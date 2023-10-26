@@ -4,12 +4,12 @@ import PropTypes from 'prop-types';
 
 import Popover from '../popover';
 import Button from '../button';
-import { TextField } from '../../component-library/text-field';
+import TextField from '../text-field';
+
 import { I18nContext } from '../../../contexts/i18n';
 
 import Identicon from '../identicon';
 import { getTokenList } from '../../../selectors';
-import { BlockSize } from '../../../helpers/constants/design-system';
 
 export default function UpdateNicknamePopover({
   address,
@@ -92,7 +92,7 @@ export default function UpdateNicknamePopover({
           value={nicknameInput}
           onChange={handleNicknameChange}
           placeholder={t('addANickname')}
-          width={BlockSize.Full}
+          fullWidth
         />
         <div className="update-nickname__content__label--capitalized">
           {t('memo')}
@@ -103,9 +103,9 @@ export default function UpdateNicknamePopover({
           value={memoInput}
           onChange={handleMemoChange}
           placeholder={t('addMemo')}
-          width={BlockSize.Full}
+          fullWidth
           margin="dense"
-          // multiline (this is from MUI component) To Do: update TextField component to support multiline/textarea input
+          multiline
           rows={3}
           classes={{
             inputMultiline: 'update-nickname__content__text-area',
