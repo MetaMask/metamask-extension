@@ -1,6 +1,7 @@
 import { TransactionStatus } from '../../../../shared/constants/transaction';
 import {
   afterTransactionSign,
+  beforeCheckPendingTransaction,
   beforeTransactionApproveOnInit,
   beforeTransactionPublish,
   getAdditionalSignArguments,
@@ -82,6 +83,23 @@ describe('MMI hooks', () => {
     it('returns false if txMeta has no custodyStatus', () => {
       const txMeta = { to: toMocked } as any;
       const result = beforeTransactionApproveOnInit(txMeta);
+      expect(result).toBe(true);
+    });
+  });
+
+  describe('beforeCheckPendingTransaction', () => {
+    it('returns true if txMeta has custodyStatus', () => {
+      const txMeta = {
+        custodyStatus: TransactionStatus.approved,
+        custodyId: 1,
+      } as any;
+      const result = beforeCheckPendingTransaction(txMeta);
+      expect(result).toBe(false);
+    });
+
+    it('returns false if txMeta has no custodyStatus', () => {
+      const txMeta = { to: toMocked } as any;
+      const result = beforeCheckPendingTransaction(txMeta);
       expect(result).toBe(true);
     });
   });

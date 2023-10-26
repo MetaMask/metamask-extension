@@ -126,9 +126,10 @@ const VALID_UNAPPROVED_TRANSACTION_TYPES = [
  * @param {number} [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
  * @param {Function} opts.hasCompletedOnboarding - Returns whether or not the user has completed the onboarding flow
  * @param {object} opts.preferencesStore
- * @param {object} hooks
+ * @param {object} opts.hooks
  * @param {Function} hooks.afterSign - Additional logic to execute after signing a transaction. Return false to not change the status to signed.
  * @param {Function} hooks.beforeApproveOnInit - Additional logic to execute before starting an approval flow for a transaction during initialization. Return false to skip the transaction.
+ * @param {Function} hooks.beforeCheckPendingTransaction - Additional logic to execute before checking pending transactions. Return false to prevent the broadcast of the transaction.
  * @param {Function} hooks.beforePublish - Additional logic to execute before publishing a transaction. Return false to prevent the broadcast of the transaction.
  * @param {Function} hooks.getAdditionalSignArguments - Returns additional arguments required to sign a transaction.
  */
@@ -164,6 +165,9 @@ export default class TransactionController extends EventEmitter {
     this._afterSign = hooks?.afterSign ? hooks.afterSign : () => true;
     this._beforeApproveOnInit = hooks?.beforeApproveOnInit
       ? hooks.beforeApproveOnInit
+      : () => true;
+    this._beforeCheckPendingTransaction = hooks?.beforeCheckPendingTransaction
+      ? hooks.beforeCheckPendingTransaction
       : () => true;
     this._beforePublish = hooks?.beforePublish
       ? hooks.beforePublish
@@ -218,6 +222,11 @@ export default class TransactionController extends EventEmitter {
       approveTransaction: this._approveTransaction.bind(this),
       getCompletedTransactions:
         this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
+      hooks: {
+        beforeCheckPendingTransaction:
+          this._beforeCheckPendingTransaction.bind(this),
+        beforePublish: this._beforePublish.bind(this),
+      },
     });
 
     this.incomingTransactionHelper = new IncomingTransactionHelper({

@@ -178,6 +178,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   afterTransactionSign as afterTransactionSignMMI,
+  beforeCheckPendingTransaction as beforeCheckPendingTransactionMMI,
   beforeTransactionPublish as beforeTransactionPublishMMI,
   beforeTransactionApproveOnInit as beforeTransactionApproveOnInitMMI,
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
@@ -1318,6 +1319,8 @@ export default class MetamaskController extends EventEmitter {
               this,
             ),
           ),
+        beforeCheckPendingTransaction:
+          beforeCheckPendingTransactionMMI.bind(this),
         beforeTransactionApproveOnInit:
           beforeTransactionApproveOnInitMMI.bind(this),
         beforePublish: beforeTransactionPublishMMI.bind(this),

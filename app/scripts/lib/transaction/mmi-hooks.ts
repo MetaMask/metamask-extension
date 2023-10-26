@@ -61,3 +61,14 @@ export function beforeTransactionApproveOnInit(
 ): boolean {
   return !txMeta?.custodyStatus;
 }
+
+/**
+ * Whether or not should run the logic before checking the transaction when checking pending transactions.
+ *
+ * @param txMeta - The transaction meta.
+ */
+export function beforeCheckPendingTransaction(
+  txMeta: TransactionMeta,
+): boolean {
+  return !txMeta?.custodyId;
+}
