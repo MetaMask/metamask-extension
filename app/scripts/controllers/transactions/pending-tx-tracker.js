@@ -194,8 +194,11 @@ export default class PendingTransactionTracker extends EventEmitter {
     let hasNoHash = !txHash;
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    // Don't emit noTxHashErr for custodian transactions
-    hasNoHash ||= !txMeta.custodyId;
+    // Some custodian transactions don't have a hash by the time they are
+    // marked as pending, so don't emit a noTxHash error for them
+
+    hasNoHash = hasNoHash && !txMeta.custodyId;
+
     ///: END:ONLY_INCLUDE_IN
 
     if (hasNoHash) {
