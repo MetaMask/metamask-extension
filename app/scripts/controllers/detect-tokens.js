@@ -1,4 +1,5 @@
 import { warn } from 'loglevel';
+import { PollingControllerOnly } from '@metamask/polling-controller/dist/PollingController';
 import { MINUTE } from '../../../shared/constants/time';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -20,7 +21,7 @@ const DEFAULT_INTERVAL = MINUTE * 3;
  * A controller that polls for token exchange
  * rates based on a user's current token list
  */
-export default class DetectTokensController {
+export default class DetectTokensController extends PollingControllerOnly {
   /**
    * Creates a DetectTokensController
    *
@@ -33,6 +34,7 @@ export default class DetectTokensController {
    * @param config.assetsContractController
    * @param config.trackMetaMetricsEvent
    * @param config.messenger
+   * @param config.getNetworkClientById
    */
   constructor({
     messenger,
@@ -43,7 +45,10 @@ export default class DetectTokensController {
     tokensController,
     assetsContractController = null,
     trackMetaMetricsEvent,
+    getNetworkClientById,
   } = {}) {
+    super();
+    this.getNetworkClientById = getNetworkClientById;
     this.messenger = messenger;
     this.assetsContractController = assetsContractController;
     this.tokensController = tokensController;
@@ -90,6 +95,14 @@ export default class DetectTokensController {
     });
 
     this.#registerKeyringHandlers();
+  }
+
+  async _executePoll(networkClientId, options) {
+    const networkClient = this.getNetworkClientById(networkClientId);
+    await this.detectNewTokens({
+      ...options,
+      chainId: networkClient.configuration.chainId,
+    });
   }
 
   /**

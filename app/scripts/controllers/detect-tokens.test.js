@@ -559,4 +559,30 @@ describe('DetectTokensController', function () {
     clock.tick(180000);
     sandbox.assert.notCalled(stub);
   });
+
+  it('should poll on the correct interval by networkClientId', async function () {
+    const clock = sandbox.useFakeTimers();
+    const controller = new DetectTokensController({
+      messenger: getRestrictedMessenger(),
+      preferences,
+      network,
+      tokensController,
+      assetsContractController,
+      getNetworkClientById: () => ({
+        configuration: {
+          chainId: '0x1',
+        },
+        provider: {},
+        blockTracker: {},
+        destroy: () => {
+          // noop
+        },
+      }),
+    });
+    const stub = sandbox.stub(controller, 'detectNewTokens');
+    controller.startPollingByNetworkClientId('mainnet');
+    clock.tick(180000);
+    sandbox.assert.called(stub);
+    sandbox.assert.calledWith(stub.firstCall, { chainId: '0x1' });
+  });
 });
