@@ -3,7 +3,6 @@ import type {
   PolymorphicComponentPropWithRef,
   StyleUtilityProps,
 } from '../box';
-import { Size } from '../../../helpers/constants/design-system';
 import { InputProps } from '../input';
 import { InputComponent } from '../input/input.types';
 
