@@ -159,16 +159,10 @@ workflows:
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
-      - test-e2e-chrome-snaps:
-          requires:
-            - prep-build-test
-      - test-e2e-firefox-snaps:
-          requires:
-            - prep-build-test
-      - test-e2e-chrome-snaps-flask:
+      - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
-      - test-e2e-firefox-snaps-flask:
+      - test-e2e-firefox-flask:
           requires:
             - prep-build-test-flask
       - test-e2e-chrome-mmi:
@@ -260,10 +254,8 @@ workflows:
             - test-e2e-chrome
             - test-e2e-chrome-multichain
             - test-e2e-firefox
-            - test-e2e-chrome-snaps
-            - test-e2e-firefox-snaps
-            - test-e2e-chrome-snaps-flask
-            - test-e2e-firefox-snaps-flask
+            - test-e2e-chrome-flask
+            - test-e2e-firefox-flask
             - test-e2e-chrome-mmi
             - test-e2e-chrome-rpc-mmi
             - test-storybook
@@ -820,7 +812,7 @@ jobs:
 
   test-e2e-chrome:
     executor: node-browsers
-    parallelism: 8
+    parallelism: 12
     steps:
       - run: *shallow-git-clone
       - run:
@@ -964,69 +956,9 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  test-e2e-firefox-snaps:
+  test-e2e-firefox-flask:
     executor: node-browsers
-    parallelism: 4
-    steps:
-      - run: *shallow-git-clone
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: test:e2e:firefox:snaps
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              yarn test:e2e:firefox:snaps --retries 2 --debug --build-type=main
-            fi
-          no_output_timeout: 20m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-chrome-snaps:
-    executor: node-browsers
-    parallelism: 4
-    steps:
-      - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: test:e2e:chrome:snaps
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              yarn test:e2e:chrome:snaps --retries 2 --debug --build-type=main
-            fi
-          no_output_timeout: 20m
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e
-
-  test-e2e-firefox-snaps-flask:
-    executor: node-browsers
-    parallelism: 4
+    parallelism: 8
     steps:
       - run: *shallow-git-clone
       - run:
@@ -1041,11 +973,11 @@ jobs:
           name: Move test zips to builds
           command: mv ./builds-test-flask ./builds
       - run:
-          name: test:e2e:firefox:snaps
+          name: test:e2e:firefox:flask
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox:snaps --retries 2 --debug --build-type=flask
+              yarn test:e2e:firefox:flask --retries 2 --debug
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -1054,9 +986,9 @@ jobs:
       - store_test_results:
           path: test/test-results/e2e
 
-  test-e2e-chrome-snaps-flask:
+  test-e2e-chrome-flask:
     executor: node-browsers
-    parallelism: 4
+    parallelism: 8
     steps:
       - run: *shallow-git-clone
       - run:
@@ -1071,11 +1003,11 @@ jobs:
           name: Move test zips to builds
           command: mv ./builds-test-flask ./builds
       - run:
-          name: test:e2e:chrome:snaps
+          name: test:e2e:chrome:flask
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:snaps --retries 2 --debug --build-type=flask
+              yarn test:e2e:chrome:flask --retries 2 --debug
             fi
           no_output_timeout: 20m
       - store_artifacts:
@@ -1086,7 +1018,7 @@ jobs:
 
   test-e2e-chrome-mmi:
     executor: node-browsers
-    parallelism: 4
+    parallelism: 8
     steps:
       - run: *shallow-git-clone
       - run:
@@ -1116,7 +1048,7 @@ jobs:
 
   test-e2e-firefox:
     executor: node-browsers-medium-plus
-    parallelism: 8
+    parallelism: 12
     steps:
       - run: *shallow-git-clone
       - run:
