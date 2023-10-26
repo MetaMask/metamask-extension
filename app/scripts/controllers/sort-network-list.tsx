@@ -11,23 +11,31 @@ const controllerName = 'NetworksOrderingController';
 export type NetworkId = `${number}`;
 
 export type NetworksOrderingControllerState = {
-  networkId: NetworkId | null;
+  networksList: NetworkId[] | null;
 };
+
+export type NetworksOrderingControllerUpdateNetworkListAction = {
+  type: `${typeof controllerName}:updateNetworkList`;
+  handler: NetworksOrderingController['updateNetowrksList'];
+};
+
+export type NetworksOrderingControllerMessengerActions =
+  NetworksOrderingControllerUpdateNetworkListAction;
 
 export type NetworksOrderingControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
-  never,
+  NetworksOrderingControllerMessengerActions,
   never,
   never,
   never
 >;
 
 const defaultState = {
-  networksList: {},
+  networksList: [],
 };
 
 const metadata = {
-  networkId: {
+  networksList: {
     persist: true,
     anonymous: true,
   },
@@ -52,26 +60,18 @@ export class NetworksOrderingController extends BaseControllerV2<
     messenger: NetworksOrderingControllerMessenger;
     state?: NetworksOrderingControllerState;
   }) {
-    const mergedState = { ...defaultState, ...state };
-    super({ messenger, metadata, name: controllerName, state: mergedState });
-    this.#onUpdateNetworksList(allAnnouncements);
+    super({
+      messenger,
+      metadata,
+      name: controllerName,
+      state: { ...defaultState, ...state },
+    });
   }
 
-  /**
-   * Compares the announcements in state with the announcements from file
-   * to check if there are any new announcements
-   * if yes, the new announcement will be added to the state with a flag indicating
-   * that the announcement is not seen by the user.
-   *
-   * @param allAnnouncements - all announcements to compare with the announcements from state
-   */
-  #addAnnouncements(allAnnouncements: AnnouncementMap): void {
+  updateNetowrksList(networksList: NetworkId[]) {
     this.update((state) => {
-      Object.values(allAnnouncements).forEach((announcement: Announcement) => {
-        state.announcements[announcement.id] = state.announcements[
-          announcement.id
-        ] ?? { ...announcement, isShown: false };
-      });
+      state.networksList = networksList;
+      return state;
     });
   }
 }
