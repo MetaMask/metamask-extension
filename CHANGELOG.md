@@ -6,6 +6,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.3.0]
+### Added
+- Display total fiat balance on home screen ([#20941](https://github.com/MetaMask/metamask-extension/pull/20941))
+- Give the user the ability to opt out of 3rd party network validation when adding a new network ([#20816](https://github.com/MetaMask/metamask-extension/pull/20816))
+- Adds conversion buttons to buy, receive, and learn more about NFTs when an account is empty. ([#21049](https://github.com/MetaMask/metamask-extension/pull/21049))
+- What's New modal for the latest Buy and Sell features ([#20965](https://github.com/MetaMask/metamask-extension/pull/20965))
+- [Flask] Suggest names for Ethereum addresses in signature requests using installed snaps ([#20959](https://github.com/MetaMask/metamask-extension/pull/20959))
+
+### Changed
+- Move the token detection prompt to the top of the assets list ([#20932](https://github.com/MetaMask/metamask-extension/pull/20932))
+- Adds address validation to the Import NFT modal ([#21028](https://github.com/MetaMask/metamask-extension/pull/21028))
+- Add error message to the Import NFT modal if an NFT with that tokenId already exists ([#20940](https://github.com/MetaMask/metamask-extension/pull/20940))
+- Show a warning when sending 0 tokens ([#21091](https://github.com/MetaMask/metamask-extension/pull/21091))
+- Enable bridge button on the zkSync network, and for some tokens on other networks ([#21085](https://github.com/MetaMask/metamask-extension/pull/21085))
+- Stop displaying a mismatched account warning on the Sign In With Ethereum page ([#21107](https://github.com/MetaMask/metamask-extension/pull/21107))
+- Ensure "Enhanced Token Detection" is toggled off when opening "Advanced Configuration" during onboarding ([#20960](https://github.com/MetaMask/metamask-extension/pull/20960))
+- Improve loading speed/performance upon opening MetaMask ([#20843](https://github.com/MetaMask/metamask-extension/pull/20843))
+- Ensure logos are displayed on "Popular Networks" added from within MetaMask ([#20895](https://github.com/MetaMask/metamask-extension/pull/20895))
+- Show more characters in the addresses in the Connected Sites account list ([#21048](https://github.com/MetaMask/metamask-extension/pull/21048))
+- Replaces the "Add / Import / Hardware" links with a single button that takes the user to another quick modal to add, import, or connect a hardware wallet.([#21081](https://github.com/MetaMask/metamask-extension/pull/21081))
+- Disable the "Buy" button on the Sepolia network ([#20839](https://github.com/MetaMask/metamask-extension/pull/20839))
+- Update the "Buy" button to a "Buy & Sell" button ([#20891](https://github.com/MetaMask/metamask-extension/pull/20891))
+- Only display the Notification item in the dropdown menu if the user has installed a snap using the notifications permission ([#20913](https://github.com/MetaMask/metamask-extension/pull/20913))
+- Update Snaps Settings screen ([#21061](https://github.com/MetaMask/metamask-extension/pull/21061))
+- Site connection icon now indicates a connection if a dapp is connected to a snap ([#20811](https://github.com/MetaMask/metamask-extension/pull/20811))
+- Update copy on the remove snap modal ([#21065](https://github.com/MetaMask/metamask-extension/pull/21065))
+- Update the padding of the transaction insight dropdown ([#21022](https://github.com/MetaMask/metamask-extension/pull/21022))
+- [Flask] Suggest names for Ethereum addresses in signature requests using services such as ENS and Etherscan ([#20831](https://github.com/MetaMask/metamask-extension/pull/20831))
+
+### Fixed
+- Fix to ensure contract address is pre-populated, and NFT is removed from token list, when converting a token to an NFT  ([#20747](https://github.com/MetaMask/metamask-extension/pull/20747))
+- Fix autodetect tokens link so that the user is correctly taken to the right scroll position in settings ([#20978](https://github.com/MetaMask/metamask-extension/pull/20978))
+- Ensure safe batch NFT transfers show display recipient address correctly ([#21042](https://github.com/MetaMask/metamask-extension/pull/21042))
+- Fix bug that can prevent MetaMask from loading, and be stuck on the loading screen, on Firefox ([#20992](https://github.com/MetaMask/metamask-extension/pull/20992))
+- Ensure correct network icon is displayed in the "You have switched to" modal when switching to "Popular Networks" ([#21016](https://github.com/MetaMask/metamask-extension/pull/21016))
+- Ensure disconnecting a single dapp from a snap only disconnects that dapp ([#20983](https://github.com/MetaMask/metamask-extension/pull/20983))
+- Fix the Snap npm link so that it leads to the stated version of the npm package ([#20897](https://github.com/MetaMask/metamask-extension/pull/20897))
+- Fix to prevent crashes when switching network during a snaps confirmation ([#21088](https://github.com/MetaMask/metamask-extension/pull/21088))
+- Fix issue that could cause crashes when attempting to render certain NFTs ([#21418](https://github.com/MetaMask/metamask-extension/pull/21418))
+
+
 ## [11.2.0]
 ### Added
 - Adds Swaps support for the zkSync Era network ([#20809](https://github.com/MetaMask/metamask-extension/pull/20809))
@@ -4066,7 +4107,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.2.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.3.0...HEAD
+[11.3.0]: https://github.com/MetaMask/metamask-extension/compare/v11.2.0...v11.3.0
 [11.2.0]: https://github.com/MetaMask/metamask-extension/compare/v11.1.2...v11.2.0
 [11.1.2]: https://github.com/MetaMask/metamask-extension/compare/v11.1.1...v11.1.2
 [11.1.1]: https://github.com/MetaMask/metamask-extension/compare/v11.1.0...v11.1.1
