@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -26,8 +26,7 @@ describe('View NFT details', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Click to open the NFT details page and check title
         await driver.clickElement('[data-testid="home__nfts-tab"]');

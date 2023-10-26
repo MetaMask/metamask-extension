@@ -230,7 +230,6 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   SnapController: {
-    snapErrors: false,
     snapStates: false,
     snaps: false,
   },

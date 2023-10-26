@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  unlockWallet,
+} = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -30,8 +35,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
@@ -159,8 +163,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
@@ -256,8 +259,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
@@ -308,8 +310,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
@@ -380,8 +381,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
@@ -451,8 +451,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
         await openDapp(driver, contract);
