@@ -15,5 +15,5 @@ Step,Test steps,Preconditions,Test data,Expected result,Notes
 14,"Close the transaction complete screen. Go to tokens tab. ",,,The token we selected to swap to is displayed with the expected amount on tokens list.,
 15,Go to MetaMask activity tab.,,,Swap transaction appears in the activity list. The recipient's hexadecimal address is shown in the activity list item. The swaped amount is shown in the activity list item.,
 16,Open the activity list item.,,,"The status, recipient's address, nonce, amount, gas and total are shown in the item details.",
-17,Expand the activity log for the transaction.,,,"The created, submitted and confirmed activity are shown in the activity log.",
+17,Expand the activity log for the transaction.,,,"The created, submitted and confirmed activities are shown in the activity log.",
 18,Proceed to view the transaction on the block explorer.,,,The block explorer opens in a new tab.,
