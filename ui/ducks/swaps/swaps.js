@@ -819,7 +819,6 @@ export const fetchQuotesAndSetQuoteState = (
         ),
       );
 
-      // TODO parametrize this by networkClientId
       const gasPriceFetchPromise = networkAndAccountSupports1559
         ? null // For EIP 1559 we can get gas prices via "useGasFeeEstimates".
         : dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
