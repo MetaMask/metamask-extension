@@ -1,4 +1,5 @@
 import { hasProperty, isObject } from '@metamask/utils';
+import { captureException } from '@sentry/browser';
 import { cloneDeep } from 'lodash';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 
@@ -23,7 +24,9 @@ export async function migrate(originalVersionedData: {
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
+function transformState(
+  state: Record<string, unknown>,
+): Record<string, unknown> {
   if (
     hasProperty(state, 'PreferencesController') &&
     isObject(state.PreferencesController) &&
@@ -38,5 +41,8 @@ function transformState(state: Record<string, unknown>) {
     };
   }
 
+  if (hasProperty(state.PreferencesController, 'isLineaMainnetReleased')) {
+    delete state.PreferencesController.isLineaMainnetReleased;
+  }
   return state;
 }
