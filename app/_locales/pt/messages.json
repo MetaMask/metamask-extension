@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Criar uma conta $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Instalado"
-  },
-  "snapError": {
-    "message": "Erro no snap: '$1'. Código de erro: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Instalar snap"
@@ -4038,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Informações compartilhadas com Serviços de Terceiros serão coletadas diretamente por eles, de acordo com políticas de privacidade próprias. Por favor, consulte-as para obter mais informações.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Gerencie seus snaps"
   },
   "snapsTermsOfUse": {
     "message": "Termos de Uso"

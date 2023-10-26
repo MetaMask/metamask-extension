@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Buat akun $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Terinstal"
-  },
-  "snapError": {
-    "message": "Kesalahan Snap: '$1'. Kode Kesalahan: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Instal Snap"
@@ -4038,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Setiap informasi yang Anda bagikan kepada Layanan Pihak Ketiga akan dikumpulkan langsung oleh Layanan Pihak Ketiga tersebut sesuai dengan kebijakan privasinya. Baca kebijakan privasinya untuk informasi lebih lanjut.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Kelola Snap Anda"
   },
   "snapsTermsOfUse": {
     "message": "Ketentuan Penggunaan"

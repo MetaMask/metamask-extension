@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "$1 계정 생성",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "스냅",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "설치됨"
-  },
-  "snapError": {
-    "message": "스냅 오류: '$1'. 오류 코드: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "스냅 설치"
@@ -4038,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "타사와 공유하는 모든 정보는 해당 타사의 개인정보 처리방침에 따라 직접 수집됩니다. 더 자세한 내용은 해당 회사의 개인정보 처리방침을 참고하시기 바랍니다.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "스냅 관리"
   },
   "snapsTermsOfUse": {
     "message": "이용약관"

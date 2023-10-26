@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Δημιουργήστε έναν $1 λογαριασμό",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Εγκαταστάθηκε"
-  },
-  "snapError": {
-    "message": "Σφάλμα Snap: '$1'. Κωδικός Σφάλματος: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Εγκατάσταση του snap"
@@ -4038,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Οποιεσδήποτε πληροφορίες μοιράζεστε με τις Υπηρεσίες Τρίτων θα συλλέγονται απευθείας από τις εν λόγω Υπηρεσίες Τρίτων σύμφωνα με τις πολιτικές απορρήτου τους. Ανατρέξτε στις πολιτικές απορρήτου τους για περισσότερες πληροφορίες.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Διαχειριστείτε τα Snaps σας"
   },
   "snapsTermsOfUse": {
     "message": "Όροι Χρήσης"

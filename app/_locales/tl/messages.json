@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Gumawa ng $1 account",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Na-install"
-  },
-  "snapError": {
-    "message": "Snap Error: '$1'. Error Code: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "I-install ang snap"
@@ -4038,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Ang anumang impormasyong ibinabahagi mo sa mga Serbisyo ng Third Party ay direktang kokolektahin ng mga Serbisyo ng Third Party na iyon alinsunod sa kanilang mga patakaran sa pagkapribado. Pakitingnan ang kanilang mga patakaran sa pagkapribado para sa higit pang impormasyon.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Pamahalaan ang iyong mga Snap"
   },
   "snapsTermsOfUse": {
     "message": "Mga Tuntunin ng Paggamit"

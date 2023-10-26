@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "创建 $1 账户",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "已安装"
-  },
-  "snapError": {
-    "message": "Snap错误：'$1'。错误代码：'$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "安装Snap"
@@ -4038,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "您与第三方服务分享的任何信息，将由这些第三方服务根据其隐私政策直接收集。请参阅其隐私政策以了解更多信息。",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "管理您的 Snaps"
   },
   "snapsTermsOfUse": {
     "message": "使用条款"

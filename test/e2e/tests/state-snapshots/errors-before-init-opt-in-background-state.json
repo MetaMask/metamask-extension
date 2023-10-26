@@ -50,7 +50,6 @@
       "traits": "object"
     },
     "NetworkController": {
-      "networkId": "1337",
       "selectedNetworkClientId": "string",
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }

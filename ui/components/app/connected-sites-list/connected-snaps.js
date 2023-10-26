@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { SnapCaveatType } from '@metamask/rpc-methods';
+import { SnapCaveatType } from '@metamask/snaps-rpc-methods';
 import { Box, IconName, IconSize, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MenuItem } from '../../ui/menu';
-import { SNAPS_VIEW_ROUTE } from '../../../helpers/constants/routes';
 import SnapAvatar from '../snaps/snap-avatar';
 import {
   AlignItems,
@@ -23,6 +22,7 @@ import {
   getPermissionSubjects,
 } from '../../../selectors';
 import { removePermissionsFor, updateCaveat } from '../../../store/actions';
+import { getSnapRoute } from '../../../helpers/utils/util';
 
 export default function ConnectedSnaps({ connectedSubjects }) {
   const [showOptions, setShowOptions] = useState();
@@ -74,9 +74,7 @@ export default function ConnectedSnaps({ connectedSubjects }) {
         </MenuItem>
         <MenuItem
           iconName={IconName.Setting}
-          onClick={() =>
-            history.push(`${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`)
-          }
+          onClick={() => history.push(getSnapRoute(snapId))}
         >
           {t('snapsSettings')}
         </MenuItem>

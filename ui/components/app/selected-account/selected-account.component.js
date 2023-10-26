@@ -13,6 +13,7 @@ import CustodyLabels from '../../institutional/custody-labels/custody-labels';
 ///: END:ONLY_INCLUDE_IN
 import { Icon, IconName, IconSize } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 
 class SelectedAccount extends Component {
   state = {
@@ -104,7 +105,7 @@ class SelectedAccount extends Component {
                 () => this.setState({ copied: false }),
                 SECOND * 3,
               );
-              copyToClipboard(checksummedAddress);
+              copyToClipboard(checksummedAddress, COPY_OPTIONS);
             }}
           >
             <div className="selected-account__name">

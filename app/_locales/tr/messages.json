@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Bir $1 hesabı oluştur",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Yüklendi"
-  },
-  "snapError": {
-    "message": "Snap Hatası: '$1'. Hata Kodu: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Snap yükle"
@@ -4038,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Üçüncü Taraf Hizmetleri ile paylaştığınız tüm bilgiler söz konusu Üçüncü Taraf Hizmetlerinin gizlilik politikalarına göre doğrudan üçüncü taraflar tarafından toplanacaktır. Daha fazla bilgi için lütfen üçüncü tarafların gizlilik politikalarına bakın.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Snaplerini yönet"
   },
   "snapsTermsOfUse": {
     "message": "Kullanım Şartları"

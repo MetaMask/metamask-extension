@@ -153,6 +153,9 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+  "accountSnapsFeedback": {
+    "message": "Submit feedback on this feature"
+  },
   "accountsConnected": {
     "message": "Accounts connected"
   },
@@ -179,6 +182,9 @@
   },
   "addAccount": {
     "message": "Add account"
+  },
+  "addAccountSnapModalHeader": {
+    "message": "Add Account Snap"
   },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
@@ -278,10 +284,10 @@
     "message": "Discover options to keep your account secure with MetaMask Snaps"
   },
   "addSnapAccountToggle": {
-    "message": "Enable \"Add Snap account\""
+    "message": "Enable \"Add account Snap (Beta)\""
   },
   "addSnapAccountsDescription": {
-    "message": "Turning on this feature will give you the option to add a Snap account right from your account list. If you install a Snap account, remember that it is a third-party service."
+    "message": "Turning on this feature will give you the option to add the new Beta account Snaps right from your account list. If you install an account Snap, remember that it is a third-party service."
   },
   "addSuggestedNFTs": {
     "message": "Add suggested NFTs"
@@ -603,7 +609,8 @@
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
   "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
+    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet. $1",
+    "description": "$1 is a link to a Blockaid's terms of use"
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -1821,6 +1828,9 @@
   "goBack": {
     "message": "Go back"
   },
+  "goToSite": {
+    "message": "Go to site"
+  },
   "goerli": {
     "message": "Goerli test network"
   },
@@ -2550,6 +2560,9 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
+  "networkNameLinea": {
+    "message": "Linea"
+  },
   "networkNameOpMainnet": {
     "message": "OP Mainnet"
   },
@@ -3227,7 +3240,8 @@
     "message": "OpenSea + Blockaid"
   },
   "openSeaMessage": {
-    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests."
+    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. $1",
+    "description": "$1 is the link to OpenSea's terms of use"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -3392,6 +3406,14 @@
   "permission_getLocaleDescription": {
     "message": "Let this Snap access your preferred language from your MetaMask settings. This can be used to localize and display the Snap's content using your language.",
     "description": "An extended description for the `snap_getLocale` permission"
+  },
+  "permission_keyring": {
+    "message": "Allow requests for adding and controlling Ethereum accounts",
+    "description": "The description for the `endowment:keyring` permission"
+  },
+  "permission_keyringDescription": {
+    "message": "Let this Snap receive requests to add or remove accounts, plus sign and transact on behalf of these accounts.",
+    "description": "An extended description for the `endowment:keyring` permission"
   },
   "permission_lifecycleHooks": {
     "message": "Use lifecycle hooks.",
@@ -3889,7 +3911,7 @@
     "message": "Security alerts"
   },
   "securityAlertsDescription": {
-    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity."
+    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity. By enabling this feature you agree to the provider's terms of use."
   },
   "securityAndPrivacy": {
     "message": "Security & privacy"
@@ -4006,6 +4028,9 @@
   "send": {
     "message": "Send"
   },
+  "sendAToken": {
+    "message": "Send a token"
+  },
   "sendBugReport": {
     "message": "Send us a bug report."
   },
@@ -4050,7 +4075,7 @@
     "description": "The token symbol that is being approved"
   },
   "settingAddSnapAccount": {
-    "message": "Add snap account"
+    "message": "Add account Snap"
   },
   "settings": {
     "message": "Settings"
@@ -4161,11 +4186,42 @@
   "snapAccountCreated": {
     "message": "Your account is ready!"
   },
+  "snapAccountLegalDisclaimerExperimentalBetaDescription": {
+    "message": "Account Management Snaps are released as part of an experimental Beta release. You agree that you will only use one of these Snaps if you understand how it functions and how to use it, and you have fully read and understand all risk warnings and other disclosures made available by the Third Party Service provider relating to use of their Snap. You agree that Consensys is not responsible for any injury that you incur as a result of your use of this Snap.\n\nYou will not be able to use your MetaMask Secret Recovery Phrase to recover accounts added through Account Management Snaps. If your account credentials are lost or compromised, MetaMask will not be able to help you. If the Snap or the associated dapp is hacked or ceases to function, you may not be able to access your account and the funds in your account."
+  },
+  "snapAccountLegalDisclaimerExperimentalBetaSubtitle": {
+    "message": "Experimental Beta"
+  },
+  "snapAccountLegalDisclaimerPrivacyDescription": {
+    "message": "Any information you share with Third Party Services will be collected directly by those Third Party Services in accordance with their privacy policies. Please refer to their privacy policies for more information. Consensys has no access to information you share with Third Party Services."
+  },
+  "snapAccountLegalDisclaimerPrivacySubtitle": {
+    "message": "Privacy"
+  },
+  "snapAccountLegalDisclaimerTermsOfUseLink": {
+    "message": "Consensys Terms of Use"
+  },
+  "snapAccountLegalDisclaimerThirdPartyDescription": {
+    "message": "You acknowledge that Account Management Snaps are a Third Party Service, as defined in the $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. Consensys does not recommend the use of any Snap by any particular person for any particular reason. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
+    "description": "$1 is a link to the ConsenSys Terms of Use"
+  },
+  "snapAccountLegalDisclaimerThirdPartySubtitle": {
+    "message": "Third-Party Service"
+  },
+  "snapAccountLegalDisclaimerTitle": {
+    "message": "Important Information"
+  },
+  "snapAccountRedirectFinishSigningTitle": {
+    "message": "Finish signing"
+  },
+  "snapAccountRedirectSiteDescription": {
+    "message": "Follow the instructions from $1"
+  },
   "snapAccountRemoved": {
     "message": "Account removed"
   },
   "snapAccounts": {
-    "message": "Snap accounts"
+    "message": "Account Snaps"
   },
   "snapAccountsDescription": {
     "message": "Accounts controlled by third-party Snaps."
@@ -4182,14 +4238,14 @@
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
   "snapCreateAccountSubtitle": {
-    "message": "Choose how to secure your new account using MetaMask Snaps."
+    "message": "Choose how to secure your new account using MetaMask Snaps. If you install an account Snap, remember that it is a third-party service."
   },
   "snapCreateAccountTitle": {
-    "message": "Create a $1 account",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "message": "Create an account $1 (Beta)",
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
-    "message": "snap",
+    "message": "Snap",
     "description": "$1 of the snapCreateAccountTitle"
   },
   "snapCreatedByMetaMask": {
@@ -4217,14 +4273,10 @@
     "message": "Website"
   },
   "snapDetailsCreateASnapAccount": {
-    "message": "Create a Snap Account"
+    "message": "Add an account Snap (Beta)"
   },
   "snapDetailsInstalled": {
     "message": "Installed"
-  },
-  "snapError": {
-    "message": "Snap Error: '$1'. Error Code: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Install snap"
@@ -4296,6 +4348,9 @@
   "snapUpdateSuccess": {
     "message": "Update complete"
   },
+  "snapUrlIsBlocked": {
+    "message": "This Snap wants to take you to a blocked site. $1."
+  },
   "snaps": {
     "message": "Snaps"
   },
@@ -4325,9 +4380,6 @@
   },
   "snapsSettings": {
     "message": "Snap settings"
-  },
-  "snapsSettingsDescription": {
-    "message": "Manage your Snaps"
   },
   "snapsTermsOfUse": {
     "message": "Terms of Use"
@@ -5320,6 +5372,12 @@
   },
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
+  },
+  "transactionInsightsDeprecationInfo": {
+    "message": "Explore more ways to get transaction insights with"
+  },
+  "transactionInsightsDeprecationTitle": {
+    "message": "This feature will be deprecated soon"
   },
   "transactionNote": {
     "message": "Transaction note"

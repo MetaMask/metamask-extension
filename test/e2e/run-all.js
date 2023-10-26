@@ -1,5 +1,6 @@
 const path = require('path');
-const { promises: fs } = require('fs');
+const fs = require('fs');
+const { execSync } = require('child_process');
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
 const { runInShell } = require('../../development/lib/run-command');
@@ -7,7 +8,9 @@ const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 
 const getTestPathsForTestDir = async (testDir) => {
-  const testFilenames = await fs.readdir(testDir, { withFileTypes: true });
+  const testFilenames = await fs.promises.readdir(testDir, {
+    withFileTypes: true,
+  });
   const testPaths = [];
 
   for (const itemInDirectory of testFilenames) {
@@ -24,15 +27,37 @@ const getTestPathsForTestDir = async (testDir) => {
   return testPaths;
 };
 
-// Heavily inspired by: https://stackoverflow.com/a/51514813
-// Splits the array into totalChunks chunks with a decent spread of items in each chunk
-function chunk(array, totalChunks) {
-  const copyArray = [...array];
-  const result = [];
-  for (let chunkIndex = totalChunks; chunkIndex > 0; chunkIndex--) {
-    result.push(copyArray.splice(0, Math.ceil(copyArray.length / chunkIndex)));
+// For running E2Es in parallel in CI
+function runningOnCircleCI(testPaths) {
+  const fullTestList = testPaths.join('\n');
+  console.log('Full test list:', fullTestList);
+  fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
+
+  // Use `circleci tests run` on `testList.txt` to do two things:
+  // 1. split the test files into chunks based on how long they take to run
+  // 2. support "Rerun failed tests" on CircleCI
+  const result = execSync(
+    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < test/test-results/fullTestList.txt',
+  ).toString('utf8');
+
+  // Report if no tests found, exit gracefully
+  if (result.indexOf('There were no tests found') !== -1) {
+    console.log(`run-all.js info: Skipping this node because "${result}"`);
+    return [];
   }
-  return result;
+
+  // If there's no text file, it means this node has no tests, so exit gracefully
+  if (!fs.existsSync('test/test-results/myTestList.txt')) {
+    console.log(
+      'run-all.js info: Skipping this node because there is no myTestList.txt',
+    );
+    return [];
+  }
+
+  // take the space-delimited result and split into an array
+  return fs
+    .readFileSync('test/test-results/myTestList.txt', { encoding: 'utf8' })
+    .split(' ');
 }
 
 async function main() {
@@ -59,10 +84,6 @@ async function main() {
           })
           .option('snaps', {
             description: `run snaps e2e tests`,
-            type: 'boolean',
-          })
-          .option('mv3', {
-            description: `run mv3 specific e2e tests`,
             type: 'boolean',
           })
           .option('rpc', {
@@ -101,7 +122,6 @@ async function main() {
     retries,
     mmi,
     snaps,
-    mv3,
     rpc,
     buildType,
     updateSnapshot,
@@ -128,27 +148,13 @@ async function main() {
       ...(await getTestPathsForTestDir(path.join(__dirname, 'metrics'))),
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
-
-    if (mv3) {
-      testPaths.push(
-        ...(await getTestPathsForTestDir(path.join(__dirname, 'mv3'))),
-      );
-    }
   }
 
   // These tests should only be run on Flask for now.
   if (buildType !== 'flask') {
     const filteredTests = [
-      'settings-add-snap-account-toggle.spec.js',
-      'test-create-snap-account.spec.js',
-      'test-remove-accounts-snap.spec.js',
-      'test-snap-accounts.spec.js',
       'test-snap-lifecycle.spec.js',
       'test-snap-get-locale.spec.js',
-      'ppom-blockaid-alert.spec.js',
-      'ppom-blockaid-alert-erc20-approval.spec.js',
-      'ppom-blockaid-alert-erc20-transfer.spec.js',
-      'ppom-toggle-settings.spec.js',
       'petnames.spec.js',
     ];
     testPaths = testPaths.filter((p) =>
@@ -178,16 +184,23 @@ async function main() {
     args.push('--mmi');
   }
 
-  // For running E2Es in parallel in CI
-  const currentChunkIndex = process.env.CIRCLE_NODE_INDEX ?? 0;
-  const totalChunks = process.env.CIRCLE_NODE_TOTAL ?? 1;
-  const chunks = chunk(testPaths, totalChunks);
-  const currentChunk = chunks[currentChunkIndex];
+  await fs.promises.mkdir('test/test-results/e2e', { recursive: true });
 
-  for (const testPath of currentChunk) {
-    const dir = 'test/test-results/e2e';
-    fs.mkdir(dir, { recursive: true });
-    await runInShell('node', [...args, testPath]);
+  let myTestList;
+  if (process.env.CIRCLECI) {
+    myTestList = runningOnCircleCI(testPaths);
+  } else {
+    myTestList = testPaths;
+  }
+
+  console.log('My test list:', myTestList);
+
+  // spawn `run-e2e-test.js` for each test in myTestList
+  for (let testPath of myTestList) {
+    if (testPath !== '') {
+      testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
+      await runInShell('node', [...args, testPath]);
+    }
   }
 }
 

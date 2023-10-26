@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Создать новый счет $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "Установлена"
-  },
-  "snapError": {
-    "message": "Ошибка snap: '$1'. Код ошибки: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "Установить snap"
@@ -4038,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Любая информация, которую вы передаете Сторонним службам, будет собираться непосредственно этими Сторонними службами в соответствии с их политикой конфиденциальности. Пожалуйста, обратитесь к их политике конфиденциальности для получения дополнительной информации.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Управление вашим Snaps"
   },
   "snapsTermsOfUse": {
     "message": "Условия использования"

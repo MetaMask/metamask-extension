@@ -3913,7 +3913,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "$1アカウントの作成",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3948,10 +3948,6 @@
   },
   "snapDetailsInstalled": {
     "message": "インストール済み"
-  },
-  "snapError": {
-    "message": "snapエラー:「$1」。エラーコード:「$2」",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
   },
   "snapInstall": {
     "message": "snapをインストール"
@@ -4038,9 +4034,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "サードパーティサービスと共有する情報は、当該サードパーティサービスにより、それぞれのプライバシーポリシーに従い直接収集されます。詳細は、各サードパーティサービスのプライバシーポリシーをご覧ください。",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Snapsの管理"
   },
   "snapsTermsOfUse": {
     "message": "利用規約"

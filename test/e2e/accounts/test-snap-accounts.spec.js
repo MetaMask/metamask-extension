@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const util = require('ethereumjs-util');
 const FixtureBuilder = require('../fixture-builder');
 const {
-  clickSignOnSignatureConfirmation,
   convertETHToHexGwei,
   openDapp,
   PRIVATE_KEY,
@@ -89,8 +88,6 @@ describe('Test Snap Account', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
 
         await driver.clickElement({ text: 'Snaps', tag: 'div' });
 
@@ -286,14 +283,25 @@ describe('Test Snap Account', function () {
     await switchToOrOpenDapp(driver);
 
     await driver.clickElement(locatorID);
-    await switchToNotificationWindow(driver, 4);
+
+    // behaviour of chrome and firefox is different,
+    // chrome needs extra time to load the popup
+    if (driver.browser === 'chrome') {
+      await driver.delay(500);
+    }
+    const handles = await driver.getAllWindowHandles();
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.Notification,
+      handles,
+      2000,
+    );
 
     // these two don't have a contract details page
     if (locatorID !== '#personalSign' && locatorID !== '#signTypedData') {
       await validateContractDetails(driver);
     }
 
-    await clickSignOnSignatureConfirmation(driver, 3);
+    await driver.clickElement({ text: 'Sign', tag: 'button' });
 
     if (isAsyncFlow) {
       await approveOrRejectRequest(driver, flowType);
@@ -422,7 +430,12 @@ describe('Test Snap Account', function () {
     });
 
     // Click "Create" on the Snap's confirmation popup
-    await switchToNotificationWindow(driver, 3);
+    const handles = await driver.getAllWindowHandles();
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.Notification,
+      handles,
+      2000,
+    );
     await driver.clickElement('[data-testid="confirmation-submit-button"]');
     await driver.clickElement('[data-testid="confirmation-submit-button"]');
     await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
@@ -466,7 +479,12 @@ describe('Test Snap Account', function () {
   async function connectAccountToTestDapp(driver) {
     await switchToOrOpenDapp(driver);
     await driver.clickElement('#connectButton');
-    await switchToNotificationWindow(driver, 4);
+    const handles = await driver.getAllWindowHandles();
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.Notification,
+      handles,
+      2000,
+    );
     await driver.clickElement('[data-testid="page-container-footer-next"]');
     await driver.clickElement('[data-testid="page-container-footer-next"]');
   }
@@ -489,6 +507,39 @@ describe('Test Snap Account', function () {
    * @param {string} flowType
    */
   async function approveOrRejectRequest(driver, flowType) {
+    // Click redirect button for async flows
+    if (flowType === 'approve' || flowType === 'reject') {
+      // There is a try catch here because when using the send eth flow,
+      // MetaMask is still active, and therefore the popup notification will
+      // no appear. The workaround is to reload the extension and
+      // force the notification to appear in the full window.
+      try {
+        // Adding a delay here because there is a race condition where
+        // the driver tries to switch to the first notification window
+        // and not the second notification window with the redirect button
+        await driver.delay(500);
+        const handles = await driver.getAllWindowHandles();
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.Notification,
+          handles,
+          2000,
+        );
+      } catch (error) {
+        console.log('SNAPS/ error switching to notification window', error);
+
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
+        await driver.navigate();
+      }
+      await driver.clickElement({
+        text: 'Go to site',
+        tag: 'button',
+      });
+
+      await driver.delay(500);
+    }
+
     await driver.switchToWindowWithTitle('SSK - Simple Snap Keyring');
 
     await driver.clickElementUsingMouseMove({
