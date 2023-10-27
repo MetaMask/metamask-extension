@@ -165,7 +165,6 @@ import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
-import { ACTION_QUEUE_METRICS_E2E_TEST } from '../../shared/constants/test-flags';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -1086,6 +1085,7 @@ export default class MetamaskController extends EventEmitter {
         'SnapsRegistry:get',
         'SnapsRegistry:getMetadata',
         'SnapsRegistry:update',
+        'SnapsRegistry:resolveVersion',
       ],
     });
 
@@ -1661,25 +1661,6 @@ export default class MetamaskController extends EventEmitter {
         this.approvalController.clear();
       },
     );
-
-    if (isManifestV3 && globalThis.isFirstTimeProfileLoaded === undefined) {
-      const { serviceWorkerLastActiveTime } =
-        this.appStateController.store.getState();
-      const metametricsPayload = {
-        category: MetaMetricsEventCategory.ServiceWorkers,
-        event: MetaMetricsEventName.ServiceWorkerRestarted,
-        properties: {
-          service_worker_restarted_time:
-            Date.now() - serviceWorkerLastActiveTime,
-        },
-      };
-
-      try {
-        this.metaMetricsController.trackEvent(metametricsPayload);
-      } catch (e) {
-        log.warn('Failed to track service worker restart metric:', e);
-      }
-    }
 
     this.metamaskMiddleware = createMetamaskMiddleware({
       static: {
@@ -2276,13 +2257,14 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapInstalled`,
-      (truncatedSnap) => {
+      (truncatedSnap, origin) => {
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.SnapInstalled,
           category: MetaMetricsEventCategory.Snaps,
           properties: {
             snap_id: truncatedSnap.id,
             version: truncatedSnap.version,
+            origin,
           },
         });
       },
@@ -2290,7 +2272,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapUpdated`,
-      (newSnap, oldVersion) => {
+      (newSnap, oldVersion, origin) => {
         this.metaMetricsController.trackEvent({
           event: MetaMetricsEventName.SnapUpdated,
           category: MetaMetricsEventCategory.Snaps,
@@ -2298,6 +2280,7 @@ export default class MetamaskController extends EventEmitter {
             snap_id: newSnap.id,
             old_version: oldVersion,
             new_version: newSnap.version,
+            origin,
           },
         });
       },
@@ -3756,13 +3739,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string>} The address of the newly-created account.
    */
   async addNewAccount(accountCount) {
-    const isActionMetricsQueueE2ETest =
-      this.appStateController.store.getState()[ACTION_QUEUE_METRICS_E2E_TEST];
-
-    if (process.env.IN_TEST && isActionMetricsQueueE2ETest) {
-      await new Promise((resolve) => setTimeout(resolve, 5_000));
-    }
-
     const oldAccounts = await this.keyringController.getAccounts();
 
     const { addedAccountAddress } = await this.keyringController.addNewAccount(
@@ -4564,7 +4540,11 @@ export default class MetamaskController extends EventEmitter {
           this.permissionController,
           origin,
         ),
-        getAccounts: this.getPermittedAccounts.bind(this, origin),
+        getSnapFile: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'SnapController:getFile',
+          origin,
+        ),
         installSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
           'SnapController:install',

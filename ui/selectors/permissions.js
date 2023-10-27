@@ -1,6 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import { CaveatTypes } from '../../shared/constants/permissions';
 import { getApprovalRequestsByType } from './approvals';

@@ -24,18 +24,20 @@ describe('Settings', function () {
 
         await driver.clickElement('[data-testid="home__asset-tab"]');
 
-        const tokenValue = '0 ETH';
+        const tokenValue = process.env.MULTICHAIN ? '0\nETH' : '0 ETH';
         const tokenListAmount = await driver.findElement(
-          '[data-testid="multichain-token-list-item-value"]',
+          process.env.MULTICHAIN
+            ? '[data-testid="token-balance-overview-currency-display"]'
+            : '[data-testid="multichain-token-list-item-value"]',
         );
         assert.equal(await tokenListAmount.getText(), tokenValue);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
-          '.currency-display-component__text',
+          '.multichain-account-list-item .currency-display-component__text',
         );
 
-        assert.equal(await accountTokenValue.getText(), '0', `ETH`);
+        assert.equal(await accountTokenValue.getText(), '0', 'ETH');
       },
     );
   });
@@ -67,18 +69,21 @@ describe('Settings', function () {
           '.settings-page__header__title-container__close-button',
         );
         await driver.clickElement('[data-testid="home__asset-tab"]');
-        const tokenValue = '0 ETH';
+
+        const tokenValue = process.env.MULTICHAIN ? '0\nETH' : '0 ETH';
         const tokenListAmount = await driver.findElement(
-          '[data-testid="multichain-token-list-item-value"]',
+          process.env.MULTICHAIN
+            ? '[data-testid="token-balance-overview-currency-display"]'
+            : '[data-testid="multichain-token-list-item-value"]',
         );
         assert.equal(await tokenListAmount.getText(), tokenValue);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountTokenValue = await driver.waitForSelector(
-          '.currency-display-component__text',
+          '.multichain-account-list-item .currency-display-component__text',
         );
 
-        assert.equal(await accountTokenValue.getText(), '0', `ETH`);
+        assert.equal(await accountTokenValue.getText(), '0', 'ETH');
       },
     );
   });

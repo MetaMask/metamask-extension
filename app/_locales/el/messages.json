@@ -3998,9 +3998,6 @@
   "snapResultSuccessDescription": {
     "message": "Το $1 είναι έτοιμο για χρήση"
   },
-  "snapUpdate": {
-    "message": "Ενημέρωση του snap"
-  },
   "snapUpdateAvailable": {
     "message": "Διαθέσιμη ενημέρωση"
   },

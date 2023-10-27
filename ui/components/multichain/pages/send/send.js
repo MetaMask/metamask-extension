@@ -1,10 +1,8 @@
-import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import { Content, Footer, Header, Page } from '../page';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
-  Box,
   ButtonIcon,
   ButtonIconSize,
   ButtonPrimary,
@@ -12,49 +10,72 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
   IconName,
-  Label,
-  PickerNetwork,
 } from '../../../component-library';
+import { Content, Footer, Header, Page } from '../page';
 import {
-  BlockSize,
-  BorderColor,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
-} from '../../../../helpers/constants/design-system';
+  getDraftTransactionExists,
+  resetSendState,
+  startNewDraftTransaction,
+} from '../../../../ducks/send';
+import { AssetType } from '../../../../../shared/constants/transaction';
+import { showQrScanner } from '../../../../store/actions';
 import {
-  getCurrentNetwork,
-  getMetaMaskAccountsOrdered,
-  getSelectedIdentity,
-} from '../../../../selectors';
-import { AccountPicker, AccountListItem } from '../..';
-import DomainInput from '../../../../pages/send/send-content/add-recipient/domain-input.component';
+  SendPageAccountPicker,
+  SendPageRecipientInput,
+  SendPageYourAccount,
+  SendPageNetworkPicker,
+} from './components';
 
 export const SendPage = () => {
   const t = useContext(I18nContext);
+  const dispatch = useDispatch();
 
-  // Network
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const startedNewDraftTransaction = useRef(false);
+  const draftTransactionExists = useSelector(getDraftTransactionExists);
+  const location = useLocation();
 
-  // Account
-  const identity = useSelector(getSelectedIdentity);
+  const cleanup = useCallback(() => {
+    dispatch(resetSendState());
+  }, [dispatch]);
 
-  // Your Accounts
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
+  /**
+   * It is possible to route to this page directly, either by typing in the url
+   * or by clicking the browser back button after progressing to the confirm
+   * screen. In the case where a draft transaction does not yet exist, this
+   * hook is responsible for creating it. We will assume that this is a native
+   * asset send.
+   */
+  useEffect(() => {
+    if (
+      draftTransactionExists === false &&
+      startedNewDraftTransaction.current === false
+    ) {
+      startedNewDraftTransaction.current = true;
+      dispatch(startNewDraftTransaction({ type: AssetType.native }));
+    }
+  }, [draftTransactionExists, dispatch]);
 
-  const SendPageRow = ({ children }) => (
-    <Box
-      display={Display.Flex}
-      paddingBottom={6}
-      flexDirection={FlexDirection.Column}
-    >
-      {children}
-    </Box>
-  );
-  SendPageRow.propTypes = {
-    children: PropTypes.element,
-  };
+  useEffect(() => {
+    window.addEventListener('beforeunload', cleanup);
+  }, [cleanup]);
+
+  useEffect(() => {
+    if (location.search === '?scan=true') {
+      dispatch(showQrScanner());
+
+      // Clear the queryString param after showing the modal
+      const [cleanUrl] = window.location.href.split('?');
+      window.history.pushState({}, null, `${cleanUrl}`);
+      window.location.hash = '#send';
+    }
+  }, [location, dispatch]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetSendState());
+      window.removeEventListener('beforeunload', cleanup);
+    };
+  }, [dispatch, cleanup]);
 
   return (
     <Page className="multichain-send-page">
@@ -70,61 +91,10 @@ export const SendPage = () => {
         {t('sendAToken')}
       </Header>
       <Content>
-        <SendPageRow>
-          <PickerNetwork
-            label={currentNetwork?.nickname}
-            src={currentNetwork?.rpcPrefs?.imageUrl}
-          />
-        </SendPageRow>
-        <SendPageRow>
-          <Label paddingBottom={2}>{t('from')}</Label>
-          <AccountPicker
-            address={identity.address}
-            name={identity.name}
-            onClick={() => undefined}
-            showAddress
-            borderColor={BorderColor.borderDefault}
-            borderWidth={1}
-            paddingTop={4}
-            paddingBottom={4}
-            block
-            justifyContent={JustifyContent.flexStart}
-            addressProps={{
-              display: Display.Flex,
-              textAlign: TextAlign.Start,
-            }}
-            labelProps={{
-              style: { flexGrow: 1, textAlign: 'start' },
-              paddingInlineStart: 2,
-            }}
-            textProps={{
-              display: Display.Flex,
-              width: BlockSize.Full,
-            }}
-            width={BlockSize.Full}
-          />
-        </SendPageRow>
-        <SendPageRow>
-          <Label paddingBottom={2}>{t('to')}</Label>
-          <DomainInput
-            userInput=""
-            onChange={() => undefined}
-            onReset={() => undefined}
-            lookupEnsName={() => undefined}
-            initializeDomainSlice={() => undefined}
-            resetDomainResolution={() => undefined}
-          />
-        </SendPageRow>
-        <SendPageRow>
-          <Label paddingBottom={2}>{t('yourAccounts')}</Label>
-          {accounts.map((account) => (
-            <AccountListItem
-              identity={account}
-              key={account.address}
-              onClick={() => undefined}
-            />
-          ))}
-        </SendPageRow>
+        <SendPageNetworkPicker />
+        <SendPageAccountPicker />
+        <SendPageRecipientInput />
+        <SendPageYourAccount />
       </Content>
       <Footer>
         <ButtonSecondary size={ButtonSecondarySize.Lg} block>
