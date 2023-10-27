@@ -11,7 +11,7 @@ const WRAPPER_PROPS = {
   },
 };
 
-export default {
+const defaultStory = {
   title: 'Components/Multichain/AddressListItem',
   component: AddressListItem,
   argTypes: {
@@ -31,6 +31,8 @@ export default {
     onClick: () => undefined,
   },
 };
+
+export default defaultStory;
 
 export const DefaultStory = (args) => (
   <Box {...WRAPPER_PROPS}>

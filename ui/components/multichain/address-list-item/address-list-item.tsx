@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import { useSelector } from 'react-redux';
 import {
@@ -7,21 +6,31 @@ import {
   Box,
   AvatarAccountVariant,
   Text,
+  AvatarAccountSize,
 } from '../../component-library';
 import {
-  Color,
   TextAlign,
   TextVariant,
   FlexDirection,
-  Size,
   BorderColor,
   Display,
   BlockSize,
   BackgroundColor,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../selectors';
 
-export const AddressListItem = ({ label, address, onClick }) => {
+interface AddressListItemProps {
+  label: string;
+  address: string;
+  onClick: () => void;
+}
+
+export const AddressListItem = ({
+  label,
+  address,
+  onClick,
+}: AddressListItemProps) => {
   const useBlockie = useSelector(getUseBlockie);
 
   return (
@@ -29,7 +38,7 @@ export const AddressListItem = ({ label, address, onClick }) => {
       display={Display.Flex}
       padding={4}
       as="button"
-      onClick={(e) => {
+      onClick={(e: Event): any => {
         e.stopPropagation();
         onClick();
       }}
@@ -39,7 +48,7 @@ export const AddressListItem = ({ label, address, onClick }) => {
     >
       <AvatarAccount
         borderColor={BorderColor.transparent}
-        size={Size.SM}
+        size={AvatarAccountSize.Sm}
         address={address}
         variant={
           useBlockie
@@ -65,7 +74,7 @@ export const AddressListItem = ({ label, address, onClick }) => {
         </Text>
         <Text
           variant={TextVariant.bodySm}
-          color={Color.textAlternative}
+          color={TextColor.textAlternative}
           ellipsis
           data-testid="address-list-item-address"
         >
@@ -75,24 +84,3 @@ export const AddressListItem = ({ label, address, onClick }) => {
     </Box>
   );
 };
-
-AddressListItem.propTypes = {
-  /**
-   * Label
-   */
-  label: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-    PropTypes.string,
-  ]).isRequired,
-  /**
-   * Address
-   */
-  address: PropTypes.string.isRequired,
-  /**
-   * Onclick
-   */
-  onClick: PropTypes.func.isRequired,
-};
-
-AddressListItem.displayName = 'AddressListItem';
