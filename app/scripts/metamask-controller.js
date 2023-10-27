@@ -1881,7 +1881,8 @@ export default class MetamaskController extends EventEmitter {
       getSelectedAddress: () =>
         this.preferencesController.store.getState().selectedAddress,
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
-      getTransaction: (txId) => this.txController.state.transactions[txId],
+      getTransaction: (txId) =>
+        this.txController.state.transactions.find((tx) => tx.id === txId),
     };
     return {
       ...controllerActions,
