@@ -5247,10 +5247,10 @@
     "message": "Select networks for each site"
   },
   "toggleRequestQueueOff": {
-    "message": "off"
+    "message": "Off"
   },
   "toggleRequestQueueOn": {
-    "message": "on"
+    "message": "On"
   },
   "token": {
     "message": "Token"
