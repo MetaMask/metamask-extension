@@ -1485,20 +1485,21 @@ index 0000000000000000000000000000000000000000..562324f841eed1cce3f5ecded9814af0
 \ No newline at end of file
 diff --git a/dist/gas.d.ts b/dist/gas.d.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..b7dd23e125ab6dde877376ba95a6470a6477e7de
+index 0000000000000000000000000000000000000000..a8bfcb5f4d713c48cc266baf328237ff0bca2e75
 --- /dev/null
 +++ b/dist/gas.d.ts
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,25 @@
 +/// <reference types="debug" />
 +import type EthQuery from '@metamask/eth-query';
 +import type { ProviderConfig } from '@metamask/network-controller';
 +import type { TransactionMeta, TransactionParams } from './types';
 +export declare type UpdateGasRequest = {
 +    ethQuery: EthQuery;
-+    txMeta: TransactionMeta;
 +    providerConfig: ProviderConfig;
++    txMeta: TransactionMeta;
 +};
 +export declare const log: import("debug").Debugger;
++export declare const FIXED_GAS = "0x5208";
 +export declare function updateGas(request: UpdateGasRequest): Promise<void>;
 +export declare function estimateGas(txParams: TransactionParams, ethQuery: EthQuery): Promise<{
 +    blockGasLimit: string;
@@ -1516,10 +1517,10 @@ index 0000000000000000000000000000000000000000..b7dd23e125ab6dde877376ba95a6470a
 \ No newline at end of file
 diff --git a/dist/gas.js b/dist/gas.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..cbf334f1067711f9bd8a8b079b71f94a98d2811e
+index 0000000000000000000000000000000000000000..9f583a3ea6fa11080f3c39c46cf574f57ca26886
 --- /dev/null
 +++ b/dist/gas.js
-@@ -0,0 +1,124 @@
+@@ -0,0 +1,127 @@
 +"use strict";
 +/* eslint-disable jsdoc/require-jsdoc */
 +var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -1532,53 +1533,26 @@ index 0000000000000000000000000000000000000000..cbf334f1067711f9bd8a8b079b71f94a
 +    });
 +};
 +Object.defineProperty(exports, "__esModule", { value: true });
-+exports.estimateGas = exports.updateGas = exports.log = void 0;
++exports.estimateGas = exports.updateGas = exports.FIXED_GAS = exports.log = void 0;
 +const controller_utils_1 = require("@metamask/controller-utils");
 +const utils_1 = require("@metamask/utils");
 +const ethereumjs_util_1 = require("ethereumjs-util");
 +const logger_1 = require("./logger");
 +exports.log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'gas');
-+const FIXED_GAS = '0x5208';
++exports.FIXED_GAS = '0x5208';
 +function updateGas(request) {
 +    return __awaiter(this, void 0, void 0, function* () {
 +        const { txMeta } = request;
-+        const { blockGasLimit, estimatedGas, simulationFails } = yield estimateGas(txMeta.txParams, request.ethQuery);
-+        txMeta.txParams.gas = yield getGas(Object.assign(Object.assign({}, request), { blockGasLimit,
-+            estimatedGas }));
++        const initialParams = Object.assign({}, txMeta.txParams);
++        const [gas, simulationFails] = yield getGas(request);
++        txMeta.txParams.gas = gas;
 +        txMeta.simulationFails = simulationFails;
++        if (!initialParams.gas) {
++            txMeta.originalGasEstimate = txMeta.txParams.gas;
++        }
 +    });
 +}
 +exports.updateGas = updateGas;
-+function getGas(request) {
-+    return __awaiter(this, void 0, void 0, function* () {
-+        const { blockGasLimit, estimatedGas, providerConfig, txMeta } = request;
-+        if (txMeta.txParams.gas) {
-+            (0, exports.log)('Using value from request', txMeta.txParams.gas);
-+            return txMeta.txParams.gas;
-+        }
-+        if (yield requiresFixedGas(request)) {
-+            (0, exports.log)('Using fixed value', FIXED_GAS);
-+            return FIXED_GAS;
-+        }
-+        const estimatedGasBN = (0, controller_utils_1.hexToBN)(estimatedGas);
-+        const maxGasBN = (0, controller_utils_1.hexToBN)(blockGasLimit).muln(0.9);
-+        const paddedGasBN = estimatedGasBN.muln(1.5);
-+        const isCustomNetwork = providerConfig.type === controller_utils_1.NetworkType.rpc;
-+        if (estimatedGasBN.gt(maxGasBN) || isCustomNetwork) {
-+            const estimatedGasHex = (0, ethereumjs_util_1.addHexPrefix)(estimatedGas);
-+            (0, exports.log)('Using estimated value', estimatedGasHex);
-+            return estimatedGasHex;
-+        }
-+        if (paddedGasBN.lt(maxGasBN)) {
-+            const paddedHex = (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(paddedGasBN));
-+            (0, exports.log)('Using 150% of estimated value', paddedHex);
-+            return paddedHex;
-+        }
-+        const maxHex = (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(maxGasBN));
-+        (0, exports.log)('Using 90% of block gas limit', maxHex);
-+        return maxHex;
-+    });
-+}
 +function estimateGas(txParams, ethQuery) {
 +    var _a;
 +    return __awaiter(this, void 0, void 0, function* () {
@@ -1598,7 +1572,6 @@ index 0000000000000000000000000000000000000000..cbf334f1067711f9bd8a8b079b71f94a
 +        let simulationFails;
 +        try {
 +            estimatedGas = yield (0, controller_utils_1.query)(ethQuery, 'estimateGas', [request]);
-+            (0, exports.log)('Estimation successful', estimatedGas);
 +        }
 +        catch (error) {
 +            simulationFails = {
@@ -1619,6 +1592,37 @@ index 0000000000000000000000000000000000000000..cbf334f1067711f9bd8a8b079b71f94a
 +    });
 +}
 +exports.estimateGas = estimateGas;
++function getGas(request) {
++    return __awaiter(this, void 0, void 0, function* () {
++        const { providerConfig, txMeta } = request;
++        if (txMeta.txParams.gas) {
++            (0, exports.log)('Using value from request', txMeta.txParams.gas);
++            return [txMeta.txParams.gas];
++        }
++        if (yield requiresFixedGas(request)) {
++            (0, exports.log)('Using fixed value', exports.FIXED_GAS);
++            return [exports.FIXED_GAS];
++        }
++        const { blockGasLimit, estimatedGas, simulationFails } = yield estimateGas(txMeta.txParams, request.ethQuery);
++        const estimatedGasBN = (0, controller_utils_1.hexToBN)(estimatedGas);
++        const maxGasBN = (0, controller_utils_1.hexToBN)(blockGasLimit).muln(0.9);
++        const paddedGasBN = estimatedGasBN.muln(1.5);
++        const isCustomNetwork = providerConfig.type === controller_utils_1.NetworkType.rpc;
++        if (estimatedGasBN.gt(maxGasBN) || isCustomNetwork) {
++            const estimatedGasHex = (0, ethereumjs_util_1.addHexPrefix)(estimatedGas);
++            (0, exports.log)('Using estimated value', estimatedGasHex);
++            return [estimatedGasHex, simulationFails];
++        }
++        if (paddedGasBN.lt(maxGasBN)) {
++            const paddedHex = (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(paddedGasBN));
++            (0, exports.log)('Using 150% of estimated value', paddedHex);
++            return [paddedHex, simulationFails];
++        }
++        const maxHex = (0, ethereumjs_util_1.addHexPrefix)((0, controller_utils_1.BNToHex)(maxGasBN));
++        (0, exports.log)('Using 90% of block gas limit', maxHex);
++        return [maxHex, simulationFails];
++    });
++}
 +function requiresFixedGas({ ethQuery, txMeta, providerConfig, }) {
 +    return __awaiter(this, void 0, void 0, function* () {
 +        const isCustomNetwork = providerConfig.type === controller_utils_1.NetworkType.rpc;
