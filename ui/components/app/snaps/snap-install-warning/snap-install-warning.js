@@ -37,9 +37,13 @@ export default function SnapInstallWarning({
 
   const SnapInstallWarningFooter = () => {
     return (
-      <div className="snap-install-warning__footer">
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+        width={BlockSize.Full}
+      >
         <Button
-          className="snap-install-warning__footer-button"
           type="primary"
           disabled={!userAgree}
           onClick={onSubmit}
@@ -48,7 +52,7 @@ export default function SnapInstallWarning({
         >
           {t('confirm')}
         </Button>
-      </div>
+      </Box>
     );
   };
 
@@ -91,7 +95,7 @@ export default function SnapInstallWarning({
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.center}
-        marginBottom={6}
+        marginBottom={4}
       >
         <AvatarIcon
           iconName={IconName.Danger}
@@ -101,14 +105,14 @@ export default function SnapInstallWarning({
         />
       </Box>
       <Text
-        paddingBottom={6}
+        paddingBottom={4}
         textAlign={TextAlign.Center}
         variant={TextVariant.headingMd}
         as="h2"
       >
         {t('snapInstallWarningHeading')}
       </Text>
-      <Text paddingBottom={6} textAlign={TextAlign.Left}>
+      <Text paddingBottom={4} textAlign={TextAlign.Left}>
         {t('snapInstallWarningCheck', [
           <Text
             key="snapNameInWarningDescription"
