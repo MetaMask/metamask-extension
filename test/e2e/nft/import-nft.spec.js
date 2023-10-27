@@ -24,7 +24,7 @@ describe('Import NFT', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle,
       },
       async ({ driver, _, contractRegistry }) => {
         const contractAddress =
@@ -72,7 +72,7 @@ describe('Import NFT', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle,
       },
       async ({ driver, _, contractRegistry }) => {
         const contractAddress =
