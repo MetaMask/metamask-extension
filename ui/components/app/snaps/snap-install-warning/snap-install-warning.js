@@ -55,11 +55,12 @@ export default function SnapInstallWarning({
   const warningElements = [];
   for (let i = 0; i < warnings.length; i++) {
     const warning = warnings[i];
-    if (i > 0 && i < warnings.length - 1) {
-      warningElements.push(', ');
-    }
-    if (i === warnings.length - 1) {
-      warningElements.push(` ${t('and')} `);
+    if (i > 0) {
+      if (i === warnings.length - 1) {
+        warningElements.push(` ${t('and')} `);
+      } else {
+        warningElements.push(', ');
+      }
     }
     warningElements.push(
       <span key={i}>
