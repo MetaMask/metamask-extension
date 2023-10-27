@@ -159,6 +159,10 @@ async function withFixtures(options, testSuite) {
       mockedEndpoint,
     });
 
+    // At this point the suite has executed successfully, so we can log out a
+    // success message.
+    console.log(`\nSuccess on test suite: '${title}'\n`);
+
     // Evaluate whether any new hosts received network requests during E2E test
     // suite execution. If so, fail the test unless the
     // --update-privacy-snapshot was specified. In that case, update the

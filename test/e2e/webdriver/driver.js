@@ -515,7 +515,7 @@ class Driver {
         `Failure in ${title}, for more information see the test-artifacts folder\n`,
       );
     }
-    console.error(`error: ${error.message}\n`);
+    console.error(`${error}\n`);
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
