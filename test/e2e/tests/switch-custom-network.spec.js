@@ -22,7 +22,7 @@ describe('Switch ethereum chain', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.fullTitle,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {

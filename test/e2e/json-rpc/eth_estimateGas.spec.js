@@ -11,7 +11,7 @@ describe('eth_estimateGas', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

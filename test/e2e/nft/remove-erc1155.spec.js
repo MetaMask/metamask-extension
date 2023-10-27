@@ -22,7 +22,7 @@ describe('Remove ERC1155 NFT', function () {
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         ganacheOptions,
         smartContract,
-        title: this.test.fullTitle,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

@@ -24,7 +24,7 @@ describe('Clear account activity', function () {
           .withTransactionControllerCompletedAndIncomingTransaction()
           .build(),
         ganacheOptions,
-        title: this.test.fullTitle,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

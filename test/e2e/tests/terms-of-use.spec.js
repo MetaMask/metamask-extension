@@ -22,7 +22,7 @@ describe('Terms of use', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.fullTitle,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

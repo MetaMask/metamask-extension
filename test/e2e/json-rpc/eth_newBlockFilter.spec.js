@@ -15,7 +15,7 @@ describe('eth_newBlockFilter', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.fullTitle,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

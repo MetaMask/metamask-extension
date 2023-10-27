@@ -35,7 +35,7 @@ describe('Portfolio site', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.fullTitle,
+        title: this.test.fullTitle(),
         testSpecificMock: mockPortfolioSite,
       },
       async ({ driver }) => {

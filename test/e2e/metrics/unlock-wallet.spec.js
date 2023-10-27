@@ -30,7 +30,7 @@ describe('Unlock wallet', function () {
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.fullTitle,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint }) => {
