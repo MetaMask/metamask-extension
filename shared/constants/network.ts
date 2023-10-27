@@ -145,6 +145,8 @@ export const CHAIN_IDS = {
   GNOSIS: '0x64',
   ZKSYNC_ERA: '0x144',
   TEST_ETH: '0x539',
+  RSK: '0x1e',
+  RSK_TESTNET: '0x1f',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -232,6 +234,7 @@ export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
 export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
+export const RSK_DISPLAY_NAME = 'Rootstock Mainnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -283,6 +286,7 @@ export const CURRENCY_SYMBOLS = {
   GLIMMER: 'GLMR',
   MOONRIVER: 'MOVR',
   ONE: 'ONE',
+  RSK: 'RBTC',
 } as const;
 
 const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
@@ -404,6 +408,7 @@ export const TENET_MAINNET_IMAGE_URL = './images/tenet.svg';
 export const VELAS_EVM_MAINNET_IMAGE_URL = './images/velas.svg';
 export const ZKATANA_MAINNET_IMAGE_URL = './images/zkatana.svg';
 export const ZORA_MAINNET_IMAGE_URL = './images/zora.svg';
+export const RSK_TOKEN_IMAGE_URL = './images/rsk.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -699,6 +704,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAINLIST_CHAIN_IDS_MAP.VELAS_EVM_MAINNET]: VELAS_EVM_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ZKATANA]: ZKATANA_MAINNET_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ZORA_MAINNET]: ZORA_MAINNET_IMAGE_URL,
+  [CHAIN_IDS.RSK]: RSK_TOKEN_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -719,6 +725,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.FANTOM]: FTM_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.RSK]: RSK_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -852,6 +859,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
     | typeof CHAIN_IDS.AURORA
+    | typeof CHAIN_IDS.RSK_TESTNET
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -913,6 +921,10 @@ export const BUYABLE_CHAINS_MAP: {
   [CHAIN_IDS.ZKSYNC_ERA]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'zksync',
+  },
+  [CHAIN_IDS.RSK]: {
+    nativeCurrency: CURRENCY_SYMBOLS.RSK,
+    network: 'rsk',
   },
 };
 
@@ -1005,6 +1017,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://basescan.org',
       imageUrl: BASE_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.RSK,
+    nickname: RSK_DISPLAY_NAME,
+    rpcUrl: `https://public-node.rsk.co`,
+    ticker: CURRENCY_SYMBOLS.RSK,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://explorer.rsk.co/',
+      imageUrl: RSK_TOKEN_IMAGE_URL,
     },
   },
 ];
