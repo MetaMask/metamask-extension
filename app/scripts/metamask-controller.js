@@ -2621,14 +2621,21 @@ export default class MetamaskController extends EventEmitter {
       verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setProviderType:
-        networkController.setProviderType.bind(networkController),
+      setProviderType: (type) => {
+        // when using this format, type happens to be the same as the networkClientId...
+        this.selectedNetworkController.setNetworkClientIdForMetamask(type);
+        return this.networkController.setProviderType(type);
+      },
+      setActiveNetwork: (networkConfigurationId) => {
+        this.selectedNetworkController.setNetworkClientIdForMetamask(
+          networkConfigurationId,
+        );
+        return this.networkController.setActiveNetwork(networkConfigurationId);
+      },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
       removeNetworkConfiguration:
         networkController.removeNetworkConfiguration.bind(networkController),
-      setActiveNetwork:
-        networkController.setActiveNetwork.bind(networkController),
       upsertNetworkConfiguration:
         this.networkController.upsertNetworkConfiguration.bind(
           this.networkController,
@@ -4460,9 +4467,6 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.upsertNetworkConfiguration.bind(
             this.networkController,
           ),
-        setActiveNetwork: this.networkController.setActiveNetwork.bind(
-          this.networkController,
-        ),
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
@@ -4472,10 +4476,18 @@ export default class MetamaskController extends EventEmitter {
           this.selectedNetworkController.setNetworkClientIdForDomain.bind(
             this.selectedNetworkController,
           ),
-        setProviderType: this.networkController.setProviderType.bind(
-          this.networkController,
-        ),
-
+        setProviderType: (type) => {
+          // when using this format, type happens to be the same as the networkClientId...
+          this.selectedNetworkController.setNetworkClientIdForMetamask(type);
+          return this.networkController.setProviderType(type);
+        },
+        setActiveNetwork: (networkClientId) => {
+          // setActiveNetwork is used for custom (non-infura) networks, and for these networks networkClientId === networkConfigurationId
+          this.selectedNetworkController.setNetworkClientIdForMetamask(
+            networkClientId,
+          );
+          this.networkController.setActiveNetwork(networkClientId);
+        },
         // Web3 shim-related
         getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
           this.alertController,
