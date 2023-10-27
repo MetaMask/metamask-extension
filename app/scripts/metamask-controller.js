@@ -4573,16 +4573,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(this.metamaskMiddleware);
 
-    // if useRequestQueue feature flag is enabled
-    // use provider fetched from registry for the particular domain
-
-    // otherwise do the same old thing
-    // forward to metamask primary provider
-    if (this.preferencesController.getUseRequestQueue() === true) {
-      engine.push(providerAsMiddleware(proxyProviderForDomain));
-    } else {
-      engine.push(providerAsMiddleware(provider));
-    }
+    engine.push(providerAsMiddleware(proxyProviderForDomain));
 
     return engine;
   }
