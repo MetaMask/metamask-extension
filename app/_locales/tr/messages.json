@@ -3998,9 +3998,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 kullanıma hazır"
   },
-  "snapUpdate": {
-    "message": "Snapi güncelle"
-  },
   "snapUpdateAvailable": {
     "message": "Güncelleme mevcut"
   },
@@ -4034,9 +4031,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Üçüncü Taraf Hizmetleri ile paylaştığınız tüm bilgiler söz konusu Üçüncü Taraf Hizmetlerinin gizlilik politikalarına göre doğrudan üçüncü taraflar tarafından toplanacaktır. Daha fazla bilgi için lütfen üçüncü tarafların gizlilik politikalarına bakın.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Snaplerini yönet"
   },
   "snapsTermsOfUse": {
     "message": "Kullanım Şartları"

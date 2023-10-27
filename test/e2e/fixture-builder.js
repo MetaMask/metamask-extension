@@ -6,11 +6,8 @@ const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { NetworkStatus } = require('@metamask/network-controller');
 const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
-const {
-  ACTION_QUEUE_METRICS_E2E_TEST,
-} = require('../../shared/constants/test-flags');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { DAPP_URL } = require('./helpers');
+const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
 
 function defaultFixture() {
   return {
@@ -209,7 +206,6 @@ function defaultFixture() {
         traits: {},
       },
       NetworkController: {
-        networkId: '1337',
         selectedNetworkClientId: 'networkConfigurationId',
         networksMetadata: {
           networkConfigurationId: {
@@ -343,10 +339,8 @@ function onboardingFixture() {
           [CHAIN_IDS.GOERLI]: true,
           [CHAIN_IDS.LOCALHOST]: true,
         },
-        [ACTION_QUEUE_METRICS_E2E_TEST]: false,
       },
       NetworkController: {
-        networkId: '1337',
         selectedNetworkClientId: 'networkConfigurationId',
         networksMetadata: {
           networkConfigurationId: {
@@ -513,6 +507,29 @@ class FixtureBuilder {
     return this;
   }
 
+  withNetworkControllerDoubleGanache() {
+    return this.withNetworkController({
+      networkConfigurations: {
+        networkConfigurationId: {
+          chainId: CHAIN_IDS.LOCALHOST,
+          nickname: 'Localhost 8545',
+          rpcPrefs: {},
+          rpcUrl: 'http://localhost:8545',
+          ticker: 'ETH',
+          networkConfigurationId: 'networkConfigurationId',
+        },
+        '76e9cd59-d8e2-47e7-b369-9c205ccb602c': {
+          id: '76e9cd59-d8e2-47e7-b369-9c205ccb602c',
+          rpcUrl: 'http://localhost:8546',
+          chainId: '0x53a',
+          ticker: 'ETH',
+          nickname: 'Localhost 8546',
+          rpcPrefs: {},
+        },
+      },
+    });
+  }
+
   withNftController(data) {
     merge(
       this.fixture.data.NftController
@@ -626,6 +643,55 @@ class FixtureBuilder {
     });
   }
 
+  withPermissionControllerConnectedToTwoTestDapps(
+    restrictReturnedAccounts = true,
+  ) {
+    return this.withPermissionController({
+      subjects: {
+        [DAPP_URL]: {
+          origin: DAPP_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'ZaqPEWxyhNCJYACFw93jE',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_URL,
+              caveats: restrictReturnedAccounts && [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                  ],
+                },
+              ],
+              date: 1664388714636,
+            },
+          },
+        },
+        [DAPP_ONE_URL]: {
+          origin: DAPP_ONE_URL,
+          permissions: {
+            eth_accounts: {
+              id: 'AqPEWxyhNCJYACFw93jE4',
+              parentCapability: 'eth_accounts',
+              invoker: DAPP_ONE_URL,
+              caveats: restrictReturnedAccounts && [
+                {
+                  type: 'restrictReturnedAccounts',
+                  value: [
+                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+                  ],
+                },
+              ],
+              date: 1664388714636,
+            },
+          },
+        },
+      },
+    });
+  }
+
   withPermissionControllerConnectedToSnapDapp() {
     return this.withPermissionController({
       subjects: {
@@ -706,6 +772,13 @@ class FixtureBuilder {
         },
       },
       selectedAddress: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+    });
+  }
+
+  withPreferencesControllerNftDetectionEnabled() {
+    return this.withPreferencesController({
+      openSeaEnabled: true,
+      useNftDetection: true,
     });
   }
 
@@ -807,7 +880,6 @@ class FixtureBuilder {
               },
               id: '7087d1d7-f0e8-4c0f-a903-6d9daa392baf',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
               time: 1631545991949,
@@ -833,7 +905,6 @@ class FixtureBuilder {
           ],
           id: '7087d1d7-f0e8-4c0f-a903-6d9daa392baf',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
           time: 1631545991949,
@@ -864,7 +935,6 @@ class FixtureBuilder {
               },
               id: '6eab4240-3762-4581-abc5-cd91eab6964e',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
               time: 1631545994578,
@@ -890,7 +960,6 @@ class FixtureBuilder {
           ],
           id: '6eab4240-3762-4581-abc5-cd91eab6964e',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
           time: 1631545994578,
@@ -921,7 +990,6 @@ class FixtureBuilder {
               },
               id: 'c15eee26-11d6-4914-a70e-36ef9a3bcacb',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
               time: 1631545996673,
@@ -947,7 +1015,6 @@ class FixtureBuilder {
           ],
           id: 'c15eee26-11d6-4914-a70e-36ef9a3bcacb',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
           time: 1631545996673,
@@ -978,7 +1045,6 @@ class FixtureBuilder {
               },
               id: 'dfa9e5ad-d069-46b1-976e-a23734971d87',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'https://metamask.github.io',
               status: 'unapproved',
               time: 1631545998675,
@@ -1004,7 +1070,6 @@ class FixtureBuilder {
           ],
           id: 'dfa9e5ad-d069-46b1-976e-a23734971d87',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'https://metamask.github.io',
           status: 'unapproved',
           time: 1631545998675,
@@ -1032,7 +1097,6 @@ class FixtureBuilder {
               chainId: CHAIN_IDS.LOCALHOST,
               id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
               time: 1617228030067,
@@ -1057,13 +1121,11 @@ class FixtureBuilder {
           ],
           id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
             id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
             loadingDefaults: true,
-            metamaskNetworkId: '1337',
             origin: 'metamask',
             status: 'unapproved',
             time: 1617228030067,
@@ -1101,7 +1163,6 @@ class FixtureBuilder {
               chainId: CHAIN_IDS.LOCALHOST,
               id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
               time: 1617228030067,
@@ -1128,13 +1189,11 @@ class FixtureBuilder {
           ],
           id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
             id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
             loadingDefaults: true,
-            metamaskNetworkId: '1337',
             origin: 'metamask',
             status: 'unapproved',
             time: 1617228030067,
@@ -1176,7 +1235,6 @@ class FixtureBuilder {
               chainId: CHAIN_IDS.LOCALHOST,
               id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
               time: 1617228030067,
@@ -1212,13 +1270,11 @@ class FixtureBuilder {
           ],
           id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
           loadingDefaults: false,
-          metamaskNetworkId: '1337',
           origin: 'metamask',
           primaryTransaction: {
             chainId: CHAIN_IDS.LOCALHOST,
             id: '13a01e77-a368-4bb9-aba9-e7435580e3b9',
             loadingDefaults: true,
-            metamaskNetworkId: '1337',
             origin: 'metamask',
             status: 'approved',
             time: 1617228030067,
@@ -1260,7 +1316,6 @@ class FixtureBuilder {
               chainId: CHAIN_IDS.LOCALHOST,
               id: '0c9342ce-ef3f-4cab-9425-8e57144256a6',
               loadingDefaults: true,
-              metamaskNetworkId: '1337',
               origin: 'metamask',
               status: 'unapproved',
               time: 1671635506502,
@@ -1372,7 +1427,6 @@ class FixtureBuilder {
           ],
           id: '0c9342ce-ef3f-4cab-9425-8e57144256a6',
           loadingDefaults: false,
-          metamaskNetworkId: '5',
           origin: 'metamask',
           status: 'confirmed',
           submittedTime: 1671635510753,
@@ -1410,7 +1464,6 @@ class FixtureBuilder {
           chainId: CHAIN_IDS.LOCALHOST,
           hash: '0xf1af8286e4fa47578c2aec5f08c108290643df978ebc766d72d88476eee90bab',
           id: '8a13fd36-fdad-48ae-8b6a-c8991026d550',
-          metamaskNetworkId: '1337',
           status: 'confirmed',
           time: 1671635520000,
           txParams: {

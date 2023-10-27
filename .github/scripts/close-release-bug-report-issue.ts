@@ -29,13 +29,17 @@ async function main(): Promise<void> {
   }
 
   // Extract branch name from the context
-  const branchName: string = context.payload.pull_request?.head.ref || "";
+  const branchName: string = context.payload.pull_request?.head.ref || '';
 
   // Extract semver version number from the branch name
-  const releaseVersionNumberMatch = branchName.match(/^Version-v(\d+\.\d+\.\d+)$/);
+  const releaseVersionNumberMatch = branchName.match(
+    /^release\/(\d+\.\d+\.\d+)$/,
+  );
 
   if (!releaseVersionNumberMatch) {
-    core.setFailed(`Failed to extract version number from branch name: ${branchName}`);
+    core.setFailed(
+      `Failed to extract version number from branch name: ${branchName}`,
+    );
     process.exit(1);
   }
 
@@ -44,17 +48,31 @@ async function main(): Promise<void> {
   // Initialise octokit, required to call Github GraphQL API
   const octokit: InstanceType<typeof GitHub> = getOctokit(personalAccessToken);
 
-  const bugReportIssue = await retrieveOpenBugReportIssue(octokit, repoOwner, bugReportRepo, releaseVersionNumber);
+  const bugReportIssue = await retrieveOpenBugReportIssue(
+    octokit,
+    repoOwner,
+    bugReportRepo,
+    releaseVersionNumber,
+  );
 
   if (!bugReportIssue) {
-    throw new Error(`No open bug report issue was found for release ${releaseVersionNumber} on ${repoOwner}/${bugReportRepo} repo`);
+    throw new Error(
+      `No open bug report issue was found for release ${releaseVersionNumber} on ${repoOwner}/${bugReportRepo} repo`,
+    );
   }
 
-  if (bugReportIssue.title?.toLocaleLowerCase() !== `v${releaseVersionNumber} Bug Report`.toLocaleLowerCase()) {
-    throw new Error(`Unexpected bug report title: "${bugReportIssue.title}" instead of "v${releaseVersionNumber} Bug Report"`);
+  if (
+    bugReportIssue.title?.toLocaleLowerCase() !==
+    `v${releaseVersionNumber} Bug Report`.toLocaleLowerCase()
+  ) {
+    throw new Error(
+      `Unexpected bug report title: "${bugReportIssue.title}" instead of "v${releaseVersionNumber} Bug Report"`,
+    );
   }
 
-  console.log(`Closing bug report issue with title "${bugReportIssue.title}" and id: ${bugReportIssue.id}`);
+  console.log(
+    `Closing bug report issue with title "${bugReportIssue.title}" and id: ${bugReportIssue.id}`,
+  );
 
   await closeIssue(octokit, bugReportIssue.id);
 
@@ -62,11 +80,18 @@ async function main(): Promise<void> {
 }
 
 // This function retrieves the issue titled "vx.y.z Bug Report" on a specific repo
-async function retrieveOpenBugReportIssue(octokit: InstanceType<typeof GitHub>, repoOwner: string, repoName: string, releaseVersionNumber: string): Promise<{
-  id: string;
-  title: string;
-} | undefined> {
-
+async function retrieveOpenBugReportIssue(
+  octokit: InstanceType<typeof GitHub>,
+  repoOwner: string,
+  repoName: string,
+  releaseVersionNumber: string,
+): Promise<
+  | {
+      id: string;
+      title: string;
+    }
+  | undefined
+> {
   const retrieveOpenBugReportIssueQuery = `
   query RetrieveOpenBugReportIssue {
     search(query: "repo:${repoOwner}/${repoName} type:issue is:open in:title v${releaseVersionNumber} Bug Report", type: ISSUE, first: 1) {
@@ -94,10 +119,11 @@ async function retrieveOpenBugReportIssue(octokit: InstanceType<typeof GitHub>, 
   return bugReportIssues?.length > 0 ? bugReportIssues[0] : undefined;
 }
 
-
 // This function closes a Github issue, based on its ID
-async function closeIssue(octokit: InstanceType<typeof GitHub>, issueId: string): Promise<string> {
-
+async function closeIssue(
+  octokit: InstanceType<typeof GitHub>,
+  issueId: string,
+): Promise<string> {
   const closeIssueMutation = `
       mutation CloseIssue($issueId: ID!) {
         updateIssue(input: {id: $issueId, state: CLOSED}) {
@@ -114,7 +140,8 @@ async function closeIssue(octokit: InstanceType<typeof GitHub>, issueId: string)
     issueId,
   });
 
-  const clientMutationId = closeIssueMutationResult?.updateIssue?.clientMutationId;
+  const clientMutationId =
+    closeIssueMutationResult?.updateIssue?.clientMutationId;
 
   return clientMutationId;
 }

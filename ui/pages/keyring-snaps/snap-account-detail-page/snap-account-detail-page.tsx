@@ -17,13 +17,11 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  ADD_SNAP_ACCOUNT_ROUTE,
-  SNAPS_VIEW_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ADD_SNAP_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapRegistry, getSnaps } from '../../../selectors';
 import { SnapDetails } from '../new-snap-account-page';
+import { getSnapRoute } from '../../../helpers/utils/util';
 import Detail from './detail';
 import { SnapDetailHeader } from './header';
 
@@ -147,13 +145,7 @@ export default function SnapAccountDetailPage() {
             <Box>
               <Button
                 variant={ButtonVariant.Link}
-                onClick={() =>
-                  history.push(
-                    `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(
-                      currentSnap.snapId,
-                    )}`,
-                  )
-                }
+                onClick={() => history.push(getSnapRoute(currentSnap.snapId))}
               >
                 {t('snapDetailManageSnap')}
               </Button>

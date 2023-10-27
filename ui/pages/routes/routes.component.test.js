@@ -33,10 +33,6 @@ jest.mock('../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
   showNetworkDropdown: () => mockShowNetworkDropdown,
   hideNetworkDropdown: () => mockHideNetworkDropdown,
-  setMouseUserState: jest.fn().mockImplementation((payload) => ({
-    type: 'SET_MOUSE_USER_STATE',
-    payload,
-  })),
 }));
 
 jest.mock('react-router-dom', () => ({

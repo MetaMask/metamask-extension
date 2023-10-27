@@ -35,7 +35,7 @@
 @import 'snaps/snap-ui-renderer/index';
 @import 'snaps/snap-ui-markdown/index';
 @import 'snaps/snap-delineator/index';
-@import 'snaps/snap-settings-card/index';
+@import 'snaps/snap-list-item/index';
 @import 'snaps/copyable/index';
 @import 'snaps/snap-version/index';
 @import 'gas-details-item/index';
@@ -49,6 +49,7 @@
 @import 'multilayer-fee-message/index';
 @import 'multiple-notifications/index';
 @import 'network-display/index';
+@import 'ui/components/app/incoming-trasaction-toggle/network-toggle';
 @import 'permission-page-container/index';
 @import 'permissions-connect-footer/index';
 @import 'permissions-connect-header/index';

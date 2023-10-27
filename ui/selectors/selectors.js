@@ -101,7 +101,6 @@ import {
 } from './transactions';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 // eslint-disable-next-line import/order
-import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 import { createDeepEqualSelector } from './util';
@@ -285,20 +284,6 @@ export function getAccountTypeForKeyring(keyring) {
 }
 
 /**
- * get the currently selected networkId which will be 'loading' when the
- * network changes. The network id should not be used in most cases,
- * instead use chainId in most situations. There are a limited number of
- * use cases to use this method still, such as when comparing transaction
- * metadata that predates the switch to using chainId.
- *
- * @deprecated - use getCurrentChainId instead
- * @param {object} state - redux state object
- */
-export function deprecatedGetCurrentNetworkId(state) {
-  return state.metamask.networkId ?? 'loading';
-}
-
-/**
  * Get MetaMask accounts, including account name and balance.
  */
 export const getMetaMaskAccounts = createSelector(
@@ -375,14 +360,7 @@ export function getMetaMaskAccountBalances(state) {
 export function getMetaMaskCachedBalances(state) {
   const chainId = getCurrentChainId(state);
 
-  // Fallback to fetching cached balances from network id
-  // this can eventually be removed
-  const network = deprecatedGetCurrentNetworkId(state);
-
-  return (
-    state.metamask.cachedBalances[chainId] ??
-    state.metamask.cachedBalances[network]
-  );
+  return state.metamask.cachedBalances[chainId];
 }
 
 /**
@@ -985,19 +963,6 @@ export const getNotifySnaps = createDeepEqualSelector(
     );
   },
 );
-
-export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
-  return Object.values(snaps).map((snap) => {
-    return {
-      id: snap.id,
-      tabMessage: () => snap.manifest.proposedName,
-      descriptionMessage: () => snap.manifest.description,
-      sectionMessage: () => snap.manifest.description,
-      route: `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`,
-      icon: 'fa fa-flask',
-    };
-  });
-});
 
 /**
  * @typedef {object} Notification

@@ -117,7 +117,6 @@ export class IncomingTransactionHelper {
       const fromBlock = this.#getFromBlock(latestBlockNumber);
       const address = this.#getCurrentAccount();
       const currentChainId = this.#getCurrentChainId();
-      const currentNetworkId = this.#getCurrentNetworkId();
 
       let remoteTransactions = [];
 
@@ -126,7 +125,6 @@ export class IncomingTransactionHelper {
           await this.#remoteTransactionSource.fetchTransactions({
             address,
             currentChainId,
-            currentNetworkId,
             fromBlock,
             limit: this.#transactionLimit,
           });
@@ -262,21 +260,14 @@ export class IncomingTransactionHelper {
   #canStart(): boolean {
     const isEnabled = this.#isEnabled();
     const currentChainId = this.#getCurrentChainId();
-    const currentNetworkId = this.#getCurrentNetworkId();
 
-    const isSupportedNetwork = this.#remoteTransactionSource.isSupportedNetwork(
-      currentChainId,
-      currentNetworkId,
-    );
+    const isSupportedNetwork =
+      this.#remoteTransactionSource.isSupportedNetwork(currentChainId);
 
     return isEnabled && isSupportedNetwork;
   }
 
   #getCurrentChainId(): Hex {
     return this.#getNetworkState().providerConfig.chainId;
-  }
-
-  #getCurrentNetworkId(): string {
-    return this.#getNetworkState().networkId as string;
   }
 }

@@ -3998,9 +3998,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 siap digunakan"
   },
-  "snapUpdate": {
-    "message": "Perbarui Snap"
-  },
   "snapUpdateAvailable": {
     "message": "Pembaruan tersedia"
   },
@@ -4034,9 +4031,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Setiap informasi yang Anda bagikan kepada Layanan Pihak Ketiga akan dikumpulkan langsung oleh Layanan Pihak Ketiga tersebut sesuai dengan kebijakan privasinya. Baca kebijakan privasinya untuk informasi lebih lanjut.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Kelola Snap Anda"
   },
   "snapsTermsOfUse": {
     "message": "Ketentuan Penggunaan"

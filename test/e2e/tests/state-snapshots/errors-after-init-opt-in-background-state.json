@@ -33,8 +33,7 @@
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
-    "snapsInstallPrivacyWarningShown": true,
-    "serviceWorkerLastActiveTime": 0
+    "snapsInstallPrivacyWarningShown": true
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -83,7 +82,6 @@
   },
   "NetworkController": {
     "selectedNetworkClientId": "string",
-    "networkId": "1337",
     "providerConfig": {
       "chainId": "0x539",
       "nickname": "Localhost 8545",
@@ -180,11 +178,7 @@
       "smartTransactions": "object"
     }
   },
-  "SnapController": {
-    "snapErrors": "object",
-    "snaps": "object",
-    "snapStates": "object"
-  },
+  "SnapController": { "snaps": "object", "snapStates": "object" },
   "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {

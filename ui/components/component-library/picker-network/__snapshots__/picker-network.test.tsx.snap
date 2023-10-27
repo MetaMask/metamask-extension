@@ -11,13 +11,13 @@ exports[`PickerNetwork should render the label inside the PickerNetwork 1`] = `
     >
       I
     </div>
-    <p
+    <span
       class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
     >
       Imported
-    </p>
+    </span>
     <span
-      class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-icon-default"
+      class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-default"
       style="mask-image: url('./images/icons/arrow-down.svg');"
     />
   </button>

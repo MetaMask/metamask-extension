@@ -24,7 +24,12 @@ const loadExtension = async (driver) => {
 };
 
 const buildQuote = async (driver, options) => {
-  await driver.clickElement('[data-testid="token-overview-button-swap"]');
+  if (process.env.MULTICHAIN) {
+    await driver.clickElement('[data-testid="app-footer-actions-button"]');
+    await driver.clickElement('[data-testid="select-action-modal-item-swap"]');
+  } else {
+    await driver.clickElement('[data-testid="token-overview-button-swap"]');
+  }
   await driver.fill(
     'input[data-testid="prepare-swap-page-from-token-amount"]',
     options.amount,
@@ -156,17 +161,22 @@ const checkActivityTransaction = async (driver, options) => {
 };
 
 const checkNotification = async (driver, options) => {
-  const boxTitle = await driver.findElement(
-    '[data-testid="swaps-banner-title"]',
-  );
-  assert.equal(await boxTitle.getText(), options.title, 'Invalid box title');
-  const boxContent = await driver.findElement(
-    '[data-testid="mm-banner-alert-notification-text"]',
-  );
-  const bodyText = await boxContent.getText();
-  console.log(`test: ${bodyText}`);
+  const isExpectedBoxTitlePresentAndVisible =
+    await driver.isElementPresentAndVisible({
+      css: '[data-testid="swaps-banner-title"]',
+      text: options.title,
+    });
+
+  assert.equal(isExpectedBoxTitlePresentAndVisible, true, 'Invalid box title');
+
+  const isExpectedBoxContentPresentAndVisible =
+    await driver.isElementPresentAndVisible({
+      css: '[data-testid="mm-banner-alert-notification-text"]',
+      text: options.text,
+    });
+
   assert.equal(
-    bodyText.includes(options.text),
+    isExpectedBoxContentPresentAndVisible,
     true,
     'Invalid box text content',
   );

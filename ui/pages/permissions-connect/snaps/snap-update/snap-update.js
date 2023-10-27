@@ -113,7 +113,7 @@ export default function SnapUpdate({
             variant={TextVariant.headingLg}
             textAlign="center"
           >
-            {t('snapUpdate')}
+            {t('updateRequest')}
           </Text>
         )}
         {isLoading && (

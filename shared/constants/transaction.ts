@@ -1,4 +1,5 @@
 import { AccessList } from '@ethereumjs/tx';
+import { Hex } from '@metamask/utils';
 
 export enum TransactionType {
   /**
@@ -284,12 +285,16 @@ export interface TxParams {
   accessList?: AccessList;
   maxFeePerGas?: string;
   maxPriorityFeePerGas?: string;
+  estimateSuggested?: string;
+  estimateUsed?: string;
 }
 
 export interface TxReceipt {
   blockHash?: string;
   blockNumber?: string;
   transactionIndex?: string;
+  gasUsed?: string;
+  status?: string;
 }
 
 export interface TxError {
@@ -320,6 +325,8 @@ interface DappSuggestedGasFees {
  * An object representing a transaction, in whatever state it is in.
  */
 export interface TransactionMeta {
+  /** Unique ID to prevent duplicate requests.*/
+  actionId?: string;
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   custodyStatus: string;
   custodyId?: string;
@@ -329,7 +336,7 @@ export interface TransactionMeta {
    * on incoming transactions!
    */
   blockNumber?: string;
-  chainId: string;
+  chainId: Hex;
   /** An internally unique tx identifier. */
   id: string;
   /** Time the transaction was first suggested, in unix epoch time (ms). */
@@ -342,6 +349,7 @@ export interface TransactionMeta {
   dappProposedTokenAmount: string;
   /** The original gas fees suggested by the dapp that proposed this transaction */
   dappSuggestedGasFees?: DappSuggestedGasFees;
+  defaultGasEstimates?: any;
   /** The balance of the token that is being sent */
   currentTokenBalance: string;
   /** The original dapp proposed token approval amount before edit by user */
@@ -362,8 +370,12 @@ export interface TransactionMeta {
   originalType: TransactionType;
   /** The current status of the transaction. */
   status: TransactionStatus;
-  /** The transaction's network ID, used for EIP-155 compliance. */
-  metamaskNetworkId: string;
+  /**
+   * The transaction's network ID, used for EIP-155 compliance.
+   *
+   * @deprecated Use `chainId` instead.
+   */
+  readonly metamaskNetworkId?: string;
   /** TODO: Find out what this is and document it */
   loadingDefaults: boolean;
   /** The transaction params as passed to the network provider. */
@@ -385,6 +397,7 @@ export interface TransactionMeta {
    * network.
    */
   rawTx: string;
+  replacedById?: string;
   /**
    * A hex string of the transaction hash, used to identify the transaction
    * on the network.
@@ -399,11 +412,13 @@ export interface TransactionMeta {
    */
   submittedTime?: number;
   /** The error encountered during the transaction */
-  txErr?: TxError;
+  error?: TxError;
   /**
    * Whether the transaction is verified on the blockchain.
    */
   verifiedOnBlockchain?: boolean;
+  securityProviderResponse?: Record<string, any>;
+  securityAlertResponse?: any;
 }
 
 /**
