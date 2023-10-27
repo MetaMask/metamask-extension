@@ -23,6 +23,7 @@ const SnapSettingsCard = ({ name, packageName, onClick, snapId }) => {
   return (
     <Box
       className="snap-settings-card"
+      data-testid={snapId}
       display={Display.Flex}
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}

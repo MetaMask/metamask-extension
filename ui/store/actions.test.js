@@ -898,6 +898,7 @@ describe('Actions', () => {
           address: '0x514910771af9ca656af840dff83e8264ecf986ca',
           symbol: 'LINK',
           decimals: 18,
+          networkClientId: 'networkClientId1',
         }),
       );
       expect(addTokenStub.callCount).toStrictEqual(1);
@@ -914,7 +915,7 @@ describe('Actions', () => {
 
       const addTokenStub = sinon
         .stub()
-        .callsFake((_, __, ___, ____, cb) => cb(null, tokenDetails));
+        .callsFake((_, cb) => cb(null, tokenDetails));
 
       background.getApi.returns({
         addToken: addTokenStub,
@@ -937,6 +938,7 @@ describe('Actions', () => {
           address: '0x514910771af9ca656af840dff83e8264ecf986ca',
           symbol: 'LINK',
           decimals: 18,
+          networkClientId: 'networkClientId1',
         }),
       );
 

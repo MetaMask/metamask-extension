@@ -107,11 +107,26 @@ describe('Remove Account Snap', function () {
         await driver.clickElement('.toggle-button > div');
 
         // Remove the snap.
+        const removeButton = await driver.findElement(
+          '[data-testid="remove-snap-button"]',
+        );
+        await driver.scrollToElement(removeButton);
+        await driver.clickElement('[data-testid="remove-snap-button"]');
+
         await driver.clickElement({
-          text: 'Remove MetaMask Simple Snap Keyring',
-          tag: 'p',
+          text: 'Continue',
+          tag: 'button',
         });
-        await driver.clickElement('#popoverRemoveSnapButton');
+
+        await driver.fill(
+          '[data-testid="remove-snap-confirmation-input"]',
+          'MetaMask Simple Snap Keyring',
+        );
+
+        await driver.clickElement({
+          text: 'Remove Snap',
+          tag: 'button',
+        });
 
         // Assert that the snap was removed.
         const removeResult = await driver.findElement(

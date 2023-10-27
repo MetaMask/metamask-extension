@@ -264,11 +264,13 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       case CHAIN_IDS.AVALANCHE:
         return t('networkNameAvalanche');
       case CHAIN_IDS.OPTIMISM:
-        return t('networkNameOptimism');
+        return t('networkNameOpMainnet');
       case CHAIN_IDS.ARBITRUM:
         return t('networkNameArbitrum');
       case CHAIN_IDS.ZKSYNC_ERA:
         return t('networkNameZkSyncEra');
+      case CHAIN_IDS.LINEA_MAINNET:
+        return t('networkNameLinea');
       default:
         throw new Error('This network is not supported for token swaps');
     }
@@ -340,7 +342,10 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     );
   }
 
-  const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
+  const { tokensWithBalances } = useTokenTracker({
+    tokens: swapsTokens,
+    includeFailedTokens: true,
+  });
   const balanceToken =
     fetchParamsSourceToken === defaultSwapsToken.address
       ? defaultSwapsToken

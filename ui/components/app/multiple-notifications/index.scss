@@ -59,6 +59,11 @@
     visibility: hidden;
   }
 
+  /* accommodates for the home "Wallet" / "Connections" footer */
+  &.home-notification-wrapper--multichain > div {
+    bottom: 88px;
+  }
+
   > div:first-of-type {
     visibility: visible;
   }

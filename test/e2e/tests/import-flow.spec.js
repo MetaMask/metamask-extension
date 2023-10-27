@@ -22,7 +22,7 @@ const ganacheOptions = {
   ],
 };
 
-describe('Import flow', function () {
+describe('Import flow @no-mmi', function () {
   it('Import wallet using Secret Recovery Phrase', async function () {
     const testPassword = 'correct horse battery staple';
 

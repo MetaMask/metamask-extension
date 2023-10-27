@@ -137,16 +137,12 @@ exports[`Onboarding Metametrics Component should match snapshot 1`] = `
       <button
         class="button btn--rounded btn-primary btn--large"
         data-testid="metametrics-i-agree"
-        role="button"
-        tabindex="0"
       >
         I agree
       </button>
       <button
         class="button btn--rounded btn-secondary btn--large"
         data-testid="metametrics-no-thanks"
-        role="button"
-        tabindex="0"
       >
         No thanks
       </button>

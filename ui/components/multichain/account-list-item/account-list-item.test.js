@@ -113,7 +113,7 @@ describe('AccountListItem', () => {
       },
     });
 
-    expect(getByText('Snaps')).toBeInTheDocument();
+    expect(getByText('Snaps (Beta)')).toBeInTheDocument();
   });
   ///: END:ONLY_INCLUDE_IN
 });

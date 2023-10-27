@@ -29,17 +29,19 @@ export default function ConfirmationFooter({
             {cancelText}
           </Button>
         ) : null}
-        <Button
-          data-testid="confirmation-submit-button"
-          disabled={Boolean(loading)}
-          type="primary"
-          onClick={onSubmit}
-          className={classnames({
-            centered: !onCancel,
-          })}
-        >
-          {loading ? loadingText : submitText}
-        </Button>
+        {onSubmit && submitText ? (
+          <Button
+            data-testid="confirmation-submit-button"
+            disabled={Boolean(loading)}
+            type="primary"
+            onClick={onSubmit}
+            className={classnames({
+              centered: !onCancel,
+            })}
+          >
+            {loading ? loadingText : submitText}
+          </Button>
+        ) : null}
       </div>
     </div>
   );

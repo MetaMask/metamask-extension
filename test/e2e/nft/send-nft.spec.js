@@ -15,7 +15,7 @@ describe('Send NFT', function () {
     ],
   };
 
-  it('should be able to send ERC721 NFT', async function () {
+  it('should be able to send ERC721 NFT @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,

@@ -5,7 +5,7 @@ const {
 const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { NetworkStatus } = require('@metamask/network-controller');
-const { CHAIN_IDS } = require('../../shared/constants/network');
+const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const {
   ACTION_QUEUE_METRICS_E2E_TEST,
 } = require('../../shared/constants/test-flags');
@@ -498,6 +498,18 @@ class FixtureBuilder {
 
   withNetworkController(data) {
     merge(this.fixture.data.NetworkController, data);
+    return this;
+  }
+
+  withNetworkControllerOnMainnet() {
+    merge(this.fixture.data.NetworkController, {
+      providerConfig: {
+        chainId: CHAIN_IDS.MAINNET,
+        nickname: '',
+        rpcUrl: '',
+        type: NETWORK_TYPES.MAINNET,
+      },
+    });
     return this;
   }
 
@@ -1372,6 +1384,7 @@ class FixtureBuilder {
             type: '0x2',
             value: '0xde0b6b3a7640000',
           },
+          hash: '0xe5e7b95690f584b8f66b33e31acc6184fea553fa6722d42486a59990d13d5fa2',
           txReceipt: {
             blockNumber: {
               length: 1,

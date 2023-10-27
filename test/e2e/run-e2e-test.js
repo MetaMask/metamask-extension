@@ -52,6 +52,12 @@ async function main() {
             description: 'Update E2E snapshots',
             type: 'boolean',
           })
+          .option('update-privacy-snapshot', {
+            default: false,
+            description:
+              'Update the privacy snapshot to include new hosts and paths',
+            type: 'boolean',
+          })
           .positional('e2e-test-path', {
             describe: 'The path for the E2E test to run.',
             type: 'string',
@@ -70,6 +76,7 @@ async function main() {
     retryUntilFailure,
     leaveRunning,
     updateSnapshot,
+    updatePrivacySnapshot,
   } = argv;
 
   if (!browser) {
@@ -117,6 +124,10 @@ async function main() {
 
   if (updateSnapshot) {
     process.env.UPDATE_SNAPSHOTS = 'true';
+  }
+
+  if (updatePrivacySnapshot) {
+    process.env.UPDATE_PRIVACY_SNAPSHOT = 'true';
   }
 
   const configFile = path.join(__dirname, '.mocharc.js');

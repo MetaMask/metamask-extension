@@ -124,7 +124,11 @@ const SnapListTab = () => {
             >
               <ButtonLink
                 size={Size.auto}
-                href="https://metamask.io/snaps/"
+                href={
+                  snapsList.length > 0
+                    ? 'https://snaps.metamask.io/'
+                    : 'https://metamask.io/snaps/'
+                }
                 target="_blank"
                 endIconName={IconName.Export}
               >

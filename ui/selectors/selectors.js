@@ -1,5 +1,5 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { SubjectType } from '@metamask/subject-metadata-controller';
+import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IN
 import { ApprovalType } from '@metamask/controller-utils';
 import {
@@ -419,6 +419,10 @@ export function getSelectedAccountCachedBalance(state) {
   return cachedBalances?.[selectedAddress];
 }
 
+export function getAllTokens(state) {
+  return state.metamask.allTokens;
+}
+
 export function getSelectedAccount(state) {
   const accounts = getMetaMaskAccounts(state);
   const selectedAddress = getSelectedAddress(state);
@@ -721,6 +725,18 @@ export function getTargetSubjectMetadata(state, origin) {
   }
   ///: END:ONLY_INCLUDE_IN
   return metadata;
+}
+
+/**
+ * Retrieve registry data for requested Snap.
+ *
+ * @param state - Redux state object.
+ * @param snapId - ID of a Snap.
+ * @returns Object containing metadata stored in Snaps registry for requested Snap.
+ */
+export function getSnapRegistryData(state, snapId) {
+  const snapsRegistryData = state.metamask.database.verifiedSnaps;
+  return snapsRegistryData ? snapsRegistryData[snapId] : null;
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
@@ -1446,6 +1462,10 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return POLYGON_DISPLAY_NAME;
     case CHAIN_IDS.AVALANCHE:
       return AVALANCHE_DISPLAY_NAME;
+    case CHAIN_IDS.LINEA_GOERLI:
+      return LINEA_GOERLI_DISPLAY_NAME;
+    case CHAIN_IDS.LINEA_MAINNET:
+      return LINEA_MAINNET_DISPLAY_NAME;
     case CHAIN_IDS.AURORA:
       return AURORA_DISPLAY_NAME;
     default:
@@ -1454,7 +1474,7 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
 };
 /**
  * To check if the chainId supports token detection,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
+ * currently it returns true for Ethereum Mainnet, BSC, Polygon, Avalanche, Linea and Aurora
  *
  * @param {*} state
  * @returns Boolean
@@ -1466,6 +1486,8 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.BSC,
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
+    CHAIN_IDS.LINEA_GOERLI,
+    CHAIN_IDS.LINEA_MAINNET,
     CHAIN_IDS.AURORA,
   ].includes(chainId);
 }
@@ -1735,4 +1757,20 @@ export function getSnapRegistry(state) {
   const { snapRegistryList } = state.metamask;
   return snapRegistryList;
 }
+
+export function getKeyringSnapAccounts(state) {
+  const identities = getMetaMaskIdentities(state);
+
+  const keyringAccounts = Object.values(identities).filter((identity) => {
+    return (
+      findKeyringForAddress(state, identity.address).type === 'Snap Keyring'
+    );
+  });
+  return keyringAccounts;
+}
+
+export function getKeyringSnapRemovalResult(state) {
+  return state.appState.keyringRemovalSnapModal;
+}
+
 ///: END:ONLY_INCLUDE_IN
