@@ -32,7 +32,7 @@ const renderExplicitAddress = (
   dispatch: any,
 ) => {
   return (
-    <div
+    <Box
       key={address}
       className="send__select-recipient-wrapper__group-item"
       onClick={() => {
@@ -46,17 +46,17 @@ const renderExplicitAddress = (
       }}
     >
       <Identicon address={address} diameter={28} />
-      <div className="send__select-recipient-wrapper__group-item__content">
-        <div className="send__select-recipient-wrapper__group-item__title">
+      <Box className="send__select-recipient-wrapper__group-item__content">
+        <Box className="send__select-recipient-wrapper__group-item__title">
           {nickname ? <Confusable input={nickname} /> : ellipsify(address)}
-        </div>
+        </Box>
         {nickname && (
-          <div className="send__select-recipient-wrapper__group-item__subtitle">
+          <Box className="send__select-recipient-wrapper__group-item__subtitle">
             {ellipsify(address)}
-          </div>
+          </Box>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 };
 
