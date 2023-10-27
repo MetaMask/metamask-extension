@@ -2289,7 +2289,7 @@ export default class MetamaskController extends EventEmitter {
       isUnlocked: this.isUnlocked(),
       accounts: await this.getPermittedAccounts(origin),
       ...this.getProviderNetworkState(
-        this.preferencesController.useRequestQueue() ? origin : undefined,
+        this.preferencesController.getUseRequestQueue() ? origin : undefined,
       ),
     };
   }
@@ -5338,9 +5338,9 @@ export default class MetamaskController extends EventEmitter {
     this.permissionLogController.updateAccountsHistory(origin, newAccounts);
   }
 
-  _notifyChainChange(newState) {
+  _notifyChainChange() {
     // TODO: check queue enabled feature flag, if disabled, dont use the 'function' payload
-    if (this.preferencesController.useRequestQueue()) {
+    if (this.preferencesController.getUseRequestQueue()) {
       this.notifyAllConnections((origin) => ({
         method: NOTIFICATION_NAMES.chainChanged,
         params: this.getProviderNetworkState(origin),
