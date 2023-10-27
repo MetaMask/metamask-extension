@@ -60,6 +60,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getUseCurrencyRateCheck,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 
 import { getURLHostName } from '../../../helpers/utils/util';
@@ -118,6 +119,8 @@ export default function BuildQuote({
   selectedAccountAddress,
   shuffledTokensList,
 }) {
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+  console.log('build-quote.js', selectedNetworkClientId);
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();

@@ -132,6 +132,7 @@ export default class SwapsController extends PollingControllerOnly {
       swapsState: {
         ...initialState.swapsState,
         swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags || {},
+        // TODO add chainId keyed version here:
       },
     });
 
@@ -247,11 +248,19 @@ export default class SwapsController extends PollingControllerOnly {
     });
   }
 
+  _executePoll(networkClientId) {
+    // TODO get current state for the chainId/networkClientId in question
+    // add state indicating what chainId/networkClientId swaps is currently using
+    // and throw an error here if an attempt is made to poll for a different chainId/networkClientId
+    return networkClientId;
+    // call fetchAndSetQuotes with the current state
+  }
+
   // Once quotes are fetched, we poll for new ones to keep the quotes up to date. Market and aggregator contract conditions can change fast enough
   // that quotes will no longer be available after 1 or 2 minutes. When fetchAndSetQuotes is first called, it receives fetch parameters that are stored in
   // state. These stored parameters are used on subsequent calls made during polling.
   // Note: we stop polling after 3 requests, until new quotes are explicitly asked for. The logic that enforces that maximum is in the body of fetchAndSetQuotes
-  pollForNewQuotes({ networkClientId }) {
+  pollForNewQuotes() {
     const {
       swapsState: {
         swapsQuoteRefreshTime,
@@ -319,8 +328,8 @@ export default class SwapsController extends PollingControllerOnly {
     if (!saveFetchedQuotes) {
       this.setSaveFetchedQuotes(true);
     }
-    // TODO check if this needs networkClientId parameterization
     let [newQuotes] = await Promise.all([
+      // receives correct chainId when networkClientId is passed via fetchParamsMetaData
       this._fetchTradesInfo(fetchParams, {
         ...fetchParamsMetaData,
       }),
@@ -754,13 +763,19 @@ export default class SwapsController extends PollingControllerOnly {
     quotes = {},
     { networkClientId } = {},
   ) {
+    const chainId = this.getChainId({ networkClientId });
+
+    // TODO this needs to be updated to use the networkClientId
+    // Blocked by TokenRatesController refactor
+    // const { contractExchangeRates: tokenConversionRates } =
+    // this.getTokenRatesState(chainId);
+
     const { contractExchangeRates: tokenConversionRates } =
       this.getTokenRatesState();
+
     const {
       swapsState: { customGasPrice, customMaxPriorityFeePerGas },
     } = this.store.getState();
-
-    const chainId = this.getChainId({ networkClientId });
 
     const numQuotes = Object.keys(quotes).length;
     if (!numQuotes) {
