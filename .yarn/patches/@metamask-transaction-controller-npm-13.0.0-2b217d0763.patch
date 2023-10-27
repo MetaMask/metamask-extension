@@ -385,7 +385,7 @@ index 0000000000000000000000000000000000000000..b08d35e6572fdbe282ec43f2a3372015
 +//# sourceMappingURL=PendingTransactionTracker.js.map
 \ No newline at end of file
 diff --git a/dist/TransactionController.d.ts b/dist/TransactionController.d.ts
-index d8fa996c21bc45df84598be8aa7f870910184244..45d8faa922ac02cd7ddda74702255ec541bd00e2 100644
+index d8fa996c21bc45df84598be8aa7f870910184244..22e54f57414eab099a95a5f6b490b0b7196d9d9a 100644
 --- a/dist/TransactionController.d.ts
 +++ b/dist/TransactionController.d.ts
 @@ -4,10 +4,12 @@ import type { TypedTransaction } from '@ethereumjs/tx';
@@ -512,7 +512,7 @@ index d8fa996c21bc45df84598be8aa7f870910184244..45d8faa922ac02cd7ddda74702255ec5
          type?: TransactionType;
      }): Promise<Result>;
      startIncomingTransactionPolling(): void;
-@@ -235,18 +249,16 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -235,18 +249,15 @@ export declare class TransactionController extends BaseController<TransactionCon
       */
      estimateGas(transaction: TransactionParams): Promise<{
          gas: string;
@@ -521,7 +521,7 @@ index d8fa996c21bc45df84598be8aa7f870910184244..45d8faa922ac02cd7ddda74702255ec5
 -    } | {
 -        gas: string;
 -        gasPrice: any;
-         estimateGasError: string | undefined;
+-        estimateGasError: string | undefined;
 +        simulationFails: {
 +            reason: any;
 +            errorKey: any;
@@ -539,7 +539,7 @@ index d8fa996c21bc45df84598be8aa7f870910184244..45d8faa922ac02cd7ddda74702255ec5
      /**
       * Updates an existing transaction in state.
       *
-@@ -323,6 +335,7 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -323,6 +334,7 @@ export declare class TransactionController extends BaseController<TransactionCon
       * @param transactionId - The ID of the transaction to approve.
       */
      private approveTransaction;
@@ -547,7 +547,7 @@ index d8fa996c21bc45df84598be8aa7f870910184244..45d8faa922ac02cd7ddda74702255ec5
      /**
       * Cancels a transaction based on its ID by setting its status to "rejected"
       * and emitting a `<tx.id>:finished` hub event.
-@@ -359,23 +372,6 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -359,23 +371,6 @@ export declare class TransactionController extends BaseController<TransactionCon
       * @returns Whether the transaction is in a final state.
       */
      private isLocalFinalState;
@@ -571,7 +571,7 @@ index d8fa996c21bc45df84598be8aa7f870910184244..45d8faa922ac02cd7ddda74702255ec5
      private requestApproval;
      private getTransaction;
      private getApprovalId;
-@@ -431,6 +427,27 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -431,6 +426,27 @@ export declare class TransactionController extends BaseController<TransactionCon
       */
      private updateTransactionMetaRSV;
      private getEIP1559Compatibility;
@@ -609,7 +609,7 @@ index 083b07c332887c5dc2bca0074f22794962934600..00000000000000000000000000000000
 -{"version":3,"file":"TransactionController.d.ts","sourceRoot":"","sources":["../src/TransactionController.ts"],"names":[],"mappings":"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"}
 \ No newline at end of file
 diff --git a/dist/TransactionController.js b/dist/TransactionController.js
-index bfa28719cf6450321d54123b47563ae0c102f1e4..d3f7681e2d93dd06260fd9af5e74604f6b1fbd86 100644
+index bfa28719cf6450321d54123b47563ae0c102f1e4..9ac0b83e6fd4c4dfb0310ccfd63059c9330ec61f 100644
 --- a/dist/TransactionController.js
 +++ b/dist/TransactionController.js
 @@ -28,11 +28,16 @@ const nonce_tracker_1 = __importDefault(require("nonce-tracker"));
@@ -813,7 +813,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d3f7681e2d93dd06260fd9af5e74604f
      }
      /**
       * Attempts to cancel a transaction based on its ID by setting its status to "rejected"
-@@ -432,93 +460,12 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -432,93 +460,11 @@ class TransactionController extends base_controller_1.BaseController {
       */
      estimateGas(transaction) {
          return __awaiter(this, void 0, void 0, function* () {
@@ -904,16 +904,15 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d3f7681e2d93dd06260fd9af5e74604f
 -                    transactions: this.trimTransactionsForState(transactions),
 -                });
 -            }
-+            const { estimatedGas: gas, estimateGasError, simulationFails, } = yield (0, gas_1.estimateGas)(transaction, this.ethQuery);
++            const { estimatedGas: gas, simulationFails } = yield (0, gas_1.estimateGas)(transaction, this.ethQuery);
 +            return {
 +                gas,
-+                estimateGasError,
 +                simulationFails,
 +            };
          });
      }
      /**
-@@ -530,7 +477,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -530,7 +476,7 @@ class TransactionController extends base_controller_1.BaseController {
      updateTransaction(transactionMeta, note) {
          const { transactions } = this.state;
          transactionMeta.txParams = (0, utils_1.normalizeTxParams)(transactionMeta.txParams);
@@ -922,7 +921,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d3f7681e2d93dd06260fd9af5e74604f
          if (!this.isHistoryDisabled) {
              (0, history_1.updateTransactionHistory)(transactionMeta, note);
          }
-@@ -702,7 +649,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -702,7 +648,7 @@ class TransactionController extends base_controller_1.BaseController {
                      if (!isTxCompleted) {
                          if (error.code === rpc_errors_1.errorCodes.provider.userRejectedRequest) {
                              this.cancelTransaction(transactionId);
@@ -931,7 +930,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d3f7681e2d93dd06260fd9af5e74604f
                          }
                          else {
                              this.failTransaction(meta, error);
-@@ -739,6 +686,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -739,6 +685,7 @@ class TransactionController extends base_controller_1.BaseController {
       */
      approveTransaction(transactionId) {
          return __awaiter(this, void 0, void 0, function* () {
@@ -939,7 +938,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d3f7681e2d93dd06260fd9af5e74604f
              const { transactions } = this.state;
              const releaseLock = yield this.mutex.acquire();
              const chainId = this.getChainId();
-@@ -771,13 +719,9 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -771,13 +718,9 @@ class TransactionController extends base_controller_1.BaseController {
                  const baseTxParams = Object.assign(Object.assign({}, transactionMeta.txParams), { gasLimit: transactionMeta.txParams.gas });
                  const isEIP1559 = (0, utils_1.isEIP1559Transaction)(transactionMeta.txParams);
                  const txParams = isEIP1559
@@ -954,7 +953,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d3f7681e2d93dd06260fd9af5e74604f
                  const unsignedEthTx = this.prepareUnsignedEthTx(txParams);
                  const signedTx = yield this.sign(unsignedEthTx, from);
                  yield this.updateTransactionMetaRSV(transactionMeta, signedTx);
-@@ -786,8 +730,9 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -786,8 +729,9 @@ class TransactionController extends base_controller_1.BaseController {
                  const rawTx = (0, ethereumjs_util_1.bufferToHex)(signedTx.serialize());
                  transactionMeta.rawTx = rawTx;
                  this.updateTransaction(transactionMeta, 'TransactionController#approveTransaction - RawTransaction added');
@@ -965,7 +964,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d3f7681e2d93dd06260fd9af5e74604f
                  transactionMeta.status = types_1.TransactionStatus.submitted;
                  transactionMeta.submittedTime = new Date().getTime();
                  this.updateTransaction(transactionMeta, 'TransactionController#approveTransaction - Transaction submitted');
-@@ -805,6 +750,11 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -805,6 +749,11 @@ class TransactionController extends base_controller_1.BaseController {
              }
          });
      }
@@ -977,7 +976,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d3f7681e2d93dd06260fd9af5e74604f
      /**
       * Cancels a transaction based on its ID by setting its status to "rejected"
       * and emitting a `<tx.id>:finished` hub event.
-@@ -884,85 +834,6 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -884,85 +833,6 @@ class TransactionController extends base_controller_1.BaseController {
              types_1.TransactionStatus.submitted,
          ].includes(status);
      }
@@ -1063,7 +1062,7 @@ index bfa28719cf6450321d54123b47563ae0c102f1e4..d3f7681e2d93dd06260fd9af5e74604f
      requestApproval(txMeta, { shouldShowRequest }) {
          return __awaiter(this, void 0, void 0, function* () {
              const id = this.getApprovalId(txMeta);
-@@ -1182,6 +1053,141 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -1182,6 +1052,141 @@ class TransactionController extends base_controller_1.BaseController {
              return (currentNetworkIsEIP1559Compatible && currentAccountIsEIP1559Compatible);
          });
      }
@@ -1486,10 +1485,10 @@ index 0000000000000000000000000000000000000000..562324f841eed1cce3f5ecded9814af0
 \ No newline at end of file
 diff --git a/dist/gas.d.ts b/dist/gas.d.ts
 new file mode 100644
-index 0000000000000000000000000000000000000000..bc833c77e5506469a0142d51a86757606d8275a3
+index 0000000000000000000000000000000000000000..b7dd23e125ab6dde877376ba95a6470a6477e7de
 --- /dev/null
 +++ b/dist/gas.d.ts
-@@ -0,0 +1,25 @@
+@@ -0,0 +1,24 @@
 +/// <reference types="debug" />
 +import type EthQuery from '@metamask/eth-query';
 +import type { ProviderConfig } from '@metamask/network-controller';
@@ -1504,7 +1503,6 @@ index 0000000000000000000000000000000000000000..bc833c77e5506469a0142d51a8675760
 +export declare function estimateGas(txParams: TransactionParams, ethQuery: EthQuery): Promise<{
 +    blockGasLimit: string;
 +    estimatedGas: string;
-+    estimateGasError: string | undefined;
 +    simulationFails: {
 +        reason: any;
 +        errorKey: any;
@@ -1518,10 +1516,10 @@ index 0000000000000000000000000000000000000000..bc833c77e5506469a0142d51a8675760
 \ No newline at end of file
 diff --git a/dist/gas.js b/dist/gas.js
 new file mode 100644
-index 0000000000000000000000000000000000000000..32f147977fe99a8077d57b89aaa0fdcb5eed7195
+index 0000000000000000000000000000000000000000..cbf334f1067711f9bd8a8b079b71f94a98d2811e
 --- /dev/null
 +++ b/dist/gas.js
-@@ -0,0 +1,121 @@
+@@ -0,0 +1,124 @@
 +"use strict";
 +/* eslint-disable jsdoc/require-jsdoc */
 +var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -1539,7 +1537,6 @@ index 0000000000000000000000000000000000000000..32f147977fe99a8077d57b89aaa0fdcb
 +const utils_1 = require("@metamask/utils");
 +const ethereumjs_util_1 = require("ethereumjs-util");
 +const logger_1 = require("./logger");
-+const utils_2 = require("./utils");
 +exports.log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'gas');
 +const FIXED_GAS = '0x5208';
 +function updateGas(request) {
@@ -1583,36 +1580,40 @@ index 0000000000000000000000000000000000000000..32f147977fe99a8077d57b89aaa0fdcb
 +    });
 +}
 +function estimateGas(txParams, ethQuery) {
++    var _a;
 +    return __awaiter(this, void 0, void 0, function* () {
 +        const request = Object.assign({}, txParams);
 +        const { data, value } = request;
 +        const { gasLimit: gasLimitHex, number: blockNumber } = yield getLatestBlock(ethQuery);
 +        const gasLimitBN = (0, controller_utils_1.hexToBN)(gasLimitHex);
-+        request.data = data ? (0, ethereumjs_util_1.addHexPrefix)(data) : data;
 +        request.gas = (0, controller_utils_1.BNToHex)((0, controller_utils_1.fractionBN)(gasLimitBN, 19, 20));
 +        request.value = value || '0x0';
++        if (data === null || data === void 0 ? void 0 : data.length) {
++            request.data = (0, ethereumjs_util_1.addHexPrefix)(data);
++        }
++        else {
++            delete request.data;
++        }
 +        let estimatedGas = request.gas;
-+        let estimateGasError;
 +        let simulationFails;
 +        try {
 +            estimatedGas = yield (0, controller_utils_1.query)(ethQuery, 'estimateGas', [request]);
++            (0, exports.log)('Estimation successful', estimatedGas);
 +        }
 +        catch (error) {
-+            estimateGasError = utils_2.ESTIMATE_GAS_ERROR;
 +            simulationFails = {
-+                reason: error.message,
++                reason: ((_a = error.data) === null || _a === void 0 ? void 0 : _a.message) || error.message,
 +                errorKey: error.errorKey,
 +                debug: {
 +                    blockNumber,
 +                    blockGasLimit: gasLimitHex,
 +                },
 +            };
-+            (0, exports.log)('Estimation failed', Object.assign(Object.assign({}, simulationFails), { fallback: estimateGas }));
++            (0, exports.log)('Estimation failed', Object.assign(Object.assign({}, simulationFails), { fallback: estimatedGas }));
 +        }
 +        return {
 +            blockGasLimit: gasLimitHex,
 +            estimatedGas,
-+            estimateGasError,
 +            simulationFails,
 +        };
 +    });

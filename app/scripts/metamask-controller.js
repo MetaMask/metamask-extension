@@ -3907,8 +3907,10 @@ export default class MetamaskController extends EventEmitter {
   async estimateGas(estimateGasParams) {
     const result = await this.txController.estimateGas(estimateGasParams);
 
-    if (result.estimateGasError) {
-      throw new Error(result.estimateGasError);
+    if (result.simulationFails) {
+      // The previous code only did a basic estimateGas query.
+      // This means we don't want to use the fallback value of 95% of the block gas limit.
+      throw new Error(result.simulationFails.reason);
     }
 
     return result.gas;
@@ -4774,7 +4776,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<number>}
    */
   async getPendingNonce(address) {
-    // TxMigrationToDo - Add getNonceLock controller method.
     const { nonceDetails, releaseLock } = await this.txController.getNonceLock(
       address,
     );
