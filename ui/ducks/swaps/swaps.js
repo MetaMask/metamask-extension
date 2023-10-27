@@ -662,6 +662,7 @@ export const fetchQuotesAndSetQuoteState = (
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
     }
+
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
     if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
@@ -702,6 +703,8 @@ export const fetchQuotesAndSetQuoteState = (
     }
     dispatch(setFetchingQuotes(true));
 
+    // TODO needs to be parameterized by chainId/networkClientId
+    // Blocked til TokenRatesController updates occur?
     const contractExchangeRates = getTokenExchangeRates(state);
 
     if (
@@ -752,6 +755,7 @@ export const fetchQuotesAndSetQuoteState = (
       );
     }
 
+    // TODO parameterize by chainId/networkClientId?
     const swapsTokens = getSwapsTokens(state);
 
     const sourceTokenInfo =
