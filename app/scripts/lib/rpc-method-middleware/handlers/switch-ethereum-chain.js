@@ -33,7 +33,7 @@ const switchEthereumChain = {
 
 export default switchEthereumChain;
 
-export function findExistingNetwork(chainId, findNetworkConfigurationBy) {
+function findExistingNetwork(chainId, findNetworkConfigurationBy) {
   if (
     Object.values(BUILT_IN_INFURA_NETWORKS)
       .map(({ chainId: id }) => id)
