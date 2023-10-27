@@ -4316,7 +4316,7 @@ export default class MetamaskController extends EventEmitter {
     }
 
     let proxyProviderForDomain = provider;
-    if (this.preferencesController.getUseRequestQueue() === true) {
+    if (this.preferencesController.getUseRequestQueue()) {
       proxyProviderForDomain =
         this.selectedNetworkController.getProviderAndBlockTracker(
           origin,
