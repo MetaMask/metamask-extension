@@ -2064,6 +2064,9 @@
   "installOrigin": {
     "message": "Install origin"
   },
+  "installRequest": {
+    "message": "Installation request"
+  },
   "installedOn": {
     "message": "Installed on $1",
     "description": "$1 is the date when the snap has been installed"
@@ -4327,9 +4330,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
   },
-  "snapUpdate": {
-    "message": "Update snap"
-  },
   "snapUpdateAvailable": {
     "message": "Update available"
   },
@@ -5504,6 +5504,9 @@
   },
   "update": {
     "message": "Update"
+  },
+  "updateRequest": {
+    "message": "Update request"
   },
   "updatedWithDate": {
     "message": "Updated $1"
