@@ -16,7 +16,7 @@ const {
   waitForTransactionToComplete,
   checkActivityTransaction,
   changeExchangeRate,
-} = require('../../swaps/shared');
+} = require('../swaps/shared');
 const {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
