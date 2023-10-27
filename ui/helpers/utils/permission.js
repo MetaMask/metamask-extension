@@ -25,7 +25,7 @@ import {
   IconSize,
 } from '../../components/component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { Color, FontWeight, IconColor } from '../constants/design-system';
+import { FontWeight, IconColor } from '../constants/design-system';
 import {
   coinTypeToProtocolName,
   getSnapDerivationPathName,
@@ -73,11 +73,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Notification,
     weight: 3,
   }),
-  [RestrictedMethods.snap_getBip32PublicKey]: ({
-    t,
-    permissionValue,
-    targetSubjectMetadata,
-  }) =>
+  [RestrictedMethods.snap_getBip32PublicKey]: ({ t, permissionValue }) =>
     permissionValue.caveats[0].value.map(({ path, curve }, i) => {
       const baseDescription = {
         leftIcon: IconName.SecuritySearch,
@@ -85,20 +81,9 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         id: `public-key-access-bip32-${path
           .join('-')
           ?.replace(/'/gu, 'h')}-${curve}-${i}`,
-        message: t('snapInstallWarningPublicKeyAccess', [
-          <Text
-            key="1"
-            color={Color.primaryDefault}
-            fontWeight={FontWeight.Medium}
-            as="span"
-          >
-            {getSnapName(targetSubjectMetadata?.origin, targetSubjectMetadata)}
-          </Text>,
-          <Text as="span" key="2" fontWeight={FontWeight.Medium}>
-            {getSnapDerivationPathName(path, curve) ??
-              `${path.join('/')} (${curve})`}
-          </Text>,
-        ]),
+        warningMessageSubject:
+          getSnapDerivationPathName(path, curve) ??
+          `${path.join('/')} (${curve})`,
       };
 
       const friendlyName = getSnapDerivationPathName(path, curve);
