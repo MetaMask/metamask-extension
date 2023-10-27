@@ -1,0 +1,11 @@
+.address-list-item {
+  /* Set explicitly to match the font-size of AccountListItem */
+  .mm-text {
+    font-size: 14px !important;
+  }
+
+  &:hover,
+  &:focus-within {
+    background: var(--color-background-default-hover);
+  }
+}

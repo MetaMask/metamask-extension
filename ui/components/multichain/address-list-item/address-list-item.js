@@ -35,6 +35,7 @@ export const AddressListItem = ({ label, address, onClick }) => {
       }}
       width={BlockSize.Full}
       backgroundColor={BackgroundColor.transparent}
+      className="address-list-item"
     >
       <AvatarAccount
         borderColor={BorderColor.transparent}
@@ -79,7 +80,11 @@ AddressListItem.propTypes = {
   /**
    * Label
    */
-  label: PropTypes.string.isRequired,
+  label: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+    PropTypes.string,
+  ]).isRequired,
   /**
    * Address
    */
