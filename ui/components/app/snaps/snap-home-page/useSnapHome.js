@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { handleSnapRequest } from '../../../../store/actions';
 
-export function useSnapPage({ snapId }) {
+export function useSnapHome({ snapId }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(undefined);
   const [error, setError] = useState(undefined);
