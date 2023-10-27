@@ -5349,15 +5349,16 @@ export default class MetamaskController extends EventEmitter {
 
   _notifyChainChange(newState) {
     // TODO: check queue enabled feature flag, if disabled, dont use the 'function' payload
-    this.notifyAllConnections((origin) => ({
-      method: NOTIFICATION_NAMES.chainChanged,
-      params: this.getProviderNetworkState(newState, origin),
-    }));
-    // else {
-    // this.notifyAllConnections({
-    //  method: NOTIFICATION_NAMES.chainChanged,
-    //  params: this.getProviderNetworkState(),
-    // });
-    // }
+    if (this.preferencesController.useRequestQueue()) {
+      this.notifyAllConnections((origin) => ({
+        method: NOTIFICATION_NAMES.chainChanged,
+        params: this.getProviderNetworkState(origin),
+      }));
+    } else {
+      this.notifyAllConnections({
+        method: NOTIFICATION_NAMES.chainChanged,
+        params: this.getProviderNetworkState(),
+      });
+    }
   }
 }
