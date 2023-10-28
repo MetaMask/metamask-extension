@@ -10,8 +10,8 @@ const {
   onboardingCompleteWalletCreation,
   onboardingPinExtension,
   getEventPayloads,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to

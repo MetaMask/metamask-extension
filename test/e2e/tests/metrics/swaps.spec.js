@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
-const FixtureBuilder = require('../fixture-builder');
+const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   generateGanacheOptions,
@@ -9,7 +9,7 @@ const {
   getEventPayloads,
   assertInAnyOrder,
   genRandInitBal,
-} = require('../helpers');
+} = require('../../helpers');
 const {
   buildQuote,
   reviewQuote,
@@ -20,7 +20,7 @@ const {
 const {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-} = require('../../../shared/constants/metametrics');
+} = require('../../../../shared/constants/metametrics');
 const {
   TOKENS_API_MOCK_RESULT,
   TOP_ASSETS_API_MOCK_RESULT,

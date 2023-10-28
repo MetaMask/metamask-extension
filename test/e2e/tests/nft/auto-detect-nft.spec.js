@@ -3,8 +3,8 @@ const {
   defaultGanacheOptions,
   unlockWallet,
   withFixtures,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 const { setupAutoDetectMocking } = require('./mocks');
 
 describe('NFT detection', function () {
