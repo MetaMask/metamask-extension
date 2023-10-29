@@ -32,13 +32,13 @@ exports[`Confirm Detail Row Component should match snapshot 1`] = `
         >
           P
         </div>
-        <p
+        <span
           class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
         >
           Private network
-        </p>
+        </span>
         <span
-          class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--display-none mm-box--color-icon-default"
+          class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-none mm-box--color-icon-default"
           style="mask-image: url('./images/icons/arrow-down.svg');"
         />
       </div>
