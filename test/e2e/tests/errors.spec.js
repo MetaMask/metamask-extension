@@ -43,6 +43,7 @@ const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
+  'PPOMController.chainStatus.0x539.lastVisited',
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);

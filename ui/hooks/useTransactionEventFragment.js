@@ -7,7 +7,6 @@ import {
   updateEventFragment,
 } from '../store/actions';
 import { selectMatchingFragment } from '../selectors';
-import { TransactionMetaMetricsEvent } from '../../shared/constants/transaction';
 
 export const useTransactionEventFragment = () => {
   const { transaction } = useGasFeeContext();
@@ -24,10 +23,7 @@ export const useTransactionEventFragment = () => {
         return;
       }
       if (!fragment) {
-        await createTransactionEventFragment(
-          transaction.id,
-          TransactionMetaMetricsEvent.approved,
-        );
+        await createTransactionEventFragment(transaction.id);
       }
       updateEventFragment(`transaction-added-${transaction.id}`, params);
     },

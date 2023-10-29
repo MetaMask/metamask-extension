@@ -256,7 +256,6 @@ const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
   TestDApp: 'E2E Test Dapp',
   Notification: 'MetaMask Notification',
-  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   InstalledExtensions: 'Extensions',
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
 });
@@ -590,7 +589,13 @@ const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
 };
 
-const SERVICE_WORKER_URL = 'chrome://inspect/#service-workers';
+const openActionMenuAndStartSendFlow = async (driver) => {
+  // TODO: Update Test when Multichain Send Flow is added
+  if (process.env.MULTICHAIN) {
+    return;
+  }
+  await driver.clickElement('[data-testid="eth-overview-send"]');
+};
 
 const sendTransaction = async (
   driver,
@@ -598,7 +603,11 @@ const sendTransaction = async (
   quantity,
   isAsyncFlow = false,
 ) => {
-  await driver.clickElement('[data-testid="eth-overview-send"]');
+  // TODO: Update Test when Multichain Send Flow is added
+  if (process.env.MULTICHAIN) {
+    return;
+  }
+  await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
   await driver.clickElement({
@@ -647,10 +656,18 @@ const TEST_SEED_PHRASE_TWO =
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
-  await driver.findElement({
-    css: '[data-testid="eth-overview__primary-currency"]',
-    text: `${balance} ETH`,
-  });
+  if (process.env.MULTICHAIN) {
+    await driver.clickElement(`[data-testid="home__asset-tab"]`);
+    await driver.findElement({
+      css: '[data-testid="token-balance-overview-currency-display"]',
+      text: `${balance} ETH`,
+    });
+  } else {
+    await driver.findElement({
+      css: '[data-testid="eth-overview__primary-currency"]',
+      text: `${balance} ETH`,
+    });
+  }
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';
@@ -671,7 +688,9 @@ const generateGanacheOptions = (overrides) => ({
 
 async function waitForAccountRendered(driver) {
   await driver.waitForSelector(
-    '[data-testid="eth-overview__primary-currency"]',
+    process.env.MULTICHAIN
+      ? '[data-testid="token-balance-overview-currency-display"]'
+      : '[data-testid="eth-overview__primary-currency"]',
   );
 }
 
@@ -684,10 +703,6 @@ const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
   await locateAccountBalanceDOM(driver, ganacheServer);
 };
-
-async function sleepSeconds(sec) {
-  return new Promise((resolve) => setTimeout(resolve, sec * 1000));
-}
 
 function roundToXDecimalPlaces(number, decimalPlaces) {
   return Math.round(number * 10 ** decimalPlaces) / 10 ** decimalPlaces;
@@ -710,34 +725,6 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
   const initialBalanceInHex = convertETHToHexGwei(initialBalance);
 
   return { initialBalance, initialBalanceInHex };
-}
-
-async function terminateServiceWorker(driver) {
-  await driver.openNewPage(SERVICE_WORKER_URL);
-
-  await driver.waitForSelector({
-    text: 'Service workers',
-    tag: 'button',
-  });
-  await driver.clickElement({
-    text: 'Service workers',
-    tag: 'button',
-  });
-
-  await driver.delay(tinyDelayMs);
-  const serviceWorkerElements = await driver.findClickableElements({
-    text: 'terminate',
-    tag: 'span',
-  });
-
-  // 1st one is app-init.js; while 2nd one is service-worker.js
-  await serviceWorkerElements[serviceWorkerElements.length - 1].click();
-
-  const serviceWorkerTab = await driver.switchToWindowWithTitle(
-    WINDOW_TITLES.ServiceWorkerSettings,
-  );
-
-  await driver.closeWindowHandle(serviceWorkerTab);
 }
 
 /**
@@ -858,7 +845,6 @@ function assertInAnyOrder(requests, assertions) {
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
-  SERVICE_WORKER_URL,
   TEST_SEED_PHRASE,
   TEST_SEED_PHRASE_TWO,
   PRIVATE_KEY,
@@ -897,8 +883,6 @@ module.exports = {
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
-  sleepSeconds,
-  terminateServiceWorker,
   clickSignOnSignatureConfirmation,
   validateContractDetails,
   switchToNotificationWindow,
@@ -911,4 +895,5 @@ module.exports = {
   onboardingPinExtension,
   assertInAnyOrder,
   genRandInitBal,
+  openActionMenuAndStartSendFlow,
 };
