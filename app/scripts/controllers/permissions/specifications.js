@@ -189,8 +189,8 @@ export const getPermissionSpecifications = ({
  * corresponds to a PreferencesController identity.
  *
  * @param {string[]} accounts - The accounts associated with the caveat.
- * @param {() => Record<string, import('@metamask/keyring-api').InternalAccount>} getInternalAccounts - Gets all
- * PreferencesController identities.
+ * @param {() => Record<string, import('@metamask/keyring-api').InternalAccount>} getInternalAccounts -
+ * Gets all AccountsController InternalAccounts.
  */
 function validateCaveatAccounts(accounts, getInternalAccounts) {
   if (!Array.isArray(accounts) || accounts.length === 0) {

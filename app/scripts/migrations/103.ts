@@ -83,7 +83,9 @@ function createInternalAccountsForAccountsController(
         name: identity.name,
         lastSelected: identity.lastSelected ?? undefined,
         keyring: {
-          // This is default HD Key Tree type because the keyring is encrypted during migration, the type will get updated when the during the initial updateAccounts call.
+          // This is default HD Key Tree type because the keyring is encrypted
+          // during migration, the type will get updated when the during the
+          // initial updateAccounts call.
           type: 'HD Key Tree',
         },
       },
