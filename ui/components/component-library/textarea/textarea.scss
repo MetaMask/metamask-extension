@@ -1,0 +1,13 @@
+.mm-textarea {
+  $resize: none, both, horizontal, vertical, initial, inherit;
+
+  &--disabled {
+    opacity: 0.5;
+  }
+
+  @each $size in $resize {
+    &--resize-#{$size} {
+      resize: $size;
+    }
+  }
+}
