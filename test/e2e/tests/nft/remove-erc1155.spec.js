@@ -1,10 +1,14 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
-const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const FixtureBuilder = require('../fixture-builder');
+const {
+  convertToHexValue,
+  withFixtures,
+  unlockWallet,
+} = require('../../helpers');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const FixtureBuilder = require('../../fixture-builder');
 
-describe('Remove NFT', function () {
-  const smartContract = SMART_CONTRACTS.NFTS;
+describe('Remove ERC1155 NFT', function () {
+  const smartContract = SMART_CONTRACTS.ERC1155;
   const ganacheOptions = {
     accounts: [
       {
@@ -15,11 +19,11 @@ describe('Remove NFT', function () {
     ],
   };
 
-  it('user should be able to remove ERC721 NFT on details page', async function () {
+  it('user should be able to remove ERC1155 NFT on details page @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
+        fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         ganacheOptions,
         smartContract,
         title: this.test.title,
@@ -28,9 +32,12 @@ describe('Remove NFT', function () {
         await driver.navigate();
         await unlockWallet(driver);
 
-        // Open the details and click remove nft button
+        // Open the details page and click remove nft button
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        await driver.clickElement('.nft-item__container');
+        const importedNftImage = await driver.findVisibleElement(
+          '.nft-item__container',
+        );
+        await importedNftImage.click();
         await driver.clickElement('[data-testid="nft-options__button"]');
         await driver.clickElement('[data-testid="nft-item-remove"]');
 
@@ -41,7 +48,7 @@ describe('Remove NFT', function () {
         });
         assert.equal(await removeNftNotification.isDisplayed(), true);
 
-        // Check the imported NFT disappeared in the NFT tab
+        // Check the imported ERC1155 NFT disappeared in the NFT tab
         const noNftInfo = await driver.waitForSelector({
           css: 'h4',
           text: 'No NFTs yet',

@@ -4,8 +4,8 @@ const {
   unlockWallet,
   waitForAccountRendered,
   defaultGanacheOptions,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('Unlock wallet', function () {
   async function mockSegment(mockServer) {
