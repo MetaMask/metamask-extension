@@ -74,8 +74,9 @@ export default function CreatePassword({
   const base64MetametricsId = Buffer.from(metametricsId ?? '').toString(
     'base64',
   );
-  const shouldInjectMetametricsIframe =
-    participateInMetaMetrics && base64MetametricsId;
+  const shouldInjectMetametricsIframe = Boolean(
+    participateInMetaMetrics && base64MetametricsId,
+  );
   const analyticsIframeQuery = {
     mmi: base64MetametricsId,
     env: 'production',
