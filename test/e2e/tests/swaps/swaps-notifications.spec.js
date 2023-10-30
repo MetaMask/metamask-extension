@@ -1,4 +1,4 @@
-const { withFixtures } = require('../helpers');
+const { withFixtures } = require('../../helpers');
 const {
   withFixturesOptions,
   loadExtension,
