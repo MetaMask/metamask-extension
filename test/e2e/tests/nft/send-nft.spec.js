@@ -1,7 +1,11 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
-const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const FixtureBuilder = require('../fixture-builder');
+const {
+  convertToHexValue,
+  withFixtures,
+  unlockWallet,
+} = require('../../helpers');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('Send NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -31,6 +35,10 @@ describe('Send NFT', function () {
         // Fill the send NFT form and confirm the transaction
         await driver.clickElement('[data-testid="home__nfts-tab"]');
         await driver.clickElement('.nft-item__container');
+        // TODO: Update Test when Multichain Send Flow is added
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
