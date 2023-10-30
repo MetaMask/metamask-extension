@@ -12,6 +12,7 @@ import {
   getSendAsset,
 } from '../../../../../ducks/send';
 import AdvancedGasInputs from '../../../../app/advanced-gas-inputs';
+import { ConfirmGasDisplay } from '../../../../app/confirm-gas-display';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import { hexToDecimal } from '../../../../../../shared/modules/conversion.utils';
 import {
@@ -67,6 +68,9 @@ export const SendPageContent = () => {
           />
         </SendPageRow>
       ) : null}
+      <SendPageRow>
+        <ConfirmGasDisplay />
+      </SendPageRow>
     </Box>
   );
 };
