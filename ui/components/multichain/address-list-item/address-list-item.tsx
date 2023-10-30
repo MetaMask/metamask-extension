@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactChild } from 'react';
 
 import { useSelector } from 'react-redux';
 import {
@@ -21,7 +21,7 @@ import {
 import { getUseBlockie } from '../../../selectors';
 
 interface AddressListItemProps {
-  label: string;
+  label: string | ReactChild;
   address: string;
   onClick: () => void;
 }
@@ -38,7 +38,7 @@ export const AddressListItem = ({
       display={Display.Flex}
       padding={4}
       as="button"
-      onClick={(e: Event): any => {
+      onClick={(e: React.MouseEvent) => {
         e.stopPropagation();
         onClick();
       }}
