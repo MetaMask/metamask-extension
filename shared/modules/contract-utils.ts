@@ -1,21 +1,23 @@
-type contract = {
+import pify from 'pify';
+
+export type Contract = {
   contractCode: string | null;
   isContractAddress: boolean;
 };
 
-export const readAddressAsContract = async (
-  ethQuery: {
-    getCode: (address: string) => string;
-  },
-  address: string,
-): Promise<contract> => {
-  let contractCode;
-  try {
-    contractCode = await ethQuery.getCode(address);
-  } catch (e) {
-    contractCode = null;
-  }
+// Note(@dbrans):
+type EthQuery = {
+  getCode: (
+    address: string,
+    cb: (err: Error, contractCode: string) => void,
+  ) => void;
+};
 
+export const readAddressAsContract = async (
+  ethQuery: EthQuery,
+  address: string,
+): Promise<Contract> => {
+  const contractCode = await pify(ethQuery.getCode.bind(ethQuery))(address);
   const isContractAddress = contractCode
     ? contractCode !== '0x' && contractCode !== '0x0'
     : false;

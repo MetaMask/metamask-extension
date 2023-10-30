@@ -139,7 +139,7 @@ export async function determineTransactionContractCode(txParams, query) {
 
 /**
  * Determines the type of the transaction by analyzing the txParams.
- * This method will return one of the types defined in shared/constants/transactions
+ * This method will return one of the types defined in {@link TransactionType}
  * It will never return TRANSACTION_TYPE_CANCEL or TRANSACTION_TYPE_RETRY as these
  * represent specific events that we control from the extension and are added manually
  * at transaction creation.
@@ -150,13 +150,6 @@ export async function determineTransactionContractCode(txParams, query) {
  */
 export async function determineTransactionType(txParams, query) {
   const { data, to } = txParams;
-  let name;
-  try {
-    ({ name } = data && parseStandardTokenTransactionData(data));
-  } catch (error) {
-    log.debug('Failed to parse transaction data.', error, data);
-  }
-
   let result;
   let contractCode;
 
@@ -170,6 +163,13 @@ export async function determineTransactionType(txParams, query) {
 
     if (isContractAddress) {
       const hasValue = txParams.value && Number(txParams.value) !== 0;
+
+      let name;
+      try {
+        ({ name } = data && parseStandardTokenTransactionData(data));
+      } catch (error) {
+        log.debug('Failed to parse transaction data.', error, data);
+      }
 
       const tokenMethodName = [
         TransactionType.tokenMethodApprove,
