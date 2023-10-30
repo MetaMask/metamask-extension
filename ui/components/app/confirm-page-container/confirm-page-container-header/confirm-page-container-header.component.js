@@ -82,6 +82,8 @@ export default function ConfirmPageContainerHeader({
         )}
         {isFullScreen ? null : (
           <PickerNetwork
+          dataTestId="network-display"
+
             as="div"
             src={currentNetwork?.rpcPrefs?.imageUrl}
             label={
