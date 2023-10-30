@@ -5,7 +5,7 @@ export type Contract = {
   isContractAddress: boolean;
 };
 
-// Note(@dbrans):
+// Note(@dbrans): This is a simplified version of the EthQuery interface specific to this file.
 type EthQuery = {
   getCode: (
     address: string,
