@@ -579,10 +579,13 @@ describe('DetectTokensController', function () {
         },
       }),
     });
-    const stub = sandbox.stub(controller, 'detectNewTokens');
+    const stub = sandbox.stub(controller, 'detectNewTokens').resolves('foo');
     controller.startPollingByNetworkClientId('mainnet');
     clock.tick(180000);
+    await Promise.resolve();
     sandbox.assert.called(stub);
+    assert.deepEqual(stub.callCount, 2);
     sandbox.assert.calledWith(stub.firstCall, { chainId: '0x1' });
+    sandbox.assert.calledWith(stub.secondCall, { chainId: '0x1' });
   });
 });
