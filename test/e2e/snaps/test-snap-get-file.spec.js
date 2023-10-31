@@ -82,9 +82,10 @@ describe('Test Snap Get Locale', function () {
         await driver.delay(500);
 
         // assert that the get text result is correct
-        const error = await driver.findElement('#getFileResult');
-        const text = await error.getText();
-        assert.equal(text.includes(`{ "foo": "bar" }`), true);
+        await driver.waitForSelector({
+          css: '#getFileResult',
+          text: '"foo": "bar"',
+        });
 
         // click on get base64 and await correct result
         await driver.clickElement('#sendGetFileBase64Button');
