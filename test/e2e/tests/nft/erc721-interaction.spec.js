@@ -4,9 +4,9 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
-} = require('../helpers');
-const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('ERC721 NFTs testdapp interaction', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -29,7 +29,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
@@ -151,7 +151,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
@@ -247,7 +247,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
@@ -298,7 +298,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
@@ -369,7 +369,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
@@ -439,7 +439,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {

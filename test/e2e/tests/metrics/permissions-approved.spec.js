@@ -6,8 +6,8 @@ const {
   openDapp,
   unlockWallet,
   getEventPayloads,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -56,7 +56,7 @@ describe('Permissions Approved Event', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {

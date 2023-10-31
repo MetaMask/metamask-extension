@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../fixture-builder');
-const { regularDelayMs, veryLargeDelayMs } = require('../helpers');
+const FixtureBuilder = require('../../fixture-builder');
+const { regularDelayMs, veryLargeDelayMs } = require('../../helpers');
 
 const ganacheOptions = {
   accounts: [

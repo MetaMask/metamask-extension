@@ -86,7 +86,7 @@ describe('Custom network', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -165,7 +165,7 @@ describe('Custom network', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({ useSafeChainsListValidation: true })
             .build(),
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -272,7 +272,7 @@ describe('Custom network', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({ useSafeChainsListValidation: false })
             .build(),
-          title: this.test.title,
+          title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
@@ -327,7 +327,7 @@ describe('Custom network', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -388,7 +388,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -475,7 +475,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -532,7 +532,7 @@ describe('Custom network', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -583,7 +583,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
@@ -625,7 +625,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
