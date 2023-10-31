@@ -35,8 +35,8 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
     const [referenceElement, setReferenceElement] =
       useState<HTMLElement | null>();
 
-    const setBoxRef = (popoverRef: HTMLElement | null) => {
-      setReferenceElement(popoverRef);
+    const setBoxRef = (anchorRef: HTMLElement | null) => {
+      setReferenceElement(anchorRef);
     };
 
     const toggleUncontrolledOpen = () => {
