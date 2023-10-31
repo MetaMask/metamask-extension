@@ -18,6 +18,10 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import PreferencesController from './preferences';
 
+const flushPromises = () => {
+  return new Promise(jest.requireActual('timers').setImmediate);
+};
+
 describe('DetectTokensController', function () {
   let sandbox,
     assetsContractController,
@@ -571,6 +575,7 @@ describe('DetectTokensController', function () {
       network,
       tokensController,
       assetsContractController,
+      disableLegacyInterval: true,
       interval: 1000,
       getNetworkClientById: () => ({
         configuration: {
@@ -587,7 +592,9 @@ describe('DetectTokensController', function () {
       .spyOn(controller, 'detectNewTokens')
       .mockResolvedValue('foo');
     controller.startPollingByNetworkClientId('mainnet');
-    await jest.advanceTimersByTime(1000);
+    await Promise.all([jest.advanceTimersByTime(0), flushPromises()]);
+    expect(detectNewTokensSpy).toHaveBeenCalledTimes(1);
+    await Promise.all([jest.advanceTimersByTime(1000), flushPromises()]);
     expect(detectNewTokensSpy).toHaveBeenCalledTimes(2);
     expect(detectNewTokensSpy.mock.calls).toStrictEqual([
       [{ chainId: '0x1' }],

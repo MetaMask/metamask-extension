@@ -35,6 +35,7 @@ export default class DetectTokensController extends PollingControllerOnly {
    * @param config.trackMetaMetricsEvent
    * @param config.messenger
    * @param config.getNetworkClientById
+   * @param config.disableLegacyInterval
    */
   constructor({
     messenger,
@@ -46,6 +47,7 @@ export default class DetectTokensController extends PollingControllerOnly {
     assetsContractController = null,
     trackMetaMetricsEvent,
     getNetworkClientById,
+    disableLegacyInterval = false,
   } = {}) {
     super();
     this.getNetworkClientById = getNetworkClientById;
@@ -53,7 +55,9 @@ export default class DetectTokensController extends PollingControllerOnly {
     this.assetsContractController = assetsContractController;
     this.tokensController = tokensController;
     this.preferences = preferences;
-    this.interval = interval;
+    if (!disableLegacyInterval) {
+      this.interval = interval;
+    }
     this.network = network;
     this.tokenList = tokenList;
     this.useTokenDetection =
