@@ -178,7 +178,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
               alignItems={AlignItems.flexEnd}
             >
               <ButtonLink
-                href={installOrigin.origin}
+                href={safeWebsite}
                 target="_blank"
                 overflowWrap={OverflowWrap.Anywhere}
               >
