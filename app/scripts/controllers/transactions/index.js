@@ -1707,7 +1707,9 @@ export default class TransactionController extends EventEmitter {
           ),
         );
       case TransactionStatus.failed:
-        throw cleanErrorStack(ethErrors.rpc.internal(finalTxMeta.err.message));
+        throw cleanErrorStack(
+          ethErrors.rpc.internal(finalTxMeta.error.message),
+        );
       default:
         throw cleanErrorStack(
           ethErrors.rpc.internal(

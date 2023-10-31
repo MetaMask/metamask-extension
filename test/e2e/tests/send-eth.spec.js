@@ -6,6 +6,7 @@ const {
   openDapp,
   locateAccountBalanceDOM,
   logInWithBalanceValidation,
+  openActionMenuAndStartSendFlow,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -24,14 +25,16 @@ describe('Send ETH from inside MetaMask using default gas', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-
+        await openActionMenuAndStartSendFlow(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -114,14 +117,16 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-
+        await openActionMenuAndStartSendFlow(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
@@ -166,15 +171,17 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-
+        await openActionMenuAndStartSendFlow(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -232,7 +239,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -311,7 +318,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           ...ganacheOptions,
           hardfork: 'london',
         },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -358,7 +365,9 @@ describe('Send ETH from dapp using advanced gas controls', function () {
 
         // Identify the transaction in the transactions list
         await driver.waitForSelector(
-          '[data-testid="eth-overview__primary-currency"]',
+          process.env.MULTICHAIN
+            ? '[data-testid="token-balance-overview-currency-display"]'
+            : '[data-testid="eth-overview__primary-currency"]',
         );
 
         await driver.clickElement('[data-testid="home__activity-tab"]');
@@ -405,7 +414,7 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
@@ -414,8 +423,10 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
         await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-
+        await openActionMenuAndStartSendFlow(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           contractAddress,

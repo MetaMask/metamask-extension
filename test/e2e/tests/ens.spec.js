@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openActionMenuAndStartSendFlow,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('ENS', function () {
@@ -80,7 +84,7 @@ describe('ENS', function () {
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({ driver }) => {
@@ -90,8 +94,11 @@ describe('ENS', function () {
 
         await driver.waitForElementNotPresent('.loading-overlay');
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-
+        await openActionMenuAndStartSendFlow(driver);
+        // TODO: Update Test when Multichain Send Flow is added
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           sampleEnsDomain,

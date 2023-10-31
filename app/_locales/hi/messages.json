@@ -3998,9 +3998,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 इस्तेमाल के लिए तैयार है"
   },
-  "snapUpdate": {
-    "message": "Snap अपडेट करें"
-  },
   "snapUpdateAvailable": {
     "message": "अपडेट उपलब्ध है"
   },

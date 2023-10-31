@@ -149,6 +149,8 @@ async function withFixtures(options, testSuite) {
       });
     }
 
+    console.log(`\nExecuting test suite: ${title}\n`);
+
     await testSuite({
       driver: driverProxy ?? driver,
       contractRegistry,
@@ -156,6 +158,10 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer,
       mockedEndpoint,
     });
+
+    // At this point the suite has executed successfully, so we can log out a
+    // success message.
+    console.log(`\nSuccess on test suite: '${title}'\n`);
 
     // Evaluate whether any new hosts received network requests during E2E test
     // suite execution. If so, fail the test unless the
@@ -199,7 +205,7 @@ async function withFixtures(options, testSuite) {
     failed = true;
     if (webDriver) {
       try {
-        await driver.verboseReportOnFailure(title);
+        await driver.verboseReportOnFailure(title, error);
       } catch (verboseReportError) {
         console.error(verboseReportError);
       }
@@ -589,13 +595,25 @@ const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
 };
 
+const openActionMenuAndStartSendFlow = async (driver) => {
+  // TODO: Update Test when Multichain Send Flow is added
+  if (process.env.MULTICHAIN) {
+    return;
+  }
+  await driver.clickElement('[data-testid="eth-overview-send"]');
+};
+
 const sendTransaction = async (
   driver,
   recipientAddress,
   quantity,
   isAsyncFlow = false,
 ) => {
-  await driver.clickElement('[data-testid="eth-overview-send"]');
+  // TODO: Update Test when Multichain Send Flow is added
+  if (process.env.MULTICHAIN) {
+    return;
+  }
+  await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
   await driver.clickElement({
@@ -644,10 +662,18 @@ const TEST_SEED_PHRASE_TWO =
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
   const balance = await ganacheServer.getBalance();
-  await driver.findElement({
-    css: '[data-testid="eth-overview__primary-currency"]',
-    text: `${balance} ETH`,
-  });
+  if (process.env.MULTICHAIN) {
+    await driver.clickElement(`[data-testid="home__asset-tab"]`);
+    await driver.findElement({
+      css: '[data-testid="token-balance-overview-currency-display"]',
+      text: `${balance} ETH`,
+    });
+  } else {
+    await driver.findElement({
+      css: '[data-testid="eth-overview__primary-currency"]',
+      text: `${balance} ETH`,
+    });
+  }
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';
@@ -668,7 +694,9 @@ const generateGanacheOptions = (overrides) => ({
 
 async function waitForAccountRendered(driver) {
   await driver.waitForSelector(
-    '[data-testid="eth-overview__primary-currency"]',
+    process.env.MULTICHAIN
+      ? '[data-testid="token-balance-overview-currency-display"]'
+      : '[data-testid="eth-overview__primary-currency"]',
   );
 }
 
@@ -873,4 +901,5 @@ module.exports = {
   onboardingPinExtension,
   assertInAnyOrder,
   genRandInitBal,
+  openActionMenuAndStartSendFlow,
 };
