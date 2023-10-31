@@ -144,6 +144,10 @@ export default class MetaMetricsController {
     this.extension = extension;
     this.environment = environment;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.selectedAddress = prefState.selectedAddress;
+    ///: END:ONLY_INCLUDE_IN
+
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
     const segmentApiCalls = initState?.segmentApiCalls || {};
 
@@ -569,6 +573,9 @@ export default class MetaMetricsController {
       const combinedProperties = merge(
         anonymousPayload.sensitiveProperties,
         anonymousPayload.properties,
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        { accountAddress: this.selectedAddress },
+        ///: END:ONLY_INCLUDE_IN
       );
 
       events.push(
