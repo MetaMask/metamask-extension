@@ -43,7 +43,7 @@ describe('Phishing Detection', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -76,7 +76,7 @@ describe('Phishing Detection', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -117,7 +117,7 @@ describe('Phishing Detection', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -161,7 +161,7 @@ describe('Phishing Detection', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: (mockServer) => {
           setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -201,7 +201,7 @@ describe('Phishing Detection', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -239,7 +239,7 @@ describe('Phishing Detection', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.PhishFort,
@@ -275,7 +275,7 @@ describe('Phishing Detection', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
