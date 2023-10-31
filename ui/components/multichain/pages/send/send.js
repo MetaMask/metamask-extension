@@ -27,8 +27,8 @@ import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import {
   SendPageAccountPicker,
   SendPageRecipientInput,
-  SendPageYourAccount,
   SendPageNetworkPicker,
+  SendPageRecipient,
 } from './components';
 
 export const SendPage = () => {
@@ -116,7 +116,7 @@ export const SendPage = () => {
         <SendPageNetworkPicker />
         <SendPageAccountPicker />
         <SendPageRecipientInput />
-        <SendPageYourAccount />
+        <SendPageRecipient />
       </Content>
       <Footer>
         <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
