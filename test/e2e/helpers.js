@@ -254,10 +254,13 @@ async function withFixtures(options, testSuite) {
 
 const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
-  TestDApp: 'E2E Test Dapp',
-  Notification: 'MetaMask Notification',
   InstalledExtensions: 'Extensions',
+  Notification: 'MetaMask Notification',
+  Phishing: 'MetaMask Phishing Detection',
+  ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
+  TestDApp: 'E2E Test Dapp',
+  TestSnaps: 'Test Snaps',
 });
 
 /**
@@ -508,8 +511,7 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
 
 const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
   await driver.navigate();
-  await driver.fill('#password', 'correct horse battery staple');
-  await driver.press('#password', driver.Key.ENTER);
+  await unlockWallet(driver);
 
   // navigate settings to reveal SRP
   await driver.clickElement('[data-testid="account-options-menu-button"]');
@@ -571,7 +573,13 @@ const switchToOrOpenDapp = async (
   dappURL = DAPP_URL,
 ) => {
   try {
-    await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+    // Do an unusually fast switchToWindowWithTitle, just 1 second
+    await driver.switchToWindowWithTitle(
+      WINDOW_TITLES.TestDApp,
+      null,
+      1000,
+      1000,
+    );
   } catch {
     await openDapp(driver, contract, dappURL);
   }
@@ -592,9 +600,11 @@ const defaultGanacheOptions = {
 const openActionMenuAndStartSendFlow = async (driver) => {
   // TODO: Update Test when Multichain Send Flow is added
   if (process.env.MULTICHAIN) {
-    return;
+    await driver.clickElement('[data-testid="app-footer-actions-button"]');
+    await driver.clickElement('[data-testid="select-action-modal-item-send"]');
+  } else {
+    await driver.clickElement('[data-testid="eth-overview-send"]');
   }
-  await driver.clickElement('[data-testid="eth-overview-send"]');
 };
 
 const sendTransaction = async (
@@ -694,10 +704,10 @@ async function waitForAccountRendered(driver) {
   );
 }
 
-const unlockWallet = async (driver) => {
-  await driver.fill('#password', 'correct horse battery staple');
+async function unlockWallet(driver) {
+  await driver.fill('#password', WALLET_PASSWORD);
   await driver.press('#password', driver.Key.ENTER);
-};
+}
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
   await unlockWallet(driver);
@@ -732,12 +742,24 @@ function genRandInitBal(minETHBal = 10, maxETHBal = 100, decimalPlaces = 4) {
  * screen.
  *
  * @param {WebDriver} driver
- * @param numHandles
+ * @param {number} numHandles
+ * @param {string} locatorID
  */
-async function clickSignOnSignatureConfirmation(driver, numHandles = 2) {
+async function clickSignOnSignatureConfirmation(
+  driver,
+  numHandles = 2, // eslint-disable-line no-unused-vars
+  locatorID = null,
+) {
   await driver.clickElement({ text: 'Sign', tag: 'button' });
-  await driver.waitUntilXWindowHandles(numHandles);
-  await driver.getAllWindowHandles();
+
+  // #ethSign has a second Sign confirmation button that says "Your funds may be at risk"
+  if (locatorID === '#ethSign') {
+    await driver.clickElement({
+      text: 'Sign',
+      tag: 'button',
+      css: '[data-testid="signature-warning-sign-button"]',
+    });
+  }
 }
 
 /**
@@ -775,8 +797,8 @@ async function validateContractDetails(driver) {
  * @param numHandles
  */
 async function switchToNotificationWindow(driver, numHandles = 3) {
-  await driver.waitUntilXWindowHandles(numHandles);
-  const windowHandles = await driver.getAllWindowHandles();
+  const windowHandles = await driver.waitUntilXWindowHandles(numHandles);
+
   await driver.switchToWindowWithTitle(
     WINDOW_TITLES.Notification,
     windowHandles,
