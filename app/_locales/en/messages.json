@@ -4330,10 +4330,6 @@
     "message": "Manage $1 accounts",
     "description": "Permission name used for the Permission Cell component displayed on warning popup when installing a Snap. $1 is list of account types."
   },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Give $2 public key access to $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
   "snapInstallationErrorDescription": {
     "message": "$1 couldn’t be installed.",
     "description": "Error description used when snap installation fails. $1 is the snap name."

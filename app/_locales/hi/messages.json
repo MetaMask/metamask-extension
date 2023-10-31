@@ -3958,10 +3958,6 @@
   "snapInstallWarningHeading": {
     "message": "सावधानी से आगे बढ़ें"
   },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "$1 को $2 की सार्वजनिक कुंजी का एक्सेस प्रदान करें",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
   "snapInstallationErrorDescription": {
     "message": "$1 इंस्टॉल नहीं किया जा सका.",
     "description": "Error description used when snap installation fails. $1 is the snap name."

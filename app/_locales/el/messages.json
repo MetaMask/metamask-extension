@@ -3958,10 +3958,6 @@
   "snapInstallWarningHeading": {
     "message": "Προχωρήστε με προσοχή"
   },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Δώστε πρόσβαση με το δημόσιο κλειδί $2 στο $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
   "snapInstallationErrorDescription": {
     "message": "Το $1 δεν μπόρεσε να εγκατασταθεί.",
     "description": "Error description used when snap installation fails. $1 is the snap name."

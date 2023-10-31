@@ -3958,10 +3958,6 @@
   "snapInstallWarningHeading": {
     "message": "Proceda con precaución"
   },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Dar a $2 el acceso de clave pública a $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
   "snapInstallationErrorDescription": {
     "message": "$1 no se pudo instalar.",
     "description": "Error description used when snap installation fails. $1 is the snap name."

@@ -3958,10 +3958,6 @@
   "snapInstallWarningHeading": {
     "message": "Magpatuloy nang may pag-iingat"
   },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Bigyan ang $2 ng access sa pampublikong key para $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
   "snapInstallationErrorDescription": {
     "message": "Hindi ma-install ang $1.",
     "description": "Error description used when snap installation fails. $1 is the snap name."

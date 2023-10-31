@@ -3958,10 +3958,6 @@
   "snapInstallWarningHeading": {
     "message": "주의하여 진행하세요"
   },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "$1에서 $2 공개 키 액세스 허용",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
   "snapInstallationErrorDescription": {
     "message": "$1 스냅을 설치할 수 없습니다.",
     "description": "Error description used when snap installation fails. $1 is the snap name."

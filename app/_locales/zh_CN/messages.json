@@ -3958,10 +3958,6 @@
   "snapInstallWarningHeading": {
     "message": "请谨慎行事"
   },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "授予 $2 对 $1 的公钥访问权限",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
   "snapInstallationErrorDescription": {
     "message": "无法安装$1。",
     "description": "Error description used when snap installation fails. $1 is the snap name."

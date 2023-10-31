@@ -3958,10 +3958,6 @@
   "snapInstallWarningHeading": {
     "message": "慎重に進めてください"
   },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "$2に$1への公開鍵アクセス権を付与する",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
   "snapInstallationErrorDescription": {
     "message": "$1をインストールできませんでした。",
     "description": "Error description used when snap installation fails. $1 is the snap name."

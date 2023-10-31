@@ -3958,10 +3958,6 @@
   "snapInstallWarningHeading": {
     "message": "Lanjutkan dengan hati-hati"
   },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Berikan $2 akses kunci publik ke $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
   "snapInstallationErrorDescription": {
     "message": "$1 tidak dapat diinstal.",
     "description": "Error description used when snap installation fails. $1 is the snap name."
