@@ -16,7 +16,7 @@ export function useSnapHome({ snapId }) {
         const newData = await handleSnapRequest({
           snapId,
           origin: '',
-          handler: 'onSnapPage',
+          handler: 'onHomePage',
           request: {
             jsonrpc: '2.0',
             method: ' ',

@@ -44,7 +44,7 @@ function SnapView() {
     getTargetSubjectMetadata(state, snap?.id),
   );
 
-  const hasHomePage = hasProperty(permissions, 'endowment:home-page');
+  const hasHomePage = hasProperty(permissions, 'endowment:page-home');
   const [showSettings, setShowSettings] = useState(!hasHomePage);
 
   if (!snap) {
@@ -57,6 +57,14 @@ function SnapView() {
     setShowSettings(true);
   };
 
+  const handleBackClick = () => {
+    if (showSettings && hasHomePage) {
+      setShowSettings(false);
+    } else {
+      history.push(SNAPS_ROUTE);
+    }
+  };
+
   return (
     <div className="snap-view">
       <Page backgroundColor={BackgroundColor.backgroundDefault}>
@@ -67,7 +75,7 @@ function SnapView() {
               ariaLabel="Back"
               iconName="arrow-left"
               size="sm"
-              onClick={() => history.push(SNAPS_ROUTE)}
+              onClick={handleBackClick}
             />
           }
           endAccessory={
