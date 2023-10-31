@@ -150,7 +150,6 @@ const { reducer, actions } = slice;
 export default reducer;
 
 const {
-  disableDomainLookup,
   domainLookup,
   enableDomainLookup,
   domainNotSupported,
@@ -166,22 +165,16 @@ export function initializeDomainSlice() {
     const chainIdInt = parseInt(chainId, 16);
     const ensAddress = ensNetworkMap[chainIdInt.toString()];
     const networkIsSupported = Boolean(ensAddress);
-    const isSupportedButNotEns = Object.values(CHAIN_IDS).includes(chainId);
     if (networkIsSupported) {
       web3Provider = new Web3Provider(global.ethereumProvider, {
         chainId: chainIdInt,
         name: networkName,
         ensAddress,
       });
-      dispatch(enableDomainLookup(chainId));
     } else {
       web3Provider = null;
-      if (isSupportedButNotEns) {
-        dispatch(enableDomainLookup(chainId));
-      } else {
-        dispatch(disableDomainLookup());
-      }
     }
+    dispatch(enableDomainLookup(chainId));
   };
 }
 
