@@ -371,6 +371,24 @@ function createScriptTasks({
         shouldLintFenceFiles,
       }),
     );
+
+    if (process.env.ENABLE_MV3) {
+      const offscreenSubtask = createTask(
+        `${taskPrefix}:offscreen`,
+        createOffscreenHWBundle({ buildTarget }),
+      );
+
+      allSubtasks.push(
+        runInChildProcess(offscreenSubtask, {
+          applyLavaMoat,
+          buildType,
+          isLavaMoat,
+          policyOnly,
+          shouldLintFenceFiles,
+        }),
+      );
+    }
+
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
@@ -463,6 +481,33 @@ function createScriptTasks({
         applyLavaMoat,
       }),
     );
+  }
+
+  /**
+   * Create a bundle for Hardware Wallet iframes on the "offscreen" page.
+   *
+   * @param {object} options - The build options.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
+   * @returns {Function} A function that creates the bundle.
+   */
+  function createOffscreenHWBundle({ buildTarget }) {
+    const bundles = ['trezor', 'ledger', 'lattice'].map((label) => {
+      return createNormalBundle({
+        buildTarget,
+        buildType,
+        browserPlatforms,
+        destFilepath: `offscreen/${label}/${label}-iframe.js`,
+        entryFilepath: `./app/scripts/lib/offscreen/${label}/${label}-iframe.ts`,
+        label,
+        ignoredFiles,
+        policyOnly,
+        shouldLintFenceFiles,
+        version,
+        applyLavaMoat,
+      });
+    });
+
+    return composeSeries(...bundles);
   }
 }
 
