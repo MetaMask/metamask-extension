@@ -589,6 +589,11 @@ describe('DetectTokensController', function () {
     controller.startPollingByNetworkClientId('mainnet');
     await jest.advanceTimersByTime(1000);
     expect(detectNewTokensSpy).toHaveBeenCalledTimes(2);
+    expect(detectNewTokensSpy.mock.calls).toStrictEqual([
+      [{ chainId: '0x1' }],
+      [{ chainId: '0x1' }],
+    ]);
+
     detectNewTokensSpy.mockRestore();
     jest.useRealTimers();
   });
