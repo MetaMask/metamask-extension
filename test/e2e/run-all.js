@@ -37,7 +37,6 @@ const getTestPathsForTestDir = async (testDir) => {
 // For running E2Es in parallel in CI
 function runningOnCircleCI(testPaths) {
   const fullTestList = testPaths.join('\n');
-  console.log('Full test list:', fullTestList);
   fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
 
   // Use `circleci tests run` on `testList.txt` to do two things:
@@ -198,12 +197,11 @@ async function main() {
     myTestList = testPaths;
   }
 
-  console.log('My test list:', myTestList);
-
   // spawn `run-e2e-test.js` for each test in myTestList
   for (let testPath of myTestList) {
     if (testPath !== '') {
       testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
+      console.log(`\nExecuting testPath: ${testPath}\n`);
       await runInShell('node', [...args, testPath]);
     }
   }
