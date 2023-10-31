@@ -32,8 +32,9 @@ export default function AssetPicker({ asset }: { asset: Asset }) {
   const image =
     asset.type === AssetType.native
       ? nativeCurrencyImage
-      : // @ts-ignore: type 'string' can't be used to index type '{}'
-        tokenList?.[asset.details.address.toLowerCase()]?.iconUrl;
+      : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore: type 'string' can't be used to index type '{}'
+        tokenList?.[asset.details?.address?.toLowerCase()]?.iconUrl;
 
   const symbol =
     asset.type === AssetType.native ? nativeCurrency : asset.details?.symbol;

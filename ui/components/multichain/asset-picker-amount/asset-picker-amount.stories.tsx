@@ -6,10 +6,11 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import mockState from '../../../../test/data/mock-state.json';
 import { AssetPickerAmount } from './asset-picker-amount';
 
-export default {
+const storybook = {
   title: 'Components/Multichain/AssetPickerAmount',
   component: AssetPickerAmount,
 };
+export default storybook;
 
 export const DefaultStory = () => (
   <div style={{ width: '400px' }}>
@@ -63,11 +64,12 @@ ErrorStory.decorators = [
   ),
 ];
 
-const store = (tx: DraftTransaction) =>
-  configureStore({
+function store(tx: DraftTransaction) {
+  return configureStore({
     ...mockState,
     send: {
       currentTransactionUUID: 'uuid',
       draftTransactions: { uuid: tx },
     },
   });
+}
