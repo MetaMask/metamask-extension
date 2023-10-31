@@ -1986,10 +1986,9 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'PhishingController:maybeUpdateState',
         ),
-        isOnPhishingList: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'PhishingController:testOrigin',
-        ),
+        isOnPhishingList: (origin) =>
+          this.controllerMessenger.call('PhishingController:testOrigin', origin)
+            .result,
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
