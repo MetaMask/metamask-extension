@@ -1,9 +1,15 @@
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const { Builder, By, until } = require('selenium-webdriver');
+const {
+  Builder,
+  By,
+  until,
+  ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
+} = require('selenium-webdriver');
 const firefox = require('selenium-webdriver/firefox');
 const proxy = require('selenium-webdriver/proxy');
+const { retry } = require('../../../development/lib/retry');
 
 /**
  * The prefix for temporary Firefox profiles. All Firefox profiles used for e2e tests
@@ -87,18 +93,37 @@ class FirefoxDriver {
   }
 
   /**
-   * Returns the Internal UUID for the given extension
+   * Returns the Internal UUID for the given extension, with retries
    *
    * @returns {Promise<string>} the Internal UUID for the given extension
    */
   async getInternalId() {
     await this._driver.get('about:debugging#addons');
-    return await this._driver
-      .wait(
-        until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
-        1000,
-      )
-      .getText();
+
+    // This method with 2 retries to find the UUID seems more stable on local e2e tests
+    let uuid;
+    await retry({ retries: 2 }, () => (uuid = this._waitOnceForUUID()));
+
+    return uuid;
+  }
+
+  /**
+   * Waits once to locate the temporary Firefox UUID, can be put in a retry loop
+   *
+   * @returns {Promise<string>} the UUID for the given extension, or null if not found
+   * @private
+   */
+  async _waitOnceForUUID() {
+    const uuidElement = await this._driver.wait(
+      until.elementLocated(By.xpath("//dl/div[contains(., 'UUID')]/dd")),
+      1000,
+    );
+
+    if (uuidElement.getText) {
+      return uuidElement.getText();
+    }
+
+    return null;
   }
 }
 
