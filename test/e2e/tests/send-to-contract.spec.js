@@ -21,7 +21,7 @@ describe('Send ERC20 token to contract address', function () {
         fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, contractRegistry }) => {
