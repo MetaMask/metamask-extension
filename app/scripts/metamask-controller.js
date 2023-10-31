@@ -818,6 +818,10 @@ export default class MetamaskController extends EventEmitter {
     this.networksOrderingController = new NetworksOrderingController({
       messenger: networksOrderingMessenger,
       state: initState.NetworksOrderingController,
+      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
+        networkControllerMessenger,
+        'NetworkController:stateChange',
+      ),
     });
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
