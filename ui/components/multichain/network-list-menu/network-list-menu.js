@@ -12,6 +12,7 @@ import {
   setShowTestNetworks,
   showModal,
   toggleNetworkMenu,
+  updateNetworksList,
 } from '../../../store/actions';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import {
@@ -20,6 +21,7 @@ import {
   getNonTestNetworks,
   getShowTestNetworks,
   getTestNetworks,
+  getOrderedNetworksList,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -81,22 +83,41 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const showSearch = nonTestNetworks.length > 3;
 
+  const orderedNetworksList = useSelector(getOrderedNetworksList);
+
+  const newOrderNetworks = () => {
+    // Create a mapping of chainId to array index in nonTestNetworks
+    const chainIdIndexMap = {};
+    nonTestNetworks.forEach((element, index) => {
+      chainIdIndexMap[element.chainId] = index;
+    });
+
+    // Sort nonTestNetworks based on the order of chainIds in arr2
+    const sortedNetworkList = orderedNetworksList.map(
+      (chainId) => nonTestNetworks[chainIdIndexMap[chainId]],
+    );
+    return sortedNetworkList;
+  };
+
+  const networksList =
+    orderedNetworksList.length > 0 ? newOrderNetworks() : nonTestNetworks;
+
   useEffect(() => {
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
     }
   }, [dispatch, currentlyOnTestNetwork]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [items, setItems] = useState([...nonTestNetworks]);
+  const [items, setItems] = useState([...networksList]);
 
   const onDragEnd = (result) => {
     const newItems = [...items];
     const [removed] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, removed);
     setItems(newItems);
-    const orderedArray = newItems.map((obj) => ({ chainId: obj.chainId }));
+    const orderedArray = newItems.map((obj) => obj.chainId);
 
-    // dispatch(updateNetworksList(orderedArray));
+    dispatch(updateNetworksList(orderedArray));
   };
 
   let searchResults = items;

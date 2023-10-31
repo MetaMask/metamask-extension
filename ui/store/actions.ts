@@ -3576,6 +3576,18 @@ export function removePermissionsFor(
   };
 }
 
+export function updateNetworksList(
+  networksList: [],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return (dispatch) => {
+    callBackgroundMethod('updateNetworksList', [networksList], (err) => {
+      if (err) {
+        dispatch(displayWarning(err));
+      }
+    });
+  };
+}
+
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * Updates the caveat value for the specified origin, permission and caveat type.

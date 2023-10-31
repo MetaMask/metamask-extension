@@ -8,19 +8,19 @@ const controllerName = 'NetworksOrderingController';
 /**
  * The network ID of a network.
  */
-export type NetworkId = `${number}`;
+export type NetworkId = string;
 
 export type NetworksOrderingControllerState = {
   networksList: NetworkId[] | null;
 };
 
-export type NetworksOrderingControllerUpdateNetworkListAction = {
-  type: `${typeof controllerName}:updateNetworkList`;
-  handler: NetworksOrderingController['updateNetowrksList'];
+export type NetworksOrderingControllerupdateNetworksListAction = {
+  type: `${typeof controllerName}:updateNetworksList`;
+  handler: NetworksOrderingController['updateNetworksList'];
 };
 
 export type NetworksOrderingControllerMessengerActions =
-  NetworksOrderingControllerUpdateNetworkListAction;
+  NetworksOrderingControllerupdateNetworksListAction;
 
 export type NetworksOrderingControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
@@ -68,9 +68,9 @@ export class NetworksOrderingController extends BaseControllerV2<
     });
   }
 
-  updateNetowrksList(networksList: NetworkId[]) {
+  updateNetworksList(networkList: []) {
     this.update((state) => {
-      state.networksList = networksList;
+      state.networksList = networkList;
       return state;
     });
   }
