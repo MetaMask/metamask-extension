@@ -3,8 +3,8 @@ const {
   defaultGanacheOptions,
   unlockWallet,
   withFixtures,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
 const { setupAutoDetectMocking } = require('./mocks');
 
 describe('NFT detection', function () {
@@ -18,7 +18,7 @@ describe('NFT detection', function () {
           .build(),
         driverOptions,
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: setupAutoDetectMocking,
       },
       async ({ driver }) => {

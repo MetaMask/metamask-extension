@@ -157,7 +157,7 @@ describe('Petnames', function () {
           .withNoNames()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await login(driver);
@@ -193,7 +193,7 @@ describe('Petnames', function () {
           .withNoNames()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await login(driver);
@@ -232,7 +232,7 @@ describe('Petnames', function () {
           .withNoNames()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await login(driver);

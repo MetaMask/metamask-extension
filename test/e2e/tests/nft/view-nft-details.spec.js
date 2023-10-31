@@ -1,7 +1,11 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
-const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const FixtureBuilder = require('../fixture-builder');
+const {
+  convertToHexValue,
+  withFixtures,
+  unlockWallet,
+} = require('../../helpers');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -22,7 +26,7 @@ describe('View NFT details', function () {
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

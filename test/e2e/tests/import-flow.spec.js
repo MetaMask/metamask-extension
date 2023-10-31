@@ -45,7 +45,7 @@ describe('Import flow @no-mmi', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -166,7 +166,7 @@ describe('Import flow @no-mmi', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -210,7 +210,7 @@ describe('Import flow @no-mmi', function () {
           .withPreferencesControllerImportedAccountIdentities()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -296,7 +296,7 @@ describe('Import flow @no-mmi', function () {
           .withPreferencesControllerImportedAccountIdentities()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -362,7 +362,7 @@ describe('Import flow @no-mmi', function () {
           .withPreferencesControllerImportedAccountIdentities()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -401,7 +401,7 @@ describe('Import flow @no-mmi', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockTrezor,
       },
       async ({ driver }) => {
