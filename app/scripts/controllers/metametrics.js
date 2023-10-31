@@ -573,9 +573,6 @@ export default class MetaMetricsController {
       const combinedProperties = merge(
         anonymousPayload.sensitiveProperties,
         anonymousPayload.properties,
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        { accountAddress: this.selectedAddress },
-        ///: END:ONLY_INCLUDE_IN
       );
 
       events.push(
@@ -718,6 +715,10 @@ export default class MetaMetricsController {
 
     if (this.extension?.runtime?.id) {
       mmiProps.extensionId = this.extension.runtime.id;
+    }
+
+    if (this.selectedAddres) {
+      mmiProps.selectedAddres = this.selectedAddres;
     }
     ///: END:ONLY_INCLUDE_IN
 
