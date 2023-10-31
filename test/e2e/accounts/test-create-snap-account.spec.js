@@ -15,7 +15,7 @@ describe('Create Snap Account', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -101,7 +101,7 @@ describe('Create Snap Account', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -196,7 +196,7 @@ describe('Create Snap Account', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

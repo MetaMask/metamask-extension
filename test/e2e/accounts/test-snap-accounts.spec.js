@@ -51,7 +51,7 @@ describe('Test Snap Account', function () {
 
   it('can create a new Snap account', async function () {
     await withFixtures(
-      accountSnapFixtures(this.test.title),
+      accountSnapFixtures(this.test.fullTitle()),
       async ({ driver }) => {
         await installSnapSimpleKeyring(driver, false);
 
@@ -66,7 +66,7 @@ describe('Test Snap Account', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await installSnapSimpleKeyring(driver, false);
@@ -135,7 +135,7 @@ describe('Test Snap Account', function () {
 
   it('can import a private key and transfer 1 ETH (sync flow)', async function () {
     await withFixtures(
-      accountSnapFixtures(this.test.title),
+      accountSnapFixtures(this.test.fullTitle()),
       async ({ driver }) => {
         await importPrivateKeyAndTransfer1ETH(driver, 'sync');
       },
@@ -144,7 +144,7 @@ describe('Test Snap Account', function () {
 
   it('can import a private key and transfer 1 ETH (async flow approve)', async function () {
     await withFixtures(
-      accountSnapFixtures(this.test.title),
+      accountSnapFixtures(this.test.fullTitle()),
       async ({ driver }) => {
         await importPrivateKeyAndTransfer1ETH(driver, 'approve');
       },
@@ -153,7 +153,7 @@ describe('Test Snap Account', function () {
 
   it('can import a private key and transfer 1 ETH (async flow reject)', async function () {
     await withFixtures(
-      accountSnapFixtures(this.test.title),
+      accountSnapFixtures(this.test.fullTitle()),
       async ({ driver }) => {
         await importPrivateKeyAndTransfer1ETH(driver, 'reject');
       },
@@ -188,7 +188,7 @@ describe('Test Snap Account', function () {
 
     it(title, async function () {
       await withFixtures(
-        accountSnapFixtures(this.test.title),
+        accountSnapFixtures(this.test.fullTitle()),
         async ({ driver }) => {
           const isAsyncFlow = flowType !== 'sync';
 
@@ -211,7 +211,7 @@ describe('Test Snap Account', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         const flowType = 'approve';

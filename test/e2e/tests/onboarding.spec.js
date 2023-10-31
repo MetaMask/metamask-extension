@@ -35,7 +35,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -56,7 +56,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -81,7 +81,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -103,7 +103,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -143,7 +143,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -182,7 +182,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -206,7 +206,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -252,7 +252,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           ...defaultGanacheOptions,
           concurrent: { port, chainId, ganacheOptions2 },
         },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
 
       async ({ driver, secondaryGanacheServer }) => {
