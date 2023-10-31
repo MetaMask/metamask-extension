@@ -1,0 +1,19 @@
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",
+3,Switch networks to a test network.,e.g. Sepolia.,"The Sepolia balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Sepolia.",
+4,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
+5,Proceed to Connect with MetaMask.,,,
+6,Connect with the current account.,,,
+7,"In test dapp, click ""send EIP 1559 transaction"".",,"MetaMask notification screen is shown. Current gas fee is displayed. ""Site suggested"" button is displayed.",Take a note for the current gas fee.
+8,"On notification screen, click ""Site suggested"" button.",,"Edit gas fee screen is shown. Three gas options are shown: low, market, aggressive. Site suggested gas fee is shown. ""Advanced"" button is displayed. ",
+9,"On edit gas fee screen, click ""Advanced"" button.",,Advanced gas fee edit screen is shown. Editable max base fee and priority fee input fields are displayed.,
+10,"In max base fee and priority fee input fields, enter new values, and click ""Save"".",e.g. 25 for max base fee and 2 for priority fee,"On notification screen, the displayed gas fee is different from previous one.","Take a note for the new gas fee. "
+11,"On notification screen , click ""Confirm"" to proceed the transaction.",,The transaction appears in the activity list. The amount is shown in the activity list item.,
+12,Open the activity list item.,,"The transaction status, recipient's address, nonce, amount are shown in the item details. Values of displayed total gas fee, priority fee, and max fee per gas are the new values that we changed in previous step.",
+13,Expand the activity log for the transaction.,,"The created, submitted and confirmed activity are shown in the activity log.",
+14,Proceed to view the transaction on the block explorer.,,The block explorer opens in a new tab.,

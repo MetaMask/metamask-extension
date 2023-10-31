@@ -27,7 +27,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
           <p
             class="mm-box mm-text mm-text--body-sm mm-box--color-text-default"
           >
-            This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity.
+            This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity. By enabling this feature you agree to the provider's terms of use.
           </p>
           <p
             class="mm-box mm-text mm-text--body-sm-bold mm-box--margin-top-4 mm-box--color-text-alternative"
@@ -60,7 +60,20 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
               <h6
                 class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--color-text-alternative"
               >
-                Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet.
+                <span>
+                   
+                  Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet. 
+                  <a
+                    class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--bodyMd mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                    href="https://blockaid.io/legal/metamask-ppom-privacy-policy/"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    Terms of use
+                  </a>
+                  
+                   
+                </span>
               </h6>
             </div>
             <label
@@ -130,7 +143,20 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
               <h6
                 class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--color-text-alternative"
               >
-                Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests.
+                <span>
+                   
+                  Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. 
+                  <a
+                    class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--bodyMd mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                    href="https://opensea.io/securityproviderterms"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    Terms of use
+                  </a>
+                  
+                   
+                </span>
               </h6>
             </div>
             <label
