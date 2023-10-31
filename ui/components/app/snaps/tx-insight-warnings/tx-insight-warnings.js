@@ -103,6 +103,7 @@ export default function TxInsightWarnings({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
+          justifyContent={JustifyContent.center}
           childrenWrapperProps={{
             alignItems: AlignItems.center,
             display: Display.Flex,
