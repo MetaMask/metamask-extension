@@ -3989,6 +3989,9 @@
   "selectAccountsForSnap": {
     "message": "Select the account(s) to use with this snap"
   },
+  "selectActionButton": {
+    "message": "Select action"
+  },
   "selectAll": {
     "message": "Select all"
   },
