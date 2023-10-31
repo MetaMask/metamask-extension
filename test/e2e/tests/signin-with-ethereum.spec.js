@@ -33,7 +33,7 @@ describe('Sign in with ethereum', function () {
         ganacheOptions: {
           ...ganacheOptions,
         },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

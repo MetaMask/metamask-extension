@@ -43,7 +43,7 @@
 
   &__checkbox {
     margin-right: 8px;
-    padding-top: 1px; // better alignment with rest of content
+    margin-top: -2px;
   }
 
   &__checkbox-label {
@@ -53,6 +53,7 @@
     margin-top: auto;
     margin-bottom: auto;
     color: var(--color-text-alternative);
+    align-items: center;
   }
 
   &__checkbox-label-tooltip {

@@ -3998,9 +3998,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 está listo para usar"
   },
-  "snapUpdate": {
-    "message": "Actualizar snap"
-  },
   "snapUpdateAvailable": {
     "message": "Actualización disponible"
   },

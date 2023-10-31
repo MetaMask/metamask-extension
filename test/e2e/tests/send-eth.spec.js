@@ -25,7 +25,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
@@ -117,7 +117,7 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
@@ -171,7 +171,7 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -239,7 +239,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -318,7 +318,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
           ...ganacheOptions,
           hardfork: 'london',
         },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -414,7 +414,7 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
