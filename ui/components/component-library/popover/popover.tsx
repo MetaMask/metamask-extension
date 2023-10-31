@@ -115,7 +115,16 @@ export const Popover: PopoverComponent = React.forwardRef(
           },
           className,
         )}
-        ref={ref && setPopperElement}
+        ref={(element: PolymorphicRef<C>) => {
+          if (ref) {
+            if (typeof ref === 'function') {
+              ref(element);
+            } else {
+              (ref as React.MutableRefObject<C | null>).current = element;
+            }
+          }
+          setPopperElement(element);
+        }}
         {...attributes.popper}
         {...(props as BoxProps<C>)}
         style={{ ...styles.popper, ...contentStyle, ...props.style }}

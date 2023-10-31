@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import classnames from 'classnames';
 import type { PolymorphicRef, BoxProps } from '../box';
 import { Box, Popover, PopoverPosition } from '..';
@@ -34,6 +34,7 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       useState<boolean>(false);
     const [referenceElement, setReferenceElement] =
       useState<HTMLElement | null>();
+    const popoverRef = useRef<HTMLDivElement | null>(null);
 
     const setBoxRef = (anchorRef: HTMLElement | null) => {
       setReferenceElement(anchorRef);
@@ -96,6 +97,7 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
             matchWidth
             referenceElement={referenceElement}
             padding={0}
+            ref={popoverRef}
             {...popoverProps}
             className={classnames(
               'mm-select-wrapper__popover',
