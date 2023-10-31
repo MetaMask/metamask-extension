@@ -146,7 +146,7 @@ export async function determineTransactionContractCode(txParams, query) {
  *
  * @param {object} txParams - Parameters for the transaction
  * @param {EthQuery} query - EthQuery instance
- * @returns {InferTransactionTypeResult}
+ * @returns {Promise<InferTransactionTypeResult>}
  */
 export async function determineTransactionType(txParams, query) {
   const { data, to } = txParams;
