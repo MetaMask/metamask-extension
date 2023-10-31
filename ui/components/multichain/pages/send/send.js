@@ -12,7 +12,7 @@ import {
   IconName,
 } from '../../../component-library';
 import { Content, Footer, Header, Page } from '../page';
-import AssetPickerAmount from '../../asset-picker-amount/asset-picker-amount';
+import { AssetPickerAmount } from '../../asset-picker-amount/asset-picker-amount';
 import {
   getDraftTransactionExists,
   resetSendState,
