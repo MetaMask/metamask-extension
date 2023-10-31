@@ -17,10 +17,13 @@ export const readAddressAsContract = async (
   ethQuery: EthQueryWithGetCode,
   address: string,
 ): Promise<Contract> => {
-  if ('getCode' in ethQuery === false) {
-    throw new Error('EthQuery must implement getCode');
+  let contractCode: string | null;
+  try {
+    contractCode = await pify(ethQuery.getCode.bind(ethQuery))(address);
+  } catch (err) {
+    // TODO(@dbrans): Dangerous to swallow errors here.
+    contractCode = null;
   }
-  const contractCode = await pify(ethQuery.getCode.bind(ethQuery))(address);
   const isContractAddress = contractCode
     ? contractCode !== '0x' && contractCode !== '0x0'
     : false;
