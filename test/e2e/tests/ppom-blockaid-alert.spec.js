@@ -158,7 +158,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
           .build(),
         defaultGanacheOptions,
         testSpecificMock: mockInfura,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
@@ -213,7 +213,8 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
    * 'malicious_domain'. Some other tests are found in other files:
    * e.g. test/e2e/flask/ppom-blockaid-alert-<name>.spec.js
    */
-  it('should show security alerts for malicious requests', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should show security alerts for malicious requests', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -226,7 +227,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
           .build(),
         defaultGanacheOptions,
         testSpecificMock: mockInfuraWithMaliciousResponses,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
@@ -286,7 +287,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {

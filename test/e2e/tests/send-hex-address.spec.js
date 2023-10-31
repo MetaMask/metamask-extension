@@ -25,7 +25,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
@@ -71,7 +71,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
@@ -131,7 +131,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
@@ -194,7 +194,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
