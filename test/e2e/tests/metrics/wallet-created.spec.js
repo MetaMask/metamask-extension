@@ -59,7 +59,7 @@ describe('Wallet Created Events @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
@@ -101,7 +101,7 @@ describe('Wallet Created Events @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {

@@ -56,7 +56,7 @@ describe('Permissions Approved Event', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
