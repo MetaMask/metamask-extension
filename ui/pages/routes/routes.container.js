@@ -12,6 +12,9 @@ import {
   getCurrentChainId,
   getShouldShowSeedPhraseReminder,
   isCurrentProviderCustom,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  getUnapprovedConfirmations,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../selectors';
 import {
   lockMetamask,
@@ -78,6 +81,7 @@ function mapStateToProps(state) {
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,
+    pendingConfirmations: getUnapprovedConfirmations(state),
     ///: END:ONLY_INCLUDE_IN
   };
 }
