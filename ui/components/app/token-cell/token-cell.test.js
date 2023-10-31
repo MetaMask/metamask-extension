@@ -56,7 +56,7 @@ describe('Token Cell', () => {
       erc20: true,
       symbol: 'TEST',
       decimals: 18,
-      address: '0xAnotherToken',
+      address: '0xANoTherToKen',
       iconUrl: './images/test_image.svg',
       aggregators: [],
     },

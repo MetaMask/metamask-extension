@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
-} from '@metamask/rpc-methods';
+} from '@metamask/snaps-rpc-methods';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
