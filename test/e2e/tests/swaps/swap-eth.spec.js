@@ -17,7 +17,7 @@ describe('Swap Eth for another Token @no-mmi', function () {
       {
         ...withFixturesOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await loadExtension(driver);
@@ -62,7 +62,7 @@ describe('Swap Eth for another Token @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await loadExtension(driver);
