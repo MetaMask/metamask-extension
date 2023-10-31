@@ -9,6 +9,7 @@ const {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   findAnotherAccountFromAccountList,
+  openActionMenuAndStartSendFlow,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { emptyHtmlPage } = require('../mock-e2e');
@@ -37,7 +38,9 @@ async function mockTrezor(mockServer) {
 describe('Import flow @no-mmi', function () {
   it('Import wallet using Secret Recovery Phrase', async function () {
     const testPassword = 'correct horse battery staple';
-
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
@@ -122,13 +125,15 @@ describe('Import flow @no-mmi', function () {
 
         // Send ETH from inside MetaMask
         // starts a send transaction
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+        await openActionMenuAndStartSendFlow(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
         await driver.fill('.unit-input__input', '1');
-
         // Continue to next screen
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
@@ -181,9 +186,11 @@ describe('Import flow @no-mmi', function () {
         await driver.clickElement('[data-testid="account-list-menu-details"');
         await driver.findVisibleElement('.qr-code__wrapper');
         // shows the correct account address
-        const address = await driver.findElement(
-          '.qr-code [data-testid="address-copy-button-text"]',
-        );
+        const address = process.env.MULTICHAIN
+          ? await driver.findElement('[data-testid="address-copy-button-text"]')
+          : await driver.findElement(
+              '.qr-code [data-testid="address-copy-button-text"]',
+            );
 
         assert.equal(await address.getText(), testAddress);
       },

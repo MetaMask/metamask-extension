@@ -4,7 +4,7 @@ To maintain a consistent and efficient development workflow, we have set specifi
 ### Mandatory team labels:
 - **Internal Developers**: Every PR raised by an internal developer must include a label prefixed with `team-` (e.g., `team-extension-ux`, `team-extension-platform`, etc.). This indicates the respective internal team responsible for the PR.
 
-- **External Contributors**: PRs from contributors outside the organization must have the `external-contributor` label.
+- **External Contributors**: PRs submitted by contributors who are not part of the organization will be automatically labeled with `external-contributor`.
 
 It's essential to ensure that PRs have the appropriate labels before they are considered for merging.
 
