@@ -3992,9 +3992,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 đã sẵn sàng để sử dụng"
   },
-  "snapUpdate": {
-    "message": "Cập nhật Snap"
-  },
   "snapUpdateAvailable": {
     "message": "Có cập nhật mới"
   },

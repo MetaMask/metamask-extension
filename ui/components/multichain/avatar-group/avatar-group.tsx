@@ -21,7 +21,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
   limit = 4,
   members = [],
   size = AvatarTokenSize.Xs,
-  borderColor = BorderColor.transparent,
+  borderColor = BorderColor.borderDefault,
 }): JSX.Element => {
   const membersCount = members.length;
   const visibleMembers = members.slice(0, limit).reverse();
@@ -41,6 +41,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
       display={Display.Flex}
       className={classnames('multichain-avatar-group', className)}
       data-testid="avatar-group"
+      gap={1}
     >
       <Box display={Display.Flex}>
         {visibleMembers.map((member, i) => (
@@ -52,7 +53,7 @@ export const AvatarGroup: React.FC<AvatarGroupProps> = ({
             }
           >
             <AvatarToken
-              src={member.image}
+              src={member.iconUrl}
               name={member.symbol}
               size={size}
               borderColor={borderColor}

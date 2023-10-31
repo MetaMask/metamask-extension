@@ -25,7 +25,7 @@ describe('Personal sign', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
         const addresses = await ganacheServer.getAccounts();
@@ -73,7 +73,7 @@ describe('Personal sign', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
         const addresses = await ganacheServer.getAccounts();

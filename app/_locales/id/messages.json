@@ -3992,9 +3992,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 siap digunakan"
   },
-  "snapUpdate": {
-    "message": "Perbarui Snap"
-  },
   "snapUpdateAvailable": {
     "message": "Pembaruan tersedia"
   },

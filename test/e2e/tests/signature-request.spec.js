@@ -71,7 +71,7 @@ describe('Sign Typed Data Signature Request', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver, ganacheServer }) => {
           const addresses = await ganacheServer.getAccounts();
@@ -132,7 +132,7 @@ describe('Sign Typed Data Signature Request', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver, ganacheServer }) => {
           const addresses = await ganacheServer.getAccounts();

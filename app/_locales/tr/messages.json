@@ -3992,9 +3992,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 kullanıma hazır"
   },
-  "snapUpdate": {
-    "message": "Snapi güncelle"
-  },
   "snapUpdateAvailable": {
     "message": "Güncelleme mevcut"
   },

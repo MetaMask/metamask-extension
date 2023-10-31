@@ -180,6 +180,7 @@ export const SelectActionModal = ({ onClose }) => {
               ///: END:ONLY_INCLUDE_IN
               onClose();
             }}
+            data-testid="select-action-modal-item-swap"
           />
           <SelectActionModalItem
             actionIcon={IconName.Arrow2UpRight}
@@ -202,6 +203,7 @@ export const SelectActionModal = ({ onClose }) => {
               history.push(SEND_ROUTE);
               onClose();
             }}
+            data-testid="select-action-modal-item-send"
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)

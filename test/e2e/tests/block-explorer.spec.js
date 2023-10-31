@@ -15,7 +15,7 @@ describe('Block Explorer', function () {
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -61,7 +61,7 @@ describe('Block Explorer', function () {
           .build(),
         ganacheOptions: defaultGanacheOptions,
         smartContract: SMART_CONTRACTS.HST,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -110,7 +110,7 @@ describe('Block Explorer', function () {
           .withTransactionControllerCompletedTransaction()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
