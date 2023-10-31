@@ -914,23 +914,15 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController,
       ),
       setAccountLabel: (address, label) => {
-        const accountToBeNamed = this.accountsController
-          .listAccounts()
-          .find(
-            (account) =>
-              account.address.toLowerCase() === address.toLowerCase(),
-          );
+        const accountToBeNamed =
+          this.accountsController.getAccountByAddress(address);
         this.accountsController.setAccountName(accountToBeNamed.id, label);
 
         this.preferencesController.setAccountLabel(address, label);
       },
       setSelectedAddress: (address) => {
-        const accountToBeSet = this.accountsController
-          .listAccounts()
-          .find(
-            (account) =>
-              account.address.toLowerCase() === address.toLowerCase(),
-          );
+        const accountToBeSet =
+          this.accountsController.getAccountByAddress(address);
         if (accountToBeSet) {
           this.accountsController.setSelectedAccount(accountToBeSet);
         }
@@ -3423,12 +3415,7 @@ export default class MetamaskController extends EventEmitter {
 
       this.selectFirstAccount();
       this.accountsController.setSelectedAccount(
-        this.accountsController
-          .listAccounts()
-          .find(
-            (account) =>
-              account.address.toLowerCase() === firstAccount.toLowerCase(),
-          ).id,
+        this.accountsController.getAccountByAddress(firstAccount).id,
       );
 
       return vault;
