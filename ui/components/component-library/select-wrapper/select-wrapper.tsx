@@ -55,7 +55,9 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
           onOpenChange(false);
         }
         // Allow the dev to pass in a controlled onBlur prop
-        onBlur?.(e);
+        if (onBlur) {
+          onBlur(e);
+        }
       }
     };
 
