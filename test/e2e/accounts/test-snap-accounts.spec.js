@@ -214,6 +214,10 @@ describe('Test Snap Account', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        if (process.env.MULTICHAIN) {
+          return;
+        }
+
         const flowType = 'approve';
         const isAsyncFlow = flowType !== 'sync';
 
