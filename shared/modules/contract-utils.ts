@@ -5,8 +5,8 @@ export type Contract = {
   isContractAddress: boolean;
 };
 
-// Note(@dbrans): This is a simplified version of the EthQuery interface specific to this file.
-type EthQuery = {
+// Note(@dbrans): This is a simplified version of the 'EthQuery' interface specific to this file.
+type EthQueryWithGetCode = {
   getCode: (
     address: string,
     cb: (err: Error, contractCode: string) => void,
@@ -14,9 +14,12 @@ type EthQuery = {
 };
 
 export const readAddressAsContract = async (
-  ethQuery: EthQuery,
+  ethQuery: EthQueryWithGetCode,
   address: string,
 ): Promise<Contract> => {
+  if ('getCode' in ethQuery === false) {
+    throw new Error('EthQuery must implement getCode');
+  }
   const contractCode = await pify(ethQuery.getCode.bind(ethQuery))(address);
   const isContractAddress = contractCode
     ? contractCode !== '0x' && contractCode !== '0x0'
