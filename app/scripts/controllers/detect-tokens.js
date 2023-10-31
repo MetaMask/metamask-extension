@@ -1,5 +1,5 @@
 import { warn } from 'loglevel';
-import { PollingControllerOnly } from '@metamask/polling-controller/dist/PollingController';
+import { PollingControllerOnly } from '@metamask/polling-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -62,6 +62,7 @@ export default class DetectTokensController extends PollingControllerOnly {
     this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
       return token.address;
     });
+    this.setIntervalLength(interval);
     this.hiddenTokens = this.tokensController?.state.ignoredTokens;
     this.detectedTokens = this.tokensController?.state.detectedTokens;
     this.chainId = this.getChainIdFromNetworkStore();

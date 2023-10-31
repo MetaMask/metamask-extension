@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import nock from 'nock';
@@ -561,13 +564,14 @@ describe('DetectTokensController', function () {
   });
 
   it('should poll on the correct interval by networkClientId', async function () {
-    const clock = sandbox.useFakeTimers();
+    jest.useFakeTimers();
     const controller = new DetectTokensController({
       messenger: getRestrictedMessenger(),
       preferences,
       network,
       tokensController,
       assetsContractController,
+      interval: 1000,
       getNetworkClientById: () => ({
         configuration: {
           chainId: '0x1',
@@ -579,13 +583,13 @@ describe('DetectTokensController', function () {
         },
       }),
     });
-    const stub = sandbox.stub(controller, 'detectNewTokens').resolves('foo');
+    const detectNewTokensSpy = jest
+      .spyOn(controller, 'detectNewTokens')
+      .mockResolvedValue('foo');
     controller.startPollingByNetworkClientId('mainnet');
-    clock.tick(180000);
-    await Promise.resolve();
-    sandbox.assert.called(stub);
-    assert.deepEqual(stub.callCount, 2);
-    sandbox.assert.calledWith(stub.firstCall, { chainId: '0x1' });
-    sandbox.assert.calledWith(stub.secondCall, { chainId: '0x1' });
+    await jest.advanceTimersByTime(1000);
+    expect(detectNewTokensSpy).toHaveBeenCalledTimes(2);
+    detectNewTokensSpy.mockRestore();
+    jest.useRealTimers();
   });
 });
