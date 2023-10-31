@@ -15,12 +15,19 @@ export const SendHexData = () => {
     <SendPageRow>
       <Label>{t('hexData')}</Label>
       <textarea
-        onInput={(event: Event & { target: HTMLTextAreaElement }) => {
+        onInput={(event: any) => {
           const newData = event.target.value.replace(/\n/gu, '') || null;
           dispatch(updateSendHexData(newData ?? ''));
         }}
         placeholder={t('optional')}
         defaultValue={data || ''}
+        style={{
+          padding: '8px 16px',
+          borderRadius: '8px',
+          background: 'var(--color-background-default)',
+          borderColor: 'var(--color-border-default)',
+          color: 'var(--color-text-default)',
+        }}
       />
     </SendPageRow>
   );
