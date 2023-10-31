@@ -3998,9 +3998,6 @@
   "snapResultSuccessDescription": {
     "message": "Το $1 είναι έτοιμο για χρήση"
   },
-  "snapUpdate": {
-    "message": "Ενημέρωση του snap"
-  },
   "snapUpdateAvailable": {
     "message": "Διαθέσιμη ενημέρωση"
   },
@@ -4034,9 +4031,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Οποιεσδήποτε πληροφορίες μοιράζεστε με τις Υπηρεσίες Τρίτων θα συλλέγονται απευθείας από τις εν λόγω Υπηρεσίες Τρίτων σύμφωνα με τις πολιτικές απορρήτου τους. Ανατρέξτε στις πολιτικές απορρήτου τους για περισσότερες πληροφορίες.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Διαχειριστείτε τα Snaps σας"
   },
   "snapsTermsOfUse": {
     "message": "Όροι Χρήσης"

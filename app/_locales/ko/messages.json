@@ -3998,9 +3998,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 사용 가능"
   },
-  "snapUpdate": {
-    "message": "스냅 업데이트"
-  },
   "snapUpdateAvailable": {
     "message": "업데이트 가능"
   },
@@ -4034,9 +4031,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "타사와 공유하는 모든 정보는 해당 타사의 개인정보 처리방침에 따라 직접 수집됩니다. 더 자세한 내용은 해당 회사의 개인정보 처리방침을 참고하시기 바랍니다.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "스냅 관리"
   },
   "snapsTermsOfUse": {
     "message": "이용약관"
