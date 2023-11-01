@@ -16,7 +16,7 @@ const {
   withFixtures,
 } = require('../helpers');
 const Driver = require('../webdriver/driver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
-const { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } = require('./utils');
+const { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } = require('./common');
 
 describe('Test Snap Account', function () {
   const ganacheOptions = {

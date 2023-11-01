@@ -7,7 +7,7 @@ const {
   switchToNotificationWindow,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
-const { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } = require('./utils');
+const { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } = require('./common');
 
 describe('Remove Account Snap', function () {
   it('disable a snap and remove it', async function () {
