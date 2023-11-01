@@ -93,7 +93,7 @@ export const SnapUIRenderer = ({
   snapId,
   delineatorType = DelineatorType.Content,
   isCollapsable = false,
-  isCollapsed = true,
+  isCollapsed = false,
   data,
   onClick,
   boxProps,

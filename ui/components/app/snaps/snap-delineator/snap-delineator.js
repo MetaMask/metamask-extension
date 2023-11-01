@@ -31,7 +31,7 @@ export const SnapDelineator = ({
   snapName,
   type = DelineatorType.default,
   isCollapsable = false,
-  isCollapsed = true,
+  isCollapsed = false,
   children,
   onClick,
   boxProps,

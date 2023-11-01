@@ -20,6 +20,7 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
   Display,
   FlexDirection,
   IconColor,
@@ -137,17 +138,30 @@ export default function TxInsightWarnings({
               ])}
         </Text>
         <Warnings />
-        <Checkbox
-          variant={TextVariant.bodySm}
-          isChecked={isChecked}
-          onChange={handleOnChange}
-          label={t('transactionInsightWarningCheckboxMessage', [
-            t(results[type].imperative),
-            stripHttpSchemes(origin),
-          ])}
-          paddingTop={4}
-          paddingBottom={4}
-        />
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.flexStart}
+          alignItems={AlignItems.center}
+          marginTop={4}
+          marginBottom={4}
+          padding={4}
+          borderRadius={BorderRadius.SM}
+          style={{
+            backgroundColor: isChecked
+              ? 'var(--color-info-muted)'
+              : 'var(--color-background-default-hover)',
+          }}
+        >
+          <Checkbox
+            variant={TextVariant.bodySm}
+            isChecked={isChecked}
+            onChange={handleOnChange}
+            label={t('transactionInsightWarningCheckboxMessage', [
+              t(results[type].imperative),
+              stripHttpSchemes(origin),
+            ])}
+          />
+        </Box>
         <Box
           display={Display.Flex}
           justifyContent={JustifyContent.spaceBetween}
