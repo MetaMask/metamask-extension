@@ -9,13 +9,13 @@ const {
   convertToHexValue,
   regularDelayMs,
   unlockWallet,
+  WALLET_PASSWORD,
 } = require('../helpers');
 
 const FixtureBuilder = require('../fixture-builder');
 const { shortenAddress } = require('../../../ui/helpers/utils/util');
 
 describe('Add account', function () {
-  const testPassword = 'correct horse battery staple';
   const firstAccount = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
   const secondAccount = '0x3ED0eE22E0685Ebbf07b2360A8331693c413CC59';
 
@@ -76,7 +76,7 @@ describe('Add account', function () {
         await completeImportSRPOnboardingFlow(
           driver,
           TEST_SEED_PHRASE,
-          testPassword,
+          WALLET_PASSWORD,
         );
 
         // Check address of 1st account

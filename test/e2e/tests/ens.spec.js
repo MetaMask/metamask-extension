@@ -1,8 +1,8 @@
-const { strict: assert } = require('assert');
 const {
   convertToHexValue,
   withFixtures,
   openActionMenuAndStartSendFlow,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -89,8 +89,7 @@ describe('ENS', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.waitForElementNotPresent('.loading-overlay');
 
@@ -108,25 +107,15 @@ describe('ENS', function () {
           '.send__select-recipient-wrapper__group-item__title',
         );
 
-        const currentEnsDomain = await driver.findElement(
-          '.ens-input__selected-input__title',
-        );
+        await driver.findElement({
+          css: '.ens-input__selected-input__title',
+          text: 'test.eth',
+        });
 
-        assert.equal(
-          await currentEnsDomain.getText(),
-          'test.eth',
-          'Domain name not correct',
-        );
-
-        const resolvedAddress = await driver.findElement(
-          '.ens-input__selected-input__subtitle',
-        );
-
-        assert.equal(
-          await resolvedAddress.getText(),
-          `0x${sampleAddress}`,
-          'Resolved address not correct',
-        );
+        await driver.findElement({
+          css: '.ens-input__selected-input__subtitle',
+          text: `0x${sampleAddress}`,
+        });
       },
     );
   });
