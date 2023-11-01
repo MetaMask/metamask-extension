@@ -1,10 +1,14 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
-const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const FixtureBuilder = require('../fixture-builder');
+const {
+  convertToHexValue,
+  withFixtures,
+  unlockWallet,
+} = require('../../helpers');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const FixtureBuilder = require('../../fixture-builder');
 
-describe('View ERC1155 NFT details', function () {
-  const smartContract = SMART_CONTRACTS.ERC1155;
+describe('View NFT details', function () {
+  const smartContract = SMART_CONTRACTS.NFTS;
   const ganacheOptions = {
     accounts: [
       {
@@ -15,40 +19,39 @@ describe('View ERC1155 NFT details', function () {
     ],
   };
 
-  it('user should be able to view ERC1155 NFT details @no-mmi', async function () {
+  it('user should be able to view ERC721 NFT details', async function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
+        fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
         await unlockWallet(driver);
 
-        // Click to open the NFT details page and check displayed account
+        // Click to open the NFT details page and check title
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        const importedNftImage = await driver.findVisibleElement(
-          '.nft-item__container',
-        );
-        await importedNftImage.click();
-        const detailsPageAccount = await driver.findElement(
-          '.asset-breadcrumb span:nth-of-type(2)',
-        );
-        assert.equal(await detailsPageAccount.getText(), 'Account 1');
+        await driver.clickElement('.nft-item__container');
 
-        // Check the displayed ERC1155 NFT details
+        const detailsPageTitle = await driver.findElement('.asset-breadcrumb');
+        assert.equal(
+          await detailsPageTitle.getText(),
+          'Account 1 / TestDappNFTs',
+        );
+
+        // Check the displayed NFT details
         const nftName = await driver.findElement('.nft-details__info h4');
-        assert.equal(await nftName.getText(), 'Rocks');
+        assert.equal(await nftName.getText(), 'Test Dapp NFTs #1');
 
         const nftDescription = await driver.findElement(
           '.nft-details__info h6:nth-of-type(2)',
         );
         assert.equal(
           await nftDescription.getText(),
-          'This is a collection of Rock NFTs.',
+          'Test Dapp NFTs for testing.',
         );
 
         const nftImage = await driver.findElement('.nft-item__container');

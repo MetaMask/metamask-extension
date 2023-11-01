@@ -1,0 +1,19 @@
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",
+3,Switch networks to a test network.,e.g. Sepolia.,"The Sepolia balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Sepolia.",
+4,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
+5,Proceed to Connect with MetaMask.,,,
+6,Connect with the current account.,,,
+7,"In test dapp, click ""send legacy transaction"".",,MetaMask notification screen is shown. Estimated gas fee is displayed. Edit button is displayed.,Take a note for the estimated gas fee.
+8,"On notification screen, click ""Edit"".",,"Edit screen is shown. Gas fee information message is shown. ""Edit suggested gas fee"" button is displayed.",
+9,"On edit screen, click ""Edit suggested gas fee"".",,Editable gas limit and gas price input fields are displayed.,
+10,"In gas price input field, enter a different value, and click ""Save"".",e.g. 50,"On notification screen, the displayed gas fee is different from previous one.","Take a note for the current gas fee. "
+11,"On notification screen , click ""Confirm"" to proceed the transaction.",,The transaction appears in the activity list. The amount is shown in the activity list item.,
+12,Open the activity list item.,,"The transaction status, recipient's address, nonce, amount are shown in the item details. Value of displayed gas price and total gas fee are the new values that we changed in previous step.",
+13,Expand the activity log for the transaction.,,"The created, submitted and confirmed activity are shown in the activity log.",
+14,Proceed to view the transaction on the block explorer.,,The block explorer opens in a new tab.,
