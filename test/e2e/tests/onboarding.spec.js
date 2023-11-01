@@ -11,11 +11,11 @@ const {
   testSRPDropdownIterations,
   locateAccountBalanceDOM,
   defaultGanacheOptions,
+  WALLET_PASSWORD,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('MetaMask onboarding @no-mmi', function () {
-  const testPassword = 'correct horse battery staple';
   const wrongSeedPhrase =
     'test test test test test test test test test test test test';
   const wrongTestPassword = 'test test test test';
@@ -41,7 +41,7 @@ describe('MetaMask onboarding @no-mmi', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        await completeCreateNewWalletOnboardingFlow(driver, testPassword);
+        await completeCreateNewWalletOnboardingFlow(driver, WALLET_PASSWORD);
 
         const homePage = await driver.findElement('.home__main-view');
         const homePageDisplayed = await homePage.isDisplayed();
@@ -65,7 +65,7 @@ describe('MetaMask onboarding @no-mmi', function () {
         await completeImportSRPOnboardingFlow(
           driver,
           TEST_SEED_PHRASE,
-          testPassword,
+          WALLET_PASSWORD,
         );
 
         const homePage = await driver.findElement('.home__main-view');
@@ -156,7 +156,10 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
         // Fill in confirm password field with incorrect password
-        await driver.fill('[data-testid="create-password-new"]', testPassword);
+        await driver.fill(
+          '[data-testid="create-password-new"]',
+          WALLET_PASSWORD,
+        );
         await driver.fill(
           '[data-testid="create-password-confirm"]',
           wrongTestPassword,
@@ -188,7 +191,11 @@ describe('MetaMask onboarding @no-mmi', function () {
       async ({ driver }) => {
         await driver.navigate();
 
-        await importSRPOnboardingFlow(driver, TEST_SEED_PHRASE, testPassword);
+        await importSRPOnboardingFlow(
+          driver,
+          TEST_SEED_PHRASE,
+          WALLET_PASSWORD,
+        );
         // Verify site
         assert.equal(
           await driver.isElementPresent({
@@ -219,10 +226,13 @@ describe('MetaMask onboarding @no-mmi', function () {
         await driver.clickElement('[data-testid="metametrics-no-thanks"]');
 
         // Fill in confirm password field with correct password
-        await driver.fill('[data-testid="create-password-new"]', testPassword);
+        await driver.fill(
+          '[data-testid="create-password-new"]',
+          WALLET_PASSWORD,
+        );
         await driver.fill(
           '[data-testid="create-password-confirm"]',
-          testPassword,
+          WALLET_PASSWORD,
         );
         await driver.clickElement('[data-testid="create-password-terms"]');
         await driver.clickElement('[data-testid="create-password-wallet"]');
@@ -257,7 +267,11 @@ describe('MetaMask onboarding @no-mmi', function () {
 
       async ({ driver, secondaryGanacheServer }) => {
         await driver.navigate();
-        await importSRPOnboardingFlow(driver, TEST_SEED_PHRASE, testPassword);
+        await importSRPOnboardingFlow(
+          driver,
+          TEST_SEED_PHRASE,
+          WALLET_PASSWORD,
+        );
 
         // Add custome network localhost 8546 during onboarding
         await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
