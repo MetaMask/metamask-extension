@@ -119,7 +119,7 @@ describe('Swap Eth for another Token @no-mmi', function () {
             },
           ],
         }),
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegmentAndMetaswapRequests,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {

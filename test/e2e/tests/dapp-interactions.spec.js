@@ -29,7 +29,7 @@ describe('Dapp interactions', function () {
           ...ganacheOptions,
           concurrent: { port: 8546, chainId: 1338 },
         },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -59,7 +59,7 @@ describe('Dapp interactions', function () {
           .build(),
         ganacheOptions,
         dappOptions: { numberOfDapps: 2 },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

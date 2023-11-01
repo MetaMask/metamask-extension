@@ -26,7 +26,7 @@ describe('Remove ERC1155 NFT', function () {
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -34,10 +34,7 @@ describe('Remove ERC1155 NFT', function () {
 
         // Open the details page and click remove nft button
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        const importedNftImage = await driver.findVisibleElement(
-          '[data-testid="nft-image"]',
-        );
-        await importedNftImage.click();
+        await driver.clickElement('[data-testid="nft-image"]');
         await driver.clickElement('[data-testid="nft-options__button"]');
         await driver.clickElement('[data-testid="nft-item-remove"]');
 

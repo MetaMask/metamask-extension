@@ -30,18 +30,21 @@ describe('Unlock wallet', function () {
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint }) => {
         await driver.navigate();
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
+
+        let mockedRequests;
         await driver.wait(async () => {
           const isPending = await mockedEndpoint.isPending();
-          return isPending === false;
+          mockedRequests = await mockedEndpoint.getSeenRequests();
+          return isPending === false && mockedRequests.length === 3;
         }, 10000);
-        const mockedRequests = await mockedEndpoint.getSeenRequests();
+
         assert.equal(mockedRequests.length, 3);
         const [firstMock, secondMock, thirdMock] = mockedRequests;
         assertBatchValue(firstMock, 'Home', '/');
