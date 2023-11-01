@@ -19,6 +19,8 @@ import {
 import { TemplateType, templates } from './shared/template';
 import { retrievePullRequest } from './shared/pull-request';
 
+const knownBots = ["metamaskbot", "dependabot", "github-actions", "sentry-io"];
+
 main().catch((error: Error): void => {
   console.error(error);
   process.exit(1);
@@ -80,6 +82,12 @@ async function main(): Promise<void> {
   const templateType: TemplateType = extractTemplateTypeFromBody(
     labelable.body,
   );
+
+  // If labelable's author is a bot we skip the template checks as bots don't use templates
+  if (knownBots.includes(labelable.author)) {
+    console.log(`${labelable.type === LabelableType.PullRequest ? 'PR' : 'Issue'} was created by a bot (${labelable.author}). Skip template checks.`);
+    process.exit(0); // Stop the process and exit with a success status code
+  }
 
   if (labelable.type === LabelableType.Issue) {
     if (templateType === TemplateType.GeneralIssue) {
