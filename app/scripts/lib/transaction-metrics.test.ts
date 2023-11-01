@@ -1,12 +1,14 @@
 import { Provider } from '@metamask/network-controller';
 import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   createTestProviderTools,
   getTestAccounts,
 } from '../../../test/stub/provider';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
-  TransactionType,
-  TransactionStatus,
   AssetType,
   TokenStandard,
   TransactionMetaMetricsEvent,

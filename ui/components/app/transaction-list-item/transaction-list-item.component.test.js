@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { fireEvent, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import mockState from '../../../../test/data/mock-state.json';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import {

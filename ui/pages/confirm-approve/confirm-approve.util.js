@@ -1,5 +1,5 @@
-import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { TransactionType } from '@metamask/transaction-controller';
+import { calcTokenValue } from '../../../shared/lib/swaps-utils';
 import { parseStandardTokenTransactionData } from '../../../shared/modules/transaction.utils';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { decimalToHex } from '../../../shared/modules/conversion.utils';

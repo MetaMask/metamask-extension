@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { TransactionType } from '@metamask/transaction-controller';
+import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { getKnownMethodData } from '../selectors';
 import { getNativeCurrency } from '../ducks/metamask/metamask';
 import { getTransactionTypeTitle } from '../helpers/utils/transactions.util';

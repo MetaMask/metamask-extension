@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
-import { getSwapsTokensReceivedFromTxMeta } from '../../shared/lib/transactions-controller-utils';
 import { TransactionType } from '@metamask/transaction-controller';
+import { getSwapsTokensReceivedFromTxMeta } from '../../shared/lib/transactions-controller-utils';
 import {
   isSwapsDefaultTokenAddress,
   isSwapsDefaultTokenSymbol,
