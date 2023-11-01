@@ -2,6 +2,7 @@ const {
   convertToHexValue,
   withFixtures,
   unlockWallet,
+  regularDelayMs,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
@@ -33,6 +34,9 @@ describe('View ERC1155 NFT details', function () {
 
         // Click to open the NFT details page and check displayed account
         await driver.clickElement('[data-testid="home__nfts-tab"]');
+
+        // wait for the image to load
+        await driver.delay(regularDelayMs);
         await driver.clickElement('.nft-item__container');
 
         await driver.findElement({
