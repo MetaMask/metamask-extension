@@ -37,7 +37,7 @@ exports[`SendPage render renders correctly 1`] = `
       class="mm-box multichain-page-content mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
     >
       <div
-        class="mm-box mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
+        class="mm-box multichain-send-page-row mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
       >
         <button
           class="mm-box mm-picker-network mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
@@ -60,7 +60,7 @@ exports[`SendPage render renders correctly 1`] = `
         </button>
       </div>
       <div
-        class="mm-box mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
+        class="mm-box multichain-send-page-row mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
       >
         <label
           class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--padding-bottom-2 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
@@ -136,7 +136,7 @@ exports[`SendPage render renders correctly 1`] = `
         </button>
       </div>
       <div
-        class="mm-box mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
+        class="mm-box multichain-send-page-row mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
       >
         <label
           class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--padding-bottom-2 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
@@ -171,7 +171,7 @@ exports[`SendPage render renders correctly 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
+        class="mm-box multichain-send-page-row mm-box--padding-bottom-6 mm-box--display-flex mm-box--flex-direction-column"
       >
         <label
           class="mm-box mm-text mm-label mm-text--body-md mm-text--font-weight-medium mm-box--padding-bottom-2 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
