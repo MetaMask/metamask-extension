@@ -27,6 +27,17 @@ export const getPermissionSubjectsDeepEqual = createDeepEqualSelector(
 );
 
 /**
+ * Deep equal selector to get the subject metadata object.
+ *
+ * @param {object} state - The current state.
+ * @returns {object} The subject metadata object.
+ */
+export const getSubjectMetadataDeepEqual = createDeepEqualSelector(
+  (state) => state.metamask.subjectMetadata,
+  (metadata) => metadata,
+);
+
+/**
  * Selector to get the permission subjects object.
  *
  * @param {object} state - The current state.

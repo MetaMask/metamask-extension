@@ -954,6 +954,11 @@ export const getInsightSnaps = createDeepEqualSelector(
   },
 );
 
+export const getInsightSnapIds = createDeepEqualSelector(
+  getInsightSnaps,
+  (snaps) => snaps.map(snap => snap.id)
+);
+
 export const getNotifySnaps = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,

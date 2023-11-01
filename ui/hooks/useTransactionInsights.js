@@ -7,7 +7,7 @@ import { TransactionType } from '../../shared/constants/transaction';
 import { Tab } from '../components/ui/tabs';
 import DropdownTab from '../components/ui/tabs/snaps/dropdown-tab';
 import { SnapInsight } from '../components/app/confirm-page-container/snaps/snap-insight';
-import { getInsightSnaps, getSubjectMetadata } from '../selectors';
+import { getInsightSnapIds, getInsightSnaps, getSubjectMetadataDeepEqual } from '../selectors';
 import { getSnapName } from '../helpers/utils/util';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
@@ -25,7 +25,8 @@ const useTransactionInsights = ({ txData }) => {
   const { txParams, chainId, origin } = txData;
   const caip2ChainId = `eip155:${stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
-  const subjectMetadata = useSelector(getSubjectMetadata);
+  const subjectMetadata = useSelector(getSubjectMetadataDeepEqual);
+  const insightSnapIds = useSelector(getInsightSnapIds)
 
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
     insightSnaps[0]?.id,
@@ -35,7 +36,7 @@ const useTransactionInsights = ({ txData }) => {
     transaction: txParams,
     chainId: caip2ChainId,
     origin,
-    insightSnaps,
+    insightSnaps: insightSnapIds,
     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
     insightSnapId: selectedInsightSnapId,
     ///: END:ONLY_INCLUDE_IN
@@ -49,10 +50,10 @@ const useTransactionInsights = ({ txData }) => {
   });
 
   useEffect(() => {
-    if (insightSnaps.length && !selectedInsightSnapId) {
-      setSelectedInsightSnapId(insightSnaps[0]?.id);
+    if (insightSnapIds.length > 0 && !selectedInsightSnapId) {
+      setSelectedInsightSnapId(insightSnapIds[0]);
     }
-  }, [insightSnaps, selectedInsightSnapId, setSelectedInsightSnapId]);
+  }, [insightSnapIds, selectedInsightSnapId, setSelectedInsightSnapId]);
 
   if (!isAllowedTransactionTypes(txData.type) || !insightSnaps.length) {
     return null;

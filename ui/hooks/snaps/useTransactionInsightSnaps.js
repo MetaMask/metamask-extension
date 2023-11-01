@@ -39,11 +39,7 @@ export function useTransactionInsightSnaps({
 
       setLoading(true);
 
-      let snapIds = insightSnaps.map((snap) => snap.id);
-
-      if (insightSnapId.length > 0) {
-        snapIds = [insightSnapId];
-      }
+      const snapIds = insightSnapId.length > 0 ? [insightSnapId] : insightSnaps;
 
       const newData = await Promise.allSettled(
         snapIds.map((snapId) => {
@@ -106,7 +102,8 @@ export function useTransactionInsightSnaps({
     chainId,
     origin,
     subjects,
-    insightSnaps,
+    // TODO: Figure out how to improve this
+    JSON.stringify(insightSnaps),
     insightSnapId,
     ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     hasFetchedV2Insight,
