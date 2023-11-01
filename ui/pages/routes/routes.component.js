@@ -622,22 +622,14 @@ export default class Routes extends Component {
       isUnlocked &&
       !shouldShowSeedPhraseReminder;
 
-    let shouldShowLoadingPage = isLoading;
+    let isLoadingShown = isLoading;
 
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-    shouldShowLoadingPage =
+    isLoadingShown =
       isLoading &&
       !pendingConfirmations.type ===
         SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect;
     ///: END:ONLY_INCLUDE_IN
-
-    console.log(
-      'SNAPS/ shouldShowLoadingPage',
-      shouldShowLoadingPage,
-      JSON.stringify(pendingConfirmations, 2, null),
-      !pendingConfirmations.type ===
-        SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-    );
 
     return (
       <div
@@ -691,9 +683,7 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IN
         }
         <Box className="main-container-wrapper">
-          {shouldShowLoadingPage ? (
-            <Loading loadingMessage={loadMessage} />
-          ) : null}
+          {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
         </Box>
