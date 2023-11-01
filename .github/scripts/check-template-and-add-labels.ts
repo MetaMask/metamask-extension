@@ -112,7 +112,7 @@ async function main(): Promise<void> {
       }
     } else {
       const errorMessage =
-        "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').";
+        "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/develop/.github/scripts/shared/template.ts#L14-L37";
       console.log(errorMessage);
 
       // Add label to indicate issue doesn't match any template
