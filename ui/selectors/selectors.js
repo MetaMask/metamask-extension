@@ -2,42 +2,39 @@
 import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
 import { ApprovalType } from '@metamask/controller-utils';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  memoize,
-  ///: END:ONLY_INCLUDE_IN
-} from 'lodash';
+import { memoize } from 'lodash';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
+import { EthMethod } from '@metamask/keyring-api';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
-  TEST_CHAINS,
-  NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
-  BUYABLE_CHAINS_MAP,
-  MAINNET_DISPLAY_NAME,
-  BSC_DISPLAY_NAME,
-  POLYGON_DISPLAY_NAME,
-  AVALANCHE_DISPLAY_NAME,
   AURORA_DISPLAY_NAME,
+  AVALANCHE_DISPLAY_NAME,
+  BSC_DISPLAY_NAME,
+  BUYABLE_CHAINS_MAP,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
-  NETWORK_TYPES,
-  NetworkStatus,
-  SEPOLIA_DISPLAY_NAME,
-  GOERLI_DISPLAY_NAME,
-  ETH_TOKEN_IMAGE_URL,
-  LINEA_GOERLI_DISPLAY_NAME,
   CURRENCY_SYMBOLS,
-  TEST_NETWORK_TICKER_MAP,
+  ETH_TOKEN_IMAGE_URL,
+  GOERLI_DISPLAY_NAME,
+  LINEA_GOERLI_DISPLAY_NAME,
   LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  MAINNET_DISPLAY_NAME,
+  NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
+  NETWORK_TYPES,
+  NetworkStatus,
+  POLYGON_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+  TEST_CHAINS,
+  TEST_NETWORK_TICKER_MAP,
 } from '../../shared/constants/network';
 import {
-  WebHIDConnectedStatuses,
-  LedgerTransportTypes,
   HardwareTransportStates,
+  LedgerTransportTypes,
+  WebHIDConnectedStatuses,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { MESSAGE_TYPE } from '../../shared/constants/app';
@@ -45,9 +42,9 @@ import { MESSAGE_TYPE } from '../../shared/constants/app';
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
 import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  ALLOWED_PROD_SWAPS_CHAIN_IDS,
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
+  ALLOWED_PROD_SWAPS_CHAIN_IDS,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
 } from '../../shared/constants/swaps';
 
 import {
@@ -56,13 +53,11 @@ import {
 } from '../../shared/constants/bridge';
 
 import {
-  shortenAddress,
   getAccountByAddress,
-  getURLHostName,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  removeSnapIdPrefix,
   getSnapName,
-  ///: END:ONLY_INCLUDE_IN
+  getURLHostName,
+  removeSnapIdPrefix,
+  shortenAddress,
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
@@ -70,17 +65,17 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
+  getConversionRate,
+  getLedgerTransportType,
   getNativeCurrency,
   getProviderConfig,
-  getConversionRate,
-  isNotEIP1559Network,
-  isEIP1559Network,
-  getLedgerTransportType,
   isAddressLedger,
+  isEIP1559Network,
+  isNotEIP1559Network,
 } from '../ducks/metamask/metamask';
 import {
-  getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
+  getLedgerWebHidConnectedStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { TransactionStatus } from '../../shared/constants/transaction';
@@ -389,7 +384,8 @@ export function getNumberOfTokens(state) {
  * Get account balances state.
  *
  * @param {object} state - Redux state
- * @returns {object} A map of account addresses to account objects (which includes the account balance)
+ * @returns {object} A map of account addresses to account objects (which includes the account
+ *   balance)
  */
 export function getMetaMaskAccountBalances(state) {
   return state.metamask.accounts;
@@ -741,6 +737,7 @@ export function getSubjectMetadata(state) {
 const getEmbeddableSvg = memoize(
   (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
 );
+
 ///: END:ONLY_INCLUDE_IN
 
 export function getTargetSubjectMetadata(state, origin) {
@@ -880,6 +877,7 @@ export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
+
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
@@ -1017,8 +1015,10 @@ export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
  * @typedef {object} Notification
  * @property {string} id - A unique identifier for the notification
  * @property {string} origin - A string identifing the snap origin
- * @property {EpochTimeStamp} createdDate - A date in epochTimeStramps, identifying when the notification was first committed
- * @property {EpochTimeStamp} readDate - A date in epochTimeStramps, identifying when the notification was read by the user
+ * @property {EpochTimeStamp} createdDate - A date in epochTimeStramps, identifying when the
+ *   notification was first committed
+ * @property {EpochTimeStamp} readDate - A date in epochTimeStramps, identifying when the
+ *   notification was read by the user
  * @property {string} message - A string containing the notification message
  */
 
@@ -1056,6 +1056,7 @@ export const getUnreadNotificationsCount = createSelector(
   getUnreadNotifications,
   (notifications) => notifications.length,
 );
+
 ///: END:ONLY_INCLUDE_IN
 
 /**
@@ -1099,7 +1100,8 @@ function getAllowedAnnouncementIds(state) {
     23: true,
     ///: END:ONLY_INCLUDE_IN
     24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
-    // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
+    // This syntax is unusual, but very helpful here.  It's equivalent to
+    // `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
@@ -1109,7 +1111,8 @@ function getAllowedAnnouncementIds(state) {
 /**
  * @typedef {object} Announcement
  * @property {number} id - A unique identifier for the announcement
- * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
+ * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was
+ *   first committed
  */
 
 /**
@@ -1177,6 +1180,7 @@ export function getShowBetaHeader(state) {
 export function getShowProductTour(state) {
   return state.metamask.showProductTour;
 }
+
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
@@ -1482,6 +1486,7 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return '';
   }
 };
+
 /**
  * To check if the chainId supports token detection,
  * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
@@ -1569,7 +1574,8 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
 }
 
 /**
- * To get the `transactionSecurityCheckEnabled` value which determines whether we use the transaction security check
+ * To get the `transactionSecurityCheckEnabled` value which determines whether we use the
+ * transaction security check
  *
  * @param {*} state
  * @returns Boolean
@@ -1588,6 +1594,7 @@ export function getIsTransactionSecurityCheckEnabled(state) {
 export function getIsSecurityAlertsEnabled(state) {
   return state.metamask.securityAlertsEnabled;
 }
+
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
@@ -1600,6 +1607,7 @@ export function getIsSecurityAlertsEnabled(state) {
 export function getIsAddSnapAccountEnabled(state) {
   return state.metamask.addSnapAccountEnabled;
 }
+
 ///: END:ONLY_INCLUDE_IN
 
 export function getIsCustomNetwork(state) {
@@ -1718,6 +1726,7 @@ export function getNameSources(state) {
 export function getIsDesktopEnabled(state) {
   return state.metamask.desktopEnabled;
 }
+
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -1759,6 +1768,7 @@ export function getSnapsInstallPrivacyWarningShown(state) {
 
   return snapsInstallPrivacyWarningShown;
 }
+
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 export function getsnapsAddSnapAccountModalDismissed(state) {
@@ -1771,4 +1781,23 @@ export function getSnapRegistry(state) {
   const { snapRegistryList } = state.metamask;
   return snapRegistryList;
 }
+
+/**
+ * Returns true if the account is a watch-only account (i.e. cannot sign transactions).
+ *
+ * @param state - Redux state object.
+ * @returns {boolean} True if the account is a watch-only account.
+ */
+export function isWatchOnlyAccount(state) {
+  const selectedAccount = getSelectedAccount(state);
+  return !selectedAccount?.methods.includes(
+    EthMethod.Sign,
+    EthMethod.PersonalSign,
+    EthMethod.SignTransaction,
+    EthMethod.SignTypedDataV1,
+    EthMethod.SignTypedDataV3,
+    EthMethod.SignTypedDataV4,
+  );
+}
+
 ///: END:ONLY_INCLUDE_IN

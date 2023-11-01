@@ -2,12 +2,7 @@ import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import {
-  useHistory,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-  useLocation,
-  ///: END:ONLY_INCLUDE_IN
-} from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
@@ -17,27 +12,24 @@ import {
 ///: END:ONLY_INCLUDE_IN
 import { I18nContext } from '../../../contexts/i18n';
 import {
-  SEND_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   BUILD_QUOTE_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
+  SEND_ROUTE,
 } from '../../../helpers/constants/routes';
 import Tooltip from '../../ui/tooltip';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
-  isBalanceCached,
-  getShouldShowFiat,
-  getIsSwapsChain,
-  getSelectedAccountCachedBalance,
   getCurrentChainId,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-  getSwapsDefaultToken,
   getCurrentKeyring,
   getIsBridgeChain,
   getIsBuyableChain,
+  getIsSwapsChain,
   getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IN
+  getSelectedAccountCachedBalance,
+  getShouldShowFiat,
+  getSwapsDefaultToken,
+  isBalanceCached,
+  isWatchOnlyAccount,
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
@@ -48,9 +40,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   MetaMetricsSwapsEventSource,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
 import Spinner from '../../ui/spinner';
 import { startNewDraftTransaction } from '../../../ducks/send';
@@ -76,6 +66,7 @@ const EthOverview = ({ className, showAddress }) => {
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring?.type);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  const isWatchOnly = useSelector(isWatchOnlyAccount);
   ///: END:ONLY_INCLUDE_IN
   const balanceIsCached = useSelector(isBalanceCached);
   const showFiat = useSelector(getShouldShowFiat);
@@ -195,11 +186,14 @@ const EthOverview = ({ className, showAddress }) => {
             <IconButton
               className="eth-overview__button"
               Icon={
-                <Icon name={IconName.Add} color={IconColor.primaryInverse} />
+                <Icon
+                  name={IconName.PlusMinus}
+                  color={IconColor.primaryInverse}
+                />
               }
-              disabled={!isBuyableChain}
+              disabled={!isBuyableChain || isWatchOnly}
               data-testid="eth-overview-buy"
-              label={t('buy')}
+              label={t('buyAndSell')}
               onClick={() => {
                 openBuyCryptoInPdapp();
                 trackEvent({
@@ -213,6 +207,22 @@ const EthOverview = ({ className, showAddress }) => {
                   },
                 });
               }}
+              tooltipRender={
+                isBuyableChain && !isWatchOnly
+                  ? null
+                  : (contents) => (
+                      <Tooltip
+                        title={
+                          isWatchOnly
+                            ? t('accountCantPerformAction')
+                            : t('currentlyUnavailable')
+                        }
+                        position="bottom"
+                      >
+                        {contents}
+                      </Tooltip>
+                    )
+              }
             />
             ///: END:ONLY_INCLUDE_IN
           }
@@ -226,6 +236,7 @@ const EthOverview = ({ className, showAddress }) => {
           <IconButton
             className="eth-overview__button"
             data-testid="eth-overview-send"
+            disabled={isWatchOnly}
             Icon={
               <Icon
                 name={IconName.Arrow2UpRight}
@@ -250,10 +261,22 @@ const EthOverview = ({ className, showAddress }) => {
                 history.push(SEND_ROUTE);
               });
             }}
+            tooltipRender={
+              isWatchOnly
+                ? (contents) => (
+                    <Tooltip
+                      title={t('accountCantPerformAction')}
+                      position="bottom"
+                    >
+                      {contents}
+                    </Tooltip>
+                  )
+                : null
+            }
           />
           <IconButton
             className="eth-overview__button"
-            disabled={!isSwapsChain}
+            disabled={!isSwapsChain || isWatchOnly}
             Icon={
               <Icon
                 name={IconName.SwapHorizontal}
@@ -291,11 +314,15 @@ const EthOverview = ({ className, showAddress }) => {
             label={t('swap')}
             data-testid="token-overview-button-swap"
             tooltipRender={
-              isSwapsChain
+              isSwapsChain && !isWatchOnly
                 ? null
                 : (contents) => (
                     <Tooltip
-                      title={t('currentlyUnavailable')}
+                      title={
+                        isWatchOnly
+                          ? t('accountCantPerformAction')
+                          : t('currentlyUnavailable')
+                      }
                       position="bottom"
                     >
                       {contents}
@@ -307,7 +334,7 @@ const EthOverview = ({ className, showAddress }) => {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             <IconButton
               className="eth-overview__button"
-              disabled={!isBridgeChain}
+              disabled={!isBridgeChain || isWatchOnly}
               data-testid="eth-overview-bridge"
               Icon={
                 <Icon name={IconName.Bridge} color={IconColor.primaryInverse} />
@@ -338,11 +365,15 @@ const EthOverview = ({ className, showAddress }) => {
                 }
               }}
               tooltipRender={
-                isBridgeChain
+                isBridgeChain && !isWatchOnly
                   ? null
                   : (contents) => (
                       <Tooltip
-                        title={t('currentlyUnavailable')}
+                        title={
+                          isWatchOnly
+                            ? t('accountCantPerformAction')
+                            : t('currentlyUnavailable')
+                        }
                         position="bottom"
                       >
                         {contents}
