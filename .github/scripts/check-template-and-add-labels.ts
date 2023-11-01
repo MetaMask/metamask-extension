@@ -132,7 +132,7 @@ async function main(): Promise<void> {
       );
     } else {
       const errorMessage =
-        "PR body does not match template ('pull-request-template.md').";
+        `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/develop/.github/scripts/shared/template.ts#L40-L47`;
       console.log(errorMessage);
 
       // Add label to indicate PR body doesn't match template
