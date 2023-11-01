@@ -3451,8 +3451,8 @@
     "description": "An extended description for the `snap_manageAccounts` permission"
   },
   "permission_manageBip32Keys": {
-    "message": "Control your accounts and assets under $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
+    "message": "Manage $1 accounts.",
+    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0' (secp256k1)'."
   },
   "permission_manageBip44AndBip32KeysDescription": {
     "message": "Allow the Snap to manage accounts and assets on the requested network. These accounts are derived and backed up using your secret recovery phrase (without revealing it). With the power to derive keys, the Snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
@@ -5510,6 +5510,10 @@
   "unknownNetwork": {
     "message": "Unknown private network"
   },
+  "unknownNetworkForKeyEntropy": {
+    "message": "Unknown network",
+    "description": "Displayed on places like Snap install warning when regular name is not available."
+  },
   "unknownQrCode": {
     "message": "Error: We couldn't identify that QR code"
   },
@@ -5527,7 +5531,7 @@
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
   "unrecognizedProtocol": {
-    "message": "$1 (Unrecognized protocol)",
+    "message": "Unknown network $1",
     "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {

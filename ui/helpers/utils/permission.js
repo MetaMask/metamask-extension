@@ -83,7 +83,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           ?.replace(/'/gu, 'h')}-${curve}-${i}`,
         warningMessageSubject:
           getSnapDerivationPathName(path, curve) ??
-          `${path.join('/')} (${curve})`,
+          `${t('unknownNetworkForKeyEntropy')}  ${path.join('/')} (${curve})`,
       };
 
       const friendlyName = getSnapDerivationPathName(path, curve);
@@ -91,9 +91,14 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         return {
           ...baseDescription,
           label: t('permission_viewNamedBip32PublicKeys', [
-            <span className="permission-label-item" key={path.join('/')}>
+            <Text
+              as="span"
+              fontWeight={FontWeight.Medium}
+              className="permission-label-item"
+              key={path.join('/')}
+            >
               {friendlyName}
-            </span>,
+            </Text>,
             path.join('/'),
           ]),
           description: t('permission_viewBip32PublicKeysDescription', [
@@ -111,9 +116,14 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
       return {
         ...baseDescription,
         label: t('permission_viewBip32PublicKeys', [
-          <span className="permission-label-item" key={path.join('/')}>
-            {path.join('/')}
-          </span>,
+          <Text
+            as="span"
+            fontWeight={FontWeight.Medium}
+            className="permission-label-item"
+            key={path.join('/')}
+          >
+            {`${t('unknownNetworkForKeyEntropy')} `} {path.join('/')}
+          </Text>,
           curve,
         ]),
         description: t('permission_viewBip32PublicKeysDescription', [
@@ -137,7 +147,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           ?.replace(/'/gu, 'h')}-${curve}-${i}`,
         warningMessageSubject:
           getSnapDerivationPathName(path, curve) ||
-          `${path.join('/')} (${curve})`,
+          `${t('unknownNetworkForKeyEntropy')} ${path.join('/')} (${curve})`,
       };
 
       const friendlyName = getSnapDerivationPathName(path, curve);
@@ -168,9 +178,8 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             className="permission-label-item"
             key={path.join('/')}
           >
-            {path.join('/')}
+            {`${t('unknownNetworkForKeyEntropy')} ${path.join('/')} (${curve})`}
           </Text>,
-          curve,
         ]),
         description: t('permission_manageBip44AndBip32KeysDescription'),
       };
@@ -185,24 +194,24 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           key={`coin-type-${coinType}`}
         >
           {coinTypeToProtocolName(coinType) ||
-            t('unrecognizedProtocol', [coinType])}
+            t('unrecognizedProtocol', [
+              <Text
+                as="span"
+                key={`unknown_protocol_${coinType}`}
+                fontWeight={FontWeight.Medium}
+              >
+                {`m/44'/${coinType}`}
+              </Text>,
+            ])}
         </Text>,
       ]),
-      description: t('permission_manageBip44AndBip32KeysDescription', [
-        <span
-          className="tooltip-label-item"
-          key={`description-coin-type-${coinType}`}
-        >
-          {coinTypeToProtocolName(coinType) ||
-            t('unrecognizedProtocol', [coinType])}
-        </span>,
-      ]),
+      description: t('permission_manageBip44AndBip32KeysDescription'),
       leftIcon: IconName.Key,
       weight: 1,
       id: `key-access-bip44-${coinType}-${i}`,
       warningMessageSubject:
         coinTypeToProtocolName(coinType) ||
-        t('unrecognizedProtocol', [coinType]),
+        t('unrecognizedProtocol', [`m/44'/${coinType}'`]),
     })),
   [RestrictedMethods.snap_getEntropy]: ({ t }) => ({
     label: t('permission_getEntropy'),
