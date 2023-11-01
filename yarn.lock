@@ -4025,7 +4025,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.1.0, @metamask/controller-utils@npm:^4.2.0, @metamask/controller-utils@npm:^4.3.0":
+"@metamask/controller-utils@npm:^4.0.0, @metamask/controller-utils@npm:^4.1.0, @metamask/controller-utils@npm:^4.2.0":
   version: 4.3.2
   resolution: "@metamask/controller-utils@npm:4.3.2"
   dependencies:
@@ -4744,16 +4744,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/phishing-controller@npm:6.0.0"
+"@metamask/phishing-controller@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@metamask/phishing-controller@npm:7.0.1"
   dependencies:
-    "@metamask/base-controller": "npm:^3.2.0"
-    "@metamask/controller-utils": "npm:^4.3.0"
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/controller-utils": "npm:^5.0.2"
     "@types/punycode": "npm:^2.1.0"
     eth-phishing-detect: "npm:^1.2.0"
     punycode: "npm:^2.1.1"
-  checksum: 77a65b03bde4a9b30f61ea1ffe771456c754654cbe63fd4693dcdfa243934c709fdc65a4cd0929226e0b851d24766dce4b52da8c9a8e3b7020e3fe820f22278f
+  checksum: e8d597d254ac1d2b7f58ff48e410102865ecfc4688a6caa03ac8d3f80d9e085ac03d74d0e591685cd283e990158e7fd35d142c10096991fc78a6d6f01c49eda7
   languageName: node
   linkType: hard
 
@@ -24780,7 +24780,7 @@ __metadata:
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^5.0.0"
-    "@metamask/phishing-controller": "npm:^6.0.0"
+    "@metamask/phishing-controller": "npm:^7.0.1"
     "@metamask/phishing-warning": "npm:^2.1.0"
     "@metamask/post-message-stream": "npm:^6.2.0"
     "@metamask/ppom-validator": "npm:^0.8.0"
