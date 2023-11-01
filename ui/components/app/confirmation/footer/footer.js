@@ -23,7 +23,8 @@ const Footer = ({
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       gap={4}
-      width={BlockSize.Half}
+      padding={4}
+      width={BlockSize.full}
     >
       <Button
         variant={ButtonVariant.Secondary}
