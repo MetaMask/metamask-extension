@@ -111,7 +111,11 @@ async function main(): Promise<void> {
       );
 
       // Add regression prod label to the bug report issue if release version was found in issue body
-      if (releaseVersion) {
+      if(isReleaseCandidateIssue(labelable)) {
+        console.log(
+          `Issue ${labelable?.number} is not a production issue. Regression prod label is not needed.`,
+        );
+      } else if (releaseVersion) {
         await addRegressionProdLabelToIssue(octokit, releaseVersion, labelable);
       } else {
         console.log(
@@ -288,4 +292,11 @@ async function userBelongsToMetaMaskOrg(
   } = await octokit.graphql(userBelongsToMetaMaskOrgQuery, { login: username });
 
   return Boolean(userBelongsToMetaMaskOrgResult?.user?.organization?.id);
+}
+
+// This function checks if issue is a release candidate (RC) issue, discovered during release regression testing phase. If so, it meanse it is not a production issue.
+function isReleaseCandidateIssue(
+  issue: Labelable,
+): boolean {
+  return Boolean(issue.labels.find(label => label.name === 'regression-RC'));
 }
