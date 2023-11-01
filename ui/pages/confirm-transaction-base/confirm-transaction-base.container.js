@@ -25,6 +25,7 @@ import {
   getCustomNonceValue,
   getIsMainnet,
   getKnownMethodData,
+  getMetaMaskAccounts,
   getUseNonceField,
   transactionFeeSelector,
   getNoGasPriceFetched,
@@ -40,8 +41,6 @@ import {
   getUnapprovedTransaction,
   getFullTxData,
   getUseCurrencyRateCheck,
-  getFirstInternalAccountByAddress,
-  getInternalAccountWithBalanceByAddress,
   getUnapprovedTransactions,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
@@ -52,6 +51,7 @@ import {
   getNativeCurrency,
   getSendToAccounts,
   getProviderConfig,
+  findKeyringForAddress,
 } from '../../ducks/metamask/metamask';
 import {
   addHexPrefix,
@@ -62,7 +62,6 @@ import {
 
 import {
   parseStandardTokenTransactionData,
-  transactionMatchesNetwork,
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
 import {
@@ -123,7 +122,7 @@ const mapStateToProps = (state, ownProps) => {
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
-  const { conversionRate, addressBook, networkId, nextNonce } = metamask;
+  const { conversionRate, identities, addressBook, nextNonce } = metamask;
   const unapprovedTxs = getUnapprovedTransactions(state);
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
@@ -138,18 +137,14 @@ const mapStateToProps = (state, ownProps) => {
     value: amount,
     data,
   } = (transaction && transaction.txParams) || txParams;
+  const accounts = getMetaMaskAccounts(state);
 
   const transactionData = parseStandardTokenTransactionData(data);
   const tokenToAddress = getTokenAddressParam(transactionData);
 
-  const fromAccount = getInternalAccountWithBalanceByAddress(
-    state,
-    fromAddress,
-  );
-  const {
-    metadata: { name: fromName },
-    balance,
-  } = fromAccount;
+  const { balance } = accounts[fromAddress];
+  const { name: fromName } = identities[fromAddress];
+  const keyring = findKeyringForAddress(state, fromAddress);
 
   const isSendingAmount =
     type === TransactionType.simpleSend || !isEmptyHexString(amount);
@@ -163,7 +158,7 @@ const mapStateToProps = (state, ownProps) => {
   const tokenList = getTokenList(state);
 
   const toName =
-    getFirstInternalAccountByAddress(state, toAddress)?.metadata.name ||
+    identities[toAddress]?.name ||
     tokenList[toAddress?.toLowerCase()]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
@@ -186,9 +181,7 @@ const mapStateToProps = (state, ownProps) => {
   } = transactionFeeSelector(state, transaction);
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
-    .filter((key) =>
-      transactionMatchesNetwork(unapprovedTxs[key], chainId, networkId),
-    )
+    .filter((key) => unapprovedTxs[key].chainId === chainId)
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
 
@@ -281,6 +274,7 @@ const mapStateToProps = (state, ownProps) => {
     chainId,
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
+    keyringForAccount: keyring,
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType,
     isNoteToTraderSupported,
@@ -315,8 +309,18 @@ export const mapDispatchToProps = (dispatch) => {
     },
     cancelTransaction: ({ id }) => dispatch(cancelTx({ id })),
     cancelAllTransactions: (txList) => dispatch(cancelTxs(txList)),
-    sendTransaction: (txData) =>
-      dispatch(updateAndApproveTx(customNonceMerge(txData))),
+    sendTransaction: (
+      txData,
+      dontShowLoadingIndicator,
+      loadingIndicatorMessage,
+    ) =>
+      dispatch(
+        updateAndApproveTx(
+          customNonceMerge(txData),
+          dontShowLoadingIndicator,
+          loadingIndicatorMessage,
+        ),
+      ),
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),

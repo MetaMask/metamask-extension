@@ -13,14 +13,15 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
-  getInternalAccounts,
   getIsDynamicTokenListAvailable,
   getIsMainnet,
   getIsTokenDetectionInactiveOnMainnet,
   getIsTokenDetectionSupported,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
+  getMetaMaskIdentities,
   getRpcPrefsForCurrentProvider,
-  getSelectedAccount,
+  getSelectedAddress,
+  getSelectedNetworkClientId,
   getTokenDetectionSupportNetworkByChainId,
   getTokenList,
 } from '../../../selectors';
@@ -111,9 +112,9 @@ export const ImportTokensModal = ({ onClose }) => {
   const isDynamicTokenListAvailable = useSelector(
     getIsDynamicTokenListAvailable,
   );
-  const selectedAccount = useSelector(getSelectedAccount);
+  const selectedAddress = useSelector(getSelectedAddress);
   const isMainnet = useSelector(getIsMainnet);
-  const accounts = useSelector(getInternalAccounts);
+  const identities = useSelector(getMetaMaskIdentities);
   const tokens = useSelector((state) => state.metamask.tokens);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
@@ -152,10 +153,11 @@ export const ImportTokensModal = ({ onClose }) => {
   // CONFIRMATION MODE
   const trackEvent = useContext(MetaMetricsContext);
   const pendingTokens = useSelector(getPendingTokens);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const handleAddTokens = useCallback(async () => {
     const addedTokenValues = Object.values(pendingTokens);
-    await dispatch(addImportedTokens(addedTokenValues));
+    await dispatch(addImportedTokens(addedTokenValues, networkClientId));
 
     const firstTokenAddress = addedTokenValues?.[0].address?.toLowerCase();
 
@@ -337,7 +339,7 @@ export const ImportTokensModal = ({ onClose }) => {
       try {
         ({ standard } = await getTokenStandardAndDetails(
           standardAddress,
-          selectedAccount.address,
+          selectedAddress,
           null,
         ));
       } catch (error) {
@@ -383,9 +385,7 @@ export const ImportTokensModal = ({ onClose }) => {
         setCustomDecimalsError(null);
         break;
 
-      case Boolean(
-        accounts.find((internalAccount) => internalAccount.address === address),
-      ):
+      case Boolean(identities[standardAddress]):
         setCustomAddressError(t('personalAddressDetected'));
         break;
 

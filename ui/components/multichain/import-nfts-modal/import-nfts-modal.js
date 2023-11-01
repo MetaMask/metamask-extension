@@ -24,8 +24,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getIsMainnet,
-  getSelectedInternalAccount,
-  getUseNftDetection,
+  getOpenSeaEnabled,
+  getSelectedAddress,
 } from '../../../selectors';
 import {
   addNftVerifyOwnership,
@@ -59,10 +59,10 @@ export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
-  const useNftDetection = useSelector(getUseNftDetection);
+  const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
   const isMainnet = useSelector(getIsMainnet);
   const nftsDropdownState = useSelector(getNftsDropdownState);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
   const {
     tokenAddress: initialTokenAddress,
@@ -84,10 +84,10 @@ export const ImportNftsModal = ({ onClose }) => {
       await dispatch(addNftVerifyOwnership(nftAddress, tokenId));
       const newNftDropdownState = {
         ...nftsDropdownState,
-        [selectedAccount.address]: {
-          ...nftsDropdownState?.[selectedAccount.address],
+        [selectedAddress]: {
+          ...nftsDropdownState?.[selectedAddress],
           [chainId]: {
-            ...nftsDropdownState?.[selectedAccount.address]?.[chainId],
+            ...nftsDropdownState?.[selectedAddress]?.[chainId],
             [nftAddress]: true,
           },
         },
@@ -181,9 +181,9 @@ export const ImportNftsModal = ({ onClose }) => {
           {t('importNFT')}
         </ModalHeader>
         <Box>
-          {isMainnet && !useNftDetection ? (
+          {isMainnet && !isDisplayNFTMediaToggleEnabled ? (
             <Box marginTop={6}>
-              <NftsDetectionNoticeImportNFTs />
+              <NftsDetectionNoticeImportNFTs onActionButtonClick={onClose} />
             </Box>
           ) : null}
           {nftAddFailed && (
@@ -227,7 +227,7 @@ export const ImportNftsModal = ({ onClose }) => {
               </Box>
               <FormTextField
                 autoFocus
-                data-testid="address"
+                dataTestId="address"
                 id="address"
                 placeholder="0x..."
                 value={nftAddress}
@@ -261,8 +261,7 @@ export const ImportNftsModal = ({ onClose }) => {
                 </Box>
               </Box>
               <FormTextField
-                autoFocus
-                data-testid="token-id"
+                dataTestId="token-id"
                 id="token-id"
                 placeholder={t('nftTokenIdPlaceholder')}
                 value={tokenId}

@@ -1,21 +1,22 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import TokenTracker from '@metamask/eth-token-tracker';
 import { shallowEqual, useSelector } from 'react-redux';
-import { getCurrentChainId, getSelectedInternalAccount } from '../selectors';
+import { getCurrentChainId, getSelectedAddress } from '../selectors';
 import { SECOND } from '../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
-export function useTokenTracker(
+export function useTokenTracker({
   tokens,
+  address,
   includeFailedTokens = false,
   hideZeroBalanceTokens = false,
-) {
+}) {
   const chainId = useSelector(getCurrentChainId);
-  const { address: userAddress } = useSelector(
-    getSelectedInternalAccount,
-    shallowEqual,
-  );
+
+  const selectedAddress = useSelector(getSelectedAddress, shallowEqual);
+  const userAddress = address ?? selectedAddress;
+
   const [loading, setLoading] = useState(() => tokens?.length >= 0);
   const [tokensWithBalances, setTokensWithBalances] = useState([]);
   const [error, setError] = useState(null);
@@ -61,11 +62,11 @@ export function useTokenTracker(
   }, []);
 
   const buildTracker = useCallback(
-    (address, tokenList) => {
+    (usersAddress, tokenList) => {
       // clear out previous tracker, if it exists.
       teardownTracker();
       tokenTracker.current = new TokenTracker({
-        userAddress: address,
+        userAddress: usersAddress,
         provider: global.ethereumProvider,
         tokens: tokenList,
         includeFailedTokens,

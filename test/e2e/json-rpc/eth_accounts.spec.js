@@ -9,11 +9,12 @@ describe('eth_accounts', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
+          .withPreferencesControllerAdditionalAccountIdentities()
           .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

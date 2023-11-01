@@ -75,7 +75,9 @@ export default class DetectTokensController {
         ) {
           this.selectedAddress = account.address;
           this.useTokenDetection = useTokenDetection;
-          this.restartTokenDetection({ selectedAddress: this.selectedAddress });
+          this.restartTokenDetection({
+            selectedAddress: this.selectedAddress,
+          });
         }
       },
     );
@@ -89,7 +91,6 @@ export default class DetectTokensController {
         this.detectedTokens = detectedTokens;
       },
     );
-
     messenger.subscribe('NetworkController:stateChange', () => {
       if (this.chainId !== this.getChainIdFromNetworkStore()) {
         const chainId = this.getChainIdFromNetworkStore();

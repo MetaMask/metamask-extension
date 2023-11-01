@@ -2,22 +2,21 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { AccountListItem } from '.';
 
-const account = {
-  ...mockState.metamask.internalAccounts.accounts[
-    'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+const identity = {
+  ...mockState.metamask.identities[
+    '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
   ],
   balance: '0x152387ad22c3f0',
 };
 
 const DEFAULT_PROPS = {
-  account,
+  identity,
   onClick: jest.fn(),
 };
 
@@ -34,9 +33,9 @@ const render = (props = {}) => {
 describe('AccountListItem', () => {
   it('renders AccountListItem component and shows account name, address, and balance', () => {
     const { container } = render();
-    expect(screen.getByText(account.metadata.name)).toBeInTheDocument();
+    expect(screen.getByText(identity.name)).toBeInTheDocument();
     expect(
-      screen.getByText(shortenAddress(toChecksumHexAddress(account.address))),
+      screen.getByText(shortenAddress(toChecksumHexAddress(identity.address))),
     ).toBeInTheDocument();
     expect(document.querySelector('[title="0.006 ETH"]')).toBeInTheDocument();
 
@@ -53,12 +52,9 @@ describe('AccountListItem', () => {
   it('renders the account name tooltip for long names', () => {
     render({
       selected: true,
-      account: {
-        ...account,
-        metadata: {
-          ...account.metadata,
-          name: 'This is a super long name that requires tooltip',
-        },
+      identity: {
+        ...identity,
+        name: 'This is a super long name that requires tooltip',
       },
     });
     expect(
@@ -108,29 +104,16 @@ describe('AccountListItem', () => {
     expect(getByAltText(`${connectedAvatarName} logo`)).toBeInTheDocument();
   });
 
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   it('renders the snap label for snap accounts', () => {
     const { getByText } = render({
-      account: {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        metadata: {
-          name: 'Snap Account',
-          keyring: {
-            type: 'Snap Keyring',
-          },
-          snap: {
-            name: 'Metamask Simple Snap',
-            id: 'metamask-simple-snap',
-            enabled: true,
-          },
-        },
-        options: {},
-        methods: [...Object.values(EthMethod)],
-        type: EthAccountType.Eoa,
-        balance: '0x0',
+      identity: {
+        address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
+        name: 'Snap Account',
       },
     });
 
-    expect(getByText('Metamask Simple Snap')).toBeInTheDocument();
+    expect(getByText('Snaps (Beta)')).toBeInTheDocument();
   });
+  ///: END:ONLY_INCLUDE_IN
 });

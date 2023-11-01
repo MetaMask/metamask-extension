@@ -17,7 +17,7 @@ export type SnapAndHardwareMessenger = RestrictedControllerMessenger<
   never
 >;
 
-export default async function getSnapAndHardwareInfoForMetrics(
+export async function getSnapAndHardwareInfoForMetrics(
   getAccountType: (address: string) => Promise<string>,
   getDeviceModel: (address: string) => Promise<string>,
   messenger: SnapAndHardwareMessenger,
@@ -30,12 +30,15 @@ export default async function getSnapAndHardwareInfoForMetrics(
 
   const account = messenger.call('AccountsController:getSelectedAccount');
   const selectedAddress = account.address;
-  const keyring = account.metadata.keyring;
+  const { keyring } = account.metadata;
 
-  const snap: Snap = (await messenger.call(
-    'SnapController:get',
-    account.metadata?.snap?.id,
-  )) as Snap;
+  let snap;
+  if (account.metadata?.snap?.id) {
+    snap = messenger.call(
+      'SnapController:get',
+      account.metadata?.snap?.id,
+    ) as Snap;
+  }
 
   async function getHardwareWalletType() {
     if (keyring?.type?.includes('Hardware')) {

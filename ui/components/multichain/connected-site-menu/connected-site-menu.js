@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import {
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
+  STATUS_CONNECTED_TO_SNAP,
   STATUS_NOT_CONNECTED,
 } from '../../../helpers/constants/connected-sites';
 import {
@@ -22,7 +23,7 @@ import {
   IconSize,
   Box,
 } from '../../component-library';
-import { getSelectedInternalAccount } from '../../../selectors';
+import { getSelectedIdentity } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -34,7 +35,10 @@ export const ConnectedSiteMenu = ({
   onClick,
 }) => {
   const t = useI18nContext();
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAccount = useSelector(getSelectedIdentity);
+  const isConnectedtoOtherAccountOrSnap =
+    status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT ||
+    status === STATUS_CONNECTED_TO_SNAP;
   return (
     <Box
       className={classNames('multichain-connected-site-menu', className)}
@@ -50,14 +54,14 @@ export const ConnectedSiteMenu = ({
         title={
           status === STATUS_NOT_CONNECTED
             ? t('statusNotConnectedAccount')
-            : `${selectedAccount?.metadata.name} ${text}`
+            : `${selectedAccount?.name} ${text}`
         }
         data-testid="multichain-connected-site-menu__tooltip"
         position="bottom"
       >
         <BadgeWrapper
           positionObj={
-            status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT
+            isConnectedtoOtherAccountOrSnap
               ? { bottom: 4, right: -1, zIndex: 1 }
               : { bottom: 2, right: -4, zIndex: 1 }
           }
@@ -65,17 +69,15 @@ export const ConnectedSiteMenu = ({
             <Box
               backgroundColor={globalMenuColor}
               className={classNames('multichain-connected-site-menu__badge', {
-                'not-connected': status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
+                'not-connected': isConnectedtoOtherAccountOrSnap,
               })}
               borderRadius={BorderRadius.full}
               borderColor={
-                status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT
+                isConnectedtoOtherAccountOrSnap
                   ? BorderColor.successDefault
                   : BackgroundColor.backgroundDefault
               }
-              borderWidth={
-                status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT ? 2 : 3
-              }
+              borderWidth={isConnectedtoOtherAccountOrSnap ? 2 : 3}
             />
           }
         >

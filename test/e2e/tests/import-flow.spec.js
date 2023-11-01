@@ -9,8 +9,12 @@ const {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   findAnotherAccountFromAccountList,
+  openActionMenuAndStartSendFlow,
+  unlockWallet,
+  WALLET_PASSWORD,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { emptyHtmlPage } = require('../mock-e2e');
 
 const ganacheOptions = {
   accounts: [
@@ -21,15 +25,28 @@ const ganacheOptions = {
     },
   ],
 };
-describe('Import flow', function () {
-  it('Import wallet using Secret Recovery Phrase', async function () {
-    const testPassword = 'correct horse battery staple';
 
+async function mockTrezor(mockServer) {
+  return await mockServer
+    .forGet('https://connect.trezor.io/9/popup.html')
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        body: emptyHtmlPage(),
+      };
+    });
+}
+
+describe('Import flow @no-mmi', function () {
+  it('Import wallet using Secret Recovery Phrase', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -38,7 +55,7 @@ describe('Import flow', function () {
         await completeImportSRPOnboardingFlow(
           driver,
           TEST_SEED_PHRASE,
-          testPassword,
+          WALLET_PASSWORD,
         );
 
         // Show account information
@@ -52,10 +69,10 @@ describe('Import flow', function () {
         // shows a QR code for the account
         await driver.findVisibleElement('.mm-modal');
         // shows the correct account address
-        const address = await driver.findElement(
-          '.multichain-address-copy-button',
-        );
-        assert.equal(await address.getText(), '0x0Cc52...7afD3');
+        await driver.findElement({
+          css: '.multichain-address-copy-button',
+          text: '0x0Cc52...7afD3',
+        });
 
         await driver.clickElement('.mm-modal button[aria-label="Close"]');
 
@@ -63,15 +80,13 @@ describe('Import flow', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-        const lockButton = await driver.findClickableElement(
-          '[data-testid="global-menu-lock"]',
-        );
-        assert.equal(await lockButton.getText(), 'Lock MetaMask');
-        await lockButton.click();
+        await driver.clickElement({
+          css: '[data-testid="global-menu-lock"]',
+          text: 'Lock MetaMask',
+        });
 
         // accepts the account password after lock
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Create a new account
         // switches to localhost
@@ -109,13 +124,15 @@ describe('Import flow', function () {
 
         // Send ETH from inside MetaMask
         // starts a send transaction
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+        await openActionMenuAndStartSendFlow(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
         await driver.fill('.unit-input__input', '1');
-
         // Continue to next screen
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
@@ -141,14 +158,13 @@ describe('Import flow', function () {
   });
 
   it('Import wallet using Secret Recovery Phrase with pasting word by word', async function () {
-    const testPassword = 'correct horse battery staple';
     const testAddress = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -157,7 +173,7 @@ describe('Import flow', function () {
         await completeImportSRPOnboardingFlowWordByWord(
           driver,
           TEST_SEED_PHRASE,
-          testPassword,
+          WALLET_PASSWORD,
         );
 
         // Show account information
@@ -168,11 +184,10 @@ describe('Import flow', function () {
         await driver.clickElement('[data-testid="account-list-menu-details"');
         await driver.findVisibleElement('.qr-code__wrapper');
         // shows the correct account address
-        const address = await driver.findElement(
-          '.qr-code [data-testid="address-copy-button-text"]',
-        );
-
-        assert.equal(await address.getText(), testAddress);
+        await driver.findElement({
+          css: '.qr-code [data-testid="address-copy-button-text"]',
+          text: testAddress,
+        });
       },
     );
   });
@@ -187,15 +202,15 @@ describe('Import flow', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
+          .withPreferencesControllerImportedAccountIdentities()
           .withAccountsControllerImportedAccount()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
@@ -257,7 +272,7 @@ describe('Import flow', function () {
         await driver.clickElement({ text: 'Remove', tag: 'button' });
         await driver.findClickableElement({
           css: '[data-testid="account-menu-icon"]',
-          text: 'Account 4',
+          text: 'Account 1',
         });
         await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountListItemsAfterRemoval = await driver.findElements(
@@ -273,15 +288,15 @@ describe('Import flow', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
+          .withPreferencesControllerImportedAccountIdentities()
           .withAccountsControllerImportedAccount()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Imports an account with JSON file
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -339,15 +354,15 @@ describe('Import flow', function () {
       {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
+          .withPreferencesControllerImportedAccountIdentities()
           .withAccountsControllerImportedAccount()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // choose Import Account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -372,39 +387,41 @@ describe('Import flow', function () {
     );
   });
 
-  if (process.env.ENABLE_MV3) {
-    it('Connects to a Hardware wallet for trezor', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder().build(),
-          ganacheOptions,
-          title: this.test.title,
-        },
-        async ({ driver }) => {
-          await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+  it('Connects to a Hardware wallet for trezor', async function () {
+    if (process.env.ENABLE_MV3) {
+      // Hardware wallets not supported in MV3 build yet
+      this.skip();
+    }
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        title: this.test.fullTitle(),
+        testSpecificMock: mockTrezor,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await unlockWallet(driver);
 
-          // choose Connect hardware wallet from the account menu
-          await driver.clickElement('[data-testid="account-menu-icon"]');
-          await driver.clickElement(
-            '[data-testid="multichain-account-menu-popover-action-button"]',
-          );
-          await driver.clickElement({
-            text: 'Add hardware wallet',
-            tag: 'button',
-          });
-          await driver.delay(regularDelayMs);
+        // choose Connect hardware wallet from the account menu
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
+        await driver.clickElement({
+          text: 'Add hardware wallet',
+          tag: 'button',
+        });
+        await driver.delay(regularDelayMs);
 
-          // should open the TREZOR Connect popup
-          await driver.clickElement('.hw-connect__btn:nth-of-type(2)');
-          await driver.delay(largeDelayMs * 2);
-          await driver.clickElement({ text: 'Continue', tag: 'button' });
-          await driver.waitUntilXWindowHandles(2);
-          const allWindows = await driver.getAllWindowHandles();
-          assert.equal(allWindows.length, 2);
-        },
-      );
-    });
-  }
+        // should open the TREZOR Connect popup
+        await driver.clickElement('.hw-connect__btn:nth-of-type(2)');
+        await driver.delay(largeDelayMs * 2);
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
+
+        const allWindows = await driver.waitUntilXWindowHandles(2);
+        assert.equal(allWindows.length, 2);
+      },
+    );
+  });
 });

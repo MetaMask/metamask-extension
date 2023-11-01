@@ -10,16 +10,10 @@ import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
-import {
-  handleMmiPortfolio,
-  setDashboardCookie,
-} from '@metamask-institutional/portfolio-dashboard';
+import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import {
-  BUILD_QUOTE_ROUTE,
-  CONNECT_HARDWARE_ROUTE,
-} from '../../../ui/helpers/constants/routes';
+import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
 import { getPermissionBackgroundApiMethods } from './permissions';
 
 export default class MMIController extends EventEmitter {
@@ -31,6 +25,7 @@ export default class MMIController extends EventEmitter {
     this.keyringController = opts.keyringController;
     this.txController = opts.txController;
     this.securityProviderRequest = opts.securityProviderRequest;
+    this.preferencesController = opts.preferencesController;
     this.appStateController = opts.appStateController;
     this.transactionUpdateController = opts.transactionUpdateController;
     this.custodyController = opts.custodyController;
@@ -44,8 +39,6 @@ export default class MMIController extends EventEmitter {
     this.signatureController = opts.signatureController;
     this.platform = opts.platform;
     this.extension = opts.extension;
-    this.accountsController = opts.accountsController;
-    this.controllerMessenger = opts.controllerMessenger;
 
     // Prepare event listener after transactionUpdateController gets initiated
     this.transactionUpdateController.prepareEventListener(
@@ -61,14 +54,6 @@ export default class MMIController extends EventEmitter {
         this.transactionUpdateController.subscribeToEvents();
       });
     }
-
-    this.controllerMessenger.subscribe(
-      'AccountsController:stateChange',
-      async (_newState, _changes) => {
-        // Changes of selected account, name changes, account additions and deletions will trigger a rerun
-        await this.prepareMmiPortfolio();
-      },
-    );
 
     this.signatureController.hub.on(
       'personal_sign:signed',
@@ -236,15 +221,10 @@ export default class MMIController extends EventEmitter {
     const newAccounts = Object.keys(accounts);
 
     // Check if any address is already added
-    const existingInternalAccounts = this.accountsController.listAccounts();
-    if (
-      newAccounts.some((address) =>
-        existingInternalAccounts.find(
-          (internalAccount) =>
-            internalAccount.address.toLowerCase() === address,
-        ),
-      )
-    ) {
+    const identities = Object.keys(
+      this.preferencesController.store.getState().identities,
+    );
+    if (newAccounts.some((address) => identities.indexOf(address) !== -1)) {
       throw new Error('Cannot import duplicate accounts');
     }
 
@@ -297,16 +277,11 @@ export default class MMIController extends EventEmitter {
       await this.keyringController.addNewAccountForKeyring(keyring);
     }
 
-    const allInternalAccounts = await this.accountsController.listAccounts();
+    const allAccounts = await this.keyringController.getAccounts();
 
+    this.preferencesController.setAddresses(allAccounts);
     const accountsToTrack = [
-      ...new Set(
-        oldAccounts.concat(
-          allInternalAccounts.map((internalAccount) =>
-            internalAccount.address.toLowerCase(),
-          ),
-        ),
-      ),
+      ...new Set(oldAccounts.concat(allAccounts.map((a) => a.toLowerCase()))),
     ];
 
     // Create a Set of lowercased addresses from oldAccounts for efficient existence checks
@@ -321,10 +296,10 @@ export default class MMIController extends EventEmitter {
       return acc;
     }, {});
 
-    // Iterate over all internal accounts
-    allInternalAccounts.forEach((internalAccount) => {
+    // Iterate over all accounts
+    allAccounts.forEach((address) => {
       // Convert the address to lowercase for consistent comparisons
-      const lowercasedAddress = internalAccount.address.toLowerCase();
+      const lowercasedAddress = address.toLowerCase();
 
       // If the address is not in oldAccounts
       if (!oldAccountsSet.has(lowercasedAddress)) {
@@ -334,7 +309,7 @@ export default class MMIController extends EventEmitter {
         // If the label is defined
         if (label) {
           // Set the label for the address
-          this.accountsController.setAccountName(internalAccount.id, label);
+          this.preferencesController.setAccountLabel(address, label);
         }
       }
     });
@@ -379,7 +354,7 @@ export default class MMIController extends EventEmitter {
   ) {
     let currentCustodyType;
     if (!custodianType) {
-      const address = this.accountsController.getSelectedAccount();
+      const address = this.preferencesController.getSelectedAddress();
       currentCustodyType = this.custodyController.getCustodyTypeByAddress(
         toChecksumHexAddress(address),
       );
@@ -470,12 +445,12 @@ export default class MMIController extends EventEmitter {
   async getCustodianJWTList(custodianEnvName) {
     console.log('getCustodianJWTList', custodianEnvName);
 
-    const internalAccounts = this.accountsController.listAccounts();
+    const { identities } = this.preferencesController.store.getState();
 
     const { mmiConfiguration } =
       this.mmiConfigurationController.store.getState();
 
-    const addresses = internalAccounts.map((account) => account.address);
+    const addresses = Object.keys(identities);
     const tokenList = [];
 
     const { custodians } = mmiConfiguration;
@@ -568,15 +543,7 @@ export default class MMIController extends EventEmitter {
   async handleMmiDashboardData() {
     await this.appStateController.getUnlockPromise(true);
     const keyringAccounts = await this.keyringController.getAccounts();
-    const internalAccounts = this.accountsController.listAccounts();
-    // TODO: update handleMmiPortfolio to use internalAccounts
-    const identities = internalAccounts.map((internalAccount) => {
-      return {
-        address: internalAccount.address,
-        name: internalAccount.metadata.name,
-      };
-    });
-
+    const { identities } = this.preferencesController.store.getState();
     const { metaMetricsId } = this.metaMetricsController.store.getState();
     const getAccountDetails = (address) =>
       this.custodyController.getAccountDetails(address);
@@ -600,18 +567,6 @@ export default class MMIController extends EventEmitter {
       getAccountDetails,
       extensionId,
     });
-  }
-
-  async prepareMmiPortfolio() {
-    try {
-      const mmiDashboardData = await this.handleMmiDashboardData();
-      const cookieSetUrls =
-        this.mmiConfigurationController.store.mmiConfiguration?.portfolio
-          ?.cookieSetUrls || [];
-      setDashboardCookie(mmiDashboardData, cookieSetUrls);
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   async newUnsignedMessage(msgParams, req, version) {
@@ -658,15 +613,9 @@ export default class MMIController extends EventEmitter {
   async setAccountAndNetwork(origin, address, chainId) {
     await this.appStateController.getUnlockPromise(true);
     const addressToLowerCase = address.toLowerCase();
-    const { address: selectedAddress } =
-      this.accountsController.getSelectedAccount();
+    const selectedAddress = this.preferencesController.getSelectedAddress();
     if (selectedAddress.toLowerCase() !== addressToLowerCase) {
-      const internalAccounts = this.accountsController.listAccounts();
-      const newAccount = internalAccounts.find(
-        (internalAccount) =>
-          internalAccount.address.toLowerCase() === addressToLowerCase,
-      );
-      this.accountsController.setSelectedAccount(newAccount.id);
+      this.preferencesController.setSelectedAddress(addressToLowerCase);
     }
     const selectedChainId = parseInt(
       this.networkController.state.providerConfig.chainId,
@@ -692,12 +641,6 @@ export default class MMIController extends EventEmitter {
       this.permissionController,
     ).addPermittedAccount(origin, addressToLowerCase);
 
-    return true;
-  }
-
-  async handleMmiOpenSwaps(origin, address, chainId) {
-    await this.setAccountAndNetwork(origin, address, chainId);
-    this.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
     return true;
   }
 

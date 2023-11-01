@@ -1,5 +1,5 @@
-import { SnapCaveatType } from '@metamask/rpc-methods';
 import { EthMethod, EthAccountType } from '@metamask/keyring-api';
+import { SnapCaveatType } from '@metamask/snaps-rpc-methods';
 import {
   CaveatTypes,
   RestrictedMethods,

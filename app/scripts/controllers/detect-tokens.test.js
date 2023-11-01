@@ -222,6 +222,7 @@ describe('DetectTokensController', function () {
 
     const tokenListMessenger = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
+      allowedEvents: ['TokenListController:stateChange'],
     });
     tokenListController = new TokenListController({
       chainId: toHex(1),
@@ -314,6 +315,11 @@ describe('DetectTokensController', function () {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
+      onTokenListStateChange: (listener) =>
+        tokenListMessenger.subscribe(
+          `${tokenListController.name}:stateChange`,
+          listener,
+        ),
     });
 
     assetsContractController = new AssetsContractController({
@@ -436,6 +442,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
 
@@ -457,6 +464,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
   });
@@ -500,8 +508,13 @@ describe('DetectTokensController', function () {
         },
       ],
       {
-        selectedAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
-        chainId: '0x1',
+        address: existingToken.address,
+        symbol: existingToken.symbol,
+        decimals: existingToken.decimals,
+        aggregators: undefined,
+        image: undefined,
+        isERC721: undefined,
+        name: undefined,
       },
     );
     const tokenAddressToAdd = erc20ContractAddresses[1];
@@ -520,6 +533,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
       {
         address: toChecksumHexAddress(tokenAddressToAdd),
@@ -528,6 +542,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
   });
