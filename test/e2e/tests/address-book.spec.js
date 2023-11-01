@@ -121,27 +121,50 @@ describe('Address Book', function () {
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
-        const recipientUsername = await driver.findElement({
-          text: 'Test Name Edit',
-          tag: 'p',
-        });
+        let recipientUsername;
+        if (process.env.MULTICHAIN) {
+          recipientUsername = await driver.findElement({
+            text: 'Test Name Edit',
+            css: '[data-testid="address-list-item-label"]',
+          });
+        } else {
+          recipientUsername = await driver.findElement({
+            text: 'Test Name Edit',
+            tag: 'p',
+          });
+        }
+
+        console.log('Text is: [', await recipientUsername.getText(), ']');
+
         assert.equal(
           await recipientUsername.getText(),
           'Test Name Edit',
           'Username is not edited correctly',
         );
 
-        const recipientAddress = await driver.findElement(
-          '.send__select-recipient-wrapper__group-item__subtitle',
-        );
-        assert.equal(
-          await recipientAddress.getText(),
-          '0x74cE...6f74',
-          'Recipient address is not edited correctly',
-        );
+        if (process.env.MULTICHAIN) {
+          const recipientAddress = await driver.findElement(
+            '[data-testid="address-list-item-address"]',
+          );
+          assert.equal(
+            await recipientAddress.getText(),
+            '0x74cE91B75935D6Bedc27eE002DeFa566c5946f74',
+            'Recipient address is not edited correctly',
+          );
+        } else {
+          const recipientAddress = await driver.findElement(
+            '.send__select-recipient-wrapper__group-item__subtitle',
+          );
+          assert.equal(
+            await recipientAddress.getText(),
+            '0x74cE...6f74',
+            'Recipient address is not edited correctly',
+          );
+        }
       },
     );
   });
+
   it('Deletes existing entry from address book', async function () {
     await withFixtures(
       {
@@ -177,10 +200,17 @@ describe('Address Book', function () {
         await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
         await driver.clickElement({ text: 'Edit', tag: 'button' });
         await driver.clickElement({ text: 'Delete contact', tag: 'a' });
+
+        let contact;
+        if (process.env.MULTICHAIN) {
+          contact = await driver.findElement('.address-list-item');
+        } else {
+          contact = await driver.findElement(
+            '.send__select-recipient-wrapper__group-item',
+          );
+        }
+
         // it checks if account is deleted
-        const contact = await driver.findElement(
-          '.send__select-recipient-wrapper__group-item',
-        );
         const exists = await driver.isElementPresent(contact);
         assert.equal(exists, false, 'Contact is not deleted');
       },
