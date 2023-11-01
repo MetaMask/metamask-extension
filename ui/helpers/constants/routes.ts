@@ -36,6 +36,7 @@ const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
 ///: END:ONLY_INCLUDE_IN
 const SEND_ROUTE = '/send';
 const CONNECTIONS = '/connections';
+const ALL_CONNECTIONS = '/all-connections';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
@@ -148,6 +149,7 @@ const PATH_NAME_MAP = {
   ///: END:ONLY_INCLUDE_IN
   [SEND_ROUTE]: 'Send Page',
   [CONNECTIONS]: 'Connections',
+  [ALL_CONNECTIONS]: 'All Connections',
   [`${TOKEN_DETAILS}/:address`]: 'Token Details Page',
   [`${CONNECT_ROUTE}/:id`]: 'Connect To Site Confirmation Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`]:
@@ -206,6 +208,7 @@ export {
   CONNECT_HARDWARE_ROUTE,
   SEND_ROUTE,
   CONNECTIONS,
+  ALL_CONNECTIONS,
   TOKEN_DETAILS,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_SEND_ETHER_PATH,
