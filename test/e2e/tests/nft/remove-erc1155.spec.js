@@ -7,6 +7,16 @@ const {
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 
+async function mockIPFSRequest(mockServer) {
+  return [
+    await mockServer
+      .forGet(
+        'https://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi.ipfs.dweb.link/',
+      )
+      .thenCallback(() => ({ statusCode: 200 })),
+  ];
+}
+
 describe('Remove ERC1155 NFT', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
   const ganacheOptions = {
@@ -27,6 +37,7 @@ describe('Remove ERC1155 NFT', function () {
         ganacheOptions,
         smartContract,
         title: this.test.fullTitle(),
+        testSpecificMock: mockIPFSRequest,
       },
       async ({ driver }) => {
         await driver.navigate();
