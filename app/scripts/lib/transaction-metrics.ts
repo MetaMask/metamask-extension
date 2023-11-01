@@ -4,6 +4,10 @@ import { BigNumber } from 'bignumber.js';
 import type { Provider } from '@metamask/network-controller';
 import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
   determineTransactionAssetType,
@@ -11,11 +15,9 @@ import {
 } from '../../../shared/modules/transaction.utils';
 import { hexWEIToDecGWEI } from '../../../shared/modules/conversion.utils';
 import {
-  TransactionType,
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
-  TransactionMeta,
 } from '../../../shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
@@ -160,7 +162,7 @@ export const handleTransactionFinalized = async (
     const { transactionMeta } = transactionEventPayload;
     const { txReceipt } = transactionMeta;
 
-    extraParams.gas_used = txReceipt.gasUsed;
+    extraParams.gas_used = txReceipt?.gasUsed;
 
     const { submittedTime } = transactionMeta;
 
@@ -168,7 +170,7 @@ export const handleTransactionFinalized = async (
       extraParams.completion_time = getTransactionCompletionTime(submittedTime);
     }
 
-    if (txReceipt.status === '0x0') {
+    if (txReceipt?.status === '0x0') {
       extraParams.status = METRICS_STATUS_FAILED;
     }
   }
@@ -594,7 +596,7 @@ async function buildEventFragmentProperties({
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     securityAlertResponse,
     ///: END:ONLY_INCLUDE_IN
-  } = transactionMeta;
+  } = transactionMeta as any; // TxMigrationToDo - Add missing metadata properties.
 
   const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
@@ -618,10 +620,12 @@ async function buildEventFragmentProperties({
     const { estimateType } = defaultGasEstimates;
     if (estimateType) {
       gasParams.default_estimate = estimateType;
-      let defaultMaxFeePerGas =
-        transactionMeta.defaultGasEstimates.maxFeePerGas;
-      let defaultMaxPriorityFeePerGas =
-        transactionMeta.defaultGasEstimates.maxPriorityFeePerGas;
+      // TxMigrationToDo - Use updated defaultGasEstimates type.
+      let defaultMaxFeePerGas = (transactionMeta.defaultGasEstimates as any)
+        ?.maxFeePerGas;
+      let defaultMaxPriorityFeePerGas = (
+        transactionMeta.defaultGasEstimates as any
+      )?.maxPriorityFeePerGas;
 
       if (
         [
@@ -646,12 +650,13 @@ async function buildEventFragmentProperties({
       }
     }
 
-    if (transactionMeta.defaultGasEstimates.gas) {
-      gasParams.default_gas = transactionMeta.defaultGasEstimates.gas;
+    if ((transactionMeta.defaultGasEstimates as any).gas) {
+      gasParams.default_gas = (transactionMeta.defaultGasEstimates as any).gas;
     }
-    if (transactionMeta.defaultGasEstimates.gasPrice) {
-      gasParams.default_gas_price =
-        transactionMeta.defaultGasEstimates.gasPrice;
+    if ((transactionMeta.defaultGasEstimates as any).gasPrice) {
+      gasParams.default_gas_price = (
+        transactionMeta.defaultGasEstimates as any
+      ).gasPrice;
     }
   }
 

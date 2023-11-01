@@ -1,6 +1,6 @@
 /* eslint-disable jest/no-conditional-expect */
 import data from '../first-time-state';
-import { TransactionStatus } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import migration25 from './025';
 
 const firstTimeState = {

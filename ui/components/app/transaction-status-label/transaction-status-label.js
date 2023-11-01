@@ -4,13 +4,11 @@ import classnames from 'classnames';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { useSelector } from 'react-redux';
 ///: END:ONLY_INCLUDE_IN
+import { TransactionStatus } from '@metamask/transaction-controller';
 import Tooltip from '../../ui/tooltip';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  TransactionGroupStatus,
-  TransactionStatus,
-} from '../../../../shared/constants/transaction';
+import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getTransactionStatusMap } from '../../../selectors/institutional/selectors';

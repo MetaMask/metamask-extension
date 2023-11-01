@@ -88,7 +88,7 @@ import {
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import { TransactionStatus } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import { Icon, IconName, IconSize } from '../../components/component-library';

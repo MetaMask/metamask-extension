@@ -1,6 +1,6 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
-import { TransactionStatus } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,

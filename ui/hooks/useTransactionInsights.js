@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { TransactionType } from '../../shared/constants/transaction';
+import { TransactionType } from '@metamask/transaction-controller';
 import { getInsightSnaps } from '../selectors';
 import { Tab } from '../components/ui/tabs';
 import DropdownTab from '../components/ui/tabs/snaps/dropdown-tab';

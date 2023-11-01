@@ -9,6 +9,7 @@ import {
 } from 'lodash';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -84,7 +85,6 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { TransactionStatus } from '../../shared/constants/transaction';
 import {
   getValueFromWeiHex,
   hexToDecimal,

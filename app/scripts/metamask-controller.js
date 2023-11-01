@@ -108,18 +108,17 @@ import {
 } from '@metamask/name-controller';
 ///: END:ONLY_INCLUDE_IN
 
-import { TransactionController } from '@metamask/transaction-controller';
+import {
+  TransactionController,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IN
 
-import {
-  AssetType,
-  TransactionStatus,
-  TransactionType,
-  TokenStandard,
-} from '../../shared/constants/transaction';
+import { AssetType, TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -1496,11 +1495,9 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:stateChange',
         ),
         getNetwork: () => this.networkController.state.networkId ?? 'loading',
-        // TxMigrationToDo - Add getNonceLock controller method.
-        // getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
-        //   this.txController.nonceTracker,
-        // ),
-        getNonceLock: () => null,
+        getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
+          this.txController.nonceTracker,
+        ),
         confirmExternalTransaction:
           this.txController.confirmExternalTransaction.bind(this.txController),
         provider: this.provider,
@@ -3178,12 +3175,7 @@ export default class MetamaskController extends EventEmitter {
       // clear cachedBalances
       this.cachedBalancesController.clearCachedBalances();
 
-      // TxMigrationToDo - Add clearUnapproved controller method.
-      this.txController.update({
-        transactions: this.txController.state.transactions.filter(
-          (txMeta) => txMeta.status !== TransactionStatus.unapproved,
-        ),
-      });
+      this.txController.clearUnapproved();
 
       // create new vault
       const vault = await this.keyringController.createNewVaultAndRestore(
@@ -4793,7 +4785,6 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<number>}
    */
   async getNextNonce(address) {
-    // TxMigrationToDo - Add getNonceLock controller method.
     const nonceLock = await this.txController.getNonceLock(address);
     nonceLock.releaseLock();
     return nonceLock.nextNonce;

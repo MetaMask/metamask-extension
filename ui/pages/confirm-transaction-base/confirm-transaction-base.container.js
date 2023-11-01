@@ -1,6 +1,10 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
@@ -79,10 +83,6 @@ import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { getIsNoteToTraderSupported } from '../../selectors/institutional/selectors';
 import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IN
-import {
-  TransactionStatus,
-  TransactionType,
-} from '../../../shared/constants/transaction';
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';

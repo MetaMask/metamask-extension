@@ -21,7 +21,11 @@ import {
   UpdateProposedNamesRequest,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
-import { TransactionParams } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionParams,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { NetworkClientId } from '@metamask/network-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
@@ -86,10 +90,6 @@ import {
 } from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '../../shared/constants/transaction';
 import { NetworkType, RPCDefinition } from '../../shared/constants/network';
 import { EtherDenomination } from '../../shared/constants/common';
 import {

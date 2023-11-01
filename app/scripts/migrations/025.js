@@ -6,7 +6,7 @@ normalizes txParams on unconfirmed txs
 */
 import { cloneDeep } from 'lodash';
 import { addHexPrefix } from '../lib/util';
-import { TransactionStatus } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '@metamask/transaction-controller';
 
 const version = 25;
 

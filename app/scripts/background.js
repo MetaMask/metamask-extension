@@ -212,7 +212,7 @@ function saveTimestamp() {
 }
 
 /**
- * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
+ * @typedef {import('@metamask/transaction-controller').TransactionMeta} TransactionMeta
  */
 
 /**

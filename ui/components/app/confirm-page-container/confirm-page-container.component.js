@@ -9,12 +9,10 @@ import React, {
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
+import { TransactionType } from '@metamask/transaction-controller';
 import { EditGasModes } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import {
-  TokenStandard,
-  TransactionType,
-} from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
