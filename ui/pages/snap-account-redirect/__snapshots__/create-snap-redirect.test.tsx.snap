@@ -31,7 +31,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
           >
             <div
               class="mm-box snap-delineator__header mm-box--padding-1 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
-              style="border-bottom-width: 0;"
+              style="border-bottom-width: 1px;"
             >
               <div
                 class="mm-box mm-box--display-flex mm-box--align-items-center"
