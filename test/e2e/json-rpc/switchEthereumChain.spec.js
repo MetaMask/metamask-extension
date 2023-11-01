@@ -5,6 +5,7 @@ const {
   openDapp,
   DAPP_URL,
   DAPP_ONE_URL,
+  unlockWallet,
   switchToNotificationWindow,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -27,8 +28,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // open two dapps
         await openDapp(driver, undefined, DAPP_URL);
@@ -70,16 +70,14 @@ describe('Switch Ethereum Chain for two dapps', function () {
         });
 
         // Dapp One ChainId assertion
-        const dappOneChainId = await driver.findElement('#chainId');
-        assert.equal(await dappOneChainId.getText(), '0x53a');
+        await driver.findElement({ css: '#chainId', text: '0x53a' });
 
         // Switch to Dapp Two
         await driver.switchToWindow(dappTwo);
         assert.equal(await driver.getCurrentUrl(), `${DAPP_ONE_URL}/`);
 
         // Dapp Two ChainId Assertion
-        const dappTwoChainId = await driver.findElement('#chainId');
-        assert.equal(await dappTwoChainId.getText(), '0x53a');
+        await driver.findElement({ css: '#chainId', text: '0x53a' });
       },
     );
   });
@@ -174,8 +172,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // open two dapps
         await openDapp(driver, undefined, DAPP_URL);
@@ -248,8 +245,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // open two dapps
         await openDapp(driver, undefined, DAPP_URL);
