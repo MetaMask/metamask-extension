@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const {
   convertToHexValue,
   withFixtures,
@@ -6,6 +5,16 @@ const {
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
+
+async function mockIPFSRequest(mockServer) {
+  return [
+    await mockServer
+      .forGet(
+        'https://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi.ipfs.dweb.link/',
+      )
+      .thenCallback(() => ({ statusCode: 200 })),
+  ];
+}
 
 describe('View ERC1155 NFT details', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
@@ -27,6 +36,7 @@ describe('View ERC1155 NFT details', function () {
         ganacheOptions,
         smartContract,
         title: this.test.fullTitle(),
+        testSpecificMock: mockIPFSRequest,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -34,34 +44,31 @@ describe('View ERC1155 NFT details', function () {
 
         // Click to open the NFT details page and check displayed account
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        const importedNftImage = await driver.findVisibleElement(
-          '.nft-item__container',
-        );
-        await importedNftImage.click();
-        const detailsPageAccount = await driver.findElement(
-          '.asset-breadcrumb span:nth-of-type(2)',
-        );
-        assert.equal(await detailsPageAccount.getText(), 'Account 1');
+
+        await driver.clickElement('.nft-item__container');
+
+        await driver.findElement({
+          css: '.asset-breadcrumb span:nth-of-type(2)',
+          text: 'Account 1',
+        });
 
         // Check the displayed ERC1155 NFT details
-        const nftName = await driver.findElement('.nft-details__info h4');
-        assert.equal(await nftName.getText(), 'Rocks');
+        await driver.findElement({
+          css: '.nft-details__info h4',
+          text: 'Rocks',
+        });
 
-        const nftDescription = await driver.findElement(
-          '.nft-details__info h6:nth-of-type(2)',
-        );
-        assert.equal(
-          await nftDescription.getText(),
-          'This is a collection of Rock NFTs.',
-        );
+        await driver.findElement({
+          css: '.nft-details__info h6:nth-of-type(2)',
+          text: 'This is a collection of Rock NFTs.',
+        });
 
-        const nftImage = await driver.findElement('.nft-item__container');
-        assert.equal(await nftImage.isDisplayed(), true);
+        await driver.findVisibleElement('.nft-item__container');
 
-        const nftContract = await driver.findElement(
-          '.nft-details__contract-wrapper',
-        );
-        assert.equal(await nftContract.getText(), '0x581c3...45947');
+        await driver.findElement({
+          css: '.nft-details__contract-wrapper',
+          text: '0x581c3...45947',
+        });
       },
     );
   });
