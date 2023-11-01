@@ -7,7 +7,11 @@ import { TransactionType } from '../../shared/constants/transaction';
 import { Tab } from '../components/ui/tabs';
 import DropdownTab from '../components/ui/tabs/snaps/dropdown-tab';
 import { SnapInsight } from '../components/app/confirm-page-container/snaps/snap-insight';
-import { getInsightSnapIds, getInsightSnaps, getSubjectMetadataDeepEqual } from '../selectors';
+import {
+  getInsightSnapIds,
+  getInsightSnaps,
+  getSubjectMetadataDeepEqual,
+} from '../selectors';
 import { getSnapName } from '../helpers/utils/util';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
@@ -26,7 +30,7 @@ const useTransactionInsights = ({ txData }) => {
   const caip2ChainId = `eip155:${stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
   const subjectMetadata = useSelector(getSubjectMetadataDeepEqual);
-  const insightSnapIds = useSelector(getInsightSnapIds)
+  const insightSnapIds = useSelector(getInsightSnapIds);
 
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
     insightSnaps[0]?.id,
