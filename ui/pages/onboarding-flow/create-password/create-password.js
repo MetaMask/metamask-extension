@@ -67,18 +67,21 @@ export default function CreatePassword({
   const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
 
-  const shouldInjectMetametricsIframe = useSelector(
-    (state) => state.metamask.participateInMetaMetrics,
+  const participateInMetaMetrics = useSelector((state) =>
+    Boolean(state.metamask.participateInMetaMetrics),
   );
   const metametricsId = useSelector(getMetaMetricsId);
   const base64MetametricsId = Buffer.from(metametricsId ?? '').toString(
     'base64',
   );
+  const shouldInjectMetametricsIframe = Boolean(
+    participateInMetaMetrics && base64MetametricsId,
+  );
   const analyticsIframeQuery = {
     mmi: base64MetametricsId,
     env: 'production',
   };
-  const analyticsIframeUrl = `https://start.metamask.io/${new URLSearchParams(
+  const analyticsIframeUrl = `https://start.metamask.io/?${new URLSearchParams(
     analyticsIframeQuery,
   )}`;
 

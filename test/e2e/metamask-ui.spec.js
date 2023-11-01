@@ -5,6 +5,7 @@ const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const createStaticServer = require('../../development/create-static-server');
 const {
   TEST_SEED_PHRASE_TWO,
+  WALLET_PASSWORD,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
@@ -86,9 +87,11 @@ describe('MetaMask @no-mmi', function () {
     });
 
     it('accepts a secure password', async function () {
-      const password = 'correct horse battery staple';
-      await driver.fill('[data-testid="create-password-new"]', password);
-      await driver.fill('[data-testid="create-password-confirm"]', password);
+      await driver.fill('[data-testid="create-password-new"]', WALLET_PASSWORD);
+      await driver.fill(
+        '[data-testid="create-password-confirm"]',
+        WALLET_PASSWORD,
+      );
       await driver.clickElement('[data-testid="create-password-terms"]');
       await driver.clickElement('[data-testid="create-password-wallet"]');
     });
@@ -153,8 +156,8 @@ describe('MetaMask @no-mmi', function () {
         TEST_SEED_PHRASE_TWO,
       );
 
-      await driver.fill('#password', 'correct horse battery staple');
-      await driver.fill('#confirm-password', 'correct horse battery staple');
+      await driver.fill('#password', WALLET_PASSWORD);
+      await driver.fill('#confirm-password', WALLET_PASSWORD);
       await driver.clickElement({
         text: enLocaleMessages.restore.message,
         tag: 'button',
