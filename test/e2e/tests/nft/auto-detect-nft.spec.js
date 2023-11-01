@@ -18,7 +18,7 @@ describe('NFT detection', function () {
           .build(),
         driverOptions,
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: setupAutoDetectMocking,
       },
       async ({ driver }) => {

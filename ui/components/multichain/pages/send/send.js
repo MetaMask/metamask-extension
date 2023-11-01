@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   ButtonIcon,
@@ -13,17 +13,22 @@ import {
 } from '../../../component-library';
 import { Content, Footer, Header, Page } from '../page';
 import {
+  SEND_STAGES,
   getDraftTransactionExists,
+  getDraftTransactionID,
+  getSendStage,
   resetSendState,
   startNewDraftTransaction,
 } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { showQrScanner } from '../../../../store/actions';
+import { cancelTx, showQrScanner } from '../../../../store/actions';
+import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import {
   SendPageAccountPicker,
   SendPageRecipientInput,
-  SendPageYourAccount,
   SendPageNetworkPicker,
+  SendPageRecipient,
 } from './components';
 
 export const SendPage = () => {
@@ -32,6 +37,11 @@ export const SendPage = () => {
 
   const startedNewDraftTransaction = useRef(false);
   const draftTransactionExists = useSelector(getDraftTransactionExists);
+  const draftTransactionID = useSelector(getDraftTransactionID);
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const sendStage = useSelector(getSendStage);
+
+  const history = useHistory();
   const location = useLocation();
 
   const cleanup = useCallback(() => {
@@ -77,6 +87,17 @@ export const SendPage = () => {
     };
   }, [dispatch, cleanup]);
 
+  const onCancel = useCallback(() => {
+    if (draftTransactionID) {
+      dispatch(cancelTx({ id: draftTransactionID }));
+    }
+    dispatch(resetSendState());
+
+    const nextRoute =
+      sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
+    history.push(nextRoute);
+  });
+
   return (
     <Page className="multichain-send-page">
       <Header
@@ -85,6 +106,7 @@ export const SendPage = () => {
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
+            onClick={onCancel}
           />
         }
       >
@@ -94,10 +116,10 @@ export const SendPage = () => {
         <SendPageNetworkPicker />
         <SendPageAccountPicker />
         <SendPageRecipientInput />
-        <SendPageYourAccount />
+        <SendPageRecipient />
       </Content>
       <Footer>
-        <ButtonSecondary size={ButtonSecondarySize.Lg} block>
+        <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
           {t('cancel')}
         </ButtonSecondary>
         <ButtonPrimary size={ButtonPrimarySize.Lg} block disabled>
