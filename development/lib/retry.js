@@ -40,7 +40,7 @@ async function retry(
         return result;
       }
     } catch (error) {
-      console.error(error);
+      console.error('error caught in retry():', error);
       if (retryUntilFailure) {
         return null;
       }

@@ -1,23 +1,25 @@
-const {
-  withFixtures,
-  defaultGanacheOptions,
-  unlockWallet,
+import { Suite } from 'mocha';
+import FixtureBuilder from '../fixture-builder';
+import {
   WINDOW_TITLES,
+  defaultGanacheOptions,
   switchToNotificationWindow,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
-const { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } = require('./utils');
+  unlockWallet,
+  withFixtures,
+} from '../helpers';
+import { Driver } from '../webdriver/driver';
+import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from './common';
 
-describe('Create Snap Account', function () {
+describe('Create Snap Account', function (this: Suite) {
   it('create Snap account popup contains correct Snap name and snapId', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test?.title,
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
 
         await unlockWallet(driver);
@@ -101,9 +103,9 @@ describe('Create Snap Account', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test?.title,
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
 
         await unlockWallet(driver);
@@ -196,9 +198,9 @@ describe('Create Snap Account', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test?.title,
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
 
         await unlockWallet(driver);
