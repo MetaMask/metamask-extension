@@ -222,7 +222,7 @@ describe('Sentry errors', function () {
             meta: undefined,
           },
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryMigratorError,
         },
@@ -250,7 +250,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -289,7 +289,7 @@ describe('Sentry errors', function () {
             meta: undefined,
           },
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryMigratorError,
         },
@@ -329,7 +329,7 @@ describe('Sentry errors', function () {
             meta: undefined,
           },
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryMigratorError,
         },
@@ -385,7 +385,7 @@ describe('Sentry errors', function () {
               .build(),
           },
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryInvariantMigrationError,
         },
@@ -430,7 +430,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -473,7 +473,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -535,7 +535,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -568,7 +568,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -601,7 +601,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -645,7 +645,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -700,7 +700,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -741,7 +741,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -790,7 +790,7 @@ describe('Sentry errors', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -838,7 +838,7 @@ describe('Sentry errors', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

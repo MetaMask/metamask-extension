@@ -1,7 +1,11 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
-const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
-const FixtureBuilder = require('../fixture-builder');
+const {
+  convertToHexValue,
+  withFixtures,
+  unlockWallet,
+} = require('../../helpers');
+const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
+const FixtureBuilder = require('../../fixture-builder');
 
 describe('Import ERC1155 NFT', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
@@ -24,7 +28,7 @@ describe('Import ERC1155 NFT', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
         const contractAddress =
@@ -73,7 +77,7 @@ describe('Import ERC1155 NFT', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
         const contractAddress =

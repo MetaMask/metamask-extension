@@ -842,7 +842,7 @@ jobs:
 
   test-e2e-chrome-multichain:
     executor: node-browsers
-    parallelism: 8
+    parallelism: 12
     steps:
       - run: *shallow-git-clone
       - run:
@@ -871,7 +871,7 @@ jobs:
           path: test/test-results/e2e
   test-e2e-chrome-mv3:
     executor: node-browsers
-    parallelism: 8
+    parallelism: 12
     steps:
       - run: *shallow-git-clone
       - run:

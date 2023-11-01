@@ -20,7 +20,7 @@ describe('4byte setting', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
@@ -61,7 +61,7 @@ describe('4byte setting', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
