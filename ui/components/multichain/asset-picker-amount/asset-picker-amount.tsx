@@ -84,13 +84,16 @@ export const AssetPickerAmount = () => {
             hexValue={amount.value}
             className="asset-picker-amount__input"
             swapIcon={(onClick: React.MouseEventHandler) => (
-              <Icon
-                className="asset-picker-amount__swap-icon"
-                name={IconName.SwapVertical}
-                size={IconSize.Sm}
-                color={IconColor.primaryDefault}
+              <button
+                className="asset-picker-amount__swap-button"
                 onClick={onClick}
-              />
+              >
+                <Icon
+                  name={IconName.SwapVertical}
+                  size={IconSize.Sm}
+                  color={IconColor.primaryDefault}
+                />
+              </button>
             )}
           />
         ) : (

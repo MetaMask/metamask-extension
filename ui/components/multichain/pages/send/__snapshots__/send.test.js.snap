@@ -965,10 +965,14 @@ exports[`SendPage render renders correctly 1`] = `
                 No conversion rate available
               </div>
             </div>
-            <span
-              class="mm-box asset-picker-amount__swap-icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-default"
-              style="mask-image: url('./images/icons/swap-vertical.svg');"
-            />
+            <button
+              class="asset-picker-amount__swap-button"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-default"
+                style="mask-image: url('./images/icons/swap-vertical.svg');"
+              />
+            </button>
           </div>
         </div>
         <p
