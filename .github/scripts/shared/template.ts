@@ -43,8 +43,6 @@ const prTemplateTitles = [
   '## **Related issues**',
   '## **Manual testing steps**',
   '## **Screenshots/Recordings**',
-  '### **Before**',
-  '### **After**',
   '## **Pre-merge author checklist**',
   '## **Pre-merge reviewer checklist**',
 ];
