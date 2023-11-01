@@ -26,7 +26,7 @@ const getTestPathsForTestDir = async (testDir) => {
     if (itemInDirectory.isDirectory()) {
       const subDirPaths = await getTestPathsForTestDir(fullPath);
       testPaths.push(...subDirPaths);
-    } else if (fullPath.endsWith('.spec.js')) {
+    } else if (fullPath.endsWith('.spec.js') || fullPath.endsWith('.spec.ts')) {
       testPaths.push(fullPath);
     }
   }
@@ -204,6 +204,7 @@ async function main() {
   for (let testPath of myTestList) {
     if (testPath !== '') {
       testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
+      console.log(`\nExecuting testPath: ${testPath}\n`);
       await runInShell('node', [...args, testPath]);
     }
   }
