@@ -1,43 +1,40 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { SubjectType } from '@metamask/permission-controller';
+import { SubjectType } from '@metamask/subject-metadata-controller';
 ///: END:ONLY_INCLUDE_IN
 import { ApprovalType } from '@metamask/controller-utils';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  memoize,
-  ///: END:ONLY_INCLUDE_IN
-} from 'lodash';
+import { memoize } from 'lodash';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
+import { EthMethod } from '@metamask/keyring-api';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
-  TEST_CHAINS,
-  NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
-  BUYABLE_CHAINS_MAP,
-  MAINNET_DISPLAY_NAME,
-  BSC_DISPLAY_NAME,
-  POLYGON_DISPLAY_NAME,
-  AVALANCHE_DISPLAY_NAME,
   AURORA_DISPLAY_NAME,
+  AVALANCHE_DISPLAY_NAME,
+  BSC_DISPLAY_NAME,
+  BUYABLE_CHAINS_MAP,
+  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
-  NETWORK_TYPES,
-  NetworkStatus,
-  SEPOLIA_DISPLAY_NAME,
-  GOERLI_DISPLAY_NAME,
-  ETH_TOKEN_IMAGE_URL,
-  LINEA_GOERLI_DISPLAY_NAME,
   CURRENCY_SYMBOLS,
-  TEST_NETWORK_TICKER_MAP,
+  ETH_TOKEN_IMAGE_URL,
+  GOERLI_DISPLAY_NAME,
+  LINEA_GOERLI_DISPLAY_NAME,
   LINEA_GOERLI_TOKEN_IMAGE_URL,
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
-  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  MAINNET_DISPLAY_NAME,
+  NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
+  NETWORK_TYPES,
+  NetworkStatus,
+  POLYGON_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+  TEST_CHAINS,
+  TEST_NETWORK_TICKER_MAP,
 } from '../../shared/constants/network';
 import {
-  WebHIDConnectedStatuses,
-  LedgerTransportTypes,
   HardwareTransportStates,
+  LedgerTransportTypes,
+  WebHIDConnectedStatuses,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { MESSAGE_TYPE } from '../../shared/constants/app';
@@ -45,9 +42,9 @@ import { MESSAGE_TYPE } from '../../shared/constants/app';
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
 import {
-  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
-  ALLOWED_PROD_SWAPS_CHAIN_IDS,
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
+  ALLOWED_PROD_SWAPS_CHAIN_IDS,
+  SWAPS_CHAINID_DEFAULT_TOKEN_MAP,
 } from '../../shared/constants/swaps';
 
 import {
@@ -56,13 +53,11 @@ import {
 } from '../../shared/constants/bridge';
 
 import {
-  shortenAddress,
   getAccountByAddress,
-  getURLHostName,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  removeSnapIdPrefix,
   getSnapName,
-  ///: END:ONLY_INCLUDE_IN
+  getURLHostName,
+  removeSnapIdPrefix,
+  shortenAddress,
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
@@ -70,17 +65,17 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
+  getConversionRate,
+  getLedgerTransportType,
   getNativeCurrency,
   getProviderConfig,
-  getConversionRate,
-  isNotEIP1559Network,
-  isEIP1559Network,
-  getLedgerTransportType,
   isAddressLedger,
+  isEIP1559Network,
+  isNotEIP1559Network,
 } from '../ducks/metamask/metamask';
 import {
-  getLedgerWebHidConnectedStatus,
   getLedgerTransportStatus,
+  getLedgerWebHidConnectedStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { TransactionStatus } from '../../shared/constants/transaction';
@@ -100,6 +95,7 @@ import {
 } from './transactions';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 // eslint-disable-next-line import/order
+import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
 import { getPermissionSubjects } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 import { createDeepEqualSelector } from './util';
@@ -278,6 +274,20 @@ export function getAccountTypeForKeyring(keyring) {
 }
 
 /**
+ * get the currently selected networkId which will be 'loading' when the
+ * network changes. The network id should not be used in most cases,
+ * instead use chainId in most situations. There are a limited number of
+ * use cases to use this method still, such as when comparing transaction
+ * metadata that predates the switch to using chainId.
+ *
+ * @deprecated - use getCurrentChainId instead
+ * @param {object} state - redux state object
+ */
+export function deprecatedGetCurrentNetworkId(state) {
+  return state.metamask.networkId ?? 'loading';
+}
+
+/**
  * Get MetaMask accounts, including account name and balance.
  */
 export const getMetaMaskAccounts = createSelector(
@@ -383,7 +393,14 @@ export function getMetaMaskAccountBalances(state) {
 export function getMetaMaskCachedBalances(state) {
   const chainId = getCurrentChainId(state);
 
-  return state.metamask.cachedBalances[chainId];
+  // Fallback to fetching cached balances from network id
+  // this can eventually be removed
+  const network = deprecatedGetCurrentNetworkId(state);
+
+  return (
+    state.metamask.cachedBalances[chainId] ??
+    state.metamask.cachedBalances[network]
+  );
 }
 
 /**
@@ -419,10 +436,6 @@ export function getSelectedAccountCachedBalance(state) {
   const { address: selectedAddress } = getSelectedInternalAccount(state);
 
   return cachedBalances?.[selectedAddress];
-}
-
-export function getAllTokens(state) {
-  return state.metamask.allTokens;
 }
 
 export function getSelectedAccount(state) {
@@ -723,6 +736,7 @@ export function getSubjectMetadata(state) {
 const getEmbeddableSvg = memoize(
   (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
 );
+
 ///: END:ONLY_INCLUDE_IN
 
 export function getTargetSubjectMetadata(state, origin) {
@@ -738,18 +752,6 @@ export function getTargetSubjectMetadata(state, origin) {
   }
   ///: END:ONLY_INCLUDE_IN
   return metadata;
-}
-
-/**
- * Retrieve registry data for requested Snap.
- *
- * @param state - Redux state object.
- * @param snapId - ID of a Snap.
- * @returns Object containing metadata stored in Snaps registry for requested Snap.
- */
-export function getSnapRegistryData(state, snapId) {
-  const snapsRegistryData = state.metamask.database.verifiedSnaps;
-  return snapsRegistryData ? snapsRegistryData[snapId] : null;
 }
 
 export function getRpcPrefsForCurrentProvider(state) {
@@ -874,6 +876,7 @@ export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
+
 export function getNativeCurrencyImage(state) {
   const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
   return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
@@ -994,6 +997,19 @@ export const getNotifySnaps = createDeepEqualSelector(
   },
 );
 
+export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
+  return Object.values(snaps).map((snap) => {
+    return {
+      id: snap.id,
+      tabMessage: () => snap.manifest.proposedName,
+      descriptionMessage: () => snap.manifest.description,
+      sectionMessage: () => snap.manifest.description,
+      route: `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`,
+      icon: 'fa fa-flask',
+    };
+  });
+});
+
 /**
  * @typedef {object} Notification
  * @property {string} id - A unique identifier for the notification
@@ -1037,6 +1053,7 @@ export const getUnreadNotificationsCount = createSelector(
   getUnreadNotifications,
   (notifications) => notifications.length,
 );
+
 ///: END:ONLY_INCLUDE_IN
 
 /**
@@ -1158,6 +1175,7 @@ export function getShowBetaHeader(state) {
 export function getShowProductTour(state) {
   return state.metamask.showProductTour;
 }
+
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
@@ -1457,19 +1475,16 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return POLYGON_DISPLAY_NAME;
     case CHAIN_IDS.AVALANCHE:
       return AVALANCHE_DISPLAY_NAME;
-    case CHAIN_IDS.LINEA_GOERLI:
-      return LINEA_GOERLI_DISPLAY_NAME;
-    case CHAIN_IDS.LINEA_MAINNET:
-      return LINEA_MAINNET_DISPLAY_NAME;
     case CHAIN_IDS.AURORA:
       return AURORA_DISPLAY_NAME;
     default:
       return '';
   }
 };
+
 /**
  * To check if the chainId supports token detection,
- * currently it returns true for Ethereum Mainnet, BSC, Polygon, Avalanche, Linea and Aurora
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
  *
  * @param {*} state
  * @returns Boolean
@@ -1481,8 +1496,6 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.BSC,
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
-    CHAIN_IDS.LINEA_GOERLI,
-    CHAIN_IDS.LINEA_MAINNET,
     CHAIN_IDS.AURORA,
   ].includes(chainId);
 }
@@ -1575,6 +1588,7 @@ export function getIsTransactionSecurityCheckEnabled(state) {
 export function getIsSecurityAlertsEnabled(state) {
   return state.metamask.securityAlertsEnabled;
 }
+
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
@@ -1587,6 +1601,7 @@ export function getIsSecurityAlertsEnabled(state) {
 export function getIsAddSnapAccountEnabled(state) {
   return state.metamask.addSnapAccountEnabled;
 }
+
 ///: END:ONLY_INCLUDE_IN
 
 export function getIsCustomNetwork(state) {
@@ -1705,6 +1720,7 @@ export function getNameSources(state) {
 export function getIsDesktopEnabled(state) {
   return state.metamask.desktopEnabled;
 }
+
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -1746,6 +1762,7 @@ export function getSnapsInstallPrivacyWarningShown(state) {
 
   return snapsInstallPrivacyWarningShown;
 }
+
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 export function getsnapsAddSnapAccountModalDismissed(state) {
@@ -1759,19 +1776,22 @@ export function getSnapRegistry(state) {
   return snapRegistryList;
 }
 
-export function getKeyringSnapAccounts(state) {
-  const identities = getMetaMaskIdentities(state);
-
-  const keyringAccounts = Object.values(identities).filter((identity) => {
-    return (
-      findKeyringForAddress(state, identity.address).type === 'Snap Keyring'
-    );
-  });
-  return keyringAccounts;
-}
-
-export function getKeyringSnapRemovalResult(state) {
-  return state.appState.keyringRemovalSnapModal;
+/**
+ * Returns true if the account is a watch-only account (i.e. cannot sign transactions).
+ *
+ * @param state - Redux state object.
+ * @returns {boolean} True if the account is a watch-only account.
+ */
+export function isWatchOnlyAccount(state) {
+  const selectedAccount = getSelectedAccount(state);
+  return !selectedAccount?.methods.includes(
+    EthMethod.Sign,
+    EthMethod.PersonalSign,
+    EthMethod.SignTransaction,
+    EthMethod.SignTypedDataV1,
+    EthMethod.SignTypedDataV3,
+    EthMethod.SignTypedDataV4,
+  );
 }
 
 ///: END:ONLY_INCLUDE_IN
