@@ -137,6 +137,7 @@ async function switchEthereumChainHandler(
         type: ApprovalType.SwitchEthereumChain,
         requestData,
       });
+      debugger;
       if (
         Object.values(BUILT_IN_INFURA_NETWORKS)
           .map(({ chainId: id }) => id)

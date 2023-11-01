@@ -18,7 +18,18 @@ import {
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
 
+const getNetworkDetails = (network) => {
+  return {
+    ...network,
+    nickname: NETWORK_TO_NAME_MAP[network.chainId],
+    iconUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+  };
+}
+
 export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
+  const fromNetworkDetails = getNetworkDetails(fromNetwork);
+  const toNetworkDetails = getNetworkDetails(toNetwork);
+
   return (
     <Box
       className="confirmation-network-switch"
@@ -31,10 +42,10 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {fromNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
+        {fromNetworkDetails.iconUrl ? (
           <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[fromNetwork.chainId]}
-            name={fromNetwork.nickname}
+            icon={fromNetworkDetails.iconUrl}
+            name={fromNetworkDetails.nickname}
             size={64}
           />
         ) : (
@@ -52,7 +63,7 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
             justifyContent: JustifyContent.center,
           }}
         >
-          {fromNetwork.nickname || NETWORK_TO_NAME_MAP[fromNetwork.type]}
+          {fromNetworkDetails.nickname}
         </Typography>
       </Box>
       <Box
@@ -68,10 +79,10 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {toNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
+        {toNetworkDetails.iconUrl ? (
           <SiteIcon
-            icon={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[toNetwork.chainId]}
-            name={toNetwork.nickname}
+            icon={toNetworkDetails.iconUrl}
+            name={toNetworkDetails.nickname}
             size={64}
           />
         ) : (
@@ -89,7 +100,7 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
             justifyContent: JustifyContent.center,
           }}
         >
-          {toNetwork.nickname}
+          {toNetworkDetails.nickname}
         </Typography>
       </Box>
     </Box>
