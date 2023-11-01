@@ -380,7 +380,7 @@ export default class ExperimentalTab extends PureComponent {
       <div className="settings-page__body">
         {this.renderSecurityAlertsToggle()}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
           this.renderKeyringSnapsToggle()
           ///: END:ONLY_INCLUDE_IN
         }
