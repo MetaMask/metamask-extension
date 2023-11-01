@@ -19,6 +19,8 @@ import {
 import { TemplateType, templates } from './shared/template';
 import { retrievePullRequest } from './shared/pull-request';
 
+const knownBots = ["metamaskbot", "dependabot", "github-actions", "sentry-io"];
+
 main().catch((error: Error): void => {
   console.error(error);
   process.exit(1);
@@ -81,6 +83,12 @@ async function main(): Promise<void> {
     labelable.body,
   );
 
+  // If labelable's author is a bot we skip the template checks as bots don't use templates
+  if (knownBots.includes(labelable.author)) {
+    console.log(`${labelable.type === LabelableType.PullRequest ? 'PR' : 'Issue'} was created by a bot (${labelable.author}). Skip template checks.`);
+    process.exit(0); // Stop the process and exit with a success status code
+  }
+
   if (labelable.type === LabelableType.Issue) {
     if (templateType === TemplateType.GeneralIssue) {
       console.log("Issue matches 'general-issue.yml' template.");
@@ -103,7 +111,11 @@ async function main(): Promise<void> {
       );
 
       // Add regression prod label to the bug report issue if release version was found in issue body
-      if (releaseVersion) {
+      if(isReleaseCandidateIssue(labelable)) {
+        console.log(
+          `Issue ${labelable?.number} is not a production issue. Regression prod label is not needed.`,
+        );
+      } else if (releaseVersion) {
         await addRegressionProdLabelToIssue(octokit, releaseVersion, labelable);
       } else {
         console.log(
@@ -112,7 +124,7 @@ async function main(): Promise<void> {
       }
     } else {
       const errorMessage =
-        "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').";
+        "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/develop/.github/scripts/shared/template.ts#L14-L37";
       console.log(errorMessage);
 
       // Add label to indicate issue doesn't match any template
@@ -132,7 +144,7 @@ async function main(): Promise<void> {
       );
     } else {
       const errorMessage =
-        "PR body does not match template ('pull-request-template.md').";
+        `PR body does not match template ('pull-request-template.md').\n\nMake sure PR's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/develop/.github/scripts/shared/template.ts#L40-L47`;
       console.log(errorMessage);
 
       // Add label to indicate PR body doesn't match template
@@ -142,9 +154,21 @@ async function main(): Promise<void> {
         invalidPullRequestTemplateLabel,
       );
 
+      // TODO: Remove these two lines in January 2024. By then, most PRs will match the new PR template, and we'll want the action to fail if they don't.
+      // For now, we're in a transition period and Github action shall add an annotation in case PR doesn't match template, but shall not fail.
+      // Indeed, many PRs were created before the new PR template was introduced and don't match the template for now.
+      core.error(errorMessage, {
+        title: invalidPullRequestTemplateLabel.name,
+        file: '.github/scripts/shared/template.ts',
+        startLine: 40,
+        endLine: 47,
+      }); // This creates an annotation on the PR
+      process.exit(0);
+
+      // TODO: Uncomment these two lines in January 2024. By then, most PRs will match the new PR template, and we'll want the action to fail if they don't.
       // Github action shall fail in case PR doesn't match template
-      core.setFailed(errorMessage);
-      process.exit(1);
+      // core.setFailed(errorMessage); // This creates a failure status for the action
+      // process.exit(1);
     }
   } else {
     core.setFailed(
@@ -268,4 +292,11 @@ async function userBelongsToMetaMaskOrg(
   } = await octokit.graphql(userBelongsToMetaMaskOrgQuery, { login: username });
 
   return Boolean(userBelongsToMetaMaskOrgResult?.user?.organization?.id);
+}
+
+// This function checks if issue is a release candidate (RC) issue, discovered during release regression testing phase. If so, it meanse it is not a production issue.
+function isReleaseCandidateIssue(
+  issue: Labelable,
+): boolean {
+  return Boolean(issue.labels.find(label => label.name === 'regression-RC'));
 }

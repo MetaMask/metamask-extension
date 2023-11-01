@@ -33,8 +33,10 @@ export const SendPageRecipientInput = () => {
       <Label paddingBottom={2}>{t('to')}</Label>
       <DomainInput
         userInput={userInput}
-        onChange={(address) => dispatch(updateRecipientUserInput(address))}
-        onValidAddressTyped={async (address) => {
+        onChange={(address: string) =>
+          dispatch(updateRecipientUserInput(address))
+        }
+        onValidAddressTyped={async (address: string) => {
           dispatch(
             addHistoryEntry(`sendFlow - Valid address typed ${address}`),
           );
@@ -44,7 +46,7 @@ export const SendPageRecipientInput = () => {
         internalSearch={isUsingMyAccountsForRecipientSearch}
         selectedAddress={recipient.address}
         selectedName={recipient.nickname}
-        onPaste={(text) => {
+        onPaste={(text: string) => {
           dispatch(
             addHistoryEntry(
               `sendFlow - User pasted ${text} into address field`,
