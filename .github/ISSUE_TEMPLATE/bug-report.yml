@@ -53,6 +53,7 @@ body:
    attributes:
      label: Version
      description: What version of MetaMask are you running? You can find the version in "Settings" > "About"
+     placeholder: "7.1.0"
    validations:
      required: true
  - type: dropdown
