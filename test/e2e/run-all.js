@@ -26,7 +26,7 @@ const getTestPathsForTestDir = async (testDir) => {
     if (itemInDirectory.isDirectory()) {
       const subDirPaths = await getTestPathsForTestDir(fullPath);
       testPaths.push(...subDirPaths);
-    } else if (fullPath.endsWith('.spec.js')) {
+    } else if (fullPath.endsWith('.spec.js') || fullPath.endsWith('.spec.ts')) {
       testPaths.push(fullPath);
     }
   }
