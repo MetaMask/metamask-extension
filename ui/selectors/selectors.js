@@ -107,7 +107,6 @@ import {
 } from './permissions';
 ///: END:ONLY_INCLUDE_IN
 import { createDeepEqualSelector } from './util';
-import internal from 'stream';
 
 /**
  * Returns true if the currently selected network is inaccessible or whether no
