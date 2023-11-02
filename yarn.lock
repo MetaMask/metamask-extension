@@ -4561,28 +4561,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:@metamask-previews/network-controller@15.1.0-preview.08312b7":
-  version: 15.1.0-preview.08312b7
-  resolution: "@metamask-previews/network-controller@npm:15.1.0-preview.08312b7"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/controller-utils": "npm:^5.0.2"
-    "@metamask/eth-json-rpc-infura": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^12.0.0"
-    "@metamask/eth-json-rpc-provider": "npm:^2.2.0"
-    "@metamask/eth-query": "npm:^3.0.1"
-    "@metamask/json-rpc-engine": "npm:^7.1.1"
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
-    "@metamask/utils": "npm:^8.1.0"
-    async-mutex: "npm:^0.2.6"
-    eth-block-tracker: "npm:^8.0.0"
-    immer: "npm:^9.0.6"
-    uuid: "npm:^8.3.2"
-  checksum: cf5f51f758e8bee3df27287addf80a1443c61e755009d6950f61e7c03ebee5a9fecc8dff8e113c8af45ed9e8d739005c3614b067cc10fb538e47f82099ab2f0b
-  languageName: node
-  linkType: hard
-
 "@metamask/network-controller@npm:^10.3.0":
   version: 10.3.1
   resolution: "@metamask/network-controller@npm:10.3.1"
@@ -24779,6 +24757,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^11.0.0"
     "@metamask/eth-keyring-controller": "npm:^13.0.1"
     "@metamask/eth-ledger-bridge-keyring": "npm:^0.15.0"
+    "@metamask/eth-query": "npm:^3.0.1"
     "@metamask/eth-snap-keyring": "npm:^1.0.0"
     "@metamask/eth-token-tracker": "npm:^4.0.0"
     "@metamask/eth-trezor-keyring": "npm:^1.1.0"
@@ -24795,7 +24774,7 @@ __metadata:
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
     "@metamask/name-controller": "npm:^3.0.0"
-    "@metamask/network-controller": "npm:^14.0.0"
+    "@metamask/network-controller": "npm:^15.1.0"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^5.0.0"
@@ -24931,7 +24910,6 @@ __metadata:
     eth-json-rpc-filters: "npm:^6.0.0"
     eth-lattice-keyring: "npm:^0.12.4"
     eth-method-registry: "npm:^2.0.0"
-    eth-query: "npm:^2.1.2"
     eth-rpc-errors: "npm:^4.0.2"
     eth-sig-util: "npm:^3.0.0"
     ethereum-ens-network-map: "npm:^1.0.2"
