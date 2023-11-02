@@ -1,9 +1,9 @@
 const { strict: assert } = require('assert');
-const { withFixtures, defaultGanacheOptions } = require('../helpers');
+const { defaultGanacheOptions, withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
-describe('eth_chainId', function () {
-  it('returns the chain ID of the current network', async function () {
+describe('eth_requestAccounts', function () {
+  it('executes a request accounts json rpc call', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -18,19 +18,21 @@ describe('eth_chainId', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        // eth_chainId
+        // eth_requestAccounts
         await driver.openNewPage(`http://127.0.0.1:8080`);
-        const request = JSON.stringify({
+
+        const requestAccountRequest = JSON.stringify({
           jsonrpc: '2.0',
-          method: 'eth_chainId',
-          params: [],
-          id: 0,
+          method: 'eth_requestAccounts',
         });
-        const result = await driver.executeScript(
-          `return window.ethereum.request(${request})`,
+
+        const requestAccount = await driver.executeScript(
+          `return window.ethereum.request(${requestAccountRequest})`,
         );
 
-        assert.equal(result, '0x539');
+        assert.deepStrictEqual(requestAccount, [
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        ]);
       },
     );
   });

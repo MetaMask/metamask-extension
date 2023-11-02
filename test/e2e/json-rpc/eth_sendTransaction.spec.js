@@ -1,17 +1,11 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { withFixtures, defaultGanacheOptions } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_sendTransaction', function () {
   const ganacheOptions = {
     hardfork: 'london',
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
+    ...defaultGanacheOptions,
   };
   const expectedHash =
     '0x855951a65dcf5949dc54beb032adfb604c52a0a548a0f616799d6873a9521470';
