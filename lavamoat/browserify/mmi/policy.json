@@ -929,7 +929,7 @@
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/eth-query": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "eth-json-rpc-filters>async-mutex": true,
@@ -1027,12 +1027,6 @@
         "eth-ens-namehash": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true
-      }
-    },
-    "@metamask/controller-utils>@metamask/eth-query": {
-      "packages": {
-        "eth-query>json-rpc-random-id": true,
-        "watchify>xtend": true
       }
     },
     "@metamask/controller-utils>@metamask/utils": {
@@ -1292,6 +1286,12 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
+    "@metamask/eth-query": {
+      "packages": {
+        "@metamask/eth-query>json-rpc-random-id": true,
+        "watchify>xtend": true
+      }
+    },
     "@metamask/eth-token-tracker": {
       "globals": {
         "console.warn": true
@@ -1331,7 +1331,7 @@
       "packages": {
         "@metamask/eth-token-tracker>eth-block-tracker>pify": true,
         "@metamask/eth-token-tracker>safe-event-emitter": true,
-        "eth-query": true
+        "eth-json-rpc-filters>eth-query": true
       }
     },
     "@metamask/eth-token-tracker>ethjs": {
@@ -1644,7 +1644,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/gas-fee-controller>@metamask/controller-utils": true,
-        "eth-query": true,
+        "eth-json-rpc-filters>eth-query": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true,
         "uuid": true
@@ -1919,7 +1919,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/eth-query": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
@@ -2025,9 +2025,9 @@
         "setTimeout": true
       },
       "packages": {
+        "@metamask/eth-query>json-rpc-random-id": true,
         "@metamask/network-controller>@metamask/utils": true,
         "@metamask/network-controller>eth-block-tracker>@metamask/safe-event-emitter": true,
-        "eth-query>json-rpc-random-id": true,
         "pify": true
       }
     },
@@ -3959,7 +3959,7 @@
       "packages": {
         "@metamask/safe-event-emitter": true,
         "eth-json-rpc-filters>async-mutex": true,
-        "eth-query": true,
+        "eth-json-rpc-filters>eth-query": true,
         "json-rpc-engine": true,
         "pify": true
       }
@@ -3970,6 +3970,13 @@
       },
       "packages": {
         "mockttp>graphql-tag>tslib": true
+      }
+    },
+    "eth-json-rpc-filters>eth-query": {
+      "packages": {
+        "@metamask/eth-query>json-rpc-random-id": true,
+        "nock>debug": true,
+        "watchify>xtend": true
       }
     },
     "eth-keyring-controller>@metamask/browser-passworder": {
@@ -4218,13 +4225,6 @@
     "eth-method-registry": {
       "packages": {
         "ethjs": true
-      }
-    },
-    "eth-query": {
-      "packages": {
-        "eth-query>json-rpc-random-id": true,
-        "nock>debug": true,
-        "watchify>xtend": true
       }
     },
     "eth-rpc-errors": {
