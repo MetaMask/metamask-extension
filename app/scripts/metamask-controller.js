@@ -178,6 +178,15 @@ import {
   handlePostTransactionBalanceUpdate,
   createTransactionEventFragmentWithTxId,
 } from './lib/transaction/metrics';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  afterTransactionSign as afterTransactionSignMMI,
+  beforeCheckPendingTransaction as beforeCheckPendingTransactionMMI,
+  beforeTransactionPublish as beforeTransactionPublishMMI,
+  beforeTransactionApproveOnInit as beforeTransactionApproveOnInitMMI,
+  getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
+} from './lib/transaction/mmi-hooks';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IN
@@ -1307,9 +1316,24 @@ export default class MetamaskController extends EventEmitter {
       getExternalPendingTransactions:
         this.getExternalPendingTransactions.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      transactionUpdateController: this.transactionUpdateController,
-      ///: END:ONLY_INCLUDE_IN
+      hooks: {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        afterSign: (txMeta, signedEthTx) =>
+          afterTransactionSignMMI(
+            txMeta,
+            signedEthTx,
+            this.transactionUpdateController.addTransactionToWatchList.bind(
+              this,
+            ),
+          ),
+        beforeCheckPendingTransaction:
+          beforeCheckPendingTransactionMMI.bind(this),
+        beforeTransactionApproveOnInit:
+          beforeTransactionApproveOnInitMMI.bind(this),
+        beforePublish: beforeTransactionPublishMMI.bind(this),
+        getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
+        ///: END:ONLY_INCLUDE_IN
+      },
       messenger: this.controllerMessenger.getRestricted({
         name: 'TransactionController',
         allowedActions: [
