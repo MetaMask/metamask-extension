@@ -2575,7 +2575,6 @@ export default class MetamaskController extends EventEmitter {
         return this.networkController.setProviderType(type);
       },
       setActiveNetwork: (networkConfigurationId) => {
-        // shouldnt be required now that we are using the latest sel net ctrl.
         this.selectedNetworkController.setNetworkClientIdForMetamask(
           networkConfigurationId,
         );
