@@ -718,7 +718,7 @@ export default class MetaMetricsController {
     }
 
     if (this.selectedAddres) {
-      mmiProps.selectedAddres = this.selectedAddres;
+      mmiProps.accountAddress = this.selectedAddres;
     }
     ///: END:ONLY_INCLUDE_IN
 
