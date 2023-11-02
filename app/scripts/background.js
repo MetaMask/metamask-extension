@@ -754,10 +754,13 @@ export function setupController(
   }
 
   function getUnapprovedTransactionCount() {
-    const waitingForUnlockCount =
-      controller.appStateController.waitingForUnlock.length;
-    const queuedRequestsCount = controller.queuedRequestController.length();
-    return waitingForUnlockCount + queuedRequestsCount;
+    let count = controller.appStateController.waitingForUnlock.length;
+    if (controller.preferencesController.getUseRequestQueue()) {
+      count += controller.queuedRequestController.length();
+    } else {
+      count += controller.approvalController.getTotalApprovalCount();
+    }
+    return count;
   }
 
   controller.controllerMessenger.subscribe(
