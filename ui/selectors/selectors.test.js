@@ -1,4 +1,6 @@
+import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType, NetworkType } from '@metamask/controller-utils';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
@@ -8,6 +10,7 @@ import {
   OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import * as selectors from './selectors';
+import { getAccountByAddress } from '../helpers/utils/util';
 
 jest.mock('../../shared/modules/network.utils', () => {
   const actual = jest.requireActual('../../shared/modules/network.utils');
@@ -16,6 +19,15 @@ jest.mock('../../shared/modules/network.utils', () => {
     shouldShowLineaMainnet: jest.fn().mockResolvedValue(true),
   };
 });
+
+const modifyStateWithHWKeyring = (keyring) => {
+  const modifiedState = deepClone(mockState);
+  modifiedState.metamask.internalAccounts.accounts[
+    modifiedState.metamask.internalAccounts.selectedAccount
+  ].metadata.keyring.type = keyring;
+
+  return modifiedState;
+};
 
 describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
@@ -28,6 +40,78 @@ describe('Selectors', () => {
       expect(
         selectors.getSelectedAddress({ metamask: { selectedAddress } }),
       ).toStrictEqual(selectedAddress);
+    });
+  });
+
+  describe('#getSelectedInternalAccount', () => {
+    it('returns undefined if selectedAccount is undefined', () => {
+      expect(
+        selectors.getSelectedInternalAccount({
+          metamask: {
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
+          },
+        }),
+      ).toBeUndefined();
+    });
+
+    it('returns selectedAccount', () => {
+      const mockInternalAccount = {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [...Object.values(EthMethod)],
+        type: EthAccountType.Eoa,
+      };
+      expect(
+        selectors.getSelectedInternalAccount({
+          metamask: {
+            internalAccounts: {
+              accounts: {
+                [mockInternalAccount.id]: mockInternalAccount,
+              },
+              selectedAccount: mockInternalAccount.id,
+            },
+          },
+        }),
+      ).toStrictEqual(mockInternalAccount);
+    });
+  });
+
+  describe('#getInternalAccounts', () => {
+    it('returns a list of internal accounts', () => {
+      expect(selectors.getInternalAccounts(mockState)).toStrictEqual(
+        Object.values(mockState.metamask.internalAccounts.accounts),
+      );
+    });
+  });
+
+  describe('#getInternalAccount', () => {
+    it("returns undefined if the account doesn't exist", () => {
+      expect(
+        selectors.getInternalAccount(mockState, 'unknown'),
+      ).toBeUndefined();
+    });
+
+    it('returns the account', () => {
+      expect(
+        selectors.getInternalAccount(
+          mockState,
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        ),
+      ).toStrictEqual(
+        mockState.metamask.internalAccounts.accounts[
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+        ],
+      );
     });
   });
 
@@ -433,37 +517,43 @@ describe('Selectors', () => {
 
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.imported;
-      expect(selectors.isHardwareWallet(mockState)).toBe(false);
+      const mockStateWithImported = modifyStateWithHWKeyring(
+        KeyringType.imported,
+      );
+      expect(selectors.isHardwareWallet(mockStateWithImported)).toBe(false);
     });
 
     it('returns true if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.ledger;
-      expect(selectors.isHardwareWallet(mockState)).toBe(true);
+      const mockStateWithLedger = modifyStateWithHWKeyring(KeyringType.ledger);
+      expect(selectors.isHardwareWallet(mockStateWithLedger)).toBe(true);
     });
 
     it('returns true if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.trezor;
-      expect(selectors.isHardwareWallet(mockState)).toBe(true);
+      const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
+      expect(selectors.isHardwareWallet(mockStateWithTrezor)).toBe(true);
     });
   });
 
   describe('#getHardwareWalletType', () => {
     it('returns undefined if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.imported;
-      expect(selectors.getHardwareWalletType(mockState)).toBeUndefined();
+      const mockStateWithImported = modifyStateWithHWKeyring(
+        KeyringType.imported,
+      );
+      expect(
+        selectors.getHardwareWalletType(mockStateWithImported),
+      ).toBeUndefined();
     });
 
     it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.ledger;
-      expect(selectors.getHardwareWalletType(mockState)).toBe(
+      const mockStateWithLedger = modifyStateWithHWKeyring(KeyringType.ledger);
+      expect(selectors.getHardwareWalletType(mockStateWithLedger)).toBe(
         KeyringType.ledger,
       );
     });
 
     it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.trezor;
-      expect(selectors.getHardwareWalletType(mockState)).toBe(
+      const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
+      expect(selectors.getHardwareWalletType(mockStateWithTrezor)).toBe(
         KeyringType.trezor,
       );
     });
