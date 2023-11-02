@@ -56,26 +56,36 @@ export default function SnapInstallWarning({
     );
   };
 
-  const warningElements = [];
-  for (let i = 0; i < warnings.length; i++) {
-    const warning = warnings[i];
-    if (i > 0) {
-      if (i === warnings.length - 1) {
-        warningElements.push(` ${t('and')} `);
-      } else {
-        warningElements.push(', ');
+  function constructWarningElementString(permissionWarnings) {
+    const warningElements = [];
+    for (let i = 0; i < permissionWarnings.length; i++) {
+      const warning = permissionWarnings[i];
+      if (i > 0) {
+        if (i === permissionWarnings.length - 1) {
+          warningElements.push(` ${t('and')} `);
+        } else {
+          warningElements.push(', ');
+        }
       }
+      warningElements.push(
+        <span key={i}>
+          <Text fontWeight={FontWeight.Medium} as="span">
+            {warning.warningMessageSubject}
+          </Text>
+        </span>,
+      );
     }
-    warningElements.push(
-      <span key={i}>
-        <Text fontWeight={FontWeight.Medium} as="span">
-          {warning.warningMessageSubject}
-        </Text>
-      </span>,
-    );
+    return warningElements;
   }
-  const permissionName = (
-    <Text>{t('snapInstallWarningPermissionName', [warningElements])}</Text>
+
+  // Filter and group warnings based on permission name
+  const bip32PublicKeyPermissionWarnings = warnings.filter(
+    (warning) => warning.permissionName === 'snap_getBip32PublicKey',
+  );
+  const bip32bip44EntropyPermissionWarnings = warnings.filter(
+    (warning) =>
+      warning.permissionName === 'snap_getBip32Entropy' ||
+      warning.permissionName === 'snap_getBip44Entropy',
   );
 
   return (
@@ -123,15 +133,66 @@ export default function SnapInstallWarning({
           </Text>,
         ])}
       </Text>
-      <PermissionCell
-        permissionName={permissionName}
-        title={permissionName}
-        description={t('snapInstallWarningPermissionDescription')}
-        weight={1}
-        avatarIcon={IconName.Key}
-        key="snapInstallWarningPermissionCell"
-        hideStatus
-      />
+      {bip32PublicKeyPermissionWarnings.length > 0 && (
+        <Box as="span">
+          <PermissionCell
+            permissionName={
+              <Text>
+                {t('snapInstallWarningPermissionNameForViewPublicKey', [
+                  constructWarningElementString(
+                    bip32PublicKeyPermissionWarnings,
+                  ),
+                ])}
+              </Text>
+            }
+            title={
+              <Text>
+                {t('snapInstallWarningPermissionNameForViewPublicKey', [
+                  constructWarningElementString(
+                    bip32PublicKeyPermissionWarnings,
+                  ),
+                ])}
+              </Text>
+            }
+            description={t(
+              'snapInstallWarningPermissionDescriptionForBip32View',
+            )}
+            weight={1}
+            avatarIcon={IconName.Key}
+            key="snapInstallWarningPermissionCell"
+            hideStatus
+          />
+        </Box>
+      )}
+      {bip32bip44EntropyPermissionWarnings.length > 0 && (
+        <Box as="span" marginTop={4}>
+          <PermissionCell
+            permissionName={
+              <Text>
+                {t('snapInstallWarningPermissionNameForEntropy', [
+                  constructWarningElementString(
+                    bip32bip44EntropyPermissionWarnings,
+                  ),
+                ])}
+              </Text>
+            }
+            title={
+              <Text>
+                {t('snapInstallWarningPermissionNameForEntropy', [
+                  constructWarningElementString(
+                    bip32bip44EntropyPermissionWarnings,
+                  ),
+                ])}
+              </Text>
+            }
+            description={t('snapInstallWarningPermissionDescriptionForEntropy')}
+            weight={1}
+            avatarIcon={IconName.Key}
+            key="snapInstallWarningPermissionCell"
+            hideStatus
+          />
+        </Box>
+      )}
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.flexStart}

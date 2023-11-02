@@ -4322,12 +4322,20 @@
   "snapInstallWarningHeading": {
     "message": "Proceed with caution"
   },
-  "snapInstallWarningPermissionDescription": {
+  "snapInstallWarningPermissionDescriptionForBip32View": {
+    "message": "Allow the snap to view your public keys (and addresses). This does not grant any control of accounts or assets.",
+    "description": "An extended description for the `snap_getBip32PublicKey` permission used for tooltip on Snap Install Warning screen (popup/modal)."
+  },
+  "snapInstallWarningPermissionDescriptionForEntropy": {
     "message": "Allow the Snap to manage accounts and assets on the requested network(s). These accounts are derived and backed up using your secret recovery phrase (without revealing it). With the power to derive keys, the Snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
     "description": "An extended description for the `snap_getBip44Entropy` and `snap_getBip44Entropy` permissions used for tooltip on Snap Install Warning screen (popup/modal)."
   },
-  "snapInstallWarningPermissionName": {
+  "snapInstallWarningPermissionNameForEntropy": {
     "message": "Manage $1 accounts",
+    "description": "Permission name used for the Permission Cell component displayed on warning popup when installing a Snap. $1 is list of account types."
+  },
+  "snapInstallWarningPermissionNameForViewPublicKey": {
+    "message": "View your public key for $1",
     "description": "Permission name used for the Permission Cell component displayed on warning popup when installing a Snap. $1 is list of account types."
   },
   "snapInstallationErrorDescription": {
