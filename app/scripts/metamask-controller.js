@@ -3222,7 +3222,6 @@ export default class MetamaskController extends EventEmitter {
 
       const ethQuery = new EthQuery(this.provider);
       accounts = await this.keyringController.getAccounts();
-      const firstAccount = accounts[0];
       lastBalance = await this.getBalance(
         accounts[accounts.length - 1],
         ethQuery,
@@ -3259,9 +3258,6 @@ export default class MetamaskController extends EventEmitter {
       this.setLedgerTransportPreference(transportPreference);
 
       this.selectFirstAccount();
-      this.accountsController.setSelectedAccount(
-        this.accountsController.getAccountByAddress(firstAccount).id,
-      );
 
       return vault;
     } finally {
