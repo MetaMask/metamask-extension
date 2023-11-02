@@ -775,6 +775,13 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerNftDetectionEnabled() {
+    return this.withPreferencesController({
+      openSeaEnabled: true,
+      useNftDetection: true,
+    });
+  }
+
   withSmartTransactionsController(data) {
     merge(this.fixture.data.SmartTransactionsController, data);
     return this;

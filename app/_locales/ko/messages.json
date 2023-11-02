@@ -3998,9 +3998,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 사용 가능"
   },
-  "snapUpdate": {
-    "message": "스냅 업데이트"
-  },
   "snapUpdateAvailable": {
     "message": "업데이트 가능"
   },

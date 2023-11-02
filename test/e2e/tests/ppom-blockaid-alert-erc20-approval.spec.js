@@ -177,7 +177,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval @no-mmi', function () {
           .build(),
         defaultGanacheOptions,
         testSpecificMock: mockInfura,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
