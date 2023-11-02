@@ -235,8 +235,13 @@ describe('migration #103', () => {
       });
     });
 
-    it("should leave selectedAccount as empty is there aren't any selectedAddress", async () => {
-      const oldData = createMockState();
+    it("should leave selectedAccount as empty if there aren't any selectedAddress", async () => {
+      const oldData = {
+        PreferencesController: {
+          identities: {},
+          selectedAddress: '',
+        },
+      };
       const oldStorage = {
         meta: { version: 102 },
         data: oldData,
@@ -247,7 +252,7 @@ describe('migration #103', () => {
         AccountsController: {
           internalAccounts: {
             accounts: expect.any(Object),
-            selectedAccount: addressToUUID(MOCK_ADDRESS),
+            selectedAccount: '',
           },
         },
       });
