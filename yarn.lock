@@ -4628,28 +4628,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^15.1.0":
-  version: 15.1.0
-  resolution: "@metamask/network-controller@npm:15.1.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/controller-utils": "npm:^5.0.2"
-    "@metamask/eth-json-rpc-infura": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^12.0.0"
-    "@metamask/eth-json-rpc-provider": "npm:^2.2.0"
-    "@metamask/eth-query": "npm:^3.0.1"
-    "@metamask/json-rpc-engine": "npm:^7.1.1"
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
-    "@metamask/utils": "npm:^8.1.0"
-    async-mutex: "npm:^0.2.6"
-    eth-block-tracker: "npm:^8.0.0"
-    immer: "npm:^9.0.6"
-    uuid: "npm:^8.3.2"
-  checksum: dd4106d8c8b97ab57f9b88e4b94c34a0848097621ef5f72b27f6fd9a2c335a210ff121049df1632ae8e6f6be1c1ed4985da1f951d317318f2fd6fbc716c2f5c8
-  languageName: node
-  linkType: hard
-
 "@metamask/notification-controller@npm:^3.0.0":
   version: 3.0.0
   resolution: "@metamask/notification-controller@npm:3.0.0"
@@ -4791,7 +4769,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^1.0.1":
+"@metamask/polling-controller@npm:^1.0.0, @metamask/polling-controller@npm:^1.0.1":
   version: 1.0.1
   resolution: "@metamask/polling-controller@npm:1.0.1"
   dependencies:
