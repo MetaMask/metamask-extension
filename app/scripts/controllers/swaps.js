@@ -5,7 +5,7 @@ import { ObservableStore } from '@metamask/obs-store';
 import { mapValues, cloneDeep } from 'lodash';
 import abi from 'human-standard-token-abi';
 import { captureException } from '@sentry/browser';
-import { PollingControllerOnly } from '@metamask/polling-controller/dist/PollingController';
+import { PollingControllerOnly } from '@metamask/polling-controller';
 
 import {
   decGWEIToHexWEI,
