@@ -12,7 +12,7 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 
-const Footer = ({
+const ConfirmFooter = ({
   cancelText = 'Cancel',
   confirmText = 'Confirm',
   onCancel,
@@ -45,11 +45,11 @@ const Footer = ({
   );
 };
 
-Footer.propTypes = {
+ConfirmFooter.propTypes = {
   cancelText: PropTypes.string,
   confirmText: PropTypes.string,
   onCancel: PropTypes.func.isRequired,
   onConfirm: PropTypes.func.isRequired,
 };
 
-export default Footer;
+export default ConfirmFooter;
