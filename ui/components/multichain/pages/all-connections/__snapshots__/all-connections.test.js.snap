@@ -61,7 +61,7 @@ exports[`All Connections render renders correctly 1`] = `
           class="mm-box mm-text mm-text--body-md mm-box--width-max mm-box--color-text-alternative"
         >
           1
-           
+
           account
         </p>
         <span
