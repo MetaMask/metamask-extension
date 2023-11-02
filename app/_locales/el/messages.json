@@ -3194,7 +3194,7 @@
   },
   "permission_manageNamedBip32Keys": {
     "message": "Ελέγξτε τους $1 λογαριασμούς σας και τα περιουσιακά σας στοιχεία.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
+    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
   },
   "permission_manageState": {
     "message": "Αποθηκεύστε και διαχειριστείτε τα δεδομένα του στη συσκευή σας.",
