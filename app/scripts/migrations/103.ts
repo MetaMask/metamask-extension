@@ -24,8 +24,8 @@ export const version = 103;
  * This migration does the following:
  *
  * - Creates a default state for AccountsController.
- * - Moves identites and selectedAddress from the PreferencesController to the AccountsController state.
- * - Removes identites and selectedAddress from the PreferencesController
+ * - Copies identities and selectedAddress from the PreferencesController to
+ * the AccountsController state as internal accounts and selectedAccount.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
