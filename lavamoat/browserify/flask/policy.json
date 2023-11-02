@@ -2353,6 +2353,7 @@
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-rpc-methods": true,
+        "@metamask/snaps-ui": true,
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "stream-browserify": true
@@ -2593,6 +2594,9 @@
       }
     },
     "@metamask/snaps-ui": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
         "@metamask/snaps-ui>@metamask/utils": true,
         "@metamask/snaps-ui>is-svg": true,
@@ -2642,6 +2646,7 @@
         "@metamask/key-tree>@scure/base": true,
         "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/snaps-ui": true,
         "@metamask/snaps-ui>is-svg": true,
         "@metamask/snaps-utils>@metamask/utils": true,
         "@metamask/snaps-utils>cron-parser": true,
