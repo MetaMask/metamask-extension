@@ -7,6 +7,16 @@ const {
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 
+async function mockIPFSRequest(mockServer) {
+  return [
+    await mockServer
+      .forGet(
+        'https://bafkreifvhjdf6ve4jfv6qytqtux5nd4nwnelioeiqx5x2ez5yrgrzk7ypi.ipfs.dweb.link/',
+      )
+      .thenCallback(() => ({ statusCode: 200 })),
+  ];
+}
+
 describe('Remove ERC1155 NFT', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
   const ganacheOptions = {
@@ -27,6 +37,7 @@ describe('Remove ERC1155 NFT', function () {
         ganacheOptions,
         smartContract,
         title: this.test.fullTitle(),
+        testSpecificMock: mockIPFSRequest,
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -34,10 +45,7 @@ describe('Remove ERC1155 NFT', function () {
 
         // Open the details page and click remove nft button
         await driver.clickElement('[data-testid="home__nfts-tab"]');
-        const importedNftImage = await driver.findVisibleElement(
-          '.nft-item__container',
-        );
-        await importedNftImage.click();
+        await driver.clickElement('[data-testid="nft-image"]');
         await driver.clickElement('[data-testid="nft-options__button"]');
         await driver.clickElement('[data-testid="nft-item-remove"]');
 
