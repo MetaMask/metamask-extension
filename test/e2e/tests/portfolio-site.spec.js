@@ -35,7 +35,7 @@ describe('Portfolio site', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockPortfolioSite,
       },
       async ({ driver }) => {
@@ -44,7 +44,11 @@ describe('Portfolio site', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // Click Portfolio site
-        await driver.clickElement('[data-testid="eth-overview-portfolio"]');
+        if (process.env.MULTICHAIN) {
+          await driver.clickElement('[data-testid="token-balance-portfolio"]');
+        } else {
+          await driver.clickElement('[data-testid="eth-overview-portfolio"]');
+        }
         await driver.waitUntilXWindowHandles(2);
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('E2E Test Page', windowHandles);
