@@ -45,7 +45,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IN(build-mmi)
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getUnapprovedTransactions,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifySnaps,
@@ -74,7 +74,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const address = useSelector(getSelectedAddress);
+  const account = useSelector(getSelectedInternalAccount);
   const unapprovedTransactons = useSelector(getUnapprovedTransactions);
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -106,12 +106,12 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       <AccountDetailsMenuItem
         metricsLocation={METRICS_LOCATION}
         closeMenu={closeMenu}
-        address={address}
+        address={account.address}
       />
       <ViewExplorerMenuItem
         metricsLocation={METRICS_LOCATION}
         closeMenu={closeMenu}
-        address={address}
+        address={account.address}
       />
       <Box
         borderColor={BorderColor.borderMuted}
