@@ -39,9 +39,13 @@ describe('MetaMask Reducers', () => {
         },
         cachedBalances: {},
         currentBlockGasLimit: '0x4c1878',
-        conversionRate: 1200.88200327,
-        nativeCurrency: 'ETH',
         useCurrencyRateCheck: true,
+        currencyRates: {
+          ETH: {
+            // TestETH ?
+            conversionRate: 1200.88200327,
+          },
+        },
         selectedNetworkClientId: NetworkType.goerli,
         networksMetadata: {
           [NetworkType.goerli]: {

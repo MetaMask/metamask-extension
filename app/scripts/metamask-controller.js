@@ -716,9 +716,7 @@ export default class MetamaskController extends EventEmitter {
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
       name: 'CurrencyRateController',
-      allowedActions: [
-          `${this.networkController.name}:getNetworkClientById`,
-      ]
+      allowedActions: [`${this.networkController.name}:getNetworkClientById`],
     });
     this.currencyRateController = new CurrencyRateController({
       includeUsdRate: true,
@@ -2329,7 +2327,6 @@ export default class MetamaskController extends EventEmitter {
 
     // The vault should not be exposed to the UI
     delete flatState.vault;
-    console.log(flatState);
 
     return {
       isInitialized,

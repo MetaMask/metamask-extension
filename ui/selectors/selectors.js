@@ -756,9 +756,8 @@ export function getInfuraBlocked(state) {
 }
 
 export function getUSDConversionRate(state) {
-  return state.metamask.currencyRates[
-    getProviderConfig(state).ticker
-  ]?.usdConversionRate;
+  return state.metamask.currencyRates[getProviderConfig(state).ticker]
+    ?.usdConversionRate;
 }
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {

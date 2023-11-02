@@ -10,7 +10,6 @@ import {
   checkNetworkAndAccountSupports1559,
   getAddressBook,
   getSelectedNetworkClientId,
-  getUseCurrencyRateCheck,
 } from '../../selectors';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
@@ -50,8 +49,14 @@ const initialState = {
   use4ByteResolution: true,
   participateInMetaMetrics: null,
   nextNonce: null,
-  conversionRate: null,
-  nativeCurrency: 'ETH',
+  currencyRates: {
+    ETH: {
+      conversionRate: null,
+    },
+  },
+  providerConfig: {
+    ticker: 'ETH',
+  },
 };
 
 /**
@@ -280,17 +285,12 @@ export function getBlockGasLimit(state) {
 }
 
 export function getNativeCurrency(state) {
-  console.log("getNativeCurrency", getProviderConfig(state).ticker)
   return getProviderConfig(state).ticker;
 }
 
 export function getConversionRate(state) {
-  console.log("getConversionRate", state.metamask.currencyRates[
-    getProviderConfig(state).ticker
-  ]?.conversionRate)
-  return state.metamask.currencyRates[
-    getProviderConfig(state).ticker
-  ]?.conversionRate;
+  return state.metamask.currencyRates[getProviderConfig(state).ticker]
+    ?.conversionRate;
 }
 
 export function getSendHexDataFeatureFlagState(state) {

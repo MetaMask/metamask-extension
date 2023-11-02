@@ -43,13 +43,14 @@
   "CachedBalancesController": { "cachedBalances": "object" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
-    "conversionDate": "number",
-    "conversionRate": 1700,
-    "nativeCurrency": "ETH",
     "currentCurrency": "usd",
-    "pendingCurrentCurrency": null,
-    "pendingNativeCurrency": null,
-    "usdConversionRate": 1700
+    "currencyRates": {
+      "ETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      }
+    }
   },
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
