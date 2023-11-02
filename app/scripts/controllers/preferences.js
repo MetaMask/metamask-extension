@@ -416,7 +416,7 @@ export default class PreferencesController {
     if (!Array.isArray(addresses) || addresses.length === 0) {
       throw new Error('Expected non-empty array of addresses. Error #11201');
     }
-
+    console.log('1', this.getSelectedAddress(), addresses);
     const { identities, lostIdentities } = this.store.getState();
 
     const newlyLost = {};
@@ -426,7 +426,6 @@ export default class PreferencesController {
         delete identities[identity];
       }
     });
-
     // Identities are no longer present.
     if (Object.keys(newlyLost).length > 0) {
       // store lost accounts
@@ -440,9 +439,8 @@ export default class PreferencesController {
 
     // If the selected account is no longer valid,
     // select an arbitrary other account:
-    let selected = this.getSelectedAddress();
+    const selected = this.getSelectedAddress();
     if (!addresses.includes(selected)) {
-      [selected] = addresses;
       this.setSelectedAddress(selected);
     }
 
@@ -462,9 +460,11 @@ export default class PreferencesController {
     if (!selectedIdentity) {
       throw new Error(`Identity for '${address} not found`);
     }
-
+    console.log({ _address, address, identities });
     selectedIdentity.lastSelected = Date.now();
     this.store.updateState({ identities, selectedAddress: address });
+    console.log('B', this.getSelectedAddress());
+    console.log('C', this.store.getState().identities);
   }
 
   /**
