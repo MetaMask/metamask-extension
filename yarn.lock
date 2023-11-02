@@ -4223,7 +4223,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-provider@npm:^2.1.0":
+"@metamask/eth-json-rpc-provider@npm:^2.1.0, @metamask/eth-json-rpc-provider@npm:^2.2.0":
   version: 2.2.0
   resolution: "@metamask/eth-json-rpc-provider@npm:2.2.0"
   dependencies:
@@ -4628,15 +4628,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@metamask/network-controller@npm:15.0.0"
+"@metamask/network-controller@npm:^15.0.0, @metamask/network-controller@npm:^15.1.0":
+  version: 15.1.0
+  resolution: "@metamask/network-controller@npm:15.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^3.2.3"
     "@metamask/controller-utils": "npm:^5.0.2"
     "@metamask/eth-json-rpc-infura": "npm:^9.0.0"
     "@metamask/eth-json-rpc-middleware": "npm:^12.0.0"
-    "@metamask/eth-json-rpc-provider": "npm:^2.1.0"
+    "@metamask/eth-json-rpc-provider": "npm:^2.2.0"
     "@metamask/eth-query": "npm:^3.0.1"
     "@metamask/json-rpc-engine": "npm:^7.1.1"
     "@metamask/rpc-errors": "npm:^6.1.0"
@@ -4646,7 +4646,7 @@ __metadata:
     eth-block-tracker: "npm:^8.0.0"
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
-  checksum: 8bd51c09b9aee747adbb6d117acfd6035b08c2c72b642bc02b383a96ff2563064de38357970faab44bd80cf804afcf2798dd9d15028789353dbc5ad5c2f84c92
+  checksum: dd4106d8c8b97ab57f9b88e4b94c34a0848097621ef5f72b27f6fd9a2c335a210ff121049df1632ae8e6f6be1c1ed4985da1f951d317318f2fd6fbc716c2f5c8
   languageName: node
   linkType: hard
 
@@ -4788,6 +4788,23 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^15.0.0
   checksum: 978bd41b57a0664fa25af7e3d0a6e580a48c15324e24d9dc2ee9b4dfda19feb1504c9dc327aed654bec999c8a8647826ebbe3ec69e4a7825133cbc3f86ffcb39
+  languageName: node
+  linkType: hard
+
+"@metamask/polling-controller@npm:^1.0.1":
+  version: 1.0.1
+  resolution: "@metamask/polling-controller@npm:1.0.1"
+  dependencies:
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/controller-utils": "npm:^5.0.2"
+    "@metamask/network-controller": "npm:^15.1.0"
+    "@metamask/utils": "npm:^8.1.0"
+    "@types/uuid": "npm:^8.3.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^15.1.0
+  checksum: a3db808306c8e1a5004374c94c459d48519d7091a0dff07925174e93c26e5d608aa2ad33604991d238b559a8754481a461177dfbda9cdf8f79c85a21eda43b67
   languageName: node
   linkType: hard
 
@@ -24784,6 +24801,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^5.0.0"
     "@metamask/phishing-controller": "npm:^7.0.1"
     "@metamask/phishing-warning": "npm:^2.1.0"
+    "@metamask/polling-controller": "npm:^1.0.1"
     "@metamask/post-message-stream": "npm:^6.2.0"
     "@metamask/ppom-validator": "npm:^0.8.0"
     "@metamask/providers": "npm:^13.1.0"

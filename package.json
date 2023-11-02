@@ -267,6 +267,7 @@
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/obs-store": "^8.1.0",
     "@metamask/permission-controller": "^5.0.0",
+    "@metamask/polling-controller": "^1.0.1",
     "@metamask/phishing-controller": "^7.0.1",
     "@metamask/post-message-stream": "^6.2.0",
     "@metamask/ppom-validator": "^0.8.0",
