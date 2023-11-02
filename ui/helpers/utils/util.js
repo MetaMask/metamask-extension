@@ -689,12 +689,13 @@ export const checkTokenIdExists = (address, tokenId, obj) => {
     // Convert to decimal
     convertedTokenId = hexToDecimal(tokenId);
   }
-
-  if (obj[address]) {
-    const value = obj[address];
+  // Convert the input address to checksum address
+  const checkSumAdr = toChecksumHexAddress(address);
+  if (obj[checkSumAdr]) {
+    const value = obj[checkSumAdr];
     return lodash.some(value.nfts, (nft) => {
       return (
-        nft.address === address &&
+        nft.address === checkSumAdr &&
         (isEqualCaseInsensitive(nft.tokenId, tokenId) ||
           isEqualCaseInsensitive(nft.tokenId, convertedTokenId.toString()))
       );
