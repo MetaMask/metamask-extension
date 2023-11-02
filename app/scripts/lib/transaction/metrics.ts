@@ -80,14 +80,10 @@ export type TransactionMetricsRequest = {
     standard?: TokenStandard;
   };
   getTransaction: (transactionId: string) => TransactionMeta;
-<<<<<<< HEAD:app/scripts/lib/transaction/metrics.ts
-  provider: Provider;
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
   trackEvent: (payload: any) => void;
-=======
   snapAndHardwareMessenger: SnapAndHardwareMessenger;
   provider: SafeEventEmitter;
->>>>>>> 76ff6a43af (fixups):app/scripts/lib/transaction-metrics.ts
 };
 
 export const METRICS_STATUS_FAILED = 'failed on-chain';
