@@ -1243,6 +1243,9 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
     });
 
     this.addressBookController = new AddressBookController(
