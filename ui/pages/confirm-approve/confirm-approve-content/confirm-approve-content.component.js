@@ -336,14 +336,21 @@ export default class ConfirmApproveContent extends Component {
             : t('functionApprove')}
         </div>
         {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
-          <div className="confirm-approve-content__small-text">
-            {`${t('parameters')}: ${isApprovalOrRejection}`}
+          <>
+            <div className="confirm-approve-content__small-text">
+              {`${t('parameters')}: ${isApprovalOrRejection}`}
+            </div>
             {
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-              `${t('tokenContractAddress')}: ${tokenAddress}`
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {`${t('tokenContractAddress')}: ${tokenAddress}`}
+              </Text>
               ///: END:ONLY_INCLUDE_IN
             }
-          </div>
+          </>
         ) : null}
         <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
           {data}
