@@ -360,12 +360,12 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             <span
               class="toggle-button__label-off"
             >
-              off
+              Off
             </span>
             <span
               class="toggle-button__label-on"
             >
-              on
+              On
             </span>
           </div>
         </label>
