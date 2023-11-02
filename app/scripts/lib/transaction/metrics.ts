@@ -3,8 +3,8 @@ import EthQuery, { Provider } from '@metamask/eth-query';
 import { BigNumber } from 'bignumber.js';
 import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 
-import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import SafeEventEmitter from '@metamask/safe-event-emitter';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   determineTransactionAssetType,
   isEIP1559Transaction,
