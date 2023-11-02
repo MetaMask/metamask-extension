@@ -164,19 +164,6 @@ export default class PermissionConnect extends Component {
     }
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const { permissionsRequest, targetSubjectMetadata } = props;
-    const { targetSubjectMetadata: savedMetadata } = state;
-
-    if (
-      permissionsRequest &&
-      savedMetadata.origin !== targetSubjectMetadata?.origin
-    ) {
-      return { targetSubjectMetadata };
-    }
-    return null;
-  }
-
   componentDidUpdate(prevProps) {
     const { permissionsRequest, lastConnectedInfo } = this.props;
     const { redirecting, origin } = this.state;
@@ -344,6 +331,7 @@ export default class PermissionConnect extends Component {
       connectPath,
       confirmPermissionPath,
       hideTopBar,
+      targetSubjectMetadata,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       snapsConnectPath,
       snapInstallPath,
@@ -359,7 +347,6 @@ export default class PermissionConnect extends Component {
       selectedAccountAddresses,
       permissionsApproved,
       redirecting,
-      targetSubjectMetadata,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       snapsInstallPrivacyWarningShown,
       ///: END:ONLY_INCLUDE_IN
