@@ -182,6 +182,9 @@ describe('PendingTransactionTracker', function () {
         publishTransaction,
         approveTransaction,
         confirmTransaction: sinon.spy(),
+        hooks: {
+          beforePublish: sinon.stub().returns(false),
+        },
       });
 
       await pendingTxTracker._resubmitTx(txMeta, '0x11' /* 16 */);
@@ -453,6 +456,9 @@ describe('PendingTransactionTracker', function () {
         approveTransaction,
         publishTransaction,
         confirmTransaction: sinon.spy(),
+        hooks: {
+          beforePublish: sinon.stub().returns(false),
+        },
       });
 
       const result = await pendingTxTracker._resubmitTx(txMeta);
@@ -677,6 +683,10 @@ describe('PendingTransactionTracker', function () {
         getCompletedTransactions: sinon.stub().returns([]),
         publishTransaction: sinon.spy(),
         confirmTransaction: sinon.spy(),
+        hooks: {
+          beforePublish: sinon.stub().returns(false),
+          beforeCheckPendingTransaction: sinon.stub().returns(false),
+        },
       });
       const listeners = {
         confirmed: sinon.spy(),
@@ -821,6 +831,10 @@ describe('PendingTransactionTracker', function () {
         getCompletedTransactions: sinon.stub().returns(txs),
         publishTransaction: sinon.spy(),
         confirmTransaction: sinon.spy(),
+        hooks: {
+          beforePublish: sinon.stub().returns(false),
+          beforeCheckPendingTransaction: sinon.stub().returns(false),
+        },
       });
       const listeners = {
         confirmed: sinon.spy(),
@@ -873,6 +887,10 @@ describe('PendingTransactionTracker', function () {
         getCompletedTransactions: sinon.stub().returns([]),
         publishTransaction: sinon.spy(),
         confirmTransaction: sinon.spy(),
+        hooks: {
+          beforePublish: sinon.stub().returns(false),
+          beforeCheckPendingTransaction: sinon.stub().returns(false),
+        },
       });
       const listeners = {
         confirmed: sinon.spy(),
