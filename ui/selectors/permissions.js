@@ -7,7 +7,7 @@ import { getApprovalRequestsByType } from './approvals';
 import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getSubjectMetadata,
   getTargetSubjectMetadata,
 } from '.';
@@ -227,7 +227,7 @@ function subjectSelector(state, origin) {
 }
 
 export function getAccountToConnectToActiveTab(state) {
-  const selectedAddress = getSelectedAddress(state);
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
 
   const {
