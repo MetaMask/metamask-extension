@@ -1915,39 +1915,9 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/phishing-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/phishing-warning>eth-phishing-detect": true,
         "punycode": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/phishing-controller>@metamask/controller-utils>@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
-      }
-    },
-    "@metamask/phishing-controller>@metamask/controller-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/phishing-warning>eth-phishing-detect": {
@@ -2180,6 +2150,9 @@
       }
     },
     "@metamask/snaps-ui": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
         "@metamask/snaps-ui>@metamask/utils": true,
         "@metamask/snaps-ui>is-svg": true,
@@ -2229,6 +2202,7 @@
         "@metamask/key-tree>@scure/base": true,
         "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/snaps-ui": true,
         "@metamask/snaps-ui>is-svg": true,
         "@metamask/snaps-utils>@metamask/utils": true,
         "@metamask/snaps-utils>cron-parser": true,
