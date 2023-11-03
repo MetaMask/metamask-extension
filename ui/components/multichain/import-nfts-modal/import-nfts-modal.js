@@ -24,8 +24,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getIsMainnet,
-  getSelectedInternalAccount,
-  getUseNftDetection,
+  getOpenSeaEnabled,
+  getSelectedAddress,
 } from '../../../selectors';
 import {
   addNftVerifyOwnership,
@@ -52,37 +52,42 @@ import {
   ModalOverlay,
 } from '../../component-library';
 import Tooltip from '../../ui/tooltip';
+import { useNftsCollections } from '../../../hooks/useNftsCollections';
+import { checkTokenIdExists } from '../../../helpers/utils/util';
 
 export const ImportNftsModal = ({ onClose }) => {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
-  const useNftDetection = useSelector(getUseNftDetection);
+  const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
   const isMainnet = useSelector(getIsMainnet);
   const nftsDropdownState = useSelector(getNftsDropdownState);
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
   const {
     tokenAddress: initialTokenAddress,
     tokenId: initialTokenId,
     ignoreErc20Token,
   } = useSelector((state) => state.appState.importNftsModal);
-
+  const existingNfts = useNftsCollections();
   const [nftAddress, setNftAddress] = useState(initialTokenAddress ?? '');
   const [tokenId, setTokenId] = useState(initialTokenId ?? '');
   const [disabled, setDisabled] = useState(true);
   const [nftAddFailed, setNftAddFailed] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
+  const [nftAddressValidationError, setNftAddressValidationError] =
+    useState(null);
+  const [duplicateTokenIdError, setDuplicateTokenIdError] = useState(null);
 
   const handleAddNft = async () => {
     try {
       await dispatch(addNftVerifyOwnership(nftAddress, tokenId));
       const newNftDropdownState = {
         ...nftsDropdownState,
-        [selectedAccount.address]: {
-          ...nftsDropdownState?.[selectedAccount.address],
+        [selectedAddress]: {
+          ...nftsDropdownState?.[selectedAddress],
           [chainId]: {
-            ...nftsDropdownState?.[selectedAccount.address]?.[chainId],
+            ...nftsDropdownState?.[selectedAddress]?.[chainId],
             [nftAddress]: true,
           },
         },
@@ -129,12 +134,32 @@ export const ImportNftsModal = ({ onClose }) => {
   };
 
   const validateAndSetAddress = (val) => {
+    setNftAddressValidationError(null);
+    if (val && !isValidHexAddress(val)) {
+      setNftAddressValidationError(t('invalidAddress'));
+    }
     setDisabled(!isValidHexAddress(val) || !tokenId);
     setNftAddress(val);
   };
 
   const validateAndSetTokenId = (val) => {
-    setDisabled(!isValidHexAddress(nftAddress) || !val || isNaN(Number(val)));
+    setDuplicateTokenIdError(null);
+    // Check if tokenId is already imported
+    const tokenIdExists = checkTokenIdExists(
+      nftAddress,
+      val,
+      existingNfts.collections,
+    );
+    if (tokenIdExists) {
+      setDuplicateTokenIdError(t('nftAlreadyAdded'));
+    }
+    setDisabled(
+      !isValidHexAddress(nftAddress) ||
+        !val ||
+        isNaN(Number(val)) ||
+        tokenIdExists,
+    );
+
     setTokenId(val);
   };
 
@@ -156,9 +181,9 @@ export const ImportNftsModal = ({ onClose }) => {
           {t('importNFT')}
         </ModalHeader>
         <Box>
-          {isMainnet && !useNftDetection ? (
+          {isMainnet && !isDisplayNFTMediaToggleEnabled ? (
             <Box marginTop={6}>
-              <NftsDetectionNoticeImportNFTs />
+              <NftsDetectionNoticeImportNFTs onActionButtonClick={onClose} />
             </Box>
           ) : null}
           {nftAddFailed && (
@@ -202,7 +227,7 @@ export const ImportNftsModal = ({ onClose }) => {
               </Box>
               <FormTextField
                 autoFocus
-                data-testid="address"
+                dataTestId="address"
                 id="address"
                 placeholder="0x..."
                 value={nftAddress}
@@ -210,6 +235,8 @@ export const ImportNftsModal = ({ onClose }) => {
                   validateAndSetAddress(e.target.value);
                   setNftAddFailed(false);
                 }}
+                helpText={nftAddressValidationError}
+                error={Boolean(nftAddressValidationError)}
               />
             </Box>
             <Box>
@@ -234,8 +261,7 @@ export const ImportNftsModal = ({ onClose }) => {
                 </Box>
               </Box>
               <FormTextField
-                autoFocus
-                data-testid="token-id"
+                dataTestId="token-id"
                 id="token-id"
                 placeholder={t('nftTokenIdPlaceholder')}
                 value={tokenId}
@@ -243,6 +269,8 @@ export const ImportNftsModal = ({ onClose }) => {
                   validateAndSetTokenId(e.target.value);
                   setNftAddFailed(false);
                 }}
+                helpText={duplicateTokenIdError}
+                error={duplicateTokenIdError}
               />
             </Box>
           </Box>

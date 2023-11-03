@@ -68,6 +68,7 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
+import getSnapAndHardwareInfoForMetrics from '../../lib/snap-keyring/metrics';
 import TransactionStateManager from './tx-state-manager';
 import TxGasUtil from './tx-gas-utils';
 import PendingTransactionTracker from './pending-tx-tracker';
@@ -154,7 +155,6 @@ export default class TransactionController extends EventEmitter {
     this._getCurrentAccountEIP1559Compatibility =
       opts.getCurrentAccountEIP1559Compatibility;
     this.preferencesStore = opts.preferencesStore || new ObservableStore({});
-    this.getCurrentAccount = opts.getCurrentAccount;
     this.provider = opts.provider;
     this.getPermittedAccounts = opts.getPermittedAccounts;
     this.blockTracker = opts.blockTracker;
@@ -167,10 +167,12 @@ export default class TransactionController extends EventEmitter {
     this.updateEventFragment = opts.updateEventFragment;
     this.finalizeEventFragment = opts.finalizeEventFragment;
     this.getEventFragmentById = opts.getEventFragmentById;
-    this.getDeviceModel = opts.getDeviceModel;
-    this.getAccountType = opts.getAccountType;
     this.getTokenStandardAndDetails = opts.getTokenStandardAndDetails;
     this.securityProviderRequest = opts.securityProviderRequest;
+    this.getSelectedAddress = opts.getSelectedAddress;
+    this.getAccountType = opts.getAccountType;
+    this.getDeviceModel = opts.getDeviceModel;
+    this.snapAndHardwareMessenger = opts.snapAndHardwareMessenger;
     this.messagingSystem = opts.messenger;
     this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
 
@@ -225,7 +227,7 @@ export default class TransactionController extends EventEmitter {
 
     this.incomingTransactionHelper = new IncomingTransactionHelper({
       blockTracker: this.blockTracker,
-      getCurrentAccount: () => this.getCurrentAccount(),
+      getCurrentAccount: () => this.getSelectedAddress(),
       getNetworkState: () => this._getNetworkState(),
       isEnabled: () =>
         Boolean(
@@ -346,7 +348,7 @@ export default class TransactionController extends EventEmitter {
       this._requestTransactionApproval(txMeta, {
         shouldShowRequest: false,
       }).catch((error) => {
-        if (error.code === errorCodes.provider.userRejectedRequest) {
+        if (error?.code === errorCodes.provider.userRejectedRequest) {
           return;
         }
         log.error('Error during persisted transaction approval', error);
@@ -1586,13 +1588,13 @@ export default class TransactionController extends EventEmitter {
 
     if (origin === ORIGIN_METAMASK) {
       // Assert the from address is the selected address
-      if (normalizedTxParams.from !== this.getSelectedAccountAddress()) {
+      if (normalizedTxParams.from !== this.getSelectedAddress()) {
         throw ethErrors.rpc.internal({
           message: `Internally initiated transaction is using invalid account.`,
           data: {
             origin,
             fromAddress: normalizedTxParams.from,
-            selectedAddress: this.getSelectedAccountAddress(),
+            selectedAddress: this.getSelectedAddress(),
           },
         });
       }
@@ -1917,7 +1919,8 @@ export default class TransactionController extends EventEmitter {
     this.getState = () => this.memStore.getState();
 
     /** @returns {string} the user selected address */
-    this.getSelectedAccountAddress = () => this.getCurrentAccount().address;
+    this.getSelectedAddress = () =>
+      this.preferencesStore.getState().selectedAddress;
 
     /** @returns {Array} transactions whos status is unapproved */
     this.getUnapprovedTxCount = () =>
@@ -2496,8 +2499,6 @@ export default class TransactionController extends EventEmitter {
       eip_1559_version: eip1559Version,
       gas_edit_type: 'none',
       gas_edit_attempted: 'none',
-      account_type: await this.getAccountType(this.getSelectedAccountAddress()),
-      device_model: await this.getDeviceModel(this.getSelectedAccountAddress()),
       asset_type: assetType,
       token_standard: tokenStandard,
       transaction_type: transactionType,
@@ -2510,6 +2511,16 @@ export default class TransactionController extends EventEmitter {
         securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
       ///: END:ONLY_INCLUDE_IN
     };
+
+    const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
+      this.getSelectedAddress,
+      this.getAccountType,
+      this.getDeviceModel,
+      this.snapAndHardwareMessenger,
+    );
+
+    // merge the snapAndHardwareInfo into the properties
+    Object.assign(properties, snapAndHardwareInfo);
 
     if (transactionContractMethod === contractMethodNames.APPROVE) {
       properties = {

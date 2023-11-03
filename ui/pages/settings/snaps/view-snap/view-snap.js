@@ -17,15 +17,19 @@ import {
 import SnapAuthorshipExpanded from '../../../../components/app/snaps/snap-authorship-expanded';
 import Box from '../../../../components/ui/box';
 import SnapRemoveWarning from '../../../../components/app/snaps/snap-remove-warning';
-import KeyringSnapRemovalWarning from '../../../../components/app/snaps/keyring-snap-removal-warning';
-import KeyringSnapRemovalResult from '../../../../components/app/snaps/keyring-snap-removal-result';
 import ConnectedSitesList from '../../../../components/app/connected-sites-list';
-
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import KeyringSnapRemovalWarning from '../../../../components/app/snaps/keyring-snap-removal-warning';
+///: END:ONLY_INCLUDE_IN
 import { SNAPS_LIST_ROUTE } from '../../../../helpers/constants/routes';
 import {
   removeSnap,
   removePermissionsFor,
   updateCaveat,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  showKeyringSnapRemovalModal,
+  getSnapAccountsById,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../../store/actions';
 import {
   getSnaps,
@@ -33,19 +37,18 @@ import {
   getPermissions,
   getPermissionSubjects,
   getTargetSubjectMetadata,
-  getInternalAccounts,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  getMemoizedMetaMaskIdentities,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../../selectors';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { Text } from '../../../../components/component-library';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { SnapDelineator } from '../../../../components/app/snaps/snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
-
-const KeyringSnapRemovalResultStatus = {
-  Success: 'success',
-  Failed: 'failed',
-  None: 'none',
-};
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { KeyringSnapRemovalResultStatus } from './constants';
+///: END:ONLY_INCLUDE_IN
 
 function ViewSnap() {
   const t = useI18nContext();
@@ -59,14 +62,18 @@ function ViewSnap() {
   const snap = Object.entries(snaps)
     .map(([_, snapState]) => snapState)
     .find((snapState) => snapState.id === decodedSnapId);
-  const internalAccounts = useSelector(getInternalAccounts);
 
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
-  const [removeKeyringSnapResult, setRemoveKeyringSnapResult] = useState({
-    result: KeyringSnapRemovalResultStatus.None,
-  });
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false);
+  // eslint-disable-next-line no-unused-vars -- Main build does not use setIsRemovingKeyringSnap
+  const [isRemovingKeyringSnap, setIsRemovingKeyringSnap] = useState(false);
+
+  // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
+  const [keyringAccounts, setKeyringAccounts] = useState([]);
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  const identities = useSelector(getMemoizedMetaMaskIdentities);
+  ///: END:ONLY_INCLUDE_IN
 
   useEffect(() => {
     if (!snap) {
@@ -92,15 +99,25 @@ function ViewSnap() {
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snap?.id),
   );
-  const isKeyringSnap = Boolean(
-    subjects[snap?.id]?.permissions?.snap_manageAccounts,
-  );
-  const keyringAccounts = internalAccounts.filter(
-    (internalAccount) =>
-      isKeyringSnap &&
-      internalAccount.metadata.keyring.type === 'Snap Keyring' &&
-      internalAccount.metadata.snap.id === snap?.id,
-  );
+
+  let isKeyringSnap = false;
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  isKeyringSnap = Boolean(subjects[snap?.id]?.permissions?.snap_manageAccounts);
+
+  useEffect(() => {
+    if (isKeyringSnap) {
+      (async () => {
+        const addresses = await getSnapAccountsById(snap.id);
+        const snapIdentities = Object.values(identities).filter((identity) =>
+          addresses.includes(identity.address.toLowerCase()),
+        );
+        setKeyringAccounts(snapIdentities);
+      })();
+    }
+  }, [snap?.id, identities, isKeyringSnap]);
+
+  ///: END:ONLY_INCLUDE_IN
+
   const dispatch = useDispatch();
 
   const onDisconnect = (connectedOrigin, snapId) => {
@@ -202,6 +219,7 @@ function ViewSnap() {
             onClick={() => setIsShowingRemoveWarning(true)}
           >
             <Text
+              data-testid="remove-snap-button"
               variant={TextVariant.bodyMd}
               color={TextColor.errorDefault}
               flexWrap={FLEX_WRAP.NO_WRAP}
@@ -212,48 +230,59 @@ function ViewSnap() {
             </Text>
           </Button>
           <SnapRemoveWarning
-            isOpen={isShowingRemoveWarning && !isKeyringSnap}
-            keyringAccounts={keyringAccounts}
-            snapUrl={snap.url}
+            isOpen={
+              isShowingRemoveWarning &&
+              (!isKeyringSnap || keyringAccounts.length === 0) &&
+              !isRemovingKeyringSnap
+            }
             onCancel={() => setIsShowingRemoveWarning(false)}
             onSubmit={async () => {
               await dispatch(removeSnap(snap.id));
             }}
             snapName={snapName}
           />
-          <KeyringSnapRemovalWarning
-            snap={snap}
-            keyringAccounts={keyringAccounts}
-            snapUrl={snap.url}
-            onCancel={() => setIsShowingRemoveWarning(false)}
-            onClose={() => setIsShowingRemoveWarning(false)}
-            onBack={() => setIsShowingRemoveWarning(false)}
-            onSubmit={async () => {
-              try {
-                await dispatch(removeSnap(snap.id));
-                setRemoveKeyringSnapResult({
-                  result: KeyringSnapRemovalResultStatus.Success,
-                });
-              } catch (e) {
-                setRemoveKeyringSnapResult({
-                  result: KeyringSnapRemovalResultStatus.Failed,
-                });
-              } finally {
-                setIsShowingRemoveWarning(false);
-              }
-            }}
-            isOpen={isShowingRemoveWarning && isKeyringSnap}
-          />
-          <KeyringSnapRemovalResult
-            snapName={snap.manifest.proposedName}
-            result={removeKeyringSnapResult.result}
-            isOpen={removeKeyringSnapResult.result !== 'none'}
-            onClose={() =>
-              setRemoveKeyringSnapResult({
-                result: KeyringSnapRemovalResultStatus.None,
-              })
-            }
-          />
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+            <>
+              <KeyringSnapRemovalWarning
+                snap={snap}
+                keyringAccounts={keyringAccounts}
+                snapUrl={snap.url}
+                onCancel={() => setIsShowingRemoveWarning(false)}
+                onClose={() => setIsShowingRemoveWarning(false)}
+                onBack={() => setIsShowingRemoveWarning(false)}
+                onSubmit={async () => {
+                  try {
+                    setIsRemovingKeyringSnap(true);
+                    await dispatch(removeSnap(snap.id));
+                    setIsShowingRemoveWarning(false);
+                    dispatch(
+                      showKeyringSnapRemovalModal({
+                        snapName,
+                        result: KeyringSnapRemovalResultStatus.Success,
+                      }),
+                    );
+                  } catch {
+                    setIsShowingRemoveWarning(false);
+                    dispatch(
+                      showKeyringSnapRemovalModal({
+                        snapName,
+                        result: KeyringSnapRemovalResultStatus.Failed,
+                      }),
+                    );
+                  } finally {
+                    setIsRemovingKeyringSnap(false);
+                  }
+                }}
+                isOpen={
+                  isShowingRemoveWarning &&
+                  isKeyringSnap &&
+                  keyringAccounts.length > 0
+                }
+              />
+            </>
+            ///: END:ONLY_INCLUDE_IN
+          }
         </Box>
       </Box>
     </Box>

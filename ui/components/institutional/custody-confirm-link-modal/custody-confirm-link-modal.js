@@ -49,7 +49,7 @@ const CustodyConfirmLink = ({ hideModal }) => {
   const { custodianName } =
     custodyAccountDetails[toChecksumHexAddress(address)] || {};
   const { displayName, iconUrl } =
-    custodians.find((item) => item.name === custodianName) || {};
+    custodians.find((item) => item.envName === custodianName) || {};
   const { url, ethereum, text, action } = useSelector(
     (state) => state.appState.modal.modalState.props.link || {},
   );

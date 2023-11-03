@@ -50,6 +50,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   getCompletedOnboarding,
+  getIsUnlocked,
   isLineaMainnetNetworkReleased,
 } from '../../../ducks/metamask/metamask';
 
@@ -75,7 +76,7 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const lineaMainnetReleased = useSelector(isLineaMainnetNetworkReleased);
 
-  const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
+  const isUnlocked = useSelector(getIsUnlocked);
 
   const showSearch = nonTestNetworks.length > 3;
 

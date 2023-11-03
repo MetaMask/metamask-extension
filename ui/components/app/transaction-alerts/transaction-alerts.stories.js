@@ -98,6 +98,11 @@ export default {
   },
   args: {
     userAcknowledgedGasMissing: false,
+    txData: {
+      txParams: {
+        value: '0x1',
+      },
+    },
   },
 };
 
@@ -121,6 +126,15 @@ export const DefaultStory = (args) => (
   </Provider>
 );
 DefaultStory.storyName = 'Default';
+DefaultStory.args = {
+  ...DefaultStory.args,
+  txData: {
+    txParams: {
+      value: '0x0',
+    },
+    type: 'simpleSend',
+  },
+};
 
 export const SimulationError = (args) => (
   <Provider store={customStore({ supportsEIP1559: true })}>
@@ -170,3 +184,20 @@ export const BusyNetwork = (args) => (
   </Provider>
 );
 BusyNetwork.storyName = 'BusyNetwork';
+
+export const SendingZeroAmount = (args) => (
+  <Provider store={customStore()}>
+    <GasFeeContextProvider transaction={customTransaction()}>
+      <TransactionAlerts {...args} />
+    </GasFeeContextProvider>
+  </Provider>
+);
+SendingZeroAmount.storyName = 'SendingZeroAmount';
+SendingZeroAmount.args = {
+  txData: {
+    txParams: {
+      value: '0x0',
+    },
+    type: 'simpleSend',
+  },
+};

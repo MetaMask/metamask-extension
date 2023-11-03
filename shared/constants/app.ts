@@ -77,6 +77,14 @@ export const SNAP_DIALOG_TYPES = {
 };
 ///: END:ONLY_INCLUDE_IN
 
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
+  confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
+  confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',
+  showSnapAccountRedirect: 'showSnapAccountRedirect',
+};
+///: END:ONLY_INCLUDE_IN
+
 /**
  * Custom messages to send and be received by the extension
  */

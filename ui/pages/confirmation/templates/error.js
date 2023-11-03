@@ -10,13 +10,14 @@ import {
   IconColor,
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
-import { processError } from '../util';
+import { processError, processHeader } from '../util';
 
 function getValues(pendingApproval, t, actions, _history) {
   return {
     content: [
+      ...(processHeader(pendingApproval.requestData.header) ?? []),
       {
-        key: 'header',
+        key: 'container',
         element: 'Box',
         props: {
           flexDirection: FlexDirection.Column,
@@ -25,7 +26,6 @@ function getValues(pendingApproval, t, actions, _history) {
           padding: 4,
         },
         children: [
-          ...(pendingApproval.requestData.header || []),
           {
             key: 'content',
             element: 'Box',
@@ -66,6 +66,7 @@ function getValues(pendingApproval, t, actions, _history) {
                 props: {
                   alignItems: AlignItems.center,
                   textAlign: TextAlign.Center,
+                  gap: 1,
                 },
                 children: processError(
                   pendingApproval.requestData.error,

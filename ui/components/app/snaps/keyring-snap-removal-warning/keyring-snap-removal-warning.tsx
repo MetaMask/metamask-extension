@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { InternalAccount } from '@metamask/keyring-api';
+import React, { useState, useEffect } from 'react';
 import { getAccountLink } from '@metamask/etherscan-link';
 import { Snap } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
@@ -34,16 +33,16 @@ export default function KeyringRemovalSnapWarning({
   keyringAccounts,
   onCancel,
   onClose,
-  onBack,
   onSubmit,
+  onBack,
   isOpen,
 }: {
   snap: Snap;
-  keyringAccounts: InternalAccount[];
+  keyringAccounts: { name: string; address: string }[];
   onCancel: () => void;
   onClose: () => void;
-  onBack: () => void;
   onSubmit: () => void;
+  onBack: () => void;
   isOpen: boolean;
 }) {
   const t = useI18nContext();
@@ -52,6 +51,10 @@ export default function KeyringRemovalSnapWarning({
   const [confirmationInput, setConfirmationInput] = useState('');
   const [error, setError] = useState(false);
   const { chainId } = useSelector(getProviderConfig);
+
+  useEffect(() => {
+    setShowConfirmation(keyringAccounts.length === 0);
+  }, [keyringAccounts]);
 
   const validateConfirmationInput = (input: string): boolean => {
     setError(false);
@@ -75,8 +78,11 @@ export default function KeyringRemovalSnapWarning({
         >
           <ModalHeader
             onBack={() => {
-              setShowConfirmation(false);
-              onBack();
+              if (showConfirmation) {
+                setShowConfirmation(false);
+              } else {
+                onBack();
+              }
             }}
             onClose={() => {
               setShowConfirmation(false);
@@ -162,7 +168,7 @@ export default function KeyringRemovalSnapWarning({
               size={ButtonSize.Lg}
               onClick={onCancel}
             >
-              {t('nevermind')}
+              {t('cancel')}
             </Button>
             <Button
               block

@@ -1,7 +1,5 @@
 .edit-gas-popover {
-  &__wrapper {
-    @include screen-sm-min {
-      max-height: 84vh;
-    }
+  &__edit-gas-display {
+    position: relative;
   }
 }

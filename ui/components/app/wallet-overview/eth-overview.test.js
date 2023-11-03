@@ -2,8 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import EthOverview from './eth-overview';
@@ -30,8 +33,9 @@ describe('EthOverview', () => {
   const mockStore = {
     metamask: {
       providerConfig: {
-        type: 'test',
         chainId: CHAIN_IDS.MAINNET,
+        nickname: MAINNET_DISPLAY_NAME,
+        type: NETWORK_TYPES.MAINNET,
       },
       cachedBalances: {
         '0x1': {
@@ -43,43 +47,18 @@ describe('EthOverview', () => {
       },
       useCurrencyRateCheck: true,
       conversionRate: 2,
+      identities: {
+        '0x1': {
+          address: '0x1',
+        },
+      },
       accounts: {
         '0x1': {
           address: '0x1',
           balance: '0x1F4',
         },
       },
-      internalAccounts: {
-        accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-            address: '0x1',
-            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-            metadata: {
-              name: 'Account 1',
-              keyring: {
-                type: KeyringType.imported,
-              },
-            },
-            options: {},
-            methods: [...Object.values(EthMethod)],
-            type: EthAccountType.Eoa,
-          },
-          'e9b992f9-e151-4317-b8b7-c771bb73dd02': {
-            address: '0x2',
-            id: 'e9b992f9-e151-4317-b8b7-c771bb73dd02',
-            metadata: {
-              name: 'Account 2',
-              keyring: {
-                type: KeyringType.imported,
-              },
-            },
-            options: {},
-            methods: [...Object.values(EthMethod)],
-            type: EthAccountType.Eoa,
-          },
-        },
-        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      },
+      selectedAddress: '0x1',
       keyrings: [
         {
           type: KeyringType.imported,
@@ -222,31 +201,18 @@ describe('EthOverview', () => {
       const mockedStoreWithCustodyKeyring = {
         metamask: {
           ...mockStore.metamask,
-          internalAccounts: {
-            ...mockStore.metamask.internalAccounts,
-            accounts: {
-              ...mockStore.metamask.internalAccounts.accounts,
-              [mockStore.metamask.internalAccounts.selectedAccount]: {
-                ...mockStore.metamask.internalAccounts.accounts[
-                  mockStore.metamask.internalAccounts.selectedAccount
-                ],
-                metadata: {
-                  ...mockStore.metamask.internalAccounts.accounts[
-                    mockStore.metamask.internalAccounts.selectedAccount
-                  ].metadata,
-                  keyring: {
-                    type: 'Custody',
-                  },
-                },
-              },
-            },
-          },
           mmiConfiguration: {
             portfolio: {
               enabled: true,
               url: 'https://metamask-institutional.io',
             },
           },
+          keyrings: [
+            {
+              type: 'Custody',
+              accounts: ['0x1'],
+            },
+          ],
         },
       };
 
@@ -395,7 +361,9 @@ describe('EthOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_button`),
+          url: expect.stringContaining(
+            `/buy?metamaskEntry=ext_buy_sell_button`,
+          ),
         }),
       );
     });

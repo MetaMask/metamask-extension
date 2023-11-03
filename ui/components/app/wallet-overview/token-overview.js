@@ -58,7 +58,7 @@ const TokenOverview = ({ className, token }) => {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
-  const { tokensWithBalances } = useTokenTracker([token]);
+  const { tokensWithBalances } = useTokenTracker({ tokens: [token] });
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const keyring = useSelector(getCurrentKeyring);
   const usingHardwareWallet = isHardwareKeyring(keyring.type);
@@ -139,9 +139,12 @@ const TokenOverview = ({ className, token }) => {
             <IconButton
               className="token-overview__button"
               Icon={
-                <Icon name={IconName.Add} color={IconColor.primaryInverse} />
+                <Icon
+                  name={IconName.PlusMinus}
+                  color={IconColor.primaryInverse}
+                />
               }
-              label={t('buy')}
+              label={t('buyAndSell')}
               data-testid="token-overview-buy"
               onClick={() => {
                 openBuyCryptoInPdapp();

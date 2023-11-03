@@ -37,6 +37,7 @@ import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wall
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
+import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -44,6 +45,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { getUseBlockie } from '../../../selectors';
+import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
@@ -63,7 +65,7 @@ function getLabel(keyring = {}, t) {
       return HardwareKeyringNames.lattice;
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     case KeyringType.snap:
-      return t('snaps');
+      return `${t('snaps')} (${t('beta')})`;
     ///: END:ONLY_INCLUDE_IN
     default:
       return null;
@@ -71,7 +73,7 @@ function getLabel(keyring = {}, t) {
 }
 
 export const AccountListItem = ({
-  account,
+  identity,
   selected = false,
   onClick,
   closeMenu,
@@ -88,6 +90,11 @@ export const AccountListItem = ({
     setAccountListItemMenuElement(ref);
   };
 
+  const { totalWeiBalance } = useAccountTotalFiatBalance(identity.address);
+  const balanceToTranslate = process.env.MULTICHAIN
+    ? totalWeiBalance
+    : identity.balance;
+
   // If this is the selected item in the Account menu,
   // scroll the item into view
   const itemRef = useRef(null);
@@ -97,13 +104,10 @@ export const AccountListItem = ({
     }
   }, [itemRef, selected]);
 
-  const { keyring } = account.metadata;
-  const isRemovable =
-    keyring.type !== KeyringType.hdKeyTree && keyring.type !== KeyringType.snap;
-  const label =
-    keyring.type === KeyringType.snap
-      ? account.metadata.snap.name
-      : getLabel(keyring, t);
+  const keyring = useSelector((state) =>
+    findKeyringForAddress(state, identity.address),
+  );
+  const label = getLabel(keyring, t);
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -135,7 +139,7 @@ export const AccountListItem = ({
       <AvatarAccount
         borderColor={BorderColor.transparent}
         size={Size.SM}
-        address={account.address}
+        address={identity.address}
         variant={
           useBlockie
             ? AvatarAccountVariant.Blockies
@@ -171,17 +175,16 @@ export const AccountListItem = ({
                 textAlign={TextAlign.Left}
                 ellipsis
               >
-                {account.metadata.name.length >
-                MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
+                {identity.name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
                   <Tooltip
-                    title={account.metadata.name}
+                    title={identity.name}
                     position="bottom"
                     wrapperClassName="multichain-account-list-item__tooltip"
                   >
-                    {account.metadata.name}
+                    {identity.name}
                   </Tooltip>
                 ) : (
-                  account.metadata.name
+                  identity.name
                 )}
               </Text>
             </Box>
@@ -197,7 +200,7 @@ export const AccountListItem = ({
             >
               <UserPreferencedCurrencyDisplay
                 ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={account.balance}
+                value={balanceToTranslate}
                 type={PRIMARY}
               />
             </Text>
@@ -217,7 +220,7 @@ export const AccountListItem = ({
               />
             ) : null}
             <Text variant={TextVariant.bodySm} color={Color.textAlternative}>
-              {shortenAddress(toChecksumHexAddress(account.address))}
+              {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
           </Box>
           <Text
@@ -228,7 +231,7 @@ export const AccountListItem = ({
           >
             <UserPreferencedCurrencyDisplay
               ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-              value={account.balance}
+              value={balanceToTranslate}
               type={SECONDARY}
             />
           </Text>
@@ -244,7 +247,7 @@ export const AccountListItem = ({
         ) : null}
       </Box>
       <ButtonIcon
-        ariaLabel={`${account.metadata.name} ${t('options')}`}
+        ariaLabel={`${identity.name} ${t('options')}`}
         iconName={IconName.MoreVertical}
         size={IconSize.Sm}
         ref={setAccountListItemMenuRef}
@@ -265,10 +268,10 @@ export const AccountListItem = ({
       />
       <AccountListItemMenu
         anchorElement={accountListItemMenuElement}
-        account={account}
+        identity={identity}
         onClose={() => setAccountOptionsMenuOpen(false)}
         isOpen={accountOptionsMenuOpen}
-        isRemovable={isRemovable}
+        isRemovable={keyring?.type !== KeyringType.hdKeyTree}
         closeMenu={closeMenu}
       />
     </Box>
@@ -277,23 +280,12 @@ export const AccountListItem = ({
 
 AccountListItem.propTypes = {
   /**
-   * Account object
+   * Identity of the account
    */
-  account: PropTypes.shape({
-    id: PropTypes.string.isRequired,
+  identity: PropTypes.shape({
+    name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
-    metadata: PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      snap: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string,
-        enabled: PropTypes.bool,
-      }),
-      keyring: PropTypes.shape({
-        type: PropTypes.string.isRequired,
-      }).isRequired,
-    }).isRequired,
   }).isRequired,
   /**
    * Represents if this account is currently selected

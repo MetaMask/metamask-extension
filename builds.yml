@@ -17,6 +17,8 @@ buildTypes:
     features:
       - build-main
       - snaps
+      - keyring-snaps
+      - blockaid
     # Additional env variables that are specific to this build
     env:
       - INFURA_PROD_PROJECT_ID
@@ -25,8 +27,8 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - KEYRING_API_ENABLED: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/2.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/3.0.0/index.html
+      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
     # Main build uses the default browser manifest
     manifestOverrides: false
 
@@ -38,7 +40,6 @@ buildTypes:
       - SEGMENT_BETA_WRITE_KEY
       - INFURA_ENV_KEY_REF: INFURA_BETA_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_BETA_WRITE_KEY
-      - KEYRING_API_ENABLED: false
     # Modifies how the version is displayed.
     # eg. instead of 10.25.0 -> 10.25.0-beta.2
     isPrerelease: true
@@ -60,12 +61,12 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/2.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/3.0.0/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
-      - KEYRING_API_ENABLED: true
+      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/dev/registry.json
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
 
@@ -80,12 +81,12 @@ buildTypes:
       - SEGMENT_FLASK_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: true
       - REQUIRE_SNAPS_ALLOWLIST: false
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/2.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/3.0.0/index.html
       - SUPPORT_LINK: https://metamask-flask.zendesk.com/hc
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
-      - KEYRING_API_ENABLED: false
+      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
     isPrerelease: true
     manifestOverrides: ./app/build-types/desktop/manifest/
 
@@ -100,11 +101,10 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_MMI_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/2.0.1/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.consensys.io/3.0.0/index.html
       - MMI_CONFIGURATION_SERVICE_URL: https://configuration.metamask-institutional.io/v2/configuration/default
       - SUPPORT_LINK: https://mmi-support.zendesk.com/hc/en-us
       - SUPPORT_REQUEST_LINK: https://mmi-support.zendesk.com/hc/en-us/requests/new
-      - KEYRING_API_ENABLED: false
     # For some reason, MMI uses this type of versioning
     # Leaving it on for backwards compatibility
     isPrerelease: true
@@ -123,7 +123,6 @@ features:
       # Whether to verify that a snap can be installed using an allow list
       - REQUIRE_SNAPS_ALLOWLIST
       - IFRAME_EXECUTION_ENVIRONMENT_URL
-      - KEYRING_API_ENABLED
     assets:
       - ./{app,shared,ui}/**/snaps/**
   desktop:
@@ -162,8 +161,6 @@ features:
         dest: images
       - ./{app,shared,ui}/**/flask/**
   keyring-snaps:
-    env:
-      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
     assets:
       - ./{app,shared,ui}/**/keyring-snaps/**
 
@@ -236,6 +233,12 @@ env:
   - METAMASK_VERSION
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - METAMASK_BUILD_TYPE
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_NAME
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_APP_ID
+  # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
+  - METAMASK_BUILD_ICON
   # Modified in <root>/development/build/scripts.js:@setEnvironmentVariables
   - NODE_ENV
   # Defined by node itself

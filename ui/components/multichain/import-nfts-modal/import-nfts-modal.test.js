@@ -189,4 +189,20 @@ describe('ImportNftsModal', () => {
 
     expect(useHistory().push).toHaveBeenCalledWith(DEFAULT_ROUTE);
   });
+
+  it('should set error message when address invalid', () => {
+    const onClose = jest.fn();
+    const { getByText, getByPlaceholderText } = renderWithProvider(
+      <ImportNftsModal onClose={onClose} />,
+      store,
+    );
+
+    const addressInput = getByPlaceholderText('0x...');
+    fireEvent.change(addressInput, {
+      target: { value: INVALID_ADDRESS },
+    });
+
+    const errorMessage = getByText('Invalid address');
+    expect(errorMessage).toBeInTheDocument();
+  });
 });

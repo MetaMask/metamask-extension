@@ -31,23 +31,8 @@ export default {
     keyringAccounts: [
       {
         address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
-        id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
-        metadata: {
-          name: 'Test Account 2',
-          keyring: {
-            type: 'HD Key Tree',
-          },
-        },
-        options: {},
-        methods: [
-          'personal_sign',
-          'eth_sign',
-          'eth_signTransaction',
-          'eth_signTypedData_v1',
-          'eth_signTypedData_v3',
-          'eth_signTypedData_v4',
-        ],
-        type: 'eip155:eoa',
+
+        name: 'Test Account 2',
       },
     ],
   },

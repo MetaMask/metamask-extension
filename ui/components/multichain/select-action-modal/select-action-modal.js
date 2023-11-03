@@ -105,12 +105,12 @@ export const SelectActionModal = ({ onClose }) => {
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             <SelectActionModalItem
-              actionIcon={IconName.Add}
+              actionIcon={IconName.PlusMinus}
               showIcon
-              primaryText={t('buy')}
-              secondaryText={t('buyDescription')}
+              primaryText={t('buyAndSell')}
+              secondaryText={t('buyAndSellDescription')}
               disabled={!isBuyableChain}
-              tooltipTitle={t('buyDisabled')}
+              tooltipTitle={t('buyAndSellDisabled')}
               onClick={() => {
                 openBuyCryptoInPdapp();
                 trackEvent({

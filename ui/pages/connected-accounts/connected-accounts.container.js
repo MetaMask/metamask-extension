@@ -2,14 +2,17 @@ import { connect } from 'react-redux';
 import {
   getAccountToConnectToActiveTab,
   getOrderedConnectedAccountsForActiveTab,
+  getOriginOfCurrentTab,
   getPermissionsForActiveTab,
-  getSelectedInternalAccount,
+  getPermissionSubjects,
+  getSelectedAddress,
+  getSubjectMetadata,
 } from '../../selectors';
 import { isExtensionUrl } from '../../helpers/utils/util';
 import {
   addPermittedAccount,
   removePermittedAccount,
-  setSelectedAccount,
+  setSelectedAddress,
 } from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ConnectedAccounts from './connected-accounts.component';
@@ -19,7 +22,10 @@ const mapStateToProps = (state) => {
   const accountToConnect = getAccountToConnectToActiveTab(state);
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
   const permissions = getPermissionsForActiveTab(state);
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const selectedAddress = getSelectedAddress(state);
+  const subjectMetadata = getSubjectMetadata(state);
+  const originOfActiveTab = getOriginOfCurrentTab(state);
+  const permissionSubjects = getPermissionSubjects(state);
 
   const isActiveTabExtension = isExtensionUrl(activeTab);
   return {
@@ -30,6 +36,9 @@ const mapStateToProps = (state) => {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     permissions,
     selectedAddress,
+    subjectMetadata,
+    originOfActiveTab,
+    permissionSubjects,
   };
 };
 
@@ -39,7 +48,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(addPermittedAccount(origin, address)),
     removePermittedAccount: (origin, address) =>
       dispatch(removePermittedAccount(origin, address)),
-    setSelectedAccount: (accountId) => dispatch(setSelectedAccount(accountId)),
+    setSelectedAddress: (address) => dispatch(setSelectedAddress(address)),
   };
 };
 

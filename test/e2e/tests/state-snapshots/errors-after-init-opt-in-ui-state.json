@@ -80,7 +80,6 @@
       }
     },
     "cachedBalances": "object",
-    "keyringTypes": "object",
     "keyrings": "object",
     "useNonceField": false,
     "usePhishDetect": true,
@@ -92,6 +91,8 @@
     "useNftDetection": false,
     "useCurrencyRateCheck": true,
     "openSeaEnabled": false,
+    "securityAlertsEnabled": "boolean",
+    "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "incomingTransactionsPreferences": {},
     "selectedAddress": "string",
@@ -103,6 +104,7 @@
     "snapRegistryList": "object",
     "transactionSecurityCheckEnabled": false,
     "theme": "light",
+    "snapsAddSnapAccountModalDismissed": "boolean",
     "isLineaMainnetReleased": true,
     "metaMetricsId": "fake-metrics-id",
     "eventsBeforeMetricsOptIn": "object",
@@ -195,7 +197,12 @@
     "ensResolutionsByAddress": "object",
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
-    "approvalFlows": "object"
+    "approvalFlows": "object",
+    "versionInfo": {},
+    "storageMetadata": {},
+    "chainStatus": {
+      "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
+    }
   },
   "send": "object",
   "swaps": "object",

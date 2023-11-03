@@ -43,7 +43,7 @@ export enum BlockaidReason {
   transferFarming = 'transfer_farming',
   /** Direct theft of assets using transferFrom  */
   transferFromFarming = 'transfer_from_farming',
-  /** Malicious trade that results in the victim being rained  */
+  /** Malicious trade that results in the victim being drained  */
   unfairTrade = 'unfair_trade',
 
   other = 'other',

@@ -2,9 +2,9 @@ import React from 'react';
 import { waitFor, fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import { Snap } from '@metamask/snaps-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import mockStore from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import messages from '../../../../../app/_locales/en/messages.json';
 import KeyringSnapRemovalWarning from './keyring-snap-removal-warning';
 
@@ -30,29 +30,11 @@ const defaultArgs = {
   keyringAccounts: [
     {
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      metadata: {
-        name: 'Test Account',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      methods: [...Object.values(EthMethod)],
-      type: EthAccountType.Eoa,
+      name: 'Test Account',
     },
     {
       address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
-      id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
-      metadata: {
-        name: 'Test Account 2',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      methods: [...Object.values(EthMethod)],
-      type: EthAccountType.Eoa,
+      name: 'Test Account 2',
     },
   ],
 };
@@ -61,6 +43,10 @@ describe('Keyring Snap Remove Warning', () => {
   let store;
   beforeAll(() => {
     store = configureMockStore()(mockStore);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
   it('show render the keyring snap warning and content', () => {
     const { getByText } = renderWithProvider(
@@ -73,8 +59,10 @@ describe('Keyring Snap Remove Warning', () => {
     expect(getByText(messages.removeKeyringSnap.message)).toBeInTheDocument();
 
     for (const account of defaultArgs.keyringAccounts) {
-      expect(getByText(account.metadata.name)).toBeInTheDocument();
-      expect(getByText(account.address)).toBeInTheDocument();
+      expect(getByText(account.name)).toBeInTheDocument();
+      expect(
+        getByText(toChecksumHexAddress(account.address)),
+      ).toBeInTheDocument();
     }
   });
 
@@ -123,12 +111,8 @@ describe('Keyring Snap Remove Warning', () => {
     const getAccountsToBeRemoved = getAllByTestId('keyring-account-list-item');
     expect(getAccountsToBeRemoved.length).toBe(2);
 
-    expect(
-      getByText(defaultArgs.keyringAccounts[0].metadata.name),
-    ).toBeInTheDocument();
-    expect(
-      getByText(defaultArgs.keyringAccounts[1].metadata.name),
-    ).toBeInTheDocument();
+    expect(getByText(defaultArgs.keyringAccounts[0].name)).toBeInTheDocument();
+    expect(getByText(defaultArgs.keyringAccounts[1].name)).toBeInTheDocument();
 
     const accountLink = getAllByTestId('keyring-account-link');
 
@@ -136,6 +120,41 @@ describe('Keyring Snap Remove Warning', () => {
 
     await waitFor(() => {
       expect(global.platform.openTab).toHaveBeenCalled();
+    });
+  });
+  describe('#onBack', () => {
+    it('will dismiss modal if modal is showing accounts', async () => {
+      const { getByLabelText } = renderWithProvider(
+        <KeyringSnapRemovalWarning {...defaultArgs} />,
+        store,
+      );
+
+      const backButton = getByLabelText('Back');
+
+      fireEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(mockOnBack).toHaveBeenCalled();
+      });
+    });
+
+    it('it will return to account list if modal is showing confirmation', async () => {
+      const { getByText, getByLabelText } = renderWithProvider(
+        <KeyringSnapRemovalWarning {...defaultArgs} />,
+        store,
+      );
+
+      const continueButton = getByText('Continue');
+
+      fireEvent.click(continueButton);
+
+      const backButton = getByLabelText('Back');
+
+      fireEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(mockOnBack).not.toHaveBeenCalled();
+      });
     });
   });
 });

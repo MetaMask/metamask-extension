@@ -188,9 +188,6 @@
   "browserNotSupported": {
     "message": "您的瀏覽器尚未支援..."
   },
-  "buy": {
-    "message": "買"
-  },
   "bytes": {
     "message": "位元組"
   },

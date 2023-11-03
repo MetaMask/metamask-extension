@@ -1,31 +1,14 @@
-import {
-  EthAccountType,
-  InternalAccount,
-  EthMethod,
-} from '@metamask/keyring-api';
-import { sha256FromString } from 'ethereumjs-util';
-import { v4 as uuid } from 'uuid';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEmpty } from 'lodash';
 
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
-interface Identity {
-  name: string;
-  address: string;
-  lastSelected?: number;
-}
-
 export const version = 100;
 
 /**
- * This migration does the following:
- *
- * - Creates a default state for AccountsController.
- * - Moves identites and selectedAddress from the PreferencesController to the AccountsController state.
- * - Removes identites and selectedAddress from the PreferencesController
+ * Copy all entries from AddressBookController to NameController.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -38,82 +21,50 @@ export async function migrate(
 ): Promise<VersionedData> {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  migrateData(versionedData.data);
+  transformState(versionedData.data);
   return versionedData;
 }
 
-function migrateData(state: Record<string, unknown>): void {
-  createDefaultAccountsController(state);
-  moveIdentitiesToAccountsController(state);
-  moveSelectedAddressToAccountsController(state);
-  removeIdentitiesAndSelectedAddressFromPreferencesController(state);
-}
+function transformState(state: Record<string, any>) {
+  const addressBook = state?.AddressBookController?.addressBook ?? {};
+  const names = state?.NameController?.names?.ethereumAddress ?? {};
 
-function createDefaultAccountsController(state: Record<string, any>) {
-  state.AccountsController = {
-    internalAccounts: {
-      accounts: {},
-      selectedAccount: '',
-    },
-  };
-}
-
-function moveIdentitiesToAccountsController(state: Record<string, any>) {
-  const identities: {
-    [key: string]: Identity;
-  } = state.PreferencesController?.identities || {};
-
-  if (Object.keys(identities).length === 0) {
+  if (isEmpty(Object.keys(addressBook))) {
     return;
   }
 
-  const accounts: Record<string, InternalAccount> = {};
+  for (const chainId of Object.keys(addressBook)) {
+    const chainAddressBook = addressBook[chainId];
 
-  Object.values(identities).forEach((identity) => {
-    const expectedId = uuid({
-      random: sha256FromString(identity.address).slice(0, 16),
-    });
+    for (const address of Object.keys(chainAddressBook)) {
+      const addressBookEntry = chainAddressBook[address];
+      const normalizedAddress = address.toLowerCase();
+      const nameEntry = names[normalizedAddress] ?? {};
+      const nameChainEntry = nameEntry[chainId] ?? {};
 
-    accounts[expectedId] = {
-      address: identity.address,
-      id: expectedId,
-      options: {},
-      metadata: {
-        name: identity.name,
-        lastSelected: identity.lastSelected ?? undefined,
-        keyring: {
-          // This is default HD Key Tree type because the keyring is encrypted during migration, the type will get updated when the during the initial updateAccounts call.
-          type: 'HD Key Tree',
-        },
-      },
-      methods: [...Object.values(EthMethod)],
-      type: EthAccountType.Eoa,
-    };
-  });
+      // Ignore if petname already set, or if address book entry is missing name or address.
+      if (
+        nameChainEntry.name?.length ||
+        !addressBookEntry.name?.length ||
+        !normalizedAddress?.length
+      ) {
+        continue;
+      }
 
-  state.AccountsController.internalAccounts.accounts = accounts;
-}
+      names[normalizedAddress] = nameEntry;
 
-function moveSelectedAddressToAccountsController(state: Record<string, any>) {
-  const selectedAddress = state.PreferencesController?.selectedAddress;
-
-  const selectedAccount = Object.values<InternalAccount>(
-    state.AccountsController.internalAccounts.accounts,
-  ).find((account: InternalAccount) => {
-    return account.address.toLowerCase() === selectedAddress.toLowerCase();
-  }) as InternalAccount;
-
-  if (selectedAccount) {
-    state.AccountsController.internalAccounts = {
-      ...state.AccountsController.internalAccounts,
-      selectedAccount: selectedAccount.id ?? '',
-    };
+      nameEntry[chainId] = {
+        name: addressBookEntry.name,
+        sourceId: addressBookEntry.isEns ? 'ens' : null,
+        proposedNames: {},
+      };
+    }
   }
-}
 
-function removeIdentitiesAndSelectedAddressFromPreferencesController(
-  state: Record<string, any>,
-) {
-  delete state.PreferencesController.identities;
-  delete state.PreferencesController.selectedAddress;
+  state.NameController = {
+    ...state.NameController,
+    names: {
+      ethereumAddress: names,
+    },
+  };
 }

@@ -21,20 +21,27 @@ export default function ConfirmationFooter({
       {submitAlerts}
       <div className="confirmation-footer__actions" style={actionsStyle}>
         {onCancel ? (
-          <Button type="secondary" onClick={onCancel}>
+          <Button
+            data-testid="confirmation-cancel-button"
+            type="secondary"
+            onClick={onCancel}
+          >
             {cancelText}
           </Button>
         ) : null}
-        <Button
-          disabled={Boolean(loading)}
-          type="primary"
-          onClick={onSubmit}
-          className={classnames({
-            centered: !onCancel,
-          })}
-        >
-          {loading ? loadingText : submitText}
-        </Button>
+        {onSubmit && submitText ? (
+          <Button
+            data-testid="confirmation-submit-button"
+            disabled={Boolean(loading)}
+            type="primary"
+            onClick={onSubmit}
+            className={classnames({
+              centered: !onCancel,
+            })}
+          >
+            {loading ? loadingText : submitText}
+          </Button>
+        ) : null}
       </div>
     </div>
   );

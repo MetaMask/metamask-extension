@@ -6,9 +6,6 @@ import { ThunkAction } from 'redux-thunk';
 import { Action, AnyAction } from 'redux';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
 import { Hex, Json } from '@metamask/utils';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import { v4 as uuidV4 } from 'uuid';
-///: END:ONLY_INCLUDE_IN
 import {
   AssetsContractController,
   BalanceMap,
@@ -19,15 +16,12 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { GasFeeController } from '@metamask/gas-fee-controller';
 import { PermissionsRequest } from '@metamask/permission-controller';
 import { NonEmptyArray } from '@metamask/controller-utils';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-import { HandlerType } from '@metamask/snaps-utils';
-///: END:ONLY_INCLUDE_IN
-import { InternalAccount } from '@metamask/keyring-api';
 import {
   SetNameRequest,
   UpdateProposedNamesRequest,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
+import { NetworkClientId } from '@metamask/network-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -39,10 +33,9 @@ import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
+  getSelectedAddress,
   hasTransactionPendingApprovals,
   getApprovalFlows,
-  getInternalAccount,
-  getSelectedInternalAccount,
   getCurrentNetworkTransactions,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifications,
@@ -367,14 +360,14 @@ export function resetAccount(): ThunkAction<
 }
 
 export function removeAccount(
-  accountId: string,
+  address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
 
     try {
       await new Promise((resolve, reject) => {
-        callBackgroundMethod('removeAccount', [accountId], (error, account) => {
+        callBackgroundMethod('removeAccount', [address], (error, account) => {
           if (error) {
             reject(error);
             return;
@@ -390,7 +383,7 @@ export function removeAccount(
       dispatch(hideLoadingIndication());
     }
 
-    log.info(`Account removed: ${accountId}`);
+    log.info(`Account removed: ${address}`);
     dispatch(showAccountsPage());
   };
 }
@@ -429,36 +422,31 @@ export function importNewAccount(
   };
 }
 
-export function addNewAccount(
-  accountName: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+export function addNewAccount(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
   log.debug(`background.addNewAccount`);
   return async (dispatch, getState) => {
-    const oldAccounts = getState().metamask.internalAccounts.accounts;
-    const oldHdAccounts = Object.values(oldAccounts).filter(
-      (account) => account.metadata.keyring.type === 'HD Key Tree',
-    );
-
+    const oldIdentities = getState().metamask.identities;
     dispatch(showLoadingIndication());
 
-    let newAccount;
+    let addedAccountAddress;
     try {
-      const { accounts }: { accounts: InternalAccount[] } =
-        await submitRequestToBackground('addNewAccount', [
-          oldHdAccounts.length,
-        ]);
-      newAccount = accounts.find((account) => !oldAccounts[account.id]);
+      addedAccountAddress = await submitRequestToBackground('addNewAccount', [
+        Object.keys(oldIdentities).length,
+      ]);
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
     } finally {
       dispatch(hideLoadingIndication());
     }
+
     await forceUpdateMetamaskState(dispatch);
-    if (accountName && newAccount) {
-      dispatch(setAccountLabel(newAccount.id, accountName));
-    }
-    return newAccount;
+    return addedAccountAddress;
   };
 }
 
@@ -1051,6 +1039,7 @@ export async function addTransactionAndWaitForPublish(
 export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
+  loadingIndicatorMessage: string,
 ): ThunkAction<
   Promise<TransactionMeta | null>,
   MetaMaskReduxState,
@@ -1058,7 +1047,8 @@ export function updateAndApproveTx(
   AnyAction
 > {
   return (dispatch: MetaMaskReduxDispatch) => {
-    !dontShowLoadingIndicator && dispatch(showLoadingIndication());
+    !dontShowLoadingIndicator &&
+      dispatch(showLoadingIndication(loadingIndicatorMessage));
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
       callBackgroundMethod(
@@ -1148,13 +1138,17 @@ export function enableSnap(
     await forceUpdateMetamaskState(dispatch);
   };
 }
+
+export async function getPhishingResult(website: string) {
+  return await submitRequestToBackground('getPhishingResult', [website]);
+}
 ///: END:ONLY_INCLUDE_IN
 
 // TODO: Clean this up.
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function removeSnap(
   snapId: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (
     dispatch: MetaMaskReduxDispatch,
     ///: END:ONLY_INCLUDE_IN
@@ -1179,18 +1173,12 @@ export function removeSnap(
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       if (isAccountsSnap) {
-        const accounts = (await handleSnapRequest({
-          snapId,
-          origin: 'metamask',
-          handler: HandlerType.OnRpcRequest,
-          request: {
-            id: uuidV4(),
-            jsonrpc: '2.0',
-            method: 'keyring_listAccounts',
-          },
-        })) as unknown as any[];
-        for (const account of accounts) {
-          dispatch(removeAccount(account.id));
+        const addresses: string[] = await submitRequestToBackground(
+          'getAccountsBySnapId',
+          [snapId],
+        );
+        for (const address of addresses) {
+          await submitRequestToBackground('removeAccount', [address]);
         }
       }
       ///: END:ONLY_INCLUDE_IN
@@ -1205,10 +1193,6 @@ export function removeSnap(
       dispatch(hideLoadingIndication());
     }
   };
-}
-
-export async function removeSnapError(msgData: string): Promise<void> {
-  return submitRequestToBackground('removeSnapError', [msgData]);
 }
 
 export async function handleSnapRequest(args: {
@@ -1544,21 +1528,18 @@ export function updateMetamaskState(
     const providerConfig = getProviderConfig(state);
     const { metamask: currentState } = state;
 
-    const {
-      currentLocale,
-      internalAccounts: { selectedAccount: selectedAccountId },
-    } = currentState;
+    const { currentLocale, selectedAddress } = currentState;
     const {
       currentLocale: newLocale,
+      selectedAddress: newSelectedAddress,
       providerConfig: newProviderConfig,
-      internalAccounts: { selectedAccount: newSelectedAccountId },
     } = newState;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
       dispatch(updateCurrentLocale(newLocale));
     }
 
-    if (selectedAccountId !== newSelectedAccountId) {
+    if (selectedAddress !== newSelectedAddress) {
       dispatch({ type: actionConstants.SELECTED_ADDRESS_CHANGED });
     }
 
@@ -1570,8 +1551,8 @@ export function updateMetamaskState(
       getMetaMaskAccounts({ metamask: newState });
     const oldAccounts: { [address: string]: Record<string, any> } =
       getMetaMaskAccounts({ metamask: currentState });
-    const newSelectedAccount = newAccounts[newSelectedAccountId];
-    const oldSelectedAccount = newAccounts[selectedAccountId];
+    const newSelectedAccount = newAccounts[newSelectedAddress];
+    const oldSelectedAccount = newAccounts[selectedAddress];
     // dispatch an ACCOUNT_CHANGED for any account whose balance or other
     // properties changed in this update
     Object.entries(oldAccounts).forEach(([address, oldAccount]) => {
@@ -1675,19 +1656,19 @@ export function lockMetamask(): ThunkAction<
   };
 }
 
-async function _setSelectedInternalAccount(accountId: string): Promise<void> {
-  log.debug(`background.setSelectedInternalAccount`);
-  await submitRequestToBackground('setSelectedInternalAccount', [accountId]);
+async function _setSelectedAddress(address: string): Promise<void> {
+  log.debug(`background.setSelectedAddress`);
+  await submitRequestToBackground('setSelectedAddress', [address]);
 }
 
-export function setSelectedAccount(
-  accountId: string,
+export function setSelectedAddress(
+  address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setSelectedInternalAccount`);
+    log.debug(`background.setSelectedAddress`);
     try {
-      await _setSelectedInternalAccount(accountId);
+      await _setSelectedAddress(address);
     } catch (error) {
       dispatch(displayWarning(error));
       return;
@@ -1697,36 +1678,32 @@ export function setSelectedAccount(
   };
 }
 
-export function setSelectedInternalAccount(
-  accountId: string,
+export function setSelectedAccount(
+  address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch, getState) => {
     dispatch(showLoadingIndication());
-    log.debug(`background.setSelectedInternalAccount`);
+    log.debug(`background.setSelectedAddress`);
 
     const state = getState();
     const unconnectedAccountAccountAlertIsEnabled =
       getUnconnectedAccountAlertEnabledness(state);
     const activeTabOrigin = state.activeTab.origin;
-    const selectedAccount = getSelectedInternalAccount(state);
-    const accountToBeSet = getInternalAccount(state, accountId);
+    const selectedAddress = getSelectedAddress(state);
     const permittedAccountsForCurrentTab =
       getPermittedAccountsForCurrentTab(state);
-
-    // TODO: ACCOUNTS_CONTROLLER change to account id
     const currentTabIsConnectedToPreviousAddress =
       Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(selectedAccount.address);
-    // TODO: ACCOUNTS_CONTROLLER change to account id
+      permittedAccountsForCurrentTab.includes(selectedAddress);
     const currentTabIsConnectedToNextAddress =
       Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(accountToBeSet.address);
+      permittedAccountsForCurrentTab.includes(address);
     const switchingToUnconnectedAddress =
       currentTabIsConnectedToPreviousAddress &&
       !currentTabIsConnectedToNextAddress;
 
     try {
-      await _setSelectedInternalAccount(accountId);
+      await _setSelectedAddress(address);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -1803,10 +1780,19 @@ export function showConfTxPage({ id }: Partial<TransactionMeta> = {}) {
 }
 
 export function addToken(
-  address?: string,
-  symbol?: string,
-  decimals?: number,
-  image?: string,
+  {
+    address,
+    symbol,
+    decimals,
+    image,
+    networkClientId,
+  }: {
+    address?: string;
+    symbol?: string;
+    decimals?: number;
+    image?: string;
+    networkClientId?: NetworkClientId;
+  },
   dontShowLoadingIndicator?: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -1818,10 +1804,13 @@ export function addToken(
     }
     try {
       await submitRequestToBackground('addToken', [
-        address,
-        symbol,
-        decimals,
-        image,
+        {
+          address,
+          symbol,
+          decimals,
+          image,
+          networkClientId,
+        },
       ]);
     } catch (error) {
       logErrorWithMessage(error);
@@ -1837,13 +1826,18 @@ export function addToken(
  * To add the tokens user selected to state
  *
  * @param tokensToImport
+ * @param networkClientId
  */
 export function addImportedTokens(
   tokensToImport: Token[],
+  networkClientId?: NetworkClientId,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('addImportedTokens', [tokensToImport]);
+      await submitRequestToBackground('addImportedTokens', [
+        tokensToImport,
+        networkClientId,
+      ]);
     } catch (error) {
       logErrorWithMessage(error);
     } finally {
@@ -2086,8 +2080,9 @@ export function createCancelTransaction(
             return;
           }
           if (newState) {
-            const currentNetworkTxList =
-              getCurrentNetworkTransactions(newState);
+            const currentNetworkTxList = getCurrentNetworkTransactions({
+              metamask: newState,
+            });
             const { id } =
               currentNetworkTxList[currentNetworkTxList.length - 1];
             newTxId = id;
@@ -2680,7 +2675,7 @@ export function showPrivateKey(key: string): PayloadAction<string> {
 }
 
 export function setAccountLabel(
-  accountId: string,
+  account: string,
   label: string,
 ): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
@@ -2688,7 +2683,7 @@ export function setAccountLabel(
     log.debug(`background.setAccountLabel`);
 
     return new Promise((resolve, reject) => {
-      callBackgroundMethod('setAccountLabel', [accountId, label], (err) => {
+      callBackgroundMethod('setAccountLabel', [account, label], (err) => {
         dispatch(hideLoadingIndication());
 
         if (err) {
@@ -2699,9 +2694,9 @@ export function setAccountLabel(
 
         dispatch({
           type: actionConstants.SET_ACCOUNT_LABEL,
-          value: { accountId, label },
+          value: { account, label },
         });
-        resolve(accountId);
+        resolve(account);
       });
     });
   };
@@ -2900,10 +2895,10 @@ export function toggleNetworkMenu() {
   };
 }
 
-export function setAccountDetailsAccountId(accountId: string) {
+export function setAccountDetailsAddress(address: string) {
   return {
-    type: actionConstants.SET_ACCOUNT_DETAILS_ACCOUNT_ID,
-    payload: accountId,
+    type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
+    payload: address,
   };
 }
 
@@ -3940,7 +3935,7 @@ export function getNextNonce(): ThunkAction<
   AnyAction
 > {
   return async (dispatch, getState) => {
-    const { address } = getSelectedInternalAccount(getState());
+    const address = getState().metamask.selectedAddress;
     let nextNonce;
     try {
       nextNonce = await submitRequestToBackground<string>('getNextNonce', [
@@ -4469,6 +4464,41 @@ export function setSecurityAlertsEnabled(val: boolean): void {
 export async function setAddSnapAccountEnabled(value: boolean): Promise<void> {
   try {
     await submitRequestToBackground('setAddSnapAccountEnabled', [value]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
+export function showKeyringSnapRemovalModal(payload: {
+  snapName: string;
+  result: 'success' | 'failed';
+}) {
+  return {
+    type: actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT,
+    payload,
+  };
+}
+
+export function hideKeyringRemovalResultModal() {
+  return {
+    type: actionConstants.HIDE_KEYRING_SNAP_REMOVAL_RESULT,
+  };
+}
+
+export async function getSnapAccountsById(snapId: string): Promise<string[]> {
+  const addresses: string[] = await submitRequestToBackground(
+    'getAccountsBySnapId',
+    [snapId],
+  );
+
+  return addresses;
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(petnames)
+export function setUseExternalNameSources(val: boolean): void {
+  try {
+    submitRequestToBackground('setUseExternalNameSources', [val]);
   } catch (error) {
     logErrorWithMessage(error);
   }

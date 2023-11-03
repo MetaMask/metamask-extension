@@ -1,5 +1,4 @@
 import React from 'react';
-import { InternalAccount } from '@metamask/keyring-api';
 import { ButtonIcon, IconName, Text, Box } from '../../../component-library';
 import {
   BlockSize,
@@ -12,13 +11,15 @@ import {
   OverflowWrap,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+// import { toChecksumHexAddress } from '../../../../../../../shared/modules/hexstring-utils';
+import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export const KeyringAccountListItem = ({
   account,
   snapUrl,
 }: {
-  account: InternalAccount;
+  account: { name: string; address: string };
   snapUrl: string;
 }) => {
   const t = useI18nContext();
@@ -40,13 +41,15 @@ export const KeyringAccountListItem = ({
       >
         <Box flexDirection={FlexDirection.Column} marginBottom={2}>
           <Text color={TextColor.textMuted}>{t('keyringAccountName')}</Text>
-          <Text>{account.metadata.name}</Text>
+          <Text>{account.name}</Text>
         </Box>
         <Box flexDirection={FlexDirection.Column}>
           <Text color={TextColor.textMuted}>
             {t('keyringAccountPublicAddress')}
           </Text>
-          <Text overflowWrap={OverflowWrap.Anywhere}>{account.address}</Text>
+          <Text overflowWrap={OverflowWrap.Anywhere}>
+            {toChecksumHexAddress(account.address)}
+          </Text>
         </Box>
       </Box>
       <Box

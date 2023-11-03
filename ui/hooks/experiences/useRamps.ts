@@ -19,7 +19,7 @@ const useRamps = (): IUseRamps => {
     (_chainId: Hex) => {
       // ChainId is not used in the current implementation but is kept for future use
       const params = new URLSearchParams();
-      params.set('metamaskEntry', 'ext_buy_button');
+      params.set('metamaskEntry', 'ext_buy_sell_button');
       if (metaMetricsId) {
         params.set('metametricsId', metaMetricsId);
       }

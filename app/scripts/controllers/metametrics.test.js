@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import { toHex } from '@metamask/controller-utils';
-import { EthAccountType } from '@metamask/keyring-api';
+import { NameType } from '@metamask/name-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
@@ -562,6 +562,80 @@ describe('MetaMetricsController', function () {
     });
   });
 
+  describe('Change Transaction XXX anonymous event namnes', function () {
+    it('should change "Transaction Added" anonymous event names to "Transaction Added Anon"', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Transaction Added',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: `Transaction Added Anon`,
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should change "Transaction Submitted" anonymous event names to "Transaction Added Anon"', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Transaction Submitted',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: `Transaction Submitted Anon`,
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        }),
+      );
+    });
+
+    it('should change "Transaction Finalized" anonymous event names to "Transaction Added Anon"', function () {
+      const metaMetricsController = getMetaMetricsController();
+      const spy = sinon.spy(segment, 'track');
+      metaMetricsController.submitEvent({
+        event: 'Transaction Finalized',
+        category: 'Unit Test',
+        sensitiveProperties: { foo: 'bar' },
+      });
+      assert.ok(spy.calledTwice);
+      assert.ok(
+        spy.calledWith({
+          event: `Transaction Finalized Anon`,
+          anonymousId: METAMETRICS_ANONYMOUS_ID,
+          context: DEFAULT_TEST_CONTEXT,
+          properties: {
+            foo: 'bar',
+            ...DEFAULT_EVENT_PROPERTIES,
+          },
+          messageId: Utils.generateRandomId(),
+          timestamp: new Date(),
+        }),
+      );
+    });
+  });
+
   describe('trackPage', function () {
     it('should track a page view', function () {
       const mock = sinon.mock(segment);
@@ -947,44 +1021,47 @@ describe('MetaMetricsController', function () {
           },
           'network-configuration-id-3': { chainId: '0xaf' },
         },
-        internalAccounts: {
-          accounts: {
-            'mock-id': {
-              address: '0x0',
-              id: 'mock-id',
-              metadata: {
-                name: 'Account 1',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthAccountType)],
-              type: EthAccountType.Eoa,
-            },
-            'mock-id-2': {
-              address: '0x1',
-              id: 'mock-id-2',
-              metadata: {
-                name: 'Account 2',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthAccountType)],
-              type: EthAccountType.Eoa,
-            },
-          },
-          selectedAccount: 'mock-id',
-        },
+        identities: [{}, {}],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
         useNftDetection: false,
+        securityAlertsEnabled: true,
         theme: 'default',
         useTokenDetection: true,
         desktopEnabled: false,
         security_providers: [],
+        names: {
+          [NameType.ETHEREUM_ADDRESS]: {
+            '0x123': {
+              '0x1': {
+                name: 'Test 1',
+              },
+              '0x2': {
+                name: 'Test 2',
+              },
+              '0x3': {
+                name: null,
+              },
+            },
+            '0x456': {
+              '0x1': {
+                name: 'Test 3',
+              },
+            },
+            '0x789': {
+              '0x1': {
+                name: null,
+              },
+            },
+          },
+          otherType: {
+            otherValue: {
+              otherVariation: {
+                name: 'Test 4',
+              },
+            },
+          },
+        },
       });
 
       assert.deepEqual(traits, {
@@ -1007,11 +1084,14 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
         [MetaMetricsUserTrait.DesktopEnabled]: false,
-        [MetaMetricsUserTrait.SecurityProviders]: [],
+        [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
         [MetaMetricsUserTrait.MmiAccountAddress]: null,
         [MetaMetricsUserTrait.MmiIsCustodian]: false,
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+        [MetaMetricsUserTrait.PetnameAddressCount]: 3,
         ///: END:ONLY_INCLUDE_IN
       });
     });
@@ -1030,37 +1110,7 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
-        internalAccounts: {
-          accounts: {
-            'mock-id': {
-              address: '0x0',
-              id: 'mock-id',
-              metadata: {
-                name: 'Account 1',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthAccountType)],
-              type: EthAccountType.Eoa,
-            },
-            'mock-id-2': {
-              address: '0x1',
-              id: 'mock-id-2',
-              metadata: {
-                name: 'Account 2',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthAccountType)],
-              type: EthAccountType.Eoa,
-            },
-          },
-          selectedAccount: 'mock-id',
-        },
+        identities: [{}, {}],
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
@@ -1083,50 +1133,7 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
-        internalAccounts: {
-          accounts: {
-            'mock-id': {
-              address: '0x0',
-              id: 'mock-id',
-              metadata: {
-                name: 'Account 1',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthAccountType)],
-              type: EthAccountType.Eoa,
-            },
-            'mock-id-2': {
-              address: '0x1',
-              id: 'mock-id-2',
-              metadata: {
-                name: 'Account 2',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthAccountType)],
-              type: EthAccountType.Eoa,
-            },
-            'mock-id-3': {
-              address: '0x2',
-              id: 'mock-id-3',
-              metadata: {
-                name: 'Account 3',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthAccountType)],
-              type: EthAccountType.Eoa,
-            },
-          },
-          selectedAccount: 'mock-id',
-        },
+        identities: [{}, {}, {}],
         useNftDetection: false,
         theme: 'default',
         useTokenDetection: true,
@@ -1155,37 +1162,7 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
-        internalAccounts: {
-          accounts: {
-            'mock-id': {
-              address: '0x0',
-              id: 'mock-id',
-              metadata: {
-                name: 'Account 1',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthAccountType)],
-              type: EthAccountType.Eoa,
-            },
-            'mock-id-2': {
-              address: '0x1',
-              id: 'mock-id-2',
-              metadata: {
-                name: 'Account 2',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthAccountType)],
-              type: EthAccountType.Eoa,
-            },
-          },
-          selectedAccount: 'mock-id',
-        },
+        identities: [{}, {}],
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,
@@ -1204,37 +1181,7 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
-        internalAccounts: {
-          accounts: {
-            'mock-id': {
-              address: '0x0',
-              id: 'mock-id',
-              metadata: {
-                name: 'Account 1',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthAccountType)],
-              type: EthAccountType.Eoa,
-            },
-            'mock-id-2': {
-              address: '0x1',
-              id: 'mock-id-2',
-              metadata: {
-                name: 'Account 2',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthAccountType)],
-              type: EthAccountType.Eoa,
-            },
-          },
-          selectedAccount: 'mock-id',
-        },
+        identities: [{}, {}],
         useNftDetection: true,
         theme: 'default',
         useTokenDetection: true,

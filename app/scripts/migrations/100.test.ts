@@ -1,274 +1,259 @@
-import { v4 as uuid } from 'uuid';
-import { sha256FromString } from 'ethereumjs-util';
-import { EthMethod, InternalAccount } from '@metamask/keyring-api';
-import { migrate } from './100';
+import { migrate, version } from './100';
 
-const MOCK_ADDRESS = '0x0';
-const MOCK_ADDRESS_2 = '0x1';
-
-function addressToUUID(address: string): string {
-  return uuid({
-    random: sha256FromString(address).slice(0, 16),
-  });
-}
-
-interface Identity {
-  name: string;
-  address: string;
-  lastSelected?: number;
-}
-
-interface Identities {
-  [key: string]: Identity;
-}
-
-function createMockPreferenceControllerState(
-  identities: Identity[] = [{ name: 'Account 1', address: MOCK_ADDRESS }],
-  selectedAddress: string = MOCK_ADDRESS,
-): {
-  identities: Identities;
-  selectedAddress: string;
-} {
-  const state: {
-    identities: Identities;
-    selectedAddress: string;
-  } = {
-    identities: {},
-    selectedAddress,
-  };
-
-  identities.forEach(({ address, name, lastSelected }) => {
-    state.identities[address] = {
-      address,
-      name,
-      lastSelected,
-    };
-  });
-
-  return state;
-}
-
-function expectedInternalAccount(
-  address: string,
-  nickname: string,
-  lastSelected?: number,
-): InternalAccount {
-  return {
-    address,
-    id: addressToUUID(address),
-    metadata: {
-      name: nickname,
-      keyring: {
-        type: 'HD Key Tree',
-      },
-      lastSelected: lastSelected ? expect.any(Number) : undefined,
-    },
-    options: {},
-    methods: [...Object.values(EthMethod)],
-    type: 'eip155:eoa',
-  };
-}
-
-function createMockState(
-  preferenceState: {
-    identities: Identities;
-    selectedAddress: string;
-  } = createMockPreferenceControllerState(),
-) {
-  return {
-    PreferencesController: {
-      ...preferenceState,
-    },
-  };
-}
+const oldVersion = 99;
 
 describe('migration #100', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: 99 },
-      data: createMockState(),
+      meta: { version: oldVersion },
+      data: {},
     };
 
     const newStorage = await migrate(oldStorage);
 
-    expect(newStorage.meta).toStrictEqual({ version: 100 });
+    expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  describe('createDefaultAccountsController', () => {
-    it('creates default state for accounts controller', async () => {
-      const oldData = createMockState();
+  it('does nothing if no address book state', async () => {
+    const oldState = {
+      OtherController: {},
+    };
 
-      const oldStorage = {
-        meta: { version: 99 },
-        data: oldData,
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      const expectedUUID = addressToUUID(MOCK_ADDRESS);
-      const resultInternalAccount = expectedInternalAccount(
-        MOCK_ADDRESS,
-        'Account 1',
-      );
-
-      expect(newStorage.data.AccountsController).toStrictEqual({
-        internalAccounts: {
-          accounts: {
-            [expectedUUID]: resultInternalAccount,
-          },
-          selectedAccount: expectedUUID,
-        },
-      });
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
     });
+
+    expect(transformedState.data).toEqual(oldState);
   });
 
-  describe('moveIdentitiesToAccountsController', () => {
-    const expectedUUID = addressToUUID(MOCK_ADDRESS);
-    const expectedUUID2 = addressToUUID(MOCK_ADDRESS_2);
+  it('does nothing if no address book entries', async () => {
+    const oldState = {
+      OtherController: {},
+      AddressBookController: {
+        addressBook: {},
+      },
+    };
 
-    it('should move the identities into AccountsController as internal accounts', async () => {
-      const oldData = createMockState();
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
 
-      const oldStorage = {
-        meta: { version: 99 },
-        data: oldData,
-      };
+    expect(transformedState.data).toEqual(oldState);
+  });
 
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual({
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [expectedUUID]: expectedInternalAccount(
-                MOCK_ADDRESS,
-                `Account 1`,
-              ),
+  it('adds name entries', async () => {
+    const oldState = {
+      OtherController: {},
+      AddressBookController: {
+        addressBook: {
+          '0x1': {
+            '0xc0ffee254729296a45a3885639AC7E10F9d54979': {
+              name: 'TestName1',
+              isEns: false,
             },
-            selectedAccount: expectedUUID,
+            '0xc0ffee254729296a45a3885639AC7E10F9d54978': {
+              name: 'TestName2',
+              isEns: true,
+            },
+          },
+          '0x2': {
+            '0xc0ffee254729296a45a3885639AC7E10F9d54977': {
+              name: 'TestName3',
+              isEns: false,
+            },
+            '0xc0ffee254729296a45a3885639AC7E10F9d54978': {
+              name: 'TestName4',
+              isEns: false,
+            },
           },
         },
-        PreferencesController: expect.any(Object),
-      });
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
     });
 
-    it('should keep the same name from the identities', async () => {
-      const oldData = createMockState(
-        createMockPreferenceControllerState([
-          { name: 'a random name', address: MOCK_ADDRESS },
-        ]),
-      );
-      const oldStorage = {
-        meta: { version: 99 },
-        data: oldData,
-      };
-      const newStorage = await migrate(oldStorage);
-      expect(newStorage.data).toStrictEqual({
-        PreferencesController: expect.any(Object),
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [expectedUUID]: expectedInternalAccount(
-                MOCK_ADDRESS,
-                `a random name`,
-              ),
+    expect(transformedState.data).toEqual({
+      ...oldState,
+      NameController: {
+        names: {
+          ethereumAddress: {
+            '0xc0ffee254729296a45a3885639ac7e10f9d54979': {
+              '0x1': {
+                name: 'TestName1',
+                sourceId: null,
+                proposedNames: {},
+              },
             },
-            selectedAccount: expectedUUID,
+            '0xc0ffee254729296a45a3885639ac7e10f9d54978': {
+              '0x1': {
+                name: 'TestName2',
+                sourceId: 'ens',
+                proposedNames: {},
+              },
+              '0x2': {
+                name: 'TestName4',
+                sourceId: null,
+                proposedNames: {},
+              },
+            },
+            '0xc0ffee254729296a45a3885639ac7e10f9d54977': {
+              '0x2': {
+                name: 'TestName3',
+                sourceId: null,
+                proposedNames: {},
+              },
+            },
           },
         },
-      });
-    });
-
-    it('should be able to handle multiple identities', async () => {
-      const oldData = createMockState({
-        identities: {
-          [MOCK_ADDRESS]: { name: 'Account 1', address: MOCK_ADDRESS },
-          [MOCK_ADDRESS_2]: { name: 'Account 2', address: MOCK_ADDRESS_2 },
-        },
-        selectedAddress: MOCK_ADDRESS,
-      });
-
-      const oldStorage = {
-        meta: { version: 99 },
-        data: oldData,
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual({
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [expectedUUID]: expectedInternalAccount(
-                MOCK_ADDRESS,
-                `Account 1`,
-              ),
-              [expectedUUID2]: expectedInternalAccount(
-                MOCK_ADDRESS_2,
-                `Account 2`,
-              ),
-            },
-            selectedAccount: expectedUUID,
-          },
-        },
-        PreferencesController: expect.any(Object),
-      });
+      },
     });
   });
 
-  describe('moveSelectedAddressToAccountsController', () => {
-    it('should select the same account as the selected address', async () => {
-      const oldData = createMockState();
-      const oldStorage = {
-        meta: { version: 99 },
-        data: oldData,
-      };
-      const newStorage = await migrate(oldStorage);
-      expect(newStorage.data).toStrictEqual({
-        PreferencesController: expect.any(Object),
-        AccountsController: {
-          internalAccounts: {
-            accounts: expect.any(Object),
-            selectedAccount: addressToUUID(MOCK_ADDRESS),
+  it('keeps existing name entries', async () => {
+    const oldState = {
+      OtherController: {},
+      AddressBookController: {
+        addressBook: {
+          '0x1': {
+            '0xc0ffee254729296a45a3885639AC7E10F9d54979': {
+              name: 'TestName1',
+              isEns: false,
+            },
           },
         },
-      });
+      },
+      NameController: {
+        names: {
+          ethereumAddress: {
+            '0xc0ffee254729296a45a3885639ac7e10f9d54978': {
+              '0x1': {
+                name: 'TestName2',
+                sourceId: 'ens',
+                proposedNames: {},
+              },
+            },
+          },
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
     });
 
-    it("should leave selectedAccount as empty is there aren't any selectedAddress", async () => {
-      const oldData = createMockState();
-      const oldStorage = {
-        meta: { version: 99 },
-        data: oldData,
-      };
-      const newStorage = await migrate(oldStorage);
-      expect(newStorage.data).toStrictEqual({
-        PreferencesController: expect.any(Object),
-        AccountsController: {
-          internalAccounts: {
-            accounts: expect.any(Object),
-            selectedAccount: addressToUUID(MOCK_ADDRESS),
+    expect(transformedState.data).toEqual({
+      ...oldState,
+      NameController: {
+        names: {
+          ethereumAddress: {
+            '0xc0ffee254729296a45a3885639ac7e10f9d54979': {
+              '0x1': {
+                name: 'TestName1',
+                sourceId: null,
+                proposedNames: {},
+              },
+            },
+            '0xc0ffee254729296a45a3885639ac7e10f9d54978': {
+              '0x1': {
+                name: 'TestName2',
+                sourceId: 'ens',
+                proposedNames: {},
+              },
+            },
           },
         },
-      });
+      },
     });
   });
 
-  describe('removeIdentitiesAndSelectedAddressFromPreferencesController', () => {
-    it('removes identities and selectedAddress in PreferenceController state', async () => {
-      const oldData = createMockState();
+  it('ignores address book entry if existing petname', async () => {
+    const oldState = {
+      OtherController: {},
+      AddressBookController: {
+        addressBook: {
+          '0x1': {
+            '0xc0ffee254729296a45a3885639AC7E10F9d54979': {
+              name: 'TestName1',
+              isEns: false,
+            },
+          },
+        },
+      },
+      NameController: {
+        names: {
+          ethereumAddress: {
+            '0xc0ffee254729296a45a3885639ac7e10f9d54979': {
+              '0x1': {
+                name: 'TestName2',
+                sourceId: 'ens',
+                proposedNames: {},
+              },
+            },
+          },
+        },
+      },
+    };
 
-      const oldStorage = {
-        meta: { version: 99 },
-        data: oldData,
-      };
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
 
-      const newStorage = await migrate(oldStorage);
+    expect(transformedState.data).toEqual({
+      ...oldState,
+      NameController: {
+        names: {
+          ethereumAddress: {
+            '0xc0ffee254729296a45a3885639ac7e10f9d54979': {
+              '0x1': {
+                name: 'TestName2',
+                sourceId: 'ens',
+                proposedNames: {},
+              },
+            },
+          },
+        },
+      },
+    });
+  });
 
-      expect(newStorage.data).toStrictEqual({
-        AccountsController: expect.any(Object),
-        PreferencesController: {},
-      });
+  it('ignores address book entry if no name or address', async () => {
+    const oldState = {
+      OtherController: {},
+      AddressBookController: {
+        addressBook: {
+          '0x1': {
+            '': {
+              name: 'TestName1',
+              isEns: false,
+            },
+            '0xc0ffee254729296a45a3885639AC7E10F9d54979': {
+              name: '',
+              isEns: false,
+            },
+          },
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual({
+      ...oldState,
+      NameController: {
+        names: {
+          ethereumAddress: {},
+        },
+      },
     });
   });
 });

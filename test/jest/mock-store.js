@@ -299,7 +299,6 @@ export const createSwapsMockStore = () => {
         },
       },
       currentLocale: 'en',
-      keyringTypes: [KeyringType.imported, KeyringType.hdKeyTree],
       keyrings: [
         {
           type: KeyringType.hdKeyTree,
