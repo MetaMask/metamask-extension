@@ -3,7 +3,7 @@ import { ConfirmationRow } from './confirmation-row';
 import { ConfirmationInlineDoubleValue } from './confirmation-inline-double-value';
 
 const ConfirmationInlineDoubleValueStory = {
-  title: 'Components/App/Modular Confirmations/Inline Double Value',
+  title: 'Components/App/Confirmations/Inline Double Value',
 
   component: ConfirmationInlineDoubleValue,
   argTypes: {

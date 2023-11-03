@@ -1,6 +1,6 @@
 import React from 'react';
-import Tooltip from '../../ui/tooltip/tooltip';
-import { Box, Icon, IconName, Text } from '../../component-library';
+import Tooltip from '../../../../../ui/tooltip/tooltip';
+import { Box, Icon, IconName, Text } from '../../../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -9,40 +9,48 @@ import {
   Display,
   FlexDirection,
   FlexWrap,
+  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
-} from '../../../helpers/constants/design-system';
+} from '../../../../../../helpers/constants/design-system';
+
+export enum ConfirmationRowVariant {
+  Default = 'default',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Error = 'error',
+  Warning = 'warning',
+}
 
 export type ConfirmationRowProps = {
   label: string;
   children: React.ReactNode | string;
   tooltip?: string;
-  variant?: 'default' | 'error' | 'warning';
+  variant?: ConfirmationRowVariant;
 };
 
 const BACKGROUND_COLORS = {
-  default: undefined,
-  error: BackgroundColor.errorMuted,
-  warning: BackgroundColor.warningMuted,
+  [ConfirmationRowVariant.Default]: undefined,
+  [ConfirmationRowVariant.Error]: BackgroundColor.errorMuted,
+  [ConfirmationRowVariant.Warning]: BackgroundColor.warningMuted,
 };
 
 const TEXT_COLORS = {
-  default: TextColor.textAlternative,
-  error: Color.errorAlternative,
-  warning: Color.warningAlternative,
+  [ConfirmationRowVariant.Default]: TextColor.textAlternative,
+  [ConfirmationRowVariant.Error]: Color.errorAlternative,
+  [ConfirmationRowVariant.Warning]: Color.warningAlternative,
 };
 
 const TOOLTIP_ICONS = {
-  default: IconName.Question,
-  error: IconName.Warning,
-  warning: IconName.Warning,
+  [ConfirmationRowVariant.Default]: IconName.Question,
+  [ConfirmationRowVariant.Error]: IconName.Warning,
+  [ConfirmationRowVariant.Warning]: IconName.Warning,
 };
 
 export const ConfirmationRow = ({
   label,
   children,
-  variant = 'default',
+  variant = ConfirmationRowVariant.Default,
   tooltip,
 }: ConfirmationRowProps) => (
   <Box
@@ -63,7 +71,10 @@ export const ConfirmationRow = ({
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
     >
-      <Text variant={TextVariant.bodyMdMedium} color={TEXT_COLORS[variant]}>
+      <Text
+        variant={TextVariant.bodyMdMedium}
+        color={TEXT_COLORS[variant] as TextColor}
+      >
         {label}
       </Text>
       {tooltip && tooltip.length > 0 && (
@@ -71,13 +82,13 @@ export const ConfirmationRow = ({
           <Icon
             name={TOOLTIP_ICONS[variant]}
             marginLeft={1}
-            color={TEXT_COLORS[variant]}
+            color={TEXT_COLORS[variant] as unknown as IconColor}
           />
         </Tooltip>
       )}
     </Box>
     {typeof children === 'string' ? (
-      <Text color={TEXT_COLORS[variant]}>{children}</Text>
+      <Text color={TEXT_COLORS[variant] as TextColor}>{children}</Text>
     ) : (
       children
     )}

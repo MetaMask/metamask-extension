@@ -2,7 +2,7 @@ import React from 'react';
 import { ConfirmationRow } from './confirmation-row';
 
 const ConfirmationRowStory = {
-  title: 'Components/App/Modular Confirmations/Row',
+  title: 'Components/App/Confirmations/Row',
 
   component: ConfirmationRow,
   argTypes: {

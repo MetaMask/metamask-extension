@@ -1,11 +1,11 @@
 import React from 'react';
-import { Box, Text } from '../../component-library';
+import { Box, Text } from '../../../../../component-library';
 import {
   AlignItems,
   Display,
   FlexDirection,
   TextColor,
-} from '../../../helpers/constants/design-system';
+} from '../../../../../../helpers/constants/design-system';
 
 export type ConfirmationInlineDoubleValueProps = {
   left: string;

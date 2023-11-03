@@ -1,21 +1,26 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   AvatarAccount,
   Box,
   Text,
   AvatarAccountSize,
-} from '../../component-library';
+} from '../../../../../component-library';
 import {
   AlignItems,
   BorderColor,
   Display,
   FlexDirection,
-} from '../../../helpers/constants/design-system';
-import { shortenAddress } from '../../../helpers/utils/util';
-import Tooltip from '../../ui/tooltip/tooltip';
+} from '../../../../../../helpers/constants/design-system';
+import { shortenAddress } from '../../../../../../helpers/utils/util';
+import Tooltip from '../../../../../ui/tooltip/tooltip';
 
-export const ConfirmationInlineAddress = ({ address }) => (
+export type ConfirmationInlineAddressProps = {
+  address: string;
+};
+
+export const ConfirmationInlineAddress = ({
+  address,
+}: ConfirmationInlineAddressProps) => (
   <Box
     display={Display.Flex}
     flexDirection={FlexDirection.Row}
@@ -31,7 +36,3 @@ export const ConfirmationInlineAddress = ({ address }) => (
     </Tooltip>
   </Box>
 );
-
-ConfirmationInlineAddress.propTypes = {
-  address: PropTypes.string.isRequired,
-};
