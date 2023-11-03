@@ -375,11 +375,6 @@ const NetworksForm = ({
       if (!formChainId || !formTickerSymbol) {
         return null;
       }
-      // Convert formChainId to hexadecimal before comparison
-      let hexFormChainId = formChainId;
-      if (!hexFormChainId.startsWith('0x')) {
-        hexFormChainId = `0x${parseInt(formChainId, 10).toString(16)}`;
-      }
 
       let safeChainsList = [];
       if (useSafeChainsListValidation) {
@@ -399,7 +394,7 @@ const NetworksForm = ({
         warningMessage = t('failedToFetchTickerSymbolData');
       } else {
         const matchedChain = safeChainsList?.find(
-          (chain) => `0x${chain.chainId.toString(16)}` === hexFormChainId,
+          (chain) => chain.chainId.toString() === formChainId,
         );
 
         if (matchedChain === undefined) {
