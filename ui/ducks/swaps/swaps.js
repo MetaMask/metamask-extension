@@ -234,8 +234,6 @@ export default reducer;
 
 // Selectors
 
-// all these selectors should be parameterized by chainId/networkClientId
-
 export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata;
 
 export const getBalanceError = (state) => state.swaps.balanceError;
@@ -329,6 +327,7 @@ export const getSmartTransactionsErrorMessageDismissed = (state) =>
 
 export const getSmartTransactionsEnabled = (state) => {
   const hardwareWalletUsed = isHardwareWallet(state);
+
   const chainId = getCurrentChainId(state);
   const isAllowedNetwork =
     ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId);

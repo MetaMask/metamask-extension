@@ -24,6 +24,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
+  getSelectedNetworkClientId,
 } from '../../selectors/selectors';
 import {
   getQuotes,
@@ -165,6 +166,10 @@ export default function Swap() {
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
+
+  // TODO replace with a prop contextual to this particular flow
+  const selectedNetworkClientId = useSelector(
+    getSelectedNetworkClientId)
 
   useEffect(() => {
     const leaveSwaps = async () => {
