@@ -6,7 +6,6 @@ import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import UrlIcon from '../../../components/ui/url-icon';
 import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
@@ -40,6 +39,7 @@ import {
   Icon,
   IconName,
   Text,
+  Box,
 } from '../../../components/component-library';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
@@ -329,17 +329,17 @@ export default class ConfirmApproveContent extends Component {
     ///: END:ONLY_INCLUDE_IN
 
     return (
-      <div className="flex-column">
-        <div className="confirm-approve-content__small-text">
+      <Box className="flex-column">
+        <Box className="confirm-approve-content__small-text">
           {isSetApproveForAll
             ? t('functionSetApprovalForAll')
             : t('functionApprove')}
-        </div>
+        </Box>
         {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
           <>
-            <div className="confirm-approve-content__small-text">
+            <Box className="confirm-approve-content__small-text">
               {`${t('parameters')}: ${isApprovalOrRejection}`}
-            </div>
+            </Box>
             {
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
               <Text
@@ -352,10 +352,10 @@ export default class ConfirmApproveContent extends Component {
             }
           </>
         ) : null}
-        <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
+        <Box className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
           {data}
-        </div>
-      </div>
+        </Box>
+      </Box>
     );
   }
 
