@@ -194,7 +194,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           key={`coin-type-${coinType}`}
         >
           {coinTypeToProtocolName(coinType) ||
-            `${t('unknownNetworkForKeyEntropy')} m/44'/${coinType}`}
+            `${t('unknownNetworkForKeyEntropy')} m/44'/${coinType}'`}
         </Text>,
       ]),
       description: t('permission_manageBip44AndBip32KeysDescription'),
@@ -203,7 +203,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
       id: `key-access-bip44-${coinType}-${i}`,
       warningMessageSubject:
         coinTypeToProtocolName(coinType) ||
-        `${t('unknownNetworkForKeyEntropy')} m/44'/${coinType}`,
+        `${t('unknownNetworkForKeyEntropy')} m/44'/${coinType}'`,
     })),
   [RestrictedMethods.snap_getEntropy]: ({ t }) => ({
     label: t('permission_getEntropy'),
