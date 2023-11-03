@@ -3,7 +3,7 @@ const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Get Locale', function () {
-  it('test snap_getLocale functionality', async function () {
+  it('test snap_getFile functionality', async function () {
     const ganacheOptions = {
       accounts: [
         {
