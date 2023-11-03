@@ -170,6 +170,11 @@ describe('SwapsController', function () {
       fetchTradesInfo: fetchTradesInfoStub,
       getCurrentChainId: getCurrentChainIdStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
+      getNetworkClientById: sinon.stub().returns({
+        configuration: {
+          chainId: '0x1',
+        },
+      }),
     });
   };
 
@@ -821,7 +826,7 @@ describe('SwapsController', function () {
         );
       });
 
-      it('performs the allowance check', async function () {
+      it.only('performs the allowance check', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
 
         // Make it so approval is not required

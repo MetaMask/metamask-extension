@@ -21,6 +21,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getFullTxData,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 
 import {
@@ -94,6 +95,7 @@ export default function AwaitingSwap({
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] =
     useState(false);
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
   let feeinUnformattedFiat;
 
@@ -305,12 +307,13 @@ export default function AwaitingSwap({
           } else if (errorKey === QUOTES_EXPIRED_ERROR) {
             dispatch(prepareForRetryGetQuotes());
             await dispatch(
-              fetchQuotesAndSetQuoteState(
+              fetchQuotesAndSetQuoteState({
                 history,
-                fromTokenInputValue,
+                inputValue: fromTokenInputValue,
                 maxSlippage,
                 trackEvent,
-              ),
+                networkClientId: selectedNetworkClientId,
+              }),
             );
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history));
