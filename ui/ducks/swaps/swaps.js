@@ -381,7 +381,8 @@ export const getCustomMaxPriorityFeePerGas = (state) =>
 export const getSwapsUserFeeLevel = (state) =>
   state.metamask.singleChainSwapsState.swapsUserFeeLevel;
 
-export const getFetchParams = (state) => state.metamask.singleChainSwapsState.fetchParams;
+export const getFetchParams = (state) =>
+  state.metamask.singleChainSwapsState.fetchParams;
 
 export const getQuotes = (state) => state.metamask.singleChainSwapsState.quotes;
 
@@ -398,7 +399,8 @@ export const getSwapsErrorKey = (state) => getSwapsState(state)?.errorKey;
 export const getShowQuoteLoadingScreen = (state) =>
   state.swaps.showQuoteLoadingScreen;
 
-export const getSwapsTokens = (state) => state.metamask.singleChainSwapsState.tokens;
+export const getSwapsTokens = (state) =>
+  state.metamask.singleChainSwapsState.tokens;
 
 export const getSwapsWelcomeMessageSeenStatus = (state) =>
   state.metamask.swapsWelcomeMessageHasBeenShown;
@@ -408,9 +410,11 @@ export const getTopQuote = (state) => {
   return quotes[topAggId];
 };
 
-export const getApproveTxId = (state) => state.metamask.singleChainSwapsState.approveTxId;
+export const getApproveTxId = (state) =>
+  state.metamask.singleChainSwapsState.approveTxId;
 
-export const getTradeTxId = (state) => state.metamask.singleChainSwapsState.tradeTxId;
+export const getTradeTxId = (state) =>
+  state.metamask.singleChainSwapsState.tradeTxId;
 
 export const getUsedQuote = (state) =>
   getSelectedQuote(state) || getTopQuote(state);

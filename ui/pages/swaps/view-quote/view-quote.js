@@ -65,7 +65,7 @@ import {
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
   getIsMultiLayerFeeNetwork,
-  getSelectedNetworkClientId,
+  // getSelectedNetworkClientId,
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
@@ -145,8 +145,6 @@ export default function ViewQuote() {
     GasRecommendations.high,
     GasRecommendations.medium,
   ];
-  // TODO replace this with a passed contextual prop(?) once there is no longer a globally selected network
-  // const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const quotes = useSelector(getQuotes, isEqual);
@@ -187,7 +185,8 @@ export default function ViewQuote() {
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
 
-  const networkClientId = useSelector(getSelectedNetworkClientId);
+  // TODO replace this with a passed contextual prop(?) once there is no longer a globally selected network
+  // const networkClientId = useSelector(getSelectedNetworkClientId);
   // TODO chainId/nativeCurrentSymbol should be derived from networkClientId;
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
