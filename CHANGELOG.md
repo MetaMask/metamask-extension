@@ -13,6 +13,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fix bug that caused Blockaid integration to only display the fallback screen if the user had just switched network ([#21518](https://github.com/MetaMask/metamask-extension/pull/21518))
+### Added
+- Adopt new version of `@metamask/signature-controller` to add signature operation logs ([#21207)](https://github.com/MetaMask/metamask-extension/pull/21207))
+
+### Changed
+- Show number of tokens to be imported ([#21521)](https://github.com/MetaMask/metamask-extension/pull/21521))
+- Updating AccountPicker component to allow for customizations ([#21544)](https://github.com/MetaMask/metamask-extension/pull/21544))
+- Update PickerNetwork component to support full width ([#21301)](https://github.com/MetaMask/metamask-extension/pull/21301))
+- Update label for buy and sell to avoid truncation ([#21568)](https://github.com/MetaMask/metamask-extension/pull/21568))
+- Remove AccountPicker hover styling when disabled ([#21451)](https://github.com/MetaMask/metamask-extension/pull/21451))
+- Remove PickerNetwork active background color change when disabled ([#21450)](https://github.com/MetaMask/metamask-extension/pull/21450))
+- Remove unused KeyringLabel ([#21446)](https://github.com/MetaMask/metamask-extension/pull/21446))
+- Ensure copy format is plain text ([#21387 ](https://github.com/MetaMask/metamask-extension/pull/21387))
+
+### Fixed
+- Fix incorrect ERC20 Token icon ([#21508)](https://github.com/MetaMask/metamask-extension/pull/21508))
+- Ensure user can see details for a token which has not been imported ([#21400)](https://github.com/MetaMask/metamask-extension/pull/21400))
+- Ensure ERC20 Token shows correct name ([#21401)](https://github.com/MetaMask/metamask-extension/pull/21401))
+- Ensure hex data is cleared during ERC20 Send ([#21336)](https://github.com/MetaMask/metamask-extension/pull/21336))
+- Fix conversion amount consistency along the send ERC20 flow ([#21185)](https://github.com/MetaMask/metamask-extension/pull/21185))
+- Fix gas calculation checking wrong account balance ([#21174)](https://github.com/MetaMask/metamask-extension/pull/21174))
+- Fixing truncation and alignment in the network toggle component ([#21370)](https://github.com/MetaMask/metamask-extension/pull/21370))
+- Fix sent integer token amount in the activity tab ([#21338)](https://github.com/MetaMask/metamask-extension/pull/21338))
+- Tweak Box Design System component to fix overflow issues ([#21317)](https://github.com/MetaMask/metamask-extension/pull/21317))
+- Fix alignment of legacy connect text ([#21552)](https://github.com/MetaMask/metamask-extension/pull/21552))
+- Reduce setMouseUserState calls to prevent re-renders ([#21443)](https://github.com/MetaMask/metamask-extension/pull/21443))
+- Fixed network picker in header of the Popup view ([#21374)](https://github.com/MetaMask/metamask-extension/pull/21374))
 
 ## [11.4.0]
 ### Added
@@ -128,7 +154,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a toggle to allow users to turn off IPFS image resolution ([#20172](https://github.com/MetaMask/metamask-extension/pull/20172))
 - Added toggles to allow users a per-network opt-out of incoming transactions functionality ([#20363](https://github.com/MetaMask/metamask-extension/pull/20363))
 - Added a toggle to allow users to opt-out of 4byte contract method names resolution ([#20098](https://github.com/MetaMask/metamask-extension/pull/20098))
-- MetaMask Institutional releases will now be available from the releases page ([#20788](https://github.com/MetaMask/metamask-extension/pull/20788)) 
+- MetaMask Institutional releases will now be available from the releases page ([#20788](https://github.com/MetaMask/metamask-extension/pull/20788))
 
 ### Changed
 - Display a "Buy more" link in swaps if the user has insufficient funds for a proposed swap ([#20241](https://github.com/MetaMask/metamask-extension/pull/20241))
@@ -161,7 +187,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Remove some spacing in the NFT collection UI ([#20442](https://github.com/MetaMask/metamask-extension/pull/20442))
 - Modify the visual alignment of the "MetaMask Support" links ([#20354](https://github.com/MetaMask/metamask-extension/pull/20354))
 - Remove the "Source" and "Link" URLs from NFT details ([#20248](https://github.com/MetaMask/metamask-extension/pull/20248))
-- Modify full screen settings styles and spacing ([#20676](https://github.com/MetaMask/metamask-extension/pull/20676)) ([#20674](https://github.com/MetaMask/metamask-extension/pull/20674)) 
+- Modify full screen settings styles and spacing ([#20676](https://github.com/MetaMask/metamask-extension/pull/20676)) ([#20674](https://github.com/MetaMask/metamask-extension/pull/20674))
 - Switch display order of fiat and eth values in Account List Menu ([#20334](https://github.com/MetaMask/metamask-extension/pull/20334))
 - Update OpenSea alert placement on Token Allowance, Confirm Pages, SIWE, and Signature V3/V4 pages ([#20530](https://github.com/MetaMask/metamask-extension/pull/20530))
 - Update scroll behaviour on Snaps install screens, so users can scroll with a button, and proceed to the next screen after scrolling to the bottom once ([#20889](https://github.com/MetaMask/metamask-extension/pull/20889))
