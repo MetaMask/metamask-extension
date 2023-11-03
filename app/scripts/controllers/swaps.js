@@ -17,6 +17,7 @@ import {
   QUOTES_NOT_AVAILABLE_ERROR,
   SWAPS_FETCH_ORDER_CONFLICT,
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
+  ALLOWED_PROD_SWAPS_CHAIN_IDS,
 } from '../../../shared/constants/swaps';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
 import { CHAIN_IDS, NetworkStatus } from '../../../shared/constants/network';
@@ -79,35 +80,49 @@ function calculateGasEstimateWithRefund(
   return gasEstimateWithRefund;
 }
 
+const singleChainSwapsStateBase = {
+  quotes: {},
+  quotesPollingLimitEnabled: false,
+  fetchParams: null,
+  tokens: null,
+  tradeTxId: null,
+  approveTxId: null,
+  quotesLastFetched: null,
+  customMaxGas: '',
+  customGasPrice: null,
+  customMaxFeePerGas: null,
+  customMaxPriorityFeePerGas: null,
+  swapsUserFeeLevel: '',
+  selectedAggId: null,
+  customApproveTxData: '',
+  errorKey: '',
+  topAggId: null,
+  routeState: '',
+  saveFetchedQuotes: false,
+  swapsFeatureIsLive: true,
+  swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
+  swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
+  swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+  swapsStxGetTransactionsRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
+  swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
+  swapsFeatureFlags: {},
+};
+
+const swapsStateByChainIdBase = {
+  ...ALLOWED_PROD_SWAPS_CHAIN_IDS.reduce((acc, chainId) => {
+    return {
+      ...acc,
+      [chainId]: {
+        ...singleChainSwapsStateBase,
+      },
+    };
+  }, {}),
+};
+
 const initialState = {
-  swapsState: {
-    quotes: {},
-    quotesPollingLimitEnabled: false,
-    fetchParams: null,
-    tokens: null,
-    tradeTxId: null,
-    approveTxId: null,
-    quotesLastFetched: null,
-    customMaxGas: '',
-    customGasPrice: null,
-    customMaxFeePerGas: null,
-    customMaxPriorityFeePerGas: null,
-    swapsUserFeeLevel: '',
-    selectedAggId: null,
-    customApproveTxData: '',
-    errorKey: '',
-    topAggId: null,
-    routeState: '',
-    swapsFeatureIsLive: true,
-    saveFetchedQuotes: false,
-    swapsQuoteRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
-    swapsQuotePrefetchingRefreshTime: FALLBACK_QUOTE_REFRESH_TIME,
-    swapsStxBatchStatusRefreshTime: FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-    swapsStxGetTransactionsRefreshTime:
-      FALLBACK_SMART_TRANSACTIONS_REFRESH_TIME,
-    swapsStxMaxFeeMultiplier: FALLBACK_SMART_TRANSACTIONS_MAX_FEE_MULTIPLIER,
-    swapsFeatureFlags: {},
-  },
+  swapsFeatureFlags: {},
+  swapsState: singleChainSwapsStateBase,
+  swapsStateByChainId: swapsStateByChainIdBase,
 };
 
 export default class SwapsController extends PollingControllerOnly {
@@ -130,10 +145,12 @@ export default class SwapsController extends PollingControllerOnly {
     super();
     this.store = new ObservableStore({
       swapsState: {
-        ...initialState.swapsState,
+        ...singleChainSwapsStateBase,
         swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags || {},
-        // TODO add chainId keyed version here:
       },
+      swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags || {},
+
+      swapsStateByChainId: swapsStateByChainIdBase,
     });
 
     this.resetState = () => {
@@ -142,6 +159,8 @@ export default class SwapsController extends PollingControllerOnly {
           ...initialState.swapsState,
           swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags,
         },
+        swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags,
+        swapsStateByChainId: swapsStateByChainIdBase,
       });
     };
 

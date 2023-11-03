@@ -146,7 +146,7 @@ export default function ViewQuote() {
     GasRecommendations.medium,
   ];
   // TODO replace this with a passed contextual prop(?) once there is no longer a globally selected network
-  const networkClientId = useSelector(getSelectedNetworkClientId);
+  // const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const routeState = useSelector(getBackgroundSwapRouteState);
   const quotes = useSelector(getQuotes, isEqual);
@@ -186,6 +186,9 @@ export default function ViewQuote() {
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
+
+  const networkClientId = useSelector(getSelectedNetworkClientId);
+  // TODO chainId/nativeCurrentSymbol should be derived from networkClientId;
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);

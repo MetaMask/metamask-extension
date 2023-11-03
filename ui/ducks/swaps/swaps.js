@@ -234,6 +234,8 @@ export default reducer;
 
 // Selectors
 
+// all these selectors should be parameterized by chainId/networkClientId
+
 export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata;
 
 export const getBalanceError = (state) => state.swaps.balanceError;
@@ -311,6 +313,8 @@ export function shouldShowCustomPriceTooLowWarning(state) {
 }
 
 // Background selectors
+
+// ALL these selectors should be parameterized by chainId/networkClientId
 
 const getSwapsState = (state) => state.metamask.swapsState;
 
@@ -637,14 +641,14 @@ const isTokenAlreadyAdded = (tokenAddress, tokens) => {
   );
 };
 
-export const fetchQuotesAndSetQuoteState = (
+export const fetchQuotesAndSetQuoteState = ({
   history,
   inputValue,
   maxSlippage,
   trackEvent,
   pageRedirectionDisabled,
   networkClientId,
-) => {
+}) => {
   return async (dispatch, getState) => {
     const state = getState();
     // eslint-disable-next-line no-param-reassign
