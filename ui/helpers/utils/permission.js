@@ -163,7 +163,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             >
               {friendlyName}
             </Text>,
-            path.join('/'),
           ]),
           description: t('permission_manageBip44AndBip32KeysDescription'),
         };
