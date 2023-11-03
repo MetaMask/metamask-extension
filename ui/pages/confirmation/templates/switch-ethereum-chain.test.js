@@ -14,18 +14,28 @@ jest.mock('../../../../shared/lib/fetch-with-cache');
 const middleware = [thunk];
 
 const mockApprovalId = 1;
+const providerConfig = {
+  type: 'rpc',
+  rpcUrl: 'http://example-custom-rpc.metamask.io',
+  chainId: '0x9999',
+  nickname: 'Test initial state',
+};
+
 const mockApproval = {
   id: mockApprovalId,
   origin: 'https://test-dapp.metamask.io',
   requestData: {
-    rpcUrl: 'https://rpcurl.test.chain',
-    rpcPrefs: {
-      blockExplorerUrl: 'https://blockexplorer.test.chain',
+    toNetworkConfiguration: {
+      rpcUrl: 'https://rpcurl.test.chain',
+      rpcPrefs: {
+        blockExplorerUrl: 'https://blockexplorer.test.chain',
+      },
+      chainName: 'Test chain',
+      ticker: 'TST',
+      chainId: '0x9999',
+      nickname: 'Test chain',
     },
-    chainName: 'Test chain',
-    ticker: 'TST',
-    chainId: '0x9999',
-    nickname: 'Test chain',
+    fromNetworkConfiguration: providerConfig,
   },
 };
 
@@ -36,12 +46,7 @@ const mockBaseStore = {
     },
     approvalFlows: [],
     subjectMetadata: {},
-    providerConfig: {
-      type: 'rpc',
-      rpcUrl: 'http://example-custom-rpc.metamask.io',
-      chainId: '0x9999',
-      nickname: 'Test initial state',
-    },
+    providerConfig,
     selectedNetworkClientId: 'test-network-client-id',
     networksMetadata: {
       'test-network-client-id': {
