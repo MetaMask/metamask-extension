@@ -29,6 +29,7 @@ import {
   SendPageRecipientInput,
   SendPageNetworkPicker,
   SendPageRecipient,
+  SendPageContent,
 } from './components';
 
 export const SendPage = () => {
@@ -116,7 +117,12 @@ export const SendPage = () => {
         <SendPageNetworkPicker />
         <SendPageAccountPicker />
         <SendPageRecipientInput />
-        <SendPageRecipient />
+        {draftTransactionExists &&
+        [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage) ? (
+          <SendPageContent />
+        ) : (
+          <SendPageRecipient />
+        )}
       </Content>
       <Footer>
         <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
