@@ -199,7 +199,11 @@ export default class TransactionController extends EventEmitter {
 
     this.incomingTransactionHelper = new IncomingTransactionHelper({
       blockTracker: this.blockTracker,
-      getCurrentAccount: () => this.getSelectedAddress(),
+      getCurrentAccount: () => () => {
+        return this.messagingSystem.call(
+          'AccountsController:getSelectedAccount',
+        ).address;
+      },
       getNetworkState: () => this._getNetworkState(),
       isEnabled: () =>
         Boolean(
@@ -1827,7 +1831,8 @@ export default class TransactionController extends EventEmitter {
 
     /** @returns {string} the user selected address */
     this.getSelectedAddress = () =>
-      this.preferencesStore.getState().selectedAddress;
+      this.messagingSystem.call('AccountsController:getSelectedAccount')
+        .address;
 
     /** @returns {Array} transactions whos status is unapproved */
     this.getUnapprovedTxCount = () =>
