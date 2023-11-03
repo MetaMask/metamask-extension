@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
 import { TransactionStatus } from '../../shared/constants/transaction';
@@ -21,6 +22,24 @@ const defaultState = {
       '0xFirstAddress': {
         balance: '0x0',
       },
+    },
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0xFirstAddress',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Test Account',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
     identities: {
       '0xFirstAddress': {},
