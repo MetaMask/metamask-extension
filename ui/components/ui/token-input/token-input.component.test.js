@@ -61,7 +61,7 @@ describe('TokenInput Component', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          nativeCurrency: 'MATIC',
+          currencyRates: {},
           preferences: {
             ...mockState.metamask.preferences,
             showFiatInTestnets: true,

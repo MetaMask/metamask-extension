@@ -61,7 +61,7 @@ const MOCK_FEE_ESTIMATE = {
 const render = ({ txProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
-      nativeCurrency: ETH,
+      currencyRates: {},
       providerConfig: {
         chainId: CHAIN_IDS.GOERLI,
         nickname: GOERLI_DISPLAY_NAME,
