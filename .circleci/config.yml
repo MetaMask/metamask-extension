@@ -1061,7 +1061,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: Activate Selenium Manager for Firefox
-          command: yarn
+          command: yarn test:e2e:updategeckodriver
       - run:
           name: test:e2e:firefox
           command: |
