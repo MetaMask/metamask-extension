@@ -825,7 +825,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: Activate Selenium Manager for Chrome
-          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+          command: yarn test:e2e:updatechromedriver
       - run:
           name: test:e2e:chrome
           command: |
@@ -855,7 +855,7 @@ jobs:
           command: mv ./builds-test-multichain ./builds
       - run:
           name: Activate Selenium Manager for Chrome
-          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+          command: yarn test:e2e:updatechromedriver
       - run:
           name: test:e2e:chrome-multichain
           command: |
@@ -884,7 +884,7 @@ jobs:
           command: mv ./builds-test-mv3 ./builds
       - run:
           name: Activate Selenium Manager for Chrome
-          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+          command: yarn test:e2e:updatechromedriver
       - run:
           name: test:e2e:chrome
           command: |
@@ -912,7 +912,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: Activate Selenium Manager for Chrome
-          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+          command: yarn test:e2e:updatechromedriver
       - run:
           name: test:e2e:chrome:rpc
           command: |
@@ -941,7 +941,7 @@ jobs:
           command: mv ./builds-test-mmi ./builds
       - run:
           name: Activate Selenium Manager for Chrome
-          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+          command: yarn test:e2e:updatechromedriver
       - run:
           name: test:e2e:chrome:rpc
           command: |
@@ -971,7 +971,7 @@ jobs:
           command: mv ./builds-test-flask ./builds
       - run:
           name: Activate Selenium Manager for Firefox
-          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser firefox
+          command: yarn test:e2e:updategeckodriver
       - run:
           name: test:e2e:firefox:flask
           command: |
@@ -1001,7 +1001,7 @@ jobs:
           command: mv ./builds-test-flask ./builds
       - run:
           name: Activate Selenium Manager for Chrome
-          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+          command: yarn test:e2e:updatechromedriver
       - run:
           name: test:e2e:chrome:flask
           command: |
@@ -1031,7 +1031,7 @@ jobs:
           command: mv ./builds-test-mmi ./builds
       - run:
           name: Activate Selenium Manager for Chrome
-          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+          command: yarn test:e2e:updatechromedriver
       - run:
           name: test:e2e:chrome:mmi
           command: |
@@ -1061,7 +1061,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: Activate Selenium Manager for Firefox
-          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser firefox
+          command: yarn
       - run:
           name: test:e2e:firefox
           command: |
@@ -1090,7 +1090,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: Activate Selenium Manager for Chrome
-          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+          command: yarn test:e2e:updatechromedriver
       - run:
           name: Run page load benchmark
           command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
@@ -1116,7 +1116,7 @@ jobs:
           command: mv ./builds-test ./builds
       - run:
           name: Activate Selenium Manager for Chrome
-          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+          command: yarn test:e2e:updatechromedriver
       - run:
           name: Run page load benchmark
           command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
@@ -1142,7 +1142,7 @@ jobs:
           command: mv ./builds-test-mv3 ./builds
       - run:
           name: Activate Selenium Manager for Chrome
-          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+          command: yarn test:e2e:updatechromedriver
       - run:
           name: Run page load benchmark
           command: |
