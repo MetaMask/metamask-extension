@@ -261,7 +261,7 @@ async function withFixtures(options, testSuite) {
 const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
   InstalledExtensions: 'Extensions',
-  Notification: 'MetaMask Notification',
+  Notification: 'MetaMask',
   Phishing: 'MetaMask Phishing Detection',
   ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
