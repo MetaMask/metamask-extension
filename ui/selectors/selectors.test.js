@@ -10,6 +10,7 @@ import {
   OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import * as selectors from './selectors';
+import { getAccountByAddress } from '../helpers/utils/util';
 
 jest.mock('../../shared/modules/network.utils', () => {
   const actual = jest.requireActual('../../shared/modules/network.utils');
