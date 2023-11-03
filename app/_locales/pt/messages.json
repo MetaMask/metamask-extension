@@ -3184,10 +3184,6 @@
     "message": "Adicionar e controlar contas Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip44Keys": {
-    "message": "Controle suas contas e ativos do $1.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
   "permission_manageState": {
     "message": "Armazenar e gerenciar dados pertinentes em seu dispositivo.",
     "description": "The description for the `snap_manageState` permission"
@@ -3942,10 +3938,6 @@
   },
   "snapInstallSuccess": {
     "message": "Instalação concluída"
-  },
-  "snapInstallWarningCheck": {
-    "message": "Reserve alguns minutos para ler a permissão que está sendo solicitada. Prossiga somente se você confia em $1.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "Prossiga com cautela"

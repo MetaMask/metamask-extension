@@ -3184,10 +3184,6 @@
     "message": "Ethereum-Konten hinzufügen und kontrollieren",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip44Keys": {
-    "message": "Verwalten Sie Ihre $1-Konten und Assets.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
   "permission_manageState": {
     "message": "Speichern und verwalten Sie die Daten auf Ihrem Gerät.",
     "description": "The description for the `snap_manageState` permission"
@@ -3942,10 +3938,6 @@
   },
   "snapInstallSuccess": {
     "message": "Installation ist abgeschlossen"
-  },
-  "snapInstallWarningCheck": {
-    "message": "Nehmen Sie sich einen Moment Zeit, um die angeforderte Genehmigung zu prüfen. Fahren Sie nur fort, wenn Sie $1 vertrauen.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "Seien Sie vorsichtig"

@@ -3184,10 +3184,6 @@
     "message": "添加并控制以太坊账户",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip44Keys": {
-    "message": "控制您的 $1 账户和资产。",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
   "permission_manageState": {
     "message": "在您的设备上存储和管理其数据。",
     "description": "The description for the `snap_manageState` permission"
@@ -3942,10 +3938,6 @@
   },
   "snapInstallSuccess": {
     "message": "安装完成"
-  },
-  "snapInstallWarningCheck": {
-    "message": "请勾选选项框以确认您理解。",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "请谨慎行事"

@@ -3184,10 +3184,6 @@
     "message": "Magdagdag at kontrolin ang mga Ethereum account",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip44Keys": {
-    "message": "Kontrolin ang iyong mga account at asset sa $1.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
   "permission_manageState": {
     "message": "Iimbak at pamahalaan ang datos nito sa iyong device.",
     "description": "The description for the `snap_manageState` permission"
@@ -3942,10 +3938,6 @@
   },
   "snapInstallSuccess": {
     "message": "Tapos na ang pag-install"
-  },
-  "snapInstallWarningCheck": {
-    "message": "Maglaan ng oras para suriin ang pahintulot na hinihiling. Magpatuloy lang kung pinagkakatiwalaan mo ang $1.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "Magpatuloy nang may pag-iingat"

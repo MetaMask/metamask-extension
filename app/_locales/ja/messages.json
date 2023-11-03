@@ -3184,10 +3184,6 @@
     "message": "イーサリアムアカウントを追加して管理します",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip44Keys": {
-    "message": "$1アカウントとアセットをコントロールします。",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
   "permission_manageState": {
     "message": "デバイスにデータを保管し管理します。",
     "description": "The description for the `snap_manageState` permission"
@@ -3942,10 +3938,6 @@
   },
   "snapInstallSuccess": {
     "message": "インストール完了"
-  },
-  "snapInstallWarningCheck": {
-    "message": "まずは、求められている許可の内容を確認してください。$1を信頼できる場合のみ続行してください。",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "慎重に進めてください"

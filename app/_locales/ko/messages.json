@@ -3184,10 +3184,6 @@
     "message": "이더리움 계정 추가 및 제어",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip44Keys": {
-    "message": "$1 계정과 자산을 통제합니다.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
   "permission_manageState": {
     "message": "장치의 데이터를 저장하고 관리합니다.",
     "description": "The description for the `snap_manageState` permission"
@@ -3942,10 +3938,6 @@
   },
   "snapInstallSuccess": {
     "message": "설치 완료"
-  },
-  "snapInstallWarningCheck": {
-    "message": "잠시 시간을 내어 요청한 권한을 검토하세요. $1(을)를 신뢰하는 경우에만 계속하세요.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "주의하여 진행하세요"

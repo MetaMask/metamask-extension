@@ -3184,10 +3184,6 @@
     "message": "Ethereum अकाउंट जोड़ें और नियंत्रित करें",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip44Keys": {
-    "message": "अपने $1 अकाउंट्स और एसेट्स नियंत्रित करें।",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
   "permission_manageState": {
     "message": "उसके डेटा को अपने डिवाइस पर स्टोर करें और प्रबंधित करें।",
     "description": "The description for the `snap_manageState` permission"
@@ -3942,10 +3938,6 @@
   },
   "snapInstallSuccess": {
     "message": "इंस्टॉलेशन समाप्त"
-  },
-  "snapInstallWarningCheck": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "सावधानी से आगे बढ़ें"

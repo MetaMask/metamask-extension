@@ -3184,10 +3184,6 @@
     "message": "Προσθήκη και έλεγχος λογαριασμών στο Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip44Keys": {
-    "message": "Ελέγξτε τους $1 λογαριασμούς και τα περιουσιακά σας στοιχεία.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
   "permission_manageState": {
     "message": "Αποθηκεύστε και διαχειριστείτε τα δεδομένα του στη συσκευή σας.",
     "description": "The description for the `snap_manageState` permission"
@@ -3942,10 +3938,6 @@
   },
   "snapInstallSuccess": {
     "message": "Η εγκατάσταση ολοκληρώθηκε"
-  },
-  "snapInstallWarningCheck": {
-    "message": "Αφιερώστε λίγο χρόνο για να ελέγξετε την άδεια που ζητείται. Συνεχίστε μόνο αν εμπιστεύεστε το $1.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "Προχωρήστε με προσοχή"
