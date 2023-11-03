@@ -24806,6 +24806,7 @@ __metadata:
     typescript: "npm:~4.5.0"
     unicode-confusables: "npm:^0.1.1"
     uuid: "npm:^8.3.2"
+    uws: "npm:^200.0.0"
     vinyl: "npm:^2.2.1"
     vinyl-buffer: "npm:^1.0.1"
     vinyl-source-stream: "npm:^2.0.0"
@@ -34490,6 +34491,13 @@ __metadata:
   bin:
     uvu: bin.js
   checksum: 66ba25afc6732249877f9f4f8b6146f3aaa97538c51cf498f55825d602c33dbb903e02c7e1547cbca6bdfbb609e07eb7ea758b5156002ac2dd5072f00606f8d9
+  languageName: node
+  linkType: hard
+
+"uws@npm:^200.0.0":
+  version: 200.0.0
+  resolution: "uws@npm:200.0.0"
+  checksum: dfc3a87517862b4dfd22879312d70fb3fdaf5f16599710eaf1dc58b90fc1b16c0d2bb047a5ddc6579098b47d34bd3a13990a482600bc21260ec9b390311d0b9d
   languageName: node
   linkType: hard
 
