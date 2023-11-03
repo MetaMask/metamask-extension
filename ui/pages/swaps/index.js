@@ -12,6 +12,7 @@ import {
   useLocation,
   useHistory,
   Redirect,
+  useParams,
 } from 'react-router-dom';
 import { shuffle, isEqual } from 'lodash';
 import classnames from 'classnames';
@@ -119,7 +120,8 @@ export default function Swap() {
   const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-
+  const params = useParams();
+  console.log('params', params);
   const { pathname } = useLocation();
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
   const isAwaitingSignaturesRoute = pathname === AWAITING_SIGNATURES_ROUTE;
@@ -134,6 +136,7 @@ export default function Swap() {
   const fetchParams = useSelector(getFetchParams, isEqual);
   const { destinationTokenInfo = {} } = fetchParams?.metaData || {};
 
+  // TODO a ton of selectors here need to be parameterized by networkClient/chainId
   const routeState = useSelector(getBackgroundSwapRouteState);
   const selectedAccount = useSelector(getSelectedAccount, shallowEqual);
   const quotes = useSelector(getQuotes, isEqual);
@@ -145,6 +148,7 @@ export default function Swap() {
   const fetchingQuotes = useSelector(getFetchingQuotes);
   let swapsErrorKey = useSelector(getSwapsErrorKey);
   const swapsEnabled = useSelector(getSwapsFeatureIsLive);
+
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const networkAndAccountSupports1559 = useSelector(
@@ -167,9 +171,12 @@ export default function Swap() {
     getCurrentSmartTransactionsError,
   );
 
+  // Maybe the strategy is to pass/get the networkClientId off the URL?
+  // This page is nice because it can serve as the base context for a particular
+  // swap that is tied to a particular account and network. However, we need to
+  // be careful to not use any selectors that are not contextual to this page.
   // TODO replace with a prop contextual to this particular flow
-  const selectedNetworkClientId = useSelector(
-    getSelectedNetworkClientId)
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
   useEffect(() => {
     const leaveSwaps = async () => {

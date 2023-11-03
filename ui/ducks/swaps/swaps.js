@@ -605,7 +605,11 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       swapsFeatureIsLive: false,
     };
     const state = getState();
-    const chainId = getCurrentChainId(state);
+    const selectedNetworkClientId = getSelectedNetworkClientId(state);
+    const chainId = await dispatch(
+      getChainIdByNetworkClientId(selectedNetworkClientId),
+    );
+    // const chainId = getCurrentChainId(state);
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));

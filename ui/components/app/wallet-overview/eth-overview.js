@@ -272,6 +272,7 @@ const EthOverview = ({ className, showAddress }) => {
 
               ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
               if (isSwapsChain) {
+                // TODO try to pass along the networkClientId here
                 trackEvent({
                   event: MetaMetricsEventName.NavSwapButtonClicked,
                   category: MetaMetricsEventCategory.Swaps,
@@ -286,7 +287,7 @@ const EthOverview = ({ className, showAddress }) => {
                 if (usingHardwareWallet) {
                   global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
                 } else {
-                  history.push(BUILD_QUOTE_ROUTE);
+                  history.push(`${BUILD_QUOTE_ROUTE}?type=swap`);
                 }
               }
               ///: END:ONLY_INCLUDE_IN
