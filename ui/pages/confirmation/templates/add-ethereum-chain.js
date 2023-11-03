@@ -1,5 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
+import log from 'loglevel';
 import { infuraProjectId } from '../../../../shared/constants/network';
 import {
   Severity,
@@ -135,10 +136,15 @@ async function getAlerts(pendingApproval, state) {
   const alerts = [];
   let safeChainsList = [];
   if (state.useSafeChainsListValidation) {
-    safeChainsList = await fetchWithCache({
-      url: 'https://chainid.network/chains.json',
-      functionName: 'getSafeChainsList',
-    });
+    try {
+      safeChainsList = await fetchWithCache({
+        url: 'https://chainid.network/chains.json',
+        functionName: 'getSafeChainsList',
+      });
+    } catch (error) {
+      // Swallow the error here to not block the user from adding a custom network
+      log.warn('Failed to fetch the chainList from chainid.network', error);
+    }
   }
   const matchedChain = safeChainsList.find(
     (chain) =>
