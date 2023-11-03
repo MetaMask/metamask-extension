@@ -28,6 +28,12 @@ export const ERROR_URL_ALLOWLIST = {
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
 export const SENTRY_BACKGROUND_STATE = {
+  AccountsController: {
+    internalAccounts: {
+      accounts: false,
+      selectedAccount: false,
+    },
+  },
   AccountTracker: {
     accounts: false,
     currentBlockGasLimit: true,
@@ -75,7 +81,6 @@ export const SENTRY_BACKGROUND_STATE = {
     qrHardware: true,
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
-    serviceWorkerLastActiveTime: true,
     showBetaHeader: true,
     showProductTour: true,
     showTestnetMessageInDropdown: true,
@@ -134,7 +139,6 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   NetworkController: {
     networkConfigurations: false,
-    networkId: true,
     networksMetadata: true,
     providerConfig: {
       chainId: true,
@@ -231,7 +235,6 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   SnapController: {
-    snapErrors: false,
     snapStates: false,
     snaps: false,
   },

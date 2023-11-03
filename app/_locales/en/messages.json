@@ -358,6 +358,9 @@
   "alerts": {
     "message": "Alerts"
   },
+  "allConnections": {
+    "message": "All Connections"
+  },
   "allCustodianAccountsConnectedSubtitle": {
     "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
   },
@@ -868,6 +871,12 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask is connected to this site, but no accounts are connected yet"
+  },
+  "connectedaccount": {
+    "message": "account"
+  },
+  "connectedaccounts": {
+    "message": "accounts"
   },
   "connecting": {
     "message": "Connecting..."
@@ -2063,6 +2072,9 @@
   },
   "installOrigin": {
     "message": "Install origin"
+  },
+  "installRequest": {
+    "message": "Installation request"
   },
   "installedOn": {
     "message": "Installed on $1",
@@ -3986,6 +3998,9 @@
   "selectAccountsForSnap": {
     "message": "Select the account(s) to use with this snap"
   },
+  "selectActionButton": {
+    "message": "Select action"
+  },
   "selectAll": {
     "message": "Select all"
   },
@@ -4027,6 +4042,9 @@
   },
   "send": {
     "message": "Send"
+  },
+  "sendAToken": {
+    "message": "Send a token"
   },
   "sendBugReport": {
     "message": "Send us a bug report."
@@ -4150,6 +4168,12 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
+  "siteConnections": {
+    "message": "Site Connections"
+  },
+  "sites": {
+    "message": "Sites"
+  },
   "skip": {
     "message": "Skip"
   },
@@ -4229,6 +4253,9 @@
   "snapConnectionWarning": {
     "message": "$1 wants to connect to $2. Only continue if you trust this website.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
+  "snapConnections": {
+    "message": "Snap Connections"
   },
   "snapContent": {
     "message": "This content is coming from $1",
@@ -4324,9 +4351,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
   },
-  "snapUpdate": {
-    "message": "Update snap"
-  },
   "snapUpdateAvailable": {
     "message": "Update available"
   },
@@ -4377,9 +4401,6 @@
   },
   "snapsSettings": {
     "message": "Snap settings"
-  },
-  "snapsSettingsDescription": {
-    "message": "Manage your Snaps"
   },
   "snapsTermsOfUse": {
     "message": "Terms of Use"
@@ -5504,6 +5525,9 @@
   },
   "update": {
     "message": "Update"
+  },
+  "updateRequest": {
+    "message": "Update request"
   },
   "updatedWithDate": {
     "message": "Updated $1"

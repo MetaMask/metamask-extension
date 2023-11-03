@@ -38,11 +38,7 @@ export default class AlertController {
    * @param {AlertControllerOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
-    const {
-      initState = {},
-      getCurrentSelectedAccount,
-      controllerMessenger,
-    } = opts;
+    const { initState = {}, controllerMessenger } = opts;
     const state = {
       ...defaultState,
       alertEnabledness: {
@@ -52,10 +48,11 @@ export default class AlertController {
     };
 
     this.store = new ObservableStore(state);
-
-    this.selectedAddress = getCurrentSelectedAccount().address;
-
     this.controllerMessenger = controllerMessenger;
+
+    this.selectedAddress = this.controllerMessenger.call(
+      'AccountsController:getSelectedAccount',
+    );
 
     this.controllerMessenger.subscribe(
       'AccountsController:selectedAccountChange',

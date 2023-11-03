@@ -86,7 +86,7 @@ describe('Custom network', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -165,7 +165,7 @@ describe('Custom network', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({ useSafeChainsListValidation: true })
             .build(),
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -272,7 +272,7 @@ describe('Custom network', function () {
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({ useSafeChainsListValidation: false })
             .build(),
-          title: this.test.title,
+          title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
@@ -327,7 +327,7 @@ describe('Custom network', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -388,7 +388,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -458,7 +458,7 @@ describe('Custom network', function () {
           });
           // verify network switched
           const networkDisplayed = await driver.findElement({
-            tag: 'p',
+            tag: 'span',
             text: 'Arbitrum One',
           });
           assert.equal(
@@ -475,7 +475,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -532,7 +532,7 @@ describe('Custom network', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -583,7 +583,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
@@ -625,7 +625,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
@@ -656,6 +656,7 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
     text: 'Security & privacy',
     tag: 'div',
   };
+  await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
   const useSafeChainsListValidationToggleSelector =
@@ -741,6 +742,8 @@ async function toggleOffSafeChainsListValidation(driver) {
     text: 'Security & privacy',
     tag: 'div',
   };
+
+  await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
   const useSafeChainsListValidationLabelSelector =

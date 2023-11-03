@@ -1,6 +1,7 @@
 const { Builder } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const proxy = require('selenium-webdriver/proxy');
+const { ThenableWebDriver } = require('selenium-webdriver'); // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 
 /**
  * Proxy host to use for HTTPS requests
@@ -14,7 +15,7 @@ const HTTPS_PROXY_HOST = '127.0.0.1:8000';
  */
 class ChromeDriver {
   static async build({ openDevToolsForTabs, port }) {
-    const args = [`load-extension=dist/chrome`];
+    const args = [`load-extension=${process.cwd()}/dist/chrome`];
     if (openDevToolsForTabs) {
       args.push('--auto-open-devtools-for-tabs');
     }

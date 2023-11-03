@@ -194,7 +194,7 @@ export default class MetaMetricsController {
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
       /* eslint-disable no-undef */
-      this.extension.alarms.getAll((alarms) => {
+      this.extension.alarms.getAll().then((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
           METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,

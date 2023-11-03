@@ -3998,9 +3998,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 está listo para usar"
   },
-  "snapUpdate": {
-    "message": "Actualizar snap"
-  },
   "snapUpdateAvailable": {
     "message": "Actualización disponible"
   },
@@ -4034,9 +4031,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Cualquier información que comparta con Servicios de terceros será recopilada directamente por dichos Servicios de terceros de acuerdo con sus políticas de privacidad. Consulte sus políticas de privacidad para obtener más información.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Administre sus snaps"
   },
   "snapsTermsOfUse": {
     "message": "Términos de uso"

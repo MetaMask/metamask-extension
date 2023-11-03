@@ -17,7 +17,7 @@ import {
 } from '../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN
 
-import getSnapAndHardwareInfoForMetrics from './snap-keyring/metrics';
+import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -118,7 +118,6 @@ const rateLimitTimeouts = {};
  * @param {number} [opts.rateLimitSeconds] - number of seconds to wait before
  *  allowing another set of events to be tracked.
  * @param opts.securityProviderRequest
- * @param {Function} opts.getSelectedAddress
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
@@ -129,7 +128,6 @@ export default function createRPCMethodTrackingMiddleware({
   getMetricsState,
   rateLimitSeconds = 60 * 5,
   securityProviderRequest,
-  getSelectedAddress,
   getAccountType,
   getDeviceModel,
   snapAndHardwareMessenger,
@@ -199,6 +197,16 @@ export default function createRPCMethodTrackingMiddleware({
         const paramsExamplePassword = req?.params?.[2];
 
         ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        if (req.securityAlertResponse?.providerRequestsCount) {
+          Object.keys(req.securityAlertResponse.providerRequestsCount).forEach(
+            (key) => {
+              const metricKey = `ppom_${key}_count`;
+              eventProperties[metricKey] =
+                req.securityAlertResponse.providerRequestsCount[key];
+            },
+          );
+        }
+
         eventProperties.security_alert_response =
           req.securityAlertResponse?.result_type ??
           BlockaidResultType.NotApplicable;
@@ -207,7 +215,6 @@ export default function createRPCMethodTrackingMiddleware({
         ///: END:ONLY_INCLUDE_IN
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
-          getSelectedAddress,
           getAccountType,
           getDeviceModel,
           snapAndHardwareMessenger,

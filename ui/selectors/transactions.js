@@ -10,14 +10,9 @@ import {
   TransactionType,
   SmartTransactionStatus,
 } from '../../shared/constants/transaction';
-import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
-import {
-  getCurrentChainId,
-  deprecatedGetCurrentNetworkId,
-  getSelectedInternalAccount,
-} from './selectors';
+import { getCurrentChainId, getSelectedAddress } from './selectors';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 
@@ -30,7 +25,7 @@ export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
 
 export const getCurrentNetworkTransactions = createDeepEqualSelector(
   (state) => {
-    const { transactions, networkId } = state.metamask ?? {};
+    const { transactions } = state.metamask ?? {};
 
     if (!transactions?.length) {
       return [];
@@ -38,8 +33,8 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
 
     const { chainId } = getProviderConfig(state);
 
-    return transactions.filter((transaction) =>
-      transactionMatchesNetwork(transaction, chainId, networkId),
+    return transactions.filter(
+      (transaction) => transaction.chainId === chainId,
     );
   },
   (transactions) => transactions,
@@ -69,7 +64,7 @@ export const incomingTxListSelector = createDeepEqualSelector(
     }
 
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);
-    const { address: selectedAddress } = getSelectedInternalAccount(state);
+    const selectedAddress = getSelectedAddress(state);
 
     return currentNetworkTransactions.filter(
       (tx) =>
@@ -103,14 +98,12 @@ export const smartTransactionsListSelector = (state) =>
     }));
 
 export const selectedAddressTxListSelector = createSelector(
-  getSelectedInternalAccount,
+  getSelectedAddress,
   getCurrentNetworkTransactions,
   smartTransactionsListSelector,
-  (selectedInternalAccount, transactions = [], smTransactions = []) => {
+  (selectedAddress, transactions = [], smTransactions = []) => {
     return transactions
-      .filter(
-        ({ txParams }) => txParams.from === selectedInternalAccount.address,
-      )
+      .filter(({ txParams }) => txParams.from === selectedAddress)
       .concat(smTransactions);
   },
 );
@@ -121,7 +114,6 @@ export const unapprovedMessagesSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  deprecatedGetCurrentNetworkId,
   getCurrentChainId,
   (
     unapprovedMsgs = {},
@@ -129,7 +121,6 @@ export const unapprovedMessagesSelector = createSelector(
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network,
     chainId,
   ) =>
     txHelper(
@@ -139,7 +130,6 @@ export const unapprovedMessagesSelector = createSelector(
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
-      network,
       chainId,
     ) || [],
 );
@@ -586,9 +576,7 @@ const hasUnapprovedTransactionsInCurrentNetwork = (state) => {
   const chainId = getCurrentChainId(state);
 
   const filteredUnapprovedTxInCurrentNetwork = unapprovedTxRequests.filter(
-    ({ id }) =>
-      unapprovedTxs[id] &&
-      transactionMatchesNetwork(unapprovedTxs[id], chainId),
+    ({ id }) => unapprovedTxs[id] && unapprovedTxs[id].chainId === chainId,
   );
 
   return filteredUnapprovedTxInCurrentNetwork.length > 0;

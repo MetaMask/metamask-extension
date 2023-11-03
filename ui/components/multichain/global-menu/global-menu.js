@@ -8,6 +8,7 @@ import {
   DEFAULT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
+  SNAPS_ROUTE,
   ///: END:ONLY_INCLUDE_IN(snaps)
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
@@ -216,6 +217,19 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             </MenuItem>
           </>
         ) : null
+        ///: END:ONLY_INCLUDE_IN(snaps)
+      }
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+        <MenuItem
+          iconName={IconName.Snaps}
+          onClick={() => {
+            history.push(SNAPS_ROUTE);
+            closeMenu();
+          }}
+        >
+          {t('snaps')}
+        </MenuItem>
         ///: END:ONLY_INCLUDE_IN(snaps)
       }
       <MenuItem

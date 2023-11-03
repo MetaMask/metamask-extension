@@ -1,7 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -15,13 +14,8 @@ import {
 import { AccountListMenu } from '.';
 
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-const mockToggleAccountMenu = jest.fn();
+const mockOnClose = jest.fn();
 const mockGetEnvironmentType = jest.fn();
-
-jest.mock('../../../store/actions.ts', () => ({
-  ...jest.requireActual('../../../store/actions.ts'),
-  toggleAccountMenu: () => mockToggleAccountMenu,
-}));
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
@@ -107,30 +101,16 @@ describe('AccountListMenu', () => {
       },
       metamask: {
         ...mockState.metamask,
-        internalAccounts: {
-          ...mockState.metamask.internalAccounts,
-          accounts: {
-            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-              metadata: {
-                name: 'Test Account',
-                keyring: {
-                  type: 'HD Key Tree',
-                },
-              },
-              options: {},
-              methods: [...Object.values(EthMethod)],
-              type: EthAccountType.Eoa,
-            },
+        accounts: {
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            balance: '0x346ba7725f412cbfdb',
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
           },
         },
       },
     });
-
-    const props = { onClose: () => jest.fn() };
     const { container } = renderWithProvider(
-      <AccountListMenu {...props} />,
+      <AccountListMenu onClose={jest.fn()} />,
       mockStore,
     );
     const searchBox = container.querySelector('input[type=search]');
@@ -216,7 +196,7 @@ describe('AccountListMenu', () => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   describe('addSnapAccountButton', () => {
-    const renderWithState = (state, props = { onClose: () => jest.fn() }) => {
+    const renderWithState = (state, props = { onClose: mockOnClose }) => {
       const store = configureStore({
         ...mockState,
         ...{
@@ -260,7 +240,7 @@ describe('AccountListMenu', () => {
 
       fireEvent.click(addSnapAccountButton);
       await waitFor(() => {
-        expect(mockToggleAccountMenu).toHaveBeenCalled();
+        expect(mockOnClose).toHaveBeenCalled();
       });
     });
 

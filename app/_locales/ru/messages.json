@@ -3998,9 +3998,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 готово к использованию"
   },
-  "snapUpdate": {
-    "message": "Обновить snap"
-  },
   "snapUpdateAvailable": {
     "message": "Доступно обновление"
   },
@@ -4034,9 +4031,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Любая информация, которую вы передаете Сторонним службам, будет собираться непосредственно этими Сторонними службами в соответствии с их политикой конфиденциальности. Пожалуйста, обратитесь к их политике конфиденциальности для получения дополнительной информации.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Управление вашим Snaps"
   },
   "snapsTermsOfUse": {
     "message": "Условия использования"

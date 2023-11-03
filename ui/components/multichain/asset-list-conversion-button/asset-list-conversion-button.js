@@ -10,20 +10,26 @@ import {
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
+export const ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES = {
+  BUY: 'buy',
+  RECEIVE: 'receive',
+  NFT: 'nft',
+};
+
 const ASSET_LIST_CONVERSION_BUTTON_VARIANTS = {
-  buy: {
+  [ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.BUY]: {
     color: 'var(--color-info-default)',
     backgroundImage: 'url(/images/token-list-buy-background.png)',
     text: 'buy',
     icon: IconName.Add,
   },
-  receive: {
+  [ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE]: {
     color: 'var(--color-flask-default)',
     backgroundImage: 'url(/images/token-list-receive-background.png)',
     text: 'receive',
     icon: IconName.Arrow2Down,
   },
-  nft: {
+  [ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT]: {
     color: 'var(--color-error-alternative)',
     backgroundImage: 'url(/images/token-list-nfts-background.png)',
     text: 'nftLearnMore',
@@ -78,5 +84,7 @@ AssetListConversionButton.propTypes = {
   /**
    * Text within the button body
    */
-  variant: PropTypes.oneOf(['buy', 'receive', 'nft']),
+  variant: PropTypes.oneOf(
+    Object.values(ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES),
+  ),
 };

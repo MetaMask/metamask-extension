@@ -9,7 +9,7 @@ import * as lodash from 'lodash';
 import bowser from 'bowser';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { getSnapPrefix } from '@metamask/snaps-utils';
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 // eslint-disable-next-line import/no-duplicates
 import { isObject } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IN
@@ -37,6 +37,7 @@ import {
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { SNAPS_VIEW_ROUTE } from '../constants/routes';
 
 export function formatDate(date, format = "M/d/y 'at' T") {
   if (!date) {
@@ -602,6 +603,10 @@ export const getSnapName = (snapId, subjectMetadata) => {
   }
 
   return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
+};
+
+export const getSnapRoute = (snapId) => {
+  return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;
 };
 
 export const getDedupedSnaps = (request, permissions) => {

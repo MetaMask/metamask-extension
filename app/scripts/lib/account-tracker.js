@@ -83,7 +83,7 @@ export default class AccountTracker {
     this.getNetworkIdentifier = opts.getNetworkIdentifier;
     this.preferencesController = opts.preferencesController;
     this.onboardingController = opts.onboardingController;
-    this.accountsController = opts.accountsController;
+    this.controllerMessenger = opts.controllerMessenger;
 
     // subscribe to account removal
     opts.onAccountRemoved((address) => this.removeAccount([address]));
@@ -98,9 +98,9 @@ export default class AccountTracker {
       }, this.onboardingController.store.getState()),
     );
 
-    this.selectedAccount = this.accountsController.getSelectedAccount();
-
-    this.controllerMessenger = opts.controllerMessenger;
+    this.selectedAccount = this.controllerMessenger.call(
+      'AccountsController:getSelectedAccount',
+    );
 
     this.controllerMessenger.subscribe(
       'AccountsController:selectedAccountChange',
@@ -256,8 +256,9 @@ export default class AccountTracker {
 
       addresses = Object.keys(accounts);
     } else {
-      const selectedAddress =
-        this.accountsController.getSelectedAccount().address;
+      const selectedAddress = this.controllerMessenger.call(
+        'AccountsController:getSelectedAccount',
+      ).address;
 
       addresses = [selectedAddress];
     }

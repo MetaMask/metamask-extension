@@ -4,7 +4,7 @@ import {
 } from '@metamask/permission-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications } from '@metamask/snaps-controllers';
-import { caveatSpecifications as snapsCaveatsSpecifications } from '@metamask/rpc-methods';
+import { caveatSpecifications as snapsCaveatsSpecifications } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import {
   CaveatTypes,
@@ -36,21 +36,11 @@ const CaveatFactories = Object.freeze({
 });
 
 /**
- * A PreferencesController identity object.
- *
- * @typedef {object} Identity
- * @property {string} address - The address of the identity.
- * @property {string} name - The name of the identity.
- * @property {number} [lastSelected] - Unix timestamp of when the identity was
- * last selected in the UI.
- */
-
-/**
  * Gets the specifications for all caveats that will be recognized by the
  * PermissionController.
  *
  * @param {{
- *   getInternalAccounts: () => Record<string, import('@metamask/eth-snap-keyring').InternalAccount>,
+ *   getInternalAccounts: () => Record<string, import('@metamask/keyring-api').InternalAccount>,
  * }} options - Options bag.
  */
 export const getCaveatSpecifications = ({ getInternalAccounts }) => {
@@ -82,12 +72,12 @@ export const getCaveatSpecifications = ({ getInternalAccounts }) => {
  *
  * @param {{
  *   getAllAccounts: () => Promise<string[]>,
- *   getInternalAccounts: () => Record<string, InternalAccount>,
+ *   getInternalAccounts: () => Record<string, import('@metamask/keyring-api').InternalAccount>,
  * }} options - Options bag.
  * @param options.getAllAccounts - A function that returns all Ethereum accounts
  * in the current MetaMask instance.
  * @param options.getInternalAccounts - A function that returns the
- * `PreferencesController` identity objects for all Ethereum accounts in the
+ * `AccountsController` internalAccount objects for all accounts in the
  * @param options.captureKeyringTypesWithMissingIdentities - A function that
  * captures extra error information about the "Missing identity for address"
  * error.
@@ -171,8 +161,8 @@ export const getPermissionSpecifications = ({
           }
 
           return (
-            secondAccount.metadata?.lastSelected -
-            firstAccount.metadata?.lastSelected
+            secondAccount.metadata.lastSelected -
+            firstAccount.metadata.lastSelected
           );
         });
       },
@@ -199,8 +189,8 @@ export const getPermissionSpecifications = ({
  * corresponds to a PreferencesController identity.
  *
  * @param {string[]} accounts - The accounts associated with the caveat.
- * @param {() => Record<string, import('@metamask/eth-snap-keyring').InternalAccount>} getInternalAccounts - Gets all
- * PreferencesController identities.
+ * @param {() => Record<string, import('@metamask/keyring-api').InternalAccount>} getInternalAccounts -
+ * Gets all AccountsController InternalAccounts.
  */
 function validateCaveatAccounts(accounts, getInternalAccounts) {
   if (!Array.isArray(accounts) || accounts.length === 0) {
