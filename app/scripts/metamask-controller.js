@@ -4601,27 +4601,11 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   async _onKeyringControllerUpdate(state) {
-    const {
-      keyrings,
-      encryptionKey: loginToken,
-      encryptionSalt: loginSalt,
-    } = state;
-    const addresses = keyrings.reduce(
-      (acc, { accounts }) => acc.concat(accounts),
-      [],
-    );
+    const { encryptionKey: loginToken, encryptionSalt: loginSalt } = state;
 
     if (isManifestV3) {
       await this.extension.storage.session.set({ loginToken, loginSalt });
     }
-
-    if (!addresses.length) {
-      return;
-    }
-
-    // Ensure preferences + identities controller know about all addresses
-    this.preferencesController.syncAddresses(addresses);
-    this.accountTracker.syncWithAddresses(addresses);
   }
 
   /**
