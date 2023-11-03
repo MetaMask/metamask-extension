@@ -154,7 +154,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
       if (friendlyName) {
         return {
           ...baseDescription,
-          label: t('permission_manageNamedBip32Keys', [
+          label: t('permission_manageBip32Keys', [
             <Text
               as="span"
               className="permission-label-item"

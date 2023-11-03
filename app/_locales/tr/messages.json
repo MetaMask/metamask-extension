@@ -3188,10 +3188,6 @@
     "message": "$1 hesaplarınızı ve varlıklarınızı kontrol edin.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
-  "permission_manageNamedBip32Keys": {
-    "message": "$1 hesaplarınızı ve varlıklarınızı kontrol edin.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
-  },
   "permission_manageState": {
     "message": "Verilerini cihazında sakla ve yönet.",
     "description": "The description for the `snap_manageState` permission"

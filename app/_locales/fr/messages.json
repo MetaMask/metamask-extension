@@ -3188,10 +3188,6 @@
     "message": "Contrôlez vos comptes et actifs de $1.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
-  "permission_manageNamedBip32Keys": {
-    "message": "Contrôlez vos actifs et vos comptes « $1 ».",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
-  },
   "permission_manageState": {
     "message": "Stockez et gérez ses données sur votre appareil.",
     "description": "The description for the `snap_manageState` permission"

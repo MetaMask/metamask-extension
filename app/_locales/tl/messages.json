@@ -3188,10 +3188,6 @@
     "message": "Kontrolin ang iyong mga account at asset sa $1.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
-  "permission_manageNamedBip32Keys": {
-    "message": "Kontrolin ang iyong $1 na mga account at asset.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
-  },
   "permission_manageState": {
     "message": "Iimbak at pamahalaan ang datos nito sa iyong device.",
     "description": "The description for the `snap_manageState` permission"

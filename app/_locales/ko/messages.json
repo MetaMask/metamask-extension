@@ -3188,10 +3188,6 @@
     "message": "$1 계정과 자산을 통제합니다.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
   },
-  "permission_manageNamedBip32Keys": {
-    "message": "$1 계정과 자산을 관리합니다.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
-  },
   "permission_manageState": {
     "message": "장치의 데이터를 저장하고 관리합니다.",
     "description": "The description for the `snap_manageState` permission"
