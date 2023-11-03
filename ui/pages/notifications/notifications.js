@@ -77,7 +77,9 @@ export default function Notifications() {
   const markAllAsRead = () => {
     const unreadNotificationIds = unreadNotifications.map(({ id }) => id);
 
-    dispatch(markNotificationsAsRead(unreadNotificationIds));
+    if (unreadNotificationIds.length > 0) {
+      dispatch(markNotificationsAsRead(unreadNotificationIds));
+    }
   };
 
   const markAsRead = (notificationToMark) => {
