@@ -2,7 +2,7 @@ const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap Get Locale', function () {
+describe('Test Snap Get File', function () {
   it('test snap_getFile functionality', async function () {
     const ganacheOptions = {
       accounts: [
