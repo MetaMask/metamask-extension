@@ -832,33 +832,89 @@ describe('Actions', () => {
     it('#setSelectedAccount', async () => {
       const store = mockStore({
         activeTab: {},
-        metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
+        metamask: {
+          alertEnabledness: {},
+          internalAccounts: {
+            accounts: {
+              'mock-id': {
+                address: '0x123',
+                id: 'mock-id',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [
+                  'personal_sign',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+              },
+            },
+            selectedAccount: 'mock-id',
+          },
+        },
       });
 
-      const setSelectedAddressSpy = sinon.stub().callsFake((_, cb) => cb());
+      const setSelectedInternalAccountSpy = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        setSelectedAddress: setSelectedAddressSpy,
+        setSelectedInternalAccount: setSelectedInternalAccountSpy,
       });
 
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.setSelectedAccount());
-      expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
+      await store.dispatch(actions.setSelectedAccount('0x123'));
+      expect(setSelectedInternalAccountSpy.callCount).toStrictEqual(1);
     });
 
     it('displays warning if setSelectedAccount throws', async () => {
       const store = mockStore({
         activeTab: {},
-        metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
+        metamask: {
+          alertEnabledness: {},
+          internalAccounts: {
+            accounts: {
+              'mock-id': {
+                address: '0x123',
+                id: 'mock-id',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [
+                  'personal_sign',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+              },
+            },
+            selectedAccount: 'mock-id',
+          },
+        },
       });
 
-      const setSelectedAddressSpy = sinon
+      const setSelectedInternalAccountSpy = sinon
         .stub()
         .callsFake((_, cb) => cb(new Error('error')));
 
       background.getApi.returns({
-        setSelectedAddress: setSelectedAddressSpy,
+        setSelectedInternalAccount: setSelectedInternalAccountSpy,
       });
 
       setBackgroundConnection(background.getApi());
@@ -869,7 +925,7 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.setSelectedAccount());
+      await store.dispatch(actions.setSelectedAccount('0x123'));
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
