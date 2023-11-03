@@ -413,7 +413,10 @@ describe('SwapsController', function () {
         const { singleChainSwapsState } = swapsController.store.getState();
         // Set mock quotes in order to have data for the test agg
         swapsController.store.updateState({
-          singleChainSwapsState: { ...singleChainSwapsState, quotes: getMockQuotes() },
+          singleChainSwapsState: {
+            ...singleChainSwapsState,
+            quotes: getMockQuotes(),
+          },
         });
 
         await swapsController.setInitialGasEstimate(
@@ -424,7 +427,9 @@ describe('SwapsController', function () {
         const { gasLimit: bufferedGasLimit } =
           await swapsController.getBufferedGasLimit();
         const { gasEstimate, gasEstimateWithRefund } =
-          swapsController.store.getState().singleChainSwapsState.quotes[initialAggId];
+          swapsController.store.getState().singleChainSwapsState.quotes[
+            initialAggId
+          ];
         assert.strictEqual(gasEstimate, bufferedGasLimit);
         assert.strictEqual(
           gasEstimateWithRefund,
@@ -438,7 +443,8 @@ describe('SwapsController', function () {
         const data = 'test';
         swapsController.setCustomApproveTxData(data);
         assert.deepStrictEqual(
-          swapsController.store.getState().singleChainSwapsState.customApproveTxData,
+          swapsController.store.getState().singleChainSwapsState
+            .customApproveTxData,
           data,
         );
       });
@@ -448,7 +454,10 @@ describe('SwapsController', function () {
       beforeEach(function () {
         const { singleChainSwapsState } = swapsController.store.getState();
         swapsController.store.updateState({
-          singleChainSwapsState: { ...singleChainSwapsState, customGasPrice: '0x174876e800' },
+          singleChainSwapsState: {
+            ...singleChainSwapsState,
+            customGasPrice: '0x174876e800',
+          },
         });
       });
 
@@ -826,7 +835,7 @@ describe('SwapsController', function () {
         );
       });
 
-      it.only('performs the allowance check', async function () {
+      it('performs the allowance check', async function () {
         fetchTradesInfoStub.resolves(getMockQuotes());
 
         // Make it so approval is not required

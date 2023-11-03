@@ -140,7 +140,9 @@ const mapStateToProps = (state) => {
     defaultHomeActiveTabName,
     firstTimeFlowType,
     completedOnboarding,
-    haveSwapsQuotes: Boolean(Object.values(singleChainSwapsState.quotes || {}).length),
+    haveSwapsQuotes: Boolean(
+      Object.values(singleChainSwapsState.quotes || {}).length,
+    ),
     swapsFetchParams: singleChainSwapsState.fetchParams,
     showAwaitingSwapScreen: singleChainSwapsState.routeState === 'awaiting',
     isMainnet: getIsMainnet(state),
