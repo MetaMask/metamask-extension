@@ -337,9 +337,9 @@ export default class ConfirmApproveContent extends Component {
         </Box>
         {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
           <>
-            <Box className="confirm-approve-content__small-text">
+            <Text className="confirm-approve-content__small-text">
               {`${t('parameters')}: ${isApprovalOrRejection}`}
-            </Box>
+            </Text>
             {
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
               <Text
