@@ -825,7 +825,7 @@ describe('Sentry errors', function () {
         },
         userOptIn: true, // Initialized as undefined
       },
-      swapsState: {
+      singleChainSwapsState: {
         // This can get wiped out during initialization due to a bug in
         // the "resetState" method
         swapsFeatureFlags: true,

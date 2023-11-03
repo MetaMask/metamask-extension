@@ -184,7 +184,7 @@ describe('Ducks - Swaps', () => {
     it('returns "customMaxPriorityFeePerGas"', () => {
       const state = createSwapsMockStore();
       const customMaxPriorityFeePerGas = '3';
-      state.metamask.swapsState.customMaxPriorityFeePerGas =
+      state.metamask.singleChainSwapsState.customMaxPriorityFeePerGas =
         customMaxPriorityFeePerGas;
       expect(swaps.getCustomMaxPriorityFeePerGas(state)).toBe(
         customMaxPriorityFeePerGas,
@@ -369,14 +369,14 @@ describe('Ducks - Swaps', () => {
     it('returns true for "swapsFeatureIsLive"', () => {
       const state = createSwapsMockStore();
       const swapsFeatureIsLive = true;
-      state.metamask.swapsState.swapsFeatureIsLive = swapsFeatureIsLive;
+      state.metamask.singleChainSwapsState.swapsFeatureIsLive = swapsFeatureIsLive;
       expect(swaps.getSwapsFeatureIsLive(state)).toBe(swapsFeatureIsLive);
     });
 
     it('returns false for "swapsFeatureIsLive"', () => {
       const state = createSwapsMockStore();
       const swapsFeatureIsLive = false;
-      state.metamask.swapsState.swapsFeatureIsLive = swapsFeatureIsLive;
+      state.metamask.singleChainSwapsState.swapsFeatureIsLive = swapsFeatureIsLive;
       expect(swaps.getSwapsFeatureIsLive(state)).toBe(swapsFeatureIsLive);
     });
   });
@@ -409,7 +409,7 @@ describe('Ducks - Swaps', () => {
 
     it('returns false if feature flag is disabled, not a HW and is Ethereum network', () => {
       const state = createSwapsMockStore();
-      state.metamask.swapsState.swapsFeatureFlags.smartTransactions.extensionActive = false;
+      state.metamask.singleChainSwapsState.swapsFeatureFlags.smartTransactions.extensionActive = false;
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
 
@@ -445,7 +445,7 @@ describe('Ducks - Swaps', () => {
 
     it('returns false if feature flag is missing', () => {
       const state = createSwapsMockStore();
-      state.metamask.swapsState.swapsFeatureFlags = {};
+      state.metamask.singleChainSwapsState.swapsFeatureFlags = {};
       expect(swaps.getSmartTransactionsEnabled(state)).toBe(false);
     });
   });
@@ -468,7 +468,7 @@ describe('Ducks - Swaps', () => {
     it('returns swapsQuoteRefreshTime', () => {
       const state = createSwapsMockStore();
       expect(swaps.getSwapsQuoteRefreshTime(state)).toBe(
-        state.metamask.swapsState.swapsQuoteRefreshTime,
+        state.metamask.singleChainSwapsState.swapsQuoteRefreshTime,
       );
     });
   });
@@ -477,7 +477,7 @@ describe('Ducks - Swaps', () => {
     it('returns swapsQuotePrefetchingRefreshTime', () => {
       const state = createSwapsMockStore();
       expect(swaps.getSwapsQuotePrefetchingRefreshTime(state)).toBe(
-        state.metamask.swapsState.swapsQuotePrefetchingRefreshTime,
+        state.metamask.singleChainSwapsState.swapsQuotePrefetchingRefreshTime,
       );
     });
   });
@@ -486,7 +486,7 @@ describe('Ducks - Swaps', () => {
     it('returns routeState', () => {
       const state = createSwapsMockStore();
       expect(swaps.getBackgroundSwapRouteState(state)).toBe(
-        state.metamask.swapsState.routeState,
+        state.metamask.singleChainSwapsState.routeState,
       );
     });
   });
@@ -495,7 +495,7 @@ describe('Ducks - Swaps', () => {
     it('returns "customMaxGas"', () => {
       const state = createSwapsMockStore();
       const customMaxGas = '29000';
-      state.metamask.swapsState.customMaxGas = customMaxGas;
+      state.metamask.singleChainSwapsState.customMaxGas = customMaxGas;
       expect(swaps.getCustomSwapsGas(state)).toBe(customMaxGas);
     });
   });
@@ -504,7 +504,7 @@ describe('Ducks - Swaps', () => {
     it('returns customGasPrice', () => {
       const state = createSwapsMockStore();
       expect(swaps.getCustomSwapsGasPrice(state)).toBe(
-        state.metamask.swapsState.customGasPrice,
+        state.metamask.singleChainSwapsState.customGasPrice,
       );
     });
   });
@@ -513,7 +513,7 @@ describe('Ducks - Swaps', () => {
     it('returns "customMaxFeePerGas"', () => {
       const state = createSwapsMockStore();
       const customMaxFeePerGas = '20';
-      state.metamask.swapsState.customMaxFeePerGas = customMaxFeePerGas;
+      state.metamask.singleChainSwapsState.customMaxFeePerGas = customMaxFeePerGas;
       expect(swaps.getCustomMaxFeePerGas(state)).toBe(customMaxFeePerGas);
     });
   });
@@ -522,7 +522,7 @@ describe('Ducks - Swaps', () => {
     it('returns swapsUserFeeLevel', () => {
       const state = createSwapsMockStore();
       expect(swaps.getSwapsUserFeeLevel(state)).toBe(
-        state.metamask.swapsState.swapsUserFeeLevel,
+        state.metamask.singleChainSwapsState.swapsUserFeeLevel,
       );
     });
   });
@@ -531,7 +531,7 @@ describe('Ducks - Swaps', () => {
     it('returns fetchParams', () => {
       const state = createSwapsMockStore();
       expect(swaps.getFetchParams(state)).toBe(
-        state.metamask.swapsState.fetchParams,
+        state.metamask.singleChainSwapsState.fetchParams,
       );
     });
   });
@@ -539,7 +539,7 @@ describe('Ducks - Swaps', () => {
   describe('getQuotes', () => {
     it('returns quotes for Swaps', () => {
       const state = createSwapsMockStore();
-      expect(swaps.getQuotes(state)).toBe(state.metamask.swapsState.quotes);
+      expect(swaps.getQuotes(state)).toBe(state.metamask.singleChainSwapsState.quotes);
     });
   });
 
@@ -547,7 +547,7 @@ describe('Ducks - Swaps', () => {
     it('returns quotesLastFetched', () => {
       const state = createSwapsMockStore();
       expect(swaps.getQuotesLastFetched(state)).toBe(
-        state.metamask.swapsState.quotesLastFetched,
+        state.metamask.singleChainSwapsState.quotesLastFetched,
       );
     });
   });
@@ -556,7 +556,7 @@ describe('Ducks - Swaps', () => {
     it('returns selected quote', () => {
       const state = createSwapsMockStore();
       expect(swaps.getSelectedQuote(state)).toBe(
-        state.metamask.swapsState.quotes.TEST_AGG_2,
+        state.metamask.singleChainSwapsState.quotes.TEST_AGG_2,
       );
     });
   });
@@ -565,7 +565,7 @@ describe('Ducks - Swaps', () => {
     it('returns errorKey', () => {
       const state = createSwapsMockStore();
       expect(swaps.getSwapsErrorKey(state)).toBe(
-        state.metamask.swapsState.errorKey,
+        state.metamask.singleChainSwapsState.errorKey,
       );
     });
   });
@@ -583,7 +583,7 @@ describe('Ducks - Swaps', () => {
     it('returns tokens', () => {
       const state = createSwapsMockStore();
       expect(swaps.getSwapsTokens(state)).toBe(
-        state.metamask.swapsState.tokens,
+        state.metamask.singleChainSwapsState.tokens,
       );
     });
   });
@@ -592,7 +592,7 @@ describe('Ducks - Swaps', () => {
     it('returns', () => {
       const state = createSwapsMockStore();
       expect(swaps.getSwapsWelcomeMessageSeenStatus(state)).toBe(
-        state.metamask.swapsState.swapsWelcomeMessageHasBeenShown,
+        state.metamask.singleChainSwapsState.swapsWelcomeMessageHasBeenShown,
       );
     });
   });
@@ -601,7 +601,7 @@ describe('Ducks - Swaps', () => {
     it('returns a top quote', () => {
       const state = createSwapsMockStore();
       expect(swaps.getTopQuote(state)).toBe(
-        state.metamask.swapsState.quotes.TEST_AGG_BEST,
+        state.metamask.singleChainSwapsState.quotes.TEST_AGG_BEST,
       );
     });
   });
@@ -610,7 +610,7 @@ describe('Ducks - Swaps', () => {
     it('returns approveTxId', () => {
       const state = createSwapsMockStore();
       expect(swaps.getApproveTxId(state)).toBe(
-        state.metamask.swapsState.approveTxId,
+        state.metamask.singleChainSwapsState.approveTxId,
       );
     });
   });
@@ -619,7 +619,7 @@ describe('Ducks - Swaps', () => {
     it('returns tradeTxId', () => {
       const state = createSwapsMockStore();
       expect(swaps.getTradeTxId(state)).toBe(
-        state.metamask.swapsState.tradeTxId,
+        state.metamask.singleChainSwapsState.tradeTxId,
       );
     });
   });
@@ -628,15 +628,15 @@ describe('Ducks - Swaps', () => {
     it('returns selected quote', () => {
       const state = createSwapsMockStore();
       expect(swaps.getUsedQuote(state)).toMatchObject(
-        state.metamask.swapsState.quotes.TEST_AGG_2,
+        state.metamask.singleChainSwapsState.quotes.TEST_AGG_2,
       );
     });
 
     it('returns best quote', () => {
       const state = createSwapsMockStore();
-      state.metamask.swapsState.selectedAggId = null;
+      state.metamask.singleChainSwapsState.selectedAggId = null;
       expect(swaps.getUsedQuote(state)).toMatchObject(
-        state.metamask.swapsState.quotes.TEST_AGG_BEST,
+        state.metamask.singleChainSwapsState.quotes.TEST_AGG_BEST,
       );
     });
   });
@@ -645,7 +645,7 @@ describe('Ducks - Swaps', () => {
     it('returns destinationTokenInfo', () => {
       const state = createSwapsMockStore();
       expect(swaps.getDestinationTokenInfo(state)).toBe(
-        state.metamask.swapsState.fetchParams.metaData.destinationTokenInfo,
+        state.metamask.singleChainSwapsState.fetchParams.metaData.destinationTokenInfo,
       );
     });
   });
@@ -653,9 +653,9 @@ describe('Ducks - Swaps', () => {
   describe('getUsedSwapsGasPrice', () => {
     it('returns customGasPrice', () => {
       const state = createSwapsMockStore();
-      state.metamask.swapsState.customGasPrice = 5;
+      state.metamask.singleChainSwapsState.customGasPrice = 5;
       expect(swaps.getUsedSwapsGasPrice(state)).toBe(
-        state.metamask.swapsState.customGasPrice,
+        state.metamask.singleChainSwapsState.customGasPrice,
       );
     });
   });
@@ -663,7 +663,7 @@ describe('Ducks - Swaps', () => {
   describe('getApproveTxParams', () => {
     it('returns approveTxParams', () => {
       const state = createSwapsMockStore();
-      state.metamask.swapsState.quotes.TEST_AGG_2.approvalNeeded = {
+      state.metamask.singleChainSwapsState.quotes.TEST_AGG_2.approvalNeeded = {
         data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
         to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
         value: '0x0',
@@ -672,7 +672,7 @@ describe('Ducks - Swaps', () => {
         gasPrice: '0x34',
       };
       expect(swaps.getApproveTxParams(state)).toMatchObject({
-        ...state.metamask.swapsState.quotes.TEST_AGG_2.approvalNeeded,
+        ...state.metamask.singleChainSwapsState.quotes.TEST_AGG_2.approvalNeeded,
         gasPrice: 5,
       });
     });
@@ -736,7 +736,7 @@ describe('Ducks - Swaps', () => {
         swapsStxBatchStatusRefreshTime,
         swapsStxStatusDeadline,
         swapsStxMaxFeeMultiplier,
-      } = state.metamask.swapsState;
+      } = state.metamask.singleChainSwapsState;
       const swapsNetworkConfig = swaps.getSwapsNetworkConfig(state);
       expect(swapsNetworkConfig).toMatchObject({
         quoteRefreshTime: swapsQuoteRefreshTime,
@@ -960,13 +960,13 @@ describe('Ducks - Swaps', () => {
     describe('getSwapRedesignEnabled', () => {
       it('returns true if feature flags are not returned from backend yet', () => {
         const state = createSwapsMockStore();
-        delete state.metamask.swapsState.swapsFeatureFlags.swapRedesign;
+        delete state.metamask.singleChainSwapsState.swapsFeatureFlags.swapRedesign;
         expect(swaps.getSwapRedesignEnabled(state)).toBe(true);
       });
 
       it('returns false if the extension feature flag for swaps redesign is false', () => {
         const state = createSwapsMockStore();
-        state.metamask.swapsState.swapsFeatureFlags.swapRedesign.extensionActive = false;
+        state.metamask.singleChainSwapsState.swapsFeatureFlags.swapRedesign.extensionActive = false;
         expect(swaps.getSwapRedesignEnabled(state)).toBe(false);
       });
 

@@ -182,7 +182,7 @@
   "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {
-    "swapsState": {
+    "singleChainSwapsState": {
       "quotes": "object",
       "quotesPollingLimitEnabled": false,
       "fetchParams": null,

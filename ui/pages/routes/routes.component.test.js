@@ -118,8 +118,8 @@ describe('Routes Component', () => {
         ...mockSendState,
         metamask: {
           ...mockSendState.metamask,
-          swapsState: {
-            ...mockSendState.metamask.swapsState,
+          singleChainSwapsState: {
+            ...mockSendState.metamask.singleChainSwapsState,
             swapsFeatureIsLive: true,
           },
           pendingApprovals: {},

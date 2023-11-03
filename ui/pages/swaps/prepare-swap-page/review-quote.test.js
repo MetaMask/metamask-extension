@@ -85,7 +85,7 @@ describe('ReviewQuote', () => {
 
   it('renders text for token approval', () => {
     const state = createSwapsMockStore();
-    state.metamask.swapsState.quotes.TEST_AGG_2.approvalNeeded = {
+    state.metamask.singleChainSwapsState.quotes.TEST_AGG_2.approvalNeeded = {
       data: '0x095ea7b300000000000000000000000095e6f48254609a6ee006f7d493c8e5fb97094cef0000000000000000000000000000000000000000004a817c7ffffffdabf41c00',
       to: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       amount: '0',

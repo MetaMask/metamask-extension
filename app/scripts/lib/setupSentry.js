@@ -235,7 +235,7 @@ export const SENTRY_BACKGROUND_STATE = {
     subjectMetadata: false,
   },
   SwapsController: {
-    swapsState: {
+    singleChainSwapsState: {
       approveTxId: false,
       customApproveTxData: false,
       customGasPrice: true,
