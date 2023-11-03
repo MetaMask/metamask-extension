@@ -328,6 +328,10 @@ export function getSelectedAddress(state) {
 
 export function getSelectedInternalAccount(state) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
+  console.log(
+    'getSelectedInternalAccount',
+    state.metamask.internalAccounts.accounts[accountId],
+  );
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
