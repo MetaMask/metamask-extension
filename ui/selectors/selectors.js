@@ -77,9 +77,6 @@ import {
   isEIP1559Network,
   getLedgerTransportType,
   isAddressLedger,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  findKeyringForAddress,
-  ///: END:ONLY_INCLUDE_IN
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
