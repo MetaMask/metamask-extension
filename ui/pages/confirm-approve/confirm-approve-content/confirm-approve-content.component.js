@@ -330,11 +330,11 @@ export default class ConfirmApproveContent extends Component {
 
     return (
       <Box className="flex-column">
-        <Box className="confirm-approve-content__small-text">
+        <Text className="confirm-approve-content__small-text">
           {isSetApproveForAll
             ? t('functionSetApprovalForAll')
             : t('functionApprove')}
-        </Box>
+        </Text>
         {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
           <>
             <Text className="confirm-approve-content__small-text">
@@ -352,9 +352,9 @@ export default class ConfirmApproveContent extends Component {
             }
           </>
         ) : null}
-        <Box className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
+        <Text className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
           {data}
-        </Box>
+        </Text>
       </Box>
     );
   }
