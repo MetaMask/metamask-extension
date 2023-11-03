@@ -167,7 +167,8 @@
     "domains": {
       "metamask": "networkConfigurationId"
     },
-    "perDomainNetwork": "boolean" },
+    "perDomainNetwork": "boolean"
+  },
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
