@@ -22,25 +22,8 @@ export default class PermissionPageContainer extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
-    selectedAccounts: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        address: PropTypes.string.isRequired,
-        balance: PropTypes.string.isRequired,
-        metadata: PropTypes.shape({
-          name: PropTypes.string.isRequired,
-          snap: PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            name: PropTypes.string,
-            enabled: PropTypes.bool,
-          }),
-          keyring: PropTypes.shape({
-            type: PropTypes.string.isRequired,
-          }).isRequired,
-        }).isRequired,
-      }),
-    ),
-    allAccountsSelected: PropTypes.bool,
+    selectedIdentities: PropTypes.array,
+    allIdentitiesSelected: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     currentPermissions: PropTypes.object,
     snapsInstallPrivacyWarningShown: PropTypes.bool.isRequired,
@@ -60,8 +43,8 @@ export default class PermissionPageContainer extends Component {
   static defaultProps = {
     request: {},
     requestMetadata: {},
-    selectedAccounts: [],
-    allAccountsSelected: false,
+    selectedIdentities: [],
+    allIdentitiesSelected: false,
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     currentPermissions: {},
     ///: END:ONLY_INCLUDE_IN
@@ -161,14 +144,14 @@ export default class PermissionPageContainer extends Component {
       request: _request,
       approvePermissionsRequest,
       rejectPermissionsRequest,
-      selectedAccounts,
+      selectedIdentities,
     } = this.props;
 
     const request = {
       ..._request,
       permissions: { ..._request.permissions },
-      approvedAccounts: selectedAccounts.map(
-        (selectedAccount) => selectedAccount.address,
+      approvedAccounts: selectedIdentities.map(
+        (selectedIdentity) => selectedIdentity.address,
       ),
     };
 
@@ -189,8 +172,8 @@ export default class PermissionPageContainer extends Component {
     const {
       requestMetadata,
       targetSubjectMetadata,
-      selectedAccounts,
-      allAccountsSelected,
+      selectedIdentities,
+      allIdentitiesSelected,
     } = this.props;
 
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -224,8 +207,8 @@ export default class PermissionPageContainer extends Component {
           requestMetadata={requestMetadata}
           subjectMetadata={targetSubjectMetadata}
           selectedPermissions={this.state.selectedPermissions}
-          selectedAccounts={selectedAccounts}
-          allAccountsSelected={allAccountsSelected}
+          selectedIdentities={selectedIdentities}
+          allIdentitiesSelected={allIdentitiesSelected}
         />
         <div className="permission-approval-container__footers">
           {targetSubjectMetadata?.subjectType !== SubjectType.Snap && (
