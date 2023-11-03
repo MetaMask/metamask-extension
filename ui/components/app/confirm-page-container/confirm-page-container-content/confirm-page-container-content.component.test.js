@@ -28,6 +28,10 @@ describe('Confirm Page Container Content', () => {
       },
       identities: {},
       tokenList: {},
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
     },
     confirmTransaction: {
       txData: {

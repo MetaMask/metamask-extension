@@ -29,6 +29,7 @@ import {
   getCurrentChainId,
   getGasPriceInHexWei,
   getIsMainnet,
+  getTargetAccount,
   getIsNonStandardEthChain,
   checkNetworkAndAccountSupports1559,
   getUseTokenDetection,
@@ -39,7 +40,6 @@ import {
   getSelectedAccount,
   getSelectedInternalAccount,
   getSelectedInternalAccountWithBalance,
-  getInternalAccountWithBalanceByAddress,
   getUnapprovedTransactions,
 } from '../../selectors';
 import {
@@ -1750,10 +1750,7 @@ export function editExistingTransaction(assetType, transactionId) {
     const state = getState();
     const unapprovedTransactions = getUnapprovedTransactions(state);
     const transaction = unapprovedTransactions[transactionId];
-    const account = getInternalAccountWithBalanceByAddress(
-      state,
-      transaction.txParams.from,
-    );
+    const account = getTargetAccount(state, transaction.txParams.from);
 
     if (assetType === AssetType.native) {
       await dispatch(
@@ -2051,10 +2048,7 @@ export function updateSendAsset(
       draftTransaction.fromAccount?.address ??
       state[name].selectedAccount.address ??
       getSelectedInternalAccount(state).address;
-    const account = getInternalAccountWithBalanceByAddress(
-      state,
-      sendingAddress,
-    );
+    const account = getTargetAccount(state, sendingAddress);
     if (type === AssetType.native) {
       const unapprovedTxs = getUnapprovedTransactions(state);
       const unapprovedTx = unapprovedTxs?.[draftTransaction.id];

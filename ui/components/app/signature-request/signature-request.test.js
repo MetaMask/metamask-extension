@@ -18,11 +18,11 @@ import {
   getMemoizedAddressBook,
   getPreferences,
   getSelectedAccount,
-  getSelectedInternalAccountWithBalance,
   getTotalUnapprovedMessagesCount,
   getInternalAccounts,
   unconfirmedTransactionsHashSelector,
   getAccountType,
+  getMemoizedMetaMaskInternalAccounts,
 } from '../../../selectors';
 import SignatureRequest from './signature-request';
 
@@ -53,6 +53,7 @@ const mockStore = {
         name: 'John Doe',
       },
     },
+    selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -112,38 +113,15 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     case conversionRateSelector:
       return opts.metamask.conversionRate;
     case getSelectedAccount:
-      return opts.metamask.accounts[
-        opts.metamask.internalAccounts.accounts[
-          opts.metamask.internalAccounts.selectedAccount
-        ].address
-      ];
+      return opts.metamask.accounts[opts.metamask.selectedAddress];
     case getInternalAccounts:
       return Object.values(opts.metamask.internalAccounts.accounts);
-    case getSelectedInternalAccountWithBalance:
-      return {
-        ...opts.metamask.internalAccounts.accounts[
-          opts.metamask.internalAccounts.selectedAccount
-        ],
-        balance:
-          opts.metamask.accounts[
-            opts.metamask.internalAccounts.accounts[
-              opts.metamask.internalAccounts.selectedAccount
-            ].address
-          ]?.balance ?? 0,
-      };
+    case getMemoizedMetaMaskInternalAccounts:
+      return Object.values(opts.metamask.internalAccounts.accounts);
     case getMemoizedAddressBook:
       return [];
     case accountsWithSendEtherInfoSelector:
-      return Object.values(opts.metamask.internalAccounts.accounts).map(
-        (internalAccount) => {
-          return {
-            ...internalAccount,
-            ...(opts.metamask.accounts[internalAccount.address] ?? {}),
-            balance:
-              opts.metamask.accounts[internalAccount.address]?.balance ?? 0,
-          };
-        },
-      );
+      return Object.values(opts.metamask.accounts);
     case getAccountType:
       return 'custody';
     case unconfirmedTransactionsHashSelector:
@@ -476,6 +454,7 @@ describe('Signature Request Component', () => {
           ...mockStore,
           metamask: {
             ...mockStore.metamask,
+            selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             accounts: {
               ...mockStore.metamask.accounts,
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {

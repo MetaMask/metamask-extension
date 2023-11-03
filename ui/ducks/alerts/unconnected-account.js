@@ -6,9 +6,11 @@ import * as actionConstants from '../../store/actionConstants';
 import {
   addPermittedAccount,
   setAlertEnabledness,
+  setSelectedAccount,
   setSelectedInternalAccount,
 } from '../../store/actions';
 import {
+  getInternalAccount,
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
 } from '../../selectors';
@@ -115,10 +117,13 @@ export const dismissAndDisableAlert = () => {
 };
 
 export const switchToAccount = (accountId) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const state = getState();
     try {
       await dispatch(switchAccountRequested());
       await dispatch(setSelectedInternalAccount(accountId));
+      const internalAcocunt = getInternalAccount(state, accountId);
+      await dispatch(setSelectedAccount(internalAcocunt.address));
       await dispatch(switchAccountSucceeded());
     } catch (error) {
       console.error(error);

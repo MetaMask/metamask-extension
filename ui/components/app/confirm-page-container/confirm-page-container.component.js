@@ -124,8 +124,8 @@ const ConfirmPageContainer = (props) => {
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const defaultToken = useSelector(getSwapsDefaultToken);
   const accountBalance = defaultToken.string;
-  const accounts = useSelector(getInternalAccounts);
-  const ownedAccountName = getAccountName(accounts, toAddress);
+  const internalAccounts = useSelector(getInternalAccounts);
+  const ownedAccountName = getAccountName(internalAccounts, toAddress);
   const toName = ownedAccountName || contact?.name;
   const recipientIsOwnedAccount = Boolean(ownedAccountName);
   const toMetadataName = useSelector((state) =>

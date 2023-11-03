@@ -5,7 +5,6 @@ import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { CaveatTypes } from '../../shared/constants/permissions';
 import { getApprovalRequestsByType } from './approvals';
 import {
-  getInternalAccounts,
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
@@ -78,7 +77,7 @@ export function getPermittedAccountsByOrigin(state) {
  * @returns {Array<object>} An array of connected subject objects.
  */
 export function getConnectedSubjectsForSelectedAddress(state) {
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const { selectedAddress } = state.metamask;
   const subjects = getPermissionSubjects(state);
   const subjectMetadata = getSubjectMetadata(state);
 
@@ -228,20 +227,23 @@ function subjectSelector(state, origin) {
 }
 
 export function getAccountToConnectToActiveTab(state) {
-  const selectedAccount = getSelectedInternalAccount(state);
-  const numberOfAccounts = getInternalAccounts(state).length;
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+
+  const {
+    metamask: { identities },
+  } = state;
+  const numberOfAccounts = Object.keys(identities).length;
 
   if (
     connectedAccounts.length &&
     connectedAccounts.length !== numberOfAccounts
   ) {
     if (
-      connectedAccounts.findIndex(
-        (address) => address === selectedAccount.address,
-      ) === -1
+      connectedAccounts.findIndex((address) => address === selectedAddress) ===
+      -1
     ) {
-      return selectedAccount;
+      return identities[selectedAddress];
     }
   }
 
@@ -264,10 +266,7 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     .filter((account) => connectedAccounts.includes(account.address))
     .map((account) => ({
       ...account,
-      metadata: {
-        ...account.metadata,
-        lastActive: permissionHistoryByAccount?.[account.address],
-      },
+      lastActive: permissionHistoryByAccount?.[account.address],
     }))
     .sort(
       ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {

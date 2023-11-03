@@ -72,6 +72,17 @@ describe('Select Action Modal', () => {
       },
       useCurrencyRateCheck: true,
       conversionRate: 2,
+      identities: {
+        '0x1': {
+          address: '0x1',
+        },
+      },
+      accounts: {
+        '0x1': {
+          address: '0x1',
+          balance: '0x1F4',
+        },
+      },
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -80,7 +91,7 @@ describe('Select Action Modal', () => {
             metadata: {
               name: 'Test Account',
               keyring: {
-                type: 'HD Key Tree',
+                type: KeyringType.imported,
               },
             },
             options: {},
@@ -89,12 +100,6 @@ describe('Select Action Modal', () => {
           },
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      },
-      accounts: {
-        '0x1': {
-          address: '0x1',
-          balance: '0x1F4',
-        },
       },
       keyrings: [
         {

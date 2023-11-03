@@ -19,11 +19,12 @@ import AssetNavigation from './asset-navigation';
 import AssetOptions from './asset-options';
 
 export default function NativeAsset({ nativeCurrency }) {
-  const { name: selectedAccountName } = useSelector(getSelectedInternalAccount);
+  const { name: selectedAccountName, address } = useSelector(
+    getSelectedInternalAccount,
+  );
 
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
-  const { address } = useSelector(getSelectedInternalAccount);
   const history = useHistory();
   const accountLink = getAccountLink(address, chainId, rpcPrefs);
   const trackEvent = useContext(MetaMetricsContext);

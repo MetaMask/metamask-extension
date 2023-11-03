@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import { NameType } from '@metamask/name-controller';
-import { getInternalAccounts, getAccountName } from '../../../../selectors';
+import {
+  getMemoizedMetaMaskInternalAccounts,
+  getAccountName,
+} from '../../../../selectors';
 import Address from '../../transaction-decoding/components/decoding/address';
 import {
   isValidHexAddress,
@@ -21,7 +24,7 @@ import { usePetnamesEnabled } from '../../../../hooks/usePetnamesEnabled';
 import Name from '../../name/name';
 
 function SignatureRequestData({ data }) {
-  const accounts = useSelector(getInternalAccounts);
+  const internalAccounts = useSelector(getMemoizedMetaMaskInternalAccounts);
   const petnamesEnabled = usePetnamesEnabled();
 
   return (
@@ -72,7 +75,7 @@ function SignatureRequestData({ data }) {
                     <Address
                       addressOnly
                       checksummedRecipientAddress={toChecksumHexAddress(value)}
-                      recipientName={getAccountName(accounts, value)}
+                      recipientName={getAccountName(internalAccounts, value)}
                     />
                   )}
                 </Text>

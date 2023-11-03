@@ -133,6 +133,7 @@ describe('Transaction Selectors', () => {
             chainId: CHAIN_IDS.MAINNET,
           },
           featureFlags: {},
+          selectedAddress: '0xAddress',
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -215,7 +216,7 @@ describe('Transaction Selectors', () => {
             nickname: 'mainnet',
             chainId: CHAIN_IDS.MAINNET,
           },
-          featureFlags: {},
+          selectedAddress: '0xAddress',
           internalAccounts: {
             accounts: {
               'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -234,6 +235,7 @@ describe('Transaction Selectors', () => {
             },
             selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
+          featureFlags: {},
           transactions: [tx1, tx2],
         },
       };
@@ -318,7 +320,7 @@ describe('Transaction Selectors', () => {
           nickname: 'mainnet',
           chainId: CHAIN_IDS.MAINNET,
         },
-        featureFlags: {},
+        selectedAddress: '0xAddress',
         internalAccounts: {
           accounts: {
             'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -337,6 +339,7 @@ describe('Transaction Selectors', () => {
           },
           selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
+        featureFlags: {},
         transactions: [submittedTx, unapprovedTx, approvedTx, confirmedTx],
       },
     };

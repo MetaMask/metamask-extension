@@ -10,6 +10,7 @@ import {
   OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import * as selectors from './selectors';
+import { getAccountByAddress } from '../helpers/utils/util';
 
 jest.mock('../../shared/modules/network.utils', () => {
   const actual = jest.requireActual('../../shared/modules/network.utils');
@@ -39,6 +40,78 @@ describe('Selectors', () => {
       expect(
         selectors.getSelectedAddress({ metamask: { selectedAddress } }),
       ).toStrictEqual(selectedAddress);
+    });
+  });
+
+  describe('#getSelectedInternalAccount', () => {
+    it('returns undefined if selectedAccount is undefined', () => {
+      expect(
+        selectors.getSelectedInternalAccount({
+          metamask: {
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
+          },
+        }),
+      ).toBeUndefined();
+    });
+
+    it('returns selectedAccount', () => {
+      const mockInternalAccount = {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [...Object.values(EthMethod)],
+        type: EthAccountType.Eoa,
+      };
+      expect(
+        selectors.getSelectedInternalAccount({
+          metamask: {
+            internalAccounts: {
+              accounts: {
+                [mockInternalAccount.id]: mockInternalAccount,
+              },
+              selectedAccount: mockInternalAccount.id,
+            },
+          },
+        }),
+      ).toStrictEqual(mockInternalAccount);
+    });
+  });
+
+  describe('#getInternalAccounts', () => {
+    it('returns a list of internal accounts', () => {
+      expect(selectors.getInternalAccounts(mockState)).toStrictEqual(
+        Object.values(mockState.metamask.internalAccounts.accounts),
+      );
+    });
+  });
+
+  describe('#getInternalAccount', () => {
+    it("returns undefined if the account doesn't exist", () => {
+      expect(
+        selectors.getInternalAccount(mockState, 'unknown'),
+      ).toBeUndefined();
+    });
+
+    it('returns the account', () => {
+      expect(
+        selectors.getInternalAccount(
+          mockState,
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        ),
+      ).toStrictEqual(
+        mockState.metamask.internalAccounts.accounts[
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+        ],
+      );
     });
   });
 

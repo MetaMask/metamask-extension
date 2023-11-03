@@ -17,6 +17,8 @@ import { KeyringType } from '../../../../../shared/constants/keyring';
 import UnconnectedAccountAlert from '.';
 
 describe('Unconnected Account Alert', () => {
+  const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+
   const internalAccounts = {
     accounts: {
       'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -49,6 +51,17 @@ describe('Unconnected Account Alert', () => {
     selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
   };
 
+  const identities = {
+    '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      name: 'Account 1',
+    },
+    '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+      address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+      name: 'Account 2',
+    },
+  };
+
   const accounts = {
     '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
       address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -79,6 +92,8 @@ describe('Unconnected Account Alert', () => {
 
   const mockState = {
     metamask: {
+      selectedAddress,
+      identities,
       internalAccounts,
       accounts,
       cachedBalances,
