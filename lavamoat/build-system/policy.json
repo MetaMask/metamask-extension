@@ -6489,6 +6489,13 @@
         "chalk>supports-color>has-flag": true
       }
     },
+    "mockttp>portfinder>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
+      }
+    },
     "nock>debug": {
       "builtin": {
         "tty.isatty": true,
