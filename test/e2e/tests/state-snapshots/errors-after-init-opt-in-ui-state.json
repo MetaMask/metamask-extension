@@ -170,7 +170,7 @@
     "unapprovedMsgCount": 0,
     "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0,
-    "swapsState": {
+    "singleChainSwapsState": {
       "quotes": "object",
       "quotesPollingLimitEnabled": false,
       "fetchParams": null,

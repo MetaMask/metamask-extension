@@ -121,7 +121,7 @@ const swapsStateByChainIdBase = {
 
 const initialState = {
   swapsFeatureFlags: {},
-  swapsState: singleChainSwapsStateBase,
+  singleChainSwapsState: singleChainSwapsStateBase,
   swapsStateByChainId: swapsStateByChainIdBase,
 };
 
@@ -144,22 +144,22 @@ export default class SwapsController extends PollingControllerOnly {
   ) {
     super();
     this.store = new ObservableStore({
-      swapsState: {
+      singleChainSwapsState: {
         ...singleChainSwapsStateBase,
-        swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags || {},
+        swapsFeatureFlags: state?.singleChainSwapsState?.swapsFeatureFlags || {},
       },
-      swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags || {},
+      swapsFeatureFlags: state?.singleChainSwapsState?.swapsFeatureFlags || {},
 
       swapsStateByChainId: swapsStateByChainIdBase,
     });
 
     this.resetState = () => {
       this.store.updateState({
-        swapsState: {
-          ...initialState.swapsState,
-          swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags,
+        singleChainSwapsState: {
+          ...initialState.singleChainSwapsState,
+          swapsFeatureFlags: state?.singleChainSwapsState?.swapsFeatureFlags,
         },
-        swapsFeatureFlags: state?.swapsState?.swapsFeatureFlags,
+        swapsFeatureFlags: state?.singleChainSwapsState?.swapsFeatureFlags,
         swapsStateByChainId: swapsStateByChainIdBase,
       });
     };
@@ -243,9 +243,9 @@ export default class SwapsController extends PollingControllerOnly {
     } catch (e) {
       console.error('Request for Swaps network config failed: ', e);
     }
-    const { swapsState: latestSwapsState } = this.store.getState();
+    const { singleChainSwapsState: latestSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: {
+      singleChainSwapsState: {
         ...latestSwapsState,
         swapsQuoteRefreshTime:
           swapsNetworkConfig?.quotes || FALLBACK_QUOTE_REFRESH_TIME,
@@ -281,7 +281,7 @@ export default class SwapsController extends PollingControllerOnly {
   // Note: we stop polling after 3 requests, until new quotes are explicitly asked for. The logic that enforces that maximum is in the body of fetchAndSetQuotes
   pollForNewQuotes() {
     const {
-      swapsState: {
+      singleChainSwapsState: {
         swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime,
         quotesPollingLimitEnabled,
@@ -292,10 +292,10 @@ export default class SwapsController extends PollingControllerOnly {
       ? swapsQuoteRefreshTime
       : swapsQuotePrefetchingRefreshTime;
     this.pollingTimeout = setTimeout(() => {
-      const { swapsState } = this.store.getState();
+      const { singleChainSwapsState } = this.store.getState();
       this.fetchAndSetQuotes(
-        swapsState.fetchParams,
-        swapsState.fetchParams?.metaData,
+        singleChainSwapsState.fetchParams,
+        singleChainSwapsState.fetchParams?.metaData,
         true,
       );
     }, quotesRefreshRateInMs);
@@ -323,7 +323,7 @@ export default class SwapsController extends PollingControllerOnly {
       chainId = configuration.chainId;
     }
     const {
-      swapsState: { quotesPollingLimitEnabled, saveFetchedQuotes },
+      singleChainSwapsState: { quotesPollingLimitEnabled, saveFetchedQuotes },
     } = this.store.getState();
 
     if (!fetchParams) {
@@ -356,7 +356,7 @@ export default class SwapsController extends PollingControllerOnly {
     ]);
 
     const {
-      swapsState: { saveFetchedQuotes: saveFetchedQuotesAfterResponse },
+      singleChainSwapsState: { saveFetchedQuotes: saveFetchedQuotesAfterResponse },
     } = this.store.getState();
 
     // If saveFetchedQuotesAfterResponse is false, it means a user left Swaps (we cleaned the state)
@@ -466,15 +466,15 @@ export default class SwapsController extends PollingControllerOnly {
       throw new Error(SWAPS_FETCH_ORDER_CONFLICT);
     }
 
-    const { swapsState } = this.store.getState();
-    let { selectedAggId } = swapsState;
+    const { singleChainSwapsState } = this.store.getState();
+    let { selectedAggId } = singleChainSwapsState;
     if (!newQuotes[selectedAggId]) {
       selectedAggId = null;
     }
 
     this.store.updateState({
-      swapsState: {
-        ...swapsState,
+      singleChainSwapsState: {
+        ...singleChainSwapsState,
         quotes: newQuotes,
         fetchParams: { ...fetchParams, metaData: fetchParamsMetaData },
         quotesLastFetched,
@@ -502,30 +502,30 @@ export default class SwapsController extends PollingControllerOnly {
   }
 
   safeRefetchQuotes() {
-    const { swapsState } = this.store.getState();
-    if (!this.pollingTimeout && swapsState.fetchParams) {
-      this.fetchAndSetQuotes(swapsState.fetchParams);
+    const { singleChainSwapsState } = this.store.getState();
+    if (!this.pollingTimeout && singleChainSwapsState.fetchParams) {
+      this.fetchAndSetQuotes(singleChainSwapsState.fetchParams);
     }
   }
 
   setSelectedQuoteAggId(selectedAggId) {
-    const { swapsState } = this.store.getState();
-    this.store.updateState({ swapsState: { ...swapsState, selectedAggId } });
+    const { singleChainSwapsState } = this.store.getState();
+    this.store.updateState({ singleChainSwapsState: { ...singleChainSwapsState, selectedAggId } });
   }
 
   setSwapsTokens(tokens) {
-    const { swapsState } = this.store.getState();
-    this.store.updateState({ swapsState: { ...swapsState, tokens } });
+    const { singleChainSwapsState } = this.store.getState();
+    this.store.updateState({ singleChainSwapsState: { ...singleChainSwapsState, tokens } });
   }
 
   clearSwapsQuotes() {
-    const { swapsState } = this.store.getState();
-    this.store.updateState({ swapsState: { ...swapsState, quotes: {} } });
+    const { singleChainSwapsState } = this.store.getState();
+    this.store.updateState({ singleChainSwapsState: { ...singleChainSwapsState, quotes: {} } });
   }
 
   setSwapsErrorKey(errorKey) {
-    const { swapsState } = this.store.getState();
-    this.store.updateState({ swapsState: { ...swapsState, errorKey } });
+    const { singleChainSwapsState } = this.store.getState();
+    this.store.updateState({ singleChainSwapsState: { ...singleChainSwapsState, errorKey } });
   }
 
   async getAllQuotesWithGasEstimates(quotes, networkClientId) {
@@ -621,9 +621,9 @@ export default class SwapsController extends PollingControllerOnly {
   }
 
   async setInitialGasEstimate(initialAggId, networkClientId) {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
 
-    const quoteToUpdate = { ...swapsState.quotes[initialAggId] };
+    const quoteToUpdate = { ...singleChainSwapsState.quotes[initialAggId] };
 
     const { gasLimit: newGasEstimate, simulationFails } =
       await this.timedoutGasReturn(
@@ -644,135 +644,135 @@ export default class SwapsController extends PollingControllerOnly {
     }
 
     this.store.updateState({
-      swapsState: {
-        ...swapsState,
-        quotes: { ...swapsState.quotes, [initialAggId]: quoteToUpdate },
+      singleChainSwapsState: {
+        ...singleChainSwapsState,
+        quotes: { ...singleChainSwapsState.quotes, [initialAggId]: quoteToUpdate },
       },
     });
   }
 
   setApproveTxId(approveTxId) {
-    const { swapsState } = this.store.getState();
-    this.store.updateState({ swapsState: { ...swapsState, approveTxId } });
+    const { singleChainSwapsState } = this.store.getState();
+    this.store.updateState({ singleChainSwapsState: { ...singleChainSwapsState, approveTxId } });
   }
 
   setTradeTxId(tradeTxId) {
-    const { swapsState } = this.store.getState();
-    this.store.updateState({ swapsState: { ...swapsState, tradeTxId } });
+    const { singleChainSwapsState } = this.store.getState();
+    this.store.updateState({ singleChainSwapsState: { ...singleChainSwapsState, tradeTxId } });
   }
 
   setQuotesLastFetched(quotesLastFetched) {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, quotesLastFetched },
+      singleChainSwapsState: { ...singleChainSwapsState, quotesLastFetched },
     });
   }
 
   setSwapsTxGasPrice(gasPrice) {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, customGasPrice: gasPrice },
+      singleChainSwapsState: { ...singleChainSwapsState, customGasPrice: gasPrice },
     });
   }
 
   setSwapsTxMaxFeePerGas(maxFeePerGas) {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, customMaxFeePerGas: maxFeePerGas },
+      singleChainSwapsState: { ...singleChainSwapsState, customMaxFeePerGas: maxFeePerGas },
     });
   }
 
   setSwapsUserFeeLevel(swapsUserFeeLevel) {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, swapsUserFeeLevel },
+      singleChainSwapsState: { ...singleChainSwapsState, swapsUserFeeLevel },
     });
   }
 
   setSwapsQuotesPollingLimitEnabled(quotesPollingLimitEnabled) {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, quotesPollingLimitEnabled },
+      singleChainSwapsState: { ...singleChainSwapsState, quotesPollingLimitEnabled },
     });
   }
 
   setSwapsTxMaxFeePriorityPerGas(maxPriorityFeePerGas) {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: {
-        ...swapsState,
+      singleChainSwapsState: {
+        ...singleChainSwapsState,
         customMaxPriorityFeePerGas: maxPriorityFeePerGas,
       },
     });
   }
 
   setSwapsTxGasLimit(gasLimit) {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, customMaxGas: gasLimit },
+      singleChainSwapsState: { ...singleChainSwapsState, customMaxGas: gasLimit },
     });
   }
 
   setCustomApproveTxData(data) {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, customApproveTxData: data },
+      singleChainSwapsState: { ...singleChainSwapsState, customApproveTxData: data },
     });
   }
 
   setBackgroundSwapRouteState(routeState) {
-    const { swapsState } = this.store.getState();
-    this.store.updateState({ swapsState: { ...swapsState, routeState } });
+    const { singleChainSwapsState } = this.store.getState();
+    this.store.updateState({ singleChainSwapsState: { ...singleChainSwapsState, routeState } });
   }
 
   setSaveFetchedQuotes(status) {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, saveFetchedQuotes: status },
+      singleChainSwapsState: { ...singleChainSwapsState, saveFetchedQuotes: status },
     });
   }
 
   setSwapsLiveness(swapsLiveness) {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     const { swapsFeatureIsLive } = swapsLiveness;
     this.store.updateState({
-      swapsState: { ...swapsState, swapsFeatureIsLive },
+      singleChainSwapsState: { ...singleChainSwapsState, swapsFeatureIsLive },
     });
   }
 
   setSwapsFeatureFlags(swapsFeatureFlags) {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: { ...swapsState, swapsFeatureFlags },
+      singleChainSwapsState: { ...singleChainSwapsState, swapsFeatureFlags },
     });
   }
 
   resetPostFetchState() {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: {
-        ...initialState.swapsState,
-        tokens: swapsState.tokens,
-        fetchParams: swapsState.fetchParams,
-        swapsFeatureIsLive: swapsState.swapsFeatureIsLive,
-        swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
+      singleChainSwapsState: {
+        ...initialState.singleChainSwapsState,
+        tokens: singleChainSwapsState.tokens,
+        fetchParams: singleChainSwapsState.fetchParams,
+        swapsFeatureIsLive: singleChainSwapsState.swapsFeatureIsLive,
+        swapsQuoteRefreshTime: singleChainSwapsState.swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime:
-          swapsState.swapsQuotePrefetchingRefreshTime,
-        swapsFeatureFlags: swapsState.swapsFeatureFlags,
+          singleChainSwapsState.swapsQuotePrefetchingRefreshTime,
+        swapsFeatureFlags: singleChainSwapsState.swapsFeatureFlags,
       },
     });
     clearTimeout(this.pollingTimeout);
   }
 
   resetSwapsState() {
-    const { swapsState } = this.store.getState();
+    const { singleChainSwapsState } = this.store.getState();
     this.store.updateState({
-      swapsState: {
-        ...initialState.swapsState,
-        swapsQuoteRefreshTime: swapsState.swapsQuoteRefreshTime,
+      singleChainSwapsState: {
+        ...initialState.singleChainSwapsState,
+        swapsQuoteRefreshTime: singleChainSwapsState.swapsQuoteRefreshTime,
         swapsQuotePrefetchingRefreshTime:
-          swapsState.swapsQuotePrefetchingRefreshTime,
-        swapsFeatureFlags: swapsState.swapsFeatureFlags,
+          singleChainSwapsState.swapsQuotePrefetchingRefreshTime,
+        swapsFeatureFlags: singleChainSwapsState.swapsFeatureFlags,
       },
     });
     clearTimeout(this.pollingTimeout);
@@ -793,7 +793,7 @@ export default class SwapsController extends PollingControllerOnly {
       this.getTokenRatesState();
 
     const {
-      swapsState: { customGasPrice, customMaxPriorityFeePerGas },
+      singleChainSwapsState: { customGasPrice, customMaxPriorityFeePerGas },
     } = this.store.getState();
 
     const numQuotes = Object.keys(quotes).length;
