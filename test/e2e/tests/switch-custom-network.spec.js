@@ -43,7 +43,7 @@ describe('Switch ethereum chain', function () {
         await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
 
@@ -74,7 +74,7 @@ describe('Switch ethereum chain', function () {
         await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
 

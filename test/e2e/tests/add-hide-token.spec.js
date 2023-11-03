@@ -172,7 +172,7 @@ describe('Add token using wallet_watchAsset', function () {
         const windowHandles = await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
 
@@ -225,7 +225,7 @@ describe('Add token using wallet_watchAsset', function () {
         const windowHandles = await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
 

@@ -113,7 +113,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
 
@@ -232,7 +232,7 @@ describe('Create token, approve token and approve token without gas', function (
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
 

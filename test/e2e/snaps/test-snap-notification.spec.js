@@ -43,7 +43,7 @@ describe('Test Snap Notification', function () {
         );
         const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.clickElement({

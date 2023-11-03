@@ -101,7 +101,7 @@ describe('Transaction security provider', function () {
 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         const warningHeader = await driver.isElementPresent({
@@ -141,7 +141,7 @@ describe('Transaction security provider', function () {
 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         const warningHeader = await driver.isElementPresent({
@@ -181,7 +181,7 @@ describe('Transaction security provider', function () {
 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         const warningHeader = await driver.isElementPresent({
@@ -221,7 +221,7 @@ describe('Transaction security provider', function () {
 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         const warningHeader = await driver.isElementPresent({

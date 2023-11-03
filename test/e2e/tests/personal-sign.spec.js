@@ -40,7 +40,7 @@ describe('Personal sign', function () {
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
 
@@ -96,7 +96,7 @@ describe('Personal sign', function () {
         await driver.clickElement('#personalSign');
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
 

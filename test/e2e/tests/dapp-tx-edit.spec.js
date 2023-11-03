@@ -42,7 +42,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         const windowHandles = await driver.getAllWindowHandles();
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.waitForSelector({
@@ -83,7 +83,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         const windowHandles = await driver.getAllWindowHandles();
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.waitForSelector({

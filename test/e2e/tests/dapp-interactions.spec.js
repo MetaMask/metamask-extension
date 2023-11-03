@@ -38,7 +38,7 @@ describe('Dapp interactions', function () {
         // Trigger Notification
         await driver.clickElement('#addEthereumChain');
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle('MetaMask');
         await unlockWallet(driver);
         const notification = await driver.isElementPresent({
           text: 'Allow this site to add a network?',

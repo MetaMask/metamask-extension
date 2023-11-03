@@ -52,7 +52,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const [extension] = windowHandles;
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
 
@@ -105,7 +105,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const [extension] = windowHandles;
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
 
@@ -160,7 +160,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         const displayedMessageTitle = await driver.findElement(
@@ -248,7 +248,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
 

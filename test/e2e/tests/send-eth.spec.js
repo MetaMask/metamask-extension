@@ -251,7 +251,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
@@ -327,7 +327,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
 
         const extension = windowHandles[0];
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });

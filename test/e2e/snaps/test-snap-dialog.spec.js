@@ -44,7 +44,7 @@ describe('Test Snap Dialog', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.clickElement({
@@ -82,7 +82,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.delay(500);
@@ -118,7 +118,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.delay(500);
@@ -145,7 +145,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.delay(500);
@@ -172,7 +172,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.delay(500);
@@ -199,7 +199,7 @@ describe('Test Snap Dialog', function () {
         // switch to dialog popup
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.delay(500);

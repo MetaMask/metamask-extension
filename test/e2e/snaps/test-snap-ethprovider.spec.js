@@ -45,7 +45,7 @@ describe('Test Snap ethereum_provider', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.clickElement({
@@ -103,7 +103,7 @@ describe('Test Snap ethereum_provider', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles2,
         );
         await driver.clickElement({

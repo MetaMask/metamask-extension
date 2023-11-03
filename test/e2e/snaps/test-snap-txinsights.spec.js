@@ -47,7 +47,7 @@ describe('Test Snap TxInsights', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.clickElement({
@@ -77,7 +77,7 @@ describe('Test Snap TxInsights', function () {
         // switch back to MetaMask window and deal with dialogs
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.clickElement({
@@ -99,7 +99,7 @@ describe('Test Snap TxInsights', function () {
         // switch back to MetaMask window and switch to tx insights pane
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.delay(1000);

@@ -48,7 +48,7 @@ describe('Sign in with ethereum', function () {
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         const title = await driver.findElement(

@@ -43,7 +43,7 @@ describe('Test Snap networkAccess', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          'MetaMask',
           windowHandles,
         );
         await driver.clickElement({

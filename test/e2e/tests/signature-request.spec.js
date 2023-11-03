@@ -88,7 +88,7 @@ describe('Sign Typed Data Signature Request', function () {
           await driver.waitUntilXWindowHandles(3);
           let windowHandles = await driver.getAllWindowHandles();
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            'MetaMask',
             windowHandles,
           );
 
@@ -154,7 +154,7 @@ describe('Sign Typed Data Signature Request', function () {
           await driver.clickElement(data.buttonId);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            'MetaMask',
             windowHandles,
           );
 

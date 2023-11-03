@@ -52,7 +52,7 @@ describe('eth_sendTransaction', function () {
 
         // confirm transaction in mm popup
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle('MetaMask');
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.switchToWindowWithTitle('E2E Test Dapp');
         const actualHash = await driver.executeScript(
@@ -99,7 +99,7 @@ describe('eth_sendTransaction', function () {
 
         // reject transaction in mm popup
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle('MetaMask');
         await driver.clickElement({ text: 'Reject', tag: 'button' });
         await driver.switchToWindowWithTitle('E2E Test Dapp');
         const result = await driver
