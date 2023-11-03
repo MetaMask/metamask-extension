@@ -3489,6 +3489,10 @@
     "message": "Allow $1 to send messages to $2 and receive a response from $2.",
     "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites', $2 is the snap name."
   },
+  "permission_rpcDescriptionOriginList": {
+    "message": "$1 and $2",
+    "description": "A list of allowed origins where $2 is the last origin of the list and $1 is the rest of the list separated by ','."
+  },
   "permission_transactionInsight": {
     "message": "Fetch and display transaction insights.",
     "description": "The description for the `endowment:transaction-insight` permission"

@@ -3126,7 +3126,7 @@
   },
   "permission_accessNetworkDescription": {
     "message": "스냅의 인터넷 액세스를 허용합니다. 이는 타사에 데이터를 전송 및 수신하는 데 사용됩니다.",
-    "description": "An extended description of the `endowment:network-access` permission."
+    "description": "An extended description of the `endowment:network-access` permission. $1 is the snap name."
   },
   "permission_accessSnap": {
     "message": "$1 스냅에 연결",
@@ -3142,7 +3142,7 @@
   },
   "permission_cronjobDescription": {
     "message": "스냅이 고정된 시간, 날짜 또는 간격으로 주기적으로 실행되는 작업을 수행하도록 허용합니다. 이는 기한이 필요한 인터렉션이나 알람 트리거에 사용됩니다.",
-    "description": "An extended description for the `snap_cronjob` permission"
+    "description": "An extended description for the `snap_cronjob` permission. $1 is the snap name."
   },
   "permission_dialog": {
     "message": "MetaMask 대화창 표시",
@@ -3150,7 +3150,7 @@
   },
   "permission_dialogDescription": {
     "message": "MetaMask 팝업에 스냅이 맞춤 메시지와 입력란을 승인 또는 거부 클릭 버튼과 함께 표시하도록 허용합니다.\n이는 경고, 컨펌 및 스냅에 필요한 옵트인 플로우 등을 생성하는 데 사용할 수 있습니다.",
-    "description": "An extended description for the `snap_dialog` permission"
+    "description": "An extended description for the `snap_dialog` permission. $1 is the snap name."
   },
   "permission_ethereumAccounts": {
     "message": "주소, 계정 잔액, 활동 및 승인할 트랜잭션 추천 보기",
@@ -3162,15 +3162,15 @@
   },
   "permission_ethereumProviderDescription": {
     "message": "스냅이 MetaMask와 직접 통신하여 블록체인에서 데이터를 읽고 메시지 및 트랜잭션을 제안하도록 허용합니다.",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
+    "description": "An extended description for the `endowment:ethereum-provider` permission. $1 is the snap name."
   },
   "permission_getEntropy": {
     "message": "이 스냅에 대해 고유한 키를 임의로 파생합니다.",
-    "description": "The description for the `snap_getEntropy` permission"
+    "description": "The description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getEntropyDescription": {
     "message": "스냅이 노출되지 않고 이 스냅에 고유한 임의의 키를 파생하도록 허용합니다. 이 키는 MetaMask 계정과 별개이며 개인 키 또는 비밀복구구문과 관련이 없습니다. 다른 스냅은 이 정보에 액세스할 수 없습니다.",
-    "description": "An extended description for the `snap_getEntropy` permission"
+    "description": "An extended description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_lifecycleHooks": {
     "message": "라이프사이클 훅 사용",
@@ -3178,7 +3178,7 @@
   },
   "permission_lifecycleHooksDescription": {
     "message": "스냅으로 라이프사이클 훅을 사용하도록 허용하면 라이프사이클 동안 코드를 특정 횟수만큼 실행합니다.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
+    "description": "An extended description for the `endowment:lifecycle-hooks` permission. $1 is the snap name."
   },
   "permission_manageAccounts": {
     "message": "이더리움 계정 추가 및 제어",
@@ -3190,7 +3190,7 @@
   },
   "permission_manageStateDescription": {
     "message": "스냅이 암호화를 통해 데이터를 안전하게 저장, 업데이트 및 검색하도록 허용합니다. 다른 스냅은 이 정보에 액세스할 수 없습니다.",
-    "description": "An extended description for the `snap_manageState` permission"
+    "description": "An extended description for the `snap_manageState` permission. $1 is the snap name."
   },
   "permission_notifications": {
     "message": "알림을 표시합니다.",
@@ -3198,15 +3198,15 @@
   },
   "permission_notificationsDescription": {
     "message": "스냅이 MetaMask에서 알림을 디스플레이하도록 허용합니다. 스냅은 작업이 필요하거나 기한이 필요한 정보를 짧은 알림으로 트리거합니다.",
-    "description": "An extended description for the `snap_notify` permission"
+    "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_rpc": {
     "message": "$1에서 이 스냅과 커뮤니케이션하도록 허용합니다.",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites', $2 is the snap name."
   },
   "permission_rpcDescription": {
     "message": "$1에서 스냅으로 메시지를 전송하고 응답을 받도록 허용합니다.",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites', $2 is the snap name."
   },
   "permission_transactionInsight": {
     "message": "트랜잭션 인사이트를 가져와 표시합니다.",
@@ -3214,7 +3214,7 @@
   },
   "permission_transactionInsightDescription": {
     "message": "스냅이 트랜잭션을 디코딩하고 MetaMask UI에서 인사이트를 디스플레이하도록 허용합니다. 이는 피싱 방지와 보안 솔루션에 사용할 수 있습니다.",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
+    "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
     "message": "트랜잭션을 추천하는 웹사이트 출처 보기",
@@ -3222,7 +3222,7 @@
   },
   "permission_transactionInsightOriginDescription": {
     "message": "스냅이 트랜잭션을 제안하는 웹사이트의 출처(URI)를 볼 수 있도록 허용합니다. 이는 피싱 방지와 보안 솔루션에 사용할 수 있습니다.",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
+    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_unknown": {
     "message": "알 수 없는 권한: $1",
@@ -3234,7 +3234,7 @@
   },
   "permission_viewBip32PublicKeysDescription": {
     "message": "스냅이 $1에 대한 공개 키(및 주소)를 볼 수 있도록 허용합니다. 이 허용이 계정이나 자산에 대한 통제권을 부여하는 것은 아닙니다.",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
+    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name). $2 is the snap name."
   },
   "permission_viewNamedBip32PublicKeys": {
     "message": "$1에 관한 공개 키 보기",
@@ -3246,7 +3246,7 @@
   },
   "permission_webAssemblyDescription": {
     "message": "스냅이 WebAssembly를 통해 하위 레벨 실행 환경에 액세스하도록 허용합니다.",
-    "description": "An extended description of the `endowment:webassembly` permission."
+    "description": "An extended description of the `endowment:webassembly` permission. $1 is the snap name."
   },
   "permissions": {
     "message": "권한"

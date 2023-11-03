@@ -3126,7 +3126,7 @@
   },
   "permission_accessNetworkDescription": {
     "message": "Izinkan snap untuk mengakses internet. Ini dapat digunakan untuk mengirim dan menerima data dari server pihak ketiga.",
-    "description": "An extended description of the `endowment:network-access` permission."
+    "description": "An extended description of the `endowment:network-access` permission. $1 is the snap name."
   },
   "permission_accessSnap": {
     "message": "Hubungkan ke Snap $1.",
@@ -3142,7 +3142,7 @@
   },
   "permission_cronjobDescription": {
     "message": "Izinkan snap untuk melakukan tindakan yang diatur secara berkala pada waktu, tanggal, atau interval yang tetap. Ini dapat digunakan untuk memicu interaksi atau pemberitahuan yang peka terhadap waktu.",
-    "description": "An extended description for the `snap_cronjob` permission"
+    "description": "An extended description for the `snap_cronjob` permission. $1 is the snap name."
   },
   "permission_dialog": {
     "message": "Tampilkan jendela dialog di MetaMask.",
@@ -3150,7 +3150,7 @@
   },
   "permission_dialogDescription": {
     "message": "Izinkan snap untuk menampilkan sembulan MetaMask dengan teks khusus, kolom input, dan tombol untuk menyetujui atau menolak suatu tindakan.\nDapat digunakan untuk membuat, misalnya, peringatan, konfirmasi, dan alur keikutsertaan untuk snap.",
-    "description": "An extended description for the `snap_dialog` permission"
+    "description": "An extended description for the `snap_dialog` permission. $1 is the snap name."
   },
   "permission_ethereumAccounts": {
     "message": "Lihat alamat, saldo akun, aktivitas, dan mulai transaksi",
@@ -3162,15 +3162,15 @@
   },
   "permission_ethereumProviderDescription": {
     "message": "Izinkan snap untuk berkomunikasi dengan MetaMask secara langsung, agar dapat membaca data dari blockchain serta menyarankan pesan dan transaksi.",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
+    "description": "An extended description for the `endowment:ethereum-provider` permission. $1 is the snap name."
   },
   "permission_getEntropy": {
     "message": "Dapatkan kunci arbitrer unik untuk snap ini.",
-    "description": "The description for the `snap_getEntropy` permission"
+    "description": "The description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_getEntropyDescription": {
     "message": "Izinkan snap untuk mendapatkan kunci arbitrer unik untuk snap ini, tanpa mengeksposnya. Kunci ini terpisah dari akun MetaMask dan tidak terkait dengan kunci pribadi atau Frasa Pemulihan Rahasia. Snap lain tidak dapat mengakses informasi ini.",
-    "description": "An extended description for the `snap_getEntropy` permission"
+    "description": "An extended description for the `snap_getEntropy` permission. $1 is the snap name."
   },
   "permission_lifecycleHooks": {
     "message": "Gunakan lifecycle hook.",
@@ -3178,7 +3178,7 @@
   },
   "permission_lifecycleHooksDescription": {
     "message": "Izinkan snap menggunakan lifecycle hook untuk menjalankan kode pada waktu tertentu selama siklus hidupnya.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
+    "description": "An extended description for the `endowment:lifecycle-hooks` permission. $1 is the snap name."
   },
   "permission_manageAccounts": {
     "message": "Tambah dan kontrol akun Ethereum",
@@ -3190,7 +3190,7 @@
   },
   "permission_manageStateDescription": {
     "message": "Izinkan snap untuk menyimpan, memperbarui, dan memulihkan data secara aman dengan enkripsi. Snap lain tidak dapat mengakses informasi ini.",
-    "description": "An extended description for the `snap_manageState` permission"
+    "description": "An extended description for the `snap_manageState` permission. $1 is the snap name."
   },
   "permission_notifications": {
     "message": "Tampilkan pemberitahuan.",
@@ -3198,15 +3198,15 @@
   },
   "permission_notificationsDescription": {
     "message": "Izinkan snap untuk menampilkan pemberitahuan dalam MetaMask. Teks pemberitahuan singkat dapat dipicu oleh snap untuk informasi yang dapat ditindaklanjuti atau peka terhadap waktu.",
-    "description": "An extended description for the `snap_notify` permission"
+    "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_rpc": {
     "message": "Izinkan $1 untuk terhubung langsung dengan snap ini.",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites', $2 is the snap name."
   },
   "permission_rpcDescription": {
     "message": "Izinkan $1 untuk mengirim pesan ke snap dan menerima tanggapan dari snap.",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites', $2 is the snap name."
   },
   "permission_transactionInsight": {
     "message": "Dapatkan dan tampilkan wawasan transaksi.",
@@ -3214,7 +3214,7 @@
   },
   "permission_transactionInsightDescription": {
     "message": "Izinkan snap untuk membaca kode transaksi dan menampilkan wawasan dalam UI MetaMask. Ini dapat digunakan sebagai solusi anti-phishing dan keamanan.",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
+    "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
     "message": "Lihat asal situs web yang mengirimkan transaksi",
@@ -3222,7 +3222,7 @@
   },
   "permission_transactionInsightOriginDescription": {
     "message": "Izinkan snap untuk melihat asal (URI) situs web yang menyarankan transaksi. Ini dapat digunakan sebagai solusi anti-phishing dan keamanan.",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
+    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_unknown": {
     "message": "Izin tidak dikenal: $1",
@@ -3234,7 +3234,7 @@
   },
   "permission_viewBip32PublicKeysDescription": {
     "message": "Izinkan snap untuk melihat kunci publik (dan alamat) untuk $1. Ini tidak memberikan kendali atas akun atau aset.",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
+    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name). $2 is the snap name."
   },
   "permission_viewNamedBip32PublicKeys": {
     "message": "Lihat kunci publik Anda untuk $1.",
@@ -3246,7 +3246,7 @@
   },
   "permission_webAssemblyDescription": {
     "message": "Izinkan snap untuk mengakses lingkungan pelaksanaan tingkat rendah melalui WebAssembly.",
-    "description": "An extended description of the `endowment:webassembly` permission."
+    "description": "An extended description of the `endowment:webassembly` permission. $1 is the snap name."
   },
   "permissions": {
     "message": "Izin"

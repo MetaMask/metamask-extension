@@ -13,6 +13,8 @@ export default function UpdateSnapPermissionList({
 }) {
   const t = useI18nContext();
 
+  console.log(targetSubjectMetadata);
+
   return (
     <Box paddingTop={1}>
       {getWeightedPermissions(t, newPermissions, targetSubjectMetadata).map(
