@@ -202,7 +202,7 @@ export default class PendingTransactionTracker extends EventEmitter {
 
     let hasNoHash = !txHash;
 
-    if (!this.beforeCheckPendingTransaction()) {
+    if (!this.beforeCheckPendingTransaction(txMeta)) {
       // Some custodian transactions don't have a hash by the time they are
       // marked as pending, so don't emit a noTxHash error for them
       hasNoHash = false;
