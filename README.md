@@ -81,7 +81,7 @@ For Jest debugging guide using Node.js, see [docs/tests/jest.md](docs/tests/jest
 Our e2e test suite can be run on either Firefox or Chrome.
 
 1. **required** `yarn build:test` to create a test build.
-2. run tests, targetting the browser:
+2. run tests, targeting the browser:
 
 - Firefox e2e tests can be run with `yarn test:e2e:firefox`.
 - Chrome e2e tests can be run with `yarn test:e2e:chrome`. The `chromedriver` package major version must match the major version of your local Chrome installation. If they don't match, update whichever is behind before running Chrome e2e tests.
@@ -111,7 +111,7 @@ For example, to run the `account-details` tests using Chrome, with debug logging
 
 #### Running specific builds types e2e test
 
-Differnt build types have different e2e tests sets. In order to run them look in the `packaje.json` file. You will find:
+Different build types have different e2e tests sets. In order to run them look in the `packaje.json` file. You will find:
 ```console
     "test:e2e:chrome:mmi": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --mmi",
     "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
