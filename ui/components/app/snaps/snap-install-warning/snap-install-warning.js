@@ -56,19 +56,26 @@ export default function SnapInstallWarning({
     );
   };
 
-  function constructWarningElementString(permissionWarnings) {
+  function constructWarningElementComponentArray(permissionWarnings) {
     const warningElements = [];
     for (let i = 0; i < permissionWarnings.length; i++) {
       const warning = permissionWarnings[i];
       if (i > 0) {
         if (i === permissionWarnings.length - 1) {
-          warningElements.push(` ${t('and')} `);
+          warningElements.push(
+            <span key={`${warning.permissionName}_and_${i}`}>
+              {' '}
+              {t('and')}{' '}
+            </span>,
+          );
         } else {
-          warningElements.push(', ');
+          warningElements.push(
+            <span key={`${warning.permissionName}_comma_${i}`}>{', '}</span>,
+          );
         }
       }
       warningElements.push(
-        <span key={i}>
+        <span key={`${warning.permissionName}_${i}`}>
           <Text fontWeight={FontWeight.Medium} as="span">
             {warning.warningMessageSubject}
           </Text>
@@ -139,7 +146,7 @@ export default function SnapInstallWarning({
             permissionName={
               <Text>
                 {t('snapInstallWarningPermissionNameForViewPublicKey', [
-                  constructWarningElementString(
+                  constructWarningElementComponentArray(
                     bip32PublicKeyPermissionWarnings,
                   ),
                 ])}
@@ -148,7 +155,7 @@ export default function SnapInstallWarning({
             title={
               <Text>
                 {t('snapInstallWarningPermissionNameForViewPublicKey', [
-                  constructWarningElementString(
+                  constructWarningElementComponentArray(
                     bip32PublicKeyPermissionWarnings,
                   ),
                 ])}
@@ -159,7 +166,7 @@ export default function SnapInstallWarning({
             )}
             weight={1}
             avatarIcon={IconName.Key}
-            key="snapInstallWarningPermissionCell"
+            key="snapInstallWarningPermissionCellViewPublicKey"
             hideStatus
           />
         </Box>
@@ -170,7 +177,7 @@ export default function SnapInstallWarning({
             permissionName={
               <Text>
                 {t('snapInstallWarningPermissionNameForEntropy', [
-                  constructWarningElementString(
+                  constructWarningElementComponentArray(
                     bip32bip44EntropyPermissionWarnings,
                   ),
                 ])}
@@ -179,7 +186,7 @@ export default function SnapInstallWarning({
             title={
               <Text>
                 {t('snapInstallWarningPermissionNameForEntropy', [
-                  constructWarningElementString(
+                  constructWarningElementComponentArray(
                     bip32bip44EntropyPermissionWarnings,
                   ),
                 ])}
@@ -188,7 +195,7 @@ export default function SnapInstallWarning({
             description={t('snapInstallWarningPermissionDescriptionForEntropy')}
             weight={1}
             avatarIcon={IconName.Key}
-            key="snapInstallWarningPermissionCell"
+            key="snapInstallWarningPermissionCellKeyEntropy"
             hideStatus
           />
         </Box>
@@ -237,8 +244,12 @@ SnapInstallWarning.propTypes = {
    * warnings list
    */
   warnings: PropTypes.arrayOf({
-    warningMessageSubject: PropTypes.string,
     id: PropTypes.string,
+    permissionName: PropTypes.string,
+    warningMessageSubject: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.element,
+    ]),
   }),
   /**
    * Snap name
