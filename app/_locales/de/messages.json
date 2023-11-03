@@ -5109,10 +5109,6 @@
     "message": "Dieses benutzerdefinierte Netzwerk wird nicht erkannt.",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
-  "unrecognizedProtocol": {
-    "message": "$1 (unbekanntes Protokoll)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
-  },
   "unsendableAsset": {
     "message": "Senden von NFT-Tokens (ERC-721) wird derzeit nicht unterstützt.",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
