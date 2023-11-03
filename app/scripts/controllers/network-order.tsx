@@ -4,28 +4,28 @@ import {
 } from '@metamask/base-controller';
 import { NetworkState } from '@metamask/network-controller';
 
-const controllerName = 'NetworksOrderingController';
+const controllerName = 'NetworksOrderController';
 
 /**
  * The network ID of a network.
  */
 export type NetworkId = string;
 
-export type NetworksOrderingControllerState = {
+export type NetworksOrderControllerState = {
   networksList: NetworkId[] | null;
 };
 
-export type NetworksOrderingControllerupdateNetworksListAction = {
+export type NetworksOrderControllerupdateNetworksListAction = {
   type: `${typeof controllerName}:updateNetworksList`;
-  handler: NetworksOrderingController['updateNetworksList'];
+  handler: NetworksOrderController['updateNetworksList'];
 };
 
-export type NetworksOrderingControllerMessengerActions =
-  NetworksOrderingControllerupdateNetworksListAction;
+export type NetworksOrderControllerMessengerActions =
+  NetworksOrderControllerupdateNetworksListAction;
 
-export type NetworksOrderingControllerMessenger = RestrictedControllerMessenger<
+export type NetworksOrderControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
-  NetworksOrderingControllerMessengerActions,
+  NetworksOrderControllerMessengerActions,
   never,
   never,
   never
@@ -42,13 +42,13 @@ const metadata = {
   },
 };
 
-export class NetworksOrderingController extends BaseControllerV2<
+export class NetworksOrderController extends BaseControllerV2<
   typeof controllerName,
-  NetworksOrderingControllerState,
-  NetworksOrderingControllerMessenger
+  NetworksOrderControllerState,
+  NetworksOrderControllerMessenger
 > {
   /**
-   * Creates a NetworksOrderingController instance.
+   * Creates a NetworksOrderController instance.
    *
    * @param args - The arguments to this function.
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
@@ -60,8 +60,8 @@ export class NetworksOrderingController extends BaseControllerV2<
     state,
     onNetworkStateChange,
   }: {
-    messenger: NetworksOrderingControllerMessenger;
-    state?: NetworksOrderingControllerState;
+    messenger: NetworksOrderControllerMessenger;
+    state?: NetworksOrderControllerState;
     onNetworkStateChange: (listener: (state: NetworkState) => void) => void;
   }) {
     super({
