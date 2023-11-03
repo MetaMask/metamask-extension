@@ -31,6 +31,20 @@ const UNRECOGNIZED_CHAIN = {
   },
 };
 
+const SAFE_CHAIN_LIST_PROVIDER_ERROR = {
+  id: 'SAFE_CHAIN_LIST_PROVIDER_ERROR',
+  severity: Severity.Warning,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'errorGettingSafeChainList',
+      },
+    },
+  },
+};
+
 const MISMATCHED_CHAIN_RECOMMENDATION = {
   id: 'MISMATCHED_CHAIN_RECOMMENDATION',
   severity: Severity.Warning,
@@ -135,6 +149,7 @@ const ERROR_CONNECTING_TO_RPC = {
 async function getAlerts(pendingApproval, state) {
   const alerts = [];
   let safeChainsList = [];
+  let providerError;
   if (state.useSafeChainsListValidation) {
     try {
       safeChainsList = await fetchWithCache({
@@ -142,6 +157,7 @@ async function getAlerts(pendingApproval, state) {
         functionName: 'getSafeChainsList',
       });
     } catch (error) {
+      providerError = error;
       // Swallow the error here to not block the user from adding a custom network
       log.warn('Failed to fetch the chainList from chainid.network', error);
     }
@@ -176,7 +192,11 @@ async function getAlerts(pendingApproval, state) {
   }
 
   if (!matchedChain && state.useSafeChainsListValidation) {
-    alerts.push(UNRECOGNIZED_CHAIN);
+    if (providerError) {
+      alerts.push(SAFE_CHAIN_LIST_PROVIDER_ERROR);
+    } else {
+      alerts.push(UNRECOGNIZED_CHAIN);
+    }
   }
 
   if (alerts.length) {
