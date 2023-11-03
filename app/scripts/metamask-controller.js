@@ -841,12 +841,7 @@ export default class MetamaskController extends EventEmitter {
       },
       preferencesController: this.preferencesController,
       onboardingController: this.onboardingController,
-      initState:
-        isManifestV3 &&
-        isFirstMetaMaskControllerSetup === false &&
-        initState.AccountTracker?.accounts
-          ? { accounts: initState.AccountTracker.accounts }
-          : { accounts: {} },
+      initState: { accounts: {} },
       onAccountRemoved: this.controllerMessenger.subscribe.bind(
         this.controllerMessenger,
         'KeyringController:accountRemoved',
@@ -970,7 +965,6 @@ export default class MetamaskController extends EventEmitter {
       keyringBuilders: additionalKeyrings,
       state: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
-      cacheEncryptionKey: isManifestV3,
       messenger: keyringControllerMessenger,
       removeIdentity: this.preferencesController.removeAddress.bind(
         this.preferencesController,
@@ -3286,10 +3280,7 @@ export default class MetamaskController extends EventEmitter {
       if (password && !process.env.IN_TEST) {
         await this.submitPassword(password);
       }
-      // Automatic login via storage encryption key
-      else if (isManifestV3) {
-        await this.submitEncryptionKey();
-      }
+
       // Updating accounts in this.accountTracker before starting UI syncing ensure that
       // state has account balance before it is synced with UI
       await this.accountTracker._updateAccounts();
@@ -4643,10 +4634,6 @@ export default class MetamaskController extends EventEmitter {
       [],
     );
 
-    if (isManifestV3) {
-      await this.extension.storage.session.set({ loginToken, loginSalt });
-    }
-
     if (!addresses.length) {
       return;
     }
@@ -5098,10 +5085,6 @@ export default class MetamaskController extends EventEmitter {
    * Locks MetaMask
    */
   setLocked() {
-    if (isManifestV3) {
-      this.clearLoginArtifacts();
-    }
-
     return this.keyringController.setLocked();
   }
 
