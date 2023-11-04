@@ -1,27 +1,27 @@
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import Footer from '.';
+import ConfirmFooter from '.';
 
-describe('Footer', () => {
+describe('ConfirmFooter', () => {
   const props = {
     onCancel: jest.fn(),
     onConfirm: jest.fn(),
   };
 
   it('renders the correct text', () => {
-    const { getByText } = render(<Footer {...props} />);
+    const { getByText } = render(<ConfirmFooter {...props} />);
     expect(getByText('Confirm')).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
   });
 
   it('calls the correct function when Confirm is clicked', () => {
-    const { getByText } = render(<Footer {...props} />);
+    const { getByText } = render(<ConfirmFooter {...props} />);
     fireEvent.click(getByText('Confirm'));
     expect(props.onConfirm).toHaveBeenCalled();
   });
 
   it('calls the correct function when Cancel is clicked', () => {
-    const { getByText } = render(<Footer {...props} />);
+    const { getByText } = render(<ConfirmFooter {...props} />);
     getByText('Cancel').click();
     expect(props.onCancel).toHaveBeenCalled();
   });
@@ -33,7 +33,7 @@ describe('Footer', () => {
       confirmText: 'Submit',
     };
 
-    const { getByText } = render(<Footer {...overrideTextProps} />);
+    const { getByText } = render(<ConfirmFooter {...overrideTextProps} />);
     expect(getByText('Submit')).toBeInTheDocument();
     expect(getByText('Close')).toBeInTheDocument();
 

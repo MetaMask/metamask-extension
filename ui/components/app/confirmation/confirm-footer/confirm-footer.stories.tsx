@@ -1,39 +1,43 @@
 import React from 'react';
-import Footer from '.';
+import { StoryFn, Meta } from '@storybook/react';
+import ConfirmFooter from '.';
 
 export default {
-  title: 'Components/App/Confirmation/Footer',
+  title: 'Components/App/Confirmation/ConfirmFooter',
   description: 'Generic footer component for confirmation pages',
-  component: Footer,
+  component: ConfirmFooter,
   parameters: {
     controls: { sort: 'alpha' },
   },
   argTypes: {
     cancelText: {
       control: 'text',
-      description: 'Text for the cancel button',
-      default: 'Cancel',
     },
     confirmText: {
       control: 'text',
-      description: 'Text for the confirm button',
-      default: 'Confirm',
     },
     onCancel: {
       action: 'onCancel',
-      description: 'Function to call when the cancel button is clicked',
     },
     onConfirm: {
       action: 'onConfirm',
-      description: 'Function to call when the confirm button is clicked',
+    },
+    cancelButtonProps: {
+      control: 'object',
+    },
+    confirmButtonProps: {
+      control: 'object',
     },
   },
   args: {
     cancelText: 'Cancel',
     confirmText: 'Confirm',
   },
-};
+} as Meta<typeof ConfirmFooter>;
 
-export const DefaultStory = (args) => <Footer {...args} />;
+const Template: StoryFn<typeof ConfirmFooter> = (args) => (
+  <ConfirmFooter {...args} />
+);
 
+export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
