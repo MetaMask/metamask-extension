@@ -24,11 +24,11 @@ export interface ConfirmFooterProps
    */
   onConfirm: (event: React.MouseEvent<HTMLButtonElement>) => void;
   /**
-   * The props to pass to the cancel button
+   * Additional props to pass to the cancel button accepts all props of the Button component
    */
   cancelButtonProps?: ButtonProps<'button'>;
   /**
-   * The props to pass to the confirm button
+   * Additional props to pass to the confirm button accepts all props of the Button component
    */
   confirmButtonProps?: ButtonProps<'button'>;
 }

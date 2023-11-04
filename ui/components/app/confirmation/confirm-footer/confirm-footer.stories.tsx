@@ -1,43 +1,39 @@
-import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
+
 import ConfirmFooter from '.';
 
-export default {
+const meta: Meta<typeof ConfirmFooter> = {
   title: 'Components/App/Confirmation/ConfirmFooter',
-  description: 'Generic footer component for confirmation pages',
   component: ConfirmFooter,
-  parameters: {
-    controls: { sort: 'alpha' },
-  },
   argTypes: {
     cancelText: {
       control: 'text',
+      description: 'Text for the cancel button',
+      default: 'Cancel',
     },
     confirmText: {
       control: 'text',
+      description: 'Text for the confirm button',
+      default: 'Confirm',
     },
     onCancel: {
       action: 'onCancel',
+      description: 'Function to call when the cancel button is clicked',
     },
     onConfirm: {
       action: 'onConfirm',
-    },
-    cancelButtonProps: {
-      control: 'object',
-    },
-    confirmButtonProps: {
-      control: 'object',
+      description: 'Function to call when the confirm button is clicked',
     },
   },
   args: {
     cancelText: 'Cancel',
     confirmText: 'Confirm',
   },
-} as Meta<typeof ConfirmFooter>;
+};
 
-const Template: StoryFn<typeof ConfirmFooter> = (args) => (
-  <ConfirmFooter {...args} />
-);
+export default meta;
+type Story = StoryObj<typeof ConfirmFooter>;
 
-export const DefaultStory = Template.bind({});
-DefaultStory.storyName = 'Default';
+// 👇 Throws a type error it the args don't match the component props
+export const DefaultStory: Story = {};
+DefaultStory.name = 'Default';
