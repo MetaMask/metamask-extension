@@ -86,21 +86,21 @@ export const NetworkListMenu = ({ onClose }) => {
   const orderedNetworksList = useSelector(getOrderedNetworksList);
 
   const newOrderNetworks = () => {
-    // Create a mapping of chainId to array index in nonTestNetworks
-    const chainIdIndexMap = {};
-    nonTestNetworks.forEach((element, index) => {
-      chainIdIndexMap[element.chainId] = index;
-    });
+    if (orderedNetworksList.length === 0) {
+      return nonTestNetworks;
+    }
 
-    // Sort nonTestNetworks based on the order of chainIds in arr2
-    const sortedNetworkList = orderedNetworksList.map(
-      (chainId) => nonTestNetworks[chainIdIndexMap[chainId]],
-    );
+    // Reorder nonTestNetworks based on the order of chainIds in orderedNetworksList
+    const sortedNetworkList = orderedNetworksList
+      .map((chainId) =>
+        nonTestNetworks.find((network) => network.chainId === chainId),
+      )
+      .filter((network) => network !== undefined);
+
     return sortedNetworkList;
   };
 
-  const networksList =
-    orderedNetworksList.length > 0 ? newOrderNetworks() : nonTestNetworks;
+  const networksList = newOrderNetworks();
 
   useEffect(() => {
     if (currentlyOnTestNetwork) {

@@ -240,7 +240,7 @@ import {
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
-import { NetworksOrderController } from './controllers/network-order';
+import { NetworksOrderController } from './controllers/networks-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { setupMultiplex } from './lib/stream-utils';
 import EnsController from './controllers/ens';
@@ -814,14 +814,11 @@ export default class MetamaskController extends EventEmitter {
 
     const networksOrderMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworksOrderController',
+      allowedEvents: ['NetworkController:stateChange'],
     });
     this.networksOrderController = new NetworksOrderController({
       messenger: networksOrderMessenger,
       state: initState.NetworksOrderController,
-      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:stateChange',
-      ),
     });
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
