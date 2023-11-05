@@ -544,9 +544,6 @@
   "rejectTxsN": {
     "message": "Kataa $1 miamala"
   },
-  "rejected": {
-    "message": "Imekataliwa"
-  },
   "remove": {
     "message": "Ondoa"
   },
@@ -640,9 +637,6 @@
   },
   "signatureRequest": {
     "message": "Ombi la Saini"
-  },
-  "signed": {
-    "message": "Imesainiwa"
   },
   "somethingWentWrong": {
     "message": "Ayaa! Hitilafu fulani imetokea."

@@ -3419,9 +3419,6 @@
   "rejectTxsN": {
     "message": "Tolak $1 transaksi"
   },
-  "rejected": {
-    "message": "Ditolak"
-  },
   "remember": {
     "message": "Ingatlah:"
   },
@@ -3857,9 +3854,6 @@
   },
   "signatureRequestWarning": {
     "message": "Berhati-hatilah sebelum menandatangani pesan ini. Anda mungkin memberikan kendali penuh atas akun dan aset Anda kepada pihak lain pesan ini. Artinya, pihak tersebut dapat menguras akun Anda kapan saja. Lanjutkan dengan hati-hati. $1."
-  },
-  "signed": {
-    "message": "Ditandatangani"
   },
   "signin": {
     "message": "Masuk"

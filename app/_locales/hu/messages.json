@@ -559,9 +559,6 @@
   "rejectTxsN": {
     "message": "$1 tranzakciók elutasítása"
   },
-  "rejected": {
-    "message": "Elutasítva"
-  },
   "remove": {
     "message": "Eltávolítás"
   },
@@ -655,9 +652,6 @@
   },
   "signatureRequest": {
     "message": "Aláírási kérelem"
-  },
-  "signed": {
-    "message": "Aláírva"
   },
   "somethingWentWrong": {
     "message": "Hoppá! Valami hiba történt..."

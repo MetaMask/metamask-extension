@@ -538,9 +538,6 @@
   "rejectTxsN": {
     "message": "Odmietnuť $1 transakcie "
   },
-  "rejected": {
-    "message": "Odmítnuto"
-  },
   "remove": {
     "message": "Odstrániť"
   },
@@ -634,9 +631,6 @@
   },
   "signatureRequest": {
     "message": "Požadavek podpisu"
-  },
-  "signed": {
-    "message": "Podepsáno"
   },
   "somethingWentWrong": {
     "message": "Och! Niečo zlyhalo."

@@ -566,9 +566,6 @@
   "rejectTxsN": {
     "message": "Atmesti $1 operac."
   },
-  "rejected": {
-    "message": "Atmesta"
-  },
   "remove": {
     "message": "Pašalinti"
   },
@@ -662,9 +659,6 @@
   },
   "signatureRequest": {
     "message": "Parašo užklausa"
-  },
-  "signed": {
-    "message": "Pasirašyta"
   },
   "somethingWentWrong": {
     "message": "Vaje! Kažkas negerai."

@@ -547,9 +547,6 @@
   "rejectTxsN": {
     "message": "Rebutja les transaccions de $1"
   },
-  "rejected": {
-    "message": "Rebutjat"
-  },
   "remove": {
     "message": "Suprimeix"
   },
@@ -643,9 +640,6 @@
   },
   "signatureRequest": {
     "message": "Sol·licitud de Signatura"
-  },
-  "signed": {
-    "message": "Signat"
   },
   "somethingWentWrong": {
     "message": "Ui! Alguna cosa ha fallat."

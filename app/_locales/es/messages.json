@@ -3419,9 +3419,6 @@
   "rejectTxsN": {
     "message": "Rechazar $1 transacciones"
   },
-  "rejected": {
-    "message": "Rechazado"
-  },
   "remember": {
     "message": "Recuerde:"
   },
@@ -3857,9 +3854,6 @@
   },
   "signatureRequestWarning": {
     "message": "Firmar este mensaje podría ser peligroso. Es posible que le esté otorgando el control total de su cuenta y activos a la contraparte de este mensaje. Eso significa que podrían vaciar su cuenta en cualquier momento. Proceda con precaución. $1."
-  },
-  "signed": {
-    "message": "Firmado"
   },
   "signin": {
     "message": "Iniciar sesión"

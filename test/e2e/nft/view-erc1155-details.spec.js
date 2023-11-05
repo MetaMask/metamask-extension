@@ -30,6 +30,10 @@ describe('View ERC1155 NFT details', function () {
 
         // Click to open the NFT details page and check displayed account
         await driver.clickElement('[data-testid="home__nfts-tab"]');
+
+        // TxMigrationToDo - Verify popup delay.
+        await driver.delay(2000);
+
         const importedNftImage = await driver.findVisibleElement(
           '.nft-item__container',
         );

@@ -181,6 +181,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
             await driver.executeScript(
               `window.transactionHash = window.ethereum.request(${request})`,
             );
+            await driver.delay(2000);
           }
 
           const windowHandles = await driver.waitUntilXWindowHandles(3);
@@ -239,6 +240,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
 
           // Click TestDapp button to send JSON-RPC request
           await driver.clickElement(btnSelector);
+          await driver.delay(2000);
 
           // Wait for confirmation pop-up
           const windowHandles = await driver.waitUntilXWindowHandles(3);
@@ -296,6 +298,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousApprovalButton');
+        await driver.delay(2000);
 
         // Wait for confirmation pop-up
         const windowHandles = await driver.waitUntilXWindowHandles(3);

@@ -3419,9 +3419,6 @@
   "rejectTxsN": {
     "message": "拒绝 $1 笔交易"
   },
-  "rejected": {
-    "message": "已拒绝"
-  },
   "remember": {
     "message": "记住："
   },
@@ -3857,9 +3854,6 @@
   },
   "signatureRequestWarning": {
     "message": "签署此消息可能会很危险。您可能会将您的账户和资产的全部控制权交给此消息另一端的一方。这意味着他们可以随时耗尽您的账户。请谨慎行事。$1。"
-  },
-  "signed": {
-    "message": "已签名"
   },
   "signin": {
     "message": "登录"

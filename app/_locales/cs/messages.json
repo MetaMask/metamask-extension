@@ -261,9 +261,6 @@
   "reject": {
     "message": "Odmítnout"
   },
-  "rejected": {
-    "message": "Odmítnuto"
-  },
   "required": {
     "message": "Povinné"
   },
@@ -303,9 +300,6 @@
   },
   "signatureRequest": {
     "message": "Požadavek podpisu"
-  },
-  "signed": {
-    "message": "Podepsáno"
   },
   "stateLogError": {
     "message": "Chyba během získávání stavových protokolů."

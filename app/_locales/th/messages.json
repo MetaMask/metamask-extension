@@ -289,9 +289,6 @@
   "reject": {
     "message": "ปฏิเสธ"
   },
-  "rejected": {
-    "message": "ถูกปฏิเสธ"
-  },
   "required": {
     "message": "จำเป็น"
   },
@@ -337,9 +334,6 @@
   },
   "signatureRequest": {
     "message": "ขอลายเซ็น"
-  },
-  "signed": {
-    "message": "ลงชื่อแล้ว"
   },
   "stateLogs": {
     "message": "บันทึกของสถานะ"

@@ -546,9 +546,6 @@
   "rejectTxsN": {
     "message": "Tolak transaksi $1"
   },
-  "rejected": {
-    "message": "Ditolak"
-  },
   "remove": {
     "message": "Alih keluar"
   },
@@ -642,9 +639,6 @@
   },
   "signatureRequest": {
     "message": "Permintaan Tandatangan"
-  },
-  "signed": {
-    "message": "Ditandatangani"
   },
   "somethingWentWrong": {
     "message": "Alamak! Ada yang tak kena."

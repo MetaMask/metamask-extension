@@ -563,9 +563,6 @@
   "rejectTxsN": {
     "message": "Hylkää $1 maksusiirtoa"
   },
-  "rejected": {
-    "message": "Hylätty"
-  },
   "remove": {
     "message": "Poista"
   },
@@ -659,9 +656,6 @@
   },
   "signatureRequest": {
     "message": "Allekirjoitus pyydetään"
-  },
-  "signed": {
-    "message": "Allekirjoitettu"
   },
   "somethingWentWrong": {
     "message": "Hupsis! Jotakin meni pieleen."

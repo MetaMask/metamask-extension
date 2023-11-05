@@ -559,9 +559,6 @@
   "rejectTxsN": {
     "message": "Odbaci transakcije: $1"
   },
-  "rejected": {
-    "message": "Odbačeno"
-  },
   "remove": {
     "message": "Ukloni"
   },
@@ -655,9 +652,6 @@
   },
   "signatureRequest": {
     "message": "Zahtjev za potpisom"
-  },
-  "signed": {
-    "message": "Potpisano"
   },
   "somethingWentWrong": {
     "message": "Ups! Nešto je pošlo po zlu."

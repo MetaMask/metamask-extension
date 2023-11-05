@@ -1057,9 +1057,6 @@
   "rejectTxsN": {
     "message": "拒絕 $1 筆交易"
   },
-  "rejected": {
-    "message": "拒絕"
-  },
   "remove": {
     "message": "移除"
   },
@@ -1227,9 +1224,6 @@
   },
   "signatureRequest": {
     "message": "請求簽署"
-  },
-  "signed": {
-    "message": "已簽署"
   },
   "skipAccountSecurity": {
     "message": "Skip Account Security?"

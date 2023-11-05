@@ -551,9 +551,6 @@
   "rejectTxsN": {
     "message": "$1ግብይቶችን አትቀበል"
   },
-  "rejected": {
-    "message": "ውድቅ የተደረገ"
-  },
   "remove": {
     "message": "አስወግድ"
   },
@@ -647,9 +644,6 @@
   },
   "signatureRequest": {
     "message": "የፊርማ ጥያቄ"
-  },
-  "signed": {
-    "message": "ተፈርሟል"
   },
   "somethingWentWrong": {
     "message": "ኤጭ! የሆነ ችግር ተፈጥሯል።"

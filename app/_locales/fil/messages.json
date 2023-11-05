@@ -490,9 +490,6 @@
   "rejectTxsN": {
     "message": "Tanggihan ang $1 (na) transaksyon"
   },
-  "rejected": {
-    "message": "Tinanggihan"
-  },
   "remove": {
     "message": "Alisin"
   },
@@ -580,9 +577,6 @@
   },
   "sign": {
     "message": "I-sign"
-  },
-  "signed": {
-    "message": "Na-sign"
   },
   "somethingWentWrong": {
     "message": "Oops! Nagkaroon ng problema."

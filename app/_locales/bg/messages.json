@@ -562,9 +562,6 @@
   "rejectTxsN": {
     "message": "Отхвърлете $1 транзакции"
   },
-  "rejected": {
-    "message": "Отказан"
-  },
   "remove": {
     "message": "Премахване"
   },
@@ -658,9 +655,6 @@
   },
   "signatureRequest": {
     "message": "Заявка за подпис"
-  },
-  "signed": {
-    "message": "Подписан"
   },
   "somethingWentWrong": {
     "message": "Упс! Нещо се обърка."
