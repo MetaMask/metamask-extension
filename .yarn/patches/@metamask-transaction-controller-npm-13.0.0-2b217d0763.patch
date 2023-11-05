@@ -6,6 +6,18 @@ index 9a28bf567caa2b9292b40d2a1a582808288dbbdb..00000000000000000000000000000000
 @@ -1 +0,0 @@
 -{"version":3,"file":"EtherscanRemoteTransactionSource.d.ts","sourceRoot":"","sources":["../src/EtherscanRemoteTransactionSource.ts"],"names":[],"mappings":"AACA,OAAO,KAAK,EAAE,GAAG,EAAE,MAAM,iBAAiB,CAAC;AAiB3C,OAAO,KAAK,EACV,uBAAuB,EACvB,8BAA8B,EAC9B,eAAe,EAChB,MAAM,SAAS,CAAC;AAGjB;;GAEG;AACH,qBAAa,gCACX,YAAW,uBAAuB;;gBAMtB,EACV,qBAAqB,GACtB,GAAE;QAAE,qBAAqB,CAAC,EAAE,OAAO,CAAA;KAAO;IAK3C,kBAAkB,CAAC,OAAO,EAAE,GAAG,GAAG,OAAO;IAIzC,sBAAsB,IAAI,MAAM,EAAE;IAI5B,iBAAiB,CACrB,OAAO,EAAE,8BAA8B,GACtC,OAAO,CAAC,eAAe,EAAE,CAAC;CAkI9B"}
 \ No newline at end of file
+diff --git a/dist/EtherscanRemoteTransactionSource.js b/dist/EtherscanRemoteTransactionSource.js
+index c03d191ccb46bafd0c8baba7370ea6c0808611c8..ca2865f2616d63223ae40609784c6ca79a593352 100644
+--- a/dist/EtherscanRemoteTransactionSource.js
++++ b/dist/EtherscanRemoteTransactionSource.js
+@@ -116,6 +116,7 @@ _EtherscanRemoteTransactionSource_includeTokenTransfers = new WeakMap(), _Ethers
+             to: txMeta.to,
+             value: (0, controller_utils_1.BNToHex)(new ethereumjs_util_1.BN(txMeta.value)),
+         },
++        type: types_1.TransactionType.incoming,
+         verifiedOnBlockchain: false,
+     };
+ };
 diff --git a/dist/EtherscanRemoteTransactionSource.js.map b/dist/EtherscanRemoteTransactionSource.js.map
 deleted file mode 100644
 index 4b10444cf000f8873da3e37c7b5cc22dc2c507c9..0000000000000000000000000000000000000000
