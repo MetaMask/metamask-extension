@@ -556,6 +556,9 @@
   "rejectTxsN": {
     "message": "Lükake $1tehingud tagasi"
   },
+  "rejected": {
+    "message": "Tagasi lükatud"
+  },
   "remove": {
     "message": "Eemalda"
   },
@@ -649,6 +652,9 @@
   },
   "signatureRequest": {
     "message": "Allkirja taotlus"
+  },
+  "signed": {
+    "message": "Allkirjastatud"
   },
   "somethingWentWrong": {
     "message": "Oih! Midagi läks valesti."

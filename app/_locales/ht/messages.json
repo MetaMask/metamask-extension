@@ -400,6 +400,9 @@
   "rejectTxsN": {
     "message": "Rejete $ 1 tranzaksyon"
   },
+  "rejected": {
+    "message": "Rejete"
+  },
   "remove": {
     "message": "retire"
   },
@@ -478,6 +481,9 @@
   },
   "signatureRequest": {
     "message": "Siyati Mande"
+  },
+  "signed": {
+    "message": "Te Siyen"
   },
   "speedUp": {
     "message": "pi vit"

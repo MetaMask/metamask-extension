@@ -547,6 +547,9 @@
   "rejectTxsN": {
     "message": "Afvis $1 transaktioner"
   },
+  "rejected": {
+    "message": "Afvist"
+  },
   "remove": {
     "message": "Fjern"
   },
@@ -637,6 +640,9 @@
   },
   "signatureRequest": {
     "message": "Signaturforespørgsel"
+  },
+  "signed": {
+    "message": "Underskrevet"
   },
   "somethingWentWrong": {
     "message": "Ups! Noget gik galt."

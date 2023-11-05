@@ -550,6 +550,9 @@
   "rejectTxsN": {
     "message": "Avslå transaksjoner på $1."
   },
+  "rejected": {
+    "message": "Avvist"
+  },
   "remove": {
     "message": "Fjern"
   },
@@ -640,6 +643,9 @@
   },
   "signatureRequest": {
     "message": "Signaturforespørsel"
+  },
+  "signed": {
+    "message": "Signert"
   },
   "somethingWentWrong": {
     "message": "Oisann! Noe gikk galt. "

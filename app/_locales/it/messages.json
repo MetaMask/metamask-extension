@@ -1301,6 +1301,9 @@
   "rejectTxsN": {
     "message": "Respingi $1 transazioni"
   },
+  "rejected": {
+    "message": "Respinta"
+  },
   "remove": {
     "message": "rimuovi"
   },
@@ -1426,6 +1429,9 @@
   },
   "signatureRequest": {
     "message": "Firma Richiesta"
+  },
+  "signed": {
+    "message": "Firmata"
   },
   "somethingWentWrong": {
     "message": "Oops! Qualcosa è andato storto."

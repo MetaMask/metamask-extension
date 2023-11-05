@@ -553,6 +553,9 @@
   "rejectTxsN": {
     "message": "Respingeți $1 (de) tranzacții"
   },
+  "rejected": {
+    "message": "Respins"
+  },
   "remove": {
     "message": "Elimină"
   },
@@ -646,6 +649,9 @@
   },
   "signatureRequest": {
     "message": "Cerere semnătură"
+  },
+  "signed": {
+    "message": "Semnat"
   },
   "somethingWentWrong": {
     "message": "Hopa! A apărut o eroare."

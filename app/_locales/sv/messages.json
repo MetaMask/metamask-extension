@@ -550,6 +550,9 @@
   "rejectTxsN": {
     "message": "Neka överföringar på $1"
   },
+  "rejected": {
+    "message": "Nekad"
+  },
   "remove": {
     "message": "Ta bort"
   },
@@ -643,6 +646,9 @@
   },
   "signatureRequest": {
     "message": "Signaturbegäran"
+  },
+  "signed": {
+    "message": "Signerat"
   },
   "somethingWentWrong": {
     "message": "Hoppsan! Något gick fel."

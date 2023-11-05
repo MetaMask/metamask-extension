@@ -562,6 +562,9 @@
   "rejectTxsN": {
     "message": "Noraidīt $1 darījumus"
   },
+  "rejected": {
+    "message": "Noraidīts"
+  },
   "remove": {
     "message": "Noņemt"
   },
@@ -655,6 +658,9 @@
   },
   "signatureRequest": {
     "message": "Paraksta pieprasījums"
+  },
+  "signed": {
+    "message": "Parakstīts"
   },
   "somethingWentWrong": {
     "message": "Ak vai! Radās problēma."

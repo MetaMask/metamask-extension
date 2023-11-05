@@ -563,6 +563,9 @@
   "rejectTxsN": {
     "message": "דחה $1 עסקאות "
   },
+  "rejected": {
+    "message": "נדחה"
+  },
   "remove": {
     "message": "הסר"
   },
@@ -656,6 +659,9 @@
   },
   "signatureRequest": {
     "message": "בקשת חתימה"
+  },
+  "signed": {
+    "message": "חתום"
   },
   "somethingWentWrong": {
     "message": "אופס! משהו השתבש."

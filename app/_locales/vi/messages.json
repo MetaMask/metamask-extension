@@ -3419,6 +3419,9 @@
   "rejectTxsN": {
     "message": "Từ chối $1 giao dịch"
   },
+  "rejected": {
+    "message": "Đã từ chối"
+  },
   "remember": {
     "message": "Ghi nhớ:"
   },
@@ -3854,6 +3857,9 @@
   },
   "signatureRequestWarning": {
     "message": "Việc ký vào thông báo này có thể gây nguy hiểm. Bạn có thể trao toàn quyền kiểm soát tài khoản và tài sản của mình cho bên kia. Nghĩa là họ có thể tiêu hoặc rút hết tiền trong tài khoản của bạn bất cứ lúc nào. Hãy tiến hành thận trọng. $1."
+  },
+  "signed": {
+    "message": "Đã ký"
   },
   "signin": {
     "message": "Đăng nhập"

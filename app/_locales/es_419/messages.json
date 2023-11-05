@@ -1783,6 +1783,9 @@
   "rejectTxsN": {
     "message": "Rechazar $1 transacciones"
   },
+  "rejected": {
+    "message": "Rechazado"
+  },
   "remember": {
     "message": "Recuerde:"
   },
@@ -2005,6 +2008,9 @@
   },
   "signatureRequest": {
     "message": "Solicitud de firma"
+  },
+  "signed": {
+    "message": "Firmado"
   },
   "simulationErrorMessageV2": {
     "message": "No pudimos estimar el gas. Podría haber un error en el contrato y esta transacción podría fallar."

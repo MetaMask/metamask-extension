@@ -563,6 +563,9 @@
   "rejectTxsN": {
     "message": "رفض معاملات $1"
   },
+  "rejected": {
+    "message": "مرفوض"
+  },
   "remove": {
     "message": "إزالة"
   },
@@ -656,6 +659,9 @@
   },
   "signatureRequest": {
     "message": "طلب التوقيع"
+  },
+  "signed": {
+    "message": "مسجل الدخول"
   },
   "somethingWentWrong": {
     "message": "عذراً! حدث خطأ ما."

@@ -560,6 +560,9 @@
   "rejectTxsN": {
     "message": "Odrzuć transakcje ($1)"
   },
+  "rejected": {
+    "message": "Odrzucone"
+  },
   "remove": {
     "message": "usuń"
   },
@@ -653,6 +656,9 @@
   },
   "signatureRequest": {
     "message": "Prośba o podpis"
+  },
+  "signed": {
+    "message": "Podpisane"
   },
   "somethingWentWrong": {
     "message": "Ups! Coś poszło nie tak."

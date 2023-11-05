@@ -3675,6 +3675,9 @@
   "rejectTxsN": {
     "message": "Reject $1 transactions"
   },
+  "rejected": {
+    "message": "Rejected"
+  },
   "remember": {
     "message": "Remember:"
   },
@@ -4140,6 +4143,9 @@
   },
   "signatureRequestWarning": {
     "message": "Signing this message could be dangerous. You may be giving total control of your account and assets to the party on the other end of this message. That means they could drain your account at any time. Proceed with caution. $1."
+  },
+  "signed": {
+    "message": "Signed"
   },
   "signin": {
     "message": "Sign-In"

@@ -566,6 +566,9 @@
   "rejectTxsN": {
     "message": "رد معاملات 1$1"
   },
+  "rejected": {
+    "message": "رد شد"
+  },
   "remove": {
     "message": "پاک کردن"
   },
@@ -659,6 +662,9 @@
   },
   "signatureRequest": {
     "message": "درخواست امضاء"
+  },
+  "signed": {
+    "message": "وارد شد"
   },
   "somethingWentWrong": {
     "message": "اوه! مشکلی پیش آمده."

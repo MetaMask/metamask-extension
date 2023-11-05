@@ -566,6 +566,9 @@
   "rejectTxsN": {
     "message": "$1 ವಹಿವಾಟುಗಳನ್ನು ತಿರಸ್ಕರಿಸಿ"
   },
+  "rejected": {
+    "message": "ತಿರಸ್ಕರಿಸಲಾಗಿದೆ"
+  },
   "remove": {
     "message": "ತೆಗೆದುಹಾಕು"
   },
@@ -659,6 +662,9 @@
   },
   "signatureRequest": {
     "message": "ಸಹಿಯ ವಿನಂತಿ"
+  },
+  "signed": {
+    "message": "ಸಹಿ ಮಾಡಲಾಗಿದೆ"
   },
   "somethingWentWrong": {
     "message": "ಓಹ್‌‍! ಏನೋ ತಪ್ಪಾಗಿದೆ."

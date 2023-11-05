@@ -560,6 +560,9 @@
   "rejectTxsN": {
     "message": "$1 লেনদেনগুলি খারিজ করুন"
   },
+  "rejected": {
+    "message": "খারিজ করা হয়েছে"
+  },
   "remove": {
     "message": "সরান"
   },
@@ -653,6 +656,9 @@
   },
   "signatureRequest": {
     "message": "স্বাক্ষরের অনুরোধ"
+  },
+  "signed": {
+    "message": "স্বাক্ষরিত"
   },
   "somethingWentWrong": {
     "message": "ওহো! কিছু সমস্যা হয়েছে।"

@@ -228,6 +228,9 @@
   "reject": {
     "message": "Afwijzen"
   },
+  "rejected": {
+    "message": "Verworpen"
+  },
   "required": {
     "message": "Verplicht"
   },

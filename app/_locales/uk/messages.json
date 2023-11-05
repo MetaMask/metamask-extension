@@ -566,6 +566,9 @@
   "rejectTxsN": {
     "message": "Відхилити транзакції ($1)"
   },
+  "rejected": {
+    "message": "Відмовлено"
+  },
   "remove": {
     "message": "Видалити"
   },
@@ -659,6 +662,9 @@
   },
   "signatureRequest": {
     "message": "Запит підпису"
+  },
+  "signed": {
+    "message": "Підписано"
   },
   "somethingWentWrong": {
     "message": "Ой! Щось пішло не так."

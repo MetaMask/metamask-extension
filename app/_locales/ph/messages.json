@@ -1138,6 +1138,9 @@
   "rejectTxsN": {
     "message": "Tanggihan ang $1 transaksyon"
   },
+  "rejected": {
+    "message": "Tinanggihan"
+  },
   "remove": {
     "message": "Tanggalin"
   },
@@ -1302,6 +1305,9 @@
   },
   "signatureRequest": {
     "message": "Request ng Signature"
+  },
+  "signed": {
+    "message": "Nilagdaan"
   },
   "somethingWentWrong": {
     "message": "Oops! Nagkaproblema."

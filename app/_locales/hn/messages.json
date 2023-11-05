@@ -238,6 +238,9 @@
   "reject": {
     "message": "अस्वीकार"
   },
+  "rejected": {
+    "message": "अस्वीकृत"
+  },
   "required": {
     "message": "आवश्यक"
   },

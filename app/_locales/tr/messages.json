@@ -3419,6 +3419,9 @@
   "rejectTxsN": {
     "message": "$1 işlemi reddet"
   },
+  "rejected": {
+    "message": "Reddedildi"
+  },
   "remember": {
     "message": "Unutmayın:"
   },
@@ -3854,6 +3857,9 @@
   },
   "signatureRequestWarning": {
     "message": "Bu mesajın imzalanması tehlikeli olabilir. Hesabınızın ve varlıklarınızın tüm kontrolünü bu mesajın diğer ucundaki tarafa veriyor olabilirsiniz. Başka bir deyişle istedikleri zaman hesabınızı boşaltabilirler. Dikkatle ilerleyin. $1."
+  },
+  "signed": {
+    "message": "İmzalandı"
   },
   "signin": {
     "message": "Giriş"
