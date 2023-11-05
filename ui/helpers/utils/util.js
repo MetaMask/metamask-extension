@@ -591,7 +591,23 @@ export function getSnapDerivationPathName(path, curve) {
       lodash.isEqual(derivationPath.path, path),
   );
 
-  return pathMetadata?.name ?? null;
+  if (pathMetadata) {
+    return pathMetadata.name;
+  }
+
+  // If the curve is secp256k1 and the path is a valid BIP44 path
+  // we try looking for the network/protocol name in SLIP44
+  if (
+    curve === 'secp256k1' &&
+    path[0] === 'm' &&
+    path[1] === `44'` &&
+    path[2].endsWith(`'`)
+  ) {
+    const coinType = path[2].slice(0, -1);
+    return coinTypeToProtocolName(coinType) ?? null;
+  }
+
+  return null;
 }
 
 export const removeSnapIdPrefix = (snapId) =>

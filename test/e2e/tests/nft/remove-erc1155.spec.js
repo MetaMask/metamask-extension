@@ -29,7 +29,7 @@ describe('Remove ERC1155 NFT', function () {
     ],
   };
 
-  it('user should be able to remove ERC1155 NFT on details page @no-mmi', async function () {
+  it('user should be able to remove ERC1155 NFT on details page', async function () {
     await withFixtures(
       {
         dapp: true,
