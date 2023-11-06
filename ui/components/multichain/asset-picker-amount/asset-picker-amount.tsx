@@ -2,9 +2,9 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
-  Icon,
+  ButtonIcon,
+  ButtonIconSize,
   IconName,
-  IconSize,
   Label,
   Text,
 } from '../../component-library';
@@ -75,16 +75,14 @@ export const AssetPickerAmount = () => {
             hexValue={amount.value}
             className="asset-picker-amount__input"
             swapIcon={(onClick: React.MouseEventHandler) => (
-              <button
-                className="asset-picker-amount__swap-button"
+              <ButtonIcon
+                backgroundColor={BackgroundColor.transparent}
+                iconName={IconName.SwapVertical}
+                ariaLabel={t('switchInputCurrency')}
+                size={ButtonIconSize.Sm}
+                color={IconColor.primaryDefault}
                 onClick={onClick}
-              >
-                <Icon
-                  name={IconName.SwapVertical}
-                  size={IconSize.Sm}
-                  color={IconColor.primaryDefault}
-                />
-              </button>
+              />
             )}
           />
         ) : (
