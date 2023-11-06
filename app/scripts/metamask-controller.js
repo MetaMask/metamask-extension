@@ -253,7 +253,6 @@ import { updateCurrentLocale } from './translate';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IN
-import TxGasUtil from './controllers/transactions/tx-gas-utils';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1465,9 +1464,15 @@ export default class MetamaskController extends EventEmitter {
 
     this.swapsController = new SwapsController(
       {
-        // TxMigrationToDo - Move getBufferedGasLimit logic.
-        getBufferedGasLimit: (...args) =>
-          new TxGasUtil(this.provider).getBufferedGasLimit(...args),
+        getBufferedGasLimit: async (txMeta, multiplier) => {
+          const { gas: gasLimit, simulationFails } =
+            await this.txController.estimateGasBuffered(
+              txMeta.txParams,
+              multiplier,
+            );
+
+          return { gasLimit, simulationFails };
+        },
         networkController: this.networkController,
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,

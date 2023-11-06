@@ -2270,7 +2270,7 @@
         "@metamask/base-controller": true,
         "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
-        "@metamask/transaction-controller>fast-json-patch": true,
+        "fast-json-patch": true,
         "lodash": true
       }
     },
@@ -2716,10 +2716,10 @@
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/transaction-controller>@metamask/utils": true,
         "@metamask/transaction-controller>eth-method-registry": true,
-        "@metamask/transaction-controller>fast-json-patch": true,
         "@metamask/transaction-controller>nonce-tracker": true,
         "eth-json-rpc-filters>async-mutex": true,
         "ethereumjs-util": true,
+        "fast-json-patch": true,
         "lodash": true,
         "uuid": true,
         "webpack>events": true
@@ -2804,14 +2804,6 @@
         "browserify>buffer": true,
         "ethjs>ethjs-util>is-hex-prefixed": true,
         "ethjs>ethjs-util>strip-hex-prefix": true
-      }
-    },
-    "@metamask/transaction-controller>fast-json-patch": {
-      "globals": {
-        "addEventListener": true,
-        "clearTimeout": true,
-        "removeEventListener": true,
-        "setTimeout": true
       }
     },
     "@metamask/transaction-controller>nonce-tracker": {
@@ -4706,6 +4698,14 @@
       "packages": {
         "browserify>buffer": true,
         "stream-browserify": true
+      }
+    },
+    "fast-json-patch": {
+      "globals": {
+        "addEventListener": true,
+        "clearTimeout": true,
+        "removeEventListener": true,
+        "setTimeout": true
       }
     },
     "fuse.js": {
