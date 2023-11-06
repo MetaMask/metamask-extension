@@ -5,8 +5,10 @@ import { Provider } from 'react-redux';
 import configureStore from '../../../store/store';
 import Name from './name';
 
-const addressNoSavedNameMock = '0xc0ffee254729296a45a3885639AC7E10F9d54978';
-const addressSavedNameMock = '0xc0ffee254729296a45a3885639AC7E10F9d54977';
+const addressNoSavedNameMock =
+  '0xc0ffee254729296a45a3885639AC7E10F9d54978'.toLowerCase();
+const addressSavedNameMock =
+  '0xc0ffee254729296a45a3885639AC7E10F9d54977'.toLowerCase();
 const chainIdMock = '0x1';
 
 const storeMock = configureStore({
