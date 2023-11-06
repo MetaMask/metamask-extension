@@ -137,6 +137,8 @@ export const CHAIN_IDS = {
   SEPOLIA: '0xaa36a7',
   LINEA_GOERLI: '0xe704',
   LINEA_MAINNET: '0xe708',
+  SCROLL: '0x82750',
+  SCROLL_SEPOLIA: '0x8274f',
   AURORA: '0x4e454152',
   MOONBEAM: '0x504',
   MOONBEAM_TESTNET: '0x507',
@@ -170,6 +172,7 @@ export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
+export const SCROLL_DISPLAY_NAME = 'Scroll';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -239,6 +242,7 @@ export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
+export const SCROLL_TOKEN_IMAGE_URL = './images/scroll.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -369,6 +373,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.SCROLL]: SCROLL_TOKEN_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -480,6 +485,14 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     domain: 'gnosisscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
   },
+  [CHAIN_IDS.SCROLL]: {
+    domain: 'scrollscan.com',
+    subdomain: `${defaultEtherscanSubdomainPrefix}`,
+  },
+  [CHAIN_IDS.SCROLL_SEPOLIA]: {
+    domain: 'scrollscan.com',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-sepolia`,
+  },
 };
 
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
@@ -518,6 +531,8 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.FANTOM_TESTNET
     | typeof CHAIN_IDS.MOONBEAM_TESTNET
     | typeof CHAIN_IDS.LINEA_GOERLI
+    | typeof CHAIN_IDS.SCROLL_SEPOLIA
+    | typeof CHAIN_IDS.SCROLL
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
@@ -698,6 +713,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://gnosisscan.io',
       imageUrl: GNOSIS_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.SCROLL,
+    nickname: SCROLL_DISPLAY_NAME,
+    rpcUrl: `https://rpc.scroll.io`,
+    ticker: CURRENCY_SYMBOLS.ETH,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://scrollscan.com',
+      imageUrl: SCROLL_TOKEN_IMAGE_URL,
     },
   },
 ];

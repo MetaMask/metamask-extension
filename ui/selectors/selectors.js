@@ -65,6 +65,8 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../helpers/utils/util';
 
+import { isMultiLayerFeeNetwork } from '../helpers/utils/multiLayerFee/networks';
+
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
@@ -1365,33 +1367,8 @@ export function getAllNetworks(state) {
   return networks;
 }
 
-export function getIsOptimism(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM ||
-    getCurrentChainId(state) === CHAIN_IDS.OPTIMISM_TESTNET
-  );
-}
-
-export function getIsBase(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.BASE ||
-    getCurrentChainId(state) === CHAIN_IDS.BASE_TESTNET
-  );
-}
-
-export function getIsOpbnb(state) {
-  return (
-    getCurrentChainId(state) === CHAIN_IDS.OPBNB ||
-    getCurrentChainId(state) === CHAIN_IDS.OPBNB_TESTNET
-  );
-}
-
-export function getIsOpStack(state) {
-  return getIsOptimism(state) || getIsBase(state) || getIsOpbnb(state);
-}
-
 export function getIsMultiLayerFeeNetwork(state) {
-  return getIsOpStack(state);
+  return isMultiLayerFeeNetwork(getCurrentChainId(state));
 }
 
 /**
