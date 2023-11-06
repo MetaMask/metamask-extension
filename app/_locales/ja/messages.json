@@ -3998,9 +3998,6 @@
   "snapResultSuccessDescription": {
     "message": "$1を使用する準備が整いました"
   },
-  "snapUpdate": {
-    "message": "snapを更新"
-  },
   "snapUpdateAvailable": {
     "message": "アップデートが利用できます"
   },

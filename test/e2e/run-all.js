@@ -7,6 +7,13 @@ const { runInShell } = require('../../development/lib/run-command');
 const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 
+// These tests should only be run on Flask for now.
+const FLASK_ONLY_TESTS = [
+  'test-snap-lifecycle.spec.js',
+  'test-snap-get-locale.spec.js',
+  'petnames.spec.js',
+];
+
 const getTestPathsForTestDir = async (testDir) => {
   const testFilenames = await fs.promises.readdir(testDir, {
     withFileTypes: true,
@@ -19,13 +26,46 @@ const getTestPathsForTestDir = async (testDir) => {
     if (itemInDirectory.isDirectory()) {
       const subDirPaths = await getTestPathsForTestDir(fullPath);
       testPaths.push(...subDirPaths);
-    } else if (fullPath.endsWith('.spec.js')) {
+    } else if (fullPath.endsWith('.spec.js') || fullPath.endsWith('.spec.ts')) {
       testPaths.push(fullPath);
     }
   }
 
   return testPaths;
 };
+
+// For running E2Es in parallel in CI
+function runningOnCircleCI(testPaths) {
+  const fullTestList = testPaths.join('\n');
+  console.log('Full test list:', fullTestList);
+  fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
+
+  // Use `circleci tests run` on `testList.txt` to do two things:
+  // 1. split the test files into chunks based on how long they take to run
+  // 2. support "Rerun failed tests" on CircleCI
+  const result = execSync(
+    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < test/test-results/fullTestList.txt',
+  ).toString('utf8');
+
+  // Report if no tests found, exit gracefully
+  if (result.indexOf('There were no tests found') !== -1) {
+    console.log(`run-all.js info: Skipping this node because "${result}"`);
+    return [];
+  }
+
+  // If there's no text file, it means this node has no tests, so exit gracefully
+  if (!fs.existsSync('test/test-results/myTestList.txt')) {
+    console.log(
+      'run-all.js info: Skipping this node because there is no myTestList.txt',
+    );
+    return [];
+  }
+
+  // take the space-delimited result and split into an array
+  return fs
+    .readFileSync('test/test-results/myTestList.txt', { encoding: 'utf8' })
+    .split(' ');
+}
 
 async function main() {
   const { argv } = yargs(hideBin(process.argv))
@@ -47,10 +87,6 @@ async function main() {
           })
           .option('mmi', {
             description: `Run only mmi related tests`,
-            type: 'boolean',
-          })
-          .option('snaps', {
-            description: `run snaps e2e tests`,
             type: 'boolean',
           })
           .option('rpc', {
@@ -88,7 +124,6 @@ async function main() {
     debug,
     retries,
     mmi,
-    snaps,
     rpc,
     buildType,
     updateSnapshot,
@@ -97,36 +132,39 @@ async function main() {
 
   let testPaths;
 
-  if (snaps) {
+  // These test paths should be run against both flask and main builds.
+  // Eventually we should move all features to this array and test them all
+  // on every build type in which they are running to avoid regressions across
+  // builds.
+  const featureTestsOnMain = [
+    ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
+    ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
+  ];
+
+  if (buildType === 'flask') {
     testPaths = [
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'snaps'))),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'accounts'))),
       ...(await getTestPathsForTestDir(path.join(__dirname, 'flask'))),
+      ...featureTestsOnMain,
     ];
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
-  } else {
+  } else if (buildType === 'mmi') {
     const testDir = path.join(__dirname, 'tests');
     testPaths = [
       ...(await getTestPathsForTestDir(testDir)),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'swaps'))),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'nft'))),
-      ...(await getTestPathsForTestDir(path.join(__dirname, 'metrics'))),
       path.join(__dirname, 'metamask-ui.spec.js'),
     ];
-  }
-
-  // These tests should only be run on Flask for now.
-  if (buildType !== 'flask') {
-    const filteredTests = [
-      'test-snap-lifecycle.spec.js',
-      'test-snap-get-locale.spec.js',
-      'petnames.spec.js',
-    ];
-    testPaths = testPaths.filter((p) =>
-      filteredTests.every((filteredTest) => !p.endsWith(filteredTest)),
+  } else {
+    const testDir = path.join(__dirname, 'tests');
+    const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
+      FLASK_ONLY_TESTS.every((filteredTest) => !p.endsWith(filteredTest)),
     );
+    testPaths = [
+      ...(await getTestPathsForTestDir(testDir)),
+      ...filteredFlaskAndMainTests,
+      path.join(__dirname, 'metamask-ui.spec.js'),
+    ];
   }
 
   const runE2eTestPath = path.join(__dirname, 'run-e2e-test.js');
@@ -151,38 +189,14 @@ async function main() {
     args.push('--mmi');
   }
 
-  // For running E2Es in parallel in CI
   await fs.promises.mkdir('test/test-results/e2e', { recursive: true });
 
-  const fullTestList = testPaths.join('\n');
-  console.log('Full test list:', fullTestList);
-  fs.writeFileSync('test/test-results/fullTestList.txt', fullTestList);
-
-  // Use `circleci tests run` on `testList.txt` to do two things:
-  // 1. split the test files into chunks based on how long they take to run
-  // 2. support "Rerun failed tests" on CircleCI
-  const result = execSync(
-    'circleci tests run --command=">test/test-results/myTestList.txt xargs echo" --split-by=timings --timings-type=filename --time-default=30s < test/test-results/fullTestList.txt',
-  ).toString('utf8');
-
-  // Report if no tests found, exit gracefully
-  if (result.indexOf('There were no tests found') !== -1) {
-    console.log(`run-all.js info: Skipping this node because "${result}"`);
-    return;
+  let myTestList;
+  if (process.env.CIRCLECI) {
+    myTestList = runningOnCircleCI(testPaths);
+  } else {
+    myTestList = testPaths;
   }
-
-  // If there's no text file, it means this node has no tests, so exit gracefully
-  if (!fs.existsSync('test/test-results/myTestList.txt')) {
-    console.log(
-      'run-all.js info: Skipping this node because there is no myTestList.txt',
-    );
-    return;
-  }
-
-  // take the space-delimited result and split into an array
-  const myTestList = fs
-    .readFileSync('test/test-results/myTestList.txt', { encoding: 'utf8' })
-    .split(' ');
 
   console.log('My test list:', myTestList);
 
@@ -190,6 +204,7 @@ async function main() {
   for (let testPath of myTestList) {
     if (testPath !== '') {
       testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
+      console.log(`\nExecuting testPath: ${testPath}\n`);
       await runInShell('node', [...args, testPath]);
     }
   }

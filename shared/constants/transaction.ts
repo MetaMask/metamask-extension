@@ -292,6 +292,7 @@ export interface TxParams {
 export interface TxReceipt {
   blockHash?: string;
   blockNumber?: string;
+  effectiveGasPrice?: string;
   transactionIndex?: string;
   gasUsed?: string;
   status?: string;
@@ -412,13 +413,18 @@ export interface TransactionMeta {
    */
   submittedTime?: number;
   /** The error encountered during the transaction */
-  txErr?: TxError;
+  error?: TxError;
   /**
    * Whether the transaction is verified on the blockchain.
    */
   verifiedOnBlockchain?: boolean;
   securityProviderResponse?: Record<string, any>;
   securityAlertResponse?: any;
+  swapMetaData?: any;
+  destinationTokenSymbol?: string;
+  destinationTokenAddress?: string;
+  destinationTokenDecimals?: string;
+  simulationFails?: boolean;
 }
 
 /**
@@ -499,4 +505,20 @@ export enum TokenStandard {
   ERC1155 = 'ERC1155',
   /** Not a token, but rather the base asset of the selected chain. */
   none = 'NONE',
+}
+
+/**
+ * Describes the event types emitted by the transaction controller.
+ */
+export enum TransactionEvent {
+  added = 'transaction-added',
+  approved = 'transaction-approved',
+  confirmed = 'transaction-confirmed',
+  dropped = 'transaction-dropped',
+  failed = 'transaction-failed',
+  newSwap = 'transaction-new-swap',
+  newSwapApproval = 'transaction-new-swap-approval',
+  postTransactionBalanceUpdated = 'post-transaction-balance-updated',
+  rejected = 'transaction-rejected',
+  submitted = 'transaction-submitted',
 }

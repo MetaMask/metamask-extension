@@ -16,7 +16,7 @@ describe('Settings', function () {
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
         defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
