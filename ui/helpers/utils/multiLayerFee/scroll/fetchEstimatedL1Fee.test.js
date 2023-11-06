@@ -5,22 +5,20 @@ import fetchEstimatedL1Fee from './fetchEstimatedL1Fee';
 
 describe('fetchEstimatedL1Fee', () => {
   beforeAll(() => {
-    global.ethereumProvider = new HttpProvider(
-      'https://optimism-mainnet.public.blastapi.io',
-    );
+    global.ethereumProvider = new HttpProvider('https://rpc.scroll.io');
     nock.disableNetConnect();
   });
 
   it('returns an expected gasFee', async () => {
     const expectedGasFeeResult = '377b09ef6660';
-    nock('https://optimism-mainnet.public.blastapi.io:443', {
+    nock('https://rpc.scroll.io:443', {
       encodedQueryParams: true,
     })
       .post('/', {
         method: 'eth_call',
         params: [
           {
-            to: '0x420000000000000000000000000000000000000f',
+            to: '0x5300000000000000000000000000000000000002',
             data: '0x49948e0e00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000023e280830f424082cf0894e7d522230eff653bb0a9b4385f0be0815420dd9880808080800000000000000000000000000000000000000000000000000000000000',
           },
           'latest',

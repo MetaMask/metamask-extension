@@ -25,8 +25,6 @@ export default async function fetchEstimatedL1Fee(
   txMeta,
   ethersProvider,
 ) {
-  console.log('scroll fetchEstimatedL1Fee called.');
-
   const chainIdAsDecimalNumber = Number(hexToDecimal(chainId));
   const provider = global.ethereumProvider
     ? new Web3Provider(global.ethereumProvider, chainIdAsDecimalNumber)
@@ -45,10 +43,7 @@ export default async function fetchEstimatedL1Fee(
   );
   const serializedTransaction =
     buildUnserializedTransaction(txMeta).serialize();
-  console.log('serializedTransaction:', serializedTransaction);
-  console.log('unserializedTransaction:', buildUnserializedTransaction(txMeta));
   const result = await contract.getL1Fee(serializedTransaction);
 
-  console.log('est l1 fee:', result?.toHexString());
   return result?.toHexString();
 }
