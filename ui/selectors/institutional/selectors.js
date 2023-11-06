@@ -121,3 +121,21 @@ export function getIsNoteToTraderSupported(state, fromChecksumHexAddress) {
 
   return foundCustodian ? foundCustodian.isNoteToTraderSupported : false;
 }
+
+export function getIsCustodianPublishesTransactionSupported(
+  state,
+  fromChecksumHexAddress,
+) {
+  const { custodyAccountDetails, mmiConfiguration } = state.metamask;
+  const accountDetails = custodyAccountDetails?.[fromChecksumHexAddress];
+
+  if (!accountDetails) {
+    return false;
+  }
+
+  const foundCustodian = mmiConfiguration?.custodians?.find(
+    (custodian) => custodian.envName === accountDetails.custodianName,
+  );
+
+  return foundCustodian ? foundCustodian.custodianPublishesTransaction : false;
+}
