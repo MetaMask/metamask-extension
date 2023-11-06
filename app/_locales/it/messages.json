@@ -1620,9 +1620,6 @@
   "swapSource": {
     "message": "Sorgente di liquidità"
   },
-  "swapSourceInfo": {
-    "message": "Cerchiamo sorgenti di liquidità multiple (siti di scambio, aggregatori, market maker professionisti) per trovare le tariffe migliori e le tasse di rete minori."
-  },
   "swapSwapFrom": {
     "message": "Scambia da"
   },

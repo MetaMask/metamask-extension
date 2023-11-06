@@ -4626,9 +4626,6 @@
   "swapSource": {
     "message": "流动性来源"
   },
-  "swapSourceInfo": {
-    "message": "我们搜索多个流动性来源（交易所、聚合器和专业做市商），以找到最优惠的价格和最低的网络费用。"
-  },
   "swapSuggested": {
     "message": "建议的交换"
   },
