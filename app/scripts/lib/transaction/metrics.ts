@@ -1,7 +1,6 @@
 import { isHexString } from 'ethereumjs-util';
-import EthQuery from 'eth-query';
+import EthQuery, { Provider } from '@metamask/eth-query';
 import { BigNumber } from 'bignumber.js';
-import type { Provider } from '@metamask/network-controller';
 import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
