@@ -95,6 +95,159 @@ async function mockInfura(mockServer) {
   await mockServer
     .forPost()
     .withJsonBodyIncluding({
+      method: 'eth_call',
+      params: [
+        {
+          data: '0x01ffc9a7780e9d6300000000000000000000000000000000000000000000000000000000',
+          to: CONTRACT_ADDRESS.BAYC,
+        },
+      ],
+    })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result:
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+        },
+      };
+    });
+
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({
+      method: 'eth_call',
+      params: [
+        {
+          data: '0x0178b8bfdae332162d22107623083e6e5828680f44a51ee4fe7b05210f01785df2e81d6d',
+          to: CONTRACT_ADDRESS.ENSRegistryWithFallback,
+        },
+      ],
+    })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result:
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+        },
+      };
+    });
+
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({
+      method: 'eth_call',
+      params: [
+        {
+          data: '0x01ffc9a780ac58cd00000000000000000000000000000000000000000000000000000000',
+          to: CONTRACT_ADDRESS.BAYC,
+        },
+      ],
+    })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result:
+            '0x0000000000000000000000000000000000000000000000000000000000000001',
+        },
+      };
+    });
+
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({
+      method: 'eth_call',
+      params: [
+        {
+          data: `0xf0002ea9000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000002000000000000000000000000${selectedAddressWithoutPrefix}0000000000000000000000002990079bcdee240329a520d2444386fc119da21a00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000`,
+          to: CONTRACT_ADDRESS.BalanceChecker,
+        },
+      ],
+    })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result:
+            '0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b6a704f0f7fd6ad',
+        },
+      };
+    });
+
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({
+      method: 'debug_traceCall',
+      params: [{ accessList: [], data: '0x00000000' }],
+    })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result: {
+            from: '0x0000000000000000000000000000000000000000',
+            gas: '0x1dcd6500',
+            gasUsed: '0x5218',
+            input: '0x00000000',
+            to: '0xb85492afc686d5ca405e3cd4f50b05d358c75ede',
+            type: 'CALL',
+            value: '0x0',
+          },
+        },
+      };
+    });
+
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({
+      method: 'eth_call',
+      params: [{ data: '0x95d89b41', to: CONTRACT_ADDRESS.BAYC }],
+    })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result:
+            '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000044241594300000000000000000000000000000000000000000000000000000000',
+        },
+      };
+    });
+
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({
+      method: 'eth_call',
+      params: [{ data: '0x06fdde03', to: CONTRACT_ADDRESS.BAYC }],
+    })
+    .thenCallback((req) => {
+      return {
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: req.body.json.id,
+          result:
+            '0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000011426f7265644170655961636874436c7562000000000000000000000000000000',
+        },
+      };
+    });
+
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({
       method: 'debug_traceCall',
       params: [
         {
