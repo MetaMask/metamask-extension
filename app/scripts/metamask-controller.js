@@ -100,7 +100,6 @@ import {
   ERC721,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-
 ///: BEGIN:ONLY_INCLUDE_IN(petnames)
 import {
   NameController,
@@ -303,6 +302,7 @@ export default class MetamaskController extends EventEmitter {
     const initState = opts.initState || {};
     const version = this.platform.getVersion();
     this.recordFirstTimeInfo(initState);
+    this.featureFlags = opts.featureFlags;
 
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
@@ -1257,6 +1257,9 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
     });
 
     this.addressBookController = new AddressBookController(
@@ -1916,8 +1919,19 @@ export default class MetamaskController extends EventEmitter {
   }
   ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  trackInsightSnapView(snapId) {
+    this.metaMetricsController.trackEvent({
+      event: MetaMetricsEventName.InsightSnapViewed,
+      category: MetaMetricsEventCategory.Snaps,
+      properties: {
+        snap_id: snapId,
+      },
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   /**
    * Tracks snaps export usage.
    * Note: This function is throttled to 1 call per 60 seconds per snap id + handler combination.
@@ -2924,7 +2938,9 @@ export default class MetamaskController extends EventEmitter {
       finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
         metaMetricsController,
       ),
-
+      ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+      trackInsightSnapView: this.trackInsightSnapView.bind(this),
+      ///: END:ONLY_INCLUDE_IN
       // approval controller
       resolvePendingApproval: this.resolvePendingApproval,
       rejectPendingApproval: this.rejectPendingApproval,
