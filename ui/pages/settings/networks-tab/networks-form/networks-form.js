@@ -405,7 +405,6 @@ const NetworksForm = ({
           if (returnedTickerSymbol !== formTickerSymbol) {
             warningKey = 'chainListReturnedDifferentTickerSymbol';
             warningMessage = t('chainListReturnedDifferentTickerSymbol', [
-              formChainId,
               returnedTickerSymbol,
             ]);
           }
