@@ -9,10 +9,18 @@ import Box from '../box';
 import {
   AlignItems,
   Color,
+<<<<<<< HEAD
   DISPLAY,
   FONT_WEIGHT,
   TEXT_ALIGN,
   TypographyVariant,
+=======
+  Display,
+  FlexDirection,
+  FontWeight,
+  TextAlign,
+  TextVariant,
+>>>>>>> upstream/multichain-swaps-controller
 } from '../../../helpers/constants/design-system';
 import Typography from '../typography';
 import { TOKEN_API_METASWAP_CODEFI_URL } from '../../../../shared/constants/tokens';
@@ -25,8 +33,14 @@ import {
 import { IMPORT_TOKEN_ROUTE } from '../../../helpers/constants/routes';
 import Chip from '../chip/chip';
 import { setFirstTimeUsedNetwork } from '../../../store/actions';
+<<<<<<< HEAD
 import { NETWORK_TYPES } from '../../../../shared/constants/network';
 import { Icon, ICON_NAMES } from '../../component-library';
+=======
+import { PickerNetwork, Text, Box } from '../../component-library';
+import Button from '../button';
+import Popover from '../popover';
+>>>>>>> upstream/multichain-swaps-controller
 
 const NewNetworkInfo = () => {
   const t = useContext(I18nContext);
@@ -86,6 +100,7 @@ const NewNetworkInfo = () => {
         fontWeight={FONT_WEIGHT.BOLD}
         align={TEXT_ALIGN.CENTER}
       >
+<<<<<<< HEAD
         {t('switchedTo')}
       </Typography>
       <Chip
@@ -129,6 +144,19 @@ const NewNetworkInfo = () => {
             marginBottom={2}
             paddingBottom={2}
             className="new-network-info__bullet-paragraph"
+=======
+        <Box
+          data-testid="new-network-info__wrapper"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+        >
+          <Text
+            variant={TextVariant.headingSm}
+            as="h4"
+            color={Color.textDefault}
+            fontWeight={FontWeight.Bold}
+            align={TextAlign.Center}
+>>>>>>> upstream/multichain-swaps-controller
           >
             <Box marginRight={4} color={Color.textDefault}>
               &bull;

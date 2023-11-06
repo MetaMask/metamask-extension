@@ -225,11 +225,29 @@ export default class ExtensionPlatform {
 
   _showFailedTransaction(txMeta, errorMessage) {
     const nonce = parseInt(txMeta.txParams.nonce, 16);
+<<<<<<< HEAD
     const title = 'Failed transaction';
     const message = `Transaction ${nonce} failed! ${
       errorMessage || txMeta.err.message
     }`;
     this._showNotification(title, message);
+=======
+    const title = t('notificationTransactionFailedTitle');
+    let message = t(
+      'notificationTransactionFailedMessage',
+      nonce,
+      errorMessage || txMeta.error.message,
+    );
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    if (isNaN(nonce)) {
+      message = t(
+        'notificationTransactionFailedMessageMMI',
+        errorMessage || txMeta.error.message,
+      );
+    }
+    ///: END:ONLY_INCLUDE_IN
+    await this._showNotification(title, message);
+>>>>>>> upstream/multichain-swaps-controller
   }
 
   _showNotification(title, message, url) {

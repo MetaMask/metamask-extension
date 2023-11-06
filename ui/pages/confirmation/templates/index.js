@@ -5,6 +5,15 @@ import {
   resolvePendingApproval,
   upsertNetworkConfiguration,
 } from '../../../store/actions';
+<<<<<<< HEAD
+=======
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import createSnapAccount from './create-snap-account';
+import removeSnapAccount from './remove-snap-account';
+import snapAccountRedirect from './snap-account-redirect';
+///: END:ONLY_INCLUDE_IN
+>>>>>>> upstream/multichain-swaps-controller
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
@@ -14,12 +23,32 @@ import snapPrompt from './flask/snap-prompt/snap-prompt';
 ///: END:ONLY_INCLUDE_IN
 
 const APPROVAL_TEMPLATES = {
+<<<<<<< HEAD
   [MESSAGE_TYPE.ADD_ETHEREUM_CHAIN]: addEthereumChain,
   [MESSAGE_TYPE.SWITCH_ETHEREUM_CHAIN]: switchEthereumChain,
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   [MESSAGE_TYPE.SNAP_DIALOG_ALERT]: snapAlert,
   [MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION]: snapConfirmation,
   [MESSAGE_TYPE.SNAP_DIALOG_PROMPT]: snapPrompt,
+=======
+  [ApprovalType.AddEthereumChain]: addEthereumChain,
+  [ApprovalType.SwitchEthereumChain]: switchEthereumChain,
+  // Use ApprovalType from utils controller
+  [ApprovalType.ResultSuccess]: success,
+  [ApprovalType.ResultError]: error,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  [ApprovalType.SnapDialogAlert]: snapAlert,
+  [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
+  [ApprovalType.SnapDialogPrompt]: snapPrompt,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation]:
+    createSnapAccount,
+  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval]:
+    removeSnapAccount,
+  [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect]:
+    snapAccountRedirect,
+>>>>>>> upstream/multichain-swaps-controller
   ///: END:ONLY_INCLUDE_IN
 };
 

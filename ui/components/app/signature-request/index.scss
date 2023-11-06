@@ -7,6 +7,15 @@
   flex: 1 1 auto;
   flex-direction: column;
   min-width: 0;
+<<<<<<< HEAD
+=======
+  width: 408px;
+  min-height: 100%;
+  height: max-content;
+  background-color: var(--color-background-default);
+  box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
+  border-radius: 8px;
+>>>>>>> upstream/multichain-swaps-controller
 
   @media screen and (min-width: $break-large) {
     flex: initial;

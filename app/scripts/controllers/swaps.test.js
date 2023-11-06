@@ -3,6 +3,7 @@ import sinon from 'sinon';
 
 import { ethers } from 'ethers';
 import { mapValues } from 'lodash';
+<<<<<<< HEAD
 import BigNumber from 'bignumber.js';
 import { ObservableStore } from '@metamask/obs-store';
 import {
@@ -10,6 +11,11 @@ import {
   MAINNET_NETWORK_ID,
   MAINNET_CHAIN_ID,
 } from '../../../shared/constants/network';
+=======
+import BigNumberjs from 'bignumber.js';
+import { NetworkType } from '@metamask/controller-utils';
+import { CHAIN_IDS, NetworkStatus } from '../../../shared/constants/network';
+>>>>>>> upstream/multichain-swaps-controller
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
@@ -99,11 +105,24 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
 
 function getMockNetworkController() {
   return {
+<<<<<<< HEAD
     store: {
       getState: () => {
         return {
           network: ROPSTEN_NETWORK_ID,
         };
+=======
+    state: {
+      selectedNetworkClientId: NetworkType.goerli,
+      networksMetadata: {
+        [NetworkType.goerli]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+>>>>>>> upstream/multichain-swaps-controller
+      },
+      providerConfig: {
+        chainId: CHAIN_IDS.GOERLI,
       },
     },
     on: sinon
@@ -114,7 +133,7 @@ function getMockNetworkController() {
 }
 
 const EMPTY_INIT_STATE = {
-  swapsState: {
+  singleChainSwapsState: {
     quotes: {},
     fetchParams: null,
     tokens: null,
@@ -164,6 +183,11 @@ describe('SwapsController', function () {
       fetchSwapsQuoteRefreshTime: fetchSwapsQuoteRefreshTimeStub,
       getCurrentChainId: getCurrentChainIdStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
+      getNetworkClientById: sinon.stub().returns({
+        configuration: {
+          chainId: '0x1',
+        },
+      }),
     });
   };
 
@@ -217,7 +241,23 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
       const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
+<<<<<<< HEAD
       onNetworkDidChange(MAINNET_NETWORK_ID);
+=======
+      networkController.state = {
+        selectedNetworkClientId: NetworkType.mainnet,
+        networksMetadata: {
+          [NetworkType.mainnet]: {
+            EIPS: {},
+            status: NetworkStatus.Available,
+          },
+        },
+        providerConfig: {
+          chainId: CHAIN_IDS.MAINNET,
+        },
+      };
+      networkStateChangeListener();
+>>>>>>> upstream/multichain-swaps-controller
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.notStrictEqual(
@@ -241,7 +281,23 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
       const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
+<<<<<<< HEAD
       onNetworkDidChange('loading');
+=======
+      networkController.state = {
+        selectedNetworkClientId: NetworkType.goerli,
+        networksMetadata: {
+          [NetworkType.goerli]: {
+            EIPS: {},
+            status: NetworkStatus.Unknown,
+          },
+        },
+        providerConfig: {
+          chainId: CHAIN_IDS.GOERLI,
+        },
+      };
+      networkStateChangeListener();
+>>>>>>> upstream/multichain-swaps-controller
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
@@ -265,7 +321,23 @@ describe('SwapsController', function () {
       const currentEthersInstance = swapsController.ethersProvider;
       const onNetworkDidChange = networkController.on.getCall(0).args[1];
 
+<<<<<<< HEAD
       onNetworkDidChange(ROPSTEN_NETWORK_ID);
+=======
+      networkController.state = {
+        selectedNetworkClientId: NetworkType.goerli,
+        networksMetadata: {
+          [NetworkType.goerli]: {
+            EIPS: {},
+            status: NetworkStatus.Available,
+          },
+        },
+        providerConfig: {
+          chainId: CHAIN_IDS.GOERLI,
+        },
+      };
+      networkStateChangeListener();
+>>>>>>> upstream/multichain-swaps-controller
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
@@ -287,7 +359,7 @@ describe('SwapsController', function () {
         const selectedAggId = 'test';
         swapsController.setSelectedQuoteAggId(selectedAggId);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.selectedAggId,
+          swapsController.store.getState().singleChainSwapsState.selectedAggId,
           selectedAggId,
         );
       });
@@ -296,7 +368,7 @@ describe('SwapsController', function () {
         const tokens = [];
         swapsController.setSwapsTokens(tokens);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.tokens,
+          swapsController.store.getState().singleChainSwapsState.tokens,
           tokens,
         );
       });
@@ -305,7 +377,7 @@ describe('SwapsController', function () {
         const tradeTxId = 'test';
         swapsController.setTradeTxId(tradeTxId);
         assert.strictEqual(
-          swapsController.store.getState().swapsState.tradeTxId,
+          swapsController.store.getState().singleChainSwapsState.tradeTxId,
           tradeTxId,
         );
       });
@@ -314,7 +386,7 @@ describe('SwapsController', function () {
         const gasPrice = 1;
         swapsController.setSwapsTxGasPrice(gasPrice);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.customGasPrice,
+          swapsController.store.getState().singleChainSwapsState.customGasPrice,
           gasPrice,
         );
       });
@@ -323,7 +395,7 @@ describe('SwapsController', function () {
         const gasLimit = '1';
         swapsController.setSwapsTxGasLimit(gasLimit);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.customMaxGas,
+          swapsController.store.getState().singleChainSwapsState.customMaxGas,
           gasLimit,
         );
       });
@@ -332,7 +404,7 @@ describe('SwapsController', function () {
         const routeState = 'test';
         swapsController.setBackgroundSwapRouteState(routeState);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.routeState,
+          swapsController.store.getState().singleChainSwapsState.routeState,
           routeState,
         );
       });
@@ -341,7 +413,7 @@ describe('SwapsController', function () {
         const errorKey = 'test';
         swapsController.setSwapsErrorKey(errorKey);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.errorKey,
+          swapsController.store.getState().singleChainSwapsState.errorKey,
           errorKey,
         );
       });
@@ -351,10 +423,13 @@ describe('SwapsController', function () {
         const baseGasEstimate = 10;
         const { maxGas, estimatedRefund } = getMockQuotes()[TEST_AGG_ID_1];
 
-        const { swapsState } = swapsController.store.getState();
+        const { singleChainSwapsState } = swapsController.store.getState();
         // Set mock quotes in order to have data for the test agg
         swapsController.store.updateState({
-          swapsState: { ...swapsState, quotes: getMockQuotes() },
+          singleChainSwapsState: {
+            ...singleChainSwapsState,
+            quotes: getMockQuotes(),
+          },
         });
 
         await swapsController.setInitialGasEstimate(
@@ -362,6 +437,7 @@ describe('SwapsController', function () {
           baseGasEstimate,
         );
 
+<<<<<<< HEAD
         const {
           gasLimit: bufferedGasLimit,
         } = await swapsController.getBufferedGasLimit();
@@ -369,6 +445,14 @@ describe('SwapsController', function () {
           gasEstimate,
           gasEstimateWithRefund,
         } = swapsController.store.getState().swapsState.quotes[initialAggId];
+=======
+        const { gasLimit: bufferedGasLimit } =
+          await swapsController.getBufferedGasLimit();
+        const { gasEstimate, gasEstimateWithRefund } =
+          swapsController.store.getState().singleChainSwapsState.quotes[
+            initialAggId
+          ];
+>>>>>>> upstream/multichain-swaps-controller
         assert.strictEqual(gasEstimate, bufferedGasLimit);
         assert.strictEqual(
           gasEstimateWithRefund,
@@ -380,7 +464,8 @@ describe('SwapsController', function () {
         const data = 'test';
         swapsController.setCustomApproveTxData(data);
         assert.deepStrictEqual(
-          swapsController.store.getState().swapsState.customApproveTxData,
+          swapsController.store.getState().singleChainSwapsState
+            .customApproveTxData,
           data,
         );
       });
@@ -388,9 +473,12 @@ describe('SwapsController', function () {
 
     describe('_findTopQuoteAndCalculateSavings', function () {
       beforeEach(function () {
-        const { swapsState } = swapsController.store.getState();
+        const { singleChainSwapsState } = swapsController.store.getState();
         swapsController.store.updateState({
-          swapsState: { ...swapsState, customGasPrice: '0x174876e800' },
+          singleChainSwapsState: {
+            ...singleChainSwapsState,
+            customGasPrice: '0x174876e800',
+          },
         });
       });
 
@@ -693,6 +781,7 @@ describe('SwapsController', function () {
           gasEstimate: 2000000,
           gasEstimateWithRefund: 'b8cae',
           savings: {
+<<<<<<< HEAD
             fee: '0',
             metaMaskFee: '0.5050505050505050505',
             performance: '6',
@@ -702,12 +791,92 @@ describe('SwapsController', function () {
           ethFee: '5.033165',
           overallValueOfQuote: '44.966835',
           metaMaskFeeInEth: '0.5050505050505050505',
+=======
+            fee: '-0.061067',
+            metaMaskFee: '0.50505050505050505050505050505050505',
+            performance: '6',
+            total: '5.43388249494949494949494949494949495',
+            medianMetaMaskFee: '0.444444444444444444444444444444444444',
+          },
+          ethFee: '0.113536',
+          overallValueOfQuote: '49.886464',
+          metaMaskFeeInEth: '0.50505050505050505050505050505050505',
+>>>>>>> upstream/multichain-swaps-controller
           ethValueOfTokens: '50',
         });
         assert.strictEqual(
           fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
             ...MOCK_FETCH_METADATA,
+<<<<<<< HEAD
             useNewSwapsApi: false,
+=======
+          }),
+          true,
+        );
+      });
+
+      it('calls returns the correct quotes on the optimism chain', async function () {
+        fetchTradesInfoStub.resetHistory();
+        const OPTIMISM_MOCK_FETCH_METADATA = {
+          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.OPTIMISM,
+        };
+        const optimismProviderResultStub = {
+          // 1 gwei
+          eth_gasPrice: '0x0de0b6b3a7640000',
+          // by default, all accounts are external accounts (not contracts)
+          eth_getCode: '0x',
+          eth_call:
+            '0x000000000000000000000000000000000000000000000000000103c18816d4e8',
+        };
+        const optimismProvider = createTestProviderTools({
+          scaffold: optimismProviderResultStub,
+          networkId: 10,
+          chainId: 10,
+        }).provider;
+
+        swapsController = getSwapsController(optimismProvider);
+
+        fetchTradesInfoStub.resolves(getMockQuotes());
+
+        // Make it so approval is not required
+        sandbox
+          .stub(swapsController, '_getERC20Allowance')
+          .resolves(BigNumber.from(1));
+
+        const [newQuotes] = await swapsController.fetchAndSetQuotes(
+          MOCK_FETCH_PARAMS,
+          OPTIMISM_MOCK_FETCH_METADATA,
+        );
+
+        assert.deepStrictEqual(newQuotes[TEST_AGG_ID_BEST], {
+          ...getMockQuotes()[TEST_AGG_ID_BEST],
+          sourceTokenInfo: undefined,
+          destinationTokenInfo: {
+            symbol: 'FOO',
+            decimals: 18,
+          },
+          isBestQuote: true,
+          // TODO: find a way to calculate these values dynamically
+          gasEstimate: 2000000,
+          gasEstimateWithRefund: '0xb8cae',
+          savings: {
+            fee: '-0.061067',
+            metaMaskFee: '0.50505050505050505050505050505050505',
+            performance: '6',
+            total: '5.43388249494949494949494949494949495',
+            medianMetaMaskFee: '0.444444444444444444444444444444444444',
+          },
+          ethFee: '0.113822',
+          multiLayerL1TradeFeeTotal: '0x0103c18816d4e8',
+          overallValueOfQuote: '49.886178',
+          metaMaskFeeInEth: '0.50505050505050505050505050505050505',
+          ethValueOfTokens: '50',
+        });
+        assert.strictEqual(
+          fetchTradesInfoStub.calledOnceWithExactly(MOCK_FETCH_PARAMS, {
+            ...OPTIMISM_MOCK_FETCH_METADATA,
+>>>>>>> upstream/multichain-swaps-controller
           }),
           true,
         );
@@ -835,11 +1004,11 @@ describe('SwapsController', function () {
 
     describe('resetSwapsState', function () {
       it('resets the swaps state correctly', function () {
-        const { swapsState: old } = swapsController.store.getState();
+        const { singleChainSwapsState: old } = swapsController.store.getState();
         swapsController.resetSwapsState();
-        const { swapsState } = swapsController.store.getState();
-        assert.deepStrictEqual(swapsState, {
-          ...EMPTY_INIT_STATE.swapsState,
+        const { singleChainSwapsState } = swapsController.store.getState();
+        assert.deepStrictEqual(singleChainSwapsState, {
+          ...EMPTY_INIT_STATE.singleChainSwapsState,
           tokens: old.tokens,
           swapsQuoteRefreshTime: old.swapsQuoteRefreshTime,
         });
@@ -867,9 +1036,9 @@ describe('SwapsController', function () {
 
       it('resets quotes state correctly', function () {
         swapsController.stopPollingForQuotes();
-        const { swapsState } = swapsController.store.getState();
-        assert.deepStrictEqual(swapsState.quotes, {});
-        assert.strictEqual(swapsState.quotesLastFetched, null);
+        const { singleChainSwapsState } = swapsController.store.getState();
+        assert.deepStrictEqual(singleChainSwapsState.quotes, {});
+        assert.strictEqual(singleChainSwapsState.quotesLastFetched, null);
       });
     });
 
@@ -890,7 +1059,7 @@ describe('SwapsController', function () {
         const useNewSwapsApi = false;
         const swapsQuoteRefreshTime = 0;
         swapsController.store.updateState({
-          swapsState: {
+          singleChainSwapsState: {
             tokens,
             fetchParams,
             swapsFeatureIsLive,
@@ -901,9 +1070,9 @@ describe('SwapsController', function () {
 
         swapsController.resetPostFetchState();
 
-        const { swapsState } = swapsController.store.getState();
-        assert.deepStrictEqual(swapsState, {
-          ...EMPTY_INIT_STATE.swapsState,
+        const { singleChainSwapsState } = swapsController.store.getState();
+        assert.deepStrictEqual(singleChainSwapsState, {
+          ...EMPTY_INIT_STATE.singleChainSwapsState,
           tokens,
           fetchParams,
           swapsFeatureIsLive,

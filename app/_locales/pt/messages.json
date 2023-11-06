@@ -2882,13 +2882,75 @@
     "message": "Snap $1 tem acesso a:",
     "description": "$1 represents the name of the snap"
   },
+<<<<<<< HEAD
   "snapAdded": {
     "message": "Adicionado em $1 a partir de $2",
     "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
+=======
+  "smartSwapsDescription": {
+    "message": "As trocas na MetaMask ficaram muito mais inteligentes! Ativar as trocas inteligentes permitirá que a MetaMask otimize programaticamente sua troca para ajudar:"
   },
-  "snapError": {
-    "message": "Erro no snap: '$1'. Código de erro: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
+  "smartSwapsErrorNotEnoughFunds": {
+    "message": "Fundos insuficientes para uma troca inteligente."
+  },
+  "smartSwapsErrorUnavailable": {
+    "message": "As trocas inteligentes estão temporariamente indisponíveis."
+  },
+  "smartSwapsSubDescription": {
+    "message": "* As trocas inteligentes tentarão enviar sua transação de forma privada, diversas vezes. Se todas as tentativas falharem, a transação será transmitida publicamente para garantir que sua troca ocorra com sucesso."
+  },
+  "snapConfigure": {
+    "message": "Configurar"
+  },
+  "snapConnectionWarning": {
+    "message": "$1 deseja conectar-se a $2. Continue apenas se você confia no site.",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
+  "snapContent": {
+    "message": "Esse conteúdo vem de $1",
+    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
+  "snapCreateAccountSubtitle": {
+    "message": "Escolha como proteger sua nova conta usando o MetaMask Snaps."
+  },
+  "snapCreateAccountTitle": {
+    "message": "Criar uma conta $1",
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
+  },
+  "snapCreateAccountTitle2": {
+    "message": "snap",
+    "description": "$1 of the snapCreateAccountTitle"
+  },
+  "snapCreatedByMetaMask": {
+    "message": "Da MetaMask"
+  },
+  "snapDetailAudits": {
+    "message": "Auditoria"
+  },
+  "snapDetailDeveloper": {
+    "message": "Desenvolvedor"
+  },
+  "snapDetailLastUpdated": {
+    "message": "Atualizado"
+  },
+  "snapDetailManageSnap": {
+    "message": "Gerenciar snap"
+  },
+  "snapDetailTags": {
+    "message": "Tags"
+  },
+  "snapDetailVersion": {
+    "message": "Versão"
+  },
+  "snapDetailWebsite": {
+    "message": "Site"
+  },
+  "snapDetailsCreateASnapAccount": {
+    "message": "Criar uma conta de snaps"
+  },
+  "snapDetailsInstalled": {
+    "message": "Instalado"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "snapInstall": {
     "message": "Instalar snap"
@@ -2900,17 +2962,79 @@
     "message": "Você está concedendo ao snap \"$1\" acesso à sua chave. Isso é irrevogável e concede a \"$1\" controle sobre suas contas e ativos. Certifique-se de que confia em \"$1\" antes de prosseguir.",
     "description": "The parameter is the name of the snap"
   },
+<<<<<<< HEAD
   "snapRequestsPermission": {
     "message": "Esse snap está solicitando as seguintes permissões:"
+=======
+  "snapInstallWarningPublicKeyAccess": {
+    "message": "Conceder a $1 acesso à chave pública de $2",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallationErrorDescription": {
+    "message": "$1 não pôde ser instalado.",
+    "description": "Error description used when snap installation fails. $1 is the snap name."
+  },
+  "snapInstallationErrorTitle": {
+    "message": "Falha na instalação",
+    "description": "Error title used when snap installation fails."
+  },
+  "snapIsAudited": {
+    "message": "Auditado"
+  },
+  "snapResultError": {
+    "message": "Erro"
+  },
+  "snapResultSuccess": {
+    "message": "Sucesso"
+  },
+  "snapResultSuccessDescription": {
+    "message": "$1 está pronto para ser usado"
+  },
+  "snapUpdateAvailable": {
+    "message": "Atualização disponível"
+  },
+  "snapUpdateErrorDescription": {
+    "message": "$1 não pôde ser atualizado.",
+    "description": "Error description used when snap update fails. $1 is the snap name."
+  },
+  "snapUpdateErrorTitle": {
+    "message": "Falha na atualização",
+    "description": "Error title used when snap update fails."
+  },
+  "snapUpdateRequest": {
+    "message": "$1 deseja atualizar $2 para $3, o que concede as permissões a seguir. Continue apenas se você confia em $2.",
+    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+  },
+  "snapUpdateSuccess": {
+    "message": "Atualização concluída"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "snaps": {
     "message": "Snaps"
   },
+<<<<<<< HEAD
   "snapsSettingsDescription": {
     "message": "Gerencie seus snaps"
   },
   "snapsStatus": {
     "message": "O status do snap depende da atividade."
+=======
+  "snapsInsightLoading": {
+    "message": "Carregando insight da transação..."
+  },
+  "snapsInvalidUIError": {
+    "message": "A IU especificada pelo snap é inválida."
+  },
+  "snapsNoInsight": {
+    "message": "O snap não retornou nenhum insight"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Informações compartilhadas com Serviços de Terceiros serão coletadas diretamente por eles, de acordo com políticas de privacidade próprias. Por favor, consulte-as para obter mais informações.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsTermsOfUse": {
+    "message": "Termos de Uso"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "snapsToggle": {
     "message": "O snap só será executado se estiver ativado"

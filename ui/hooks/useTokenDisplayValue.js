@@ -40,8 +40,16 @@ export function useTokenDisplayValue(
       transactionData &&
       // and a token object has been provided
       token &&
+<<<<<<< HEAD
       // and we are able to parse the token details from the raw data
       tokenData?.args?.length,
+=======
+      // and the provided token object contains a defined decimal value we need to calculate amount
+      token.decimals !== null &&
+      token.decimals !== undefined &&
+      // and we are able to parse the token detail we to calculate amount from the raw data
+      tokenValue,
+>>>>>>> upstream/multichain-swaps-controller
   );
 
   const displayValue = useMemo(() => {

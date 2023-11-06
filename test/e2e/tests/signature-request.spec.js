@@ -10,9 +10,18 @@ describe('Sign Typed Data V4 Signature Request', function () {
     const ganacheOptions = {
       accounts: [
         {
+<<<<<<< HEAD
           secretKey:
             '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
           balance: convertToHexValue(25000000000000000000),
+=======
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
+          ganacheOptions,
+          title: this.test.fullTitle(),
+>>>>>>> upstream/multichain-swaps-controller
         },
       ],
     };
@@ -74,6 +83,7 @@ describe('Sign Typed Data V4 Signature Request', function () {
         await driver.waitUntilXWindowHandles(2);
         windowHandles = await driver.getAllWindowHandles();
 
+<<<<<<< HEAD
         // switch to the Dapp and verify the signed addressed
         await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
         await driver.clickElement('#signTypedDataV4Verify');
@@ -83,6 +93,105 @@ describe('Sign Typed Data V4 Signature Request', function () {
         assert.equal(await recoveredAddress.getText(), publicAddress);
       },
     );
+=======
+          // Approve signing typed data
+          await approveSignatureRequest(
+            driver,
+            data.type,
+            '[data-testid="signature-request-scroll-button"]',
+          );
+          await driver.waitUntilXWindowHandles(2);
+          windowHandles = await driver.getAllWindowHandles();
+
+          // switch to the Dapp and verify the signed address
+          await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+          await driver.clickElement(data.verifyId);
+          const recoveredAddress = await driver.findElement(
+            data.verifyResultId,
+          );
+
+          assert.equal(await recoveredAddress.getText(), publicAddress);
+        },
+      );
+    });
+  });
+
+  testData.forEach((data) => {
+    it(`can queue multiple Signature Requests of ${data.type} and confirm @no-mmi`, async function () {
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .build(),
+          ganacheOptions,
+          title: this.test.fullTitle(),
+        },
+        async ({ driver, ganacheServer }) => {
+          const addresses = await ganacheServer.getAccounts();
+          const publicAddress = addresses[0];
+          await driver.navigate();
+          await driver.fill('#password', 'correct horse battery staple');
+          await driver.press('#password', driver.Key.ENTER);
+
+          await openDapp(driver);
+
+          // creates multiple sign typed data signature requests
+          await driver.clickElement(data.buttonId);
+
+          await driver.waitUntilXWindowHandles(3);
+          const windowHandles = await driver.getAllWindowHandles();
+          // switches to Dapp
+          await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
+          // creates second sign typed data signature request
+          await driver.clickElement(data.buttonId);
+
+          await driver.switchToWindowWithTitle(
+            'MetaMask Notification',
+            windowHandles,
+          );
+
+          await driver.waitForSelector({
+            text: 'Reject 2 requests',
+            tag: 'button',
+          });
+
+          await verifyAndAssertSignTypedData(
+            driver,
+            data.type,
+            data.verifyAndAssertMessage.titleClass,
+            data.verifyAndAssertMessage.originClass,
+            data.verifyAndAssertMessage.messageClass,
+            data.expectedMessage,
+          );
+
+          // approve first signature request
+          await approveSignatureRequest(
+            driver,
+            data.type,
+            '[data-testid="signature-request-scroll-button"]',
+          );
+          await driver.waitUntilXWindowHandles(3);
+
+          // approve second signature request
+          await approveSignatureRequest(
+            driver,
+            data.type,
+            '[data-testid="signature-request-scroll-button"]',
+          );
+          await driver.waitUntilXWindowHandles(2);
+
+          // switch to the Dapp and verify the signed address for each request
+          await driver.switchToWindowWithTitle('E2E Test Dapp');
+          await driver.clickElement(data.verifyId);
+          const recoveredAddress = await driver.findElement(
+            data.verifyResultId,
+          );
+          assert.equal(await recoveredAddress.getText(), publicAddress);
+        },
+      );
+    });
+>>>>>>> upstream/multichain-swaps-controller
   });
 });
 

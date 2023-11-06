@@ -28,10 +28,41 @@ import { SECOND } from '../../../../shared/constants/time';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import GasDetailsItem from '../../../components/app/gas-details-item';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
+<<<<<<< HEAD
+=======
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IN
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
+
+import { TokenStandard } from '../../../../shared/constants/transaction';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
+import ContractDetailsModal from '../../../components/app/modals/contract-details-modal/contract-details-modal';
+import {
+  ButtonIcon,
+  Icon,
+  IconName,
+  Text,
+} from '../../../components/component-library';
+import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
+import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
+import CustomNonce from '../../../components/app/custom-nonce';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
+>>>>>>> upstream/multichain-swaps-controller
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    trackEvent: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static propTypes = {
@@ -73,6 +104,26 @@ export default class ConfirmApproveContent extends Component {
     showFullTxDetails: false,
     copied: false,
   };
+
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  componentDidMount() {
+    const { txData } = this.props;
+    if (txData.securityAlertResponse) {
+      const blockaidMetricsParams = getBlockaidMetricsParams(
+        txData.securityAlertResponse,
+      );
+
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.SignatureRequested,
+        properties: {
+          action: 'Sign Request',
+          ...blockaidMetricsParams,
+        },
+      });
+    }
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   renderApproveContentCard({
     showHeader = true,
@@ -212,6 +263,7 @@ export default class ConfirmApproveContent extends Component {
             {`${displayedAddress}`}
           </div>
           <div className="confirm-approve-content__medium-text">
+<<<<<<< HEAD
             <Button
               type="link"
               className="confirm-approve-content__copy-address"
@@ -223,6 +275,15 @@ export default class ConfirmApproveContent extends Component {
                 );
                 copyToClipboard(toAddress);
               }}
+=======
+            <ButtonIcon
+              ariaLabel="copy"
+              onClick={() => copyToClipboard(toAddress, COPY_OPTIONS)}
+              color={IconColor.iconDefault}
+              iconName={
+                this.state.copied ? IconName.CopySuccess : IconName.Copy
+              }
+>>>>>>> upstream/multichain-swaps-controller
               title={
                 this.state.copied
                   ? t('copiedExclamation')
@@ -264,6 +325,7 @@ export default class ConfirmApproveContent extends Component {
     } = this.props;
     return (
       <>
+<<<<<<< HEAD
         {useNonceField && (
           <div className="confirm-approve-content__custom-nonce-content">
             <Box
@@ -300,6 +362,18 @@ export default class ConfirmApproveContent extends Component {
             </Typography>
           </div>
         )}
+=======
+        <span
+          className="confirm-approve-content__approval-asset-title"
+          onClick={() => {
+            copyToClipboard(tokenAddress, COPY_OPTIONS);
+          }}
+          title={tokenAddress}
+        >
+          {titleTokenDescription}
+        </span>
+        {tokenIdWrapped && <span>{tokenIdWrapped}</span>}
+>>>>>>> upstream/multichain-swaps-controller
       </>
     );
   }

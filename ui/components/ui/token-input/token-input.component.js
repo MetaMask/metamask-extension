@@ -32,6 +32,11 @@ export default class TokenInput extends PureComponent {
       symbol: PropTypes.string,
     }).isRequired,
     tokenExchangeRates: PropTypes.object,
+<<<<<<< HEAD
+=======
+    nativeCurrency: PropTypes.string,
+    tokens: PropTypes.array.isRequired,
+>>>>>>> upstream/multichain-swaps-controller
   };
 
   constructor(props) {
@@ -96,7 +101,13 @@ export default class TokenInput extends PureComponent {
       currentCurrency,
       hideConversion,
       token,
+<<<<<<< HEAD
+=======
+      tokens,
+      nativeCurrency,
+>>>>>>> upstream/multichain-swaps-controller
     } = this.props;
+
     const { decimalValue } = this.state;
 
     const tokenExchangeRate = tokenExchangeRates?.[token.address] || 0;
@@ -115,8 +126,13 @@ export default class TokenInput extends PureComponent {
       currency = currentCurrency;
       numberOfDecimals = 2;
     } else {
+<<<<<<< HEAD
       // Display ETH
       currency = ETH;
+=======
+      // Display Native currency
+      currency = nativeCurrency;
+>>>>>>> upstream/multichain-swaps-controller
       numberOfDecimals = 6;
     }
 
@@ -126,7 +142,6 @@ export default class TokenInput extends PureComponent {
       fromCurrency: ETH,
       fromDenomination: ETH,
     });
-
     return tokenExchangeRate ? (
       <CurrencyDisplay
         className="currency-input__conversion-component"

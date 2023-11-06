@@ -177,6 +177,7 @@ export const NETWORK_NAMES = {
 };
 
 /**
+<<<<<<< HEAD
  * The Network ID for our builtin networks. This is the decimal equivalent of
  * the chain id for the network, but is expresssed as a string. Many moons ago
  * the decision was made on the extension team to expressly use chainId with
@@ -193,6 +194,8 @@ export const NETWORK_IDS = {
 } as const;
 
 /**
+=======
+>>>>>>> upstream/multichain-swaps-controller
  * An object containing all of the chain ids for networks both built in and
  * those that we have added custom code to support our feature set.
  */
@@ -460,24 +463,35 @@ export const TEST_NETWORK_TICKER_MAP: {
  */
 export const BUILT_IN_NETWORKS = {
   [NETWORK_TYPES.GOERLI]: {
-    networkId: NETWORK_IDS.GOERLI,
     chainId: CHAIN_IDS.GOERLI,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.GOERLI],
     blockExplorerUrl: `https://${NETWORK_TYPES.GOERLI}.etherscan.io`,
   },
   [NETWORK_TYPES.SEPOLIA]: {
-    networkId: NETWORK_IDS.SEPOLIA,
     chainId: CHAIN_IDS.SEPOLIA,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.SEPOLIA],
     blockExplorerUrl: `https://${NETWORK_TYPES.SEPOLIA}.etherscan.io`,
   },
+<<<<<<< HEAD
+=======
+  [NETWORK_TYPES.LINEA_GOERLI]: {
+    chainId: CHAIN_IDS.LINEA_GOERLI,
+    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.LINEA_GOERLI],
+    blockExplorerUrl: 'https://goerli.lineascan.build',
+  },
+>>>>>>> upstream/multichain-swaps-controller
   [NETWORK_TYPES.MAINNET]: {
-    networkId: NETWORK_IDS.MAINNET,
     chainId: CHAIN_IDS.MAINNET,
     blockExplorerUrl: `https://etherscan.io`,
   },
+<<<<<<< HEAD
+=======
+  [NETWORK_TYPES.LINEA_MAINNET]: {
+    chainId: CHAIN_IDS.LINEA_MAINNET,
+    blockExplorerUrl: 'https://lineascan.build',
+  },
+>>>>>>> upstream/multichain-swaps-controller
   [NETWORK_TYPES.LOCALHOST]: {
-    networkId: NETWORK_IDS.LOCALHOST,
     chainId: CHAIN_IDS.LOCALHOST,
   },
 } as const;
@@ -488,11 +502,14 @@ export const NETWORK_TO_NAME_MAP = {
   [NETWORK_TYPES.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [NETWORK_TYPES.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
+<<<<<<< HEAD
   [NETWORK_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
   [NETWORK_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [NETWORK_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
   [NETWORK_IDS.LOCALHOST]: LOCALHOST_DISPLAY_NAME,
 
+=======
+>>>>>>> upstream/multichain-swaps-controller
   [CHAIN_IDS.GOERLI]: GOERLI_DISPLAY_NAME,
   [CHAIN_IDS.SEPOLIA]: SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.MAINNET]: MAINNET_DISPLAY_NAME,
@@ -527,6 +544,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
 } as const;
 
+<<<<<<< HEAD
 export const NETWORK_ID_TO_ETHERS_NETWORK_NAME_MAP = {
   [NETWORK_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
   [NETWORK_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
@@ -538,6 +556,14 @@ export const CHAIN_ID_TO_NETWORK_ID_MAP = {
   [CHAIN_IDS.GOERLI]: NETWORK_IDS.GOERLI,
   [CHAIN_IDS.SEPOLIA]: NETWORK_IDS.SEPOLIA,
   [CHAIN_IDS.LOCALHOST]: NETWORK_IDS.LOCALHOST,
+=======
+export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
+  [CHAIN_IDS.GOERLI]: NETWORK_TYPES.GOERLI,
+  [CHAIN_IDS.SEPOLIA]: NETWORK_TYPES.SEPOLIA,
+  [CHAIN_IDS.LINEA_GOERLI]: NETWORK_TYPES.LINEA_GOERLI,
+  [CHAIN_IDS.MAINNET]: NETWORK_NAMES.HOMESTEAD,
+  [CHAIN_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
+>>>>>>> upstream/multichain-swaps-controller
 } as const;
 
 export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
@@ -563,85 +589,87 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     subdomain: `${defaultEtherscanSubdomainPrefix}-${
       CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.GOERLI]
     }`,
-    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.GOERLI],
   },
   [CHAIN_IDS.MAINNET]: {
     domain: defaultEtherscanDomain,
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.MAINNET],
   },
   [CHAIN_IDS.SEPOLIA]: {
     domain: defaultEtherscanDomain,
     subdomain: `${defaultEtherscanSubdomainPrefix}-${
       CHAIN_ID_TO_TYPE_MAP[CHAIN_IDS.SEPOLIA]
     }`,
-    networkId: CHAIN_ID_TO_NETWORK_ID_MAP[CHAIN_IDS.SEPOLIA],
   },
+<<<<<<< HEAD
+=======
+  [CHAIN_IDS.LINEA_GOERLI]: {
+    domain: 'lineascan.build',
+    subdomain: 'goerli',
+  },
+  [CHAIN_IDS.LINEA_MAINNET]: {
+    domain: 'lineascan.build',
+    subdomain: defaultEtherscanSubdomainPrefix,
+  },
+>>>>>>> upstream/multichain-swaps-controller
   [CHAIN_IDS.BSC]: {
     domain: 'bscscan.com',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: parseInt(CHAIN_IDS.BSC, 16).toString(),
   },
   [CHAIN_IDS.BSC_TESTNET]: {
     domain: 'bscscan.com',
     subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
-    networkId: parseInt(CHAIN_IDS.BSC_TESTNET, 16).toString(),
   },
   [CHAIN_IDS.OPTIMISM]: {
     domain: defaultEtherscanDomain,
     subdomain: `${defaultEtherscanSubdomainPrefix}-optimistic`,
-    networkId: parseInt(CHAIN_IDS.OPTIMISM, 16).toString(),
   },
   [CHAIN_IDS.OPTIMISM_TESTNET]: {
     domain: defaultEtherscanDomain,
     subdomain: `${defaultEtherscanSubdomainPrefix}-goerli-optimistic`,
-    networkId: parseInt(CHAIN_IDS.OPTIMISM_TESTNET, 16).toString(),
   },
   [CHAIN_IDS.POLYGON]: {
     domain: 'polygonscan.com',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: parseInt(CHAIN_IDS.POLYGON, 16).toString(),
   },
   [CHAIN_IDS.POLYGON_TESTNET]: {
     domain: 'polygonscan.com',
     subdomain: `${defaultEtherscanSubdomainPrefix}-mumbai`,
-    networkId: parseInt(CHAIN_IDS.POLYGON_TESTNET, 16).toString(),
   },
   [CHAIN_IDS.AVALANCHE]: {
     domain: 'snowtrace.io',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: parseInt(CHAIN_IDS.AVALANCHE, 16).toString(),
   },
   [CHAIN_IDS.AVALANCHE_TESTNET]: {
     domain: 'snowtrace.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
-    networkId: parseInt(CHAIN_IDS.AVALANCHE_TESTNET, 16).toString(),
   },
   [CHAIN_IDS.FANTOM]: {
     domain: 'ftmscan.com',
     subdomain: defaultEtherscanSubdomainPrefix,
-    networkId: parseInt(CHAIN_IDS.FANTOM, 16).toString(),
   },
   [CHAIN_IDS.FANTOM_TESTNET]: {
     domain: 'ftmscan.com',
     subdomain: `${defaultEtherscanSubdomainPrefix}-testnet`,
-    networkId: parseInt(CHAIN_IDS.FANTOM_TESTNET, 16).toString(),
   },
   [CHAIN_IDS.MOONBEAM]: {
     domain: 'moonscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-moonbeam`,
-    networkId: parseInt(CHAIN_IDS.MOONBEAM, 16).toString(),
   },
   [CHAIN_IDS.MOONBEAM_TESTNET]: {
     domain: 'moonscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-moonbase`,
-    networkId: parseInt(CHAIN_IDS.MOONBEAM_TESTNET, 16).toString(),
   },
   [CHAIN_IDS.MOONRIVER]: {
     domain: 'moonscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-moonriver`,
-    networkId: parseInt(CHAIN_IDS.MOONRIVER, 16).toString(),
   },
+<<<<<<< HEAD
+=======
+  [CHAIN_IDS.GNOSIS]: {
+    domain: 'gnosisscan.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
+  },
+>>>>>>> upstream/multichain-swaps-controller
 };
 
 /**

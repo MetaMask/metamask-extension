@@ -4,10 +4,10 @@ import thunk from 'redux-thunk';
 import nock from 'nock';
 import { waitFor } from '@testing-library/react';
 
+import { setBackgroundConnection } from '../../store/background-connection';
 import {
   renderWithProvider,
   createSwapsMockStore,
-  setBackgroundConnection,
   MOCKS,
   CONSTANTS,
 } from '../../../test/jest';
@@ -60,7 +60,7 @@ describe('Swap', () => {
 
   it('renders the component with initial props', async () => {
     const swapsMockStore = createSwapsMockStore();
-    swapsMockStore.metamask.swapsState.swapsFeatureFlags.swapRedesign.extensionActive = false;
+    swapsMockStore.metamask.singleChainSwapsState.swapsFeatureFlags.swapRedesign.extensionActive = false;
     const store = configureMockStore(middleware)(swapsMockStore);
     const { container, getByText } = renderWithProvider(<Swap />, store);
     await waitFor(() => expect(featureFlagsNock.isDone()).toBe(true));

@@ -14,7 +14,9 @@ import {
   Display,
   FlexDirection,
   FlexWrap,
+  FontWeight,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -31,6 +33,10 @@ import {
 import AddSnapAccountModal from '../add-snap-account-modal';
 import SnapCard from '../snap-card/snap-card';
 import { FEEDBACK_FORM } from '../constants';
+<<<<<<< HEAD
+=======
+import { CONSENSYS_TERMS_OF_USE } from '../../../../shared/lib/ui-utils';
+>>>>>>> upstream/multichain-swaps-controller
 
 export interface SnapDetails {
   id: string;
@@ -76,8 +82,35 @@ export default function NewSnapAccountPage() {
     getsnapsAddSnapAccountModalDismissed,
   );
 
+  const legalDisclaimerContent = [
+    {
+      title: t('snapAccountLegalDisclaimerThirdPartySubtitle'),
+      description: t('snapAccountLegalDisclaimerThirdPartyDescription', [
+        <ButtonLink
+          href={CONSENSYS_TERMS_OF_USE}
+          variant={TextVariant.bodyXs}
+          externalLink
+        >
+          {t('snapAccountLegalDisclaimerTermsOfUseLink')}
+        </ButtonLink>,
+      ]),
+    },
+    {
+      title: t('snapAccountLegalDisclaimerPrivacySubtitle'),
+      description: t('snapAccountLegalDisclaimerPrivacyDescription'),
+    },
+    {
+      title: t('snapAccountLegalDisclaimerExperimentalBetaSubtitle'),
+      description: t('snapAccountLegalDisclaimerExperimentalBetaDescription'),
+    },
+  ];
+
   return (
-    <Box className="snap-account-page">
+    <Box
+      className="snap-account-page"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+    >
       <AddSnapAccountModal
         onClose={async () => {
           await hidePopup();
@@ -104,7 +137,12 @@ export default function NewSnapAccountPage() {
             </Text>,
           ])}
         </Text>
-        <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+        <Text
+          className="snap-account-subtitle"
+          variant={TextVariant.bodyMd}
+          color={TextColor.textAlternative}
+          textAlign={TextAlign.Center}
+        >
           {t('snapCreateAccountSubtitle')}
         </Text>
       </Box>
@@ -114,6 +152,7 @@ export default function NewSnapAccountPage() {
         gap={4}
         padding={[0, 10, 0, 10]}
         className="snap-account-cards"
+        marginBottom={'auto'}
       >
         {Object.values(snapRegistryList).map(
           (snap: SnapDetails, index: number) => {
@@ -142,6 +181,7 @@ export default function NewSnapAccountPage() {
         )}
       </Box>
       <Box className="snap-account-footer">
+<<<<<<< HEAD
         <ButtonLink
           size={ButtonLinkSize.Md}
           data-testid="snap-account-link"
@@ -153,6 +193,54 @@ export default function NewSnapAccountPage() {
           externalLink
         >
           {t('snapFeedback')}
+=======
+        <Box className="legal-disclaimer">
+          <Text
+            variant={TextVariant.bodyXsMedium}
+            color={TextColor.textAlternative}
+            textAlign={TextAlign.Left}
+            fontWeight={FontWeight.Bold}
+          >
+            {t('snapAccountLegalDisclaimerTitle').toUpperCase()}
+          </Text>
+          <>
+            {legalDisclaimerContent.map((element, index) => (
+              <Box
+                id={`legal-disclaimer-element-${index}`}
+                className="legal-disclaimer-element"
+              >
+                <Text
+                  variant={TextVariant.bodyXsMedium}
+                  color={TextColor.textAlternative}
+                  textAlign={TextAlign.Left}
+                  fontWeight={FontWeight.Bold}
+                >
+                  {element.title}
+                </Text>
+                <Text
+                  variant={TextVariant.bodyXs}
+                  color={TextColor.textAlternative}
+                  textAlign={TextAlign.Left}
+                >
+                  {element.description}
+                </Text>
+              </Box>
+            ))}
+          </>
+        </Box>
+        <ButtonLink
+          className="feedback-link"
+          size={ButtonLinkSize.Sm}
+          data-testid="snap-account-link"
+          href={FEEDBACK_FORM}
+          display={Display.Flex}
+          paddingLeft={4}
+          marginBottom={4}
+          textAlign={TextAlign.Center}
+          externalLink
+        >
+          {t('accountSnapsFeedback')}
+>>>>>>> upstream/multichain-swaps-controller
         </ButtonLink>
       </Box>
     </Box>

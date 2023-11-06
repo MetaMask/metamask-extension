@@ -158,7 +158,7 @@ export default function SnapInstall({
               paddingBottom={2}
               textAlign="center"
             >
-              {t('snapInstall')}
+              {t('installRequest')}
             </Text>
             <Text
               className="snap-install__content__permission-description"

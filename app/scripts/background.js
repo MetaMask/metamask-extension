@@ -103,10 +103,14 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
+<<<<<<< HEAD
 const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
 const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
 
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
+=======
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+>>>>>>> upstream/multichain-swaps-controller
 const OVERRIDE_ORIGIN = {
   EXTENSION: 'EXTENSION',
   DESKTOP: 'DESKTOP_APP',
@@ -197,6 +201,12 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   connectExternal(...args);
 });
 
+function saveTimestamp() {
+  const timestamp = new Date().toISOString();
+
+  browser.storage.session.set({ timestamp });
+}
+
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
  */
@@ -220,10 +230,16 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} featureFlags - An object for optional feature flags.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
+<<<<<<< HEAD
  * @property {object} provider - The current selected network provider.
  * @property {string} provider.rpcUrl - The address for the RPC API, if using an RPC API.
  * @property {string} provider.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} networkId - The stringified number of the current network ID.
+=======
+ * @property {object} providerConfig - The current selected network provider.
+ * @property {string} providerConfig.rpcUrl - The address for the RPC API, if using an RPC API.
+ * @property {string} providerConfig.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
+>>>>>>> upstream/multichain-swaps-controller
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
@@ -270,6 +286,13 @@ async function initialize() {
 
     let isFirstMetaMaskControllerSetup;
     if (isManifestV3) {
+      // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
+      // miliseconds. This keeps the service worker alive.
+      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+      saveTimestamp();
+      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+
       const sessionData = await browser.storage.session.get([
         'isFirstMetaMaskControllerSetup',
       ]);
@@ -290,6 +313,7 @@ async function initialize() {
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
+
     resolveInitialization();
   } catch (error) {
     rejectInitialization(error);
@@ -605,20 +629,6 @@ export function setupController(
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
 
-      if (isManifestV3) {
-        // If we get a WORKER_KEEP_ALIVE message, we respond with an ACK
-        remotePort.onMessage.addListener((message) => {
-          if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
-            // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
-            remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
-
-            controller.appStateController.setServiceWorkerLastActiveTime(
-              Date.now(),
-            );
-          }
-        });
-      }
-
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
         endOfStream(portStream, () => {
@@ -808,7 +818,18 @@ export function setupController(
           case MESSAGE_TYPE.SNAP_DIALOG_PROMPT:
             controller.approvalController.accept(id, null);
             break;
+<<<<<<< HEAD
           case MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION:
+=======
+          case ApprovalType.SnapDialogConfirmation:
+            controller.approvalController.accept(id, false);
+            break;
+          ///: END:ONLY_INCLUDE_IN
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
+>>>>>>> upstream/multichain-swaps-controller
             controller.approvalController.accept(id, false);
             break;
           ///: END:ONLY_INCLUDE_IN
@@ -909,15 +930,18 @@ const addAppInstalledEvent = () => {
 };
 
 // On first install, open a new tab with MetaMask
-browser.runtime.onInstalled.addListener(({ reason }) => {
+async function onInstall() {
+  const storeAlreadyExisted = Boolean(await localStore.get());
+  // If the store doesn't exist, then this is the first time running this script,
+  // and is therefore an install
   if (
-    reason === 'install' &&
+    !storeAlreadyExisted &&
     !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
   ) {
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
-});
+}
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryState = function () {
@@ -931,7 +955,8 @@ function setupSentryGetStateGlobal(store) {
   };
 }
 
-function initBackground() {
+async function initBackground() {
+  await onInstall();
   initialize().catch(log.error);
 }
 

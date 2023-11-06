@@ -36,7 +36,7 @@ export default function TransactionListItem({
 
   const {
     initialTransaction: { id },
-    primaryTransaction: { err, status },
+    primaryTransaction: { error, status },
   } = transactionGroup;
 
   const speedUpMetricsEvent = useMetricEvent({
@@ -151,6 +151,7 @@ export default function TransactionListItem({
           <TransactionIcon category={category} status={displayedStatusKey} />
         }
         subtitle={
+<<<<<<< HEAD
           <h3>
             <TransactionStatus
               isPending={isPending}
@@ -170,6 +171,22 @@ export default function TransactionListItem({
               {subtitle}
             </span>
           </h3>
+=======
+          <TransactionStatusLabel
+            statusOnly
+            isPending={isPending}
+            isEarliestNonce={isEarliestNonce}
+            error={error}
+            date={date}
+            status={displayedStatusKey}
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
+            custodyStatusDisplayText={
+              transactionGroup.primaryTransaction.custodyStatusDisplayText
+            }
+            ///: END:ONLY_INCLUDE_IN
+          />
+>>>>>>> upstream/multichain-swaps-controller
         }
         rightContent={
           !isSignatureReq &&
@@ -216,7 +233,7 @@ export default function TransactionListItem({
             <TransactionStatus
               isPending={isPending}
               isEarliestNonce={isEarliestNonce}
-              error={err}
+              error={error}
               date={date}
               status={displayedStatusKey}
               statusOnly={true}

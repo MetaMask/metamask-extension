@@ -1,7 +1,19 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+<<<<<<< HEAD
 import { ApprovalType } from '@metamask/controller-utils';
+=======
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  getMmiPortfolioEnabled,
+  getMmiPortfolioUrl,
+  getWaitForConfirmDeepLinkDialog,
+} from '../../selectors/institutional/selectors';
+import { mmiActionsFactory } from '../../store/institutional/institution-background';
+import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
+///: END:ONLY_INCLUDE_IN
+>>>>>>> upstream/multichain-swaps-controller
 import {
   activeTabHasPermissions,
   getFirstPermissionRequest,
@@ -45,9 +57,6 @@ import {
   setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  removeSnapError,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../store/actions';
 import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -71,7 +80,7 @@ const mapStateToProps = (state) => {
     selectedAddress,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
-    swapsState,
+    singleChainSwapsState,
     firstTimeFlowType,
     completedOnboarding,
   } = metamask;
@@ -124,23 +133,25 @@ const mapStateToProps = (state) => {
     selectedAddress,
     firstPermissionsRequestId,
     totalUnapprovedCount,
+<<<<<<< HEAD
+=======
+    hasApprovalFlows: getApprovalFlows(state)?.length > 0,
+>>>>>>> upstream/multichain-swaps-controller
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     firstTimeFlowType,
     completedOnboarding,
-    haveSwapsQuotes: Boolean(Object.values(swapsState.quotes || {}).length),
-    swapsFetchParams: swapsState.fetchParams,
-    showAwaitingSwapScreen: swapsState.routeState === 'awaiting',
+    haveSwapsQuotes: Boolean(
+      Object.values(singleChainSwapsState.quotes || {}).length,
+    ),
+    swapsFetchParams: singleChainSwapsState.fetchParams,
+    showAwaitingSwapScreen: singleChainSwapsState.routeState === 'awaiting',
     isMainnet: getIsMainnet(state),
     originOfCurrentTab,
     shouldShowWeb3ShimUsageNotification,
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    errorsToShow: metamask.snapErrors,
-    shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
-    ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showTermsOfUsePopup: getShowTermsOfUse(state),
@@ -162,6 +173,7 @@ const mapDispatchToProps = (dispatch) => ({
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   removeSnapError: async (id) => await removeSnapError(id),
   ///: END:ONLY_INCLUDE_IN
+<<<<<<< HEAD
   setConnectedStatusPopoverHasBeenShown: () =>
     dispatch(setConnectedStatusPopoverHasBeenShown()),
   onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
@@ -198,6 +210,52 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch(setActiveNetwork(networkConfigurationId));
   },
 });
+=======
+
+  return {
+    closeNotificationPopup: () => closeNotificationPopup(),
+    setConnectedStatusPopoverHasBeenShown: () =>
+      dispatch(setConnectedStatusPopoverHasBeenShown()),
+    onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
+    setWeb3ShimUsageAlertDismissed: (origin) =>
+      setWeb3ShimUsageAlertDismissed(origin),
+    disableWeb3ShimUsageAlert: () =>
+      setAlertEnabledness(AlertTypes.web3ShimUsage, false),
+    hideWhatsNewPopup: () => dispatch(hideWhatsNewPopup()),
+    setRecoveryPhraseReminderHasBeenShown: () =>
+      dispatch(setRecoveryPhraseReminderHasBeenShown()),
+    setRecoveryPhraseReminderLastShown: (lastShown) =>
+      dispatch(setRecoveryPhraseReminderLastShown(lastShown)),
+    setTermsOfUseLastAgreed: (lastAgreed) => {
+      dispatch(setTermsOfUseLastAgreed(lastAgreed));
+    },
+    setOutdatedBrowserWarningLastShown: (lastShown) => {
+      dispatch(setOutdatedBrowserWarningLastShown(lastShown));
+    },
+    setNewNftAddedMessage: (message) => {
+      dispatch(setRemoveNftMessage(''));
+      dispatch(setNewNftAddedMessage(message));
+    },
+    setRemoveNftMessage: (message) => {
+      dispatch(setNewNftAddedMessage(''));
+      dispatch(setRemoveNftMessage(message));
+    },
+    setNewTokensImported: (newTokens) => {
+      dispatch(setNewTokensImported(newTokens));
+    },
+    clearNewNetworkAdded: () => {
+      dispatch(setNewNetworkAdded({}));
+    },
+    setActiveNetwork: (networkConfigurationId) => {
+      dispatch(setActiveNetwork(networkConfigurationId));
+    },
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    setWaitForConfirmDeepLinkDialog: (wait) =>
+      dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
+    ///: END:ONLY_INCLUDE_IN
+  };
+};
+>>>>>>> upstream/multichain-swaps-controller
 
 export default compose(
   withRouter,

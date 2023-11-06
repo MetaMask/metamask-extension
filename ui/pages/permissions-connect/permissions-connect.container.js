@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+import { SubjectType } from '@metamask/permission-controller';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+///: END:ONLY_INCLUDE_IN
+>>>>>>> upstream/multichain-swaps-controller
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {

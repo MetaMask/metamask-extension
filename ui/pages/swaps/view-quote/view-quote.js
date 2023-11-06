@@ -62,6 +62,11 @@ import {
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
   getUSDConversionRate,
+<<<<<<< HEAD
+=======
+  getIsMultiLayerFeeNetwork,
+  // getSelectedNetworkClientId,
+>>>>>>> upstream/multichain-swaps-controller
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 
@@ -174,6 +179,10 @@ export default function ViewQuote() {
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
   const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
+
+  // TODO replace this with a passed contextual prop(?) once there is no longer a globally selected network
+  // const networkClientId = useSelector(getSelectedNetworkClientId);
+  // TODO chainId/nativeCurrentSymbol should be derived from networkClientId;
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
   const reviewSwapClickedTimestamp = useSelector(getReviewSwapClickedTimestamp);
@@ -262,7 +271,10 @@ export default function ViewQuote() {
 
   const gasTotalInWeiHex = calcGasTotal(maxGasLimit, maxFeePerGas || gasPrice);
 
-  const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
+  const { tokensWithBalances } = useTokenTracker({
+    tokens: swapsTokens,
+    includeFailedTokens: true,
+  });
   const balanceToken =
     fetchParamsSourceToken === defaultSwapsToken.address
       ? defaultSwapsToken

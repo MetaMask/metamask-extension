@@ -12,9 +12,84 @@
     "featureFlags": {
       "showIncomingTransactions": true
     },
+<<<<<<< HEAD
     "network": "4",
     "provider": {
       "chainId": "0x4"
+=======
+    "snaps": {
+      "npm:@metamask/test-snap-bip44": {
+        "id": "npm:@metamask/test-snap-bip44",
+        "origin": "npm:@metamask/test-snap-bip44",
+        "version": "5.1.2",
+        "iconUrl": null,
+        "initialPermissions": {
+          "endowment:ethereum-provider": {}
+        },
+        "manifest": {
+          "description": "An example Snap that signs messages using BLS.",
+          "proposedName": "BIP-44 Test Snap",
+          "repository": {
+            "type": "git",
+            "url": "https://github.com/MetaMask/test-snaps.git"
+          },
+          "source": {
+            "location": {
+              "npm": {
+                "filePath": "dist/bundle.js",
+                "packageName": "@metamask/test-snap-bip44",
+                "registry": "https://registry.npmjs.org"
+              }
+            },
+            "shasum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+          },
+          "version": "5.1.2"
+        },
+        "versionHistory": [
+          {
+            "date": 1680686075921,
+            "origin": "https://metamask.github.io",
+            "version": "5.1.2"
+          }
+        ]
+      }
+    },
+    "preferences": {
+      "hideZeroBalanceTokens": false,
+      "showFiatInTestnets": false,
+      "showTestNetworks": true,
+      "useNativeCurrencyAsPrimaryCurrency": true
+    },
+    "ensResolutionsByAddress": {},
+    "isAccountMenuOpen": false,
+    "isUnlocked": true,
+    "alertEnabledness": {
+      "unconnectedAccount": true
+    },
+    "featureFlags": {},
+    "providerConfig": {
+      "type": "rpc",
+      "nickname": "goerli",
+      "chainId": "0x5",
+      "ticker": "ETH",
+      "id": "chain5"
+    },
+    "networkConfigurations": {
+      "testNetworkConfigurationId": {
+        "rpcUrl": "https://testrpc.com",
+        "chainId": "0x1",
+        "nickname": "Custom Mainnet RPC",
+        "type": "rpc",
+        "id": "testNetworkConfigurationId"
+      },
+      "chain5": {
+        "type": "rpc",
+        "chainId": "0x5",
+        "ticker": "ETH",
+        "nickname": "Chain 5",
+        "id": "chain5"
+      }
+>>>>>>> upstream/multichain-swaps-controller
     },
     "keyrings": [
       {
@@ -212,12 +287,65 @@
         "occurrences": 12
       }
     },
+<<<<<<< HEAD
     "currentNetworkTxList": [
+=======
+    "transactions": [
+      {
+        "chainId": "0x5",
+        "id": 8393540981007587,
+        "time": 1536268017676,
+        "status": "unapproved",
+        "loadingDefaults": false,
+        "txParams": {
+          "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
+          "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+          "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "value": "0x0",
+          "gas": "0x5208",
+          "gasPrice": "0x3b9aca00"
+        },
+        "history": [
+          {
+            "id": 8393540981007587,
+            "time": 1536268017676,
+            "status": "unapproved",
+            "chainId": "0x5",
+            "loadingDefaults": true,
+            "txParams": {
+              "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+              "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+              "value": "0x0",
+              "gas": "0x5208",
+              "gasPrice": "0x3b9aca00"
+            }
+          },
+          [
+            {
+              "op": "replace",
+              "path": "/loadingDefaults",
+              "value": false,
+              "timestamp": 1536268017685
+            }
+          ],
+          [
+            {
+              "op": "add",
+              "path": "/origin",
+              "value": "MetaMask",
+              "note": "#newUnapprovedTransaction - adding the origin",
+              "timestamp": 1536268017686
+            }
+          ]
+        ],
+        "origin": "metamask"
+      },
+>>>>>>> upstream/multichain-swaps-controller
       {
         "id": 3387511061307736,
         "time": 1528133130531,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -232,7 +360,7 @@
             "id": 3387511061307736,
             "time": 1528133130531,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -397,7 +525,7 @@
         "id": 3387511061307737,
         "time": 1528133149983,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -412,7 +540,7 @@
             "id": 3387511061307737,
             "time": 1528133149983,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -577,7 +705,7 @@
         "id": 3387511061307738,
         "time": 1528133180635,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -592,7 +720,7 @@
             "id": 3387511061307738,
             "time": 1528133180635,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -757,7 +885,7 @@
         "id": 3387511061307739,
         "time": 1528133223918,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -773,7 +901,7 @@
             "id": 3387511061307739,
             "time": 1528133223918,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -942,7 +1070,7 @@
         "id": 3387511061307740,
         "time": 1528133291381,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -958,7 +1086,7 @@
             "id": 3387511061307740,
             "time": 1528133291381,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1124,7 +1252,7 @@
         "id": 3387511061307741,
         "time": 1528133318440,
         "status": "rejected",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1138,7 +1266,7 @@
             "id": 3387511061307741,
             "time": 1528133318440,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",

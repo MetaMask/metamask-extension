@@ -3,6 +3,60 @@ import PropTypes from 'prop-types';
 import { stripHexPrefix } from 'ethereumjs-util';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
+<<<<<<< HEAD
+=======
+import { ethErrors, serializeError } from 'eth-rpc-errors';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { SubjectType } from '@metamask/permission-controller';
+///: END:ONLY_INCLUDE_IN
+import LedgerInstructionField from '../ledger-instruction-field';
+import { MESSAGE_TYPE } from '../../../../shared/constants/app';
+import {
+  getURLHostName,
+  sanitizeString,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  shortenAddress,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../helpers/utils/util';
+import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
+import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
+import SiteOrigin from '../../ui/site-origin';
+import Typography from '../../ui/typography/typography';
+import { PageContainerFooter } from '../../ui/page-container';
+import {
+  TypographyVariant,
+  FontWeight,
+  TextAlign,
+  TextColor,
+  Size,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  IconColor,
+  Display,
+  BlockSize,
+  TextVariant,
+  BackgroundColor,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../helpers/constants/design-system';
+import {
+  ButtonLink,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  Box,
+  Icon,
+  IconName,
+  Text,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../component-library';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
+import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IN
+import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
+import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
+>>>>>>> upstream/multichain-swaps-controller
 
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -18,7 +72,11 @@ import SiteIcon from '../../ui/site-icon';
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
+<<<<<<< HEAD
     metricsEvent: PropTypes.func.isRequired,
+=======
+    trackEvent: PropTypes.func,
+>>>>>>> upstream/multichain-swaps-controller
   };
 
   static propTypes = {
@@ -176,6 +234,26 @@ export default class SignatureRequestOriginal extends Component {
       </div>
     );
   };
+
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  componentDidMount() {
+    const { txData } = this.props;
+    if (txData.securityAlertResponse) {
+      const blockaidMetricsParams = getBlockaidMetricsParams(
+        txData.securityAlertResponse,
+      );
+
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.SignatureRequested,
+        properties: {
+          action: 'Sign Request',
+          ...blockaidMetricsParams,
+        },
+      });
+    }
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   msgHexToText = (hex) => {
     try {

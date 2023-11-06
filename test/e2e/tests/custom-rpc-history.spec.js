@@ -18,7 +18,7 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: 'imported-account',
         ganacheOptions: { ...ganacheOptions, concurrent: { port, chainId } },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -53,7 +53,17 @@ describe('Stores custom RPC history', function () {
         await chainIdInput.clear();
         await chainIdInput.sendKeys(chainId.toString());
 
+<<<<<<< HEAD
         await driver.clickElement('.network-form__footer .btn-primary');
+=======
+        await symbolInput.clear();
+        await symbolInput.sendKeys(symbol);
+
+        await driver.clickElement(
+          '.networks-tab__add-network-form-footer .btn-primary',
+        );
+
+>>>>>>> upstream/multichain-swaps-controller
         await driver.findElement({ text: networkName, tag: 'span' });
       },
     );
@@ -64,7 +74,7 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: 'imported-account',
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -103,7 +113,12 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: 'imported-account',
         ganacheOptions,
+<<<<<<< HEAD
         title: this.test.title,
+=======
+        title: this.test.fullTitle(),
+        failOnConsoleError: false,
+>>>>>>> upstream/multichain-swaps-controller
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -148,7 +163,7 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: 'imported-account',
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -167,7 +182,7 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: 'custom-rpc',
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -195,7 +210,12 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: 'custom-rpc',
         ganacheOptions,
+<<<<<<< HEAD
         title: this.test.title,
+=======
+        title: this.test.fullTitle(),
+        failOnConsoleError: false,
+>>>>>>> upstream/multichain-swaps-controller
       },
       async ({ driver }) => {
         await driver.navigate();

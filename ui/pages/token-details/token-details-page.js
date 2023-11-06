@@ -32,8 +32,11 @@ export default function TokenDetailsPage() {
   const t = useContext(I18nContext);
   const tokens = useSelector(getTokens);
   const tokenList = useSelector(getTokenList);
+<<<<<<< HEAD
   const useTokenDetection = useSelector(getUseTokenDetection);
 
+=======
+>>>>>>> upstream/multichain-swaps-controller
   const { address: tokenAddress } = useParams();
   const tokenMetadata = Object.values(tokenList).find((token) =>
     isEqualCaseInsensitive(token.address, tokenAddress),
@@ -47,8 +50,14 @@ export default function TokenDetailsPage() {
     isEqualCaseInsensitive(address, tokenAddress),
   );
 
-  const { tokensWithBalances } = useTokenTracker([token]);
+  // When the user did not import the token
+  // the token variable will be undefined.
+  // In that case we want to call useTokenTracker with [] instead of [undefined]
+  const { tokensWithBalances } = useTokenTracker({
+    tokens: token ? [token] : [],
+  });
   const tokenBalance = tokensWithBalances[0]?.string;
+
   const tokenCurrencyBalance = useTokenFiatAmount(
     token?.address,
     tokenBalance,

@@ -10,7 +10,12 @@ export const txMetaStub = {
   history: [
     {
       id: 405984854664302,
+<<<<<<< HEAD
       metamaskNetworkId: '5',
+=======
+      loadingDefaults: true,
+      chainId: '0x5',
+>>>>>>> upstream/multichain-swaps-controller
       status: TransactionStatus.unapproved,
       time: 1572395156620,
       type: TransactionType.simpleSend,
@@ -126,7 +131,11 @@ export const txMetaStub = {
     ],
   ],
   id: 405984854664302,
+<<<<<<< HEAD
   metamaskNetworkId: '5',
+=======
+  loadingDefaults: false,
+>>>>>>> upstream/multichain-swaps-controller
   origin: 'MetaMask',
   r: '0x5f973e540f2d3c2f06d3725a626b75247593cb36477187ae07ecfe0a4db3cf57',
   rawTx:

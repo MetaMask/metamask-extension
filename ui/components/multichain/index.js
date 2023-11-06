@@ -23,4 +23,9 @@ export { AccountDetailsMenuItem, ViewExplorerMenuItem } from './menu-items';
 export { ImportTokensModal } from './import-tokens-modal';
 export { SelectActionModal } from './select-action-modal';
 export { SelectActionModalItem } from './select-action-modal-item';
+<<<<<<< HEAD
 export { ConnectionHeader } from './connection-header';
+=======
+export { AssetListConversionButton } from './asset-list-conversion-button';
+export { AvatarGroup } from './avatar-group';
+>>>>>>> upstream/multichain-swaps-controller

@@ -4,16 +4,17 @@
 * This will help improve specificity and reduce the chance of
 * unintended overrides.
 **/
-@import 'address-copy-button/index';
-@import 'import-nfts-modal/index';
-@import 'account-list-item/index';
-@import 'account-list-item-menu/index';
-@import 'account-list-menu/index';
-@import 'account-picker/index';
-@import 'activity-list-item/index';
+@import 'pages';
+@import 'address-copy-button';
+@import 'import-nfts-modal';
+@import 'account-list-item';
+@import 'account-list-item-menu';
+@import 'account-list-menu';
+@import 'account-picker';
+@import 'activity-list-item';
 @import 'app-footer/app-footer';
 @import 'app-header/app-header';
-@import 'connected-site-menu/index';
+@import 'connected-site-menu';
 @import 'account-list-menu/';
 @import 'token-list-item/token-list-item';
 @import 'network-list-item/';

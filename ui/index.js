@@ -10,8 +10,14 @@ import { ALERT_TYPES } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
+<<<<<<< HEAD
 import switchDirection from '../app/scripts/constants/switch-direction';
 import { setupLocale } from '../app/scripts/constants/error-utils';
+=======
+import { COPY_OPTIONS } from '../shared/constants/copy';
+import switchDirection from '../shared/lib/switch-direction';
+import { setupLocale } from '../shared/lib/error-utils';
+>>>>>>> upstream/multichain-swaps-controller
 import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
@@ -25,8 +31,36 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
+<<<<<<< HEAD
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn');
+=======
+import { setBackgroundConnection } from './store/background-connection';
+
+log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
+
+let reduxStore;
+
+/**
+ * Method to update backgroundConnection object use by UI
+ *
+ * @param backgroundConnection - connection object to background
+ */
+export const updateBackgroundConnection = (backgroundConnection) => {
+  setBackgroundConnection(backgroundConnection);
+  backgroundConnection.onNotification((data) => {
+    if (data.method === 'sendUpdate') {
+      reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
+    } else {
+      throw new Error(
+        `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
+          data,
+        )}`,
+      );
+    }
+  });
+};
+>>>>>>> upstream/multichain-swaps-controller
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
@@ -110,8 +144,12 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     metamaskState.unapprovedDecryptMsgs,
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
+<<<<<<< HEAD
     metamaskState.network,
     metamaskState.provider.chainId,
+=======
+    metamaskState.providerConfig.chainId,
+>>>>>>> upstream/multichain-swaps-controller
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;
   if (numberOfUnapprovedTx > 0) {
@@ -193,7 +231,7 @@ window.logState = function (toClipboard) {
     if (err) {
       console.error(err.message);
     } else if (toClipboard) {
-      copyToClipboard(result);
+      copyToClipboard(result, COPY_OPTIONS);
       console.log('State log copied');
     } else {
       console.log(result);

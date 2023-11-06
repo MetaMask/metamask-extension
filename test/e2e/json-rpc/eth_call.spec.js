@@ -15,7 +15,7 @@ describe('eth_call', function () {
           .build(),
         ganacheOptions: defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);

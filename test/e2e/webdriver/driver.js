@@ -1,15 +1,41 @@
 const { promises: fs } = require('fs');
 const { strict: assert } = require('assert');
+<<<<<<< HEAD
 const { until, error: webdriverError, By } = require('selenium-webdriver');
+=======
+const {
+  By,
+  Condition,
+  error: webdriverError,
+  Key,
+  until,
+  ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
+  WebElement, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
+} = require('selenium-webdriver');
+>>>>>>> upstream/multichain-swaps-controller
 const cssToXPath = require('css-to-xpath');
+const { retry } = require('../../../development/lib/retry');
+
+const PAGES = {
+  BACKGROUND: 'background',
+  HOME: 'home',
+  NOTIFICATION: 'notification',
+  POPUP: 'popup',
+};
 
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
  *
+<<<<<<< HEAD
  * @param {Object} element - Selenium Element
  * @param driver
  * @returns {Object} modified Selenium Element
+=======
+ * @param {object} element - Selenium Element
+ * @param {!ThenableWebDriver} driver
+ * @returns {object} modified Selenium Element
+>>>>>>> upstream/multichain-swaps-controller
  */
 function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
@@ -31,7 +57,19 @@ function wrapElementWithAPI(element, driver) {
   return element;
 }
 
+<<<<<<< HEAD
+=======
+until.elementIsNotPresent = function elementIsNotPresent(locator) {
+  return new Condition(`Element not present`, function (driver) {
+    return driver.findElements(locator).then(function (elements) {
+      return elements.length === 0;
+    });
+  });
+};
+
+>>>>>>> upstream/multichain-swaps-controller
 /**
+ * This is MetaMask's custom E2E test driver, wrapping the Selenium WebDriver.
  * For Selenium WebDriver API documentation, see:
  * https://www.selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
  */
@@ -155,6 +193,7 @@ class Driver {
     return wrapElementWithAPI(element, this);
   }
 
+<<<<<<< HEAD
   async waitForAbsenceOfSelector(rawLocator, { timeout = this.timeout } = {}) {
     const selector = this.buildLocator(rawLocator);
     await this.driver.wait(
@@ -165,6 +204,19 @@ class Driver {
       timeout,
       'Timed out waiting for element to not exist',
     );
+=======
+  async waitForNonEmptyElement(element) {
+    await this.driver.wait(async () => {
+      const elemText = await element.getText();
+      const empty = elemText === '';
+      return !empty;
+    }, this.timeout);
+  }
+
+  async waitForElementNotPresent(rawLocator) {
+    const locator = this.buildLocator(rawLocator);
+    return await this.driver.wait(until.elementIsNotPresent(locator));
+>>>>>>> upstream/multichain-swaps-controller
   }
 
   async quit() {
@@ -173,6 +225,10 @@ class Driver {
 
   // Element interactions
 
+  /**
+   * @param {*} rawLocator
+   * @returns {WebElement}
+   */
   async findElement(rawLocator) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.driver.wait(
@@ -271,8 +327,23 @@ class Driver {
 
   // Navigation
 
+<<<<<<< HEAD
   async navigate(page = Driver.PAGES.HOME) {
     return await this.driver.get(`${this.extensionUrl}/${page}.html`);
+=======
+  async navigate(page = PAGES.HOME) {
+    const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
+    // Wait for asyncronous JavaScript to load
+    await this.driver.wait(
+      until.elementLocated(this.buildLocator('.metamask-loaded')),
+      10 * 1000,
+    );
+    return response;
+  }
+
+  async getCurrentUrl() {
+    return await this.driver.getCurrentUrl();
+>>>>>>> upstream/multichain-swaps-controller
   }
 
   // Metrics
@@ -315,15 +386,35 @@ class Driver {
     title,
     initialWindowHandles,
     delayStep = 1000,
+<<<<<<< HEAD
     timeout = 5000,
+=======
+    timeout = this.timeout,
+    { retries = 8, retryDelay = 2500 } = {},
+>>>>>>> upstream/multichain-swaps-controller
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
     let timeElapsed = 0;
+
     while (timeElapsed <= timeout) {
       for (const handle of windowHandles) {
+<<<<<<< HEAD
         await this.driver.switchTo().window(handle);
         const handleTitle = await this.driver.getTitle();
+=======
+        const handleTitle = await retry(
+          {
+            retries,
+            delay: retryDelay,
+          },
+          async () => {
+            await this.driver.switchTo().window(handle);
+            return await this.driver.getTitle();
+          },
+        );
+
+>>>>>>> upstream/multichain-swaps-controller
         if (handleTitle === title) {
           return handle;
         }
@@ -360,7 +451,17 @@ class Driver {
 
   // Error handling
 
-  async verboseReportOnFailure(title) {
+  async verboseReportOnFailure(title, error) {
+    if (process.env.CIRCLECI) {
+      console.error(
+        `Failure in ${title}, for more information see the artifacts tab in CI\n`,
+      );
+    } else {
+      console.error(
+        `Failure in ${title}, for more information see the test-artifacts folder\n`,
+      );
+    }
+    console.error(`${error}\n`);
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
@@ -444,6 +545,7 @@ function collectMetrics() {
   return results;
 }
 
+<<<<<<< HEAD
 Driver.PAGES = {
   BACKGROUND: 'background',
   HOME: 'home',
@@ -453,3 +555,6 @@ Driver.PAGES = {
 };
 
 module.exports = Driver;
+=======
+module.exports = { Driver, PAGES };
+>>>>>>> upstream/multichain-swaps-controller

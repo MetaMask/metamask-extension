@@ -1,4 +1,15 @@
+<<<<<<< HEAD
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+=======
+import React, {
+  useCallback,
+  useContext,
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  useEffect,
+  ///: END:ONLY_INCLUDE_IN
+  useState,
+} from 'react';
+>>>>>>> upstream/multichain-swaps-controller
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -30,7 +41,19 @@ import SecurityProviderBannerMessage from '../security-provider-banner-message/s
 import { SECURITY_PROVIDER_MESSAGE_SEVERITIES } from '../security-provider-banner-message/security-provider-banner-message.constants';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
+<<<<<<< HEAD
 import { showModal, cancelMsgs } from '../../../store/actions';
+=======
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IN
+>>>>>>> upstream/multichain-swaps-controller
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
@@ -115,6 +138,28 @@ export default function SignatureRequestSIWE({
   const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  const trackEvent = useContext(MetaMetricsContext);
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  useEffect(() => {
+    if (txData.securityAlertResponse) {
+      const blockaidMetricsParams = getBlockaidMetricsParams(
+        txData.securityAlertResponse,
+      );
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.SignatureRequested,
+        properties: {
+          action: 'Sign Request',
+          ...blockaidMetricsParams,
+        },
+      });
+    }
+  }, [txData?.securityAlertResponse]);
+  ///: END:ONLY_INCLUDE_IN
 
   const {
     msgParams: {

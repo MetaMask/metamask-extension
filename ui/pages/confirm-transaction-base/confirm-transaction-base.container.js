@@ -34,7 +34,27 @@ import {
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
+<<<<<<< HEAD
   transactionMatchesNetwork,
+=======
+  isAddressLedger,
+  updateGasFees,
+  getIsGasEstimatesLoading,
+  getNativeCurrency,
+  getSendToAccounts,
+  getProviderConfig,
+  findKeyringForAddress,
+} from '../../ducks/metamask/metamask';
+import {
+  addHexPrefix,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getEnvironmentType,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../../app/scripts/lib/util';
+
+import {
+  parseStandardTokenTransactionData,
+>>>>>>> upstream/multichain-swaps-controller
   txParamsAreDappSuggested,
 } from '../../../shared/modules/transaction.utils';
 import { KEYRING_TYPES } from '../../../shared/constants/hardware-wallets';
@@ -72,6 +92,7 @@ const mapStateToProps = (state, ownProps) => {
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
 
   const { confirmTransaction, metamask } = state;
+<<<<<<< HEAD
   const {
     ensResolutionsByAddress,
     conversionRate,
@@ -83,6 +104,11 @@ const mapStateToProps = (state, ownProps) => {
     provider: { chainId },
     ledgerTransportType,
   } = metamask;
+=======
+  const { conversionRate, identities, addressBook, nextNonce } = metamask;
+  const unapprovedTxs = getUnapprovedTransactions(state);
+  const { chainId } = getProviderConfig(state);
+>>>>>>> upstream/multichain-swaps-controller
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
   const { txParams = {}, id: transactionId, type } = txData;
   const transaction =
@@ -139,9 +165,13 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   const currentNetworkUnapprovedTxs = Object.keys(unapprovedTxs)
+<<<<<<< HEAD
     .filter((key) =>
       transactionMatchesNetwork(unapprovedTxs[key], chainId, network),
     )
+=======
+    .filter((key) => unapprovedTxs[key].chainId === chainId)
+>>>>>>> upstream/multichain-swaps-controller
     .reduce((acc, key) => ({ ...acc, [key]: unapprovedTxs[key] }), {});
   const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length;
 

@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { DialogType } from '@metamask/snaps-rpc-methods';
+///: END:ONLY_INCLUDE_IN
+>>>>>>> upstream/multichain-swaps-controller
 import { RestrictedMethods } from './permissions';
 
 /**
@@ -51,6 +57,18 @@ export const MESSAGE_TYPE = {
   SNAP_CONFIRM: RestrictedMethods.snap_confirm,
   ///: END:ONLY_INCLUDE_IN
 };
+<<<<<<< HEAD
+=======
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
+  confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
+  confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',
+  showSnapAccountRedirect: 'showSnapAccountRedirect',
+};
+///: END:ONLY_INCLUDE_IN
+>>>>>>> upstream/multichain-swaps-controller
 
 /**
  * The different kinds of subjects that MetaMask may interact with, including

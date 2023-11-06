@@ -1471,8 +1471,197 @@
   "signed": {
     "message": "Подписан"
   },
+<<<<<<< HEAD
   "slow": {
     "message": "Медленный"
+=======
+  "signin": {
+    "message": "Войти"
+  },
+  "simulationErrorMessageV2": {
+    "message": "Мы не смогли оценить размер платы за газ. В контракте может быть ошибка, и эта транзакция может завершиться неудачно."
+  },
+  "skip": {
+    "message": "Пропустить"
+  },
+  "skipAccountSecurity": {
+    "message": "Пропустить безопасность счета?"
+  },
+  "skipAccountSecurityDetails": {
+    "message": "Я понимаю, что, если я не создам резервную копию своей секретной фразы для восстановления, я могу потерять доступ ко всем своим счетам и всем средствам на них."
+  },
+  "smartContracts": {
+    "message": "Смарт-контракты"
+  },
+  "smartSwap": {
+    "message": "Смарт-своп"
+  },
+  "smartSwapsAreHere": {
+    "message": "Появились смарт-свопы!"
+  },
+  "smartSwapsDescription": {
+    "message": "Свопы MetaMask стали намного умнее! Включение смарт-свопов позволит MetaMask программно оптимизировать ваш своп, чтобы помочь:"
+  },
+  "smartSwapsErrorNotEnoughFunds": {
+    "message": "Недостаточно средств для смарт-свопа."
+  },
+  "smartSwapsErrorUnavailable": {
+    "message": "Смарт-свопы временно недоступны."
+  },
+  "smartSwapsSubDescription": {
+    "message": "* Смарт-свопы попытаются отправить вашу транзакцию в частном порядке несколько раз. Если все попытки не увенчаются успехом, транзакция будет транслироваться публично, чтобы гарантировать успешное завершение вашего свопа."
+  },
+  "snapConfigure": {
+    "message": "Настроить"
+  },
+  "snapConnectionWarning": {
+    "message": "$1 хочет подключиться к $2. Продолжайте, только если вы доверяете этому сайту.",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
+  "snapContent": {
+    "message": "Этот контент поступает от $1",
+    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
+  "snapCreateAccountSubtitle": {
+    "message": "Выберите способ защиты вашего нового счета с помощью MetaMask Snaps."
+  },
+  "snapCreateAccountTitle": {
+    "message": "Создать новый счет $1",
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
+  },
+  "snapCreateAccountTitle2": {
+    "message": "snap",
+    "description": "$1 of the snapCreateAccountTitle"
+  },
+  "snapCreatedByMetaMask": {
+    "message": "От MetaMask"
+  },
+  "snapDetailAudits": {
+    "message": "Аудит"
+  },
+  "snapDetailDeveloper": {
+    "message": "Разработчик"
+  },
+  "snapDetailLastUpdated": {
+    "message": "Обновлено"
+  },
+  "snapDetailManageSnap": {
+    "message": "Управление snap"
+  },
+  "snapDetailTags": {
+    "message": "Теги"
+  },
+  "snapDetailVersion": {
+    "message": "Версия"
+  },
+  "snapDetailWebsite": {
+    "message": "Веб-сайт"
+  },
+  "snapDetailsCreateASnapAccount": {
+    "message": "Создать счет Snap"
+  },
+  "snapDetailsInstalled": {
+    "message": "Установлена"
+  },
+  "snapInstall": {
+    "message": "Установить snap"
+  },
+  "snapInstallRequest": {
+    "message": "Установка $1 дает ему следующие разрешения. Продолжайте, только если доверяете $1.",
+    "description": "$1 is the snap name."
+  },
+  "snapInstallSuccess": {
+    "message": "Установка завершена"
+  },
+  "snapInstallWarningCheck": {
+    "message": "Чтобы подтвердить, что вы понимаете, отметьте все.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
+  },
+  "snapInstallWarningCheckPlural": {
+    "message": "Чтобы подтвердить, что вы понимаете, отметьте все ячейки.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
+  },
+  "snapInstallWarningHeading": {
+    "message": "Действуйте с осторожностью"
+  },
+  "snapInstallWarningKeyAccess": {
+    "message": "Передать управление счетом $2 $1",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallWarningPublicKeyAccess": {
+    "message": "Предоставьте $2 доступ к открытому ключу к $1",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallationErrorDescription": {
+    "message": "Не удалось установить $1.",
+    "description": "Error description used when snap installation fails. $1 is the snap name."
+  },
+  "snapInstallationErrorTitle": {
+    "message": "Ошибка установки",
+    "description": "Error title used when snap installation fails."
+  },
+  "snapIsAudited": {
+    "message": "Проверена"
+  },
+  "snapResultError": {
+    "message": "Ошибка"
+  },
+  "snapResultSuccess": {
+    "message": "Успех"
+  },
+  "snapResultSuccessDescription": {
+    "message": "$1 готово к использованию"
+  },
+  "snapUpdateAvailable": {
+    "message": "Доступно обновление"
+  },
+  "snapUpdateErrorDescription": {
+    "message": "Не удалось обновить $1.",
+    "description": "Error description used when snap update fails. $1 is the snap name."
+  },
+  "snapUpdateErrorTitle": {
+    "message": "Ошибка обновления",
+    "description": "Error title used when snap update fails."
+  },
+  "snapUpdateRequest": {
+    "message": "$1 хочет обновить $2 до $3, что дает ему следующие разрешения. Продолжайте, только если доверяете $2.",
+    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+  },
+  "snapUpdateSuccess": {
+    "message": "Обновление завершено"
+  },
+  "snaps": {
+    "message": "Snaps"
+  },
+  "snapsInsightLoading": {
+    "message": "Загрузка аналитики по транзакции..."
+  },
+  "snapsInvalidUIError": {
+    "message": "Пользовательский интерфейс, указанный snap, недействителен."
+  },
+  "snapsNoInsight": {
+    "message": "Этот snap не выдал никакой аналитики"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Любая информация, которую вы передаете Сторонним службам, будет собираться непосредственно этими Сторонними службами в соответствии с их политикой конфиденциальности. Пожалуйста, обратитесь к их политике конфиденциальности для получения дополнительной информации.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsTermsOfUse": {
+    "message": "Условия использования"
+  },
+  "snapsToggle": {
+    "message": "Snap будет работать только в том случае, если он включен"
+  },
+  "snapsUIError": {
+    "message": "Свяжитесь с авторами $1 для получения дополнительной поддержки.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "Некоторые сети могут представлять угрозу безопасности и/или конфиденциальности. Прежде чем добавлять и использовать сеть, ознакомьтесь с рисками."
+  },
+  "somethingIsWrong": {
+    "message": "Что-то пошло не так. Попробуйте перезагрузить страницу."
+>>>>>>> upstream/multichain-swaps-controller
   },
   "somethingWentWrong": {
     "message": "Упс! Что-то пошло не так."

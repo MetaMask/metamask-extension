@@ -33,6 +33,7 @@ import {
   fetchSmartTransactionFees,
   cancelSmartTransaction,
   getTransactions,
+  getChainIdByNetworkClientId,
 } from '../../store/actions';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -101,6 +102,7 @@ const GAS_PRICES_LOADING_STATES = {
 
 export const FALLBACK_GAS_MULTIPLIER = 1.5;
 
+// TODO do we parameterize all state by chainId
 const initialState = {
   aggregatorMetadata: null,
   approveTxId: null,
@@ -226,6 +228,8 @@ export default reducer;
 
 // Selectors
 
+// all these selectors should be parameterized by chainId/networkClientId
+
 export const getAggregatorMetadata = (state) => state.swaps.aggregatorMetadata;
 
 export const getBalanceError = (state) => state.swaps.balanceError;
@@ -304,10 +308,12 @@ export function shouldShowCustomPriceTooLowWarning(state) {
 
 // Background selectors
 
-const getSwapsState = (state) => state.metamask.swapsState;
+// ALL these selectors should be parameterized by chainId/networkClientId
+
+const getSwapsState = (state) => state.metamask.singleChainSwapsState;
 
 export const getSwapsFeatureIsLive = (state) =>
-  state.metamask.swapsState.swapsFeatureIsLive;
+  state.metamask.singleChainSwapsState.swapsFeatureIsLive;
 
 export const getSmartTransactionsError = (state) =>
   state.appState.smartTransactionsError;
@@ -322,7 +328,7 @@ export const getSmartTransactionsEnabled = (state) => {
     chainId,
   );
   const smartTransactionsFeatureFlagEnabled =
-    state.metamask.swapsState?.swapsFeatureFlags?.smartTransactions
+    state.metamask.singleChainSwapsState?.swapsFeatureFlags?.smartTransactions
       ?.extensionActive;
   const smartTransactionsLiveness =
     state.metamask.smartTransactionsState?.liveness;
@@ -340,36 +346,49 @@ export const getCurrentSmartTransactionsEnabled = (state) => {
   return smartTransactionsEnabled && !currentSmartTransactionsError;
 };
 
+<<<<<<< HEAD
+=======
+export const getSwapRedesignEnabled = (state) => {
+  const swapRedesign =
+    state.metamask.singleChainSwapsState?.swapsFeatureFlags?.swapRedesign;
+  if (swapRedesign === undefined) {
+    return true; // By default show the redesign if we don't have feature flags returned yet.
+  }
+  return swapRedesign.extensionActive;
+};
+
+>>>>>>> upstream/multichain-swaps-controller
 export const getSwapsQuoteRefreshTime = (state) =>
-  state.metamask.swapsState.swapsQuoteRefreshTime;
+  state.metamask.singleChainSwapsState.swapsQuoteRefreshTime;
 
 export const getSwapsQuotePrefetchingRefreshTime = (state) =>
-  state.metamask.swapsState.swapsQuotePrefetchingRefreshTime;
+  state.metamask.singleChainSwapsState.swapsQuotePrefetchingRefreshTime;
 
 export const getBackgroundSwapRouteState = (state) =>
-  state.metamask.swapsState.routeState;
+  state.metamask.singleChainSwapsState.routeState;
 
 export const getCustomSwapsGas = (state) =>
-  state.metamask.swapsState.customMaxGas;
+  state.metamask.singleChainSwapsState.customMaxGas;
 
 export const getCustomSwapsGasPrice = (state) =>
-  state.metamask.swapsState.customGasPrice;
+  state.metamask.singleChainSwapsState.customGasPrice;
 
 export const getCustomMaxFeePerGas = (state) =>
-  state.metamask.swapsState.customMaxFeePerGas;
+  state.metamask.singleChainSwapsState.customMaxFeePerGas;
 
 export const getCustomMaxPriorityFeePerGas = (state) =>
-  state.metamask.swapsState.customMaxPriorityFeePerGas;
+  state.metamask.singleChainSwapsState.customMaxPriorityFeePerGas;
 
 export const getSwapsUserFeeLevel = (state) =>
-  state.metamask.swapsState.swapsUserFeeLevel;
+  state.metamask.singleChainSwapsState.swapsUserFeeLevel;
 
-export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
+export const getFetchParams = (state) =>
+  state.metamask.singleChainSwapsState.fetchParams;
 
-export const getQuotes = (state) => state.metamask.swapsState.quotes;
+export const getQuotes = (state) => state.metamask.singleChainSwapsState.quotes;
 
 export const getQuotesLastFetched = (state) =>
-  state.metamask.swapsState.quotesLastFetched;
+  state.metamask.singleChainSwapsState.quotesLastFetched;
 
 export const getSelectedQuote = (state) => {
   const { selectedAggId, quotes } = getSwapsState(state);
@@ -381,7 +400,8 @@ export const getSwapsErrorKey = (state) => getSwapsState(state)?.errorKey;
 export const getShowQuoteLoadingScreen = (state) =>
   state.swaps.showQuoteLoadingScreen;
 
-export const getSwapsTokens = (state) => state.metamask.swapsState.tokens;
+export const getSwapsTokens = (state) =>
+  state.metamask.singleChainSwapsState.tokens;
 
 export const getSwapsWelcomeMessageSeenStatus = (state) =>
   state.metamask.swapsWelcomeMessageHasBeenShown;
@@ -391,9 +411,11 @@ export const getTopQuote = (state) => {
   return quotes[topAggId];
 };
 
-export const getApproveTxId = (state) => state.metamask.swapsState.approveTxId;
+export const getApproveTxId = (state) =>
+  state.metamask.singleChainSwapsState.approveTxId;
 
-export const getTradeTxId = (state) => state.metamask.swapsState.tradeTxId;
+export const getTradeTxId = (state) =>
+  state.metamask.singleChainSwapsState.tradeTxId;
 
 export const getUsedQuote = (state) =>
   getSelectedQuote(state) || getTopQuote(state);
@@ -455,7 +477,7 @@ export const getSwapsNetworkConfig = (state) => {
     swapsStxBatchStatusRefreshTime,
     swapsStxStatusDeadline,
     swapsStxMaxFeeMultiplier,
-  } = state.metamask.swapsState;
+  } = state.metamask.singleChainSwapsState;
   return {
     quoteRefreshTime: swapsQuoteRefreshTime,
     quotePrefetchingRefreshTime: swapsQuotePrefetchingRefreshTime,
@@ -548,9 +570,11 @@ export const swapsQuoteSelected = (aggId) => {
   };
 };
 
-export const fetchAndSetSwapsGasPriceInfo = () => {
+export const fetchAndSetSwapsGasPriceInfo = (chainId) => {
   return async (dispatch) => {
-    const basicEstimates = await dispatch(fetchMetaSwapsGasPriceEstimates());
+    const basicEstimates = await dispatch(
+      fetchMetaSwapsGasPriceEstimates(chainId),
+    );
 
     if (basicEstimates?.fast) {
       dispatch(setSwapsTxGasPrice(decGWEIToHexWEI(basicEstimates.fast)));
@@ -607,19 +631,39 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
   };
 };
 
+<<<<<<< HEAD
 export const fetchQuotesAndSetQuoteState = (
+=======
+const isTokenAlreadyAdded = (tokenAddress, tokens) => {
+  if (!Array.isArray(tokens)) {
+    return false;
+  }
+  return tokens.find(
+    (token) => token.address.toLowerCase() === tokenAddress.toLowerCase(),
+  );
+};
+
+export const fetchQuotesAndSetQuoteState = ({
+>>>>>>> upstream/multichain-swaps-controller
   history,
   inputValue,
   maxSlippage,
   trackEvent,
   pageRedirectionDisabled,
-) => {
+  networkClientId,
+}) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
+    // eslint-disable-next-line no-param-reassign
+    networkClientId ??= getSelectedNetworkClientId(state);
     let swapsLivenessForNetwork = {
       swapsFeatureIsLive: false,
     };
+    const chainIdFromNetworkClient = await dispatch(
+      getChainIdByNetworkClientId(networkClientId),
+    );
+    const chainId = chainIdFromNetworkClient ?? getCurrentChainId(state);
+
     try {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       swapsLivenessForNetwork = getSwapsLivenessForNetwork(
@@ -629,6 +673,7 @@ export const fetchQuotesAndSetQuoteState = (
     } catch (error) {
       log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
     }
+
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
     if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
@@ -669,6 +714,8 @@ export const fetchQuotesAndSetQuoteState = (
     }
     dispatch(setFetchingQuotes(true));
 
+    // TODO needs to be parameterized by chainId/networkClientId
+    // Blocked til TokenRatesController updates occur?
     const contractExchangeRates = getTokenExchangeRates(state);
 
     let destinationTokenAddedForSwap = false;
@@ -706,6 +753,7 @@ export const fetchQuotesAndSetQuoteState = (
       );
     }
 
+    // TODO parameterize by chainId/networkClientId?
     const swapsTokens = getSwapsTokens(state);
 
     const sourceTokenInfo =
@@ -767,13 +815,14 @@ export const fetchQuotesAndSetQuoteState = (
             destinationTokenInfo,
             accountBalance: selectedAccount.balance,
             chainId,
+            networkClientId,
           },
         ),
       );
 
       const gasPriceFetchPromise = networkAndAccountSupports1559
         ? null // For EIP 1559 we can get gas prices via "useGasFeeEstimates".
-        : dispatch(fetchAndSetSwapsGasPriceInfo());
+        : dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
 
       const [[fetchedQuotes, selectedAggId]] = await Promise.all([
         fetchAndSetQuotesPromise,
@@ -1010,10 +1059,16 @@ export const signAndSendTransactions = (
   history,
   trackEvent,
   additionalTrackingParams,
+  networkClientId,
 ) => {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
+    // eslint-disable-next-line no-param-reassign
+    networkClientId ??= getSelectedNetworkClientId(state);
+    const chainIdFromNetworkClient = await dispatch(
+      getChainIdByNetworkClientId(networkClientId),
+    );
+    const chainId = chainIdFromNetworkClient ?? getCurrentChainId(state);
     const hardwareWalletUsed = isHardwareWallet(state);
     const networkAndAccountSupports1559 = checkNetworkAndAccountSupports1559(
       state,
@@ -1037,9 +1092,11 @@ export const signAndSendTransactions = (
       return;
     }
 
+    // TODO parameterize this by networkClientId/chainId
     const customSwapsGas = getCustomSwapsGas(state);
     const customMaxFeePerGas = getCustomMaxFeePerGas(state);
     const customMaxPriorityFeePerGas = getCustomMaxPriorityFeePerGas(state);
+
     const fetchParams = getFetchParams(state);
     const { metaData, value: swapTokenValue, slippage } = fetchParams;
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
@@ -1050,6 +1107,7 @@ export const signAndSendTransactions = (
       history.push(AWAITING_SWAP_ROUTE);
     }
 
+    // TODO parameterize this by networkClientId/chainId
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
 
     let maxFeePerGas;
@@ -1057,6 +1115,7 @@ export const signAndSendTransactions = (
     let baseAndPriorityFeePerGas;
     let decEstimatedBaseFee;
 
+    // TODO parameterize this by networkClientId/chainId
     if (networkAndAccountSupports1559) {
       const {
         high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
@@ -1271,10 +1330,12 @@ export const signAndSendTransactions = (
   };
 };
 
-export function fetchMetaSwapsGasPriceEstimates() {
+export function fetchMetaSwapsGasPriceEstimates(chainId) {
   return async (dispatch, getState) => {
     const state = getState();
-    const chainId = getCurrentChainId(state);
+
+    // eslint-disable-next-line no-param-reassign
+    chainId ??= getCurrentChainId(state);
 
     dispatch(swapGasPriceEstimatesFetchStarted());
 
@@ -1291,6 +1352,8 @@ export function fetchMetaSwapsGasPriceEstimates() {
       dispatch(swapGasPriceEstimatesFetchFailed());
 
       try {
+        // TODO this fallback needs to be parametrized by networkClientId
+        // we need some action that fetches gasPrice in the background
         const gasPrice = await global.ethQuery.gasPrice();
         const gasPriceInDecGWEI = hexWEIToDecGWEI(gasPrice.toString(10));
 

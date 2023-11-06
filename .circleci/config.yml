@@ -38,7 +38,20 @@ workflows:
       - prep-build-test:
           requires:
             - prep-deps
+<<<<<<< HEAD
       - prep-build-test-metrics:
+=======
+      - prep-build-multichain-test:
+          requires:
+            - prep-deps
+      - prep-build-test-mv3:
+          requires:
+            - prep-deps
+      - prep-build-test-flask:
+          requires:
+            - prep-deps
+      - prep-build-test-mmi:
+>>>>>>> upstream/multichain-swaps-controller
           requires:
             - prep-deps
       - prep-build-storybook:
@@ -57,16 +70,39 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-build-test
+      - test-e2e-chrome-multichain:
+          requires:
+            - prep-build-multichain-test
       - test-e2e-firefox:
           requires:
             - prep-build-test
       - test-e2e-chrome-metrics:
           requires:
+<<<<<<< HEAD
             - prep-build-test-metrics
       - test-e2e-firefox-metrics:
           requires:
             - prep-build-test-metrics
       - test-unit:
+=======
+            - prep-build-test
+      - test-e2e-chrome-flask:
+          requires:
+            - prep-build-test-flask
+      - test-e2e-firefox-flask:
+          requires:
+            - prep-build-test-flask
+      - test-e2e-chrome-mmi:
+          requires:
+            - prep-build-test-mmi
+      - test-e2e-chrome-rpc-mmi:
+          requires:
+            - prep-build-test-mmi
+      - test-e2e-chrome-mv3:
+          requires:
+            - prep-build-test-mv3
+      - test-unit-mocha:
+>>>>>>> upstream/multichain-swaps-controller
           requires:
             - prep-deps
       - test-unit-global:
@@ -91,9 +127,18 @@ workflows:
             - validate-source-maps
             - test-mozilla-lint
             - test-e2e-chrome
+            - test-e2e-chrome-multichain
             - test-e2e-firefox
+<<<<<<< HEAD
             - test-e2e-chrome-metrics
             - test-e2e-firefox-metrics
+=======
+            - test-e2e-chrome-flask
+            - test-e2e-firefox-flask
+            - test-e2e-chrome-mmi
+            - test-e2e-chrome-rpc-mmi
+            - test-storybook
+>>>>>>> upstream/multichain-swaps-controller
       - benchmark:
           requires:
             - prep-build-test
@@ -218,8 +263,34 @@ jobs:
             - dist-test
             - builds-test
 
+<<<<<<< HEAD
   prep-build-test-metrics:
     executor: node-browsers-medium-plus
+=======
+  prep-build-multichain-test:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: MULTICHAIN=1 yarn build:test
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test-multichain
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-multichain
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-multichain
+            - builds-test-multichain
+
+  prep-build-storybook:
+    executor: node-browsers-large
+>>>>>>> upstream/multichain-swaps-controller
     steps:
       - checkout
       - attach_workspace:
@@ -333,12 +404,19 @@ jobs:
           command: yarn depcheck
 
   test-e2e-chrome:
+<<<<<<< HEAD
     executor: node-browsers
     steps:
       - checkout
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
+=======
+    executor: node-browsers-large
+    parallelism: 24
+    steps:
+      - run: *shallow-git-clone
+>>>>>>> upstream/multichain-swaps-controller
       - attach_workspace:
           at: .
       - run:
@@ -348,24 +426,121 @@ jobs:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
       - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+      - run:
           name: test:e2e:chrome
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
+<<<<<<< HEAD
               yarn test:e2e:chrome --retries 2
+=======
+              yarn test:e2e:chrome --retries 2 --debug
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-multichain:
+    executor: node-browsers-large
+    parallelism: 24
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-multichain ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-multichain ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+      - run:
+          name: test:e2e:chrome-multichain
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              MULTICHAIN=1 yarn test:e2e:chrome --retries 2 --debug
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+  test-e2e-chrome-mv3:
+    executor: node-browsers-large
+    parallelism: 24
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mv3 ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-mv3 ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+      - run:
+          name: test:e2e:chrome
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome --retries 2 --debug || echo "Temporarily suppressing MV3 e2e test failures"
+>>>>>>> upstream/multichain-swaps-controller
             fi
           no_output_timeout: 20m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
 
+<<<<<<< HEAD
   test-e2e-chrome-metrics:
+=======
+  test-e2e-chrome-rpc:
+    executor: node-browsers
+    parallelism: 1
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+      - run:
+          name: test:e2e:chrome:rpc
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:rpc --retries 2
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-rpc-mmi:
+>>>>>>> upstream/multichain-swaps-controller
     executor: node-browsers
     steps:
-      - checkout
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -375,7 +550,14 @@ jobs:
           name: Move test zips to builds
           command: mv ./builds-test-metrics ./builds
       - run:
+<<<<<<< HEAD
           name: test:e2e:chrome:metrics
+=======
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+      - run:
+          name: test:e2e:chrome:rpc
+>>>>>>> upstream/multichain-swaps-controller
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
@@ -385,6 +567,7 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+<<<<<<< HEAD
 
   test-e2e-firefox:
     executor: node-browsers
@@ -393,6 +576,106 @@ jobs:
       - run:
           name: Install Firefox
           command: ./.circleci/scripts/firefox-install.sh
+=======
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-firefox-flask:
+    executor: node-browsers-large
+    parallelism: 16
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-flask ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-flask ./builds
+      - run:
+          name: Activate Selenium Manager for Firefox
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser firefox
+      - run:
+          name: test:e2e:firefox:flask
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:firefox:flask --retries 2 --debug
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-flask:
+    executor: node-browsers-large
+    parallelism: 16
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-flask ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-flask ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+      - run:
+          name: test:e2e:chrome:flask
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:flask --retries 2 --debug
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-mmi:
+    executor: node-browsers-large
+    parallelism: 16
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mmi ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-mmi ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+      - run:
+          name: test:e2e:chrome:mmi
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:mmi --retries 2 --debug --build-type=mmi
+            fi
+          no_output_timeout: 20m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-firefox:
+    executor: node-browsers-large
+    parallelism: 24
+    steps:
+      - run: *shallow-git-clone
+>>>>>>> upstream/multichain-swaps-controller
       - attach_workspace:
           at: .
       - run:
@@ -401,6 +684,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
+      - run:
+          name: Activate Selenium Manager for Firefox
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser firefox
       - run:
           name: test:e2e:firefox
           command: |
@@ -439,14 +725,23 @@ jobs:
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
+<<<<<<< HEAD
+=======
+      - store_test_results:
+          path: test/test-results/e2e
+>>>>>>> upstream/multichain-swaps-controller
 
   benchmark:
     executor: node-browsers-medium-plus
     steps:
+<<<<<<< HEAD
       - checkout
       - run:
           name: Re-Install Chrome
           command: ./.circleci/scripts/chrome-install.sh
+=======
+      - run: *shallow-git-clone
+>>>>>>> upstream/multichain-swaps-controller
       - attach_workspace:
           at: .
       - run:
@@ -455,6 +750,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
       - run:
           name: Run page load benchmark
           command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
@@ -466,6 +764,75 @@ jobs:
           paths:
             - test-artifacts
 
+<<<<<<< HEAD
+=======
+  user-actions-benchmark:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+      - run:
+          name: Run page load benchmark
+          command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test-artifacts
+
+  stats-module-load-init:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mv3 ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-mv3 ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
+      - run:
+          name: Run page load benchmark
+          command: |
+            mkdir -p test-artifacts/chrome/mv3
+            cp -R development/charts/flamegraph test-artifacts/chrome/mv3/initialisation
+            cp -R development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/background
+            cp -R development/charts/flamegraph/chart test-artifacts/chrome/mv3/initialisation/ui
+            cp -R development/charts/table test-artifacts/chrome/mv3/load_time
+      - run:
+          name: Run page load benchmark
+          command: yarn mv3:stats:chrome --out test-artifacts/chrome/mv3
+      - run:
+          name: Install jq
+          command: sudo apt install jq -y
+      - run:
+          name: Record bundle size at commit
+          command: ./.circleci/scripts/bundle-stats-commit.sh
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - persist_to_workspace:
+          root: .
+          paths:
+            - test-artifacts
+
+>>>>>>> upstream/multichain-swaps-controller
   job-publish-prerelease:
     executor: node-browsers
     steps:

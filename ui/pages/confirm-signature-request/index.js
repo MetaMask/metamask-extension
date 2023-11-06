@@ -70,7 +70,6 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTypedMessages,
-    networkId,
     blockGasLimit,
   } = useSelector((state) => state.metamask);
   const { chainId } = useSelector(getProviderConfig);
@@ -88,13 +87,24 @@ const ConfirmTxScreen = ({ match }) => {
       {},
       {},
       {},
-      networkId,
+      {},
+      {},
       chainId,
     );
     if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
       navigateToMostRecentOverviewPage();
     }
+<<<<<<< HEAD
   }, []);
+=======
+  }, [
+    chainId,
+    navigateToMostRecentOverviewPage,
+    sendTo,
+    unapprovedMessagesTotal,
+    unapprovedTxs,
+  ]);
+>>>>>>> upstream/multichain-swaps-controller
 
   useEffect(() => {
     if (!prevValue) {
@@ -102,6 +112,7 @@ const ConfirmTxScreen = ({ match }) => {
       return;
     }
 
+<<<<<<< HEAD
     let prevTx;
     const { params: { id: transactionId } = {} } = match;
     if (transactionId) {
@@ -110,10 +121,38 @@ const ConfirmTxScreen = ({ match }) => {
       const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevValue;
       const prevUnconfTxList = txHelper(
         prevUnapprovedTxs,
+=======
+      let prevTx;
+      const { params: { id: transactionId } = {} } = match;
+      if (transactionId) {
+        prevTx = currentNetworkTxList.find(
+          ({ id }) => `${id}` === transactionId,
+        );
+      } else {
+        const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } =
+          prevValue;
+        const prevUnconfTxList = txHelper(
+          prevUnapprovedTxs,
+          {},
+          {},
+          {},
+          {},
+          {},
+          chainId,
+        );
+        const prevTxData = prevUnconfTxList[prevIndex] || {};
+        prevTx =
+          currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {};
+      }
+
+      const unconfTxList = txHelper(
+        unapprovedTxs || {},
+>>>>>>> upstream/multichain-swaps-controller
         {},
         {},
         {},
-        networkId,
+        {},
+        {},
         chainId,
       );
       const prevTxData = prevUnconfTxList[prevIndex] || {};
@@ -162,8 +201,9 @@ const ConfirmTxScreen = ({ match }) => {
       unapprovedTxs || {},
       unapprovedMsgs,
       unapprovedPersonalMsgs,
+      {},
+      {},
       unapprovedTypedMessages,
-      networkId,
       chainId,
     );
 
@@ -173,7 +213,19 @@ const ConfirmTxScreen = ({ match }) => {
       ? unconfTxList.find(({ id }) => `${id}` === transactionId)
       : unconfTxList[index];
     return cloneDeep(unconfirmedTx);
+<<<<<<< HEAD
   };
+=======
+  }, [
+    chainId,
+    index,
+    match,
+    unapprovedMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedTxs,
+    unapprovedTypedMessages,
+  ]);
+>>>>>>> upstream/multichain-swaps-controller
 
   const txData = getTxData() || {};
 

@@ -679,11 +679,17 @@ describe('MetaMetricsController', function () {
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
+<<<<<<< HEAD
         useCollectibleDetection: false,
+=======
+        useNftDetection: false,
+        securityAlertsEnabled: true,
+>>>>>>> upstream/multichain-swaps-controller
         theme: 'default',
       });
 
       assert.deepEqual(traits, {
+<<<<<<< HEAD
         [TRAITS.ADDRESS_BOOK_ENTRIES]: 3,
         [TRAITS.LEDGER_CONNECTION_TYPE]: 'web-hid',
         [TRAITS.NETWORKS_ADDED]: [MAINNET_CHAIN_ID, ROPSTEN_CHAIN_ID],
@@ -694,6 +700,36 @@ describe('MetaMetricsController', function () {
         [TRAITS.NUMBER_OF_TOKENS]: 5,
         [TRAITS.OPENSEA_API_ENABLED]: true,
         [TRAITS.THEME]: 'default',
+=======
+        [MetaMetricsUserTrait.AddressBookEntries]: 3,
+        [MetaMetricsUserTrait.InstallDateExt]: '',
+        [MetaMetricsUserTrait.LedgerConnectionType]: 'web-hid',
+        [MetaMetricsUserTrait.NetworksAdded]: [
+          CHAIN_IDS.MAINNET,
+          CHAIN_IDS.GOERLI,
+          '0xaf',
+        ],
+        [MetaMetricsUserTrait.NetworksWithoutTicker]: ['0xaf'],
+        [MetaMetricsUserTrait.NftAutodetectionEnabled]: false,
+        [MetaMetricsUserTrait.NumberOfAccounts]: 2,
+        [MetaMetricsUserTrait.NumberOfNftCollections]: 3,
+        [MetaMetricsUserTrait.NumberOfNfts]: 4,
+        [MetaMetricsUserTrait.NumberOfTokens]: 5,
+        [MetaMetricsUserTrait.OpenseaApiEnabled]: true,
+        [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
+        [MetaMetricsUserTrait.Theme]: 'default',
+        [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
+        [MetaMetricsUserTrait.DesktopEnabled]: false,
+        [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
+        [MetaMetricsUserTrait.MmiAccountAddress]: null,
+        [MetaMetricsUserTrait.MmiIsCustodian]: false,
+        ///: END:ONLY_INCLUDE_IN
+        ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+        [MetaMetricsUserTrait.PetnameAddressCount]: 3,
+        ///: END:ONLY_INCLUDE_IN
+>>>>>>> upstream/multichain-swaps-controller
       });
     });
 

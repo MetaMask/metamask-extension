@@ -24,7 +24,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     id: 643368596521636,
     time: 1653527035634,
     status: 'submitted',
-    metamaskNetworkId: '5',
     originalGasEstimate: '5208',
     userEditedGasLimit: false,
     chainId: '0x5',
@@ -49,7 +48,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         id: 643368596521636,
         time: 1653527035634,
         status: 'approved',
-        metamaskNetworkId: '5',
         originalGasEstimate: '5208',
         userEditedGasLimit: false,
         chainId: '0x5',
@@ -155,7 +153,11 @@ export const MOCK_TRANSACTION_BY_TYPE = {
       maxPriorityFeePerGas: '0x9502F900',
     },
     id: 7694052085150913,
+<<<<<<< HEAD
     metamaskNetworkId: '5',
+=======
+    loadingDefaults: true,
+>>>>>>> upstream/multichain-swaps-controller
     origin: 'https://remix.ethereum.org',
     originalGasEstimate: '0x118f4',
     sendFlowHistory: [],
@@ -178,7 +180,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
   [MOCK_TX_TYPE.DEPLOY_CONTRACT]: {
     blockNumber: '6195527',
     id: 4243712234858468,
-    metamaskNetworkId: '5',
+    chainId: '0x5',
     status: 'confirmed',
     time: 1585088013000,
     txParams: {
@@ -235,7 +237,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
   [MOCK_TX_TYPE.INCOMING]: {
     blockNumber: '6477257',
     id: 4243712234858505,
-    metamaskNetworkId: '5',
+    chainId: '0x5',
     status: 'confirmed',
     time: 1589314295000,
     txParams: {
@@ -289,7 +291,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     id: 3938342322880462,
     time: 1653459456297,
     status: 'failed',
-    metamaskNetworkId: '5',
+    chainId: '0x5',
     originalGasEstimate: '14609',
     userEditedGasLimit: false,
     chainId: '0x5',
@@ -318,7 +320,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         id: 3938342322880462,
         time: 1653459456297,
         status: 'approved',
-        metamaskNetworkId: '5',
         originalGasEstimate: '14609',
         userEditedGasLimit: false,
         chainId: '0x5',
@@ -476,7 +477,12 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     id: 4243712234858512,
     time: 1589314601567,
     status: 'confirmed',
+<<<<<<< HEAD
     metamaskNetworkId: '5',
+=======
+    chainId: '0x5',
+    loadingDefaults: false,
+>>>>>>> upstream/multichain-swaps-controller
     txParams: {
       from: '0xabca64466f257793eaa52fcfff5066894b76a149',
       to: '0xefg5bc4e8f1f969934d773fa67da095d2e491a97',
@@ -491,7 +497,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
   [MOCK_TX_TYPE.SMART]: {
     blockNumber: '6195527',
     id: 4243712234858468,
-    metamaskNetworkId: '5',
+    chainId: '0x5',
     status: 'confirmed',
     time: 1585088013000,
     txParams: {
@@ -511,7 +517,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
   [MOCK_TX_TYPE.SWAP]: {
     blockNumber: '6195527',
     id: 4243712234858467,
-    metamaskNetworkId: '5',
+    chainId: '0x5',
     status: 'confirmed',
     time: 1585088013000,
     txParams: {
@@ -530,7 +536,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
   [MOCK_TX_TYPE.SWAP_APPROVAL]: {
     blockNumber: '6195527',
     id: 4243712234858467,
-    metamaskNetworkId: '5',
+    chainId: '0x5',
     status: 'confirmed',
     time: 1585088013000,
     txParams: {
@@ -550,7 +556,6 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     id: 5177046356058729,
     time: 1653457101080,
     status: 'submitted',
-    metamaskNetworkId: '5',
     originalGasEstimate: '0xb427',
     userEditedGasLimit: false,
     chainId: '0x5',
@@ -577,7 +582,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         id: 5177046356058729,
         time: 1653457101080,
         status: 'unapproved',
-        metamaskNetworkId: '5',
+        chainId: '0x5',
         originalGasEstimate: '0xb427',
         userEditedGasLimit: false,
         chainId: '0x5',
@@ -747,7 +752,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     id: 1441203963845330,
     time: 1652206763566,
     status: 'confirmed',
-    metamaskNetworkId: '5',
+    chainId: '0x5',
     originalGasEstimate: '0x118e0',
     userEditedGasLimit: false,
     chainId: '0x5',
@@ -847,7 +852,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     id: 5177046356058725,
     time: 1653457077370,
     status: 'confirmed',
-    metamaskNetworkId: '5',
+    chainId: '0x5',
     originalGasEstimate: '0xea60',
     userEditedGasLimit: false,
     chainId: '0x5',
@@ -874,7 +879,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         id: 5177046356058725,
         time: 1653457077370,
         status: 'unapproved',
-        metamaskNetworkId: '5',
+        chainId: '0x5',
         originalGasEstimate: '0xea60',
         userEditedGasLimit: false,
         chainId: '0x5',
@@ -1194,7 +1199,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
     id: 5177046356058754,
     time: 1653457323504,
     status: 'confirmed',
-    metamaskNetworkId: '5',
+    chainId: '0x5',
     originalGasEstimate: '0x10896',
     userEditedGasLimit: false,
     chainId: '0x5',
@@ -1243,7 +1248,7 @@ export const MOCK_TRANSACTION_BY_TYPE = {
         id: 5177046356058754,
         time: 1653457323504,
         status: 'unapproved',
-        metamaskNetworkId: '5',
+        chainId: '0x5',
         originalGasEstimate: '0x10896',
         userEditedGasLimit: false,
         chainId: '0x5',

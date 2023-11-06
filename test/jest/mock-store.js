@@ -159,7 +159,6 @@ export const createSwapsMockStore = () => {
           id: 6571648590592143,
           time: 1667403993369,
           status: 'confirmed',
-          metamaskNetworkId: '5',
           originalGasEstimate: '0x7548',
           userEditedGasLimit: false,
           chainId: '0x5',
@@ -289,7 +288,7 @@ export const createSwapsMockStore = () => {
           address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
         },
       ],
-      swapsState: {
+      singleChainSwapsState: {
         swapsFeatureFlags: {
           smartTransactions: {
             mobileActive: true,

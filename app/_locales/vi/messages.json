@@ -1471,8 +1471,197 @@
   "signed": {
     "message": "Đã ký"
   },
+<<<<<<< HEAD
   "slow": {
     "message": "Chậm"
+=======
+  "signin": {
+    "message": "Đăng nhập"
+  },
+  "simulationErrorMessageV2": {
+    "message": "Chúng tôi không thể ước tính gas. Có thể đã xảy ra lỗi trong hợp đồng và giao dịch này có thể thất bại."
+  },
+  "skip": {
+    "message": "Bỏ qua"
+  },
+  "skipAccountSecurity": {
+    "message": "Bỏ qua bảo mật tài khoản?"
+  },
+  "skipAccountSecurityDetails": {
+    "message": "Tôi hiểu rằng nếu chưa sao lưu Cụm từ khôi phục bí mật của mình, tôi có thể bị mất tài khoản và toàn bộ tài sản bên trong."
+  },
+  "smartContracts": {
+    "message": "Hợp đồng thông minh"
+  },
+  "smartSwap": {
+    "message": "Hoán đổi thông minh"
+  },
+  "smartSwapsAreHere": {
+    "message": "Hoán đổi thông minh đã ra mắt!"
+  },
+  "smartSwapsDescription": {
+    "message": "Tính năng Hoán đổi của MetaMask nay đã thông minh hơn rất nhiều! Kích hoạt Hoán đổi thông minh sẽ cho phép MetaMask tối ưu quy trình Hoán đổi để giúp bạn:"
+  },
+  "smartSwapsErrorNotEnoughFunds": {
+    "message": "Không có đủ tiền để thực hiện hoán đổi thông minh."
+  },
+  "smartSwapsErrorUnavailable": {
+    "message": "Hoán đổi thông minh tạm thời không khả dụng."
+  },
+  "smartSwapsSubDescription": {
+    "message": "* Hoán đổi thông minh sẽ cố gắng gửi giao dịch của bạn nhiều lần một cách riêng tư. Nếu tất cả các lần thử đều không thành công, giao dịch sẽ được phát công khai để đảm bảo Hoán đổi của bạn được thực hiện thành công."
+  },
+  "snapConfigure": {
+    "message": "Định cấu hình"
+  },
+  "snapConnectionWarning": {
+    "message": "$1 muốn kết nối với $2. Chỉ tiếp tục nếu bạn tin tưởng trang web này.",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
+  "snapContent": {
+    "message": "Nội dung này đến từ $1",
+    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
+  "snapCreateAccountSubtitle": {
+    "message": "Chọn cách bảo mật tài khoản mới của bạn bằng MetaMask Snap."
+  },
+  "snapCreateAccountTitle": {
+    "message": "Tạo tài khoản $1",
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
+  },
+  "snapCreateAccountTitle2": {
+    "message": "Snap",
+    "description": "$1 of the snapCreateAccountTitle"
+  },
+  "snapCreatedByMetaMask": {
+    "message": "Bởi MetaMask"
+  },
+  "snapDetailAudits": {
+    "message": "Kiểm tra"
+  },
+  "snapDetailDeveloper": {
+    "message": "Nhà phát triển"
+  },
+  "snapDetailLastUpdated": {
+    "message": "Đã cập nhật"
+  },
+  "snapDetailManageSnap": {
+    "message": "Quản lý Snap"
+  },
+  "snapDetailTags": {
+    "message": "Thẻ"
+  },
+  "snapDetailVersion": {
+    "message": "Phiên bản"
+  },
+  "snapDetailWebsite": {
+    "message": "Trang web"
+  },
+  "snapDetailsCreateASnapAccount": {
+    "message": "Tạo tài khoản Snap"
+  },
+  "snapDetailsInstalled": {
+    "message": "Đã cài đặt"
+  },
+  "snapInstall": {
+    "message": "Cài đặt Snap"
+  },
+  "snapInstallRequest": {
+    "message": "Cài đặt $1 để được cấp các quyền sau. Chỉ tiếp tục nếu bạn tin tưởng $1.",
+    "description": "$1 is the snap name."
+  },
+  "snapInstallSuccess": {
+    "message": "Cài đặt hoàn tất"
+  },
+  "snapInstallWarningCheck": {
+    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào ô.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
+  },
+  "snapInstallWarningCheckPlural": {
+    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào tất cả các ô.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
+  },
+  "snapInstallWarningHeading": {
+    "message": "Hãy tiến hành thận trọng"
+  },
+  "snapInstallWarningKeyAccess": {
+    "message": "Bạn đang cấp quyền truy cập khóa $2 cho Snap \"$1\". Hành động này không thể hủy bỏ và sẽ cấp quyền kiểm soát tài khoản và tài sản $2 của bạn cho \"$1\". Đảm bảo bạn tin tưởng \"$1\" trước khi tiếp tục.",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallWarningPublicKeyAccess": {
+    "message": "Cấp quyền truy cập $1 cho khóa công khai $2",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallationErrorDescription": {
+    "message": "Không thể cài đặt $1.",
+    "description": "Error description used when snap installation fails. $1 is the snap name."
+  },
+  "snapInstallationErrorTitle": {
+    "message": "Cài đặt thất bại",
+    "description": "Error title used when snap installation fails."
+  },
+  "snapIsAudited": {
+    "message": "Đã kiểm tra"
+  },
+  "snapResultError": {
+    "message": "Lỗi"
+  },
+  "snapResultSuccess": {
+    "message": "Thành công"
+  },
+  "snapResultSuccessDescription": {
+    "message": "$1 đã sẵn sàng để sử dụng"
+  },
+  "snapUpdateAvailable": {
+    "message": "Có cập nhật mới"
+  },
+  "snapUpdateErrorDescription": {
+    "message": "Không thể cập nhật $1.",
+    "description": "Error description used when snap update fails. $1 is the snap name."
+  },
+  "snapUpdateErrorTitle": {
+    "message": "Cập nhật thất bại",
+    "description": "Error title used when snap update fails."
+  },
+  "snapUpdateRequest": {
+    "message": "$1 muốn cập nhật $2 lên $3 để được cấp các quyền sau. Chỉ tiếp tục nếu bạn tin tưởng $2.",
+    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+  },
+  "snapUpdateSuccess": {
+    "message": "Cập nhật hoàn tất"
+  },
+  "snaps": {
+    "message": "Snap"
+  },
+  "snapsInsightLoading": {
+    "message": "Đang tải thông tin chi tiết về giao dịch..."
+  },
+  "snapsInvalidUIError": {
+    "message": "Giao diện người dùng được chỉ định bởi Snap không hợp lệ."
+  },
+  "snapsNoInsight": {
+    "message": "Snap không trả về bất kỳ thông tin chi tiết nào"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Mọi thông tin mà bạn chia sẻ với Dịch vụ bên thứ ba sẽ được Dịch vụ bên thứ ba đó thu thập trực tiếp theo chính sách quyền riêng tư của họ. Vui lòng tham khảo chính sách quyền riêng tư của họ để biết thêm thông tin.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsTermsOfUse": {
+    "message": "Điều khoản sử dụng"
+  },
+  "snapsToggle": {
+    "message": "Snap chỉ hoạt động khi đã bật"
+  },
+  "snapsUIError": {
+    "message": "Liên hệ với những người tạo ra $1 để được hỗ trợ thêm.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "Một số mạng có thể gây ra rủi ro về bảo mật và/hoặc quyền riêng tư. Bạn cần hiểu rõ các rủi ro này trước khi thêm và sử dụng mạng."
+  },
+  "somethingIsWrong": {
+    "message": "Đã xảy ra lỗi. Hãy thử tải lại trang."
+>>>>>>> upstream/multichain-swaps-controller
   },
   "somethingWentWrong": {
     "message": "Rất tiếc! Đã xảy ra sự cố."

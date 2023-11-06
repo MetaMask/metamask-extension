@@ -87,6 +87,15 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
+<<<<<<< HEAD
+=======
+  "accountSnapsFeedback": {
+    "message": "Submit feedback on this feature"
+  },
+  "accountsConnected": {
+    "message": "Accounts connected"
+  },
+>>>>>>> upstream/multichain-swaps-controller
   "active": {
     "message": "Active"
   },
@@ -108,6 +117,15 @@
   "addANickname": {
     "message": "Add a nickname"
   },
+<<<<<<< HEAD
+=======
+  "addAccount": {
+    "message": "Add account"
+  },
+  "addAccountSnapModalHeader": {
+    "message": "Add Account Snap"
+  },
+>>>>>>> upstream/multichain-swaps-controller
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -154,7 +172,39 @@
     "message": "Add memo"
   },
   "addNetwork": {
+<<<<<<< HEAD
     "message": "Add Network"
+=======
+    "message": "Add network"
+  },
+  "addNetworkTooltipWarning": {
+    "message": "This network connection relies on third parties. This connection may be less reliable or enable third-parties to track activity. $1",
+    "description": "$1 is Learn more link"
+  },
+  "addNewAccount": {
+    "message": "Add a new account"
+  },
+  "addNewToken": {
+    "message": "Add new token"
+  },
+  "addNft": {
+    "message": "Add NFT"
+  },
+  "addNfts": {
+    "message": "Add NFTs"
+  },
+  "addSnapAccountModalDescription": {
+    "message": "Discover options to keep your account secure with MetaMask Snaps"
+  },
+  "addSnapAccountToggle": {
+    "message": "Enable \"Add account Snap (Beta)\""
+  },
+  "addSnapAccountsDescription": {
+    "message": "Turning on this feature will give you the option to add the new Beta account Snaps right from your account list. If you install an account Snap, remember that it is a third-party service."
+  },
+  "addSuggestedNFTs": {
+    "message": "Add suggested NFTs"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "addSuggestedTokens": {
     "message": "Add Suggested Tokens"
@@ -222,6 +272,29 @@
   "alerts": {
     "message": "Alerts"
   },
+<<<<<<< HEAD
+=======
+  "allConnections": {
+    "message": "All Connections"
+  },
+  "allCustodianAccountsConnectedSubtitle": {
+    "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
+  },
+  "allCustodianAccountsConnectedTitle": {
+    "message": "No accounts available to connect"
+  },
+  "allOfYour": {
+    "message": "All of your $1",
+    "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
+  "allYourNFTsOf": {
+    "message": "All of your NFTs from $1",
+    "description": "$1 is a link to contract on the block explorer when we're not able to retrieve a erc721 or erc1155 name"
+  },
+  "allow": {
+    "message": "Allow"
+  },
+>>>>>>> upstream/multichain-swaps-controller
   "allowExternalExtensionTo": {
     "message": "Allow this external extension to:"
   },
@@ -390,6 +463,46 @@
     "message": "View account at $1",
     "description": "$1 replaced by URL for custom block explorer"
   },
+<<<<<<< HEAD
+=======
+  "blockaid": {
+    "message": "Blockaid"
+  },
+  "blockaidDescriptionApproveFarming": {
+    "message": "If you approve this request, a third party known for scams might take all your assets."
+  },
+  "blockaidDescriptionBlurFarming": {
+    "message": "If you approve this request, someone can steal your assets listed on Blur."
+  },
+  "blockaidDescriptionFailed": {
+    "message": "Because of an error, this request was not verified by the security provider. Proceed with caution."
+  },
+  "blockaidDescriptionMaliciousDomain": {
+    "message": "You're interacting with a malicious domain. If you approve this request, you might lose your assets."
+  },
+  "blockaidDescriptionMightLoseAssets": {
+    "message": "If you approve this request, you might lose your assets."
+  },
+  "blockaidDescriptionSeaportFarming": {
+    "message": "If you approve this request, someone can steal your assets listed on OpenSea."
+  },
+  "blockaidDescriptionTransferFarming": {
+    "message": "If you approve this request, a third party known for scams will take all your assets."
+  },
+  "blockaidMessage": {
+    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet. $1",
+    "description": "$1 is a link to a Blockaid's terms of use"
+  },
+  "blockaidTitleDeceptive": {
+    "message": "This is a deceptive request"
+  },
+  "blockaidTitleMayNotBeSafe": {
+    "message": "Request may not be safe"
+  },
+  "blockaidTitleSuspicious": {
+    "message": "This is a suspicious request"
+  },
+>>>>>>> upstream/multichain-swaps-controller
   "blockies": {
     "message": "Blockies"
   },
@@ -587,6 +700,12 @@
   "connectedSnapSites": {
     "message": "$1 snap is connected to these sites. They have access to the permissions listed above.",
     "description": "$1 represents the name of the snap"
+  },
+  "connectedaccount": {
+    "message": "account"
+  },
+  "connectedaccounts": {
+    "message": "accounts"
   },
   "connecting": {
     "message": "Connecting..."
@@ -1394,6 +1513,9 @@
   "goBack": {
     "message": "Go Back"
   },
+  "goToSite": {
+    "message": "Go to site"
+  },
   "goerli": {
     "message": "Goerli Test Network"
   },
@@ -1537,6 +1659,42 @@
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
   },
+<<<<<<< HEAD
+=======
+  "inputLogicEmptyState": {
+    "message": "Only enter a number that you're comfortable with the third party spending now or in the future. You can always increase the spending cap later."
+  },
+  "inputLogicEqualOrSmallerNumber": {
+    "message": "This allows the third party to spend $1 from your current balance.",
+    "description": "$1 is the current token balance in the account and the name of the current token"
+  },
+  "inputLogicHigherNumber": {
+    "message": "This allows the third party to spend all your token balance until it reaches the cap or you revoke the spending cap. If this is not intended, consider setting a lower spending cap."
+  },
+  "insightsFromSnap": {
+    "message": "Insights from $1",
+    "description": "$1 represents the name of the snap"
+  },
+  "install": {
+    "message": "Install"
+  },
+  "installExtension": {
+    "message": "Install extension"
+  },
+  "installExtensionDescription": {
+    "message": "The institution-compliant version of the world's leading web3 wallet, MetaMask."
+  },
+  "installOrigin": {
+    "message": "Install origin"
+  },
+  "installRequest": {
+    "message": "Installation request"
+  },
+  "installedOn": {
+    "message": "Installed on $1",
+    "description": "$1 is the date when the snap has been installed"
+  },
+>>>>>>> upstream/multichain-swaps-controller
   "insufficientBalance": {
     "message": "Insufficient balance."
   },
@@ -1958,6 +2116,18 @@
   "networkNameEthereum": {
     "message": "Ethereum"
   },
+<<<<<<< HEAD
+=======
+  "networkNameGoerli": {
+    "message": "Goerli"
+  },
+  "networkNameLinea": {
+    "message": "Linea"
+  },
+  "networkNameOpMainnet": {
+    "message": "OP Mainnet"
+  },
+>>>>>>> upstream/multichain-swaps-controller
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2307,15 +2477,39 @@
   "onlyConnectTrust": {
     "message": "Only connect with sites you trust."
   },
+<<<<<<< HEAD
   "onlyInteractWith": {
     "message": "Only interact with entities you trust."
+=======
+  "openCustodianApp": {
+    "message": "Open $1 app",
+    "description": "The $1 is the name of the Custodian that will be open"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "openFullScreenForLedgerWebHid": {
     "message": "Open MetaMask in full screen to connect your ledger via WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
+<<<<<<< HEAD
   "openSourceCode": {
     "message": "Check the source code"
+=======
+  "openInBlockExplorer": {
+    "message": "Open in block explorer"
+  },
+  "openSeaLabel": {
+    "message": "OpenSea + Blockaid"
+  },
+  "openSeaMessage": {
+    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. $1",
+    "description": "$1 is the link to OpenSea's terms of use"
+  },
+  "openSeaNew": {
+    "message": "OpenSea"
+  },
+  "operationFailed": {
+    "message": "Operation Failed"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "optional": {
     "message": "Optional"
@@ -2399,6 +2593,65 @@
     "message": "See address, account balance, activity and suggest transactions to approve",
     "description": "The description for the `eth_accounts` permission"
   },
+<<<<<<< HEAD
+=======
+  "permission_ethereumProvider": {
+    "message": "Access the Ethereum provider.",
+    "description": "The description for the `endowment:ethereum-provider` permission"
+  },
+  "permission_ethereumProviderDescription": {
+    "message": "Allow the snap to communicate with MetaMask directly, in order for it to read data from the blockchain and suggest messages and transactions.",
+    "description": "An extended description for the `endowment:ethereum-provider` permission"
+  },
+  "permission_getEntropy": {
+    "message": "Derive arbitrary keys unique to this snap.",
+    "description": "The description for the `snap_getEntropy` permission"
+  },
+  "permission_getEntropyDescription": {
+    "message": "Allow the snap to derive arbitrary keys unique to this snap, without exposing them. These keys are separate from your MetaMask account(s) and not related to your private keys or Secret Recovery Phrase. Other snaps cannot access this information.",
+    "description": "An extended description for the `snap_getEntropy` permission"
+  },
+  "permission_getLocale": {
+    "message": "View your preferred language.",
+    "description": "The description for the `snap_getLocale` permission"
+  },
+  "permission_getLocaleDescription": {
+    "message": "Let this Snap access your preferred language from your MetaMask settings. This can be used to localize and display the Snap's content using your language.",
+    "description": "An extended description for the `snap_getLocale` permission"
+  },
+  "permission_keyring": {
+    "message": "Allow requests for adding and controlling Ethereum accounts",
+    "description": "The description for the `endowment:keyring` permission"
+  },
+  "permission_keyringDescription": {
+    "message": "Let this Snap receive requests to add or remove accounts, plus sign and transact on behalf of these accounts.",
+    "description": "An extended description for the `endowment:keyring` permission"
+  },
+  "permission_lifecycleHooks": {
+    "message": "Use lifecycle hooks.",
+    "description": "The description for the `endowment:lifecycle-hooks` permission"
+  },
+  "permission_lifecycleHooksDescription": {
+    "message": "Allow the snap to use lifecycle hooks to run code at specific times during its lifecycle.",
+    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
+  },
+  "permission_manageAccounts": {
+    "message": "Add and control Ethereum accounts",
+    "description": "The description for `snap_manageAccounts` permission"
+  },
+  "permission_manageAccountsDescription": {
+    "message": "Allow this Snap to add or remove Ethereum accounts, then transact and sign with these accounts.",
+    "description": "An extended description for the `snap_manageAccounts` permission"
+  },
+  "permission_manageBip32Keys": {
+    "message": "Control your accounts and assets under $1 ($2).",
+    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
+  },
+  "permission_manageBip32KeysDescription": {
+    "message": "Allow the snap to derive BIP-32 key pairs based on your Secret Recovery Phrase without exposing it. This grants full access to all accounts and assets on $1.\nWith the power to manage keys, the snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
+    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
+  },
+>>>>>>> upstream/multichain-swaps-controller
   "permission_manageBip44Keys": {
     "message": "Control your \"$1\" accounts and assets.",
     "description": "The description for the `snap_getBip44Entropy_*` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
@@ -2685,7 +2938,23 @@
     "message": "Secret Recovery Phrase"
   },
   "secureWallet": {
+<<<<<<< HEAD
     "message": "Secure Wallet"
+=======
+    "message": "Secure wallet"
+  },
+  "security": {
+    "message": "Security"
+  },
+  "securityAlert": {
+    "message": "Security alert from $1 and $2"
+  },
+  "securityAlerts": {
+    "message": "Security alerts"
+  },
+  "securityAlertsDescription": {
+    "message": "This feature alerts you to malicious activity by actively reviewing transaction and signature requests. Always do your own due diligence before approving any requests. There's no guarantee that this feature will detect all malicious activity. By enabling this feature you agree to the provider's terms of use."
+>>>>>>> upstream/multichain-swaps-controller
   },
   "securityAndPrivacy": {
     "message": "Security & Privacy"
@@ -2753,6 +3022,15 @@
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
   },
+<<<<<<< HEAD
+=======
+  "selectAccountsForSnap": {
+    "message": "Select the account(s) to use with this snap"
+  },
+  "selectActionButton": {
+    "message": "Select action"
+  },
+>>>>>>> upstream/multichain-swaps-controller
   "selectAll": {
     "message": "Select all"
   },
@@ -2783,8 +3061,19 @@
   "send": {
     "message": "Send"
   },
+<<<<<<< HEAD
   "sendAmount": {
     "message": "Send Amount"
+=======
+  "sendAToken": {
+    "message": "Send a token"
+  },
+  "sendBugReport": {
+    "message": "Send us a bug report."
+  },
+  "sendDescription": {
+    "message": "Send crypto to any account"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "sendSpecifiedTokens": {
     "message": "Send $1",
@@ -2809,6 +3098,19 @@
   "setAdvancedPrivacySettingsDetails": {
     "message": "MetaMask uses these trusted third-party services to enhance product usability and safety."
   },
+<<<<<<< HEAD
+=======
+  "setApprovalForAll": {
+    "message": "Set approval for all"
+  },
+  "setApprovalForAllTitle": {
+    "message": "Approve $1 with no spend limit",
+    "description": "The token symbol that is being approved"
+  },
+  "settingAddSnapAccount": {
+    "message": "Add account Snap"
+  },
+>>>>>>> upstream/multichain-swaps-controller
   "settings": {
     "message": "Settings"
   },
@@ -2888,6 +3190,12 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
+  "siteConnections": {
+    "message": "Site Connections"
+  },
+  "sites": {
+    "message": "Sites"
+  },
   "skip": {
     "message": "Skip"
   },
@@ -2907,13 +3215,121 @@
     "message": "$1 snap has access to:",
     "description": "$1 represents the name of the snap"
   },
+<<<<<<< HEAD
   "snapAdded": {
     "message": "Added on $1 from $2",
     "description": "$1 represents the date the snap was installed, $2 represents which origin installed the snap."
+=======
+  "smartSwapsDescription": {
+    "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Swaps will allow MetaMask to programmatically optimize your Swap to help:"
   },
-  "snapError": {
-    "message": "Snap Error: '$1'. Error Code: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
+  "smartSwapsErrorNotEnoughFunds": {
+    "message": "Not enough funds for a smart swap."
+  },
+  "smartSwapsErrorUnavailable": {
+    "message": "Smart Swaps are temporarily unavailable."
+  },
+  "smartSwapsSubDescription": {
+    "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
+  },
+  "snapAccountCreated": {
+    "message": "Your account is ready!"
+  },
+  "snapAccountLegalDisclaimerExperimentalBetaDescription": {
+    "message": "Account Management Snaps are released as part of an experimental Beta release. You agree that you will only use one of these Snaps if you understand how it functions and how to use it, and you have fully read and understand all risk warnings and other disclosures made available by the Third Party Service provider relating to use of their Snap. You agree that Consensys is not responsible for any injury that you incur as a result of your use of this Snap.\n\nYou will not be able to use your MetaMask Secret Recovery Phrase to recover accounts added through Account Management Snaps. If your account credentials are lost or compromised, MetaMask will not be able to help you. If the Snap or the associated dapp is hacked or ceases to function, you may not be able to access your account and the funds in your account."
+  },
+  "snapAccountLegalDisclaimerExperimentalBetaSubtitle": {
+    "message": "Experimental Beta"
+  },
+  "snapAccountLegalDisclaimerPrivacyDescription": {
+    "message": "Any information you share with Third Party Services will be collected directly by those Third Party Services in accordance with their privacy policies. Please refer to their privacy policies for more information. Consensys has no access to information you share with Third Party Services."
+  },
+  "snapAccountLegalDisclaimerPrivacySubtitle": {
+    "message": "Privacy"
+  },
+  "snapAccountLegalDisclaimerTermsOfUseLink": {
+    "message": "Consensys Terms of Use"
+  },
+  "snapAccountLegalDisclaimerThirdPartyDescription": {
+    "message": "You acknowledge that Account Management Snaps are a Third Party Service, as defined in the $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. Consensys does not recommend the use of any Snap by any particular person for any particular reason. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
+    "description": "$1 is a link to the ConsenSys Terms of Use"
+  },
+  "snapAccountLegalDisclaimerThirdPartySubtitle": {
+    "message": "Third-Party Service"
+  },
+  "snapAccountLegalDisclaimerTitle": {
+    "message": "Important Information"
+  },
+  "snapAccountRedirectFinishSigningTitle": {
+    "message": "Finish signing"
+  },
+  "snapAccountRedirectSiteDescription": {
+    "message": "Follow the instructions from $1"
+  },
+  "snapAccountRemoved": {
+    "message": "Account removed"
+  },
+  "snapAccounts": {
+    "message": "Account Snaps"
+  },
+  "snapAccountsDescription": {
+    "message": "Accounts controlled by third-party Snaps."
+  },
+  "snapConfigure": {
+    "message": "Configure"
+  },
+  "snapConnectionWarning": {
+    "message": "$1 wants to connect to $2. Only continue if you trust this website.",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
+  "snapConnections": {
+    "message": "Snap Connections"
+  },
+  "snapContent": {
+    "message": "This content is coming from $1",
+    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
+  "snapCreateAccountSubtitle": {
+    "message": "Choose how to secure your new account using MetaMask Snaps. If you install an account Snap, remember that it is a third-party service."
+  },
+  "snapCreateAccountTitle": {
+    "message": "Create an account $1 (Beta)",
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
+  },
+  "snapCreateAccountTitle2": {
+    "message": "Snap",
+    "description": "$1 of the snapCreateAccountTitle"
+  },
+  "snapCreatedByMetaMask": {
+    "message": "By MetaMask"
+  },
+  "snapDetailAudits": {
+    "message": "Audit"
+  },
+  "snapDetailDeveloper": {
+    "message": "Developer"
+  },
+  "snapDetailLastUpdated": {
+    "message": "Updated"
+  },
+  "snapDetailManageSnap": {
+    "message": "Manage snap"
+  },
+  "snapDetailTags": {
+    "message": "Tags"
+  },
+  "snapDetailVersion": {
+    "message": "Version"
+  },
+  "snapDetailWebsite": {
+    "message": "Website"
+  },
+  "snapDetailsCreateASnapAccount": {
+    "message": "Add an account Snap (Beta)"
+  },
+  "snapDetailsInstalled": {
+    "message": "Installed"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "snapInstall": {
     "message": "Install Snap"
@@ -2925,17 +3341,96 @@
     "message": "You are granting key access to the snap \"$1\". This is irrevocable and grants \"$1\" control of your accounts and assets. Make sure you trust \"$1\" before proceeding.",
     "description": "The parameter is the name of the snap"
   },
+<<<<<<< HEAD
   "snapRequestsPermission": {
     "message": "This snap is requesting the following permissions:"
+=======
+  "snapInstallWarningPublicKeyAccess": {
+    "message": "Give $2 public key access to $1",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallationErrorDescription": {
+    "message": "$1 couldn’t be installed.",
+    "description": "Error description used when snap installation fails. $1 is the snap name."
+  },
+  "snapInstallationErrorTitle": {
+    "message": "Installation failed",
+    "description": "Error title used when snap installation fails."
+  },
+  "snapIsAudited": {
+    "message": "Audited"
+  },
+  "snapResultError": {
+    "message": "Error"
+  },
+  "snapResultSuccess": {
+    "message": "Success"
+  },
+  "snapResultSuccessDescription": {
+    "message": "$1 is ready to use"
+  },
+  "snapUpdateAvailable": {
+    "message": "Update available"
+  },
+  "snapUpdateErrorDescription": {
+    "message": "$1 couldn’t be updated.",
+    "description": "Error description used when snap update fails. $1 is the snap name."
+  },
+  "snapUpdateErrorTitle": {
+    "message": "Update failed",
+    "description": "Error title used when snap update fails."
+  },
+  "snapUpdateRequest": {
+    "message": "$1 wants to update $2 to $3 which gives it the following permissions. Only continue if you trust $2.",
+    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+  },
+  "snapUpdateSuccess": {
+    "message": "Update complete"
+>>>>>>> upstream/multichain-swaps-controller
+  },
+  "snapUrlIsBlocked": {
+    "message": "This Snap wants to take you to a blocked site. $1."
   },
   "snaps": {
     "message": "Snaps"
   },
+<<<<<<< HEAD
   "snapsSettingsDescription": {
     "message": "Manage your Snaps"
   },
   "snapsStatus": {
     "message": "Snap status is dependent on activity."
+=======
+  "snapsConnected": {
+    "message": "Snaps connected"
+  },
+  "snapsInsightLoading": {
+    "message": "Loading transaction insight..."
+  },
+  "snapsInvalidUIError": {
+    "message": "The UI specified by the snap is invalid."
+  },
+  "snapsNoInsight": {
+    "message": "The snap didn't return any insight"
+  },
+  "snapsPrivacyWarningFirstMessage": {
+    "message": "You acknowledge that any Snap that you install is a Third Party Service, unless otherwise identified, as defined in the Consensys $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. Consensys does not recommend the use of any Snap by any particular person for any particular reason. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
+    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Any information you share with Third Party Services will be collected directly by those Third Party Services in accordance with their privacy policies. Please refer to their privacy policies for more information.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsPrivacyWarningThirdMessage": {
+    "message": "Consensys has no access to information you share with Third Party Services.",
+    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsSettings": {
+    "message": "Snap settings"
+  },
+  "snapsTermsOfUse": {
+    "message": "Terms of Use"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "snapsToggle": {
     "message": "A snap will only run if it is enabled"
@@ -3726,7 +4221,20 @@
     "message": "Priority Fee (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
+<<<<<<< HEAD
     "message": "Total Gas Fee"
+=======
+    "message": "Total gas fee"
+  },
+  "transactionInsightsDeprecationInfo": {
+    "message": "Explore more ways to get transaction insights with"
+  },
+  "transactionInsightsDeprecationTitle": {
+    "message": "This feature will be deprecated soon"
+  },
+  "transactionNote": {
+    "message": "Transaction note"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "transactionResubmitted": {
     "message": "Transaction resubmitted with estimated gas fee increased to $1 at $2"
@@ -3827,6 +4335,15 @@
   "upArrow": {
     "message": "up arrow"
   },
+<<<<<<< HEAD
+=======
+  "update": {
+    "message": "Update"
+  },
+  "updateRequest": {
+    "message": "Update request"
+  },
+>>>>>>> upstream/multichain-swaps-controller
   "updatedWithDate": {
     "message": "Updated $1"
   },

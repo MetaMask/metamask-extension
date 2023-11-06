@@ -1468,8 +1468,197 @@
   "signed": {
     "message": "Nilagdaan"
   },
+<<<<<<< HEAD
   "slow": {
     "message": "Mabagal"
+=======
+  "signin": {
+    "message": "Mag-sign In"
+  },
+  "simulationErrorMessageV2": {
+    "message": "Hindi namin nagawang tantyahin ang gas. Maaaring may error sa kontrata at maaaring mabigo ang transaksyong ito."
+  },
+  "skip": {
+    "message": "Laktawan"
+  },
+  "skipAccountSecurity": {
+    "message": "Laktawan ang Account Security?"
+  },
+  "skipAccountSecurityDetails": {
+    "message": "Nauunawaan ko na hanggang sa i-back up ko ang aking Lihim na Parirala sa Pagbawi, maaaring mawala sa akin ang mga account ko at lahat ng asset ng mga ito."
+  },
+  "smartContracts": {
+    "message": "Mga smart na kontrata"
+  },
+  "smartSwap": {
+    "message": "Smart swap"
+  },
+  "smartSwapsAreHere": {
+    "message": "Nandito na ang mga Smart Swap!"
+  },
+  "smartSwapsDescription": {
+    "message": "Mas humusay pa ang mga MetaMask Swap! Ang pag-enable sa mga Smart Swap ay magbibigay-daan sa MetaMask na i-optimize ang iyong Swap gamit ang program para makatulong na:"
+  },
+  "smartSwapsErrorNotEnoughFunds": {
+    "message": "Hindi sapat ang pondo para sa smart swap."
+  },
+  "smartSwapsErrorUnavailable": {
+    "message": "Pansamantalang hindi available ang mga Smart Swap."
+  },
+  "smartSwapsSubDescription": {
+    "message": "* Susubukan ng mga Smart Swap na isumite nang pribado ang iyong transaksyon, maraming beses. Kapag nabigo ang lahat ng pagsubok, ipapakita sa publiko ang transaksyon upang matiyak na ang Swap ay naging matagumpay."
+  },
+  "snapConfigure": {
+    "message": "I-configure"
+  },
+  "snapConnectionWarning": {
+    "message": "Gustong kumonekta ng $1 sa $2. Magpatuloy lang kung pinagkakatiwalaan mo ang website na ito.",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
+  "snapContent": {
+    "message": "Ang nilalamang ito ay nagmumula sa $1",
+    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
+  "snapCreateAccountSubtitle": {
+    "message": "Piliin kung paano gawing ligtas ang iyong bagong account gamit ang mga MetaMask Snap."
+  },
+  "snapCreateAccountTitle": {
+    "message": "Gumawa ng $1 account",
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
+  },
+  "snapCreateAccountTitle2": {
+    "message": "snap",
+    "description": "$1 of the snapCreateAccountTitle"
+  },
+  "snapCreatedByMetaMask": {
+    "message": "Sa pamamagitan ng MetaMask"
+  },
+  "snapDetailAudits": {
+    "message": "I-audit"
+  },
+  "snapDetailDeveloper": {
+    "message": "Developer"
+  },
+  "snapDetailLastUpdated": {
+    "message": "In-update"
+  },
+  "snapDetailManageSnap": {
+    "message": "Pamahalaan ang snap"
+  },
+  "snapDetailTags": {
+    "message": "Mga Tag"
+  },
+  "snapDetailVersion": {
+    "message": "Bersyon"
+  },
+  "snapDetailWebsite": {
+    "message": "Website"
+  },
+  "snapDetailsCreateASnapAccount": {
+    "message": "Gumawa ng Snap Account"
+  },
+  "snapDetailsInstalled": {
+    "message": "Na-install"
+  },
+  "snapInstall": {
+    "message": "I-install ang snap"
+  },
+  "snapInstallRequest": {
+    "message": "Ang pag-install ng $1 ay nagbibigay dito ng mga sumusunod na pahintulot. Magpatuloy lang kung pinagkakatiwalaan mo ang $1.",
+    "description": "$1 is the snap name."
+  },
+  "snapInstallSuccess": {
+    "message": "Tapos na ang pag-install"
+  },
+  "snapInstallWarningCheck": {
+    "message": "Maglaan ng oras para suriin ang pahintulot na hinihiling. Magpatuloy lang kung pinagkakatiwalaan mo ang $1.",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
+  },
+  "snapInstallWarningCheckPlural": {
+    "message": "Maglaan ng oras para suriin ang mga pahintulot na hinihiling. Magpatuloy lang kung pinagkakatiwalaan mo ang $1.",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
+  },
+  "snapInstallWarningHeading": {
+    "message": "Magpatuloy nang may pag-iingat"
+  },
+  "snapInstallWarningKeyAccess": {
+    "message": "Binibigyan mo ang $2 ng key access sa snap na \"$1\". Hindi na ito mababawi at nagbibigay ito sa \"$1\" ng kontrol sa iyong mga $2 account at asset. Tiyaking pinagkakatiwalaan mo ang \"$1\" bago magpatuloy.",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallWarningPublicKeyAccess": {
+    "message": "Bigyan ang $2 ng access sa pampublikong key para $1",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallationErrorDescription": {
+    "message": "Hindi ma-install ang $1.",
+    "description": "Error description used when snap installation fails. $1 is the snap name."
+  },
+  "snapInstallationErrorTitle": {
+    "message": "Nabigo ang pag-install",
+    "description": "Error title used when snap installation fails."
+  },
+  "snapIsAudited": {
+    "message": "In-audit"
+  },
+  "snapResultError": {
+    "message": "Error"
+  },
+  "snapResultSuccess": {
+    "message": "Tagumpay"
+  },
+  "snapResultSuccessDescription": {
+    "message": "Handa nang gamitin ang $1"
+  },
+  "snapUpdateAvailable": {
+    "message": "Available ang update"
+  },
+  "snapUpdateErrorDescription": {
+    "message": "Hindi ma-update ang $1.",
+    "description": "Error description used when snap update fails. $1 is the snap name."
+  },
+  "snapUpdateErrorTitle": {
+    "message": "Nabigo ang pag-update",
+    "description": "Error title used when snap update fails."
+  },
+  "snapUpdateRequest": {
+    "message": "Gustong i-update ng $1 ang $2 sa $3 na nagbibigay dito ng mga sumusunod na pahintulot. Magpatuloy lang kung pinagkakatiwalaan mo ang $2.",
+    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+  },
+  "snapUpdateSuccess": {
+    "message": "Tapos na ang pag-update"
+  },
+  "snaps": {
+    "message": "Mga Snap"
+  },
+  "snapsInsightLoading": {
+    "message": "Naglo-load ng insight sa transaksyon..."
+  },
+  "snapsInvalidUIError": {
+    "message": "Ang UI na tinukoy ng snap ay hindi wasto."
+  },
+  "snapsNoInsight": {
+    "message": "Ang snap ay hindi nagbalik ng anumang insight"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "Ang anumang impormasyong ibinabahagi mo sa mga Serbisyo ng Third Party ay direktang kokolektahin ng mga Serbisyo ng Third Party na iyon alinsunod sa kanilang mga patakaran sa pagkapribado. Pakitingnan ang kanilang mga patakaran sa pagkapribado para sa higit pang impormasyon.",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsTermsOfUse": {
+    "message": "Mga Tuntunin ng Paggamit"
+  },
+  "snapsToggle": {
+    "message": "Tatakbo lamang ang snap kapag pinagana ito"
+  },
+  "snapsUIError": {
+    "message": "Makipag-ugnayan sa mga tagalikha ng $1 para sa karagdagang suporta.",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "Maaaring magdulot ang ilang network ng mga panganib sa seguridad at/o pagkapribado. Unawain ang mga panganib bago idagdag o gamitin ang isang network."
+  },
+  "somethingIsWrong": {
+    "message": "May nangyaring mali. Subukang muling i-load ang pahina."
+>>>>>>> upstream/multichain-swaps-controller
   },
   "somethingWentWrong": {
     "message": "Oops! Nagkaproblema."

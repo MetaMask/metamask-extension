@@ -21,11 +21,6 @@ export interface RemoteTransactionSourceRequest {
   currentChainId: Hex;
 
   /**
-   * The networkId of the current network.
-   */
-  currentNetworkId: string;
-
-  /**
    * Block number to start fetching transactions from.
    */
   fromBlock?: number;
@@ -41,7 +36,7 @@ export interface RemoteTransactionSourceRequest {
  * Used by the IncomingTransactionHelper to retrieve remote transaction data.
  */
 export interface RemoteTransactionSource {
-  isSupportedNetwork: (chainId: Hex, networkId: string) => boolean;
+  isSupportedNetwork: (chainId: Hex) => boolean;
 
   fetchTransactions: (
     request: RemoteTransactionSourceRequest,

@@ -9,6 +9,7 @@ import {
   TRANSACTION_TYPES,
   SMART_TRANSACTION_STATUSES,
 } from '../../shared/constants/transaction';
+<<<<<<< HEAD
 import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import { hexToDecimal } from '../../app/scripts/constants/metamask-controller-utils';
 import {
@@ -16,6 +17,13 @@ import {
   deprecatedGetCurrentNetworkId,
   getSelectedAddress,
 } from './selectors';
+=======
+import { hexToDecimal } from '../../shared/modules/conversion.utils';
+import { getProviderConfig } from '../ducks/metamask/metamask';
+import { getCurrentChainId, getSelectedAddress } from './selectors';
+import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import { createDeepEqualSelector } from './util';
+>>>>>>> upstream/multichain-swaps-controller
 
 const INVALID_INITIAL_TRANSACTION_TYPES = [
   TRANSACTION_TYPES.CANCEL,
@@ -40,8 +48,64 @@ export const incomingTxListSelector = (state) => {
   );
 };
 export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
+<<<<<<< HEAD
 export const currentNetworkTxListSelector = (state) =>
   state.metamask.currentNetworkTxList;
+=======
+
+export const getCurrentNetworkTransactions = createDeepEqualSelector(
+  (state) => {
+    const { transactions } = state.metamask ?? {};
+
+    if (!transactions?.length) {
+      return [];
+    }
+
+    const { chainId } = getProviderConfig(state);
+
+    return transactions.filter(
+      (transaction) => transaction.chainId === chainId,
+    );
+  },
+  (transactions) => transactions,
+);
+
+export const getUnapprovedTransactions = createDeepEqualSelector(
+  (state) => {
+    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
+
+    return currentNetworkTransactions
+      .filter(
+        (transaction) => transaction.status === TransactionStatus.unapproved,
+      )
+      .reduce((result, transaction) => {
+        result[transaction.id] = transaction;
+        return result;
+      }, {});
+  },
+  (transactions) => transactions,
+);
+
+export const incomingTxListSelector = createDeepEqualSelector(
+  (state) => {
+    const { incomingTransactionsPreferences } = state.metamask;
+    if (!incomingTransactionsPreferences) {
+      return [];
+    }
+
+    const currentNetworkTransactions = getCurrentNetworkTransactions(state);
+    const selectedAddress = getSelectedAddress(state);
+
+    return currentNetworkTransactions.filter(
+      (tx) =>
+        tx.type === TransactionType.incoming &&
+        tx.txParams.to === selectedAddress,
+    );
+  },
+  (transactions) => transactions,
+);
+
+>>>>>>> upstream/multichain-swaps-controller
 export const unapprovedPersonalMsgsSelector = (state) =>
   state.metamask.unapprovedPersonalMsgs;
 export const unapprovedDecryptMsgsSelector = (state) =>
@@ -81,7 +145,6 @@ export const unapprovedMessagesSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  deprecatedGetCurrentNetworkId,
   getCurrentChainId,
   (
     unapprovedMsgs = {},
@@ -89,7 +152,6 @@ export const unapprovedMessagesSelector = createSelector(
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network,
     chainId,
   ) =>
     txHelper(
@@ -99,7 +161,6 @@ export const unapprovedMessagesSelector = createSelector(
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
-      network,
       chainId,
     ) || [],
 );
@@ -528,3 +589,37 @@ export const submittedPendingTransactionsSelector = createSelector(
       (transaction) => transaction.status === TRANSACTION_STATUSES.SUBMITTED,
     ),
 );
+<<<<<<< HEAD
+=======
+
+const hasUnapprovedTransactionsInCurrentNetwork = (state) => {
+  const unapprovedTxs = getUnapprovedTransactions(state);
+  const unapprovedTxRequests = getApprovalRequestsByType(
+    state,
+    ApprovalType.Transaction,
+  );
+
+  const chainId = getCurrentChainId(state);
+
+  const filteredUnapprovedTxInCurrentNetwork = unapprovedTxRequests.filter(
+    ({ id }) => unapprovedTxs[id] && unapprovedTxs[id].chainId === chainId,
+  );
+
+  return filteredUnapprovedTxInCurrentNetwork.length > 0;
+};
+
+const TRANSACTION_APPROVAL_TYPES = [
+  ApprovalType.EthDecrypt,
+  ApprovalType.EthGetEncryptionPublicKey,
+  ApprovalType.EthSign,
+  ApprovalType.EthSignTypedData,
+  ApprovalType.PersonalSign,
+];
+
+export function hasTransactionPendingApprovals(state) {
+  return (
+    hasUnapprovedTransactionsInCurrentNetwork(state) ||
+    TRANSACTION_APPROVAL_TYPES.some((type) => hasPendingApprovals(state, type))
+  );
+}
+>>>>>>> upstream/multichain-swaps-controller

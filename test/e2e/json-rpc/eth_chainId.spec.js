@@ -10,8 +10,13 @@ describe('eth_chainId', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
+<<<<<<< HEAD
         ganacheOptions: defaultGanacheOptions,
         title: this.test.title,
+=======
+        ganacheOptions,
+        title: this.test.fullTitle(),
+>>>>>>> upstream/multichain-swaps-controller
       },
       async ({ driver }) => {
         await driver.navigate();

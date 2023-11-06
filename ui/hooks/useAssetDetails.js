@@ -20,6 +20,12 @@ export function useAssetDetails(tokenAddress, userAddress, transactionData) {
 
   // in-hook state
   const [currentAsset, setCurrentAsset] = useState(null);
+<<<<<<< HEAD
+=======
+  const { tokensWithBalances } = useTokenTracker({
+    tokens: currentToken ? [currentToken] : [],
+  });
+>>>>>>> upstream/multichain-swaps-controller
 
   // previous state checkers
   const prevTokenAddress = usePrevious(tokenAddress);

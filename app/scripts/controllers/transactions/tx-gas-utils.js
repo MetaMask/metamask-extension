@@ -24,16 +24,24 @@ import { bnToHex } from '../../../../shared/modules/conversion.utils';
  */
 
 export default class TxGasUtil {
-  constructor(provider) {
+  constructor(provider, { getNetworkClientById } = {}) {
+    this.getNetworkClientById = getNetworkClientById;
     this.query = new EthQuery(provider);
   }
 
   /**
    * @param {object} txMeta - the txMeta object
+   * @param {string} networkClientId - the network client id
    * @returns {GasAnalysisResult} The result of the gas analysis
    */
-  async analyzeGasUsage(txMeta) {
-    const block = await this.query.getBlockByNumber('latest', false);
+  async analyzeGasUsage(txMeta, { networkClientId } = {}) {
+    let { query } = this;
+    if (networkClientId) {
+      const { provider } = this.getNetworkClientById(networkClientId);
+      query = new EthQuery(provider);
+    }
+
+    const block = await query.getBlockByNumber('latest', false);
 
     // fallback to block gasLimit
     const blockGasLimitBN = hexToBn(block.gasLimit);
@@ -41,7 +49,7 @@ export default class TxGasUtil {
     let estimatedGasHex = bnToHex(saferGasLimitBN);
     let simulationFails;
     try {
-      estimatedGasHex = await this.estimateTxGas(txMeta);
+      estimatedGasHex = await this._estimateTxGas(txMeta, { query });
     } catch (error) {
       log.warn(error);
       simulationFails = {
@@ -62,9 +70,11 @@ export default class TxGasUtil {
    * Estimates the tx's gas usage
    *
    * @param {object} txMeta - the txMeta object
+   * @param {object} options - options object
+   * @param {object} options.query - the ethQuery obj
    * @returns {string} the estimated gas limit as a hex string
    */
-  async estimateTxGas(txMeta) {
+  async _estimateTxGas(txMeta, { query }) {
     const txParams = cloneDeep(txMeta.txParams);
 
     // `eth_estimateGas` can fail if the user has insufficient balance for the
@@ -77,7 +87,7 @@ export default class TxGasUtil {
     delete txParams.maxPriorityFeePerGas;
 
     // estimate tx gas requirements
-    return await this.query.estimateGas(txParams);
+    return await query.estimateGas(txParams);
   }
 
   /**
@@ -106,9 +116,9 @@ export default class TxGasUtil {
     return bnToHex(upperGasLimitBn);
   }
 
-  async getBufferedGasLimit(txMeta, multiplier) {
+  async getBufferedGasLimit(txMeta, multiplier, { networkClientId } = {}) {
     const { blockGasLimit, estimatedGasHex, simulationFails } =
-      await this.analyzeGasUsage(txMeta);
+      await this.analyzeGasUsage(txMeta, { networkClientId });
     // add additional gas buffer to our estimation for safety
     const gasLimit = this.addGasBuffer(
       addHexPrefix(estimatedGasHex),

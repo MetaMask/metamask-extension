@@ -11,8 +11,18 @@ import Copy from '../../components/ui/icon/copy-icon.component';
 
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import { SECOND } from '../../../shared/constants/time';
+<<<<<<< HEAD
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { conversionUtil } from '../../../shared/modules/conversion-util';
+=======
+import { Numeric } from '../../../shared/modules/Numeric';
+import { EtherDenomination } from '../../../shared/constants/common';
+import { Icon, IconName } from '../../components/component-library';
+import { IconColor } from '../../helpers/constants/design-system';
+import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
+import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
+import { COPY_OPTIONS } from '../../../shared/constants/copy';
+>>>>>>> upstream/multichain-swaps-controller
 
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
@@ -83,10 +93,18 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   copyMessage = () => {
+<<<<<<< HEAD
     copyToClipboard(this.state.rawMessage);
     this.context.metricsEvent({
       eventOpts: {
         category: 'Messages',
+=======
+    copyToClipboard(this.state.rawMessage, COPY_OPTIONS);
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Messages,
+      event: 'Copy',
+      properties: {
+>>>>>>> upstream/multichain-swaps-controller
         action: 'Decrypt Message Copy',
         name: 'Copy',
       },

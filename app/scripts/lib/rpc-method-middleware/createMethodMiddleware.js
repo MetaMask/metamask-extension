@@ -1,4 +1,14 @@
+<<<<<<< HEAD
 import { permittedMethods, selectHooks } from '@mm-snap/rpc-methods';
+=======
+import { permissionRpcMethods } from '@metamask/permission-controller';
+import {
+  selectHooks,
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  permittedMethods as permittedSnapMethods,
+  ///: END:ONLY_INCLUDE_IN
+} from '@metamask/snaps-rpc-methods';
+>>>>>>> upstream/multichain-swaps-controller
 import { ethErrors } from 'eth-rpc-errors';
 import handlers from './handlers';
 

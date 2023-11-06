@@ -43,6 +43,7 @@ const removedBackgroundFields = [
   // These properties are set to undefined, causing inconsistencies between Chrome and Firefox
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
+  'PPOMController.chainStatus.0x539.lastVisited',
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
@@ -221,7 +222,7 @@ describe('Sentry errors', function () {
             meta: undefined,
           },
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryMigratorError,
         },
@@ -249,7 +250,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -288,7 +289,7 @@ describe('Sentry errors', function () {
             meta: undefined,
           },
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryMigratorError,
         },
@@ -328,7 +329,7 @@ describe('Sentry errors', function () {
             meta: undefined,
           },
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryMigratorError,
         },
@@ -384,7 +385,7 @@ describe('Sentry errors', function () {
               .build(),
           },
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryInvariantMigrationError,
         },
@@ -429,7 +430,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -472,7 +473,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -534,7 +535,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -567,7 +568,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -600,7 +601,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -644,7 +645,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -699,7 +700,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -740,7 +741,7 @@ describe('Sentry errors', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           failOnConsoleError: false,
           testSpecificMock: mockSentryTestError,
         },
@@ -789,7 +790,7 @@ describe('Sentry errors', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -824,7 +825,7 @@ describe('Sentry errors', function () {
         },
         userOptIn: true, // Initialized as undefined
       },
-      swapsState: {
+      singleChainSwapsState: {
         // This can get wiped out during initialization due to a bug in
         // the "resetState" method
         swapsFeatureFlags: true,
@@ -837,7 +838,7 @@ describe('Sentry errors', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

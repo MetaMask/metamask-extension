@@ -1471,8 +1471,197 @@
   "signed": {
     "message": "हस्ताक्षर किया गया"
   },
+<<<<<<< HEAD
   "slow": {
     "message": "धीमा"
+=======
+  "signin": {
+    "message": "साइन-इन करें"
+  },
+  "simulationErrorMessageV2": {
+    "message": "हम गैस का अनुमान नहीं लगा पाए। कॉन्ट्रैक्ट में कोई गड़बड़ी हो सकती है और यह ट्रांसेक्शन विफल हो सकता है।"
+  },
+  "skip": {
+    "message": "छोड़ें"
+  },
+  "skipAccountSecurity": {
+    "message": "अकाउंट सुरक्षा छोड़ें?"
+  },
+  "skipAccountSecurityDetails": {
+    "message": "मैं समझता हूं कि जब तक मैं अपने सीक्रेट रिकवरी फ्रेज का बैकअप नहीं लेता, मैं अपने अकाउंट और उनकी सभी संपत्ति खो सकता हूं।"
+  },
+  "smartContracts": {
+    "message": "स्मार्ट कॉन्ट्रैक्ट्स"
+  },
+  "smartSwap": {
+    "message": "स्मार्ट स्वैप"
+  },
+  "smartSwapsAreHere": {
+    "message": "स्मार्ट स्वैप यहां हैं!"
+  },
+  "smartSwapsDescription": {
+    "message": "MetaMask के स्वैप अब और अधिक स्मार्ट हो गए हैं! इन हेतु सहायता के लिए स्मार्ट स्वैप को इनेबल करने से MetaMask आपके स्वैप को प्रोग्रामेटिक रूप से ऑप्टिमाइज कर पाएगा:"
+  },
+  "smartSwapsErrorNotEnoughFunds": {
+    "message": "स्मार्ट स्वैप के लिए पर्याप्त फंड नहीं है।"
+  },
+  "smartSwapsErrorUnavailable": {
+    "message": "स्मार्ट स्वैप अस्थायी रूप से अनुपलब्ध हैं।"
+  },
+  "smartSwapsSubDescription": {
+    "message": "* स्मार्ट स्वैप कई बार आपके ट्रांसेक्शन को निजी तौर पर सबमिट करने की कोशिश करेगा। यदि सभी प्रयास विफल हो जाते हैं, तो यह सुनिश्चित करने के लिए ट्रांसेक्शन सार्वजनिक रूप से प्रसारित किया जाएगा कि आपका स्वैप सफलतापूर्वक पूरा हो गया है।"
+  },
+  "snapConfigure": {
+    "message": "कॉन्फिगर करें"
+  },
+  "snapConnectionWarning": {
+    "message": "$1 चाहता है कि $2 के साथ जुड़े. तभी आगे बढ़ें अगर आप इस वेबसाइट पर भरोसा करते हैं।",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
+  "snapContent": {
+    "message": "यह कंटेंट $1 से आ रही है",
+    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
+  "snapCreateAccountSubtitle": {
+    "message": "MetaMask Snaps का इस्तेमाल करके अपने नए अकाउंट को सुरक्षित करने का तरीका चुनें।"
+  },
+  "snapCreateAccountTitle": {
+    "message": "एक $1 वाला अकाउंट बनाएं",
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
+  },
+  "snapCreateAccountTitle2": {
+    "message": "Snap",
+    "description": "$1 of the snapCreateAccountTitle"
+  },
+  "snapCreatedByMetaMask": {
+    "message": "MetaMask द्वारा"
+  },
+  "snapDetailAudits": {
+    "message": "ऑडिट करें"
+  },
+  "snapDetailDeveloper": {
+    "message": "डेवलपर"
+  },
+  "snapDetailLastUpdated": {
+    "message": "अपडेट किया गया"
+  },
+  "snapDetailManageSnap": {
+    "message": "Snap को प्रबंधित करें"
+  },
+  "snapDetailTags": {
+    "message": "टैग"
+  },
+  "snapDetailVersion": {
+    "message": "वर्शन"
+  },
+  "snapDetailWebsite": {
+    "message": "वेबसाइट"
+  },
+  "snapDetailsCreateASnapAccount": {
+    "message": "एक Snap अकाउंट बनाएं"
+  },
+  "snapDetailsInstalled": {
+    "message": "इंस्टॉल किया गया"
+  },
+  "snapInstall": {
+    "message": "Snap इंस्टाल करें"
+  },
+  "snapInstallRequest": {
+    "message": "$1 इंस्टॉल करने से इसे निम्नलिखित अनुमतियां मिलती हैं। अगर आप $1 पर भरोसा करते हैं तो ही जारी रखें।",
+    "description": "$1 is the snap name."
+  },
+  "snapInstallSuccess": {
+    "message": "इंस्टॉलेशन समाप्त"
+  },
+  "snapInstallWarningCheck": {
+    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
+  },
+  "snapInstallWarningCheckPlural": {
+    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं:",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
+  },
+  "snapInstallWarningHeading": {
+    "message": "सावधानी से आगे बढ़ें"
+  },
+  "snapInstallWarningKeyAccess": {
+    "message": "आप स्नैप \"$1\" के लिए $2 कुंजी का एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके $2 खातों और संपत्तियों पर \"$1\" नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallWarningPublicKeyAccess": {
+    "message": "$1 को $2 की सार्वजनिक कुंजी का एक्सेस प्रदान करें",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallationErrorDescription": {
+    "message": "$1 इंस्टॉल नहीं किया जा सका.",
+    "description": "Error description used when snap installation fails. $1 is the snap name."
+  },
+  "snapInstallationErrorTitle": {
+    "message": "इंस्टॉलेशन नहीं हो पाया",
+    "description": "Error title used when snap installation fails."
+  },
+  "snapIsAudited": {
+    "message": "ऑडिट किया गया"
+  },
+  "snapResultError": {
+    "message": "गड़बड़ी"
+  },
+  "snapResultSuccess": {
+    "message": "सफल"
+  },
+  "snapResultSuccessDescription": {
+    "message": "$1 इस्तेमाल के लिए तैयार है"
+  },
+  "snapUpdateAvailable": {
+    "message": "अपडेट उपलब्ध है"
+  },
+  "snapUpdateErrorDescription": {
+    "message": "$1 अपडेट नहीं किया जा सका।",
+    "description": "Error description used when snap update fails. $1 is the snap name."
+  },
+  "snapUpdateErrorTitle": {
+    "message": "अपडेट नहीं हो पाया",
+    "description": "Error title used when snap update fails."
+  },
+  "snapUpdateRequest": {
+    "message": "$1 $2 को $3 से अपडेट करना चाहते हैं जो इसे निम्नलिखित अनुमतियां देती है। यदि आप $2 पर भरोसा करते हैं तो ही जारी रखें।",
+    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+  },
+  "snapUpdateSuccess": {
+    "message": "अपडेट समाप्त"
+  },
+  "snaps": {
+    "message": "Snaps"
+  },
+  "snapsInsightLoading": {
+    "message": "ट्रांजैक्शन इनसाइट लोड हो रही है..."
+  },
+  "snapsInvalidUIError": {
+    "message": "Snap द्वारा निर्दिष्ट किया गया UI ग़लत है।"
+  },
+  "snapsNoInsight": {
+    "message": "Snap ने कोई इनसाइट नहीं लौटाई"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "थर्ड पार्टी सेवाओं के साथ आप जो भी सूचना शेयर करते हैं, उसे उन थर्ड पार्टी सेवाओं द्वारा उनकी अपनी गोपनीयता नीतियों के अनुसार सीधे एकत्र की जाएगी। अधिक जानकारी के लिए कृपया उनकी गोपनीयता नीतियां देखें।",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsTermsOfUse": {
+    "message": "इस्तेमाल की शर्तें"
+  },
+  "snapsToggle": {
+    "message": "कोई Snap तभी चलेगा जब उसे इनेबल किया गया हो"
+  },
+  "snapsUIError": {
+    "message": "अधिक सहायता के लिए $1 के निर्माताओं से कॉन्टेक्ट करें।",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "कुछ नेटवर्क सुरक्षा और/या गोपनीयता संबंधी जोखिम पैदा कर सकते हैं। नेटवर्क जोड़ने और इस्तेमाल करने से पहले जोखिमों को समझें।"
+  },
+  "somethingIsWrong": {
+    "message": "कुछ गड़बड़ हो गया है। पेज को फिर से लोड करने की कोशिश करें।"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "somethingWentWrong": {
     "message": "ओह! कुछ गलत हो गया।"

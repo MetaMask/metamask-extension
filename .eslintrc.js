@@ -143,7 +143,13 @@ module.exports = {
         'test/e2e/**/*.spec.js',
       ],
       excludedFiles: [
+<<<<<<< HEAD
         'app/scripts/controllers/network/**/*.test.js',
+=======
+        'app/scripts/controllers/app-state.test.js',
+        'app/scripts/controllers/mmi-controller.test.js',
+        'app/scripts/controllers/detect-tokens.test.js',
+>>>>>>> upstream/multichain-swaps-controller
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/lib/**/*.test.js',
         'app/scripts/migrations/*.test.js',
@@ -173,6 +179,11 @@ module.exports = {
         'app/scripts/controllers/network/**/*.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/lib/**/*.test.js',
+<<<<<<< HEAD
+=======
+        'app/scripts/controllers/detect-tokens.test.js',
+        'app/scripts/metamask-controller.test.js',
+>>>>>>> upstream/multichain-swaps-controller
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
         'development/**/*.test.js',

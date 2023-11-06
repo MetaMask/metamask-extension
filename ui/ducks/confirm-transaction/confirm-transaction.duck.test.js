@@ -275,7 +275,12 @@ describe('Confirm Transaction Duck', () => {
       const txData = {
         history: [],
         id: 2603411941761054,
+<<<<<<< HEAD
         metamaskNetworkId: '5',
+=======
+        loadingDefaults: false,
+        chainId: '0x5',
+>>>>>>> upstream/multichain-swaps-controller
         origin: 'faucet.metamask.io',
         status: TransactionStatus.unapproved,
         time: 1530838113716,
@@ -344,7 +349,6 @@ describe('Confirm Transaction Duck', () => {
         metamask: {
           conversionRate: 468.58,
           currentCurrency: 'usd',
-          networkId: '5',
           selectedNetworkClientId: NetworkType.goerli,
           networksMetadata: {
             [NetworkType.goerli]: {
@@ -359,7 +363,12 @@ describe('Confirm Transaction Duck', () => {
             {
               history: [],
               id: 2603411941761054,
+<<<<<<< HEAD
               metamaskNetworkId: '5',
+=======
+              loadingDefaults: false,
+              chainId: '0x5',
+>>>>>>> upstream/multichain-swaps-controller
               origin: 'faucet.metamask.io',
               status: TransactionStatus.unapproved,
               time: 1530838113716,

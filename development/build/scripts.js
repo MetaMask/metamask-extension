@@ -25,7 +25,24 @@ const metamaskrc = require('rc')('metamask', {
     'https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496',
 });
 
+<<<<<<< HEAD
 const { version } = require('../../package.json');
+=======
+const phishingWarningManifest = require('@metamask/phishing-warning/package.json');
+const { streamFlatMap } = require('../stream-flat-map');
+const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
+const { getConfig } = require('./config');
+const {
+  isDevBuild,
+  isTestBuild,
+  getEnvironment,
+  logError,
+  wrapAgainstScuttling,
+  getBuildName,
+  getBuildAppId,
+  getBuildIcon,
+} = require('./utils');
+>>>>>>> upstream/multichain-swaps-controller
 
 const packageJSON = require('../../package.json');
 const {
@@ -421,6 +438,7 @@ async function bundleIt(buildConfiguration) {
   }
 }
 
+<<<<<<< HEAD
 function getEnvironmentVariables({ devMode, testing }) {
   const environment = getEnvironment({ devMode, testing });
   if (environment === 'production' && !process.env.SENTRY_DSN) {
@@ -428,6 +446,51 @@ function getEnvironmentVariables({ devMode, testing }) {
   }
   return {
     METAMASK_DEBUG: devMode,
+=======
+/**
+ * Sets environment variables to inject in the current build.
+ *
+ * @param {object} options - Build options.
+ * @param {BUILD_TARGETS} options.buildTarget - The current build target.
+ * @param {string} options.buildType - The current build type (e.g. "main",
+ * "flask", etc.).
+ * @param {string} options.version - The current version of the extension.
+ * @param options.activeBuild
+ * @param options.variables
+ * @param options.environment
+ */
+async function setEnvironmentVariables({
+  buildTarget,
+  buildType,
+  activeBuild,
+  environment,
+  variables,
+  version,
+}) {
+  const devMode = isDevBuild(buildTarget);
+  const testing = isTestBuild(buildTarget);
+
+  variables.set({
+    IN_TEST: testing,
+    INFURA_PROJECT_ID: getInfuraProjectId({
+      buildType,
+      activeBuild,
+      variables,
+      environment,
+      testing,
+    }),
+    METAMASK_DEBUG: devMode || variables.getMaybe('METAMASK_DEBUG') === true,
+    METAMASK_BUILD_NAME: getBuildName({
+      environment,
+      buildType,
+    }),
+    METAMASK_BUILD_APP_ID: getBuildAppId({
+      buildType,
+    }),
+    METAMASK_BUILD_ICON: getBuildIcon({
+      buildType,
+    }),
+>>>>>>> upstream/multichain-swaps-controller
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
     NODE_ENV: devMode ? 'development' : 'production',

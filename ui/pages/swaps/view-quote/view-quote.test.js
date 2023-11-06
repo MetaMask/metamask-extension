@@ -2,10 +2,20 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+<<<<<<< HEAD
 import {
   renderWithProvider,
   createSwapsMockStore,
   setBackgroundConnection,
+=======
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import {
+  renderWithProvider,
+  createSwapsMockStore,
+  MOCKS,
+>>>>>>> upstream/multichain-swaps-controller
 } from '../../../../test/jest';
 import ViewQuote from '.';
 

@@ -3,8 +3,11 @@
 @import 'networks-tab/index';
 @import 'settings-tab/index';
 @import 'contact-list-tab/index';
+<<<<<<< HEAD
 @import 'flask/snaps-list-tab/index';
 @import 'flask/view-snap/index';
+=======
+>>>>>>> upstream/multichain-swaps-controller
 
 .settings-page {
   position: relative;
@@ -352,6 +355,18 @@
       max-width: 100%;
       width: 100%;
     }
+<<<<<<< HEAD
+=======
+
+    .eth-sign-toggle .toggle-button__status {
+      // for eth_sign we need to override the uppercase property of toggle button text
+      text-transform: capitalize;
+    }
+  }
+
+  &__button {
+    cursor: pointer;
+>>>>>>> upstream/multichain-swaps-controller
   }
 
   &__copy-icon {

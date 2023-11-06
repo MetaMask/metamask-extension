@@ -65,6 +65,7 @@ import {
   getTokenList,
   isHardwareWallet,
   getHardwareWalletType,
+  getSelectedNetworkClientId,
 } from '../../../selectors';
 import {
   getValueFromWeiHex,
@@ -220,6 +221,8 @@ export default function PrepareSwapPage({
   const fetchingQuotes = useSelector(getFetchingQuotes);
   const loadingComplete = !fetchingQuotes && areQuotesPresent;
 
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+
   const showSmartTransactionsOptInPopover =
     smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
 
@@ -238,7 +241,7 @@ export default function PrepareSwapPage({
     ? defaultSwapsToken
     : sourceTokenInfo;
 
-  const { tokensWithBalances } = useTokenTracker(tokens);
+  const { tokensWithBalances } = useTokenTracker({ tokens });
 
   // If the fromToken was set in a call to `onFromSelect` (see below), and that from token has a balance
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
@@ -569,7 +572,7 @@ export default function PrepareSwapPage({
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
     trackPrepareSwapPageLoadedEvent();
-  }, [dispatch]);
+  }, [dispatch, trackPrepareSwapPageLoadedEvent]);
 
   const BlockExplorerLink = () => {
     return (
@@ -627,13 +630,14 @@ export default function PrepareSwapPage({
       setPrefetchingQuotes(true);
       const pageRedirectionDisabled = true;
       await dispatch(
-        fetchQuotesAndSetQuoteState(
+        fetchQuotesAndSetQuoteState({
           history,
-          fromTokenInputValue,
+          inputValue: fromTokenInputValue,
           maxSlippage,
           trackEvent,
           pageRedirectionDisabled,
-        ),
+          networkClientId: selectedNetworkClientId,
+        }),
       );
     };
     // Delay fetching quotes until a user is done typing an input value. If they type a new char in less than a second,

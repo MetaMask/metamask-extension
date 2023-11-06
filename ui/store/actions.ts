@@ -73,7 +73,11 @@ import {
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
 import {
+<<<<<<< HEAD
   TransactionMetaMetricsEvent,
+=======
+  TransactionMeta,
+>>>>>>> upstream/multichain-swaps-controller
   TransactionType,
 } from '../../shared/constants/transaction';
 import {
@@ -96,7 +100,7 @@ import {
   generateActionId,
   callBackgroundMethod,
   submitRequestToBackground,
-} from './action-queue';
+} from './background-connection';
 import {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
@@ -1144,11 +1148,19 @@ export function addUnapprovedTransactionAndRouteToConfirmationPage(
   return async (dispatch) => {
     const actionId = generateActionId();
     try {
+<<<<<<< HEAD
       log.debug('background.addUnapprovedTransaction');
       const txMeta = await submitRequestToBackground<TransactionMeta>(
         'addUnapprovedTransaction',
         [method, txParams, ORIGIN_METAMASK, type, sendFlowHistory, actionId],
         actionId,
+=======
+      log.debug('background.addTransaction');
+
+      const transactionMeta = await submitRequestToBackground<TransactionMeta>(
+        'addTransaction',
+        [txParams, { ...options, actionId, origin: ORIGIN_METAMASK }],
+>>>>>>> upstream/multichain-swaps-controller
       );
       dispatch(showConfTxPage());
       return txMeta;
@@ -1178,10 +1190,24 @@ export async function addUnapprovedTransaction(
 ): Promise<TransactionMeta> {
   log.debug('background.addUnapprovedTransaction');
   const actionId = generateActionId();
+<<<<<<< HEAD
   const txMeta = await submitRequestToBackground<TransactionMeta>(
     'addUnapprovedTransaction',
     [method, txParams, ORIGIN_METAMASK, type, undefined, actionId],
     actionId,
+=======
+
+  return await submitRequestToBackground<TransactionMeta>(
+    'addTransactionAndWaitForPublish',
+    [
+      txParams,
+      {
+        ...options,
+        origin: ORIGIN_METAMASK,
+        actionId,
+      },
+    ],
+>>>>>>> upstream/multichain-swaps-controller
   );
   return txMeta;
 }
@@ -1293,10 +1319,6 @@ export function removeSnap(
     await submitRequestToBackground('removeSnap', [snapId]);
     await forceUpdateMetamaskState(dispatch);
   };
-}
-
-export async function removeSnapError(msgData: string): Promise<void> {
-  return submitRequestToBackground('removeSnapError', [msgData]);
 }
 
 export async function handleSnapRequest(args: {
@@ -2345,14 +2367,19 @@ export function createCancelTransaction(
             return;
           }
           if (newState) {
+<<<<<<< HEAD
             const { currentNetworkTxList } = newState;
+=======
+            const currentNetworkTxList = getCurrentNetworkTransactions({
+              metamask: newState,
+            });
+>>>>>>> upstream/multichain-swaps-controller
             const { id } =
               currentNetworkTxList[currentNetworkTxList.length - 1];
             newTxId = id;
             resolve(newState);
           }
         },
-        actionId,
       );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -2387,7 +2414,6 @@ export function createSpeedUpTransaction(
             resolve(newState);
           }
         },
-        actionId,
       );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -3046,15 +3072,6 @@ export function completeOnboarding() {
   };
 }
 
-export function setMouseUserState(
-  isMouseUser: boolean,
-): PayloadAction<boolean> {
-  return {
-    type: actionConstants.SET_MOUSE_USER_STATE,
-    payload: isMouseUser,
-  };
-}
-
 export async function forceUpdateMetamaskState(
   dispatch: MetaMaskReduxDispatch,
 ) {
@@ -3390,6 +3407,19 @@ export function setSwapsFeatureFlags(
   };
 }
 
+export function getChainIdByNetworkClientId(
+  networkClientId: NetworkClientId,
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    const {
+      configuration: { chainId },
+    } = await submitRequestToBackground<any>('getNetworkClientById', [
+      networkClientId,
+    ]);
+    return chainId;
+  };
+}
+
 export function fetchAndSetQuotes(
   fetchParams: {
     slippage: string;
@@ -3406,6 +3436,7 @@ export function fetchAndSetQuotes(
     destinationTokenInfo: Token;
     accountBalance: string;
     chainId: string;
+    networkClientId: NetworkClientId;
   },
 ): ThunkAction<
   Promise<
@@ -4190,13 +4221,13 @@ export function createEventFragment(
 
 export function createTransactionEventFragment(
   transactionId: string,
-  event: TransactionMetaMetricsEvent,
 ): Promise<string> {
   const actionId = generateActionId();
   return submitRequestToBackground('createTransactionEventFragment', [
-    transactionId,
-    event,
-    actionId,
+    {
+      transactionId,
+      actionId,
+    },
   ]);
 }
 

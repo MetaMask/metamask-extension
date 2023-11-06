@@ -17,7 +17,12 @@ describe('Deploy contract and call contract methods', function () {
         dapp: true,
         fixtures: 'connected-state',
         ganacheOptions,
+<<<<<<< HEAD
         title: this.test.title,
+=======
+        smartContract,
+        title: this.test.fullTitle(),
+>>>>>>> upstream/multichain-swaps-controller
       },
       async ({ driver }) => {
         await driver.navigate();

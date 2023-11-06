@@ -21,6 +21,13 @@ import {
   BSC,
   RINKEBY,
   AVALANCHE,
+<<<<<<< HEAD
+=======
+  OPTIMISM,
+  ARBITRUM,
+  ZKSYNC_ERA,
+  LINEA,
+>>>>>>> upstream/multichain-swaps-controller
 } from '../../../shared/constants/swaps';
 import {
   fetchTradesInfo,
@@ -331,6 +338,10 @@ describe('Swaps Util', () => {
 
     it('returns an empty string for an unsupported network', () => {
       expect(getNetworkNameByChainId(KOVAN_CHAIN_ID)).toBe('');
+    });
+
+    it('returns "linea" for Linea chain ID', () => {
+      expect(getNetworkNameByChainId(CHAIN_IDS.LINEA_MAINNET)).toBe(LINEA);
     });
   });
 

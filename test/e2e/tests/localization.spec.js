@@ -14,10 +14,28 @@ describe('Localization', function () {
       ],
     };
     await withFixtures(
+<<<<<<< HEAD
       { fixtures: 'localization', ganacheOptions, title: this.test.title },
+=======
+      {
+        fixtures: new FixtureBuilder()
+          .withCurrencyController({
+            currentCurrency: 'php',
+          })
+          .withPreferencesController({
+            preferences: {
+              showFiatInTestnets: true,
+            },
+          })
+          .build(),
+        ganacheOptions,
+        title: this.test.fullTitle(),
+      },
+>>>>>>> upstream/multichain-swaps-controller
       async ({ driver }) => {
         console.log(111);
         await driver.navigate();
+<<<<<<< HEAD
         const passwordField = await driver.findElement(By.css('#password'));
         console.log(222);
         await passwordField.sendKeys('correct horse battery staple');
@@ -27,6 +45,18 @@ describe('Localization', function () {
           By.css('[data-testid="eth-overview__secondary-currency"]'),
         );
         console.log(444);
+=======
+        await driver.fill('#password', 'correct horse battery staple');
+        await driver.press('#password', driver.Key.ENTER);
+
+        const secondaryBalance = process.env.MULTICHAIN
+          ? await driver.findElement(
+              '[data-testid="multichain-token-list-item-secondary-value"]',
+            )
+          : await driver.findElement(
+              '[data-testid="eth-overview__secondary-currency"]',
+            );
+>>>>>>> upstream/multichain-swaps-controller
         const secondaryBalanceText = await secondaryBalance.getText();
         const [fiatAmount, fiatUnit] = secondaryBalanceText
           .trim()

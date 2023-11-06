@@ -7,7 +7,7 @@ import {
 } from '../../../shared/modules/conversion.utils';
 import {
   checkNetworkAndAccountSupports1559,
-  getSelectedAccount,
+  getTargetAccount,
 } from '../../selectors';
 import { addHexes } from '../../helpers/utils/conversions.util';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
@@ -17,6 +17,12 @@ import {
   bnLessThanEqualTo,
 } from '../../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
+<<<<<<< HEAD
+=======
+import { Numeric } from '../../../shared/modules/Numeric';
+import { PENDING_STATUS_HASH } from '../../helpers/constants/transactions';
+import { TransactionType } from '../../../shared/constants/transaction';
+>>>>>>> upstream/multichain-swaps-controller
 
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 
@@ -267,12 +273,26 @@ export function useGasFeeErrors({
     [gasErrors, gasWarnings],
   );
 
+<<<<<<< HEAD
   const { balance: ethBalance } = useSelector(getSelectedAccount);
   const balanceError = getBalanceError(
     minimumCostInHexWei,
     transaction,
     ethBalance,
+=======
+  const account = useSelector(
+    (state) => getTargetAccount(state, transaction?.txParams?.from),
+    shallowEqual,
+>>>>>>> upstream/multichain-swaps-controller
   );
+
+  // Balance check is only relevant for outgoing + pending transactions
+  const balanceError =
+    account !== undefined &&
+    transaction?.type !== TransactionType.incoming &&
+    transaction?.status in PENDING_STATUS_HASH
+      ? hasBalanceError(minimumCostInHexWei, transaction, account.balance)
+      : false;
 
   return {
     gasErrors: errorsAndWarnings,

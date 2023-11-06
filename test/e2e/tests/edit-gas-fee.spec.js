@@ -25,7 +25,7 @@ describe.skip('Editing Confirm Transaction', function () {
       {
         fixtures: 'eip-1559-v2',
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -105,7 +105,7 @@ describe.skip('Editing Confirm Transaction', function () {
       {
         fixtures: 'eip-1559-v2',
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -206,7 +206,7 @@ describe.skip('Editing Confirm Transaction', function () {
       {
         fixtures: 'eip-1559-v2-dapp',
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         dapp: true,
       },
       async ({ driver }) => {

@@ -188,6 +188,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     }
   }, [history, quotes, routeState]);
 
+  // TODO replace this with a passed contextual prop(?) once there is no longer a globally selected network
+  // const networkClientId = useSelector(getSelectedNetworkClientId);
+
   const quotesLastFetched = useSelector(getQuotesLastFetched);
   const prevQuotesLastFetched = usePrevious(quotesLastFetched);
 
@@ -269,6 +272,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         return t('networkNameArbitrum');
       case CHAIN_IDS.ZKSYNC_ERA:
         return t('networkNameZkSyncEra');
+      case CHAIN_IDS.LINEA_MAINNET:
+        return t('networkNameLinea');
       default:
         throw new Error('This network is not supported for token swaps');
     }
@@ -340,7 +345,10 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     );
   }
 
-  const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
+  const { tokensWithBalances } = useTokenTracker({
+    tokens: swapsTokens,
+    includeFailedTokens: true,
+  });
   const balanceToken =
     fetchParamsSourceToken === defaultSwapsToken.address
       ? defaultSwapsToken

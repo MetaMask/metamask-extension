@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 import { BN } from 'ethereumjs-util';
 import { toPrecisionWithoutTrailingZeros } from '../../../app/scripts/constants/transactions-controller-utils';
 import { addHexPrefixToObjectValues } from '../../../app/scripts/constants/swaps-utils';
+=======
+import Bowser from 'bowser';
+import { BN, toChecksumAddress } from 'ethereumjs-util';
+import { CHAIN_IDS } from '../../../shared/constants/network';
+import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
+import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
+>>>>>>> upstream/multichain-swaps-controller
 import * as util from './util';
 
 describe('util', () => {
@@ -336,10 +344,255 @@ describe('util', () => {
     it('should handle unknown permissions', () => {
       const translationMock = jest.fn();
 
+<<<<<<< HEAD
       util.getPermissionLocaleMessage(translationMock, 'wallet_fooBar');
       expect(translationMock).toHaveBeenCalledWith('unknownPermission', [
         'wallet_fooBar',
       ]);
+=======
+    it('should return ignore message data with unknown types', () => {
+      message.do_not_display = 'one';
+      message.do_not_display_2 = {
+        do_not_display: 'two',
+      };
+
+      // result will NOT contain the do_not_displays because type definition
+      const result = util.sanitizeMessage(message, primaryType, types);
+      expect(result).toStrictEqual({
+        type: 'Mail',
+        value: {
+          contents: {
+            type: 'string',
+            value: 'Hello, Bob!',
+          },
+          from: {
+            type: 'Person',
+            value: {
+              name: {
+                type: 'string',
+                value: 'Cow',
+              },
+              wallets: {
+                type: 'address[]',
+                value: [
+                  {
+                    type: 'address',
+                    value: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+                  },
+                  {
+                    type: 'address',
+                    value: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+                  },
+                ],
+              },
+            },
+          },
+          nestArray: {
+            type: 'uint256[2][2]',
+            value: [
+              {
+                type: 'uint256[2]',
+                value: [
+                  {
+                    type: 'uint256',
+                    value: 12,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 34,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 56,
+                  },
+                ],
+              },
+              {
+                type: 'uint256[2]',
+                value: [
+                  {
+                    type: 'uint256',
+                    value: 56,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 78,
+                  },
+                  {
+                    type: 'uint256',
+                    value: 89,
+                  },
+                ],
+              },
+            ],
+          },
+          to: {
+            type: 'Person[]',
+            value: [
+              {
+                type: 'Person',
+                value: {
+                  name: {
+                    type: 'string',
+                    value: 'Bob',
+                  },
+                  wallets: {
+                    type: 'address[]',
+                    value: [
+                      {
+                        type: 'address',
+                        value: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+                      },
+                      {
+                        type: 'address',
+                        value: '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+                      },
+                      {
+                        type: 'address',
+                        value: '0xB0B0b0b0b0b0B000000000000000000000000000',
+                      },
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        },
+      });
+    });
+  });
+
+  describe('sanitizeString', () => {
+    it('should return the passed value, unchanged, if it is falsy', () => {
+      expect(util.sanitizeString('')).toStrictEqual('');
+    });
+
+    it('should return the passed value, unchanged, if it is not a string', () => {
+      expect(util.sanitizeString(true)).toStrictEqual(true);
+    });
+
+    it('should return a truthy string that oes not match the sanitizeString regex, unchanged', () => {
+      expect(
+        util.sanitizeString('The Quick Brown Fox Jumps Over The Lazy Dog'),
+      ).toStrictEqual('The Quick Brown Fox Jumps Over The Lazy Dog');
+    });
+
+    it('should return a string that matches sanitizeString regex with the matched characters replaced', () => {
+      expect(
+        util.sanitizeString(
+          'The Quick Brown \u202EFox Jumps Over The Lazy Dog',
+        ),
+      ).toStrictEqual('The Quick Brown \\u202EFox Jumps Over The Lazy Dog');
+    });
+  });
+
+  describe('isDefaultMetaMaskChain()', () => {
+    it('should return true if the provided chainId is a default MetaMask chain', () => {
+      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.GOERLI)).toBeTruthy();
+    });
+
+    it('should return false if the provided chainId is a not default MetaMask chain', () => {
+      expect(util.isDefaultMetaMaskChain(CHAIN_IDS.CELO)).toBeFalsy();
+    });
+  });
+
+  describe('getNetworkNameFromProviderType()', () => {
+    it('should return providerConfig.type if the type is not rpc', () => {
+      expect(util.getNetworkNameFromProviderType('mainnet')).toStrictEqual(
+        'mainnet',
+      );
+    });
+    it('should return empty string if teh providerConfig.type is rpc', () => {
+      expect(util.getNetworkNameFromProviderType('rpc')).toStrictEqual('');
+    });
+  });
+
+  describe('checkTokenIdExists()', () => {
+    const data = {
+      '0x2df920B180c58766951395c26ecF1EC2063490Fa': {
+        collectionName: 'Numbers',
+        nfts: [
+          {
+            address: '0x2df920B180c58766951395c26ecF1EC2063490Fa',
+            description: 'Numbers',
+            favorite: false,
+            name: 'Numbers #132',
+            tokenId: '132',
+          },
+        ],
+      },
+      '0x2dF920B180C58766951395C26ecF1Ec206343334': {
+        collectionName: 'toto',
+        nfts: [
+          {
+            address: '0x2dF920B180C58766951395C26ecF1Ec206343334',
+            description: 'toto',
+            favorite: false,
+            name: 'toto#3453',
+            tokenId: '3453',
+          },
+        ],
+      },
+      '0xf4910C763eD4e47A585E2D34baA9A4b611aE448C': {
+        collectionName: 'foo',
+        nfts: [
+          {
+            address: '0xf4910C763eD4e47A585E2D34baA9A4b611aE448C',
+            description: 'foo',
+            favorite: false,
+            name: 'toto#111486581076844052489180254627234340268504869259922513413248833349282110111749',
+            tokenId:
+              '111486581076844052489180254627234340268504869259922513413248833349282110111749',
+          },
+        ],
+      },
+    };
+    it('should return true if it exists regardless if the entered value is checksum address or not', () => {
+      const adr = '0x2df920B180c58766951395c26ecF1EC206343334';
+      const checksumAdre = toChecksumAddress(adr);
+      expect(util.checkTokenIdExists(adr, '3453', data)).toBeTruthy();
+      expect(util.checkTokenIdExists(checksumAdre, '3453', data)).toBeTruthy();
+    });
+
+    it('should return true if it exists in decimal format', () => {
+      expect(
+        util.checkTokenIdExists(
+          '0x2df920B180c58766951395c26ecF1EC206343334',
+          '0xD7D',
+          data,
+        ),
+      ).toBeTruthy();
+    });
+
+    it('should return true if is exists but input is not decimal nor hex', () => {
+      expect(
+        util.checkTokenIdExists(
+          '0xf4910C763eD4e47A585E2D34baA9A4b611aE448C',
+          '111486581076844052489180254627234340268504869259922513413248833349282110111749',
+          data,
+        ),
+      ).toBeTruthy();
+    });
+
+    it('should return false if it does not exists', () => {
+      expect(
+        util.checkTokenIdExists(
+          '0x2df920B180c58766951395c26ecF1EC206343334',
+          '1122',
+          data,
+        ),
+      ).toBeFalsy();
+    });
+
+    it('should return false if it address does not exists', () => {
+      expect(
+        util.checkTokenIdExists(
+          '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+          '1122',
+          data,
+        ),
+      ).toBeFalsy();
+>>>>>>> upstream/multichain-swaps-controller
     });
   });
 });

@@ -16,6 +16,11 @@ import {
   getUSDConversionRate,
   isHardwareWallet,
   getHardwareWalletType,
+<<<<<<< HEAD
+=======
+  getFullTxData,
+  getSelectedNetworkClientId,
+>>>>>>> upstream/multichain-swaps-controller
 } from '../../../selectors';
 
 import {
@@ -83,9 +88,15 @@ export default function AwaitingSwap({
   const usdConversionRate = useSelector(getUSDConversionRate);
   const chainId = useSelector(getCurrentChainId);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider, shallowEqual);
+<<<<<<< HEAD
   const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] = useState(
     false,
   );
+=======
+  const [trackedQuotesExpiredEvent, setTrackedQuotesExpiredEvent] =
+    useState(false);
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
+>>>>>>> upstream/multichain-swaps-controller
 
   let feeinUnformattedFiat;
 
@@ -269,12 +280,13 @@ export default function AwaitingSwap({
           } else if (errorKey === QUOTES_EXPIRED_ERROR) {
             dispatch(prepareForRetryGetQuotes());
             await dispatch(
-              fetchQuotesAndSetQuoteState(
+              fetchQuotesAndSetQuoteState({
                 history,
-                fromTokenInputValue,
+                inputValue: fromTokenInputValue,
                 maxSlippage,
                 trackEvent,
-              ),
+                networkClientId: selectedNetworkClientId,
+              }),
             );
           } else if (errorKey) {
             await dispatch(navigateBackToBuildQuote(history));

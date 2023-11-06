@@ -69,6 +69,32 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+<<<<<<< HEAD
+=======
+import { TransactionStatus } from '../../shared/constants/transaction';
+import {
+  getValueFromWeiHex,
+  hexToDecimal,
+} from '../../shared/modules/conversion.utils';
+import { BackgroundColor } from '../helpers/constants/design-system';
+import {
+  NOTIFICATION_BUY_SELL_BUTTON,
+  NOTIFICATION_DROP_LEDGER_FIREFOX,
+  NOTIFICATION_OPEN_BETA_SNAPS,
+} from '../../shared/notifications';
+import {
+  getCurrentNetworkTransactions,
+  getUnapprovedTransactions,
+} from './transactions';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+// eslint-disable-next-line import/order
+import {
+  getPermissionSubjects,
+  getConnectedSubjectsForAllAddresses,
+} from './permissions';
+///: END:ONLY_INCLUDE_IN
+import { createDeepEqualSelector } from './util';
+>>>>>>> upstream/multichain-swaps-controller
 
 /**
  * One of the only remaining valid uses of selecting the network subkey of the
@@ -236,6 +262,7 @@ export function getAccountType(state) {
 }
 
 /**
+<<<<<<< HEAD
  * get the currently selected networkId which will be 'loading' when the
  * network changes. The network id should not be used in most cases,
  * instead use chainId in most situations. There are a limited number of
@@ -249,6 +276,10 @@ export function deprecatedGetCurrentNetworkId(state) {
   return state.metamask.network;
 }
 
+=======
+ * Get MetaMask accounts, including account name and balance.
+ */
+>>>>>>> upstream/multichain-swaps-controller
 export const getMetaMaskAccounts = createSelector(
   getMetaMaskAccountsRaw,
   getMetaMaskCachedBalances,
@@ -308,14 +339,7 @@ export function getMetaMaskAccountsRaw(state) {
 export function getMetaMaskCachedBalances(state) {
   const chainId = getCurrentChainId(state);
 
-  // Fallback to fetching cached balances from network id
-  // this can eventually be removed
-  const network = deprecatedGetCurrentNetworkId(state);
-
-  return (
-    state.metamask.cachedBalances[chainId] ??
-    state.metamask.cachedBalances[network]
-  );
+  return state.metamask.cachedBalances[chainId];
 }
 
 /**
@@ -351,6 +375,10 @@ export function getSelectedAccountCachedBalance(state) {
   const selectedAddress = getSelectedAddress(state);
 
   return cachedBalances && cachedBalances[selectedAddress];
+}
+
+export function getAllTokens(state) {
+  return state.metamask.allTokens;
 }
 
 export function getSelectedAccount(state) {
@@ -702,10 +730,175 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
+<<<<<<< HEAD
 ///: BEGIN:ONLY_INCLUDE_IN(flask)
 export function getSnaps(state) {
   return state.metamask.snaps;
 }
+=======
+export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
+  getMetaMaskIdentities,
+  (identities) => identities,
+);
+
+export const getMemoizedAddressBook = createDeepEqualSelector(
+  getAddressBook,
+  (addressBook) => addressBook,
+);
+
+export const getMemoizedMetadataContractName = createDeepEqualSelector(
+  getTokenList,
+  (_tokenList, address) => address,
+  (tokenList, address) => {
+    const entry = Object.values(tokenList).find((identity) =>
+      isEqualCaseInsensitive(identity.address, address),
+    );
+    return entry && entry.name !== '' ? entry.name : '';
+  },
+);
+
+export const getTxData = (state) => state.confirmTransaction.txData;
+
+export const getUnapprovedTransaction = createDeepEqualSelector(
+  (state) => getUnapprovedTransactions(state),
+  (_, transactionId) => transactionId,
+  (unapprovedTxs, transactionId) => {
+    return (
+      Object.values(unapprovedTxs).find(({ id }) => id === transactionId) || {}
+    );
+  },
+);
+
+export const getTransaction = createDeepEqualSelector(
+  (state) => getCurrentNetworkTransactions(state),
+  (_, transactionId) => transactionId,
+  (unapprovedTxs, transactionId) => {
+    return (
+      Object.values(unapprovedTxs).find(({ id }) => id === transactionId) || {}
+    );
+  },
+);
+
+export const getFullTxData = createDeepEqualSelector(
+  getTxData,
+  (state, transactionId, status) => {
+    if (status === TransactionStatus.unapproved) {
+      return getUnapprovedTransaction(state, transactionId);
+    }
+    return getTransaction(state, transactionId);
+  },
+  (_state, _transactionId, _status, customTxParamsData) => customTxParamsData,
+  (txData, transaction, customTxParamsData) => {
+    let fullTxData = { ...txData, ...transaction };
+    if (transaction && transaction.simulationFails) {
+      fullTxData.simulationFails = { ...transaction.simulationFails };
+    }
+    if (customTxParamsData) {
+      fullTxData = {
+        ...fullTxData,
+        txParams: {
+          ...fullTxData.txParams,
+          data: customTxParamsData,
+        },
+      };
+    }
+    return fullTxData;
+  },
+);
+
+export const getAllConnectedAccounts = createDeepEqualSelector(
+  getConnectedSubjectsForAllAddresses,
+  (connectedSubjects) => {
+    return Object.keys(connectedSubjects);
+  },
+);
+
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+export function getSnaps(state) {
+  return state.metamask.snaps;
+}
+
+export const getSnap = createDeepEqualSelector(
+  getSnaps,
+  (_, snapId) => snapId,
+  (snaps, snapId) => {
+    return snaps[snapId];
+  },
+);
+
+export const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
+  return Object.values(snaps).reduce((acc, cur) => {
+    if (cur.enabled) {
+      acc[cur.id] = cur;
+    }
+    return acc;
+  }, {});
+});
+
+export const getInsightSnaps = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
+    );
+  },
+);
+
+export const getNotifySnaps = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps).filter(
+      ({ id }) => subjects[id]?.permissions.snap_notify,
+    );
+  },
+);
+
+/**
+ * @typedef {object} Notification
+ * @property {string} id - A unique identifier for the notification
+ * @property {string} origin - A string identifing the snap origin
+ * @property {EpochTimeStamp} createdDate - A date in epochTimeStramps, identifying when the notification was first committed
+ * @property {EpochTimeStamp} readDate - A date in epochTimeStramps, identifying when the notification was read by the user
+ * @property {string} message - A string containing the notification message
+ */
+
+/**
+ * Notifications are managed by the notification controller and referenced by
+ * `state.metamask.notifications`. This function returns a list of notifications
+ * the can be shown to the user.
+ *
+ * The returned notifications are sorted by date.
+ *
+ * @param {object} state - the redux state object
+ * @returns {Notification[]} An array of notifications that can be shown to the user
+ */
+
+export function getNotifications(state) {
+  const notifications = Object.values(state.metamask.notifications);
+
+  const notificationsSortedByDate = notifications.sort(
+    (a, b) => new Date(b.createdDate) - new Date(a.createdDate),
+  );
+  return notificationsSortedByDate;
+}
+
+export function getUnreadNotifications(state) {
+  const notifications = getNotifications(state);
+
+  const unreadNotificationCount = notifications.filter(
+    (notification) => notification.readDate === null,
+  );
+
+  return unreadNotificationCount;
+}
+
+export const getUnreadNotificationsCount = createSelector(
+  getUnreadNotifications,
+  (notifications) => notifications.length,
+);
+>>>>>>> upstream/multichain-swaps-controller
 ///: END:ONLY_INCLUDE_IN
 
 /**
@@ -930,11 +1123,80 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return POLYGON_DISPLAY_NAME;
     case AVALANCHE_CHAIN_ID:
       return AVALANCHE_DISPLAY_NAME;
+<<<<<<< HEAD
+=======
+    case CHAIN_IDS.LINEA_GOERLI:
+      return LINEA_GOERLI_DISPLAY_NAME;
+    case CHAIN_IDS.LINEA_MAINNET:
+      return LINEA_MAINNET_DISPLAY_NAME;
+    case CHAIN_IDS.AURORA:
+      return AURORA_DISPLAY_NAME;
+>>>>>>> upstream/multichain-swaps-controller
     default:
       return '';
   }
 };
 /**
+<<<<<<< HEAD
+=======
+ * To check if the chainId supports token detection,
+ * currently it returns true for Ethereum Mainnet, BSC, Polygon, Avalanche, Linea and Aurora
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsDynamicTokenListAvailable(state) {
+  const chainId = getCurrentChainId(state);
+  return [
+    CHAIN_IDS.MAINNET,
+    CHAIN_IDS.BSC,
+    CHAIN_IDS.POLYGON,
+    CHAIN_IDS.AVALANCHE,
+    CHAIN_IDS.LINEA_GOERLI,
+    CHAIN_IDS.LINEA_MAINNET,
+    CHAIN_IDS.AURORA,
+  ].includes(chainId);
+}
+
+/**
+ * To retrieve the list of tokens detected and saved on the state to detectedToken object.
+ *
+ * @param {*} state
+ * @returns list of token objects
+ */
+export function getDetectedTokensInCurrentNetwork(state) {
+  const currentChainId = getCurrentChainId(state);
+  const selectedAddress = getSelectedAddress(state);
+  return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
+}
+
+/**
+ * To fetch the name of the tokens that are imported from tokens found page
+ *
+ * @param {*} state
+ * @returns
+ */
+export function getNewTokensImported(state) {
+  return state.appState.newTokensImported;
+}
+
+/**
+ * To check if the token detection is OFF and the network is Mainnet
+ * so that the user can skip third party token api fetch
+ * and use the static tokenlist from contract-metadata
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsTokenDetectionInactiveOnMainnet(state) {
+  const isMainnet = getIsMainnet(state);
+  const useTokenDetection = getUseTokenDetection(state);
+
+  return !useTokenDetection && isMainnet;
+}
+
+/**
+>>>>>>> upstream/multichain-swaps-controller
  * To check for the chainId that supports token detection ,
  * currently it returns true for Ethereum Mainnet, Polygon, BSC and Avalanche
  *
@@ -998,3 +1260,150 @@ export function getBlockExplorerLinkText(
 
   return blockExplorerLinkText;
 }
+<<<<<<< HEAD
+=======
+
+export function getIsNetworkUsed(state) {
+  const chainId = getCurrentChainId(state);
+  const { usedNetworks } = state.metamask;
+
+  return Boolean(usedNetworks[chainId]);
+}
+
+export function getAllAccountsOnNetworkAreEmpty(state) {
+  const balances = getMetaMaskCachedBalances(state) ?? {};
+  const hasNoNativeFundsOnAnyAccounts = Object.values(balances).every(
+    (balance) => balance === '0x0' || balance === '0x00',
+  );
+  const hasNoTokens = getNumberOfTokens(state) === 0;
+
+  return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
+}
+
+export function getShouldShowSeedPhraseReminder(state) {
+  const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
+    state.metamask;
+  const accountBalance = getCurrentEthBalance(state) ?? 0;
+  return (
+    seedPhraseBackedUp === false &&
+    (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
+    dismissSeedBackUpReminder === false
+  );
+}
+
+export function getCustomTokenAmount(state) {
+  return state.appState.customTokenAmount;
+}
+
+export function getOnboardedInThisUISession(state) {
+  return state.appState.onboardedInThisUISession;
+}
+
+export const useSafeChainsListValidationSelector = (state) => {
+  return state.metamask.useSafeChainsListValidation;
+};
+
+/**
+ * To get the useCurrencyRateCheck flag which to check if the user prefers currency conversion
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseCurrencyRateCheck(state) {
+  return Boolean(state.metamask.useCurrencyRateCheck);
+}
+
+export function getNames(state) {
+  return state.metamask.names || {};
+}
+
+export function getEthereumAddressNames(state) {
+  return state.metamask.names?.[NameType.ETHEREUM_ADDRESS] || {};
+}
+
+export function getNameSources(state) {
+  return state.metamask.nameSources || {};
+}
+
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
+/**
+ * To get the `desktopEnabled` value which determines whether we use the desktop app
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getIsDesktopEnabled(state) {
+  return state.metamask.desktopEnabled;
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+/**
+ * To get all installed snaps with proper metadata
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getSnapsList(state) {
+  const snaps = getSnaps(state);
+  return Object.entries(snaps).map(([key, snap]) => {
+    const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
+    return {
+      key,
+      id: snap.id,
+      iconUrl: targetSubjectMetadata?.iconUrl,
+      subjectType: targetSubjectMetadata?.subjectType,
+      packageName: removeSnapIdPrefix(snap.id),
+      name: getSnapName(snap.id, targetSubjectMetadata),
+    };
+  });
+}
+
+/**
+ * To get the state of snaps privacy warning popover.
+ *
+ * @param state - Redux state object.
+ * @returns True if popover has been shown, false otherwise.
+ */
+export function getSnapsInstallPrivacyWarningShown(state) {
+  const { snapsInstallPrivacyWarningShown } = state.metamask;
+
+  if (
+    snapsInstallPrivacyWarningShown === undefined ||
+    snapsInstallPrivacyWarningShown === null
+  ) {
+    return false;
+  }
+
+  return snapsInstallPrivacyWarningShown;
+}
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export function getsnapsAddSnapAccountModalDismissed(state) {
+  const { snapsAddSnapAccountModalDismissed } = state.metamask;
+
+  return snapsAddSnapAccountModalDismissed;
+}
+
+export function getSnapRegistry(state) {
+  const { snapRegistryList } = state.metamask;
+  return snapRegistryList;
+}
+
+export function getKeyringSnapAccounts(state) {
+  const identities = getMetaMaskIdentities(state);
+
+  const keyringAccounts = Object.values(identities).filter((identity) => {
+    return (
+      findKeyringForAddress(state, identity.address).type === 'Snap Keyring'
+    );
+  });
+  return keyringAccounts;
+}
+
+export function getKeyringSnapRemovalResult(state) {
+  return state.appState.keyringRemovalSnapModal;
+}
+
+///: END:ONLY_INCLUDE_IN
+>>>>>>> upstream/multichain-swaps-controller

@@ -25,14 +25,24 @@ describe('Advanced Settings', function () {
         dapp: true,
         fixtures: 'imported-account',
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
+<<<<<<< HEAD
 
         await driver.clickElement('.account-menu__icon');
+=======
+        // TODO: Remove this test since we are not showing any secondary balance
+        if (process.env.MULTICHAIN) {
+          return;
+        }
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+>>>>>>> upstream/multichain-swaps-controller
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
 
@@ -109,7 +119,7 @@ describe('Advanced Settings', function () {
         dapp: true,
         fixtures: 'imported-account',
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

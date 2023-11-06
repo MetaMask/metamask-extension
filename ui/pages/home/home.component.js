@@ -103,6 +103,7 @@ export default class Home extends PureComponent {
     disableWeb3ShimUsageAlert: PropTypes.func.isRequired,
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
+<<<<<<< HEAD
     showWhatsNewPopup: PropTypes.bool.isRequired,
     hideWhatsNewPopup: PropTypes.func.isRequired,
     notificationsToShow: PropTypes.bool.isRequired,
@@ -112,6 +113,8 @@ export default class Home extends PureComponent {
     removeSnapError: PropTypes.func.isRequired,
     ///: END:ONLY_INCLUDE_IN
     showRecoveryPhraseReminder: PropTypes.bool.isRequired,
+=======
+>>>>>>> upstream/multichain-swaps-controller
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
     seedPhraseBackedUp: PropTypes.bool.isRequired,
@@ -232,11 +235,14 @@ export default class Home extends PureComponent {
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
+<<<<<<< HEAD
       ///: BEGIN:ONLY_INCLUDE_IN(flask)
       removeSnapError,
       errorsToShow,
       shouldShowErrors,
       ///: END:ONLY_INCLUDE_IN
+=======
+>>>>>>> upstream/multichain-swaps-controller
       infuraBlocked,
       newNetworkAdded,
       setNewNetworkAdded,
@@ -245,6 +251,7 @@ export default class Home extends PureComponent {
     } = this.props;
     return (
       <MultipleNotifications>
+<<<<<<< HEAD
         {
           ///: BEGIN:ONLY_INCLUDE_IN(flask)
           shouldShowErrors
@@ -283,6 +290,9 @@ export default class Home extends PureComponent {
           ///: END:ONLY_INCLUDE_IN
         }
         {newCollectibleAddedMessage === 'success' ? (
+=======
+        {newNftAddedMessage === 'success' ? (
+>>>>>>> upstream/multichain-swaps-controller
           <ActionableMessage
             type="success"
             className="home__new-network-notification"

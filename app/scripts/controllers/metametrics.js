@@ -88,6 +88,10 @@ export default class MetaMetricsController {
     this.version =
       environment === 'production' ? version : `${version}-${environment}`;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.selectedAddress = prefState.selectedAddress;
+    ///: END:ONLY_INCLUDE_IN
+
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
 
     this.store = new ObservableStore({
@@ -124,6 +128,7 @@ export default class MetaMetricsController {
     // within the fragment's timeout window. When creating a new event fragment
     // a timeout can be specified that will cause an abandoned event to be
     // tracked if the event isn't progressed within that amount of time.
+<<<<<<< HEAD
     setInterval(() => {
       Object.values(this.store.getState().fragments).forEach((fragment) => {
         if (
@@ -131,6 +136,24 @@ export default class MetaMetricsController {
           Date.now() - fragment.lastUpdated / 1000 > fragment.timeout
         ) {
           this.finalizeEventFragment(fragment.id, { abandoned: true });
+=======
+    if (isManifestV3) {
+      /* eslint-disable no-undef */
+      this.extension.alarms.getAll().then((alarms) => {
+        const hasAlarm = checkAlarmExists(
+          alarms,
+          METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+        );
+
+        if (!hasAlarm) {
+          this.extension.alarms.create(
+            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+            {
+              delayInMinutes: 1,
+              periodInMinutes: 1,
+            },
+          );
+>>>>>>> upstream/multichain-swaps-controller
         }
       });
     }, SECOND * 30);
@@ -509,6 +532,22 @@ export default class MetaMetricsController {
       referrer,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
+<<<<<<< HEAD
+=======
+
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const mmiProps = {};
+
+    if (this.extension?.runtime?.id) {
+      mmiProps.extensionId = this.extension.runtime.id;
+    }
+
+    if (this.selectedAddres) {
+      mmiProps.accountAddress = this.selectedAddres;
+    }
+    ///: END:ONLY_INCLUDE_IN
+
+>>>>>>> upstream/multichain-swaps-controller
     return {
       event,
       properties: {
@@ -540,13 +579,33 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
+<<<<<<< HEAD
     /**
      * @type {MetaMetricsTraits}
      */
+=======
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const mmiAccountAddress =
+      metamaskState.custodyAccountDetails &&
+      Object.keys(metamaskState.custodyAccountDetails).length
+        ? Object.keys(metamaskState.custodyAccountDetails)[0]
+        : null;
+    ///: END:ONLY_INCLUDE_IN
+    const { traits, previousUserTraits } = this.store.getState();
+    let securityProvider;
+    if (metamaskState.securityAlertsEnabled) {
+      securityProvider = 'blockaid';
+    }
+    if (metamaskState.transactionSecurityCheckEnabled) {
+      securityProvider = 'opensea';
+    }
+    /** @type {MetaMetricsTraits} */
+>>>>>>> upstream/multichain-swaps-controller
     const currentTraits = {
       [TRAITS.ADDRESS_BOOK_ENTRIES]: sum(
         Object.values(metamaskState.addressBook).map(size),
       ),
+<<<<<<< HEAD
       [TRAITS.LEDGER_CONNECTION_TYPE]: metamaskState.ledgerTransportType,
       [TRAITS.NETWORKS_ADDED]: metamaskState.frequentRpcListDetail.map(
         (rpc) => rpc.chainId,
@@ -560,6 +619,53 @@ export default class MetaMetricsController {
       [TRAITS.NUMBER_OF_TOKENS]: this._getNumberOfTokens(metamaskState),
       [TRAITS.OPENSEA_API_ENABLED]: metamaskState.openSeaEnabled,
       [TRAITS.THEME]: metamaskState.theme || 'default',
+=======
+      [MetaMetricsUserTrait.InstallDateExt]:
+        traits[MetaMetricsUserTrait.InstallDateExt] || '',
+      [MetaMetricsUserTrait.LedgerConnectionType]:
+        metamaskState.ledgerTransportType,
+      [MetaMetricsUserTrait.NetworksAdded]: Object.values(
+        metamaskState.networkConfigurations,
+      ).map((networkConfiguration) => networkConfiguration.chainId),
+      [MetaMetricsUserTrait.NetworksWithoutTicker]: Object.values(
+        metamaskState.networkConfigurations,
+      )
+        .filter(({ ticker }) => !ticker)
+        .map(({ chainId }) => chainId),
+      [MetaMetricsUserTrait.NftAutodetectionEnabled]:
+        metamaskState.useNftDetection,
+      [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
+        metamaskState.identities,
+      ).length,
+      [MetaMetricsUserTrait.NumberOfNftCollections]:
+        this._getAllUniqueNFTAddressesLength(metamaskState.allNfts),
+      [MetaMetricsUserTrait.NumberOfNfts]: this._getAllNFTsFlattened(
+        metamaskState.allNfts,
+      ).length,
+      [MetaMetricsUserTrait.NumberOfTokens]:
+        this._getNumberOfTokens(metamaskState),
+      [MetaMetricsUserTrait.OpenseaApiEnabled]: metamaskState.openSeaEnabled,
+      [MetaMetricsUserTrait.ThreeBoxEnabled]: false, // deprecated, hard-coded as false
+      [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
+      [MetaMetricsUserTrait.TokenDetectionEnabled]:
+        metamaskState.useTokenDetection,
+      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      [MetaMetricsUserTrait.DesktopEnabled]:
+        metamaskState.desktopEnabled || false,
+      ///: END:ONLY_INCLUDE_IN
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
+      [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
+      [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
+      ///: END:ONLY_INCLUDE_IN
+      [MetaMetricsUserTrait.SecurityProviders]: securityProvider
+        ? [securityProvider]
+        : [],
+      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      [MetaMetricsUserTrait.PetnameAddressCount]:
+        this._getPetnameAddressCount(metamaskState),
+      ///: END:ONLY_INCLUDE_IN
+>>>>>>> upstream/multichain-swaps-controller
     };
 
     if (!this.previousTraits) {

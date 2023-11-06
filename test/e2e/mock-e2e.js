@@ -27,7 +27,7 @@ const emptyHtmlPage = () => `<!DOCTYPE html>
  * are not requests that the extension itself makes.
  */
 const browserAPIRequestDomains =
-  /^.*\.(googleapis\.com|google\.com|mozilla\.net|mozilla\.com|gvt1\.com)$/iu;
+  /^.*\.(googleapis\.com|google\.com|mozilla\.net|mozilla\.com|mozilla\.org|gvt1\.com)$/iu;
 
 /**
  * @typedef {import('mockttp').Mockttp} Mockttp
@@ -531,4 +531,4 @@ async function mockTokenNameProvider(server) {
   }
 }
 
-module.exports = { setupMocking };
+module.exports = { setupMocking, emptyHtmlPage };

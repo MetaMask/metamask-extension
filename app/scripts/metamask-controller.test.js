@@ -61,7 +61,25 @@ const browserPolyfillMock = {
       addListener: () => undefined,
     },
     onMessageExternal: {
+<<<<<<< HEAD
       addListener: () => undefined,
+=======
+      addListener: jest.fn(),
+    },
+    getPlatformInfo: jest.fn().mockResolvedValue('mac'),
+  },
+  storage: {
+    session: {
+      set: jest.fn(),
+    },
+  },
+  alarms: {
+    getAll: jest.fn(() => Promise.resolve([])),
+    create: jest.fn(),
+    clear: jest.fn(),
+    onAlarm: {
+      addListener: jest.fn(),
+>>>>>>> upstream/multichain-swaps-controller
     },
     getPlatformInfo: async () => 'mac',
   },
@@ -94,7 +112,7 @@ const MetaMaskController = proxyquire('./metamask-controller', {
   './lib/createLoggerMiddleware': { default: createLoggerMiddlewareMock },
 }).default;
 
-const currentNetworkId = '5';
+const currentChainId = '0x5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -558,6 +576,7 @@ describe('MetaMaskController', function () {
       }
     });
 
+<<<<<<< HEAD
     it('should be locked by default', async function () {
       await metamaskController
         .connectHardware(HardwareDeviceNames.trezor, 0)
@@ -566,6 +585,889 @@ describe('MetaMaskController', function () {
         HardwareDeviceNames.trezor,
       );
       assert.equal(status, false);
+=======
+    describe('forgetDevice', () => {
+      it('should throw if it receives an unknown device name', async () => {
+        const result = metamaskController.forgetDevice(
+          'Some random device name',
+        );
+        await expect(result).rejects.toThrow(
+          'MetamaskController:getKeyringForDevice - Unknown device',
+        );
+      });
+
+      it('should wipe all the keyring info', async () => {
+        await metamaskController
+          .connectHardware(HardwareDeviceNames.trezor, 0)
+          .catch(() => null);
+        await metamaskController.forgetDevice(HardwareDeviceNames.trezor);
+        const keyrings =
+          await metamaskController.keyringController.getKeyringsByType(
+            KeyringType.trezor,
+          );
+
+        expect(keyrings[0].accounts).toStrictEqual([]);
+        expect(keyrings[0].page).toStrictEqual(0);
+        expect(keyrings[0].isUnlocked()).toStrictEqual(false);
+      });
+    });
+
+    describe('unlockHardwareWalletAccount', () => {
+      const accountToUnlock = 10;
+      beforeEach(async () => {
+        await metamaskController.keyringController.createNewVaultAndRestore(
+          'password',
+          TEST_SEED,
+        );
+        jest.spyOn(window, 'open').mockReturnValue();
+        jest
+          .spyOn(
+            metamaskController.keyringController,
+            'addNewAccountForKeyring',
+          )
+          .mockReturnValue('0x123');
+
+        jest
+          .spyOn(metamaskController.keyringController, 'getAccounts')
+          .mockResolvedValueOnce(['0x1'])
+          .mockResolvedValueOnce(['0x2'])
+          .mockResolvedValueOnce(['0x3']);
+        jest
+          .spyOn(metamaskController.preferencesController, 'setAddresses')
+          .mockReturnValue();
+        jest
+          .spyOn(metamaskController.preferencesController, 'setSelectedAddress')
+          .mockReturnValue();
+        jest
+          .spyOn(metamaskController.preferencesController, 'setAccountLabel')
+          .mockReturnValue();
+
+        await metamaskController.unlockHardwareWalletAccount(
+          accountToUnlock,
+          HardwareDeviceNames.trezor,
+          `m/44'/1'/0'/0`,
+        );
+      });
+
+      it('should set unlockedAccount in the keyring', async () => {
+        const keyrings =
+          await metamaskController.keyringController.getKeyringsByType(
+            KeyringType.trezor,
+          );
+        expect(keyrings[0].unlockedAccount).toStrictEqual(accountToUnlock);
+      });
+
+      it('should call keyringController.addNewAccount', async () => {
+        expect(
+          metamaskController.keyringController.addNewAccountForKeyring,
+        ).toHaveBeenCalledTimes(1);
+      });
+
+      it('should call keyringController.getAccounts', async () => {
+        expect(
+          metamaskController.keyringController.getAccounts,
+        ).toHaveBeenCalledTimes(2);
+      });
+
+      it('should call preferencesController.setAddresses', async () => {
+        expect(
+          metamaskController.preferencesController.setAddresses,
+        ).toHaveBeenCalledTimes(1);
+      });
+
+      it('should call preferencesController.setSelectedAddress', async () => {
+        expect(
+          metamaskController.preferencesController.setSelectedAddress,
+        ).toHaveBeenCalledTimes(1);
+      });
+
+      it('should call preferencesController.setAccountLabel', async () => {
+        expect(
+          metamaskController.preferencesController.setAccountLabel,
+        ).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('#addNewAccount', () => {
+      it('errors when an primary keyring is does not exist', async () => {
+        const addNewAccount = metamaskController.addNewAccount();
+
+        await expect(addNewAccount).rejects.toThrow('No HD keyring found');
+      });
+    });
+
+    describe('#verifyseedPhrase', () => {
+      it('errors when no keying is provided', async () => {
+        await expect(metamaskController.verifySeedPhrase()).rejects.toThrow(
+          'No HD keyring found',
+        );
+      });
+
+      it('#addNewAccount', async () => {
+        await metamaskController.createNewVaultAndKeychain('password');
+        await metamaskController.addNewAccount(1);
+        const getAccounts =
+          await metamaskController.keyringController.getAccounts();
+        expect(getAccounts).toHaveLength(2);
+      });
+    });
+
+    describe('#resetAccount', () => {
+      it('wipes transactions from only the correct chain id and with the selected address', async function () {
+        jest
+          .spyOn(metamaskController.preferencesController, 'getSelectedAddress')
+          .mockReturnValue('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
+
+        metamaskController.txController.txStateManager._addTransactionsToState([
+          createTxMeta({
+            id: 1,
+            status: TransactionStatus.unapproved,
+            chainId: currentChainId,
+            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
+          }),
+          createTxMeta({
+            id: 1,
+            status: TransactionStatus.unapproved,
+            chainId: currentChainId,
+            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
+          }),
+          createTxMeta({
+            id: 2,
+            status: TransactionStatus.rejected,
+            chainId: '0x32',
+          }),
+          createTxMeta({
+            id: 3,
+            status: TransactionStatus.submitted,
+            chainId: currentChainId,
+            txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
+          }),
+        ]);
+
+        await metamaskController.resetAccount();
+
+        expect(
+          metamaskController.txController.txStateManager.getTransaction(1),
+        ).toBeUndefined();
+      });
+    });
+
+    describe('#removeAccount', () => {
+      let ret;
+      const addressToRemove = '0x1';
+      let mockKeyring;
+
+      beforeEach(async () => {
+        mockKeyring = {
+          getAccounts: jest.fn().mockResolvedValue([]),
+          destroy: jest.fn(),
+        };
+        jest
+          .spyOn(metamaskController.keyringController, 'removeAccount')
+          .mockReturnValue();
+        jest
+          .spyOn(metamaskController, 'removeAllAccountPermissions')
+          .mockReturnValue();
+
+        jest
+          .spyOn(metamaskController.keyringController, 'getKeyringForAccount')
+          .mockResolvedValue(mockKeyring);
+
+        ret = await metamaskController.removeAccount(addressToRemove);
+      });
+
+      it('should call keyringController.removeAccount', async () => {
+        expect(
+          metamaskController.keyringController.removeAccount,
+        ).toHaveBeenCalledWith(addressToRemove);
+      });
+      it('should call metamaskController.removeAllAccountPermissions', async () => {
+        expect(
+          metamaskController.removeAllAccountPermissions,
+        ).toHaveBeenCalledWith(addressToRemove);
+      });
+      it('should return address', async () => {
+        expect(ret).toStrictEqual('0x1');
+      });
+      it('should call keyringController.getKeyringForAccount', async () => {
+        expect(
+          metamaskController.keyringController.getKeyringForAccount,
+        ).toHaveBeenCalledWith(addressToRemove);
+      });
+      it('should call keyring.destroy', async () => {
+        expect(mockKeyring.destroy).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('#setupUntrustedCommunication', () => {
+      const mockTxParams = { from: TEST_ADDRESS };
+
+      beforeEach(() => {
+        initializeMockMiddlewareLog();
+      });
+
+      afterAll(() => {
+        tearDownMockMiddlewareLog();
+      });
+
+      it('sets up phishing stream for untrusted communication', async () => {
+        const phishingMessageSender = {
+          url: 'http://test.metamask-phishing.io',
+          tab: {},
+        };
+
+        const { promise, resolve } = deferredPromise();
+        const streamTest = createThoughStream((chunk, _, cb) => {
+          if (chunk.name !== 'phishing') {
+            cb();
+            return;
+          }
+          expect(chunk.data.hostname).toStrictEqual(
+            new URL(phishingMessageSender.url).hostname,
+          );
+          resolve();
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunication({
+          connectionStream: streamTest,
+          sender: phishingMessageSender,
+        });
+        await promise;
+        streamTest.end();
+      });
+
+      it('adds a tabId, origin and networkClient to requests', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+          tab: { id: 456 },
+        };
+        const streamTest = createThoughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunication({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
+
+        const message = {
+          id: 1999133338649204,
+          jsonrpc: '2.0',
+          params: [{ ...mockTxParams }],
+          method: 'eth_sendTransaction',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              name: 'metamask-provider',
+              data: message,
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'origin',
+                  'http://mycrypto.com',
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'tabId',
+                  456,
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'networkClientId',
+                  'networkConfigurationId1',
+                );
+                resolve();
+              });
+            },
+          );
+        });
+      });
+
+      it('should add only origin to request if tabId not provided', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+        };
+        const streamTest = createThoughStream((chunk, _, cb) => {
+          if (chunk.data && chunk.data.method) {
+            cb(null, chunk);
+            return;
+          }
+          cb();
+        });
+
+        metamaskController.setupUntrustedCommunication({
+          connectionStream: streamTest,
+          sender: messageSender,
+        });
+
+        const message = {
+          id: 1999133338649204,
+          jsonrpc: '2.0',
+          params: [{ ...mockTxParams }],
+          method: 'eth_sendTransaction',
+        };
+        await new Promise((resolve) => {
+          streamTest.write(
+            {
+              name: 'metamask-provider',
+              data: message,
+            },
+            null,
+            () => {
+              setTimeout(() => {
+                expect(loggerMiddlewareMock.requests[0]).not.toHaveProperty(
+                  'tabId',
+                );
+                expect(loggerMiddlewareMock.requests[0]).toHaveProperty(
+                  'origin',
+                  'http://mycrypto.com',
+                );
+                resolve();
+              });
+            },
+          );
+        });
+      });
+    });
+
+    describe('#setupTrustedCommunication', () => {
+      it('sets up controller JSON-RPC api for trusted communication', async () => {
+        const messageSender = {
+          url: 'http://mycrypto.com',
+          tab: {},
+        };
+        const { promise, resolve } = deferredPromise();
+        const streamTest = createThoughStream((chunk, _, cb) => {
+          expect(chunk.name).toStrictEqual('controller');
+          resolve();
+          cb();
+        });
+
+        metamaskController.setupTrustedCommunication(streamTest, messageSender);
+        await promise;
+        streamTest.end();
+      });
+    });
+
+    describe('#markPasswordForgotten', () => {
+      it('adds and sets forgottenPassword to config data to true', () => {
+        metamaskController.markPasswordForgotten(noop);
+        const state = metamaskController.getState();
+        expect(state.forgottenPassword).toStrictEqual(true);
+      });
+    });
+
+    describe('#unMarkPasswordForgotten', () => {
+      it('adds and sets forgottenPassword to config data to false', () => {
+        metamaskController.unMarkPasswordForgotten(noop);
+        const state = metamaskController.getState();
+        expect(state.forgottenPassword).toStrictEqual(false);
+      });
+    });
+
+    describe('#_onKeyringControllerUpdate', () => {
+      it('should do nothing if there are no keyrings in state', async () => {
+        jest
+          .spyOn(metamaskController.preferencesController, 'syncAddresses')
+          .mockReturnValue();
+        jest
+          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .mockReturnValue();
+
+        const oldState = metamaskController.getState();
+        await metamaskController._onKeyringControllerUpdate({ keyrings: [] });
+
+        expect(
+          metamaskController.preferencesController.syncAddresses,
+        ).not.toHaveBeenCalled();
+        expect(
+          metamaskController.accountTracker.syncWithAddresses,
+        ).not.toHaveBeenCalled();
+        expect(metamaskController.getState()).toStrictEqual(oldState);
+      });
+
+      it('should sync addresses if there are keyrings in state', async () => {
+        jest
+          .spyOn(metamaskController.preferencesController, 'syncAddresses')
+          .mockReturnValue();
+        jest
+          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .mockReturnValue();
+
+        const oldState = metamaskController.getState();
+        await metamaskController._onKeyringControllerUpdate({
+          keyrings: [
+            {
+              accounts: ['0x1', '0x2'],
+            },
+          ],
+        });
+
+        expect(
+          metamaskController.preferencesController.syncAddresses,
+        ).toHaveBeenCalledWith(['0x1', '0x2']);
+        expect(
+          metamaskController.accountTracker.syncWithAddresses,
+        ).toHaveBeenCalledWith(['0x1', '0x2']);
+        expect(metamaskController.getState()).toStrictEqual(oldState);
+      });
+
+      it('should NOT update selected address if already unlocked', async () => {
+        jest
+          .spyOn(metamaskController.preferencesController, 'syncAddresses')
+          .mockReturnValue();
+        jest
+          .spyOn(metamaskController.accountTracker, 'syncWithAddresses')
+          .mockReturnValue();
+
+        const oldState = metamaskController.getState();
+        await metamaskController._onKeyringControllerUpdate({
+          isUnlocked: true,
+          keyrings: [
+            {
+              accounts: ['0x1', '0x2'],
+            },
+          ],
+        });
+
+        expect(
+          metamaskController.preferencesController.syncAddresses,
+        ).toHaveBeenCalledWith(['0x1', '0x2']);
+        expect(
+          metamaskController.accountTracker.syncWithAddresses,
+        ).toHaveBeenCalledWith(['0x1', '0x2']);
+        expect(metamaskController.getState()).toStrictEqual(oldState);
+      });
+    });
+
+    describe('markNotificationsAsRead', () => {
+      it('marks the notification as read', () => {
+        metamaskController.markNotificationsAsRead([NOTIFICATION_ID]);
+        const readNotification =
+          metamaskController.getState().notifications[NOTIFICATION_ID];
+        expect(readNotification.readDate).not.toBeNull();
+      });
+    });
+
+    describe('dismissNotifications', () => {
+      it('deletes the notification from state', () => {
+        metamaskController.dismissNotifications([NOTIFICATION_ID]);
+        const state = metamaskController.getState().notifications;
+        expect(Object.values(state)).not.toContain(NOTIFICATION_ID);
+      });
+    });
+
+    describe('getTokenStandardAndDetails', () => {
+      it('gets token data from the token list if available, and with a balance retrieved by fetchTokenBalance', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        const tokenData = {
+          decimals: 18,
+          symbol: 'DAI',
+        };
+
+        metamaskController.tokenListController.update(() => {
+          return {
+            tokenList: {
+              '0x6b175474e89094c44da98b954eedeac495271d0f': tokenData,
+            },
+          };
+        });
+
+        metamaskController.provider = provider;
+        const tokenDetails =
+          await metamaskController.getTokenStandardAndDetails(
+            '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+            '0xf0d172594caedee459b89ad44c94098e474571b6',
+          );
+
+        expect(tokenDetails.standard).toStrictEqual('ERC20');
+        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
+        expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
+        expect(tokenDetails.balance).toStrictEqual('3000000000000000000');
+      });
+
+      it('gets token data from tokens if available, and with a balance retrieved by fetchTokenBalance', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        const tokenData = {
+          decimals: 18,
+          symbol: 'DAI',
+        };
+
+        metamaskController.tokensController.update({
+          tokens: [
+            {
+              address: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              ...tokenData,
+            },
+          ],
+        });
+
+        metamaskController.provider = provider;
+        const tokenDetails =
+          await metamaskController.getTokenStandardAndDetails(
+            '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+            '0xf0d172594caedee459b89ad44c94098e474571b6',
+          );
+
+        expect(tokenDetails.standard).toStrictEqual('ERC20');
+        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
+        expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
+        expect(tokenDetails.balance).toStrictEqual('3000000000000000000');
+      });
+
+      it('gets token data from contract-metadata if available, and with a balance retrieved by fetchTokenBalance', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        metamaskController.provider = provider;
+        const tokenDetails =
+          await metamaskController.getTokenStandardAndDetails(
+            '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+            '0xf0d172594caedee459b89ad44c94098e474571b6',
+          );
+
+        expect(tokenDetails.standard).toStrictEqual('ERC20');
+        expect(tokenDetails.decimals).toStrictEqual('18');
+        expect(tokenDetails.symbol).toStrictEqual('DAI');
+        expect(tokenDetails.balance).toStrictEqual('3000000000000000000');
+      });
+
+      it('gets token data from the blockchain, via the assetsContractController, if not available through other sources', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        const tokenData = {
+          standard: 'ERC20',
+          decimals: 18,
+          symbol: 'DAI',
+          balance: '333',
+        };
+
+        metamaskController.tokenListController.update(() => {
+          return {
+            tokenList: {
+              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            },
+          };
+        });
+
+        metamaskController.provider = provider;
+
+        jest
+          .spyOn(
+            metamaskController.assetsContractController,
+            'getTokenStandardAndDetails',
+          )
+          .mockReturnValue(tokenData);
+
+        const tokenDetails =
+          await metamaskController.getTokenStandardAndDetails(
+            '0xNotInTokenList',
+            '0xf0d172594caedee459b89ad44c94098e474571b6',
+          );
+
+        expect(tokenDetails.standard).toStrictEqual(
+          tokenData.standard.toUpperCase(),
+        );
+        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
+        expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
+        expect(tokenDetails.balance).toStrictEqual(tokenData.balance);
+      });
+
+      it('gets token data from the blockchain, via the assetsContractController, if it is in the token list but is an ERC721', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        const tokenData = {
+          standard: 'ERC721',
+          decimals: 18,
+          symbol: 'DAI',
+          balance: '333',
+        };
+
+        metamaskController.tokenListController.update(() => {
+          return {
+            tokenList: {
+              '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+            },
+          };
+        });
+
+        metamaskController.provider = provider;
+
+        jest
+          .spyOn(
+            metamaskController.assetsContractController,
+            'getTokenStandardAndDetails',
+          )
+          .mockReturnValue(tokenData);
+
+        const tokenDetails =
+          await metamaskController.getTokenStandardAndDetails(
+            '0xAAA75474e89094c44da98b954eedeac495271d0f',
+            '0xf0d172594caedee459b89ad44c94098e474571b6',
+          );
+
+        expect(tokenDetails.standard).toStrictEqual(
+          tokenData.standard.toUpperCase(),
+        );
+        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
+        expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
+        expect(tokenDetails.balance).toStrictEqual(tokenData.balance);
+      });
+
+      it('gets token data from the blockchain, via the assetsContractController, if it is in the token list but is an ERC1155', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        const tokenData = {
+          standard: 'ERC1155',
+          decimals: 18,
+          symbol: 'DAI',
+          balance: '333',
+        };
+
+        metamaskController.tokenListController.update(() => {
+          return {
+            tokenList: {
+              '0xaaa75474e89094c44da98b954eedeac495271d0f': tokenData,
+            },
+          };
+        });
+
+        metamaskController.provider = provider;
+
+        jest
+          .spyOn(
+            metamaskController.assetsContractController,
+            'getTokenStandardAndDetails',
+          )
+          .mockReturnValue(tokenData);
+
+        const tokenDetails =
+          await metamaskController.getTokenStandardAndDetails(
+            '0xAAA75474e89094c44da98b954eedeac495271d0f',
+            '0xf0d172594caedee459b89ad44c94098e474571b6',
+          );
+        expect(tokenDetails.standard).toStrictEqual(
+          tokenData.standard.toUpperCase(),
+        );
+        expect(tokenDetails.decimals).toStrictEqual(String(tokenData.decimals));
+        expect(tokenDetails.symbol).toStrictEqual(tokenData.symbol);
+        expect(tokenDetails.balance).toStrictEqual(tokenData.balance);
+      });
+
+      describe('findNetworkConfigurationBy', () => {
+        it('returns null if passed an object containing a valid networkConfiguration key but no matching value is found', () => {
+          expect(
+            metamaskController.findNetworkConfigurationBy({
+              chainId: '0xnone',
+            }),
+          ).toStrictEqual(null);
+        });
+        it('returns null if passed an object containing an invalid networkConfiguration key', () => {
+          expect(
+            metamaskController.findNetworkConfigurationBy({
+              invalidKey: '0xnone',
+            }),
+          ).toStrictEqual(null);
+        });
+
+        it('returns matching networkConfiguration when passed a chainId that matches an existing configuration', () => {
+          expect(
+            metamaskController.findNetworkConfigurationBy({
+              chainId: MAINNET_CHAIN_ID,
+            }),
+          ).toStrictEqual({
+            chainId: MAINNET_CHAIN_ID,
+            nickname: 'Alt Mainnet',
+            id: NETWORK_CONFIGURATION_ID_1,
+            rpcUrl: ALT_MAINNET_RPC_URL,
+            ticker: ETH,
+            type: NETWORK_TYPES.RPC,
+          });
+        });
+
+        it('returns matching networkConfiguration when passed a ticker that matches an existing configuration', () => {
+          expect(
+            metamaskController.findNetworkConfigurationBy({
+              ticker: MATIC,
+            }),
+          ).toStrictEqual({
+            rpcUrl: POLYGON_RPC_URL,
+            type: NETWORK_TYPES.RPC,
+            chainId: POLYGON_CHAIN_ID,
+            ticker: MATIC,
+            nickname: 'Polygon',
+            id: NETWORK_CONFIGURATION_ID_2,
+          });
+        });
+
+        it('returns matching networkConfiguration when passed a nickname that matches an existing configuration', () => {
+          expect(
+            metamaskController.findNetworkConfigurationBy({
+              nickname: 'Alt Mainnet',
+            }),
+          ).toStrictEqual({
+            chainId: MAINNET_CHAIN_ID,
+            nickname: 'Alt Mainnet',
+            id: NETWORK_CONFIGURATION_ID_1,
+            rpcUrl: ALT_MAINNET_RPC_URL,
+            ticker: ETH,
+            type: NETWORK_TYPES.RPC,
+          });
+        });
+
+        it('returns null if passed an object containing mismatched networkConfiguration key/value combination', () => {
+          expect(
+            metamaskController.findNetworkConfigurationBy({
+              nickname: MAINNET_CHAIN_ID,
+            }),
+          ).toStrictEqual(null);
+        });
+
+        it('returns the first networkConfiguration added if passed an key/value combination for which there are multiple matching configurations', () => {
+          expect(
+            metamaskController.findNetworkConfigurationBy({
+              chainId: POLYGON_CHAIN_ID,
+            }),
+          ).toStrictEqual({
+            rpcUrl: POLYGON_RPC_URL,
+            type: NETWORK_TYPES.RPC,
+            chainId: POLYGON_CHAIN_ID,
+            ticker: MATIC,
+            nickname: 'Polygon',
+            id: NETWORK_CONFIGURATION_ID_2,
+          });
+        });
+      });
+    });
+
+    describe('incoming transactions', () => {
+      it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
+        expect(
+          TransactionController.prototype.startIncomingTransactionPolling,
+        ).not.toHaveBeenCalled();
+
+        await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
+          {
+            incomingTransactionsPreferences: {
+              [MAINNET_CHAIN_ID]: true,
+            },
+          },
+        );
+
+        expect(
+          TransactionController.prototype.startIncomingTransactionPolling,
+        ).toHaveBeenCalledTimes(1);
+      });
+
+      it('stops incoming transaction polling if incomingTransactionsPreferences is disabled for that chainId', async () => {
+        expect(
+          TransactionController.prototype.stopIncomingTransactionPolling,
+        ).not.toHaveBeenCalled();
+
+        await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
+          {
+            incomingTransactionsPreferences: {
+              [MAINNET_CHAIN_ID]: false,
+            },
+          },
+        );
+
+        expect(
+          TransactionController.prototype.stopIncomingTransactionPolling,
+        ).toHaveBeenCalledTimes(1);
+      });
+
+      it('updates incoming transactions when changing account', async () => {
+        expect(
+          TransactionController.prototype.updateIncomingTransactions,
+        ).not.toHaveBeenCalled();
+
+        await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
+          {
+            selectedAddress: 'foo',
+          },
+        );
+
+        expect(
+          TransactionController.prototype.updateIncomingTransactions,
+        ).toHaveBeenCalledTimes(1);
+      });
+
+      it('updates incoming transactions when changing network', async () => {
+        expect(
+          TransactionController.prototype.updateIncomingTransactions,
+        ).not.toHaveBeenCalled();
+
+        await ControllerMessenger.prototype.subscribe.mock.calls
+          .filter((args) => args[0] === 'NetworkController:networkDidChange')
+          .slice(-1)[0][1]();
+
+        expect(
+          TransactionController.prototype.updateIncomingTransactions,
+        ).toHaveBeenCalledTimes(1);
+      });
+>>>>>>> upstream/multichain-swaps-controller
     });
   });
 

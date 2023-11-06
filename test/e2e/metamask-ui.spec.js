@@ -3,7 +3,21 @@ const webdriver = require('selenium-webdriver');
 
 const { By, Key, until } = webdriver;
 const enLocaleMessages = require('../../app/_locales/en/messages.json');
+<<<<<<< HEAD
 const { tinyDelayMs, regularDelayMs, largeDelayMs } = require('./helpers');
+=======
+const createStaticServer = require('../../development/create-static-server');
+const {
+  TEST_SEED_PHRASE_TWO,
+  WALLET_PASSWORD,
+  tinyDelayMs,
+  regularDelayMs,
+  largeDelayMs,
+  veryLargeDelayMs,
+  openDapp,
+  openActionMenuAndStartSendFlow,
+} = require('./helpers');
+>>>>>>> upstream/multichain-swaps-controller
 const { buildWebDriver } = require('./webdriver');
 const Ganache = require('./ganache');
 
@@ -71,6 +85,7 @@ describe('MetaMask', function () {
     });
 
     it('accepts a secure password', async function () {
+<<<<<<< HEAD
       const passwordBox = await driver.findElement(
         By.css('.first-time-flow__form #create-password'),
       );
@@ -85,6 +100,15 @@ describe('MetaMask', function () {
 
       await driver.clickElement(By.css('.first-time-flow__form button'));
       await driver.delay(regularDelayMs);
+=======
+      await driver.fill('[data-testid="create-password-new"]', WALLET_PASSWORD);
+      await driver.fill(
+        '[data-testid="create-password-confirm"]',
+        WALLET_PASSWORD,
+      );
+      await driver.clickElement('[data-testid="create-password-terms"]');
+      await driver.clickElement('[data-testid="create-password-wallet"]');
+>>>>>>> upstream/multichain-swaps-controller
     });
 
     let seedPhrase;
@@ -213,6 +237,7 @@ describe('MetaMask', function () {
       await driver.clickElement(
         By.xpath(`//div[contains(text(), 'Create Account')]`),
       );
+<<<<<<< HEAD
       await driver.delay(regularDelayMs);
     });
 
@@ -234,6 +259,26 @@ describe('MetaMask', function () {
         By.css('.selected-account__name'),
       );
       assert.equal(await accountName.getText(), '2nd account');
+=======
+
+      await driver.fill('#password', WALLET_PASSWORD);
+      await driver.fill('#confirm-password', WALLET_PASSWORD);
+      await driver.clickElement({
+        text: enLocaleMessages.restore.message,
+        tag: 'button',
+      });
+      await driver.delay(regularDelayMs);
+    });
+
+    it('balance renders', async function () {
+      const balanceSelector = process.env.MULTICHAIN
+        ? '[data-testid="token-balance-overview-currency-display"]'
+        : '[data-testid="eth-overview__primary-currency"]';
+      await driver.waitForSelector({
+        css: `${balanceSelector} .currency-display-component__text`,
+        text: process.env.MULTICHAIN ? '0' : '1000',
+      });
+>>>>>>> upstream/multichain-swaps-controller
       await driver.delay(regularDelayMs);
     });
   });
@@ -1108,10 +1153,17 @@ describe('MetaMask', function () {
       await driver.switchToWindow(dapp);
       await driver.delay(tinyDelayMs);
 
+<<<<<<< HEAD
       const tokenContractAddress = await driver.findElement(
         By.css('#tokenAddress'),
       );
       await driver.wait(until.elementTextMatches(tokenContractAddress, /0x/u));
+=======
+      const tokenContractAddress = await driver.waitForSelector({
+        css: '#tokenAddresses',
+        text: '0x',
+      });
+>>>>>>> upstream/multichain-swaps-controller
       tokenAddress = await tokenContractAddress.getText();
 
       await driver.delay(regularDelayMs);
@@ -1162,9 +1214,20 @@ describe('MetaMask', function () {
   });
 
   describe('Send token from inside MetaMask', function () {
+<<<<<<< HEAD
     let gasModal;
     it('starts to send a transaction', async function () {
       await driver.clickElement(By.css('[data-testid="eth-overview-send"]'));
+=======
+    if (process.env.MULTICHAIN) {
+      return;
+    }
+    it('starts to send a transaction', async function () {
+      await openActionMenuAndStartSendFlow(driver);
+      if (process.env.MULTICHAIN) {
+        return;
+      }
+>>>>>>> upstream/multichain-swaps-controller
       await driver.delay(regularDelayMs);
 
       const inputAddress = await driver.findElement(
@@ -1433,11 +1496,22 @@ describe('MetaMask', function () {
       await driver.delay(regularDelayMs);
     });
 
+<<<<<<< HEAD
     it('displays the token approval data', async function () {
       await driver.clickElement(
         By.css('.confirm-approve-content__view-full-tx-button'),
       );
       await driver.delay(regularDelayMs);
+=======
+    it('checks balance', async function () {
+      if (process.env.MULTICHAIN) {
+        return;
+      }
+      await driver.clickElement({
+        text: 'Tokens',
+        tag: 'button',
+      });
+>>>>>>> upstream/multichain-swaps-controller
 
       const functionType = await driver.findElement(
         By.css(

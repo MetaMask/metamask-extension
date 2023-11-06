@@ -5,6 +5,21 @@ import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { util } from '@metamask/controllers';
 import slip44 from '@metamask/slip44';
+<<<<<<< HEAD
+=======
+import * as lodash from 'lodash';
+import bowser from 'bowser';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { getSnapPrefix } from '@metamask/snaps-utils';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
+// eslint-disable-next-line import/no-duplicates
+import { isObject } from '@metamask/utils';
+///: END:ONLY_INCLUDE_IN
+// eslint-disable-next-line import/no-duplicates
+import { isStrictHexString } from '@metamask/utils';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
+import { logErrorWithMessage } from '../../../shared/modules/error';
+>>>>>>> upstream/multichain-swaps-controller
 import {
   GOERLI_CHAIN_ID,
   KOVAN_CHAIN_ID,
@@ -19,7 +34,22 @@ import {
   TRUNCATED_NAME_CHAR_LIMIT,
   TRUNCATED_ADDRESS_END_CHARS,
 } from '../../../shared/constants/labels';
+<<<<<<< HEAD
 import { toBigNumber } from '../../../shared/modules/conversion.utils';
+=======
+import { Numeric } from '../../../shared/modules/Numeric';
+import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import {
+  SNAPS_DERIVATION_PATHS,
+  SNAPS_METADATA,
+} from '../../../shared/constants/snaps';
+///: END:ONLY_INCLUDE_IN
+// formatData :: ( date: <Unix Timestamp> ) -> String
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { hexToDecimal } from '../../../shared/modules/conversion.utils';
+import { SNAPS_VIEW_ROUTE } from '../constants/routes';
+>>>>>>> upstream/multichain-swaps-controller
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
 export function formatDate(date, format = "M/d/y 'at' T") {
@@ -490,8 +520,42 @@ export function getAssetImageURL(image, ipfsGateway) {
     return '';
   }
 
+<<<<<<< HEAD
   if (image.startsWith('ipfs://')) {
     return util.getFormattedIpfsUrl(ipfsGateway, image, true);
+=======
+  if (ipfsGateway && image.startsWith('ipfs://')) {
+    // With v11.1.0, we started seeing errors thrown that included this
+    // line in the stack trace. The cause is that the `getIpfsCIDv1AndPath`
+    // method within assets-controllers/src/assetsUtil.ts can throw
+    // if part of the ipfsUrl, i.e. the `image` variable within this function,
+    // contains characters not in the Base58 alphabet. Details on that are
+    // here https://digitalbazaar.github.io/base58-spec/#alphabet. This happens
+    // with some NFTs, when we attempt to parse part of their IPFS image address
+    // with the `CID.parse` function (CID is part of the multiform package)
+    //
+    // Before v11.1.0 `getFormattedIpfsUrl` was not used in the extension codebase.
+    // Its use within assets-controllers always ensures that errors are caught
+    // and ignored. So while we were handling NFTs that can cause this error before,
+    // we were always catching and ignoring the error. As of PR #20172, we started
+    // passing all NFTs image URLs to `getAssetImageURL` from nft-items.js, which is
+    // why we started seeing these errors cause crashes for users in v11.1.0
+    //
+    // For the sake of a quick fix, we are wrapping this call in a try-catch, which
+    // the assets-controllers already do in some form in all cases where this function
+    // is called. This probably does not affect user experience, as we would not have
+    // correctly rendered these NFTs before v11.1.0 either (due to the same error
+    // disuccessed in this code comment).
+    //
+    // In the future, we can look into solving the root cause, which might require
+    // no longer using multiform's CID.parse() method within the assets-controller
+    try {
+      return getFormattedIpfsUrl(ipfsGateway, image, true);
+    } catch (e) {
+      logErrorWithMessage(e);
+      return '';
+    }
+>>>>>>> upstream/multichain-swaps-controller
   }
   return image;
 }
@@ -533,3 +597,132 @@ export function coinTypeToProtocolName(coinType) {
 export function isNullish(value) {
   return value === null || value === undefined;
 }
+<<<<<<< HEAD
+=======
+
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+/**
+ * @param {string[]} path
+ * @param {string} curve
+ * @returns {string | null}
+ */
+export function getSnapDerivationPathName(path, curve) {
+  const pathMetadata = SNAPS_DERIVATION_PATHS.find(
+    (derivationPath) =>
+      derivationPath.curve === curve &&
+      lodash.isEqual(derivationPath.path, path),
+  );
+
+  return pathMetadata?.name ?? null;
+}
+
+export const removeSnapIdPrefix = (snapId) =>
+  snapId?.replace(getSnapPrefix(snapId), '');
+
+export const getSnapName = (snapId, subjectMetadata) => {
+  if (SNAPS_METADATA[snapId]?.name) {
+    return SNAPS_METADATA[snapId].name;
+  }
+
+  return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
+};
+
+export const getSnapRoute = (snapId) => {
+  return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;
+};
+
+export const getDedupedSnaps = (request, permissions) => {
+  const permission = request?.permissions?.[WALLET_SNAP_PERMISSION_KEY];
+  const requestedSnaps = permission?.caveats[0].value;
+  const currentSnaps =
+    permissions?.[WALLET_SNAP_PERMISSION_KEY]?.caveats[0].value;
+
+  if (!isObject(currentSnaps) && requestedSnaps) {
+    return Object.keys(requestedSnaps);
+  }
+
+  const requestedSnapKeys = requestedSnaps ? Object.keys(requestedSnaps) : [];
+  const currentSnapKeys = currentSnaps ? Object.keys(currentSnaps) : [];
+  const dedupedSnaps = requestedSnapKeys.filter(
+    (snapId) => !currentSnapKeys.includes(snapId),
+  );
+
+  return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
+};
+
+///: END:ONLY_INCLUDE_IN
+
+/**
+ * The method escape RTL character in string
+ *
+ * @param {*} value
+ * @returns {(string|*)} escaped string or original param value
+ */
+export const sanitizeString = (value) => {
+  if (!value) {
+    return value;
+  }
+  if (!lodash.isString(value)) {
+    return value;
+  }
+  const regex = /\u202E/giu;
+  return value.replace(regex, '\\u202E');
+};
+
+/**
+ * This method checks current provider type and returns its string representation
+ *
+ * @param {*} provider
+ * @param {*} t
+ * @returns
+ */
+
+export const getNetworkNameFromProviderType = (providerName) => {
+  if (providerName === NETWORK_TYPES.RPC) {
+    return '';
+  }
+  return providerName;
+};
+
+/**
+ * Checks if the given keyring type is able to export an account.
+ *
+ * @param keyringType - The type of the keyring.
+ * @returns {boolean} `false` if the keyring type includes 'Hardware' or 'Snap', `true` otherwise.
+ */
+export const isAbleToExportAccount = (keyringType = '') => {
+  return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
+};
+
+/**
+ * Checks if a tokenId in Hex or decimal format already exists in an object.
+ *
+ * @param {string} address - collection address.
+ * @param {string} tokenId - tokenId to search for
+ * @param {*} obj - object to look into
+ * @returns {boolean} `false` if tokenId does not already exist.
+ */
+export const checkTokenIdExists = (address, tokenId, obj) => {
+  // check if input tokenId is hexadecimal
+  // If it is convert to decimal and compare with existing tokens
+  const isHex = isStrictHexString(tokenId);
+  let convertedTokenId = tokenId;
+  if (isHex) {
+    // Convert to decimal
+    convertedTokenId = hexToDecimal(tokenId);
+  }
+  // Convert the input address to checksum address
+  const checkSumAdr = toChecksumHexAddress(address);
+  if (obj[checkSumAdr]) {
+    const value = obj[checkSumAdr];
+    return lodash.some(value.nfts, (nft) => {
+      return (
+        nft.address === checkSumAdr &&
+        (isEqualCaseInsensitive(nft.tokenId, tokenId) ||
+          isEqualCaseInsensitive(nft.tokenId, convertedTokenId.toString()))
+      );
+    });
+  }
+  return false;
+};
+>>>>>>> upstream/multichain-swaps-controller

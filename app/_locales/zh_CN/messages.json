@@ -1480,8 +1480,197 @@
   "signed": {
     "message": "已签名"
   },
+<<<<<<< HEAD
   "slow": {
     "message": "慢"
+=======
+  "signin": {
+    "message": "登录"
+  },
+  "simulationErrorMessageV2": {
+    "message": "我们无法估算燃料。合约中可能存在错误，这笔交易可能会失败。"
+  },
+  "skip": {
+    "message": "跳过"
+  },
+  "skipAccountSecurity": {
+    "message": "跳过账户安全？"
+  },
+  "skipAccountSecurityDetails": {
+    "message": "我明白，在我备份我的账户私钥助记词之前，我可能会丢失我的账户及其所有资产。"
+  },
+  "smartContracts": {
+    "message": "智能合约"
+  },
+  "smartSwap": {
+    "message": "智能兑换"
+  },
+  "smartSwapsAreHere": {
+    "message": "智能兑换已推出！"
+  },
+  "smartSwapsDescription": {
+    "message": "MetaMask Swaps 变得更加智能！启用智能兑换使得 MetaMask 在编程方面让您的兑换体验更加优化，有助于："
+  },
+  "smartSwapsErrorNotEnoughFunds": {
+    "message": "没有足够的资金进行智能兑换。"
+  },
+  "smartSwapsErrorUnavailable": {
+    "message": "智能兑换暂时不可用。"
+  },
+  "smartSwapsSubDescription": {
+    "message": "* 智能兑换将多次尝试以私密方式提交您的交易。如果所有尝试都失败，交易将会公开广播，以确保您的兑换成功进行。"
+  },
+  "snapConfigure": {
+    "message": "配置"
+  },
+  "snapConnectionWarning": {
+    "message": "$1想连接$2。只有在您信任此网站的情况下才能继续。",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
+  "snapContent": {
+    "message": "此内容来自$1",
+    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
+  "snapCreateAccountSubtitle": {
+    "message": "选择如何使用 MetaMask Snaps 来保护您的新账户。"
+  },
+  "snapCreateAccountTitle": {
+    "message": "创建 $1 账户",
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
+  },
+  "snapCreateAccountTitle2": {
+    "message": "snap",
+    "description": "$1 of the snapCreateAccountTitle"
+  },
+  "snapCreatedByMetaMask": {
+    "message": "由MetaMask创建"
+  },
+  "snapDetailAudits": {
+    "message": "审核"
+  },
+  "snapDetailDeveloper": {
+    "message": "开发者"
+  },
+  "snapDetailLastUpdated": {
+    "message": "已更新"
+  },
+  "snapDetailManageSnap": {
+    "message": "管理snap"
+  },
+  "snapDetailTags": {
+    "message": "标签"
+  },
+  "snapDetailVersion": {
+    "message": "版本"
+  },
+  "snapDetailWebsite": {
+    "message": "网站"
+  },
+  "snapDetailsCreateASnapAccount": {
+    "message": "创建Snap账户"
+  },
+  "snapDetailsInstalled": {
+    "message": "已安装"
+  },
+  "snapInstall": {
+    "message": "安装Snap"
+  },
+  "snapInstallRequest": {
+    "message": "安装$1，将向其授予以下权限。只有在您信任$1的情况下才能继续。",
+    "description": "$1 is the snap name."
+  },
+  "snapInstallSuccess": {
+    "message": "安装完成"
+  },
+  "snapInstallWarningCheck": {
+    "message": "请勾选选项框以确认您理解。",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
+  },
+  "snapInstallWarningCheckPlural": {
+    "message": "请勾选所有方框以确认您理解。",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
+  },
+  "snapInstallWarningHeading": {
+    "message": "请谨慎行事"
+  },
+  "snapInstallWarningKeyAccess": {
+    "message": "将对 $2 的账户控制权授予 $1",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallWarningPublicKeyAccess": {
+    "message": "授予 $2 对 $1 的公钥访问权限",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallationErrorDescription": {
+    "message": "无法安装$1。",
+    "description": "Error description used when snap installation fails. $1 is the snap name."
+  },
+  "snapInstallationErrorTitle": {
+    "message": "安装失败",
+    "description": "Error title used when snap installation fails."
+  },
+  "snapIsAudited": {
+    "message": "已审核"
+  },
+  "snapResultError": {
+    "message": "错误"
+  },
+  "snapResultSuccess": {
+    "message": "成功"
+  },
+  "snapResultSuccessDescription": {
+    "message": "$1已可以使用"
+  },
+  "snapUpdateAvailable": {
+    "message": "有更新"
+  },
+  "snapUpdateErrorDescription": {
+    "message": "无法更新$1。",
+    "description": "Error description used when snap update fails. $1 is the snap name."
+  },
+  "snapUpdateErrorTitle": {
+    "message": "更新失败",
+    "description": "Error title used when snap update fails."
+  },
+  "snapUpdateRequest": {
+    "message": "$1希望将$2更新为$3，更新后将获得下列权限。只有在您信任$2的情况下才可继续。",
+    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+  },
+  "snapUpdateSuccess": {
+    "message": "更新完成"
+  },
+  "snaps": {
+    "message": "Snaps"
+  },
+  "snapsInsightLoading": {
+    "message": "正在加载交易洞察……"
+  },
+  "snapsInvalidUIError": {
+    "message": "Snap 指定的用户界面无效。"
+  },
+  "snapsNoInsight": {
+    "message": "Snap 没有返回任何洞察"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "您与第三方服务分享的任何信息，将由这些第三方服务根据其隐私政策直接收集。请参阅其隐私政策以了解更多信息。",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsTermsOfUse": {
+    "message": "使用条款"
+  },
+  "snapsToggle": {
+    "message": "Snap 仅在启用后才会运行"
+  },
+  "snapsUIError": {
+    "message": "联系 $1 的创建者以获得进一步支持。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "某些网络可能会带来安全和/或隐私风险。在添加和使用网络之前，请先了解风险。"
+  },
+  "somethingIsWrong": {
+    "message": "出错了。尝试重新加载页面。"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "somethingWentWrong": {
     "message": "糟糕！出问题了。"

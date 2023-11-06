@@ -6,6 +6,11 @@ import { MemoryRouter } from 'react-router-dom';
 import * as en from '../../app/_locales/en/messages.json';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
+<<<<<<< HEAD
+=======
+import * as en from '../../app/_locales/en/messages.json';
+import { LegacyMetaMetricsProvider } from '../../ui/contexts/metametrics';
+>>>>>>> upstream/multichain-swaps-controller
 
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;

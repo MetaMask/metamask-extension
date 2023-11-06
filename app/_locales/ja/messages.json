@@ -1480,8 +1480,197 @@
   "signed": {
     "message": "署名が完了しました"
   },
+<<<<<<< HEAD
   "slow": {
     "message": "低速"
+=======
+  "signin": {
+    "message": "サインイン"
+  },
+  "simulationErrorMessageV2": {
+    "message": "ガス代を見積もることができませんでした。コントラクトにエラーがある可能性があり、このトランザクションは失敗するかもしれません。"
+  },
+  "skip": {
+    "message": "スキップ"
+  },
+  "skipAccountSecurity": {
+    "message": "アカウントのセキュリティをスキップしますか？"
+  },
+  "skipAccountSecurityDetails": {
+    "message": "私は、シークレットリカバリーフレーズをバックアップするまで、アカウントとそのアセットのすべてを失う可能性があることを理解しています。"
+  },
+  "smartContracts": {
+    "message": "スマートコントラクト"
+  },
+  "smartSwap": {
+    "message": "スマートスワップ"
+  },
+  "smartSwapsAreHere": {
+    "message": "スマートスワップの登場です！"
+  },
+  "smartSwapsDescription": {
+    "message": "MetaMask Swapsがはるかに賢くなりました！スマートスワップを有効にすると、MetaMaskがプログラムに従ってスワップを最適化できるようになるため、以下のようなメリットがあります。"
+  },
+  "smartSwapsErrorNotEnoughFunds": {
+    "message": "スマートスワップに必要な資金が不足しています。"
+  },
+  "smartSwapsErrorUnavailable": {
+    "message": "スマートスワップは一時的にご利用いただけません。"
+  },
+  "smartSwapsSubDescription": {
+    "message": "* スマートスワップは、トランザクションの送信を非公開で複数回試行します。すべての試行に失敗した場合、スワップが正常に行われるように、トランザクションが一般公開されます。"
+  },
+  "snapConfigure": {
+    "message": "構成"
+  },
+  "snapConnectionWarning": {
+    "message": "$1が$2への接続を要求しています。このWebサイトが信頼できる場合にのみ続行してください。",
+    "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
+  "snapContent": {
+    "message": "このコンテンツは$1からのものです",
+    "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
+  },
+  "snapCreateAccountSubtitle": {
+    "message": "MetaMask Snapで新規アカウントのセキュリティを確保する方法を選択してください。"
+  },
+  "snapCreateAccountTitle": {
+    "message": "$1アカウントの作成",
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
+  },
+  "snapCreateAccountTitle2": {
+    "message": "snap",
+    "description": "$1 of the snapCreateAccountTitle"
+  },
+  "snapCreatedByMetaMask": {
+    "message": "By MetaMask"
+  },
+  "snapDetailAudits": {
+    "message": "監査"
+  },
+  "snapDetailDeveloper": {
+    "message": "開発者"
+  },
+  "snapDetailLastUpdated": {
+    "message": "更新済み"
+  },
+  "snapDetailManageSnap": {
+    "message": "snapの管理"
+  },
+  "snapDetailTags": {
+    "message": "タグ"
+  },
+  "snapDetailVersion": {
+    "message": "バージョン"
+  },
+  "snapDetailWebsite": {
+    "message": "Webサイト"
+  },
+  "snapDetailsCreateASnapAccount": {
+    "message": "スナップアカウントの作成"
+  },
+  "snapDetailsInstalled": {
+    "message": "インストール済み"
+  },
+  "snapInstall": {
+    "message": "snapをインストール"
+  },
+  "snapInstallRequest": {
+    "message": "$1をインストールすることで、次のアクセス許可が付与されます。$1を信頼できる場合にのみ続行してください。",
+    "description": "$1 is the snap name."
+  },
+  "snapInstallSuccess": {
+    "message": "インストール完了"
+  },
+  "snapInstallWarningCheck": {
+    "message": "まずは、求められている許可の内容を確認してください。$1を信頼できる場合のみ続行してください。",
+    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
+  },
+  "snapInstallWarningCheckPlural": {
+    "message": "まずは、求められている許可の内容を確認してください。$1を信頼できる場合のみ続行してください。",
+    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
+  },
+  "snapInstallWarningHeading": {
+    "message": "慎重に進めてください"
+  },
+  "snapInstallWarningKeyAccess": {
+    "message": "$2に$1アカウントのコントロールを許可する",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallWarningPublicKeyAccess": {
+    "message": "$2に$1への公開鍵アクセス権を付与する",
+    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  },
+  "snapInstallationErrorDescription": {
+    "message": "$1をインストールできませんでした。",
+    "description": "Error description used when snap installation fails. $1 is the snap name."
+  },
+  "snapInstallationErrorTitle": {
+    "message": "インストールに失敗しました",
+    "description": "Error title used when snap installation fails."
+  },
+  "snapIsAudited": {
+    "message": "監査済み"
+  },
+  "snapResultError": {
+    "message": "エラー"
+  },
+  "snapResultSuccess": {
+    "message": "成功"
+  },
+  "snapResultSuccessDescription": {
+    "message": "$1を使用する準備が整いました"
+  },
+  "snapUpdateAvailable": {
+    "message": "アップデートが利用できます"
+  },
+  "snapUpdateErrorDescription": {
+    "message": "$1を更新できませんでした。",
+    "description": "Error description used when snap update fails. $1 is the snap name."
+  },
+  "snapUpdateErrorTitle": {
+    "message": "更新失敗",
+    "description": "Error title used when snap update fails."
+  },
+  "snapUpdateRequest": {
+    "message": "$1が$2の$3への更新を要求しています。これにより、次のアクセス許可が付与されます。$2を信頼できる場合にのみ続行してください。",
+    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+  },
+  "snapUpdateSuccess": {
+    "message": "更新完了"
+  },
+  "snaps": {
+    "message": "Snaps"
+  },
+  "snapsInsightLoading": {
+    "message": "トランザクションインサイトを読み込み中..."
+  },
+  "snapsInvalidUIError": {
+    "message": "snapに指定されたUIが無効です。"
+  },
+  "snapsNoInsight": {
+    "message": "snapがインサイトを返しませんでした"
+  },
+  "snapsPrivacyWarningSecondMessage": {
+    "message": "サードパーティサービスと共有する情報は、当該サードパーティサービスにより、それぞれのプライバシーポリシーに従い直接収集されます。詳細は、各サードパーティサービスのプライバシーポリシーをご覧ください。",
+    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+  },
+  "snapsTermsOfUse": {
+    "message": "利用規約"
+  },
+  "snapsToggle": {
+    "message": "snapは有効になっている場合にのみ実行されます"
+  },
+  "snapsUIError": {
+    "message": "今後のサポートは、$1の作成者にお問い合わせください。",
+    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+  },
+  "someNetworksMayPoseSecurity": {
+    "message": "ネットワークによっては、セキュリティやプライバシーの面でリスクが伴う可能性があります。ネットワークを追加・使用する前にリスクを理解するようにしてください。"
+  },
+  "somethingIsWrong": {
+    "message": "エラーが発生しました。ページを再度読み込んでみてください。"
+>>>>>>> upstream/multichain-swaps-controller
   },
   "somethingWentWrong": {
     "message": "おおぅ!問題が発生しました。"

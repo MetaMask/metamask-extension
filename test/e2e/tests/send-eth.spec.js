@@ -2,7 +2,15 @@ const { strict: assert } = require('assert');
 const {
   convertToHexValue,
   withFixtures,
+<<<<<<< HEAD
   regularDelayMs,
+=======
+  openDapp,
+  locateAccountBalanceDOM,
+  logInWithBalanceValidation,
+  openActionMenuAndStartSendFlow,
+  unlockWallet,
+>>>>>>> upstream/multichain-swaps-controller
 } = require('../helpers');
 
 describe('Send ETH from inside MetaMask using default gas', function () {
@@ -20,7 +28,7 @@ describe('Send ETH from inside MetaMask using default gas', function () {
       {
         fixtures: 'imported-account',
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
 
@@ -35,8 +43,10 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-
+        await openActionMenuAndStartSendFlow(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.fill(
           'input[placeholder="Search, public address (0x), or ENS"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -45,12 +55,19 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         const inputAmount = await driver.findElement('.unit-input__input');
         await inputAmount.fill('1000');
 
+<<<<<<< HEAD
         const errorAmount = await driver.findElement('.send-v2__error-amount');
         assert.equal(
           await errorAmount.getText(),
           'Insufficient funds.',
           'send screen should render an insufficient fund error message',
         );
+=======
+        await driver.findElement({
+          css: '.send-v2__error-amount',
+          text: 'Insufficient funds for gas',
+        });
+>>>>>>> upstream/multichain-swaps-controller
 
         await inputAmount.press(driver.Key.BACK_SPACE);
         await inputAmount.press(driver.Key.BACK_SPACE);
@@ -99,6 +116,68 @@ describe('Send ETH from inside MetaMask using default gas', function () {
   });
 });
 
+<<<<<<< HEAD
+=======
+describe('Send ETH non-contract address with data that matches ERC20 transfer data signature', function () {
+  const ganacheOptions = {
+    accounts: [
+      {
+        secretKey:
+          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+        balance: convertToHexValue(25000000000000000000),
+      },
+    ],
+  };
+  it('renders the correct recipient on the confirmation screen', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            featureFlags: {
+              sendHexData: true,
+            },
+          })
+          .build(),
+        ganacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver, ganacheServer }) => {
+        await driver.navigate();
+        await logInWithBalanceValidation(driver, ganacheServer);
+
+        await openActionMenuAndStartSendFlow(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
+        await driver.fill(
+          'input[placeholder="Enter public address (0x) or ENS name"]',
+          '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
+        );
+
+        await driver.fill(
+          'textarea[placeholder="Optional',
+          '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
+        );
+
+        await driver.findClickableElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+
+        await driver.findClickableElement(
+          '[data-testid="sender-to-recipient__name"]',
+        );
+        await driver.clickElement('[data-testid="sender-to-recipient__name"]');
+
+        const recipientAddress = await driver.findElements({
+          text: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
+        });
+
+        assert.equal(recipientAddress.length, 1);
+      },
+    );
+  });
+});
+
+>>>>>>> upstream/multichain-swaps-controller
 /* eslint-disable-next-line mocha/max-top-level-suites */
 describe('Send ETH from inside MetaMask using advanced gas modal', function () {
   const ganacheOptions = {
@@ -115,15 +194,16 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
       {
         fixtures: 'imported-account',
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-
+        await openActionMenuAndStartSendFlow(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.fill(
           'input[placeholder="Search, public address (0x), or ENS"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
@@ -138,6 +218,7 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
         // Continue to next screen
         await driver.clickElement({ text: 'Next', tag: 'button' });
 
+        await driver.delay(1000);
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );
@@ -182,12 +263,11 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         dapp: true,
         fixtures: 'connected-state',
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // goes to the settings screen
         await driver.clickElement('.account-menu__icon');
@@ -246,16 +326,162 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         });
 
         // the transaction has the expected gas price
+<<<<<<< HEAD
         const txValue = await driver.findClickableElement(
           '.transaction-list-item__primary-currency',
+=======
+        driver.clickElement(
+          '[data-testid="transaction-list-item-primary-currency"]',
+>>>>>>> upstream/multichain-swaps-controller
         );
-        await txValue.click();
-        const gasPrice = await driver.waitForSelector({
+        await driver.waitForSelector({
           css: '[data-testid="transaction-breakdown__gas-price"]',
           text: '100',
         });
-        assert.equal(await gasPrice.getText(), '100');
       },
     );
   });
+<<<<<<< HEAD
+=======
+
+  it('should display correct gas values for EIP-1559 transaction', async function () {
+    await withFixtures(
+      {
+        dapp: true,
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .build(),
+        ganacheOptions: {
+          ...ganacheOptions,
+          hardfork: 'london',
+        },
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await unlockWallet(driver);
+
+        // initiates a transaction from the dapp
+        await openDapp(driver);
+        await driver.clickElement({ text: 'Create Token', tag: 'button' });
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
+
+        const extension = windowHandles[0];
+        await driver.switchToWindowWithTitle(
+          'MetaMask Notification',
+          windowHandles,
+        );
+        await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
+        await driver.clickElement('[data-testid="edit-gas-fee-button"]');
+        await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
+
+        const baseFeeInput = await driver.findElement(
+          '[data-testid="base-fee-input"]',
+        );
+        await baseFeeInput.fill('25');
+        const priorityFeeInput = await driver.findElement(
+          '[data-testid="priority-fee-input"]',
+        );
+        await priorityFeeInput.fill('1');
+
+        await driver.clickElement({ text: 'Save', tag: 'button' });
+        await driver.waitForSelector({
+          css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
+          text: '0.04503836 ETH',
+        });
+        await driver.waitForSelector({
+          css: '.transaction-detail-item:nth-of-type(2) h6:nth-of-type(2)',
+          text: '0.04503836 ETH',
+        });
+
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitUntilXWindowHandles(2);
+        await driver.switchToWindow(extension);
+
+        // Identify the transaction in the transactions list
+        await driver.waitForSelector(
+          process.env.MULTICHAIN
+            ? '[data-testid="token-balance-overview-currency-display"]'
+            : '[data-testid="eth-overview__primary-currency"]',
+        );
+
+        await driver.clickElement('[data-testid="home__activity-tab"]');
+        await driver.waitForSelector(
+          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+        );
+        await driver.waitForSelector({
+          css: '[data-testid="transaction-list-item-primary-currency"]',
+          text: '-0 ETH',
+        });
+
+        // the transaction has the expected gas value
+        await driver.clickElement(
+          '[data-testid="transaction-list-item-primary-currency"]',
+        );
+
+        await driver.waitForSelector({
+          text: '0.000000025',
+        });
+      },
+    );
+  });
+});
+
+describe('Send ETH from inside MetaMask to a Multisig Address', function () {
+  const smartContract = SMART_CONTRACTS.MULTISIG;
+  const ganacheOptions = {
+    accounts: [
+      {
+        secretKey:
+          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+        balance: convertToHexValue(25000000000000000000),
+      },
+    ],
+  };
+
+  it('finds the transaction in the transactions list @no-mmi', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions,
+        smartContract,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver, contractRegistry, ganacheServer }) => {
+        const contractAddress = await contractRegistry.getContractAddress(
+          smartContract,
+        );
+        await driver.navigate();
+        await logInWithBalanceValidation(driver, ganacheServer);
+
+        await openActionMenuAndStartSendFlow(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
+        await driver.fill(
+          'input[placeholder="Enter public address (0x) or ENS name"]',
+          contractAddress,
+        );
+
+        const inputAmount = await driver.findElement('.unit-input__input');
+        await inputAmount.fill('1');
+
+        // Continue to next screen
+        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+        // Go back to home screen to check txn
+        await locateAccountBalanceDOM(driver, ganacheServer);
+        await driver.clickElement('[data-testid="home__activity-tab"]');
+
+        await driver.findElement(
+          '.transaction-list__completed-transactions .activity-list-item',
+        );
+        await driver.assertElementNotPresent(
+          '.transaction-status-label--failed',
+        );
+      },
+    );
+  });
+>>>>>>> upstream/multichain-swaps-controller
 });

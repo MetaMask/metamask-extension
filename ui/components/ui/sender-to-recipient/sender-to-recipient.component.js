@@ -8,6 +8,12 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+<<<<<<< HEAD
+=======
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
+import NicknamePopovers from '../../app/modals/nickname-popovers';
+import { Icon, IconName } from '../../component-library';
+>>>>>>> upstream/multichain-swaps-controller
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
@@ -49,7 +55,7 @@ function SenderAddress({
       )}
       onClick={() => {
         setAddressCopied(true);
-        copyToClipboard(checksummedSenderAddress);
+        copyToClipboard(checksummedSenderAddress, COPY_OPTIONS);
         if (onSenderClick) {
           onSenderClick();
         }
@@ -106,6 +112,7 @@ export function RecipientWithAddress({
   const t = useI18nContext();
 
   return (
+<<<<<<< HEAD
     <div
       className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
       onClick={() => {
@@ -121,6 +128,52 @@ export function RecipientWithAddress({
     >
       <div className="sender-to-recipient__sender-icon">
         <Identicon address={checksummedRecipientAddress} diameter={24} />
+=======
+    <>
+      <div
+        className="sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address"
+        onClick={() => {
+          if (recipientIsOwnedAccount) {
+            setAddressCopied(true);
+            copyToClipboard(checksummedRecipientAddress, COPY_OPTIONS);
+          } else {
+            setShowNicknamePopovers(true);
+            if (onRecipientClick) {
+              onRecipientClick();
+            }
+          }
+        }}
+      >
+        <div className="sender-to-recipient__sender-icon">
+          <Identicon address={checksummedRecipientAddress} diameter={24} />
+        </div>
+        <Tooltip
+          position="bottom"
+          disabled={!recipientName}
+          html={tooltipHtml}
+          wrapperClassName="sender-to-recipient__tooltip-wrapper"
+          containerClassName="sender-to-recipient__tooltip-container"
+          onHidden={() => setAddressCopied(false)}
+        >
+          <div
+            className="sender-to-recipient__name"
+            data-testid="sender-to-recipient__name"
+          >
+            {addressOnly
+              ? recipientName ||
+                recipientNickname ||
+                recipientMetadataName ||
+                recipientEns ||
+                shortenAddress(checksummedRecipientAddress)
+              : recipientName ||
+                recipientNickname ||
+                recipientMetadataName ||
+                recipientEns ||
+                shortenAddress(checksummedRecipientAddress) ||
+                t('newContract')}
+          </div>
+        </Tooltip>
+>>>>>>> upstream/multichain-swaps-controller
       </div>
       <div className="sender-to-recipient__name">
         {addressOnly

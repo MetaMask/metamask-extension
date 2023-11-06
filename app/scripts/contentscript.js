@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const fs = require('fs')
 const path = require('path')
 const pump = require('pump')
@@ -12,6 +13,18 @@ const PortStream = require('extension-port-stream')
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
 const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
 const inpageBundle = inpageContent + inpageSuffix
+=======
+import { WindowPostMessageStream } from '@metamask/post-message-stream';
+import PortStream from 'extension-port-stream';
+import ObjectMultiplex from 'obj-multiplex';
+import pump from 'pump';
+import { obj as createThoughStream } from 'through2';
+import browser from 'webextension-polyfill';
+import { EXTENSION_MESSAGES } from '../../shared/constants/app';
+import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
+import { isManifestV3 } from '../../shared/modules/mv3.utils';
+import shouldInjectProvider from '../../shared/modules/provider-injection';
+>>>>>>> upstream/multichain-swaps-controller
 
 // Eventually this streaming injection could be replaced with:
 // https://developer.mozilla.org/en-US/docs/Mozilla/Tech/XPCOM/Language_Bindings/Components.utils.exportFunction
@@ -44,12 +57,35 @@ function injectScript (content) {
 }
 
 /**
+<<<<<<< HEAD
  * Sets up the stream communication and submits site metadata
  *
  */
 async function start () {
   await setupStreams()
   await domIsReady()
+=======
+ * PHISHING STREAM LOGIC
+ */
+
+function setupPhishingPageStreams() {
+  // the transport-specific streams for communication between inpage and background
+  const phishingPageStream = new WindowPostMessageStream({
+    name: CONTENT_SCRIPT,
+    target: PHISHING_WARNING_PAGE,
+  });
+
+  // create and connect channel muxers
+  // so we can handle the channels individually
+  phishingPageMux = new ObjectMultiplex();
+  phishingPageMux.setMaxListeners(25);
+
+  pump(phishingPageMux, phishingPageStream, phishingPageMux, (err) =>
+    logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
+  );
+
+  phishingPageChannel = phishingPageMux.createStream(PHISHING_SAFELIST);
+>>>>>>> upstream/multichain-swaps-controller
 }
 
 /**
@@ -59,12 +95,19 @@ async function start () {
  */
 async function setupStreams () {
   // the transport-specific streams for communication between inpage and background
+<<<<<<< HEAD
   const pageStream = new LocalMessageDuplexStream({
     name: 'contentscript',
     target: 'inpage',
   })
   const extensionPort = extension.runtime.connect({ name: 'contentscript' })
   const extensionStream = new PortStream(extensionPort)
+=======
+  const pageStream = new WindowPostMessageStream({
+    name: CONTENT_SCRIPT,
+    target: INPAGE,
+  });
+>>>>>>> upstream/multichain-swaps-controller
 
   // create and connect channel muxers
   // so we can handle the channels individually
@@ -102,9 +145,52 @@ async function setupStreams () {
   return { background }
 }
 
+<<<<<<< HEAD
 function forwardTrafficBetweenMuxers (channelName, muxA, muxB) {
   const channelA = muxA.createStream(channelName)
   const channelB = muxB.createStream(channelName)
+=======
+  extensionMux.removeAllListeners();
+  extensionMux.destroy();
+
+  extensionChannel.removeAllListeners();
+  extensionChannel.destroy();
+
+  extensionStream = null;
+};
+
+/**
+ * LEGACY STREAM LOGIC
+ * TODO:LegacyProvider: Delete
+ */
+
+// TODO:LegacyProvider: Delete
+const setupLegacyPageStreams = () => {
+  const legacyPageStream = new WindowPostMessageStream({
+    name: LEGACY_CONTENT_SCRIPT,
+    target: LEGACY_INPAGE,
+  });
+
+  legacyPageMux = new ObjectMultiplex();
+  legacyPageMux.setMaxListeners(25);
+
+  pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
+    logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
+  );
+
+  legacyPageMuxLegacyProviderChannel =
+    legacyPageMux.createStream(LEGACY_PROVIDER);
+  legacyPagePublicConfigChannel =
+    legacyPageMux.createStream(LEGACY_PUBLIC_CONFIG);
+};
+
+// TODO:LegacyProvider: Delete
+const setupLegacyExtensionStreams = () => {
+  legacyExtMux = new ObjectMultiplex();
+  legacyExtMux.setMaxListeners(25);
+
+  notificationTransformStream = getNotificationTransformStream();
+>>>>>>> upstream/multichain-swaps-controller
   pump(
     channelA,
     channelB,

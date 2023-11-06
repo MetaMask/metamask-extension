@@ -47,7 +47,19 @@ const colors = {
 };
 
 const ToggleButton = (props) => {
+<<<<<<< HEAD
   const { value, onToggle, offLabel, onLabel, disabled } = props;
+=======
+  const {
+    value,
+    onToggle,
+    offLabel,
+    onLabel,
+    disabled,
+    className,
+    dataTestId,
+  } = props;
+>>>>>>> upstream/multichain-swaps-controller
 
   const modifier = value ? 'on' : 'off';
 
@@ -66,6 +78,9 @@ const ToggleButton = (props) => {
         thumbStyle={thumbStyle}
         thumbAnimateRange={[3, 18]}
         colors={colors}
+        passThroughInputProps={{
+          'data-testId': dataTestId,
+        }}
       />
       <div className="toggle-button__status">
         <span className="toggle-button__label-off">{offLabel}</span>
@@ -81,6 +96,17 @@ ToggleButton.propTypes = {
   offLabel: PropTypes.string,
   onLabel: PropTypes.string,
   disabled: PropTypes.bool,
+<<<<<<< HEAD
+=======
+  /**
+   * Additional className to add to the ToggleButton
+   */
+  className: PropTypes.string,
+  /**
+   * A test id for the toggle button
+   */
+  dataTestId: PropTypes.string,
+>>>>>>> upstream/multichain-swaps-controller
 };
 
 export default ToggleButton;

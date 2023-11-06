@@ -104,6 +104,7 @@ export default class PermissionConnect extends Component {
     }
   }
 
+<<<<<<< HEAD
   static getDerivedStateFromProps(props, state) {
     const { permissionsRequest, targetDomainMetadata } = props;
     const { targetDomainMetadata: savedMetadata } = state;
@@ -117,6 +118,8 @@ export default class PermissionConnect extends Component {
     return null;
   }
 
+=======
+>>>>>>> upstream/multichain-swaps-controller
   componentDidUpdate(prevProps) {
     const { permissionsRequest, lastConnectedInfo } = this.props;
     const { redirecting, origin } = this.state;
@@ -207,12 +210,33 @@ export default class PermissionConnect extends Component {
       permissionsRequestId,
       connectPath,
       confirmPermissionPath,
+<<<<<<< HEAD
+=======
+      hideTopBar,
+      targetSubjectMetadata,
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      snapsConnectPath,
+      snapInstallPath,
+      snapUpdatePath,
+      snapResultPath,
+      requestState,
+      approvePendingApproval,
+      rejectPendingApproval,
+      setSnapsInstallPrivacyWarningShownStatus,
+      ///: END:ONLY_INCLUDE_IN
+>>>>>>> upstream/multichain-swaps-controller
     } = this.props;
     const {
       selectedAccountAddresses,
       permissionsApproved,
       redirecting,
+<<<<<<< HEAD
       targetDomainMetadata,
+=======
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      snapsInstallPrivacyWarningShown,
+      ///: END:ONLY_INCLUDE_IN
+>>>>>>> upstream/multichain-swaps-controller
     } = this.state;
 
     return (

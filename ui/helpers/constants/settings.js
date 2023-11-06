@@ -7,9 +7,12 @@ import {
   NETWORKS_ROUTE,
   CONTACT_LIST_ROUTE,
   EXPERIMENTAL_ROUTE,
+<<<<<<< HEAD
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   SNAPS_LIST_ROUTE,
   ///: END:ONLY_INCLUDE_IN
+=======
+>>>>>>> upstream/multichain-swaps-controller
 } from './routes';
 
 export const SETTINGS_CONSTANTS = [
@@ -146,6 +149,7 @@ export const SETTINGS_CONSTANTS = [
     route: CONTACT_LIST_ROUTE,
     icon: 'fa fa-address-book',
   },
+<<<<<<< HEAD
   ///: BEGIN:ONLY_INCLUDE_IN(flask)
   {
     tabMessage: (t) => t('snaps'),
@@ -155,6 +159,8 @@ export const SETTINGS_CONSTANTS = [
     icon: 'fa fa-flask',
   },
   ///: END:ONLY_INCLUDE_IN
+=======
+>>>>>>> upstream/multichain-swaps-controller
   {
     tabMessage: (t) => t('securityAndPrivacy'),
     sectionMessage: (t) => t('revealSeedWords'),
