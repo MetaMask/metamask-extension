@@ -27,14 +27,14 @@ export const SelectActionModalItem = ({
   primaryText,
   secondaryText,
   disabled,
+  ...props
 }) => {
   if (disabled) {
     return null;
   }
   return (
     <Box
-      paddingTop={4}
-      paddingBottom={4}
+      padding={4}
       gap={4}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
@@ -47,6 +47,7 @@ export const SelectActionModalItem = ({
       className="select-action-modal-item"
       data-testid="select-action-modal-item"
       width={BlockSize.Full}
+      {...props}
     >
       <Box>
         <AvatarIcon

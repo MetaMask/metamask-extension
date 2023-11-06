@@ -5,6 +5,8 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { EtherDenomination } from '../constants/common';
 import { stripHexPrefix } from './hexstring-utils';
 
+const MAX_DECIMALS_FOR_TOKENS = 36;
+BigNumber.config({ DECIMAL_PLACES: MAX_DECIMALS_FOR_TOKENS });
 export type NumericValue = string | number | BN | BigNumber;
 export type NumericBase = 10 | 16;
 

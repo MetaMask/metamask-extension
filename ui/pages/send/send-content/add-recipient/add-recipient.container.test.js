@@ -16,7 +16,7 @@ jest.mock('../../../../selectors', () => ({
     { name: `account1:mockState` },
     { name: `account2:mockState` },
   ],
-  currentNetworkTxListSelector: (s) => `currentNetworkTxListSelector:${s}`,
+  getCurrentNetworkTransactions: (s) => `getCurrentNetworkTransactions:${s}`,
 }));
 
 jest.mock('../../../../ducks/domains', () => ({

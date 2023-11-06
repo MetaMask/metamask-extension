@@ -12,6 +12,7 @@ import {
   TextAlign,
   JustifyContent,
   FontWeight,
+  Display,
 } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import Button from '../../../ui/button';
@@ -86,7 +87,11 @@ export default function SnapInstallWarning({
       footerProps={{ padding: [4, 6] }}
       onClose={onCancel}
     >
-      <Box justifyContent={JustifyContent.center} marginBottom={6}>
+      <Box
+        display={Display.Flex}
+        justifyContent={JustifyContent.center}
+        marginBottom={6}
+      >
         <AvatarIcon
           iconName={IconName.Danger}
           backgroundColor={BackgroundColor.warningMuted}

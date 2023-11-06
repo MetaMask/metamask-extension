@@ -3,12 +3,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
 
-import ToggleButton from '../../ui/toggle-button';
 import { Box, Text } from '../../component-library';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextVariant,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -42,10 +38,6 @@ const IncomingTransactionToggle = ({
     ),
   );
 
-  const [isAllEnabled, setIsAllEnabled] = useState(
-    checkAllNetworks(incomingTransactionsPreferences),
-  );
-
   useEffect(() => {
     setNetworkPreferences(
       generateIncomingNetworkPreferences(
@@ -55,49 +47,16 @@ const IncomingTransactionToggle = ({
     );
   }, [incomingTransactionsPreferences, allNetworks]);
 
-  useEffect(() => {
-    setIsAllEnabled(checkAllNetworks(incomingTransactionsPreferences));
-  }, [incomingTransactionsPreferences]);
-
-  const toggleAllEnabled = (isAllEnabledValue: boolean): void => {
-    Object.keys(incomingTransactionsPreferences).forEach((chainId) => {
-      if (incomingTransactionsPreferences[chainId] !== isAllEnabledValue) {
-        setIncomingTransactionsPreferences(chainId, isAllEnabledValue);
-      }
-    });
-  };
-
   const toggleSingleNetwork = (chainId: string, value: boolean): void => {
     setIncomingTransactionsPreferences(chainId, value);
   };
 
   return (
     <Box ref={wrapperRef} className="mm-incoming-transaction-toggle">
-      <Text variant={TextVariant.bodyMdMedium}>
-        {t('showIncomingTransactions')}
-      </Text>
-
+      <Text variant={TextVariant.bodyMd}>{t('showIncomingTransactions')}</Text>
       <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-        {t('showIncomingTransactionsInformation')}
+        {t('showIncomingTransactionsExplainer')}
       </Text>
-      <Box
-        marginTop={3}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-        data-testid="incoming-transaction-toggle-enable-all"
-      >
-        <Text variant={TextVariant.bodySmBold}>
-          {t('enableForAllNetworks')}
-        </Text>
-        <ToggleButton
-          value={isAllEnabled}
-          onToggle={(value) => toggleAllEnabled(!value)}
-          offLabel={t('off')}
-          onLabel={t('on')}
-        />
-      </Box>
       {Object.keys(networkPreferences).map((chainId, index) => {
         return (
           <NetworkToggle
@@ -138,10 +97,4 @@ function generateIncomingNetworkPreferences(
   });
 
   return incomingTxnPreferences;
-}
-
-function checkAllNetworks(
-  incomingTransactionsPreferences: Record<string, boolean>,
-): boolean {
-  return Object.values(incomingTransactionsPreferences).every(Boolean);
 }

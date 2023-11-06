@@ -54,7 +54,7 @@ describe('Show account details', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -77,7 +77,7 @@ describe('Show account details', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -97,7 +97,7 @@ describe('Show account details', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -105,6 +105,9 @@ describe('Show account details', function () {
 
         // Create and focus on different account
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
@@ -125,7 +128,7 @@ describe('Show account details', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -145,7 +148,7 @@ describe('Show account details', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -153,6 +156,9 @@ describe('Show account details', function () {
 
         // Create and focus on different account
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
@@ -172,7 +178,7 @@ describe('Show account details', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {

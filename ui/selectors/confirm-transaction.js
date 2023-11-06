@@ -6,7 +6,6 @@ import {
   addFiat,
   addEth,
 } from '../helpers/utils/confirm-tx.util';
-import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
@@ -29,10 +28,13 @@ import {
   sumHexes,
 } from '../../shared/modules/conversion.utils';
 import { getAveragePriceEstimateInHexWEI } from './custom-gas';
-import { getCurrentChainId, deprecatedGetCurrentNetworkId } from './selectors';
-import { checkNetworkAndAccountSupports1559 } from '.';
+import { getCurrentChainId } from './selectors';
+import {
+  checkNetworkAndAccountSupports1559,
+  getUnapprovedTransactions,
+} from '.';
 
-const unapprovedTxsSelector = (state) => state.metamask.unapprovedTxs;
+const unapprovedTxsSelector = (state) => getUnapprovedTransactions(state);
 const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
 const unapprovedPersonalMsgsSelector = (state) =>
   state.metamask.unapprovedPersonalMsgs;
@@ -50,7 +52,6 @@ export const unconfirmedTransactionsListSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  deprecatedGetCurrentNetworkId,
   getCurrentChainId,
   (
     unapprovedTxs = {},
@@ -59,7 +60,6 @@ export const unconfirmedTransactionsListSelector = createSelector(
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network,
     chainId,
   ) =>
     txHelper(
@@ -69,7 +69,6 @@ export const unconfirmedTransactionsListSelector = createSelector(
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
-      network,
       chainId,
     ) || [],
 );
@@ -81,7 +80,6 @@ export const unconfirmedTransactionsHashSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  deprecatedGetCurrentNetworkId,
   getCurrentChainId,
   (
     unapprovedTxs = {},
@@ -90,16 +88,13 @@ export const unconfirmedTransactionsHashSelector = createSelector(
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network,
     chainId,
   ) => {
     const filteredUnapprovedTxs = Object.keys(unapprovedTxs).reduce(
       (acc, address) => {
         const transactions = { ...acc };
 
-        if (
-          transactionMatchesNetwork(unapprovedTxs[address], chainId, network)
-        ) {
+        if (unapprovedTxs[address].chainId === chainId) {
           transactions[address] = unapprovedTxs[address];
         }
 

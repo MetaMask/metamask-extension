@@ -32,10 +32,6 @@ describe('IncomingTransactionToggle', () => {
       mockStore,
     );
     expect(container).toMatchSnapshot();
-    const enableForAllCheckbox = within(
-      getByTestId('incoming-transaction-toggle-enable-all'),
-    ).getByRole('checkbox');
-    expect(enableForAllCheckbox.checked).toStrictEqual(false);
 
     const ethMainnetCheckbox = within(
       getByTestId(`network-toggle-${ALL_NETWORKS_DATA[0].chainId}`),
@@ -63,40 +59,7 @@ describe('IncomingTransactionToggle', () => {
     expect(lineaGoerliCheckbox.value).toStrictEqual('true');
   });
 
-  it('should trigger settle for all when click toggle all button', () => {
-    const { getByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <IncomingTransactionToggle
-          setIncomingTransactionsPreferences={
-            setIncomingTransactionsPreferencesStub
-          }
-          allNetworks={ALL_NETWORKS_DATA}
-          incomingTransactionsPreferences={INCOMING_DATA}
-        />
-      </MetaMetricsContext.Provider>,
-      mockStore,
-    );
-    const enableForAllCheckbox = within(
-      getByTestId('incoming-transaction-toggle-enable-all'),
-    ).getByRole('checkbox');
-    fireEvent.click(enableForAllCheckbox);
-    // set 2 false to true
-    expect(setIncomingTransactionsPreferencesStub).toHaveBeenCalledTimes(2);
-    expect(
-      setIncomingTransactionsPreferencesStub.mock.calls[0][0],
-    ).toStrictEqual('0xe708');
-    expect(
-      setIncomingTransactionsPreferencesStub.mock.calls[0][1],
-    ).toStrictEqual(true);
-    expect(
-      setIncomingTransactionsPreferencesStub.mock.calls[1][0],
-    ).toStrictEqual('0x5');
-    expect(
-      setIncomingTransactionsPreferencesStub.mock.calls[1][1],
-    ).toStrictEqual(true);
-  });
-
-  it('should trigger settle for one when click toggle one button', () => {
+  it('should settle the preference when click toggle one button', () => {
     const { getByTestId } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <IncomingTransactionToggle

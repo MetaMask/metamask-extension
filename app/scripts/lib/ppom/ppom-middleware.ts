@@ -1,10 +1,12 @@
 import { PPOM } from '@blockaid/ppom_release';
 import { PPOMController } from '@metamask/ppom-validator';
+import { NetworkController } from '@metamask/network-controller';
 
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import PreferencesController from '../../controllers/preferences';
 
 const { sentry } = global as any;
@@ -31,17 +33,24 @@ const ConfirmationMethods = Object.freeze([
  *
  * @param ppomController - Instance of PPOMController.
  * @param preferencesController - Instance of PreferenceController.
+ * @param networkController - Instance of NetworkController.
  * @returns PPOMMiddleware function.
  */
 export function createPPOMMiddleware(
   ppomController: PPOMController,
   preferencesController: PreferencesController,
+  networkController: NetworkController,
 ) {
   return async (req: any, _res: any, next: () => void) => {
     try {
       const securityAlertsEnabled =
         preferencesController.store.getState()?.securityAlertsEnabled;
-      if (securityAlertsEnabled && ConfirmationMethods.includes(req.method)) {
+      const { chainId } = networkController.state.providerConfig;
+      if (
+        securityAlertsEnabled &&
+        ConfirmationMethods.includes(req.method) &&
+        chainId === CHAIN_IDS.MAINNET
+      ) {
         // eslint-disable-next-line require-atomic-updates
         req.securityAlertResponse = await ppomController.usePPOM(
           async (ppom: PPOM) => {

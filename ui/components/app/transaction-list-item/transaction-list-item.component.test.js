@@ -12,11 +12,8 @@ import {
   getShouldShowFiat,
   getCurrentNetwork,
 } from '../../../selectors';
-import {
-  renderWithProvider,
-  setBackgroundConnection,
-} from '../../../../test/jest';
-
+import { renderWithProvider } from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { getTokens } from '../../../ducks/metamask/metamask';
@@ -25,7 +22,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-
+import { TransactionStatus } from '../../../../shared/constants/transaction';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {
@@ -231,10 +228,60 @@ describe('TransactionListItem', () => {
         ...(transactionGroup.primaryTransaction.custodyId = '1'),
       };
 
-      const { queryByTestId } = renderWithProvider(
+      const { getByTestId } = renderWithProvider(
         <TransactionListItem transactionGroup={newTransactionGroup} />,
       );
-      expect(queryByTestId('custody-icon')).toBeInTheDocument();
+      const custodyIcon = getByTestId('custody-icon');
+      const custodyIconBadge = getByTestId('custody-icon-badge');
+
+      expect(custodyIcon).toBeInTheDocument();
+      expect(custodyIconBadge).toHaveClass('mm-box--color-primary-default');
+    });
+
+    it('should display correctly the custody icon if status is signed', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+        ...(transactionGroup.primaryTransaction.status =
+          TransactionStatus.signed),
+      };
+
+      const { getByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+      );
+
+      const custodyIconBadge = getByTestId('custody-icon-badge');
+
+      expect(custodyIconBadge).toHaveClass('mm-box--color-icon-alternative');
+    });
+
+    it('should display correctly the custody icon if status is rejected', () => {
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+        ...(transactionGroup.primaryTransaction.status =
+          TransactionStatus.rejected),
+      };
+
+      const { getByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+      );
+
+      const custodyIconBadge = getByTestId('custody-icon-badge');
+
+      expect(custodyIconBadge).toHaveClass('mm-box--color-error-default');
     });
 
     it('should click the custody list item and view the send screen', () => {

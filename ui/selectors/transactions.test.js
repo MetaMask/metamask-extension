@@ -106,7 +106,7 @@ describe('Transaction Selectors', () => {
   });
 
   describe('transactionsSelector', () => {
-    it('selects the currentNetworkTxList', () => {
+    it('selects the current network transactions', () => {
       const state = {
         metamask: {
           providerConfig: {
@@ -115,9 +115,10 @@ describe('Transaction Selectors', () => {
           },
           featureFlags: {},
           selectedAddress: '0xAddress',
-          currentNetworkTxList: [
+          transactions: [
             {
               id: 0,
+              chainId: CHAIN_IDS.MAINNET,
               time: 0,
               txParams: {
                 from: '0xAddress',
@@ -126,6 +127,7 @@ describe('Transaction Selectors', () => {
             },
             {
               id: 1,
+              chainId: CHAIN_IDS.MAINNET,
               time: 1,
               txParams: {
                 from: '0xAddress',
@@ -136,7 +138,7 @@ describe('Transaction Selectors', () => {
         },
       };
 
-      const orderedTxList = state.metamask.currentNetworkTxList.sort(
+      const orderedTxList = state.metamask.transactions.sort(
         (a, b) => b.time - a.time,
       );
 
@@ -152,6 +154,7 @@ describe('Transaction Selectors', () => {
       const tx1 = {
         id: 0,
         time: 0,
+        chainId: CHAIN_IDS.MAINNET,
         txParams: {
           from: '0xAddress',
           to: '0xRecipient',
@@ -162,6 +165,7 @@ describe('Transaction Selectors', () => {
       const tx2 = {
         id: 1,
         time: 1,
+        chainId: CHAIN_IDS.MAINNET,
         txParams: {
           from: '0xAddress',
           to: '0xRecipient',
@@ -177,7 +181,7 @@ describe('Transaction Selectors', () => {
           },
           selectedAddress: '0xAddress',
           featureFlags: {},
-          currentNetworkTxList: [tx1, tx2],
+          transactions: [tx1, tx2],
         },
       };
 
@@ -210,6 +214,7 @@ describe('Transaction Selectors', () => {
     const submittedTx = {
       id: 0,
       time: 0,
+      chainId: CHAIN_IDS.MAINNET,
       txParams: {
         from: '0xAddress',
         to: '0xRecipient',
@@ -221,6 +226,7 @@ describe('Transaction Selectors', () => {
     const unapprovedTx = {
       id: 1,
       time: 1,
+      chainId: CHAIN_IDS.MAINNET,
       txParams: {
         from: '0xAddress',
         to: '0xRecipient',
@@ -232,6 +238,7 @@ describe('Transaction Selectors', () => {
     const approvedTx = {
       id: 2,
       time: 2,
+      chainId: CHAIN_IDS.MAINNET,
       txParams: {
         from: '0xAddress',
         to: '0xRecipient',
@@ -243,6 +250,7 @@ describe('Transaction Selectors', () => {
     const confirmedTx = {
       id: 3,
       time: 3,
+      chainId: CHAIN_IDS.MAINNET,
       txParams: {
         from: '0xAddress',
         to: '0xRecipient',
@@ -259,12 +267,7 @@ describe('Transaction Selectors', () => {
         },
         selectedAddress: '0xAddress',
         featureFlags: {},
-        currentNetworkTxList: [
-          submittedTx,
-          unapprovedTx,
-          approvedTx,
-          confirmedTx,
-        ],
+        transactions: [submittedTx, unapprovedTx, approvedTx, confirmedTx],
       },
     };
 
@@ -327,11 +330,11 @@ describe('Transaction Selectors', () => {
   });
 
   describe('hasTransactionPendingApprovals', () => {
-    const mockNetworkId = 'mockNetworkId';
+    const mockChainId = 'mockChainId';
     const mockedState = {
       metamask: {
         providerConfig: {
-          chainId: mockNetworkId,
+          chainId: mockChainId,
         },
         pendingApprovalCount: 2,
         pendingApprovals: {
@@ -352,12 +355,13 @@ describe('Transaction Selectors', () => {
             requestState: null,
           },
         },
-        unapprovedTxs: {
-          2: {
+        transactions: [
+          {
             id: '2',
-            chainId: mockNetworkId,
+            chainId: mockChainId,
+            status: TransactionStatus.unapproved,
           },
-        },
+        ],
       },
     };
 
@@ -365,11 +369,13 @@ describe('Transaction Selectors', () => {
       const result = hasTransactionPendingApprovals(mockedState);
       expect(result).toBe(true);
     });
+
     it('should return false if there is a pending transaction on different network', () => {
-      mockedState.metamask.unapprovedTxs['2'].chainId = 'differentNetworkId';
+      mockedState.metamask.transactions[0].chainId = 'differentChainId';
       const result = hasTransactionPendingApprovals(mockedState);
       expect(result).toBe(false);
     });
+
     it.each([
       [ApprovalType.EthDecrypt],
       [ApprovalType.EthGetEncryptionPublicKey],

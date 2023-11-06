@@ -155,28 +155,32 @@ export default class SwapsController {
     this.indexOfNewestCallInFlight = 0;
 
     this.ethersProvider = new Web3Provider(provider);
-    this._currentNetworkId = networkController.state.networkId;
+    this._currentChainId = networkController.state.providerConfig.chainId;
     onNetworkStateChange(() => {
-      const { networkId, networksMetadata, selectedNetworkClientId } =
-        networkController.state;
+      const {
+        networksMetadata,
+        selectedNetworkClientId,
+        providerConfig: { chainId },
+      } = networkController.state;
       const selectedNetworkStatus =
         networksMetadata[selectedNetworkClientId]?.status;
       if (
         selectedNetworkStatus === NetworkStatus.Available &&
-        networkId !== this._currentNetworkId
+        chainId !== this._currentChainId
       ) {
-        this._currentNetworkId = networkId;
+        this._currentChainId = chainId;
         this.ethersProvider = new Web3Provider(provider);
       }
     });
   }
 
   async fetchSwapsNetworkConfig(chainId) {
-    const response = await fetchWithCache(
-      getBaseApi('network', chainId),
-      { method: 'GET' },
-      { cacheRefreshTime: 600000 },
-    );
+    const response = await fetchWithCache({
+      url: getBaseApi('network', chainId),
+      fetchOptions: { method: 'GET' },
+      cacheOptions: { cacheRefreshTime: 600000 },
+      functionName: 'fetchSwapsNetworkConfig',
+    });
     const { refreshRates, parameters = {} } = response || {};
     if (
       !refreshRates ||

@@ -27,7 +27,6 @@
         "ticker": "ETH"
       }
     ],
-    "infuraBlocked": false,
     "ipfsGateway": "dweb.link",
     "knownMethodData": {},
     "ledgerTransportType": "webhid",

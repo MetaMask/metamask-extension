@@ -200,6 +200,7 @@ export default function ConfirmTokenTransactionBase({
       primaryTotalTextOverride={`${subtotalDisplay} + ${ethTransactionTotal} ${nativeCurrency}`}
       primaryTotalTextOverrideMaxAmount={`${subtotalDisplay} + ${ethTransactionTotalMaxAmount} ${nativeCurrency}`}
       secondaryTotalTextOverride={secondaryTotalTextOverride}
+      tokenSymbol={tokenSymbol}
     />
   );
 }

@@ -133,7 +133,7 @@ export default function RevealSeedPage() {
           size={TEXT_FIELD_SIZES.LG}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          error={error}
+          error={Boolean(error)}
           width={BlockSize.Full}
         />
         {error && (

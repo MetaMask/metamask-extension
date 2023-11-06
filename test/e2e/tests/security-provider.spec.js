@@ -83,7 +83,7 @@ describe('Transaction security provider', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) =>
           await mockSecurityProviderDetection(mockServer, 'malicious'),
         dapp: true,
@@ -123,7 +123,7 @@ describe('Transaction security provider', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) =>
           await mockSecurityProviderDetection(mockServer, 'notSafe'),
         dapp: true,
@@ -163,7 +163,7 @@ describe('Transaction security provider', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) =>
           await mockSecurityProviderDetection(mockServer, 'notMalicious'),
         dapp: true,
@@ -203,7 +203,7 @@ describe('Transaction security provider', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) =>
           await mockSecurityProviderDetection(mockServer, 'requestNotVerified'),
         dapp: true,

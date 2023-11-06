@@ -164,10 +164,8 @@ function migrateData(state: Record<string, unknown>): void {
       );
     }
   } else {
-    console.warn(
-      new Error(
-        `typeof state.TokenListController is ${typeof state.TokenListController}`,
-      ),
+    log.warn(
+      `typeof state.TokenListController is ${typeof state.TokenListController}`,
     );
   }
 

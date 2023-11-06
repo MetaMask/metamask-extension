@@ -1,4 +1,7 @@
+import log from 'loglevel';
 import { migrate } from './088';
+
+jest.mock('loglevel');
 
 const sentryCaptureExceptionMock = jest.fn();
 
@@ -725,7 +728,7 @@ describe('migration #88', () => {
   });
 
   it('logs a warning if it has no TokenListController property', async () => {
-    const mockWarnFn = jest.spyOn(console, 'warn');
+    const mockWarnFn = jest.spyOn(log, 'warn');
 
     const oldData = {
       TokensController: {},
@@ -762,14 +765,15 @@ describe('migration #88', () => {
     };
 
     await migrate(oldStorage);
-    expect(mockWarnFn).toHaveBeenCalledTimes(1);
-    expect(mockWarnFn).toHaveBeenCalledWith(
-      new Error(`typeof state.TokenListController is undefined`),
+    expect(mockWarnFn).toHaveBeenCalledTimes(4);
+    expect(mockWarnFn).toHaveBeenNthCalledWith(
+      1,
+      'typeof state.TokenListController is undefined',
     );
   });
 
   it('logs a warning if the TokenListController property is not an object', async () => {
-    const mockWarnFn = jest.spyOn(console, 'warn');
+    const mockWarnFn = jest.spyOn(log, 'warn');
 
     const oldData = {
       TokensController: {},
@@ -807,9 +811,10 @@ describe('migration #88', () => {
     };
 
     await migrate(oldStorage);
-    expect(mockWarnFn).toHaveBeenCalledTimes(1);
-    expect(mockWarnFn).toHaveBeenCalledWith(
-      new Error(`typeof state.TokenListController is boolean`),
+    expect(mockWarnFn).toHaveBeenCalledTimes(4);
+    expect(mockWarnFn).toHaveBeenNthCalledWith(
+      1,
+      'typeof state.TokenListController is boolean',
     );
   });
 

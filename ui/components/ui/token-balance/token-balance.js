@@ -4,7 +4,7 @@ import CurrencyDisplay from '../currency-display';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 
 export default function TokenBalance({ className, token }) {
-  const { tokensWithBalances } = useTokenTracker([token]);
+  const { tokensWithBalances } = useTokenTracker({ tokens: [token] });
 
   const { string, symbol } = tokensWithBalances[0] || {};
   return (

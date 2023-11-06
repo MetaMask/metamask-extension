@@ -8,7 +8,7 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
-  it('allows selecting high, medium, low gas estimates on edit gas fee popover', async function () {
+  it('allows selecting high, medium, low gas estimates on edit gas fee popover @no-mmi', async function () {
     const ganacheOptions = {
       hardfork: 'london',
       accounts: [
@@ -25,7 +25,7 @@ describe('Editing Confirm Transaction', function () {
           .withTransactionControllerTypeTwoTransaction()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -111,7 +111,7 @@ describe('Editing Confirm Transaction', function () {
           .withTransactionControllerTypeTwoTransaction()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -179,7 +179,7 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it('should use dapp suggested estimates for transaction coming from dapp', async function () {
+  it('should use dapp suggested estimates for transaction coming from dapp @no-mmi', async function () {
     const ganacheOptions = {
       hardfork: 'london',
       accounts: [
@@ -196,7 +196,7 @@ describe('Editing Confirm Transaction', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         dapp: true,
       },
       async ({ driver }) => {

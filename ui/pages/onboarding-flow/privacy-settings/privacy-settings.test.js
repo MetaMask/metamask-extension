@@ -2,10 +2,8 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import {
-  renderWithProvider,
-  setBackgroundConnection,
-} from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import { renderWithProvider } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import PrivacySettings from './privacy-settings';
 
@@ -23,6 +21,13 @@ describe('Privacy Settings Onboarding View', () => {
         [CHAIN_IDS.SEPOLIA]: false,
         [CHAIN_IDS.LINEA_GOERLI]: true,
       },
+      usePhishDetect: true,
+      use4ByteResolution: true,
+      useTokenDetection: false,
+      useCurrencyRateCheck: true,
+      useMultiAccountBalanceChecker: true,
+      ipfsGateway: 'test.link',
+      useAddressBarEnsResolution: true,
     },
   };
 
@@ -58,7 +63,7 @@ describe('Privacy Settings Onboarding View', () => {
       <PrivacySettings />,
       store,
     );
-    // All settings are initialized toggled to true
+    // All settings are initialized toggled to be same as default
     expect(setUsePhishDetectStub).toHaveBeenCalledTimes(0);
     expect(setUse4ByteResolutionStub).toHaveBeenCalledTimes(0);
     expect(setUseTokenDetectionStub).toHaveBeenCalledTimes(0);
@@ -70,13 +75,13 @@ describe('Privacy Settings Onboarding View', () => {
     const toggles = container.querySelectorAll('input[type=checkbox]');
     const submitButton = getByText('Done');
     // toggle to false
-    fireEvent.click(toggles[1]);
+    fireEvent.click(toggles[0]);
+    fireEvent.click(toggles[5]);
     fireEvent.click(toggles[6]);
     fireEvent.click(toggles[7]);
     fireEvent.click(toggles[8]);
     fireEvent.click(toggles[9]);
     fireEvent.click(toggles[10]);
-    fireEvent.click(toggles[11]);
 
     fireEvent.click(submitButton);
 
@@ -96,7 +101,7 @@ describe('Privacy Settings Onboarding View', () => {
 
     expect(setUsePhishDetectStub.mock.calls[0][0]).toStrictEqual(false);
     expect(setUse4ByteResolutionStub.mock.calls[0][0]).toStrictEqual(false);
-    expect(setUseTokenDetectionStub.mock.calls[0][0]).toStrictEqual(false);
+    expect(setUseTokenDetectionStub.mock.calls[0][0]).toStrictEqual(true);
     expect(setUseMultiAccountBalanceCheckerStub.mock.calls[0][0]).toStrictEqual(
       false,
     );

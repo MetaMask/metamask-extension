@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-import { SubjectType } from '@metamask/subject-metadata-controller';
+import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IN
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
@@ -162,19 +162,6 @@ export default class PermissionConnect extends Component {
       }
       ///: END:ONLY_INCLUDE_IN
     }
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    const { permissionsRequest, targetSubjectMetadata } = props;
-    const { targetSubjectMetadata: savedMetadata } = state;
-
-    if (
-      permissionsRequest &&
-      savedMetadata.origin !== targetSubjectMetadata?.origin
-    ) {
-      return { targetSubjectMetadata };
-    }
-    return null;
   }
 
   componentDidUpdate(prevProps) {
@@ -344,6 +331,7 @@ export default class PermissionConnect extends Component {
       connectPath,
       confirmPermissionPath,
       hideTopBar,
+      targetSubjectMetadata,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       snapsConnectPath,
       snapInstallPath,
@@ -359,7 +347,6 @@ export default class PermissionConnect extends Component {
       selectedAccountAddresses,
       permissionsApproved,
       redirecting,
-      targetSubjectMetadata,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       snapsInstallPrivacyWarningShown,
       ///: END:ONLY_INCLUDE_IN
