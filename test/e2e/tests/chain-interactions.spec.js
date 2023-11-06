@@ -15,7 +15,7 @@ describe('Chain Interactions', function () {
     ],
     concurrent: { port, chainId },
   };
-  it('should add the Ganache test chain and not switch the network @no-mmi', async function () {
+  it('should add the Ganache test chain and not switch the network', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -51,7 +51,7 @@ describe('Chain Interactions', function () {
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
         // switch to extension
-        await driver.waitUntilXWindowHandles(2);
+        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindow(extension);
 
         // verify networks
