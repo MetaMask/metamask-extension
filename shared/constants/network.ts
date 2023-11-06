@@ -242,7 +242,7 @@ export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
-export const SCROLL_TOKEN_IMAGE_URL = './images/scroll.svg';
+export const SCROLLETH_TOKEN_IMAGE_URL = './images/scroll.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -373,7 +373,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.SCROLL]: SCROLL_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.SCROLL]: SCROLLETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.SCROLL_SEPOLIA]: SCROLLETH_TOKEN_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -722,7 +723,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     ticker: CURRENCY_SYMBOLS.ETH,
     rpcPrefs: {
       blockExplorerUrl: 'https://scrollscan.com',
-      imageUrl: SCROLL_TOKEN_IMAGE_URL,
+      imageUrl: SCROLLETH_TOKEN_IMAGE_URL,
     },
   },
 ];
