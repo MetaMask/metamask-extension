@@ -1,3 +1,6 @@
+/**
+ * @jest-environment node
+ */
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import nock from 'nock';
@@ -14,6 +17,10 @@ import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import PreferencesController from './preferences';
+
+const flushPromises = () => {
+  return new Promise(jest.requireActual('timers').setImmediate);
+};
 
 describe('DetectTokensController', function () {
   let sandbox,
@@ -558,5 +565,43 @@ describe('DetectTokensController', function () {
     );
     clock.tick(180000);
     sandbox.assert.notCalled(stub);
+  });
+
+  it('should poll on the correct interval by networkClientId', async function () {
+    jest.useFakeTimers();
+    const controller = new DetectTokensController({
+      messenger: getRestrictedMessenger(),
+      preferences,
+      network,
+      tokensController,
+      assetsContractController,
+      disableLegacyInterval: true,
+      interval: 1000,
+      getNetworkClientById: () => ({
+        configuration: {
+          chainId: '0x1',
+        },
+        provider: {},
+        blockTracker: {},
+        destroy: () => {
+          // noop
+        },
+      }),
+    });
+    const detectNewTokensSpy = jest
+      .spyOn(controller, 'detectNewTokens')
+      .mockResolvedValue('foo');
+    controller.startPollingByNetworkClientId('mainnet');
+    await Promise.all([jest.advanceTimersByTime(0), flushPromises()]);
+    expect(detectNewTokensSpy).toHaveBeenCalledTimes(1);
+    await Promise.all([jest.advanceTimersByTime(1000), flushPromises()]);
+    expect(detectNewTokensSpy).toHaveBeenCalledTimes(2);
+    expect(detectNewTokensSpy.mock.calls).toStrictEqual([
+      [{ chainId: '0x1' }],
+      [{ chainId: '0x1' }],
+    ]);
+
+    detectNewTokensSpy.mockRestore();
+    jest.useRealTimers();
   });
 });

@@ -144,6 +144,10 @@ export default class MetaMetricsController {
     this.extension = extension;
     this.environment = environment;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.selectedAddress = prefState.selectedAddress;
+    ///: END:ONLY_INCLUDE_IN
+
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
     const segmentApiCalls = initState?.segmentApiCalls || {};
 
@@ -711,6 +715,10 @@ export default class MetaMetricsController {
 
     if (this.extension?.runtime?.id) {
       mmiProps.extensionId = this.extension.runtime.id;
+    }
+
+    if (this.selectedAddres) {
+      mmiProps.accountAddress = this.selectedAddres;
     }
     ///: END:ONLY_INCLUDE_IN
 

@@ -150,6 +150,7 @@ export const AppFooter = () => {
                   borderRadius={BorderRadius.full}
                   size={ButtonIconSize.Lg}
                   onClick={() => dispatch(showSelectActionModal())}
+                  ariaLabel={t('selectActionButton')}
                 />
               </Box>
               <Box
