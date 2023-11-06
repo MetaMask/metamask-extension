@@ -115,6 +115,7 @@ export default {
   },
   args: {
     placeholder: 'Placeholder...',
+    value: ' ',
   },
 } as Meta<typeof TextField>;
 
@@ -368,6 +369,6 @@ MaxLength.args = { maxLength: 10, placeholder: 'Max length 10' };
 export const ReadOnly = Template.bind({});
 ReadOnly.args = { readOnly: true, value: 'Read only' };
 
-// eslint-disable-next-line @typescript-eslint/no-shadow
-export const Required = Template.bind({});
-Required.args = { required: true, placeholder: 'Required' };
+export const RequiredStory = Template.bind({});
+RequiredStory.args = { required: true, placeholder: 'Required' };
+RequiredStory.storyName = 'Required';
