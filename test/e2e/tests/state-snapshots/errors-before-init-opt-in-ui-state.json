@@ -99,7 +99,7 @@
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
       "useMultiAccountBalanceChecker": true,
-      "useRequestQueue": false
+      "useRequestQueue": "boolean"
     },
     "SmartTransactionsController": {
       "smartTransactionsState": {

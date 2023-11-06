@@ -93,7 +93,7 @@
       "selectedAddress": "string",
       "theme": "light",
       "useBlockie": false,
-      "useRequestQueue": false,
+      "useRequestQueue": "boolean",
       "useNftDetection": false,
       "useNonceField": false,
       "usePhishDetect": true,
