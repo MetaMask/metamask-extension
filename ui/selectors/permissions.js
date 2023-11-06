@@ -5,6 +5,7 @@ import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 import { CaveatTypes } from '../../shared/constants/permissions';
 import { getApprovalRequestsByType } from './approvals';
 import {
+  getInternalAccounts,
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedInternalAccount,
@@ -227,23 +228,21 @@ function subjectSelector(state, origin) {
 }
 
 export function getAccountToConnectToActiveTab(state) {
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const selectedAccount = getSelectedInternalAccount(state);
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
-
-  const {
-    metamask: { identities },
-  } = state;
-  const numberOfAccounts = Object.keys(identities).length;
+  const internalAccounts = getInternalAccounts(state);
+  const numberOfAccounts = internalAccounts.length;
 
   if (
     connectedAccounts.length &&
     connectedAccounts.length !== numberOfAccounts
   ) {
     if (
-      connectedAccounts.findIndex((address) => address === selectedAddress) ===
-      -1
+      connectedAccounts.findIndex(
+        (address) => address === selectedAccount.address,
+      ) === -1
     ) {
-      return identities[selectedAddress];
+      return selectedAccount;
     }
   }
 
@@ -266,7 +265,10 @@ export function getOrderedConnectedAccountsForActiveTab(state) {
     .filter((account) => connectedAccounts.includes(account.address))
     .map((account) => ({
       ...account,
-      lastActive: permissionHistoryByAccount?.[account.address],
+      metadata: {
+        ...account.metadata,
+        lastActive: permissionHistoryByAccount?.[account.address],
+      },
     }))
     .sort(
       ({ lastSelected: lastSelectedA }, { lastSelected: lastSelectedB }) => {

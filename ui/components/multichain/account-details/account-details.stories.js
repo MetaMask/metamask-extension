@@ -2,7 +2,9 @@ import React from 'react';
 import testData from '../../../../.storybook/test-data';
 import { AccountDetails } from '.';
 
-const [, address] = Object.keys(testData.metamask.identities);
+const { address } = Object.values(
+  testData.metamask.internalAccounts.accounts,
+)[1];
 
 export default {
   title: 'Components/Multichain/AccountDetails',

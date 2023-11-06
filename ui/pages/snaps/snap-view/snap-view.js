@@ -30,7 +30,6 @@ import {
   updateCaveat,
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   showKeyringSnapRemovalModal,
-  getSnapAccountsById,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../store/actions';
 import {
@@ -40,7 +39,7 @@ import {
   getPermissionSubjects,
   getTargetSubjectMetadata,
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  getMemoizedMetaMaskIdentities,
+  getMemoizedMetaMaskInternalAccounts,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { getSnapName } from '../../../helpers/utils/util';
@@ -62,6 +61,8 @@ import {
 } from '../../../components/multichain/pages/page';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { KeyringSnapRemovalResultStatus } from './constants';
+// eslint-disable-next-line import/order
+import { KeyringType } from '../../../../shared/constants/keyring';
 ///: END:ONLY_INCLUDE_IN
 
 function SnapView() {
@@ -86,7 +87,7 @@ function SnapView() {
   // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
   const [keyringAccounts, setKeyringAccounts] = useState([]);
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  const identities = useSelector(getMemoizedMetaMaskIdentities);
+  const internalAccounts = useSelector(getMemoizedMetaMaskInternalAccounts);
   ///: END:ONLY_INCLUDE_IN
 
   useEffect(() => {
@@ -121,14 +122,15 @@ function SnapView() {
   useEffect(() => {
     if (isKeyringSnap) {
       (async () => {
-        const addresses = await getSnapAccountsById(snap.id);
-        const snapIdentities = Object.values(identities).filter((identity) =>
-          addresses.includes(identity.address.toLowerCase()),
+        const snapInternalAccounts = internalAccounts.filter(
+          (account) =>
+            account.metadata.keyring.type === KeyringType.snap &&
+            account.metadata.snap.id === snap.id,
         );
-        setKeyringAccounts(snapIdentities);
+        setKeyringAccounts(snapInternalAccounts);
       })();
     }
-  }, [snap?.id, identities, isKeyringSnap]);
+  }, [snap?.id, internalAccounts, isKeyringSnap]);
 
   ///: END:ONLY_INCLUDE_IN
 

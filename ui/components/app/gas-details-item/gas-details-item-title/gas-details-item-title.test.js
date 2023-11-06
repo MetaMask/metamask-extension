@@ -1,5 +1,6 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
@@ -32,6 +33,24 @@ const render = () => {
         '0xAddress': {},
       },
       selectedAddress: '0xAddress',
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0xAddress',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
     },
   });
 

@@ -81,7 +81,16 @@ const baseProps = {
   fromAccount: {
     address: '0x123456789abcdef',
     balance: '0x346ba7725f412cbfdb',
-    name: 'Antonio',
+    id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    metadata: {
+      name: 'Antonio',
+      keyring: {
+        type: 'HD Key Tree',
+      },
+    },
+    options: {},
+    methods: [...Object.values(EthMethod)],
+    type: EthAccountType.Eoa,
   },
 };
 
