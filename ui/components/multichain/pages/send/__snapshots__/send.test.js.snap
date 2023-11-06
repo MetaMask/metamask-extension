@@ -975,15 +975,31 @@ exports[`SendPage render renders correctly 1`] = `
             </button>
           </div>
         </div>
-        <p
-          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+        <div
+          class="mm-box mm-box--display-flex"
         >
-          Balance
-          : 
-          0
-           
-          ETH
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--margin-right-1 mm-box--color-text-alternative"
+          >
+            Balance
+            :
+          </p>
+          <div
+            class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+            title="0 ETH"
+          >
+            <span
+              class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-alternative"
+            >
+              0
+            </span>
+            <span
+              class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-alternative"
+            >
+              ETH
+            </span>
+          </div>
+        </div>
       </div>
     </div>
     <div
