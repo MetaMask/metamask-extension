@@ -1581,6 +1581,9 @@
     "message": "Error details",
     "description": "Title for collapsible section that displays error details for debugging purposes"
   },
+  "errorGettingSafeChainList": {
+    "message": "Error while getting safe chain list, please continue with caution."
+  },
   "errorMessage": {
     "message": "Message: $1",
     "description": "Displayed error message for debugging purposes. $1 is the error message"
