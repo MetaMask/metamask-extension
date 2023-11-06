@@ -20,7 +20,7 @@
     "pendingTokens": "object",
     "customNonceValue": "",
     "useBlockie": false,
-    "useRequestQueue": false,
+    "useRequestQueue": "boolean",
     "featureFlags": {},
     "welcomeScreenSeen": false,
     "currentLocale": "en",
