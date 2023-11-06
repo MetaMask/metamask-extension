@@ -153,6 +153,9 @@ function defaultFixture() {
           ///: END:ONLY_INCLUDE_IN
         },
       },
+      NetworksOrderController: {
+        networksList: [],
+      },
       AppStateController: {
         browserEnvironment: {},
         nftsDropdownState: {},
@@ -448,6 +451,11 @@ class FixtureBuilder {
 
   withAnnouncementController(data) {
     merge(this.fixture.data.AnnouncementController, data);
+    return this;
+  }
+
+  withNetworksOrderController(data) {
+    merge(this.fixture.data.NetworksOrderController, data);
     return this;
   }
 
