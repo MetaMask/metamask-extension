@@ -426,7 +426,15 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
       let originsMessage;
 
       if (allowedOrigins.length === 1) {
-        originsMessage = allowedOrigins[0];
+        originsMessage = (
+          <Text
+            color={TextColor.inherit}
+            variant={TextVariant.inherit}
+            fontWeight={FontWeight.Medium}
+          >
+            {allowedOrigins[0]}
+          </Text>
+        );
       } else {
         const lastOrigin = allowedOrigins.slice(-1);
 
