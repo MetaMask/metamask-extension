@@ -36,6 +36,7 @@ describe('switchEthereumChainHandler', () => {
       jest.fn(),
       {
         getCurrentChainId: () => NON_INFURA_CHAIN_ID,
+        getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
@@ -62,6 +63,7 @@ describe('switchEthereumChainHandler', () => {
       jest.fn(),
       {
         getCurrentChainId: () => NON_INFURA_CHAIN_ID,
+        getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
         findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
@@ -88,6 +90,7 @@ describe('switchEthereumChainHandler', () => {
       jest.fn(),
       {
         getCurrentChainId: () => NON_INFURA_CHAIN_ID,
+        getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
         findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
@@ -114,6 +117,7 @@ describe('switchEthereumChainHandler', () => {
       jest.fn(),
       {
         getCurrentChainId: () => CHAIN_IDS.MAINNET,
+        getProviderConfig: () => ({ chainId: CHAIN_IDS.MAINNET }),
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
