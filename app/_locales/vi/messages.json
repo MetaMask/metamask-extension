@@ -3473,9 +3473,6 @@
   "searchAccounts": {
     "message": "Tìm kiếm tài khoản"
   },
-  "searchResults": {
-    "message": "Kết quả tìm kiếm"
-  },
   "secretRecoveryPhrase": {
     "message": "Cụm từ khôi phục bí mật"
   },

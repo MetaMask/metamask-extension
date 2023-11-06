@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
+import { useHistory } from 'react-router-dom';
 import {
   ButtonLink,
   IconName,
@@ -9,7 +10,7 @@ import {
 } from '../../component-library';
 import { AlignItems, Display } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { detectNewTokens, showImportTokensModal } from '../../../store/actions';
+import { detectNewTokens } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -20,6 +21,7 @@ import {
   getIsTokenDetectionInactiveOnMainnet,
 } from '../../../selectors';
 import type { BoxProps } from '../../component-library/box';
+import { IMPORT_TOKENS_ROUTE } from '../../../helpers/constants/routes';
 import type { ImportTokenLinkProps } from './import-token-link.types';
 
 export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
@@ -29,6 +31,7 @@ export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const isTokenDetectionSupported = useSelector(getIsTokenDetectionSupported);
   const isTokenDetectionInactiveOnMainnet = useSelector(
@@ -50,17 +53,14 @@ export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
           data-testid="import-token-button"
           startIconName={IconName.Add}
           onClick={() => {
-            dispatch(showImportTokensModal());
-            trackEvent(
-              {
-                event: MetaMetricsEventName.TokenImportButtonClicked,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  location: 'Home',
-                },
+            history.push(IMPORT_TOKENS_ROUTE);
+            trackEvent({
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.TokenImportButtonClicked,
+              properties: {
+                location: 'HOME',
               },
-              {},
-            );
+            });
           }}
         >
           {isTokenDetectionAvailable

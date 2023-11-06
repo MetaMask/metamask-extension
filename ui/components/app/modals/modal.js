@@ -19,6 +19,7 @@ import InteractiveReplacementTokenModal from '../../institutional/interactive-re
 import TransactionFailed from '../../institutional/transaction-failed-modal';
 ///: END:ONLY_INCLUDE_IF
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
+import ImportTokenExitModal from './import-token-exit-modal';
 import QRScanner from './qr-scanner';
 
 import ConfirmRemoveAccount from './confirm-remove-account';
@@ -156,6 +157,28 @@ const MODALS = {
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,
       paddingRight:
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,
+    },
+  },
+
+  IMPORT_TOKEN_EXIT_MODAL: {
+    contents: <ImportTokenExitModal />,
+    mobileModalStyle: {
+      width: '90%',
+      top: getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
+      borderRadius: '10px',
+    },
+    laptopModalStyle: {
+      borderRadius: '10px',
+      width:
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '357px' : '367px',
+      top: 'calc(33% + 45px)',
+      paddingLeft:
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,
+      paddingRight:
+        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ? '16px' : null,
+    },
+    contentStyle: {
+      borderRadius: '10px',
     },
   },
 

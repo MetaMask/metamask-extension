@@ -6,6 +6,8 @@
   &__tokens-container {
     display: flex;
     flex-direction: column;
+    overflow: auto;
+    max-height: 400px;
   }
 
   &__token {
@@ -28,6 +30,27 @@
 
     &--selected {
       border-color: var(--color-primary-default) !important;
+    }
+
+    &--disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+  }
+
+  &__token_component {
+    display: flex;
+    flex-flow: row nowrap;
+    padding: 20px;
+    align-items: center;
+    cursor: pointer;
+
+    &--selected {
+      background-color: rgb(230, 242, 250);
+    }
+
+    &--selected-dark {
+      background-color: rgb(99, 113, 122);
     }
 
     &--disabled {

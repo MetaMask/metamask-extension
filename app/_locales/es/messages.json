@@ -3473,9 +3473,6 @@
   "searchAccounts": {
     "message": "Buscar cuentas"
   },
-  "searchResults": {
-    "message": "Resultados de la búsqueda"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
   },

@@ -3473,9 +3473,6 @@
   "searchAccounts": {
     "message": "Hesapları ara"
   },
-  "searchResults": {
-    "message": "Arama sonuçları"
-  },
   "secretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesi"
   },

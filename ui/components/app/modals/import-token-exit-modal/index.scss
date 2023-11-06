@@ -1,0 +1,26 @@
+.exit-token-confirmation {
+  border-radius: 25px;
+  min-height: 150px;
+  background-color: var(--color-background-default);
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+
+  &__container {
+    padding: 24px 27px 21px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__title {
+    font-size: small;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 25px;
+    width: 100%;
+    gap: 20px;
+  }
+}

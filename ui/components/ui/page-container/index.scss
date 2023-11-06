@@ -1,4 +1,8 @@
 .page-container {
+  ::-webkit-scrollbar {
+    display: none; /* Added this to remove the scroll bar for Chrome, Safari, and Opera */
+  }
+
   width: 408px;
   background-color: var(--color-background-default);
   box-shadow: var(--shadow-size-xs) var(--color-shadow-default);
@@ -198,6 +202,10 @@
 
 @include screen-sm-max {
   .page-container {
+    ::-webkit-scrollbar {
+      display: none; /* Added this to remove the scroll bar for Chrome, Safari, and Opera */
+    }
+
     height: 100%;
     width: 100%;
     background-color: var(--color-background-default);

@@ -12,12 +12,14 @@ export default class TokenSearch extends Component {
 
   static defaultProps = {
     error: null,
+    searchClassName: undefined,
   };
 
   static propTypes = {
     onSearch: PropTypes.func,
     error: PropTypes.string,
     tokenList: PropTypes.object,
+    searchClassName: PropTypes.string,
   };
 
   state = {
@@ -59,9 +61,11 @@ export default class TokenSearch extends Component {
   render() {
     const { error } = this.props;
     const { searchQuery } = this.state;
+    const { searchClassName } = this.props;
 
     return (
       <TextFieldSearch
+        className={searchClassName}
         placeholder={this.context.t('search')}
         value={searchQuery}
         onChange={(e) => this.handleSearch(e.target.value)}

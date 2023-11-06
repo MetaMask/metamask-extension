@@ -1,0 +1,85 @@
+
+.scrollable {
+  ::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
+  }
+}
+
+.banner {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+
+.import-tokens-page {
+  padding: 16px;
+  $self: &;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__search-list {
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none; /* for Firefox */
+    overflow-y: scroll;
+    max-width: 100%;
+    overflow: auto;
+    max-height: 400px;
+  }
+
+  &__tab {
+    display: flex;
+    flex: 1;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  &__active-tab {
+    color: var(--color-primary-default);
+  }
+
+  &__button-tab {
+    font-weight: 500;
+  }
+
+  &__button-search {
+    outline-color: var(--color-primary-default);
+  }
+
+  &__custom-token-form {
+    input[type='number']::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+
+    input[type='number']:hover::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      display: none;
+    }
+    & #{$self}__decimal-warning {
+      margin-top: 5px;
+    }
+  }
+
+  &__header {
+    position: relative;
+    display: flex;
+    padding: 12px;
+    justify-content: center;
+    flex: 0 0 auto;
+    border-bottom: none !important;
+  }
+
+  &__footer {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    padding: 16px;
+    flex: 0 0 auto;
+  }
+
+  &__title {
+    margin-left: 120px;
+  }
+}

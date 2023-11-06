@@ -3473,9 +3473,6 @@
   "searchAccounts": {
     "message": "搜索账户"
   },
-  "searchResults": {
-    "message": "搜索结果"
-  },
   "secretRecoveryPhrase": {
     "message": "私钥助记词"
   },

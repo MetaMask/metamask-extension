@@ -3473,9 +3473,6 @@
   "searchAccounts": {
     "message": "Поиск счетов"
   },
-  "searchResults": {
-    "message": "Результаты поиска"
-  },
   "secretRecoveryPhrase": {
     "message": "Секретная фраза для восстановления"
   },

@@ -21,6 +21,7 @@ import PermissionsConnect from '../permissions-connect';
 import RestoreVaultPage from '../keychains/restore-vault';
 import RevealSeedConfirmation from '../keychains/reveal-seed';
 import ConfirmAddSuggestedTokenPage from '../confirm-add-suggested-token';
+import ImportTokens from '../import-tokens';
 import CreateAccountPage from '../create-account/create-account.component';
 import ConfirmAddSuggestedNftPage from '../confirm-add-suggested-nft';
 import Loading from '../../components/ui/loading-screen';
@@ -86,6 +87,8 @@ import {
   CONNECTIONS,
   ALL_CONNECTIONS,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  IMPORT_TOKENS_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
   CONFIRM_ADD_CUSTODIAN_TOKEN,
@@ -314,6 +317,11 @@ export default class Routes extends Component {
         <Authenticated
           path={CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE}
           component={ConfirmAddSuggestedTokenPage}
+          exact
+        />
+        <Authenticated
+          path={IMPORT_TOKENS_ROUTE}
+          component={ImportTokens}
           exact
         />
         <Authenticated

@@ -3473,9 +3473,6 @@
   "searchAccounts": {
     "message": "Αναζήτηση λογαριασμών"
   },
-  "searchResults": {
-    "message": "Αποτελέσματα αναζήτησης"
-  },
   "secretRecoveryPhrase": {
     "message": "Μυστική Φράση Ανάκτησης"
   },
