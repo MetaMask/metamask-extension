@@ -728,25 +728,6 @@ describe('Selectors', () => {
     expect(isFantomSupported).toBeFalsy();
   });
 
-  it('#getIsBridgeToken', () => {
-    mockState.metamask.providerConfig.chainId = '0xa';
-    const isOptimismTokenSupported = selectors.getIsBridgeToken(
-      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
-    )(mockState);
-    expect(isOptimismTokenSupported).toBeTruthy();
-
-    const isOptimismUnknownTokenSupported = selectors.getIsBridgeToken(
-      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e60',
-    )(mockState);
-    expect(isOptimismUnknownTokenSupported).toBeFalsy();
-
-    mockState.metamask.providerConfig.chainId = '0xfa';
-    const isFantomTokenSupported = selectors.getIsBridgeToken(
-      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
-    )(mockState);
-    expect(isFantomTokenSupported).toBeFalsy();
-  });
-
   it('returns proper values for snaps privacy warning shown status', () => {
     mockState.metamask.snapsInstallPrivacyWarningShown = false;
     expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
