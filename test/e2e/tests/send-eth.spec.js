@@ -176,6 +176,8 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
         await driver.navigate();
         await unlockWallet(driver);
 
+        await driver.delay(1000);
+
         await openActionMenuAndStartSendFlow(driver);
         if (process.env.MULTICHAIN) {
           return;
@@ -398,7 +400,7 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
     ],
   };
 
-  it('finds the transaction in the transactions list @no-mmi', async function () {
+  it('finds the transaction in the transactions list', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),

@@ -815,9 +815,6 @@ jobs:
     parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -826,6 +823,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
       - run:
           name: test:e2e:chrome
           command: |
@@ -845,9 +845,6 @@ jobs:
     parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -856,6 +853,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test-multichain ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
       - run:
           name: test:e2e:chrome-multichain
           command: |
@@ -874,9 +874,6 @@ jobs:
     parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -885,6 +882,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test-mv3 ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
       - run:
           name: test:e2e:chrome
           command: |
@@ -901,10 +901,7 @@ jobs:
     executor: node-browsers
     parallelism: 1
     steps:
-      - checkout
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -913,6 +910,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
       - run:
           name: test:e2e:chrome:rpc
           command: |
@@ -930,10 +930,7 @@ jobs:
   test-e2e-chrome-rpc-mmi:
     executor: node-browsers
     steps:
-      - checkout
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -942,6 +939,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test-mmi ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
       - run:
           name: test:e2e:chrome:rpc
           command: |
@@ -961,9 +961,6 @@ jobs:
     parallelism: 16
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -972,6 +969,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test-flask ./builds
+      - run:
+          name: Activate Selenium Manager for Firefox
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser firefox
       - run:
           name: test:e2e:firefox:flask
           command: |
@@ -991,9 +991,6 @@ jobs:
     parallelism: 16
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1002,6 +999,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test-flask ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
       - run:
           name: test:e2e:chrome:flask
           command: |
@@ -1021,9 +1021,6 @@ jobs:
     parallelism: 16
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1032,6 +1029,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test-mmi ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
       - run:
           name: test:e2e:chrome:mmi
           command: |
@@ -1051,9 +1051,6 @@ jobs:
     parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1062,6 +1059,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
+      - run:
+          name: Activate Selenium Manager for Firefox
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser firefox
       - run:
           name: test:e2e:firefox
           command: |
@@ -1080,9 +1080,6 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1091,6 +1088,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
       - run:
           name: Run page load benchmark
           command: yarn benchmark:chrome --out test-artifacts/chrome/benchmark/pageload.json --retries 2
@@ -1106,9 +1106,6 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1117,6 +1114,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
       - run:
           name: Run page load benchmark
           command: yarn user-actions-benchmark:chrome --out test-artifacts/chrome/benchmark/user_actions.json --retries 2
@@ -1132,9 +1132,6 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1143,6 +1140,9 @@ jobs:
       - run:
           name: Move test zips to builds
           command: mv ./builds-test-mv3 ./builds
+      - run:
+          name: Activate Selenium Manager for Chrome
+          command: node_modules/selenium-webdriver/bin/linux/selenium-manager --browser chrome
       - run:
           name: Run page load benchmark
           command: |

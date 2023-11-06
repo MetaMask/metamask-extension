@@ -16,19 +16,29 @@ import {
   SEND_STAGES,
   getDraftTransactionExists,
   getDraftTransactionID,
+  getSendErrors,
   getSendStage,
+  isSendFormInvalid,
   resetSendState,
+  signTransaction,
   startNewDraftTransaction,
 } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/send/send.constants';
 import { cancelTx, showQrScanner } from '../../../../store/actions';
-import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../helpers/constants/routes';
+import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import {
   SendPageAccountPicker,
   SendPageRecipientInput,
   SendPageNetworkPicker,
   SendPageRecipient,
+  SendPageContent,
 } from './components';
 
 export const SendPage = () => {
@@ -43,6 +53,7 @@ export const SendPage = () => {
 
   const history = useHistory();
   const location = useLocation();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
@@ -87,7 +98,7 @@ export const SendPage = () => {
     };
   }, [dispatch, cleanup]);
 
-  const onCancel = useCallback(() => {
+  const onCancel = () => {
     if (draftTransactionID) {
       dispatch(cancelTx({ id: draftTransactionID }));
     }
@@ -96,7 +107,29 @@ export const SendPage = () => {
     const nextRoute =
       sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
     history.push(nextRoute);
-  });
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+
+    await dispatch(signTransaction());
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
+      event: 'Complete',
+      properties: {
+        action: 'Edit Screen',
+        legacy_event: true,
+      },
+    });
+    history.push(CONFIRM_TRANSACTION_ROUTE);
+  };
+
+  // Submit button
+  const sendErrors = useSelector(getSendErrors);
+  const isInvalidSendForm = useSelector(isSendFormInvalid);
+  const submitDisabled =
+    isInvalidSendForm && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR;
 
   return (
     <Page className="multichain-send-page">
@@ -116,13 +149,23 @@ export const SendPage = () => {
         <SendPageNetworkPicker />
         <SendPageAccountPicker />
         <SendPageRecipientInput />
-        <SendPageRecipient />
+        {draftTransactionExists &&
+        [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage) ? (
+          <SendPageContent />
+        ) : (
+          <SendPageRecipient />
+        )}
       </Content>
       <Footer>
         <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
           {t('cancel')}
         </ButtonSecondary>
-        <ButtonPrimary size={ButtonPrimarySize.Lg} block disabled>
+        <ButtonPrimary
+          onClick={onSubmit}
+          size={ButtonPrimarySize.Lg}
+          disabled={submitDisabled}
+          block
+        >
           {t('confirm')}
         </ButtonPrimary>
       </Footer>

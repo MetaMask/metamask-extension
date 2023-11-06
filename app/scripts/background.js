@@ -495,6 +495,7 @@ export function setupController(
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
+    featureFlags: {},
   });
 
   setupEnsIpfsResolver({
