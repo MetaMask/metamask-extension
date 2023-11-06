@@ -37,6 +37,7 @@ import {
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
+  getSelectedNetworkClientId,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
@@ -82,6 +83,7 @@ const EthOverview = ({ className, showAddress }) => {
   const balance = useSelector(getSelectedAccountCachedBalance);
   const isSwapsChain = useSelector(getIsSwapsChain);
   const chainId = useSelector(getCurrentChainId);
+  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -272,7 +274,6 @@ const EthOverview = ({ className, showAddress }) => {
 
               ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
               if (isSwapsChain) {
-                // TODO try to pass along the networkClientId here
                 trackEvent({
                   event: MetaMetricsEventName.NavSwapButtonClicked,
                   category: MetaMetricsEventCategory.Swaps,
@@ -285,9 +286,13 @@ const EthOverview = ({ className, showAddress }) => {
                 });
                 dispatch(setSwapsFromToken(defaultSwapsToken));
                 if (usingHardwareWallet) {
+                  // TODO figure out if its possible to pass state here
                   global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
                 } else {
-                  history.push(`${BUILD_QUOTE_ROUTE}?type=swap`);
+                  history.push({
+                    pathname: BUILD_QUOTE_ROUTE,
+                    state: { networkClientId: selectedNetworkClientId },
+                  });
                 }
               }
               ///: END:ONLY_INCLUDE_IN

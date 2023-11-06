@@ -12,7 +12,6 @@ import {
   useLocation,
   useHistory,
   Redirect,
-  useParams,
 } from 'react-router-dom';
 import { shuffle, isEqual } from 'lodash';
 import classnames from 'classnames';
@@ -25,7 +24,6 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getTokenList,
-  getSelectedNetworkClientId,
 } from '../../selectors/selectors';
 import {
   getQuotes,
@@ -120,9 +118,13 @@ export default function Swap() {
   const history = useHistory();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const params = useParams();
-  console.log('params', params);
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const { pathname, state } = location;
+  // TODO use the networkClient from the state instead of the chainId
+  // pass it to the duck and use it in the selectors
+  const { networkClientId } = state || {};
+  // should throw an error if networkClientId is undefined
+  // if someone navigates to the swaps page without going through the home page
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
   const isAwaitingSignaturesRoute = pathname === AWAITING_SIGNATURES_ROUTE;
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE;
@@ -170,13 +172,6 @@ export default function Swap() {
   const currentSmartTransactionsError = useSelector(
     getCurrentSmartTransactionsError,
   );
-
-  // Maybe the strategy is to pass/get the networkClientId off the URL?
-  // This page is nice because it can serve as the base context for a particular
-  // swap that is tied to a particular account and network. However, we need to
-  // be careful to not use any selectors that are not contextual to this page.
-  // TODO replace with a prop contextual to this particular flow
-  const selectedNetworkClientId = useSelector(getSelectedNetworkClientId);
 
   useEffect(() => {
     const leaveSwaps = async () => {
