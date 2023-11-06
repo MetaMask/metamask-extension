@@ -20,17 +20,18 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import { AssetType } from '../../../../shared/constants/transaction';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import UserPreferencedCurrencyInput from '../../app/user-preferenced-currency-input/user-preferenced-currency-input.container';
 import UserPreferencedTokenInput from '../../app/user-preferenced-token-input/user-preferenced-token-input.component';
 import {
   getCurrentDraftTransaction,
   updateSendAmount,
 } from '../../../ducks/send';
-import { Numeric } from '../../../../shared/modules/Numeric';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import AssetPicker from './asset-picker/asset-picker';
+import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
+import { PRIMARY } from '../../../helpers/constants/common';
+import TokenBalance from '../../ui/token-balance';
 import MaxClearButton from './max-clear-button';
+import AssetPicker from './asset-picker/asset-picker';
 
 // A component that combines an asset picker with an input for the amount to send.
 // Work in progress.
@@ -38,20 +39,10 @@ export const AssetPickerAmount = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const { asset, amount } = useSelector(getCurrentDraftTransaction);
-  const nativeCurrency = useSelector(getNativeCurrency);
 
   if (!asset) {
     throw new Error('No asset is drafted for sending');
   }
-
-  let balance = new Numeric(asset.balance, 16).toBase(10);
-  if (asset.type === AssetType.native) {
-    balance = balance.applyConversionRate(1 / Math.pow(10, 18));
-  }
-
-  // TODO: Handle long symbols in the UI
-  const symbol =
-    asset.type === AssetType.native ? nativeCurrency : asset.details?.symbol;
 
   return (
     <Box className="asset-picker-amount">
@@ -107,10 +98,29 @@ export const AssetPickerAmount = () => {
           />
         )}
       </Box>
-      <Text color={TextColor.textAlternative}>
-        {/* TODO: Consider rounding the balance so its not super long? */}
-        {t('balance')}: {balance.toString()} {symbol}
-      </Text>
+      <Box display={Display.Flex}>
+        <Text color={TextColor.textAlternative} marginRight={1}>
+          {t('balance')}:
+        </Text>
+        {asset.type === AssetType.native ? (
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore: Other props are optional but the compiler expects them
+          <UserPreferencedCurrencyDisplay
+            value={asset.balance}
+            type={PRIMARY}
+            textProps={{ color: TextColor.textAlternative }}
+            suffixProps={{ color: TextColor.textAlternative }}
+          />
+        ) : (
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore: Details should be defined for token assets
+          <TokenBalance
+            token={asset.details}
+            textProps={{ color: TextColor.textAlternative }}
+            suffixProps={{ color: TextColor.textAlternative }}
+          />
+        )}
+      </Box>
     </Box>
   );
 };

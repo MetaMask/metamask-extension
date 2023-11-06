@@ -36,6 +36,7 @@ export default function AssetPicker({ asset }: { asset: Asset }) {
         // @ts-ignore: type 'string' can't be used to index type '{}'
         tokenList?.[asset.details?.address?.toLowerCase()]?.iconUrl;
 
+  // TODO: Handle long symbols in the UI
   const symbol =
     asset.type === AssetType.native ? nativeCurrency : asset.details?.symbol;
 
