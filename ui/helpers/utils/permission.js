@@ -300,10 +300,9 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     targetSubjectMetadata,
   }) => ({
     label: t('permission_accessNetwork'),
-    description: t(
-      'permission_accessNetworkDescription',
+    description: t('permission_accessNetworkDescription', [
       getSnapNameComponent(targetSubjectMetadata),
-    ),
+    ]),
     leftIcon: IconName.Global,
     weight: 2,
   }),
