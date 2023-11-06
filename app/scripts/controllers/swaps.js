@@ -43,7 +43,7 @@ import {
   calcGasTotal,
   calcTokenAmount,
 } from '../../../shared/lib/transactions-controller-utils';
-import fetchEstimatedL1Fee from '../../../ui/helpers/utils/optimism/fetchEstimatedL1Fee';
+import fetchEstimatedL1Fee from '../../../ui/helpers/utils/multiLayerFee/fetchEstimatedL1Fee';
 
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';

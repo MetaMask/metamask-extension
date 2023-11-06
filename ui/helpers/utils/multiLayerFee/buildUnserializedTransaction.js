@@ -13,15 +13,17 @@ function buildTxParams(txMeta) {
 
 function buildTransactionCommon(txMeta) {
   // This produces a transaction whose information does not completely match an
-  // Optimism transaction — for instance, DEFAULT_CHAIN is still 'mainnet' and
-  // genesis points to the mainnet genesis, not the Optimism genesis — but
+  // any L2 transaction — for instance, DEFAULT_CHAIN is still 'mainnet' and
+  // genesis points to the mainnet genesis, not the L2 genesis — but
   // considering that all we want to do is serialize a transaction, this works
   // fine for our use case.
   return Common.custom({
     chainId: new BN(stripHexPrefix(txMeta.chainId), 16),
-    // Optimism only supports type-0 transactions; it does not support any of
-    // the newer EIPs since EIP-155. Source:
-    // <https://github.com/ethereum-optimism/optimism/blob/develop/specs/l2geth/transaction-types.md>
+    // Scroll only supports type-0 transactions, while OP Stack chains can support
+    // type-2 transactions, but that support hasn't been tested here.
+    // Sources:
+    // <https://community.optimism.io/docs/developers/build/transaction-fees/#the-l2-execution-fee>
+    // <https://docs.scroll.io/en/developers/ethereum-and-scroll-differences/#user-content-fnref-eip1559>
     defaultHardfork: Hardfork.SpuriousDragon,
   });
 }

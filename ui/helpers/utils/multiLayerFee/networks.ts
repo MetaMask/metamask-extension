@@ -1,16 +1,16 @@
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
-export function isOptimism(chainId: string) {
+function isOptimism(chainId: string) {
   return (
     chainId === CHAIN_IDS.OPTIMISM || chainId === CHAIN_IDS.OPTIMISM_TESTNET
   );
 }
 
-export function isBase(chainId: string) {
+function isBase(chainId: string) {
   return chainId === CHAIN_IDS.BASE || chainId === CHAIN_IDS.BASE_TESTNET;
 }
 
-export function isOpbnb(chainId: string) {
+function isOpbnb(chainId: string) {
   return chainId === CHAIN_IDS.OPBNB || chainId === CHAIN_IDS.OPBNB_TESTNET;
 }
 

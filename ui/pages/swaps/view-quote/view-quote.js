@@ -108,7 +108,7 @@ import {
 } from '../../../../shared/lib/transactions-controller-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { calcTokenValue } from '../../../../shared/lib/swaps-utils';
-import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
+import fetchEstimatedL1Fee from '../../../helpers/utils/multiLayerFee/fetchEstimatedL1Fee';
 import {
   addHexes,
   decGWEIToHexWEI,
