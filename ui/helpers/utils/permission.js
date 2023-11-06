@@ -423,7 +423,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
       });
     }
 
-    if (allowedOrigins.length > 0) {
+    if (allowedOrigins?.length > 0) {
       let originsMessage;
 
       if (allowedOrigins.length === 1) {
