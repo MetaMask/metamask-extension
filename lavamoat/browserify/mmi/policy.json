@@ -772,16 +772,9 @@
       },
       "packages": {
         "@metamask-institutional/sdk>@metamask-institutional/simplecache": true,
-        "@metamask-institutional/sdk>bignumber.js": true,
         "@metamask-institutional/sdk>jsonwebtoken": true,
         "browserify>crypto-browserify": true,
         "webpack>events": true
-      }
-    },
-    "@metamask-institutional/sdk>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
       }
     },
     "@metamask-institutional/sdk>jsonwebtoken": {
