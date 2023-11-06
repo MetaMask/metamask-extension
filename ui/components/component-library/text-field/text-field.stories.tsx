@@ -115,7 +115,6 @@ export default {
   },
   args: {
     placeholder: 'Placeholder...',
-    value: ' ',
   },
 } as Meta<typeof TextField>;
 
