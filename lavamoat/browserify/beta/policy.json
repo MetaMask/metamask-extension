@@ -2036,6 +2036,15 @@
         "superstruct": true
       }
     },
+    "@metamask/queued-request-controller": {
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/selected-network-controller": true
+      }
+    },
     "@metamask/rpc-methods-flask>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -2071,7 +2080,8 @@
     },
     "@metamask/selected-network-controller": {
       "packages": {
-        "@metamask/base-controller": true
+        "@metamask/base-controller": true,
+        "@metamask/network-controller>@metamask/swappable-obj-proxy": true
       }
     },
     "@metamask/signature-controller": {
