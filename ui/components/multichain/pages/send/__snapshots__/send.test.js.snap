@@ -966,10 +966,11 @@ exports[`SendPage render renders correctly 1`] = `
               </div>
             </div>
             <button
-              class="asset-picker-amount__swap-button"
+              aria-label="Switch input currency"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-default"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/swap-vertical.svg');"
               />
             </button>
