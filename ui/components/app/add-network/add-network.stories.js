@@ -7,6 +7,7 @@ const OPTIMISM_IMAGE_URL = './images/optimism.svg';
 const AVALANCHE_IMAGE_URL = './images/avax-token.png';
 const PALM_IMAGE_URL = './images/palm.svg';
 const BSC_IMAGE_URL = './images/bsc-filled.svg';
+const IMMUTABLE_TOKEN_IMAGE_URL = './images/immutable-token.svg';
 
 export default {
   title: 'Components/App/AddNetwork',
@@ -74,6 +75,26 @@ export default {
         rpcPrefs: {
           blockExplorerUrl: 'https://explorer.harmony.one/',
           imageUrl: '',
+        },
+      },
+      {
+        chainId: '13371',
+        nickname: 'Immutable zkEVM Mainnet',
+        rpcUrl: 'https://rpc.immutable.com/',
+        ticker: 'IMX',
+        rpcPrefs: {
+          blockExplorerUrl: 'https://explorer.immutable.com/',
+          imageUrl: IMMUTABLE_TOKEN_IMAGE_URL,
+        },
+      },
+      {
+        chainId: '13473',
+        nickname: 'Immutable zkEVM Testnet',
+        rpcUrl: 'https://rpc.testnet.immutable.com/',
+        ticker: 'test-IMX',
+        rpcPrefs: {
+          blockExplorerUrl: 'https://explorer.testnet.immutable.com/',
+          imageUrl: IMMUTABLE_TOKEN_IMAGE_URL,
         },
       },
       {
