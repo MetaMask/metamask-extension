@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -22,10 +22,7 @@ describe('Test Snap TxInsights', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
