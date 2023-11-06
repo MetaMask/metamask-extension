@@ -7,7 +7,7 @@ import switchEthereumChain from './switch-ethereum-chain';
 const NON_INFURA_CHAIN_ID = '0x123456789';
 
 const mockRequestUserApproval = ({ requestData }) => {
-  return Promise.resolve(requestData);
+  return Promise.resolve(requestData.toNetworkConfiguration);
 };
 
 const MOCK_MAINNET_CONFIGURATION = {
@@ -36,6 +36,8 @@ describe('switchEthereumChainHandler', () => {
       jest.fn(),
       {
         getCurrentChainId: () => NON_INFURA_CHAIN_ID,
+        findNetworkClientIdByChainId: () => 123,
+        setNetworkClientIdForDomain: jest.fn(),
         getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
@@ -64,6 +66,8 @@ describe('switchEthereumChainHandler', () => {
       {
         getCurrentChainId: () => NON_INFURA_CHAIN_ID,
         getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
+        setNetworkClientIdForDomain: jest.fn(),
+        findNetworkClientIdByChainId: () => 123,
         findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
         setActiveNetwork: mockSetActiveNetwork,
@@ -90,6 +94,8 @@ describe('switchEthereumChainHandler', () => {
       jest.fn(),
       {
         getCurrentChainId: () => NON_INFURA_CHAIN_ID,
+        findNetworkClientIdByChainId: () => 123,
+        setNetworkClientIdForDomain: jest.fn(),
         getProviderConfig: () => ({ chainId: NON_INFURA_CHAIN_ID }),
         findNetworkConfigurationBy: () => MOCK_LINEA_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
@@ -117,6 +123,8 @@ describe('switchEthereumChainHandler', () => {
       jest.fn(),
       {
         getCurrentChainId: () => CHAIN_IDS.MAINNET,
+        findNetworkClientIdByChainId: () => 123,
+        setNetworkClientIdForDomain: jest.fn(),
         getProviderConfig: () => ({ chainId: CHAIN_IDS.MAINNET }),
         findNetworkConfigurationBy: () => MOCK_MAINNET_CONFIGURATION,
         setProviderType: mockSetProviderType,
