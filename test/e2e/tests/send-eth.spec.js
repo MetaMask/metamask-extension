@@ -176,6 +176,8 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
         await driver.navigate();
         await unlockWallet(driver);
 
+        await driver.delay(1000);
+
         await openActionMenuAndStartSendFlow(driver);
         if (process.env.MULTICHAIN) {
           return;
