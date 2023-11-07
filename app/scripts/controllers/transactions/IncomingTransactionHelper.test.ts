@@ -21,7 +21,7 @@ const NETWORK_STATE_MOCK: NetworkState = {
   },
 } as unknown as NetworkState;
 
-const ADDERSS_MOCK = '0x1';
+const ADDRESS_MOCK = '0x1';
 const FROM_BLOCK_HEX_MOCK = '0x20';
 const FROM_BLOCK_DECIMAL_MOCK = 32;
 
@@ -33,7 +33,7 @@ const BLOCK_TRACKER_MOCK = {
 
 const CONTROLLER_ARGS_MOCK = {
   blockTracker: BLOCK_TRACKER_MOCK,
-  getCurrentAccount: () => ADDERSS_MOCK,
+  getCurrentAccount: () => ADDRESS_MOCK,
   getNetworkState: () => NETWORK_STATE_MOCK,
   remoteTransactionSource: {} as RemoteTransactionSource,
   transactionLimit: 1,
@@ -136,7 +136,7 @@ describe('IncomingTransactionHelper', () => {
         );
 
         expect(remoteTransactionSource.fetchTransactions).toHaveBeenCalledWith({
-          address: ADDERSS_MOCK,
+          address: ADDRESS_MOCK,
           currentChainId: NETWORK_STATE_MOCK.providerConfig.chainId,
           fromBlock: expect.any(Number),
           limit: CONTROLLER_ARGS_MOCK.transactionLimit,
@@ -171,7 +171,7 @@ describe('IncomingTransactionHelper', () => {
           ...CONTROLLER_ARGS_MOCK,
           remoteTransactionSource,
           lastFetchedBlockNumbers: {
-            [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${ADDERSS_MOCK}`]:
+            [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${ADDRESS_MOCK}`]:
               FROM_BLOCK_DECIMAL_MOCK,
           },
         });
@@ -412,7 +412,7 @@ describe('IncomingTransactionHelper', () => {
         );
 
         expect(lastFetchedBlockNumbers).toStrictEqual({
-          [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${ADDERSS_MOCK}`]:
+          [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${ADDRESS_MOCK}`]:
             parseInt(TRANSACTION_MOCK_2.blockNumber as string, 10),
         });
       });
@@ -470,7 +470,7 @@ describe('IncomingTransactionHelper', () => {
             TRANSACTION_MOCK_2,
           ]),
           lastFetchedBlockNumbers: {
-            [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${ADDERSS_MOCK}`]:
+            [`${NETWORK_STATE_MOCK.providerConfig.chainId}#${ADDRESS_MOCK}`]:
               parseInt(TRANSACTION_MOCK_2.blockNumber as string, 10),
           },
         });

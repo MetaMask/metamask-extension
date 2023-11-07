@@ -27,7 +27,7 @@ import {
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
-import EthQuery from 'eth-query';
+import EthQuery from '@metamask/eth-query';
 import nanoid from 'nanoid';
 import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
@@ -2352,11 +2352,11 @@ export default class MetamaskController extends EventEmitter {
       isInitialized,
       ...flatState,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-      // Snap state and source code is stripped out to prevent piping to the MetaMask UI.
+      // Snap state, source code and other files are stripped out to prevent piping to the MetaMask UI.
       snapStates: {},
       snaps: Object.values(flatState.snaps ?? {}).reduce((acc, snap) => {
         // eslint-disable-next-line no-unused-vars
-        const { sourceCode, ...rest } = snap;
+        const { sourceCode, auxiliaryFiles, ...rest } = snap;
         acc[snap.id] = rest;
         return acc;
       }, {}),
