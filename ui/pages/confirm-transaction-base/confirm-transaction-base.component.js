@@ -520,7 +520,7 @@ export default class ConfirmTransactionBase extends Component {
   renderDataHex() {
     const { txData, dataHexComponent } = this.props;
     const {
-      txParams: { data, to },
+      txParams: { data },
     } = txData;
     if (!data) {
       return null;
