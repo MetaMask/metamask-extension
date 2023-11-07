@@ -57,32 +57,36 @@ export default function SnapInstallWarning({
   };
 
   function constructWarningElementComponentArray(permissionWarnings) {
-    const warningElements = [];
-    for (let i = 0; i < permissionWarnings.length; i++) {
-      const warning = permissionWarnings[i];
-      if (i > 0) {
-        if (i === permissionWarnings.length - 1) {
-          warningElements.push(
-            <span key={`${warning.permissionName}_and_${i}`}>
+    return permissionWarnings.map((warning, index) => {
+      const elements = [];
+
+      if (index > 0) {
+        if (index === permissionWarnings.length - 1) {
+          elements.push(
+            <span key={`${warning.permissionName}_and_${index}`}>
               {' '}
               {t('and')}{' '}
             </span>,
           );
         } else {
-          warningElements.push(
-            <span key={`${warning.permissionName}_comma_${i}`}>{', '}</span>,
+          elements.push(
+            <span key={`${warning.permissionName}_comma_${index}`}>
+              {', '}
+            </span>,
           );
         }
       }
-      warningElements.push(
-        <span key={`${warning.permissionName}_${i}`}>
+
+      elements.push(
+        <span key={`${warning.permissionName}_${index}`}>
           <Text fontWeight={FontWeight.Medium} as="span">
             {warning.warningMessageSubject}
           </Text>
         </span>,
       );
-    }
-    return warningElements;
+
+      return elements;
+    });
   }
 
   // Filter and group warnings based on permission name
