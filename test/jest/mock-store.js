@@ -223,7 +223,7 @@ export const createSwapsMockStore = () => {
         },
       ],
       useCurrencyRateCheck: true,
-      currentCurrency: 'usd',
+      currentCurrency: 'ETH',
       currencyRates: {
         ETH: {
           conversionRate: 1,
