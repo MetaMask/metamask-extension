@@ -3184,26 +3184,6 @@
     "message": "Ajouter et gérer des comptes Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "Contrôlez vos comptes et vos actifs sous $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Autoriser le snap à dériver des paires de clés BIP-32 basées sur votre phrase secrète de récupération sans l’exposer. Cela donne un accès complet à tous les comptes et actifs sur $1.\nGrâce au pouvoir de gestion des clés, le snap peut prendre en charge différents protocoles de la blockchain au-delà d’Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "Contrôlez vos comptes et actifs de $1.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Autoriser le snap à dériver des paires de clés BIP-44 basées sur votre phrase secrète de récupération sans l’exposer. Cela donne un accès complet à tous les comptes et actifs sur $1.\nGrâce au pouvoir de gestion des clés, le snap peut prendre en charge différents protocoles de la blockchain au-delà d’Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "Contrôlez vos actifs et vos comptes « $1 ».",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Stockez et gérez ses données sur votre appareil.",
     "description": "The description for the `snap_manageState` permission"
@@ -3959,24 +3939,8 @@
   "snapInstallSuccess": {
     "message": "Installation terminée"
   },
-  "snapInstallWarningCheck": {
-    "message": "Cochez la case pour confirmer que vous avez compris.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Veuillez confirmer que vous avez bien compris en cochant toutes les cases.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Agissez avec prudence"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Vous autorisez $2 à accéder à la clé du snap « $1 ». Cette action est irréversible et accorde à « $1 » le contrôle de vos comptes et actifs $2. Assurez-vous que vous faites confiance à « $1 » avant de continuer.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Autoriser $2 à accéder à la clé publique de $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "$1 n’a pas pu être installé.",
@@ -4626,9 +4590,6 @@
   "swapSource": {
     "message": "Source de liquidité"
   },
-  "swapSourceInfo": {
-    "message": "Nous consultons de multiples sources de liquidité (bourses, agrégateurs et teneurs de marché professionnels) pour trouver les meilleurs taux et les frais de réseau les plus bas."
-  },
   "swapSuggested": {
     "message": "Swap proposé"
   },
@@ -5128,10 +5089,6 @@
   "unrecognizedChain": {
     "message": "Ce réseau personnalisé n’est pas reconnu",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (protocole inconnu)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "L’envoi de jetons NFT (ERC-721) n’est pas pris en charge actuellement",

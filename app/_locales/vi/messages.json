@@ -3184,26 +3184,6 @@
     "message": "Thêm và kiểm soát các tài khoản Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "Kiểm soát các tài khoản và tài sản của bạn ở $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Cho phép Snap lấy các cặp khóa BIP-32 dựa trên Cụm từ khôi phục bí mật của bạn mà không để lộ. Điều này sẽ cấp toàn quyền truy cập vào tất cả các tài khoản và tài sản trên $1.\nVới khả năng quản lý khóa, Snap có thể hỗ trợ nhiều giao thức chuỗi khối ngoài Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "Kiểm soát các tài khoản và tài sản $1 của bạn.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Cho phép Snap lấy các cặp khóa BIP-44 dựa trên Cụm từ khôi phục bí mật của bạn mà không để lộ. Điều này sẽ cấp toàn quyền truy cập vào tất cả các tài khoản và tài sản trên $1.\nVới khả năng quản lý khóa, Snap có thể hỗ trợ nhiều giao thức chuỗi khối ngoài Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "Kiểm soát các tài khoản và tài sản $1 của bạn.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Lưu trữ và quản lý dữ liệu trong thiết bị.",
     "description": "The description for the `snap_manageState` permission"
@@ -3959,24 +3939,8 @@
   "snapInstallSuccess": {
     "message": "Cài đặt hoàn tất"
   },
-  "snapInstallWarningCheck": {
-    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào ô.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Để xác nhận rằng bạn hiểu, hãy đánh dấu vào tất cả các ô.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Hãy tiến hành thận trọng"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Bạn đang cấp quyền truy cập khóa $2 cho Snap \"$1\". Hành động này không thể hủy bỏ và sẽ cấp quyền kiểm soát tài khoản và tài sản $2 của bạn cho \"$1\". Đảm bảo bạn tin tưởng \"$1\" trước khi tiếp tục.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Cấp quyền truy cập $1 cho khóa công khai $2",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "Không thể cài đặt $1.",
@@ -4626,9 +4590,6 @@
   "swapSource": {
     "message": "Nguồn thanh khoản"
   },
-  "swapSourceInfo": {
-    "message": "Chúng tôi tìm kiếm nhiều nguồn thanh khoản (các sàn giao dịch, trình tổng hợp và nhà tạo lập thị trường) để tìm được mức tỷ giá tốt nhất và phí mạng thấp nhất."
-  },
   "swapSuggested": {
     "message": "Hoán đổi gợi ý"
   },
@@ -5128,10 +5089,6 @@
   "unrecognizedChain": {
     "message": "Không thể nhận diện mạng tùy chỉnh này",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (Giao thức chưa được công nhận)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "Hiện không hỗ trợ gửi token NFT (ERC-721)",

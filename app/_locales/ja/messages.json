@@ -3184,26 +3184,6 @@
     "message": "イーサリアムアカウントを追加して管理します",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "$1 ($2) のアカウントとアセットを管理します。",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "snapがシークレットリカバリーフレーズに基づき、公開することなくBIP-32キーペアを導出することを許可します。これにより、$1のすべてのアカウントとアセットへの完全アクセスが許可されます。\\nキーの管理権限を与えることで、snapはイーサリアム (EVM) 以外にもさまざまなブロックチェーンプロトコルをサポートできるようになります。",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "$1アカウントとアセットをコントロールします。",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "snapがシークレットリカバリーフレーズに基づき、公開することなくBIP-44キーペアを導出することを許可します。これにより、$1のすべてのアカウントとアセットへの完全アクセスが許可されます。\\nキーの管理権限を与えることで、snapはイーサリアム (EVM) 以外にもさまざまなブロックチェーンプロトコルをサポートできるようになります。",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "$1アカウントとアセットをコントロールします。",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "デバイスにデータを保管し管理します。",
     "description": "The description for the `snap_manageState` permission"
@@ -3959,24 +3939,8 @@
   "snapInstallSuccess": {
     "message": "インストール完了"
   },
-  "snapInstallWarningCheck": {
-    "message": "まずは、求められている許可の内容を確認してください。$1を信頼できる場合のみ続行してください。",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "まずは、求められている許可の内容を確認してください。$1を信頼できる場合のみ続行してください。",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "慎重に進めてください"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "$2に$1アカウントのコントロールを許可する",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "$2に$1への公開鍵アクセス権を付与する",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "$1をインストールできませんでした。",
@@ -4626,9 +4590,6 @@
   "swapSource": {
     "message": "流動性の供給源"
   },
-  "swapSourceInfo": {
-    "message": "弊社は、最良のレートと最小のネットワーク手数料を見つけるために、複数の流動性供給源 (取引所、アグリゲーター、専門のマーケットメーカー) を検索します。"
-  },
   "swapSuggested": {
     "message": "スワップが提案されました"
   },
@@ -5128,10 +5089,6 @@
   "unrecognizedChain": {
     "message": "このカスタムネットワークは認識されていません",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (不明なプロトコル)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "NFT (ERC-721) トークンの送信は現在サポートされていません",
