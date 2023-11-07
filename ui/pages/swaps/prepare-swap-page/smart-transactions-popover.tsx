@@ -32,13 +32,15 @@ export default function SmartTransactionsPopover({
 }: Props) {
   const t = useContext(I18nContext);
   return (
-    <Modal isOpen={isOpen} onClose={onCloseSmartTransactionsOptInPopover}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onCloseSmartTransactionsOptInPopover}
+      isClosedOnOutsideClick={false}
+      isClosedOnEscapeKey={false}
+    >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onCloseSmartTransactionsOptInPopover}>
-          {t('smartSwapsAreHere')}
-        </ModalHeader>
-
+        <ModalHeader>{t('smartSwapsAreHere')}</ModalHeader>
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
