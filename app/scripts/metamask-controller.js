@@ -905,6 +905,7 @@ export default class MetamaskController extends EventEmitter {
       ///: END:ONLY_INCLUDE_IN
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     const snapKeyringBuildMessenger = this.controllerMessenger.getRestricted({
       name: 'SnapKeyringBuilder',
       allowedActions: [
@@ -921,7 +922,6 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     const getSnapController = () => this.snapController;
 
     additionalKeyrings.push(
