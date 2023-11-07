@@ -917,22 +917,19 @@ export default class MetamaskController extends EventEmitter {
         'ApprovalController:showError',
         'PhishingController:test',
         'PhishingController:maybeUpdateState',
+        'KeyringController:getAccounts',
       ],
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     const getSnapController = () => this.snapController;
-    const getKeyringController = () => this.keyringController;
-    const getPreferencesController = () => this.preferencesController;
-    const getPhishingController = () => this.phishingController;
 
     additionalKeyrings.push(
       snapKeyringBuilder(
         snapKeyringBuildMessenger,
         getSnapController,
-        getKeyringController,
-        getPreferencesController,
-        getPhishingController,
+        async () => await this.keyringController.persistAllKeyrings(),
+        (address) => this.preferencesController.setSelectedAddress(address),
         (address) => this.removeAccount(address),
       ),
     );

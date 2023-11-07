@@ -10,14 +10,13 @@ import type {
   ShowSuccess,
   StartFlow,
 } from '@metamask/approval-controller';
-import type { KeyringController } from '@metamask/keyring-controller';
+import type { KeyringControllerGetAccountsAction } from '@metamask/keyring-controller';
 import browser from 'webextension-polyfill';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
-import PreferencesController from '../../controllers/preferences';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 
 /**
@@ -44,7 +43,8 @@ type SnapKeyringBuilderAllowActions =
   | AcceptRequest
   | RejectRequest
   | MaybeUpdateState
-  | TestOrigin;
+  | TestOrigin
+  | KeyringControllerGetAccountsAction;
 
 type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
   'SnapKeyringBuilder',
@@ -59,8 +59,8 @@ type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
  *
  * @param controllerMessenger - The controller messenger instance.
  * @param getSnapController - A function that retrieves the Snap Controller instance.
- * @param getKeyringController - A function that retrieves the Keyring Controller instance.
- * @param getPreferencesController - A function that retrieves the Preferences Controller instance.
+ * @param persistKeyringHelper - A function that retrieves the Keyring Controller instance.
+ * @param setSelectedAccountHelper - A function that retrieves the Preferences Controller instance.
  * @param removeAccountHelper - A function to help remove an account based on its address.
  * @returns The constructed SnapKeyring builder instance with the following methods:
  * - `saveState`: Persists all keyrings in the keyring controller.
@@ -70,14 +70,16 @@ type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
 export const snapKeyringBuilder = (
   controllerMessenger: snapKeyringBuilderMessenger,
   getSnapController: () => SnapController,
-  getKeyringController: () => KeyringController,
-  getPreferencesController: () => PreferencesController,
+  persistKeyringHelper: () => Promise<void>,
+  setSelectedAccountHelper: (address: string) => void,
   removeAccountHelper: (address: string) => Promise<any>,
 ) => {
   const builder = (() => {
     return new SnapKeyring(getSnapController() as any, {
       addressExists: async (address) => {
-        const addresses = await getKeyringController().getAccounts();
+        const addresses = await controllerMessenger.call(
+          'KeyringController:getAccounts',
+        );
         return addresses.includes(address.toLowerCase());
       },
       redirectUser: async (snapId: string, url: string, message: string) => {
@@ -120,7 +122,7 @@ export const snapKeyringBuilder = (
         }
       },
       saveState: async () => {
-        await getKeyringController().persistAllKeyrings();
+        await persistKeyringHelper();
       },
       addAccount: async (
         address: string,
@@ -152,8 +154,8 @@ export const snapKeyringBuilder = (
           if (confirmationResult) {
             try {
               await handleUserInput(confirmationResult);
-              await getKeyringController().persistAllKeyrings();
-              getPreferencesController().setSelectedAddress(address);
+              await persistKeyringHelper();
+              setSelectedAccountHelper(address);
               await controllerMessenger.call('ApprovalController:showSuccess', {
                 message: t('snapAccountCreated') ?? 'Your account is ready!',
                 header: [snapAuthorshipHeader],
@@ -211,7 +213,7 @@ export const snapKeyringBuilder = (
             try {
               await removeAccountHelper(address);
               await handleUserInput(confirmationResult);
-              await getKeyringController().persistAllKeyrings();
+              await persistKeyringHelper();
               await controllerMessenger.call('ApprovalController:showSuccess', {
                 message: t('snapAccountRemoved') ?? 'Account removed',
                 header: [snapAuthorshipHeader],
