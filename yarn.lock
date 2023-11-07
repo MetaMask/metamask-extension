@@ -4011,14 +4011,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/contract-metadata@npm:^2.3.1":
-  version: 2.3.1
-  resolution: "@metamask/contract-metadata@npm:2.3.1"
-  checksum: cdeda6e36c5a361d57e84029442aac85f280dc957de9983532ed5fa18a8c1136c0967e576b6fda617b343a218cea318efe0a83a149dc4b5874216cccf7811a62
-  languageName: node
-  linkType: hard
-
-"@metamask/contract-metadata@npm:^2.4.0":
+"@metamask/contract-metadata@npm:^2.3.1, @metamask/contract-metadata@npm:^2.4.0":
   version: 2.4.0
   resolution: "@metamask/contract-metadata@npm:2.4.0"
   checksum: 09829751ec3239cb06b74ee338207a802e4c0e7b0184e2b2a3e43c1c043bb6cc432081b6375707d3a5cbe0870502729c2d4c6aa3dd040a2e66432275b47a32ec
