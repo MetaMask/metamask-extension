@@ -140,8 +140,37 @@ export default function SnapInstallWarning({
           </Text>,
         ])}
       </Text>
-      {bip32PublicKeyPermissionWarnings.length > 0 && (
+      {bip32bip44EntropyPermissionWarnings.length > 0 && (
         <Box as="span">
+          <PermissionCell
+            permissionName={
+              <Text>
+                {t('snapInstallWarningPermissionNameForEntropy', [
+                  constructWarningElementComponentArray(
+                    bip32bip44EntropyPermissionWarnings,
+                  ),
+                ])}
+              </Text>
+            }
+            title={
+              <Text>
+                {t('snapInstallWarningPermissionNameForEntropy', [
+                  constructWarningElementComponentArray(
+                    bip32bip44EntropyPermissionWarnings,
+                  ),
+                ])}
+              </Text>
+            }
+            description={t('snapInstallWarningPermissionDescriptionForEntropy')}
+            weight={1}
+            avatarIcon={IconName.Key}
+            key="snapInstallWarningPermissionCellKeyEntropy"
+            hideStatus
+          />
+        </Box>
+      )}
+      {bip32PublicKeyPermissionWarnings.length > 0 && (
+        <Box as="span" marginTop={4}>
           <PermissionCell
             permissionName={
               <Text>
@@ -167,35 +196,6 @@ export default function SnapInstallWarning({
             weight={1}
             avatarIcon={IconName.Key}
             key="snapInstallWarningPermissionCellViewPublicKey"
-            hideStatus
-          />
-        </Box>
-      )}
-      {bip32bip44EntropyPermissionWarnings.length > 0 && (
-        <Box as="span" marginTop={4}>
-          <PermissionCell
-            permissionName={
-              <Text>
-                {t('snapInstallWarningPermissionNameForEntropy', [
-                  constructWarningElementComponentArray(
-                    bip32bip44EntropyPermissionWarnings,
-                  ),
-                ])}
-              </Text>
-            }
-            title={
-              <Text>
-                {t('snapInstallWarningPermissionNameForEntropy', [
-                  constructWarningElementComponentArray(
-                    bip32bip44EntropyPermissionWarnings,
-                  ),
-                ])}
-              </Text>
-            }
-            description={t('snapInstallWarningPermissionDescriptionForEntropy')}
-            weight={1}
-            avatarIcon={IconName.Key}
-            key="snapInstallWarningPermissionCellKeyEntropy"
             hideStatus
           />
         </Box>
