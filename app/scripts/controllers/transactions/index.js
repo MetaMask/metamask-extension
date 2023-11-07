@@ -120,6 +120,12 @@ const VALID_UNAPPROVED_TRANSACTION_TYPES = [
  * @param {number} [opts.txHistoryLimit] - number *optional* for limiting how many transactions are in state
  * @param {Function} opts.hasCompletedOnboarding - Returns whether or not the user has completed the onboarding flow
  * @param {object} opts.preferencesStore
+ * @param {object} opts.hooks
+ * @param {Function} hooks.afterSign - Additional logic to execute after signing a transaction. Return false to not change the status to signed.
+ * @param {Function} hooks.beforeApproveOnInit - Additional logic to execute before starting an approval flow for a transaction during initialization. Return false to skip the transaction.
+ * @param {Function} hooks.beforeCheckPendingTransaction - Additional logic to execute before checking pending transactions. Return false to prevent the broadcast of the transaction.
+ * @param {Function} hooks.beforePublish - Additional logic to execute before publishing a transaction. Return false to prevent the broadcast of the transaction.
+ * @param {Function} hooks.getAdditionalSignArguments - Returns additional arguments required to sign a transaction.
  */
 
 export default class TransactionController extends EventEmitter {
@@ -148,6 +154,21 @@ export default class TransactionController extends EventEmitter {
     this.snapAndHardwareMessenger = opts.snapAndHardwareMessenger;
     this.messagingSystem = opts.messenger;
     this._hasCompletedOnboarding = opts.hasCompletedOnboarding;
+
+    const { hooks } = opts ?? {};
+    this._afterSign = hooks?.afterSign ? hooks.afterSign : () => true;
+    this._beforeApproveOnInit = hooks?.beforeApproveOnInit
+      ? hooks.beforeApproveOnInit
+      : () => true;
+    this._beforeCheckPendingTransaction = hooks?.beforeCheckPendingTransaction
+      ? hooks.beforeCheckPendingTransaction
+      : () => true;
+    this._beforePublish = hooks?.beforePublish
+      ? hooks.beforePublish
+      : () => true;
+    this._getAdditionalSignArguments = hooks?.getAdditionalSignArguments
+      ? hooks.getAdditionalSignArguments
+      : () => [undefined];
 
     this.memStore = new ObservableStore({});
 
@@ -195,6 +216,11 @@ export default class TransactionController extends EventEmitter {
       approveTransaction: this._approveTransaction.bind(this),
       getCompletedTransactions:
         this.txStateManager.getConfirmedTransactions.bind(this.txStateManager),
+      hooks: {
+        beforeCheckPendingTransaction:
+          this._beforeCheckPendingTransaction.bind(this),
+        beforePublish: this._beforePublish.bind(this),
+      },
     });
 
     this.incomingTransactionHelper = new IncomingTransactionHelper({
@@ -239,10 +265,6 @@ export default class TransactionController extends EventEmitter {
     // request state update to finalize initialization
     this._updatePendingTxsAfterFirstBlock();
     this._onBootCleanUp();
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    this.transactionUpdateController = opts.transactionUpdateController;
-    ///: END:ONLY_INCLUDE_IN
   }
 
   /**
@@ -1381,24 +1403,12 @@ export default class TransactionController extends EventEmitter {
     const signedEthTx = await this.signEthTx(
       unsignedEthTx,
       fromAddress,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      txMeta.custodyStatus ? txMeta : undefined,
-      ///: END:ONLY_INCLUDE_IN
+      ...this._getAdditionalSignArguments(txMeta),
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    if (txMeta.custodyStatus) {
-      txMeta.custodyId = signedEthTx.custodian_transactionId;
-      txMeta.custodyStatus = signedEthTx.transactionStatus;
-
-      this.transactionUpdateController.addTransactionToWatchList(
-        txMeta.custodyId,
-        fromAddress,
-      );
-
+    if (!this._afterSign(txMeta, signedEthTx)) {
       return null;
     }
-    ///: END:ONLY_INCLUDE_IN
 
     // add r,s,v values for provider request purposes see createMetamaskMiddleware
     // and JSON rpc standard for further explanation
@@ -1736,9 +1746,8 @@ export default class TransactionController extends EventEmitter {
     // that is already being incremented & signed.
     const txMeta = this.txStateManager.getTransaction(txId);
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // MMI does not broadcast transactions, as that is the responsibility of the custodian
-    if (txMeta.custodyStatus) {
+    if (!this._beforePublish(txMeta)) {
       this.inProcessOfSigning.delete(txId);
       // Custodial nonces and gas params are set by the custodian, so MMI follows the approve
       // workflow before the transaction parameters are sent to the keyring
@@ -1747,7 +1756,6 @@ export default class TransactionController extends EventEmitter {
       // MMI relies on custodian to publish transactions so exits this code path early
       return;
     }
-    ///: END:ONLY_INCLUDE_IN
 
     if (this.inProcessOfSigning.has(txId)) {
       return;
@@ -1905,18 +1913,12 @@ export default class TransactionController extends EventEmitter {
         },
       })
       .forEach((txMeta) => {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         // If you create a Tx and its still inside the custodian waiting to be approved we don't want to approve it right away
-        if (!txMeta.custodyStatus) {
-          ///: END:ONLY_INCLUDE_IN
-
+        if (this._beforeApproveOnInit(txMeta)) {
           // Line below will try to publish transaction which is in
           // APPROVED state at the time of controller bootup
           this._approveTransaction(txMeta.id);
-
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
         }
-        ///: END:ONLY_INCLUDE_IN
       });
   }
 
