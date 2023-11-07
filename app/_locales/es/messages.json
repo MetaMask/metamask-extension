@@ -4626,9 +4626,6 @@
   "swapSource": {
     "message": "Fuente de liquidez"
   },
-  "swapSourceInfo": {
-    "message": "Buscamos varias fuentes de liquidez (sitios de cambio, agregadores y creadores de mercado profesionales) para obtener las mejores tasas y las tarifas de red más bajas."
-  },
   "swapSuggested": {
     "message": "Intercambio sugerido"
   },

@@ -4626,9 +4626,6 @@
   "swapSource": {
     "message": "유동성 소스"
   },
-  "swapSourceInfo": {
-    "message": "저희는 여러 유동성 소스(교환, 애그리게이터, 투자전문기관)를 검색하여 최상의 요율과 최저 네트워크 수수료를 찾아드립니다."
-  },
   "swapSuggested": {
     "message": "제안 스왑"
   },
