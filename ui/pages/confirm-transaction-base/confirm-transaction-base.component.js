@@ -522,7 +522,7 @@ export default class ConfirmTransactionBase extends Component {
     const {
       txParams: { data, to },
     } = txData;
-    if (!data || !to) {
+    if (!data) {
       return null;
     }
     return (
