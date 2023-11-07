@@ -5362,7 +5362,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   _notifyChainChange() {
-    // TODO: check queue enabled feature flag, if disabled, dont use the 'function' payload
     if (this.preferencesController.getUseRequestQueue()) {
       this.notifyAllConnections((origin) => ({
         method: NOTIFICATION_NAMES.chainChanged,

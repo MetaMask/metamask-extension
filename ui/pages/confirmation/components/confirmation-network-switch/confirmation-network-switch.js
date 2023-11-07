@@ -19,16 +19,11 @@ import {
 } from '../../../../../shared/constants/network';
 
 const getNetworkDetails = (network) => {
-  if (network.nickname === undefined) {
-    delete network.nickname;
-  }
-  if (network.iconUrl === undefined) {
-    delete network.iconUrl;
-  }
   return {
-    nickname: NETWORK_TO_NAME_MAP[network.chainId],
-    iconUrl: CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
     ...network,
+    nickname: network.nickname ?? NETWORK_TO_NAME_MAP[network.chainId],
+    iconUrl:
+      network.iconUrl ?? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
   };
 };
 

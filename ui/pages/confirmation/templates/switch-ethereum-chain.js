@@ -68,19 +68,8 @@ function getValues(pendingApproval, t, actions) {
           element: 'ConfirmationNetworkSwitch',
           key: 'network-being-switched',
           props: {
-            toNetwork: {
-              chainId:
-                pendingApproval.requestData.toNetworkConfiguration.chainId,
-              nickname:
-                pendingApproval.requestData.toNetworkConfiguration.nickname,
-            },
-            fromNetwork: {
-              chainId:
-                pendingApproval.requestData.fromNetworkConfiguration.chainId,
-              nickname:
-                pendingApproval.requestData.fromNetworkConfiguration.nickname,
-              type: pendingApproval.requestData.fromNetworkConfiguration.type,
-            },
+            toNetwork: pendingApproval.requestData.toNetworkConfiguration,
+            fromNetwork: pendingApproval.requestData.fromNetworkConfiguration,
           },
         },
       },

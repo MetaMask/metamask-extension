@@ -202,7 +202,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useNonceField: true,
     usePhishDetect: true,
     useTokenDetection: true,
-    useRequestQueue: false,
+    useRequestQueue: true,
   },
   SelectedNetworkController: { domains: true, perDomainNetwork: false },
   SignatureController: {
