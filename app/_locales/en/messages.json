@@ -5120,6 +5120,9 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Allow this site to switch the network?"
   },
+  "switchInputCurrency": {
+    "message": "Switch input currency"
+  },
   "switchNetwork": {
     "message": "Switch network"
   },
