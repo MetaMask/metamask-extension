@@ -99,7 +99,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             >
               {friendlyName}
             </Text>,
-            path.join('/'),
           ]),
           description: t('permission_viewBip32PublicKeysDescription', [
             <span
@@ -108,7 +107,6 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
             >
               {friendlyName}
             </span>,
-            path.join('/'),
           ]),
         };
       }
