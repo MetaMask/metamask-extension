@@ -915,6 +915,8 @@ export default class MetamaskController extends EventEmitter {
         'ApprovalController:endFlow',
         'ApprovalController:showSuccess',
         'ApprovalController:showError',
+        'PhishingController:test',
+        'PhishingController:maybeUpdateState',
       ],
     });
 

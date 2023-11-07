@@ -11,9 +11,9 @@ import type {
   StartFlow,
 } from '@metamask/approval-controller';
 import type { KeyringController } from '@metamask/keyring-controller';
-import { PhishingController } from '@metamask/phishing-controller';
 import browser from 'webextension-polyfill';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
@@ -42,7 +42,9 @@ type SnapKeyringBuilderAllowActions =
   | ShowError
   | AddApprovalRequest
   | AcceptRequest
-  | RejectRequest;
+  | RejectRequest
+  | MaybeUpdateState
+  | TestOrigin;
 
 type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
   'SnapKeyringBuilder',
@@ -59,7 +61,6 @@ type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
  * @param getSnapController - A function that retrieves the Snap Controller instance.
  * @param getKeyringController - A function that retrieves the Keyring Controller instance.
  * @param getPreferencesController - A function that retrieves the Preferences Controller instance.
- * @param getPhishingController - A function that retrieves the Phishing Controller instance
  * @param removeAccountHelper - A function to help remove an account based on its address.
  * @returns The constructed SnapKeyring builder instance with the following methods:
  * - `saveState`: Persists all keyrings in the keyring controller.
@@ -71,7 +72,6 @@ export const snapKeyringBuilder = (
   getSnapController: () => SnapController,
   getKeyringController: () => KeyringController,
   getPreferencesController: () => PreferencesController,
-  getPhishingController: () => PhishingController,
   removeAccountHelper: (address: string) => Promise<any>,
 ) => {
   const builder = (() => {
@@ -83,7 +83,20 @@ export const snapKeyringBuilder = (
       redirectUser: async (snapId: string, url: string, message: string) => {
         // Either url or message must be defined
         if (url.length > 0 || message.length > 0) {
-          const isBlocked = await isBlockedUrl(url, getPhishingController());
+          const isBlocked = await isBlockedUrl(
+            url,
+            async () => {
+              return await controllerMessenger.call(
+                'PhishingController:maybeUpdateState',
+              );
+            },
+            (urlToTest: string) => {
+              return controllerMessenger.call(
+                'PhishingController:testOrigin',
+                urlToTest,
+              );
+            },
+          );
 
           const confirmationResult = await controllerMessenger.call(
             'ApprovalController:addRequest',
