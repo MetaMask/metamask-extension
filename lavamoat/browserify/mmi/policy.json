@@ -739,7 +739,6 @@
         "console.log": true
       },
       "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
         "@metamask-institutional/custody-controller": true,
         "@metamask-institutional/sdk": true,
         "@metamask-institutional/sdk>@metamask-institutional/types": true
