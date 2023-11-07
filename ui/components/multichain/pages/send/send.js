@@ -12,7 +12,6 @@ import {
   IconName,
 } from '../../../component-library';
 import { Content, Footer, Header, Page } from '../page';
-import { AssetPickerAmount } from '../../asset-picker-amount/asset-picker-amount';
 import {
   SEND_STAGES,
   getDraftTransactionExists,
@@ -156,7 +155,6 @@ export const SendPage = () => {
         ) : (
           <SendPageRecipient />
         )}
-        <AssetPickerAmount />
       </Content>
       <Footer>
         <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
