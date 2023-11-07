@@ -940,6 +940,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -965,6 +967,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1024,6 +1028,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1201,6 +1207,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1617,42 +1625,12 @@
         "setInterval": true
       },
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/gas-fee-controller>@metamask/controller-utils": true,
-        "eth-json-rpc-filters>eth-query": true,
+        "@metamask/controller-utils": true,
+        "@metamask/eth-query": true,
+        "@metamask/polling-controller": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true,
         "uuid": true
-      }
-    },
-    "@metamask/gas-fee-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/gas-fee-controller>@metamask/controller-utils>@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
-      }
-    },
-    "@metamask/gas-fee-controller>@metamask/controller-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/jazzicon": {
@@ -1755,6 +1733,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1850,6 +1830,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1912,25 +1894,11 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/utils": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "node-fetch": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": {
-      "packages": {
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "webpack>events": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/utils": {
@@ -1940,6 +1908,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1976,8 +1946,16 @@
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
-        "@metamask/network-controller>eth-block-tracker>@metamask/safe-event-emitter": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": true,
         "@metamask/providers>@metamask/json-rpc-engine": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "webpack>events": true
       }
     },
     "@metamask/network-controller>@metamask/utils": {
@@ -1987,6 +1965,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2001,8 +1981,8 @@
       },
       "packages": {
         "@metamask/eth-query>json-rpc-random-id": true,
-        "@metamask/network-controller>@metamask/utils": true,
         "@metamask/network-controller>eth-block-tracker>@metamask/safe-event-emitter": true,
+        "@metamask/network-controller>eth-block-tracker>@metamask/utils": true,
         "pify": true
       }
     },
@@ -2012,6 +1992,21 @@
       },
       "packages": {
         "webpack>events": true
+      }
+    },
+    "@metamask/network-controller>eth-block-tracker>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/notification-controller": {
@@ -2063,6 +2058,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2178,6 +2175,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2207,6 +2206,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2257,7 +2258,8 @@
     },
     "@metamask/selected-network-controller": {
       "packages": {
-        "@metamask/base-controller": true
+        "@metamask/base-controller": true,
+        "@metamask/network-controller>@metamask/swappable-obj-proxy": true
       }
     },
     "@metamask/signature-controller": {
@@ -2287,48 +2289,29 @@
       },
       "packages": {
         "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/providers": true,
-        "@metamask/base-controller": true,
-        "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
+        "@metamask/eth-query": true,
+        "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "fast-json-patch": true,
         "lodash": true
       }
     },
-    "@metamask/smart-transactions-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/smart-transactions-controller>@metamask/controller-utils>@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/controller-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
     "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/smart-transactions-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "uuid": true
       }
     },
     "@metamask/smart-transactions-controller>bignumber.js": {
@@ -2382,6 +2365,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2570,6 +2555,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2593,6 +2580,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2658,6 +2647,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2671,6 +2662,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
