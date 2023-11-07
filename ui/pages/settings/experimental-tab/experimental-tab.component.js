@@ -34,9 +34,9 @@ import {
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
 ///: END:ONLY_INCLUDE_IN
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  BLOCKAID_TERMS_OF_USE,
-  ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    BLOCKAID_TERMS_OF_USE,
+    ///: END:ONLY_INCLUDE_IN
   OPENSEA_TERMS_OF_USE,
 } from '../../../../shared/lib/ui-utils';
 
@@ -192,16 +192,7 @@ export default class ExperimentalTab extends PureComponent {
                       marginTop={0}
                       marginRight={1}
                     >
-                      {t('blockaidMessage', [
-                        <ButtonLink
-                          variant="bodyMd"
-                          href={BLOCKAID_TERMS_OF_USE}
-                          externalLink
-                          key="blockaid-terms-of-use"
-                        >
-                          {t('terms')}
-                        </ButtonLink>,
-                      ])}
+                      {t('blockaidMessage')}
                     </Text>
                   </div>
                   <ToggleButton
