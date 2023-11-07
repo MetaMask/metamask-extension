@@ -1,7 +1,6 @@
 const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
-const { unlink } = require('fs');
 
 describe('Test Snap getEntropy', function () {
   it('can use snap_getEntropy inside a snap', async function () {
