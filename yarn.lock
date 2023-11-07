@@ -3945,9 +3945,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:@metamask-previews/assets-controllers@17.0.0-preview.7f750b2":
-  version: 17.0.0-preview.7f750b2
-  resolution: "@metamask-previews/assets-controllers@npm:17.0.0-preview.7f750b2"
+"@metamask/assets-controllers@npm:^18.0.0":
+  version: 18.0.0
+  resolution: "@metamask/assets-controllers@npm:18.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -3956,12 +3956,12 @@ __metadata:
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/approval-controller": "npm:^4.1.0"
     "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/contract-metadata": "npm:^2.3.1"
+    "@metamask/contract-metadata": "npm:^2.4.0"
     "@metamask/controller-utils": "npm:^5.0.2"
     "@metamask/eth-query": "npm:^3.0.1"
     "@metamask/metamask-eth-abis": "npm:3.0.0"
     "@metamask/network-controller": "npm:^15.1.0"
-    "@metamask/polling-controller": "npm:^1.0.0"
+    "@metamask/polling-controller": "npm:^1.0.1"
     "@metamask/preferences-controller": "npm:^4.4.3"
     "@metamask/rpc-errors": "npm:^6.1.0"
     "@metamask/utils": "npm:^8.1.0"
@@ -3976,7 +3976,7 @@ __metadata:
     "@metamask/approval-controller": ^4.1.0
     "@metamask/network-controller": ^15.1.0
     "@metamask/preferences-controller": ^4.4.3
-  checksum: 1c25a4b0ee6b96f82a98355e849616cfe1e5b203b0fdb36d29a17dae7d19787e733bd6ca67c987d44edf8f788215d0a7d749580ba71f0e395f9d18f3543da9cc
+  checksum: 68022501c23edf218b168b9b4e445a09850a49da2f1af533ba1aa1e3fc0bd575b5dd36932e9f3a1b3501fee61a0cf31eefea9cff84f70bc0fb544109f653e9c4
   languageName: node
   linkType: hard
 
@@ -4015,6 +4015,13 @@ __metadata:
   version: 2.3.1
   resolution: "@metamask/contract-metadata@npm:2.3.1"
   checksum: cdeda6e36c5a361d57e84029442aac85f280dc957de9983532ed5fa18a8c1136c0967e576b6fda617b343a218cea318efe0a83a149dc4b5874216cccf7811a62
+  languageName: node
+  linkType: hard
+
+"@metamask/contract-metadata@npm:^2.4.0":
+  version: 2.4.0
+  resolution: "@metamask/contract-metadata@npm:2.4.0"
+  checksum: 09829751ec3239cb06b74ee338207a802e4c0e7b0184e2b2a3e43c1c043bb6cc432081b6375707d3a5cbe0870502729c2d4c6aa3dd040a2e66432275b47a32ec
   languageName: node
   linkType: hard
 
@@ -4744,7 +4751,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^1.0.0, @metamask/polling-controller@npm:^1.0.1":
+"@metamask/polling-controller@npm:^1.0.1":
   version: 1.0.1
   resolution: "@metamask/polling-controller@npm:1.0.1"
   dependencies:
@@ -24488,7 +24495,7 @@ __metadata:
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^4.0.0"
     "@metamask/approval-controller": "npm:^3.4.0"
-    "@metamask/assets-controllers": "npm:^16.0.0"
+    "@metamask/assets-controllers": "npm:^18.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^3.2.0"
     "@metamask/browser-passworder": "npm:^4.1.0"

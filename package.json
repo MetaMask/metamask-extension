@@ -107,8 +107,6 @@
     "audit": "yarn npm audit --recursive --environment production --severity moderate"
   },
   "resolutions": {
-    "@metamask/assets-controllers@^16.0.0": "npm:@metamask-previews/assets-controllers@17.0.0-preview.7f750b2",
-    "@metamask/network-controller@^14.0.0": "npm:@metamask-previews/network-controller@15.1.0-preview.08312b7",
     "simple-update-notifier@^1.0.0": "^2.0.0",
     "@babel/core": "patch:@babel/core@npm%3A7.23.2#~/.yarn/patches/@babel-core-npm-7.23.2-b93f586907.patch",
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.23.2#~/.yarn/patches/@babel-runtime-npm-7.23.2-d013d6cf7e.patch",
@@ -239,7 +237,7 @@
     "@metamask/address-book-controller": "^3.0.0",
     "@metamask/announcement-controller": "^4.0.0",
     "@metamask/approval-controller": "^3.4.0",
-    "@metamask/assets-controllers": "^16.0.0",
+    "@metamask/assets-controllers": "^18.0.0",
     "@metamask/base-controller": "^3.2.0",
     "@metamask/browser-passworder": "^4.1.0",
     "@metamask/contract-metadata": "^2.3.1",
