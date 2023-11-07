@@ -284,7 +284,9 @@ const EthOverview = ({ className, showAddress }) => {
                     chain_id: chainId,
                   },
                 });
+                // set swaps networkclientid
                 dispatch(setSwapsFromToken(defaultSwapsToken));
+
                 if (usingHardwareWallet) {
                   // TODO figure out if its possible to pass state here
                   global.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
