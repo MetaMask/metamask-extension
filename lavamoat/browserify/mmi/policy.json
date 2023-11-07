@@ -940,6 +940,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -965,6 +967,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1024,6 +1028,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1098,6 +1104,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1210,6 +1218,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1428,6 +1438,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1719,6 +1731,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1793,6 +1807,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1888,6 +1904,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1964,6 +1982,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -1991,6 +2011,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2046,6 +2068,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2162,6 +2186,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2319,6 +2345,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2507,6 +2535,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2530,6 +2560,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2595,6 +2627,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
@@ -2608,6 +2642,8 @@
       },
       "packages": {
         "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/key-tree>@scure/base": true,
+        "@metamask/snaps-ui>@metamask/utils>pony-cause": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
