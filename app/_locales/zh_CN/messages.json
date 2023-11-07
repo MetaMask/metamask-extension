@@ -3184,26 +3184,6 @@
     "message": "添加并控制以太坊账户",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "在$1（$2）下控制您的账户和资产。",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "允许snap根据您的私钥助记词衍生BIP-32私钥对，而不将其公开。这会授予对在$1上的所有账户和资产的完全访问权限。\nsnap具有管理私钥的功能，因此可以支持以太坊（EVM）之外的各种区块链协议。",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "控制您的 $1 账户和资产。",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "允许snap根据您的私钥助记词衍生BIP-44私钥对，而不将其公开。这会授予对在$1上的所有账户和资产的完全访问权限。\nsnap具有管理私钥的功能，因此可以支持以太坊（EVM）之外的各种区块链协议。",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "控制您的$1账户和资产。",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "在您的设备上存储和管理其数据。",
     "description": "The description for the `snap_manageState` permission"
@@ -3959,24 +3939,8 @@
   "snapInstallSuccess": {
     "message": "安装完成"
   },
-  "snapInstallWarningCheck": {
-    "message": "请勾选选项框以确认您理解。",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "请勾选所有方框以确认您理解。",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "请谨慎行事"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "将对 $2 的账户控制权授予 $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "授予 $2 对 $1 的公钥访问权限",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "无法安装$1。",
@@ -4626,9 +4590,6 @@
   "swapSource": {
     "message": "流动性来源"
   },
-  "swapSourceInfo": {
-    "message": "我们搜索多个流动性来源（交易所、聚合器和专业做市商），以找到最优惠的价格和最低的网络费用。"
-  },
   "swapSuggested": {
     "message": "建议的交换"
   },
@@ -5128,10 +5089,6 @@
   "unrecognizedChain": {
     "message": "该自定义网络无法识别",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1（未识别的协议）",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "当前不支持发送NFT (ERC-721)代币",

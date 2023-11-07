@@ -5,39 +5,9 @@ exports[`All Connections render renders correctly 1`] = `
   <div
     class="mm-box multichain-page mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
     data-testid="all-connections"
+    header="[object Object]"
     style="height: 100%;"
   >
-    <div
-      class="mm-box mm-header-base multichain-page-header mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--width-full mm-box--background-color-background-default"
-    >
-      <div
-        class="mm-box"
-        style="min-width: 0px;"
-      >
-        <button
-          aria-label="Back"
-          class="mm-box mm-button-icon mm-button-icon--size-sm connections-header__start-accessory mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
-        >
-          <span
-            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-            style="mask-image: url('./images/icons/arrow-left.svg');"
-          />
-        </button>
-      </div>
-      <div
-        class="mm-box"
-      >
-        <p
-          class="mm-box mm-text mm-text--body-md-bold mm-text--ellipsis mm-text--text-align-center mm-box--padding-inline-start-8 mm-box--padding-inline-end-8 mm-box--display-block mm-box--color-text-default"
-        >
-          <span
-            class="mm-box mm-text mm-text--heading-md mm-text--text-align-center mm-box--color-text-default"
-          >
-            All Connections
-          </span>
-        </p>
-      </div>
-    </div>
     <p
       class="mm-box mm-text mm-text--body-lg-medium mm-text--text-align-center mm-box--padding-4 mm-box--color-text-default mm-box--background-color-background-default"
       data-testid="sites-connections"
