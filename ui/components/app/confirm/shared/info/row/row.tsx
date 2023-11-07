@@ -17,8 +17,7 @@ import {
 
 export enum ConfirmInfoRowVariant {
   Default = 'default',
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  Error = 'error',
+  Critical = 'critical',
   Warning = 'warning',
 }
 
@@ -31,19 +30,19 @@ export type ConfirmInfoRowProps = {
 
 const BACKGROUND_COLORS = {
   [ConfirmInfoRowVariant.Default]: undefined,
-  [ConfirmInfoRowVariant.Error]: BackgroundColor.errorMuted,
+  [ConfirmInfoRowVariant.Critical]: BackgroundColor.errorMuted,
   [ConfirmInfoRowVariant.Warning]: BackgroundColor.warningMuted,
 };
 
 const TEXT_COLORS = {
   [ConfirmInfoRowVariant.Default]: TextColor.textAlternative,
-  [ConfirmInfoRowVariant.Error]: Color.errorAlternative,
+  [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
   [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
 };
 
 const TOOLTIP_ICONS = {
   [ConfirmInfoRowVariant.Default]: IconName.Question,
-  [ConfirmInfoRowVariant.Error]: IconName.Warning,
+  [ConfirmInfoRowVariant.Critical]: IconName.Warning,
   [ConfirmInfoRowVariant.Warning]: IconName.Warning,
 };
 
