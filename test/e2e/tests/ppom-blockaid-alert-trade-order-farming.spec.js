@@ -12,13 +12,10 @@ const {
 
 const bannerAlertSelector = '[data-testid="security-provider-banner-alert"]';
 
-const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
-const selectedAddressWithoutPrefix = '5cfe73b6021e818b776b421b1c4db2474086a7e1';
-
 const CONTRACT_ADDRESS = {
   WrappedEther: 'c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
   OffchainOracle: '0x52cbe0f49ccdd4dc6e9c13bab024eabd2842045b',
-  TetherToken: 'dac17f958d2ee523a2206206994597c13d831ec7'
+  TetherToken: 'dac17f958d2ee523a2206206994597c13d831ec7',
 };
 
 async function mockInfura(mockServer) {
@@ -29,11 +26,11 @@ async function mockInfura(mockServer) {
       {
         params: [
           {
-            "accessList": [],
-            "data": "0x06fdde03",
-            "to": CONTRACT_ADDRESS.WrappedEther,
-            "type": "0x02"
-          }
+            accessList: [],
+            data: '0x06fdde03',
+            to: CONTRACT_ADDRESS.WrappedEther,
+            type: '0x02',
+          },
         ],
       },
     ],
@@ -43,13 +40,13 @@ async function mockInfura(mockServer) {
         methodResultVariant: 'symbol',
         params: [
           {
-            "accessList": [],
-            "data": "0x95d89b41",
-            "to": CONTRACT_ADDRESS.WrappedEther,
-            "type": "0x02"
+            accessList: [],
+            data: '0x95d89b41',
+            to: CONTRACT_ADDRESS.WrappedEther,
+            type: '0x02',
           },
-          "0x11a7e9a"
-        ]
+          '0x11a7e9a',
+        ],
       },
     ],
     [
@@ -58,29 +55,29 @@ async function mockInfura(mockServer) {
         methodResultVariant: 'decimals',
         params: [
           {
-            "accessList": [],
-            "data": "0x313ce567",
-            "to": CONTRACT_ADDRESS.WrappedEther,
-            "type": "0x02"
+            accessList: [],
+            data: '0x313ce567',
+            to: CONTRACT_ADDRESS.WrappedEther,
+            type: '0x02',
           },
-          "0x11a7e9a"
-        ]
-      }
+          '0x11a7e9a',
+        ],
+      },
     ],
     [
       'eth_call',
       {
-        methodResultVariant: "getRateWithThreshold",
+        methodResultVariant: 'getRateWithThreshold',
         params: [
           {
-            "accessList": [],
-            "data": `0x6744d6c7000000000000000000000000${CONTRACT_ADDRESS.WrappedEther}000000000000000000000000${CONTRACT_ADDRESS.TetherToken}00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000063`,
-            "to": CONTRACT_ADDRESS.OffchainOracle,
-            "type": "0x02"
+            accessList: [],
+            data: `0x6744d6c7000000000000000000000000${CONTRACT_ADDRESS.WrappedEther}000000000000000000000000${CONTRACT_ADDRESS.TetherToken}00000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000063`,
+            to: CONTRACT_ADDRESS.OffchainOracle,
+            type: '0x02',
           },
-          "0x11a7e9a"
-        ]
-      }
+          '0x11a7e9a',
+        ],
+      },
     ],
     ['eth_estimateGas'],
     ['eth_feeHistory'],
