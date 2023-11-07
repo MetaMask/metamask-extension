@@ -172,6 +172,7 @@ const AssetList = ({ onClickAsset }) => {
                 : undefined
             }
             tokenImage={balanceIsLoading ? null : primaryTokenImage}
+            isOriginalTokenSymbol={isOriginalNativeSymbol}
           />
           <TokenList
             tokens={tokensWithBalances}

@@ -6,18 +6,23 @@ export function useIsOriginalNativeTokenSymbol(chainId, ticker) {
 
   useEffect(() => {
     async function getNativeTokenSymbol(networkId) {
-      const safeChainsList = await fetchWithCache({
-        url: 'https://chainid.network/chains.json',
-        functionName: 'getSafeChainsList',
-      });
+      try {
+        const safeChainsList = await fetchWithCache({
+          url: 'https://chainid.network/chains.json',
+          functionName: 'getSafeChainsList',
+        });
 
-      const matchedChain = safeChainsList.find(
-        (network) => network.chainId === parseInt(networkId, 16),
-      );
+        const matchedChain = safeChainsList.find(
+          (network) => network.chainId === parseInt(networkId, 16),
+        );
 
-      const symbol = matchedChain?.nativeCurrency?.symbol ?? null;
+        const symbol = matchedChain?.nativeCurrency?.symbol ?? null;
 
-      setIsOriginalNativeSymbol(symbol === ticker);
+        setIsOriginalNativeSymbol(symbol === ticker);
+        return symbol === ticker;
+      } catch (err) {
+        return null;
+      }
     }
     getNativeTokenSymbol(chainId);
   }, [isOriginalNativeSymbol, chainId, ticker]);
