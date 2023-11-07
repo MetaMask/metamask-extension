@@ -134,6 +134,14 @@ const mapStateToProps = (state, ownProps) => {
   const { txParams = {}, id: transactionId, type } = txData;
   const txId = transactionId || paramsTransactionId;
   const transaction = getUnapprovedTransaction(state, txId);
+  const finalTxParams = (transaction && transaction.txParams) || txParams;
+
+  if (!Object.keys(finalTxParams).length) {
+    // finalTxParams is empty. We don't have enough information to render this component.
+    // Fixes https://github.com/MetaMask/metamask-extension/issues/21026
+    return {};
+  }
+
   const {
     from: fromAddress,
     to: txParamsToAddress,
@@ -141,7 +149,7 @@ const mapStateToProps = (state, ownProps) => {
     gas: gasLimit,
     value: amount,
     data,
-  } = (transaction && transaction.txParams) || txParams;
+  } = finalTxParams;
   const accounts = getMetaMaskAccounts(state);
 
   const transactionData = parseStandardTokenTransactionData(data);

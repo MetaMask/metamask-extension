@@ -970,6 +970,13 @@ export default class ConfirmTransactionBase extends Component {
       isNoteToTraderSupported,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
+
+    if (!fromAddress) {
+      // We don't have enough information to render this component.
+      // Fixes https://github.com/MetaMask/metamask-extension/issues/21026
+      return <></>;
+    }
+
     const {
       submitting,
       submitError,
