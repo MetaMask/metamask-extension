@@ -4626,9 +4626,6 @@
   "swapSource": {
     "message": "Liquiditätsquelle"
   },
-  "swapSourceInfo": {
-    "message": "Wir suchen mehrere Liquiditätsquellen (Börsen, Aggregatoren und professionelle Marktmacher), um die besten Kurse und niedrigsten Netzwerkgebühren zu finden."
-  },
   "swapSuggested": {
     "message": "Swap vorgeschlagen"
   },
