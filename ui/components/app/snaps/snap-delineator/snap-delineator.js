@@ -11,13 +11,16 @@ import {
   TextVariant,
   TextColor,
   Display,
+  JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import {
   AvatarIcon,
+  Icon,
   AvatarIconSize,
   Box,
   IconName,
   Text,
+  IconSize,
 } from '../../../component-library';
 import {
   DelineatorType,
@@ -27,10 +30,16 @@ import {
 export const SnapDelineator = ({
   snapName,
   type = DelineatorType.default,
+  isCollapsable = false,
+  isCollapsed = false,
   children,
+  onClick,
+  boxProps,
 }) => {
   const t = useI18nContext();
-  const isError = type === DelineatorType.Error;
+  const isError =
+    type === DelineatorType.Error || type === DelineatorType.Warning;
+
   return (
     <Box
       className="snap-delineator__wrapper"
@@ -40,37 +49,53 @@ export const SnapDelineator = ({
       backgroundColor={
         isError ? BackgroundColor.errorMuted : BackgroundColor.backgroundDefault
       }
+      {...boxProps}
     >
       <Box
         className="snap-delineator__header"
         display={Display.Flex}
         alignItems={AlignItems.center}
+        justifyContent={JustifyContent.spaceBetween}
         padding={1}
+        style={{ borderBottomWidth: isCollapsed ? 0 : 1 }}
       >
-        <AvatarIcon
-          iconName={IconName.Snaps}
-          size={AvatarIconSize.Sm}
-          backgroundColor={
-            isError ? IconColor.errorDefault : IconColor.infoDefault
-          }
-          borderColor={BackgroundColor.backgroundDefault}
-          borderWidth={2}
-          iconProps={{
-            color: IconColor.infoInverse,
-          }}
-        />
-        <Text
-          variant={TextVariant.bodySm}
-          color={isError ? TextColor.errorDefault : TextColor.textAlternative}
-          className="snap-delineator__header__text"
-          marginLeft={1}
-          marginTop={0}
-          marginBottom={0}
-        >
-          {t(getDelineatorTitle(type), [snapName])}
-        </Text>
+        <Box display={Display.Flex} alignItems={AlignItems.center}>
+          <AvatarIcon
+            iconName={IconName.Snaps}
+            size={AvatarIconSize.Xs}
+            backgroundColor={
+              isError ? IconColor.errorDefault : IconColor.infoDefault
+            }
+            iconProps={{
+              color: IconColor.infoInverse,
+            }}
+          />
+          <Text
+            variant={TextVariant.bodySm}
+            color={isError ? TextColor.textDefault : TextColor.textAlternative}
+            className="snap-delineator__header__text"
+            marginLeft={1}
+            marginTop={0}
+            marginBottom={0}
+          >
+            {t(getDelineatorTitle(type), [snapName])}
+          </Text>
+        </Box>
+        {isCollapsable && (
+          <Icon
+            name={isCollapsed ? IconName.ArrowDown : IconName.ArrowUp}
+            size={IconSize.Sm}
+            color={IconColor.iconMuted}
+            className="snap-delineator__expansion-icon"
+            onClick={onClick}
+          />
+        )}
       </Box>
-      <Box className="snap-delineator__content" padding={4}>
+      <Box
+        className="snap-delineator__content"
+        padding={4}
+        display={isCollapsable && isCollapsed ? Display.None : Display.Block}
+      >
         {children}
       </Box>
     </Box>
@@ -80,5 +105,9 @@ export const SnapDelineator = ({
 SnapDelineator.propTypes = {
   snapName: PropTypes.string,
   type: PropTypes.string,
+  isCollapsable: PropTypes.bool,
+  isCollapsed: PropTypes.bool,
+  onClick: PropTypes.func,
+  boxProps: PropTypes.object,
   children: PropTypes.node,
 };
