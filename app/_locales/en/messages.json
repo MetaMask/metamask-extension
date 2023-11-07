@@ -401,9 +401,13 @@
   "amount": {
     "message": "Amount"
   },
-  "and": {
-    "message": "and",
-    "description": "Just 'and' word used to construct other content."
+  "andForListItems": {
+    "message": "$1, and $2",
+    "description": "$1 is the first item, $2 is the last item in a list of items. Used in Snap Install Warning modal."
+  },
+  "andForTwoItems": {
+    "message": "$1 and $2",
+    "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",

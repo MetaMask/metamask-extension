@@ -57,30 +57,60 @@ export default function SnapInstallWarning({
   };
 
   function constructWarningElementComponentArray(permissionWarnings) {
-    return permissionWarnings.map((warning, index) => {
-      const elements = [];
+    if (permissionWarnings.length === 1) {
+      return [
+        <Text
+          fontWeight={FontWeight.Medium}
+          as="span"
+          key="warningMessageSubject"
+        >
+          {permissionWarnings[0].warningMessageSubject}
+        </Text>,
+      ];
+    }
 
-      if (index > 0) {
-        if (index === permissionWarnings.length - 1) {
-          elements.push(
-            <span key={`${warning.permissionName}_and_${index}`}>
-              {' '}
-              {t('and')}{' '}
-            </span>,
-          );
-        } else {
-          elements.push(
-            <span key={`${warning.permissionName}_comma_${index}`}>
-              {', '}
-            </span>,
-          );
-        }
+    if (permissionWarnings.length === 2) {
+      const firstWarningSubject = permissionWarnings[0].warningMessageSubject;
+      const secondWarningSubject = permissionWarnings[1].warningMessageSubject;
+      return [
+        <Text
+          fontWeight={FontWeight.Medium}
+          as="span"
+          key="warningMessageSubject"
+        >
+          {t('andForTwoItems', [firstWarningSubject, secondWarningSubject])}
+        </Text>,
+      ];
+    }
+
+    return permissionWarnings.map((warning, index) => {
+      if (permissionWarnings.length - 1 === index) {
+        return [];
+      }
+      const elements = [];
+      // Handle last two elements
+      if (permissionWarnings.length - 2 === index) {
+        elements.push(
+          <Text
+            fontWeight={FontWeight.Medium}
+            as="span"
+            key={`${warning.permissionName}_and_${index}`}
+          >
+            {t('andForListItems', [
+              warning.warningMessageSubject,
+              permissionWarnings[permissionWarnings.length - 1]
+                .warningMessageSubject,
+            ])}
+          </Text>,
+        );
+        return elements;
       }
 
       elements.push(
         <span key={`${warning.permissionName}_${index}`}>
           <Text fontWeight={FontWeight.Medium} as="span">
             {warning.warningMessageSubject}
+            {', '}
           </Text>
         </span>,
       );
