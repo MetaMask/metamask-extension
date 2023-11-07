@@ -3184,26 +3184,6 @@
     "message": "Ethereum अकाउंट जोड़ें और नियंत्रित करें",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "$1($2) के तहत अपने एकाउंट्स और संपत्तियों को नियंत्रित करें।",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Snap को अपने सीक्रेट रिकवरी फ्रेज के आधार पर, उसे उजागर किए बिना BIP-32 चाबी के जोड़े प्राप्त करने की अनुमति दें। यह $1 पर सभी एकाउंट्स और संपत्तियों तक पूरा एक्सेस प्रदान करता है।\nचाबियों को प्रबंधित करने की शक्ति के साथ, Ethereum (ईवीएम) से परे विभिन्न प्रकार के ब्लॉकचेन प्रोटोकॉल का सपोर्ट Snap कर सकता है।",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "अपने $1 अकाउंट्स और एसेट्स नियंत्रित करें।",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Snap को अपने सीक्रेट रिकवरी फ्रेज के आधार पर, उसे उजागर किए बिना, BIP-44 चाबी के जोड़े को प्राप्त करने की अनुमति दें। यह $1 पर सभी एकाउंट्स और संपत्तियों तक पूरा एक्सेस प्रदान करता है।\nचाबियों को प्रबंधित करने की शक्ति के साथ, Ethereum (ईवीएम) से परे विभिन्न प्रकार के ब्लॉकचेन प्रोटोकॉल का सपोर्ट Snap कर सकता है।",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "आपके $1 एकाउंट्स और संपत्तियों को नियंत्रित करें।",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "उसके डेटा को अपने डिवाइस पर स्टोर करें और प्रबंधित करें।",
     "description": "The description for the `snap_manageState` permission"
@@ -3959,24 +3939,8 @@
   "snapInstallSuccess": {
     "message": "इंस्टॉलेशन समाप्त"
   },
-  "snapInstallWarningCheck": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं:",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "सावधानी से आगे बढ़ें"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "आप स्नैप \"$1\" के लिए $2 कुंजी का एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके $2 खातों और संपत्तियों पर \"$1\" नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "$1 को $2 की सार्वजनिक कुंजी का एक्सेस प्रदान करें",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "$1 इंस्टॉल नहीं किया जा सका.",
@@ -4626,9 +4590,6 @@
   "swapSource": {
     "message": "चलनिधि का स्रोत"
   },
-  "swapSourceInfo": {
-    "message": "हम सर्वोत्तम दरों और कम-से-कम नेटवर्क फ़ीस का पता लगाने के लिए कई चलनिधि स्रोतों (एक्सचेंज, एग्रीगेटर और पेशेवर बाजार निर्माताओं) की खोज करते हैं।"
-  },
   "swapSuggested": {
     "message": "विनिमय का सुझाव"
   },
@@ -5128,10 +5089,6 @@
   "unrecognizedChain": {
     "message": "यह कस्टम नेटवर्क पहचाना नहीं गया है",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (अपरिचित प्रोटोकॉल)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "वर्तमान में NFT (ERC-721) टोकन भेजना समर्थित नहीं है",

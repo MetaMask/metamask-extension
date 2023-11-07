@@ -3184,26 +3184,6 @@
     "message": "Προσθήκη και έλεγχος λογαριασμών στο Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "Ελέγξτε τους λογαριασμούς και τα περιουσιακά σας στοιχεία στο $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Επιτρέψτε στο snap να εξάγει ζεύγη κλειδιών BIP-32 με βάση τη Μυστική Φράση Ανάκτησης, χωρίς να την αποκαλύψετε. Αυτό παρέχει πλήρη πρόσβαση σε όλους τους λογαριασμούς και τα περιουσιακά στοιχεία στο $1.\nΜε τη δυνατότητα διαχείρισης των κλειδιών, το snap μπορεί να υποστηρίξει μια ποικιλία πρωτοκόλλων blockchain πέραν του Ethereum (EVMs).",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "Ελέγξτε τους $1 λογαριασμούς και τα περιουσιακά σας στοιχεία.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Επιτρέψτε στο snap να εξάγει ζεύγη κλειδιών BIP-44 με βάση τη Μυστική Φράση Ανάκτησης, χωρίς να την αποκαλύψετε. Αυτό παρέχει πλήρη πρόσβαση σε όλους τους λογαριασμούς και τα περιουσιακά στοιχεία στο $1.\nΜε τη δυνατότητα διαχείρισης των κλειδιών, το συμπληρωματικό πρόγραμμα μπορεί να υποστηρίξει μια ποικιλία πρωτοκόλλων blockchain πέραν του Ethereum (EVMs).",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "Ελέγξτε τους $1 λογαριασμούς σας και τα περιουσιακά σας στοιχεία.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Αποθηκεύστε και διαχειριστείτε τα δεδομένα του στη συσκευή σας.",
     "description": "The description for the `snap_manageState` permission"
@@ -3959,24 +3939,8 @@
   "snapInstallSuccess": {
     "message": "Η εγκατάσταση ολοκληρώθηκε"
   },
-  "snapInstallWarningCheck": {
-    "message": "Αφιερώστε λίγο χρόνο για να ελέγξετε την άδεια που ζητείται. Συνεχίστε μόνο αν εμπιστεύεστε το $1.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Αφιερώστε λίγο χρόνο για να ελέγξετε την άδεια που ζητείται. Συνεχίστε μόνο αν εμπιστεύεστε το $1.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Προχωρήστε με προσοχή"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Δώστε τον έλεγχο λογαριασμού $2 στο $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Δώστε πρόσβαση με το δημόσιο κλειδί $2 στο $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "Το $1 δεν μπόρεσε να εγκατασταθεί.",
@@ -4626,9 +4590,6 @@
   "swapSource": {
     "message": "Πηγή ρευστότητας"
   },
-  "swapSourceInfo": {
-    "message": "Αναζητούμε πολλαπλές πηγές ρευστότητας (χρηματιστήρια, ανταλλακτήρια και επαγγελματίες διαπραγματευτές της αγοράς) για να βρούμε τις καλύτερες τιμές και τις χαμηλότερες χρεώσεις δικτύου."
-  },
   "swapSuggested": {
     "message": "Προτεινόμενη ανταλλαγή"
   },
@@ -5128,10 +5089,6 @@
   "unrecognizedChain": {
     "message": "Αυτό το προσαρμοσμένο δίκτυο δεν αναγνωρίζεται",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (Μη αναγνωρισμένο πρωτόκολλο)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "Η αποστολή NFT (ERC-721) tokens δεν υποστηρίζεται προς το παρόν",

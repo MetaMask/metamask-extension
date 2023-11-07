@@ -1789,13 +1789,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@download/blockies@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "@download/blockies@npm:1.0.3"
-  checksum: aa26de81ee550f6608bf6f5f31c873866c9006a11a69e4475b7bc59332931d85e4f13b1759e6ac2fff90dbd0957aff545c1c14425609178b10fb6beb8556bedb
-  languageName: node
-  linkType: hard
-
 "@electron/get@npm:^2.0.0":
   version: 2.0.2
   resolution: "@electron/get@npm:2.0.2"
@@ -4042,7 +4035,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^1.12.0, @metamask/design-tokens@npm:^1.6.0":
+"@metamask/design-tokens@npm:^1.12.0":
   version: 1.12.0
   resolution: "@metamask/design-tokens@npm:1.12.0"
   checksum: bc1f5f4c3d43455a10e546bed951de6797a134557adb654cc61f39c4adc22065aedf12f6891c138e207d4ecd541914f95a9cc12fa201055bf65002f54207bc58
@@ -4358,18 +4351,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-trezor-keyring@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "@metamask/eth-trezor-keyring@npm:1.1.0"
+"@metamask/eth-trezor-keyring@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/eth-trezor-keyring@npm:2.0.0"
   dependencies:
     "@ethereumjs/tx": "npm:^4.0.0"
     "@ethereumjs/util": "npm:^8.0.0"
     "@metamask/eth-sig-util": "npm:^5.0.2"
-    "@metamask/utils": "npm:^4.0.0"
     "@trezor/connect-plugin-ethereum": "npm:^9.0.1"
     "@trezor/connect-web": "npm:^9.0.6"
     hdkey: "npm:0.8.0"
-  checksum: eb1ac827d07a6c2d7b0f1f291691b13b1b65db85f4bced5e2af9f5bdf9117a9b725673b069ad67fd57b7c525cbb53755f8b3877a1f2c72e7812b2d8e127a52a9
+  checksum: e245c0403689996f21ba53eed0a6e9ac098d15fafbb59dd5daaeeb4e33acc53bfa580d32e6091a921a11056ecfe0c3a139e7080a5c1de0a2aa22af762408ec42
   languageName: node
   linkType: hard
 
@@ -4637,6 +4629,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/object-multiplex@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/object-multiplex@npm:2.0.0"
+  dependencies:
+    once: "npm:^1.4.0"
+    readable-stream: "npm:^3.6.2"
+  checksum: 54baea752a3ac7c2742c376512e00d4902d383e9da8787574d3b21eb0081523309e24e3915a98f3ae0341d65712b6832d2eb7eeb862f4ef0da1ead52dcde5387
+  languageName: node
+  linkType: hard
+
 "@metamask/obs-store@npm:^5.0.0":
   version: 5.0.0
   resolution: "@metamask/obs-store@npm:5.0.0"
@@ -4721,20 +4723,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-warning@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "@metamask/phishing-warning@npm:2.1.0"
+"@metamask/phishing-warning@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/phishing-warning@npm:3.0.0"
   dependencies:
-    "@metamask/design-tokens": "npm:^1.6.0"
-    "@metamask/post-message-stream": "npm:^6.0.0"
-    "@types/punycode": "npm:^2.1.0"
+    "@metamask/design-tokens": "npm:^1.12.0"
+    "@metamask/object-multiplex": "npm:^2.0.0"
+    "@metamask/post-message-stream": "npm:^7.0.0"
     eth-phishing-detect: "npm:^1.2.0"
     globalthis: "npm:1.0.1"
-    obj-multiplex: "npm:^1.0.0"
-    pump: "npm:^3.0.0"
-    punycode: "npm:^2.1.1"
-    ses: "npm:^0.18.1"
-  checksum: a78d952cc8f78c1c59f9dd773fe265b0f8ac835ae4bd312e05e091260dd9c3c755de1712ce09a79ec4acfdeae6e236161bbf959199b7c8d55c449050978328a4
+    punycode: "npm:^2.3.0"
+    readable-stream: "npm:^3.6.2"
+    ses: "npm:^0.18.8"
+  checksum: 86aeb3c46fb1f47d59017d8de60545d11cf16d3784c9cb3adcfe4b9c8f775c06889ced2ed816c75a87581bbe5919db11b2f3176b095f46b62d3bb31560ecd008
   languageName: node
   linkType: hard
 
@@ -4769,16 +4770,6 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^15.1.0
   checksum: a3db808306c8e1a5004374c94c459d48519d7091a0dff07925174e93c26e5d608aa2ad33604991d238b559a8754481a461177dfbda9cdf8f79c85a21eda43b67
-  languageName: node
-  linkType: hard
-
-"@metamask/post-message-stream@npm:^6.0.0, @metamask/post-message-stream@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "@metamask/post-message-stream@npm:6.2.0"
-  dependencies:
-    "@metamask/utils": "npm:^5.0.0"
-    readable-stream: "npm:2.3.3"
-  checksum: da0cfd0fd43195d6ee2c50845408b723f9193fc932394527502b992a33c72294d28115fae964bb1562ffcc75379b2fc7cdc54ba84bf44b975553bcea81a33427
   languageName: node
   linkType: hard
 
@@ -11603,6 +11594,13 @@ __metadata:
   version: 1.2.1
   resolution: "blakejs@npm:1.2.1"
   checksum: 0638b1bd058b21892633929c43005aa6a4cc4b2ac5b338a146c3c076622f1b360795bd7a4d1f077c9b01863ed2df0c1504a81c5b520d164179120434847e6cd7
+  languageName: node
+  linkType: hard
+
+"blo@npm:1.1.1":
+  version: 1.1.1
+  resolution: "blo@npm:1.1.1"
+  checksum: 47fac139d8aaa0dc85510fb1ada9a0c54beb20a2c485bf25eb64b51176397e58aa95da5c414139c95171d080a5bf3385afffea2b176b449d24c69605833d7868
   languageName: node
   linkType: hard
 
@@ -24549,7 +24547,6 @@ __metadata:
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "npm:^7.23.2"
     "@blockaid/ppom_release": "npm:^1.2.8"
-    "@download/blockies": "npm:^1.0.3"
     "@ensdomains/content-hash": "npm:^2.5.6"
     "@ethereumjs/common": "npm:^3.1.1"
     "@ethereumjs/tx": "npm:^4.1.1"
@@ -24595,7 +24592,7 @@ __metadata:
     "@metamask/eth-query": "npm:^3.0.1"
     "@metamask/eth-snap-keyring": "npm:^1.0.0"
     "@metamask/eth-token-tracker": "npm:^4.0.0"
-    "@metamask/eth-trezor-keyring": "npm:^1.1.0"
+    "@metamask/eth-trezor-keyring": "npm:^2.0.0"
     "@metamask/etherscan-link": "npm:^2.2.0"
     "@metamask/ethjs-query": "npm:^0.5.0"
     "@metamask/forwarder": "npm:^1.1.0"
@@ -24614,9 +24611,9 @@ __metadata:
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^5.0.0"
     "@metamask/phishing-controller": "npm:^7.0.1"
-    "@metamask/phishing-warning": "npm:^2.1.0"
+    "@metamask/phishing-warning": "npm:^3.0.0"
     "@metamask/polling-controller": "npm:^1.0.1"
-    "@metamask/post-message-stream": "npm:^6.2.0"
+    "@metamask/post-message-stream": "npm:^7.0.0"
     "@metamask/ppom-validator": "npm:^0.8.0"
     "@metamask/providers": "npm:^13.1.0"
     "@metamask/rate-limit-controller": "npm:^3.0.0"
@@ -24703,6 +24700,7 @@ __metadata:
     base64-js: "npm:^1.5.1"
     bify-module-groups: "npm:^2.0.0"
     bignumber.js: "npm:^4.1.0"
+    blo: "npm:1.1.1"
     bn.js: "npm:^5.2.1"
     bowser: "npm:^2.11.0"
     brfs: "npm:^2.0.2"
@@ -28459,7 +28457,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"process-nextick-args@npm:^1.0.6, process-nextick-args@npm:~1.0.6":
+"process-nextick-args@npm:^1.0.6":
   version: 1.0.7
   resolution: "process-nextick-args@npm:1.0.7"
   checksum: f3b0e2f762e4fc03d02779fbf434caff82d27439ba2ecd82f7f95439e56dc23e367a8c1d3919533bd961b8e447d8ad0d941d6a3acda48ddcb80fe1b45b423579
@@ -28716,10 +28714,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"punycode@npm:^2.1.0, punycode@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "punycode@npm:2.1.1"
-  checksum: 939daa010c2cacebdb060c40ecb52fef0a739324a66f7fffe0f94353a1ee83e3b455e9032054c4a0c4977b0a28e27086f2171c392832b59a01bd948fd8e20914
+"punycode@npm:^2.1.0, punycode@npm:^2.1.1, punycode@npm:^2.3.0":
+  version: 2.3.1
+  resolution: "punycode@npm:2.3.1"
+  checksum: febdc4362bead22f9e2608ff0171713230b57aff9dddc1c273aa2a651fbd366f94b7d6a71d78342a7c0819906750351ca7f2edd26ea41b626d87d6a13d1bd059
   languageName: node
   linkType: hard
 
@@ -29635,21 +29633,6 @@ __metadata:
     string_decoder: "npm:^1.1.1"
     util-deprecate: "npm:^1.0.1"
   checksum: d9e3e53193adcdb79d8f10f2a1f6989bd4389f5936c6f8b870e77570853561c362bee69feca2bbb7b32368ce96a85504aa4cedf7cf80f36e6a9de30d64244048
-  languageName: node
-  linkType: hard
-
-"readable-stream@npm:2.3.3":
-  version: 2.3.3
-  resolution: "readable-stream@npm:2.3.3"
-  dependencies:
-    core-util-is: "npm:~1.0.0"
-    inherits: "npm:~2.0.3"
-    isarray: "npm:~1.0.0"
-    process-nextick-args: "npm:~1.0.6"
-    safe-buffer: "npm:~5.1.1"
-    string_decoder: "npm:~1.0.3"
-    util-deprecate: "npm:~1.0.1"
-  checksum: 3d0767205c263e5beb1929ca67f3269eeda21e7d6b71595515c50074e9cb9cabd7cae2f7237e2eb2ec548d264501b9b0a3e929bd0dc49df706ccb554a028c913
   languageName: node
   linkType: hard
 
@@ -31235,7 +31218,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ses@npm:^0.18.1, ses@npm:^0.18.8":
+"ses@npm:^0.18.8":
   version: 0.18.8
   resolution: "ses@npm:0.18.8"
   dependencies:
@@ -32301,15 +32284,6 @@ __metadata:
   dependencies:
     safe-buffer: "npm:~5.2.0"
   checksum: 54d23f4a6acae0e93f999a585e673be9e561b65cd4cca37714af1e893ab8cd8dfa52a9e4f58f48f87b4a44918d3a9254326cb80ed194bf2e4c226e2b21767e56
-  languageName: node
-  linkType: hard
-
-"string_decoder@npm:~1.0.3":
-  version: 1.0.3
-  resolution: "string_decoder@npm:1.0.3"
-  dependencies:
-    safe-buffer: "npm:~5.1.0"
-  checksum: 8689f666b5c6045f125fc6202eebd28f790606bc7962cfcc27eec54cfdcd19c3222ae6a4d5a3a911ef71574d8b2f9b607f99922a0db9837f1ff132465cc519f2
   languageName: node
   linkType: hard
 
