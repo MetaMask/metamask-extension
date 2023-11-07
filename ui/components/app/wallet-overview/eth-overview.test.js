@@ -47,6 +47,7 @@ describe('EthOverview', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       useCurrencyRateCheck: true,
+      currentCurrency: 'usd',
       currencyRates: {
         ETH: {
           conversionRate: 2,

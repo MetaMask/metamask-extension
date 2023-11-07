@@ -70,8 +70,8 @@ describe('Confirm Transaction Selector', () => {
               conversionRate: 556.12,
             },
           },
+          providerConfig: { ticker: 'ETH' },
         },
-        providerConfig: { ticker: 'ETH' },
       };
       expect(conversionRateSelector(state)).toStrictEqual(556.12);
     });
