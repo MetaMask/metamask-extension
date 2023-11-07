@@ -24408,7 +24408,7 @@ __metadata:
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
     "@metamask/name-controller": "npm:^3.0.0"
-    "@metamask/network-controller": "npm:^15.1.0"
+    "@metamask/network-controller": "npm:^15.2.0"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^5.0.0"
