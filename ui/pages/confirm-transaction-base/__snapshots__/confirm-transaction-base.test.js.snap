@@ -230,7 +230,7 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
     >
       
       <div
-        class="confirm-page-container-summary confirm-page-container-summary--border"
+        class="confirm-page-container-summary"
       >
         <div
           class="confirm-page-container-summary__action-row"
