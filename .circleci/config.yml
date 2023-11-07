@@ -26,6 +26,8 @@ executors:
 orbs:
   gh: circleci/github-cli@2.0
   codecov: codecov/codecov@3.2.2
+  slack: circleci/slack@4.12.5
+
 
 rc_branch_only: &rc_branch_only
   filters:
@@ -1076,9 +1078,19 @@ jobs:
           name: test:e2e:chrome:mmi
           command: |
             SHARD="$((${CIRCLE_NODE_INDEX}+1))"; xvfb-run yarn playwright test --shard=${SHARD}/${CIRCLE_NODE_TOTAL}
-            # xvfb-run yarn playwright test
           no_output_timeout: 20m
-
+      - slack/notify:
+          branch_pattern: Version-v*
+          event: fail
+          mentions: <@antonio.regadas>, <@ramon.acitores134>
+          template: basic_fail_1
+          channel: C01LUJL3T98
+      - slack/notify:
+          branch_pattern: develop
+          event: fail
+          mentions: <@antonio.regadas>, <@ramon.acitores134>
+          template: basic_fail_1
+          channel: C05QXJA7NP8
       - store_artifacts:
           name: html-report and artifacts
           path: public/playwright/playwright-reports
