@@ -4626,9 +4626,6 @@
   "swapSource": {
     "message": "Source de liquidité"
   },
-  "swapSourceInfo": {
-    "message": "Nous consultons de multiples sources de liquidité (bourses, agrégateurs et teneurs de marché professionnels) pour trouver les meilleurs taux et les frais de réseau les plus bas."
-  },
   "swapSuggested": {
     "message": "Swap proposé"
   },

@@ -4626,9 +4626,6 @@
   "swapSource": {
     "message": "Nguồn thanh khoản"
   },
-  "swapSourceInfo": {
-    "message": "Chúng tôi tìm kiếm nhiều nguồn thanh khoản (các sàn giao dịch, trình tổng hợp và nhà tạo lập thị trường) để tìm được mức tỷ giá tốt nhất và phí mạng thấp nhất."
-  },
   "swapSuggested": {
     "message": "Hoán đổi gợi ý"
   },

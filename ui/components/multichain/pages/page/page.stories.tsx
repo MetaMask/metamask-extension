@@ -8,12 +8,14 @@ import {
 import { BackgroundColor } from '../../../../helpers/constants/design-system';
 import { Page, Header, Content, Footer } from '.';
 
-export default {
+const story = {
   title: 'Components/Multichain/Page',
   component: Page,
   argTypes: {},
   args: {},
 };
+
+export default story;
 
 const scrollingContent = 'Content '.repeat(2000);
 

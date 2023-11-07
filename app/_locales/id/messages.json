@@ -4626,9 +4626,6 @@
   "swapSource": {
     "message": "Sumber likuiditas"
   },
-  "swapSourceInfo": {
-    "message": "Kami mencari beberapa sumber likuiditas (penukaran, agregator, dan pembuat pasar profesional) untuk menemukan tarif terbaik dan biaya jaringan terendah."
-  },
   "swapSuggested": {
     "message": "Pertukaran yang disarankan"
   },

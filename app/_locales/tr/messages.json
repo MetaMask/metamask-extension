@@ -4626,9 +4626,6 @@
   "swapSource": {
     "message": "Likidite kaynağı"
   },
-  "swapSourceInfo": {
-    "message": "En iyi fiyatı ve en düşük ağ ücretlerini bulmak için birden fazla likidite kaynağında arama yaparız (borsalar, toplayıcılar ve profesyonel piyasa yapıcıları)."
-  },
   "swapSuggested": {
     "message": "Swap öneriliyor"
   },

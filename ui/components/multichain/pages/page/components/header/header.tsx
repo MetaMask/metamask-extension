@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { HeaderBase, Text } from '../../../../../component-library';
 import {
@@ -9,13 +8,34 @@ import {
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 
+import type { StyleUtilityProps } from '../../../../../component-library/box';
+
+interface HeaderProps extends StyleUtilityProps {
+  /**
+   * Elements that go in the page footer
+   */
+  children: React.ReactNode | React.ReactNode[];
+  /**
+   * Elements that go in the header end accessory
+   */
+  endAccessory?: React.ReactNode | React.ReactNode[];
+  /**
+   * Elements that go in the header start accessory
+   */
+  startAccessory?: React.ReactNode | React.ReactNode[];
+  /**
+   * Additional CSS class provided to the footer
+   */
+  className?: string;
+}
+
 export const Header = ({
   children,
   endAccessory = null,
   startAccessory = null,
   className = '',
   ...props
-}) => {
+}: HeaderProps) => {
   return (
     <HeaderBase
       padding={4}
@@ -37,27 +57,4 @@ export const Header = ({
       </Text>
     </HeaderBase>
   );
-};
-
-Header.propTypes = {
-  /**
-   * Additional CSS class provided to the header
-   */
-  className: PropTypes.string,
-  /**
-   * Elements that go in the page footer
-   */
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-    PropTypes.string,
-  ]).isRequired,
-  /**
-   * Any element to place at the end of the header
-   */
-  endAccessory: PropTypes.element,
-  /**
-   * Any element to place at the start of the header
-   */
-  startAccessory: PropTypes.element,
 };
