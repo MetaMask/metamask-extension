@@ -33,12 +33,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
 ///: END:ONLY_INCLUDE_IN
-import {
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-    BLOCKAID_TERMS_OF_USE,
-    ///: END:ONLY_INCLUDE_IN
-  OPENSEA_TERMS_OF_USE,
-} from '../../../../shared/lib/ui-utils';
+import { OPENSEA_TERMS_OF_USE } from '../../../../shared/lib/ui-utils';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
