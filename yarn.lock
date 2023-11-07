@@ -4189,23 +4189,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^12.0.0":
-  version: 12.0.0
-  resolution: "@metamask/eth-json-rpc-middleware@npm:12.0.0"
-  dependencies:
-    "@metamask/eth-json-rpc-provider": "npm:^2.1.0"
-    "@metamask/eth-sig-util": "npm:^7.0.0"
-    "@metamask/json-rpc-engine": "npm:^7.1.1"
-    "@metamask/rpc-errors": "npm:^6.0.0"
-    "@metamask/utils": "npm:^8.1.0"
-    eth-block-tracker: "npm:^8.0.0"
-    klona: "npm:^2.0.6"
-    pify: "npm:^5.0.0"
-    safe-stable-stringify: "npm:^2.4.3"
-  checksum: 55da1e56604d7b872adf925c0d6f0c782a65ea9a7c23593264e53881a7dc10c866e8a3bfdcbef341d657062d1bcff08c7c5a9e3b8158dd659fa102ff0e45bfc3
-  languageName: node
-  linkType: hard
-
 "@metamask/eth-json-rpc-middleware@npm:^12.0.1":
   version: 12.0.1
   resolution: "@metamask/eth-json-rpc-middleware@npm:12.0.1"
@@ -4453,18 +4436,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^7.1.0, @metamask/json-rpc-engine@npm:^7.1.1":
-  version: 7.1.1
-  resolution: "@metamask/json-rpc-engine@npm:7.1.1"
-  dependencies:
-    "@metamask/rpc-errors": "npm:^6.0.0"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^8.1.0"
-  checksum: 91320ab6bdc4577a96b26b1b06e71b77c65abbc02fd8d30c53a8a63d93b28cb82619031cc45542085b94f7115d46e3dcb16620fa5f5cb1f387cb3bebcff36ae9
-  languageName: node
-  linkType: hard
-
-"@metamask/json-rpc-engine@npm:^7.2.0":
+"@metamask/json-rpc-engine@npm:^7.1.0, @metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.2.0":
   version: 7.2.0
   resolution: "@metamask/json-rpc-engine@npm:7.2.0"
   dependencies:
@@ -4604,29 +4576,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^15.0.0, @metamask/network-controller@npm:^15.1.0":
-  version: 15.1.0
-  resolution: "@metamask/network-controller@npm:15.1.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/controller-utils": "npm:^5.0.2"
-    "@metamask/eth-json-rpc-infura": "npm:^9.0.0"
-    "@metamask/eth-json-rpc-middleware": "npm:^12.0.0"
-    "@metamask/eth-json-rpc-provider": "npm:^2.2.0"
-    "@metamask/eth-query": "npm:^3.0.1"
-    "@metamask/json-rpc-engine": "npm:^7.1.1"
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
-    "@metamask/utils": "npm:^8.1.0"
-    async-mutex: "npm:^0.2.6"
-    eth-block-tracker: "npm:^8.0.0"
-    immer: "npm:^9.0.6"
-    uuid: "npm:^8.3.2"
-  checksum: dd4106d8c8b97ab57f9b88e4b94c34a0848097621ef5f72b27f6fd9a2c335a210ff121049df1632ae8e6f6be1c1ed4985da1f951d317318f2fd6fbc716c2f5c8
-  languageName: node
-  linkType: hard
-
-"@metamask/network-controller@npm:^15.2.0":
+"@metamask/network-controller@npm:^15.0.0, @metamask/network-controller@npm:^15.1.0, @metamask/network-controller@npm:^15.2.0":
   version: 15.2.0
   resolution: "@metamask/network-controller@npm:15.2.0"
   dependencies:
@@ -5190,21 +5140,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/utils@npm:^8.0.0, @metamask/utils@npm:^8.1.0":
-  version: 8.1.0
-  resolution: "@metamask/utils@npm:8.1.0"
-  dependencies:
-    "@ethereumjs/tx": "npm:^4.1.2"
-    "@noble/hashes": "npm:^1.3.1"
-    "@types/debug": "npm:^4.1.7"
-    debug: "npm:^4.3.4"
-    semver: "npm:^7.5.4"
-    superstruct: "npm:^1.0.3"
-  checksum: 00400538ce635841ee97db6ad27ef9bb1e71a047899aa748789da9cbb21926eac37a91d366fbfaf1d3138b7a8d4bb2b5c23edf532f7896af3e377429d9ae577e
-  languageName: node
-  linkType: hard
-
-"@metamask/utils@npm:^8.2.0":
+"@metamask/utils@npm:^8.0.0, @metamask/utils@npm:^8.1.0, @metamask/utils@npm:^8.2.0":
   version: 8.2.0
   resolution: "@metamask/utils@npm:8.2.0"
   dependencies:
@@ -6268,14 +6204,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/base@npm:^1.0.0, @scure/base@npm:^1.1.1, @scure/base@npm:~1.1.0":
-  version: 1.1.1
-  resolution: "@scure/base@npm:1.1.1"
-  checksum: 9aaa525ac25215cbe1bde00733a2fd25e99f03793aa1fd2961c567bb62b60c8a3a485a7cb5d748c41604fca79d149de19b05e64449b770c0a04b9ae38d0b5b2b
-  languageName: node
-  linkType: hard
-
-"@scure/base@npm:^1.1.3":
+"@scure/base@npm:^1.0.0, @scure/base@npm:^1.1.1, @scure/base@npm:^1.1.3, @scure/base@npm:~1.1.0":
   version: 1.1.3
   resolution: "@scure/base@npm:1.1.3"
   checksum: cb715fa8cdb043c4d96b6ba0666791d4eb4d033f7b5285a853aba25e0ba94914f05ff5d956029ad060005f9bdd02dab0caef9a0a63f07ed096a2c2a0c0cf9c36
