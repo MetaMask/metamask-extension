@@ -125,6 +125,7 @@ describe('Transaction metrics', () => {
       device_model: undefined,
       eip_1559_version: '0',
       gas_edit_attempted: 'none',
+      gas_estimation_failed: false,
       gas_edit_type: 'none',
       network: mockNetworkId,
       referrer: ORIGIN_METAMASK,
@@ -178,6 +179,34 @@ describe('Transaction metrics', () => {
         uniqueIdentifier: 'transaction-added-1',
         persist: true,
         properties: expectedProperties,
+        sensitiveProperties: expectedSensitiveProperties,
+      });
+    });
+
+    it('should create event fragment when simulation failed', async () => {
+      mockTransactionMeta.simulationFails = true;
+
+      await handleTransactionAdded(mockTransactionMetricsRequest, {
+        transactionMeta: mockTransactionMeta as any,
+        actionId: mockActionId,
+      });
+
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+        actionId: mockActionId,
+        category: MetaMetricsEventCategory.Transactions,
+        failureEvent: TransactionMetaMetricsEvent.rejected,
+        initialEvent: TransactionMetaMetricsEvent.added,
+        successEvent: TransactionMetaMetricsEvent.approved,
+        uniqueIdentifier: 'transaction-added-1',
+        persist: true,
+        properties: {
+          ...expectedProperties,
+          ui_customizations: ['gas_estimation_failed'],
+          gas_estimation_failed: true,
+        },
         sensitiveProperties: expectedSensitiveProperties,
       });
     });
