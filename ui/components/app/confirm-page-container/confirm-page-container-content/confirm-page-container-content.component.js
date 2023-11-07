@@ -82,10 +82,7 @@ export default class ConfirmPageContainerContent extends Component {
       return this.renderTabs();
     }
 
-    return (
-      detailsComponent ||
-      insightComponent
-    );
+    return detailsComponent || insightComponent;
   }
 
   renderTabs() {
@@ -233,23 +230,23 @@ export default class ConfirmPageContainerContent extends Component {
             description={
               isBuyableChain
                 ? t('insufficientCurrencyBuyOrDeposit', [
-                  nativeCurrency,
-                  networkName,
-                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                  <Button
-                    variant={BUTTON_VARIANT.LINK}
-                    size={BUTTON_SIZES.INHERIT}
-                    onClick={openBuyCryptoInPdapp}
-                    key={`${nativeCurrency}-buy-button`}
-                  >
-                    {t('buyAsset', [nativeCurrency])}
-                  </Button>,
-                  ///: END:ONLY_INCLUDE_IN
-                ])
+                    nativeCurrency,
+                    networkName,
+                    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                    <Button
+                      variant={BUTTON_VARIANT.LINK}
+                      size={BUTTON_SIZES.INHERIT}
+                      onClick={openBuyCryptoInPdapp}
+                      key={`${nativeCurrency}-buy-button`}
+                    >
+                      {t('buyAsset', [nativeCurrency])}
+                    </Button>,
+                    ///: END:ONLY_INCLUDE_IN
+                  ])
                 : t('insufficientCurrencyDeposit', [
-                  nativeCurrency,
-                  networkName,
-                ])
+                    nativeCurrency,
+                    networkName,
+                  ])
             }
           />
         )}
