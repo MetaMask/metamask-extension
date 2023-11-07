@@ -401,6 +401,14 @@
   "amount": {
     "message": "Amount"
   },
+  "andForListItems": {
+    "message": "$1, and $2",
+    "description": "$1 is the first item, $2 is the last item in a list of items. Used in Snap Install Warning modal."
+  },
+  "andForTwoItems": {
+    "message": "$1 and $2",
+    "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
+  },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
     "description": "The description of the application"
@@ -3447,24 +3455,16 @@
     "description": "An extended description for the `snap_manageAccounts` permission"
   },
   "permission_manageBip32Keys": {
-    "message": "Control your accounts and assets under $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
+    "message": "Manage $1 accounts.",
+    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0' (secp256k1)'."
   },
-  "permission_manageBip32KeysDescription": {
-    "message": "Allow the snap to derive BIP-32 key pairs based on your Secret Recovery Phrase without exposing it. This grants full access to all accounts and assets on $1.\nWith the power to manage keys, the snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
+  "permission_manageBip44AndBip32KeysDescription": {
+    "message": "Allow the Snap to manage accounts and assets on the requested network. These accounts are derived and backed up using your secret recovery phrase (without revealing it). With the power to derive keys, the Snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
+    "description": "An extended description for the `snap_getBip44Entropy` and `snap_getBip44Entropy` permissions."
   },
   "permission_manageBip44Keys": {
-    "message": "Control your $1 accounts and assets.",
+    "message": "Manage $1 accounts.",
     "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Allow the snap to derive BIP-44 key pairs based on your Secret Recovery Phrase without exposing it. This grants full access to all accounts and assets on $1.\nWith the power to manage keys, the snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "Control your $1 accounts and assets.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
   },
   "permission_manageState": {
     "message": "Store and manage its data on your device.",
@@ -4316,23 +4316,27 @@
     "message": "Installation complete"
   },
   "snapInstallWarningCheck": {
-    "message": "Take a moment to review the permission being requested. Only continue if you trust $1.",
+    "message": "$1 wants permission to do the following:",
     "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Take a moment to review the permissions being requested. Only continue if you trust $1.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
   },
   "snapInstallWarningHeading": {
     "message": "Proceed with caution"
   },
-  "snapInstallWarningKeyAccess": {
-    "message": "Give $2 account control to $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  "snapInstallWarningPermissionDescriptionForBip32View": {
+    "message": "Allow the snap to view your public keys (and addresses). This does not grant any control of accounts or assets.",
+    "description": "An extended description for the `snap_getBip32PublicKey` permission used for tooltip on Snap Install Warning screen (popup/modal)."
   },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Give $2 public key access to $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
+  "snapInstallWarningPermissionDescriptionForEntropy": {
+    "message": "Allow the Snap to manage accounts and assets on the requested network(s). These accounts are derived and backed up using your secret recovery phrase (without revealing it). With the power to derive keys, the Snap can support a variety of blockchain protocols beyond Ethereum (EVMs).",
+    "description": "An extended description for the `snap_getBip44Entropy` and `snap_getBip44Entropy` permissions used for tooltip on Snap Install Warning screen (popup/modal)."
+  },
+  "snapInstallWarningPermissionNameForEntropy": {
+    "message": "Manage $1 accounts",
+    "description": "Permission name used for the Permission Cell component displayed on warning popup when installing a Snap. $1 is list of account types."
+  },
+  "snapInstallWarningPermissionNameForViewPublicKey": {
+    "message": "View your public key for $1",
+    "description": "Permission name used for the Permission Cell component displayed on warning popup when installing a Snap. $1 is list of account types."
   },
   "snapInstallationErrorDescription": {
     "message": "$1 couldn’t be installed.",
@@ -5514,6 +5518,10 @@
   "unknownNetwork": {
     "message": "Unknown private network"
   },
+  "unknownNetworkForKeyEntropy": {
+    "message": "Unknown network",
+    "description": "Displayed on places like Snap install warning when regular name is not available."
+  },
   "unknownQrCode": {
     "message": "Error: We couldn't identify that QR code"
   },
@@ -5529,10 +5537,6 @@
   "unrecognizedChain": {
     "message": "This custom network is not recognized",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (Unrecognized protocol)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "Sending NFT (ERC-721) tokens is not currently supported",
