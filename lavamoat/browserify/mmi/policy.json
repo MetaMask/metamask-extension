@@ -5,11 +5,6 @@
         "regeneratorRuntime": "write"
       }
     },
-    "@download/blockies": {
-      "globals": {
-        "document.createElement": true
-      }
-    },
     "@ensdomains/content-hash": {
       "globals": {
         "console.warn": true
@@ -3451,6 +3446,11 @@
       "globals": {
         "crypto": true,
         "define": true
+      }
+    },
+    "blo": {
+      "globals": {
+        "btoa": true
       }
     },
     "bn.js": {
