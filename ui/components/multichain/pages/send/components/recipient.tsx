@@ -22,6 +22,7 @@ import { getAddressBookEntry } from '../../../../../selectors';
 import Identicon from '../../../../ui/identicon';
 import Confusable from '../../../../ui/confusable';
 import { ellipsify } from '../../../../../pages/send/send.utils';
+import { Tab, Tabs } from '../../../../ui/tabs';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccount } from '.';
 
 const renderExplicitAddress = (
@@ -100,10 +101,14 @@ export const SendPageRecipient = () => {
     );
   } else {
     contents = (
-      <>
-        {userInput ? null : <SendPageYourAccount />}
-        <SendPageAddressBook />
-      </>
+      <Tabs>
+        <Tab tabKey="accounts" name={t('yourAccounts')}>
+          <SendPageYourAccount />
+        </Tab>
+        <Tab tabKey="contacts" name={t('contacts')}>
+          <SendPageAddressBook />
+        </Tab>
+      </Tabs>
     );
   }
 
@@ -119,7 +124,9 @@ export const SendPageRecipient = () => {
           {t(domainWarning ?? recipient.warning)}
         </BannerAlert>
       ) : null}
-      <Box marginTop={6}>{contents}</Box>
+      <Box marginTop={6} className="multichain-send-page__recipient">
+        {contents}
+      </Box>
     </SendPageRow>
   );
 };
