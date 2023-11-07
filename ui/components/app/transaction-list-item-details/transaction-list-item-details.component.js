@@ -11,15 +11,13 @@ import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   Box,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   Icon,
   IconName,
   Text,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { IconColor } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IN
 import { SECOND } from '../../../../shared/constants/time';

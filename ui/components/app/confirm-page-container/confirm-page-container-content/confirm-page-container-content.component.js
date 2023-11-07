@@ -28,9 +28,7 @@ export default class ConfirmPageContainerContent extends Component {
     action: PropTypes.string,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     insightComponent: PropTypes.node,
-    ///: END:ONLY_INCLUDE_IN
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
     tokenAddress: PropTypes.string,
@@ -66,15 +64,11 @@ export default class ConfirmPageContainerContent extends Component {
   };
 
   renderContent() {
-    const { detailsComponent, dataHexComponent } = this.props;
-
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    const { insightComponent } = this.props;
+    const { detailsComponent, dataHexComponent, insightComponent } = this.props;
 
     if (insightComponent && (detailsComponent || dataHexComponent)) {
       return this.renderTabs();
     }
-    ///: END:ONLY_INCLUDE_IN
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const { noteComponent } = this.props;
@@ -90,9 +84,7 @@ export default class ConfirmPageContainerContent extends Component {
 
     return (
       detailsComponent ||
-      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       insightComponent
-      ///: END:ONLY_INCLUDE_IN
     );
   }
 
@@ -241,23 +233,23 @@ export default class ConfirmPageContainerContent extends Component {
             description={
               isBuyableChain
                 ? t('insufficientCurrencyBuyOrDeposit', [
-                    nativeCurrency,
-                    networkName,
-                    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                    <Button
-                      variant={BUTTON_VARIANT.LINK}
-                      size={BUTTON_SIZES.INHERIT}
-                      onClick={openBuyCryptoInPdapp}
-                      key={`${nativeCurrency}-buy-button`}
-                    >
-                      {t('buyAsset', [nativeCurrency])}
-                    </Button>,
-                    ///: END:ONLY_INCLUDE_IN
-                  ])
+                  nativeCurrency,
+                  networkName,
+                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                  <Button
+                    variant={BUTTON_VARIANT.LINK}
+                    size={BUTTON_SIZES.INHERIT}
+                    onClick={openBuyCryptoInPdapp}
+                    key={`${nativeCurrency}-buy-button`}
+                  >
+                    {t('buyAsset', [nativeCurrency])}
+                  </Button>,
+                  ///: END:ONLY_INCLUDE_IN
+                ])
                 : t('insufficientCurrencyDeposit', [
-                    nativeCurrency,
-                    networkName,
-                  ])
+                  nativeCurrency,
+                  networkName,
+                ])
             }
           />
         )}
