@@ -3184,26 +3184,6 @@
     "message": "Tambah dan kontrol akun Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "Kontrol akun dan aset Anda dengan $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Izinkan snap untuk mendapatkan pasangan kunci BIP-32 berdasarkan Frasa Pemulihan Rahasia tanpa mengeksposnya. Ini memberikan akses penuh ke semua akun dan aset di $1.\nDengan kemampuan untuk mengelola kunci, snap dapat mendukung berbagai protokol blockchain selain Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "Kontrol akun dan aset $1 Anda.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Izinkan snap untuk mendapatkan pasangan kunci BIP-44 berdasarkan Frasa Pemulihan Rahasia tanpa mengeksposnya. Ini memberikan akses penuh ke semua akun dan aset di $1.\nDengan kemampuan untuk mengelola kunci, snap dapat mendukung berbagai protokol blockchain selain Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "Kontrol akun dan aset $1 Anda.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Simpan dan kelola datanya di perangkat Anda.",
     "description": "The description for the `snap_manageState` permission"
@@ -3959,24 +3939,8 @@
   "snapInstallSuccess": {
     "message": "Instalasi selesai"
   },
-  "snapInstallWarningCheck": {
-    "message": "Luang waktu untuk meninjau izin yang diminta. Lanjutkan hanya jika Anda memercayai $1.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Luang waktu untuk meninjau izin yang diminta. Lanjutkan hanya jika Anda memercayai $1.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Lanjutkan dengan hati-hati"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Berikan $2 kendali akun ke $1.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Berikan $2 akses kunci publik ke $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "$1 tidak dapat diinstal.",
@@ -4626,9 +4590,6 @@
   "swapSource": {
     "message": "Sumber likuiditas"
   },
-  "swapSourceInfo": {
-    "message": "Kami mencari beberapa sumber likuiditas (penukaran, agregator, dan pembuat pasar profesional) untuk menemukan tarif terbaik dan biaya jaringan terendah."
-  },
   "swapSuggested": {
     "message": "Pertukaran yang disarankan"
   },
@@ -5128,10 +5089,6 @@
   "unrecognizedChain": {
     "message": "Jaringan kustom ini tidak dikenali",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (Protokol tak dikenal)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "Tidak mendukung pengiriman token NFT (ERC-721) untuk saat ini",

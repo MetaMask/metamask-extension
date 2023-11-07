@@ -2,6 +2,7 @@ import React from 'react';
 import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
+import { AssetType } from '../../../../../shared/constants/transaction';
 import { SendPage } from '.';
 
 jest.mock('@ethersproject/providers', () => {
@@ -15,7 +16,19 @@ jest.mock('@ethersproject/providers', () => {
 });
 
 const render = (props = {}) => {
-  const store = configureStore(mockState);
+  const store = configureStore({
+    ...mockState,
+    send: {
+      ...mockState.send,
+      currentTransactionUUID: 'uuid',
+      draftTransactions: {
+        uuid: {
+          asset: { type: AssetType.native },
+          amount: {},
+        },
+      },
+    },
+  });
   return renderWithProvider(<SendPage {...props} />, store);
 };
 

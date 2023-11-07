@@ -3184,26 +3184,6 @@
     "message": "이더리움 계정 추가 및 제어",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "'$1'($2) 하에서 계정과 자산을 통제합니다.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "스냅이 비밀 복구 문구를 노출하지 않고 이를 기반으로 BIP-32 키 쌍을 파생하도록 허용합니다. 이렇게 하면 $1의 모든 계정과 자산에 대한 전체 액세스 권한이 부여됩니다.\n스냅은 키 관리 기능을 통해 이더리움(EVM)을 넘어 다양한 블록체인 프로토콜을 지원할 수 있습니다.",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "$1 계정과 자산을 통제합니다.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "스냅이 비밀 복구 문구를 노출하지 않고 이를 기반으로 BIP-44 키 쌍을 파생하도록 허용합니다. 이렇게 하면 $1의 모든 계정과 자산에 대한 전체 액세스 권한이 부여됩니다.\n스냅은 키 관리 기능을 통해 이더리움(EVM)을 넘어 다양한 블록체인 프로토콜을 지원할 수 있습니다.",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "$1 계정과 자산을 관리합니다.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "장치의 데이터를 저장하고 관리합니다.",
     "description": "The description for the `snap_manageState` permission"
@@ -3959,24 +3939,8 @@
   "snapInstallSuccess": {
     "message": "설치 완료"
   },
-  "snapInstallWarningCheck": {
-    "message": "잠시 시간을 내어 요청한 권한을 검토하세요. $1(을)를 신뢰하는 경우에만 계속하세요.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "잠시 시간을 내어 요청한 권한을 검토하세요. $1(을)를 신뢰하는 경우에만 계속하세요.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "주의하여 진행하세요"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "'$1' 스냅 이용에 필요한 $2 키 액세스 권한을 부여하고 있습니다. 이 작업은 사용자의 $2 계정과 자산에 '$1' 제어 권한을 부여하며 취소가 불가능합니다. '$1의 신뢰성을 확인한 후에 진행하세요.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "$1에서 $2 공개 키 액세스 허용",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "$1 스냅을 설치할 수 없습니다.",
@@ -4626,9 +4590,6 @@
   "swapSource": {
     "message": "유동성 소스"
   },
-  "swapSourceInfo": {
-    "message": "저희는 여러 유동성 소스(교환, 애그리게이터, 투자전문기관)를 검색하여 최상의 요율과 최저 네트워크 수수료를 찾아드립니다."
-  },
   "swapSuggested": {
     "message": "제안 스왑"
   },
@@ -5128,10 +5089,6 @@
   "unrecognizedChain": {
     "message": "이 맞춤 네트워크는 인식되지 않았습니다.",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (인식할 수 없는 프로트콜)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "NFT(ERC-721) 토큰 전송은 현재 지원되지 않습니다.",
