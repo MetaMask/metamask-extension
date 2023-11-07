@@ -1,3 +1,3 @@
-export * from './confirmation-row';
-export * from './confirmation-inline-double-value';
-export * from './confirmation-inline-address';
+export * from './row';
+export * from './value-double';
+export * from './address';

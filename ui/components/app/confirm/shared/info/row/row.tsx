@@ -15,44 +15,44 @@ import {
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
 
-export enum ConfirmationRowVariant {
+export enum ConfirmInfoRowVariant {
   Default = 'default',
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Error = 'error',
   Warning = 'warning',
 }
 
-export type ConfirmationRowProps = {
+export type ConfirmInfoRowProps = {
   label: string;
   children: React.ReactNode | string;
   tooltip?: string;
-  variant?: ConfirmationRowVariant;
+  variant?: ConfirmInfoRowVariant;
 };
 
 const BACKGROUND_COLORS = {
-  [ConfirmationRowVariant.Default]: undefined,
-  [ConfirmationRowVariant.Error]: BackgroundColor.errorMuted,
-  [ConfirmationRowVariant.Warning]: BackgroundColor.warningMuted,
+  [ConfirmInfoRowVariant.Default]: undefined,
+  [ConfirmInfoRowVariant.Error]: BackgroundColor.errorMuted,
+  [ConfirmInfoRowVariant.Warning]: BackgroundColor.warningMuted,
 };
 
 const TEXT_COLORS = {
-  [ConfirmationRowVariant.Default]: TextColor.textAlternative,
-  [ConfirmationRowVariant.Error]: Color.errorAlternative,
-  [ConfirmationRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowVariant.Default]: TextColor.textAlternative,
+  [ConfirmInfoRowVariant.Error]: Color.errorAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
 };
 
 const TOOLTIP_ICONS = {
-  [ConfirmationRowVariant.Default]: IconName.Question,
-  [ConfirmationRowVariant.Error]: IconName.Warning,
-  [ConfirmationRowVariant.Warning]: IconName.Warning,
+  [ConfirmInfoRowVariant.Default]: IconName.Question,
+  [ConfirmInfoRowVariant.Error]: IconName.Warning,
+  [ConfirmInfoRowVariant.Warning]: IconName.Warning,
 };
 
-export const ConfirmationRow = ({
+export const ConfirmInfoRow = ({
   label,
   children,
-  variant = ConfirmationRowVariant.Default,
+  variant = ConfirmInfoRowVariant.Default,
   tooltip,
-}: ConfirmationRowProps) => (
+}: ConfirmInfoRowProps) => (
   <Box
     display={Display.Flex}
     flexDirection={FlexDirection.Row}

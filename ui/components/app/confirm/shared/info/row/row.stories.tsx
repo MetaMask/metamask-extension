@@ -1,10 +1,10 @@
 import React from 'react';
-import { ConfirmationRow } from './confirmation-row';
+import { ConfirmInfoRow } from './row';
 
-const ConfirmationRowStory = {
+const ConfirmInfoRowStory = {
   title: 'Components/App/Confirmations/Row',
 
-  component: ConfirmationRow,
+  component: ConfirmInfoRow,
   argTypes: {
     label: {
       control: 'text',
@@ -12,7 +12,7 @@ const ConfirmationRowStory = {
   },
 };
 
-export const DefaultStory = (args) => <ConfirmationRow {...args} />;
+export const DefaultStory = (args) => <ConfirmInfoRow {...args} />;
 
 DefaultStory.storyName = 'Default';
 
@@ -21,4 +21,4 @@ DefaultStory.args = {
   children: 'Value',
 };
 
-export default ConfirmationRowStory;
+export default ConfirmInfoRowStory;

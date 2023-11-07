@@ -14,13 +14,13 @@ import {
 import { shortenAddress } from '../../../../../../helpers/utils/util';
 import Tooltip from '../../../../../ui/tooltip/tooltip';
 
-export type ConfirmationInlineAddressProps = {
+export type ConfirmInfoRowAddressProps = {
   address: string;
 };
 
-export const ConfirmationInlineAddress = ({
+export const ConfirmInfoRowAddress = ({
   address,
-}: ConfirmationInlineAddressProps) => (
+}: ConfirmInfoRowAddressProps) => (
   <Box
     display={Display.Flex}
     flexDirection={FlexDirection.Row}

@@ -7,15 +7,15 @@ import {
   TextColor,
 } from '../../../../../../helpers/constants/design-system';
 
-export type ConfirmationInlineDoubleValueProps = {
+export type ConfirmInfoRowValueDoubleProps = {
   left: string;
   right: string;
 };
 
-export const ConfirmationInlineDoubleValue = ({
+export const ConfirmInfoRowValueDouble = ({
   left,
   right,
-}: ConfirmationInlineDoubleValueProps) => (
+}: ConfirmInfoRowValueDoubleProps) => (
   <Box
     display={Display.Flex}
     flexDirection={FlexDirection.Row}
