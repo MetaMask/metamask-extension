@@ -5,6 +5,7 @@ import {
   Display,
   FlexDirection,
   TextColor,
+  FlexWrap,
 } from '../../../../../../helpers/constants/design-system';
 
 export type ConfirmInfoRowValueDoubleProps = {
@@ -20,8 +21,13 @@ export const ConfirmInfoRowValueDouble = ({
     display={Display.Flex}
     flexDirection={FlexDirection.Row}
     alignItems={AlignItems.center}
+    flexWrap={FlexWrap.Wrap}
+    style={{
+      // TODO: Box should support this
+      columnGap: '8px',
+    }}
   >
     <Text color={TextColor.textMuted}>{left}</Text>
-    <Text marginLeft={2}>{right}</Text>
+    <Text>{right}</Text>
   </Box>
 );
