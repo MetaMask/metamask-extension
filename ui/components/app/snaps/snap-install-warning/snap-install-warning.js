@@ -215,7 +215,7 @@ export default function SnapInstallWarning({
       >
         <Checkbox
           isRequired
-          onChange={() => setUserAgree(!userAgree)}
+          onChange={() => setUserAgree((state) => !state)}
           isChecked={userAgree}
           label={
             <Text as="span">
