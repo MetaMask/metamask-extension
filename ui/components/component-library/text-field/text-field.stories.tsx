@@ -128,6 +128,7 @@ const Template: StoryFn<typeof TextField> = (args) => {
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
+DefaultStory.args = { value: '' };
 
 export const SizeStory: StoryFn<typeof TextField> = (args) => {
   return (
@@ -340,6 +341,7 @@ InputComponentStory.args = {
   startAccessory: (
     <Icon color={IconColor.iconAlternative} name={IconName.Wallet} />
   ),
+  value: '',
 };
 
 export const AutoComplete = Template.bind({});
