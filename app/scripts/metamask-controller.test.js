@@ -4,7 +4,7 @@
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThoughStream } from 'through2';
-import EthQuery from 'eth-query';
+import EthQuery from '@metamask/eth-query';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   ListNames,

@@ -3,12 +3,14 @@ import { ButtonPrimary } from '../../../../../component-library';
 import { Display } from '../../../../../../helpers/constants/design-system';
 import { Footer } from '.';
 
-export default {
+const story = {
   title: 'Components/Multichain/Page/Footer',
   component: Footer,
   argTypes: {},
   args: {},
 };
+
+export default story;
 
 export const DefaultStory = (args) => (
   <Footer {...args}>
