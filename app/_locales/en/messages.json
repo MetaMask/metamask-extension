@@ -358,6 +358,9 @@
   "alerts": {
     "message": "Alerts"
   },
+  "allConnections": {
+    "message": "All Connections"
+  },
   "allCustodianAccountsConnectedSubtitle": {
     "message": "You have either already connected all your custodian accounts or don’t have any account to connect to MetaMask Institutional."
   },
@@ -868,6 +871,12 @@
   },
   "connectedSnapAndNoAccountDescription": {
     "message": "MetaMask is connected to this site, but no accounts are connected yet"
+  },
+  "connectedaccount": {
+    "message": "account"
+  },
+  "connectedaccounts": {
+    "message": "accounts"
   },
   "connecting": {
     "message": "Connecting..."
@@ -1572,6 +1581,9 @@
     "message": "Error details",
     "description": "Title for collapsible section that displays error details for debugging purposes"
   },
+  "errorGettingSafeChainList": {
+    "message": "Error while getting safe chain list, please continue with caution."
+  },
   "errorMessage": {
     "message": "Message: $1",
     "description": "Displayed error message for debugging purposes. $1 is the error message"
@@ -2063,6 +2075,9 @@
   },
   "installOrigin": {
     "message": "Install origin"
+  },
+  "installRequest": {
+    "message": "Installation request"
   },
   "installedOn": {
     "message": "Installed on $1",
@@ -3986,6 +4001,9 @@
   "selectAccountsForSnap": {
     "message": "Select the account(s) to use with this snap"
   },
+  "selectActionButton": {
+    "message": "Select action"
+  },
   "selectAll": {
     "message": "Select all"
   },
@@ -4153,6 +4171,12 @@
   "simulationErrorMessageV2": {
     "message": "We were not able to estimate gas. There might be an error in the contract and this transaction may fail."
   },
+  "siteConnections": {
+    "message": "Site Connections"
+  },
+  "sites": {
+    "message": "Sites"
+  },
   "skip": {
     "message": "Skip"
   },
@@ -4232,6 +4256,9 @@
   "snapConnectionWarning": {
     "message": "$1 wants to connect to $2. Only continue if you trust this website.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
+  },
+  "snapConnections": {
+    "message": "Snap Connections"
   },
   "snapContent": {
     "message": "This content is coming from $1",
@@ -4326,9 +4353,6 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
-  },
-  "snapUpdate": {
-    "message": "Update snap"
   },
   "snapUpdateAvailable": {
     "message": "Update available"
@@ -5373,6 +5397,21 @@
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
   },
+  "transactionInsightWarningCheckboxMessage": {
+    "message": "$1 the request by $2",
+    "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
+  },
+  "transactionInsightWarningContentPlural": {
+    "message": "Review $1 warnings before $2. Once made, your $3 is irreversible.",
+    "description": "$1 is the number of warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
+  },
+  "transactionInsightWarningContentSingular": {
+    "message": "Review 1 warning before $1. Once made, your $2 is irreversible.",
+    "description": "$1 is the action (i.e. signing) and $2 is the result (i.e. signature, transaction)"
+  },
+  "transactionInsightWarningHeader": {
+    "message": "This request may be risky"
+  },
   "transactionInsightsDeprecationInfo": {
     "message": "Explore more ways to get transaction insights with"
   },
@@ -5504,6 +5543,9 @@
   },
   "update": {
     "message": "Update"
+  },
+  "updateRequest": {
+    "message": "Update request"
   },
   "updatedWithDate": {
     "message": "Updated $1"
@@ -5660,6 +5702,10 @@
   },
   "warning": {
     "message": "Warning"
+  },
+  "warningFromSnap": {
+    "message": "Warning from $1",
+    "description": "$1 represents the name of the snap"
   },
   "warningTooltipText": {
     "message": "$1 The third party could spend your entire token balance without further notice or consent. Protect yourself by customizing a lower spending cap.",

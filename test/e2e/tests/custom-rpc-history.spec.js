@@ -24,7 +24,7 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: { ...ganacheOptions, concurrent: { port, chainId } },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -80,7 +80,7 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -122,7 +122,7 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -175,7 +175,7 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -216,7 +216,7 @@ describe('Stores custom RPC history', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -268,7 +268,7 @@ describe('Stores custom RPC history', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
