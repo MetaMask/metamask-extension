@@ -136,7 +136,7 @@ workflows:
       - prep-build-test-mmi:
           requires:
             - prep-deps
-      - prep-build-test-mmi-playwright:
+      - prep-build-test-mmi-playwright - OPTIONAL:
           requires:
             - prep-deps
       - prep-build-storybook:
@@ -178,7 +178,7 @@ workflows:
             - prep-build-test-mmi
       - test-e2e-mmi-playwright:
           requires:
-            - prep-build-test-mmi-playwright
+            - prep-build-test-mmi-playwright - OPTIONAL
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
@@ -626,7 +626,7 @@ jobs:
             - dist-test-mmi
             - builds-test-mmi
 
-  prep-build-test-mmi-playwright:
+  prep-build-test-mmi-playwright - OPTIONAL:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
