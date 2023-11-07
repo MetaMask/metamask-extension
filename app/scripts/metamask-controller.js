@@ -20,11 +20,14 @@ import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager'
 import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
-import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
+import {
+  TrezorConnectBridge,
+  TrezorKeyring,
+} from '@metamask/eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
-import EthQuery from 'eth-query';
+import EthQuery from '@metamask/eth-query';
 import nanoid from 'nanoid';
 import { captureException } from '@sentry/browser';
 import { AddressBookController } from '@metamask/address-book-controller';
@@ -97,7 +100,6 @@ import {
   ERC721,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-
 ///: BEGIN:ONLY_INCLUDE_IN(petnames)
 import {
   NameController,
@@ -117,6 +119,7 @@ import {
   TransactionStatus,
   TransactionType,
   TokenStandard,
+  TransactionEvent,
 } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
@@ -169,12 +172,23 @@ import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
   handleTransactionAdded,
   handleTransactionApproved,
-  handleTransactionFinalized,
+  handleTransactionFailed,
+  handleTransactionConfirmed,
   handleTransactionDropped,
   handleTransactionRejected,
   handleTransactionSubmitted,
+  handlePostTransactionBalanceUpdate,
   createTransactionEventFragmentWithTxId,
-} from './lib/transaction-metrics';
+} from './lib/transaction/metrics';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  afterTransactionSign as afterTransactionSignMMI,
+  beforeCheckPendingTransaction as beforeCheckPendingTransactionMMI,
+  beforeTransactionPublish as beforeTransactionPublishMMI,
+  beforeTransactionApproveOnInit as beforeTransactionApproveOnInitMMI,
+  getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
+} from './lib/transaction/mmi-hooks';
+///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IN
@@ -226,6 +240,7 @@ import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
+import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
 
@@ -287,6 +302,7 @@ export default class MetamaskController extends EventEmitter {
     const initState = opts.initState || {};
     const version = this.platform.getVersion();
     this.recordFirstTimeInfo(initState);
+    this.featureFlags = opts.featureFlags;
 
     // this keeps track of how many "controllerStream" connections are open
     // the only thing that uses controller connections are open metamask UI instances
@@ -714,17 +730,18 @@ export default class MetamaskController extends EventEmitter {
       },
     });
 
-    this.phishingController = new PhishingController(
-      {},
-      initState.PhishingController,
-    );
+    const phishingControllerMessenger = this.controllerMessenger.getRestricted({
+      name: 'PhishingController',
+    });
+
+    this.phishingController = new PhishingController({
+      messenger: phishingControllerMessenger,
+      state: initState.PhishingController,
+      hotlistRefreshInterval: process.env.IN_TEST ? 5 * SECOND : undefined,
+      stalelistRefreshInterval: process.env.IN_TEST ? 30 * SECOND : undefined,
+    });
 
     this.phishingController.maybeUpdateState();
-
-    if (process.env.IN_TEST) {
-      this.phishingController.setHotlistRefreshInterval(5 * SECOND);
-      this.phishingController.setStalelistRefreshInterval(30 * SECOND);
-    }
 
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     this.ppomController = new PPOMController({
@@ -870,14 +887,29 @@ export default class MetamaskController extends EventEmitter {
       const keyringOverrides = this.opts.overrides?.keyrings;
 
       const additionalKeyringTypes = [
-        keyringOverrides?.trezor || TrezorKeyring,
         keyringOverrides?.ledger || LedgerBridgeKeyring,
         keyringOverrides?.lattice || LatticeKeyring,
         QRHardwareKeyring,
       ];
 
+      const additionalBridgedKeyringTypes = [
+        {
+          keyring: keyringOverrides?.trezor || TrezorKeyring,
+          bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
+        },
+      ];
+
       additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
         keyringBuilderFactory(keyringType),
+      );
+
+      additionalBridgedKeyringTypes.forEach((keyringType) =>
+        additionalKeyrings.push(
+          hardwareKeyringBuilderFactory(
+            keyringType.keyring,
+            keyringType.bridge,
+          ),
+        ),
       );
 
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -1077,6 +1109,8 @@ export default class MetamaskController extends EventEmitter {
         `${this.approvalController.name}:updateRequestState`,
         `${this.permissionController.name}:grantPermissions`,
         `${this.subjectMetadataController.name}:getSubjectMetadata`,
+        `${this.phishingController.name}:maybeUpdateState`,
+        `${this.phishingController.name}:testOrigin`,
         'ExecutionService:executeSnap',
         'ExecutionService:getRpcRequestHandler',
         'ExecutionService:terminateSnap',
@@ -1223,6 +1257,9 @@ export default class MetamaskController extends EventEmitter {
       trackMetaMetricsEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),
+      getNetworkClientById: this.networkController.getNetworkClientById.bind(
+        this.networkController,
+      ),
     });
 
     this.addressBookController = new AddressBookController(
@@ -1301,9 +1338,24 @@ export default class MetamaskController extends EventEmitter {
       getExternalPendingTransactions:
         this.getExternalPendingTransactions.bind(this),
       securityProviderRequest: this.securityProviderRequest.bind(this),
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      transactionUpdateController: this.transactionUpdateController,
-      ///: END:ONLY_INCLUDE_IN
+      hooks: {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        afterSign: (txMeta, signedEthTx) =>
+          afterTransactionSignMMI(
+            txMeta,
+            signedEthTx,
+            this.transactionUpdateController.addTransactionToWatchList.bind(
+              this,
+            ),
+          ),
+        beforeCheckPendingTransaction:
+          beforeCheckPendingTransactionMMI.bind(this),
+        beforeTransactionApproveOnInit:
+          beforeTransactionApproveOnInitMMI.bind(this),
+        beforePublish: beforeTransactionPublishMMI.bind(this),
+        getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
+        ///: END:ONLY_INCLUDE_IN
+      },
       messenger: this.controllerMessenger.getRestricted({
         name: 'TransactionController',
         allowedActions: [
@@ -1314,124 +1366,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    const transactionMetricsRequest = this.getTransactionMetricsRequest();
-
-    this.txController.on(
-      'transaction-added',
-      handleTransactionAdded.bind(null, transactionMetricsRequest),
-    );
-    this.txController.on(
-      'transaction-approved',
-      handleTransactionApproved.bind(null, transactionMetricsRequest),
-    );
-    this.txController.on(
-      'transaction-dropped',
-      handleTransactionDropped.bind(null, transactionMetricsRequest),
-    );
-    this.txController.on(
-      'transaction-finalized',
-      handleTransactionFinalized.bind(null, transactionMetricsRequest),
-    );
-    this.txController.on(
-      'transaction-rejected',
-      handleTransactionRejected.bind(null, transactionMetricsRequest),
-    );
-    this.txController.on(
-      'transaction-submitted',
-      handleTransactionSubmitted.bind(null, transactionMetricsRequest),
-    );
-    this.txController.on('transaction-swap-failed', (payload) =>
-      this.metaMetricsController.trackEvent(payload),
-    );
-    this.txController.on('transaction-swap-finalized', (payload) =>
-      this.metaMetricsController.trackEvent(payload),
-    );
-
-    this.txController.on(`tx:status-update`, async (txId, status) => {
-      if (
-        status === TransactionStatus.confirmed ||
-        status === TransactionStatus.failed
-      ) {
-        const txMeta = this.txController.txStateManager.getTransaction(txId);
-        let rpcPrefs = {};
-        if (txMeta.chainId) {
-          const { networkConfigurations } = this.networkController.state;
-          const matchingNetworkConfig = Object.values(
-            networkConfigurations,
-          ).find(
-            (networkConfiguration) =>
-              networkConfiguration.chainId === txMeta.chainId,
-          );
-          rpcPrefs = matchingNetworkConfig?.rpcPrefs ?? {};
-        }
-
-        try {
-          await this.platform.showTransactionNotification(txMeta, rpcPrefs);
-        } catch (error) {
-          log.error('Failed to create transaction notification', error);
-        }
-
-        const { txReceipt } = txMeta;
-
-        // if this is a transferFrom method generated from within the app it may be an NFT transfer transaction
-        // in which case we will want to check and update ownership status of the transferred NFT.
-        if (
-          txMeta.type === TransactionType.tokenMethodTransferFrom &&
-          txMeta.txParams !== undefined
-        ) {
-          const {
-            data,
-            to: contractAddress,
-            from: userAddress,
-          } = txMeta.txParams;
-          const { chainId } = txMeta;
-          const transactionData = parseStandardTokenTransactionData(data);
-          // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
-          // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
-          // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
-          const transactionDataTokenId =
-            getTokenIdParam(transactionData) ??
-            getTokenValueParam(transactionData);
-          const { allNfts } = this.nftController.state;
-
-          // check if its a known NFT
-          const knownNft = allNfts?.[userAddress]?.[chainId]?.find(
-            ({ address, tokenId }) =>
-              isEqualCaseInsensitive(address, contractAddress) &&
-              tokenId === transactionDataTokenId,
-          );
-
-          // if it is we check and update ownership status.
-          if (knownNft) {
-            this.nftController.checkAndUpdateSingleNftOwnershipStatus(
-              knownNft,
-              false,
-              { userAddress, chainId },
-            );
-          }
-        }
-
-        const metamaskState = this.getState();
-
-        if (txReceipt && txReceipt.status === '0x0') {
-          this.metaMetricsController.trackEvent(
-            {
-              event: 'Tx Status Update: On-Chain Failure',
-              category: MetaMetricsEventCategory.Background,
-              properties: {
-                action: 'Transactions',
-                errorMessage: txMeta.simulationFails?.reason,
-                numberOfTokens: metamaskState.tokens.length,
-                numberOfAccounts: Object.keys(metamaskState.accounts).length,
-              },
-            },
-            {
-              matomoEvent: true,
-            },
-          );
-        }
-      }
-    });
+    this._addTransactionControllerListeners();
 
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
@@ -1633,14 +1568,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     }).init();
     ///: END:ONLY_INCLUDE_IN
-
-    this.txController.on('newSwapApproval', (txMeta) => {
-      this.swapsController.setApproveTxId(txMeta.id);
-    });
-
-    this.txController.on('newSwap', (txMeta) => {
-      this.swapsController.setTradeTxId(txMeta.id);
-    });
 
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
@@ -1937,48 +1864,6 @@ export default class MetamaskController extends EventEmitter {
     checkForMultipleVersionsRunning();
   }
 
-  getTransactionMetricsRequest() {
-    const controllerActions = {
-      // Metametrics Actions
-      createEventFragment: this.metaMetricsController.createEventFragment.bind(
-        this.metaMetricsController,
-      ),
-      finalizeEventFragment:
-        this.metaMetricsController.finalizeEventFragment.bind(
-          this.metaMetricsController,
-        ),
-      getEventFragmentById:
-        this.metaMetricsController.getEventFragmentById.bind(
-          this.metaMetricsController,
-        ),
-      updateEventFragment: this.metaMetricsController.updateEventFragment.bind(
-        this.metaMetricsController,
-      ),
-      // Other dependencies
-      getAccountType: this.getAccountType.bind(this),
-      getDeviceModel: this.getDeviceModel.bind(this),
-      getEIP1559GasFeeEstimates:
-        this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
-      getSelectedAddress: () =>
-        this.preferencesController.store.getState().selectedAddress,
-      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
-      getTransaction: this.txController.txStateManager.getTransaction.bind(
-        this.txController,
-      ),
-    };
-    return {
-      ...controllerActions,
-      snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
-        name: 'SnapAndHardwareMessenger',
-        allowedActions: [
-          'KeyringController:getKeyringForAccount',
-          'SnapController:get',
-        ],
-      }),
-      provider: this.provider,
-    };
-  }
-
   triggerNetworkrequests() {
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
@@ -2034,8 +1919,19 @@ export default class MetamaskController extends EventEmitter {
   }
   ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  trackInsightSnapView(snapId) {
+    this.metaMetricsController.trackEvent({
+      event: MetaMetricsEventName.InsightSnapViewed,
+      category: MetaMetricsEventCategory.Snaps,
+      properties: {
+        snap_id: snapId,
+      },
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   /**
    * Tracks snaps export usage.
    * Note: This function is throttled to 1 call per 60 seconds per snap id + handler combination.
@@ -2143,6 +2039,13 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:updateSnapState',
         ),
+        maybeUpdatePhishingList: this.controllerMessenger.call.bind(
+          this.controllerMessenger,
+          'PhishingController:maybeUpdateState',
+        ),
+        isOnPhishingList: (origin) =>
+          this.controllerMessenger.call('PhishingController:testOrigin', origin)
+            .result,
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
@@ -2449,11 +2352,11 @@ export default class MetamaskController extends EventEmitter {
       isInitialized,
       ...flatState,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-      // Snap state and source code is stripped out to prevent piping to the MetaMask UI.
+      // Snap state, source code and other files are stripped out to prevent piping to the MetaMask UI.
       snapStates: {},
       snaps: Object.values(flatState.snaps ?? {}).reduce((acc, snap) => {
         // eslint-disable-next-line no-unused-vars
-        const { sourceCode, ...rest } = snap;
+        const { sourceCode, auxiliaryFiles, ...rest } = snap;
         acc[snap.id] = rest;
         return acc;
       }, {}),
@@ -3035,7 +2938,9 @@ export default class MetamaskController extends EventEmitter {
       finalizeEventFragment: metaMetricsController.finalizeEventFragment.bind(
         metaMetricsController,
       ),
-
+      ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+      trackInsightSnapView: this.trackInsightSnapView.bind(this),
+      ///: END:ONLY_INCLUDE_IN
       // approval controller
       resolvePendingApproval: this.resolvePendingApproval,
       rejectPendingApproval: this.rejectPendingApproval,
@@ -4879,6 +4784,188 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
+  /**
+   * A method for setting TransactionController event listeners
+   */
+  _addTransactionControllerListeners() {
+    const transactionMetricsRequest = this.getTransactionMetricsRequest();
+
+    this.txController.on(
+      TransactionEvent.postTransactionBalanceUpdated,
+      handlePostTransactionBalanceUpdate.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      TransactionEvent.added,
+      handleTransactionAdded.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      TransactionEvent.approved,
+      handleTransactionApproved.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      TransactionEvent.dropped,
+      handleTransactionDropped.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      TransactionEvent.confirmed,
+      handleTransactionConfirmed.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      TransactionEvent.failed,
+      handleTransactionFailed.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(TransactionEvent.newSwap, ({ transactionMeta }) => {
+      this.swapsController.setTradeTxId(transactionMeta.id);
+    });
+    this.txController.on(
+      TransactionEvent.newSwapApproval,
+      ({ transactionMeta }) => {
+        this.swapsController.setApproveTxId(transactionMeta.id);
+      },
+    );
+    this.txController.on(
+      TransactionEvent.rejected,
+      handleTransactionRejected.bind(null, transactionMetricsRequest),
+    );
+    this.txController.on(
+      TransactionEvent.submitted,
+      handleTransactionSubmitted.bind(null, transactionMetricsRequest),
+    );
+
+    this.txController.on(`tx:status-update`, async (txId, status) => {
+      if (
+        status === TransactionStatus.confirmed ||
+        status === TransactionStatus.failed
+      ) {
+        const txMeta = this.txController.txStateManager.getTransaction(txId);
+        let rpcPrefs = {};
+        if (txMeta.chainId) {
+          const { networkConfigurations } = this.networkController.state;
+          const matchingNetworkConfig = Object.values(
+            networkConfigurations,
+          ).find(
+            (networkConfiguration) =>
+              networkConfiguration.chainId === txMeta.chainId,
+          );
+          rpcPrefs = matchingNetworkConfig?.rpcPrefs ?? {};
+        }
+
+        try {
+          await this.platform.showTransactionNotification(txMeta, rpcPrefs);
+        } catch (error) {
+          log.error('Failed to create transaction notification', error);
+        }
+
+        const { txReceipt } = txMeta;
+
+        // if this is a transferFrom method generated from within the app it may be an NFT transfer transaction
+        // in which case we will want to check and update ownership status of the transferred NFT.
+        if (
+          txMeta.type === TransactionType.tokenMethodTransferFrom &&
+          txMeta.txParams !== undefined
+        ) {
+          const {
+            data,
+            to: contractAddress,
+            from: userAddress,
+          } = txMeta.txParams;
+          const { chainId } = txMeta;
+          const transactionData = parseStandardTokenTransactionData(data);
+          // Sometimes the tokenId value is parsed as "_value" param. Not seeing this often any more, but still occasionally:
+          // i.e. call approve() on BAYC contract - https://etherscan.io/token/0xbc4ca0eda7647a8ab7c2061c2e118a18a936f13d#writeContract, and tokenId shows up as _value,
+          // not sure why since it doesn't match the ERC721 ABI spec we use to parse these transactions - https://github.com/MetaMask/metamask-eth-abis/blob/d0474308a288f9252597b7c93a3a8deaad19e1b2/src/abis/abiERC721.ts#L62.
+          const transactionDataTokenId =
+            getTokenIdParam(transactionData) ??
+            getTokenValueParam(transactionData);
+          const { allNfts } = this.nftController.state;
+
+          // check if its a known NFT
+          const knownNft = allNfts?.[userAddress]?.[chainId]?.find(
+            ({ address, tokenId }) =>
+              isEqualCaseInsensitive(address, contractAddress) &&
+              tokenId === transactionDataTokenId,
+          );
+
+          // if it is we check and update ownership status.
+          if (knownNft) {
+            this.nftController.checkAndUpdateSingleNftOwnershipStatus(
+              knownNft,
+              false,
+              { userAddress, chainId },
+            );
+          }
+        }
+
+        const metamaskState = this.getState();
+
+        if (txReceipt && txReceipt.status === '0x0') {
+          this.metaMetricsController.trackEvent(
+            {
+              event: 'Tx Status Update: On-Chain Failure',
+              category: MetaMetricsEventCategory.Background,
+              properties: {
+                action: 'Transactions',
+                errorMessage: txMeta.simulationFails?.reason,
+                numberOfTokens: metamaskState.tokens.length,
+                numberOfAccounts: Object.keys(metamaskState.accounts).length,
+              },
+            },
+            {
+              matomoEvent: true,
+            },
+          );
+        }
+      }
+    });
+  }
+
+  getTransactionMetricsRequest() {
+    const controllerActions = {
+      // Metametrics Actions
+      createEventFragment: this.metaMetricsController.createEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      finalizeEventFragment:
+        this.metaMetricsController.finalizeEventFragment.bind(
+          this.metaMetricsController,
+        ),
+      getEventFragmentById:
+        this.metaMetricsController.getEventFragmentById.bind(
+          this.metaMetricsController,
+        ),
+      getParticipateInMetrics: () =>
+        this.metaMetricsController.state.participateInMetaMetrics,
+      trackEvent: this.metaMetricsController.trackEvent.bind(
+        this.metaMetricsController,
+      ),
+      updateEventFragment: this.metaMetricsController.updateEventFragment.bind(
+        this.metaMetricsController,
+      ),
+      // Other dependencies
+      getAccountType: this.getAccountType.bind(this),
+      getDeviceModel: this.getDeviceModel.bind(this),
+      getEIP1559GasFeeEstimates:
+        this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
+      getSelectedAddress: () =>
+        this.preferencesController.store.getState().selectedAddress,
+      getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
+      getTransaction: this.txController.txStateManager.getTransaction.bind(
+        this.txController,
+      ),
+    };
+    return {
+      ...controllerActions,
+      snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
+        name: 'SnapAndHardwareMessenger',
+        allowedActions: [
+          'KeyringController:getKeyringForAccount',
+          'SnapController:get',
+        ],
+      }),
+      provider: this.provider,
+    };
+  }
+
   //=============================================================================
   // CONFIG
   //=============================================================================
@@ -5011,13 +5098,6 @@ export default class MetamaskController extends EventEmitter {
    * Locks MetaMask
    */
   setLocked() {
-    const [trezorKeyring] = this.keyringController.getKeyringsByType(
-      KeyringType.trezor,
-    );
-    if (trezorKeyring) {
-      trezorKeyring.dispose();
-    }
-
     if (isManifestV3) {
       this.clearLoginArtifacts();
     }

@@ -3,17 +3,24 @@
     padding-bottom: 0;
   }
 
-  .checkbox-label {
-    @include H7;
+  .permission-cell {
+    margin: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 
-    display: flex;
-    align-items: flex-start;
-    gap: 0 16px;
-    margin-top: 24px;
+  .mm-checkbox__input:focus {
+    border-color: var(--color-border-default);
+    outline: none;
+  }
 
-    &--first {
-      margin-top: 0;
-    }
+  .mm-checkbox__input--checked:focus {
+    border-color: var(--color-primary-default);
+    outline: none;
+  }
+
+  .mm-checkbox__input {
+    cursor: pointer;
   }
 
   &__footer {

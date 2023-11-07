@@ -3184,26 +3184,6 @@
     "message": "Добавляйте счета Ethereum и управляйте ими",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "Контролируйте свои счета и активы в $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Разрешите snap извлекать пары ключей BIP-32 на основе вашей секретной фразы для восстановления, не раскрывая ее. Это дает полный доступ ко всем счетам и активам на $1.\nБлагодаря способности управлять ключами, snap может поддерживать множество протоколов блокчейна, кроме Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "Контролируйте свои счета и активы «$1».",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Разрешите snap извлекать пары ключей BIP-44 на основе вашей секретной фразы для восстановления, не раскрывая ее. Это дает полный доступ ко всем счетам и активам на $1.\nБлагодаря способности управлять ключами snap может поддерживать множество протоколов блокчейна, кроме Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "Контролируйте свои счета и активы $1.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Храните и управляйте его данными на вашем устройстве.",
     "description": "The description for the `snap_manageState` permission"
@@ -3959,24 +3939,8 @@
   "snapInstallSuccess": {
     "message": "Установка завершена"
   },
-  "snapInstallWarningCheck": {
-    "message": "Чтобы подтвердить, что вы понимаете, отметьте все.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Чтобы подтвердить, что вы понимаете, отметьте все ячейки.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Действуйте с осторожностью"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Передать управление счетом $2 $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Предоставьте $2 доступ к открытому ключу к $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "Не удалось установить $1.",
@@ -4626,9 +4590,6 @@
   "swapSource": {
     "message": "Источник ликвидности"
   },
-  "swapSourceInfo": {
-    "message": "Мы ищем по разным источникам ликвидности (биржи, агрегаторы и профессиональные маркет-мейкеры), чтобы найти лучшие курсы и самые низкие комиссии сети."
-  },
   "swapSuggested": {
     "message": "Рекомендуется своп"
   },
@@ -5128,10 +5089,6 @@
   "unrecognizedChain": {
     "message": "Эта пользовательская сеть не распознана. Мы рекомендуем $1, прежде чем продолжить",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (Нераспознанный протокол)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "Отправка токенов NFT (ERC-721) сейчас не поддерживается",
