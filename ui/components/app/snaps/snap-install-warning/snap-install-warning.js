@@ -87,10 +87,9 @@ export default function SnapInstallWarning({
       if (permissionWarnings.length - 1 === index) {
         return [];
       }
-      const elements = [];
       // Handle last two elements
       if (permissionWarnings.length - 2 === index) {
-        elements.push(
+        return [
           <Text
             fontWeight={FontWeight.Medium}
             as="span"
@@ -102,20 +101,17 @@ export default function SnapInstallWarning({
                 .warningMessageSubject,
             ])}
           </Text>,
-        );
-        return elements;
+        ];
       }
 
-      elements.push(
+      return [
         <span key={`${warning.permissionName}_${index}`}>
           <Text fontWeight={FontWeight.Medium} as="span">
             {warning.warningMessageSubject}
             {', '}
           </Text>
         </span>,
-      );
-
-      return elements;
+      ];
     });
   }
 
