@@ -15,8 +15,12 @@ import {
   getCurrentChainId,
   getSwapsDefaultToken,
   getSelectedAddress,
+  getIsTestnet,
 } from '../../../selectors';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getProviderConfig,
+} from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
 import Box from '../../ui/box/box';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -39,12 +43,20 @@ import { Display } from '../../../helpers/constants/design-system';
 import { ReceiveModal } from '../../multichain/receive-modal';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
+  const chainId = useSelector(getCurrentChainId);
+  const { ticker } = useSelector(getProviderConfig);
+  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
+    chainId,
+    ticker,
+  );
+  const isTestNet = useSelector(getIsTestnet);
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
@@ -92,7 +104,6 @@ const AssetList = ({ onClickAsset }) => {
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   const shouldShowReceive = balanceIsZero;
   const { openBuyCryptoInPdapp } = useRamps();
-  const chainId = useSelector(getCurrentChainId);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
   return (
@@ -155,7 +166,11 @@ const AssetList = ({ onClickAsset }) => {
               secondaryCurrencyProperties.value
             }
             tokenSymbol={primaryCurrencyProperties.suffix}
-            secondary={showFiat ? secondaryCurrencyDisplay : undefined}
+            secondary={
+              isTestNet || (showFiat && isOriginalNativeSymbol)
+                ? secondaryCurrencyDisplay
+                : undefined
+            }
             tokenImage={balanceIsLoading ? null : primaryTokenImage}
           />
           <TokenList
