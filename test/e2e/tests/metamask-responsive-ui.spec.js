@@ -140,6 +140,8 @@ describe('MetaMask Responsive UI', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
+        await driver.delay(1000);
+
         // Send ETH from inside MetaMask
         // starts to send a transaction
         await openActionMenuAndStartSendFlow(driver);
