@@ -83,14 +83,14 @@ const TransactionAlerts = ({
 
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
-        event: MetaMetricsEventName.SignatureRequested,
+        event: 'Confirm: Started',
         properties: {
-          action: 'Sign Request',
+          action: 'Confirm Screen',
           ...blockaidMetricsParams,
         },
       });
     }
-  }, [txData?.securityAlertResponse]);
+  }, []);
   ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)

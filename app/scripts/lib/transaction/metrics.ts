@@ -32,16 +32,11 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import {
-  BlockaidReason,
-  BlockaidResultType,
-} from '../../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IN
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
+import { getBlockaidMetricsParams } from '../../../../ui/helpers/utils/metrics';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
@@ -925,46 +920,28 @@ async function buildEventFragmentProperties({
     }
   }
 
-  let uiCustomizations;
+  let uiCustomizations: string[] = [];
+
+  // eslint-disable-next-line no-lonely-if
+  if (securityProviderResponse?.flagAsDangerous === 1) {
+    uiCustomizations = ['flagged_as_malicious'];
+  } else if (securityProviderResponse?.flagAsDangerous === 2) {
+    uiCustomizations = ['flagged_as_safety_unknown'];
+  }
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  if (securityAlertResponse?.result_type === BlockaidResultType.Failed) {
-    uiCustomizations = ['security_alert_failed'];
-  } else {
-    ///: END:ONLY_INCLUDE_IN
-    // eslint-disable-next-line no-lonely-if
-    if (securityProviderResponse?.flagAsDangerous === 1) {
-      uiCustomizations = ['flagged_as_malicious'];
-    } else if (securityProviderResponse?.flagAsDangerous === 2) {
-      uiCustomizations = ['flagged_as_safety_unknown'];
-    } else {
-      uiCustomizations = null;
-    }
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  }
-  ///: END:ONLY_INCLUDE_IN
-
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  const additionalBlockaidParams = {} as Record<string, any>;
-
-  if (securityProviderResponse?.providerRequestsCount) {
-    Object.keys(securityProviderResponse.providerRequestsCount).forEach(
-      (key) => {
-        const metricKey = `ppom_${key}_count`;
-        additionalBlockaidParams[metricKey] =
-          securityProviderResponse.providerRequestsCount[key];
-      },
-    );
-  }
+  const additionalBlockaidParams = getBlockaidMetricsParams(
+    securityAlertResponse,
+  );
+  uiCustomizations = uiCustomizations.concat(
+    additionalBlockaidParams.ui_customizations,
+  );
   ///: END:ONLY_INCLUDE_IN
 
   if (simulationFails) {
-    if (uiCustomizations === null) {
-      uiCustomizations = ['gas_estimation_failed'];
-    } else {
-      uiCustomizations.push('gas_estimation_failed');
-    }
+    uiCustomizations.concat(['gas_estimation_failed']);
   }
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -985,14 +962,10 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
-    ui_customizations: uiCustomizations,
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-    security_alert_response:
-      securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
-    security_alert_reason:
-      securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
     ...additionalBlockaidParams,
     ///: END:ONLY_INCLUDE_IN
+    ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
     gas_estimation_failed: Boolean(simulationFails),
   } as Record<string, any>;
 

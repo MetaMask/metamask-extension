@@ -163,7 +163,7 @@ export default function TokenAllowance({
         },
       });
     }
-  }, [txData?.securityAlertResponse]);
+  }, []);
   ///: END:ONLY_INCLUDE_IN
 
   /**
