@@ -349,27 +349,33 @@ AutoComplete.args = {
   autoComplete: true,
   type: 'password',
   placeholder: 'Enter password',
+  value: '',
 };
 
 export const AutoFocus = Template.bind({});
-AutoFocus.args = { autoFocus: true };
+AutoFocus.args = { autoFocus: true, placeholder: 'AutoFocus', value: '' };
 
 export const DefaultValue = Template.bind({});
-DefaultValue.args = { defaultValue: 'Default value' };
+DefaultValue.args = {
+  defaultValue: 'Default value',
+};
+DefaultValue.args = {
+  value: DefaultValue.args.defaultValue || '',
+};
 
 export const Disabled = Template.bind({});
 Disabled.args = { disabled: true };
 
 export const ErrorStory = Template.bind({});
-ErrorStory.args = { error: true };
+ErrorStory.args = { error: true, value: '' };
 ErrorStory.storyName = 'Error';
 
 export const MaxLength = Template.bind({});
-MaxLength.args = { maxLength: 10, placeholder: 'Max length 10' };
+MaxLength.args = { maxLength: 10, placeholder: 'Max length 10', value: '' };
 
 export const ReadOnly = Template.bind({});
 ReadOnly.args = { readOnly: true, value: 'Read only' };
 
 export const RequiredStory = Template.bind({});
-RequiredStory.args = { required: true, placeholder: 'Required' };
+RequiredStory.args = { required: true, placeholder: 'Required', value: '' };
 RequiredStory.storyName = 'Required';
