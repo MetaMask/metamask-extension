@@ -72,10 +72,6 @@ describe('ExperimentalTab', () => {
     );
     expect(getAllByRole('link', { name: 'Terms of use' })[0]).toHaveAttribute(
       'href',
-      'https://blockaid.io/legal/metamask-ppom-privacy-policy/',
-    );
-    expect(getAllByRole('link', { name: 'Terms of use' })[1]).toHaveAttribute(
-      'href',
       'https://opensea.io/securityproviderterms',
     );
   });

@@ -57,20 +57,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             <h6
               class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--color-text-alternative"
             >
-              <span>
-                 
-                Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet. 
-                <a
-                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--bodyMd mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                  href="https://blockaid.io/legal/metamask-ppom-privacy-policy/"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  Terms of use
-                </a>
-                
-                 
-              </span>
+              Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet.
             </h6>
           </div>
           <label

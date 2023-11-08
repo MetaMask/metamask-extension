@@ -3124,10 +3124,6 @@
     "message": "インターネットにアクセスします。",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "snapによるインターネットへのアクセスを許可します。これはサードパーティサーバーとのデータの送受信の両方に使用できます。",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "$1 snapに接続します。",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3140,17 +3136,9 @@
     "message": "定期的なアクションのスケジュール設定と実行。",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "snapが、一定の時刻、日付、または間隔で定期的に実行されるアクションを実行することを許可します。これは、時間依存のやり取りや通知のトリガーに使用できます。",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "MetaMaskにダイアログウィンドウを表示します。",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "このsnapがカスタムテキスト、入力フィールド、アクションの承認・拒否ボタンを備えたMetaMaskポップアップを表示することを許可します。これは、snapのアラート、承認、オプトインフローなどの作成に使用される可能性があります。",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "アドレス、アカウント残高、アクティビティを表示して、承認するトランザクションを提案",
@@ -3160,25 +3148,9 @@
     "message": "イーサリアムプロバイダーにアクセスします。",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "ブロックチェーンのデータを読み込みメッセージやトランザクションを提案するために、snapによるMetaMaskとの直接の通信を許可します。",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "このsnapに固有の無作為なキーを導出します。",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "snapが、このsnapに固有の任意のキーを公開せずに導出することを許可します。これらのキーはMetaMaskアカウントとは別で、秘密鍵やシークレットリカバリーフレーズとは関連性がありません。他のsnapはこの情報にアクセスできません。",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "ライフサイクルフックを使用します。",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "snapがライフサイクルフックを使用して、ライフサイクルの特定のタイミングでコードを実行することを許可します。",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_manageAccounts": {
     "message": "イーサリアムアカウントを追加して管理します",
@@ -3188,41 +3160,18 @@
     "message": "デバイスにデータを保管し管理します。",
     "description": "The description for the `snap_manageState` permission"
   },
-  "permission_manageStateDescription": {
-    "message": "snapが暗号化を使用して安全にデータを保管、更新、取得することを許可します。他のsnapはこの情報にアクセスできません。",
-    "description": "An extended description for the `snap_manageState` permission"
-  },
   "permission_notifications": {
     "message": "通知を表示します。",
     "description": "The description for the `snap_notify` permission"
-  },
-  "permission_notificationsDescription": {
-    "message": "snapがMetaMask内に通知を表示することを許可します。snapは、行動を促す情報や緊急性の高い情報に関する短い通知テキストをトリガーできます。",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "$1によるこのsnapとの直接のやり取りを許可してください。",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "$1によるsnapへのメッセージの送信とsnapからの応答の受信を許可します。",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
   },
   "permission_transactionInsight": {
     "message": "トランザクションインサイトを取得して表示します。",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "snapによるトランザクションのデコードと、MetaMask UI内でのインサイトの表示を許可します。これは、フィッシング対策やセキュリティソリューションに使用できます。",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
+
   "permission_transactionInsightOrigin": {
     "message": "トランザクションを提案しているWebサイトの提供元を確認します",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "snapが、トランザクションを提案するWebサイトの転送元 (URI) を確認することを許可します。これは、フィッシング対策やセキュリティソリューションに使用できます。",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "不明な許可: $1",
@@ -3232,10 +3181,6 @@
     "message": "$1 ($2) の公開鍵を表示します。",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "snapが、$1の公開鍵 (およびアドレス) を表示することを許可します。これは、アカウントやアセットのコントロールを許可するものでは一切ありません。",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "$1の公開鍵を表示します。",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3243,10 +3188,6 @@
   "permission_webAssembly": {
     "message": "WebAssemblyのサポート",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "snapがWebAssemblyを介して低レベルの実行環境にアクセスすることを許可します。",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "許可"
