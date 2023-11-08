@@ -20,6 +20,13 @@ const SCROLL_GAS_PRICE_ORACLE_ABI = [
 const SCROLL_GAS_PRICE_ORACLE_ADDRESS =
   '0x5300000000000000000000000000000000000002';
 
+/**
+ * Fetches the estimated L1 fee for the transaction by calling Scroll L1 Gas Oracle.
+ *
+ * @param chainId - The id of the chain we're calculating the L1 fee for
+ * @param txMeta - Metadata of the transaction
+ * @param ethersProvider - Ethers provider used for interacting with the Oracles
+ */
 export default async function fetchEstimatedL1Fee(
   chainId,
   txMeta,
