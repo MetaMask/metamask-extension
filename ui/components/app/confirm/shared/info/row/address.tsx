@@ -10,6 +10,7 @@ import {
   BorderColor,
   Display,
   FlexDirection,
+  TextColor,
 } from '../../../../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../../../../helpers/utils/util';
 import Tooltip from '../../../../../ui/tooltip/tooltip';
@@ -32,7 +33,9 @@ export const ConfirmInfoRowAddress = ({
       borderColor={BorderColor.transparent}
     />
     <Tooltip position="top" title={address} interactive>
-      <Text marginLeft={2}>{shortenAddress(address)}</Text>
+      <Text marginLeft={2} color={TextColor.inherit}>
+        {shortenAddress(address)}
+      </Text>
     </Tooltip>
   </Box>
 );

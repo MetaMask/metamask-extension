@@ -63,6 +63,7 @@ export const ConfirmInfoRow = ({
     marginBottom={2}
     paddingLeft={1}
     paddingRight={1}
+    color={TEXT_COLORS[variant] as TextColor}
   >
     <Box
       display={Display.Flex}
@@ -70,10 +71,7 @@ export const ConfirmInfoRow = ({
       justifyContent={JustifyContent.center}
       alignItems={AlignItems.center}
     >
-      <Text
-        variant={TextVariant.bodyMdMedium}
-        color={TEXT_COLORS[variant] as TextColor}
-      >
+      <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
         {label}
       </Text>
       {tooltip && tooltip.length > 0 && (
@@ -87,7 +85,7 @@ export const ConfirmInfoRow = ({
       )}
     </Box>
     {typeof children === 'string' ? (
-      <Text color={TEXT_COLORS[variant] as TextColor}>{children}</Text>
+      <Text color={TextColor.inherit}>{children}</Text>
     ) : (
       children
     )}

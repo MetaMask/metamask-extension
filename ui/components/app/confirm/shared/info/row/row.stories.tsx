@@ -1,12 +1,19 @@
 import React from 'react';
-import { ConfirmInfoRow } from './row';
+import { ConfirmInfoRow, ConfirmInfoRowVariant } from './row';
 
 const ConfirmInfoRowStory = {
   title: 'Components/App/Confirm/InfoRow',
 
   component: ConfirmInfoRow,
   argTypes: {
+    variant: {
+      control: 'select',
+      options: Object.values(ConfirmInfoRowVariant),
+    },
     label: {
+      control: 'text',
+    },
+    children: {
       control: 'text',
     },
   },

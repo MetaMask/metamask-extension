@@ -28,6 +28,6 @@ export const ConfirmInfoRowValueDouble = ({
     }}
   >
     <Text color={TextColor.textMuted}>{left}</Text>
-    <Text>{right}</Text>
+    <Text color={TextColor.inherit}>{right}</Text>
   </Box>
 );
