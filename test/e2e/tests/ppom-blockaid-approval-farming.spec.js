@@ -98,29 +98,6 @@ async function mockInfura(mockServer) {
       method: 'eth_call',
       params: [
         {
-          data: '0x01ffc9a7780e9d6300000000000000000000000000000000000000000000000000000000',
-          to: CONTRACT_ADDRESS.BAYC,
-        },
-      ],
-    })
-    .thenCallback((req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: req.body.json.id,
-          result:
-            '0x0000000000000000000000000000000000000000000000000000000000000001',
-        },
-      };
-    });
-
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({
-      method: 'eth_call',
-      params: [
-        {
           data: '0x0178b8bfdae332162d22107623083e6e5828680f44a51ee4fe7b05210f01785df2e81d6d',
           to: CONTRACT_ADDRESS.ENSRegistryWithFallback,
         },
@@ -161,6 +138,7 @@ async function mockInfura(mockServer) {
       };
     });
 
+  // 1
   await mockServer
     .forPost()
     .withJsonBodyIncluding({
@@ -205,24 +183,6 @@ async function mockInfura(mockServer) {
             type: 'CALL',
             value: '0x0',
           },
-        },
-      };
-    });
-
-  await mockServer
-    .forPost()
-    .withJsonBodyIncluding({
-      method: 'eth_call',
-      params: [{ data: '0x95d89b41', to: CONTRACT_ADDRESS.BAYC }],
-    })
-    .thenCallback((req) => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: req.body.json.id,
-          result:
-            '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000044241594300000000000000000000000000000000000000000000000000000000',
         },
       };
     });
