@@ -1062,7 +1062,7 @@ jobs:
 
   test-e2e-mmi-playwright - OPTIONAL:
     executor: playwright
-    parallelism: 4
+    parallelism: 2
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
