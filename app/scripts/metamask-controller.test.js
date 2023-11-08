@@ -765,6 +765,56 @@ describe('MetaMaskController', () => {
     });
 
     describe('forgetDevice', () => {
+      let localMetaMaskController;
+
+      beforeEach(async () => {
+        jest.spyOn(window, 'open').mockReturnValue();
+
+        localMetaMaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: {
+            encrypt(_, object) {
+              this.object = object;
+              return Promise.resolve('mock-encrypted');
+            },
+            decrypt() {
+              return Promise.resolve(this.object);
+            },
+          },
+          initState: {
+            ...cloneDeep(firstTimeState),
+            KeyringController: {
+              keyrings: [{ type: KeyringType.trezor, accounts: ['0x123'] }],
+              isUnlocked: true,
+            },
+            PreferencesController: {
+              identities: {
+                '0x123': { name: 'Trezor 1', address: '0x123' },
+              },
+              selectedAddress: '0x123',
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        localMetaMaskController.keyringController.createNewVaultAndKeychain(
+          'password',
+        );
+
+        localMetaMaskController.keyringController.addNewKeyring(
+          'Trezor Hardware',
+          {
+            accounts: ['0x123'],
+          },
+        );
+      });
       it('should throw if it receives an unknown device name', async () => {
         const result = metamaskController.forgetDevice(
           'Some random device name',
@@ -772,6 +822,13 @@ describe('MetaMaskController', () => {
         await expect(result).rejects.toThrow(
           'MetamaskController:getKeyringForDevice - Unknown device',
         );
+      });
+
+      it('should remove the identities when the device is forgotten', async () => {
+        await localMetaMaskController.forgetDevice(HardwareDeviceNames.trezor);
+        const { identities: updatedIdentities } =
+          localMetaMaskController.preferencesController.store.getState();
+        expect(updatedIdentities['0x123']).toBeUndefined();
       });
 
       it('should wipe all the keyring info', async () => {
