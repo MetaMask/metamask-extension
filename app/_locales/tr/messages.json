@@ -3124,10 +3124,6 @@
     "message": "İnternete erişim sağla.",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "Snapin internete erişim sağlamasına izin verin. Üçüncü taraf sunucuları ile hem veri göndermek hem de veri almak için kullanılabilir.",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "$1 snape bağlan.",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3140,17 +3136,9 @@
     "message": "Periyodik eylemleri planla ve gerçekleştir.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "Snap'in sabit saat, tarih veya aralıklarda periyodik olarak çalışan eylemleri gerçekleştirmesine izin verin. Zamana duyarlı etkileşim ya da bildirimleri tetiklemek için kullanılabilir.",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "MetaMask'te iletişim kutusu pencerelerini göster.",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "Snapin bir eylemi onaylamak ya da reddetmek için özel metin, giriş alanı ve düğmelerle MetaMask açılır pencerelerini göstermesine izin verin.\nBir snap için ör. uyarı, onay ve talep edilen akış oluşturmak için kullanılabilir.",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "Adrese, hesap bakiyesine, aktiviteye bakın ve işlemleri başlatın",
@@ -3160,25 +3148,9 @@
     "message": "Ethereum sağlayıcısına ulaş.",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "Blokzincirinden veri okuyabilmesi ve mesaj ile işlemleri önerebilmesi için snap'in doğrudan MetaMask ile iletişim kurmasına izin verin.",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "Bu snap için eşsiz rastgele anahtarları türet.",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "Snapin, ifşa etmeden, bu snap'e özel rastgele anahtarlar türetmesine izin verin. Bu anahtarlar MetaMask hesap veya hesaplarınızdan ayrıdır ve özel anahtarlarınızla ya da Gizli Kurtarma İfadenizle bağlantılı değildir. Diğer snapler bu bilgilere erişim sağlayamaz.",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "Yaşam döngüsü kancalarını kullanın.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Bu yaşam döngüsü sırasında belirli zamanlarda kod çalıştırmak için snapin yaşam döngüsü kancalarını kullanmasına izin verin.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum hesaplarını ekle ve kontrol et",
@@ -3188,41 +3160,17 @@
     "message": "Verilerini cihazında sakla ve yönet.",
     "description": "The description for the `snap_manageState` permission"
   },
-  "permission_manageStateDescription": {
-    "message": "Snapin şifreleme ile güvenli bir şekilde veri depolamasına, güncellemesine ve almasına izin verin. Diğer snapler bu bilgilere erişim sağlayamaz.",
-    "description": "An extended description for the `snap_manageState` permission"
-  },
   "permission_notifications": {
     "message": "Bildirimleri göster.",
     "description": "The description for the `snap_notify` permission"
-  },
-  "permission_notificationsDescription": {
-    "message": "Snapin MetaMask dahilinde bildirim göstermesine izin verin. Eyleme geçirilebilir ya da zamana duyarlı bilgiler için bir snap tarafından kısa bir bildirim metni tetiklenebilir.",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "$1 bu snaple doğrudan iletişim kurabilsin.",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "$1 için snape mesaj gönderme ve snapten yanıt alma izni verin.",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
   },
   "permission_transactionInsight": {
     "message": "İşlem içgörülerini al ve görüntüle.",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "Snapin işlemlerin şifresini çözmesine ve MetaMask Kullanıcı Arayüzü dahilinde içgörüleri göstermesine izin verin. Kimlik avından korunma ve güvenlik çözümleri için kullanılabilir.",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "İşlem öneren web sitelerinin kökenlerini gör",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "Snapin işlem öneren web sitelerinin asıl adresini (URI) görmesine izin verin. Kimlik avından korunma ve güvenlik çözümleri için kullanılabilir.",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Bilinmeyen izin: $1",
@@ -3232,10 +3180,6 @@
     "message": "$1 ($2) için genel anahtarınızı görüntüleyin.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "Snapin $1 için genel anahtarları (ve adresleri) görüntülemesine izin verin. Bu eylem, herhangi bir şekilde hesapların ya da varlıkların kontrolünü vermez.",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "$1 için genel anahtarınızı görüntüleyin.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3243,10 +3187,6 @@
   "permission_webAssembly": {
     "message": "WebAssembly desteği.",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "Snapin WebAssembly aracılığıyla düşük seviye gerçekleştirme ortamlarına erişim sağlamasına izin verin.",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "İzinler"

@@ -220,7 +220,7 @@
     "message": "यह महत्वपूर्ण है कि आपका प्रोवाइडर विश्वसनीय हो, क्योंकि उसके पास निम्नलिखित अधिकार हैं:"
   },
   "addEthereumChainWarningModalListPointOne": {
-    "message": "आपके एकाउंट्स और आईपी ​​एड्रेस देखने की, और उन्हें एक साथ जोड़ने की"
+    "message": "आपके एकाउंट्स और आईपी   एड्रेस देखने की, और उन्हें एक साथ जोड़ने की"
   },
   "addEthereumChainWarningModalListPointThree": {
     "message": "अकाउंट बैलेंस और अन्य ऑन-चेन स्टेट दिखाने की"
@@ -3124,10 +3124,6 @@
     "message": "इंटरनेट एक्सेस करें।",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "Snap को इंटरनेट एक्सेस करने दें। इसका इस्तेमाल थर्ड-पार्टी सर्वर के साथ डेटा भेजने और प्राप्त करने दोनों के लिए किया जा सकता है।",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "$1 Snap से कनेक्ट करें।",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3140,17 +3136,9 @@
     "message": "समय-समय पर आने वाले क्रियाओं को शेड्यूल और निष्पादित करें।",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "Snap को अनुमति दें ताकि वह नियत समय, दिनांक या अंतराल पर चलने वाली कार्रवाइयां कर सके। इसका इस्तेमाल समय-संवेदी इंटरैक्शन या सूचनाओं को ट्रिगर करने के लिए किया जा सकता है।",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "MetaMask में डायलॉग विंडो प्रदर्शित करें।",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "Snap को MetaMask पॉपअप को कस्टम टेक्स्ट, इनपुट फील्ड और किसी कार्वराई को स्वीकृत या रिजेक्ट करने के बटन दिखाने की अनुमति दें।\nउदाहरण के लिए Snap के लिए अलर्ट, कन्फर्मेशन और ऑप्ट-इन प्रवाह सृजित करने के लिए इसका इस्तेमाल किया जा सकता है।",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "एड्रेस, अकाउंट का बैलेंस, एक्टिविटी देखें और ट्रांसेक्शन शुरू करें",
@@ -3160,25 +3148,9 @@
     "message": "Ethereum प्रोवाइडर को ऐक्सेस करें।",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "Snap को MetaMask के साथ सीधे संवाद करने की अनुमति दें, ताकि वह ब्लॉकचेन से डेटा पढ़ सके और मैसेज और ट्रांसेक्शन का सुझाव दे सके।",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "इस Snap के लिए अनूठी स्वेच्छित कुंजियां प्राप्त करें।",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "Snap को इस Snap के लिए विशिष्ट विवेकाधीन चाबियों को बिना उन्हें उजागर किए, प्राप्त करने की अनुमति दें। ये चाबियां आपके MetaMask अकाउंट (एकाउंट्स) से अलग हैं और आपकी निजी चाबियों या सीक्रेट रिकवरी फ्रेज से संबंधित नहीं हैं। इस जानकारी को अन्य Snaps एक्सेस नहीं कर सकते हैं।",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "लाइफसाइकल हुक्स का इस्तेमाल करें।",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Snap को उसके लाइफसाइकल के दौरान खास समयों पर कोड चलाने के लिए लाइफसाइकल हुक का इस्तेमाल करने की अनुमति दें।",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum अकाउंट जोड़ें और नियंत्रित करें",
@@ -3188,41 +3160,17 @@
     "message": "उसके डेटा को अपने डिवाइस पर स्टोर करें और प्रबंधित करें।",
     "description": "The description for the `snap_manageState` permission"
   },
-  "permission_manageStateDescription": {
-    "message": "Snap को एन्क्रिप्शन के साथ सुरक्षित रूप से डेटा को स्टोर करने, अपडेट करने और पुनः प्राप्त करने की अनुमति दें। अन्य Snaps इस जानकारी को एक्सेस नहीं कर सकते हैं।",
-    "description": "An extended description for the `snap_manageState` permission"
-  },
   "permission_notifications": {
     "message": "नोटीफिकेशंस दिखाएं।",
     "description": "The description for the `snap_notify` permission"
-  },
-  "permission_notificationsDescription": {
-    "message": "Snap को MetaMask के भीतर सूचनाएं दिखाने की अनुमति दें। कार्रवाई योग्य या समय-संवेदी जानकारी के लिए एक शॉर्ट नोटिफिकेशन टेक्स्ट को Snap द्वारा ट्रिगर किया जा सकता है।",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "$1 को इस Snap से सीधे संवाद करने की अनुमति दें।",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "Snap को मैसेज भेजने और Snap से प्रतिक्रिया प्राप्त करने के लिए $1 को अनुमति दें।",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
   },
   "permission_transactionInsight": {
     "message": "ट्रांजैक्शन इनसाइट्स प्राप्त करें और प्रदर्शित करें।",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "Snap को ट्रांसेक्शन को डिकोड करने और MetaMask UI के भीतर इनसाइट्स दिखाने की अनुमति दें। इसका इस्तेमाल एंटी-फिशिंग और सुरक्षा समाधान के लिए किया जा सकता है।",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "ट्रांसेक्शन का सुझाव देने वाली वेबसाइटों की स्रोत देखें",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "Snap को ट्रांसेक्शन का सुझाव देने वाली वेबसाइटों की जड़ों (URI) को देखने की अनुमति दें। इसका इस्तेमाल एंटी-फिशिंग और सुरक्षा समाधान के लिए किया जा सकता है।",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "अज्ञात अनुमति: $1",
@@ -3232,10 +3180,6 @@
     "message": "$1 ($2) के लिए अपनी पब्लिक की को देखें।",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "Snap को $1 के लिए आपकी सार्वजनिक चाबियों (और पतों) को देखने की अनुमति दें। यह एकाउंट्स या संपत्तियों पर कोई नियंत्रण प्रदान नहीं करता है।",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "$1 के लिए अपनी पब्लिक की को देखें",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3243,10 +3187,6 @@
   "permission_webAssembly": {
     "message": "वेब असेंबली के लिए सपोर्ट।",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "Snap को WebAssembly के माध्यम से निम्न-स्तरीय निष्पादन वातावरण को एक्सेस करने की अनुमति दें।",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "अनुमतियाँ"
