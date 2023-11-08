@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { createContext } from 'react';
 import Tooltip from '../../../../../ui/tooltip/tooltip';
 import { Box, Icon, IconName, Text } from '../../../../../component-library';
 import {
@@ -46,48 +46,54 @@ const TOOLTIP_ICONS = {
   [ConfirmInfoRowVariant.Warning]: IconName.Warning,
 };
 
+export const ConfirmInfoRowContext = createContext({
+  variant: ConfirmInfoRowVariant.Default,
+});
+
 export const ConfirmInfoRow = ({
   label,
   children,
   variant = ConfirmInfoRowVariant.Default,
   tooltip,
 }: ConfirmInfoRowProps) => (
-  <Box
-    display={Display.Flex}
-    flexDirection={FlexDirection.Row}
-    justifyContent={JustifyContent.spaceBetween}
-    flexWrap={FlexWrap.Wrap}
-    backgroundColor={BACKGROUND_COLORS[variant]}
-    borderRadius={BorderRadius.SM}
-    marginTop={2}
-    marginBottom={2}
-    paddingLeft={1}
-    paddingRight={1}
-    color={TEXT_COLORS[variant] as TextColor}
-  >
+  <ConfirmInfoRowContext.Provider value={{ variant }}>
     <Box
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.center}
-      alignItems={AlignItems.center}
+      justifyContent={JustifyContent.spaceBetween}
+      flexWrap={FlexWrap.Wrap}
+      backgroundColor={BACKGROUND_COLORS[variant]}
+      borderRadius={BorderRadius.SM}
+      marginTop={2}
+      marginBottom={2}
+      paddingLeft={1}
+      paddingRight={1}
+      color={TEXT_COLORS[variant] as TextColor}
     >
-      <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
-        {label}
-      </Text>
-      {tooltip && tooltip.length > 0 && (
-        <Tooltip title={tooltip} style={{ display: 'flex' }}>
-          <Icon
-            name={TOOLTIP_ICONS[variant]}
-            marginLeft={1}
-            color={TEXT_COLORS[variant] as unknown as IconColor}
-          />
-        </Tooltip>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.center}
+        alignItems={AlignItems.center}
+      >
+        <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
+          {label}
+        </Text>
+        {tooltip && tooltip.length > 0 && (
+          <Tooltip title={tooltip} style={{ display: 'flex' }}>
+            <Icon
+              name={TOOLTIP_ICONS[variant]}
+              marginLeft={1}
+              color={TEXT_COLORS[variant] as unknown as IconColor}
+            />
+          </Tooltip>
+        )}
+      </Box>
+      {typeof children === 'string' ? (
+        <Text color={TextColor.inherit}>{children}</Text>
+      ) : (
+        children
       )}
     </Box>
-    {typeof children === 'string' ? (
-      <Text color={TextColor.inherit}>{children}</Text>
-    ) : (
-      children
-    )}
-  </Box>
+  </ConfirmInfoRowContext.Provider>
 );
