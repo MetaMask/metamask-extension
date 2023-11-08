@@ -353,7 +353,7 @@
     "qrcode-generator": "1.4.1",
     "qrcode.react": "^1.0.1",
     "react": "^16.12.0",
-    "react-beautiful-dnd": "patch:react-beautiful-dnd@npm%3A13.1.1#~/.yarn/patches/react-beautiful-dnd-npm-13.1.1-ddc8adf565.patch",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^16.12.0",
     "react-focus-lock": "^2.9.4",
     "react-idle-timer": "^4.2.5",

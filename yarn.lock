@@ -24545,7 +24545,7 @@ __metadata:
     qrcode.react: "npm:^1.0.1"
     randomcolor: "npm:^0.5.4"
     react: "npm:^16.12.0"
-    react-beautiful-dnd: "patch:react-beautiful-dnd@npm%3A13.1.1#~/.yarn/patches/react-beautiful-dnd-npm-13.1.1-ddc8adf565.patch"
+    react-beautiful-dnd: "npm:^13.1.1"
     react-devtools: "npm:^4.11.0"
     react-dom: "npm:^16.12.0"
     react-focus-lock: "npm:^2.9.4"
@@ -28636,7 +28636,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-beautiful-dnd@npm:13.1.1":
+"react-beautiful-dnd@npm:^13.1.1":
   version: 13.1.1
   resolution: "react-beautiful-dnd@npm:13.1.1"
   dependencies:
@@ -28651,24 +28651,6 @@ __metadata:
     react: ^16.8.5 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.5 || ^17.0.0 || ^18.0.0
   checksum: 2de8162a74f7fc78294e5a928b92d3fff02c579d137a25d53b1ab4313abeb108709bb7281512f7f94d18257de3122b8c85cb5a8375113cb8657088b1a9bda65b
-  languageName: node
-  linkType: hard
-
-"react-beautiful-dnd@patch:react-beautiful-dnd@npm%3A13.1.1#~/.yarn/patches/react-beautiful-dnd-npm-13.1.1-ddc8adf565.patch":
-  version: 13.1.1
-  resolution: "react-beautiful-dnd@patch:react-beautiful-dnd@npm%3A13.1.1#~/.yarn/patches/react-beautiful-dnd-npm-13.1.1-ddc8adf565.patch::version=13.1.1&hash=5cbb75"
-  dependencies:
-    "@babel/runtime": "npm:^7.9.2"
-    css-box-model: "npm:^1.2.0"
-    memoize-one: "npm:^5.1.1"
-    raf-schd: "npm:^4.0.2"
-    react-redux: "npm:^7.2.0"
-    redux: "npm:^4.0.4"
-    use-memo-one: "npm:^1.1.1"
-  peerDependencies:
-    react: ^16.8.5 || ^17.0.0 || ^18.0.0
-    react-dom: ^16.8.5 || ^17.0.0 || ^18.0.0
-  checksum: 64928a9baf44fa1bff56c76394f97e145aeec323bd5838840ae6d3c1328c1e8228f99e2361e57cccef99b20f5c76b4aadbffecf316fa658fa2dd809099bdf79c
   languageName: node
   linkType: hard
 
