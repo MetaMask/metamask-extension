@@ -1245,6 +1245,7 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:stateChange',
           'KeyringController:lock',
           'KeyringController:unlock',
+          'TokenListController:stateChange',
         ],
       });
     this.detectTokensController = new DetectTokensController({
