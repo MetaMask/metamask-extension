@@ -105,28 +105,6 @@ export class CustodianTestClient implements ICustodianTestClient {
     return /submitted|mined/iu;
   }
 
-  private async getEIP721SignatureTransactionStatusCreated() {
-    const authorization = this.bearerToken;
-    return await axios
-      .get(
-        `${baseUrl}/custodian/eip-712-signature?transactionStatuses=created`,
-        {
-          headers: {
-            authorization,
-            'Content-Type': 'application/json',
-          },
-        },
-      )
-      .then(function (response) {
-        expect(response.status).toBe(200);
-        return response.data;
-      })
-      .catch(function (error) {
-        console.log(error.response.data);
-        throw error;
-      });
-  }
-
   public async signEIP721MessageV4(signedTransactionTime?: string) {
     // Sign Typed Data
     const id = await this.getTxByMessageContentCreated(signedTransactionTime);
@@ -153,10 +131,32 @@ export class CustodianTestClient implements ICustodianTestClient {
   }
 
   public async signEIP721MessageV3(signedTransactionTime?: string) {
-    // Sign Typed Data
-    const transaction = await this.getEIP721TransactionStatusCreatedByTimestamp(
-      signedTransactionTime as string,
-    );
+    const maxRetries = 3;
+    const retryInterval = 3000;
+    let retries = 0;
+    let transaction: any;
+    while (retries < maxRetries) {
+      try {
+        // Sign Typed Data
+        transaction = await this.getEIP721TransactionStatusCreatedByTimestamp(
+          signedTransactionTime as string,
+        );
+        if (!transaction) {
+          throw Error('Tx not found');
+        }
+        break;
+      } catch (error) {
+        console.log(error);
+        retries += 1;
+        if (retries < maxRetries) {
+          console.log(`Retrying in ${retryInterval / 1000} seconds...`);
+          await new Promise((resolve) => setTimeout(resolve, retryInterval));
+        } else {
+          throw error;
+        }
+      }
+    }
+
     const authorization = this.bearerToken;
     const dataRaw = { transactionStatus: 'signed' };
     await axios
@@ -187,8 +187,7 @@ export class CustodianTestClient implements ICustodianTestClient {
     let retries = 0;
     while (retries < maxRetries) {
       try {
-        const transactions =
-          await this.getEIP721SignatureTransactionStatusCreated();
+        const transactions = await this.getEIP721TransactionStatusCreated();
         const { id } = transactions.find(
           (transaction: any) =>
             transaction?.payload?.message?.contents === signedTransactionTime,
@@ -237,20 +236,42 @@ export class CustodianTestClient implements ICustodianTestClient {
       });
   }
 
-  async getPersonalSignatureTransactionStatusCreatedByTimestamp(
+  private async getPersonalSignatureTransactionStatusCreatedByTimestamp(
     signedTransactionTime: string,
   ) {
-    const transactions =
-      await this.getPersonalSignatureTransactionStatusCreated();
-    // get the tx with closest to signedTransactionTime
-    const diffTime = transactions.map((tx: { createdAt: string }) =>
-      Math.abs(
-        new Date(tx.createdAt).getTime() - parseInt(signedTransactionTime, 10),
-      ),
+    const maxRetries = 3;
+    const retryInterval = 3000;
+    let retries = 0;
+    while (retries < maxRetries) {
+      try {
+        const transactions =
+          await this.getPersonalSignatureTransactionStatusCreated();
+        // Throw an error if transactions is undefined or its size is 0
+        if (!transactions || transactions.length === 0) {
+          throw new Error('No transactions found.');
+        }
+        // get the tx with closest to signedTransactionTime
+        const diffTime = transactions.map((tx: { createdAt: string }) =>
+          Math.abs(
+            new Date(tx.createdAt).getTime() -
+              parseInt(signedTransactionTime, 10),
+          ),
+        );
+        const min = Math.min(...diffTime);
+        const index = diffTime.indexOf(min);
+        return transactions[index];
+      } catch (e) {
+        console.error(e);
+      }
+      retries += 1;
+      if (retries < maxRetries) {
+        console.log(`Retrying in ${retryInterval / 1000} seconds...`);
+        await new Promise((resolve) => setTimeout(resolve, retryInterval));
+      }
+    }
+    throw new Error(
+      `👎 Max retries (${maxRetries}) reached. Personal Signature tx not found.`,
     );
-    const min = Math.min(...diffTime);
-    const index = diffTime.indexOf(min);
-    return transactions[index];
   }
 
   async getEIP721TransactionStatusCreatedByTimestamp(

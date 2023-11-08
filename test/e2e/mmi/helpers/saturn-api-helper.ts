@@ -109,22 +109,6 @@ export class SaturnAPIClient {
     return json;
   }
 
-  async getPersonalSignatureTransactionStatusCreatedByTimestamp(
-    signedTransactionTime: string,
-  ) {
-    const transactions =
-      await this.getPersonalSignatureTransactionStatusCreated();
-    // get the tx with closest to signedTransactionTime
-    const diffTime = transactions.map((tx: { createdAt: string }) =>
-      Math.abs(
-        new Date(tx.createdAt).getTime() - parseInt(signedTransactionTime, 10),
-      ),
-    );
-    const min = Math.min(...diffTime);
-    const index = diffTime.indexOf(min);
-    return transactions[index];
-  }
-
   async patchPersonalSignatureTransaction(id: string, newStatus: string) {
     const authorization = `${this.bearerToken}`;
     const dataRaw = { transactionStatus: `${newStatus}` };
