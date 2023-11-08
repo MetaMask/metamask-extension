@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Kung tatangkain mong magpadala ng mga asset nang direkta mula sa isang network papunta sa isa pa, maaari itong magresulta sa permanenteng pagkawala ng asset. Siguraduhing gumamit ng bridge."
   },
-  "attemptToCancelSwap": {
-    "message": "Magtangkang kanselahin ang pag-swap sa halagang ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
   },

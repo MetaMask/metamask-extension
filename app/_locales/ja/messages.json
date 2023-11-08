@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "1つのネットワークから別のネットワークに直接アセットを送ろうとすると、アセットが永久に失われる可能性があります。必ずブリッジを使用してください。"
   },
-  "attemptToCancelSwap": {
-    "message": "~$1でスワップのキャンセルを試行",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "ブロックチェーンへの接続を試みています。"
   },

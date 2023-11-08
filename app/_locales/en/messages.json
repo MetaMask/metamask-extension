@@ -480,9 +480,8 @@
   "attemptSendingAssets": {
     "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
-  "attemptToCancelSwap": {
-    "message": "Attempt to cancel swap for ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
+  "attemptToCancelSwapForFree": {
+    "message": "Attempt to cancel swap for free"
   },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."

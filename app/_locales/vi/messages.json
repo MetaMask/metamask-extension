@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Nếu bạn cố gắng gửi tài sản trực tiếp từ mạng này sang mạng khác, bạn có thể bị mất tài sản vĩnh viễn. Hãy nhớ sử dụng cầu nối."
   },
-  "attemptToCancelSwap": {
-    "message": "Cố gắng hủy hoán đổi với giá ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Đang cố gắng kết nối với chuỗi khối."
   },

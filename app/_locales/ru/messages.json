@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Попытка отправки активов напрямую из одной сети в другую может привести к необратимой потере активов. Следует использовать мост."
   },
-  "attemptToCancelSwap": {
-    "message": "Попытка отменить своп на ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Попытка подключения к блокчейну..."
   },

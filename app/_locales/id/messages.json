@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Jika Anda mencoba untuk mengirim aset secara langsung dari satu jaringan ke jaringan lain, aset Anda berpotensi hilang secara permanen. Pastikan untuk menggunakan bridge."
   },
-  "attemptToCancelSwap": {
-    "message": "Mencoba membatalkan pertukaran dengan biaya ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Mencoba terhubung ke blockchain."
   },

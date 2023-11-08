@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "如果您试图将资产从一个网络直接发送到另一个网络，这可能会导致永久的资产损失。请务必使用跨链桥进行操作。"
   },
-  "attemptToCancelSwap": {
-    "message": "尝试取消兑换 ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "正在尝试连接到区块链。"
   },

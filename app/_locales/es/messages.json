@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Si intenta enviar activos directamente de una red a otra, esto puede provocar la pérdida permanente de activos. Asegúrese de utilizar un puente."
   },
-  "attemptToCancelSwap": {
-    "message": "Intentar cancelar el intercambio por ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Intentando una conexión a la cadena de bloques."
   },

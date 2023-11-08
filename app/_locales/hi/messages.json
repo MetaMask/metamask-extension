@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "यदि आप एसेट्स को सीधे एक नेटवर्क से दूसरे नेटवर्क पर भेजने की कोशिश करते हैं, तो इस वजह से स्थायी एसेट्स का नुकसान हो सकता है। ब्रिज का इस्तेमाल करना पक्का करें।"
   },
-  "attemptToCancelSwap": {
-    "message": "~$1 के लिए स्वैप कैंसिल करने की कोशिश करें",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "ब्लॉकचेन से कनेक्ट करने की कोशिश कर रहे हैं।"
   },

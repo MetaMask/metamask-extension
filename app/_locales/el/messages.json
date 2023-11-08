@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Εάν επιχειρήσετε να στείλετε περιουσιακά στοιχεία απευθείας από ένα δίκτυο σε ένα άλλο, αυτό ενδέχεται να οδηγήσει σε μόνιμη απώλεια περιουσιακών στοιχείων. Βεβαιωθείτε ότι χρησιμοποιείτε μια διασύνδεση."
   },
-  "attemptToCancelSwap": {
-    "message": "Προσπάθεια ακύρωσης της ανταλλαγής για ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Προσπάθεια σύνδεσης στο blockchain."
   },

@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, une perte permanente des actifs pourrait en résulter. Assurez-vous d’utiliser une passerelle."
   },
-  "attemptToCancelSwap": {
-    "message": "Tentative d’annulation du swap pour ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Tentative de connexion au réseau"
   },
