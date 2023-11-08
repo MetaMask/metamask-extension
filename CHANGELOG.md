@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix bug that caused Blockaid integration to only display the fallback screen if the user had just switched network ([#21518](https://github.com/MetaMask/metamask-extension/pull/21518))
 ### Added
-- Adopt new version of `@metamask/signature-controller` to add signature operation logs ([#21207)](https://github.com/MetaMask/metamask-extension/pull/21207))
+- Include logs of signature operations in the metamask state logs ([#21207)](https://github.com/MetaMask/metamask-extension/pull/21207))
 
 ### Changed
 - Show number of tokens to be imported ([#21521)](https://github.com/MetaMask/metamask-extension/pull/21521))
@@ -23,7 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update label for buy and sell to avoid truncation ([#21568)](https://github.com/MetaMask/metamask-extension/pull/21568))
 - Remove AccountPicker hover styling when disabled ([#21451)](https://github.com/MetaMask/metamask-extension/pull/21451))
 - Remove PickerNetwork active background color change when disabled ([#21450)](https://github.com/MetaMask/metamask-extension/pull/21450))
-- Remove unused KeyringLabel ([#21446)](https://github.com/MetaMask/metamask-extension/pull/21446))
 - Ensure copy format is plain text ([#21387 ](https://github.com/MetaMask/metamask-extension/pull/21387))
 
 ### Fixed
@@ -37,8 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix sent integer token amount in the activity tab ([#21338)](https://github.com/MetaMask/metamask-extension/pull/21338))
 - Tweak Box Design System component to fix overflow issues ([#21317)](https://github.com/MetaMask/metamask-extension/pull/21317))
 - Fix alignment of legacy connect text ([#21552)](https://github.com/MetaMask/metamask-extension/pull/21552))
-- Reduce setMouseUserState calls to prevent re-renders ([#21443)](https://github.com/MetaMask/metamask-extension/pull/21443))
-- Fixed network picker in header of the Popup view ([#21374)](https://github.com/MetaMask/metamask-extension/pull/21374))
+- Remove network name from the network picker in the Popup view ([#21374)](https://github.com/MetaMask/metamask-extension/pull/21374))
 
 ## [11.4.0]
 ### Added
