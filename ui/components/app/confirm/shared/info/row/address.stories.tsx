@@ -3,7 +3,7 @@ import { ConfirmInfoRow } from './row';
 import { ConfirmInfoRowAddress } from './address';
 
 const ConfirmInfoRowAddressStory = {
-  title: 'Components/App/Confirmations/Inline Address',
+  title: 'Components/App/Confirm/InfoRowAddress',
 
   component: ConfirmInfoRowAddress,
   argTypes: {
