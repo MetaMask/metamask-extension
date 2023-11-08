@@ -32,6 +32,12 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../../shared/constants/security-provider';
+///: END:ONLY_INCLUDE_IN
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
@@ -920,28 +926,35 @@ async function buildEventFragmentProperties({
     }
   }
 
-  let uiCustomizations: string[] = [];
+  let uiCustomizations;
+  let additionalBlockaidParams;
 
   // eslint-disable-next-line no-lonely-if
   if (securityProviderResponse?.flagAsDangerous === 1) {
     uiCustomizations = ['flagged_as_malicious'];
   } else if (securityProviderResponse?.flagAsDangerous === 2) {
     uiCustomizations = ['flagged_as_safety_unknown'];
+  } else {
+    uiCustomizations = null;
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  const additionalBlockaidParams = getBlockaidMetricsParams(
-    securityAlertResponse,
-  );
-  uiCustomizations = uiCustomizations.concat(
-    additionalBlockaidParams.ui_customizations,
-  );
+  if (securityAlertResponse?.result_type === BlockaidResultType.Failed) {
+    uiCustomizations = ['security_alert_failed'];
+  } else {
+    additionalBlockaidParams = getBlockaidMetricsParams(securityAlertResponse);
+    uiCustomizations = additionalBlockaidParams?.ui_customizations ?? null;
+  }
+
   ///: END:ONLY_INCLUDE_IN
 
   if (simulationFails) {
-    uiCustomizations.concat(['gas_estimation_failed']);
+    if (uiCustomizations === null) {
+      uiCustomizations = ['gas_estimation_failed'];
+    } else {
+      uiCustomizations.push('gas_estimation_failed');
+    }
   }
-
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -962,10 +975,14 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     ...additionalBlockaidParams,
-    ///: END:ONLY_INCLUDE_IN
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    security_alert_response:
+      securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
+    security_alert_reason:
+      securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
+    ///: END:ONLY_INCLUDE_IN
     gas_estimation_failed: Boolean(simulationFails),
   } as Record<string, any>;
 

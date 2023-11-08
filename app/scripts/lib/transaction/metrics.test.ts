@@ -17,7 +17,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import { BlockaidReason } from '../../../../shared/constants/security-provider';
+import { BlockaidReason, BlockaidResultType } from '../../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN(blockaid)
 import {
   handleTransactionAdded,
@@ -107,8 +107,9 @@ describe('Transaction metrics', () => {
     // copy mockTransactionMeta and add blockaid data
     mockTransactionMetaWithBlockaid = {
       ...JSON.parse(JSON.stringify(mockTransactionMeta)),
-      securityProviderResponse: {
-        flagAsDangerous: 1,
+      securityAlertResponse: {
+        result_type: BlockaidResultType.Malicious,
+        reason: BlockaidReason.maliciousDomain,
         providerRequestsCount: {
           eth_call: 5,
           eth_getCode: 3,
@@ -230,6 +231,8 @@ describe('Transaction metrics', () => {
         persist: true,
         properties: {
           ...expectedProperties,
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_response: 'Malicious',
           ui_customizations: ['flagged_as_malicious'],
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
@@ -315,6 +318,8 @@ describe('Transaction metrics', () => {
         properties: {
           ...expectedProperties,
           ui_customizations: ['flagged_as_malicious'],
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
         },
@@ -330,6 +335,8 @@ describe('Transaction metrics', () => {
           properties: {
             ...expectedProperties,
             ui_customizations: ['flagged_as_malicious'],
+            security_alert_reason: BlockaidReason.maliciousDomain,
+            security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
             ppom_eth_getCode_count: 3,
           },
@@ -442,6 +449,8 @@ describe('Transaction metrics', () => {
         properties: {
           ...expectedProperties,
           ui_customizations: ['flagged_as_malicious'],
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
         },
@@ -460,6 +469,8 @@ describe('Transaction metrics', () => {
           properties: {
             ...expectedProperties,
             ui_customizations: ['flagged_as_malicious'],
+            security_alert_reason: BlockaidReason.maliciousDomain,
+            security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
             ppom_eth_getCode_count: 3,
           },
@@ -627,6 +638,8 @@ describe('Transaction metrics', () => {
         properties: {
           ...expectedProperties,
           ui_customizations: ['flagged_as_malicious'],
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
         },
@@ -647,6 +660,8 @@ describe('Transaction metrics', () => {
           properties: {
             ...expectedProperties,
             ui_customizations: ['flagged_as_malicious'],
+            security_alert_reason: BlockaidReason.maliciousDomain,
+            security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
             ppom_eth_getCode_count: 3,
           },
@@ -750,6 +765,8 @@ describe('Transaction metrics', () => {
         properties: {
           ...expectedProperties,
           ui_customizations: ['flagged_as_malicious'],
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
         },
@@ -769,6 +786,8 @@ describe('Transaction metrics', () => {
           properties: {
             ...expectedProperties,
             ui_customizations: ['flagged_as_malicious'],
+            security_alert_reason: BlockaidReason.maliciousDomain,
+            security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
             ppom_eth_getCode_count: 3,
           },
@@ -867,6 +886,8 @@ describe('Transaction metrics', () => {
         properties: {
           ...expectedProperties,
           ui_customizations: ['flagged_as_malicious'],
+          security_alert_reason: BlockaidReason.maliciousDomain,
+          security_alert_response: 'Malicious',
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
         },
@@ -882,6 +903,8 @@ describe('Transaction metrics', () => {
           properties: {
             ...expectedProperties,
             ui_customizations: ['flagged_as_malicious'],
+            security_alert_reason: BlockaidReason.maliciousDomain,
+            security_alert_response: 'Malicious',
             ppom_eth_call_count: 5,
             ppom_eth_getCode_count: 3,
           },

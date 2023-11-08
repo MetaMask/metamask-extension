@@ -27,6 +27,7 @@ export function formatAccountType(accountType) {
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 export const getBlockaidMetricsParams = (securityAlertResponse = null) => {
   const additionalParams = {};
+  additionalParams.ui_customizations = [];
 
   if (securityAlertResponse) {
     const {
