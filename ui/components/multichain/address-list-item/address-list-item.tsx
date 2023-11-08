@@ -19,6 +19,8 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../selectors';
+import { shortenAddress } from '../../../helpers/utils/util';
+import Tooltip from '../../ui/tooltip';
 
 interface AddressListItemProps {
   label: string | ReactChild;
@@ -78,7 +80,9 @@ export const AddressListItem = ({
           ellipsis
           data-testid="address-list-item-address"
         >
-          {address}
+          <Tooltip title={address} position="bottom">
+            {shortenAddress(address)}
+          </Tooltip>
         </Text>
       </Box>
     </Box>
