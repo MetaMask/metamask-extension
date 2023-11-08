@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
+import { useSelector } from 'react-redux';
+import { getIsCustodianSupportedChain } from '../../../selectors/institutional/selectors';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { ButtonBase, IconName } from '../../component-library';
 import {
   BackgroundColor,
@@ -30,9 +33,22 @@ export const AddressCopyButton = ({
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
   const t = useI18nContext();
 
+  const isCustodianSupportedChain = useSelector(getIsCustodianSupportedChain);
+  const { nickname, type: networkType } = useSelector(getProviderConfig);
+
+  const tooltipTitle = copied ? t('copiedExclamation') : t('copyToClipboard');
+
   return (
-    <Tooltip position="bottom" title={copied ? t('copiedExclamation') : null}>
+    <Tooltip
+      position="bottom"
+      title={
+        isCustodianSupportedChain
+          ? tooltipTitle
+          : t('custodyWrongChain', [nickname || networkType])
+      }
+    >
       <ButtonBase
+        disabled={!isCustodianSupportedChain}
         backgroundColor={BackgroundColor.primaryMuted}
         onClick={() => {
           handleCopy(checksummedAddress);
