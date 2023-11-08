@@ -148,6 +148,8 @@ export default class ConfirmTransactionBase extends Component {
     showTransactionsFailedModal: PropTypes.func,
     showCustodianDeepLink: PropTypes.func,
     isNoteToTraderSupported: PropTypes.bool,
+    custodianPublishesTransaction: PropTypes.bool,
+    rpcUrl: PropTypes.string,
     isMainBetaFlask: PropTypes.bool,
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
@@ -727,6 +729,8 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionsFailedModal,
       fromAddress,
       isNoteToTraderSupported,
+      custodianPublishesTransaction,
+      rpcUrl,
       methodData,
       maxFeePerGas,
       customTokenAmount,
@@ -750,6 +754,10 @@ export default class ConfirmTransactionBase extends Component {
           note: noteText,
         };
       }
+
+      txData.metadata.custodianPublishesTransaction =
+        custodianPublishesTransaction;
+      txData.metadata.rpcUrl = rpcUrl;
     }
 
     updateTxData({

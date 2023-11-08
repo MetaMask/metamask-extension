@@ -1,7 +1,6 @@
 import { isHexString } from 'ethereumjs-util';
-import EthQuery from 'eth-query';
+import EthQuery, { Provider } from '@metamask/eth-query';
 import { BigNumber } from 'bignumber.js';
-import type { Provider } from '@metamask/network-controller';
 import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
@@ -739,6 +738,7 @@ async function buildEventFragmentProperties({
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     securityAlertResponse,
     ///: END:ONLY_INCLUDE_IN
+    simulationFails,
   } = transactionMeta;
 
   const query = new EthQuery(transactionMetricsRequest.provider);
@@ -932,6 +932,13 @@ async function buildEventFragmentProperties({
   }
   ///: END:ONLY_INCLUDE_IN
 
+  if (simulationFails) {
+    if (uiCustomizations === null) {
+      uiCustomizations = ['gas_estimation_failed'];
+    } else {
+      uiCustomizations.push('gas_estimation_failed');
+    }
+  }
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -960,6 +967,7 @@ async function buildEventFragmentProperties({
       securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
     ...additionalBlockaidParams,
     ///: END:ONLY_INCLUDE_IN
+    gas_estimation_failed: Boolean(simulationFails),
   } as Record<string, any>;
 
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(

@@ -14,7 +14,11 @@ describe('Header', () => {
 
   it('renders the startAccessory when provided', () => {
     const { container } = render(
-      <Header startAccessory={<ButtonIcon name={IconName.ArrowLeft} />}>
+      <Header
+        startAccessory={
+          <ButtonIcon iconName={IconName.ArrowLeft} ariaLabel="Back" />
+        }
+      >
         {HEADER_TEXT}
       </Header>,
     );
@@ -26,7 +30,9 @@ describe('Header', () => {
     const headerText = 'Connections';
 
     const { container } = render(
-      <Header endAccessory={<ButtonIcon name={IconName.Close} />}>
+      <Header
+        endAccessory={<ButtonIcon iconName={IconName.Close} ariaLabel="Back" />}
+      >
         {headerText}
       </Header>,
     );
@@ -39,8 +45,12 @@ describe('Header', () => {
 
     const { container } = render(
       <Header
-        startAccessory={<ButtonIcon name={IconName.ArrowLeft} />}
-        endAccessory={<ButtonIcon name={IconName.Close} />}
+        startAccessory={
+          <ButtonIcon iconName={IconName.ArrowLeft} ariaLabel="Back" />
+        }
+        endAccessory={
+          <ButtonIcon iconName={IconName.Close} ariaLabel="Close" />
+        }
       >
         {headerText}
       </Header>,
