@@ -83,10 +83,6 @@ export const SendPageAddressBook = () => {
     return nonContacts;
   };
 
-  const noContactsLink = (
-    <a href={`#${CONTACT_LIST_ROUTE}`}>{t('sendNoContactsConversionText')}</a>
-  );
-
   const selectRecipient = (
     address = '',
     nickname = '',
@@ -124,7 +120,15 @@ export const SendPageAddressBook = () => {
             {t('sendNoContactsTitle')}
           </Text>
           <Text color={TextColor.textAlternative}>
-            {t('sendNoContactsDescription', [noContactsLink])}
+            {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore: Expected 0-1 arguments, but got 2.
+              t('sendNoContactsDescription', [
+                <a href={`#${CONTACT_LIST_ROUTE}`}>
+                  {t('sendNoContactsConversionText')}
+                </a>,
+              ])
+            }
           </Text>
         </Box>
       )}

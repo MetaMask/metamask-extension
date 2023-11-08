@@ -102,12 +102,20 @@ export const SendPageRecipient = () => {
   } else {
     contents = (
       <Tabs>
-        <Tab tabKey="accounts" name={t('yourAccounts')}>
-          <SendPageYourAccount />
-        </Tab>
-        <Tab tabKey="contacts" name={t('contacts')}>
-          <SendPageAddressBook />
-        </Tab>
+        {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          <Tab tabKey="accounts" name={t('yourAccounts')}>
+            <SendPageYourAccount />
+          </Tab>
+        }
+        {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          <Tab tabKey="contacts" name={t('contacts')}>
+            <SendPageAddressBook />
+          </Tab>
+        }
       </Tabs>
     );
   }
