@@ -170,6 +170,9 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  handleMMITransactionUpdate,
+  ///: END:ONLY_INCLUDE_IN
   handleTransactionAdded,
   handleTransactionApproved,
   handleTransactionFailed,
@@ -1350,7 +1353,7 @@ export default class MetamaskController extends EventEmitter {
             txMeta,
             signedEthTx,
             this.transactionUpdateController.addTransactionToWatchList.bind(
-              this,
+              this.transactionUpdateController,
             ),
           ),
         beforeCheckPendingTransaction:
@@ -1466,6 +1469,8 @@ export default class MetamaskController extends EventEmitter {
     );
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const transactionMetricsRequest = this.getTransactionMetricsRequest();
+
     this.mmiController = new MMIController({
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
@@ -1485,6 +1490,10 @@ export default class MetamaskController extends EventEmitter {
       signatureController: this.signatureController,
       platform: this.platform,
       extension: this.extension,
+      trackTransactionEvents: handleMMITransactionUpdate.bind(
+        null,
+        transactionMetricsRequest,
+      ),
     });
     ///: END:ONLY_INCLUDE_IN
 
