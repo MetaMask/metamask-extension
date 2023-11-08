@@ -1185,14 +1185,15 @@
       },
       "packages": {
         "@ethereumjs/tx": true,
-        "@metamask/eth-ledger-bridge-keyring>eth-sig-util": true,
+        "@ethereumjs/tx>@ethereumjs/rlp": true,
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util": true,
         "@metamask/eth-ledger-bridge-keyring>hdkey": true,
         "browserify>buffer": true,
-        "ethereumjs-util": true,
         "webpack>events": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>eth-sig-util": {
+    "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util": {
       "packages": {
         "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util": true,
         "browserify>buffer": true,
@@ -1214,12 +1215,17 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
-    "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util>ethereum-cryptography": {
+    "@metamask/eth-ledger-bridge-keyring>@metamask/eth-sig-util>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
       "packages": {
+        "@metamask/key-tree>@noble/hashes": true,
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
-        "mocha>serialize-javascript>randombytes": true
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util>ethjs-util": {
@@ -1231,20 +1237,11 @@
     },
     "@metamask/eth-ledger-bridge-keyring>hdkey": {
       "packages": {
-        "@metamask/eth-ledger-bridge-keyring>hdkey>secp256k1": true,
-        "@metamask/eth-trezor-keyring>hdkey>coinstring": true,
         "browserify>assert": true,
         "browserify>crypto-browserify": true,
-        "koa>content-disposition>safe-buffer": true
-      }
-    },
-    "@metamask/eth-ledger-bridge-keyring>hdkey>secp256k1": {
-      "packages": {
-        "@metamask/eth-trezor-keyring>hdkey>secp256k1>bip66": true,
-        "@metamask/ppom-validator>elliptic": true,
-        "bn.js": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "ethereumjs-util>create-hash": true,
+        "ethereumjs-util>create-hash>ripemd160": true,
+        "ethereumjs-util>ethereum-cryptography>bs58check": true,
+        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
         "koa>content-disposition>safe-buffer": true
       }
     },
@@ -2774,15 +2771,6 @@
         "define": true
       }
     },
-    "brfs>static-module>object-inspect": {
-      "globals": {
-        "HTMLElement": true,
-        "WeakRef": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
     "browserify>assert": {
       "globals": {
         "Buffer": true
@@ -3055,8 +3043,8 @@
     },
     "browserify>url": {
       "packages": {
-        "@storybook/addon-knobs>qs": true,
-        "browserify>punycode": true
+        "browserify>punycode": true,
+        "browserify>querystring-es3": true
       }
     },
     "browserify>util": {
@@ -4739,13 +4727,6 @@
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
-      }
-    },
-    "string.prototype.matchall>side-channel": {
-      "packages": {
-        "brfs>static-module>object-inspect": true,
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "superstruct": {
