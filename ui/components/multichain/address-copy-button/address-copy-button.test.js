@@ -5,15 +5,12 @@ import copyToClipboard from 'copy-to-clipboard';
 import mockState from '../../../../test/data/mock-state.json';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { AddressCopyButton } from '.';
 
-import {
-  getCustodyAccountDetails,
-  getIsCustodianSupportedChain,
-} from '../../../selectors/institutional/selectors';
+import { getIsCustodianSupportedChain } from '../../../selectors/institutional/selectors';
 
 jest.mock('copy-to-clipboard');
 
