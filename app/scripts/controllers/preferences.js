@@ -118,9 +118,6 @@ export default class PreferencesController {
     this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
 
-    // subscribe to account removal
-    opts.onAccountRemoved((address) => this.removeAddress(address));
-
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
     };
