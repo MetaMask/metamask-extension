@@ -1,4 +1,10 @@
 import { InvisibleCharacter } from '../../components/component-library';
+import {
+  GOERLI_DISPLAY_NAME,
+  LINEA_GOERLI_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+} from '../../../shared/constants/network';
+import { BackgroundColor } from '../constants/design-system';
 
 export function getAccountNameErrorMessage(
   accounts,
@@ -40,4 +46,17 @@ export function getAccountNameErrorMessage(
   }
 
   return { isValidAccountName, errorMessage };
+}
+
+export function getAvatarNetworkColor(name) {
+  switch (name) {
+    case GOERLI_DISPLAY_NAME:
+      return BackgroundColor.goerli;
+    case LINEA_GOERLI_DISPLAY_NAME:
+      return BackgroundColor.lineaGoerli;
+    case SEPOLIA_DISPLAY_NAME:
+      return BackgroundColor.sepolia;
+    default:
+      return undefined;
+  }
 }

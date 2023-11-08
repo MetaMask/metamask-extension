@@ -198,7 +198,7 @@ export function useTransactionDisplayData(transactionGroup) {
     );
 
   const tokenDisplayValue = useTokenDisplayValue(
-    initialTransaction?.txParams?.data,
+    primaryTransaction?.txParams?.data,
     token,
     isTokenCategory,
   );

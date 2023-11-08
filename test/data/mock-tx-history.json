@@ -5,21 +5,20 @@
         "id": 6616756286038869,
         "time": 1502438908445,
         "status": "confirmed",
-        "metamaskNetworkId": "5",
         "txParams": {
           "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
           "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
           "value": "0x0",
           "gasPrice": "0x3b9aca00",
           "gas": "0x7b0d",
-          "chainId": 5
+          "chainId": "0x5"
         },
         "history": [
           {
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "unapproved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -32,7 +31,7 @@
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "unapproved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -45,7 +44,7 @@
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -58,7 +57,7 @@
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -71,7 +70,7 @@
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -79,19 +78,13 @@
               "gasPrice": "3b9aca00",
               "gas": "0x7b0d",
               "nonce": 0
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             }
           },
           {
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -99,19 +92,13 @@
               "gasPrice": "3b9aca00",
               "gas": "0x7b0d",
               "nonce": 0
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             }
           },
           {
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -119,19 +106,13 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             }
           },
           {
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -139,19 +120,13 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             }
           },
           {
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -159,12 +134,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264"
           },
@@ -172,7 +141,7 @@
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -180,12 +149,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264"
           },
@@ -193,7 +156,7 @@
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -201,12 +164,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
             "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012"
@@ -215,7 +172,7 @@
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -223,12 +180,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
             "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012"
@@ -237,7 +188,7 @@
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "submitted",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -245,12 +196,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
             "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012"
@@ -259,7 +204,7 @@
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "submitted",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -267,12 +212,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
             "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012"
@@ -281,7 +220,7 @@
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "confirmed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -289,12 +228,6 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
             "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012",
@@ -304,7 +237,7 @@
             "id": 6616756286038869,
             "time": 1502438908445,
             "status": "confirmed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -312,24 +245,12 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16643c",
-              "baseCount": 0,
-              "baseCountHex": "0x0",
-              "pendingCount": 0
             },
             "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
             "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012",
             "retryCount": 1
           }
         ],
-        "nonceDetails": {
-          "blockNumber": "0x16643c",
-          "baseCount": 0,
-          "baseCountHex": "0x0",
-          "pendingCount": 0
-        },
         "rawTx": "0xf86380843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a02e45f61129f0c97634e37a1823b858df7b0dfc867a44949aae7dd9bcea1c1b5aa03b1f002cda0872d40517d5b26caefa3e407ec8fd03bc7dc2d995b84726961264",
         "hash": "0x38c254639139c94303a3141aee041b15301509e743f08569ffac6aca17518012",
         "retryCount": 1
@@ -338,7 +259,7 @@
         "id": 6616756286038870,
         "time": 1502573153664,
         "status": "rejected",
-        "metamaskNetworkId": "5",
+        "chainId": "0x5",
         "txParams": {
           "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
           "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -351,7 +272,7 @@
             "id": 6616756286038870,
             "time": 1502573153664,
             "status": "rejected",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -364,7 +285,7 @@
             "id": 6616756286038870,
             "time": 1502573153664,
             "status": "rejected",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -379,7 +300,7 @@
         "id": 6616756286038871,
         "time": 1502573157128,
         "status": "confirmed",
-        "metamaskNetworkId": "5",
+        "chainId": "0x5",
         "txParams": {
           "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
           "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -394,7 +315,7 @@
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "unapproved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -407,7 +328,7 @@
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "unapproved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -420,7 +341,7 @@
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -433,7 +354,7 @@
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -446,7 +367,7 @@
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -454,19 +375,13 @@
               "gasPrice": "28fa6ae00",
               "gas": "0x7b0d",
               "nonce": 1
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             }
           },
           {
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -474,19 +389,13 @@
               "gasPrice": "28fa6ae00",
               "gas": "0x7b0d",
               "nonce": 1
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             }
           },
           {
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -495,19 +404,13 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             }
           },
           {
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -516,19 +419,13 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             }
           },
           {
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -537,12 +434,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0"
           },
@@ -550,7 +441,7 @@
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -559,12 +450,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0"
           },
@@ -572,7 +457,7 @@
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -581,12 +466,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
             "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150"
@@ -595,7 +474,7 @@
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -604,12 +483,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
             "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150"
@@ -618,7 +491,7 @@
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "submitted",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -627,12 +500,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
             "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150"
@@ -641,7 +508,7 @@
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "submitted",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -650,12 +517,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
             "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150"
@@ -664,7 +525,7 @@
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "confirmed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -673,12 +534,6 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
             "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150",
@@ -688,7 +543,7 @@
             "id": 6616756286038871,
             "time": 1502573157128,
             "status": "confirmed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -697,24 +552,12 @@
               "gas": "0x7b0d",
               "nonce": "0x01",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x168739",
-              "baseCount": 1,
-              "baseCountHex": "0x1",
-              "pendingCount": 0
             },
             "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
             "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150",
             "retryCount": 1
           }
         ],
-        "nonceDetails": {
-          "blockNumber": "0x168739",
-          "baseCount": 1,
-          "baseCountHex": "0x1",
-          "pendingCount": 0
-        },
         "rawTx": "0xf8640185028fa6ae00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a06261831b3d599a90dc24fac67bc648fd58cab2036e4e8dfbbb5c00c3fd9cf66ba00e2ea6ebc63ba715a94dc94e24120639c4ad60832d3285dd558929a61cc18cc0",
         "hash": "0xeb1c57dec9df8410bcc65374c7f684fc8ebfcda6865a149e38bb000fa706a150",
         "retryCount": 1
@@ -723,7 +566,7 @@
         "id": 6616756286038872,
         "time": 1502734903652,
         "status": "confirmed",
-        "metamaskNetworkId": "5",
+        "chainId": "0x5",
         "txParams": {
           "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
           "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -738,7 +581,7 @@
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "unapproved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -751,7 +594,7 @@
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "unapproved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -764,7 +607,7 @@
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -777,7 +620,7 @@
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -790,7 +633,7 @@
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -798,19 +641,13 @@
               "gasPrice": "4a817c800",
               "gas": "0x7b0d",
               "nonce": 2
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             }
           },
           {
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -818,19 +655,13 @@
               "gasPrice": "4a817c800",
               "gas": "0x7b0d",
               "nonce": 2
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             }
           },
           {
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -839,19 +670,13 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             }
           },
           {
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -860,19 +685,13 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             }
           },
           {
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -881,12 +700,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc"
           },
@@ -894,7 +707,7 @@
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -903,12 +716,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc"
           },
@@ -916,7 +723,7 @@
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -925,12 +732,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
             "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270"
@@ -939,7 +740,7 @@
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -948,12 +749,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
             "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270"
@@ -962,7 +757,7 @@
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "submitted",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -971,12 +766,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
             "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270"
@@ -985,7 +774,7 @@
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "submitted",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -994,12 +783,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
             "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270"
@@ -1008,7 +791,7 @@
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "confirmed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1017,12 +800,6 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
             "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270",
@@ -1032,7 +809,7 @@
             "id": 6616756286038872,
             "time": 1502734903652,
             "status": "confirmed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1041,24 +818,12 @@
               "gas": "0x7b0d",
               "nonce": "0x02",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b066",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 0
             },
             "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
             "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270",
             "retryCount": 1
           }
         ],
-        "nonceDetails": {
-          "blockNumber": "0x16b066",
-          "baseCount": 2,
-          "baseCountHex": "0x2",
-          "pendingCount": 0
-        },
         "rawTx": "0xf864028504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa057380f9007a48d4bce31792859b1a25cb2b45ba615e7951d8e8a925360a0b301a042393e72d1a96a2605c0da95705c5f3f7c744f0affcac01e0a64721037f04adc",
         "hash": "0xc28ceb1e2c4e5c61b805b181e3cc99dd7bade58935233fab76c63cedfd494270",
         "retryCount": 1
@@ -1067,7 +832,7 @@
         "id": 6616756286038873,
         "time": 1502734910224,
         "status": "confirmed",
-        "metamaskNetworkId": "5",
+        "chainId": "0x5",
         "txParams": {
           "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
           "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1082,7 +847,7 @@
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "unapproved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1095,7 +860,7 @@
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "unapproved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1108,7 +873,7 @@
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1121,7 +886,7 @@
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1134,7 +899,7 @@
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1142,19 +907,13 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "nonce": 3
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             }
           },
           {
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1162,19 +921,13 @@
               "gasPrice": "0x3b9aca00",
               "gas": "0x7b0d",
               "nonce": 3
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             }
           },
           {
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1183,19 +936,13 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             }
           },
           {
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1204,19 +951,13 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             }
           },
           {
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1225,12 +966,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897"
           },
@@ -1238,7 +973,7 @@
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1247,12 +982,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897"
           },
@@ -1260,7 +989,7 @@
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1269,12 +998,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
             "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7"
@@ -1283,7 +1006,7 @@
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1292,12 +1015,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
             "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7"
@@ -1306,7 +1023,7 @@
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "submitted",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1315,12 +1032,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
             "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7"
@@ -1329,7 +1040,7 @@
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "submitted",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1338,12 +1049,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
             "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7"
@@ -1352,7 +1057,7 @@
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "confirmed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1361,12 +1066,6 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
             "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7",
@@ -1376,7 +1075,7 @@
             "id": 6616756286038873,
             "time": 1502734910224,
             "status": "confirmed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1385,24 +1084,12 @@
               "gas": "0x7b0d",
               "nonce": "0x03",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 1
             },
             "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
             "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7",
             "retryCount": 2
           }
         ],
-        "nonceDetails": {
-          "blockNumber": "0x16b067",
-          "baseCount": 2,
-          "baseCountHex": "0x2",
-          "pendingCount": 1
-        },
         "rawTx": "0xf86303843b9aca00827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c80802aa0e442afe9386066936f556d852a296d22b8392652aa2ddb26969d83d661759ee1a06dc55b164f666a37107e86d575d2701602fc100f0ef4875736d45995150d4897",
         "hash": "0xfcc66b8002c64a5aaa076adea7f7e48d194de10e40eb64924c8de344805c8cb7",
         "retryCount": 2
@@ -1411,7 +1098,7 @@
         "id": 6616756286038874,
         "time": 1502734917414,
         "status": "confirmed",
-        "metamaskNetworkId": "5",
+        "chainId": "0x5",
         "txParams": {
           "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
           "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1426,7 +1113,7 @@
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "unapproved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1439,7 +1126,7 @@
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "unapproved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1452,7 +1139,7 @@
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1465,7 +1152,7 @@
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1478,7 +1165,7 @@
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1486,19 +1173,13 @@
               "gasPrice": "4a817c800",
               "gas": "0x7b0d",
               "nonce": 4
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             }
           },
           {
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1506,19 +1187,13 @@
               "gasPrice": "4a817c800",
               "gas": "0x7b0d",
               "nonce": 4
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             }
           },
           {
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1527,19 +1202,13 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             }
           },
           {
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1548,19 +1217,13 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             }
           },
           {
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1569,12 +1232,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3"
           },
@@ -1582,7 +1239,7 @@
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1591,12 +1248,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3"
           },
@@ -1604,7 +1255,7 @@
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1613,12 +1264,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
             "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635"
@@ -1627,7 +1272,7 @@
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1636,12 +1281,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
             "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635"
@@ -1650,7 +1289,7 @@
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "submitted",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1659,12 +1298,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
             "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635"
@@ -1673,7 +1306,7 @@
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "submitted",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1682,12 +1315,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
             "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635"
@@ -1696,7 +1323,7 @@
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "confirmed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1705,12 +1332,6 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
             "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635",
@@ -1720,7 +1341,7 @@
             "id": 6616756286038874,
             "time": 1502734917414,
             "status": "confirmed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1729,24 +1350,12 @@
               "gas": "0x7b0d",
               "nonce": "0x04",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b067",
-              "baseCount": 2,
-              "baseCountHex": "0x2",
-              "pendingCount": 2
             },
             "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
             "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635",
             "retryCount": 4
           }
         ],
-        "nonceDetails": {
-          "blockNumber": "0x16b067",
-          "baseCount": 2,
-          "baseCountHex": "0x2",
-          "pendingCount": 2
-        },
         "rawTx": "0xf864048504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a04be1c01535745fa7ec7aeb6e0b64d009981713808ca443b181fad802ce941352a03887e90375d9225b8dfd0d42324eed8eb4982fd14ea7b4069290237b29d1dcd3",
         "hash": "0x9258ed7e451402612f572cbef52b63cd63cc2c59f443a207b7b4f8d317958635",
         "retryCount": 4
@@ -1755,7 +1364,7 @@
         "id": 6616756286038875,
         "time": 1502734922745,
         "status": "confirmed",
-        "metamaskNetworkId": "5",
+        "chainId": "0x5",
         "txParams": {
           "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
           "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1770,7 +1379,7 @@
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "unapproved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1783,7 +1392,7 @@
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "unapproved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1796,7 +1405,7 @@
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1809,7 +1418,7 @@
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1822,7 +1431,7 @@
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1830,19 +1439,13 @@
               "gasPrice": "4a817c800",
               "gas": "0x7b0d",
               "nonce": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             }
           },
           {
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "approved",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1850,19 +1453,13 @@
               "gasPrice": "4a817c800",
               "gas": "0x7b0d",
               "nonce": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             }
           },
           {
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1871,19 +1468,13 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             }
           },
           {
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1892,19 +1483,13 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             }
           },
           {
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1913,12 +1498,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5"
           },
@@ -1926,7 +1505,7 @@
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1935,12 +1514,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5"
           },
@@ -1948,7 +1521,7 @@
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1957,12 +1530,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
             "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e"
@@ -1971,7 +1538,7 @@
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "signed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -1980,12 +1547,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
             "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e"
@@ -1994,7 +1555,7 @@
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "submitted",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -2003,12 +1564,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
             "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e"
@@ -2017,7 +1572,7 @@
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "submitted",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -2026,12 +1581,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
             "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e"
@@ -2040,7 +1589,7 @@
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "confirmed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -2049,12 +1598,6 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
             "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e",
@@ -2064,7 +1607,7 @@
             "id": 6616756286038875,
             "time": 1502734922745,
             "status": "confirmed",
-            "metamaskNetworkId": "5",
+            "chainId": "0x5",
             "txParams": {
               "from": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
               "to": "0x3ae39e89dc7e736cce53091057a45bf44b1a566c",
@@ -2073,24 +1616,12 @@
               "gas": "0x7b0d",
               "nonce": "0x05",
               "chainId": 5
-            },
-            "nonceDetails": {
-              "blockNumber": "0x16b068",
-              "baseCount": 3,
-              "baseCountHex": "0x3",
-              "pendingCount": 2
             },
             "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
             "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e",
             "retryCount": 3
           }
         ],
-        "nonceDetails": {
-          "blockNumber": "0x16b068",
-          "baseCount": 3,
-          "baseCountHex": "0x3",
-          "pendingCount": 2
-        },
         "rawTx": "0xf864058504a817c800827b0d943ae39e89dc7e736cce53091057a45bf44b1a566c808029a0dac4756e84c008714b3b8b43807157ed63737450780bc57590e930c8a360750ca00b43ac8ec5235f57ccca7e68ce8fbf77f43d6ffa5fbff296cba66cef47889cf5",
         "hash": "0x67cdff49c1f8ed506c759fc8fd7ffe93d59fcb3bfd926b964cad47e2e504dc9e",
         "retryCount": 3

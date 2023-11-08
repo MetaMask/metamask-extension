@@ -90,6 +90,7 @@ import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
   QUOTES_EXPIRED_ERROR,
+  MAX_ALLOWED_SLIPPAGE,
 } from '../../../../shared/constants/swaps';
 import {
   resetSwapsPostFetchState,
@@ -136,8 +137,6 @@ import ListWithSearch from '../list-with-search/list-with-search';
 import SmartTransactionsPopover from './smart-transactions-popover';
 import QuotesLoadingAnimation from './quotes-loading-animation';
 import ReviewQuote from './review-quote';
-
-const MAX_ALLOWED_SLIPPAGE = 15;
 
 let timeoutIdForQuotesPrefetching;
 
@@ -239,7 +238,7 @@ export default function PrepareSwapPage({
     ? defaultSwapsToken
     : sourceTokenInfo;
 
-  const { tokensWithBalances } = useTokenTracker(tokens);
+  const { tokensWithBalances } = useTokenTracker({ tokens });
 
   // If the fromToken was set in a call to `onFromSelect` (see below), and that from token has a balance
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
@@ -570,7 +569,7 @@ export default function PrepareSwapPage({
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
     trackPrepareSwapPageLoadedEvent();
-  }, [dispatch]);
+  }, [dispatch, trackPrepareSwapPageLoadedEvent]);
 
   const BlockExplorerLink = () => {
     return (
@@ -1077,7 +1076,10 @@ export default function PrepareSwapPage({
         )}
         {swapsErrorKey && (
           <Box display={DISPLAY.FLEX} marginTop={2}>
-            <SwapsBannerAlert swapsErrorKey={swapsErrorKey} />
+            <SwapsBannerAlert
+              swapsErrorKey={swapsErrorKey}
+              currentSlippage={maxSlippage}
+            />
           </Box>
         )}
         {transactionSettingsOpened &&

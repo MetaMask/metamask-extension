@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { tEn } = require('../../lib/i18n-helpers');
 
 describe('Show account details', function () {
   const ganacheOptions = {
@@ -14,6 +15,7 @@ describe('Show account details', function () {
   };
 
   const PASSWORD = 'correct horse battery staple';
+  const wrongPassword = 'test test test test';
 
   async function revealPrivateKey(driver, useAccountMenu = true) {
     if (useAccountMenu) {
@@ -27,11 +29,18 @@ describe('Show account details', function () {
       await driver.clickElement('[data-testid="account-options-menu-button"]');
       await driver.clickElement('[data-testid="account-list-menu-details"]');
     }
-
-    await driver.clickElement({ css: 'button', text: 'Show private key' });
+    await driver.clickElement({ css: 'button', text: tEn('showPrivateKey') });
 
     await driver.fill('#account-details-authenticate', PASSWORD);
     await driver.press('#account-details-authenticate', driver.Key.ENTER);
+
+    await driver.holdMouseDownOnElement(
+      {
+        text: tEn('holdToRevealPrivateKey'),
+        tag: 'span',
+      },
+      2000,
+    );
 
     const keyContainer = await driver.findElement(
       '[data-testid="account-details-key"]',
@@ -45,12 +54,11 @@ describe('Show account details', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', PASSWORD);
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
@@ -69,12 +77,11 @@ describe('Show account details', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', PASSWORD);
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         const key = await revealPrivateKey(driver);
         assert.equal(
@@ -90,20 +97,22 @@ describe('Show account details', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', PASSWORD);
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Create and focus on different account
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
+        await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
-        await driver.clickElement({ text: 'Create', tag: 'button' });
+        await driver.clickElement({ text: tEn('create'), tag: 'button' });
 
         const key = await revealPrivateKey(driver);
         assert.equal(
@@ -119,12 +128,11 @@ describe('Show account details', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', PASSWORD);
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         const key = await revealPrivateKey(driver, false);
         assert.equal(
@@ -140,26 +148,64 @@ describe('Show account details', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', PASSWORD);
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Create and focus on different account
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
+        await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
-        await driver.clickElement({ text: 'Create', tag: 'button' });
+        await driver.clickElement({ text: tEn('create'), tag: 'button' });
 
         const key = await revealPrivateKey(driver, false);
         assert.equal(
           key,
           'f444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8',
         );
+      },
+    );
+  });
+
+  it('should not reveal private key when password is incorrect', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test.fullTitle(),
+        failOnConsoleError: false,
+      },
+      async ({ driver }) => {
+        await driver.navigate();
+        await unlockWallet(driver);
+
+        // Attempt to reveal private key from account menu
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="account-list-item-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="account-list-menu-details"]');
+        await driver.clickElement({
+          css: 'button',
+          text: tEn('showPrivateKey'),
+        });
+
+        // Enter incorrect password
+        await driver.fill('#account-details-authenticate', wrongPassword);
+        await driver.press('#account-details-authenticate', driver.Key.ENTER);
+
+        // Display error when password is incorrect
+        const passwordErrorIsDisplayed = await driver.isElementPresent({
+          css: '.mm-help-text',
+          text: 'Incorrect Password.',
+        });
+        assert.equal(passwordErrorIsDisplayed, true);
       },
     );
   });

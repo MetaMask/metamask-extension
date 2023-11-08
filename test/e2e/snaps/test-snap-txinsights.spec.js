@@ -18,7 +18,7 @@ describe('Test Snap TxInsights', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -102,6 +102,11 @@ describe('Test Snap TxInsights', function () {
           'MetaMask Notification',
           windowHandles,
         );
+        await driver.delay(1000);
+        await driver.clickElement({
+          text: 'Insights Example Snap',
+          tag: 'button',
+        });
 
         // check that txinsightstest tab contains the right info
         await driver.delay(1000);

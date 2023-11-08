@@ -15,7 +15,13 @@ export {
   BadgeWrapperAnchorElementShape,
 } from './badge-wrapper';
 export { Box } from './box';
-export { Button, BUTTON_VARIANT, BUTTON_SIZES } from './button';
+export {
+  Button,
+  ButtonVariant,
+  ButtonSize,
+  BUTTON_SIZES,
+  BUTTON_VARIANT,
+} from './button';
 export { ButtonBase, ButtonBaseSize } from './button-base';
 export { ButtonIcon, ButtonIconSize } from './button-icon';
 export { ButtonLink, ButtonLinkSize } from './button-link';
@@ -41,7 +47,7 @@ export { Modal, useModalContext } from './modal';
 
 // Molecules
 export { BannerBase } from './banner-base';
-export { BannerAlert, BANNER_ALERT_SEVERITIES } from './banner-alert';
+export { BannerAlert, BannerAlertSeverity } from './banner-alert';
 export { BannerTip, BannerTipLogoType } from './banner-tip';
 export { PopoverHeader } from './popover-header';
 export { Popover, PopoverPosition, PopoverRole } from './popover';

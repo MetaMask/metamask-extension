@@ -26,11 +26,12 @@ export default class AppStateController extends EventEmitter {
       initState,
       onInactiveTimeout,
       preferencesStore,
-      qrHardwareStore,
       messenger,
+      extension,
     } = opts;
     super();
 
+    this.extension = extension;
     this.onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.store = new ObservableStore({
       timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
@@ -49,6 +50,10 @@ export default class AppStateController extends EventEmitter {
       showProductTour: true,
       trezorModel: null,
       currentPopupId: undefined,
+      // This key is only used for checking if the user had set advancedGasFee
+      // prior to Migration 92.3 where we split out the setting to support
+      // multiple networks.
+      hadAdvancedGasFeesSetPriorToMigration92_3: false,
       ...initState,
       qrHardware: {},
       nftsDropdownState: {},
@@ -57,7 +62,6 @@ export default class AppStateController extends EventEmitter {
         '0x5': true,
         '0x539': true,
       },
-      serviceWorkerLastActiveTime: 0,
     });
     this.timer = null;
 
@@ -72,9 +76,13 @@ export default class AppStateController extends EventEmitter {
       }
     });
 
-    qrHardwareStore.subscribe((state) => {
-      this.store.updateState({ qrHardware: state });
-    });
+    messenger.subscribe(
+      'KeyringController:qrKeyringStateChange',
+      (qrHardware) =>
+        this.store.updateState({
+          qrHardware,
+        }),
+    );
 
     const { preferences } = preferencesStore.getState();
     this._setInactiveTimeout(preferences.autoLockTimeLimit);
@@ -245,7 +253,7 @@ export default class AppStateController extends EventEmitter {
     if (this.timer) {
       clearTimeout(this.timer);
     } else if (isManifestV3) {
-      chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+      this.extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
     }
 
     if (!timeoutMinutes) {
@@ -253,14 +261,14 @@ export default class AppStateController extends EventEmitter {
     }
 
     if (isManifestV3) {
-      chrome.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
+      this.extension.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
         delayInMinutes: timeoutMinutes,
         periodInMinutes: timeoutMinutes,
       });
-      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+      this.extension.alarms.onAlarm.addListener((alarmInfo) => {
         if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
           this.onInactiveTimeout();
-          chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+          this.extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
         }
       });
     } else {
@@ -424,12 +432,6 @@ export default class AppStateController extends EventEmitter {
    */
   getCurrentPopupId() {
     return this.store.getState().currentPopupId;
-  }
-
-  setServiceWorkerLastActiveTime(serviceWorkerLastActiveTime) {
-    this.store.updateState({
-      serviceWorkerLastActiveTime,
-    });
   }
 
   _requestApproval() {

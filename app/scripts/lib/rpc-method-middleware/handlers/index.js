@@ -11,7 +11,6 @@ import watchAsset from './watch-asset';
 import mmiSupported from './institutional/mmi-supported';
 import mmiAuthenticate from './institutional/mmi-authenticate';
 import mmiPortfolio from './institutional/mmi-portfolio';
-import mmiOpenSwaps from './institutional/mmi-open-swaps';
 import mmiCheckIfTokenIsPresent from './institutional/mmi-check-if-token-is-present';
 import mmiSetAccountAndNetwork from './institutional/mmi-set-account-and-network';
 import mmiOpenAddHardwareWallet from './institutional/mmi-open-add-hardware-wallet';
@@ -30,7 +29,6 @@ const handlers = [
   mmiAuthenticate,
   mmiSupported,
   mmiPortfolio,
-  mmiOpenSwaps,
   mmiCheckIfTokenIsPresent,
   mmiSetAccountAndNetwork,
   mmiOpenAddHardwareWallet,

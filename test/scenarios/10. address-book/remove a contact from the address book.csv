@@ -1,0 +1,12 @@
+Step,Test Steps,Preconditions,Test Data,Expected Result,Notes
+1,Open the extension.,,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",
+3,Select Expand view in the wallet menu.,,,"A new tab opens.
+The expanded extension view is shown.",
+4,Proceed to open the Accounts options menu.,,,The accounts menu popover is shown.,
+5,Proceed to Contacts in the Settings menu.,,,The contact list is displayed.,
+6,Select a contact in the contact list.,A contact exists in the contact list.,,The view contact screen is displayed.,
+7,Proceed to Edit the contact.,,,The edit contact screen is displayed.,
+8,Proceed to Delete the contact.,,,The deleted contact does not appear in the contact list.,

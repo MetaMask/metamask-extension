@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router-dom';
 import semver from 'semver';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Box,
   Button,
   Tag,
@@ -13,16 +13,15 @@ import {
   BlockSize,
   Display,
   FlexDirection,
+  OverflowWrap,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  ADD_SNAP_ACCOUNT_ROUTE,
-  SNAPS_VIEW_ROUTE,
-} from '../../../helpers/constants/routes';
+import { ADD_SNAP_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getSnapRegistry, getSnaps } from '../../../selectors';
 import { SnapDetails } from '../new-snap-account-page';
+import { getSnapRoute } from '../../../helpers/utils/util';
 import Detail from './detail';
 import { SnapDetailHeader } from './header';
 
@@ -104,17 +103,35 @@ export default function SnapAccountDetailPage() {
             })}
           </Detail>
           <Detail title={t('snapDetailDeveloper')}>
-            <Text variant={TextVariant.bodyMd}>{currentSnap.developer}</Text>
+            <Text
+              variant={TextVariant.bodyMd}
+              overflowWrap={OverflowWrap.BreakWord}
+            >
+              {currentSnap.developer}
+            </Text>
           </Detail>
-          <Detail title={t('snapDetailWebsite')}>{currentSnap.website}</Detail>
+          <Detail title={t('snapDetailWebsite')}>
+            <Button
+              variant={ButtonVariant.Link}
+              overflowWrap={OverflowWrap.Anywhere}
+              href={currentSnap.website}
+              externalLink
+            >
+              {currentSnap.website}
+            </Button>
+          </Detail>
           <Detail title={t('snapDetailAudits')}>
             {currentSnap.auditUrls.map((auditLink, index) => {
               return (
-                <Text key={`audit-link-${index}`}>
-                  <Button variant={BUTTON_VARIANT.LINK} href={auditLink}>
-                    {auditLink}
-                  </Button>
-                </Text>
+                <Button
+                  key={`audit-link-${index}`}
+                  variant={ButtonVariant.Link}
+                  overflowWrap={OverflowWrap.Anywhere}
+                  href={auditLink}
+                  externalLink
+                >
+                  {auditLink}
+                </Button>
               );
             })}
           </Detail>
@@ -127,14 +144,8 @@ export default function SnapAccountDetailPage() {
           {isInstalled && (
             <Box>
               <Button
-                variant={BUTTON_VARIANT.LINK}
-                onClick={() =>
-                  history.push(
-                    `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(
-                      currentSnap.snapId,
-                    )}`,
-                  )
-                }
+                variant={ButtonVariant.Link}
+                onClick={() => history.push(getSnapRoute(currentSnap.snapId))}
               >
                 {t('snapDetailManageSnap')}
               </Button>

@@ -11,11 +11,11 @@ import {
 } from '../../../components/component-library';
 import {
   TextColor,
-  TypographyVariant,
   Display,
   FlexDirection,
   AlignItems,
-  TextAlign,
+  TextVariant,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 
 export default function InstitutionalEntityDonePage(props) {
@@ -45,25 +45,20 @@ export default function InstitutionalEntityDonePage(props) {
                 alt="Entity image"
               />
             )}
-            <Text
-              as="h4"
-              marginTop={4}
-              marginBottom={4}
-              color={TextColor.textDefault}
-              textAlign={TextAlign.Left}
-            >
-              {state.title}
-            </Text>
-            <Text
-              as="p"
-              color={TextColor.textDefault}
-              marginTop={2}
-              marginBottom={5}
-              variant={TypographyVariant.headingSm}
-              textAlign={TextAlign.Left}
-            >
-              {state.description}
-            </Text>
+            <Box paddingTop={4} paddingBottom={4}>
+              <Text
+                paddingTop={3}
+                fontWeight={FontWeight.Bold}
+                variant={TextVariant.headingSm}
+                as="h5"
+              >
+                {state.title}
+              </Text>
+
+              <Text paddingTop={3} color={TextColor.textAlternative}>
+                {state.description}
+              </Text>
+            </Box>
           </Box>
         </Box>
       </Box>

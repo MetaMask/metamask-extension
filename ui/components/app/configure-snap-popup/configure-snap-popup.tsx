@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  BUTTON_VARIANT,
+  ButtonVariant,
   Button,
   Box,
   Modal,
@@ -72,7 +72,7 @@ export default function ConfigureSnapPopup({
             {t('configureSnapPopupLink')}
           </Text>
           <Button
-            variant={BUTTON_VARIANT.LINK}
+            variant={ButtonVariant.Link}
             marginBottom={8}
             onClick={() => {
               global.platform.openTab({

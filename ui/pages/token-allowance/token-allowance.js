@@ -25,6 +25,7 @@ import ReviewSpendingCap from '../../components/ui/review-spending-cap/review-sp
 import { PageContainerFooter } from '../../components/ui/page-container';
 import ContractDetailsModal from '../../components/app/modals/contract-details-modal/contract-details-modal';
 import {
+  getCustomTokenAmount,
   getNetworkIdentifier,
   transactionFeeSelector,
   getKnownMethodData,
@@ -62,6 +63,12 @@ import {
 import { isSuspiciousResponse } from '../../../shared/modules/security-provider.utils';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import BlockaidBannerAlert from '../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+import { getBlockaidMetricsParams } from '../../helpers/utils/metrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { MetaMetricsContext } from '../../contexts/metametrics';
 ///: END:ONLY_INCLUDE_IN
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
@@ -109,9 +116,9 @@ export default function TokenAllowance({
   const { hostname } = new URL(origin);
   const thisOriginIsAllowedToSkipFirstPage = ALLOWED_HOSTS.includes(hostname);
 
-  const [customSpendingCap, setCustomSpendingCap] = useState(
-    dappProposedTokenAmount,
-  );
+  const customTokenAmount = useSelector(getCustomTokenAmount);
+  const [customSpendingCap, setCustomSpendingCap] = useState(customTokenAmount);
+
   const [showContractDetails, setShowContractDetails] = useState(false);
   const [inputChangeInProgress, setInputChangeInProgress] = useState(false);
   const [showFullTxDetails, setShowFullTxDetails] = useState(false);
@@ -135,6 +142,47 @@ export default function TokenAllowance({
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  const trackEvent = useContext(MetaMetricsContext);
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  useEffect(() => {
+    if (txData.securityAlertResponse) {
+      const blockaidMetricsParams = getBlockaidMetricsParams(
+        txData.securityAlertResponse,
+      );
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.SignatureRequested,
+        properties: {
+          action: 'Sign Request',
+          ...blockaidMetricsParams,
+        },
+      });
+    }
+  }, [txData?.securityAlertResponse]);
+  ///: END:ONLY_INCLUDE_IN
+
+  /**
+   * We set the customSpendingCap to the dappProposedTokenAmount, if provided, rather than setting customTokenAmount
+   * because customTokenAmount is reserved for custom user input. This is only set once when the component is mounted.
+   */
+  const initializeCustomSpendingCap = () => {
+    if (
+      (!customSpendingCap || customSpendingCap === '') &&
+      dappProposedTokenAmount
+    ) {
+      setCustomSpendingCap(dappProposedTokenAmount);
+    }
+  };
+
+  useEffect(() => {
+    initializeCustomSpendingCap();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const replaceCommaToDot = (inputValue) => {
     return inputValue.replace(/,/gu, '.');
@@ -314,18 +362,6 @@ export default function TokenAllowance({
       <Box>
         <ConfirmPageContainerNavigation />
       </Box>
-      {
-        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-        <BlockaidBannerAlert
-          securityAlertResponse={txData?.securityAlertResponse}
-        />
-        ///: END:ONLY_INCLUDE_IN
-      }
-      {isSuspiciousResponse(txData?.securityProviderResponse) && (
-        <SecurityProviderBannerMessage
-          securityProviderResponse={txData.securityProviderResponse}
-        />
-      )}
       <Box
         paddingLeft={4}
         paddingRight={4}
@@ -367,6 +403,19 @@ export default function TokenAllowance({
         accountAddress={userAddress}
         chainId={fullTxData.chainId}
       />
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        <BlockaidBannerAlert
+          securityAlertResponse={txData?.securityAlertResponse}
+          margin={4}
+        />
+        ///: END:ONLY_INCLUDE_IN
+      }
+      {isSuspiciousResponse(txData?.securityProviderResponse) && (
+        <SecurityProviderBannerMessage
+          securityProviderResponse={txData.securityProviderResponse}
+        />
+      )}
       {warning && (
         <Box className="token-allowance-container__custom-nonce-warning">
           <ConfirmPageContainerWarning warning={warning} />

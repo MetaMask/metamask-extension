@@ -20,7 +20,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  CONSENSYS_PRIVACY_LINK,
+  ///: END:ONLY_INCLUDE_IN
+  SUPPORT_LINK,
+} from '../../../../shared/lib/ui-utils';
 
 export default class InfoTab extends PureComponent {
   state = {
@@ -55,7 +60,7 @@ export default class InfoTab extends PureComponent {
     let privacyUrl, siteUrl;
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    privacyUrl = 'https://consensys.net/codefi/about/privacy-policy/';
+    privacyUrl = CONSENSYS_PRIVACY_LINK;
     siteUrl = MMI_WEB_SITE;
     ///: END:ONLY_INCLUDE_IN
 

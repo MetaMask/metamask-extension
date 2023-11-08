@@ -52,6 +52,12 @@ describe('TokenOverview', () => {
         },
       ],
       contractExchangeRates: {},
+      mmiConfiguration: {
+        portfolio: {
+          enabled: true,
+        },
+        url: 'https://metamask-institutional.io',
+      },
     },
   };
 
@@ -228,12 +234,14 @@ describe('TokenOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_button`),
+          url: expect.stringContaining(
+            `/buy?metamaskEntry=ext_buy_sell_button`,
+          ),
         }),
       );
     });
 
-    it('should show the Bridge button if chain id and token are supported', async () => {
+    it('should show the Bridge button if chain id is supported', async () => {
       const mockToken = {
         name: 'test',
         isERC721: false,
@@ -297,30 +305,16 @@ describe('TokenOverview', () => {
       expect(bridgeButton).not.toBeInTheDocument();
     });
 
-    it('should not show the Bridge button if token is not supported', async () => {
-      const mockToken = {
-        name: 'test',
-        isERC721: false,
-        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f620',
-        symbol: 'test',
-      };
-
-      const mockedStoreWithBridgeableChainId = {
-        metamask: {
-          ...mockStore.metamask,
-          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithBridgeableChainId,
-      );
-
+    it('should show the MMI Portfolio and Stake buttons', () => {
       const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={mockToken} />,
-        mockedStore,
+        <TokenOverview token={token} />,
+        store,
       );
-      const bridgeButton = queryByTestId('token-overview-bridge');
-      expect(bridgeButton).not.toBeInTheDocument();
+      const mmiStakeButton = queryByTestId('token-overview-mmi-stake');
+      const mmiPortfolioButton = queryByTestId('token-overview-mmi-portfolio');
+
+      expect(mmiStakeButton).toBeInTheDocument();
+      expect(mmiPortfolioButton).toBeInTheDocument();
     });
   });
 });

@@ -16,7 +16,7 @@ import {
 
 import {
   AvatarIcon,
-  IconSize,
+  AvatarIconSize,
   Text,
   Box,
   BannerAlert,
@@ -35,10 +35,7 @@ const InstallError = ({ title, error, description, iconName }) => {
       {iconName && (
         <AvatarIcon
           iconName={iconName}
-          size={IconSize.Xl}
-          iconProps={{
-            size: IconSize.Xl,
-          }}
+          size={AvatarIconSize.Xl}
           color={IconColor.errorDefault}
           backgroundColor={BackgroundColor.errorMuted}
           marginBottom={4}

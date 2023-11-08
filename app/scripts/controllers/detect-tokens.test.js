@@ -1,7 +1,9 @@
+/**
+ * @jest-environment node
+ */
 import { strict as assert } from 'assert';
 import sinon from 'sinon';
 import nock from 'nock';
-import { ObservableStore } from '@metamask/obs-store';
 import BigNumber from 'bignumber.js';
 import { ControllerMessenger } from '@metamask/base-controller';
 import {
@@ -16,24 +18,33 @@ import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import DetectTokensController from './detect-tokens';
 import PreferencesController from './preferences';
 
-function buildMessenger() {
-  return new ControllerMessenger().getRestricted({
-    name: 'DetectTokensController',
-    allowedEvents: ['NetworkController:stateChange'],
-  });
-}
+const flushPromises = () => {
+  return new Promise(jest.requireActual('timers').setImmediate);
+};
 
 describe('DetectTokensController', function () {
   let sandbox,
     assetsContractController,
-    keyringMemStore,
     network,
     preferences,
     provider,
     tokensController,
-    tokenListController;
+    tokenListController,
+    messenger;
 
   const noop = () => undefined;
+
+  const getRestrictedMessenger = () => {
+    return messenger.getRestricted({
+      name: 'DetectTokensController',
+      allowedActions: ['KeyringController:getState'],
+      allowedEvents: [
+        'NetworkController:stateChange',
+        'KeyringController:lock',
+        'KeyringController:unlock',
+      ],
+    });
+  };
 
   const networkControllerProviderConfig = {
     getAccounts: noop,
@@ -198,7 +209,11 @@ describe('DetectTokensController', function () {
       .reply(200, { error: 'ChainId 3 is not supported' })
       .persist();
 
-    keyringMemStore = new ObservableStore({ isUnlocked: false });
+    messenger = new ControllerMessenger();
+    messenger.registerActionHandler('KeyringController:getState', () => ({
+      isUnlocked: true,
+    }));
+
     const networkControllerMessenger = new ControllerMessenger();
     network = new NetworkController({
       messenger: networkControllerMessenger,
@@ -209,6 +224,7 @@ describe('DetectTokensController', function () {
 
     const tokenListMessenger = new ControllerMessenger().getRestricted({
       name: 'TokenListController',
+      allowedEvents: ['TokenListController:stateChange'],
     });
     tokenListController = new TokenListController({
       chainId: toHex(1),
@@ -223,8 +239,8 @@ describe('DetectTokensController', function () {
       network,
       provider,
       tokenListController,
-      onInfuraIsBlocked: sinon.stub(),
-      onInfuraIsUnblocked: sinon.stub(),
+      networkConfigurations: {},
+      onAccountRemoved: sinon.stub(),
     });
     preferences.setAddresses([
       '0x7e57e2',
@@ -241,6 +257,11 @@ describe('DetectTokensController', function () {
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
+      onTokenListStateChange: (listener) =>
+        tokenListMessenger.subscribe(
+          `${tokenListController.name}:stateChange`,
+          listener,
+        ),
     });
 
     assetsContractController = new AssetsContractController({
@@ -261,7 +282,11 @@ describe('DetectTokensController', function () {
 
   it('should poll on correct interval', async function () {
     const stub = sinon.stub(global, 'setInterval');
-    new DetectTokensController({ messenger: buildMessenger(), interval: 1337 }); // eslint-disable-line no-new
+    // eslint-disable-next-line no-new
+    new DetectTokensController({
+      messenger: getRestrictedMessenger(),
+      interval: 1337,
+    });
     assert.strictEqual(stub.getCall(0).args[1], 1337);
     stub.restore();
   });
@@ -270,10 +295,9 @@ describe('DetectTokensController', function () {
     const clock = sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -307,10 +331,9 @@ describe('DetectTokensController', function () {
     });
     await tokenListController.start();
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -331,10 +354,9 @@ describe('DetectTokensController', function () {
     sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -354,6 +376,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
 
@@ -375,6 +398,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
   });
@@ -383,10 +407,9 @@ describe('DetectTokensController', function () {
     sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -409,6 +432,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
     const tokenAddressToAdd = erc20ContractAddresses[1];
@@ -427,6 +451,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
       {
         address: toChecksumHexAddress(tokenAddressToAdd),
@@ -435,6 +460,7 @@ describe('DetectTokensController', function () {
         aggregators: undefined,
         image: undefined,
         isERC721: undefined,
+        name: undefined,
       },
     ]);
   });
@@ -442,10 +468,9 @@ describe('DetectTokensController', function () {
   it('should trigger detect new tokens when change address', async function () {
     sandbox.useFakeTimers();
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -462,10 +487,9 @@ describe('DetectTokensController', function () {
   it('should trigger detect new tokens when submit password', async function () {
     sandbox.useFakeTimers();
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -473,18 +497,38 @@ describe('DetectTokensController', function () {
     controller.isOpen = true;
     controller.selectedAddress = '0x0';
     const stub = sandbox.stub(controller, 'detectNewTokens');
-    await controller._keyringMemStore.updateState({ isUnlocked: true });
+
+    messenger.publish('KeyringController:unlock');
+
     sandbox.assert.called(stub);
+    assert.equal(controller.isUnlocked, true);
+  });
+
+  it('should not be active after lock event is emitted', async function () {
+    sandbox.useFakeTimers();
+    const controller = new DetectTokensController({
+      messenger: getRestrictedMessenger(),
+      preferences,
+      network,
+      tokenList: tokenListController,
+      tokensController,
+      assetsContractController,
+    });
+    controller.isOpen = true;
+
+    messenger.publish('KeyringController:lock');
+
+    assert.equal(controller.isUnlocked, false);
+    assert.equal(controller.isActive, false);
   });
 
   it('should not trigger detect new tokens when not unlocked', async function () {
     const clock = sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokenList: tokenListController,
       tokensController,
       assetsContractController,
@@ -503,10 +547,9 @@ describe('DetectTokensController', function () {
     const clock = sandbox.useFakeTimers();
     await network.setProviderType(NETWORK_TYPES.MAINNET);
     const controller = new DetectTokensController({
-      messenger: buildMessenger(),
+      messenger: getRestrictedMessenger(),
       preferences,
       network,
-      keyringMemStore,
       tokensController,
       assetsContractController,
     });
@@ -522,5 +565,43 @@ describe('DetectTokensController', function () {
     );
     clock.tick(180000);
     sandbox.assert.notCalled(stub);
+  });
+
+  it('should poll on the correct interval by networkClientId', async function () {
+    jest.useFakeTimers();
+    const controller = new DetectTokensController({
+      messenger: getRestrictedMessenger(),
+      preferences,
+      network,
+      tokensController,
+      assetsContractController,
+      disableLegacyInterval: true,
+      interval: 1000,
+      getNetworkClientById: () => ({
+        configuration: {
+          chainId: '0x1',
+        },
+        provider: {},
+        blockTracker: {},
+        destroy: () => {
+          // noop
+        },
+      }),
+    });
+    const detectNewTokensSpy = jest
+      .spyOn(controller, 'detectNewTokens')
+      .mockResolvedValue('foo');
+    controller.startPollingByNetworkClientId('mainnet');
+    await Promise.all([jest.advanceTimersByTime(0), flushPromises()]);
+    expect(detectNewTokensSpy).toHaveBeenCalledTimes(1);
+    await Promise.all([jest.advanceTimersByTime(1000), flushPromises()]);
+    expect(detectNewTokensSpy).toHaveBeenCalledTimes(2);
+    expect(detectNewTokensSpy.mock.calls).toStrictEqual([
+      [{ chainId: '0x1' }],
+      [{ chainId: '0x1' }],
+    ]);
+
+    detectNewTokensSpy.mockRestore();
+    jest.useRealTimers();
   });
 });

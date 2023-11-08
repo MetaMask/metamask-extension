@@ -25,6 +25,10 @@ async function main() {
               'Run tests in debug mode, logging each driver interaction',
             type: 'boolean',
           })
+          .option('mmi', {
+            description: 'Run only mmi related tests',
+            type: 'boolean',
+          })
           .option('retries', {
             default: 0,
             description:
@@ -48,6 +52,12 @@ async function main() {
             description: 'Update E2E snapshots',
             type: 'boolean',
           })
+          .option('update-privacy-snapshot', {
+            default: false,
+            description:
+              'Update the privacy snapshot to include new hosts and paths',
+            type: 'boolean',
+          })
           .positional('e2e-test-path', {
             describe: 'The path for the E2E test to run.',
             type: 'string',
@@ -60,11 +70,13 @@ async function main() {
   const {
     browser,
     debug,
+    mmi,
     e2eTestPath,
     retries,
     retryUntilFailure,
     leaveRunning,
     updateSnapshot,
+    updatePrivacySnapshot,
   } = argv;
 
   if (!browser) {
@@ -95,8 +107,6 @@ async function main() {
     throw error;
   }
 
-  const testFileName = path.basename(e2eTestPath);
-
   if (debug) {
     process.env.E2E_DEBUG = 'true';
   }
@@ -114,26 +124,35 @@ async function main() {
     process.env.UPDATE_SNAPSHOTS = 'true';
   }
 
+  if (updatePrivacySnapshot) {
+    process.env.UPDATE_PRIVACY_SNAPSHOT = 'true';
+  }
+
   const configFile = path.join(__dirname, '.mocharc.js');
   const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
+
+  // If mmi flag is passed
+  if (mmi) {
+    // Tests that contains `@no-mmi` will be grep (-g) and inverted (-i)
+    // meaning that all tests with @no-mmi in the title will be ignored
+    extraArgs.push('-g', '@no-mmi', '-i');
+  }
 
   const dir = 'test/test-results/e2e';
   fs.mkdir(dir, { recursive: true });
 
   await retry({ retries, retryUntilFailure }, async () => {
-    await runInShell(
-      'yarn',
-      [
-        'mocha',
-        `--config=${configFile}`,
-        `--timeout=${testTimeoutInMilliseconds}`,
-        '--reporter=xunit',
-        ...extraArgs,
-        e2eTestPath,
-        exit,
-      ],
-      `${dir}/${testFileName}.xml`,
-    );
+    await runInShell('yarn', [
+      'mocha',
+      `--config=${configFile}`,
+      `--timeout=${testTimeoutInMilliseconds}`,
+      '--reporter=mocha-junit-reporter',
+      '--reporter-options',
+      `mochaFile=test/test-results/e2e/[hash].xml`,
+      ...extraArgs,
+      e2eTestPath,
+      exit,
+    ]);
   });
 }
 

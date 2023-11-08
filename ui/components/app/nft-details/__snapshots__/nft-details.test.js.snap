@@ -50,13 +50,13 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           data-testid="nft-item"
         >
           <div
-            class="mm-box mm-badge-wrapper nft-item__badge-wrapper mm-box--display-block"
+            class="mm-box mm-badge-wrapper nft-item__badge-wrapper nft-item__badge-wrapper__clickable mm-box--display-block"
           >
             <img
               alt="MUNK #1 1"
               class="mm-box nft-item__item nft-item__item-image mm-box--display-block mm-box--justify-content-center"
               data-testid="nft-image"
-              src="ipfs://QmTSZUNt8AKyDabkyXXXP4oHWDnaVXgNdXoJGEyaYzLbeL"
+              src="https://bafybeiclzx7zfjvuiuwobn5ip3ogc236bjqfjzoblumf4pau4ep6dqramu.ipfs.dweb.link"
             />
             <div
               class="mm-box mm-badge-wrapper__badge-container"
@@ -94,8 +94,6 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           <button
             class="button btn--rounded btn-primary nft-details__send-button"
             data-testid="nft-send-button"
-            role="button"
-            tabindex="0"
           >
             Send
           </button>
@@ -155,7 +153,7 @@ exports[`NFT Details should match minimal props and state snapshot 1`] = `
           <h6
             class="mm-box mm-text mm-text--body-sm mm-text--overflow-wrap-break-word mm-box--margin-bottom-4 mm-box--color-text-alternative"
           >
-            0xDc7...6414
+            0xDc738...06414
           </h6>
           <div
             class="nft-details__tooltip-wrapper"

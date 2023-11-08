@@ -3,8 +3,6 @@
 @import 'networks-tab/index';
 @import 'settings-tab/index';
 @import 'contact-list-tab/index';
-@import 'snaps/snaps-list-tab/index';
-@import 'snaps/view-snap/index';
 
 .settings-page {
   position: relative;
@@ -259,10 +257,6 @@
 
   &__body {
     padding: 24px;
-
-    @include screen-sm-min {
-      padding: 12px;
-    }
   }
 
   &__content-row {
@@ -273,8 +267,6 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    font-size: 16px;
-    font-weight: 500;
 
     @include screen-sm-max {
       height: initial;
@@ -332,7 +324,7 @@
   }
 
   &__content-row-experimental {
-    padding: 10px 0 0 12px;
+    padding: 16px 0 16px 12px;
   }
 
   &__content-label {
@@ -369,12 +361,6 @@
       // for eth_sign we need to override the uppercase property of toggle button text
       text-transform: capitalize;
     }
-  }
-
-  &__content-item-col-open-sea {
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 4px;
   }
 
   &__button {

@@ -7,6 +7,7 @@ import {
   rejectPendingApproval,
 } from '../../store/actions';
 import configureStore from '../../store/store';
+import mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/jest/rendering';
 import ConfirmAddSuggestedNFT from '.';
 
@@ -68,6 +69,7 @@ jest.mock('../../store/actions', () => ({
 const renderComponent = (pendingNfts = {}) => {
   const store = configureStore({
     metamask: {
+      ...mockState.metamask,
       pendingApprovals: pendingNfts,
       providerConfig: { chainId: '0x1' },
     },
@@ -102,14 +104,37 @@ describe('ConfirmAddSuggestedNFT Component', () => {
     });
 
     expect(screen.getByText('Add suggested NFTs')).toBeInTheDocument();
-    expect(screen.getByText('www.opensea.io')).toBeInTheDocument();
+    expect(screen.getByText('https://www.opensea.io')).toBeInTheDocument();
     expect(
-      screen.getByText('wants to add this asset to your wallet'),
+      screen.getByText(
+        'This allows the following asset to be added to your wallet.',
+      ),
     ).toBeInTheDocument();
     expect(screen.getByText('CryptoKitty')).toBeInTheDocument();
     expect(screen.getByText('#15')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Add NFT' })).toBeInTheDocument();
+  });
+
+  it('should match snapshot', () => {
+    const container = renderComponent({
+      1: {
+        id: '1',
+        origin: 'https://www.opensea.io',
+        time: 1,
+        type: ApprovalType.WatchAsset,
+        requestData: {
+          asset: {
+            address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+            name: 'CryptoKitty',
+            tokenId: '15',
+            standard: 'ERC721',
+          },
+        },
+      },
+    });
+
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a list of suggested NFTs', () => {
@@ -122,7 +147,7 @@ describe('ConfirmAddSuggestedNFT Component', () => {
       expect(screen.getByText(`#${asset.tokenId}`)).toBeInTheDocument();
     }
     expect(screen.getAllByRole('img')).toHaveLength(
-      Object.values(PENDING_NFT_APPROVALS).length,
+      Object.values(PENDING_NFT_APPROVALS).length + 1,
     );
   });
 

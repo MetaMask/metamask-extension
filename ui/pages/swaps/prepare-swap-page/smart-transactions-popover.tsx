@@ -16,7 +16,7 @@ import {
   Text,
   Box,
   Button,
-  BUTTON_VARIANT,
+  ButtonVariant,
 } from '../../../components/component-library';
 
 interface Props {
@@ -80,7 +80,7 @@ export default function SmartTransactionsPopover({
           </Text>
 
           <Button
-            variant={BUTTON_VARIANT.PRIMARY}
+            variant={ButtonVariant.Primary}
             onClick={onEnableSmartTransactionsClick}
             width={BlockSize.Full}
           >
@@ -89,7 +89,7 @@ export default function SmartTransactionsPopover({
 
           <Button
             type="link"
-            variant={BUTTON_VARIANT.LINK}
+            variant={ButtonVariant.Link}
             onClick={onCloseSmartTransactionsOptInPopover}
             width={BlockSize.Full}
           >

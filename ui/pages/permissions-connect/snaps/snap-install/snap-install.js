@@ -120,7 +120,7 @@ export default function SnapInstall({
         <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
       )}
       <Box
-        ref={ref}
+        ref={!isLoading && !hasError ? ref : undefined}
         onScroll={onScroll}
         className="snap-install__content"
         style={{
@@ -158,7 +158,7 @@ export default function SnapInstall({
               paddingBottom={2}
               textAlign="center"
             >
-              {t('snapInstall')}
+              {t('installRequest')}
             </Text>
             <Text
               className="snap-install__content__permission-description"

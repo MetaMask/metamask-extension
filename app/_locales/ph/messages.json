@@ -195,9 +195,6 @@
   "buildContactList": {
     "message": "Buuin ang iyong listahan ng contact"
   },
-  "buy": {
-    "message": "Bumili"
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -337,9 +334,6 @@
   },
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
-  },
-  "copyPrivateKey": {
-    "message": "Ito ang iyong pribadong key (i-click para kopyahin)"
   },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
@@ -489,9 +483,6 @@
   "enterMaxSpendLimit": {
     "message": "Ilagay ang Max na Limitasyon sa Paggastos"
   },
-  "enterPassword": {
-    "message": "Ilagay ang password"
-  },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
   },
@@ -541,9 +532,6 @@
   },
   "expandView": {
     "message": "I-expand ang view"
-  },
-  "exportPrivateKey": {
-    "message": "I-export ang Pribadong Key"
   },
   "externalExtension": {
     "message": "External Extension"
@@ -1309,9 +1297,6 @@
   "showPermissions": {
     "message": "Ipakita ang mga pahintulot"
   },
-  "showPrivateKeys": {
-    "message": "Ipakita ang Mga Private Key"
-  },
   "sigRequest": {
     "message": "Request ng Signature"
   },
@@ -1574,9 +1559,6 @@
   "swapSource": {
     "message": "Pinagkunan ng liquidity"
   },
-  "swapSourceInfo": {
-    "message": "Naghahanap kami ng maraming pinagkukunan ng liquidity (mga exchange, aggregator at propesyonal na market maker) para mahanap ang mga pinakasulit na rate at pinakamababang bayarin sa network."
-  },
   "swapSwapFrom": {
     "message": "I-swap mula sa"
   },
@@ -1763,9 +1745,6 @@
   },
   "tryAgain": {
     "message": "Subukan ulit"
-  },
-  "typePassword": {
-    "message": "Uri ng password ng iyong MetaMask"
   },
   "unapproved": {
     "message": "Hindi inaprubahan"

@@ -51,7 +51,7 @@ describe('AccountListItem', () => {
   });
 
   it('enables the settings item when there is no active transaction', async () => {
-    const { getByTestId } = render({ unapprovedTxs: {} });
+    const { getByTestId } = render({ transactions: [] });
     await waitFor(() => {
       expect(getByTestId('global-menu-settings')).toBeEnabled();
     });
@@ -65,7 +65,7 @@ describe('AccountListItem', () => {
   });
 
   it('enables the connected sites item when there is no active transaction', async () => {
-    const { getByTestId } = render({ unapprovedTxs: {} });
+    const { getByTestId } = render({ transactions: [] });
     await waitFor(() => {
       expect(getByTestId('global-menu-connected-sites')).toBeEnabled();
     });

@@ -70,6 +70,7 @@ describe('Account Tracker', () => {
           getState: noop,
         },
       },
+      onAccountRemoved: jest.fn(),
     });
   });
 
@@ -137,6 +138,38 @@ describe('Account Tracker', () => {
       };
 
       expect(newAccounts).toStrictEqual(expectedAccounts);
+    });
+  });
+
+  describe('onAccountRemoved', () => {
+    it('should remove an account from state', () => {
+      let accountRemovedListener;
+      const onAccountRemoved = (callback) => {
+        accountRemovedListener = callback;
+      };
+      accountTracker = new AccountTracker({
+        provider,
+        blockTracker: blockTrackerStub,
+        preferencesController: {
+          store: {
+            getState: () => ({
+              useMultiAccountBalanceChecker,
+            }),
+            subscribe: noop,
+          },
+        },
+        onboardingController: {
+          store: {
+            subscribe: noop,
+            getState: noop,
+          },
+        },
+        onAccountRemoved,
+      });
+      accountRemovedListener(VALID_ADDRESS);
+      expect(
+        accountTracker.store.getState().accounts[VALID_ADDRESS],
+      ).toStrictEqual(undefined);
     });
   });
 

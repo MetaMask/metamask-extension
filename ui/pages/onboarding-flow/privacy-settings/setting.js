@@ -7,7 +7,6 @@ import {
   TextVariant,
   AlignItems,
   Display,
-  FontWeight,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -30,10 +29,8 @@ export const Setting = ({
       className="privacy-settings__setting__wrapper"
     >
       <div className="privacy-settings__setting">
-        <Text variant={TextVariant.bodyLgMedium} fontWeight={FontWeight.Bold}>
-          {title}
-        </Text>
-        <Text variant={TextVariant.bodyMd} as="div">
+        <Text variant={TextVariant.bodyMdMedium}>{title}</Text>
+        <Text variant={TextVariant.bodySm} as="div">
           {description}
         </Text>
       </div>

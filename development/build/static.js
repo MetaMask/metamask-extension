@@ -179,6 +179,10 @@ function getCopyTargets(
       dest: 'init-globals.js',
     },
     {
+      src: './app/scripts/load-app.js',
+      dest: 'load-app.js',
+    },
+    {
       src: shouldIncludeLockdown
         ? `./app/scripts/lockdown-run.js`
         : EMPTY_JS_FILE,
@@ -204,7 +208,7 @@ function getCopyTargets(
 
   if (activeFeatures.includes('blockaid')) {
     allCopyTargets.push({
-      src: getPathInsideNodeModules('@blockaid/ppom', '/'),
+      src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
       pattern: '*.wasm',
       dest: '',
     });

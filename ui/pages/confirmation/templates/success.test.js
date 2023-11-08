@@ -18,9 +18,9 @@ const mockApproval = {
     header: [
       {
         key: 'headerText',
-        element: 'Typography',
+        name: 'Typography',
         children: 'Success mock',
-        props: {
+        properties: {
           variant: 'h2',
           class: 'header-mock-class',
         },
@@ -51,6 +51,10 @@ describe('success template', () => {
             type: ApprovalType.ResultSuccess,
           },
         },
+        providerConfig: {
+          chainId: '0x1',
+        },
+        transactions: [],
       },
     };
     const store = configureMockStore(middleware)(testStore);

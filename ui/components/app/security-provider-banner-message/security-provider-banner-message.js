@@ -47,6 +47,7 @@ export default function SecurityProviderBannerMessage({
 
   return (
     <BannerAlert
+      className="security-provider-banner-message"
       marginTop={4}
       marginRight={4}
       marginLeft={4}

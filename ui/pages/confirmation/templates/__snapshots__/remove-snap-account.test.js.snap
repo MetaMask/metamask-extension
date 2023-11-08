@@ -1,0 +1,245 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`remove-snap-account confirmation should match snapshot 1`] = `
+<div>
+  <div
+    class="confirmation-page"
+  >
+    <div
+      class="confirmation-page__content"
+    >
+      <div
+        class="mm-box snaps-authorship-header mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
+        style="box-shadow: var(--shadow-size-lg) var(--color-shadow-default);"
+      >
+        <div
+          class="mm-box"
+        >
+          <div
+            class="mm-box mm-badge-wrapper snap-avatar mm-box--display-inline-block"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+              style="border-width: 0px;"
+            >
+              m
+            </div>
+            <div
+              class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
+            >
+              <div
+                class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+              >
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-info-inverse"
+                  style="mask-image: url('./images/icons/snaps.svg');"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-right-4 mm-box--margin-left-4 mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+          >
+            @metamask/snap-test
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+          >
+            @metamask/snap-test
+          </p>
+        </div>
+        <div
+          class="mm-box mm-box--margin-left-auto"
+        >
+          <a
+            class="mm-box mm-text mm-button-base snap-version mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="https://www.npmjs.com/package/@metamask/snap-test"
+            target="_blank"
+          >
+            <span
+              class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+            >
+              <div
+                class="box snap-version__wrapper box--padding-top-1 box--padding-right-2 box--padding-bottom-1 box--padding-left-2 box--flex-direction-row box--align-items-center box--background-color-background-alternative box--rounded-pill box--display-flex"
+              >
+                <svg
+                  class="preloader__icon"
+                  fill="none"
+                  height="18"
+                  viewBox="0 0 16 16"
+                  width="18"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    clip-rule="evenodd"
+                    d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
+                    fill="#C1DAEC"
+                    fill-rule="evenodd"
+                  />
+                  <mask
+                    height="16"
+                    id="mask0"
+                    mask-type="alpha"
+                    maskUnits="userSpaceOnUse"
+                    width="16"
+                    x="0"
+                    y="0"
+                  >
+                    <path
+                      clip-rule="evenodd"
+                      d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
+                      fill="#037DD6"
+                      fill-rule="evenodd"
+                    />
+                  </mask>
+                  <g
+                    mask="url(#mask0)"
+                  >
+                    <path
+                      d="M6.85718 17.9999V11.4285V8.28564H-4.85711V17.9999H6.85718Z"
+                      fill="#037DD6"
+                    />
+                  </g>
+                </svg>
+                <span
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-text-alternative"
+                  style="mask-image: url('./images/icons/export.svg');"
+                />
+              </div>
+            </span>
+          </a>
+        </div>
+      </div>
+      <div
+        class="mm-box remove-snap-account-page mm-box--padding-top-2 mm-box--padding-bottom-2 mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--background-color-background-default mm-box--border-style-none"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--height-full"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+          >
+            <div
+              class="mm-box mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center"
+            >
+              <div
+                class="mm-box mm-box--padding-bottom-2"
+              >
+                <div
+                  class="mm-box mm-badge-wrapper snap-avatar mm-box--display-inline-block"
+                >
+                  <div
+                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
+                    style="border-width: 0px;"
+                  >
+                    m
+                  </div>
+                  <div
+                    class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
+                  >
+                    <div
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-3 box--border-style-solid"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-inverse"
+                        style="mask-image: url('./images/icons/snaps.svg');"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h2
+                class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--color-text-default"
+              >
+                Remove account
+              </h2>
+              <p
+                class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-text--overflow-wrap-anywhere mm-box--color-text-default"
+              >
+                Test Snap Account Name wants to remove this account from MetaMask:
+              </p>
+              <div
+                class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4"
+              >
+                <div
+                  class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-warning mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-warning-muted mm-box--rounded-sm"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-warning-default"
+                    style="mask-image: url('./images/icons/danger.svg');"
+                  />
+                  <div
+                    class="mm-box mm-box--min-width-0"
+                  >
+                    <p
+                      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                    >
+                      Be sure you can access this account on your own before removing it
+                    </p>
+                    <p
+                      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="box box--padding-4 box--display-flex box--gap-4 box--flex-direction-row box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
+              >
+                <div
+                  class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-space-between"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-sm mm-box--color-text-muted"
+                  >
+                    Public address
+                  </p>
+                  <p
+                    class="mm-box mm-text mm-text--body-xs mm-box--color-text-default"
+                  >
+                    0x000000000000000000000000000000000000000
+                  </p>
+                </div>
+                <div
+                  class="mm-box mm-box--margin-left-auto mm-box--display-flex mm-box--align-items-center"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-primary-default"
+                    style="mask-image: url('./images/icons/share.svg');"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="confirmation-footer"
+      style="box-shadow: var(--shadow-size-lg) var(--color-shadow-default);"
+    >
+      <div
+        class="confirmation-footer__actions"
+        style="border-top: 0;"
+      >
+        <button
+          class="button btn--rounded btn-secondary"
+          data-testid="confirmation-cancel-button"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary"
+          data-testid="confirmation-submit-button"
+        >
+          Remove
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

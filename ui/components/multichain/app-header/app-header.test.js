@@ -31,4 +31,10 @@ describe('App Header', () => {
     const { getByTestId } = render({ send: { stage: SEND_STAGES.DRAFT } });
     expect(getByTestId('account-menu-icon')).toBeEnabled();
   });
+
+  it('should show the copy button for multichain', () => {
+    process.env.MULTICHAIN = 1;
+    const { getByTestId } = render({ send: { stage: SEND_STAGES.INACTIVE } });
+    expect(getByTestId('app-header-copy-button')).toBeEnabled();
+  });
 });

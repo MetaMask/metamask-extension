@@ -65,6 +65,7 @@ function documentElementCheck() {
  */
 function blockedDomainCheck() {
   const blockedDomains = [
+    'execution.consensys.io',
     'execution.metamask.io',
     'uscourts.gov',
     'dropbox.com',
@@ -80,7 +81,7 @@ function blockedDomainCheck() {
   const currentUrl = window.location.href;
   let currentRegex;
   for (let i = 0; i < blockedDomains.length; i++) {
-    const blockedDomain = blockedDomains[i].replace('.', '\\.');
+    const blockedDomain = blockedDomains[i].replaceAll('.', '\\.');
     currentRegex = new RegExp(
       `(?:https?:\\/\\/)(?:(?!${blockedDomain}).)*$`,
       'u',

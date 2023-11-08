@@ -11,10 +11,10 @@ import { getKnownMethodData } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionFunctionType } from '../../../hooks/useTransactionFunctionType';
 
-import Box from '../../ui/box/box';
 import Disclosure from '../../ui/disclosure';
 import TransactionDecoding from '../transaction-decoding';
-import { Text } from '../../component-library';
+import { Text, Box } from '../../component-library';
+import TransactionInsightsDeprecationAlert from './transaction-insights-deprecation-alert';
 
 const ConfirmData = ({ txData, dataComponent }) => {
   const t = useI18nContext();
@@ -25,7 +25,14 @@ const ConfirmData = ({ txData, dataComponent }) => {
   const { functionType } = useTransactionFunctionType(txData);
 
   if (dataComponent) {
-    return dataComponent;
+    return (
+      <Box>
+        <Box marginLeft={4} marginRight={4} marginTop={4}>
+          <TransactionInsightsDeprecationAlert />
+        </Box>
+        {dataComponent}
+      </Box>
+    );
   }
 
   if (!txParams.data) {
@@ -38,28 +45,33 @@ const ConfirmData = ({ txData, dataComponent }) => {
     : '';
 
   return (
-    <Box color={Color.textAlternative} className="confirm-data" padding={4}>
-      <Box paddingBottom={3} paddingTop={2}>
-        <Text
-          as="span"
-          textTransform={TextTransform.Uppercase}
-          variant={TextVariant.bodySm}
-        >
-          {`${t('functionType')}:`}
-        </Text>
-        <Text
-          as="span"
-          color={Color.textDefault}
-          paddingLeft={1}
-          textTransform={TextTransform.Capitalize}
-          variant={TextVariant.bodySmBold}
-        >
-          {`${functionType} ${functionParams}`}
-        </Text>
+    <Box>
+      <Box marginLeft={4} marginRight={4} marginTop={4}>
+        <TransactionInsightsDeprecationAlert />
       </Box>
-      <Disclosure>
-        <TransactionDecoding to={txParams?.to} inputData={txParams?.data} />
-      </Disclosure>
+      <Box color={Color.textAlternative} className="confirm-data" padding={4}>
+        <Box paddingBottom={3} paddingTop={2}>
+          <Text
+            as="span"
+            textTransform={TextTransform.Uppercase}
+            variant={TextVariant.bodySm}
+          >
+            {`${t('functionType')}:`}
+          </Text>
+          <Text
+            as="span"
+            color={Color.textDefault}
+            paddingLeft={1}
+            textTransform={TextTransform.Capitalize}
+            variant={TextVariant.bodySmBold}
+          >
+            {`${functionType} ${functionParams}`}
+          </Text>
+        </Box>
+        <Disclosure>
+          <TransactionDecoding to={txParams?.to} inputData={txParams?.data} />
+        </Disclosure>
+      </Box>
     </Box>
   );
 };

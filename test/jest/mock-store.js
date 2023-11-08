@@ -154,15 +154,14 @@ export const createSwapsMockStore = () => {
         showFiatInTestnets: true,
       },
       currentCurrency: 'ETH',
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 6571648590592143,
           time: 1667403993369,
           status: 'confirmed',
-          metamaskNetworkId: '5',
           originalGasEstimate: '0x7548',
           userEditedGasLimit: false,
-          chainId: '0x5',
+          chainId: CHAIN_IDS.MAINNET,
           loadingDefaults: false,
           dappSuggestedGasFees: null,
           sendFlowHistory: null,
@@ -260,7 +259,6 @@ export const createSwapsMockStore = () => {
       },
       selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       currentLocale: 'en',
-      keyringTypes: [KeyringType.imported, KeyringType.hdKeyTree],
       keyrings: [
         {
           type: KeyringType.hdKeyTree,

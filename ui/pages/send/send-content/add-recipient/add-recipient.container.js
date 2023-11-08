@@ -3,7 +3,7 @@ import {
   getAddressBook,
   getAddressBookEntry,
   getMetaMaskAccountsOrdered,
-  currentNetworkTxListSelector,
+  getCurrentNetworkTransactions,
 } from '../../../../selectors';
 
 import {
@@ -35,7 +35,7 @@ function mapStateToProps(state) {
 
   const addressBook = getAddressBook(state);
 
-  const txList = [...currentNetworkTxListSelector(state)].reverse();
+  const txList = [...getCurrentNetworkTransactions(state)].reverse();
 
   const nonContacts = addressBook
     .filter(({ name }) => !name)

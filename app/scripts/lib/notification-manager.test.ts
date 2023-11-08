@@ -35,6 +35,7 @@ jest.mock('webextension-polyfill', () => {
       getAll: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
+      getLastFocused: jest.fn(),
     },
   };
 });
@@ -67,5 +68,29 @@ describe('Notification Manager', () => {
     await notificationManager.showPopup(setCurrentPopupIdSpy, currentPopupId);
     expect(setCurrentPopupIdSpy).toHaveBeenCalledTimes(1);
     expect(setCurrentPopupIdSpy).toHaveBeenCalledWith(newPopupWindow.id);
+  });
+
+  it('should not pass negative left value for extension window created from last focused window', async () => {
+    const newPopupWindow = generateMockWindow();
+    setCurrentPopupIdSpy = jest.fn();
+    const createSpy = jest.fn().mockReturnValue(newPopupWindow);
+    browser.windows.getAll.mockReturnValue([]);
+    browser.windows.create = createSpy;
+    browser.windows.getLastFocused.mockReturnValue({
+      top: 0,
+      left: 0,
+      width: 120, // make sure this is smalled than NOTIFICATION_WIDTH
+    });
+    currentPopupId = undefined;
+    await notificationManager.showPopup(setCurrentPopupIdSpy, currentPopupId);
+    expect(createSpy).toHaveBeenCalledTimes(1);
+    expect(createSpy).toHaveBeenCalledWith({
+      height: 620,
+      left: 0, // this is critical, means error related to polyfill is not triggered
+      top: 0,
+      type: 'popup',
+      url: 'notification.html',
+      width: 360,
+    });
   });
 });

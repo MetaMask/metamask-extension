@@ -9,7 +9,6 @@ const sendEther = {
   id: 9597986287241458,
   time: 1681203297082,
   status: 'unapproved',
-  metamaskNetworkId: '5',
   originalGasEstimate: '0x5208',
   userEditedGasLimit: false,
   chainId: '0x5',
@@ -40,10 +39,12 @@ const sendEther = {
   },
 };
 
-mockState.metamask.unapprovedTxs[sendEther.id] = sendEther;
+mockState.metamask.transactions.push(sendEther);
+
 mockState.confirmTransaction = {
   txData: sendEther,
 };
+
 const store = configureStore(mockState);
 
 export default {

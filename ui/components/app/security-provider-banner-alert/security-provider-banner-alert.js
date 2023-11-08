@@ -26,23 +26,44 @@ import {
   SecurityProvider,
   SECURITY_PROVIDER_CONFIG,
 } from '../../../../shared/constants/security-provider';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 function SecurityProviderBannerAlert({
   description,
   details,
+  onClickSupportLink,
   provider,
   severity,
   title,
+  ...props
 }) {
   const t = useContext(I18nContext);
 
   return (
-    <BannerAlert title={title} severity={severity} margin={4}>
+    <BannerAlert
+      data-testid="security-provider-banner-alert"
+      title={title}
+      severity={severity}
+      {...props}
+    >
       <Text marginTop={2}>{description}</Text>
 
       {details && (
         <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
           {details}
+          <Text marginTop={3} display={Display.Flex}>
+            {t('somethingDoesntLookRight', [
+              <ButtonLink
+                key={`security-provider-button-supporturl-${provider}`}
+                size={Size.inherit}
+                href={ZENDESK_URLS.SUPPORT_URL}
+                externalLink
+                onClick={onClickSupportLink}
+              >
+                {t('contactUs')}
+              </ButtonLink>,
+            ])}
+          </Text>
         </Disclosure>
       )}
 
@@ -61,7 +82,7 @@ function SecurityProviderBannerAlert({
             size={IconSize.Sm}
             marginInlineEnd={1}
           />
-          {t('securityProviderAdviceBy', [
+          {t('securityProviderPoweredBy', [
             <ButtonLink
               key={`security-provider-button-link-${provider}`}
               size={Size.inherit}
@@ -97,6 +118,9 @@ SecurityProviderBannerAlert.propTypes = {
 
   /** Name of the security provider */
   provider: PropTypes.oneOf(Object.values(SecurityProvider)),
+
+  /** Function to be called when the support link is clicked */
+  onClickSupportLink: PropTypes.func,
 };
 
 export default SecurityProviderBannerAlert;

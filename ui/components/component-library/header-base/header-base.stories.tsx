@@ -3,7 +3,7 @@ import { StoryFn, Meta } from '@storybook/react';
 import {
   IconName,
   Button,
-  BUTTON_SIZES,
+  ButtonSize,
   ButtonIcon,
   ButtonIconSize,
   Text,
@@ -206,7 +206,7 @@ export const UseCaseDemos = (args) => (
           <Button
             backgroundColor={BackgroundColor.successAlternative}
             style={{ whiteSpace: 'nowrap' }}
-            size={BUTTON_SIZES.SM}
+            size={ButtonSize.Sm}
           >
             Unlock Now
           </Button>
@@ -231,6 +231,41 @@ export const UseCaseDemos = (args) => (
       </HeaderBase>
     </Box>
     <Text>
+      children with ellipsis, startAccessory, and endAccessory assigned{' '}
+    </Text>
+    <Box backgroundColor={BackgroundColor.warningAlternative}>
+      <HeaderBase
+        marginBottom={4}
+        startAccessory={
+          <Button
+            backgroundColor={BackgroundColor.successAlternative}
+            style={{ whiteSpace: 'nowrap' }}
+            size={ButtonSize.Sm}
+          >
+            Unlock Now
+          </Button>
+        }
+        endAccessory={
+          <ButtonIcon
+            backgroundColor={BackgroundColor.goerli}
+            size={ButtonIconSize.Sm}
+            iconName={IconName.Close}
+            ariaLabel="close"
+          />
+        }
+        {...args}
+      >
+        <Text
+          variant={TextVariant.headingSm}
+          textAlign={TextAlign.Center}
+          backgroundColor={BackgroundColor.primaryAlternative}
+          ellipsis={true}
+        >
+          Title is sentence case no period
+        </Text>
+      </HeaderBase>
+    </Box>
+    <Text>
       children, startAccessory, and endAccessory assigned with prop alignItems=
       {AlignItems.center} passed at HeaderBase
     </Text>
@@ -247,10 +282,7 @@ export const UseCaseDemos = (args) => (
           />
         }
         endAccessory={
-          <Button
-            backgroundColor={BackgroundColor.goerli}
-            size={BUTTON_SIZES.SM}
-          >
+          <Button backgroundColor={BackgroundColor.goerli} size={ButtonSize.Sm}>
             Download
           </Button>
         }
@@ -272,7 +304,7 @@ export const UseCaseDemos = (args) => (
         startAccessory={
           <Button
             backgroundColor={BackgroundColor.successAlternative}
-            size={BUTTON_SIZES.SM}
+            size={ButtonSize.Sm}
           >
             Unlock
           </Button>

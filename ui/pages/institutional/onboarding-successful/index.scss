@@ -1,0 +1,9 @@
+.onboarding-successful {
+  @include screen-sm-min {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  max-width: 600px;
+}
