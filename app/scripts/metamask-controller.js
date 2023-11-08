@@ -1458,7 +1458,6 @@ export default class MetamaskController extends EventEmitter {
     this.mmiController = new MMIController({
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
-      txController: this.txController,
       securityProviderRequest: this.securityProviderRequest.bind(this),
       preferencesController: this.preferencesController,
       appStateController: this.appStateController,
@@ -1474,6 +1473,21 @@ export default class MetamaskController extends EventEmitter {
       signatureController: this.signatureController,
       platform: this.platform,
       extension: this.extension,
+      hooks: {
+        getTransactions: this.txController.getTransactions.bind(this),
+        updateTransactionHash: this.txController.setTxHash.bind(this),
+        txStateManager: {
+          getTransactions: this.txController.getTransactions.bind(this),
+          setTxStatusSigned:
+            this.txController.txStateManager.setTxStatusSigned.bind(this),
+          setTxStatusSubmitted:
+            this.txController.txStateManager.setTxStatusSubmitted.bind(this),
+          setTxStatusFailed:
+            this.txController.txStateManager.setTxStatusFailed.bind(this),
+          updateTransaction:
+            this.txController.txStateManager.updateTransaction.bind(this),
+        },
+      },
     });
     ///: END:ONLY_INCLUDE_IN
 
