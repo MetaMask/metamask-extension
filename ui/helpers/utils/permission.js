@@ -117,9 +117,9 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           ...baseDescription,
           label: t('permission_viewNamedBip32PublicKeys', [
             <Text
-              as="span"
+              color={TextColor.inherit}
+              variant={TextVariant.inherit}
               fontWeight={FontWeight.Medium}
-              className="permission-label-item"
               key={path.join('/')}
             >
               {friendlyName}
@@ -142,9 +142,9 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         ...baseDescription,
         label: t('permission_viewBip32PublicKeys', [
           <Text
-            as="span"
+            color={TextColor.inherit}
+            variant={TextVariant.inherit}
             fontWeight={FontWeight.Medium}
-            className="permission-label-item"
             key={path.join('/')}
           >
             {`${t('unknownNetworkForKeyEntropy')} `} {path.join('/')}
@@ -164,7 +164,11 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         ]),
       };
     }),
-  [RestrictedMethods.snap_getBip32Entropy]: ({ t, permissionValue }) =>
+  [RestrictedMethods.snap_getBip32Entropy]: ({
+    t,
+    permissionValue,
+    targetSubjectMetadata,
+  }) =>
     permissionValue.caveats[0].value.map(({ path, curve }, i) => {
       const baseDescription = {
         leftIcon: IconName.Key,
@@ -183,15 +187,17 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
           ...baseDescription,
           label: t('permission_manageBip32Keys', [
             <Text
-              as="span"
-              className="permission-label-item"
-              key={path.join('/')}
+              color={TextColor.inherit}
+              variant={TextVariant.inherit}
               fontWeight={FontWeight.Medium}
+              key={path.join('/')}
             >
               {friendlyName}
             </Text>,
           ]),
-          description: t('permission_manageBip44AndBip32KeysDescription'),
+          description: t('permission_manageBip44AndBip32KeysDescription', [
+            getSnapNameComponent(targetSubjectMetadata),
+          ]),
         };
       }
 
@@ -199,31 +205,39 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
         ...baseDescription,
         label: t('permission_manageBip32Keys', [
           <Text
-            as="span"
+            color={TextColor.inherit}
+            variant={TextVariant.inherit}
             fontWeight={FontWeight.Medium}
-            className="permission-label-item"
             key={path.join('/')}
           >
             {`${t('unknownNetworkForKeyEntropy')} ${path.join('/')} (${curve})`}
           </Text>,
         ]),
-        description: t('permission_manageBip44AndBip32KeysDescription'),
+        description: t('permission_manageBip44AndBip32KeysDescription', [
+          getSnapNameComponent(targetSubjectMetadata),
+        ]),
       };
     }),
-  [RestrictedMethods.snap_getBip44Entropy]: ({ t, permissionValue }) =>
+  [RestrictedMethods.snap_getBip44Entropy]: ({
+    t,
+    permissionValue,
+    targetSubjectMetadata,
+  }) =>
     permissionValue.caveats[0].value.map(({ coinType }, i) => ({
       label: t('permission_manageBip44Keys', [
         <Text
-          as="span"
+          color={TextColor.inherit}
+          variant={TextVariant.inherit}
           fontWeight={FontWeight.Medium}
-          className="permission-label-item"
           key={`coin-type-${coinType}`}
         >
           {coinTypeToProtocolName(coinType) ||
             `${t('unknownNetworkForKeyEntropy')} m/44'/${coinType}'`}
         </Text>,
       ]),
-      description: t('permission_manageBip44AndBip32KeysDescription'),
+      description: t('permission_manageBip44AndBip32KeysDescription', [
+        getSnapNameComponent(targetSubjectMetadata),
+      ]),
       leftIcon: IconName.Key,
       weight: 1,
       id: `key-access-bip44-${coinType}-${i}`,
