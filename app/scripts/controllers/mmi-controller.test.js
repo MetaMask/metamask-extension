@@ -106,16 +106,18 @@ describe('MMIController', function () {
   });
 
   describe('trackTransactionEventFromCustodianEvent', function () {
-    it('should call txController._trackTransactionMetricsEvent', function () {
-      const txMeta = {};
+    it('should call trackTransactionEvents', function () {
       const event = 'event';
-      mmiController.txController._trackTransactionMetricsEvent = jest.fn();
+      mmiController.trackTransactionEvents = jest.fn();
 
-      mmiController.trackTransactionEventFromCustodianEvent(txMeta, event);
+      mmiController.trackTransactionEventFromCustodianEvent({}, event);
 
-      expect(
-        mmiController.txController._trackTransactionMetricsEvent,
-      ).toHaveBeenCalledWith(txMeta, event);
+      expect(mmiController.trackTransactionEvents).toHaveBeenCalledWith(
+        {
+          transactionMeta: {},
+        },
+        event,
+      );
     });
   });
 

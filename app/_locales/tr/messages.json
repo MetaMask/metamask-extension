@@ -3184,26 +3184,6 @@
     "message": "Ethereum hesaplarını ekle ve kontrol et",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "$1 ($2) altındaki hesaplarınızı ve varlıklarınızı kontrol edin.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Snap'in, ifşa etmeden, Gizli Kurtarma İfadenize göre BIP-32 anahtar çiftleri türetmesine izin verin. Bu işlem $1 üzerinde tüm hesaplara ve varlıklara tam erişim verir.\nSnap, anahtarları yönetme yetkisi ile Ethereum (EVM'ler) ötesinde çeşitli blokzinciri protokollerini destekleyebilir.",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "$1 hesaplarınızı ve varlıklarınızı kontrol edin.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Snap'in, ifşa etmeden, Gizli Kurtarma İfadenize göre BIP-44 anahtar çiftleri türetmesine izin verin. Bu işlem $1 üzerinde tüm hesaplara ve varlıklara tam erişim verir.\nSnap, anahtarları yönetme yetkisi ile Ethereum (EVM'ler) ötesinde çeşitli blokzinciri protokollerini destekleyebilir.",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "$1 hesaplarınızı ve varlıklarınızı kontrol edin.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Verilerini cihazında sakla ve yönet.",
     "description": "The description for the `snap_manageState` permission"
@@ -3959,24 +3939,8 @@
   "snapInstallSuccess": {
     "message": "Yükleme tamamlandı"
   },
-  "snapInstallWarningCheck": {
-    "message": "Anladığını doğrulamak için kutucuğu işaretle.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Anladığınızı kontrol etmek için tüm kutuları işaretleyin.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Dikkatle ilerleyin"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "\"$1\" için $2 anahtar erişimi veriyorsunuz. Bu iptal edilemez ve $2 hesaplarınıza ve varlıklarınıza \"$1\" kontrolü verir. İlerlemeden önce \"$1\" alanına güvendiğinizden emin olun.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "$2 için $1 genel anahtar erişimi ver",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "$1 yüklenemedi.",
@@ -4626,9 +4590,6 @@
   "swapSource": {
     "message": "Likidite kaynağı"
   },
-  "swapSourceInfo": {
-    "message": "En iyi fiyatı ve en düşük ağ ücretlerini bulmak için birden fazla likidite kaynağında arama yaparız (borsalar, toplayıcılar ve profesyonel piyasa yapıcıları)."
-  },
   "swapSuggested": {
     "message": "Swap öneriliyor"
   },
@@ -5128,10 +5089,6 @@
   "unrecognizedChain": {
     "message": "Bu özel ağ tanınmadı",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (Tanınmayan protokol)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "NFT (ERC-721) tokenlerin gönderilmesi şu anda desteklenmiyor",

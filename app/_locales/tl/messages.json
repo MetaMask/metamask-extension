@@ -3184,26 +3184,6 @@
     "message": "Magdagdag at kontrolin ang mga Ethereum account",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "Kontrolin ang iyong mga account at asset sa ilalim ng $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Payagan ang snap na kunin ang pares ng BIP-32 key batay sa iyong Lihim na Parirala sa Pagbawi nang hindi ito ibinubunyag. Magbibigay ito ng buong access sa lahat ng account at asset sa $1.\nGamit ang kapangyarihang pamahalaan ang mga key, ang snap ay maaaring sumuporta sa iba't ibang protocol ng blockchain higit sa Ethereum (mga EVM).",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "Kontrolin ang iyong mga account at asset sa $1.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Payagan ang snap na kunin ang mga pares ng BIP-44 key sa iyong Lihim na Parirala sa Pagbawi nang hindi ito ibinubunyag. Nagbibigay ito ng buong access sa lahat ng account at asset sa $1.\nGamit ang kapangyarihang pamahalaan ang mga key, ang snap ay maaaring sumuporta sa iba't ibang protocol ng blockchain higit sa Ethereum (mga EVM).",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "Kontrolin ang iyong $1 na mga account at asset.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Iimbak at pamahalaan ang datos nito sa iyong device.",
     "description": "The description for the `snap_manageState` permission"
@@ -3959,24 +3939,8 @@
   "snapInstallSuccess": {
     "message": "Tapos na ang pag-install"
   },
-  "snapInstallWarningCheck": {
-    "message": "Maglaan ng oras para suriin ang pahintulot na hinihiling. Magpatuloy lang kung pinagkakatiwalaan mo ang $1.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Maglaan ng oras para suriin ang mga pahintulot na hinihiling. Magpatuloy lang kung pinagkakatiwalaan mo ang $1.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Magpatuloy nang may pag-iingat"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Binibigyan mo ang $2 ng key access sa snap na \"$1\". Hindi na ito mababawi at nagbibigay ito sa \"$1\" ng kontrol sa iyong mga $2 account at asset. Tiyaking pinagkakatiwalaan mo ang \"$1\" bago magpatuloy.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Bigyan ang $2 ng access sa pampublikong key para $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "Hindi ma-install ang $1.",
@@ -4626,9 +4590,6 @@
   "swapSource": {
     "message": "Pinagmumulan ng liquidity"
   },
-  "swapSourceInfo": {
-    "message": "Naghahanap kami ng maraming pinagkukunan ng liquidity (mga palitan, aggregator at propesyonal na market maker) para mahanap ang mga pinakasulit na rate at pinakamababang bayarin sa network."
-  },
   "swapSuggested": {
     "message": "Iminungkahi ang pag-swap"
   },
@@ -5128,10 +5089,6 @@
   "unrecognizedChain": {
     "message": "Hindi nakikilala ang custom network na ito. Nirerekomenda namin na ikaw ay $1 bago magpatuloy",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (Hindi nakikilalang protocol)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "Ang pagpapadala ng mga token ng NFT (ERC-721) ay kasalukuyang hindi suportado",

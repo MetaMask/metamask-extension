@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Box } from '../../../../../component-library';
 import {
@@ -7,8 +6,24 @@ import {
   Display,
   FlexDirection,
 } from '../../../../../../helpers/constants/design-system';
+import type { StyleUtilityProps } from '../../../../../component-library/box';
 
-export const Content = ({ children, className = '', ...props }) => {
+interface ContentProps extends StyleUtilityProps {
+  /**
+   * Elements that go in the page content section
+   */
+  children: React.ReactNode | React.ReactNode[];
+  /**
+   * Additional CSS class provided to the content
+   */
+  className?: string;
+}
+
+export const Content = ({
+  children,
+  className = '',
+  ...props
+}: ContentProps) => {
   return (
     <Box
       display={Display.Flex}
@@ -22,19 +37,4 @@ export const Content = ({ children, className = '', ...props }) => {
       {children}
     </Box>
   );
-};
-
-Content.propTypes = {
-  /**
-   * Elements that go in the page content section
-   */
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-    PropTypes.string,
-  ]).isRequired,
-  /**
-   * Additional CSS class provided to the content
-   */
-  className: PropTypes.string,
 };

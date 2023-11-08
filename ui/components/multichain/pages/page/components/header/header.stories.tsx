@@ -6,7 +6,7 @@ import {
 } from '../../../../../component-library';
 import { Header } from '.';
 
-export default {
+const story = {
   title: 'Components/Multichain/Page/Header',
   component: Header,
   argTypes: {
@@ -19,6 +19,8 @@ export default {
   },
   args: {},
 };
+
+export default story;
 
 export const DefaultStory = (args) => <Header {...args}>Connect</Header>;
 DefaultStory.storyName = 'Default';

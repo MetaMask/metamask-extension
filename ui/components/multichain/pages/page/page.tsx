@@ -8,13 +8,20 @@ import {
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 
-export const Page = ({
-  header = null,
-  footer = null,
-  children,
-  className = '',
-  ...props
-}) => {
+import type { StyleUtilityProps } from '../../../component-library/box';
+
+interface PageProps extends StyleUtilityProps {
+  /**
+   * Elements that go in the page footer
+   */
+  children: React.ReactNode | React.ReactNode[];
+  /**
+   * Additional CSS class provided to the footer
+   */
+  className?: string;
+}
+
+export const Page = ({ children, className = '', ...props }: PageProps) => {
   return (
     <Box
       display={Display.Flex}
@@ -24,16 +31,12 @@ export const Page = ({
       className={classnames('multichain-page', className)}
       {...props}
     >
-      {header}
       {children}
-      {footer}
     </Box>
   );
 };
 
 Page.propTypes = {
-  header: PropTypes.element,
-  footer: PropTypes.element,
   className: PropTypes.string,
   children: PropTypes.node,
 };
