@@ -4841,9 +4841,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/smart-transactions-controller@npm:^6.2.0":
-  version: 6.2.0
-  resolution: "@metamask/smart-transactions-controller@npm:6.2.0"
+"@metamask/smart-transactions-controller@npm:^6.2.1":
+  version: 6.2.1
+  resolution: "@metamask/smart-transactions-controller@npm:6.2.1"
   dependencies:
     "@ethersproject/bytes": "npm:^5.7.0"
     "@metamask/base-controller": "npm:^3.2.1"
@@ -4854,7 +4854,7 @@ __metadata:
     bignumber.js: "npm:^9.0.1"
     fast-json-patch: "npm:^3.1.0"
     lodash: "npm:^4.17.21"
-  checksum: 7f5ec0a1927388d5d20e2e2e52f7fb57090cfcdcd038258606083921a554fa47148a9efd83b05228edc709e7a3bbf896f31543a6240c1af7ef137e04de86b422
+  checksum: 32d59f034e4f931fe8e8c66a024791908ffeb322db19c4975b63534e29056f1ee06a5e5b6b70df1842412da4b17e29c2b589330df896c0d9bcda1a511cd34803
   languageName: node
   linkType: hard
 
@@ -24024,7 +24024,7 @@ __metadata:
     "@metamask/selected-network-controller": "npm:^3.1.0"
     "@metamask/signature-controller": "npm:^6.1.2"
     "@metamask/slip44": "npm:^3.1.0"
-    "@metamask/smart-transactions-controller": "npm:^6.2.0"
+    "@metamask/smart-transactions-controller": "npm:^6.2.1"
     "@metamask/snaps-controllers": "npm:^3.2.0"
     "@metamask/snaps-rpc-methods": "npm:^3.2.1"
     "@metamask/snaps-ui": "npm:^3.1.0"
