@@ -59,7 +59,7 @@ export default function SmartTransactionsPopover({
         >
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             <img
-              src="./images/logo/smart-transactions-header.png"
+              src="./images/logo/metamask-smart-transactions.png"
               alt={t('swapSwapSwitch')}
             />
           </Box>
