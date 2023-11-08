@@ -30,7 +30,7 @@ import {
   getIsSwapsChain,
   getCurrentChainId,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-  getIsBridgeToken,
+  getIsBridgeChain,
   getCurrentKeyring,
   getIsBuyableChain,
   getMetaMetricsId,
@@ -73,7 +73,7 @@ const TokenOverview = ({ className, token }) => {
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-  const isBridgeToken = useSelector(getIsBridgeToken(token.address));
+  const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
@@ -294,7 +294,7 @@ const TokenOverview = ({ className, token }) => {
 
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-            isBridgeToken && (
+            isBridgeChain && (
               <IconButton
                 className="token-overview__button"
                 data-testid="token-overview-bridge"

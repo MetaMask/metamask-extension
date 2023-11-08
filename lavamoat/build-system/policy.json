@@ -1192,6 +1192,33 @@
         "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
+    "@sentry/cli>which": {
+      "builtin": {
+        "path.join": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.env.OSTYPE": true,
+        "process.env.PATH": true,
+        "process.env.PATHEXT": true,
+        "process.platform": true
+      },
+      "packages": {
+        "@sentry/cli>which>isexe": true
+      }
+    },
+    "@sentry/cli>which>isexe": {
+      "builtin": {
+        "fs": true
+      },
+      "globals": {
+        "TESTING_WINDOWS": true,
+        "process.env.PATHEXT": true,
+        "process.getgid": true,
+        "process.getuid": true,
+        "process.platform": true
+      }
+    },
     "@storybook/addon-knobs>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
@@ -2082,9 +2109,9 @@
         "process.platform": true
       },
       "packages": {
+        "@sentry/cli>which": true,
         "cross-spawn>path-key": true,
-        "cross-spawn>shebang-command": true,
-        "mocha>which": true
+        "cross-spawn>shebang-command": true
       }
     },
     "cross-spawn>path-key": {
@@ -3160,7 +3187,7 @@
     },
     "eslint>minimatch>brace-expansion": {
       "packages": {
-        "mocha>minimatch>brace-expansion>concat-map": true,
+        "eslint>minimatch>brace-expansion>concat-map": true,
         "stylelint>balanced-match": true
       }
     },
@@ -6371,33 +6398,6 @@
         "chalk>supports-color>has-flag": true
       }
     },
-    "mocha>which": {
-      "builtin": {
-        "path.join": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.env.OSTYPE": true,
-        "process.env.PATH": true,
-        "process.env.PATHEXT": true,
-        "process.platform": true
-      },
-      "packages": {
-        "mocha>which>isexe": true
-      }
-    },
-    "mocha>which>isexe": {
-      "builtin": {
-        "fs": true
-      },
-      "globals": {
-        "TESTING_WINDOWS": true,
-        "process.env.PATHEXT": true,
-        "process.getgid": true,
-        "process.getuid": true,
-        "process.platform": true
-      }
-    },
     "nock>debug": {
       "builtin": {
         "tty.isatty": true,
@@ -8066,7 +8066,7 @@
         "process.platform": true
       },
       "packages": {
-        "mocha>which>isexe": true
+        "@sentry/cli>which>isexe": true
       }
     },
     "stylelint>globjoin": {

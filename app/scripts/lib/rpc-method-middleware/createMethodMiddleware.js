@@ -4,7 +4,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   permittedMethods as permittedSnapMethods,
   ///: END:ONLY_INCLUDE_IN
-} from '@metamask/rpc-methods';
+} from '@metamask/snaps-rpc-methods';
 import { ethErrors } from 'eth-rpc-errors';
 import { flatten } from 'lodash';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';

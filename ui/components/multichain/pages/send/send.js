@@ -1,10 +1,8 @@
-import React, { useContext } from 'react';
-import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import { Content, Footer, Header, Page } from '../page';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useLocation } from 'react-router-dom';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
-  Box,
   ButtonIcon,
   ButtonIconSize,
   ButtonPrimary,
@@ -12,49 +10,127 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
   IconName,
-  Label,
-  PickerNetwork,
 } from '../../../component-library';
+import { Content, Footer, Header, Page } from '../page';
+import { AssetPickerAmount } from '../../asset-picker-amount/asset-picker-amount';
 import {
-  BlockSize,
-  BorderColor,
-  Display,
-  FlexDirection,
-  JustifyContent,
-  TextAlign,
-} from '../../../../helpers/constants/design-system';
+  SEND_STAGES,
+  getDraftTransactionExists,
+  getDraftTransactionID,
+  getSendErrors,
+  getSendStage,
+  isSendFormInvalid,
+  resetSendState,
+  signTransaction,
+  startNewDraftTransaction,
+} from '../../../../ducks/send';
+import { AssetType } from '../../../../../shared/constants/transaction';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/send/send.constants';
+import { cancelTx, showQrScanner } from '../../../../store/actions';
 import {
-  getCurrentNetwork,
-  getMetaMaskAccountsOrdered,
-  getSelectedIdentity,
-} from '../../../../selectors';
-import { AccountPicker, AccountListItem } from '../..';
-import DomainInput from '../../../../pages/send/send-content/add-recipient/domain-input.component';
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../helpers/constants/routes';
+import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
+import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
+import {
+  SendPageAccountPicker,
+  SendPageRecipientInput,
+  SendPageNetworkPicker,
+  SendPageRecipient,
+  SendPageContent,
+} from './components';
 
 export const SendPage = () => {
   const t = useContext(I18nContext);
+  const dispatch = useDispatch();
 
-  // Network
-  const currentNetwork = useSelector(getCurrentNetwork);
+  const startedNewDraftTransaction = useRef(false);
+  const draftTransactionExists = useSelector(getDraftTransactionExists);
+  const draftTransactionID = useSelector(getDraftTransactionID);
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const sendStage = useSelector(getSendStage);
 
-  // Account
-  const identity = useSelector(getSelectedIdentity);
+  const history = useHistory();
+  const location = useLocation();
+  const trackEvent = useContext(MetaMetricsContext);
 
-  // Your Accounts
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const cleanup = useCallback(() => {
+    dispatch(resetSendState());
+  }, [dispatch]);
 
-  const SendPageRow = ({ children }) => (
-    <Box
-      display={Display.Flex}
-      paddingBottom={6}
-      flexDirection={FlexDirection.Column}
-    >
-      {children}
-    </Box>
-  );
-  SendPageRow.propTypes = {
-    children: PropTypes.element,
+  /**
+   * It is possible to route to this page directly, either by typing in the url
+   * or by clicking the browser back button after progressing to the confirm
+   * screen. In the case where a draft transaction does not yet exist, this
+   * hook is responsible for creating it. We will assume that this is a native
+   * asset send.
+   */
+  useEffect(() => {
+    if (
+      draftTransactionExists === false &&
+      startedNewDraftTransaction.current === false
+    ) {
+      startedNewDraftTransaction.current = true;
+      dispatch(startNewDraftTransaction({ type: AssetType.native }));
+    }
+  }, [draftTransactionExists, dispatch]);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', cleanup);
+  }, [cleanup]);
+
+  useEffect(() => {
+    if (location.search === '?scan=true') {
+      dispatch(showQrScanner());
+
+      // Clear the queryString param after showing the modal
+      const [cleanUrl] = window.location.href.split('?');
+      window.history.pushState({}, null, `${cleanUrl}`);
+      window.location.hash = '#send';
+    }
+  }, [location, dispatch]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetSendState());
+      window.removeEventListener('beforeunload', cleanup);
+    };
+  }, [dispatch, cleanup]);
+
+  const onCancel = () => {
+    if (draftTransactionID) {
+      dispatch(cancelTx({ id: draftTransactionID }));
+    }
+    dispatch(resetSendState());
+
+    const nextRoute =
+      sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
+    history.push(nextRoute);
   };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+
+    await dispatch(signTransaction());
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
+      event: 'Complete',
+      properties: {
+        action: 'Edit Screen',
+        legacy_event: true,
+      },
+    });
+    history.push(CONFIRM_TRANSACTION_ROUTE);
+  };
+
+  // Submit button
+  const sendErrors = useSelector(getSendErrors);
+  const isInvalidSendForm = useSelector(isSendFormInvalid);
+  const submitDisabled =
+    isInvalidSendForm && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR;
 
   return (
     <Page className="multichain-send-page">
@@ -64,73 +140,34 @@ export const SendPage = () => {
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
+            onClick={onCancel}
           />
         }
       >
         {t('sendAToken')}
       </Header>
       <Content>
-        <SendPageRow>
-          <PickerNetwork
-            label={currentNetwork?.nickname}
-            src={currentNetwork?.rpcPrefs?.imageUrl}
-          />
-        </SendPageRow>
-        <SendPageRow>
-          <Label paddingBottom={2}>{t('from')}</Label>
-          <AccountPicker
-            address={identity.address}
-            name={identity.name}
-            onClick={() => undefined}
-            showAddress
-            borderColor={BorderColor.borderDefault}
-            borderWidth={1}
-            paddingTop={4}
-            paddingBottom={4}
-            block
-            justifyContent={JustifyContent.flexStart}
-            addressProps={{
-              display: Display.Flex,
-              textAlign: TextAlign.Start,
-            }}
-            labelProps={{
-              style: { flexGrow: 1, textAlign: 'start' },
-              paddingInlineStart: 2,
-            }}
-            textProps={{
-              display: Display.Flex,
-              width: BlockSize.Full,
-            }}
-            width={BlockSize.Full}
-          />
-        </SendPageRow>
-        <SendPageRow>
-          <Label paddingBottom={2}>{t('to')}</Label>
-          <DomainInput
-            userInput=""
-            onChange={() => undefined}
-            onReset={() => undefined}
-            lookupEnsName={() => undefined}
-            initializeDomainSlice={() => undefined}
-            resetDomainResolution={() => undefined}
-          />
-        </SendPageRow>
-        <SendPageRow>
-          <Label paddingBottom={2}>{t('yourAccounts')}</Label>
-          {accounts.map((account) => (
-            <AccountListItem
-              identity={account}
-              key={account.address}
-              onClick={() => undefined}
-            />
-          ))}
-        </SendPageRow>
+        <SendPageNetworkPicker />
+        <SendPageAccountPicker />
+        <SendPageRecipientInput />
+        {draftTransactionExists &&
+        [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage) ? (
+          <SendPageContent />
+        ) : (
+          <SendPageRecipient />
+        )}
+        <AssetPickerAmount />
       </Content>
       <Footer>
-        <ButtonSecondary size={ButtonSecondarySize.Lg} block>
+        <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
           {t('cancel')}
         </ButtonSecondary>
-        <ButtonPrimary size={ButtonPrimarySize.Lg} block disabled>
+        <ButtonPrimary
+          onClick={onSubmit}
+          size={ButtonPrimarySize.Lg}
+          disabled={submitDisabled}
+          block
+        >
           {t('confirm')}
         </ButtonPrimary>
       </Footer>

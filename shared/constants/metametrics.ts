@@ -562,12 +562,12 @@ export enum MetaMetricsEventName {
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
-  ServiceWorkerRestarted = 'Service Worker Restarted',
   SettingsUpdated = 'Settings Updated',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',
   SignatureRequested = 'Signature Requested',
+  SimulationFails = 'Simulation Fails',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',
@@ -644,6 +644,9 @@ export enum MetaMetricsEventName {
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  InsightSnapViewed = 'Insight Snap Viewed',
+  ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   AddSnapAccountEnabled = 'Add Snap Account Enabled',
   ///: END:ONLY_INCLUDE_IN
@@ -681,7 +684,6 @@ export enum MetaMetricsEventCategory {
   Petnames = 'Petnames',
   Phishing = 'Phishing',
   Retention = 'Retention',
-  ServiceWorkers = 'service_workers',
   Settings = 'Settings',
   Snaps = 'Snaps',
   Swaps = 'Swaps',
@@ -742,6 +744,7 @@ export enum MetaMetricsEventLocation {
 export enum MetaMetricsEventUiCustomization {
   FlaggedAsMalicious = 'flagged_as_malicious',
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
+  GasEstimationFailed = 'gas_estimation_failed',
   Siwe = 'sign_in_with_ethereum',
 }
 

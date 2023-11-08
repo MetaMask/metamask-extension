@@ -34,11 +34,12 @@ const PermissionCell = ({
   dateApproved,
   revoked,
   showOptions,
+  hideStatus,
 }) => {
   const t = useI18nContext();
 
+  const infoIcon = IconName.Info;
   let infoIconColor = IconColor.iconMuted;
-  let infoIcon = IconName.Info;
   let iconColor = IconColor.primaryDefault;
   let iconBackgroundColor = Color.primaryMuted;
 
@@ -46,7 +47,6 @@ const PermissionCell = ({
     iconColor = IconColor.warningDefault;
     iconBackgroundColor = Color.warningMuted;
     infoIconColor = IconColor.warningDefault;
-    infoIcon = IconName.Danger;
   }
 
   if (dateApproved) {
@@ -99,17 +99,19 @@ const PermissionCell = ({
         >
           {title}
         </Text>
-        <Text
-          className="permission-cell__status"
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-        >
-          {!revoked &&
-            (dateApproved
-              ? t('approvedOn', [formatDate(dateApproved, 'yyyy-MM-dd')])
-              : t('permissionRequested'))}
-          {revoked ? t('permissionRevoked') : ''}
-        </Text>
+        {!hideStatus && (
+          <Text
+            className="permission-cell__status"
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+          >
+            {!revoked &&
+              (dateApproved
+                ? t('approvedOn', [formatDate(dateApproved, 'yyyy-MM-dd')])
+                : t('permissionRequested'))}
+            {revoked ? t('permissionRevoked') : ''}
+          </Text>
+        )}
       </Box>
       <Box>
         {showOptions && snapId ? (
@@ -119,7 +121,17 @@ const PermissionCell = ({
             description={description}
           />
         ) : (
-          <Tooltip html={<div>{description}</div>} position="bottom">
+          <Tooltip
+            html={
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {description}
+              </Text>
+            }
+            position="bottom"
+          >
             <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
           </Tooltip>
         )}
@@ -130,7 +142,8 @@ const PermissionCell = ({
 
 PermissionCell.propTypes = {
   snapId: PropTypes.string,
-  permissionName: PropTypes.string.isRequired,
+  permissionName: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
+    .isRequired,
   title: PropTypes.oneOfType([
     PropTypes.string.isRequired,
     PropTypes.object.isRequired,
@@ -141,6 +154,7 @@ PermissionCell.propTypes = {
   dateApproved: PropTypes.number,
   revoked: PropTypes.bool,
   showOptions: PropTypes.bool,
+  hideStatus: PropTypes.bool,
 };
 
 export default PermissionCell;
