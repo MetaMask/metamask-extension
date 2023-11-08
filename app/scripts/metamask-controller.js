@@ -1348,7 +1348,7 @@ export default class MetamaskController extends EventEmitter {
             txMeta,
             signedEthTx,
             this.transactionUpdateController.addTransactionToWatchList.bind(
-              this,
+              this.transactionUpdateController,
             ),
           ),
         beforeCheckPendingTransaction:
