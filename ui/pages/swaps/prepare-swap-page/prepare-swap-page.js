@@ -223,12 +223,13 @@ export default function PrepareSwapPage({
   const showSmartTransactionsOptInPopover =
     smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
 
-  const onCloseSmartTransactionsOptInPopover = (e) => {
+  const onManageStxInSettings = (e) => {
     e?.preventDefault();
-    setSmartTransactionsOptInStatus(false, smartTransactionsOptInStatus);
+    setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
+    dispatch(setTransactionSettingsOpened(true));
   };
 
-  const onEnableSmartTransactionsClick = () =>
+  const onStartSwapping = () =>
     setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
@@ -865,10 +866,8 @@ export default function PrepareSwapPage({
         </Modal>
 
         <SmartTransactionsPopover
-          onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
-          onCloseSmartTransactionsOptInPopover={
-            onCloseSmartTransactionsOptInPopover
-          }
+          onStartSwapping={onStartSwapping}
+          onManageStxInSettings={onManageStxInSettings}
           isOpen={showSmartTransactionsOptInPopover}
         />
 

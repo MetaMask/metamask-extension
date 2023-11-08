@@ -3805,9 +3805,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Les contrats de swap intelligents sont temporairement indisponibles."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Lorsque vous souscrivez un contrat de swap intelligent, ce contrat sera proposé en privé à différents investisseurs. Si toutes les tentatives échouent, le contrat sera diffusé publiquement afin de trouver preneur."
-  },
   "snapConfigure": {
     "message": "Configurer"
   },
@@ -4200,9 +4197,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Votre transaction a été annulée et vous avez évité ainsi de payer inutilement des frais de transaction."
-  },
-  "stxYouCanOptOut": {
-    "message": "Vous pouvez vous désinscrire dans les paramètres avancés à tout moment."
   },
   "submit": {
     "message": "Envoyer"

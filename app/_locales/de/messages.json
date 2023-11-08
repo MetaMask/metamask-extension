@@ -3805,9 +3805,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps sind vorrübergehend nicht verfügbar."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Smart Swaps versucht mehrmals, Ihre Transaktion privat zu übermitteln. Wenn alle Versuche fehlschlagen, wird die Transaktion öffentlich übertragen, um sicherzustellen, dass Ihr Swap erfolgreich durchgeführt wird."
-  },
   "snapConfigure": {
     "message": "Konfigurieren"
   },
@@ -4200,9 +4197,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Ihre Transaktion wurde storniert und Sie haben keine unnötigen Gas-Gebühren bezahlt."
-  },
-  "stxYouCanOptOut": {
-    "message": "Sie können sich in den erweiterten Einstellungen jederzeit abmelden."
   },
   "submit": {
     "message": "Absenden"

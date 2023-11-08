@@ -1675,6 +1675,9 @@
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
   },
+  "faq": {
+    "message": "FAQ"
+  },
   "fast": {
     "message": "Fast"
   },
@@ -3880,6 +3883,9 @@
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
   },
+  "riskDisclosures": {
+    "message": "Risk Disclosures"
+  },
   "rpcUrl": {
     "message": "New RPC URL"
   },
@@ -4195,14 +4201,15 @@
   "smartSwapsDescription": {
     "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Swaps will allow MetaMask to programmatically optimize your Swap to help:"
   },
+  "smartSwapsDescription2": {
+    "message": "*Smart Swaps will submit your transaction privately, multiple times. You can opt-out in advanced settings at any time. To learn more about Smart Swaps, read our $1 and $2.",
+    "description": "$1 is an external link to FAQ and $2 is an external link to Risk Disclosures"
+  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Not enough funds for a smart swap."
   },
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps are temporarily unavailable."
-  },
-  "smartSwapsSubDescription": {
-    "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
   },
   "snapAccountCreated": {
     "message": "Your account is ready!"
@@ -4686,9 +4693,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Your transaction has been cancelled and you did not pay any unnecessary gas fees."
-  },
-  "stxYouCanOptOut": {
-    "message": "You can opt-out in advanced settings any time."
   },
   "submit": {
     "message": "Submit"

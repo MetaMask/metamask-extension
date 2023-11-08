@@ -3806,9 +3806,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "スマートスワップは一時的にご利用いただけません。"
   },
-  "smartSwapsSubDescription": {
-    "message": "* スマートスワップは、トランザクションの送信を非公開で複数回試行します。すべての試行に失敗した場合、スワップが正常に行われるように、トランザクションが一般公開されます。"
-  },
   "snapConfigure": {
     "message": "構成"
   },
@@ -4201,9 +4198,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "不要なガス代を支払うことなくトランザクションがキャンセルされました。"
-  },
-  "stxYouCanOptOut": {
-    "message": "「高度な設定」でいつでもオプトアウトできます。"
   },
   "submit": {
     "message": "送信"

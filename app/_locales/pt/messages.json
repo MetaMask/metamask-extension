@@ -3809,9 +3809,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "As trocas inteligentes estão temporariamente indisponíveis."
   },
-  "smartSwapsSubDescription": {
-    "message": "* As trocas inteligentes tentarão enviar sua transação de forma privada, diversas vezes. Se todas as tentativas falharem, a transação será transmitida publicamente para garantir que sua troca ocorra com sucesso."
-  },
   "snapConfigure": {
     "message": "Configurar"
   },
@@ -4204,9 +4201,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Sua transação foi cancelada e você não pagou nenhuma taxa de gás desnecessária."
-  },
-  "stxYouCanOptOut": {
-    "message": "Você pode cancelar a participação a qualquer momento nas configurações avançadas."
   },
   "submit": {
     "message": "Enviar"

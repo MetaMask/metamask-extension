@@ -3805,9 +3805,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Pansamantalang hindi available ang mga Smart Swap."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Susubukan ng mga Smart Swap na isumite nang pribado ang iyong transaksyon, maraming beses. Kapag nabigo ang lahat ng pagsubok, ipapakita sa publiko ang transaksyon upang matiyak na ang Swap ay naging matagumpay."
-  },
   "snapConfigure": {
     "message": "I-configure"
   },
@@ -4200,9 +4197,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Kinansela ang iyong transaksyon at hindi ka nagbayad para sa anumang mga hindi kinakailangang gas."
-  },
-  "stxYouCanOptOut": {
-    "message": "Maaari kang mag-opt-out sa mga advanced setting anumang oras."
   },
   "submit": {
     "message": "Isumite"

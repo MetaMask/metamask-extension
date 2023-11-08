@@ -3805,9 +3805,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "智能兑换暂时不可用。"
   },
-  "smartSwapsSubDescription": {
-    "message": "* 智能兑换将多次尝试以私密方式提交您的交易。如果所有尝试都失败，交易将会公开广播，以确保您的兑换成功进行。"
-  },
   "snapConfigure": {
     "message": "配置"
   },
@@ -4200,9 +4197,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "您的交易已被取消，您并未支付任何不必要的燃料费。"
-  },
-  "stxYouCanOptOut": {
-    "message": "您可以随时选择退出高级设置。"
   },
   "submit": {
     "message": "提交"

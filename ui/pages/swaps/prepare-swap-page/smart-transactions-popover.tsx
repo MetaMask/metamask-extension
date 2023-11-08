@@ -7,6 +7,9 @@ import {
   FlexDirection,
   FontWeight,
   BlockSize,
+  Size,
+  AlignItems,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
   Modal,
@@ -17,30 +20,37 @@ import {
   Box,
   Button,
   ButtonVariant,
+  ButtonLink,
 } from '../../../components/component-library';
 
 interface Props {
-  onEnableSmartTransactionsClick: () => void;
-  onCloseSmartTransactionsOptInPopover: () => void;
+  onStartSwapping: () => void;
+  onManageStxInSettings: () => void;
   isOpen: boolean;
 }
 
 export default function SmartTransactionsPopover({
-  onEnableSmartTransactionsClick,
-  onCloseSmartTransactionsOptInPopover,
+  onStartSwapping,
+  onManageStxInSettings,
   isOpen,
 }: Props) {
   const t = useContext(I18nContext);
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onCloseSmartTransactionsOptInPopover}
+      onClose={onStartSwapping}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
+      className="mm-modal__custom-scrollbar"
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{t('smartSwapsAreHere')}</ModalHeader>
+        <ModalHeader
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+        >
+          {t('smartSwapsAreHere')}
+        </ModalHeader>
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -71,28 +81,34 @@ export default function SmartTransactionsPopover({
             </li>
           </Text>
           <Text color={TextColor.textAlternative}>
-            {t('smartSwapsSubDescription')}&nbsp;
-            <Text
-              as="span"
-              fontWeight={FontWeight.Bold}
-              color={TextColor.textAlternative}
-            >
-              {t('stxYouCanOptOut')}&nbsp;
-            </Text>
+            {t('smartSwapsDescription2', [
+              <ButtonLink
+                size={Size.inherit}
+                href={'https://support.metamask.io/hc/articles/9184393821211'}
+                externalLink
+              >
+                {t('faq')}
+              </ButtonLink>,
+              <ButtonLink
+                size={Size.inherit}
+                href={'https://support.metamask.io/hc/articles/9184393821211'}
+                externalLink
+              >
+                {t('riskDisclosures')}
+              </ButtonLink>,
+            ])}
           </Text>
-
           <Button
             variant={ButtonVariant.Primary}
-            onClick={onEnableSmartTransactionsClick}
+            onClick={onStartSwapping}
             width={BlockSize.Full}
           >
             {t('startSwapping')}
           </Button>
-
           <Button
             type="link"
             variant={ButtonVariant.Link}
-            onClick={onCloseSmartTransactionsOptInPopover}
+            onClick={onManageStxInSettings}
             width={BlockSize.Full}
           >
             {t('manageInSettings')}

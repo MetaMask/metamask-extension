@@ -3805,9 +3805,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Hoán đổi thông minh tạm thời không khả dụng."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Hoán đổi thông minh sẽ cố gắng gửi giao dịch của bạn nhiều lần một cách riêng tư. Nếu tất cả các lần thử đều không thành công, giao dịch sẽ được phát công khai để đảm bảo Hoán đổi của bạn được thực hiện thành công."
-  },
   "snapConfigure": {
     "message": "Định cấu hình"
   },
@@ -4200,9 +4197,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Giao dịch của bạn đã bị hủy và bạn không phải trả bất kỳ phí gas không cần thiết nào."
-  },
-  "stxYouCanOptOut": {
-    "message": "Bạn có thể chọn không tham gia trong mục cài đặt nâng cao bất cứ lúc nào."
   },
   "submit": {
     "message": "Gửi"

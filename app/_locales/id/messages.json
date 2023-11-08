@@ -3805,9 +3805,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swap tidak tersedia untuk sementara waktu."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Smart Swap akan mencoba mengirimkan transaksi Anda secara pribadi, beberapa kali. Jika semua upaya gagal, transaksi akan disiarkan secara publik untuk memastikan Swap telah berhasil dilakukan."
-  },
   "snapConfigure": {
     "message": "Konfigurasikan"
   },
@@ -4200,9 +4197,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Transaksi Anda telah dibatalkan dan Anda tidak membayar biaya gas yang tidak perlu."
-  },
-  "stxYouCanOptOut": {
-    "message": "Anda dapat memilih keluar pada pengaturan lanjutan kapan saja."
   },
   "submit": {
     "message": "Kirim"

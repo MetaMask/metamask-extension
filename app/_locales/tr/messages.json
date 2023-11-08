@@ -3805,9 +3805,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Akıllı Swap'lar geçici olarak kullanılamıyor."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Akıllı Swap'lar, işleminizi birden çok kez özel olarak göndermeye çalışır. Tüm denemeler başarısız olursa Swap işleminin başarılı bir şekilde gerçekleşmesini sağlamak için işlem herkese açık olarak yayınlanacaktır."
-  },
   "snapConfigure": {
     "message": "Yapılandır"
   },
@@ -4200,9 +4197,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "İşleminiz iptal edildi ve gereksiz gaz ücreti ödemediniz."
-  },
-  "stxYouCanOptOut": {
-    "message": "\nDilediğin zaman gelişmiş ayarlarda devre dışı bırakabilirsin."
   },
   "submit": {
     "message": "Gönder"
