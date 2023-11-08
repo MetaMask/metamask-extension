@@ -157,7 +157,7 @@ export const SENTRY_BACKGROUND_STATE = {
     chainStatus: true,
     securityAlertsEnabled: false,
     storageMetadata: [],
-    versionFileETag: 'string',
+    versionFileETag: '123',
     versionInfo: [],
   },
   PermissionController: {
