@@ -284,7 +284,7 @@
     "@metamask/snaps-rpc-methods": "^3.2.1",
     "@metamask/snaps-ui": "^3.1.0",
     "@metamask/snaps-utils": "^3.2.0",
-    "@metamask/utils": "^5.0.0",
+    "@metamask/utils": "^8.2.0",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "^1.6.2",
