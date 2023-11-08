@@ -225,12 +225,12 @@ export default function PrepareSwapPage({
 
   const onManageStxInSettings = (e) => {
     e?.preventDefault();
-    setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
     dispatch(setTransactionSettingsOpened(true));
   };
 
-  const onStartSwapping = () =>
+  const onStartSwapping = () => {
     setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
+  };
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
     sourceTokenInfo?.symbol,
