@@ -79,6 +79,7 @@ export const AddressListItem = ({
           color={TextColor.textAlternative}
           ellipsis
           data-testid="address-list-item-address"
+          as="div"
         >
           <Tooltip title={address} position="bottom">
             {shortenAddress(address)}

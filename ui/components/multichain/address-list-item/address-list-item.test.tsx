@@ -4,6 +4,7 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import { AddressListItem } from '.';
+import { shortenAddress } from '../../../helpers/utils/util';
 
 const SAMPLE_ADDRESS = '0x0c54FcCd2e384b4BB6f2E405Bf5Cbc15a017AaFb';
 const SAMPLE_LABEL = 'metamask.eth';
@@ -25,7 +26,7 @@ describe('AddressListItem', () => {
   it('renders the address and label', () => {
     const { getByText } = render();
 
-    expect(getByText(SAMPLE_ADDRESS)).toBeInTheDocument();
+    expect(getByText(shortenAddress(SAMPLE_ADDRESS))).toBeInTheDocument();
     expect(getByText(SAMPLE_LABEL)).toBeInTheDocument();
   });
 
