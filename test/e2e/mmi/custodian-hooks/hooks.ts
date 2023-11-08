@@ -29,7 +29,8 @@ export class CustodianTestClient implements ICustodianTestClient {
         return `bearer ${response.data.access_token}`;
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(error.response.data);
+        throw error;
       })) as string;
   }
 
@@ -47,7 +48,8 @@ export class CustodianTestClient implements ICustodianTestClient {
         return response.data.name;
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(error.response.data);
+        throw error;
       });
   }
 
@@ -81,8 +83,8 @@ export class CustodianTestClient implements ICustodianTestClient {
         expect(response.status).toBe(200);
       })
       .catch(function (error) {
-        console.log(error);
-        return error;
+        console.error(error.response.data);
+        throw error;
       });
     return newStatus;
   }
@@ -120,7 +122,8 @@ export class CustodianTestClient implements ICustodianTestClient {
         return response.data;
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(error.response.data);
+        throw error;
       });
   }
 
@@ -144,7 +147,8 @@ export class CustodianTestClient implements ICustodianTestClient {
         expect(response.status).toBe(200);
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(error.response.data);
+        throw error;
       });
   }
 
@@ -170,7 +174,8 @@ export class CustodianTestClient implements ICustodianTestClient {
         expect(response.status).toBe(200);
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(error.response.data);
+        throw error;
       });
   }
 
@@ -178,7 +183,7 @@ export class CustodianTestClient implements ICustodianTestClient {
     signedTransactionTime: string | undefined,
   ) {
     const maxRetries = 3;
-    const retryInterval = 1000;
+    const retryInterval = 3000;
     let retries = 0;
     while (retries < maxRetries) {
       try {
@@ -227,7 +232,8 @@ export class CustodianTestClient implements ICustodianTestClient {
         expect(response.status).toBe(200);
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(error.response.data);
+        throw error;
       });
   }
 
@@ -279,8 +285,8 @@ export class CustodianTestClient implements ICustodianTestClient {
         return response.data;
       })
       .catch(function (error) {
-        console.log(error);
-        return error;
+        console.log(error.response.data);
+        throw error;
       });
   }
 
@@ -301,8 +307,8 @@ export class CustodianTestClient implements ICustodianTestClient {
         return response.data;
       })
       .catch(function (error) {
-        console.log(error);
-        return error;
+        console.log(error.response.data);
+        throw error;
       });
   }
 

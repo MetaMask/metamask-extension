@@ -90,7 +90,6 @@ export class MMISignUpPage {
       })
       .click();
     // After this click its redirect to the dashboard but we don't need to signin
-    await this.page.close();
   }
 
   async close() {

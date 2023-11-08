@@ -18,16 +18,17 @@ const callTestDappBtn = async (
   // Getting extension id of MMI
   const extension = new ChromeExtensionPage(await context.newPage());
   const extensionId = await extension.initExtension();
+  await extension.close();
 
   const signUp = new MMISignUpPage(
     await context.newPage(),
     extensionId as string,
   );
   await signUp.goto();
-
   await signUp.start();
   await signUp.authentication();
   await signUp.info();
+  await signUp.close();
 
   const mainPage = new MMIMainPage(page);
 
