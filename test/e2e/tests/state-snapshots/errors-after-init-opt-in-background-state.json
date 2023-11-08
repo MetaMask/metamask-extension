@@ -7,7 +7,6 @@
     "web3ShimUsageOrigins": "object"
   },
   "AnnouncementController": { "announcements": "object" },
-  "NetworksOrderController": { "networksList": "object" },
   "AppMetadataController": {
     "currentAppVersion": "string",
     "previousAppVersion": "",
@@ -101,6 +100,7 @@
     },
     "networkConfigurations": "object"
   },
+  "NetworksOrderController": { "networksList": "object" },
   "NftController": {
     "allNftContracts": "object",
     "allNfts": "object",
