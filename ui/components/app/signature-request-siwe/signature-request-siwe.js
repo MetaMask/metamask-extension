@@ -21,7 +21,6 @@ import { PageContainerFooter } from '../../ui/page-container';
 import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import {
   accountsWithSendEtherInfoSelector,
-  getInternalAccountByAddress,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
   unconfirmedMessagesHashSelector,

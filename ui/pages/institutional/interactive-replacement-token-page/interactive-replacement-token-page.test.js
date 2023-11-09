@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, act, fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
@@ -108,6 +109,24 @@ const render = ({ newState } = {}) => {
       },
       institutionalFeatures: {
         connectRequests,
+      },
+      internalAccounts: {
+        accounts: {
+          '8dc33129-d810-47e2-abba-942796808e80': {
+            address: custodianAddress,
+            id: '8dc33129-d810-47e2-abba-942796808e80',
+            metadata: {
+              name: accountName,
+              keyring: {
+                type: 'Custody - Jupiter',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: '8dc33129-d810-47e2-abba-942796808e80',
       },
       ...newState,
     },

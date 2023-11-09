@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
 import { hideModal } from '../../../store/actions';
@@ -74,6 +75,24 @@ describe('Custody Confirm Link', () => {
         type: 'test',
       },
       selectedAddress: '0xAddress',
+      internalAccounts: {
+        accounts: {
+          '8dc33129-d810-47e2-abba-942796808e80': {
+            address: '0xAddress',
+            id: '8dc33129-d810-47e2-abba-942796808e80',
+            metadata: {
+              name: mockedCustodianName,
+              keyring: {
+                type: 'testCustody - Saturn',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: '8dc33129-d810-47e2-abba-942796808e80',
+      },
     },
   };
 

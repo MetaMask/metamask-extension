@@ -3,7 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-import { getMetaMaskAccounts } from '../../../selectors';
+import {
+  getMetaMaskAccounts,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import CustodyLabels from '../../../components/institutional/custody-labels/custody-labels';
 import PulseLoader from '../../../components/ui/pulse-loader';
 import { INSTITUTIONAL_FEATURES_DONE_ROUTE } from '../../../helpers/constants/routes';
@@ -52,11 +55,11 @@ export default function InteractiveReplacementTokenPage({ history }) {
     (state) => state.appState.modal.modalState.props?.address,
   );
   const {
-    selectedAddress,
     custodyAccountDetails,
     interactiveReplacementToken,
     mmiConfiguration,
   } = useSelector((state) => state.metamask);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const { custodianName } =
     custodyAccountDetails[toChecksumHexAddress(address || selectedAddress)] ||
     {};
@@ -106,8 +109,12 @@ export default function InteractiveReplacementTokenPage({ history }) {
           ),
         );
 
-        const filteredAccounts = custodianAccounts.filter(
-          (account) => metaMaskAccounts[account.address.toLowerCase()],
+        const filteredAccounts = custodianAccounts.filter((custodianAccount) =>
+          Object.values(metaMaskAccounts).find(
+            (account) =>
+              account.address.toLowerCase() ===
+              custodianAccount.address.toLowerCase(),
+          ),
         );
 
         const mappedAccounts = filteredAccounts.map((account) => ({
@@ -115,7 +122,11 @@ export default function InteractiveReplacementTokenPage({ history }) {
           name: account.name,
           labels: account.labels,
           balance:
-            metaMaskAccounts[account.address.toLowerCase()]?.balance || 0,
+            Object.values(metaMaskAccounts).find(
+              (accountWithBalance) =>
+                accountWithBalance.address.toLowerCase() ===
+                account.address.toLowerCase(),
+            )?.balance || 0,
         }));
 
         if (isMounted) {

@@ -94,9 +94,9 @@ export function getIsCustodianSupportedChain(state) {
 
 export function getMMIAddressFromModalOrAddress(state) {
   const modalAddress = state?.appState?.modal?.modalState?.props?.address;
-  const selectedAddress = state?.metamask?.selectedAddress;
+  const selectedInternalAccount = getSelectedInternalAccount(state);
 
-  return modalAddress || selectedAddress;
+  return modalAddress || selectedInternalAccount?.address;
 }
 
 export function getMMIConfiguration(state) {

@@ -24,6 +24,31 @@ const defaultState = {
     identities: {
       '0xFirstAddress': {},
     },
+    internalAccounts: {
+      accounts: {
+        '95a689e2-2e85-49a1-80e0-caf609c3a950': {
+          address: '0xFirstAddress',
+          id: '95a689e2-2e85-49a1-80e0-caf609c3a950',
+          metadata: {
+            name: 'Custodian Account A',
+            keyring: {
+              type: 'Custody',
+            },
+          },
+          options: {},
+          methods: [
+            'personal_sign',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        },
+      },
+      selectedAccount: '95a689e2-2e85-49a1-80e0-caf609c3a950',
+    },
     cachedBalances: {
       '0x1': {
         '0xFirstAddress': '0x0',

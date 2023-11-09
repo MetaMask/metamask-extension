@@ -18,6 +18,31 @@ const customData = {
         name: 'Custodian A',
       },
     },
+    internalAccounts: {
+      accounts: {
+        'd6ff7fc3-7e79-4ad6-884f-de8f5969e3bb': {
+          address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+          id: 'd6ff7fc3-7e79-4ad6-884f-de8f5969e3bb',
+          metadata: {
+            name: 'Custodian A',
+            keyring: {
+              type: 'Custody - Saturn',
+            },
+          },
+          options: {},
+          methods: [
+            'personal_sign',
+            'eth_sign',
+            'eth_signTransaction',
+            'eth_signTypedData_v1',
+            'eth_signTypedData_v3',
+            'eth_signTypedData_v4',
+          ],
+          type: 'eip155:eoa',
+        },
+      },
+      selectedAccount: 'd6ff7fc3-7e79-4ad6-884f-de8f5969e3bb',
+    },
     isUnlocked: true,
     interactiveReplacementToken: {
       oldRefreshToken:

@@ -577,7 +577,24 @@ describe('Institutional selectors', () => {
           },
         },
         metamask: {
-          selectedAddress: 'selectedAddress',
+          internalAccounts: {
+            accounts: {
+              '8dc33129-d810-47e2-abba-942796808e80': {
+                address: '0xAddress',
+                id: '8dc33129-d810-47e2-abba-942796808e80',
+                metadata: {
+                  name: 'Custom Account A',
+                  keyring: {
+                    type: 'testCustody - Saturn',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: '8dc33129-d810-47e2-abba-942796808e80',
+          },
         },
       };
 
@@ -597,12 +614,30 @@ describe('Institutional selectors', () => {
         },
         metamask: {
           selectedAddress: 'selectedAddress',
+          internalAccounts: {
+            accounts: {
+              '8dc33129-d810-47e2-abba-942796808e80': {
+                address: '0xAddress',
+                id: '8dc33129-d810-47e2-abba-942796808e80',
+                metadata: {
+                  name: 'Custom Account A',
+                  keyring: {
+                    type: 'testCustody - Saturn',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: '8dc33129-d810-47e2-abba-942796808e80',
+          },
         },
       };
 
       const address = getMMIAddressFromModalOrAddress(state);
 
-      expect(address).toBe('selectedAddress');
+      expect(address).toBe('0xAddress');
     });
 
     it('returns undefined if neither modalAddress nor selectedAddress exist', () => {
@@ -614,7 +649,12 @@ describe('Institutional selectors', () => {
             },
           },
         },
-        metamask: {},
+        metamask: {
+          internalAccounts: {
+            accounts: {},
+            selectedAccount: '',
+          },
+        },
       };
 
       const address = getMMIAddressFromModalOrAddress(state);

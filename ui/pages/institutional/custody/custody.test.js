@@ -1,5 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { fireEvent, waitFor, screen, act } from '@testing-library/react';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -79,6 +80,24 @@ describe('CustodyPage', function () {
       },
       history: {
         mostRecentOverviewPage: '/',
+      },
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Custody Account A',
+              keyring: {
+                type: 'Custody',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
     },
   };
