@@ -144,6 +144,12 @@ export default function TransactionSettings({
     }
   }, [dispatch, activeButtonIndex]);
 
+  useEffect(() => {
+    if (newSmartTransactionsOptInStatus === undefined) {
+      setNewSmartTransactionsOptInStatus(smartTransactionsOptInStatus);
+    }
+  }, [smartTransactionsOptInStatus, newSmartTransactionsOptInStatus]);
+
   return (
     <Modal
       onClose={onModalClose}

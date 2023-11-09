@@ -225,6 +225,7 @@ export default function PrepareSwapPage({
 
   const onManageStxInSettings = (e) => {
     e?.preventDefault();
+    setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
     dispatch(setTransactionSettingsOpened(true));
   };
 
