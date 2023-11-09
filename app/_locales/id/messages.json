@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Jika Anda mencoba untuk mengirim aset secara langsung dari satu jaringan ke jaringan lain, aset Anda berpotensi hilang secara permanen. Pastikan untuk menggunakan bridge."
   },
-  "attemptToCancelSwap": {
-    "message": "Mencoba membatalkan pertukaran dengan biaya ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Mencoba terhubung ke blockchain."
   },
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
-  },
-  "enableSmartSwaps": {
-    "message": "Aktifkan pertukaran cerdas"
   },
   "enableSnap": {
     "message": "Aktifkan"
@@ -2521,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Belum ada snap yang diinstal."
-  },
-  "noThanksVariant2": {
-    "message": "Tidak, terima kasih."
   },
   "noTransactions": {
     "message": "Anda tidak memiliki transaksi"
@@ -3811,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swap tidak tersedia untuk sementara waktu."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Smart Swap akan mencoba mengirimkan transaksi Anda secara pribadi, beberapa kali. Jika semua upaya gagal, transaksi akan disiarkan secara publik untuk memastikan Swap telah berhasil dilakukan."
-  },
   "snapConfigure": {
     "message": "Konfigurasikan"
   },
@@ -4189,9 +4176,6 @@
     "message": "Swap akan selesai dalam <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simulasikan transaksi sebelum dikirim untuk mengurangi biaya transaksi dan mengurangi kegagalan."
-  },
   "stxTryingToCancel": {
     "message": "Mencoba membatalkan transaksi Anda..."
   },
@@ -4206,9 +4190,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Transaksi Anda telah dibatalkan dan Anda tidak membayar biaya gas yang tidak perlu."
-  },
-  "stxYouCanOptOut": {
-    "message": "Anda dapat memilih keluar pada pengaturan lanjutan kapan saja."
   },
   "submit": {
     "message": "Kirim"
