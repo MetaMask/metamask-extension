@@ -32,9 +32,9 @@ import {
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getIsAddSnapAccountEnabled,
-  getSelectedInternalAccount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
