@@ -765,12 +765,19 @@ describe('MetaMaskController', () => {
     });
 
     describe('forgetDevice', () => {
-      let localMetaMaskController;
+      it('should throw if it receives an unknown device name', async () => {
+        const result = metamaskController.forgetDevice(
+          'Some random device name',
+        );
+        await expect(result).rejects.toThrow(
+          'MetamaskController:getKeyringForDevice - Unknown device',
+        );
+      });
 
-      beforeEach(async () => {
+      it('should remove the identities when the device is forgotten', async () => {
         jest.spyOn(window, 'open').mockReturnValue();
 
-        localMetaMaskController = new MetaMaskController({
+        const localMetaMaskController = new MetaMaskController({
           showUserConfirmation: noop,
           encryptor: {
             encrypt(_, object) {
@@ -804,27 +811,17 @@ describe('MetaMaskController', () => {
           isFirstMetaMaskControllerSetup: true,
         });
 
-        localMetaMaskController.keyringController.createNewVaultAndKeychain(
+        await localMetaMaskController.keyringController.createNewVaultAndKeychain(
           'password',
         );
 
-        localMetaMaskController.keyringController.addNewKeyring(
+        await localMetaMaskController.keyringController.addNewKeyring(
           'Trezor Hardware',
           {
             accounts: ['0x123'],
           },
         );
-      });
-      it('should throw if it receives an unknown device name', async () => {
-        const result = metamaskController.forgetDevice(
-          'Some random device name',
-        );
-        await expect(result).rejects.toThrow(
-          'MetamaskController:getKeyringForDevice - Unknown device',
-        );
-      });
 
-      it('should remove the identities when the device is forgotten', async () => {
         await localMetaMaskController.forgetDevice(HardwareDeviceNames.trezor);
         const { identities: updatedIdentities } =
           localMetaMaskController.preferencesController.store.getState();
