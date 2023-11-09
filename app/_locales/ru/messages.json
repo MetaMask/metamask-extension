@@ -4176,9 +4176,6 @@
     "message": "Своп завершится через <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Моделируйте транзакции перед отправкой, чтобы снизить транзакционные издержки и сократить число отказов."
-  },
   "stxTryingToCancel": {
     "message": "Попытка отменить транзакцию..."
   },

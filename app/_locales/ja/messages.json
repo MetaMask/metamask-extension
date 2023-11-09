@@ -4177,9 +4177,6 @@
     "message": "スワップ完了まで残り <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "送信前にトランザクションのシミュレーションを行い、トランザクションのコストと失敗率を減らします。"
-  },
   "stxTryingToCancel": {
     "message": "トランザクションのキャンセルを試みています..."
   },

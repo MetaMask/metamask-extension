@@ -22,6 +22,7 @@ import {
   ButtonLink,
   ButtonLinkSize,
 } from '../../../components/component-library';
+import { SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL } from '../../../../shared/constants/swaps';
 
 interface Props {
   onStartSwapping: () => void;
@@ -84,7 +85,7 @@ export default function SmartTransactionsPopover({
             {t('smartSwapsDescription2', [
               <ButtonLink
                 size={ButtonLinkSize.Inherit}
-                href={'https://support.metamask.io/hc/articles/9184393821211'}
+                href={SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL}
                 externalLink
               >
                 {t('faqAndRiskDisclosures')}

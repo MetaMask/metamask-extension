@@ -4176,9 +4176,6 @@
     "message": "Matatapos ang Swap sa <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Gayahin ang mga transaksyon bago isumite upang bumaba ang gastos sa transaksyon at mabawasan ang mga pagkabigo."
-  },
   "stxTryingToCancel": {
     "message": "Sinusubukang kanselahin ang iyong transaksyon..."
   },

@@ -4199,13 +4199,17 @@
   },
   "smartSwapsDescription2": {
     "message": "*Smart Swaps will submit your transaction privately. You can opt-out in advanced settings at any time. To learn more about Smart Swaps, read our $1.",
-    "description": "$1 is an external link to FAQ and $2 is an external link to Risk Disclosures"
+    "description": "$1 is an external link to FAQ and Risk Disclosures"
   },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Not enough funds for a smart swap."
   },
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps are temporarily unavailable."
+  },
+  "smartSwapsTooltip": {
+    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures. To learn more, read our $1",
+    "description": "$1 is an external link to FAQ and Risk Disclosures"
   },
   "snapAccountCreated": {
     "message": "Your account is ready!"
@@ -4671,9 +4675,6 @@
   "stxSwapCompleteIn": {
     "message": "Swap will complete in <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
-  },
-  "stxTooltip": {
-    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures."
   },
   "stxTryingToCancel": {
     "message": "Trying to cancel your transaction..."

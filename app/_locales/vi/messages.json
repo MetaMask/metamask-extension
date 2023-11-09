@@ -4176,9 +4176,6 @@
     "message": "Hoán đổi sẽ hoàn tất sau <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Mô phỏng giao dịch trước khi gửi để giảm chi phí giao dịch và tỷ lệ thất bại."
-  },
   "stxTryingToCancel": {
     "message": "Đang cố gắng hủy giao dịch của bạn..."
   },

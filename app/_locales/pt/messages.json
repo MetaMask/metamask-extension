@@ -4180,9 +4180,6 @@
     "message": "A troca será concluída em <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simule as transações antes de enviá-las para diminuir os custos de transação e reduzir a possibilidade de falhas."
-  },
   "stxTryingToCancel": {
     "message": "Tentando cancelar sua transação..."
   },

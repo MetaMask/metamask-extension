@@ -4176,9 +4176,6 @@
     "message": "Swap距离完成尚有<",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "在提交前模拟交易，以降低交易成本并减少失败。"
-  },
   "stxTryingToCancel": {
     "message": "正在尝试取消您的交易......"
   },

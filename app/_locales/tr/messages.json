@@ -4176,9 +4176,6 @@
     "message": "Swap işleminin tamamlanmasına kalan süre <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "İşlem maliyetlerini azaltmak ve arızaları azaltmak için göndermeden önce işlemleri simüle et."
-  },
   "stxTryingToCancel": {
     "message": "İşlemin iptal edilmeye çalışılıyor..."
   },

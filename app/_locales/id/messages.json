@@ -4176,9 +4176,6 @@
     "message": "Swap akan selesai dalam <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simulasikan transaksi sebelum dikirim untuk mengurangi biaya transaksi dan mengurangi kegagalan."
-  },
   "stxTryingToCancel": {
     "message": "Mencoba membatalkan transaksi Anda..."
   },

@@ -4176,9 +4176,6 @@
     "message": "Le Swap sera effectué dans <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simulez les transactions avant de les soumettre pour réduire les coûts et les échecs de transaction."
-  },
   "stxTryingToCancel": {
     "message": "Tentative d’annulation de votre transaction..."
   },
