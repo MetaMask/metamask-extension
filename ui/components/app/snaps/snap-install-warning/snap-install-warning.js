@@ -12,6 +12,7 @@ import {
   AlignItems,
   BorderRadius,
   BlockSize,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import Popover from '../../../ui/popover';
 import {
@@ -191,7 +192,19 @@ export default function SnapInstallWarning({
                 ])}
               </Text>
             }
-            description={t('snapInstallWarningPermissionDescriptionForEntropy')}
+            description={t(
+              'snapInstallWarningPermissionDescriptionForEntropy',
+              [
+                <Text
+                  color={TextColor.inherit}
+                  variant={TextVariant.inherit}
+                  fontWeight={FontWeight.Medium}
+                  key="1"
+                >
+                  {snapName}
+                </Text>,
+              ],
+            )}
             weight={1}
             avatarIcon={IconName.Key}
             key="snapInstallWarningPermissionCellKeyEntropy"
@@ -222,6 +235,16 @@ export default function SnapInstallWarning({
             }
             description={t(
               'snapInstallWarningPermissionDescriptionForBip32View',
+              [
+                <Text
+                  color={TextColor.inherit}
+                  variant={TextVariant.inherit}
+                  fontWeight={FontWeight.Medium}
+                  key="1"
+                >
+                  {snapName}
+                </Text>,
+              ],
             )}
             weight={1}
             avatarIcon={IconName.Key}
