@@ -609,8 +609,7 @@
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
   "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet. $1",
-    "description": "$1 is a link to a Blockaid's terms of use"
+    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
