@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { I18nContext } from '../../../contexts/i18n';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   TextColor,
   Display,
@@ -34,7 +34,7 @@ export default function SmartTransactionsPopover({
   onManageStxInSettings,
   isOpen,
 }: Props) {
-  const t = useContext(I18nContext);
+  const t = useI18nContext();
   return (
     <Modal
       isOpen={isOpen}
