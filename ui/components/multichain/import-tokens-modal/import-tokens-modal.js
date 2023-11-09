@@ -13,14 +13,14 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
+  getInternalAccounts,
   getIsDynamicTokenListAvailable,
   getIsMainnet,
   getIsTokenDetectionInactiveOnMainnet,
   getIsTokenDetectionSupported,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
-  getMetaMaskIdentities,
   getRpcPrefsForCurrentProvider,
-  getSelectedAddress,
+  getSelectedAccount,
   getSelectedNetworkClientId,
   getTokenDetectionSupportNetworkByChainId,
   getTokenList,
@@ -112,9 +112,9 @@ export const ImportTokensModal = ({ onClose }) => {
   const isDynamicTokenListAvailable = useSelector(
     getIsDynamicTokenListAvailable,
   );
-  const selectedAddress = useSelector(getSelectedAddress);
+  const selectedAccount = useSelector(getSelectedAccount);
   const isMainnet = useSelector(getIsMainnet);
-  const identities = useSelector(getMetaMaskIdentities);
+  const accounts = useSelector(getInternalAccounts);
   const tokens = useSelector((state) => state.metamask.tokens);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
@@ -339,7 +339,7 @@ export const ImportTokensModal = ({ onClose }) => {
       try {
         ({ standard } = await getTokenStandardAndDetails(
           standardAddress,
-          selectedAddress,
+          selectedAccount.address,
           null,
         ));
       } catch (error) {
@@ -385,7 +385,9 @@ export const ImportTokensModal = ({ onClose }) => {
         setCustomDecimalsError(null);
         break;
 
-      case Boolean(identities[standardAddress]):
+      case Boolean(
+        accounts.find((internalAccount) => internalAccount.address === address),
+      ):
         setCustomAddressError(t('personalAddressDetected'));
         break;
 
