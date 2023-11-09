@@ -4980,10 +4980,6 @@
   "verifyContractDetails": {
     "message": "Verifikasikan detail pihak ketiga"
   },
-  "verifyThisTokenDecimalOn": {
-    "message": "Desimal token dapat ditemukan di $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "verifyThisTokenOn": {
     "message": "Verifikasikan token ini di $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""

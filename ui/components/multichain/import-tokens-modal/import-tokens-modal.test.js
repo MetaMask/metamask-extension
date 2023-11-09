@@ -43,7 +43,7 @@ describe('ImportTokensModal', () => {
         getByText(`Add the tokens you've acquired using MetaMask`),
       ).toBeInTheDocument();
       expect(getByText('Next')).toBeDisabled();
-      expect(getByPlaceholderText('Search')).toBeInTheDocument();
+      expect(getByPlaceholderText('Search tokens')).toBeInTheDocument();
     });
 
     it('shows the token detection notice when setting is off', () => {
@@ -84,6 +84,14 @@ describe('ImportTokensModal', () => {
       const customTokenButton = getByText('Custom token');
       fireEvent.click(customTokenButton);
 
+      // Enter token address first
+      const tokenAddress = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
+      const eventTokenAddress = { target: { value: tokenAddress } };
+      fireEvent.change(
+        getByTestId('import-tokens-modal-custom-address'),
+        eventTokenAddress,
+      );
+
       const tokenSymbol = 'META';
       const event = { target: { value: tokenSymbol } };
       fireEvent.change(getByTestId('import-tokens-modal-custom-symbol'), event);
@@ -97,6 +105,14 @@ describe('ImportTokensModal', () => {
       const { getByText, getByTestId } = render();
       const customTokenButton = getByText('Custom token');
       fireEvent.click(customTokenButton);
+
+      // Enter token address first
+      const tokenAddress = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
+      const eventTokenAddress = { target: { value: tokenAddress } };
+      fireEvent.change(
+        getByTestId('import-tokens-modal-custom-address'),
+        eventTokenAddress,
+      );
 
       const tokenPrecision = '2';
       const event = { target: { value: tokenPrecision } };
@@ -152,6 +168,7 @@ describe('ImportTokensModal', () => {
           decimals: Number(tokenPrecision),
           standard: TokenStandard.ERC20,
           symbol: tokenSymbol,
+          name: '',
         },
         selectedTokens: {},
         tokenAddressList: [],

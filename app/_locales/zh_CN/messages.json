@@ -4980,10 +4980,6 @@
   "verifyContractDetails": {
     "message": "验证第三方详情"
   },
-  "verifyThisTokenDecimalOn": {
-    "message": "代币小数可以在 $1 上找到",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "verifyThisTokenOn": {
     "message": "在 $1 上验证此代币",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""

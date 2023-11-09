@@ -1795,10 +1795,6 @@
   "userName": {
     "message": "Username"
   },
-  "verifyThisTokenDecimalOn": {
-    "message": "Makikita sa $1 ang decimal ng token",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
-  },
   "verifyThisTokenOn": {
     "message": "I-verify ang token na ito sa $1",
     "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""

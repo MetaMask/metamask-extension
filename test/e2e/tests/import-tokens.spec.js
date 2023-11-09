@@ -36,7 +36,7 @@ describe('Import flow', function () {
         await driver.delay(regularDelayMs);
 
         await driver.clickElement('[data-testid="import-token-button"]');
-        await driver.fill('input[placeholder="Search"]', 'cha');
+        await driver.fill('input[placeholder="Search tokens"]', 'cha');
 
         await driver.clickElement('.token-list__token_component');
         await driver.clickElement(
@@ -46,14 +46,10 @@ describe('Import flow', function () {
           '.token-list__token_component:nth-of-type(3)',
         );
 
-        await driver.clickElement({
-          css: '.import-tokens-page__footer button',
-          text: 'Next',
-        });
-        await driver.clickElement({
-          css: '.import-tokens-page__footer button',
-          text: 'Import',
-        });
+        await driver.clickElement('[data-testid="import-tokens-button-next"]');
+        await driver.clickElement(
+          '[data-testid="import-tokens-modal-import-button"]',
+        );
 
         // Wait for "loading tokens" to be gone
         await driver.waitForElementNotPresent(

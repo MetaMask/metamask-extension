@@ -285,6 +285,7 @@ describe('MetaMask @no-mmi', function () {
       if (process.env.MULTICHAIN) {
         return;
       }
+      await driver.clickElement('[data-testid="home__asset-tab"]');
       const [, tkn] = await driver.findElements(
         '[data-testid="multichain-token-list-button"]',
       );
@@ -394,6 +395,9 @@ describe('MetaMask @no-mmi', function () {
 
       await driver.switchToWindow(extension);
       await driver.delay(largeDelayMs);
+
+      await driver.switchToWindow(extension);
+      await driver.clickElement({ tag: 'button', text: 'Activity' });
 
       await driver.findElements('.transaction-list__pending-transactions');
       await driver.waitForSelector({
