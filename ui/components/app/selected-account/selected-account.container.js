@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import {
-  getSelectedIdentity,
+  getSelectedInternalAccount,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getAccountType,
   ///: END:ONLY_INCLUDE_IN
@@ -16,7 +16,7 @@ import SelectedAccount from './selected-account.component';
 
 const mapStateToProps = (state) => {
   return {
-    selectedIdentity: getSelectedIdentity(state),
+    selectedAccount: getSelectedInternalAccount(state),
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     accountType: getAccountType(state),
     accountDetails: getCustodyAccountDetails(state),
