@@ -2,7 +2,6 @@ import React, {
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   useCallback,
   useContext,
-  useEffect,
   ///: END:ONLY_INCLUDE_IN
 } from 'react';
 import PropTypes from 'prop-types';
@@ -33,7 +32,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IN
 
 const TransactionAlerts = ({
