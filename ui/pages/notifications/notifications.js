@@ -75,9 +75,13 @@ export default function Notifications() {
   const unreadNotifications = useSelector(getUnreadNotifications);
 
   const markAllAsRead = () => {
-    const unreadNotificationIds = unreadNotifications.map(({ id }) => id);
+    const unreadNotificationIds = unreadNotifications
+      .filter(({ readDate }) => !readDate)
+      .map(({ id }) => id);
 
-    dispatch(markNotificationsAsRead(unreadNotificationIds));
+    if (unreadNotificationIds.length > 0) {
+      dispatch(markNotificationsAsRead(unreadNotificationIds));
+    }
   };
 
   const markAsRead = (notificationToMark) => {
