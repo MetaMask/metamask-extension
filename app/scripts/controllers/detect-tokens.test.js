@@ -678,6 +678,8 @@ describe('DetectTokensController', function () {
       assetsContractController,
       disableLegacyInterval: true,
       interval: 1000,
+      getCurrentSelectedAccount:
+        accountsController.getSelectedAccount.bind(accountsController),
       getNetworkClientById: () => ({
         configuration: {
           chainId: '0x1',
