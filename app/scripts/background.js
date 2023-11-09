@@ -46,7 +46,6 @@ import migrations from './migrations';
 import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
-import ReadOnlyNetworkStore from './lib/network-store';
 import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
 
 import createStreamSink from './lib/createStreamSink';
@@ -76,7 +75,7 @@ import DesktopManager from '@metamask/desktop/dist/desktop-manager';
 
 // Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+const localStore = new LocalStore();
 global.stateHooks.getMostRecentPersistedState = () =>
   localStore.mostRecentRetrievedState;
 
@@ -919,12 +918,11 @@ async function onInstall() {
   const storeAlreadyExisted = Boolean(await localStore.get());
   // If the store doesn't exist, then this is the first time running this script,
   // and is therefore an install
-  if (
-    !storeAlreadyExisted &&
-    !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
-  ) {
+  if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
     addAppInstalledEvent();
-    platform.openExtensionInBrowser();
+    if (!process.env.IN_TEST) {
+      platform.openExtensionInBrowser();
+    }
   }
 }
 
