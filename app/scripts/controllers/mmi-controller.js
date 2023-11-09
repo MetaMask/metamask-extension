@@ -39,6 +39,7 @@ export default class MMIController extends EventEmitter {
     this.signatureController = opts.signatureController;
     this.platform = opts.platform;
     this.extension = opts.extension;
+    this.trackTransactionEvents = opts.trackTransactionEvents;
 
     // Prepare event listener after transactionUpdateController gets initiated
     this.transactionUpdateController.prepareEventListener(
@@ -75,7 +76,13 @@ export default class MMIController extends EventEmitter {
   }
 
   async trackTransactionEventFromCustodianEvent(txMeta, event) {
-    this.txController._trackTransactionMetricsEvent(txMeta, event);
+    // transactionMetricsRequest parameter is already bound in the constructor
+    this.trackTransactionEvents(
+      {
+        transactionMeta: txMeta,
+      },
+      event,
+    );
   }
 
   async addKeyringIfNotExists(type) {

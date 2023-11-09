@@ -33,12 +33,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
 ///: END:ONLY_INCLUDE_IN
-import {
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  BLOCKAID_TERMS_OF_USE,
-  ///: END:ONLY_INCLUDE_IN
-  OPENSEA_TERMS_OF_USE,
-} from '../../../../shared/lib/ui-utils';
+import { OPENSEA_TERMS_OF_USE } from '../../../../shared/lib/ui-utils';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -57,6 +52,8 @@ export default class ExperimentalTab extends PureComponent {
     addSnapAccountEnabled: PropTypes.bool,
     setAddSnapAccountEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
+    useRequestQueue: PropTypes.bool,
+    setUseRequestQueue: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -192,16 +189,7 @@ export default class ExperimentalTab extends PureComponent {
                       marginTop={0}
                       marginRight={1}
                     >
-                      {t('blockaidMessage', [
-                        <ButtonLink
-                          variant="bodyMd"
-                          href={BLOCKAID_TERMS_OF_USE}
-                          externalLink
-                          key="blockaid-terms-of-use"
-                        >
-                          {t('terms')}
-                        </ButtonLink>,
-                      ])}
+                      {t('blockaidMessage')}
                     </Text>
                   </div>
                   <ToggleButton
@@ -365,7 +353,36 @@ export default class ExperimentalTab extends PureComponent {
       </>
     );
   }
+
   ///: END:ONLY_INCLUDE_IN
+  renderToggleRequestQueue() {
+    const { t } = this.context;
+    const { useRequestQueue, setUseRequestQueue } = this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[7]}
+        className="settings-page__content-row settings-page__content-row-experimental"
+        data-testid="experimental-setting-toggle-request-queue"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('toggleRequestQueueField')}</span>
+          <div className="settings-page__content-description">
+            {t('toggleRequestQueueDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            className="request-queue-toggle"
+            value={useRequestQueue || false}
+            onToggle={(value) => setUseRequestQueue(!value)}
+            offLabel={t('toggleRequestQueueOff')}
+            onLabel={t('toggleRequestQueueOn')}
+          />
+        </div>
+      </Box>
+    );
+  }
 
   render() {
     return (
@@ -381,6 +398,7 @@ export default class ExperimentalTab extends PureComponent {
           this.renderDesktopEnableButton()
           ///: END:ONLY_INCLUDE_IN
         }
+        {this.renderToggleRequestQueue()}
       </div>
     );
   }
