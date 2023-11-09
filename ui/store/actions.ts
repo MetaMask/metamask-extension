@@ -43,6 +43,7 @@ import {
   getPermissionSubjects,
   ///: END:ONLY_INCLUDE_IN
   getInternalAccountByAddress,
+  getSelectedInternalAccount,
 } from '../selectors';
 import {
   computeEstimatedGasLimit,
@@ -3948,7 +3949,7 @@ export function getNextNonce(): ThunkAction<
   AnyAction
 > {
   return async (dispatch, getState) => {
-    const address = getState().metamask.selectedAddress;
+    const { address } = getSelectedInternalAccount(getState());
     let nextNonce;
     try {
       nextNonce = await submitRequestToBackground<string>('getNextNonce', [
