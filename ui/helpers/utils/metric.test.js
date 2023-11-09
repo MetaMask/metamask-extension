@@ -19,7 +19,7 @@ describe('getMethodName', () => {
 describe('getBlockaidMetricsParams', () => {
   it('should return empty object when securityAlertResponse is not defined', () => {
     const result = getBlockaidMetricsParams(undefined);
-    expect(result).toStrictEqual({ "ui_customizations": []});
+    expect(result).toStrictEqual({ ui_customizations: [] });
   });
 
   it('should return additionalParams object when securityAlertResponse defined', () => {
