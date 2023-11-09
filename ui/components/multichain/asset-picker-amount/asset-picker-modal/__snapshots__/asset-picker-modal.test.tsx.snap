@@ -1,0 +1,169 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AssetPickerModal should match snapshot 1`] = `
+<div
+  class="mm-modal asset-picker-modal"
+  data-testid="asset-picker-modal"
+>
+  <div
+    aria-hidden="true"
+    class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+  />
+  <div
+    data-focus-guard="true"
+    style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+    tabindex="0"
+  />
+  <div
+    data-focus-lock-disabled="false"
+  >
+    <div
+      class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--sm:padding-top-8 mm-box--md:padding-top-12 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--sm:padding-bottom-8 mm-box--md:padding-bottom-12 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-screen mm-box--height-screen"
+    >
+      <section
+        aria-modal="true"
+        class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
+        role="dialog"
+      >
+        <div
+          class="mm-box mm-header-base mm-modal-header mm-box--display-flex mm-box--justify-content-space-between"
+        >
+          <div
+            class="mm-box"
+          >
+            <header
+              class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+            >
+              Select a token
+            </header>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            style="min-width: 0px;"
+          >
+            <button
+              aria-label="Close"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
+              />
+            </button>
+          </div>
+        </div>
+        <div>
+          <div
+            class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-text-field-search asset-picker-modal__search-list box--padding-left-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--width-full box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/search.svg');"
+            />
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--margin-right-6 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+              data-testid="asset-picker-modal-search-input"
+              focused="true"
+              placeholder="Search token or NFT"
+              type="search"
+              value=""
+            />
+          </div>
+          <div
+            class="mm-box multichain-asset-picker-list-item multichain-asset-picker-list-item--selected mm-box--padding-4 mm-box--gap-2 mm-box--background-color-primary-muted"
+          >
+            <div
+              class="mm-box multichain-asset-picker-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
+            />
+            <div
+              class="multichain-token-list"
+            >
+              <div
+                class="multichain-token-list__data"
+              >
+                <div
+                  class="mm-box multichain-token-list-item mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
+                  data-testid="multichain-token-list-item"
+                >
+                  <a
+                    class="mm-box multichain-token-list-item__container-cell mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-row"
+                    data-testid="multichain-token-list-button"
+                    href="#"
+                  >
+                    <div
+                      class="mm-box mm-badge-wrapper mm-box--margin-right-3 mm-box--display-inline-block"
+                    >
+                      <div
+                        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-avatar-token--with-halo mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                      >
+                        <img
+                          aria-hidden="true"
+                          class="mm-avatar-token__token-image--blurred"
+                          src="./images/eth_logo.png"
+                        />
+                        <img
+                          alt="ETH logo"
+                          class="mm-avatar-token__token-image--size-reduced"
+                          src="./images/eth_logo.png"
+                        />
+                      </div>
+                      <div
+                        class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-top-right"
+                      >
+                        <div
+                          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+                        >
+                          ?
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="mm-box multichain-token-list-item__container-cell--text-container mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+                      style="flex-grow: 1; overflow: hidden;"
+                    >
+                      <div
+                        class="mm-box mm-box--display-flex mm-box--gap-1 mm-box--justify-content-space-between"
+                      >
+                        <div
+                          class="mm-box mm-box--width-1/3"
+                        >
+                          <p
+                            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                          >
+                            Ethereum
+                          </p>
+                        </div>
+                        <p
+                          class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--text-align-end mm-box--width-2/3 mm-box--color-text-default"
+                          data-testid="multichain-token-list-item-secondary-value"
+                        >
+                          0 ETH
+                        </p>
+                      </div>
+                      <p
+                        class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+                        data-testid="multichain-token-list-item-value"
+                      >
+                        0
+                         
+                        ETH
+                         
+                      </p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div
+    data-focus-guard="true"
+    style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+    tabindex="0"
+  />
+</div>
+`;
