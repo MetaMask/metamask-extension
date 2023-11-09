@@ -87,6 +87,7 @@ export default function SmartTransactionsPopover({
                 size={ButtonLinkSize.Inherit}
                 href={SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL}
                 externalLink
+                display={Display.Inline}
               >
                 {t('faqAndRiskDisclosures')}
               </ButtonLink>,
