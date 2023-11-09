@@ -101,7 +101,7 @@ export const SendPageRecipient = () => {
     );
   } else {
     contents = (
-      <Tabs>
+      <Tabs defaultActiveTabKey={userInput ? 'contacts' : 'accounts'}>
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
