@@ -1578,16 +1578,20 @@ export default class MetamaskController extends EventEmitter {
           process.env.PASSWORD,
           this.preferencesController.getSelectedAddress(),
         ),
+      getTransactions: () => this.txController.getTransactions(),
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserOperationController',
         allowedActions: ['ApprovalController:addRequest'],
       }),
       provider: this.provider,
+      state: initState.UserOperationController,
     });
 
     this.userOperationController.hub.on('transaction-updated', (txMeta) => {
       txMeta.txParams.from = this.preferencesController.getSelectedAddress();
+
       this.txController.txStateManager.updateTransaction(txMeta, 'User');
+      this.txController.emit('tx:status-update', txMeta.id, txMeta.status);
     });
 
     // ensure accountTracker updates balances after network change
@@ -1772,6 +1776,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(petnames)
       NameController: this.nameController,
       ///: END:ONLY_INCLUDE_IN
+      UserOperationController: this.userOperationController,
       ...resetOnRestartStore,
     });
 
@@ -1817,6 +1822,7 @@ export default class MetamaskController extends EventEmitter {
         ///: BEGIN:ONLY_INCLUDE_IN(petnames)
         NameController: this.nameController,
         ///: END:ONLY_INCLUDE_IN
+        UserOperationController: this.userOperationController,
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,

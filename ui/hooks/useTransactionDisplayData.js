@@ -315,6 +315,11 @@ export function useTransactionDisplayData(transactionGroup) {
     category = TransactionGroupCategory.send;
     title = t('send');
     subtitle = t('toAddress', [shortenAddress(recipientAddress)]);
+  } else if (type === TransactionType.userOperation) {
+    category = TransactionGroupCategory.interaction;
+    title = getTransactionTypeTitle(t, type);
+    subtitle = origin;
+    subtitleContainsOrigin = true;
   } else {
     dispatch(
       captureSingleException(

@@ -76,6 +76,7 @@ export enum TransactionType {
    * spend on behalf of the user
    */
   tokenMethodSetApprovalForAll = 'setapprovalforall',
+  userOperation = 'userOperation',
 }
 
 /**
