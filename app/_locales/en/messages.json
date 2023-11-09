@@ -1502,9 +1502,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
-  "enableSmartSwaps": {
-    "message": "Enable smart swaps"
-  },
   "enableSnap": {
     "message": "Enable"
   },
@@ -2387,6 +2384,9 @@
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manageInSettings": {
+    "message": "Manage in settings"
+  },
   "max": {
     "message": "Max"
   },
@@ -2744,9 +2744,6 @@
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
-  },
-  "noThanksVariant2": {
-    "message": "No, thanks."
   },
   "noTransactions": {
     "message": "You have no transactions"
@@ -4568,6 +4565,9 @@
   },
   "stakeDescription": {
     "message": "Stake your crypto to earn rewards"
+  },
+  "startSwapping": {
+    "message": "Start swapping"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."

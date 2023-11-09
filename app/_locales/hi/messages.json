@@ -1408,9 +1408,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
   },
-  "enableSmartSwaps": {
-    "message": "स्मार्ट स्वैप इनेबल करें"
-  },
   "enableSnap": {
     "message": "इनेबल करें"
   },
@@ -2521,9 +2518,6 @@
   },
   "noSnaps": {
     "message": "आपके पास इंस्टाल किए गए Snap नहीं हैं।"
-  },
-  "noThanksVariant2": {
-    "message": "नहीं, धन्यवाद।"
   },
   "noTransactions": {
     "message": "आपके पास कोई ट्रांसेक्शन नहीं है"

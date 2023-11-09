@@ -86,7 +86,7 @@ export default function SmartTransactionsPopover({
             onClick={onEnableSmartTransactionsClick}
             width={BlockSize.Full}
           >
-            {t('enableSmartSwaps')}
+            {t('startSwapping')}
           </Button>
 
           <Button
@@ -95,7 +95,7 @@ export default function SmartTransactionsPopover({
             onClick={onCloseSmartTransactionsOptInPopover}
             width={BlockSize.Full}
           >
-            {t('noThanksVariant2')}
+            {t('manageInSettings')}
           </Button>
         </Box>
       </ModalContent>

@@ -1408,9 +1408,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
   },
-  "enableSmartSwaps": {
-    "message": "스마트 스왑 활성화"
-  },
   "enableSnap": {
     "message": "활성화"
   },
@@ -2521,9 +2518,6 @@
   },
   "noSnaps": {
     "message": "설치된 스냅이 없습니다"
-  },
-  "noThanksVariant2": {
-    "message": "아니요, 괜찮습니다."
   },
   "noTransactions": {
     "message": "트랜잭션이 없습니다."

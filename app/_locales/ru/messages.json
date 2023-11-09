@@ -1408,9 +1408,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
   },
-  "enableSmartSwaps": {
-    "message": "Включить смарт-свопы"
-  },
   "enableSnap": {
     "message": "Включить"
   },
@@ -2521,9 +2518,6 @@
   },
   "noSnaps": {
     "message": "Snaps не установлены."
-  },
-  "noThanksVariant2": {
-    "message": "Нет, спасибо."
   },
   "noTransactions": {
     "message": "У вас нет транзакций"

@@ -1408,9 +1408,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
   },
-  "enableSmartSwaps": {
-    "message": "Smart Swaps aktivieren"
-  },
   "enableSnap": {
     "message": "Aktivieren"
   },
@@ -2521,9 +2518,6 @@
   },
   "noSnaps": {
     "message": "Keine Snaps installiert"
-  },
-  "noThanksVariant2": {
-    "message": "Nein, danke."
   },
   "noTransactions": {
     "message": "Keine Transaktionen"

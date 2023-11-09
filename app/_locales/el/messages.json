@@ -1408,9 +1408,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
   },
-  "enableSmartSwaps": {
-    "message": "Ενεργοποίηση των έξυπνων ανταλλαγών"
-  },
   "enableSnap": {
     "message": "Ενεργοποίηση"
   },
@@ -2521,9 +2518,6 @@
   },
   "noSnaps": {
     "message": "Δεν έχετε εγκαταστήσει κανένα snap."
-  },
-  "noThanksVariant2": {
-    "message": "Όχι, ευχαριστώ."
   },
   "noTransactions": {
     "message": "Δεν έχετε καμιά συναλλαγή"

@@ -1408,9 +1408,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
   },
-  "enableSmartSwaps": {
-    "message": "Paganahin ang mga smart swap"
-  },
   "enableSnap": {
     "message": "Paganahin"
   },
@@ -2521,9 +2518,6 @@
   },
   "noSnaps": {
     "message": "Wala kang naka-install na snaps."
-  },
-  "noThanksVariant2": {
-    "message": "Huwag na lang."
   },
   "noTransactions": {
     "message": "Wala kang transaksyon"

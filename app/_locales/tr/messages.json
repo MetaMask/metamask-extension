@@ -1408,9 +1408,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
   },
-  "enableSmartSwaps": {
-    "message": "Akıllı swap'ları etkinleştirin"
-  },
   "enableSnap": {
     "message": "Etkinleştir"
   },
@@ -2521,9 +2518,6 @@
   },
   "noSnaps": {
     "message": "Yüklü snapiniz yok."
-  },
-  "noThanksVariant2": {
-    "message": "Hayır, teşekkürler."
   },
   "noTransactions": {
     "message": "İşleminiz yok"

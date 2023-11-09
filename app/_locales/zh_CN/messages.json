@@ -1408,9 +1408,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
   },
-  "enableSmartSwaps": {
-    "message": "启用智能兑换"
-  },
   "enableSnap": {
     "message": "启用"
   },
@@ -2521,9 +2518,6 @@
   },
   "noSnaps": {
     "message": "您没有安装 snap。"
-  },
-  "noThanksVariant2": {
-    "message": "不，谢谢."
   },
   "noTransactions": {
     "message": "您没有任何交易"

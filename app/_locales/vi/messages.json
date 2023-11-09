@@ -1408,9 +1408,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
   },
-  "enableSmartSwaps": {
-    "message": "Kích hoạt hoán đổi thông minh"
-  },
   "enableSnap": {
     "message": "Bật"
   },
@@ -2521,9 +2518,6 @@
   },
   "noSnaps": {
     "message": "Bạn chưa cài đặt bất kỳ Snap nào."
-  },
-  "noThanksVariant2": {
-    "message": "Không, cảm ơn."
   },
   "noTransactions": {
     "message": "Bạn không có giao dịch nào"

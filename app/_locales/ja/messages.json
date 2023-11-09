@@ -1408,9 +1408,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
   },
-  "enableSmartSwaps": {
-    "message": "スマートスワップを有効にする"
-  },
   "enableSnap": {
     "message": "有効にする"
   },
@@ -2521,9 +2518,6 @@
   },
   "noSnaps": {
     "message": "snapがインストールされていません"
-  },
-  "noThanksVariant2": {
-    "message": "結構です。"
   },
   "noTransactions": {
     "message": "トランザクションがありません"
