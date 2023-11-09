@@ -70,7 +70,7 @@ export const AddressListItem = ({
           width={BlockSize.Full}
           textAlign={TextAlign.Left}
           ellipsis
-          data-testid="address-list-item-label"
+          className="address-list-item__label"
         >
           {label}
         </Text>

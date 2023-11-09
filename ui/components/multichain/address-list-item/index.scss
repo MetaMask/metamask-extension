@@ -1,6 +1,6 @@
 .address-list-item {
   /* Set explicitly to match the font-size of AccountListItem */
-  .mm-text {
+  &__label {
     font-size: 14px !important;
   }
 
