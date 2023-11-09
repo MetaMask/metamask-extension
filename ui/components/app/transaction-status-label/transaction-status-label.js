@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Tooltip from '../../ui/tooltip';
-
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   TransactionGroupStatus,
@@ -75,9 +74,7 @@ export default function TransactionStatusLabel({
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  if (
-    custodyStatus
-  ) {
+  if (custodyStatus) {
     if (error) {
       tooltipText = error.message;
       statusText =
