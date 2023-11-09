@@ -95,7 +95,7 @@ export const NetworkListMenu = ({ onClose }) => {
       .map((chainId) =>
         nonTestNetworks.find((network) => network.chainId === chainId),
       )
-      .filter((network) => network !== undefined);
+      .filter(Boolean);
 
     return sortedNetworkList;
   };
@@ -268,7 +268,7 @@ export const NetworkListMenu = ({ onClose }) => {
                       {...provided.droppableProps}
                       ref={provided.innerRef}
                     >
-                      {searchResults?.map((network, index) => {
+                      {searchResults.map((network, index) => {
                         if (
                           !lineaMainnetReleased &&
                           network.providerType === 'linea-mainnet'
