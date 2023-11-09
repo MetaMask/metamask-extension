@@ -3124,10 +3124,6 @@
     "message": "访问互联网。",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "允许snap访问互联网。这可用于通过第三方服务器发送和接收数据。",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "连接到$1 Snap。",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3140,17 +3136,9 @@
     "message": "规划并执行定期操作。",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "允许snap执行按固定时间、日期或间隔定期运行的操作。这可用于触发对时间敏感的交互或通知。",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "在 MetaMask 中显示对话框窗口。",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "允许snap显示带有以下内容的MetaMask弹出窗口：自定义文本、输入字段以及用于批准或拒绝操作的按钮。\n这可用于创建snap的提醒、确认和流程加入选择等。",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "查看您允许的账户的地址（必填）",
@@ -3160,25 +3148,9 @@
     "message": "访问以太坊提供商。",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "允许snap直接与MetaMask通信，使其可以从区块链中读取数据，并提出消息和交易建议。",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "衍生特定于此snap的随机私钥。",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "允许 snap 衍生其独有的任意私钥，而不公开私钥。这些私钥与您的 MetaMask 账户是分开的，与您的私钥或私钥助记词无关。其他 snap 无法访问此信息。",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "使用生命周期挂钩。",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "允许snap使用生命周期挂钩在其生命周期的特定时间运行代码。",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_manageAccounts": {
     "message": "添加并控制以太坊账户",
@@ -3188,41 +3160,17 @@
     "message": "在您的设备上存储和管理其数据。",
     "description": "The description for the `snap_manageState` permission"
   },
-  "permission_manageStateDescription": {
-    "message": "允许 snap 使用加密安全地存储、更新和检索数据。其他 snap 无法访问此信息。",
-    "description": "An extended description for the `snap_manageState` permission"
-  },
   "permission_notifications": {
     "message": "显示通知。",
     "description": "The description for the `snap_notify` permission"
-  },
-  "permission_notificationsDescription": {
-    "message": "允许snap在MetaMask中显示通知。snap可以触发简短的通知文本，以提供可操作或对时间敏感的信息。",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "允许 $1 直接与此 snap 通信。",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "允许$1向 snap 发送消息以及接收来自 snap 的响应。",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
   },
   "permission_transactionInsight": {
     "message": "获取并显示交易洞察。",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "允许snap对交易进行解码，并在MetaMask UI中显示见解。这可用于反网络钓鱼和安全解决方案。",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "查看建议交易的网站来源",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "允许snap查看建议交易的网站的来源（URI）。这可用于反网络钓鱼和安全解决方案。",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "未知权限：$1",
@@ -3232,10 +3180,6 @@
     "message": "查看您的$1 ($2)公钥。",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "允许snap查看$1的公钥（和地址）。这并不会授予对账户或资产的任何控制权。",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "查看您的$1公钥。",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3243,10 +3187,6 @@
   "permission_webAssembly": {
     "message": "支持WebAssembly。",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "允许snap通过WebAssembly访问低级执行环境。",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "权限"
