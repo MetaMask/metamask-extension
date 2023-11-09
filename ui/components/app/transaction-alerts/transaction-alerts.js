@@ -75,25 +75,6 @@ const TransactionAlerts = ({
   ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  useEffect(() => {
-    if (txData.securityAlertResponse) {
-      const blockaidMetricsParams = getBlockaidMetricsParams(
-        txData.securityAlertResponse,
-      );
-
-      trackEvent({
-        category: MetaMetricsEventCategory.Transactions,
-        event: 'Confirm: Started',
-        properties: {
-          action: 'Confirm Screen',
-          ...blockaidMetricsParams,
-        },
-      });
-    }
-  }, []);
-  ///: END:ONLY_INCLUDE_IN
-
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   const onClickSupportLink = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,

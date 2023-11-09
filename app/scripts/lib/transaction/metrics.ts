@@ -976,7 +976,7 @@ async function buildEventFragmentProperties({
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
     ...additionalBlockaidParams,
-    ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
+    ui_customizations: uiCustomizations?.length > 0 ? uiCustomizations : null,
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     security_alert_response:
       securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
