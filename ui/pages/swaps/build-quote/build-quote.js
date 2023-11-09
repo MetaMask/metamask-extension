@@ -170,12 +170,12 @@ export default function BuildQuote({
   const showSmartTransactionsOptInPopover =
     smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
 
-  const onCloseSmartTransactionsOptInPopover = (e) => {
+  const onManageStxInSettings = (e) => {
     e?.preventDefault();
     setSmartTransactionsOptInStatus(false, smartTransactionsOptInStatus);
   };
 
-  const onEnableSmartTransactionsClick = () =>
+  const onStartSwapping = () =>
     setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
@@ -575,10 +575,8 @@ export default function BuildQuote({
     <div className="build-quote">
       <div className="build-quote__content">
         <SmartTransactionsPopover
-          onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
-          onCloseSmartTransactionsOptInPopover={
-            onCloseSmartTransactionsOptInPopover
-          }
+          onStartSwapping={onStartSwapping}
+          onManageStxInSettings={onManageStxInSettings}
           isOpen={showSmartTransactionsOptInPopover}
         />
 

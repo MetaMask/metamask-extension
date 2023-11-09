@@ -256,7 +256,7 @@ exports[`ConfirmSendEther should render correct information for for confirm send
     >
       
       <div
-        class="confirm-page-container-summary confirm-page-container-summary--border"
+        class="confirm-page-container-summary"
       >
         <div
           class="site-origin confirm-page-container-summary__origin"
