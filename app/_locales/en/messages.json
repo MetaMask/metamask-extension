@@ -1,4 +1,7 @@
 {
+  "DragAndDropBanner": {
+    "message": "You can drag networks to reorder them. "
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
