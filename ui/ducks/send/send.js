@@ -38,7 +38,8 @@ import {
   getIsMultiLayerFeeNetwork,
   getEnsResolutionByAddress,
   getSelectedAccount,
-  getSelectedAddress,
+  getSelectedInternalAccount,
+  getSelectedInternalAccountWithBalance,
   getUnapprovedTransactions,
 } from '../../selectors';
 import {
@@ -504,6 +505,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const transaction = unapprovedTxs[draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
+    const selectedAccount = getSelectedInternalAccountWithBalance(state);
 
     let gasTotalForLayer1;
     if (isMultiLayerFeeNetwork) {
@@ -531,7 +533,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
       const gasLimit = await estimateGasLimitForSend({
         gasPrice: draftTransaction.gas.gasPrice,
         blockGasLimit: metamask.currentBlockGasLimit,
-        selectedAddress: metamask.selectedAddress,
+        selectedAddress: selectedAccount.address,
         sendToken: draftTransaction.asset.details,
         to: draftTransaction.recipient.address?.toLowerCase(),
         value: draftTransaction.amount.value,
@@ -667,7 +669,8 @@ export const initializeSendState = createAsyncThunk(
         blockGasLimit: metamask.currentBlockGasLimit,
         selectedAddress:
           draftTransaction.fromAccount?.address ??
-          sendState.selectedAccount.address,
+          sendState.selectedAccount.address ??
+          account.address,
         sendToken: draftTransaction.asset.details,
         to: draftTransaction.recipient.address.toLowerCase(),
         value: draftTransaction.amount.value,
@@ -1922,7 +1925,7 @@ export function updateRecipientUserInput(userInput) {
     const sendingAddress =
       draftTransaction.fromAccount?.address ??
       state[name].selectedAccount.address ??
-      getSelectedAddress(state);
+      getSelectedInternalAccount(state).address;
     const chainId = getCurrentChainId(state);
     const tokens = getTokens(state);
     const useTokenDetection = getUseTokenDetection(state);
@@ -2044,7 +2047,7 @@ export function updateSendAsset(
     const sendingAddress =
       draftTransaction.fromAccount?.address ??
       state[name].selectedAccount.address ??
-      getSelectedAddress(state);
+      getSelectedInternalAccount(state).address;
     const account = getTargetAccount(state, sendingAddress);
     if (type === AssetType.native) {
       const unapprovedTxs = getUnapprovedTransactions(state);
