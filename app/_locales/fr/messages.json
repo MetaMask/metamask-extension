@@ -3868,10 +3868,6 @@
     "message": "La mise à jour a échoué",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1 veut mettre à jour $2 vers $3, ce qui lui donne les autorisations suivantes. Ne continuez que si vous faites confiance à $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "Mise à jour terminée"
   },

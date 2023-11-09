@@ -50,6 +50,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifySnaps,
   getUnreadNotificationsCount,
+  getAnySnapUpdateAvailable,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -92,6 +93,9 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
+  const snapsUpdatesAvailable = useSelector((state) =>
+    getAnySnapUpdateAvailable(state),
+  );
   ///: END:ONLY_INCLUDE_IN
 
   let supportText = t('support');
@@ -227,6 +231,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             history.push(SNAPS_ROUTE);
             closeMenu();
           }}
+          showInfoDot={snapsUpdatesAvailable}
         >
           {t('snaps')}
         </MenuItem>

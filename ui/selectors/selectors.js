@@ -2,11 +2,10 @@
 import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IN
 import { ApprovalType } from '@metamask/controller-utils';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  memoize,
-  ///: END:ONLY_INCLUDE_IN
-} from 'lodash';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { memoize } from 'lodash';
+import semver from 'semver';
+///: END:ONLY_INCLUDE_IN
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
@@ -706,6 +705,44 @@ export function getTargetSubjectMetadata(state, origin) {
   return metadata;
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+/**
+ * Input selector for reusing the same state object.
+ * Used in memoized selectors created with createSelector
+ * when raw state is needed to be passed to other selectors
+ * used to achieve re-usability.
+ *
+ * @param state - Redux state object.
+ * @returns Object - Redux state object.
+ */
+export const rawStateSelector = (state) => state;
+
+/**
+ * Input selector used to retrieve Snaps that are added to Snaps Directory.
+ *
+ * @param state - Redux state object.
+ * @returns Object - Containing verified Snaps from the Directory.
+ */
+const selectVerifiedSnapsRegistry = (state) =>
+  state.metamask.database?.verifiedSnaps;
+
+/**
+ * Input selector providing a way to pass a snapId as an argument.
+ *
+ * @param _state - Redux state object.
+ * @param snapId - ID of a Snap.
+ * @returns string - ID of a Snap that can be used as input selector.
+ */
+const selectSnapId = (_state, snapId) => snapId;
+
+/**
+ * Input selector for retrieving all installed Snaps.
+ *
+ * @param state - Redux state object.
+ * @returns Object - Installed Snaps.
+ */
+export const selectInstalledSnaps = (state) => state.metamask.snaps;
+
 /**
  * Retrieve registry data for requested Snap.
  *
@@ -713,10 +750,72 @@ export function getTargetSubjectMetadata(state, origin) {
  * @param snapId - ID of a Snap.
  * @returns Object containing metadata stored in Snaps registry for requested Snap.
  */
-export function getSnapRegistryData(state, snapId) {
-  const snapsRegistryData = state.metamask.database.verifiedSnaps;
-  return snapsRegistryData ? snapsRegistryData[snapId] : null;
-}
+export const getSnapRegistryData = createSelector(
+  [selectVerifiedSnapsRegistry, selectSnapId],
+  (snapsRegistryData, snapId) => {
+    return snapsRegistryData ? snapsRegistryData[snapId] : null;
+  },
+);
+
+/**
+ * Find and return Snap's latest version available in registry.
+ *
+ * @param state - Redux state object.
+ * @param snapId - ID of a Snap.
+ * @returns String SemVer version.
+ */
+export const getSnapLatestVersion = createSelector(
+  [getSnapRegistryData],
+  (snapRegistryData) => {
+    if (!snapRegistryData) {
+      return null;
+    }
+
+    return Object.keys(snapRegistryData.versions).reduce((latest, version) => {
+      return semver.gt(version, latest) ? version : latest;
+    }, '0.0.0');
+  },
+);
+
+/**
+ * Return a Map of all installed Snaps with available update status.
+ *
+ * @param state - Redux state object.
+ * @returns Map Snap IDs mapped to a boolean value (true if update is available, false otherwise).
+ */
+export const getAllSnapAvailableUpdates = createSelector(
+  [selectInstalledSnaps, rawStateSelector],
+  (installedSnaps, state) => {
+    const snapMap = new Map();
+
+    Object.keys(installedSnaps).forEach((snapId) => {
+      const latestVersion = getSnapLatestVersion(state, snapId);
+
+      snapMap.set(
+        snapId,
+        latestVersion
+          ? semver.gt(latestVersion, installedSnaps[snapId].version)
+          : false,
+      );
+    });
+
+    return snapMap;
+  },
+);
+
+/**
+ * Return status of Snaps update availability for any installed Snap.
+ *
+ * @param state - Redux state object.
+ * @returns boolean true if update is available, false otherwise.
+ */
+export const getAnySnapUpdateAvailable = createSelector(
+  [getAllSnapAvailableUpdates],
+  (snapMap) => {
+    return [...snapMap.values()].some((value) => value === true);
+  },
+);
+///: END:ONLY_INCLUDE_IN
 
 export function getRpcPrefsForCurrentProvider(state) {
   const { rpcPrefs } = getProviderConfig(state);
