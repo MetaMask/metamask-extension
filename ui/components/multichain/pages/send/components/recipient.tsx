@@ -121,20 +121,22 @@ export const SendPageRecipient = () => {
   }
 
   return (
-    <SendPageRow>
+    <>
       {showErrorBanner ? (
-        <BannerAlert severity={BannerAlertSeverity.Danger} marginTop={6}>
-          {t(domainError ?? recipient.error)}
-        </BannerAlert>
+        <SendPageRow>
+          <BannerAlert severity={BannerAlertSeverity.Danger}>
+            {t(domainError ?? recipient.error)}
+          </BannerAlert>
+        </SendPageRow>
       ) : null}
       {showWarningBanner ? (
-        <BannerAlert severity={BannerAlertSeverity.Warning} marginTop={6}>
-          {t(domainWarning ?? recipient.warning)}
-        </BannerAlert>
+        <SendPageRow>
+          <BannerAlert severity={BannerAlertSeverity.Warning}>
+            {t(domainWarning ?? recipient.warning)}
+          </BannerAlert>
+        </SendPageRow>
       ) : null}
-      <Box marginTop={6} className="multichain-send-page__recipient">
-        {contents}
-      </Box>
-    </SendPageRow>
+      <Box className="multichain-send-page__recipient">{contents}</Box>
+    </>
   );
 };
