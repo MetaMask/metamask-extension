@@ -11,6 +11,7 @@ import {
   FlexWrap,
   IconColor,
   JustifyContent,
+  OverflowWrap,
   TextColor,
   TextVariant,
 } from '../../../../../../helpers/constants/design-system';
@@ -69,7 +70,7 @@ export const ConfirmInfoRow = ({
       paddingLeft={2}
       paddingRight={2}
       color={TEXT_COLORS[variant] as TextColor}
-      style={{ overflowWrap: 'anywhere', minHeight: '24px' }}
+      style={{ overflowWrap: OverflowWrap.Anywhere, minHeight: '24px' }}
     >
       <Box
         display={Display.Flex}
