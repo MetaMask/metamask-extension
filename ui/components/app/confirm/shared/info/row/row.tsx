@@ -63,11 +63,11 @@ export const ConfirmInfoRow = ({
       justifyContent={JustifyContent.spaceBetween}
       flexWrap={FlexWrap.Wrap}
       backgroundColor={BACKGROUND_COLORS[variant]}
-      borderRadius={BorderRadius.SM}
+      borderRadius={BorderRadius.LG}
       marginTop={2}
       marginBottom={2}
-      paddingLeft={1}
-      paddingRight={1}
+      paddingLeft={2}
+      paddingRight={2}
       color={TEXT_COLORS[variant] as TextColor}
     >
       <Box
