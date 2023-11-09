@@ -2230,9 +2230,6 @@
     "message": "Đảm bảo không có ai đang nhìn",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Dữ liệu không đúng định dạng"
-  },
   "max": {
     "message": "Tối đa"
   },
@@ -4840,18 +4837,6 @@
   "transactionCreated": {
     "message": "Đã tạo giao dịch với giá trị $1 lúc $2."
   },
-  "transactionData": {
-    "message": "Dữ liệu giao dịch"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Được giải mã bởi Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Đã xác minh hợp đồng trên $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Giải ID giao dịch hiện không khả dụng cho ID chuỗi $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Trang web gợi ý"
   },
@@ -4982,9 +4967,6 @@
   },
   "twelveHrTitle": {
     "message": "12 giờ:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Thông tin chi tiết về giao dịch không được hỗ trợ cho hợp đồng này tại thời điểm này."
   },
   "typeYourSRP": {
     "message": "Nhập Cụm từ khôi phục bí mật của bạn"

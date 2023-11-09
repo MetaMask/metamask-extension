@@ -2230,9 +2230,6 @@
     "message": "Asegúrese de que nadie esté mirando",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Datos con formato incorrecto"
-  },
   "max": {
     "message": "Máx."
   },
@@ -4840,18 +4837,6 @@
   "transactionCreated": {
     "message": "La transacción se creó con un valor de $1 en $2."
   },
-  "transactionData": {
-    "message": "Datos de transacción"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Decodificado por Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Contrato verificado en $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "La decodificación de la transacción no está disponible para chainId $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Sitio sugerido"
   },
@@ -4982,9 +4967,6 @@
   },
   "twelveHrTitle": {
     "message": "12 horas:"
-  },
-  "txInsightsNotSupported": {
-    "message": "En este momento no se admiten informaciones sobre las transacciones para este contrato."
   },
   "typeYourSRP": {
     "message": "Escriba la frase secreta de recuperación"

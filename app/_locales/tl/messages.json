@@ -2230,9 +2230,6 @@
     "message": "Siguraduhing walang tumitingin",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Pangit na datos"
-  },
   "max": {
     "message": "Max"
   },
@@ -4840,18 +4837,6 @@
   "transactionCreated": {
     "message": "Nagawa ang transaksyon na nagkakahalagang $1 sa $2."
   },
-  "transactionData": {
-    "message": "Data ng transaksyon"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Na-decode ng Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Na-verify na kontrata sa $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Ang pag-decode ng transaksyon ay hindi available para sa ID ng chain na $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Minungkahing site"
   },
@@ -4982,9 +4967,6 @@
   },
   "twelveHrTitle": {
     "message": "12 oras:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Hindi sinusuportahan ang mga insight sa transaksyon para sa kontratang ito sa oras na ito."
   },
   "typeYourSRP": {
     "message": "I-type ang iyong Lihim na Parirala sa Pagbawi"

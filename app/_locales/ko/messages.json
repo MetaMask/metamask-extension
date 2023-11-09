@@ -2230,9 +2230,6 @@
     "message": "다른 사람이 이 화면을 보고 있지는 않은지 확인하세요.",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "잘못된 데이터"
-  },
   "max": {
     "message": "최대"
   },
@@ -4840,18 +4837,6 @@
   "transactionCreated": {
     "message": "$2에서 $1 값으로 생성된 트랜잭션"
   },
-  "transactionData": {
-    "message": "트랜잭션 데이터"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Truffle에 의한 디코딩"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "$1에 대한 확인된 계약"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "체인 id $1에 대한 트랜잭션 디코딩을 사용할 수 없습니다."
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "추천 사이트"
   },
@@ -4982,9 +4967,6 @@
   },
   "twelveHrTitle": {
     "message": "12시간:"
-  },
-  "txInsightsNotSupported": {
-    "message": "현재 이 계약에 대해 트랜잭션 인사이트가 지원되지 않습니다."
   },
   "typeYourSRP": {
     "message": "비밀복구구문을 입력하세요"

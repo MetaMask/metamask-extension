@@ -2230,9 +2230,6 @@
     "message": "पक्का करें कि इसे कोई भी नहीं देख रहा है",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "बिगड़ा डेटा"
-  },
   "max": {
     "message": "अधिकतम"
   },
@@ -4840,18 +4837,6 @@
   "transactionCreated": {
     "message": "$2 पर $1 के मूल्य के साथ ट्रांसेक्शन बनाया गया।"
   },
-  "transactionData": {
-    "message": "ट्रांसेक्शन का डेटा"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Truffle द्वारा डिकोड किया गया"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "$1 पर वेरीफ़ाई कॉन्ट्रैक्ट"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "ChainId $1 के लिए ट्रांसेक्शन डिकोडिंग उपलब्ध नहीं है"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "साइट का सुझाव दिया गया"
   },
@@ -4982,9 +4967,6 @@
   },
   "twelveHrTitle": {
     "message": "12 घंटे:"
-  },
-  "txInsightsNotSupported": {
-    "message": "इस समय इस कॉन्ट्रैक्ट के लिए ट्रांसेक्शन की जानकारी समर्थित नहीं है।"
   },
   "typeYourSRP": {
     "message": "अपना गुप्त रिकवरी वाक्यांश लिखें"

@@ -2230,9 +2230,6 @@
     "message": "Pastikan tidak ada yang melihat layar Anda",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Format data salah"
-  },
   "max": {
     "message": "Maks"
   },
@@ -4840,18 +4837,6 @@
   "transactionCreated": {
     "message": "Transaksi dibuat dengan nilai sebesar $1 pada $2."
   },
-  "transactionData": {
-    "message": "Data transaksi"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Kode diuraikan oleh Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Kontrak diverifikasi pada $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Penguraian kode transaksi tidak tersedia untuk Id chain $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Situs yang disarankan"
   },
@@ -4982,9 +4967,6 @@
   },
   "twelveHrTitle": {
     "message": "12 j:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Wawasan transaksi tidak didukung untuk kontrak ini saat ini."
   },
   "typeYourSRP": {
     "message": "Ketik Frasa Pemulihan Rahasia"
