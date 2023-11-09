@@ -4,7 +4,7 @@ import README from './README.mdx';
 import SignatureRequestSIWE from './signature-request-siwe';
 
 const {
-  internalAccount: { accounts, selectedAccount },
+  internalAccounts: { accounts, selectedAccount },
 } = testData.metamask;
 const otherAccount = Object.values(accounts)[1];
 
