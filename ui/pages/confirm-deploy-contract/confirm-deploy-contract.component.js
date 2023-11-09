@@ -82,7 +82,7 @@ export default class ConfirmDeployContract extends Component {
     return (
       <ConfirmTransactionBase
         actionKey="contractDeployment"
-        dataComponent={this.renderData()}
+        dataHexComponent={this.renderData()}
       />
     );
   }

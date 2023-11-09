@@ -422,6 +422,32 @@ export const handlePostTransactionBalanceUpdate = async (
   }
 };
 
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+/**
+ * This function is called when a transaction metadata updated in the MMI controller.
+ *
+ * @param transactionMetricsRequest - Contains controller actions needed to create/update/finalize event fragments
+ * @param transactionEventPayload - The event payload
+ * @param transactionEventPayload.transactionMeta - The transaction meta object
+ * @param eventName - The event name
+ */
+export const handleMMITransactionUpdate = async (
+  transactionMetricsRequest: TransactionMetricsRequest,
+  transactionEventPayload: TransactionEventPayload,
+  eventName: TransactionMetaMetricsEvent,
+) => {
+  if (!transactionEventPayload.transactionMeta) {
+    return;
+  }
+
+  await createUpdateFinalizeTransactionEventFragment({
+    eventName,
+    transactionEventPayload,
+    transactionMetricsRequest,
+  });
+};
+///: END:ONLY_INCLUDE_IN
+
 function calculateTransactionsCost(
   transactionMeta: TransactionMeta,
   approvalTransactionMeta?: TransactionMeta,
@@ -738,6 +764,7 @@ async function buildEventFragmentProperties({
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     securityAlertResponse,
     ///: END:ONLY_INCLUDE_IN
+    simulationFails,
   } = transactionMeta;
 
   const query = new EthQuery(transactionMetricsRequest.provider);
@@ -931,6 +958,13 @@ async function buildEventFragmentProperties({
   }
   ///: END:ONLY_INCLUDE_IN
 
+  if (simulationFails) {
+    if (uiCustomizations === null) {
+      uiCustomizations = ['gas_estimation_failed'];
+    } else {
+      uiCustomizations.push('gas_estimation_failed');
+    }
+  }
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -959,6 +993,7 @@ async function buildEventFragmentProperties({
       securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
     ...additionalBlockaidParams,
     ///: END:ONLY_INCLUDE_IN
+    gas_estimation_failed: Boolean(simulationFails),
   } as Record<string, any>;
 
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(

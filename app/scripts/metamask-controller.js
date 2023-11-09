@@ -17,10 +17,18 @@ import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
 import { KeyringController } from '@metamask/keyring-controller';
 import createFilterMiddleware from 'eth-json-rpc-filters';
 import createSubscriptionManager from 'eth-json-rpc-filters/subscriptionManager';
-import { errorCodes as rpcErrorCodes, EthereumRpcError } from 'eth-rpc-errors';
+import {
+  errorCodes as rpcErrorCodes,
+  EthereumRpcError,
+  ethErrors,
+} from 'eth-rpc-errors';
+
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
-import { TrezorKeyring } from '@metamask/eth-trezor-keyring';
+import {
+  TrezorConnectBridge,
+  TrezorKeyring,
+} from '@metamask/eth-trezor-keyring';
 import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
@@ -107,6 +115,12 @@ import {
 } from '@metamask/name-controller';
 ///: END:ONLY_INCLUDE_IN
 
+import {
+  QueuedRequestController,
+  createQueuedRequestMiddleware,
+  QueuedRequestControllerEventTypes,
+} from '@metamask/queued-request-controller';
+
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -167,6 +181,9 @@ import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  handleMMITransactionUpdate,
+  ///: END:ONLY_INCLUDE_IN
   handleTransactionAdded,
   handleTransactionApproved,
   handleTransactionFailed,
@@ -237,6 +254,7 @@ import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
 import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
+import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
 import AppMetadataController from './controllers/app-metadata';
 
@@ -360,18 +378,11 @@ export default class MetamaskController extends EventEmitter {
     // next, we will initialize the controllers
     // controller initialization order matters
 
-    this.selectedNetworkController = new SelectedNetworkController({
+    this.queuedRequestController = new QueuedRequestController({
       messenger: this.controllerMessenger.getRestricted({
-        name: 'SelectedNetworkController',
-        allowedActions: [
-          'SelectedNetworkController:getState',
-          'SelectedNetworkController:getNetworkClientIdForDomain',
-          'SelectedNetworkController:setNetworkClientIdForDomain',
-        ],
-        allowedEvents: [
-          'SelectedNetworkController:stateChange',
-          'NetworkController:stateChange',
-        ],
+        name: 'QueuedRequestController',
+        allowedActions: [],
+        allowedEvents: [QueuedRequestControllerEventTypes.countChanged],
       }),
     });
 
@@ -406,6 +417,15 @@ export default class MetamaskController extends EventEmitter {
         'NetworkController:networkDidChange',
         'NetworkController:infuraIsBlocked',
         'NetworkController:infuraIsUnblocked',
+      ],
+      allowedActions: [
+        'NetworkController:getNetworkClientById',
+        `NetworkController:getEthQuery`,
+        `NetworkController:getProviderConfig`,
+        `NetworkController:getEIP1559Compatibility`,
+        `NetworkController:findNetworkClientIdByChainId`,
+        `NetworkController:setProviderType`,
+        `NetworkController:setActiveNetwork`,
       ],
     });
 
@@ -473,6 +493,27 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
+    this.selectedNetworkController = new SelectedNetworkController({
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'SelectedNetworkController',
+        allowedActions: [
+          'SelectedNetworkController:getState',
+          'SelectedNetworkController:getNetworkClientIdForDomain',
+          'SelectedNetworkController:setNetworkClientIdForDomain',
+          'NetworkController:getNetworkClientById',
+        ],
+        allowedEvents: [
+          'SelectedNetworkController:stateChange',
+          'NetworkController:stateChange',
+        ],
+      }),
+    });
+
+    // turn on perDappSelectedNetwork feature flag
+    this.selectedNetworkController.update((state) => {
+      state.perDomainNetwork = true;
+    });
+
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
       preventPollingOnNetworkRestart: initState.TokenListController
@@ -485,10 +526,6 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
-      onAccountRemoved: this.controllerMessenger.subscribe.bind(
-        this.controllerMessenger,
-        'KeyringController:accountRemoved',
-      ),
       tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
@@ -837,12 +874,7 @@ export default class MetamaskController extends EventEmitter {
       },
       preferencesController: this.preferencesController,
       onboardingController: this.onboardingController,
-      initState:
-        isManifestV3 &&
-        isFirstMetaMaskControllerSetup === false &&
-        initState.AccountTracker?.accounts
-          ? { accounts: initState.AccountTracker.accounts }
-          : { accounts: {} },
+      initState: { accounts: {} },
       onAccountRemoved: this.controllerMessenger.subscribe.bind(
         this.controllerMessenger,
         'KeyringController:accountRemoved',
@@ -883,14 +915,29 @@ export default class MetamaskController extends EventEmitter {
       const keyringOverrides = this.opts.overrides?.keyrings;
 
       const additionalKeyringTypes = [
-        keyringOverrides?.trezor || TrezorKeyring,
         keyringOverrides?.ledger || LedgerBridgeKeyring,
         keyringOverrides?.lattice || LatticeKeyring,
         QRHardwareKeyring,
       ];
 
+      const additionalBridgedKeyringTypes = [
+        {
+          keyring: keyringOverrides?.trezor || TrezorKeyring,
+          bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
+        },
+      ];
+
       additionalKeyrings = additionalKeyringTypes.map((keyringType) =>
         keyringBuilderFactory(keyringType),
+      );
+
+      additionalBridgedKeyringTypes.forEach((keyringType) =>
+        additionalKeyrings.push(
+          hardwareKeyringBuilderFactory(
+            keyringType.keyring,
+            keyringType.bridge,
+          ),
+        ),
       );
 
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -962,7 +1009,6 @@ export default class MetamaskController extends EventEmitter {
       keyringBuilders: additionalKeyrings,
       state: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
-      cacheEncryptionKey: isManifestV3,
       messenger: keyringControllerMessenger,
       removeIdentity: this.preferencesController.removeAddress.bind(
         this.preferencesController,
@@ -1337,7 +1383,7 @@ export default class MetamaskController extends EventEmitter {
             txMeta,
             signedEthTx,
             this.transactionUpdateController.addTransactionToWatchList.bind(
-              this,
+              this.transactionUpdateController,
             ),
           ),
         beforeCheckPendingTransaction:
@@ -1447,6 +1493,8 @@ export default class MetamaskController extends EventEmitter {
     );
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    const transactionMetricsRequest = this.getTransactionMetricsRequest();
+
     this.mmiController = new MMIController({
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
@@ -1466,6 +1514,10 @@ export default class MetamaskController extends EventEmitter {
       signatureController: this.signatureController,
       platform: this.platform,
       extension: this.extension,
+      trackTransactionEvents: handleMMITransactionUpdate.bind(
+        null,
+        transactionMetricsRequest,
+      ),
     });
     ///: END:ONLY_INCLUDE_IN
 
@@ -1577,7 +1629,7 @@ export default class MetamaskController extends EventEmitter {
         this.encryptionPublicKeyController.clearUnapproved();
         this.decryptMessageController.clearUnapproved();
         this.signatureController.clearUnapproved();
-        this.approvalController.clear();
+        this.approvalController.clear(ethErrors.provider.userRejectedRequest());
       },
     );
 
@@ -2265,18 +2317,40 @@ export default class MetamaskController extends EventEmitter {
     return {
       isUnlocked: this.isUnlocked(),
       accounts: await this.getPermittedAccounts(origin),
-      ...this.getProviderNetworkState(),
+      ...this.getProviderNetworkState(
+        this.preferencesController.getUseRequestQueue() ? origin : undefined,
+      ),
     };
   }
 
   /**
-   * Gets network state relevant for external providers.
+   * Retrieves network state information relevant for external providers.
    *
-   * @returns {object} An object with relevant network state properties.
+   * @param {string} origin - The origin identifier for which network state is requested (default: 'metamask').
+   * @returns {object} An object containing important network state properties, including chainId and networkVersion.
    */
-  getProviderNetworkState() {
+  getProviderNetworkState(origin = 'metamask') {
+    let chainId;
+    if (this.preferencesController.getUseRequestQueue()) {
+      // It would be nice to have selectedNetworkController always return a value, and have it decide how to default the values (in all cases we want the default to be 'what ever the globally selected network is').
+      // I ended up adding this defaulting here because of an issue where the selected network for the origin 'metamask' - it is `undefined` until you unlock the wallet and select a network for the first time.
+      const networkClientId =
+        this.controllerMessenger.call(
+          'SelectedNetworkController:getNetworkClientIdForDomain',
+          origin,
+        ) || this.networkController.state.selectedNetworkClientId;
+
+      const networkClient = this.controllerMessenger.call(
+        'NetworkController:getNetworkClientById',
+        networkClientId,
+      );
+      chainId = networkClient.configuration.chainId;
+    } else {
+      chainId = this.networkController.state.providerConfig.chainId;
+    }
+
     return {
-      chainId: this.networkController.state.providerConfig.chainId,
+      chainId,
       networkVersion: this.deprecatedNetworkId ?? 'loading',
     };
   }
@@ -2344,11 +2418,11 @@ export default class MetamaskController extends EventEmitter {
       isInitialized,
       ...flatState,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-      // Snap state and source code is stripped out to prevent piping to the MetaMask UI.
+      // Snap state, source code and other files are stripped out to prevent piping to the MetaMask UI.
       snapStates: {},
       snaps: Object.values(flatState.snaps ?? {}).reduce((acc, snap) => {
         // eslint-disable-next-line no-unused-vars
-        const { sourceCode, ...rest } = snap;
+        const { sourceCode, auxiliaryFiles, ...rest } = snap;
         acc[snap.id] = rest;
         return acc;
       }, {}),
@@ -2430,6 +2504,11 @@ export default class MetamaskController extends EventEmitter {
       setOpenSeaEnabled: preferencesController.setOpenSeaEnabled.bind(
         preferencesController,
       ),
+      getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
+        this.preferencesController,
+      ),
+      getProviderConfig: () => this.networkController.state.providerConfig,
+
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       setSecurityAlertsEnabled:
         preferencesController.setSecurityAlertsEnabled.bind(
@@ -2448,6 +2527,9 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IN
+      setUseRequestQueue: preferencesController.setUseRequestQueue.bind(
+        preferencesController,
+      ),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
@@ -2516,14 +2598,21 @@ export default class MetamaskController extends EventEmitter {
       verifyPassword: this.verifyPassword.bind(this),
 
       // network management
-      setProviderType:
-        networkController.setProviderType.bind(networkController),
+      setProviderType: (type) => {
+        // when using this format, type happens to be the same as the networkClientId...
+        this.selectedNetworkController.setNetworkClientIdForMetamask(type);
+        return this.networkController.setProviderType(type);
+      },
+      setActiveNetwork: (networkConfigurationId) => {
+        this.selectedNetworkController.setNetworkClientIdForMetamask(
+          networkConfigurationId,
+        );
+        return this.networkController.setActiveNetwork(networkConfigurationId);
+      },
       rollbackToPreviousProvider:
         networkController.rollbackToPreviousProvider.bind(networkController),
       removeNetworkConfiguration:
         networkController.removeNetworkConfiguration.bind(networkController),
-      setActiveNetwork:
-        networkController.setActiveNetwork.bind(networkController),
       upsertNetworkConfiguration:
         this.networkController.upsertNetworkConfiguration.bind(
           this.networkController,
@@ -3278,10 +3367,7 @@ export default class MetamaskController extends EventEmitter {
       if (password && !process.env.IN_TEST) {
         await this.submitPassword(password);
       }
-      // Automatic login via storage encryption key
-      else if (isManifestV3) {
-        await this.submitEncryptionKey();
-      }
+
       // Updating accounts in this.accountTracker before starting UI syncing ensure that
       // state has account balance before it is synced with UI
       await this.accountTracker._updateAccounts();
@@ -3500,6 +3586,11 @@ export default class MetamaskController extends EventEmitter {
    */
   async forgetDevice(deviceName) {
     const keyring = await this.getKeyringForDevice(deviceName);
+
+    for (const address of keyring.accounts) {
+      await this.removeAccount(address);
+    }
+
     keyring.forgetDevice();
     return true;
   }
@@ -4215,6 +4306,36 @@ export default class MetamaskController extends EventEmitter {
     // append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
+    const { selectedNetworkClientId } = this.networkController.state;
+
+    const selectedNetworkClientIdForDomain =
+      this.selectedNetworkController.getNetworkClientIdForDomain(origin);
+
+    // Not sure that this will happen anymore
+    if (selectedNetworkClientIdForDomain === undefined) {
+      this.selectedNetworkController.setNetworkClientIdForDomain(
+        origin,
+        selectedNetworkClientId,
+      );
+    }
+
+    let proxyProviderForDomain = provider;
+    if (this.preferencesController.getUseRequestQueue()) {
+      proxyProviderForDomain =
+        this.selectedNetworkController.getProviderAndBlockTracker(
+          origin,
+        ).provider;
+    }
+
+    const requestQueueMiddleware = createQueuedRequestMiddleware({
+      messenger: this.controllerMessenger,
+      useRequestQueue: this.preferencesController.getUseRequestQueue.bind(
+        this.preferencesController,
+      ),
+    });
+    // add some middleware that will switch chain on each request (as needed)
+    engine.push(requestQueueMiddleware);
+
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
 
@@ -4357,21 +4478,36 @@ export default class MetamaskController extends EventEmitter {
           this.networkController.upsertNetworkConfiguration.bind(
             this.networkController,
           ),
-        setActiveNetwork: this.networkController.setActiveNetwork.bind(
-          this.networkController,
-        ),
+        setActiveNetwork: (networkClientId) => {
+          // setActiveNetwork is used for custom (non-infura) networks, and for these networks networkClientId === networkConfigurationId
+          this.selectedNetworkController.setNetworkClientIdForMetamask(
+            networkClientId,
+          );
+          this.networkController.setActiveNetwork(networkClientId);
+        },
         findNetworkClientIdByChainId:
           this.networkController.findNetworkClientIdByChainId.bind(
             this.networkController,
           ),
         findNetworkConfigurationBy: this.findNetworkConfigurationBy.bind(this),
+        getNetworkClientIdForDomain:
+          this.selectedNetworkController.getNetworkClientIdForDomain.bind(
+            this.selectedNetworkController,
+          ),
         setNetworkClientIdForDomain:
           this.selectedNetworkController.setNetworkClientIdForDomain.bind(
             this.selectedNetworkController,
           ),
-        setProviderType: this.networkController.setProviderType.bind(
-          this.networkController,
+
+        getUseRequestQueue: this.preferencesController.getUseRequestQueue.bind(
+          this.preferencesController,
         ),
+        getProviderConfig: () => this.networkController.state.providerConfig,
+        setProviderType: (type) => {
+          // when using this format, type happens to be the same as the networkClientId...
+          this.selectedNetworkController.setNetworkClientIdForMetamask(type);
+          return this.networkController.setProviderType(type);
+        },
 
         // Web3 shim-related
         getWeb3ShimUsageState: this.alertController.getWeb3ShimUsageState.bind(
@@ -4470,8 +4606,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(this.metamaskMiddleware);
 
-    // forward to metamask primary provider
-    engine.push(providerAsMiddleware(provider));
+    engine.push(providerAsMiddleware(proxyProviderForDomain));
 
     return engine;
   }
@@ -4625,19 +4760,11 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   async _onKeyringControllerUpdate(state) {
-    const {
-      keyrings,
-      encryptionKey: loginToken,
-      encryptionSalt: loginSalt,
-    } = state;
+    const { keyrings } = state;
     const addresses = keyrings.reduce(
       (acc, { accounts }) => acc.concat(accounts),
       [],
     );
-
-    if (isManifestV3) {
-      await this.extension.storage.session.set({ loginToken, loginSalt });
-    }
 
     if (!addresses.length) {
       return;
@@ -5090,17 +5217,6 @@ export default class MetamaskController extends EventEmitter {
    * Locks MetaMask
    */
   setLocked() {
-    const [trezorKeyring] = this.keyringController.getKeyringsByType(
-      KeyringType.trezor,
-    );
-    if (trezorKeyring) {
-      trezorKeyring.dispose();
-    }
-
-    if (isManifestV3) {
-      this.clearLoginArtifacts();
-    }
-
     return this.keyringController.setLocked();
   }
 
@@ -5237,9 +5353,16 @@ export default class MetamaskController extends EventEmitter {
   }
 
   _notifyChainChange() {
-    this.notifyAllConnections({
-      method: NOTIFICATION_NAMES.chainChanged,
-      params: this.getProviderNetworkState(),
-    });
+    if (this.preferencesController.getUseRequestQueue()) {
+      this.notifyAllConnections((origin) => ({
+        method: NOTIFICATION_NAMES.chainChanged,
+        params: this.getProviderNetworkState(origin),
+      }));
+    } else {
+      this.notifyAllConnections({
+        method: NOTIFICATION_NAMES.chainChanged,
+        params: this.getProviderNetworkState(),
+      });
+    }
   }
 }
