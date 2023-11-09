@@ -13,8 +13,4 @@ export const AUTO_DETECT_TOKEN_LEARN_MORE_LINK =
   'https://consensys.net/privacy-policy/';
 export const CONSENSYS_TERMS_OF_USE = 'https://consensys.io/terms-of-use';
 
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-export const BLOCKAID_TERMS_OF_USE =
-  'https://blockaid.io/legal/metamask-ppom-privacy-policy/';
-///: END:ONLY_INCLUDE_IN
 export const OPENSEA_TERMS_OF_USE = 'https://opensea.io/securityproviderterms';

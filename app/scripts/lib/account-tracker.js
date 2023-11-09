@@ -7,7 +7,7 @@
  * on each new block.
  */
 
-import EthQuery from 'eth-query';
+import EthQuery from '@metamask/eth-query';
 
 import { ObservableStore } from '@metamask/obs-store';
 import log from 'loglevel';

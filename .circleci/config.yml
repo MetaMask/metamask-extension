@@ -815,9 +815,6 @@ jobs:
     parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -845,9 +842,6 @@ jobs:
     parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -869,14 +863,12 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
+
   test-e2e-chrome-mv3:
     executor: node-browsers-large
     parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -901,10 +893,7 @@ jobs:
     executor: node-browsers
     parallelism: 1
     steps:
-      - checkout
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -930,10 +919,7 @@ jobs:
   test-e2e-chrome-rpc-mmi:
     executor: node-browsers
     steps:
-      - checkout
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -961,9 +947,6 @@ jobs:
     parallelism: 16
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -991,9 +974,6 @@ jobs:
     parallelism: 16
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1021,9 +1001,6 @@ jobs:
     parallelism: 16
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1051,9 +1028,6 @@ jobs:
     parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1080,9 +1054,6 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1106,9 +1077,6 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1132,9 +1100,6 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:

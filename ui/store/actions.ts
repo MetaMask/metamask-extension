@@ -2169,7 +2169,6 @@ export function setProviderType(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setProviderType`, type);
-
     try {
       await submitRequestToBackground('setProviderType', [type]);
     } catch (error) {
@@ -4481,6 +4480,14 @@ export async function getSnapAccountsById(snapId: string): Promise<string[]> {
 }
 ///: END:ONLY_INCLUDE_IN
 
+export function setUseRequestQueue(val: boolean): void {
+  try {
+    submitRequestToBackground('setUseRequestQueue', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
 ///: BEGIN:ONLY_INCLUDE_IN(petnames)
 export function setUseExternalNameSources(val: boolean): void {
   try {
@@ -4624,6 +4631,14 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
       'setSnapsInstallPrivacyWarningShownStatus',
       [shown],
     );
+  };
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+export function trackInsightSnapUsage(snapId: string) {
+  return async () => {
+    await submitRequestToBackground('trackInsightSnapView', [snapId]);
   };
 }
 ///: END:ONLY_INCLUDE_IN
