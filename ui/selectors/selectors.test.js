@@ -258,7 +258,124 @@ describe('Selectors', () => {
     });
   });
 
-  describe('#getMetaMaskAccountsOrdered', () => {});
+  describe('#getMetaMaskAccountsOrdered', () => {
+    let mockInternalAccounts, mockAccounts;
+
+    const mockHDInternalAccount = {
+      address: '0x11111',
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        name: 'Account 1',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      options: {},
+      methods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
+    };
+    const mockHDInternalAccount2 = {
+      address: '0x22222',
+      id: '1d2fac3d-d046-4452-b062-ab982f4a5572',
+      metadata: {
+        name: 'Account 2',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      options: {},
+      methods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
+    };
+    const mockLedgerInternalAccount = {
+      address: '0x333333',
+      id: '4dc06564-4ce5-42a2-a7c1-ce1735e9b3d2',
+      metadata: {
+        name: 'Ledger 1',
+        keyring: {
+          type: 'Ledger Hardware',
+        },
+      },
+      options: {},
+      methods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
+    };
+    const mockTrezorInternalAccount = {
+      address: '0x44444',
+      id: '58ba6dbd-d50d-4e02-88dc-b871caddcc73',
+      metadata: {
+        name: 'Trezor 1',
+        keyring: {
+          type: 'Trezor Hardware',
+        },
+      },
+      options: {},
+      methods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
+    };
+
+    beforeEach(() => {
+      mockInternalAccounts = {
+        accounts: {
+          [mockTrezorInternalAccount.id]: mockTrezorInternalAccount,
+          [mockLedgerInternalAccount.id]: mockLedgerInternalAccount,
+          [mockHDInternalAccount.id]: mockHDInternalAccount,
+          [mockHDInternalAccount2.id]: mockHDInternalAccount2,
+        },
+        selectedAccount: mockHDInternalAccount.id,
+      };
+
+      mockAccounts = {
+        [mockHDInternalAccount.address]: {
+          address: mockHDInternalAccount.address,
+          balance: '0x1',
+        },
+        [mockHDInternalAccount2.address]: {
+          address: mockHDInternalAccount2.address,
+          balance: '0x1',
+        },
+        [mockLedgerInternalAccount.address]: {
+          address: mockLedgerInternalAccount.address,
+          balance: '0x1',
+        },
+        [mockTrezorInternalAccount.address]: {
+          address: mockTrezorInternalAccount.address,
+          balance: '0x1',
+        },
+      };
+    });
+    it('should return an ordered list of accounts by keyring', () => {
+      console.log(
+        selectors.getMetaMaskAccountsOrdered({
+          metamask: {
+            accounts: mockAccounts,
+            internalAccounts: mockInternalAccounts,
+            providerConfig: {
+              chainId: '0x11111111',
+            },
+            cachedBalances: {},
+          },
+        }),
+      );
+      expect(
+        selectors.getMetaMaskAccountsOrdered({
+          metamask: {
+            accounts: mockAccounts,
+            internalAccounts: mockInternalAccounts,
+            providerConfig: {
+              chainId: '0x11111111',
+            },
+            cachedBalances: {},
+          },
+        }),
+      ).toStrictEqual([
+        { ...mockHDInternalAccount, balance: '0x1' },
+        { ...mockHDInternalAccount2, balance: '0x1' },
+        { ...mockLedgerInternalAccount, balance: '0x1' },
+        { ...mockTrezorInternalAccount, balance: '0x1' },
+      ]);
+    });
+  });
 
   describe('#getSuggestedTokens', () => {
     it('returns an empty array if pendingApprovals is undefined', () => {
