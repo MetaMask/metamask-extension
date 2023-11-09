@@ -254,8 +254,9 @@ env:
   - BLOCKAID_PUBLIC_KEY
   # Determines if feature flagged Multichain UI should be used
   - MULTICHAIN: ''
-  - SMART_CONTRACT_ACCOUNT
-  - SMART_CONTRACT_SNAP_ID
+  - SIMPLE_ACCOUNT_OWNER: null
+  - SIMPLE_ACCOUNT_SALT: null
+  - SMART_CONTRACT_SNAP_ID: null
 
   ###
   # Meta variables

@@ -1208,7 +1208,8 @@ async function setEnvironmentVariables({
       variables,
       environment,
     }),
-    SMART_CONTRACT_ACCOUNT: variables.getMaybe('SMART_CONTRACT_ACCOUNT'),
+    SIMPLE_ACCOUNT_OWNER: variables.getMaybe('SIMPLE_ACCOUNT_OWNER'),
+    SIMPLE_ACCOUNT_SALT: variables.getMaybe('SIMPLE_ACCOUNT_SALT'),
     SMART_CONTRACT_SNAP_ID: variables.getMaybe('SMART_CONTRACT_SNAP_ID'),
   });
 }

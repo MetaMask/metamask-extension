@@ -3802,17 +3802,14 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} [req] - The original request, containing the origin.
    */
   async newUnapprovedTransaction(txParams, req) {
-    const smartContractAccount = process.env.SMART_CONTRACT_ACCOUNT;
+    const smartContractSnapId = process.env.SMART_CONTRACT_SNAP_ID;
 
-    if (smartContractAccount) {
+    if (smartContractSnapId) {
       await this.userOperationController.addUserOperationFromTransaction(
-        {
-          ...txParams,
-          from: smartContractAccount,
-        },
+        txParams,
         {
           chainId: this.networkController.state.providerConfig.chainId,
-          snapId: process.env.SMART_CONTRACT_SNAP_ID,
+          snapId: smartContractSnapId,
         },
       );
 
