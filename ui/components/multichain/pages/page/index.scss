@@ -1,1 +1,7 @@
 @import 'components/';
+
+.multichain-page {
+  &__inner-container {
+    max-width: 480px;
+  }
+}
