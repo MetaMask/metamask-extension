@@ -7,7 +7,6 @@ import {
 } from '../../store/actions';
 import {
   getConnectedSubjectsForSelectedAddress,
-  getCurrentAccountWithSendEtherInfo,
   getOriginOfCurrentTab,
   getPermissionSubjects,
   getPermittedAccountsByOrigin,
@@ -36,7 +35,7 @@ const mapStateToProps = (state) => {
   }
 
   return {
-    accountLabel: getCurrentAccountWithSendEtherInfo(state).metadata.name,
+    accountLabel: getSelectedInternalAccount(state).metadata.name,
     connectedSubjects,
     subjects: getPermissionSubjects(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
