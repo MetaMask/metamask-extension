@@ -38,11 +38,11 @@ export default class MMIController extends EventEmitter {
     this.signatureController = opts.signatureController;
     this.platform = opts.platform;
     this.extension = opts.extension;
-    this.trackTransactionEvents = opts.trackTransactionEvents;
 
     const { hooks } = opts ?? {};
     this.getTransactions = hooks?.getTransactions;
     this.updateTransactionHash = hooks?.updateTransactionHash;
+    this.trackTransactionEvents = hooks?.trackTransactionEvents;
     this.txStateManager = hooks?.txStateManager;
 
     // Prepare event listener after transactionUpdateController gets initiated

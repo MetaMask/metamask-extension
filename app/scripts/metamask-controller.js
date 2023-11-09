@@ -1478,23 +1478,37 @@ export default class MetamaskController extends EventEmitter {
       signatureController: this.signatureController,
       platform: this.platform,
       extension: this.extension,
-      trackTransactionEvents: handleMMITransactionUpdate.bind(
-        null,
-        transactionMetricsRequest,
-      ),
       hooks: {
-        getTransactions: this.txController.getTransactions.bind(this),
-        updateTransactionHash: this.txController.setTxHash.bind(this),
+        getTransactions: this.txController.getTransactions.bind(
+          this.txController,
+        ),
+        updateTransactionHash: this.txController.setTxHash.bind(
+          this.txController,
+        ),
+        trackTransactionEvents: handleMMITransactionUpdate.bind(
+          null,
+          transactionMetricsRequest,
+        ),
         txStateManager: {
-          getTransactions: this.txController.getTransactions.bind(this),
+          getTransactions: this.txController.getTransactions.bind(
+            this.txController,
+          ),
           setTxStatusSigned:
-            this.txController.txStateManager.setTxStatusSigned.bind(this),
+            this.txController.txStateManager.setTxStatusSigned.bind(
+              this.txController.txStateManager,
+            ),
           setTxStatusSubmitted:
-            this.txController.txStateManager.setTxStatusSubmitted.bind(this),
+            this.txController.txStateManager.setTxStatusSubmitted.bind(
+              this.txController.txStateManager,
+            ),
           setTxStatusFailed:
-            this.txController.txStateManager.setTxStatusFailed.bind(this),
+            this.txController.txStateManager.setTxStatusFailed.bind(
+              this.txController.txStateManager,
+            ),
           updateTransaction:
-            this.txController.txStateManager.updateTransaction.bind(this),
+            this.txController.txStateManager.updateTransaction.bind(
+              this.txController.txStateManager,
+            ),
         },
       },
     });
