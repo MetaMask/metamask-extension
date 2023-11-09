@@ -105,11 +105,51 @@ describe('EthOverview', () => {
     },
   };
 
+  const mockWatchOnlyStore = {
+    ...mockStore,
+    metamask: {
+      ...mockStore.metamask,
+      selectedAddress: '0x1',
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x1',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Account 1',
+              keyring: {
+                type: KeyringType.imported,
+              },
+            },
+            options: {},
+            methods: [],
+            type: EthAccountType.Eoa,
+          },
+          'e9b992f9-e151-4317-b8b7-c771bb73dd02': {
+            address: '0x2',
+            id: 'e9b992f9-e151-4317-b8b7-c771bb73dd02',
+            metadata: {
+              name: 'Account 2',
+              keyring: {
+                type: KeyringType.imported,
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
+    },
+  };
+
   const store = configureMockStore([thunk])(mockStore);
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
   const ETH_OVERVIEW_PORTFOLIO = 'eth-overview-portfolio';
   const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
+  const ETH_OVERVIEW_SEND = 'eth-overview-send';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
   const ETH_OVERVIEW_SECONDARY_CURRENCY = 'eth-overview__secondary-currency';
 
@@ -272,6 +312,21 @@ describe('EthOverview', () => {
       );
     });
 
+    it('should have the Swap button disabled when an account is watch-only', () => {
+      const mockedStore = configureMockStore([thunk])(mockWatchOnlyStore);
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+      const swapButton = queryByTestId(ETH_OVERVIEW_SWAP);
+      expect(swapButton).toBeInTheDocument();
+      expect(swapButton).toBeDisabled();
+      expect(queryByText('Swap').parentElement).toHaveAttribute(
+        'data-original-title',
+        'This account cannot perform this action',
+      );
+    });
+
     it('should have the Bridge button disabled if chain id is not part of supported chains', () => {
       const mockedFantomStore = {
         ...mockStore,
@@ -295,6 +350,21 @@ describe('EthOverview', () => {
       expect(queryByText('Bridge').parentElement).toHaveAttribute(
         'data-original-title',
         'Unavailable on this network',
+      );
+    });
+
+    it('should have the Bridge button disabled when an account is watch-only', () => {
+      const mockedStore = configureMockStore([thunk])(mockWatchOnlyStore);
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+      const bridgeButton = queryByTestId(ETH_OVERVIEW_BRIDGE);
+      expect(bridgeButton).toBeInTheDocument();
+      expect(bridgeButton).toBeDisabled();
+      expect(queryByText('Bridge').parentElement).toHaveAttribute(
+        'data-original-title',
+        'This account cannot perform this action',
       );
     });
 
@@ -326,6 +396,21 @@ describe('EthOverview', () => {
       const { queryByTestId } = renderWithProvider(<EthOverview />, store);
       const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
       expect(buyButton).toBeInTheDocument();
+    });
+
+    it('should have the Buy button disabled when an account is watch-only', () => {
+      const mockedStore = configureMockStore([thunk])(mockWatchOnlyStore);
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+      const buyButton = queryByTestId(ETH_OVERVIEW_BUY);
+      expect(buyButton).toBeInTheDocument();
+      expect(buyButton).toBeDisabled();
+      expect(queryByText('Buy & Sell').parentElement).toHaveAttribute(
+        'data-original-title',
+        'This account cannot perform this action',
+      );
     });
 
     it('should have the Buy native token button disabled if chain id is not part of supported buyable chains', () => {
@@ -397,6 +482,21 @@ describe('EthOverview', () => {
             `/buy?metamaskEntry=ext_buy_sell_button`,
           ),
         }),
+      );
+    });
+
+    it('should have the Send button disabled when an account is watch-only', () => {
+      const mockedStore = configureMockStore([thunk])(mockWatchOnlyStore);
+      const { queryByTestId, queryByText } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+      const sendButton = queryByTestId(ETH_OVERVIEW_SEND);
+      expect(sendButton).toBeInTheDocument();
+      expect(sendButton).toBeDisabled();
+      expect(queryByText('Send').parentElement).toHaveAttribute(
+        'data-original-title',
+        'This account cannot perform this action',
       );
     });
   });

@@ -131,7 +131,7 @@
     "message": "Account"
   },
   "accountCantPerformAction": {
-    "message": "This account can't perform this action."
+    "message": "This account cannot perform this action"
   },
   "accountDetails": {
     "message": "Account details"
