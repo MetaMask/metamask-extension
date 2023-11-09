@@ -7,7 +7,6 @@ import {
   FlexDirection,
   FontWeight,
   BlockSize,
-  Size,
   AlignItems,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
@@ -21,6 +20,7 @@ import {
   Button,
   ButtonVariant,
   ButtonLink,
+  ButtonLinkSize,
 } from '../../../components/component-library';
 
 interface Props {
@@ -83,14 +83,14 @@ export default function SmartTransactionsPopover({
           <Text color={TextColor.textAlternative}>
             {t('smartSwapsDescription2', [
               <ButtonLink
-                size={Size.inherit}
+                size={ButtonLinkSize.Inherit}
                 href={'https://support.metamask.io/hc/articles/9184393821211'}
                 externalLink
               >
                 {t('faq')}
               </ButtonLink>,
               <ButtonLink
-                size={Size.inherit}
+                size={ButtonLinkSize.Inherit}
                 href={'https://support.metamask.io/hc/articles/9184393821211'}
                 externalLink
               >
