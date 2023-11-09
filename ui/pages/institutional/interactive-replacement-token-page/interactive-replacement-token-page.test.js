@@ -113,8 +113,21 @@ const render = ({ newState } = {}) => {
       internalAccounts: {
         accounts: {
           '8dc33129-d810-47e2-abba-942796808e80': {
-            address: custodianAddress,
+            address,
             id: '8dc33129-d810-47e2-abba-942796808e80',
+            metadata: {
+              name: accountName,
+              keyring: {
+                type: 'Custody - Jupiter',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+          '97ed8126-6b45-4f39-b7b2-5a7f947ef359': {
+            address: custodianAddress,
+            id: '97ed8126-6b45-4f39-b7b2-5a7f947ef359',
             metadata: {
               name: accountName,
               keyring: {

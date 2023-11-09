@@ -109,12 +109,8 @@ export default function InteractiveReplacementTokenPage({ history }) {
           ),
         );
 
-        const filteredAccounts = custodianAccounts.filter((custodianAccount) =>
-          Object.values(metaMaskAccounts).find(
-            (account) =>
-              account.address.toLowerCase() ===
-              custodianAccount.address.toLowerCase(),
-          ),
+        const filteredAccounts = custodianAccounts.filter(
+          (account) => metaMaskAccounts[account.address.toLowerCase()],
         );
 
         const mappedAccounts = filteredAccounts.map((account) => ({
