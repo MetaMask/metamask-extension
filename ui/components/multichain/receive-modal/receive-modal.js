@@ -14,7 +14,7 @@ import {
 } from '../../component-library';
 import QrView from '../../ui/qr-code';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getMetaMaskAccountsOrdered, getUseBlockie } from '../../../selectors';
+import { getInternalAccountByAddress, getUseBlockie } from '../../../selectors';
 import {
   AlignItems,
   BlockSize,
@@ -28,8 +28,10 @@ import {
 export const ReceiveModal = ({ address, onClose }) => {
   const t = useI18nContext();
   const useBlockie = useSelector(getUseBlockie);
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const { name } = accounts.find((account) => account.address === address);
+  const internalAccount = useSelector((state) =>
+    getInternalAccountByAddress(state, address),
+  );
+  const name = internalAccount?.metadata.name;
 
   return (
     <Modal isOpen onClose={onClose}>

@@ -288,40 +288,54 @@ export function getAccountTypeForKeyring(keyring) {
  * Get MetaMask accounts, including account name and balance.
  */
 export const getMetaMaskAccounts = createSelector(
-  getMetaMaskIdentities,
+  getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
-  (identities, balances, cachedBalances) =>
-    Object.keys(identities).reduce((accounts, address) => {
+  (internalAccounts, balances, cachedBalances) =>
+    Object.values(internalAccounts).reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
-      let account = {};
+      let account = internalAccount;
 
-      if (balances[address]) {
+      if (balances[internalAccount.address]) {
         account = {
           ...account,
-          ...balances[address],
+          ...balances[internalAccount.address],
         };
       }
 
       if (account.balance === null || account.balance === undefined) {
         account = {
           ...account,
-          balance: cachedBalances && cachedBalances[address],
+          balance: cachedBalances && cachedBalances[internalAccount.address],
         };
       }
 
       return {
         ...accounts,
-        [address]: account,
+        [internalAccount.address]: account,
       };
     }, {}),
 );
 
+/**
+ * Returns the selected address from the Metamask state.
+ *
+ * @deprecated This function is deprecated and will be removed in a future release. Use `getSelectedAccount` instead.
+ * @param state - The Metamask state object.
+ * @returns {string} The selected address.
+ */
 export function getSelectedAddress(state) {
   return state.metamask.selectedAddress;
 }
 
+/**
+ * Returns the selected identity from the Metamask state.
+ *
+ * @deprecated This function is deprecated and will be removed in future versions. Use getSelectedInternalAccount() instead.
+ * @param state - The Metamask state object.
+ * @returns The selected identity object.
+ */
 export function getSelectedIdentity(state) {
   const selectedAddress = getSelectedAddress(state);
   const { identities } = state.metamask;
@@ -396,6 +410,7 @@ export function getMetaMaskKeyrings(state) {
  *
  * @param {object} state - Redux state
  * @returns {object} A map of account addresses to identities (which includes the account name)
+ * @deprecated This function is deprecated and will be removed in a future version. Use getInternalAccounts instead.
  */
 export function getMetaMaskIdentities(state) {
   return state.metamask.identities;
@@ -421,14 +436,14 @@ export function getMetaMaskCachedBalances(state) {
  * Get ordered (by keyrings) accounts with identity and balance
  */
 export const getMetaMaskAccountsOrdered = createSelector(
-  getMetaMaskKeyrings,
-  getMetaMaskIdentities,
+  getInternalAccountsSortedByKeyring,
   getMetaMaskAccounts,
-  (keyrings, identities, accounts) =>
-    keyrings
-      .reduce((list, keyring) => list.concat(keyring.accounts), [])
-      .filter((address) => Boolean(identities[address]))
-      .map((address) => ({ ...identities[address], ...accounts[address] })),
+  (internalAccounts, accounts) => {
+    return internalAccounts.map((internalAccount) => ({
+      ...internalAccount,
+      ...accounts[internalAccount.address],
+    }));
+  },
 );
 
 export const getMetaMaskAccountsConnected = createSelector(
@@ -533,11 +548,14 @@ export function getMetadataContractName(state, address) {
 
 export function accountsWithSendEtherInfoSelector(state) {
   const accounts = getMetaMaskAccounts(state);
-  const identities = getMetaMaskIdentities(state);
+  const internalAccounts = getInternalAccounts(state);
 
-  const accountsWithSendEtherInfo = Object.entries(identities).map(
-    ([key, identity]) => {
-      return { ...identity, ...accounts[key] };
+  const accountsWithSendEtherInfo = Object.values(internalAccounts).map(
+    (internalAccount) => {
+      return {
+        ...internalAccount,
+        ...accounts[internalAccount.address],
+      };
     },
   );
 
@@ -545,9 +563,10 @@ export function accountsWithSendEtherInfoSelector(state) {
 }
 
 export function getAccountsWithLabels(state) {
-  return getMetaMaskAccountsOrdered(state).map(
-    ({ address, name, balance }) => ({
-      address,
+  return getMetaMaskAccountsOrdered(state).map((account) => {
+    const { address, metdata: name, balance } = account;
+    return {
+      ...account,
       addressLabel: `${
         name.length < TRUNCATED_NAME_CHAR_LIMIT
           ? name
@@ -555,8 +574,8 @@ export function getAccountsWithLabels(state) {
       } (${shortenAddress(address)})`,
       label: name,
       balance,
-    }),
-  );
+    };
+  });
 }
 
 export function getCurrentAccountWithSendEtherInfo(state) {
@@ -904,11 +923,25 @@ export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
 }
 
+/**
+ * Returns a memoized version of the MetaMask identities.
+ *
+ * @deprecated This selector is deprecated and will be removed in a future version.
+ * Please use getMemoizedMetaMaskInternalAccounts instead.
+ * @param state - The Redux state.
+ * @returns {Array} An array of MetaMask identities.
+ */
 export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
   getMetaMaskIdentities,
   (identities) => identities,
 );
 
+/**
+ * Returns a memoized selector that gets the internal accounts from the Redux store.
+ *
+ * @param state - The Redux store state.
+ * @returns {Array} An array of internal accounts.
+ */
 export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
   getInternalAccounts,
   (internalAccounts) => internalAccounts,

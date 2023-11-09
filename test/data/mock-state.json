@@ -221,6 +221,26 @@
             "eth_signTypedData_v4"
           ],
           "type": "eip155:eoa"
+        },
+        "f810ad88-5c16-4e94-b375-b2a747a5213d": {
+          "address": "0xca8f1f0245530118d0cf14a06b01daf8f76cf281",
+          "id": "f810ad88-5c16-4e94-b375-b2a747a5213d",
+          "metadata": {
+            "name": "Custody test",
+            "keyring": {
+              "type": "Custody test"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
         }
       },
       "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"

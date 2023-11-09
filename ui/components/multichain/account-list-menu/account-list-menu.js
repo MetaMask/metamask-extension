@@ -29,12 +29,12 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getSelectedAccount,
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getIsAddSnapAccountEnabled,
+  getSelectedInternalAccount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
@@ -74,7 +74,7 @@ export const AccountListMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const selectedAccount = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
@@ -94,7 +94,7 @@ export const AccountListMenu = ({
       distance: 100,
       maxPatternLength: 32,
       minMatchCharLength: 1,
-      keys: ['name', 'address'],
+      keys: ['metadata.name', 'address'],
     });
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
@@ -337,7 +337,7 @@ export const AccountListMenu = ({
                       });
                       dispatch(setSelectedAccount(account.address));
                     }}
-                    identity={account}
+                    account={account}
                     key={account.address}
                     selected={selectedAccount.address === account.address}
                     closeMenu={onClose}
