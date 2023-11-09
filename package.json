@@ -270,7 +270,7 @@
     "@metamask/phishing-controller": "^7.0.1",
     "@metamask/polling-controller": "^1.0.1",
     "@metamask/post-message-stream": "^7.0.0",
-    "@metamask/ppom-validator": "^0.8.0",
+    "@metamask/ppom-validator": "^0.10.0",
     "@metamask/providers": "^13.1.0",
     "@metamask/queued-request-controller": "^0.1.3",
     "@metamask/rate-limit-controller": "^3.0.0",

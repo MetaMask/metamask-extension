@@ -202,7 +202,8 @@
     "storageMetadata": {},
     "chainStatus": {
       "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
-    }
+    },
+    "versionFileETag": "string"
   },
   "send": "object",
   "swaps": "object",
