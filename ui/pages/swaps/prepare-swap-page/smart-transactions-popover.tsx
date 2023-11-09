@@ -87,14 +87,7 @@ export default function SmartTransactionsPopover({
                 href={'https://support.metamask.io/hc/articles/9184393821211'}
                 externalLink
               >
-                {t('faq')}
-              </ButtonLink>,
-              <ButtonLink
-                size={ButtonLinkSize.Inherit}
-                href={'https://support.metamask.io/hc/articles/9184393821211'}
-                externalLink
-              >
-                {t('riskDisclosures')}
+                {t('faqAndRiskDisclosures')}
               </ButtonLink>,
             ])}
           </Text>

@@ -1674,8 +1674,8 @@
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
   },
-  "faq": {
-    "message": "FAQ"
+  "faqAndRiskDisclosures": {
+    "message": "FAQ and Risk Disclosures"
   },
   "fast": {
     "message": "Fast"
@@ -3882,9 +3882,6 @@
   "revokeSpendingCapTooltipText": {
     "message": "This third party will be unable to spend any more of your current or future tokens."
   },
-  "riskDisclosures": {
-    "message": "Risk Disclosures"
-  },
   "rpcUrl": {
     "message": "New RPC URL"
   },
@@ -4201,7 +4198,7 @@
     "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Swaps will allow MetaMask to programmatically optimize your Swap to help:"
   },
   "smartSwapsDescription2": {
-    "message": "*Smart Swaps will submit your transaction privately, multiple times. You can opt-out in advanced settings at any time. To learn more about Smart Swaps, read our $1 and $2.",
+    "message": "*Smart Swaps will submit your transaction privately. You can opt-out in advanced settings at any time. To learn more about Smart Swaps, read our $1.",
     "description": "$1 is an external link to FAQ and $2 is an external link to Risk Disclosures"
   },
   "smartSwapsErrorNotEnoughFunds": {
