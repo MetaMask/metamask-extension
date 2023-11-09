@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Kung tatangkain mong magpadala ng mga asset nang direkta mula sa isang network papunta sa isa pa, maaari itong magresulta sa permanenteng pagkawala ng asset. Siguraduhing gumamit ng bridge."
   },
-  "attemptToCancelSwap": {
-    "message": "Magtangkang kanselahin ang pag-swap sa halagang ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
   },
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
-  },
-  "enableSmartSwaps": {
-    "message": "Paganahin ang mga smart swap"
   },
   "enableSnap": {
     "message": "Paganahin"
@@ -2521,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Wala kang naka-install na snaps."
-  },
-  "noThanksVariant2": {
-    "message": "Huwag na lang."
   },
   "noTransactions": {
     "message": "Wala kang transaksyon"
@@ -3811,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Pansamantalang hindi available ang mga Smart Swap."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Susubukan ng mga Smart Swap na isumite nang pribado ang iyong transaksyon, maraming beses. Kapag nabigo ang lahat ng pagsubok, ipapakita sa publiko ang transaksyon upang matiyak na ang Swap ay naging matagumpay."
-  },
   "snapConfigure": {
     "message": "I-configure"
   },
@@ -4189,9 +4176,6 @@
     "message": "Matatapos ang Swap sa <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Gayahin ang mga transaksyon bago isumite upang bumaba ang gastos sa transaksyon at mabawasan ang mga pagkabigo."
-  },
   "stxTryingToCancel": {
     "message": "Sinusubukang kanselahin ang iyong transaksyon..."
   },
@@ -4206,9 +4190,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Kinansela ang iyong transaksyon at hindi ka nagbayad para sa anumang mga hindi kinakailangang gas."
-  },
-  "stxYouCanOptOut": {
-    "message": "Maaari kang mag-opt-out sa mga advanced setting anumang oras."
   },
   "submit": {
     "message": "Isumite"

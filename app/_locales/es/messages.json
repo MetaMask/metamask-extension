@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Si intenta enviar activos directamente de una red a otra, esto puede provocar la pérdida permanente de activos. Asegúrese de utilizar un puente."
   },
-  "attemptToCancelSwap": {
-    "message": "Intentar cancelar el intercambio por ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Intentando una conexión a la cadena de bloques."
   },
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Utilice la API de OpenSea para obtener los datos de NFT. La autodetección de NFT depende de la API de OpenSea y no estará disponible si la API está desactivada."
-  },
-  "enableSmartSwaps": {
-    "message": "Habilitar intercambios inteligentes"
   },
   "enableSnap": {
     "message": "Activar"
@@ -2521,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "No tiene ningún snap instalado."
-  },
-  "noThanksVariant2": {
-    "message": "No, gracias."
   },
   "noTransactions": {
     "message": "No tiene transacciones"
@@ -3811,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Los intercambios inteligentes no están disponibles temporalmente."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Los intercambios inteligentes intentarán enviar su transacción de forma privada varias veces. Si todos los intentos fallan, la transacción se transmitirá públicamente para garantizar que su intercambio se realice con éxito."
-  },
   "snapConfigure": {
     "message": "Configurar"
   },
@@ -4189,9 +4176,6 @@
     "message": "El intercambio finalizará en <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simule transacciones antes de enviarlas para disminuir los costos de transacción y reducir las fallas."
-  },
   "stxTryingToCancel": {
     "message": "Intentando cancelar su transacción..."
   },
@@ -4206,9 +4190,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Su transacción ha sido cancelada y no pagó ninguna comisión de gas innecesaria."
-  },
-  "stxYouCanOptOut": {
-    "message": "Puede darse de baja en la configuración avanzada en cualquier momento."
   },
   "submit": {
     "message": "Enviar"

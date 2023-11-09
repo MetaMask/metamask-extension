@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, une perte permanente des actifs pourrait en résulter. Assurez-vous d’utiliser une passerelle."
   },
-  "attemptToCancelSwap": {
-    "message": "Tentative d’annulation du swap pour ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Tentative de connexion au réseau"
   },
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Utilisez l’API OpenSea pour récupérer les données de NFT. La détection automatique de NFT repose sur l’API OpenSea et ne sera pas disponible si elle est désactivée."
-  },
-  "enableSmartSwaps": {
-    "message": "Activer les contrats de swap intelligents"
   },
   "enableSnap": {
     "message": "Activer"
@@ -2521,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Aucun Snap installé"
-  },
-  "noThanksVariant2": {
-    "message": "Non merci."
   },
   "noTransactions": {
     "message": "Aucune transaction"
@@ -3811,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Les contrats de swap intelligents sont temporairement indisponibles."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Lorsque vous souscrivez un contrat de swap intelligent, ce contrat sera proposé en privé à différents investisseurs. Si toutes les tentatives échouent, le contrat sera diffusé publiquement afin de trouver preneur."
-  },
   "snapConfigure": {
     "message": "Configurer"
   },
@@ -4189,9 +4176,6 @@
     "message": "Le Swap sera effectué dans <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simulez les transactions avant de les soumettre pour réduire les coûts et les échecs de transaction."
-  },
   "stxTryingToCancel": {
     "message": "Tentative d’annulation de votre transaction..."
   },
@@ -4206,9 +4190,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Votre transaction a été annulée et vous avez évité ainsi de payer inutilement des frais de transaction."
-  },
-  "stxYouCanOptOut": {
-    "message": "Vous pouvez vous désinscrire dans les paramètres avancés à tout moment."
   },
   "submit": {
     "message": "Envoyer"

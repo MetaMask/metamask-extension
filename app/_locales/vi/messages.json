@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Nếu bạn cố gắng gửi tài sản trực tiếp từ mạng này sang mạng khác, bạn có thể bị mất tài sản vĩnh viễn. Hãy nhớ sử dụng cầu nối."
   },
-  "attemptToCancelSwap": {
-    "message": "Cố gắng hủy hoán đổi với giá ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Đang cố gắng kết nối với chuỗi khối."
   },
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
-  },
-  "enableSmartSwaps": {
-    "message": "Kích hoạt hoán đổi thông minh"
   },
   "enableSnap": {
     "message": "Bật"
@@ -2521,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Bạn chưa cài đặt bất kỳ Snap nào."
-  },
-  "noThanksVariant2": {
-    "message": "Không, cảm ơn."
   },
   "noTransactions": {
     "message": "Bạn không có giao dịch nào"
@@ -3811,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Hoán đổi thông minh tạm thời không khả dụng."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Hoán đổi thông minh sẽ cố gắng gửi giao dịch của bạn nhiều lần một cách riêng tư. Nếu tất cả các lần thử đều không thành công, giao dịch sẽ được phát công khai để đảm bảo Hoán đổi của bạn được thực hiện thành công."
-  },
   "snapConfigure": {
     "message": "Định cấu hình"
   },
@@ -4189,9 +4176,6 @@
     "message": "Hoán đổi sẽ hoàn tất sau <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Mô phỏng giao dịch trước khi gửi để giảm chi phí giao dịch và tỷ lệ thất bại."
-  },
   "stxTryingToCancel": {
     "message": "Đang cố gắng hủy giao dịch của bạn..."
   },
@@ -4206,9 +4190,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Giao dịch của bạn đã bị hủy và bạn không phải trả bất kỳ phí gas không cần thiết nào."
-  },
-  "stxYouCanOptOut": {
-    "message": "Bạn có thể chọn không tham gia trong mục cài đặt nâng cao bất cứ lúc nào."
   },
   "submit": {
     "message": "Gửi"

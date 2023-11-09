@@ -824,6 +824,7 @@ describe('Sentry errors', function () {
           tradeTxFees: true, // Initialized as undefined
         },
         userOptIn: true, // Initialized as undefined
+        userOptInV2: true, // Initialized as undefined
       },
       swapsState: {
         // This can get wiped out during initialization due to a bug in
