@@ -2230,9 +2230,6 @@
     "message": "请确保没有人在看您的屏幕",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "格式错误的数据"
-  },
   "max": {
     "message": "最大"
   },
@@ -4840,18 +4837,6 @@
   "transactionCreated": {
     "message": "在 $2 创建了值为 $1 的交易。"
   },
-  "transactionData": {
-    "message": "交易数据"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "由 Truffle 解码"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "已在 $1 验证的合约"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "链 ID $1 不可使用交易解码"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "建议的网站"
   },
@@ -4982,9 +4967,6 @@
   },
   "twelveHrTitle": {
     "message": "12小时："
-  },
-  "txInsightsNotSupported": {
-    "message": "此合约目前不支持交易见解。"
   },
   "typeYourSRP": {
     "message": "输入私钥助记词"

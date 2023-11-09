@@ -2230,9 +2230,6 @@
     "message": "Hiç kimsenin bakmadığından emin olun",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Hatalı biçimlendirilmiş veri"
-  },
   "max": {
     "message": "Maksimum"
   },
@@ -4840,18 +4837,6 @@
   "transactionCreated": {
     "message": "İşlem $2 itibariyle $1 değeriyle oluşturuldu."
   },
-  "transactionData": {
-    "message": "İşlem verileri"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Truffle ile şifresi çözüldü"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Sözleşme $1 üzerinde doğrulandı"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "$1 zincir kimliği için işlem şifre çözme mümkün değil"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site önerisi"
   },
@@ -4982,9 +4967,6 @@
   },
   "twelveHrTitle": {
     "message": "12 sa.:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Şu anda işlem içgörüleri bu sözleşme için desteklenmiyor."
   },
   "typeYourSRP": {
     "message": "Gizli Kurtarma İfadenizi girin"

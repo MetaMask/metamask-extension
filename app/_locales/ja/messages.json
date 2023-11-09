@@ -2230,9 +2230,6 @@
     "message": "誰にも見られていないことを確認してください",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "不正な形式のデータ"
-  },
   "max": {
     "message": "最大"
   },
@@ -4841,18 +4838,6 @@
   "transactionCreated": {
     "message": "トランザクションは$1の値が$2で作成されました。"
   },
-  "transactionData": {
-    "message": "トランザクションデータ"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Truffleによるデコード"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "$1にコントラクトを確認しました"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "トランザクションのデコードは、チェーンID $1 で使用できません"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "サイトが提案されました"
   },
@@ -4983,9 +4968,6 @@
   },
   "twelveHrTitle": {
     "message": "12時間:"
-  },
-  "txInsightsNotSupported": {
-    "message": "現時点では、このコントラクトでトランザクションインサイトはサポートされていません。"
   },
   "typeYourSRP": {
     "message": "シークレットリカバリーフレーズを入力してください"

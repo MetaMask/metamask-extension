@@ -2230,9 +2230,6 @@
     "message": "Убедитесь, что никто не смотрит",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Искаженные данные"
-  },
   "max": {
     "message": "Макс."
   },
@@ -4840,18 +4837,6 @@
   "transactionCreated": {
     "message": "В $2 создана транзакция на сумму $1."
   },
-  "transactionData": {
-    "message": "Данные транзакции"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Расшифровано Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Подтвержденный контракт на $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Расшифровка транзакции недоступна для ID блокчейна $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Рекомендовано сайтом"
   },
@@ -4982,9 +4967,6 @@
   },
   "twelveHrTitle": {
     "message": "12 ч:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Для этого контракта сейчас не поддерживается аналитика транзакций."
   },
   "typeYourSRP": {
     "message": "Введите секретную фразу для восстановления"

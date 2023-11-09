@@ -2230,9 +2230,6 @@
     "message": "Βεβαιωθείτε ότι κανείς δεν κοιτάει",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Εσφαλμένα δεδομένα"
-  },
   "max": {
     "message": "Μέγ."
   },
@@ -4840,18 +4837,6 @@
   "transactionCreated": {
     "message": "Η συναλλαγή δημιουργήθηκε με αξία $1 στις $2."
   },
-  "transactionData": {
-    "message": "Δεδομένα συναλλαγής"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Αποκωδικοποιήθηκε από Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Επαληθευμένο συμβόλαιο σε $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Η αποκωδικοποίηση συναλλαγών δεν είναι διαθέσιμη για chainId $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Προτεινόμενος ιστότοπος"
   },
@@ -4982,9 +4967,6 @@
   },
   "twelveHrTitle": {
     "message": "12ώρες:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Οι αναλύσεις συναλλαγών δεν υποστηρίζονται προς το παρόν για τo συγκεκριμένo συμβόλαιο."
   },
   "typeYourSRP": {
     "message": "Πληκτρολογήστε τη Μυστική σας Φράση Ανάκτησης"
