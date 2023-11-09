@@ -2924,7 +2924,7 @@
     "message": "Ang datos na ito ay pinagsama-sama at samakatuwid ay hindi nagpapakilala para sa mga layunin ng General Data Protection Regulation (EU) 2016/679."
   },
   "onboardingMetametricsDescription": {
-    "message": "Nais ng MetaMask na mangalap ng datos ng paggamit upang mas maunawaan kung paano nakikipag-ugnayan ang aming mga user sa MetaMask. Gagamitin ang datos na ito upang ibigay ang serbisyo, na kinabibilangan ng pagpapabuti ng serbisyo batay sa iyong paggamit."
+    "message": "Nais ng MetaMask na mangalap ng datos ng paggamit upang mas maunawaan kung paano nakikipag-ugnayan ang aming mga user sa MetaMask. Gagamitin ang datos na ito upang ibigay ang serbisyo, na kinabibilangan ng pagpapabuti ng serbisyo batay sa iyong paggamit."
   },
   "onboardingMetametricsDescription2": {
     "message": "Ang MetaMask ay..."
@@ -2933,7 +2933,7 @@
     "message": "Salamat nalang"
   },
   "onboardingMetametricsInfuraTerms": {
-    "message": "* Kapag ginamit mo ang Infura bilang iyong default na provider ng RPC sa MetaMask, kukunin ng Infura ang iyong IP address at ang iyong Ethereum wallet address kapag nagpadala ka ng transaksyon. Hindi namin iniimbak ang impormasyong ito sa paraan na nagpapahintulot sa aming mga system na iugnay ang dalawang piraso ng data na iyon. Para sa higit pang impormasyon kung paano nakikipag-ugnayan ang MetaMask at Infura mula sa pananaw ng pagkolekta ng data, tingnan ang aming update na $1. Para sa higit pang impormasyon sa aming mga kasanayan sa pagkapribado sa pangkalahatan, tingnan ang aming $2.",
+    "message": "* Kapag ginamit mo ang Infura bilang iyong default na provider ng RPC sa MetaMask, kukunin ng Infura ang iyong IP address at ang iyong Ethereum wallet address kapag nagpadala ka ng transaksyon. Hindi namin iniimbak ang impormasyong ito sa paraan na nagpapahintulot sa aming mga system na iugnay ang dalawang piraso ng data na iyon. Para sa higit pang impormasyon kung paano nakikipag-ugnayan ang MetaMask at Infura mula sa pananaw ng pagkolekta ng data, tingnan ang aming update na $1. Para sa higit pang impormasyon sa aming mga kasanayan sa pagkapribado sa pangkalahatan, tingnan ang aming $2.",
     "description": "$1 represents `onboardingMetametricsInfuraTermsPolicyLink`, $2 represents `onboardingMetametricsInfuraTermsPolicy`"
   },
   "onboardingMetametricsInfuraTermsPolicy": {
@@ -3124,10 +3124,6 @@
     "message": "I-access ang Internet.",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "Payagan ang snap na ma-access ang internet. Maaari itong gamitin para magpadala at tumanggap ng data gamit ang mga third-party server.",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "Kumonekta sa $1 snap.",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3140,17 +3136,9 @@
     "message": "Mag-iskedyul at magsagawa ng mga pana-panahong mga aksyon.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "Payagan ang snap na isagawa ang mga aksyon na madalas paganahin sa hindi nababagong oras, petsa, o agwat. Maaari itong gamitin para ma-trigger ang mga pakikipag-ugnayan o abiso na sensitibo sa oras.",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "Ipakita ang mga dialog window sa MetaMask.",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "Payagan ang snap na ipakita ang mga MetaMask popup na may custom text, input field, at mga button upang maaprubahan o matanggihan ang aksyon.\nMaaaring gamitin para gumawa hal. ng mga alerto, kumpirmasyon, at opt-in flow para sa snap.",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "Tingnan ang mga address, balanse ng account, aktibidad at simulan ang iyong mga transaksyon",
@@ -3160,25 +3148,9 @@
     "message": "I-access ang provider ng Ethereum.",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "Payagan ang snap na makipag-usap nang direkta sa MetaMask, para mabasa nito ang data mula sa blockchain at magmungkahi ng mga mensahe at transaksyon.",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "Kumuha ng mga arbitrary key na natatangi sa snap na ito.",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "Payagan ang snap na makuha ang mga arbitraryong key na natatangi sa snap na ito, nang hindi sila ibinubunyag. Ang mga key na ito ay hiwalay mula sa iyong (mga) account sa MetaMask at hindi nauugnay sa iyong mga pribadong key o Lihim na Parirala sa Pagbawi. Ang ibang mga snap ay hindi maa-access ang impormasyong ito.",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "Gumagamit ng mga lifecycle hook.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Pinapayagan ang snap na gumamit ng mga lifecycle hook para paganahin ang code sa mga espisipikong panahon sa oras ng lifecycle nito.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_manageAccounts": {
     "message": "Magdagdag at kontrolin ang mga Ethereum account",
@@ -3188,41 +3160,17 @@
     "message": "Iimbak at pamahalaan ang datos nito sa iyong device.",
     "description": "The description for the `snap_manageState` permission"
   },
-  "permission_manageStateDescription": {
-    "message": "Payagan ang snap na mag-imbak, mag-update, at bawiin ang data nang ligtas gamit ang pag-encrypt. Ang ibang mga snap ay hindi maa-access ang impormasyong ito.",
-    "description": "An extended description for the `snap_manageState` permission"
-  },
   "permission_notifications": {
     "message": "Ipakita ang mga notipikasyon.",
     "description": "The description for the `snap_notify` permission"
-  },
-  "permission_notificationsDescription": {
-    "message": "Payagan ang snap na ipakita ang mga abiso sa loob ng MetaMask. Ang maikling text ng abiso ay maaaring ma-trigger sa pamamagitan ng snap para sa impormasyong naaaksyunan o sensitibo sa oras.",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "Payagan ang $1 na direktang makipag-usap sa snap na ito.",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "Payagan ang $1 na magpadala ng mga mensahe sa snap at tumanggap ng mga tugon mula sa snap.",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
   },
   "permission_transactionInsight": {
     "message": "Kunin at ipakita ang mga insight sa transaksyon.",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "Payagan ang snap na mag-decode ng mga transaksyon at ipakita ang mga insight sa loob ng MetaMask UI. Magagamit ito para sa mga solusyon sa anti-phishing at seguridad.",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "Tingnan ang pinagmulan ng mga website na nagmumungkahi ng mga transaksyon",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "Payagan ang snap na makita ang orihinal (URI) ng mga website na nagmumungkahi ng mga transaksyon. Magagamit ito para sa mga solusyon sa anti-phishing at seguridad.",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Hindi kilalang pahintulot: $1",
@@ -3232,10 +3180,6 @@
     "message": "Tingnan ang iyong pampublikong key para sa $1 ($2).",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "Payagan ang snap na makita ang iyong mga pampublikong key (at mga address) para sa $1. Hindi ito nagbibigay ng anumang kontrol ng mga account o asset.",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "Tingnan ang iyong pampublikong key para sa $1.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3243,10 +3187,6 @@
   "permission_webAssembly": {
     "message": "Suporta para sa WebAssembly.",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "Payagan ang snap na ma-access ang mababang antas ng mga kapaligiran ng pagpapatupad sa pamamagitan ng WebAssembly.",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "Mga Pahintulot"

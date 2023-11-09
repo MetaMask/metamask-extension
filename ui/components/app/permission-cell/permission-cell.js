@@ -121,7 +121,17 @@ const PermissionCell = ({
             description={description}
           />
         ) : (
-          <Tooltip html={<div>{description}</div>} position="bottom">
+          <Tooltip
+            html={
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {description}
+              </Text>
+            }
+            position="bottom"
+          >
             <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
           </Tooltip>
         )}
