@@ -33,6 +33,13 @@ const pageWrapProps = {
   },
 };
 
+const responsivePageWrapProps = {
+  style: {
+    width: '100%',
+    height: '600px',
+    border: '1px solid var(--color-border-muted)',
+  },
+};
 export const HeaderStory = (args) => (
   <div {...pageWrapProps}>
     <Page {...args}>
@@ -54,6 +61,36 @@ export const HeaderStory = (args) => (
     </Page>
   </div>
 );
+export const FullscreenStory = (args) => (
+  <div {...responsivePageWrapProps}>
+    <Page {...args}>
+      <Header
+        startAccessory={
+          <ButtonIcon
+            size={ButtonIconSize.Sm}
+            ariaLabel="Back"
+            iconName={IconName.ArrowLeft}
+          />
+        }
+        backgroundColor={BackgroundColor.primaryAlternative}
+      >
+        Connect
+      </Header>
+      <Content background={BackgroundColor.successAlternative}>
+        {scrollingContent}
+      </Content>
+      <Footer backgroundColor={BackgroundColor.warningAlternative}>
+        <ButtonPrimary block disabled>
+          Cancel
+        </ButtonPrimary>
+        <ButtonPrimary block>Confirm</ButtonPrimary>
+      </Footer>
+    </Page>
+  </div>
+);
+FullscreenStory.storyName = 'Fullscreen';
+FullscreenStory.args = {};
+
 HeaderStory.storyName = 'Header';
 HeaderStory.args = {};
 
