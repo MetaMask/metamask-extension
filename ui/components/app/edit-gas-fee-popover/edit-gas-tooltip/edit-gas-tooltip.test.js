@@ -1,5 +1,4 @@
 import React from 'react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import configureStore from '../../../../store/store';
 import { renderWithProvider } from '../../../../../test/jest';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
@@ -42,11 +41,15 @@ const renderComponent = (componentProps) => {
           balance: '0x176e5b6f173ebe66',
         },
       },
+      identities: {
+        '0xAddress': {},
+      },
+      selectedAddress: '0xAddress',
       internalAccounts: {
         accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          mockId: {
             address: '0xAddress',
-            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            id: 'mockId',
             metadata: {
               name: 'Test Account',
               keyring: {
@@ -54,11 +57,17 @@ const renderComponent = (componentProps) => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
-            type: EthAccountType.Eoa,
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
           },
         },
-        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
       featureFlags: { advancedInlineGas: true },
     },

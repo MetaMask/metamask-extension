@@ -9,7 +9,7 @@ import { setAccountLabel } from '../../../store/actions';
 import {
   getCurrentChainId,
   getHardwareWalletType,
-  getInternalAccount,
+  getInternalAccountByAddress,
 } from '../../../selectors';
 import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import {
@@ -32,20 +32,18 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const AccountDetailsDisplay = ({
-  accountName,
   accounts,
-  accountId,
+  accountName,
+  address,
   onExportClick,
 }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
 
-  const displayedAccount = useSelector((state) =>
-    getInternalAccount(state, accountId),
-  );
-  const { keyring } = displayedAccount.metadata;
-  const { address } = displayedAccount;
+  const {
+    metadata: { keyring },
+  } = useSelector((state) => getInternalAccountByAddress(state, address));
   const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
 
   const chainId = useSelector(getCurrentChainId);
@@ -60,7 +58,7 @@ export const AccountDetailsDisplay = ({
       <EditableLabel
         defaultValue={accountName}
         onSubmit={(label) => {
-          dispatch(setAccountLabel(accountId, label));
+          dispatch(setAccountLabel(address, label));
           trackEvent({
             category: MetaMetricsEventCategory.Accounts,
             event: MetaMetricsEventName.AccountRenamed,
@@ -108,9 +106,9 @@ AccountDetailsDisplay.propTypes = {
    */
   accountName: PropTypes.string.isRequired,
   /**
-   * Current account id
+   * Current address
    */
-  accountId: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
   /**
    * Executes upon Export button click
    */

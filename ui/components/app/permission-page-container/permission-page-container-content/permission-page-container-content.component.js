@@ -17,14 +17,7 @@ export default class PermissionPageContainerContent extends PureComponent {
       iconUrl: PropTypes.string,
     }),
     selectedPermissions: PropTypes.object.isRequired,
-    selectedAccounts: PropTypes.arrayOf(
-      PropTypes.shape({
-        address: PropTypes.string.isRequired,
-        addressLabel: PropTypes.string.isRequired,
-        balance: PropTypes.string.isRequired,
-        label: PropTypes.string.isRequired,
-      }),
-    ),
+    selectedAccounts: PropTypes.array,
     allAccountsSelected: PropTypes.bool,
   };
 
@@ -63,7 +56,7 @@ export default class PermissionPageContainerContent extends PureComponent {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             {selectedAccounts.slice(0, 6).map((account, index) => {
               return (
-                <div key={`tooltip-identity-${index}`}>
+                <div key={`tooltip-account-${index}`}>
                   {account.addressLabel}
                 </div>
               );

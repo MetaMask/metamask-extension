@@ -75,6 +75,9 @@ const render = ({ txProps, contextProps } = {}) => {
           balance: '0x1F4',
         },
       },
+      identities: {
+        '0xAddress': {},
+      },
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -93,6 +96,7 @@ const render = ({ txProps, contextProps } = {}) => {
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
+      selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
       advancedGasFee: {},

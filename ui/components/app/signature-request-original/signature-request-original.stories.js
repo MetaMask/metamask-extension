@@ -67,7 +67,7 @@ export default {
     sign: { action: 'Sign' },
   },
   args: {
-    fromAccount: MOCK_PRIMARY_ACCOUNT.address,
+    fromAccount: MOCK_PRIMARY_ACCOUNT,
     history: {
       push: action('history.push()'),
     },

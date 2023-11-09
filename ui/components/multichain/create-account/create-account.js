@@ -10,7 +10,10 @@ import {
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
-import { getMetaMaskAccountsOrdered } from '../../../selectors';
+import {
+  getMetaMaskAccountsOrdered,
+  getInternalAccounts,
+} from '../../../selectors';
 import { addNewAccount, setAccountLabel } from '../../../store/actions';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import {
@@ -29,9 +32,10 @@ export const CreateAccount = ({ onActionComplete }) => {
   const trackEvent = useContext(MetaMetricsContext);
 
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const internalAccounts = useSelector(getInternalAccounts);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
-  const newAccountNumber = Object.keys(accounts).length + 1;
+  const newAccountNumber = Object.keys(internalAccounts).length + 1;
   const defaultAccountName = t('newAccountNumberName', [newAccountNumber]);
 
   const [newAccountName, setNewAccountName] = useState('');
@@ -45,9 +49,9 @@ export const CreateAccount = ({ onActionComplete }) => {
   );
 
   const onCreateAccount = async (name) => {
-    const newAccount = await dispatch(addNewAccount(name));
+    const newAccountAddress = await dispatch(addNewAccount());
     if (name) {
-      dispatch(setAccountLabel(newAccount.id, name));
+      dispatch(setAccountLabel(newAccountAddress, name));
     }
   };
 

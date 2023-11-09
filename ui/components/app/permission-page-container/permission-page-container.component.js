@@ -22,14 +22,7 @@ export default class PermissionPageContainer extends Component {
   static propTypes = {
     approvePermissionsRequest: PropTypes.func.isRequired,
     rejectPermissionsRequest: PropTypes.func.isRequired,
-    selectedAccounts: PropTypes.arrayOf(
-      PropTypes.shape({
-        address: PropTypes.string.isRequired,
-        addressLabel: PropTypes.string.isRequired,
-        balance: PropTypes.string.isRequired,
-        label: PropTypes.string.isRequired,
-      }),
-    ),
+    selectedAccounts: PropTypes.array,
     allAccountsSelected: PropTypes.bool,
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     currentPermissions: PropTypes.object,

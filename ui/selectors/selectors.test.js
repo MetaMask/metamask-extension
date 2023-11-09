@@ -10,6 +10,7 @@ import {
   OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import * as selectors from './selectors';
+import { getAccountByAddress } from '../helpers/utils/util';
 
 jest.mock('../../shared/modules/network.utils', () => {
   const actual = jest.requireActual('../../shared/modules/network.utils');
@@ -41,6 +42,224 @@ describe('Selectors', () => {
       ).toStrictEqual(selectedAddress);
     });
   });
+
+  describe('#getSelectedInternalAccount', () => {
+    it('returns undefined if selectedAccount is undefined', () => {
+      expect(
+        selectors.getSelectedInternalAccount({
+          metamask: {
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
+          },
+        }),
+      ).toBeUndefined();
+    });
+
+    it('returns selectedAccount', () => {
+      const mockInternalAccount = {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [...Object.values(EthMethod)],
+        type: EthAccountType.Eoa,
+      };
+      expect(
+        selectors.getSelectedInternalAccount({
+          metamask: {
+            internalAccounts: {
+              accounts: {
+                [mockInternalAccount.id]: mockInternalAccount,
+              },
+              selectedAccount: mockInternalAccount.id,
+            },
+          },
+        }),
+      ).toStrictEqual(mockInternalAccount);
+    });
+  });
+
+  describe('#getInternalAccounts', () => {
+    it('returns a list of internal accounts', () => {
+      expect(selectors.getInternalAccounts(mockState)).toStrictEqual(
+        Object.values(mockState.metamask.internalAccounts.accounts),
+      );
+    });
+  });
+
+  describe('#getInternalAccount', () => {
+    it("returns undefined if the account doesn't exist", () => {
+      expect(
+        selectors.getInternalAccount(mockState, 'unknown'),
+      ).toBeUndefined();
+    });
+
+    it('returns the account', () => {
+      expect(
+        selectors.getInternalAccount(
+          mockState,
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        ),
+      ).toStrictEqual(
+        mockState.metamask.internalAccounts.accounts[
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+        ],
+      );
+    });
+  });
+
+  describe('#getMetaMaskAccounts', () => {
+    const mockInternalAccount = {
+      address: '0x123',
+      id: '9b1cbd2e-87a7-421d-9090-5970ae70ab72',
+      metadata: {
+        name: 'Test Account 3',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      options: {},
+      methods: [
+        'personal_sign',
+        'eth_sign',
+        'eth_signTransaction',
+        'eth_signTypedData_v1',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+      ],
+      type: 'eip155:eoa',
+    };
+
+    const mockInternalAccounts = {
+      accounts: {
+        [mockInternalAccount.id]: mockInternalAccount,
+      },
+      selectedAccount: '9b1cbd2e-87a7-421d-9090-5970ae70ab72',
+    };
+
+    const mockAccounts = {
+      '0x123': {
+        address: '0x123',
+        balance: '0x1',
+      },
+    };
+
+    const mockChainId = '0x1';
+
+    const mockCachedBalances = {
+      [mockChainId]: {
+        '0x123': {
+          address: '0x123',
+          balance: '0x1',
+        },
+      },
+    };
+
+    it('returns an empty object if there are no accounts', () => {
+      expect(
+        selectors.getMetaMaskAccounts({
+          metamask: {
+            internalAccounts: { accounts: {} },
+            providerConfig: { chainId: '0x0' },
+            cachedBalances: {},
+          },
+        }),
+      ).toStrictEqual({});
+    });
+
+    it('returns accounts with balances', () => {
+      const expectedMetaMaskAccounts = {
+        [mockInternalAccount.address]: {
+          ...mockInternalAccount,
+          balance: mockAccounts['0x123'].balance,
+        },
+      };
+      expect(
+        selectors.getMetaMaskAccounts({
+          metamask: {
+            accounts: mockAccounts,
+            internalAccounts: mockInternalAccounts,
+            providerConfig: {
+              chainId: '0x1',
+            },
+            cachedBalances: {},
+          },
+        }),
+      ).toStrictEqual(expectedMetaMaskAccounts);
+    });
+
+    it('returns accounts that uses balance instead of cache if both are presetn', () => {
+      const expectedMetaMaskAccounts = {
+        [mockInternalAccount.address]: {
+          ...mockInternalAccount,
+          balance: mockAccounts['0x123'].balance,
+        },
+      };
+      expect(
+        selectors.getMetaMaskAccounts({
+          metamask: {
+            accounts: mockAccounts,
+            internalAccounts: mockInternalAccounts,
+            providerConfig: {
+              chainId: '0x1',
+            },
+            cachedBalances: mockCachedBalances,
+          },
+        }),
+      ).toStrictEqual(expectedMetaMaskAccounts);
+    });
+
+    it("returns object of accounts with undefined balance if there isn't any cached balance", () => {
+      const expectedMetaMaskAccounts = {
+        [mockInternalAccount.address]: {
+          ...mockInternalAccount,
+          balance: undefined,
+        },
+      };
+      expect(
+        selectors.getMetaMaskAccounts({
+          metamask: {
+            accounts: {},
+            internalAccounts: mockInternalAccounts,
+            providerConfig: {
+              chainId: '0x1',
+            },
+            cachedBalances: {},
+          },
+        }),
+      ).toStrictEqual(expectedMetaMaskAccounts);
+    });
+
+    it('returns an object of accounts with 0 balance the chainId is unknown', () => {
+      const expectedMetaMaskAccounts = {
+        [mockInternalAccount.address]: {
+          ...mockInternalAccount,
+          balance: '0x1',
+        },
+      };
+      expect(
+        selectors.getMetaMaskAccounts({
+          metamask: {
+            accounts: mockAccounts,
+            internalAccounts: mockInternalAccounts,
+            providerConfig: {
+              chainId: '0x11111111',
+            },
+            cachedBalances: {},
+          },
+        }),
+      ).toStrictEqual(expectedMetaMaskAccounts);
+    });
+  });
+
+  describe('#getMetaMaskAccountsOrdered', () => {});
 
   describe('#getSuggestedTokens', () => {
     it('returns an empty array if pendingApprovals is undefined', () => {

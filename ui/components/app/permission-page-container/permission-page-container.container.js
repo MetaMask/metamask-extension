@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import {
-  getMetaMaskAccounts,
+  getInternalAccounts,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getPermissions,
   ///: END:ONLY_INCLUDE_IN
@@ -15,13 +15,13 @@ const mapStateToProps = (state, ownProps) => {
     ownProps.request.metadata?.origin,
   );
   ///: END:ONLY_INCLUDE_IN
-  const allAccounts = getMetaMaskAccounts(state);
-  const allAccountsSelected =
-    Object.keys(selectedAccounts).length === Object.keys(allAccounts).length &&
-    selectedAccounts.length > 1;
+  const allInternalAccounts = getInternalAccounts(state);
+  const allInternalAccountsSelected =
+    Object.keys(selectedAccounts).length ===
+      Object.keys(allInternalAccounts).length && selectedAccounts.length > 1;
 
   return {
-    allAccountsSelected,
+    allInternalAccountsSelected,
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     currentPermissions,
     ///: END:ONLY_INCLUDE_IN

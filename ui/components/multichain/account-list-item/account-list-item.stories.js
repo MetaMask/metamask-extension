@@ -8,22 +8,22 @@ import { AccountListItem } from '.';
 
 const store = configureStore(testData);
 
-const [chaosAccountId, simpleAccountId, hardwareAccountId] = Object.keys(
+const [chaosId, simpleId, hardwareId] = Object.keys(
   testData.metamask.internalAccounts.accounts,
 );
 
 const SIMPLE_ACCOUNT = {
-  ...testData.metamask.internalAccounts.accounts[simpleAccountId],
+  ...testData.metamask.internalAccounts.accounts[simpleId],
   balance: '0x152387ad22c3f0',
 };
 
 const HARDWARE_ACCOUNT = {
-  ...testData.metamask.internalAccounts.accounts[hardwareAccountId],
+  ...testData.metamask.internalAccounts.accounts[hardwareId],
   balance: '0x152387ad22c3f0',
 };
 
 const CHAOS_ACCOUNT = {
-  ...testData.metamask.internalAccounts.accounts[chaosAccountId],
+  ...testData.metamask.internalAccounts.accounts[chaosId],
   balance: '0x152387ad22c3f0',
 };
 
@@ -40,7 +40,7 @@ export default {
   title: 'Components/Multichain/AccountListItem',
   component: AccountListItem,
   argTypes: {
-    account: {
+    ACCOUNT: {
       control: 'object',
     },
     selected: {
@@ -60,7 +60,7 @@ export default {
     },
   },
   args: {
-    account: SIMPLE_ACCOUNT,
+    ACCOUNT: SIMPLE_ACCOUNT,
     onClick,
   },
 };
@@ -83,7 +83,7 @@ export const HardwareItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-HardwareItem.args = { account: HARDWARE_ACCOUNT };
+HardwareItem.args = { ACCOUNT: HARDWARE_ACCOUNT };
 HardwareItem.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
@@ -93,7 +93,7 @@ export const SelectedHardwareItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-SelectedHardwareItem.args = { account: HARDWARE_ACCOUNT, selected: true };
+SelectedHardwareItem.args = { ACCOUNT: HARDWARE_ACCOUNT, selected: true };
 SelectedHardwareItem.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
@@ -103,7 +103,7 @@ export const ChaosDataItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-ChaosDataItem.args = { account: CHAOS_ACCOUNT };
+ChaosDataItem.args = { ACCOUNT: CHAOS_ACCOUNT };
 
 export const ConnectedSiteItem = (args) => (
   <div {...CONTAINER_STYLES}>
@@ -121,7 +121,7 @@ export const ConnectedSiteChaosItem = (args) => (
   </div>
 );
 ConnectedSiteChaosItem.args = {
-  account: CHAOS_ACCOUNT,
+  ACCOUNT: CHAOS_ACCOUNT,
   connectedAvatar: 'https://uniswap.org/favicon.ico',
   connectedAvatarName: 'Uniswap',
 };

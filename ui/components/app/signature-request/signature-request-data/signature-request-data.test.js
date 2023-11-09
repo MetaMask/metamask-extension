@@ -70,6 +70,37 @@ describe('Signature Request Data', () => {
           },
           selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+            '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+              address: '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+              id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+              metadata: {
+                name: 'Account 2',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
         addressBook: {
           '0x5': {
             '0x06195827297c7A80a443b6894d3BDB8824b43896': {

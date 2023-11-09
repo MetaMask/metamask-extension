@@ -18,16 +18,14 @@ export default {
 export const DefaultStory = () => {
   const { metamask } = store.getState();
 
-  const { internalAccounts, assetImages, tokens } = metamask;
-  const accounts = Object.values(internalAccounts.accounts);
-  const selectedAccount =
-    internalAccounts.accounts[internalAccounts.selectedAccount];
+  const { assetImages, tokens } = metamask;
+  const internalAccounts = Object.values(metamask.internalAccounts.accounts);
 
   return (
     <SendAssetRow
       tokens={tokens}
-      selectedAccount={selectedAccount}
-      accounts={accounts}
+      selectedAddress="0x983211ce699ea5ab57cc528086154b6db1ad8e55"
+      accounts={internalAccounts}
       assetImages={assetImages}
       setSendToken={() => undefined}
       setUnsendableAssetError={() => undefined}

@@ -23,7 +23,7 @@ export const SendPageYourAccount = () => {
       <Label paddingBottom={2}>{t('yourAccounts')}</Label>
       {accounts.map((account: any) => (
         <AccountListItem
-          identity={account}
+          account={account}
           key={account.address}
           onClick={() => {
             dispatch(

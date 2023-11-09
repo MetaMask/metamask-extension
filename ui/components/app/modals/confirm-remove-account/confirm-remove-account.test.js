@@ -36,7 +36,7 @@ describe('Confirm Remove Account', () => {
     hideModal: jest.fn(),
     removeAccount: jest.fn().mockResolvedValue(),
     account: {
-      address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      address: '0x0',
       id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       metadata: {
         name: 'Account 1',
@@ -75,7 +75,7 @@ describe('Confirm Remove Account', () => {
     expect(props.hideModal).toHaveBeenCalled();
   });
 
-  it('should call remove account with identity address', async () => {
+  it('should call remove account with account address', async () => {
     const { queryByText } = renderWithProvider(
       <ConfirmRemoveAccount.WrappedComponent {...props} />,
       mockStore,
@@ -83,7 +83,7 @@ describe('Confirm Remove Account', () => {
 
     fireEvent.click(queryByText('Remove'));
 
-    expect(props.removeAccount).toHaveBeenCalledWith(props.account.id);
+    expect(props.removeAccount).toHaveBeenCalledWith(props.account.address);
     expect(props.hideModal).toHaveBeenCalled();
   });
 

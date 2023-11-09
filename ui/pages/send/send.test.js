@@ -82,6 +82,7 @@ const baseStore = {
       medium: '1',
       fast: '2',
     },
+    selectedAddress: '0x0',
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -134,6 +135,7 @@ const baseStore = {
     accounts: {
       '0x0': { balance: '0x0', address: '0x0' },
     },
+    identities: { '0x0': { address: '0x0' } },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {
       '0x32e6c34cd57087abbd59b5a4aecc4cb495924356': {
@@ -245,6 +247,7 @@ describe('Send Page', () => {
             id: 3111025347726181,
             time: 1620723786838,
             status: 'unapproved',
+            metamaskNetworkId: '5',
             chainId: '0x5',
             loadingDefaults: false,
             txParams: {
@@ -290,6 +293,7 @@ describe('Send Page', () => {
             id: 3111025347726181,
             time: 1620723786838,
             status: 'unapproved',
+            metamaskNetworkId: '5',
             chainId: '0x5',
             loadingDefaults: false,
             txParams: {

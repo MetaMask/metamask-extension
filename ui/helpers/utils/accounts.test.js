@@ -5,12 +5,12 @@ import {
   SEPOLIA_DISPLAY_NAME,
 } from '../../../shared/constants/network';
 import { BackgroundColor } from '../constants/design-system';
+import mockState from '../../../test/data/mock-state.json';
 import { getAccountNameErrorMessage, getAvatarNetworkColor } from './accounts';
 
-const mockAccounts = [
-  { metadata: { name: 'Account 1' } },
-  { metadata: { name: 'Account 2' } },
-];
+const mockAccounts = Object.values(
+  mockState.metamask.internalAccounts.accounts,
+);
 
 const mockLocalization = { t: jest.fn().mockReturnValue('Account') };
 

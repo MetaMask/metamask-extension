@@ -38,7 +38,7 @@ import {
   getConnectedSubjectsForAllAddresses,
   getCurrentNetwork,
   getOriginOfCurrentTab,
-  getSelectedAddress,
+  getSelectedAccount,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -55,7 +55,7 @@ export const AppFooter = () => {
   const activeConnections = location.pathname === CONNECTIONS;
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
   const isFullScreen = getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN;
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
 
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);

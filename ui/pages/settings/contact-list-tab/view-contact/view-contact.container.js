@@ -1,7 +1,10 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { getAddressBookEntry } from '../../../../selectors';
+import {
+  getAddressBookEntry,
+  getInternalAccountByAddress,
+} from '../../../../selectors';
 import {
   CONTACT_EDIT_ROUTE,
   CONTACT_LIST_ROUTE,
@@ -18,12 +21,11 @@ const mapStateToProps = (state, ownProps) => {
     ? pathNameTail.toLowerCase()
     : ownProps.match.params.id;
 
-  const contact =
-    getAddressBookEntry(state, address) ||
-    state.metamask.internalAccounts.accounts.find(
-      (account) => account.address.toLowerCase() === address,
-    );
-  const { memo, name } = contact || {};
+  const internalAccount = getInternalAccountByAddress(state, address);
+
+  const contact = getAddressBookEntry(state, address);
+  const { memo } = contact || {};
+  const name = contact?.name || internalAccount.metadata.name;
 
   return {
     name,

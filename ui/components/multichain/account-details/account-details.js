@@ -15,14 +15,14 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getInternalAccountByAddress,
   getMetaMaskAccountsOrdered,
-  getInternalAccount,
   getUseBlockie,
 } from '../../../selectors';
 import {
   clearAccountDetails,
   hideWarning,
-  setAccountDetailsAccountId,
+  setAccountDetailsAddress,
 } from '../../../store/actions';
 import HoldToRevealModal from '../../app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
@@ -41,17 +41,15 @@ import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';
 import { AccountDetailsKey } from './account-details-key';
 
-export const AccountDetails = ({ accountId }) => {
+export const AccountDetails = ({ address }) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const account = useSelector((state) => getInternalAccount(state, accountId));
   const {
     metadata: { name },
-    address,
-  } = account;
+  } = useSelector((state) => getInternalAccountByAddress(state, address));
   const [showHoldToReveal, setShowHoldToReveal] = useState(false);
   const [attemptingExport, setAttemptingExport] = useState(false);
 
@@ -59,7 +57,7 @@ export const AccountDetails = ({ accountId }) => {
   const [privateKey, setPrivateKey] = useState('');
 
   const onClose = useCallback(() => {
-    dispatch(setAccountDetailsAccountId(''));
+    dispatch(setAccountDetailsAddress(''));
     dispatch(clearAccountDetails());
     dispatch(hideWarning());
   }, [dispatch]);
@@ -132,7 +130,7 @@ export const AccountDetails = ({ accountId }) => {
             <AccountDetailsDisplay
               accounts={accounts}
               accountName={name}
-              accountId={accountId}
+              address={address}
               onExportClick={() => setAttemptingExport(true)}
             />
           )}
@@ -164,7 +162,7 @@ export const AccountDetails = ({ accountId }) => {
 
 AccountDetails.propTypes = {
   /**
-   * The account id of the account to show details for
+   * The address to show account details for
    */
-  accountId: PropTypes.string,
+  address: PropTypes.string,
 };

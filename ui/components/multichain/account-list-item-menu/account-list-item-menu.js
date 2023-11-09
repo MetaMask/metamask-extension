@@ -17,7 +17,6 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IN
-import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { MenuItem } from '../../ui/menu';
 import {
   IconName,
@@ -54,9 +53,7 @@ export const AccountListItemMenu = ({
 
   const deviceName = useSelector(getHardwareWalletType);
 
-  const keyring = useSelector((state) =>
-    findKeyringForAddress(state, account.id),
-  );
+  const { keyring } = account.metadata;
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -138,7 +135,7 @@ export const AccountListItemMenu = ({
           <AccountDetailsMenuItem
             metricsLocation={METRICS_LOCATION}
             closeMenu={closeMenu}
-            accountId={account.id}
+            address={account.address}
             textProps={{ variant: TextVariant.bodySm }}
           />
           <ViewExplorerMenuItem
@@ -242,7 +239,7 @@ AccountListItemMenu.propTypes = {
    */
   isRemovable: PropTypes.bool.isRequired,
   /**
-   * Account object
+   * An account object that has name, address, and balance data
    */
   account: PropTypes.shape({
     id: PropTypes.string.isRequired,
@@ -252,8 +249,8 @@ AccountListItemMenu.propTypes = {
       name: PropTypes.string.isRequired,
       snap: PropTypes.shape({
         id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        enabled: PropTypes.bool.isRequired,
+        name: PropTypes.string,
+        enabled: PropTypes.bool,
       }),
       keyring: PropTypes.shape({
         type: PropTypes.string.isRequired,

@@ -106,7 +106,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       <AccountDetailsMenuItem
         metricsLocation={METRICS_LOCATION}
         closeMenu={closeMenu}
-        accountId={account.id}
+        address={account.address}
       />
       <ViewExplorerMenuItem
         metricsLocation={METRICS_LOCATION}

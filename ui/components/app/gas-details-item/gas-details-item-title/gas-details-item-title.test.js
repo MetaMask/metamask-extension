@@ -29,6 +29,10 @@ const render = () => {
           balance: '0x176e5b6f173ebe66',
         },
       },
+      identities: {
+        '0xAddress': {},
+      },
+      selectedAddress: '0xAddress',
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {

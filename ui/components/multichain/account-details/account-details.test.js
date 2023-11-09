@@ -7,10 +7,10 @@ import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/jest';
 import { shortenAddress } from '../../../helpers/utils/util';
 import {
-  setAccountDetailsAccountId,
   clearAccountDetails,
   exportAccount,
   hideWarning,
+  setAccountDetailsAddress,
 } from '../../../store/actions';
 import configureStore from '../../../store/store';
 import { AccountDetailsKey } from './account-details-key';
@@ -22,17 +22,17 @@ describe('AccountDetails', () => {
   const account = Object.values(
     mockState.metamask.internalAccounts.accounts,
   )[0];
-  const { id: accountId, address } = account;
-  const mockSetAccountDetailsAccountId = jest.fn();
+  const { address } = account;
+  const mockSetAccountDetailsAddress = jest.fn();
   const mockClearAccountDetails = jest.fn();
   const mockExportAccount = jest.fn().mockResolvedValue(true);
   const mockHideWarning = jest.fn();
 
   beforeEach(() => {
-    setAccountDetailsAccountId.mockReturnValue(mockSetAccountDetailsAccountId);
     clearAccountDetails.mockReturnValue(mockClearAccountDetails);
     exportAccount.mockReturnValue(mockExportAccount);
     hideWarning.mockReturnValue(mockHideWarning);
+    setAccountDetailsAddress.mockReturnValue(mockSetAccountDetailsAddress);
   });
 
   afterEach(() => jest.clearAllMocks());
@@ -44,7 +44,7 @@ describe('AccountDetails', () => {
       },
       ...storeModifications,
     });
-    const allProps = { accountId, ...props };
+    const allProps = { address, ...props };
     return renderWithProvider(<AccountDetails {...allProps} />, store);
   }
 

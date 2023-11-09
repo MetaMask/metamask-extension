@@ -21,6 +21,7 @@ import { PageContainerFooter } from '../../ui/page-container';
 import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import {
   accountsWithSendEtherInfoSelector,
+  getInternalAccountByAddress,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
   unconfirmedMessagesHashSelector,
@@ -103,7 +104,7 @@ export default function SignatureRequestSIWE({ txData }) {
 
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
 
-  const fromAccount = getAccountByAddress(allAccounts, from);
+  const fromAccount = allAccounts.find((account) => account.address === from);
   const targetSubjectMetadata = subjectMetadata[origin];
 
   const isMatchingAddress =

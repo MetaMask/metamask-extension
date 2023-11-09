@@ -77,6 +77,63 @@ describe('MetaMask Reducers', () => {
           },
           selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Send Account 1',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+            '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+              address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+              id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+              metadata: {
+                name: 'Send Account 2',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+            '15e69915-2a1a-4019-93b3-916e11fd432f': {
+              address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+              id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+              metadata: {
+                name: 'Send Account 3',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+            '784225f4-d30b-4e77-a900-c8bbce735b88': {
+              address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+              id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+              metadata: {
+                name: 'Send Account 4',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
         cachedBalances: {},
         currentBlockGasLimit: '0x4c1878',
         conversionRate: 1200.88200327,

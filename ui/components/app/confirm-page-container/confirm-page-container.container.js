@@ -17,8 +17,8 @@ function mapStateToProps(state, ownProps) {
   const networkIdentifier = getNetworkIdentifier(state);
   const defaultToken = getSwapsDefaultToken(state);
   const accountBalance = defaultToken.string;
-  const accounts = getInternalAccounts(state);
-  const ownedAccountName = getAccountName(accounts, to);
+  const internalAccounts = getInternalAccounts(state);
+  const ownedAccountName = getAccountName(internalAccounts, to);
   const toName = ownedAccountName || contact?.name;
   const toMetadataName = getMetadataContractName(state, to);
 

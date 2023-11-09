@@ -9,8 +9,6 @@ import {
   accountsWithSendEtherInfoSelector,
   checkNetworkAndAccountSupports1559,
   getAddressBook,
-  getFirstInternalAccountByAddress,
-  getSelectedInternalAccount,
   getSelectedNetworkClientId,
   getUseCurrencyRateCheck,
 } from '../../selectors';
@@ -19,6 +17,8 @@ import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
 
 import { KeyringType } from '../../../shared/constants/keyring';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
+import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
+import { stripHexPrefix } from '../../../shared/modules/hexstring-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 
 const initialState = {
@@ -26,10 +26,8 @@ const initialState = {
   isUnlocked: false,
   isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
-  internalAccounts: {
-    accounts: {},
-    selectedAccount: '',
-  },
+  identities: {},
+  internalAccounts: { accounts: {}, selectedAccount: '' },
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
@@ -86,21 +84,12 @@ export default function reduceMetamask(state = initialState, action) {
       };
 
     case actionConstants.SET_ACCOUNT_LABEL: {
-      const { accountId, label } = action.value;
-      const internalAccounts = {
-        ...metamaskState.internalAccounts,
-        accounts: {
-          ...metamaskState.internalAccounts.accounts,
-          [accountId]: {
-            ...metamaskState.internalAccounts.accounts[accountId],
-            metadata: {
-              ...metamaskState.internalAccounts.accounts[accountId].metadata,
-              name: label,
-            },
-          },
-        },
-      };
-      return Object.assign(metamaskState, { internalAccounts });
+      const { account } = action.value;
+      const name = action.value.label;
+      const id = {};
+      id[account] = { ...metamaskState.identities[account], name };
+      const identities = { ...metamaskState.identities, ...id };
+      return Object.assign(metamaskState, { identities });
     }
 
     case actionConstants.UPDATE_CUSTOM_NONCE:
@@ -271,9 +260,8 @@ export function getNftsDropdownState(state) {
 
 export const getNfts = (state) => {
   const {
-    metamask: { allNfts },
+    metamask: { allNfts, selectedAddress },
   } = state;
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
 
   return allNfts?.[selectedAddress]?.[chainId] ?? [];
@@ -281,9 +269,8 @@ export const getNfts = (state) => {
 
 export const getNftContracts = (state) => {
   const {
-    metamask: { allNftContracts },
+    metamask: { allNftContracts, selectedAddress },
   } = state;
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const { chainId } = getProviderConfig(state);
 
   return allNftContracts?.[selectedAddress]?.[chainId] ?? [];
@@ -396,13 +383,20 @@ export function getSeedPhraseBackedUp(state) {
  * Given the redux state object and an address, finds a keyring that contains that address, if one exists
  *
  * @param {object} state - the redux state object
- * @param {string} address - the address to search for among the internal accounts
+ * @param {string} address - the address to search for among the keyring addresses
  * @returns {object | undefined} The keyring which contains the passed address, or undefined
  */
 export function findKeyringForAddress(state, address) {
-  const account = getFirstInternalAccountByAddress(state, address);
+  const keyring = state.metamask.keyrings.find((kr) => {
+    return kr.accounts.some((account) => {
+      return (
+        isEqualCaseInsensitive(account, addHexPrefix(address)) ||
+        isEqualCaseInsensitive(account, stripHexPrefix(address))
+      );
+    });
+  });
 
-  return account?.metadata?.keyring;
+  return keyring;
 }
 
 /**
@@ -419,11 +413,11 @@ export function getLedgerTransportType(state) {
  * Given the redux state object and an address, returns a boolean indicating whether the passed address is part of a Ledger keyring
  *
  * @param {object} state - the redux state object
- * @param {string} accountId - the account id to search for among all internal accounts
+ * @param {string} address - the address to search for among all keyring addresses
  * @returns {boolean} true if the passed address is part of a ledger keyring, and false otherwise
  */
-export function isAddressLedger(state, accountId) {
-  const keyring = findKeyringForAddress(state, accountId);
+export function isAddressLedger(state, address) {
+  const keyring = findKeyringForAddress(state, address);
 
   return keyring?.type === KeyringType.ledger;
 }
@@ -436,11 +430,9 @@ export function isAddressLedger(state, accountId) {
  * @returns {boolean} true if the user has a Ledger account and false otherwise
  */
 export function doesUserHaveALedgerAccount(state) {
-  return Object.values(state.metamask.internalAccounts.accounts).some(
-    (account) => {
-      return account.metadata.keyring.type === KeyringType.ledger;
-    },
-  );
+  return state.metamask.keyrings.some((kr) => {
+    return kr.type === KeyringType.ledger;
+  });
 }
 
 export function isLineaMainnetNetworkReleased(state) {

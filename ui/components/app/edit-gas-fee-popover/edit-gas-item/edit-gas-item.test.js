@@ -1,6 +1,5 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
 import {
   EditGasModes,
@@ -77,11 +76,14 @@ const renderComponent = ({
           balance: '0x176e5b6f173ebe66',
         },
       },
+      identities: {
+        '0xAddress': {},
+      },
       internalAccounts: {
         accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          mockId: {
             address: '0xAddress',
-            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            id: 'mockId',
             metadata: {
               name: 'Test Account',
               keyring: {
@@ -89,12 +91,20 @@ const renderComponent = ({
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
-            type: EthAccountType.Eoa,
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
           },
         },
-        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        selectedAccount: 'mock-id',
       },
+      selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasEstimateType: 'fee-market',
       gasFeeEstimates: MOCK_FEE_ESTIMATE,

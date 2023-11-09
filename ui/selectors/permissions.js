@@ -78,7 +78,7 @@ export function getPermittedAccountsByOrigin(state) {
  * @returns {Array<object>} An array of connected subject objects.
  */
 export function getConnectedSubjectsForSelectedAddress(state) {
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
+  const { selectedAddress } = state.metamask;
   const subjects = getPermissionSubjects(state);
   const subjectMetadata = getSubjectMetadata(state);
 
@@ -229,8 +229,9 @@ function subjectSelector(state, origin) {
 
 export function getAccountToConnectToActiveTab(state) {
   const selectedAccount = getSelectedInternalAccount(state);
-  const numberOfAccounts = getInternalAccounts(state).length;
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
+  const internalAccounts = getInternalAccounts(state);
+  const numberOfAccounts = internalAccounts.length;
 
   if (
     connectedAccounts.length &&

@@ -15,9 +15,9 @@ export default function AccountListItem({
   ///: END:ONLY_INCLUDE_IN
 }) {
   const {
+    metadata: { name },
     address,
     balance,
-    metadata: { name },
   } = account || {};
 
   let showDefaultMismatchWarning = true;
