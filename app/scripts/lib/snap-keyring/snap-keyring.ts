@@ -157,7 +157,7 @@ export const snapKeyringBuilder = (
               await persistKeyringHelper();
               setSelectedAccountHelper(address);
               await controllerMessenger.call('ApprovalController:showSuccess', {
-                message: t('snapAccountCreated') ?? 'Your account is ready!',
+                message: t('snapAccountCreated') as string,
                 header: [snapAuthorshipHeader],
               });
             } catch (error) {
