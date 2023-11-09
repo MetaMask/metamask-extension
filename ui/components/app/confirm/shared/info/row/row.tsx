@@ -69,6 +69,7 @@ export const ConfirmInfoRow = ({
       paddingLeft={2}
       paddingRight={2}
       color={TEXT_COLORS[variant] as TextColor}
+      style={{ overflowWrap: 'anywhere', minHeight: '24px' }}
     >
       <Box
         display={Display.Flex}
