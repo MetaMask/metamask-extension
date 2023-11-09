@@ -14,7 +14,7 @@ import {
   getIsBuyableChain,
   getCurrentChainId,
   getSwapsDefaultToken,
-  getSelectedAddress,
+  getSelectedAccount,
 } from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { useCurrencyDisplay } from '../../../hooks/useCurrencyDisplay';
@@ -48,7 +48,7 @@ const AssetList = ({ onClickAsset }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
