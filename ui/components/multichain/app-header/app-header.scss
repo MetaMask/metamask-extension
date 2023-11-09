@@ -69,31 +69,6 @@
   flex: 0 0 auto;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-.custody-logo {
-  @media screen and (max-width: $break-small) {
-    display: none;
-  }
-
-  &--icon {
-    height: 35px;
-    margin-left: 10px;
-  }
-}
-
-.app-header__custody-logo {
-  &--icon {
-    height: 16px;
-    margin-left: 15px;
-    margin-top: 4px;
-
-    @media screen and (min-width: $break-large) {
-      display: none;
-    }
-  }
-}
-///: END:ONLY_INCLUDE_IN
-
 .app-header__metafox-logo {
   &--icon {
     height: 32px;

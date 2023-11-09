@@ -5,3 +5,13 @@
     height: auto;
   }
 }
+
+.custody-logo {
+  &--icon {
+    height: 20px;
+    margin-right: 5px;
+    background-color: #FFF;
+    border-radius: 3px;
+    padding: 1px;
+  }
+}
