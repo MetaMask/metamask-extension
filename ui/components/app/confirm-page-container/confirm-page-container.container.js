@@ -6,7 +6,7 @@ import {
   getSwapsDefaultToken,
   getMetadataContractName,
   getAccountName,
-  getInternalAccounts,
+  getMetaMaskIdentities,
 } from '../../../selectors';
 import ConfirmPageContainer from './confirm-page-container.component';
 
@@ -17,8 +17,8 @@ function mapStateToProps(state, ownProps) {
   const networkIdentifier = getNetworkIdentifier(state);
   const defaultToken = getSwapsDefaultToken(state);
   const accountBalance = defaultToken.string;
-  const accounts = getInternalAccounts(state);
-  const ownedAccountName = getAccountName(accounts, to);
+  const identities = getMetaMaskIdentities(state);
+  const ownedAccountName = getAccountName(identities, to);
   const toName = ownedAccountName || contact?.name;
   const toMetadataName = getMetadataContractName(state, to);
 
