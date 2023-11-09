@@ -125,7 +125,6 @@ export class NetworksOrderController extends BaseControllerV2<
       // Return the updated state
       return { ...state, networksList: updatedNetworksList };
     });
-    console.log(networkConfigurations, combinedNetworks, uniqueChainIds);
   }
 
   // Action for updating the networks list
