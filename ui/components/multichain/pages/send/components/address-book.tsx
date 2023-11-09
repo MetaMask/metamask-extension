@@ -124,9 +124,13 @@ export const SendPageAddressBook = () => {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore: Expected 0-1 arguments, but got 2.
               t('sendNoContactsDescription', [
-                <a href={`#${CONTACT_LIST_ROUTE}`}>
+                <Text
+                  as="a"
+                  href={`#${CONTACT_LIST_ROUTE}`}
+                  color={TextColor.primaryDefault}
+                >
                   {t('sendNoContactsConversionText')}
-                </a>,
+                </Text>,
               ])
             }
           </Text>
