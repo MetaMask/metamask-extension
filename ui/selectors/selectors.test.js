@@ -829,8 +829,10 @@ describe('Selectors', () => {
     );
   });
 
-  it('should return if the account is watch only', () => {
-    const watchOnlyAccount = selectors.isWatchOnlyAccount(mockState);
-    expect(watchOnlyAccount).toBe(false);
+  describe('#isWatchOnly', () => {
+    it('should return if the account is watch only', () => {
+      const watchOnlyAccount = selectors.isWatchOnlyAccount(mockState);
+      expect(watchOnlyAccount).toBe(false);
+    });
   });
 });
