@@ -3804,7 +3804,10 @@ export default class MetamaskController extends EventEmitter {
           ...txParams,
           from: smartContractAccount,
         },
-        { chainId: this.networkController.state.providerConfig.chainId },
+        {
+          chainId: this.networkController.state.providerConfig.chainId,
+          snapId: process.env.SMART_CONTRACT_SNAP_ID,
+        },
       );
 
       return '';

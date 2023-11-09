@@ -1209,6 +1209,7 @@ async function setEnvironmentVariables({
       environment,
     }),
     SMART_CONTRACT_ACCOUNT: variables.getMaybe('SMART_CONTRACT_ACCOUNT'),
+    SMART_CONTRACT_SNAP_ID: variables.getMaybe('SMART_CONTRACT_SNAP_ID'),
   });
 }
 

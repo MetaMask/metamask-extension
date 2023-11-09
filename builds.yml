@@ -255,6 +255,7 @@ env:
   # Determines if feature flagged Multichain UI should be used
   - MULTICHAIN: ''
   - SMART_CONTRACT_ACCOUNT
+  - SMART_CONTRACT_SNAP_ID
 
   ###
   # Meta variables
