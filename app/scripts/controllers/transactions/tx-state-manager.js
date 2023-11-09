@@ -341,14 +341,16 @@ export default class TransactionStateManager extends EventEmitter {
   }
 
   _updateTransactionHistory(txMeta, note) {
-    // create txMeta snapshot for history
-    const currentState = snapshotFromTxMeta(txMeta);
-    // recover previous tx state obj
-    const previousState = replayHistory(txMeta.history);
-    // generate history entry and add to history
-    const entry = generateHistoryEntry(previousState, currentState, note);
-    if (entry.length) {
-      txMeta.history.push(entry);
+    if (txMeta.history) {
+      // create txMeta snapshot for history
+      const currentState = snapshotFromTxMeta(txMeta);
+      // recover previous tx state obj
+      const previousState = replayHistory(txMeta.history);
+      // generate history entry and add to history
+      const entry = generateHistoryEntry(previousState, currentState, note);
+      if (entry.length) {
+        txMeta.history.push(entry);
+      }
     }
 
     // commit txMeta to state

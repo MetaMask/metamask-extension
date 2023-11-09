@@ -110,6 +110,8 @@ import {
 } from '@metamask/name-controller';
 ///: END:ONLY_INCLUDE_IN
 
+import { UserOperationController } from '@metamask/user-operation-controller';
+
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -1568,6 +1570,25 @@ export default class MetamaskController extends EventEmitter {
       }),
     }).init();
     ///: END:ONLY_INCLUDE_IN
+
+    this.userOperationController = new UserOperationController({
+      blockTracker: this.blockTracker,
+      getPrivateKey: () =>
+        this.keyringController.exportAccount(
+          process.env.PASSWORD,
+          this.preferencesController.getSelectedAddress(),
+        ),
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'UserOperationController',
+        allowedActions: ['ApprovalController:addRequest'],
+      }),
+      provider: this.provider,
+    });
+
+    this.userOperationController.hub.on('transaction-updated', (txMeta) => {
+      txMeta.txParams.from = this.preferencesController.getSelectedAddress();
+      this.txController.txStateManager.updateTransaction(txMeta, 'User');
+    });
 
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
@@ -3775,6 +3796,20 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} [req] - The original request, containing the origin.
    */
   async newUnapprovedTransaction(txParams, req) {
+    const smartContractAccount = process.env.SMART_CONTRACT_ACCOUNT;
+
+    if (smartContractAccount) {
+      await this.userOperationController.addUserOperationFromTransaction(
+        {
+          ...txParams,
+          from: smartContractAccount,
+        },
+        { chainId: this.networkController.state.providerConfig.chainId },
+      );
+
+      return '';
+    }
+
     // Options are passed explicitly as an additional security measure
     // to ensure approval is not disabled
     const { result } = await this.txController.addTransaction(txParams, {

@@ -283,6 +283,7 @@
     "@metamask/snaps-rpc-methods": "^3.2.1",
     "@metamask/snaps-ui": "^3.1.0",
     "@metamask/snaps-utils": "^3.2.0",
+    "@metamask/user-operation-controller": "file:.yalc/@metamask/user-operation-controller",
     "@metamask/utils": "^5.0.0",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",

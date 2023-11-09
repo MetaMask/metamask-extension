@@ -254,6 +254,7 @@ env:
   - BLOCKAID_PUBLIC_KEY
   # Determines if feature flagged Multichain UI should be used
   - MULTICHAIN: ''
+  - SMART_CONTRACT_ACCOUNT
 
   ###
   # Meta variables

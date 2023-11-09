@@ -1208,6 +1208,7 @@ async function setEnvironmentVariables({
       variables,
       environment,
     }),
+    SMART_CONTRACT_ACCOUNT: variables.getMaybe('SMART_CONTRACT_ACCOUNT'),
   });
 }
 

@@ -1,0 +1,57 @@
+{
+  "name": "@metamask/user-operation-controller",
+  "version": "0.0.0",
+  "description": "Creates and manages the life cycle of user operations.",
+  "keywords": [
+    "MetaMask",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/core/tree/main/packages/user-operation-controller#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/core/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/core.git"
+  },
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build:docs": "typedoc",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/user-operation-controller",
+    "prepare-manifest:preview": "../../scripts/prepare-preview-manifest.sh",
+    "publish:preview": "yarn npm publish --tag preview",
+    "test": "jest --reporters=jest-silent-reporter",
+    "test:clean": "jest --clearCache",
+    "test:verbose": "jest --verbose",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@ethersproject/abi": "^5.7.0",
+    "@ethersproject/bytes": "^5.7.0",
+    "@ethersproject/constants": "^5.7.0",
+    "@ethersproject/contracts": "^5.7.0",
+    "@ethersproject/keccak256": "^5.7.0",
+    "@ethersproject/providers": "^5.7.0",
+    "@ethersproject/wallet": "^5.7.0",
+    "@metamask/approval-controller": "4.1.0",
+    "@metamask/base-controller": "^3.2.3",
+    "@metamask/controller-utils": "5.0.2",
+    "@metamask/transaction-controller": "16.0.0",
+    "@metamask/utils": "^8.2.0",
+    "async-mutex": "^0.2.6",
+    "immer": "^9.0.6"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "yalcSig": "d3c55c87b0f28367af5d22e70c7d074b"
+}
