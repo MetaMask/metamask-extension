@@ -1592,6 +1592,7 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const mmiControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'MMIController',
       allowedEvents: [],
@@ -1604,7 +1605,6 @@ export default class MetamaskController extends EventEmitter {
       ],
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const transactionMetricsRequest = this.getTransactionMetricsRequest();
 
     this.mmiController = new MMIController({
