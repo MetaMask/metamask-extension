@@ -1559,9 +1559,6 @@
   "swapSource": {
     "message": "Pinagkunan ng liquidity"
   },
-  "swapSourceInfo": {
-    "message": "Naghahanap kami ng maraming pinagkukunan ng liquidity (mga exchange, aggregator at propesyonal na market maker) para mahanap ang mga pinakasulit na rate at pinakamababang bayarin sa network."
-  },
   "swapSwapFrom": {
     "message": "I-swap mula sa"
   },
