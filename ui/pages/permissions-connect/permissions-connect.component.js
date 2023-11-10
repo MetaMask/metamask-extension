@@ -397,7 +397,7 @@ export default class PermissionConnect extends Component {
                   rejectPermissionsRequest={(requestId) =>
                     this.cancelPermissionsRequest(requestId)
                   }
-                  selectedIdentities={accounts.filter((account) =>
+                  selectedAccounts={accounts.filter((account) =>
                     selectedAccountAddresses.has(account.address),
                   )}
                   targetSubjectMetadata={targetSubjectMetadata}
