@@ -58,9 +58,7 @@ describe('Selectors', () => {
         address: '',
         metadata: {
           name: '',
-          keyring: {
-            type: '',
-          },
+          keyring: null,
         },
         options: {},
         methods: [],
