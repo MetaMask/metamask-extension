@@ -24,11 +24,6 @@ import { ConfirmPageContainerWarning } from '../../../components/app/confirm-pag
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import BlockaidBannerAlert from '../../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IN
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 
@@ -51,9 +46,6 @@ import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-    trackEvent: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
   };
 
   static propTypes = {
@@ -102,26 +94,6 @@ export default class ConfirmApproveContent extends Component {
     copied: false,
     setShowContractDetails: false,
   };
-
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  componentDidMount() {
-    const { txData } = this.props;
-    if (txData.securityAlertResponse) {
-      const blockaidMetricsParams = getBlockaidMetricsParams(
-        txData.securityAlertResponse,
-      );
-
-      this.context.trackEvent({
-        category: MetaMetricsEventCategory.Transactions,
-        event: MetaMetricsEventName.SignatureRequested,
-        properties: {
-          action: 'Sign Request',
-          ...blockaidMetricsParams,
-        },
-      });
-    }
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   renderApproveContentCard({
     showHeader = true,
