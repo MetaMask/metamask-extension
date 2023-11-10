@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.5.0]
+## [11.4.1]
+### Changed
+- Fixes the snaps website link pointing to the wrong URL. ([#21619](https://github.com/MetaMask/metamask-extension/pull/21619))
+
+### Fixed
+- Fix bug that caused Blockaid integration to only display the fallback screen if the user had just switched network ([#21518](https://github.com/MetaMask/metamask-extension/pull/21518))
 
 ## [11.4.0]
 ### Added
@@ -4145,6 +4151,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.5.0...HEAD
 [11.5.0]: https://github.com/MetaMask/metamask-extension/compare/v11.4.0...v11.5.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.4.1...HEAD
+[11.4.1]: https://github.com/MetaMask/metamask-extension/compare/v11.4.0...v11.4.1
 [11.4.0]: https://github.com/MetaMask/metamask-extension/compare/v11.3.0...v11.4.0
 [11.3.0]: https://github.com/MetaMask/metamask-extension/compare/v11.2.0...v11.3.0
 [11.2.0]: https://github.com/MetaMask/metamask-extension/compare/v11.1.2...v11.2.0

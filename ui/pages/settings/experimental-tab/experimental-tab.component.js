@@ -9,9 +9,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IN(build-main)
-import { showSnapAccountExperimentalToggle } from '../../../../shared/modules/snap-accounts';
-///: END:ONLY_INCLUDE_IN
 
 import {
   Text,
@@ -23,7 +20,7 @@ import {
   TextColor,
   TextVariant,
   Display,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   FontWeight,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -51,7 +48,7 @@ export default class ExperimentalTab extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
     addSnapAccountEnabled: PropTypes.bool,
     setAddSnapAccountEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
@@ -276,8 +273,8 @@ export default class ExperimentalTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  keyringSnapsToggle() {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  renderKeyringSnapsToggle() {
     const { t, trackEvent } = this.context;
     const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
 
@@ -349,27 +346,12 @@ export default class ExperimentalTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IN
 
-  renderKeyringSnapsToggle() {
-    let toggle = null;
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-    toggle = this.keyringSnapsToggle();
-    ///: END:ONLY_INCLUDE_IN
-
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
-    if (!showSnapAccountExperimentalToggle()) {
-      toggle = null;
-    }
-    ///: END:ONLY_INCLUDE_IN
-
-    return toggle;
-  }
-
   render() {
     return (
       <div className="settings-page__body">
         {this.renderSecurityAlertsToggle()}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
           this.renderKeyringSnapsToggle()
           ///: END:ONLY_INCLUDE_IN
         }
