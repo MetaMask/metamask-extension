@@ -185,7 +185,11 @@
       "smartTransactions": "object"
     }
   },
-  "SnapController": { "snaps": "object", "snapStates": "object" },
+  "SnapController": {
+    "snaps": "object",
+    "snapStates": "object",
+    "unencryptedSnapStates": "object"
+  },
   "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {
