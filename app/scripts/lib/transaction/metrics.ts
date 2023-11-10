@@ -37,12 +37,12 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { getBlockaidMetricsParams } from '../../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IN
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
 } from '../snap-keyring/metrics';
-import { getBlockaidMetricsParams } from '../../../../ui/helpers/utils/metrics';
 
 export type TransactionMetricsRequest = {
   createEventFragment: (
