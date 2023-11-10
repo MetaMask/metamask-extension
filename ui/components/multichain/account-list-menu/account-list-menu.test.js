@@ -1,6 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
@@ -101,10 +102,22 @@ describe('AccountListMenu', () => {
       },
       metamask: {
         ...mockState.metamask,
-        accounts: {
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            balance: '0x346ba7725f412cbfdb',
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
           },
         },
       },

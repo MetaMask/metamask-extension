@@ -20,6 +20,7 @@ import {
   getTargetSubjectMetadata,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
+  getInternalAccounts,
 } from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { TransactionStatus } from '../../../shared/constants/transaction';
@@ -55,13 +56,13 @@ const ConfirmTxScreen = ({ match }) => {
   );
   const sendTo = useSelector(getSendTo);
   const {
-    identities,
     currentCurrency,
     unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTypedMessages,
     blockGasLimit,
   } = useSelector((state) => state.metamask);
+  const internalAccounts = useSelector(getInternalAccounts);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
   const currentNetworkTxList = useSelector(getCurrentNetworkTransactions);
   const { chainId } = useSelector(getProviderConfig);
@@ -205,7 +206,7 @@ const ConfirmTxScreen = ({ match }) => {
       history={history}
       txData={txData}
       key={txData.id}
-      identities={identities}
+      accounts={internalAccounts}
       currentCurrency={currentCurrency}
       blockGasLimit={blockGasLimit}
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)

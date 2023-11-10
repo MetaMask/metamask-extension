@@ -17,13 +17,13 @@ export default class PermissionPageContainerContent extends PureComponent {
       iconUrl: PropTypes.string,
     }),
     selectedPermissions: PropTypes.object.isRequired,
-    selectedIdentities: PropTypes.array,
-    allIdentitiesSelected: PropTypes.bool,
+    selectedAccounts: PropTypes.array,
+    allAccountsSelected: PropTypes.bool,
   };
 
   static defaultProps = {
-    selectedIdentities: [],
-    allIdentitiesSelected: false,
+    selectedAccounts: [],
+    allAccountsSelected: false,
   };
 
   static contextTypes = {
@@ -44,7 +44,7 @@ export default class PermissionPageContainerContent extends PureComponent {
   }
 
   renderAccountTooltip(textContent) {
-    const { selectedIdentities } = this.props;
+    const { selectedAccounts } = this.props;
     const { t } = this.context;
 
     return (
@@ -54,15 +54,15 @@ export default class PermissionPageContainerContent extends PureComponent {
         wrapperClassName="permission-approval-container__bold-title-elements"
         html={
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {selectedIdentities.slice(0, 6).map((identity, index) => {
+            {selectedAccounts.slice(0, 6).map((account, index) => {
               return (
-                <div key={`tooltip-identity-${index}`}>
-                  {identity.addressLabel}
+                <div key={`tooltip-account-${index}`}>
+                  {account.addressLabel}
                 </div>
               );
             })}
-            {selectedIdentities.length > 6
-              ? t('plusXMore', [selectedIdentities.length - 6])
+            {selectedAccounts.length > 6
+              ? t('plusXMore', [selectedAccounts.length - 6])
               : null}
           </div>
         }
@@ -75,8 +75,8 @@ export default class PermissionPageContainerContent extends PureComponent {
   getTitle() {
     const {
       subjectMetadata,
-      selectedIdentities,
-      allIdentitiesSelected,
+      selectedAccounts,
+      allAccountsSelected,
       selectedPermissions,
     } = this.props;
     const { t } = this.context;
@@ -85,18 +85,18 @@ export default class PermissionPageContainerContent extends PureComponent {
       return t('externalExtension', [subjectMetadata.extensionId]);
     } else if (!selectedPermissions.eth_accounts) {
       return t('permissionRequestCapitalized');
-    } else if (allIdentitiesSelected) {
+    } else if (allAccountsSelected) {
       return t('connectToAll', [
         this.renderAccountTooltip(t('connectToAllAccounts')),
       ]);
-    } else if (selectedIdentities.length > 1) {
+    } else if (selectedAccounts.length > 1) {
       return t('connectToMultiple', [
         this.renderAccountTooltip(
-          t('connectToMultipleNumberOfAccounts', [selectedIdentities.length]),
+          t('connectToMultipleNumberOfAccounts', [selectedAccounts.length]),
         ),
       ]);
     }
-    return t('connectTo', [selectedIdentities[0]?.addressLabel]);
+    return t('connectTo', [selectedAccounts[0]?.addressLabel]);
   }
 
   getHeaderText() {
