@@ -3441,6 +3441,14 @@
     "message": "Allow $1 to use lifecycle hooks to run code at specific times during its lifecycle.",
     "description": "An extended description for the `endowment:lifecycle-hooks` permission. $1 is the snap name."
   },
+  "permission_homePage": {
+    "message": "Display a custom screen",
+    "description": "The description for the `endowment:page-home` permission"
+  },
+  "permission_homePageDescription": {
+    "message": "Let $1 display a custom home screen in MetaMask. This can be used for user interfaces, configuration, and dashboards.",
+    "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
+  },
   "permission_manageAccounts": {
     "message": "Add and control Ethereum accounts",
     "description": "The description for `snap_manageAccounts` permission"
