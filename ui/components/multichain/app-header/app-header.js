@@ -91,7 +91,8 @@ export const AppHeader = ({ location }) => {
   const showProductTourPopup = useSelector(getShowProductTour);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const selectedAddress = internalAccount.address;
+  // During onboarding there is no selected internal account
+  const selectedAddress = internalAccount?.address;
   const custodianIcon = useSelector((state) =>
     getCustodianIconForAddress(state, selectedAddress),
   );
@@ -103,6 +104,8 @@ export const AppHeader = ({ location }) => {
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   // Used for copy button
+
+  // During onboarding there is no selected internal account
   const currentAddress = internalAccount?.address;
   const checksummedCurrentAddress = toChecksumHexAddress(currentAddress);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);

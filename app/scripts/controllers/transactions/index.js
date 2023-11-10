@@ -225,7 +225,7 @@ export default class TransactionController extends EventEmitter {
 
     this.incomingTransactionHelper = new IncomingTransactionHelper({
       blockTracker: this.blockTracker,
-      getCurrentAccount: () => () => {
+      getCurrentAccount: () => {
         return this.messagingSystem.call(
           'AccountsController:getSelectedAccount',
         ).address;

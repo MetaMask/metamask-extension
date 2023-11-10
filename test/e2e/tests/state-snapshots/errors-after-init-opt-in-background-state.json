@@ -80,8 +80,7 @@
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object",
-    "previousUserTraits": "object"
+    "segmentApiCalls": "object"
   },
   "NetworkController": {
     "selectedNetworkClientId": "string",
