@@ -139,17 +139,17 @@ export const SizeStory: StoryFn<typeof TextField> = (args) => {
     >
       <TextField
         {...args}
-        placeholder="Size.SM (height: 32px)"
+        placeholder="TextFieldSize.Sm (height: 32px)"
         size={TextFieldSize.Sm}
       />
       <TextField
         {...args}
-        placeholder="Size.MD (height: 40px)"
+        placeholder="TextFieldSize.Md (height: 40px)"
         size={TextFieldSize.Md}
       />
       <TextField
         {...args}
-        placeholder="Size.LG (height: 48px)"
+        placeholder="TextFieldSize.Lg (height: 48px)"
         size={TextFieldSize.Lg}
       />
     </Box>
