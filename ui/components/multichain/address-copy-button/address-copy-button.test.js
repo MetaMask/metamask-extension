@@ -20,7 +20,7 @@ jest.mock('../../../selectors/institutional/selectors', () => {
   return {
     getCustodyAccountDetails: mockGetCustodyAccountDetails,
     getIsCustodianSupportedChain: mockGetisCustodianSupportedChain,
-    getCustodianIconForAddress: mockedGetCustodianIconForAddress
+    getCustodianIconForAddress: mockedGetCustodianIconForAddress,
   };
 });
 

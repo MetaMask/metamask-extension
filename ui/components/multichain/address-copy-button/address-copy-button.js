@@ -11,7 +11,13 @@ import {
 } from '../../../selectors/institutional/selectors';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 ///: END:ONLY_INCLUDE_IN
-import { ButtonBase, IconName } from '../../component-library';
+import {
+  ButtonBase,
+  IconName,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  Box,
+  ///: END:ONLY_INCLUDE_IN
+} from '../../component-library';
 import {
   BackgroundColor,
   TextVariant,
@@ -28,9 +34,6 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MINUTE } from '../../../../shared/constants/time';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { Box } from '../../component-library';
-///: END:ONLY_INCLUDE_IN
 
 export const AddressCopyButton = ({
   address,
