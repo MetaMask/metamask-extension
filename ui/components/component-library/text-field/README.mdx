@@ -20,9 +20,9 @@ Use the `size` prop to set the height of the `TextField`.
 
 Possible sizes include:
 
-- `sm` 32px
-- `md` 40px
-- `lg` 48px
+- `Sm` 32px
+- `Md` 40px
+- `Lg` 48px
 
 Defaults to `md`
 
@@ -31,12 +31,11 @@ Defaults to `md`
 </Canvas>
 
 ```jsx
-import { Size } from '../../../helpers/constants/design-system';
-import { TextField } from '../../component-library';
+import { TextField, TextFieldSize } from '../../component-library';
 
-<TextField size={Size.SM} />
-<TextField size={Size.MD} />
-<TextField size={Size.LG} />
+<TextField size={TextFieldSize.Sm} />
+<TextField size={TextFieldSize.Md} />
+<TextField size={TextFieldSize.Lg} />
 ```
 
 ### Type
@@ -56,11 +55,11 @@ Defaults to `text`.
 </Canvas>
 
 ```jsx
-import { TextField } from '../../component-library';
+import { TextField, TextFieldType } from '../../component-library';
 
-<TextField type="text" /> // (Default)
-<TextField type="number" />
-<TextField type="password" />
+<TextField  placeholder="Default" />
+<TextField  type={TextFieldType.Password} placeholder="Password" />
+<TextField  type={TextFieldType.Number} placeholder="Number" />
 ```
 
 ### Truncate
