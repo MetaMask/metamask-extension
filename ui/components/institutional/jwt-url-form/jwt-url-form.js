@@ -89,8 +89,8 @@ const JwtUrlForm = (props) => {
               height="154px"
               resize="both"
               boxProps={{
-                borderRadius: 'sm',
-                borderStyle: 'solid',
+                borderRadius: BorderRadius.SM,
+                borderStyle: BorderStyle.solid,
                 backgroundColor: BackgroundColor.backgroundDefault,
                 color: TextColor.textDefault,
                 padding: 2,
