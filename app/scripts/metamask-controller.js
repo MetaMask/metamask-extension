@@ -1573,6 +1573,9 @@ export default class MetamaskController extends EventEmitter {
 
     this.userOperationController = new UserOperationController({
       blockTracker: this.blockTracker,
+      getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
+        this.gasFeeController,
+      ),
       getPrivateKey: () =>
         this.keyringController.exportAccount(
           process.env.PASSWORD,
@@ -3805,15 +3808,26 @@ export default class MetamaskController extends EventEmitter {
     const smartContractSnapId = process.env.SMART_CONTRACT_SNAP_ID;
 
     if (smartContractSnapId) {
-      await this.userOperationController.addUserOperationFromTransaction(
-        txParams,
-        {
-          chainId: this.networkController.state.providerConfig.chainId,
-          snapId: smartContractSnapId,
-        },
-      );
+      const result =
+        await this.userOperationController.addUserOperationFromTransaction(
+          txParams,
+          {
+            chainId: this.networkController.state.providerConfig.chainId,
+            snapId: smartContractSnapId,
+          },
+        );
 
-      return '';
+      log.info('Added user operation', result.id);
+
+      const hash = await result.hash;
+
+      log.info('Submitted user operation', hash);
+
+      const transactionHash = await result.transactionHash;
+
+      log.info('Confirmed user operation', transactionHash);
+
+      return transactionHash;
     }
 
     // Options are passed explicitly as an additional security measure
