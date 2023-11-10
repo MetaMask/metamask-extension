@@ -708,7 +708,9 @@ const CustodyPage = () => {
         <ConfirmConnectCustodianModal
           onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
           custodianName={selectedCustodianDisplayName}
-          custodianURL={matchedCustodian?.onboardingUrl}
+          custodianURL={
+            matchedCustodian?.onboardingUrl || matchedCustodian?.website
+          }
         />
       )}
     </Box>
