@@ -344,6 +344,11 @@ export function getSelectedInternalAccount(state) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
+export function checkIfMethodIsEnabled(state, methodName) {
+  const internalAccount = getSelectedInternalAccount(state);
+  return Boolean(internalAccount.methods.includes(methodName));
+}
+
 export function getSelectedInternalAccountWithBalance(state) {
   const selectedAccount = getSelectedInternalAccount(state);
   const rawAccount = getMetaMaskAccountBalances(state)[selectedAccount.address];
@@ -437,8 +442,9 @@ export const getMetaMaskAccountsConnected = createSelector(
 );
 
 export function isBalanceCached(state) {
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   const selectedAccountBalance =
-    getMetaMaskAccountBalances(state)[getSelectedAddress(state)]?.balance;
+    getMetaMaskAccountBalances(state)[selectedAddress]?.balance;
   const cachedBalance = getSelectedAccountCachedBalance(state);
 
   return Boolean(!selectedAccountBalance && cachedBalance);
@@ -488,9 +494,7 @@ export function getEnsResolutionByAddress(state, address) {
 
   const entry =
     getAddressBookEntry(state, address) ||
-    Object.values(state.metamask.identities).find((identity) =>
-      isEqualCaseInsensitive(identity.address, address),
-    );
+    getInternalAccountByAddress(state, address);
 
   return entry?.name || '';
 }
@@ -516,11 +520,11 @@ export function getAddressBookEntryOrAccountName(state, address) {
   return internalAccount?.metadata.name || address;
 }
 
-export function getAccountName(identities, address) {
-  const entry = Object.values(identities).find((identity) =>
-    isEqualCaseInsensitive(identity.address, address),
+export function getAccountName(accounts, accountAddress) {
+  const account = accounts.find((internalAccount) =>
+    isEqualCaseInsensitive(internalAccount.address, accountAddress),
   );
-  return entry && entry.name !== '' ? entry.name : '';
+  return account && account.metadata.name !== '' ? account.metadata.name : '';
 }
 
 export function getMetadataContractName(state, address) {
@@ -560,7 +564,7 @@ export function getAccountsWithLabels(state) {
 }
 
 export function getCurrentAccountWithSendEtherInfo(state) {
-  const currentAddress = getSelectedAddress(state);
+  const { address: currentAddress } = getSelectedInternalAccount(state);
   const accounts = accountsWithSendEtherInfoSelector(state);
 
   return getAccountByAddress(accounts, currentAddress);
@@ -907,6 +911,11 @@ export function getShowWhatsNewPopup(state) {
 export const getMemoizedMetaMaskIdentities = createDeepEqualSelector(
   getMetaMaskIdentities,
   (identities) => identities,
+);
+
+export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
+  getInternalAccounts,
+  (internalAccounts) => internalAccounts,
 );
 
 export const getMemoizedAddressBook = createDeepEqualSelector(
@@ -1529,7 +1538,7 @@ export function getIsDynamicTokenListAvailable(state) {
  */
 export function getDetectedTokensInCurrentNetwork(state) {
   const currentChainId = getCurrentChainId(state);
-  const selectedAddress = getSelectedAddress(state);
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
   return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
 }
 
@@ -1799,13 +1808,13 @@ export function getSnapRegistry(state) {
 }
 
 export function getKeyringSnapAccounts(state) {
-  const identities = getMetaMaskIdentities(state);
+  const internalAccounts = getInternalAccounts(state);
 
-  const keyringAccounts = Object.values(identities).filter((identity) => {
-    return (
-      findKeyringForAddress(state, identity.address).type === 'Snap Keyring'
-    );
-  });
+  const keyringAccounts = Object.values(internalAccounts).filter(
+    (internalAccount) => {
+      return internalAccount.metadata.keyring.type === KeyringType.snap;
+    },
+  );
   return keyringAccounts;
 }
 
