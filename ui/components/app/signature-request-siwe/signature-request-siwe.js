@@ -21,12 +21,11 @@ import { PageContainerFooter } from '../../ui/page-container';
 import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import {
   accountsWithSendEtherInfoSelector,
-  getInternalAccountByAddress,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
   unconfirmedMessagesHashSelector,
 } from '../../../selectors';
-import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
+import { valuesFor } from '../../../helpers/utils/util';
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 import { formatMessageParams } from '../../../../shared/modules/siwe';
 import { clearConfirmTransaction } from '../../../ducks/confirm-transaction/confirm-transaction.duck';
