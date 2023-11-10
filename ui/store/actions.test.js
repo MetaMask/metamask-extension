@@ -266,6 +266,24 @@ describe('Actions', () => {
           identities: {
             '0xAnotherAddress': {},
           },
+          internalAccounts: {
+            accounts: {
+              '22497cc9-e791-42b8-adef-2f13ef216b86': {
+                address: '0xAnotherAddress',
+                id: '22497cc9-e791-42b8-adef-2f13ef216b86',
+                metadata: {
+                  name: 'Test Account 2',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: '22497cc9-e791-42b8-adef-2f13ef216b86',
+          },
         }),
       );
 
@@ -2064,6 +2082,24 @@ describe('Actions', () => {
             },
             identities: {
               '0xFirstAddress': {},
+            },
+            internalAccounts: {
+              accounts: {
+                '8e110453-2231-4e62-82de-29b913dfef4b': {
+                  address: '0xFirstAddress',
+                  id: '8e110453-2231-4e62-82de-29b913dfef4b',
+                  metadata: {
+                    name: 'Test Account 2',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: '8e110453-2231-4e62-82de-29b913dfef4b',
             },
             cachedBalances: {
               '0x1': {
