@@ -7,7 +7,8 @@ import {
   BlockSize,
   FlexDirection,
   TextVariant,
-  Color,
+  BackgroundColor,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { ButtonVariant, Box, Button, Text } from '../../component-library';
 import TextArea from '../../ui/textarea';
@@ -90,7 +91,7 @@ const JwtUrlForm = (props) => {
               boxProps={{
                 borderRadius: 'sm',
                 borderStyle: 'solid',
-                backgroundColor: Background.backgroundDefault,
+                backgroundColor: BackgroundColor.backgroundDefault,
                 color: TextColor.textDefault,
                 padding: 2,
               }}
@@ -113,8 +114,8 @@ const JwtUrlForm = (props) => {
             }}
             value={props.apiUrl}
             inputProps={{
-              backgroundColor: Color.backgroundDefault,
-              color: Color.textDefault,
+              backgroundColor: BackgroundColor.backgroundDefault,
+              color: TextColor.textDefault,
               padding: 2,
             }}
           />

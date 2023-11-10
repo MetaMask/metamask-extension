@@ -35,6 +35,7 @@ import {
   TextColor,
   TextAlign,
   TextVariant,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -381,7 +382,10 @@ const CustodyPage = () => {
   }
 
   return (
-    <Box className="main-container" backgroundColor={Color.backgroundDefault}>
+    <Box
+      className="main-container"
+      backgroundColor={BackgroundColor.backgroundDefault}
+    >
       {connectError && (
         <Text
           data-testid="connect-error"
