@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Se você tentar enviar ativos diretamente de uma rede para outra, isso poderá resultar na perda permanente deles. Certifique-se de usar uma ponte."
   },
-  "attemptToCancelSwap": {
-    "message": "Tentar cancelar a troca por ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Tentando conexão com a blockchain."
   },
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
-  },
-  "enableSmartSwaps": {
-    "message": "Ativar trocas inteligentes"
   },
   "enableSnap": {
     "message": "Ativar"
@@ -2521,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Você não tem nenhum snap instalado."
-  },
-  "noThanksVariant2": {
-    "message": "Não, obrigado."
   },
   "noTransactions": {
     "message": "Você não tem transações"
@@ -3815,9 +3805,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "As trocas inteligentes estão temporariamente indisponíveis."
   },
-  "smartSwapsSubDescription": {
-    "message": "* As trocas inteligentes tentarão enviar sua transação de forma privada, diversas vezes. Se todas as tentativas falharem, a transação será transmitida publicamente para garantir que sua troca ocorra com sucesso."
-  },
   "snapConfigure": {
     "message": "Configurar"
   },
@@ -4193,9 +4180,6 @@
     "message": "A troca será concluída em <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simule as transações antes de enviá-las para diminuir os custos de transação e reduzir a possibilidade de falhas."
-  },
   "stxTryingToCancel": {
     "message": "Tentando cancelar sua transação..."
   },
@@ -4210,9 +4194,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Sua transação foi cancelada e você não pagou nenhuma taxa de gás desnecessária."
-  },
-  "stxYouCanOptOut": {
-    "message": "Você pode cancelar a participação a qualquer momento nas configurações avançadas."
   },
   "submit": {
     "message": "Enviar"

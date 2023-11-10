@@ -4,8 +4,12 @@ import classnames from 'classnames';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { useSelector } from 'react-redux';
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 import { getSelectedAddress } from '../../../selectors';
+import {
+  getIsCustodianSupportedChain,
+  getCustodianIconForAddress,
+} from '../../../selectors/institutional/selectors';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 ///: END:ONLY_INCLUDE_IN
 import { ButtonBase, IconName } from '../../component-library';
 import {
@@ -46,11 +50,25 @@ export const AddressCopyButton = ({
   const custodianIcon = useSelector((state) =>
     getCustodianIconForAddress(state, selectedAddress),
   );
+  const isCustodianSupportedChain = useSelector(getIsCustodianSupportedChain);
+  const { nickname, type: networkType } = useSelector(getProviderConfig);
+  ///: END:ONLY_INCLUDE_IN
+
+  const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
+  let tooltipTitle = tooltipText;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  tooltipTitle = isCustodianSupportedChain
+    ? tooltipText
+    : t('custodyWrongChain', [nickname || networkType]);
   ///: END:ONLY_INCLUDE_IN
 
   return (
-    <Tooltip position="bottom" title={copied ? t('copiedExclamation') : null}>
+    <Tooltip position="bottom" title={tooltipTitle}>
       <ButtonBase
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        disabled={!isCustodianSupportedChain}
+        ///: END:ONLY_INCLUDE_IN
         backgroundColor={BackgroundColor.primaryMuted}
         onClick={() => {
           handleCopy(checksummedAddress);

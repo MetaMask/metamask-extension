@@ -526,10 +526,6 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
-      onAccountRemoved: this.controllerMessenger.subscribe.bind(
-        this.controllerMessenger,
-        'KeyringController:accountRemoved',
-      ),
       tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
@@ -957,19 +953,30 @@ export default class MetamaskController extends EventEmitter {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    const snapKeyringBuildMessenger = this.controllerMessenger.getRestricted({
+      name: 'SnapKeyringBuilder',
+      allowedActions: [
+        'ApprovalController:addRequest',
+        'ApprovalController:acceptRequest',
+        'ApprovalController:rejectRequest',
+        'ApprovalController:startFlow',
+        'ApprovalController:endFlow',
+        'ApprovalController:showSuccess',
+        'ApprovalController:showError',
+        'PhishingController:test',
+        'PhishingController:maybeUpdateState',
+        'KeyringController:getAccounts',
+      ],
+    });
+
     const getSnapController = () => this.snapController;
-    const getApprovalController = () => this.approvalController;
-    const getKeyringController = () => this.keyringController;
-    const getPreferencesController = () => this.preferencesController;
-    const getPhishingController = () => this.phishingController;
 
     additionalKeyrings.push(
       snapKeyringBuilder(
+        snapKeyringBuildMessenger,
         getSnapController,
-        getApprovalController,
-        getKeyringController,
-        getPreferencesController,
-        getPhishingController,
+        async () => await this.keyringController.persistAllKeyrings(),
+        (address) => this.preferencesController.setSelectedAddress(address),
         (address) => this.removeAccount(address),
       ),
     );
@@ -2413,6 +2420,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       // Snap state, source code and other files are stripped out to prevent piping to the MetaMask UI.
       snapStates: {},
+      unencryptedSnapStates: {},
       snaps: Object.values(flatState.snaps ?? {}).reduce((acc, snap) => {
         // eslint-disable-next-line no-unused-vars
         const { sourceCode, auxiliaryFiles, ...rest } = snap;
@@ -3579,6 +3587,11 @@ export default class MetamaskController extends EventEmitter {
    */
   async forgetDevice(deviceName) {
     const keyring = await this.getKeyringForDevice(deviceName);
+
+    for (const address of keyring.accounts) {
+      await this.removeAccount(address);
+    }
+
     keyring.forgetDevice();
     return true;
   }

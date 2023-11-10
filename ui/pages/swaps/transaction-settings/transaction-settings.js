@@ -17,12 +17,14 @@ import {
   DISPLAY,
   SEVERITIES,
   FlexDirection,
+  Display,
 } from '../../../helpers/constants/design-system';
 import { getTranslatedStxErrorMessage } from '../swaps.util';
 import {
   Slippage,
   SLIPPAGE_VERY_HIGH_ERROR,
   SLIPPAGE_NEGATIVE_ERROR,
+  SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL,
 } from '../../../../shared/constants/swaps';
 import {
   BannerAlert,
@@ -31,6 +33,8 @@ import {
   ModalContent,
   ModalHeader,
   ButtonPrimary,
+  ButtonLink,
+  ButtonLinkSize,
 } from '../../../components/component-library';
 import { setSwapsErrorKey } from '../../../store/actions';
 import { getSwapsErrorKey } from '../../../ducks/swaps/swaps';
@@ -144,11 +148,17 @@ export default function TransactionSettings({
     }
   }, [dispatch, activeButtonIndex]);
 
+  useEffect(() => {
+    if (newSmartTransactionsOptInStatus === undefined) {
+      setNewSmartTransactionsOptInStatus(smartTransactionsOptInStatus);
+    }
+  }, [smartTransactionsOptInStatus, newSmartTransactionsOptInStatus]);
+
   return (
     <Modal
       onClose={onModalClose}
       isOpen
-      isClosedOnOutsideClick
+      isClosedOnOutsideClick={false}
       isClosedOnEscapeKey
       className="mm-modal__custom-scrollbar"
     >
@@ -196,7 +206,17 @@ export default function TransactionSettings({
                     ) : (
                       <InfoTooltip
                         position="top"
-                        contentText={t('stxTooltip')}
+                        contentText={t('smartSwapsTooltip', [
+                          <ButtonLink
+                            key="smart-swaps-faq-and-risk-disclosures"
+                            size={ButtonLinkSize.Inherit}
+                            href={SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL}
+                            externalLink
+                            display={Display.Inline}
+                          >
+                            {t('faqAndRiskDisclosures')}
+                          </ButtonLink>,
+                        ])}
                         iconFillColor="var(--color-icon-muted)"
                       />
                     )}

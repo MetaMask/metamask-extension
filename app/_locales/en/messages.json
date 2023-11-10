@@ -480,9 +480,8 @@
   "attemptSendingAssets": {
     "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
-  "attemptToCancelSwap": {
-    "message": "Attempt to cancel swap for ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
+  "attemptToCancelSwapForFree": {
+    "message": "Attempt to cancel swap for free"
   },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
@@ -1502,9 +1501,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
-  "enableSmartSwaps": {
-    "message": "Enable smart swaps"
-  },
   "enableSnap": {
     "message": "Enable"
   },
@@ -1677,6 +1673,9 @@
   },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
+  },
+  "faqAndRiskDisclosures": {
+    "message": "FAQ and Risk Disclosures"
   },
   "fast": {
     "message": "Fast"
@@ -2387,6 +2386,9 @@
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manageInSettings": {
+    "message": "Manage in settings"
+  },
   "max": {
     "message": "Max"
   },
@@ -2744,9 +2746,6 @@
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
-  },
-  "noThanksVariant2": {
-    "message": "No, thanks."
   },
   "noTransactions": {
     "message": "You have no transactions"
@@ -4198,14 +4197,19 @@
   "smartSwapsDescription": {
     "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Swaps will allow MetaMask to programmatically optimize your Swap to help:"
   },
+  "smartSwapsDescription2": {
+    "message": "*Smart Swaps will submit your transaction privately. You can opt-out in advanced settings at any time. To learn more about Smart Swaps, read our $1.",
+    "description": "$1 is an external link to FAQ and Risk Disclosures"
+  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Not enough funds for a smart swap."
   },
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps are temporarily unavailable."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
+  "smartSwapsTooltip": {
+    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures. To learn more, read our $1",
+    "description": "$1 is an external link to FAQ and Risk Disclosures"
   },
   "snapAccountCreated": {
     "message": "Your account is ready!"
@@ -4569,6 +4573,9 @@
   "stakeDescription": {
     "message": "Stake your crypto to earn rewards"
   },
+  "startSwapping": {
+    "message": "Start swapping"
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4669,9 +4676,6 @@
     "message": "Swap will complete in <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures."
-  },
   "stxTryingToCancel": {
     "message": "Trying to cancel your transaction..."
   },
@@ -4686,9 +4690,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Your transaction has been cancelled and you did not pay any unnecessary gas fees."
-  },
-  "stxYouCanOptOut": {
-    "message": "You can opt-out in advanced settings any time."
   },
   "submit": {
     "message": "Submit"

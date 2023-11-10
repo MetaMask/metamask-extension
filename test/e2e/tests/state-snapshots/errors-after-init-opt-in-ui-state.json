@@ -153,6 +153,7 @@
     "logs": "object",
     "snaps": "object",
     "snapStates": "object",
+    "unencryptedSnapStates": "object",
     "jobs": "object",
     "database": "object",
     "lastUpdated": "object",
