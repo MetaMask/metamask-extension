@@ -346,9 +346,7 @@ export function getSelectedInternalAccount(state) {
       address: '',
       metadata: {
         name: '',
-        keyring: {
-          type: '',
-        },
+        keyring: null,
       },
       options: {},
       methods: [],
