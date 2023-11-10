@@ -9,6 +9,8 @@ import {
   TextVariant,
   BackgroundColor,
   TextColor,
+  BorderRadius,
+  BorderStyle,
 } from '../../../helpers/constants/design-system';
 import { ButtonVariant, Box, Button, Text } from '../../component-library';
 import TextArea from '../../ui/textarea';
