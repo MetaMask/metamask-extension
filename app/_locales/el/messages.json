@@ -3907,9 +3907,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightLoading": {
-    "message": "Φόρτωση πληροφοριών συναλλαγών..."
-  },
   "snapsInvalidUIError": {
     "message": "Το UI που καθορίζεται από το snap δεν είναι έγκυρο."
   },

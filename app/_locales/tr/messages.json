@@ -3907,9 +3907,6 @@
   "snaps": {
     "message": "Snapler"
   },
-  "snapsInsightLoading": {
-    "message": "İşlem içgörüsü yükleniyor..."
-  },
   "snapsInvalidUIError": {
     "message": "Snap tarafından belirtilen kullanıcı arayüzü geçersiz."
   },
