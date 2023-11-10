@@ -381,7 +381,7 @@ const CustodyPage = () => {
   }
 
   return (
-    <Box className="main-container custody-account-container">
+    <Box className="main-container" backgroundColor={Color.backgroundDefault}>
       {connectError && (
         <Text
           data-testid="connect-error"
