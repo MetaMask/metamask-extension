@@ -352,7 +352,7 @@ export function getSelectedInternalAccountWithBalance(state) {
 
   const selectedAccountWithBalance = {
     ...selectedAccount,
-    balance: rawAccount ? rawAccount.balance : 0,
+    balance: rawAccount ? rawAccount.balance : '0x0',
   };
 
   return selectedAccountWithBalance;
@@ -1697,7 +1697,12 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
 export function getShouldShowSeedPhraseReminder(state) {
   const { tokens, seedPhraseBackedUp, dismissSeedBackUpReminder } =
     state.metamask;
-  const accountBalance = getCurrentEthBalance(state) ?? 0;
+
+  // if there is no account, we don't need to show the seed phrase reminder
+  const accountBalance = getSelectedInternalAccount(state)
+    ? getCurrentEthBalance(state)
+    : 0;
+
   return (
     seedPhraseBackedUp === false &&
     (parseInt(accountBalance, 16) > 0 || tokens.length > 0) &&
