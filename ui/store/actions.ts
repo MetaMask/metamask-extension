@@ -1526,12 +1526,15 @@ export function updateMetamaskState(
     const providerConfig = getProviderConfig(state);
     const { metamask: currentState } = state;
 
-    const { currentLocale, selectedAddress } = currentState;
-    const {
-      currentLocale: newLocale,
-      selectedAddress: newSelectedAddress,
-      providerConfig: newProviderConfig,
-    } = newState;
+    const { currentLocale } = currentState;
+    const currentInternalAccount = getSelectedInternalAccount(state);
+    const selectedAddress = currentInternalAccount?.address;
+    const { currentLocale: newLocale, providerConfig: newProviderConfig } =
+      newState;
+    const newInternalAccount = getSelectedInternalAccount({
+      metamask: newState,
+    });
+    const newSelectedAddress = newInternalAccount?.address;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
       dispatch(updateCurrentLocale(newLocale));
