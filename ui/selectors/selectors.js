@@ -337,7 +337,25 @@ export function getInternalAccountByAddress(state, address) {
 
 export function getSelectedInternalAccount(state) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
-  return state.metamask.internalAccounts.accounts[accountId];
+  const internalAccount = state.metamask.internalAccounts.accounts[accountId];
+
+  // During onboarding there aren't any internal accounts yet
+  if (!internalAccount) {
+    return {
+      id: '',
+      address: '',
+      metadata: {
+        name: '',
+        keyring: {
+          type: '',
+        },
+      },
+      options: {},
+      methods: [],
+    };
+  }
+
+  return internalAccount;
 }
 
 export function checkIfMethodIsEnabled(state, methodName) {

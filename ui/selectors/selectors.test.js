@@ -53,7 +53,18 @@ describe('Selectors', () => {
             },
           },
         }),
-      ).toBeUndefined();
+      ).toStrictEqual({
+        id: '',
+        address: '',
+        metadata: {
+          name: '',
+          keyring: {
+            type: '',
+          },
+        },
+        options: {},
+        methods: [],
+      });
     });
 
     it('returns selectedAccount', () => {

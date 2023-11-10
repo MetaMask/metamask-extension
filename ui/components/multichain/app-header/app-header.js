@@ -91,7 +91,7 @@ export const AppHeader = ({ location }) => {
   const showProductTourPopup = useSelector(getShowProductTour);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const selectedAddress = internalAccount?.address;
+  const selectedAddress = internalAccount.address;
   const custodianIcon = useSelector((state) =>
     getCustodianIconForAddress(state, selectedAddress),
   );
