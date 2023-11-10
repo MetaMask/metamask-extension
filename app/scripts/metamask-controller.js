@@ -1492,12 +1492,15 @@ export default class MetamaskController extends EventEmitter {
         getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
         ///: END:ONLY_INCLUDE_IN
       },
+      getSelectedAddress: () =>
+        this.accountsController.getSelectedAccount().address,
       messenger: this.controllerMessenger.getRestricted({
         name: 'TransactionController',
         allowedActions: [
           `${this.approvalController.name}:addRequest`,
           `${this.approvalController.name}:acceptRequest`,
           `${this.approvalController.name}:rejectRequest`,
+          `${this.accountsController.name}:getSelectedAccount`,
         ],
       }),
     });
