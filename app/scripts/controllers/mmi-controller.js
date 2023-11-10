@@ -43,7 +43,13 @@ export default class MMIController extends EventEmitter {
     this.getTransactions = hooks?.getTransactions;
     this.updateTransactionHash = hooks?.updateTransactionHash;
     this.trackTransactionEvents = hooks?.trackTransactionEvents;
-    this.txStateManager = hooks?.txStateManager;
+    this.txStateManager = {
+      getTransactions: hooks?.getTransactions,
+      setTxStatusSigned: hooks?.setTxStatusSigned,
+      setTxStatusSubmitted: hooks?.setTxStatusSubmitted,
+      setTxStatusFailed: hooks?.setTxStatusFailed,
+      updateTransaction: hooks?.updateTransaction,
+    };
 
     // Prepare event listener after transactionUpdateController gets initiated
     this.transactionUpdateController.prepareEventListener(

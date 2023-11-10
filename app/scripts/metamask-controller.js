@@ -1510,34 +1510,29 @@ export default class MetamaskController extends EventEmitter {
         getTransactions: this.txController.getTransactions.bind(
           this.txController,
         ),
-        updateTransactionHash: this.txController.setTxHash.bind(
-          this.txController,
-        ),
+        setTxStatusSigned:
+          this.txController.txStateManager.setTxStatusSigned.bind(
+            this.txController.txStateManager,
+          ),
+        setTxStatusSubmitted:
+          this.txController.txStateManager.setTxStatusSubmitted.bind(
+            this.txController.txStateManager,
+          ),
+        setTxStatusFailed:
+          this.txController.txStateManager.setTxStatusFailed.bind(
+            this.txController.txStateManager,
+          ),
         trackTransactionEvents: handleMMITransactionUpdate.bind(
           null,
           transactionMetricsRequest,
         ),
-        txStateManager: {
-          getTransactions: this.txController.getTransactions.bind(
-            this.txController,
+        updateTransaction:
+          this.txController.txStateManager.updateTransaction.bind(
+            this.txController.txStateManager,
           ),
-          setTxStatusSigned:
-            this.txController.txStateManager.setTxStatusSigned.bind(
-              this.txController.txStateManager,
-            ),
-          setTxStatusSubmitted:
-            this.txController.txStateManager.setTxStatusSubmitted.bind(
-              this.txController.txStateManager,
-            ),
-          setTxStatusFailed:
-            this.txController.txStateManager.setTxStatusFailed.bind(
-              this.txController.txStateManager,
-            ),
-          updateTransaction:
-            this.txController.txStateManager.updateTransaction.bind(
-              this.txController.txStateManager,
-            ),
-        },
+        updateTransactionHash: this.txController.setTxHash.bind(
+          this.txController,
+        ),
       },
     });
     ///: END:ONLY_INCLUDE_IN
