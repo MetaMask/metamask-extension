@@ -40,7 +40,7 @@ export default {
   title: 'Components/Multichain/AccountListItem',
   component: AccountListItem,
   argTypes: {
-    ACCOUNT: {
+    account: {
       control: 'object',
     },
     selected: {
@@ -60,7 +60,7 @@ export default {
     },
   },
   args: {
-    ACCOUNT: SIMPLE_ACCOUNT,
+    account: SIMPLE_ACCOUNT,
     onClick,
   },
 };
@@ -83,7 +83,7 @@ export const HardwareItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-HardwareItem.args = { ACCOUNT: HARDWARE_ACCOUNT };
+HardwareItem.args = { account: HARDWARE_ACCOUNT };
 HardwareItem.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
@@ -93,7 +93,7 @@ export const SelectedHardwareItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-SelectedHardwareItem.args = { ACCOUNT: HARDWARE_ACCOUNT, selected: true };
+SelectedHardwareItem.args = { account: HARDWARE_ACCOUNT, selected: true };
 SelectedHardwareItem.decorators = [
   (story) => <Provider store={store}>{story()}</Provider>,
 ];
@@ -103,7 +103,7 @@ export const ChaosDataItem = (args) => (
     <AccountListItem {...args} />
   </div>
 );
-ChaosDataItem.args = { ACCOUNT: CHAOS_ACCOUNT };
+ChaosDataItem.args = { account: CHAOS_ACCOUNT };
 
 export const ConnectedSiteItem = (args) => (
   <div {...CONTAINER_STYLES}>

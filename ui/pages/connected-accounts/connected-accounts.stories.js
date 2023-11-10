@@ -90,6 +90,7 @@ export const DefaultStory = () => {
       activeTabOrigin="https://metamask.github.io"
       accountToConnect={accounts[0]}
       connectAccount={action('Account Connected')}
+      connectedAccounts={accounts}
       removePermittedAccount={action('Account Removed')}
       setSelectedAddress={action('Selected Address Changed')}
       originOfActiveTab="https://snaps.metamask.io/"
