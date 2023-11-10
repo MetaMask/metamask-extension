@@ -20,7 +20,7 @@ import {
   getIsTokenDetectionSupported,
   getIstokenDetectionInactiveOnNonMainnetSupportedNetwork,
   getRpcPrefsForCurrentProvider,
-  getSelectedAccount,
+  getSelectedInternalAccount,
   getSelectedNetworkClientId,
   getTokenDetectionSupportNetworkByChainId,
   getTokenList,
@@ -112,7 +112,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const isDynamicTokenListAvailable = useSelector(
     getIsDynamicTokenListAvailable,
   );
-  const selectedAccount = useSelector(getSelectedAccount);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const isMainnet = useSelector(getIsMainnet);
   const accounts = useSelector(getInternalAccounts);
   const tokens = useSelector((state) => state.metamask.tokens);
