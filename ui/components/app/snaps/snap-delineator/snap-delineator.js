@@ -12,6 +12,7 @@ import {
   TextColor,
   Display,
   JustifyContent,
+  BlockSize,
 } from '../../../../helpers/constants/design-system';
 import {
   AvatarIcon,
@@ -26,10 +27,12 @@ import {
   DelineatorType,
   getDelineatorTitle,
 } from '../../../../helpers/constants/snaps';
+import PulseLoader from '../../../ui/pulse-loader/pulse-loader';
 
 export const SnapDelineator = ({
   snapName,
   type = DelineatorType.default,
+  isLoading = false,
   isCollapsable = false,
   isCollapsed = false,
   children,
@@ -96,7 +99,17 @@ export const SnapDelineator = ({
         padding={4}
         display={isCollapsable && isCollapsed ? Display.None : Display.Block}
       >
-        {children}
+        {!isLoading && children}
+        {isLoading && (
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+            height={BlockSize.Full}
+          >
+            <PulseLoader />
+          </Box>
+        )}
       </Box>
     </Box>
   );
@@ -107,6 +120,7 @@ SnapDelineator.propTypes = {
   type: PropTypes.string,
   isCollapsable: PropTypes.bool,
   isCollapsed: PropTypes.bool,
+  isLoading: PropTypes.bool,
   onClick: PropTypes.func,
   boxProps: PropTypes.object,
   children: PropTypes.node,
