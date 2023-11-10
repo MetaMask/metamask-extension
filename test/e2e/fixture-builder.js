@@ -1514,7 +1514,7 @@ class FixtureBuilder {
 
   build() {
     this.fixture.meta = {
-      version: 84,
+      version: 74,
     };
     return this.fixture;
   }
