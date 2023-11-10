@@ -291,15 +291,6 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
             <button
               class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
             >
-              Data
-            </button>
-          </li>
-          <li
-            class="box tab confirm-page-container-content__tab box--flex-direction-row"
-          >
-            <button
-              class="box box--padding-2 box--display-block box--flex-direction-row box--text-align-center box--width-full"
-            >
               Hex
             </button>
           </li>
