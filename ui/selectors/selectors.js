@@ -333,6 +333,12 @@ export function getSelectedIdentity(state) {
   return identities[selectedAddress];
 }
 
+export function getInternalAccountByAddress(state, address) {
+  return Object.values(state.metamask.internalAccounts.accounts).find(
+    (account) => isEqualCaseInsensitive(account.address, address),
+  );
+}
+
 export function getSelectedInternalAccount(state) {
   const accountId = state.metamask.internalAccounts.selectedAccount;
   return state.metamask.internalAccounts.accounts[accountId];
