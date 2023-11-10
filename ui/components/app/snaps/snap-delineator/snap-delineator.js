@@ -13,6 +13,7 @@ import {
   Display,
   JustifyContent,
   BlockSize,
+  FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import {
   AvatarIcon,
@@ -28,6 +29,8 @@ import {
   getDelineatorTitle,
 } from '../../../../helpers/constants/snaps';
 import PulseLoader from '../../../ui/pulse-loader/pulse-loader';
+
+const LOADING_HEIGHT = '180px';
 
 export const SnapDelineator = ({
   snapName,
@@ -46,6 +49,8 @@ export const SnapDelineator = ({
   return (
     <Box
       className="snap-delineator__wrapper"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       borderStyle={BorderStyle.solid}
       borderColor={BorderColor.borderDefault}
       borderRadius={BorderRadius.LG}
@@ -53,6 +58,7 @@ export const SnapDelineator = ({
         isError ? BackgroundColor.errorMuted : BackgroundColor.backgroundDefault
       }
       {...boxProps}
+      style={{ minHeight: isLoading && LOADING_HEIGHT, ...boxProps?.style }}
     >
       <Box
         className="snap-delineator__header"
@@ -97,19 +103,13 @@ export const SnapDelineator = ({
       <Box
         className="snap-delineator__content"
         padding={4}
-        display={isCollapsable && isCollapsed ? Display.None : Display.Block}
+        display={isCollapsable && isCollapsed ? Display.None : Display.Flex}
+        alignItems={isLoading && AlignItems.center}
+        justifyContent={isLoading && JustifyContent.center}
+        style={{ height: isLoading && LOADING_HEIGHT }}
       >
         {!isLoading && children}
-        {isLoading && (
-          <Box
-            display={Display.Flex}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-            height={BlockSize.Full}
-          >
-            <PulseLoader />
-          </Box>
-        )}
+        {isLoading && <PulseLoader />}
       </Box>
     </Box>
   );
