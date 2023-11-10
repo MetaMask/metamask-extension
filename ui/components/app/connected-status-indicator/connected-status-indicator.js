@@ -18,14 +18,14 @@ import {
   getAddressConnectedSubjectMap,
   getOriginOfCurrentTab,
   getPermissionsForActiveTab,
-  getSelectedAddress,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import { ConnectedSiteMenu } from '../../multichain';
 
 export default function ConnectedStatusIndicator({ onClick }) {
   const t = useI18nContext();
 
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
 
   const permissionsForActiveTab = useSelector(getPermissionsForActiveTab);
 

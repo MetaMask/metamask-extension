@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import reactRouterDom from 'react-router-dom';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/jest';
 import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
@@ -165,6 +166,24 @@ const render = ({
       },
       providerConfig: { chainId },
       selectedAddress,
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: selectedAddress,
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
       useNftDetection,
       nftsDropdownState,
     },
