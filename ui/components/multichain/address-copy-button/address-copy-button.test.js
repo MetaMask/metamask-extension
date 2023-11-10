@@ -7,7 +7,7 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { getIsCustodianSupportedChain } from '../../../selectors/institutional/selectors';
+import { getIsCustodianSupportedChain, getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
 import { AddressCopyButton } from '.';
 
 jest.mock('copy-to-clipboard');
@@ -107,5 +107,31 @@ describe('AccountListItem', () => {
 
     expect(button).toBeDisabled();
     expect(tooltipTitle).toBeInTheDocument();
+  });
+
+  it('should render the Custody logo', () => {
+    getCustodianIconForAddress.mockReturnValue('https://saturn-custody-ui.metamask-institutional.io/saturn.svg');
+
+    const { queryByTestId } = renderWithProvider(
+      <AddressCopyButton address={SAMPLE_ADDRESS} />,
+      mockStore,
+    );
+
+    const logo = queryByTestId('custody-logo');
+
+    expect(logo).toBeInTheDocument();
+  });
+
+  it('should not render the Custody logo if no icon exists', () => {
+    getCustodianIconForAddress.mockReturnValue(undefined);
+
+    const { queryByTestId } = renderWithProvider(
+      <AddressCopyButton address={SAMPLE_ADDRESS} />,
+      mockStore,
+    );
+
+    const logo = queryByTestId('custody-logo');
+
+    expect(logo).not.toBeInTheDocument();
   });
 });

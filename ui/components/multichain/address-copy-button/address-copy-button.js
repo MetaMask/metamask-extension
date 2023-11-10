@@ -90,30 +90,21 @@ export const AddressCopyButton = ({
         alignItems={AlignItems.center}
         data-testid="address-copy-button-text"
       >
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-          custodianIcon && (
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              className="custody-logo"
-              data-testid="custody-logo"
-            >
+        <Box display={Display.Flex} alignItems={AlignItems.center}>
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            custodianIcon && (
               <img
                 src={custodianIcon}
-                className="custody-logo--icon"
-                alt="custody icon"
+                data-testid="custody-logo"
+                className="custody-logo"
+                alt="custody logo"
               />
-              {displayAddress}
-            </Box>
-          )
-          ///: END:ONLY_INCLUDE_IN
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-          displayAddress
-          ///: END:ONLY_INCLUDE_IN
-        }
+            )
+            ///: END:ONLY_INCLUDE_IN
+          }
+          {displayAddress}
+        </Box>
       </ButtonBase>
     </Tooltip>
   );
