@@ -110,7 +110,7 @@ const JwtUrlForm = (props) => {
             fullWidth
             id="api-url-box"
             data-testid="jwt-api-url-input"
-            type={'text'}
+            type="text"
             onChange={(e) => {
               props.onUrlChange(e.target.value);
             }}
