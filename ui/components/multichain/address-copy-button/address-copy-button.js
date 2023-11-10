@@ -14,9 +14,7 @@ import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import {
   ButtonBase,
   IconName,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   Box,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 import {
   BackgroundColor,
@@ -25,9 +23,7 @@ import {
   Size,
   BorderRadius,
   AlignItems,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   Display,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
