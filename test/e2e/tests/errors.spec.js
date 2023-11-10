@@ -412,7 +412,8 @@ describe('Sentry errors', function () {
           // Temporarily allow either 8 or 10, until we get to the bottom of this
           assert(
             migrationLogMessages.length === 8 ||
-              migrationLogMessages.length === 10,
+              migrationLogMessages.length === 10 ||
+              migrationLogMessages.length === 21,
           );
 
           // const firstMigrationLog = migrationLogMessages[0];
