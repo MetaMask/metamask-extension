@@ -7,36 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.5.0]
+### Added
+- Updated logging so that signature requests are included in the MetaMask state logs, which can be downloaded from Settings. ([#21207)](https://github.com/MetaMask/metamask-extension/pull/21207))
+
+### Changed
+- Updated the token import button to display the number of tokens to be imported ([#21521)](https://github.com/MetaMask/metamask-extension/pull/21521))
+- Improved the visibility of the 'Buy & Sell' button label in full-screen mode ([#21568)](https://github.com/MetaMask/metamask-extension/pull/21568))
+- Updated the account picker to prevent its background from changing when it is disabled ([#21451)](https://github.com/MetaMask/metamask-extension/pull/21451)) and ([#21450)](https://github.com/MetaMask/metamask-extension/pull/21450))
+- Updated 'Copy to Clipboard' functionality to ensure copied content is in plain text format ([#21387 ](https://github.com/MetaMask/metamask-extension/pull/21387))
+
+### Fixed
+- Fixed an issue where the correct icon was not displayed for some custom ERC20 tokens ([#21508)](https://github.com/MetaMask/metamask-extension/pull/21508))
+- Prevent errors when accessing a token details page for a token not already imported by the user ([#21400)](https://github.com/MetaMask/metamask-extension/pull/21400))
+- Ensure ERC20 Token shows correct name ([#21401)](https://github.com/MetaMask/metamask-extension/pull/21401))
+- EFixed the send screen so that it clears Hex Data when changing the asset from an ERC20 token to ETH ([#21336)](https://github.com/MetaMask/metamask-extension/pull/21336))
+- Fixed an issue where the conversion rate was incorrectly displayed as 'ETH' when sending tokens on Polygon and BNB chains ([#21185)](https://github.com/MetaMask/metamask-extension/pull/21185))
+- Fixed the incorrect display of insufficient balance errors when the account issuing the transaction is different from the currently selected account ([#21174)](https://github.com/MetaMask/metamask-extension/pull/21174))
+- Fixing truncation and alignment in the network toggle component ([#21370)](https://github.com/MetaMask/metamask-extension/pull/21370))
+- Fixed an issue in the transaction history where token amounts sent without decimals were incorrectly displayed as 0([#21338)](https://github.com/MetaMask/metamask-extension/pull/21338))
+- Fixed overflow issues in the Blockaid Security Alert ([#21317)](https://github.com/MetaMask/metamask-extension/pull/21317))
+- Fix alignment of legacy connect text ([#21552)](https://github.com/MetaMask/metamask-extension/pull/21552))
+- Remove network name from the network picker in the Popup view ([#21374)](https://github.com/MetaMask/metamask-extension/pull/21374))
+
 ## [11.4.1]
 ### Changed
 - Fixes the snaps website link pointing to the wrong URL. ([#21619](https://github.com/MetaMask/metamask-extension/pull/21619))
 
 ### Fixed
 - Fix bug that caused Blockaid integration to only display the fallback screen if the user had just switched network ([#21518](https://github.com/MetaMask/metamask-extension/pull/21518))
-### Added
-- Include logs of signature operations in the metamask state logs ([#21207)](https://github.com/MetaMask/metamask-extension/pull/21207))
-
-### Changed
-- Show number of tokens to be imported ([#21521)](https://github.com/MetaMask/metamask-extension/pull/21521))
-- Updating AccountPicker component to allow for customizations ([#21544)](https://github.com/MetaMask/metamask-extension/pull/21544))
-- Update PickerNetwork component to support full width ([#21301)](https://github.com/MetaMask/metamask-extension/pull/21301))
-- Update label for buy and sell to avoid truncation ([#21568)](https://github.com/MetaMask/metamask-extension/pull/21568))
-- Remove AccountPicker hover styling when disabled ([#21451)](https://github.com/MetaMask/metamask-extension/pull/21451))
-- Remove PickerNetwork active background color change when disabled ([#21450)](https://github.com/MetaMask/metamask-extension/pull/21450))
-- Ensure copy format is plain text ([#21387 ](https://github.com/MetaMask/metamask-extension/pull/21387))
-
-### Fixed
-- Fix incorrect ERC20 Token icon ([#21508)](https://github.com/MetaMask/metamask-extension/pull/21508))
-- Ensure user can see details for a token which has not been imported ([#21400)](https://github.com/MetaMask/metamask-extension/pull/21400))
-- Ensure ERC20 Token shows correct name ([#21401)](https://github.com/MetaMask/metamask-extension/pull/21401))
-- Ensure hex data is cleared during ERC20 Send ([#21336)](https://github.com/MetaMask/metamask-extension/pull/21336))
-- Fix conversion amount consistency along the send ERC20 flow ([#21185)](https://github.com/MetaMask/metamask-extension/pull/21185))
-- Fix gas calculation checking wrong account balance ([#21174)](https://github.com/MetaMask/metamask-extension/pull/21174))
-- Fixing truncation and alignment in the network toggle component ([#21370)](https://github.com/MetaMask/metamask-extension/pull/21370))
-- Fix sent integer token amount in the activity tab ([#21338)](https://github.com/MetaMask/metamask-extension/pull/21338))
-- Tweak Box Design System component to fix overflow issues ([#21317)](https://github.com/MetaMask/metamask-extension/pull/21317))
-- Fix alignment of legacy connect text ([#21552)](https://github.com/MetaMask/metamask-extension/pull/21552))
-- Remove network name from the network picker in the Popup view ([#21374)](https://github.com/MetaMask/metamask-extension/pull/21374))
 
 ## [11.4.0]
 ### Added
@@ -4174,8 +4172,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.5.0...HEAD
-[11.5.0]: https://github.com/MetaMask/metamask-extension/compare/v11.4.0...v11.5.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.4.1...HEAD
+[11.5.0]: https://github.com/MetaMask/metamask-extension/compare/v11.4.1...v11.5.0
 [11.4.1]: https://github.com/MetaMask/metamask-extension/compare/v11.4.0...v11.4.1
 [11.4.0]: https://github.com/MetaMask/metamask-extension/compare/v11.3.0...v11.4.0
 [11.3.0]: https://github.com/MetaMask/metamask-extension/compare/v11.2.0...v11.3.0
