@@ -12,7 +12,6 @@ import {
   TextColor,
   Display,
   JustifyContent,
-  BlockSize,
   FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -29,8 +28,6 @@ import {
   getDelineatorTitle,
 } from '../../../../helpers/constants/snaps';
 import PulseLoader from '../../../ui/pulse-loader/pulse-loader';
-
-const LOADING_HEIGHT = '180px';
 
 export const SnapDelineator = ({
   snapName,
@@ -58,7 +55,7 @@ export const SnapDelineator = ({
         isError ? BackgroundColor.errorMuted : BackgroundColor.backgroundDefault
       }
       {...boxProps}
-      style={{ minHeight: isLoading && LOADING_HEIGHT, ...boxProps?.style }}
+      style={{ minHeight: isLoading && '180px', ...boxProps?.style }}
     >
       <Box
         className="snap-delineator__header"
@@ -104,9 +101,10 @@ export const SnapDelineator = ({
         className="snap-delineator__content"
         padding={4}
         display={isCollapsable && isCollapsed ? Display.None : Display.Flex}
+        flexDirection={FlexDirection.Column}
         alignItems={isLoading && AlignItems.center}
         justifyContent={isLoading && JustifyContent.center}
-        style={{ height: isLoading && LOADING_HEIGHT }}
+        style={{ flexGrow: isLoading && '1' }}
       >
         {!isLoading && children}
         {isLoading && <PulseLoader />}

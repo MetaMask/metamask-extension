@@ -37,6 +37,7 @@ import { useTransactionInsightSnaps } from '../../../../hooks/snaps/useTransacti
 ///: END:ONLY_INCLUDE_IN
 
 export const SnapInsight = ({
+  snapId,
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   data,
   ///: END:ONLY_INCLUDE_IN
@@ -46,11 +47,10 @@ export const SnapInsight = ({
   ///: END:ONLY_INCLUDE_IN
 }) => {
   const t = useI18nContext();
-  let error, snapId, content;
+  let error, content;
   let isLoading = loading;
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   error = data?.error;
-  snapId = data?.snapId;
   content = data?.response?.content;
   const dispatch = useDispatch();
   useEffect(() => {
@@ -68,7 +68,6 @@ export const SnapInsight = ({
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
   const insights = useTransactionInsightSnaps(insightHookParams);
   error = insights.data?.[0]?.error;
-  snapId = insightHookParams.insightSnapId;
   content = insights.data?.[0]?.response?.content;
   isLoading = insights.loading;
   ///: END:ONLY_INCLUDE_IN
@@ -132,6 +131,7 @@ export const SnapInsight = ({
 };
 
 SnapInsight.propTypes = {
+  snapId: PropTypes.string,
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   /*
    * The insight object
