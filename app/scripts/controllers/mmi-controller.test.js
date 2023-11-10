@@ -65,7 +65,6 @@ describe('MMIController', function () {
         messenger: mockMessenger,
       }),
       custodianEventHandlerFactory: jest.fn(),
-      hooks: {
         getTransactions: jest.fn(),
         updateTransactionHash: jest.fn(),
         trackTransactionEvents: jest.fn(),
@@ -73,7 +72,6 @@ describe('MMIController', function () {
         setTxStatusSubmitted: jest.fn(),
         setTxStatusFailed: jest.fn(),
         updateTransaction: jest.fn(),
-      },
     });
   });
 

@@ -39,16 +39,14 @@ export default class MMIController extends EventEmitter {
     this.platform = opts.platform;
     this.extension = opts.extension;
 
-    const { hooks } = opts ?? {};
-    this.getTransactions = hooks?.getTransactions;
-    this.updateTransactionHash = hooks?.updateTransactionHash;
-    this.trackTransactionEvents = hooks?.trackTransactionEvents;
+    this.updateTransactionHash = opts.updateTransactionHash;
+    this.trackTransactionEvents = opts.trackTransactionEvents;
     this.txStateManager = {
-      getTransactions: hooks?.getTransactions,
-      setTxStatusSigned: hooks?.setTxStatusSigned,
-      setTxStatusSubmitted: hooks?.setTxStatusSubmitted,
-      setTxStatusFailed: hooks?.setTxStatusFailed,
-      updateTransaction: hooks?.updateTransaction,
+      getTransactions: opts.getTransactions,
+      setTxStatusSigned: opts.setTxStatusSigned,
+      setTxStatusSubmitted: opts.setTxStatusSubmitted,
+      setTxStatusFailed: opts.setTxStatusFailed,
+      updateTransaction: opts.updateTransaction,
     };
 
     // Prepare event listener after transactionUpdateController gets initiated
@@ -171,7 +169,7 @@ export default class MMIController extends EventEmitter {
           }
         }
 
-        const txList = this.getTransactions(); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
+        const txList = this.txStateManager.getTransactions({}, [], false); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
 
         try {
           updateCustodianTransactions({
@@ -424,7 +422,9 @@ export default class MMIController extends EventEmitter {
   }
 
   async getCustodianConfirmDeepLink(txId) {
-    const txMeta = this.getTransactions().find((tx) => tx.id === txId);
+    const txMeta = this.txStateManager
+      .getTransactions()
+      .find((tx) => tx.id === txId);
 
     const address = txMeta.txParams.from;
     const custodyType = this.custodyController.getCustodyTypeByAddress(

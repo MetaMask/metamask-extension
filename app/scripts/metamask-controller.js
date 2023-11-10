@@ -1506,34 +1506,32 @@ export default class MetamaskController extends EventEmitter {
       signatureController: this.signatureController,
       platform: this.platform,
       extension: this.extension,
-      hooks: {
-        getTransactions: this.txController.getTransactions.bind(
-          this.txController,
+      getTransactions: this.txController.getTransactions.bind(
+        this.txController,
+      ),
+      setTxStatusSigned:
+        this.txController.txStateManager.setTxStatusSigned.bind(
+          this.txController.txStateManager,
         ),
-        setTxStatusSigned:
-          this.txController.txStateManager.setTxStatusSigned.bind(
-            this.txController.txStateManager,
-          ),
-        setTxStatusSubmitted:
-          this.txController.txStateManager.setTxStatusSubmitted.bind(
-            this.txController.txStateManager,
-          ),
-        setTxStatusFailed:
-          this.txController.txStateManager.setTxStatusFailed.bind(
-            this.txController.txStateManager,
-          ),
-        trackTransactionEvents: handleMMITransactionUpdate.bind(
-          null,
-          transactionMetricsRequest,
+      setTxStatusSubmitted:
+        this.txController.txStateManager.setTxStatusSubmitted.bind(
+          this.txController.txStateManager,
         ),
-        updateTransaction:
-          this.txController.txStateManager.updateTransaction.bind(
-            this.txController.txStateManager,
-          ),
-        updateTransactionHash: this.txController.setTxHash.bind(
-          this.txController,
+      setTxStatusFailed:
+        this.txController.txStateManager.setTxStatusFailed.bind(
+          this.txController.txStateManager,
         ),
-      },
+      trackTransactionEvents: handleMMITransactionUpdate.bind(
+        null,
+        transactionMetricsRequest,
+      ),
+      updateTransaction:
+        this.txController.txStateManager.updateTransaction.bind(
+          this.txController.txStateManager,
+        ),
+      updateTransactionHash: this.txController.setTxHash.bind(
+        this.txController,
+      ),
     });
     ///: END:ONLY_INCLUDE_IN
 
