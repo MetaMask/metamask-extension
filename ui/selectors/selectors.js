@@ -563,8 +563,12 @@ export function accountsWithSendEtherInfoSelector(state) {
 }
 
 export function getAccountsWithLabels(state) {
-  return getMetaMaskAccountsOrdered(state).map((account) => {
-    const { address, metdata: name, balance } = account;
+  const result = getMetaMaskAccountsOrdered(state).map((account) => {
+    const {
+      address,
+      metadata: { name },
+      balance,
+    } = account;
     return {
       ...account,
       addressLabel: `${
@@ -576,6 +580,8 @@ export function getAccountsWithLabels(state) {
       balance,
     };
   });
+  console.log(result);
+  return result;
 }
 
 export function getCurrentAccountWithSendEtherInfo(state) {
