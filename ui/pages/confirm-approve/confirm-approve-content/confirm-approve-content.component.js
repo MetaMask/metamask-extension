@@ -41,6 +41,7 @@ import UserPreferencedCurrencyDisplay from '../../../components/app/user-prefere
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
 import CustomNonce from '../../../components/app/custom-nonce';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -274,7 +275,7 @@ export default class ConfirmApproveContent extends Component {
           <div className="confirm-approve-content__medium-text">
             <ButtonIcon
               ariaLabel="copy"
-              onClick={() => copyToClipboard(toAddress)}
+              onClick={() => copyToClipboard(toAddress, COPY_OPTIONS)}
               color={IconColor.iconDefault}
               iconName={
                 this.state.copied ? IconName.CopySuccess : IconName.Copy
@@ -420,7 +421,7 @@ export default class ConfirmApproveContent extends Component {
         <span
           className="confirm-approve-content__approval-asset-title"
           onClick={() => {
-            copyToClipboard(tokenAddress);
+            copyToClipboard(tokenAddress, COPY_OPTIONS);
           }}
           title={tokenAddress}
         >

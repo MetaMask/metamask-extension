@@ -8,6 +8,7 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import NicknamePopovers from '../../app/modals/nickname-popovers';
 import { Icon, IconName } from '../../component-library';
 import {
@@ -51,7 +52,7 @@ function SenderAddress({
       )}
       onClick={() => {
         setAddressCopied(true);
-        copyToClipboard(checksummedSenderAddress);
+        copyToClipboard(checksummedSenderAddress, COPY_OPTIONS);
         if (onSenderClick) {
           onSenderClick();
         }
@@ -130,7 +131,7 @@ export function RecipientWithAddress({
         onClick={() => {
           if (recipientIsOwnedAccount) {
             setAddressCopied(true);
-            copyToClipboard(checksummedRecipientAddress);
+            copyToClipboard(checksummedRecipientAddress, COPY_OPTIONS);
           } else {
             setShowNicknamePopovers(true);
             if (onRecipientClick) {

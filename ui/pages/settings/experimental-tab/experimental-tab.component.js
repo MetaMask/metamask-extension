@@ -7,9 +7,7 @@ import {
 } from '../../../helpers/utils/settings-search';
 import {
   MetaMetricsEventCategory,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   MetaMetricsEventName,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
 
 import {
@@ -35,12 +33,7 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
 ///: END:ONLY_INCLUDE_IN
-import {
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  BLOCKAID_TERMS_OF_USE,
-  ///: END:ONLY_INCLUDE_IN
-  OPENSEA_TERMS_OF_USE,
-} from '../../../../shared/lib/ui-utils';
+import { OPENSEA_TERMS_OF_USE } from '../../../../shared/lib/ui-utils';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -94,10 +87,9 @@ export default class ExperimentalTab extends PureComponent {
       this.props;
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Settings,
-      event: 'Enabled/Disable security_alerts_enabled',
+      event: MetaMetricsEventName.SettingsUpdated,
       properties: {
-        action: 'Enabled/Disable security_alerts_enabled',
-        legacy_event: true,
+        blockaid_alerts_enabled: newValue,
       },
     });
     setSecurityAlertsEnabled(newValue);
@@ -118,10 +110,9 @@ export default class ExperimentalTab extends PureComponent {
       this.props;
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Settings,
-      event: 'Enabled/Disable TransactionSecurityCheck',
+      event: MetaMetricsEventName.SettingsUpdated,
       properties: {
-        action: 'Enabled/Disable TransactionSecurityCheck',
-        legacy_event: true,
+        opensea_alerts_enabled: newValue,
       },
     });
     setTransactionSecurityCheckEnabled(newValue);
@@ -195,16 +186,7 @@ export default class ExperimentalTab extends PureComponent {
                         marginTop={0}
                         marginRight={1}
                       >
-                        {t('blockaidMessage', [
-                          <ButtonLink
-                            variant="bodyMd"
-                            href={BLOCKAID_TERMS_OF_USE}
-                            externalLink
-                            key="blockaid-terms-of-use"
-                          >
-                            {t('terms')}
-                          </ButtonLink>,
-                        ])}
+                        {t('blockaidMessage')}
                       </Text>
                     </div>
                     <ToggleButton
@@ -333,21 +315,20 @@ export default class ExperimentalTab extends PureComponent {
                 >
                   {t('addSnapAccountToggle')}
                 </Text>
-                <Box data-testid="add-snap-account-toggle">
-                  <ToggleButton
-                    value={addSnapAccountEnabled}
-                    onToggle={(value) => {
-                      trackEvent({
-                        event: MetaMetricsEventName.AddSnapAccountEnabled,
-                        category: MetaMetricsEventCategory.Settings,
-                        properties: {
-                          enabled: !value,
-                        },
-                      });
-                      setAddSnapAccountEnabled(!value);
-                    }}
-                  />
-                </Box>
+                <ToggleButton
+                  dataTestId="add-snap-account-toggle"
+                  value={addSnapAccountEnabled}
+                  onToggle={(value) => {
+                    trackEvent({
+                      event: MetaMetricsEventName.AddSnapAccountEnabled,
+                      category: MetaMetricsEventCategory.Settings,
+                      properties: {
+                        enabled: !value,
+                      },
+                    });
+                    setAddSnapAccountEnabled(!value);
+                  }}
+                />
               </div>
               <Text
                 variant={TextVariant.bodySm}

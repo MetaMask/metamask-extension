@@ -23,6 +23,7 @@ import {
   BackgroundColor,
   BlockSize,
   Display,
+  FontWeight,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
@@ -234,6 +235,9 @@ export const AppHeader = ({ location }) => {
                       src={currentNetwork?.rpcPrefs?.imageUrl}
                       label={currentNetwork?.nickname}
                       aria-label={t('networkMenu')}
+                      labelProps={{
+                        display: Display.None,
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
@@ -301,6 +305,7 @@ export const AppHeader = ({ location }) => {
                   }}
                   disabled={disableAccountPicker}
                   showAddress={Boolean(process.env.MULTICHAIN)}
+                  labelProps={{ fontWeight: FontWeight.Bold }}
                 />
               ) : null}
               <Box

@@ -609,8 +609,7 @@
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
   "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet. $1",
-    "description": "$1 is a link to a Blockaid's terms of use"
+    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -2063,6 +2062,9 @@
   },
   "installOrigin": {
     "message": "Install origin"
+  },
+  "installRequest": {
+    "message": "Installation request"
   },
   "installedOn": {
     "message": "Installed on $1",
@@ -4028,6 +4030,9 @@
   "send": {
     "message": "Send"
   },
+  "sendAToken": {
+    "message": "Send a token"
+  },
   "sendBugReport": {
     "message": "Send us a bug report."
   },
@@ -4324,9 +4329,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
   },
-  "snapUpdate": {
-    "message": "Update snap"
-  },
   "snapUpdateAvailable": {
     "message": "Update available"
   },
@@ -4377,9 +4379,6 @@
   },
   "snapsSettings": {
     "message": "Snap settings"
-  },
-  "snapsSettingsDescription": {
-    "message": "Manage your Snaps"
   },
   "snapsTermsOfUse": {
     "message": "Terms of Use"
@@ -5504,6 +5503,9 @@
   },
   "update": {
     "message": "Update"
+  },
+  "updateRequest": {
+    "message": "Update request"
   },
   "updatedWithDate": {
     "message": "Updated $1"

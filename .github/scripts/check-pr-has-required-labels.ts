@@ -1,6 +1,9 @@
 import * as core from '@actions/core';
 import { context, getOctokit } from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
+import { externalContributorLabel } from './shared/label';
+import { Labelable } from './shared/labelable';
+import { retrievePullRequest } from './shared/pull-request';
 
 main().catch((error: Error): void => {
   console.error(error);
@@ -19,29 +22,46 @@ async function main(): Promise<void> {
   const octokit: InstanceType<typeof GitHub> = getOctokit(githubToken);
 
   // Retrieve pull request info from context
-  const prRepoOwner = context.repo.owner;
-  const prRepoName = context.repo.repo;
-  const prNumber = context.payload.pull_request?.number;
-  if (!prNumber) {
+  const pullRequestRepoOwner = context.repo.owner;
+  const pullRequestRepoName = context.repo.repo;
+  const pullRequestNumber = context.payload.pull_request?.number;
+  if (!pullRequestNumber) {
     core.setFailed('Pull request number not found');
     process.exit(1);
   }
 
   // Retrieve pull request labels
-  const prLabels = await retrievePullRequestLabels(octokit, prRepoOwner, prRepoName, prNumber);
+  const pullRequest: Labelable = await retrievePullRequest(
+    octokit,
+    pullRequestRepoOwner,
+    pullRequestRepoName,
+    pullRequestNumber,
+  );
+  const pullRequestLabels =
+    pullRequest.labels?.map((labelObject) => labelObject?.name) || [];
 
-  const preventMergeLabels = ["needs-qa", "QA'd but questions", "issues-found", "need-ux-ds-review", "blocked", "stale", "DO-NOT-MERGE"];
-
+  const preventMergeLabels = [
+    'needs-qa',
+    "QA'd but questions",
+    'issues-found',
+    'need-ux-ds-review',
+    'blocked',
+    'stale',
+    'DO-NOT-MERGE',
+  ];
   let hasTeamLabel = false;
 
   // Check pull request has at least required QA label and team label
-  for (const label of prLabels) {
-    if (label.startsWith("team-") || label === "external-contributor") {
+  for (const label of pullRequestLabels) {
+    if (label.startsWith('team-') || label === externalContributorLabel.name) {
       console.log(`PR contains a team label as expected: ${label}`);
       hasTeamLabel = true;
     }
     if (preventMergeLabels.includes(label)) {
-      throw new Error(`PR cannot be merged because it still contains this label: ${label}`);
+      core.setFailed(
+        `PR cannot be merged because it still contains this label: ${label}`,
+      );
+      process.exit(1);
     }
     if (hasTeamLabel) {
       return;
@@ -54,44 +74,6 @@ async function main(): Promise<void> {
     errorMessage += 'No team labels found on the PR. ';
   }
   errorMessage += `Please make sure the PR is appropriately labeled before merging it.\n\nSee labeling guidelines for more detail: https://github.com/MetaMask/metamask-extension/blob/develop/.github/LABELING_GUIDELINES.md`;
-  throw new Error(errorMessage);
-
-}
-
-// This function retrieves the pull request on a specific repo
-async function retrievePullRequestLabels(octokit: InstanceType<typeof GitHub>, repoOwner: string, repoName: string, prNumber: number): Promise<string[]> {
-
-  const retrievePullRequestLabelsQuery = `
-    query RetrievePullRequestLabels($repoOwner: String!, $repoName: String!, $prNumber: Int!) {
-      repository(owner: $repoOwner, name: $repoName) {
-        pullRequest(number: $prNumber) {
-          labels(first: 100) {
-            nodes {
-                name
-            }
-          }
-        }
-      }
-    }
-  `;
-
-  const retrievePullRequestLabelsResult: {
-    repository: {
-      pullRequest: {
-        labels: {
-          nodes: {
-            name: string;
-          }[];
-        }
-      };
-    };
-  } = await octokit.graphql(retrievePullRequestLabelsQuery, {
-    repoOwner,
-    repoName,
-    prNumber,
-  });
-
-  const pullRequestLabels = retrievePullRequestLabelsResult?.repository?.pullRequest?.labels?.nodes?.map(labelObject => labelObject?.name);
-
-  return pullRequestLabels || [];
+  core.setFailed(errorMessage);
+  process.exit(1);
 }

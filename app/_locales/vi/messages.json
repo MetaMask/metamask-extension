@@ -3998,9 +3998,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 đã sẵn sàng để sử dụng"
   },
-  "snapUpdate": {
-    "message": "Cập nhật Snap"
-  },
   "snapUpdateAvailable": {
     "message": "Có cập nhật mới"
   },
@@ -4034,9 +4031,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Mọi thông tin mà bạn chia sẻ với Dịch vụ bên thứ ba sẽ được Dịch vụ bên thứ ba đó thu thập trực tiếp theo chính sách quyền riêng tư của họ. Vui lòng tham khảo chính sách quyền riêng tư của họ để biết thêm thông tin.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Quản lý Snap"
   },
   "snapsTermsOfUse": {
     "message": "Điều khoản sử dụng"

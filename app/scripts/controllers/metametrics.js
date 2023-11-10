@@ -144,6 +144,10 @@ export default class MetaMetricsController {
     this.extension = extension;
     this.environment = environment;
 
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    this.selectedAddress = prefState.selectedAddress;
+    ///: END:ONLY_INCLUDE_IN
+
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
     const segmentApiCalls = initState?.segmentApiCalls || {};
 
@@ -194,7 +198,7 @@ export default class MetaMetricsController {
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
       /* eslint-disable no-undef */
-      this.extension.alarms.getAll((alarms) => {
+      this.extension.alarms.getAll().then((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
           METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
@@ -711,6 +715,10 @@ export default class MetaMetricsController {
 
     if (this.extension?.runtime?.id) {
       mmiProps.extensionId = this.extension.runtime.id;
+    }
+
+    if (this.selectedAddres) {
+      mmiProps.accountAddress = this.selectedAddres;
     }
     ///: END:ONLY_INCLUDE_IN
 

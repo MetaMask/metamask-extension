@@ -9,7 +9,7 @@ import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
 import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
 import * as actions from './actions';
-import { _setBackgroundConnection } from './action-queue';
+import { setBackgroundConnection } from './background-connection';
 
 const middleware = [thunk];
 const defaultState = {
@@ -39,7 +39,7 @@ const baseMockState = defaultState.metamask;
 describe('Actions', () => {
   let background;
 
-  const currentNetworkId = '5';
+  const currentChainId = '0x5';
 
   beforeEach(async () => {
     background = sinon.createStubInstance(MetaMaskController, {
@@ -63,7 +63,7 @@ describe('Actions', () => {
         cb(),
       );
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -88,7 +88,7 @@ describe('Actions', () => {
 
       background.submitPassword.callsFake((_, cb) => cb(new Error('error')));
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -118,7 +118,7 @@ describe('Actions', () => {
 
       background.unMarkPasswordForgotten.callsFake((cb) => cb());
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       await store.dispatch(
         actions.createNewVaultAndRestore('password', 'test'),
@@ -132,7 +132,7 @@ describe('Actions', () => {
       background.createNewVaultAndRestore.callsFake((_, __, cb) => cb());
       background.unMarkPasswordForgotten.callsFake((cb) => cb());
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -158,7 +158,7 @@ describe('Actions', () => {
         cb(new Error('error')),
       );
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -189,7 +189,7 @@ describe('Actions', () => {
         cb(null, Array.from(Buffer.from('test').values())),
       );
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       await store.dispatch(actions.requestRevealSeedWords());
       expect(verifyPassword.callCount).toStrictEqual(1);
@@ -204,7 +204,7 @@ describe('Actions', () => {
         cb(new Error('error'));
       });
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -252,7 +252,7 @@ describe('Actions', () => {
 
       const removeAccount = background.removeAccount.callsFake((_, cb) => cb());
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         'SHOW_LOADING_INDICATION',
@@ -279,7 +279,7 @@ describe('Actions', () => {
         cb(new Error('error'));
       });
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -307,7 +307,7 @@ describe('Actions', () => {
 
       const resetAccount = background.resetAccount.callsFake((cb) => cb());
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -327,7 +327,7 @@ describe('Actions', () => {
         cb(new Error('error'));
       });
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -356,7 +356,7 @@ describe('Actions', () => {
           cb();
         });
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       await store.dispatch(
         actions.importNewAccount(
@@ -375,7 +375,7 @@ describe('Actions', () => {
         cb(new Error('error')),
       );
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         {
@@ -405,7 +405,7 @@ describe('Actions', () => {
         }),
       );
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       await store.dispatch(actions.addNewAccount(1));
       expect(addNewAccount.callCount).toStrictEqual(1);
@@ -418,7 +418,7 @@ describe('Actions', () => {
         cb(new Error('error'));
       });
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -448,7 +448,7 @@ describe('Actions', () => {
         },
       );
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       await store.dispatch(
         actions.checkHardwareStatus(
@@ -466,7 +466,7 @@ describe('Actions', () => {
         cb(new Error('error')),
       );
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -492,7 +492,7 @@ describe('Actions', () => {
 
       const forgetDevice = background.forgetDevice.callsFake((_, cb) => cb());
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       await store.dispatch(actions.forgetDevice(HardwareDeviceNames.ledger));
       expect(forgetDevice.callCount).toStrictEqual(1);
@@ -503,7 +503,7 @@ describe('Actions', () => {
 
       background.forgetDevice.callsFake((_, cb) => cb(new Error('error')));
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -533,7 +533,7 @@ describe('Actions', () => {
 
       background.establishLedgerTransportPreference.callsFake((cb) => cb());
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       await store.dispatch(
         actions.connectHardware(
@@ -554,7 +554,7 @@ describe('Actions', () => {
 
       background.establishLedgerTransportPreference.callsFake((cb) => cb());
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         {
@@ -585,7 +585,7 @@ describe('Actions', () => {
           (_, __, ___, ____, cb) => cb(),
         );
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       await store.dispatch(
         actions.unlockHardwareWalletAccounts(
@@ -605,7 +605,7 @@ describe('Actions', () => {
         cb(new Error('error')),
       );
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -629,7 +629,7 @@ describe('Actions', () => {
     it('calls setCurrentCurrency', async () => {
       const store = mockStore();
       background.setCurrentCurrency = sinon.stub().callsFake((_, cb) => cb());
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       await store.dispatch(actions.setCurrentCurrency('jpy'));
       expect(background.setCurrentCurrency.callCount).toStrictEqual(1);
@@ -640,7 +640,7 @@ describe('Actions', () => {
       background.setCurrentCurrency = sinon
         .stub()
         .callsFake((_, cb) => cb(new Error('error')));
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -665,7 +665,7 @@ describe('Actions', () => {
     const txData = {
       id: '1',
       status: TransactionStatus.unapproved,
-      metamaskNetworkId: currentNetworkId,
+      chainId: currentChainId,
       txParams,
     };
 
@@ -683,7 +683,7 @@ describe('Actions', () => {
         getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.updateTransaction(txData));
 
@@ -711,7 +711,7 @@ describe('Actions', () => {
         ),
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -748,7 +748,7 @@ describe('Actions', () => {
 
       const backgroundSetLocked = background.setLocked.callsFake((cb) => cb());
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       await store.dispatch(actions.lockMetamask());
       expect(backgroundSetLocked.callCount).toStrictEqual(1);
@@ -761,7 +761,7 @@ describe('Actions', () => {
         cb(new Error('error'));
       });
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -790,7 +790,7 @@ describe('Actions', () => {
         setSelectedAddress: setSelectedAddressSpy,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(
         actions.setSelectedAddress(
@@ -811,7 +811,7 @@ describe('Actions', () => {
         setSelectedAddress: setSelectedAddressSpy,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -841,7 +841,7 @@ describe('Actions', () => {
         setSelectedAddress: setSelectedAddressSpy,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.setSelectedAccount());
       expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
@@ -861,7 +861,7 @@ describe('Actions', () => {
         setSelectedAddress: setSelectedAddressSpy,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -891,7 +891,7 @@ describe('Actions', () => {
         getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(
         actions.addToken({
@@ -922,7 +922,7 @@ describe('Actions', () => {
         getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -961,7 +961,7 @@ describe('Actions', () => {
         getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(
         actions.ignoreTokens({ tokensToIgnore: '0x0000001' }),
@@ -977,7 +977,7 @@ describe('Actions', () => {
         getState: sinon.stub().callsFake((cb) => cb(null, baseMockState)),
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -1011,7 +1011,7 @@ describe('Actions', () => {
         setProviderType: setProviderTypeStub,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.setProviderType());
       expect(setProviderTypeStub.callCount).toStrictEqual(1);
@@ -1026,7 +1026,7 @@ describe('Actions', () => {
           .callsFake((_, cb) => cb(new Error('error'))),
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         {
@@ -1053,7 +1053,7 @@ describe('Actions', () => {
       background.getApi.returns({
         setActiveNetwork: setCurrentNetworkStub,
       });
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.setActiveNetwork('networkConfigurationId'));
       expect(
@@ -1071,7 +1071,7 @@ describe('Actions', () => {
       background.getApi.returns({
         setActiveNetwork: setCurrentNetworkStub,
       });
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         {
@@ -1105,7 +1105,7 @@ describe('Actions', () => {
         removeNetworkConfiguration: removeNetworkConfigurationStub,
         upsertNetworkConfiguration: upsertNetworkConfigurationStub,
       });
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const networkConfiguration = {
         rpcUrl: 'newRpc',
@@ -1152,7 +1152,7 @@ describe('Actions', () => {
         upsertNetworkConfiguration: upsertNetworkConfigurationStub,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'DISPLAY_WARNING', payload: 'Had a problem removing network!' },
@@ -1208,7 +1208,7 @@ describe('Actions', () => {
       background.getApi.returns({
         upsertNetworkConfiguration: upsertNetworkConfigurationStub,
       });
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const networkConfiguration = {
         rpcUrl: 'newRpc',
@@ -1265,7 +1265,7 @@ describe('Actions', () => {
       background.getApi.returns({
         requestUserApproval: requestUserApprovalStub,
       });
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const networkConfiguration = {
         rpcUrl: 'newRpc',
@@ -1308,7 +1308,7 @@ describe('Actions', () => {
       background.getApi.returns({
         removeNetworkConfiguration: removeNetworkConfigurationStub,
       });
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(
         actions.removeNetworkConfiguration('testNetworkConfigurationId'),
@@ -1373,7 +1373,7 @@ describe('Actions', () => {
         setAddressBook: setAddressBookStub,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.addToAddressBook('0x0000'));
       expect(setAddressBookStub.callCount).toStrictEqual(1);
@@ -1402,7 +1402,7 @@ describe('Actions', () => {
         exportAccount: exportAccountStub,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -1434,7 +1434,7 @@ describe('Actions', () => {
         verifyPassword: verifyPasswordStub,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -1463,7 +1463,7 @@ describe('Actions', () => {
         exportAccount: exportAccountStub,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -1496,7 +1496,7 @@ describe('Actions', () => {
         setAccountLabel: setAccountLabelStub,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(
         actions.setAccountLabel(
@@ -1516,7 +1516,7 @@ describe('Actions', () => {
           .callsFake((_, __, cb) => cb(new Error('error'))),
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -1551,7 +1551,7 @@ describe('Actions', () => {
         setFeatureFlag: setFeatureFlagStub,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.setFeatureFlag());
       expect(setFeatureFlagStub.callCount).toStrictEqual(1);
@@ -1566,7 +1566,7 @@ describe('Actions', () => {
           .callsFake((_, __, cb) => cb(new Error('error'))),
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -1595,7 +1595,7 @@ describe('Actions', () => {
         completeOnboarding: completeOnboardingStub,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.setCompletedOnboarding());
       expect(completeOnboardingStub.callCount).toStrictEqual(1);
@@ -1610,7 +1610,7 @@ describe('Actions', () => {
           .callsFake((cb) => cb(new Error('error'))),
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -1641,7 +1641,7 @@ describe('Actions', () => {
         setParticipateInMetaMetrics: setParticipateInMetaMetricsStub,
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       await store.dispatch(actions.setParticipateInMetaMetrics(true));
       expect(setParticipateInMetaMetricsStub).toHaveBeenCalledWith(
@@ -1660,7 +1660,7 @@ describe('Actions', () => {
     it('calls setUseBlockie in background', async () => {
       const store = mockStore();
       const setUseBlockieStub = sinon.stub().callsFake((_, cb) => cb());
-      _setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
+      setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
 
       await store.dispatch(actions.setUseBlockie());
       expect(setUseBlockieStub.callCount).toStrictEqual(1);
@@ -1672,7 +1672,7 @@ describe('Actions', () => {
         cb(new Error('error'));
       });
 
-      _setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
+      setBackgroundConnection({ setUseBlockie: setUseBlockieStub });
 
       const expectedActions = [
         { type: 'SHOW_LOADING_INDICATION', payload: undefined },
@@ -1693,7 +1693,7 @@ describe('Actions', () => {
     it('calls setUsePhishDetect in background', () => {
       const store = mockStore();
       const setUsePhishDetectStub = sinon.stub().callsFake((_, cb) => cb());
-      _setBackgroundConnection({
+      setBackgroundConnection({
         setUsePhishDetect: setUsePhishDetectStub,
       });
 
@@ -1707,7 +1707,7 @@ describe('Actions', () => {
         cb(new Error('error'));
       });
 
-      _setBackgroundConnection({
+      setBackgroundConnection({
         setUsePhishDetect: setUsePhishDetectStub,
       });
 
@@ -1732,7 +1732,7 @@ describe('Actions', () => {
       const setUseMultiAccountBalanceCheckerStub = sinon
         .stub()
         .callsFake((_, cb) => cb());
-      _setBackgroundConnection({
+      setBackgroundConnection({
         setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
       });
 
@@ -1748,7 +1748,7 @@ describe('Actions', () => {
           cb(new Error('error'));
         });
 
-      _setBackgroundConnection({
+      setBackgroundConnection({
         setUseMultiAccountBalanceChecker: setUseMultiAccountBalanceCheckerStub,
       });
 
@@ -1771,7 +1771,7 @@ describe('Actions', () => {
     it('calls setUse4ByteResolution in background', async () => {
       const store = mockStore();
       const setUse4ByteResolutionStub = sinon.stub().callsFake((_, cb) => cb());
-      _setBackgroundConnection({
+      setBackgroundConnection({
         setUse4ByteResolution: setUse4ByteResolutionStub,
       });
 
@@ -1785,7 +1785,7 @@ describe('Actions', () => {
         cb(new Error('error'));
       });
 
-      _setBackgroundConnection({
+      setBackgroundConnection({
         setUse4ByteResolution: setUse4ByteResolutionStub,
       });
 
@@ -1810,7 +1810,7 @@ describe('Actions', () => {
       const setUseSafeChainsListValidationStub = sinon
         .stub()
         .callsFake((_, cb) => cb());
-      _setBackgroundConnection({
+      setBackgroundConnection({
         setUseSafeChainsListValidation: setUseSafeChainsListValidationStub,
       });
 
@@ -1826,7 +1826,7 @@ describe('Actions', () => {
           cb(new Error('error'));
         });
 
-      _setBackgroundConnection({
+      setBackgroundConnection({
         setUseSafeChainsListValidation: setUseSafeChainsListValidationStub,
       });
 
@@ -1855,7 +1855,7 @@ describe('Actions', () => {
     it('calls expected actions', async () => {
       const store = mockStore();
       const setCurrentLocaleStub = sinon.stub().callsFake((_, cb) => cb());
-      _setBackgroundConnection({
+      setBackgroundConnection({
         setCurrentLocale: setCurrentLocaleStub,
       });
 
@@ -1878,7 +1878,7 @@ describe('Actions', () => {
       const setCurrentLocaleStub = sinon
         .stub()
         .callsFake((_, cb) => cb(new Error('error')));
-      _setBackgroundConnection({
+      setBackgroundConnection({
         setCurrentLocale: setCurrentLocaleStub,
       });
 
@@ -1904,7 +1904,7 @@ describe('Actions', () => {
 
       background.markPasswordForgotten.callsFake((cb) => cb());
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       await store.dispatch(actions.markPasswordForgotten());
 
@@ -1918,7 +1918,7 @@ describe('Actions', () => {
         cb(new Error('error')),
       );
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       const expectedActions = [
         { type: 'HIDE_LOADING_INDICATION' },
@@ -1942,7 +1942,7 @@ describe('Actions', () => {
 
       background.unMarkPasswordForgotten.callsFake((cb) => cb());
 
-      _setBackgroundConnection(background);
+      setBackgroundConnection(background);
 
       store.dispatch(actions.unMarkPasswordForgotten());
 
@@ -1999,7 +1999,7 @@ describe('Actions', () => {
         ),
       });
 
-      _setBackgroundConnection(background.getApi());
+      setBackgroundConnection(background.getApi());
 
       const txId = 1457634084250832;
 
@@ -2028,7 +2028,7 @@ describe('Actions', () => {
           ),
         });
 
-        _setBackgroundConnection(background.getApi());
+        setBackgroundConnection(background.getApi());
 
         await store.dispatch(actions.setDesktopEnabled(true));
 

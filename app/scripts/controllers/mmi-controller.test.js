@@ -41,7 +41,6 @@ describe('MMIController', function () {
           type: 'rinkeby',
         },
         getCurrentChainId: jest.fn(),
-        getNetworkId: jest.fn(),
         onNetworkStateChange: jest.fn(),
       }),
       signatureController: new SignatureController({
