@@ -7,7 +7,10 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { getIsCustodianSupportedChain, getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
+import {
+  getIsCustodianSupportedChain,
+  getCustodianIconForAddress,
+} from '../../../selectors/institutional/selectors';
 import { AddressCopyButton } from '.';
 
 jest.mock('copy-to-clipboard');
@@ -110,7 +113,9 @@ describe('AccountListItem', () => {
   });
 
   it('should render the Custody logo', () => {
-    getCustodianIconForAddress.mockReturnValue('https://saturn-custody-ui.metamask-institutional.io/saturn.svg');
+    getCustodianIconForAddress.mockReturnValue(
+      'https://saturn-custody-ui.metamask-institutional.io/saturn.svg',
+    );
 
     const { queryByTestId } = renderWithProvider(
       <AddressCopyButton address={SAMPLE_ADDRESS} />,

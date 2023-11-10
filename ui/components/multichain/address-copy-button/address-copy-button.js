@@ -11,11 +11,7 @@ import {
 } from '../../../selectors/institutional/selectors';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 ///: END:ONLY_INCLUDE_IN
-import {
-  ButtonBase,
-  IconName,
-  Box,
-} from '../../component-library';
+import { ButtonBase, IconName, Box } from '../../component-library';
 import {
   BackgroundColor,
   TextVariant,
