@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import Box from '../../ui/box';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { IconName, ButtonIcon, Text } from '../../component-library';
-import { Menu, MenuItem } from '../../ui/menu';
+import { MenuItem } from '../../ui/menu';
 import {
   TextColor,
   TextVariant,
@@ -58,7 +58,7 @@ export const PermissionCellOptions = ({
         data-testid={permissionName}
       />
       {showOptions && (
-        <Menu anchorElement={ref.current} onHide={handleClose}>
+        <Popover anchorElement={ref.current} onHide={handleClose}>
           <MenuItem onClick={handleDetailsOpen}>
             <Text
               variant={TextVariant.bodySm}
@@ -82,7 +82,7 @@ export const PermissionCellOptions = ({
               </Text>
             </MenuItem>
           )}
-        </Menu>
+        </Popover>
       )}
       {showDetails && (
         <Popover title={t('details')} onClose={handleDetailsClose}>

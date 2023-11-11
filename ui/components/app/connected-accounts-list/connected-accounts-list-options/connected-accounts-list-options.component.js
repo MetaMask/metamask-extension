@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
-import { Menu } from '../../../ui/menu';
-import { IconName, ButtonIcon } from '../../../component-library';
+import { IconName, ButtonIcon,Popover } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 const ConnectedAccountsListOptions = ({
@@ -22,7 +21,7 @@ const ConnectedAccountsListOptions = ({
         ariaLabel={t('options')}
       />
       {show ? (
-        <Menu
+        <Popover
           anchorElement={ref.current}
           onHide={onHideOptions}
           popperOptions={{
@@ -32,7 +31,7 @@ const ConnectedAccountsListOptions = ({
           }}
         >
           {children}
-        </Menu>
+        </Popover>
       ) : null}
     </div>
   );

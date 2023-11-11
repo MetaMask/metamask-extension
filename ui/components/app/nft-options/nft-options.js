@@ -2,8 +2,7 @@ import React, { useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { I18nContext } from '../../../contexts/i18n';
-import { Menu, MenuItem } from '../../ui/menu';
-import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
+import { ButtonIcon, ButtonIconSize, IconName,Popover } from '../../component-library';
 import { Color } from '../../../helpers/constants/design-system';
 
 const NftOptions = ({ onRemove, onViewOnOpensea }) => {
@@ -24,7 +23,7 @@ const NftOptions = ({ onRemove, onViewOnOpensea }) => {
       />
 
       {nftOptionsOpen ? (
-        <Menu
+        <Popover
           data-testid="close-nft-options-menu"
           anchorElement={ref.current}
           onHide={() => setNftOptionsOpen(false)}
@@ -51,7 +50,7 @@ const NftOptions = ({ onRemove, onViewOnOpensea }) => {
           >
             {t('removeNFT')}
           </MenuItem>
-        </Menu>
+        </Popover>
       ) : null}
     </div>
   );
