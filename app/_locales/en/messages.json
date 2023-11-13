@@ -4399,9 +4399,6 @@
   "snapsConnected": {
     "message": "Snaps connected"
   },
-  "snapsInsightLoading": {
-    "message": "Loading transaction insight..."
-  },
   "snapsInvalidUIError": {
     "message": "The UI specified by the snap is invalid."
   },

@@ -3,16 +3,16 @@ version: 2.1
 executors:
   node-browsers:
     docker:
-      - image: cimg/node:18.17-browsers
+      - image: cimg/node:18.18-browsers
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:18.17-browsers
+      - image: cimg/node:18.18-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-large:
     docker:
-      - image: cimg/node:18.17-browsers
+      - image: cimg/node:18.18-browsers
     resource_class: large
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
@@ -830,7 +830,7 @@ jobs:
             then
               yarn test:e2e:chrome --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -857,7 +857,7 @@ jobs:
             then
               MULTICHAIN=1 yarn test:e2e:chrome --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -884,7 +884,7 @@ jobs:
             then
               yarn test:e2e:chrome --retries 2 --debug || echo "Temporarily suppressing MV3 e2e test failures"
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -909,7 +909,7 @@ jobs:
             then
               yarn test:e2e:chrome:rpc --retries 2
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -935,7 +935,7 @@ jobs:
             then
               yarn test:e2e:chrome:rpc --retries 2 --debug --build-type=mmi
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -962,7 +962,7 @@ jobs:
             then
               yarn test:e2e:firefox:flask --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -989,7 +989,7 @@ jobs:
             then
               yarn test:e2e:chrome:flask --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1016,7 +1016,7 @@ jobs:
             then
               yarn test:e2e:chrome:mmi --retries 2 --debug --build-type=mmi
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1043,7 +1043,7 @@ jobs:
             then
               yarn test:e2e:firefox --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts

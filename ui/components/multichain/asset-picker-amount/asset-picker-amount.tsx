@@ -17,6 +17,7 @@ import {
   Display,
   IconColor,
   TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 
 import { AssetType } from '../../../../shared/constants/transaction';
@@ -97,7 +98,11 @@ export const AssetPickerAmount = () => {
         )}
       </Box>
       <Box display={Display.Flex}>
-        <Text color={TextColor.textAlternative} marginRight={1}>
+        <Text
+          color={TextColor.textAlternative}
+          marginRight={1}
+          variant={TextVariant.bodySm}
+        >
           {t('balance')}:
         </Text>
         {asset.type === AssetType.native ? (
@@ -106,8 +111,14 @@ export const AssetPickerAmount = () => {
           <UserPreferencedCurrencyDisplay
             value={asset.balance}
             type={PRIMARY}
-            textProps={{ color: TextColor.textAlternative }}
-            suffixProps={{ color: TextColor.textAlternative }}
+            textProps={{
+              color: TextColor.textAlternative,
+              variant: TextVariant.bodySm,
+            }}
+            suffixProps={{
+              color: TextColor.textAlternative,
+              variant: TextVariant.bodySm,
+            }}
           />
         ) : (
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment

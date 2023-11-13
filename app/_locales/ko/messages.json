@@ -3907,9 +3907,6 @@
   "snaps": {
     "message": "스냅"
   },
-  "snapsInsightLoading": {
-    "message": "트랜잭션 인사이트를 가져오는 중..."
-  },
   "snapsInvalidUIError": {
     "message": "스냅에서 지정한 UI가 올바르지 않습니다."
   },

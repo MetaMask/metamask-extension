@@ -3907,9 +3907,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightLoading": {
-    "message": "ट्रांजैक्शन इनसाइट लोड हो रही है..."
-  },
   "snapsInvalidUIError": {
     "message": "Snap द्वारा निर्दिष्ट किया गया UI ग़लत है।"
   },

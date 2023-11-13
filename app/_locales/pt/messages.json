@@ -3911,9 +3911,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightLoading": {
-    "message": "Carregando insight da transação..."
-  },
   "snapsInvalidUIError": {
     "message": "A IU especificada pelo snap é inválida."
   },
