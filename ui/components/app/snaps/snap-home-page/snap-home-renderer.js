@@ -25,7 +25,6 @@ export const SnapHomeRenderer = ({ snapId }) => {
 
   return (
     <Box>
-      {loading && <Text>Loading...</Text>}
       {error && (
         <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
           <Text variant={TextVariant.bodySm} marginBottom={4}>
@@ -34,7 +33,9 @@ export const SnapHomeRenderer = ({ snapId }) => {
           <Copyable text={error.message} />
         </SnapDelineator>
       )}
-      {content && <SnapUIRenderer snapId={snapId} data={content} />}
+      {(content || loading) && (
+        <SnapUIRenderer snapId={snapId} data={content} isLoading={loading} />
+      )}
     </Box>
   );
 };
