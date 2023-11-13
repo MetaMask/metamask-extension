@@ -153,6 +153,7 @@
     "logs": "object",
     "snaps": "object",
     "snapStates": "object",
+    "unencryptedSnapStates": "object",
     "jobs": "object",
     "database": "object",
     "lastUpdated": "object",
@@ -202,7 +203,8 @@
     "storageMetadata": {},
     "chainStatus": {
       "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
-    }
+    },
+    "versionFileETag": "string"
   },
   "send": "object",
   "swaps": "object",

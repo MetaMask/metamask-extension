@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Se você tentar enviar ativos diretamente de uma rede para outra, isso poderá resultar na perda permanente deles. Certifique-se de usar uma ponte."
   },
-  "attemptToCancelSwap": {
-    "message": "Tentar cancelar a troca por ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Tentando conexão com a blockchain."
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "A rede com ID de cadeia $1 pode usar um símbolo de moeda ($2) diferente do que você inseriu. Por favor, verifique antes de continuar.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Escolha sua rede"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
-  },
-  "enableSmartSwaps": {
-    "message": "Ativar trocas inteligentes"
   },
   "enableSnap": {
     "message": "Ativar"
@@ -2230,9 +2223,6 @@
     "message": "Certifique-se de que ninguém está olhando",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Dados inválidos"
-  },
   "max": {
     "message": "Máximo"
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Você não tem nenhum snap instalado."
-  },
-  "noThanksVariant2": {
-    "message": "Não, obrigado."
   },
   "noTransactions": {
     "message": "Você não tem transações"
@@ -3818,9 +3805,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "As trocas inteligentes estão temporariamente indisponíveis."
   },
-  "smartSwapsSubDescription": {
-    "message": "* As trocas inteligentes tentarão enviar sua transação de forma privada, diversas vezes. Se todas as tentativas falharem, a transação será transmitida publicamente para garantir que sua troca ocorra com sucesso."
-  },
   "snapConfigure": {
     "message": "Configurar"
   },
@@ -3926,9 +3910,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Carregando insight da transação..."
   },
   "snapsInvalidUIError": {
     "message": "A IU especificada pelo snap é inválida."
@@ -4196,9 +4177,6 @@
     "message": "A troca será concluída em <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simule as transações antes de enviá-las para diminuir os custos de transação e reduzir a possibilidade de falhas."
-  },
   "stxTryingToCancel": {
     "message": "Tentando cancelar sua transação..."
   },
@@ -4213,9 +4191,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Sua transação foi cancelada e você não pagou nenhuma taxa de gás desnecessária."
-  },
-  "stxYouCanOptOut": {
-    "message": "Você pode cancelar a participação a qualquer momento nas configurações avançadas."
   },
   "submit": {
     "message": "Enviar"
@@ -4844,18 +4819,6 @@
   "transactionCreated": {
     "message": "Transação criada com valor de $1 às $2."
   },
-  "transactionData": {
-    "message": "Dados da transação"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Decodificado por Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Contrato verificado em $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "A decodificação da transação não está disponível para o ID de cadeia $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site sugerido"
   },
@@ -4986,9 +4949,6 @@
   },
   "twelveHrTitle": {
     "message": "12 h:"
-  },
-  "txInsightsNotSupported": {
-    "message": "As informações sobre transações não são suportadas para esse contrato, por ora."
   },
   "typeYourSRP": {
     "message": "Digite sua Frase de Recuperação Secreta"

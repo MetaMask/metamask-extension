@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Nếu bạn cố gắng gửi tài sản trực tiếp từ mạng này sang mạng khác, bạn có thể bị mất tài sản vĩnh viễn. Hãy nhớ sử dụng cầu nối."
   },
-  "attemptToCancelSwap": {
-    "message": "Cố gắng hủy hoán đổi với giá ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Đang cố gắng kết nối với chuỗi khối."
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Mạng có ID chuỗi $1 có thể sử dụng một ký hiệu tiền tệ ($2) khác với ký hiệu mà bạn đã nhập. Vui lòng xác minh trước khi tiếp tục.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Chọn mạng của bạn"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
-  },
-  "enableSmartSwaps": {
-    "message": "Kích hoạt hoán đổi thông minh"
   },
   "enableSnap": {
     "message": "Bật"
@@ -2230,9 +2223,6 @@
     "message": "Đảm bảo không có ai đang nhìn",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Dữ liệu không đúng định dạng"
-  },
   "max": {
     "message": "Tối đa"
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Bạn chưa cài đặt bất kỳ Snap nào."
-  },
-  "noThanksVariant2": {
-    "message": "Không, cảm ơn."
   },
   "noTransactions": {
     "message": "Bạn không có giao dịch nào"
@@ -3814,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Hoán đổi thông minh tạm thời không khả dụng."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Hoán đổi thông minh sẽ cố gắng gửi giao dịch của bạn nhiều lần một cách riêng tư. Nếu tất cả các lần thử đều không thành công, giao dịch sẽ được phát công khai để đảm bảo Hoán đổi của bạn được thực hiện thành công."
-  },
   "snapConfigure": {
     "message": "Định cấu hình"
   },
@@ -3922,9 +3906,6 @@
   },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInsightLoading": {
-    "message": "Đang tải thông tin chi tiết về giao dịch..."
   },
   "snapsInvalidUIError": {
     "message": "Giao diện người dùng được chỉ định bởi Snap không hợp lệ."
@@ -4192,9 +4173,6 @@
     "message": "Hoán đổi sẽ hoàn tất sau <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Mô phỏng giao dịch trước khi gửi để giảm chi phí giao dịch và tỷ lệ thất bại."
-  },
   "stxTryingToCancel": {
     "message": "Đang cố gắng hủy giao dịch của bạn..."
   },
@@ -4209,9 +4187,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Giao dịch của bạn đã bị hủy và bạn không phải trả bất kỳ phí gas không cần thiết nào."
-  },
-  "stxYouCanOptOut": {
-    "message": "Bạn có thể chọn không tham gia trong mục cài đặt nâng cao bất cứ lúc nào."
   },
   "submit": {
     "message": "Gửi"
@@ -4840,18 +4815,6 @@
   "transactionCreated": {
     "message": "Đã tạo giao dịch với giá trị $1 lúc $2."
   },
-  "transactionData": {
-    "message": "Dữ liệu giao dịch"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Được giải mã bởi Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Đã xác minh hợp đồng trên $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Giải ID giao dịch hiện không khả dụng cho ID chuỗi $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Trang web gợi ý"
   },
@@ -4982,9 +4945,6 @@
   },
   "twelveHrTitle": {
     "message": "12 giờ:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Thông tin chi tiết về giao dịch không được hỗ trợ cho hợp đồng này tại thời điểm này."
   },
   "typeYourSRP": {
     "message": "Nhập Cụm từ khôi phục bí mật của bạn"

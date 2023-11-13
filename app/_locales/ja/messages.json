@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "1つのネットワークから別のネットワークに直接アセットを送ろうとすると、アセットが永久に失われる可能性があります。必ずブリッジを使用してください。"
   },
-  "attemptToCancelSwap": {
-    "message": "~$1でスワップのキャンセルを試行",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "ブロックチェーンへの接続を試みています。"
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "チェーンID $1 のネットワークは、入力されたものとは異なる通貨記号 ($2) を使用している可能性があります。続行する前に確認してください。",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "ネットワークを選択してください"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
-  },
-  "enableSmartSwaps": {
-    "message": "スマートスワップを有効にする"
   },
   "enableSnap": {
     "message": "有効にする"
@@ -2230,9 +2223,6 @@
     "message": "誰にも見られていないことを確認してください",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "不正な形式のデータ"
-  },
   "max": {
     "message": "最大"
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "snapがインストールされていません"
-  },
-  "noThanksVariant2": {
-    "message": "結構です。"
   },
   "noTransactions": {
     "message": "トランザクションがありません"
@@ -3168,7 +3155,6 @@
     "message": "トランザクションインサイトを取得して表示します。",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-
   "permission_transactionInsightOrigin": {
     "message": "トランザクションを提案しているWebサイトの提供元を確認します",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
@@ -3815,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "スマートスワップは一時的にご利用いただけません。"
   },
-  "smartSwapsSubDescription": {
-    "message": "* スマートスワップは、トランザクションの送信を非公開で複数回試行します。すべての試行に失敗した場合、スワップが正常に行われるように、トランザクションが一般公開されます。"
-  },
   "snapConfigure": {
     "message": "構成"
   },
@@ -3923,9 +3906,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "トランザクションインサイトを読み込み中..."
   },
   "snapsInvalidUIError": {
     "message": "snapに指定されたUIが無効です。"
@@ -4193,9 +4173,6 @@
     "message": "スワップ完了まで残り <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "送信前にトランザクションのシミュレーションを行い、トランザクションのコストと失敗率を減らします。"
-  },
   "stxTryingToCancel": {
     "message": "トランザクションのキャンセルを試みています..."
   },
@@ -4210,9 +4187,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "不要なガス代を支払うことなくトランザクションがキャンセルされました。"
-  },
-  "stxYouCanOptOut": {
-    "message": "「高度な設定」でいつでもオプトアウトできます。"
   },
   "submit": {
     "message": "送信"
@@ -4841,18 +4815,6 @@
   "transactionCreated": {
     "message": "トランザクションは$1の値が$2で作成されました。"
   },
-  "transactionData": {
-    "message": "トランザクションデータ"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Truffleによるデコード"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "$1にコントラクトを確認しました"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "トランザクションのデコードは、チェーンID $1 で使用できません"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "サイトが提案されました"
   },
@@ -4983,9 +4945,6 @@
   },
   "twelveHrTitle": {
     "message": "12時間:"
-  },
-  "txInsightsNotSupported": {
-    "message": "現時点では、このコントラクトでトランザクションインサイトはサポートされていません。"
   },
   "typeYourSRP": {
     "message": "シークレットリカバリーフレーズを入力してください"

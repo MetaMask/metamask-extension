@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "यदि आप एसेट्स को सीधे एक नेटवर्क से दूसरे नेटवर्क पर भेजने की कोशिश करते हैं, तो इस वजह से स्थायी एसेट्स का नुकसान हो सकता है। ब्रिज का इस्तेमाल करना पक्का करें।"
   },
-  "attemptToCancelSwap": {
-    "message": "~$1 के लिए स्वैप कैंसिल करने की कोशिश करें",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "ब्लॉकचेन से कनेक्ट करने की कोशिश कर रहे हैं।"
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "चेन ID $1 वाला नेटवर्क आपके द्वारा एंटर किए गए करेंसी सिंबल ($2) से अलग करेंसी चिह्न का इस्तेमाल कर सकता है। कृपया जारी रखने से पहले वेरीफ़ाई करें।",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "अपना नेटवर्क चुनें"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
-  },
-  "enableSmartSwaps": {
-    "message": "स्मार्ट स्वैप इनेबल करें"
   },
   "enableSnap": {
     "message": "इनेबल करें"
@@ -2230,9 +2223,6 @@
     "message": "पक्का करें कि इसे कोई भी नहीं देख रहा है",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "बिगड़ा डेटा"
-  },
   "max": {
     "message": "अधिकतम"
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "आपके पास इंस्टाल किए गए Snap नहीं हैं।"
-  },
-  "noThanksVariant2": {
-    "message": "नहीं, धन्यवाद।"
   },
   "noTransactions": {
     "message": "आपके पास कोई ट्रांसेक्शन नहीं है"
@@ -3814,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "स्मार्ट स्वैप अस्थायी रूप से अनुपलब्ध हैं।"
   },
-  "smartSwapsSubDescription": {
-    "message": "* स्मार्ट स्वैप कई बार आपके ट्रांसेक्शन को निजी तौर पर सबमिट करने की कोशिश करेगा। यदि सभी प्रयास विफल हो जाते हैं, तो यह सुनिश्चित करने के लिए ट्रांसेक्शन सार्वजनिक रूप से प्रसारित किया जाएगा कि आपका स्वैप सफलतापूर्वक पूरा हो गया है।"
-  },
   "snapConfigure": {
     "message": "कॉन्फिगर करें"
   },
@@ -3922,9 +3906,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "ट्रांजैक्शन इनसाइट लोड हो रही है..."
   },
   "snapsInvalidUIError": {
     "message": "Snap द्वारा निर्दिष्ट किया गया UI ग़लत है।"
@@ -4192,9 +4173,6 @@
     "message": "स्वैप पूरा होने में बैलेंस समय <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "ट्रांसेक्शन की लागतें घटाने और विफलताओं को कम करने के लिए सबमिट करने से पहले ट्रांसेक्शन को सिम्युलेट करें।"
-  },
   "stxTryingToCancel": {
     "message": "अपके ट्रांसेक्शन को कैंसिल करने की कोशिश कर रहा है..."
   },
@@ -4209,9 +4187,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "आपका ट्रांसेक्शन कैंसिल किया गया और आपने किसी भी तरह के अनावश्यक गैस फ़ीस का पेमेंट नहीं किया।"
-  },
-  "stxYouCanOptOut": {
-    "message": "एड्वांस्ड सेटिंग्स में आप कभी भी ऑप्ट-आउट कर सकते हैं।"
   },
   "submit": {
     "message": "सबमिट करें"
@@ -4840,18 +4815,6 @@
   "transactionCreated": {
     "message": "$2 पर $1 के मूल्य के साथ ट्रांसेक्शन बनाया गया।"
   },
-  "transactionData": {
-    "message": "ट्रांसेक्शन का डेटा"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Truffle द्वारा डिकोड किया गया"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "$1 पर वेरीफ़ाई कॉन्ट्रैक्ट"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "ChainId $1 के लिए ट्रांसेक्शन डिकोडिंग उपलब्ध नहीं है"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "साइट का सुझाव दिया गया"
   },
@@ -4982,9 +4945,6 @@
   },
   "twelveHrTitle": {
     "message": "12 घंटे:"
-  },
-  "txInsightsNotSupported": {
-    "message": "इस समय इस कॉन्ट्रैक्ट के लिए ट्रांसेक्शन की जानकारी समर्थित नहीं है।"
   },
   "typeYourSRP": {
     "message": "अपना गुप्त रिकवरी वाक्यांश लिखें"

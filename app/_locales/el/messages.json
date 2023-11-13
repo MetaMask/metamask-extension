@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Εάν επιχειρήσετε να στείλετε περιουσιακά στοιχεία απευθείας από ένα δίκτυο σε ένα άλλο, αυτό ενδέχεται να οδηγήσει σε μόνιμη απώλεια περιουσιακών στοιχείων. Βεβαιωθείτε ότι χρησιμοποιείτε μια διασύνδεση."
   },
-  "attemptToCancelSwap": {
-    "message": "Προσπάθεια ακύρωσης της ανταλλαγής για ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Προσπάθεια σύνδεσης στο blockchain."
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Το δίκτυο με αναγνωριστικό αλυσίδας $1 ενδέχεται να χρησιμοποιεί διαφορετικό σύμβολο νομίσματος ($2) από αυτό που έχετε εισαγάγει. Παρακαλούμε επιβεβαιώστε το πριν συνεχίσετε.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Επιλέξτε το δίκτυό σας"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
-  },
-  "enableSmartSwaps": {
-    "message": "Ενεργοποίηση των έξυπνων ανταλλαγών"
   },
   "enableSnap": {
     "message": "Ενεργοποίηση"
@@ -2230,9 +2223,6 @@
     "message": "Βεβαιωθείτε ότι κανείς δεν κοιτάει",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Εσφαλμένα δεδομένα"
-  },
   "max": {
     "message": "Μέγ."
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Δεν έχετε εγκαταστήσει κανένα snap."
-  },
-  "noThanksVariant2": {
-    "message": "Όχι, ευχαριστώ."
   },
   "noTransactions": {
     "message": "Δεν έχετε καμιά συναλλαγή"
@@ -3814,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Οι Έξυπνες Ανταλλαγές είναι προσωρινά μη διαθέσιμες."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Οι Έξυπνες Ανταλλαγές θα προσπαθήσουν να υποβάλουν τη συναλλαγή σας ιδιωτικά, πολλές φορές. Εάν αποτύχουν όλες οι προσπάθειες, η συναλλαγή θα μεταδοθεί δημόσια για να διασφαλιστεί ότι η Ανταλλαγή σας θα πραγματοποιηθεί με επιτυχία."
-  },
   "snapConfigure": {
     "message": "Διαμόρφωση"
   },
@@ -3922,9 +3906,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Φόρτωση πληροφοριών συναλλαγών..."
   },
   "snapsInvalidUIError": {
     "message": "Το UI που καθορίζεται από το snap δεν είναι έγκυρο."
@@ -4192,9 +4173,6 @@
     "message": "Η Ανταλλαγή θα ολοκληρωθεί σε <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Προσομοίωση συναλλαγών πριν από την υποβολή για μείωση του κόστους συναλλαγής και των αποτυχιών."
-  },
   "stxTryingToCancel": {
     "message": "Γίνεται προσπάθεια ακύρωσης της συναλλαγής σας..."
   },
@@ -4209,9 +4187,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Η συναλλαγή σας ακυρώθηκε και δεν πληρώσατε περιττά τέλη συναλλαγής."
-  },
-  "stxYouCanOptOut": {
-    "message": "Μπορείτε να εξαιρεθείτε από τις ρυθμίσεις για προχωρημένους ανά πάσα στιγμή."
   },
   "submit": {
     "message": "Υποβολή"
@@ -4840,18 +4815,6 @@
   "transactionCreated": {
     "message": "Η συναλλαγή δημιουργήθηκε με αξία $1 στις $2."
   },
-  "transactionData": {
-    "message": "Δεδομένα συναλλαγής"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Αποκωδικοποιήθηκε από Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Επαληθευμένο συμβόλαιο σε $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Η αποκωδικοποίηση συναλλαγών δεν είναι διαθέσιμη για chainId $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Προτεινόμενος ιστότοπος"
   },
@@ -4982,9 +4945,6 @@
   },
   "twelveHrTitle": {
     "message": "12ώρες:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Οι αναλύσεις συναλλαγών δεν υποστηρίζονται προς το παρόν για τo συγκεκριμένo συμβόλαιο."
   },
   "typeYourSRP": {
     "message": "Πληκτρολογήστε τη Μυστική σας Φράση Ανάκτησης"

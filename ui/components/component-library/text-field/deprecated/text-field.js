@@ -8,11 +8,11 @@ import {
   AlignItems,
   BorderRadius,
   BackgroundColor,
-} from '../../../helpers/constants/design-system';
+} from '../../../../helpers/constants/design-system';
 
-import Box from '../../ui/box';
+import Box from '../../../ui/box';
 
-import { Input } from '../input';
+import { Input } from '../../input';
 
 import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from './text-field.constants';
 

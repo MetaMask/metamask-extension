@@ -41,7 +41,6 @@ describe('Confirm Transaction', () => {
     );
     expect(getByText('0xb19Ac...f0c5e')).toBeInTheDocument();
     expect(getByRole('button', { name: 'Details' })).toBeInTheDocument();
-    expect(getByRole('button', { name: 'Data' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Hex' })).toBeInTheDocument();
   });
 });

@@ -27,7 +27,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
             [snapAccountRedirectSiteDescription]
           </p>
           <div
-            class="mm-box snap-delineator__wrapper mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-style-solid mm-box--border-color-border-default box--border-width-1"
+            class="mm-box snap-delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-style-solid mm-box--border-color-border-default box--border-width-1"
           >
             <div
               class="mm-box snap-delineator__header mm-box--padding-1 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -52,7 +52,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
               </div>
             </div>
             <div
-              class="mm-box snap-delineator__content mm-box--padding-4 mm-box--display-block"
+              class="mm-box snap-delineator__content mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column"
             >
               <p
                 class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
