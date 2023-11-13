@@ -45,7 +45,7 @@
     "test:e2e:mmi": "yarn playwright test",
     "test:e2e:mmi:visual": "./test/e2e/mmi/scripts/run-visual-test.sh check",
     "test:e2e:mmi:visual:update": "./test/e2e/mmi/scripts/run-visual-test.sh update",
-    "test:e2e:chrome:snaps": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --snaps",
+    "test:e2e:pw:report": "yarn playwright show-report public/playwright/playwright-reports/html",
     "test:e2e:chrome:mv3": "ENABLE_MV3=true SELENIUM_BROWSER=chrome node test/e2e/run-all.js",
     "test:e2e:chrome:rpc": "SELENIUM_BROWSER=chrome node test/e2e/run-all.js --rpc",
     "test:e2e:firefox": "SELENIUM_BROWSER=firefox node test/e2e/run-all.js",
@@ -109,8 +109,7 @@
     "check-pr-has-required-labels": "ts-node ./.github/scripts/check-pr-has-required-labels.ts",
     "close-release-bug-report-issue": "ts-node ./.github/scripts/close-release-bug-report-issue.ts",
     "check-template-and-add-labels": "ts-node ./.github/scripts/check-template-and-add-labels.ts",
-    "audit": "yarn npm audit --recursive --environment production --severity moderate",
-    "test:pw:report": "yarn playwright show-report public/playwright/playwright-reports/html"
+    "audit": "yarn npm audit --recursive --environment production --severity moderate"
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",

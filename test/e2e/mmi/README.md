@@ -25,6 +25,12 @@ From the root of the project, you can use the following scripts to run the tests
   ```
   yarn test:e2e:mmi
   ```
+
+> Note: If you run the tests for first time, you may need to install the browser dependency (Playwright will inform you in case you need):
+> ```
+> yarn playwright install chromium
+>```
+
 - To run visual tests:
   ```
   yarn test:e2e:mmi:visual
@@ -44,5 +50,5 @@ To run visual tests, you need to generate a Docker image. This ensures that the 
 
 Test reports are generated in the public folder. To obtain comprehensive, readable reports with direct access to `traces.zip`, run the following script:
 ```
-yarn test:pw:report
+yarn test:e2e:pw:report
 ```
