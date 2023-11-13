@@ -22,18 +22,13 @@ const renderComponent = (props) => {
   return renderWithProvider(<NetworksListItem {...props} />, store);
 };
 
-const defaultNetworks = defaultNetworksData.map((network) => ({
-  ...network,
-  viewOnly: true,
-}));
-
 const MainnetProps = {
-  network: defaultNetworks[0],
+  network: defaultNetworksData[0],
   networkIsSelected: false,
   selectedRpcUrl: 'http://localhost:8545',
 };
 const testNetProps = {
-  network: defaultNetworks[1],
+  network: defaultNetworksData[1],
   networkIsSelected: false,
   selectedRpcUrl: 'http://localhost:8545',
 };

@@ -25,7 +25,6 @@ const renderComponent = (props) => {
 
 const defaultNetworks = defaultNetworksData.map((network) => ({
   ...network,
-  viewOnly: true,
   isATestNetwork: true,
 }));
 

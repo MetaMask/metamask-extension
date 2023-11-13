@@ -1572,7 +1572,6 @@ export const networkList = [
     providerType: 'mainnet',
     rpcUrl: 'https://mainnet.infura.io/v3/',
     ticker: 'ETH',
-    viewOnly: true,
   },
   {
     blockExplorerUrl: 'https://goerli.etherscan.io',
@@ -1583,7 +1582,6 @@ export const networkList = [
     providerType: 'goerli',
     rpcUrl: 'https://goerli.infura.io/v3/',
     ticker: 'ETH',
-    viewOnly: true,
   },
   {
     blockExplorerUrl: 'https://sepolia.etherscan.io',
@@ -1594,7 +1592,6 @@ export const networkList = [
     providerType: 'sepolia',
     rpcUrl: 'https://sepolia.infura.io/v3/',
     ticker: 'ETH',
-    viewOnly: true,
   },
   {
     blockExplorerUrl: '',
