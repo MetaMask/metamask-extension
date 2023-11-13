@@ -125,7 +125,7 @@ describe('Address Book', function () {
         if (process.env.MULTICHAIN) {
           recipientUsername = await driver.findElement({
             text: 'Test Name Edit',
-            css: '[data-testid="address-list-item-label"]',
+            css: '.address-list-item__label',
           });
         } else {
           recipientUsername = await driver.findElement({
