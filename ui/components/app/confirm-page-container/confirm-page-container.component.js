@@ -88,7 +88,6 @@ const ConfirmPageContainer = (props) => {
     titleComponent,
     subtitleComponent,
     detailsComponent,
-    dataComponent,
     dataHexComponent,
     onCancelAll,
     onCancel,
@@ -241,7 +240,6 @@ const ConfirmPageContainer = (props) => {
             titleComponent={titleComponent}
             subtitleComponent={subtitleComponent}
             detailsComponent={detailsComponent}
-            dataComponent={dataComponent}
             dataHexComponent={dataHexComponent}
             ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             insightComponent={insightComponent}
@@ -422,7 +420,6 @@ ConfirmPageContainer.propTypes = {
   contentComponent: PropTypes.node,
   errorKey: PropTypes.string,
   errorMessage: PropTypes.string,
-  dataComponent: PropTypes.node,
   dataHexComponent: PropTypes.node,
   detailsComponent: PropTypes.node,
   txData: PropTypes.object,

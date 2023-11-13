@@ -157,6 +157,7 @@ export const SENTRY_BACKGROUND_STATE = {
     chainStatus: true,
     securityAlertsEnabled: false,
     storageMetadata: [],
+    versionFileETag: false,
     versionInfo: [],
   },
   PermissionController: {
@@ -222,9 +223,11 @@ export const SENTRY_BACKGROUND_STATE = {
       liveness: true,
       smartTransactions: false,
       userOptIn: true,
+      userOptInV2: true,
     },
   },
   SnapController: {
+    unencryptedSnapStates: false,
     snapStates: false,
     snaps: false,
   },

@@ -37,7 +37,15 @@ describe('isBlockedUrl', () => {
     [0, true],
     [-1, true],
   ])('"%s" is blocked: %s', async (url: any, expected: boolean) => {
-    const result = await isBlockedUrl(url, phishingController);
+    const result = await isBlockedUrl(
+      url,
+      async () => {
+        return await phishingController.maybeUpdateState();
+      },
+      (origin: string) => {
+        return phishingController.test(origin);
+      },
+    );
     expect(result).toEqual(expected);
   });
 });
