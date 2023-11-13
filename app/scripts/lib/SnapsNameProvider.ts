@@ -11,8 +11,8 @@ import {
   OnNameLookupArgs,
   HandlerType,
   OnNameLookupResponse,
-  TruncatedSnap,
-} from '@metamask/snaps-utils';
+  Snap as TruncatedSnap,
+} from '@metamask/snaps-sdk';
 import log from 'loglevel';
 import {
   GetAllSnaps,
