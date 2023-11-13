@@ -658,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Mạng có ID chuỗi $1 có thể sử dụng một ký hiệu tiền tệ ($2) khác với ký hiệu mà bạn đã nhập. Vui lòng xác minh trước khi tiếp tục.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Chọn mạng của bạn"

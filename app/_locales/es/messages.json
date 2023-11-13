@@ -658,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "La red con ID de cadena $1 puede usar un símbolo de moneda diferente ($2) al que ingresó. Verifique antes de continuar.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Elija su red"
