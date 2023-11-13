@@ -19,7 +19,7 @@ export default function NftsDetectionNoticeImportNFTs({ onActionButtonClick }) {
         onActionButtonClick?.();
       }}
     >
-      {t('newNFTDetectedInImportNFTsMessage', [
+      {t('newNFTDetectedInImportNFTsMsg', [
         <b key="new-nft-detected-in-import-nfts-message-strong-text">
           {t('newNFTDetectedInImportNFTsMessageStrongText')}
         </b>,

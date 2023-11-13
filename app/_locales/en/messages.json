@@ -2654,12 +2654,12 @@
   "newContract": {
     "message": "New contract"
   },
-  "newNFTDetectedInImportNFTsMessage": {
-    "message": "To use Opensea see your NFT, turn on 'Enable OpenSea API' in $1.",
-    "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
-  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Security and privacy"
+  },
+  "newNFTDetectedInImportNFTsMsg": {
+    "message": "To use Opensea see your NFT, turn on 'Display NFT Media' in $1.",
+    "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInNFTsTabMessage": {
     "message": "Let MetaMask automatically detect and display NFTs in your wallet."
