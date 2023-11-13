@@ -44,7 +44,7 @@ function SnapView() {
     getTargetSubjectMetadata(state, snap?.id),
   );
 
-  const hasHomePage = hasProperty(permissions, 'endowment:page-home');
+  const hasHomePage = permissions && hasProperty(permissions, 'endowment:page-home');
   const [showSettings, setShowSettings] = useState(!hasHomePage);
 
   if (!snap) {
