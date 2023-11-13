@@ -62,6 +62,7 @@ export default class PreferencesController {
       useNftDetection: false,
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
+      useRequestQueue: false,
       openSeaEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
       securityAlertsEnabled: false,
@@ -117,9 +118,6 @@ export default class PreferencesController {
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
-
-    // subscribe to account removal
-    opts.onAccountRemoved((address) => this.removeAddress(address));
 
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
@@ -224,6 +222,15 @@ export default class PreferencesController {
    */
   setUseCurrencyRateCheck(val) {
     this.store.updateState({ useCurrencyRateCheck: val });
+  }
+
+  /**
+   * Setter for the `useRequestQueue` property
+   *
+   * @param {boolean} val - Whether or not the user wants to have requests queued if network change is required.
+   */
+  setUseRequestQueue(val) {
+    this.store.updateState({ useRequestQueue: val });
   }
 
   /**
@@ -474,6 +481,15 @@ export default class PreferencesController {
    */
   getSelectedAddress() {
     return this.store.getState().selectedAddress;
+  }
+
+  /**
+   * Getter for the `useRequestQueue` property
+   *
+   * @returns {boolean} whether this option is on or off.
+   */
+  getUseRequestQueue() {
+    return this.store.getState().useRequestQueue;
   }
 
   /**

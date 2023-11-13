@@ -152,6 +152,7 @@ export const SENTRY_BACKGROUND_STATE = {
     chainStatus: true,
     securityAlertsEnabled: false,
     storageMetadata: [],
+    versionFileETag: false,
     versionInfo: [],
   },
   PermissionController: {
@@ -197,6 +198,7 @@ export const SENTRY_BACKGROUND_STATE = {
     useNonceField: true,
     usePhishDetect: true,
     useTokenDetection: true,
+    useRequestQueue: true,
   },
   SelectedNetworkController: { domains: true, perDomainNetwork: false },
   SignatureController: {
@@ -216,9 +218,11 @@ export const SENTRY_BACKGROUND_STATE = {
       liveness: true,
       smartTransactions: false,
       userOptIn: true,
+      userOptInV2: true,
     },
   },
   SnapController: {
+    unencryptedSnapStates: false,
     snapStates: false,
     snaps: false,
   },
