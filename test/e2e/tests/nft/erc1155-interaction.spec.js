@@ -30,7 +30,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
@@ -87,7 +87,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
@@ -131,7 +131,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
     );
   });
 
-  it('should enable approval for a third party address to manage all ERC1155 token @no-mmi', async function () {
+  it('should enable approval for a third party address to manage all ERC1155 token', async function () {
     const expectedMessageTitle =
       'Allow access to and transfer all of your NFTs from this collection?';
     const expectedDescription =
@@ -145,7 +145,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
@@ -220,7 +220,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
     );
   });
 
-  it('should revoke approval for a third party address to manage all ERC1155 token @no-mmi', async function () {
+  it('should revoke approval for a third party address to manage all ERC1155 token', async function () {
     const expectedMessageTitle =
       'Revoke permission to access and transfer all of your NFTs from this collection?';
     const expectedDescription =
@@ -233,7 +233,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);

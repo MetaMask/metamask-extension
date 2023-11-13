@@ -144,7 +144,7 @@ describe('Transaction Finalized Event', function () {
           })
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints, ganacheServer }) => {

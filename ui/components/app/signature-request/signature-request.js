@@ -255,6 +255,27 @@ const SignatureRequest = ({ txData }) => {
   ]);
   ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  useEffect(() => {
+    if (txData.securityAlertResponse) {
+      const blockaidMetricsParams = getBlockaidMetricsParams(
+        txData.securityAlertResponse,
+      );
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.SignatureRequested,
+        properties: {
+          action: 'Sign Request',
+          type,
+          version,
+          ...blockaidMetricsParams,
+        },
+      });
+    }
+  }, []);
+  ///: END:ONLY_INCLUDE_IN
+
   return (
     <div className="signature-request">
       <ConfirmPageContainerNavigation />
