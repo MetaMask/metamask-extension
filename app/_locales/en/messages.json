@@ -2064,6 +2064,9 @@
     "message": "Imported",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
+  "imtoken": {
+    "message": "imToken"
+  },
   "inYourSettings": {
     "message": "in your Settings"
   },
