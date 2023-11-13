@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Si vous essayez d’envoyer des actifs directement d’un réseau à un autre, une perte permanente des actifs pourrait en résulter. Assurez-vous d’utiliser une passerelle."
   },
-  "attemptToCancelSwap": {
-    "message": "Tentative d’annulation du swap pour ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Tentative de connexion au réseau"
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Le réseau avec l’ID de chaîne $1 peut utiliser un symbole de devise différent ($2) de celui que vous avez saisi. Veuillez vérifier avant de continuer.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Choisissez votre réseau"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Utilisez l’API OpenSea pour récupérer les données de NFT. La détection automatique de NFT repose sur l’API OpenSea et ne sera pas disponible si elle est désactivée."
-  },
-  "enableSmartSwaps": {
-    "message": "Activer les contrats de swap intelligents"
   },
   "enableSnap": {
     "message": "Activer"
@@ -2230,9 +2223,6 @@
     "message": "Assurez-vous que personne ne regarde votre écran",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Données malformées"
-  },
   "max": {
     "message": "Max."
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Aucun Snap installé"
-  },
-  "noThanksVariant2": {
-    "message": "Non merci."
   },
   "noTransactions": {
     "message": "Aucune transaction"
@@ -3814,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Les contrats de swap intelligents sont temporairement indisponibles."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Lorsque vous souscrivez un contrat de swap intelligent, ce contrat sera proposé en privé à différents investisseurs. Si toutes les tentatives échouent, le contrat sera diffusé publiquement afin de trouver preneur."
-  },
   "snapConfigure": {
     "message": "Configurer"
   },
@@ -3922,9 +3906,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Chargement de l’aperçu de transaction…"
   },
   "snapsInvalidUIError": {
     "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide."
@@ -4192,9 +4173,6 @@
     "message": "Le Swap sera effectué dans <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simulez les transactions avant de les soumettre pour réduire les coûts et les échecs de transaction."
-  },
   "stxTryingToCancel": {
     "message": "Tentative d’annulation de votre transaction..."
   },
@@ -4209,9 +4187,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Votre transaction a été annulée et vous avez évité ainsi de payer inutilement des frais de transaction."
-  },
-  "stxYouCanOptOut": {
-    "message": "Vous pouvez vous désinscrire dans les paramètres avancés à tout moment."
   },
   "submit": {
     "message": "Envoyer"
@@ -4840,18 +4815,6 @@
   "transactionCreated": {
     "message": "Transaction créée avec une valeur de $1 sur $2."
   },
-  "transactionData": {
-    "message": "Données de transaction"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Décodé par Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Contrat vérifié sur $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Le décodage de la transaction n’est pas disponible pour l’ID de chaîne $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site suggéré"
   },
@@ -4982,9 +4945,6 @@
   },
   "twelveHrTitle": {
     "message": "12 h :"
-  },
-  "txInsightsNotSupported": {
-    "message": "Les aperçus de transaction ne sont pas pris en charge pour ce contrat à l’heure actuelle."
   },
   "typeYourSRP": {
     "message": "Saisissez votre phrase secrète de récupération"

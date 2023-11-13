@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "한 네트워크에서 다른 네트워크로 자산을 직접 전송하면 자산이 영구적으로 손실될 수 있습니다. 반드시 브릿지를 이용하세요."
   },
-  "attemptToCancelSwap": {
-    "message": "~$1의 비용으로 스왑 취소 시도",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "블록체인에 연결 중입니다."
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "체인 ID $1의 네트워크는 입력한 것과 다른 통화 기호($2)를 사용할 수 있습니다. 확인 후 진행하세요.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "네트워크 선택"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "OpenSea의 API를 사용하여 NFT 데이터를 가져옵니다. NFT 자동 감지는 OpenSea의 API에 의존하며 이 API가 꺼져 있으면 사용할 수 없습니다."
-  },
-  "enableSmartSwaps": {
-    "message": "스마트 스왑 활성화"
   },
   "enableSnap": {
     "message": "활성화"
@@ -2230,9 +2223,6 @@
     "message": "다른 사람이 이 화면을 보고 있지는 않은지 확인하세요.",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "잘못된 데이터"
-  },
   "max": {
     "message": "최대"
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "설치된 스냅이 없습니다"
-  },
-  "noThanksVariant2": {
-    "message": "아니요, 괜찮습니다."
   },
   "noTransactions": {
     "message": "트랜잭션이 없습니다."
@@ -3814,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "스마트 스왑을 잠시 사용할 수 없습니다."
   },
-  "smartSwapsSubDescription": {
-    "message": "*스마트 스왑은 비공개로 트랜잭션 제출을 여러 번 시도할 것입니다. 모든 시도가 실패하면 성공적인 스왑을 위해 트랜잭션이 공개적으로 브로드캐스트될 것입니다."
-  },
   "snapConfigure": {
     "message": "구성"
   },
@@ -3922,9 +3906,6 @@
   },
   "snaps": {
     "message": "스냅"
-  },
-  "snapsInsightLoading": {
-    "message": "트랜잭션 인사이트를 가져오는 중..."
   },
   "snapsInvalidUIError": {
     "message": "스냅에서 지정한 UI가 올바르지 않습니다."
@@ -4192,9 +4173,6 @@
     "message": "스왑 완료까지 남은 시간:",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "제출하기 전에 트랜잭션을 시뮬레이션하면 트랜잭션 비용을 줄이고 실패율을 낮출 수 있습니다."
-  },
   "stxTryingToCancel": {
     "message": "트랜잭션을 취소하려고 합니다..."
   },
@@ -4209,9 +4187,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "트랜잭션이 취소되어 가스비를 지급하지 않았습니다."
-  },
-  "stxYouCanOptOut": {
-    "message": "고급 설정에서 언제든지 옵트아웃할 수 있습니다."
   },
   "submit": {
     "message": "제출"
@@ -4840,18 +4815,6 @@
   "transactionCreated": {
     "message": "$2에서 $1 값으로 생성된 트랜잭션"
   },
-  "transactionData": {
-    "message": "트랜잭션 데이터"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Truffle에 의한 디코딩"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "$1에 대한 확인된 계약"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "체인 id $1에 대한 트랜잭션 디코딩을 사용할 수 없습니다."
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "추천 사이트"
   },
@@ -4982,9 +4945,6 @@
   },
   "twelveHrTitle": {
     "message": "12시간:"
-  },
-  "txInsightsNotSupported": {
-    "message": "현재 이 계약에 대해 트랜잭션 인사이트가 지원되지 않습니다."
   },
   "typeYourSRP": {
     "message": "비밀복구구문을 입력하세요"

@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Попытка отправки активов напрямую из одной сети в другую может привести к необратимой потере активов. Следует использовать мост."
   },
-  "attemptToCancelSwap": {
-    "message": "Попытка отменить своп на ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Попытка подключения к блокчейну..."
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Сеть с ID блокчейна $1 может использовать другой символ валюты ($2), чем тот, который вы ввели. Подтвердите, прежде чем продолжить.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Выберите свою сеть"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
-  },
-  "enableSmartSwaps": {
-    "message": "Включить смарт-свопы"
   },
   "enableSnap": {
     "message": "Включить"
@@ -2230,9 +2223,6 @@
     "message": "Убедитесь, что никто не смотрит",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Искаженные данные"
-  },
   "max": {
     "message": "Макс."
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Snaps не установлены."
-  },
-  "noThanksVariant2": {
-    "message": "Нет, спасибо."
   },
   "noTransactions": {
     "message": "У вас нет транзакций"
@@ -3814,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Смарт-свопы временно недоступны."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Смарт-свопы попытаются отправить вашу транзакцию в частном порядке несколько раз. Если все попытки не увенчаются успехом, транзакция будет транслироваться публично, чтобы гарантировать успешное завершение вашего свопа."
-  },
   "snapConfigure": {
     "message": "Настроить"
   },
@@ -3922,9 +3906,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Загрузка аналитики по транзакции..."
   },
   "snapsInvalidUIError": {
     "message": "Пользовательский интерфейс, указанный snap, недействителен."
@@ -4192,9 +4173,6 @@
     "message": "Своп завершится через <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Моделируйте транзакции перед отправкой, чтобы снизить транзакционные издержки и сократить число отказов."
-  },
   "stxTryingToCancel": {
     "message": "Попытка отменить транзакцию..."
   },
@@ -4209,9 +4187,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Ваша транзакция была отменена, и вы не вносили никакой ненужной платы за газ."
-  },
-  "stxYouCanOptOut": {
-    "message": "Вы можете отказаться в любое время в расширенных настройках."
   },
   "submit": {
     "message": "Отправить"
@@ -4840,18 +4815,6 @@
   "transactionCreated": {
     "message": "В $2 создана транзакция на сумму $1."
   },
-  "transactionData": {
-    "message": "Данные транзакции"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Расшифровано Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Подтвержденный контракт на $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Расшифровка транзакции недоступна для ID блокчейна $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Рекомендовано сайтом"
   },
@@ -4982,9 +4945,6 @@
   },
   "twelveHrTitle": {
     "message": "12 ч:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Для этого контракта сейчас не поддерживается аналитика транзакций."
   },
   "typeYourSRP": {
     "message": "Введите секретную фразу для восстановления"

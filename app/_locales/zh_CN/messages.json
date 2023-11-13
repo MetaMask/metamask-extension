@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "如果您试图将资产从一个网络直接发送到另一个网络，这可能会导致永久的资产损失。请务必使用跨链桥进行操作。"
   },
-  "attemptToCancelSwap": {
-    "message": "尝试取消兑换 ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "正在尝试连接到区块链。"
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "链 ID为$1的网络使用的货币代码（$2）可能与您输入的不同。请在继续之前进行验证。",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "选择您的网络"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
-  },
-  "enableSmartSwaps": {
-    "message": "启用智能兑换"
   },
   "enableSnap": {
     "message": "启用"
@@ -2230,9 +2223,6 @@
     "message": "请确保没有人在看您的屏幕",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "格式错误的数据"
-  },
   "max": {
     "message": "最大"
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "您没有安装 snap。"
-  },
-  "noThanksVariant2": {
-    "message": "不，谢谢."
   },
   "noTransactions": {
     "message": "您没有任何交易"
@@ -3814,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "智能兑换暂时不可用。"
   },
-  "smartSwapsSubDescription": {
-    "message": "* 智能兑换将多次尝试以私密方式提交您的交易。如果所有尝试都失败，交易将会公开广播，以确保您的兑换成功进行。"
-  },
   "snapConfigure": {
     "message": "配置"
   },
@@ -3922,9 +3906,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "正在加载交易洞察……"
   },
   "snapsInvalidUIError": {
     "message": "Snap 指定的用户界面无效。"
@@ -4192,9 +4173,6 @@
     "message": "Swap距离完成尚有<",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "在提交前模拟交易，以降低交易成本并减少失败。"
-  },
   "stxTryingToCancel": {
     "message": "正在尝试取消您的交易......"
   },
@@ -4209,9 +4187,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "您的交易已被取消，您并未支付任何不必要的燃料费。"
-  },
-  "stxYouCanOptOut": {
-    "message": "您可以随时选择退出高级设置。"
   },
   "submit": {
     "message": "提交"
@@ -4840,18 +4815,6 @@
   "transactionCreated": {
     "message": "在 $2 创建了值为 $1 的交易。"
   },
-  "transactionData": {
-    "message": "交易数据"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "由 Truffle 解码"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "已在 $1 验证的合约"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "链 ID $1 不可使用交易解码"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "建议的网站"
   },
@@ -4982,9 +4945,6 @@
   },
   "twelveHrTitle": {
     "message": "12小时："
-  },
-  "txInsightsNotSupported": {
-    "message": "此合约目前不支持交易见解。"
   },
   "typeYourSRP": {
     "message": "输入私钥助记词"

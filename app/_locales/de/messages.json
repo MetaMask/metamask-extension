@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Wenn Sie versuchen, Assets direkt von einem Netzwerk in ein anderes zu senden, kann dies zu einem dauerhaften Asset-Verlust führen. Verwenden Sie unbedingt eine Bridge."
   },
-  "attemptToCancelSwap": {
-    "message": "Versuchen, Swap für ~$1 zu stornieren.",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Versuch einer Verbindung zur Blockchain."
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Das Netzwerk mit der Chain-ID $1 verwendet möglicherweise ein anderes Währungssymbol ($2) als das, das Sie eingegeben haben. Bitte überprüfen Sie dies, bevor Sie fortfahren.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Wählen Sie Ihr Netzwerk"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Verwenden Sie die OpenSea's API, um NFT-Daten abzurufen. Die NFT-Auto-Erkennung basiert auf der OpenSea's API und wird nicht verfügbar sein, wenn diese deaktiviert ist."
-  },
-  "enableSmartSwaps": {
-    "message": "Smart Swaps aktivieren"
   },
   "enableSnap": {
     "message": "Aktivieren"
@@ -2230,9 +2223,6 @@
     "message": "Stellen Sie sicher, dass niemand zuschaut.",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Fehlerhafte Daten"
-  },
   "max": {
     "message": "Max."
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Keine Snaps installiert"
-  },
-  "noThanksVariant2": {
-    "message": "Nein, danke."
   },
   "noTransactions": {
     "message": "Keine Transaktionen"
@@ -3814,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps sind vorrübergehend nicht verfügbar."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Smart Swaps versucht mehrmals, Ihre Transaktion privat zu übermitteln. Wenn alle Versuche fehlschlagen, wird die Transaktion öffentlich übertragen, um sicherzustellen, dass Ihr Swap erfolgreich durchgeführt wird."
-  },
   "snapConfigure": {
     "message": "Konfigurieren"
   },
@@ -3922,9 +3906,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Transaktions-Einsicht wird geladen ..."
   },
   "snapsInvalidUIError": {
     "message": "Die vom Snap spezifizierte UI ist ungültig."
@@ -4192,9 +4173,6 @@
     "message": "Swap abgeschlossen in <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simulieren Sie Transaktionen vor der Übermittlung, um die Transaktionskosten zu senken und Ausfälle zu vermeiden."
-  },
   "stxTryingToCancel": {
     "message": "Es wird versucht, Ihre Transaktion zu stornieren ..."
   },
@@ -4209,9 +4187,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Ihre Transaktion wurde storniert und Sie haben keine unnötigen Gas-Gebühren bezahlt."
-  },
-  "stxYouCanOptOut": {
-    "message": "Sie können sich in den erweiterten Einstellungen jederzeit abmelden."
   },
   "submit": {
     "message": "Absenden"
@@ -4840,18 +4815,6 @@
   "transactionCreated": {
     "message": "Transaktion mit einem Wert von $1 bei $2 erstellt."
   },
-  "transactionData": {
-    "message": "Transaktionsdaten"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Dekodiert von Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Verifizierter Contract auf $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Transaktionsdekodierung ist nicht verfügbar für Chain-ID $1."
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Seite vorgeschlagen"
   },
@@ -4982,9 +4945,6 @@
   },
   "twelveHrTitle": {
     "message": "12 Std:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Transaktionseinsichten für diesen Contract zu diesem Zeitpunkt nicht unterstützt."
   },
   "typeYourSRP": {
     "message": "Geben Sie Ihre geheime Wiederherstellungsphrase ein."

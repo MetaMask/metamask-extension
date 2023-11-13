@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Jika Anda mencoba untuk mengirim aset secara langsung dari satu jaringan ke jaringan lain, aset Anda berpotensi hilang secara permanen. Pastikan untuk menggunakan bridge."
   },
-  "attemptToCancelSwap": {
-    "message": "Mencoba membatalkan pertukaran dengan biaya ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Mencoba terhubung ke blockchain."
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Jaringan dengan ID chain $1 dapat menggunakan simbol mata uang yang berbeda ($2) dari yang Anda masukkan. Harap verifikasikan sebelum melanjutkan.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Pilih jaringan Anda"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
-  },
-  "enableSmartSwaps": {
-    "message": "Aktifkan pertukaran cerdas"
   },
   "enableSnap": {
     "message": "Aktifkan"
@@ -2230,9 +2223,6 @@
     "message": "Pastikan tidak ada yang melihat layar Anda",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Format data salah"
-  },
   "max": {
     "message": "Maks"
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Belum ada snap yang diinstal."
-  },
-  "noThanksVariant2": {
-    "message": "Tidak, terima kasih."
   },
   "noTransactions": {
     "message": "Anda tidak memiliki transaksi"
@@ -3814,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swap tidak tersedia untuk sementara waktu."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Smart Swap akan mencoba mengirimkan transaksi Anda secara pribadi, beberapa kali. Jika semua upaya gagal, transaksi akan disiarkan secara publik untuk memastikan Swap telah berhasil dilakukan."
-  },
   "snapConfigure": {
     "message": "Konfigurasikan"
   },
@@ -3922,9 +3906,6 @@
   },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInsightLoading": {
-    "message": "Memuat wawasan transaksi..."
   },
   "snapsInvalidUIError": {
     "message": "UI yang ditentukan oleh snap tidak valid."
@@ -4192,9 +4173,6 @@
     "message": "Swap akan selesai dalam <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simulasikan transaksi sebelum dikirim untuk mengurangi biaya transaksi dan mengurangi kegagalan."
-  },
   "stxTryingToCancel": {
     "message": "Mencoba membatalkan transaksi Anda..."
   },
@@ -4209,9 +4187,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Transaksi Anda telah dibatalkan dan Anda tidak membayar biaya gas yang tidak perlu."
-  },
-  "stxYouCanOptOut": {
-    "message": "Anda dapat memilih keluar pada pengaturan lanjutan kapan saja."
   },
   "submit": {
     "message": "Kirim"
@@ -4840,18 +4815,6 @@
   "transactionCreated": {
     "message": "Transaksi dibuat dengan nilai sebesar $1 pada $2."
   },
-  "transactionData": {
-    "message": "Data transaksi"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Kode diuraikan oleh Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Kontrak diverifikasi pada $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Penguraian kode transaksi tidak tersedia untuk Id chain $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Situs yang disarankan"
   },
@@ -4982,9 +4945,6 @@
   },
   "twelveHrTitle": {
     "message": "12 j:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Wawasan transaksi tidak didukung untuk kontrak ini saat ini."
   },
   "typeYourSRP": {
     "message": "Ketik Frasa Pemulihan Rahasia"

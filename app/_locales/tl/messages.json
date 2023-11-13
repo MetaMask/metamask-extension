@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Kung tatangkain mong magpadala ng mga asset nang direkta mula sa isang network papunta sa isa pa, maaari itong magresulta sa permanenteng pagkawala ng asset. Siguraduhing gumamit ng bridge."
   },
-  "attemptToCancelSwap": {
-    "message": "Magtangkang kanselahin ang pag-swap sa halagang ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Sinusubukang kumonekta sa blockchain."
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Ang network na may ID ng chain na $1 ay maaaring gumamit ng ibang simbolo ng currency ($2) sa inilagay mo. Mag-verify bago magpatuloy.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Piliin ang iyong network"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
-  },
-  "enableSmartSwaps": {
-    "message": "Paganahin ang mga smart swap"
   },
   "enableSnap": {
     "message": "Paganahin"
@@ -2230,9 +2223,6 @@
     "message": "Siguraduhing walang tumitingin",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Pangit na datos"
-  },
   "max": {
     "message": "Max"
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Wala kang naka-install na snaps."
-  },
-  "noThanksVariant2": {
-    "message": "Huwag na lang."
   },
   "noTransactions": {
     "message": "Wala kang transaksyon"
@@ -3814,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Pansamantalang hindi available ang mga Smart Swap."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Susubukan ng mga Smart Swap na isumite nang pribado ang iyong transaksyon, maraming beses. Kapag nabigo ang lahat ng pagsubok, ipapakita sa publiko ang transaksyon upang matiyak na ang Swap ay naging matagumpay."
-  },
   "snapConfigure": {
     "message": "I-configure"
   },
@@ -3922,9 +3906,6 @@
   },
   "snaps": {
     "message": "Mga Snap"
-  },
-  "snapsInsightLoading": {
-    "message": "Naglo-load ng insight sa transaksyon..."
   },
   "snapsInvalidUIError": {
     "message": "Ang UI na tinukoy ng snap ay hindi wasto."
@@ -4192,9 +4173,6 @@
     "message": "Matatapos ang Swap sa <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Gayahin ang mga transaksyon bago isumite upang bumaba ang gastos sa transaksyon at mabawasan ang mga pagkabigo."
-  },
   "stxTryingToCancel": {
     "message": "Sinusubukang kanselahin ang iyong transaksyon..."
   },
@@ -4209,9 +4187,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Kinansela ang iyong transaksyon at hindi ka nagbayad para sa anumang mga hindi kinakailangang gas."
-  },
-  "stxYouCanOptOut": {
-    "message": "Maaari kang mag-opt-out sa mga advanced setting anumang oras."
   },
   "submit": {
     "message": "Isumite"
@@ -4840,18 +4815,6 @@
   "transactionCreated": {
     "message": "Nagawa ang transaksyon na nagkakahalagang $1 sa $2."
   },
-  "transactionData": {
-    "message": "Data ng transaksyon"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Na-decode ng Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Na-verify na kontrata sa $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Ang pag-decode ng transaksyon ay hindi available para sa ID ng chain na $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Minungkahing site"
   },
@@ -4982,9 +4945,6 @@
   },
   "twelveHrTitle": {
     "message": "12 oras:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Hindi sinusuportahan ang mga insight sa transaksyon para sa kontratang ito sa oras na ito."
   },
   "typeYourSRP": {
     "message": "I-type ang iyong Lihim na Parirala sa Pagbawi"

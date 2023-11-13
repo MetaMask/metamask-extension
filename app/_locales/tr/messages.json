@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Varlıkları doğrudan bir ağdan diğerine göndermeye çalışırsanız bu durum kalıcı varlık kaybına neden olabilir. Bir köprü kullandığınızdan emin olun."
   },
-  "attemptToCancelSwap": {
-    "message": "~$1 için swap'ı iptal etme girişimi",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Blockzincirine bağlanmaya çalışılıyor."
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Zincir kimliği $1 olan ağ, girdiğin para biriminden farklı bir para birimi sembolü ($2) kullanabilir. Lütfen devam etmeden önce doğrula.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Ağınızı seçin"
@@ -1407,9 +1403,6 @@
   },
   "enableOpenSeaAPIDescription": {
     "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
-  },
-  "enableSmartSwaps": {
-    "message": "Akıllı swap'ları etkinleştirin"
   },
   "enableSnap": {
     "message": "Etkinleştir"
@@ -2230,9 +2223,6 @@
     "message": "Hiç kimsenin bakmadığından emin olun",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Hatalı biçimlendirilmiş veri"
-  },
   "max": {
     "message": "Maksimum"
   },
@@ -2524,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Yüklü snapiniz yok."
-  },
-  "noThanksVariant2": {
-    "message": "Hayır, teşekkürler."
   },
   "noTransactions": {
     "message": "İşleminiz yok"
@@ -3814,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Akıllı Swap'lar geçici olarak kullanılamıyor."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Akıllı Swap'lar, işleminizi birden çok kez özel olarak göndermeye çalışır. Tüm denemeler başarısız olursa Swap işleminin başarılı bir şekilde gerçekleşmesini sağlamak için işlem herkese açık olarak yayınlanacaktır."
-  },
   "snapConfigure": {
     "message": "Yapılandır"
   },
@@ -3922,9 +3906,6 @@
   },
   "snaps": {
     "message": "Snapler"
-  },
-  "snapsInsightLoading": {
-    "message": "İşlem içgörüsü yükleniyor..."
   },
   "snapsInvalidUIError": {
     "message": "Snap tarafından belirtilen kullanıcı arayüzü geçersiz."
@@ -4192,9 +4173,6 @@
     "message": "Swap işleminin tamamlanmasına kalan süre <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "İşlem maliyetlerini azaltmak ve arızaları azaltmak için göndermeden önce işlemleri simüle et."
-  },
   "stxTryingToCancel": {
     "message": "İşlemin iptal edilmeye çalışılıyor..."
   },
@@ -4209,9 +4187,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "İşleminiz iptal edildi ve gereksiz gaz ücreti ödemediniz."
-  },
-  "stxYouCanOptOut": {
-    "message": "\nDilediğin zaman gelişmiş ayarlarda devre dışı bırakabilirsin."
   },
   "submit": {
     "message": "Gönder"
@@ -4840,18 +4815,6 @@
   "transactionCreated": {
     "message": "İşlem $2 itibariyle $1 değeriyle oluşturuldu."
   },
-  "transactionData": {
-    "message": "İşlem verileri"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Truffle ile şifresi çözüldü"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Sözleşme $1 üzerinde doğrulandı"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "$1 zincir kimliği için işlem şifre çözme mümkün değil"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site önerisi"
   },
@@ -4982,9 +4945,6 @@
   },
   "twelveHrTitle": {
     "message": "12 sa.:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Şu anda işlem içgörüleri bu sözleşme için desteklenmiyor."
   },
   "typeYourSRP": {
     "message": "Gizli Kurtarma İfadenizi girin"
