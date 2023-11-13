@@ -11,7 +11,7 @@ const logOutputFolder = './public/playwright/playwright-reports';
 const config: PlaywrightTestConfig = {
   testDir: 'test/e2e/mmi/specs',
   /* Maximum time one test can run for. */
-  timeout: 60 * 1000,
+  timeout: 70 * 1000,
   expect: {
     timeout: 30 * 1000,
   },

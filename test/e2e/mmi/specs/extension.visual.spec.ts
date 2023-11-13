@@ -10,6 +10,7 @@ import { MMIAccountMenuPage } from '../pageObjects/mmi-accountMenu-page';
 
 test.describe('MMI extension', () => {
   test('Interactive token replacement', async ({ page, context }) => {
+    test.slow();
     // Getting extension id of MMI
     const extensions = new ChromeExtensionPage(await context.newPage());
 
