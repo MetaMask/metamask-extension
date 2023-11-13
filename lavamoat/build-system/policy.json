@@ -125,11 +125,16 @@
         "process.versions.node": true
       },
       "packages": {
+        "@babel/core>@babel/helper-compilation-targets>lru-cache": true,
         "@babel/core>@babel/helper-compilation-targets>semver": true,
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
-        "mockttp>@httptoolkit/proxy-agent>lru-cache": true,
         "webpack>browserslist": true
+      }
+    },
+    "@babel/core>@babel/helper-compilation-targets>lru-cache": {
+      "packages": {
+        "@babel/core>@babel/helper-compilation-targets>lru-cache>yallist": true
       }
     },
     "@babel/core>@babel/helper-compilation-targets>semver": {
@@ -449,23 +454,8 @@
         "@babel/core": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-syntax-async-generators": true,
-        "@babel/preset-env>@babel/plugin-transform-async-generator-functions>@babel/helper-remap-async-to-generator": true,
+        "@babel/preset-env>@babel/plugin-transform-async-to-generator>@babel/helper-remap-async-to-generator": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-async-generator-functions>@babel/helper-remap-async-to-generator": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/plugin-transform-async-generator-functions>@babel/helper-remap-async-to-generator>@babel/helper-wrap-function": true,
-        "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
-        "depcheck>@babel/traverse>@babel/helper-environment-visitor": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-async-generator-functions>@babel/helper-remap-async-to-generator>@babel/helper-wrap-function": {
-      "packages": {
-        "@babel/core>@babel/template": true,
-        "@babel/core>@babel/types": true,
-        "depcheck>@babel/traverse>@babel/helper-function-name": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-async-to-generator": {
@@ -757,13 +747,7 @@
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/plugin-syntax-object-rest-spread": true,
-        "@babel/preset-env>@babel/plugin-transform-object-rest-spread>@babel/plugin-transform-parameters": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-object-rest-spread>@babel/plugin-transform-parameters": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true
+        "@babel/preset-env>@babel/plugin-transform-parameters": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-object-super": {
@@ -6359,14 +6343,19 @@
       "packages": {
         "@babel/register>clone-deep>is-plain-object": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": true,
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true,
-        "lavamoat>lavamoat-core>merge-deep>kind-of": true
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": {
       "packages": {
         "gulp>undertaker>object.reduce>for-own>for-in": true
+      }
+    },
+    "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": {
+      "packages": {
+        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
@@ -6498,11 +6487,6 @@
       },
       "packages": {
         "chalk>supports-color>has-flag": true
-      }
-    },
-    "mockttp>@httptoolkit/proxy-agent>lru-cache": {
-      "packages": {
-        "mockttp>@httptoolkit/proxy-agent>lru-cache>yallist": true
       }
     },
     "mockttp>portfinder>mkdirp": {
