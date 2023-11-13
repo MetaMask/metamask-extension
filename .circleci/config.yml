@@ -277,6 +277,7 @@ workflows:
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-chrome-multichain
+            - test-e2e-chrome-multiple-providers
             - test-e2e-firefox
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
