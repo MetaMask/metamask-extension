@@ -729,6 +729,7 @@ export default class SecurityTab extends PureComponent {
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         gap={4}
+        id="display-nft-media"
       >
         <div className="settings-page__content-item">
           <span>{t('displayNftMedia')}</span>
