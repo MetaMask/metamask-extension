@@ -16,6 +16,7 @@ import {
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   ONBOARDING_PIN_EXTENSION_ROUTE,
+  MMI_ONBOARDING_COMPLETION_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
@@ -93,10 +94,16 @@ export default function CreatePassword({
         ///: END:ONLY_INCLUDE_IN
 
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+        history.replace(ONBOARDING_PIN_EXTENSION_ROUTE);
         ///: END:ONLY_INCLUDE_IN
       } else {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+        ///: END:ONLY_INCLUDE_IN
+
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        history.replace(MMI_ONBOARDING_COMPLETION_ROUTE);
+        ///: END:ONLY_INCLUDE_IN
       }
     }
   }, [currentKeyring, history, firstTimeFlowType]);

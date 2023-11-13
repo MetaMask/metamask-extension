@@ -12,6 +12,9 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi)
   ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  MMI_ONBOARDING_COMPLETION_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import {
   getCompletedOnboarding,
@@ -31,9 +34,17 @@ export default function OnboardingFlowSwitch() {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   if (seedPhraseBackedUp !== null) {
     return <Redirect to={{ pathname: ONBOARDING_COMPLETION_ROUTE }} />;
   }
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  if (seedPhraseBackedUp !== null) {
+    return <Redirect to={{ pathname: MMI_ONBOARDING_COMPLETION_ROUTE }} />;
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   if (isUnlocked) {
     return <Redirect to={{ pathname: LOCK_ROUTE }} />;
