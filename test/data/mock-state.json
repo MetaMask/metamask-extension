@@ -4,6 +4,7 @@
   },
   "appState": {
     "networkDropdownOpen": false,
+    "importNftsModal": { "open": false },
     "gasIsLoading": false,
     "isLoading": false,
     "modal": {
@@ -18,6 +19,14 @@
     },
     "warning": null,
     "customTokenAmount": "10"
+  },
+  "confirmTransaction": {
+    "txData": {
+      "txParams": {
+        "gas": "0x153e2",
+        "value": "0x0"
+      }
+    }
   },
   "history": {
     "mostRecentOverviewPage": "/mostRecentOverviewPage"
@@ -108,7 +117,6 @@
       "unconnectedAccount": true
     },
     "featureFlags": {},
-    "networkId": "5",
     "providerConfig": {
       "type": "rpc",
       "nickname": "goerli",
@@ -151,6 +159,10 @@
       {
         "type": "Snap Keyring",
         "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
+      },
+      {
+        "type": "Custody test",
+        "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
       }
     ],
     "identities": {
@@ -169,6 +181,10 @@
       "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
         "name": "Test Account 3",
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823"
+      },
+      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+        "name": "Custody test",
+        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
       }
     },
     "selectedNetworkClientId": "goerli",
@@ -596,7 +612,6 @@
         "id": 8393540981007587,
         "time": 1536268017676,
         "status": "unapproved",
-        "metamaskNetworkId": "4",
         "loadingDefaults": false,
         "txParams": {
           "data": "0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000",
@@ -611,7 +626,7 @@
             "id": 8393540981007587,
             "time": 1536268017676,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
@@ -645,7 +660,7 @@
         "id": 3387511061307736,
         "time": 1528133130531,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -660,7 +675,7 @@
             "id": 3387511061307736,
             "time": 1528133130531,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -777,7 +792,7 @@
         "id": 3387511061307737,
         "time": 1528133149983,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -792,7 +807,7 @@
             "id": 3387511061307737,
             "time": 1528133149983,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -909,7 +924,7 @@
         "id": 3387511061307738,
         "time": 1528133180635,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -924,7 +939,7 @@
             "id": 3387511061307738,
             "time": 1528133180635,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1041,7 +1056,7 @@
         "id": 3387511061307739,
         "time": 1528133223918,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1057,7 +1072,7 @@
             "id": 3387511061307739,
             "time": 1528133223918,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1178,7 +1193,7 @@
         "id": 3387511061307740,
         "time": 1528133291381,
         "status": "confirmed",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1194,7 +1209,7 @@
             "id": 3387511061307740,
             "time": 1528133291381,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1312,7 +1327,7 @@
         "id": 3387511061307741,
         "time": 1528133318440,
         "status": "rejected",
-        "metamaskNetworkId": "4",
+        "chainId": "0x5",
         "loadingDefaults": false,
         "txParams": {
           "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1326,7 +1341,7 @@
             "id": 3387511061307741,
             "time": 1528133318440,
             "status": "unapproved",
-            "metamaskNetworkId": "4",
+            "chainId": "0x5",
             "loadingDefaults": true,
             "txParams": {
               "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
@@ -1379,6 +1394,7 @@
       }
     ],
     "desktopEnabled": false,
+    "addSnapAccountEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
@@ -1389,7 +1405,40 @@
         "requestState": { "test": "value" }
       }
     },
-    "pendingApprovalCount": 1
+    "pendingApprovalCount": 1,
+    "database": {
+      "verifiedSnaps": {
+        "npm:@metamask/test-snap-bip44": {
+          "id": "npm:@metamask/test-snap-bip44",
+          "metadata": {
+            "name": "BIP-44",
+            "author": {
+              "name": "Consensys",
+              "website": "https://consensys.io/"
+            },
+            "website": "https://snaps.consensys.io/",
+            "summary": "An example Snap that signs messages using BLS.",
+            "description": "An example Snap that signs messages using BLS.",
+            "audits": [
+              {
+                "auditor": "Consensys Diligence",
+                "report": "https://consensys.io/diligence/audits/"
+              }
+            ],
+            "category": "interoperability",
+            "support": {
+              "contact": "https://github.com/MetaMask"
+            },
+            "sourceCode": "https://github.com/MetaMask/test-snaps"
+          },
+          "versions": {
+            "5.1.2": {
+              "checksum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+            }
+          }
+        }
+      }
+    }
   },
   "send": {
     "amountMode": "INPUT",

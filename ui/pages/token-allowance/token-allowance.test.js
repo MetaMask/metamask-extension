@@ -74,7 +74,6 @@ const state = {
       },
     ],
     transactions: [],
-    keyringTypes: [],
     keyrings: [
       {
         type: KeyringType.hdKeyTree,
@@ -164,7 +163,6 @@ describe('TokenAllowancePage', () => {
       id: 3049568294499567,
       time: 1664449552289,
       status: 'unapproved',
-      metamaskNetworkId: '3',
       originalGasEstimate: '0xea60',
       userEditedGasLimit: false,
       chainId: '0x3',

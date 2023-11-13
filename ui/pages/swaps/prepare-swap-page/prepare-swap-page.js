@@ -117,7 +117,6 @@ import {
   Icon,
   IconName,
   IconSize,
-  TextField,
   ButtonLink,
   ButtonLinkSize,
   Modal,
@@ -127,6 +126,7 @@ import {
   BannerAlert,
   Text,
 } from '../../../components/component-library';
+import { TextField } from '../../../components/component-library/text-field/deprecated';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import ImportToken from '../import-token';
 import TransactionSettings from '../transaction-settings/transaction-settings';
@@ -223,13 +223,15 @@ export default function PrepareSwapPage({
   const showSmartTransactionsOptInPopover =
     smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
 
-  const onCloseSmartTransactionsOptInPopover = (e) => {
+  const onManageStxInSettings = (e) => {
     e?.preventDefault();
-    setSmartTransactionsOptInStatus(false, smartTransactionsOptInStatus);
+    setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
+    dispatch(setTransactionSettingsOpened(true));
   };
 
-  const onEnableSmartTransactionsClick = () =>
+  const onStartSwapping = () => {
     setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
+  };
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
     sourceTokenInfo?.symbol,
@@ -238,7 +240,7 @@ export default function PrepareSwapPage({
     ? defaultSwapsToken
     : sourceTokenInfo;
 
-  const { tokensWithBalances } = useTokenTracker(tokens);
+  const { tokensWithBalances } = useTokenTracker({ tokens });
 
   // If the fromToken was set in a call to `onFromSelect` (see below), and that from token has a balance
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
@@ -569,7 +571,7 @@ export default function PrepareSwapPage({
     dispatch(resetSwapsPostFetchState());
     dispatch(setReviewSwapClickedTimestamp());
     trackPrepareSwapPageLoadedEvent();
-  }, [dispatch]);
+  }, [dispatch, trackPrepareSwapPageLoadedEvent]);
 
   const BlockExplorerLink = () => {
     return (
@@ -865,10 +867,8 @@ export default function PrepareSwapPage({
         </Modal>
 
         <SmartTransactionsPopover
-          onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
-          onCloseSmartTransactionsOptInPopover={
-            onCloseSmartTransactionsOptInPopover
-          }
+          onStartSwapping={onStartSwapping}
+          onManageStxInSettings={onManageStxInSettings}
           isOpen={showSmartTransactionsOptInPopover}
         />
 

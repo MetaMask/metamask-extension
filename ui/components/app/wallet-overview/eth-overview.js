@@ -14,7 +14,6 @@ import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
-import { MMI_SWAPS_URL } from '../../../../shared/constants/swaps';
 ///: END:ONLY_INCLUDE_IN
 import { I18nContext } from '../../../contexts/i18n';
 import {
@@ -112,7 +111,7 @@ const EthOverview = ({ className, showAddress }) => {
           onClick={() => {
             stakingEvent();
             global.platform.openTab({
-              url: 'https://metamask-institutional.io/stake',
+              url: `${mmiPortfolioUrl}/stake`,
             });
           }}
         />
@@ -125,7 +124,9 @@ const EthOverview = ({ className, showAddress }) => {
             label={t('portfolio')}
             onClick={() => {
               portfolioEvent();
-              window.open(mmiPortfolioUrl, '_blank');
+              global.platform.openTab({
+                url: mmiPortfolioUrl,
+              });
             }}
           />
         )}
@@ -194,11 +195,14 @@ const EthOverview = ({ className, showAddress }) => {
             <IconButton
               className="eth-overview__button"
               Icon={
-                <Icon name={IconName.Add} color={IconColor.primaryInverse} />
+                <Icon
+                  name={IconName.PlusMinus}
+                  color={IconColor.primaryInverse}
+                />
               }
               disabled={!isBuyableChain}
               data-testid="eth-overview-buy"
-              label={t('buy')}
+              label={t('buyAndSell')}
               onClick={() => {
                 openBuyCryptoInPdapp();
                 trackEvent({
@@ -262,7 +266,7 @@ const EthOverview = ({ className, showAddress }) => {
             onClick={() => {
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
               global.platform.openTab({
-                url: MMI_SWAPS_URL,
+                url: `${mmiPortfolioUrl}/swap`,
               });
               ///: END:ONLY_INCLUDE_IN
 

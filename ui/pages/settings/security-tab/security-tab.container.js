@@ -13,6 +13,10 @@ import {
   setOpenSeaEnabled,
   setUseNftDetection,
   setUse4ByteResolution,
+  setUseSafeChainsListValidation,
+  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  setUseExternalNameSources,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../store/actions';
 import { getAllNetworks } from '../../../selectors';
 import SecurityTab from './security-tab.component';
@@ -30,11 +34,15 @@ const mapStateToProps = (state) => {
     useTokenDetection,
     ipfsGateway,
     useMultiAccountBalanceChecker,
+    useSafeChainsListValidation,
     useCurrencyRateCheck,
     useAddressBarEnsResolution,
     openSeaEnabled,
     useNftDetection,
     use4ByteResolution,
+    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+    useExternalNameSources,
+    ///: END:ONLY_INCLUDE_IN
   } = metamask;
 
   const allNetworks = getAllNetworks(state);
@@ -48,11 +56,15 @@ const mapStateToProps = (state) => {
     useTokenDetection,
     ipfsGateway,
     useMultiAccountBalanceChecker,
+    useSafeChainsListValidation,
     useCurrencyRateCheck,
     useAddressBarEnsResolution,
     openSeaEnabled,
     useNftDetection,
     use4ByteResolution,
+    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+    useExternalNameSources,
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 
@@ -64,22 +76,24 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setParticipateInMetaMetrics(val)),
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
     setUseCurrencyRateCheck: (val) => dispatch(setUseCurrencyRateCheck(val)),
-    setUseTokenDetection: (value) => {
-      return dispatch(setUseTokenDetection(value));
-    },
-    setIpfsGateway: (value) => {
-      return dispatch(setIpfsGateway(value));
-    },
-    setUseMultiAccountBalanceChecker: (value) => {
-      return dispatch(setUseMultiAccountBalanceChecker(value));
-    },
-    setUseAddressBarEnsResolution: (value) =>
-      dispatch(setUseAddressBarEnsResolution(value)),
+    setUseTokenDetection: (val) => dispatch(setUseTokenDetection(val)),
+    setIpfsGateway: (val) => dispatch(setIpfsGateway(val)),
+    setUseMultiAccountBalanceChecker: (val) =>
+      dispatch(setUseMultiAccountBalanceChecker(val)),
+    setUseAddressBarEnsResolution: (val) =>
+      dispatch(setUseAddressBarEnsResolution(val)),
+    setUseSafeChainsListValidation: (val) =>
+      dispatch(setUseSafeChainsListValidation(val)),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
     setUse4ByteResolution: (value) => {
       return dispatch(setUse4ByteResolution(value));
     },
+    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+    setUseExternalNameSources: (value) => {
+      return dispatch(setUseExternalNameSources(value));
+    },
+    ///: END:ONLY_INCLUDE_IN
   };
 };
 

@@ -9,7 +9,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { isWebUrl } from '../../../../../app/scripts/lib/util';
 import {
   MetaMetricsEventCategory,
@@ -34,6 +34,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
+import { useSafeChainsListValidationSelector } from '../../../../selectors';
 import {
   editAndSetNetworkConfiguration,
   setNewNetworkAdded,
@@ -106,6 +107,10 @@ const NetworksForm = ({
 
   const trackEvent = useContext(MetaMetricsContext);
 
+  const useSafeChainsListValidation = useSelector(
+    useSafeChainsListValidationSelector,
+  );
+
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');
     setRpcUrl(selectedNetwork.rpcUrl);
@@ -142,6 +147,7 @@ const NetworksForm = ({
   const prevRpcUrl = useRef();
   const prevTicker = useRef();
   const prevBlockExplorerUrl = useRef();
+  // This effect is used to reset the form when the user switches between networks
   useEffect(() => {
     if (!prevAddNewNetwork.current && addNewNetwork) {
       setNetworkName('');
@@ -151,16 +157,33 @@ const NetworksForm = ({
       setBlockExplorerUrl('');
       setErrors({});
       setIsSubmitting(false);
-    } else if (
-      (prevNetworkName.current !== selectedNetworkName ||
-        prevRpcUrl.current !== selectedNetwork.rpcUrl ||
-        prevChainId.current !== selectedNetwork.chainId ||
-        prevTicker.current !== selectedNetwork.ticker ||
-        prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl) &&
-      (!isEditing || !isEqual(selectedNetwork, previousNetwork))
-    ) {
-      resetForm(selectedNetwork);
+    } else {
+      const networkNameChanged =
+        prevNetworkName.current !== selectedNetworkName;
+      const rpcUrlChanged = prevRpcUrl.current !== selectedNetwork.rpcUrl;
+      const chainIdChanged = prevChainId.current !== selectedNetwork.chainId;
+      const tickerChanged = prevTicker.current !== selectedNetwork.ticker;
+      const blockExplorerUrlChanged =
+        prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl;
+
+      if (
+        (networkNameChanged ||
+          rpcUrlChanged ||
+          chainIdChanged ||
+          tickerChanged ||
+          blockExplorerUrlChanged) &&
+        (!isEditing || !isEqual(selectedNetwork, previousNetwork))
+      ) {
+        resetForm(selectedNetwork);
+      }
     }
+
+    prevAddNewNetwork.current = addNewNetwork;
+    prevNetworkName.current = selectedNetworkName;
+    prevRpcUrl.current = selectedNetwork.rpcUrl;
+    prevChainId.current = selectedNetwork.chainId;
+    prevTicker.current = selectedNetwork.ticker;
+    prevBlockExplorerUrl.current = selectedNetwork.blockExplorerUrl;
   }, [
     selectedNetwork,
     selectedNetworkName,
@@ -347,22 +370,23 @@ const NetworksForm = ({
     async (formChainId, formTickerSymbol) => {
       let warningKey;
       let warningMessage;
-      let safeChainsList;
       let providerError;
 
       if (!formChainId || !formTickerSymbol) {
         return null;
       }
 
-      try {
-        safeChainsList =
-          (await fetchWithCache({
+      let safeChainsList = [];
+      if (useSafeChainsListValidation) {
+        try {
+          safeChainsList = await fetchWithCache({
             url: 'https://chainid.network/chains.json',
             functionName: 'getSafeChainsList',
-          })) || [];
-      } catch (err) {
-        log.warn('Failed to fetch the chainList from chainid.network', err);
-        providerError = err;
+          });
+        } catch (err) {
+          log.warn('Failed to fetch the chainList from chainid.network', err);
+          providerError = err;
+        }
       }
 
       if (providerError) {

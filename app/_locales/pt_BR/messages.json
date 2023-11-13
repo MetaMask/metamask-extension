@@ -299,9 +299,6 @@
   "busy": {
     "message": "Ocupado"
   },
-  "buy": {
-    "message": "Comprar"
-  },
   "bytes": {
     "message": "Bytes"
   },
@@ -724,6 +721,12 @@
   },
   "enableFromSettings": {
     "message": " Ative nas Configurações."
+  },
+  "enableOpenSeaAPI": {
+    "message": "Ativar a API OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
   },
   "enableToken": {
     "message": "ativar $1",
@@ -1391,9 +1394,6 @@
   },
   "newContract": {
     "message": "Novo contrato"
-  },
-  "newNFTsDetected": {
-    "message": "Novidade! Detecção de NFT"
   },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
@@ -2328,9 +2328,6 @@
   "swapSource": {
     "message": "Fonte de liquidez"
   },
-  "swapSourceInfo": {
-    "message": "Pesquisamos várias fontes de liquidez (exchanges, agregadores e formadores de mercado profissionais) para descobrir as melhores tarifas e as taxas de rede mais baixas."
-  },
   "swapSuggested": {
     "message": "Troca sugerida"
   },
@@ -2500,18 +2497,6 @@
   "transactionCreated": {
     "message": "Transação criada com valor de $1 às $2."
   },
-  "transactionData": {
-    "message": "Dados da transação"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Decodificado por Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Contrato verificado em $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "A decodificação da transação não está disponível para o chainId $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site sugerido"
   },
@@ -2609,9 +2594,6 @@
   "twelveHrTitle": {
     "message": "12 h:"
   },
-  "txInsightsNotSupported": {
-    "message": "As informações sobre transações não são suportadas para esse contrato, por ora."
-  },
   "u2f": {
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
@@ -2665,9 +2647,6 @@
   },
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
-  },
-  "useNftDetectionDescription": {
-    "message": "A exibição de mídias e dados de NFTs pode expor seu endereço IP para servidores centralizados. APIs terceirizadas (como a OpenSea) são utilizadas para detectar NFTs na sua carteira. Isso expõe o endereço da sua conta com esses serviços. Deixe essa opção desativada se você não quer que o aplicativo extraia dados desses serviços."
   },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"

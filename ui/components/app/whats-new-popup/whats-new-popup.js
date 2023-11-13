@@ -8,15 +8,10 @@ import { getCurrentLocale } from '../../../ducks/locale/locale';
 import { I18nContext } from '../../../contexts/i18n';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
 import Popover from '../../ui/popover';
-import {
-  Text,
-  ButtonPrimary,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  IconName,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../component-library';
+import { Text, ButtonPrimary } from '../../component-library';
 import { updateViewedNotifications } from '../../../store/actions';
 import {
+  NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
   getTranslatedUINotifications,
@@ -29,12 +24,7 @@ import {
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
 } from '../../../helpers/constants/routes';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  Size,
-  ///: END:ONLY_INCLUDE_IN
-  TextVariant,
-} from '../../../helpers/constants/design-system';
+import { TextVariant } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -88,7 +78,7 @@ function getActionFunctionById(id, history) {
     },
     18: () => {
       updateViewedNotifications({ 18: true });
-      history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
+      history.push(`${EXPERIMENTAL_ROUTE}#security-alerts`);
     },
     19: () => {
       updateViewedNotifications({ 19: true });
@@ -110,7 +100,7 @@ function getActionFunctionById(id, history) {
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     23: () => {
       updateViewedNotifications({ 23: true });
-      history.push(`${EXPERIMENTAL_ROUTE}#transaction-security-check`);
+      history.push(`${EXPERIMENTAL_ROUTE}#security-alerts`);
     },
     ///: END:ONLY_INCLUDE_IN
     24: () => {
@@ -123,6 +113,12 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ [NOTIFICATION_OPEN_BETA_SNAPS]: true });
       global.platform.openTab({
         url: 'https://metamask.io/snaps/',
+      });
+    },
+    [NOTIFICATION_BUY_SELL_BUTTON]: () => {
+      updateViewedNotifications({ [NOTIFICATION_BUY_SELL_BUTTON]: true });
+      global.platform.openTab({
+        url: 'https://portfolio.metamask.io/sell/build-quote',
       });
     },
   };
@@ -160,30 +156,9 @@ const renderFirstNotification = ({
   history,
   isLast,
   trackEvent,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  mmiPortfolioUrl,
-  seenNotifications,
-  onClose,
-  ///: END:ONLY_INCLUDE_IN
 }) => {
-  const {
-    id,
-    date,
-    title,
-    description,
-    image,
-    actionText,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    customButton,
-    hideDate,
-    ///: END:ONLY_INCLUDE_IN
-  } = notification;
+  const { id, date, title, description, image, actionText } = notification;
   const actionFunction = getActionFunctionById(id, history);
-  let showNotificationDate = true;
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  showNotificationDate = !hideDate;
-  ///: END:ONLY_INCLUDE_IN
 
   const imageComponent = image && (
     <img
@@ -194,6 +169,7 @@ const renderFirstNotification = ({
     />
   );
   const placeImageBelowDescription = image?.placeImageBelowDescription;
+
   return (
     <div
       className={classnames(
@@ -212,9 +188,8 @@ const renderFirstNotification = ({
         <div className="whats-new-popup__notification-description">
           {renderDescription(description)}
         </div>
-        {showNotificationDate && (
-          <div className="whats-new-popup__notification-date">{date}</div>
-        )}
+
+        <div className="whats-new-popup__notification-date">{date}</div>
       </div>
       {placeImageBelowDescription && imageComponent}
       {actionText && (
@@ -232,26 +207,6 @@ const renderFirstNotification = ({
           {actionText}
         </ButtonPrimary>
       )}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        customButton && customButton.name === 'mmi-portfolio' && (
-          <ButtonPrimary
-            className="whats-new-popup__button"
-            data-testid="view-mmi-portfolio"
-            size={Size.SM}
-            startIconName={IconName.MmmiPortfolioDashboard}
-            onClick={() => {
-              updateViewedNotifications(seenNotifications);
-              onClose();
-              window.open(mmiPortfolioUrl, '_blank');
-            }}
-            block
-          >
-            {customButton.text}
-          </ButtonPrimary>
-        )
-        ///: END:ONLY_INCLUDE_IN
-      }
       <div
         className="whats-new-popup__intersection-observable"
         ref={idRefMap[id]}
@@ -296,12 +251,7 @@ const renderSubsequentNotification = ({
   );
 };
 
-export default function WhatsNewPopup({
-  onClose,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  mmiPortfolioUrl,
-  ///: END:ONLY_INCLUDE_IN
-}) {
+export default function WhatsNewPopup({ onClose }) {
   const t = useContext(I18nContext);
   const history = useHistory();
 
@@ -346,6 +296,7 @@ export default function WhatsNewPopup({
       },
     );
   };
+
   useEffect(() => {
     const observer = new window.IntersectionObserver(
       (entries, _observer) => {
@@ -374,26 +325,10 @@ export default function WhatsNewPopup({
       observer.observe(ref.current);
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    trackEvent({
-      category: MetaMetricsEventCategory.MMI,
-      event: MetaMetricsEventName.MMIPortfolioDashboardModalOpen,
-      properties: {
-        action: 'Modal was opened',
-      },
-    });
-    ///: END:ONLY_INCLUDE_IN
-
     return () => {
       observer.disconnect();
     };
-  }, [
-    idRefMap,
-    setSeenNotifications,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    trackEvent,
-    ///: END:ONLY_INCLUDE_IN
-  ]);
+  }, [idRefMap, setSeenNotifications]);
 
   // Display the swaps notification with full image
   // Displays the NFTs & OpenSea notifications 18,19 with full image
@@ -411,6 +346,7 @@ export default function WhatsNewPopup({
     // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
     [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
+    [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
   };
 
   return (
@@ -428,15 +364,6 @@ export default function WhatsNewPopup({
             completed_all: true,
           },
         });
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        trackEvent({
-          category: MetaMetricsEventCategory.MMI,
-          event: MetaMetricsEventName.MMIPortfolioDashboardModalButton,
-          properties: {
-            action: 'Button was clicked',
-          },
-        });
-        ///: END:ONLY_INCLUDE_IN
         onClose();
       }}
       popoverRef={popoverRef}
@@ -449,12 +376,8 @@ export default function WhatsNewPopup({
           const notification = getTranslatedUINotifications(t, locale)[id];
           const isLast = index === notifications.length - 1;
           // Choose the appropriate rendering function based on the id
-          let renderNotification =
+          const renderNotification =
             notificationRenderers[id] || renderSubsequentNotification;
-
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-          renderNotification = renderFirstNotification;
-          ///: END:ONLY_INCLUDE_IN
 
           return renderNotification({
             notification,
@@ -462,11 +385,6 @@ export default function WhatsNewPopup({
             history,
             isLast,
             trackEvent,
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            mmiPortfolioUrl,
-            seenNotifications,
-            onClose,
-            ///: END:ONLY_INCLUDE_IN
           });
         })}
       </div>
@@ -476,7 +394,4 @@ export default function WhatsNewPopup({
 
 WhatsNewPopup.propTypes = {
   onClose: PropTypes.func.isRequired,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  mmiPortfolioUrl: PropTypes.string.isRequired,
-  ///: END:ONLY_INCLUDE_IN
 };

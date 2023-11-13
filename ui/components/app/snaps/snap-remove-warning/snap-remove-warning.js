@@ -45,7 +45,7 @@ export default function SnapRemoveWarning({
             size={BUTTON_SIZES.LG}
             onClick={onCancel}
           >
-            {t('nevermind')}
+            {t('cancel')}
           </Button>
           <Button
             block

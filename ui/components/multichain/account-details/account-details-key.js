@@ -68,7 +68,16 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
 };
 
 AccountDetailsKey.propTypes = {
+  /**
+   * Name of the account
+   */
   accountName: PropTypes.string.isRequired,
+  /**
+   * Executes upon Close button click
+   */
   onClose: PropTypes.func.isRequired,
+  /**
+   * The private key
+   */
   privateKey: PropTypes.string.isRequired,
 };

@@ -26,7 +26,7 @@ describe('eth_subscribe', function () {
           .build(),
         ganacheOptions,
         dappOptions: { numberOfDapps: 2 },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

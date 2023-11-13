@@ -371,9 +371,6 @@
   "amount": {
     "message": "金額"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "ブラウザにあるイーサリアムウォレット",
     "description": "The description of the application"
@@ -444,10 +441,6 @@
   },
   "attemptSendingAssets": {
     "message": "1つのネットワークから別のネットワークに直接アセットを送ろうとすると、アセットが永久に失われる可能性があります。必ずブリッジを使用してください。"
-  },
-  "attemptToCancelSwap": {
-    "message": "~$1でスワップのキャンセルを試行",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
   },
   "attemptingConnect": {
     "message": "ブロックチェーンへの接続を試みています。"
@@ -614,18 +607,9 @@
   "busy": {
     "message": "ビジー状態"
   },
-  "buy": {
-    "message": "購入"
-  },
   "buyAsset": {
     "message": "$1を購入",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "仮想通貨を保持して利益を得ます"
-  },
-  "buyDisabled": {
-    "message": "このネットワークでは購入できません"
   },
   "buyMoreAsset": {
     "message": "$1を追加購入",
@@ -981,9 +965,6 @@
   "custodian": {
     "message": "カストディアン"
   },
-  "custodianAccount": {
-    "message": "カストディアンアカウント"
-  },
   "custodianAccountAddedDesc": {
     "message": "カストディアンアカウントをMetaMask Institutionalで使えるようになりました。"
   },
@@ -1292,12 +1273,6 @@
   "dismissReminderField": {
     "message": "シークレットリカバリーフレーズのバックアップリマインダーを解除"
   },
-  "displayNftMedia": {
-    "message": "NFTメディアの表示"
-  },
-  "displayNftMediaDescription": {
-    "message": "NFTのメディアとデータを表示した場合、IPアドレスがOpenSeaをはじめとするサードパーティに公開されます。その結果、攻撃者がユーザーのIPアドレスとイーサリアムアドレスを関連付けられるようになる可能性があります。NFTの自動検出はこの設定に依存しており、この設定を無効にすると利用できなくなります。"
-  },
   "domain": {
     "message": "ドメイン"
   },
@@ -1420,14 +1395,14 @@
   "enableAutoDetect": {
     "message": " 自動検出を有効にする"
   },
-  "enableForAllNetworks": {
-    "message": "すべてのネットワークで有効にする"
-  },
   "enableFromSettings": {
     "message": " 設定で有効にします。"
   },
-  "enableSmartSwaps": {
-    "message": "スマートスワップを有効にする"
+  "enableOpenSeaAPI": {
+    "message": "OpenSea APIを有効にする"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
   },
   "enableSnap": {
     "message": "有効にする"
@@ -1452,21 +1427,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "改善されたトークン検出は現在$1で利用可能です。$2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMaskは、「https://metamask.eth」などのENSドメインをブラウザのアドレスバーに直接表示します。使い方は次の通りです:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "一般的なブラウザは通常、ENSやIPFSアドレスを扱えませんが、MetaMaskはそれをサポートします。この機能を使うと、IPFSサードパーティサービスにIPアドレスが共有される可能性があります。"
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMaskはイーサリアムのENSコントラクトを確認し、ENS名に接続されたコードを取得します。"
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "コードがIPFSにリンクされている場合、IPFSネットワークからコンテンツを取得します。"
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "その後コンテンツが表示され、通常Webサイトやその他同様のコンテンツとなります。"
   },
   "ensDomainsSettingTitle": {
     "message": "アドレスバーにENSドメインを表示する"
@@ -1571,11 +1531,9 @@
   "experimental": {
     "message": "試験運用"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snapsを閲覧"
-  },
   "extendWalletWithSnaps": {
-    "message": "ウォレットのユーザー体験をカスタマイズします。"
+    "message": "ウォレットのユーザー体験をカスタマイズします。",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "外部拡張機能"
@@ -1605,9 +1563,6 @@
   "fileImportFail": {
     "message": "ファイルのインポートが機能していない場合、ここをクリックしてください！",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "ドロップされたファイルが大きすぎます。"
   },
   "flaskWelcomeUninstall": {
     "message": "この拡張機能はアンインストールしてください",
@@ -2268,9 +2223,6 @@
     "message": "誰にも見られていないことを確認してください",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "不正な形式のデータ"
-  },
   "max": {
     "message": "最大"
   },
@@ -2345,9 +2297,6 @@
   },
   "missingSettingRequest": {
     "message": "ここからリクエスト"
-  },
-  "mmiAddToken": {
-    "message": "$1のページがMetaMask Institutionalで次のカストディアントークンの承認を求めています"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMaskは、世界中でデザイン・開発されています。"
@@ -2428,9 +2377,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2488,12 +2434,6 @@
   },
   "newContract": {
     "message": "新しいコントラクト"
-  },
-  "newNFTDetectedMessage": {
-    "message": "OpenseaからのNFTの自動検出とウォレットへの表示をMetaMaskに許可してください。"
-  },
-  "newNFTsDetected": {
-    "message": "新機能！NFT検出"
   },
   "newNetworkAdded": {
     "message": "「$1」が追加されました！"
@@ -2574,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "snapがインストールされていません"
-  },
-  "noThanksVariant2": {
-    "message": "結構です。"
   },
   "noTransactions": {
     "message": "トランザクションがありません"
@@ -3069,9 +3006,6 @@
   "openInBlockExplorer": {
     "message": "ブロックエクスプローラーで開く"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (ベータ)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3177,10 +3111,6 @@
     "message": "インターネットにアクセスします。",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "snapによるインターネットへのアクセスを許可します。これはサードパーティサーバーとのデータの送受信の両方に使用できます。",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "$1 snapに接続します。",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3193,17 +3123,9 @@
     "message": "定期的なアクションのスケジュール設定と実行。",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "snapが、一定の時刻、日付、または間隔で定期的に実行されるアクションを実行することを許可します。これは、時間依存のやり取りや通知のトリガーに使用できます。",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "MetaMaskにダイアログウィンドウを表示します。",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "このsnapがカスタムテキスト、入力フィールド、アクションの承認・拒否ボタンを備えたMetaMaskポップアップを表示することを許可します。これは、snapのアラート、承認、オプトインフローなどの作成に使用される可能性があります。",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "アドレス、アカウント残高、アクティビティを表示して、承認するトランザクションを提案",
@@ -3213,97 +3135,30 @@
     "message": "イーサリアムプロバイダーにアクセスします。",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "ブロックチェーンのデータを読み込みメッセージやトランザクションを提案するために、snapによるMetaMaskとの直接の通信を許可します。",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "このsnapに固有の無作為なキーを導出します。",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "snapが、このsnapに固有の任意のキーを公開せずに導出することを許可します。これらのキーはMetaMaskアカウントとは別で、秘密鍵やシークレットリカバリーフレーズとは関連性がありません。他のsnapはこの情報にアクセスできません。",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "ライフサイクルフックを使用します。",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "snapがライフサイクルフックを使用して、ライフサイクルの特定のタイミングでコードを実行することを許可します。",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "無期限で実行。",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "大きなデータの処理中など、snapが無期限で実行されることを許可します。",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "イーサリアムアカウントを追加して管理します",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "$1 ($2) のアカウントとアセットを管理します。",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "snapがシークレットリカバリーフレーズに基づき、公開することなくBIP-32キーペアを導出することを許可します。これにより、$1のすべてのアカウントとアセットへの完全アクセスが許可されます。\\nキーの管理権限を与えることで、snapはイーサリアム (EVM) 以外にもさまざまなブロックチェーンプロトコルをサポートできるようになります。",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "$1アカウントとアセットをコントロールします。",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "snapがシークレットリカバリーフレーズに基づき、公開することなくBIP-44キーペアを導出することを許可します。これにより、$1のすべてのアカウントとアセットへの完全アクセスが許可されます。\\nキーの管理権限を与えることで、snapはイーサリアム (EVM) 以外にもさまざまなブロックチェーンプロトコルをサポートできるようになります。",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "$1アカウントとアセットをコントロールします。",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "デバイスにデータを保管し管理します。",
     "description": "The description for the `snap_manageState` permission"
-  },
-  "permission_manageStateDescription": {
-    "message": "snapが暗号化を使用して安全にデータを保管、更新、取得することを許可します。他のsnapはこの情報にアクセスできません。",
-    "description": "An extended description for the `snap_manageState` permission"
   },
   "permission_notifications": {
     "message": "通知を表示します。",
     "description": "The description for the `snap_notify` permission"
   },
-  "permission_notificationsDescription": {
-    "message": "snapがMetaMask内に通知を表示することを許可します。snapは、行動を促す情報や緊急性の高い情報に関する短い通知テキストをトリガーできます。",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "$1によるこのsnapとの直接のやり取りを許可してください。",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "$1によるsnapへのメッセージの送信とsnapからの応答の受信を許可します。",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
   "permission_transactionInsight": {
     "message": "トランザクションインサイトを取得して表示します。",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "snapによるトランザクションのデコードと、MetaMask UI内でのインサイトの表示を許可します。これは、フィッシング対策やセキュリティソリューションに使用できます。",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
+
   "permission_transactionInsightOrigin": {
     "message": "トランザクションを提案しているWebサイトの提供元を確認します",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "snapが、トランザクションを提案するWebサイトの転送元 (URI) を確認することを許可します。これは、フィッシング対策やセキュリティソリューションに使用できます。",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "不明な許可: $1",
@@ -3313,10 +3168,6 @@
     "message": "$1 ($2) の公開鍵を表示します。",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "snapが、$1の公開鍵 (およびアドレス) を表示することを許可します。これは、アカウントやアセットのコントロールを許可するものでは一切ありません。",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "$1の公開鍵を表示します。",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3324,10 +3175,6 @@
   "permission_webAssembly": {
     "message": "WebAssemblyのサポート",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "snapがWebAssemblyを介して低レベルの実行環境にアクセスすることを許可します。",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "許可"
@@ -3886,9 +3733,6 @@
     "message": "これは、ユーザーのイーサリアムアドレスおよびIPアドレスにアクセスする$1に依存します。$2",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "これは、ユーザーのイーサリアムアドレスおよびIPアドレスにアクセスする各ネットワークに依存します。"
-  },
   "showMore": {
     "message": "他を表示"
   },
@@ -3958,9 +3802,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "スマートスワップは一時的にご利用いただけません。"
   },
-  "smartSwapsSubDescription": {
-    "message": "* スマートスワップは、トランザクションの送信を非公開で複数回試行します。すべての試行に失敗した場合、スワップが正常に行われるように、トランザクションが一般公開されます。"
-  },
   "snapConfigure": {
     "message": "構成"
   },
@@ -3977,7 +3818,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "$1アカウントの作成",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -4013,10 +3854,6 @@
   "snapDetailsInstalled": {
     "message": "インストール済み"
   },
-  "snapError": {
-    "message": "snapエラー:「$1」。エラーコード:「$2」",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
-  },
   "snapInstall": {
     "message": "snapをインストール"
   },
@@ -4027,24 +3864,8 @@
   "snapInstallSuccess": {
     "message": "インストール完了"
   },
-  "snapInstallWarningCheck": {
-    "message": "まずは、求められている許可の内容を確認してください。$1を信頼できる場合のみ続行してください。",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "まずは、求められている許可の内容を確認してください。$1を信頼できる場合のみ続行してください。",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "慎重に進めてください"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "$2に$1アカウントのコントロールを許可する",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "$2に$1への公開鍵アクセス権を付与する",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "$1をインストールできませんでした。",
@@ -4065,9 +3886,6 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1を使用する準備が整いました"
-  },
-  "snapUpdate": {
-    "message": "snapを更新"
   },
   "snapUpdateAvailable": {
     "message": "アップデートが利用できます"
@@ -4102,9 +3920,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "サードパーティサービスと共有する情報は、当該サードパーティサービスにより、それぞれのプライバシーポリシーに従い直接収集されます。詳細は、各サードパーティサービスのプライバシーポリシーをご覧ください。",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Snapsの管理"
   },
   "snapsTermsOfUse": {
     "message": "利用規約"
@@ -4362,9 +4177,6 @@
     "message": "スワップ完了まで残り <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "送信前にトランザクションのシミュレーションを行い、トランザクションのコストと失敗率を減らします。"
-  },
   "stxTryingToCancel": {
     "message": "トランザクションのキャンセルを試みています..."
   },
@@ -4379,9 +4191,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "不要なガス代を支払うことなくトランザクションがキャンセルされました。"
-  },
-  "stxYouCanOptOut": {
-    "message": "「高度な設定」でいつでもオプトアウトできます。"
   },
   "submit": {
     "message": "送信"
@@ -4700,9 +4509,6 @@
   "swapSource": {
     "message": "流動性の供給源"
   },
-  "swapSourceInfo": {
-    "message": "弊社は、最良のレートと最小のネットワーク手数料を見つけるために、複数の流動性供給源 (取引所、アグリゲーター、専門のマーケットメーカー) を検索します。"
-  },
   "swapSuggested": {
     "message": "スワップが提案されました"
   },
@@ -4857,9 +4663,6 @@
   "termsOfService": {
     "message": "サービス規約"
   },
-  "termsOfUse": {
-    "message": "利用規約"
-  },
   "termsOfUseAgreeText": {
     "message": " MetaMaskおよびそのすべての機能の利用に適用される利用規約に同意します。"
   },
@@ -4887,10 +4690,6 @@
   },
   "thisCollection": {
     "message": "このコレクション"
-  },
-  "thisServiceIsExperimental": {
-    "message": "このサービスは試験運用中です。この機能を有効にすることで、OpenSeaの$1に同意したものとみなされます。",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "時間"
@@ -5020,18 +4819,6 @@
   "transactionCreated": {
     "message": "トランザクションは$1の値が$2で作成されました。"
   },
-  "transactionData": {
-    "message": "トランザクションデータ"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Truffleによるデコード"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "$1にコントラクトを確認しました"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "トランザクションのデコードは、チェーンID $1 で使用できません"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "サイトが提案されました"
   },
@@ -5107,12 +4894,6 @@
   "transactionResubmitted": {
     "message": "推定のガス代を$2で$1に増加し、トランザクションを再送信しました"
   },
-  "transactionSecurityCheck": {
-    "message": "セキュリティアラートを有効にする"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "当社はサードパーティAPIを使用して、ユーザーが署名する前に未署名のトランザクションおよび署名のリクエストに関するリスクを検出・表示します。このようなサービスは、ユーザーの未署名のトランザクションおよび署名のリクエスト、アカウントアドレス、希望言語にアクセスできます。"
-  },
   "transactionSettings": {
     "message": "トランザクション設定"
   },
@@ -5169,9 +4950,6 @@
   "twelveHrTitle": {
     "message": "12時間:"
   },
-  "txInsightsNotSupported": {
-    "message": "現時点では、このコントラクトでトランザクションインサイトはサポートされていません。"
-  },
   "typeYourSRP": {
     "message": "シークレットリカバリーフレーズを入力してください"
   },
@@ -5216,10 +4994,6 @@
     "message": "このカスタムネットワークは認識されていません",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
-  "unrecognizedProtocol": {
-    "message": "$1 (不明なプロトコル)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
-  },
   "unsendableAsset": {
     "message": "NFT (ERC-721) トークンの送信は現在サポートされていません",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -5256,21 +5030,6 @@
   },
   "useNftDetection": {
     "message": "NFTを自動検出"
-  },
-  "useNftDetectionDescription": {
-    "message": "当社はサードパーティAPIを使用して、ウォレットのNFTを検出します。これにより、ユーザーのIPアドレスが中央サーバーに開示される可能性があります。この機能を有効にする場合は、いくつかの注意点があります。"
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "アカウントアドレスがサードパーティAPIに開示されます。"
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFTのメタデータには、詐欺サイトやフィッシングサイトへのリンクが含まれている可能性があります。"
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "誰でもユーザーのアカウントにNFTをエアドロップできます。これには不快なコンテンツが含まれていて、ウォレットに自動的に表示される可能性があります。"
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "アプリによるこれらのサービスからのデータの取得を希望しない場合は、この機能をオフのままにしてください。"
   },
   "usePhishingDetection": {
     "message": "フィッシング検出を使用"
@@ -5345,9 +5104,6 @@
   },
   "viewOnOpensea": {
     "message": "Openseaで表示"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Portfolioダッシュボードを表示"
   },
   "viewinCustodianApp": {
     "message": "カストディアンアプリで表示"

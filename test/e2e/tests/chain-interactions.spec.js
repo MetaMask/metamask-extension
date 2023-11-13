@@ -21,7 +21,7 @@ describe('Chain Interactions', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -51,7 +51,7 @@ describe('Chain Interactions', function () {
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
         // switch to extension
-        await driver.waitUntilXWindowHandles(2);
+        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindow(extension);
 
         // verify networks
@@ -76,7 +76,7 @@ describe('Chain Interactions', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

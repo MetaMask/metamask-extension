@@ -371,9 +371,6 @@
   "amount": {
     "message": "Tutar"
   },
-  "apiUrl": {
-    "message": "API URL"
-  },
   "appDescription": {
     "message": "Tarayıcında bir Ethereum Cüzdanı",
     "description": "The description of the application"
@@ -444,10 +441,6 @@
   },
   "attemptSendingAssets": {
     "message": "Varlıkları doğrudan bir ağdan diğerine göndermeye çalışırsanız bu durum kalıcı varlık kaybına neden olabilir. Bir köprü kullandığınızdan emin olun."
-  },
-  "attemptToCancelSwap": {
-    "message": "~$1 için swap'ı iptal etme girişimi",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
   },
   "attemptingConnect": {
     "message": "Blockzincirine bağlanmaya çalışılıyor."
@@ -614,18 +607,9 @@
   "busy": {
     "message": "Meşgul"
   },
-  "buy": {
-    "message": "Satın Al"
-  },
   "buyAsset": {
     "message": "$1 satın al",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Kriptonuzu tutun ve potansiyel kârlar elde edin"
-  },
-  "buyDisabled": {
-    "message": "Satın al bu ağda kullanılamaz"
   },
   "buyMoreAsset": {
     "message": "Daha fazla $1 satın al",
@@ -981,9 +965,6 @@
   "custodian": {
     "message": "Saklayıcı Kurum"
   },
-  "custodianAccount": {
-    "message": "Saklayıcı kurum hesabı"
-  },
   "custodianAccountAddedDesc": {
     "message": "Artık saklayıcı kurum hesaplarınızı MetaMask Institutional'da kullanabilirsiniz."
   },
@@ -1292,12 +1273,6 @@
   "dismissReminderField": {
     "message": "Gizli Kurtarma İfadesi yedekleme hatırlatma uyarısını yoksay"
   },
-  "displayNftMedia": {
-    "message": "NFT medyasını göster"
-  },
-  "displayNftMediaDescription": {
-    "message": "NFT medyasının ve verilerin gösterilmesi IP adresinizin OpenSea'ye veya diğer üçüncü taraflara aktarılmasına neden olur. Bu durum, saldırganların IP adresinizi Ethereum adresinizle ilişkilendirmesini sağlayabilir. NFT otomatik algılama bu ayara dayalıdır ve bu ayar kapatıldığında kullanılamaz olur."
-  },
   "domain": {
     "message": "Alan"
   },
@@ -1420,14 +1395,14 @@
   "enableAutoDetect": {
     "message": " Otomatik algılamayı etkinleştir"
   },
-  "enableForAllNetworks": {
-    "message": "Tüm ağlar için etkinleştir"
-  },
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
   },
-  "enableSmartSwaps": {
-    "message": "Akıllı swap'ları etkinleştirin"
+  "enableOpenSeaAPI": {
+    "message": "OpenSea API'yi etkinleştir"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
   },
   "enableSnap": {
     "message": "Etkinleştir"
@@ -1452,21 +1427,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Gelişmiş token algılama şu anda $1 üzerinden kullanılabilir. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask, \"https://metamask.eth\" gibi ENS alanlarını tarayıcınızın adres çubuğunda görmenizi sağlar. Şöyle çalışır:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Normal tarayıcılar genellikle ENS veya IPFS adreslerini kullanmaz, ancak MetaMask bu konuda yardımcı olur. Bu özelliği kullandığınızda IP adresiniz IPFS üçüncü taraf hizmetleri ile paylaşılabilir."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask, ENS adına bağlı kodu bulmak için Ethereum'un ENS sözleşmesi ile kontrol gerçekleştirir."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Kod IPFS'ye bağlı ise içeriği IPFS ağından alır."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Ardından, genellikle bir web sitesi veya benzeri olan içeriği görebilirsiniz."
   },
   "ensDomainsSettingTitle": {
     "message": "ENS alanlarını adres çubuğunda göster"
@@ -1571,11 +1531,9 @@
   "experimental": {
     "message": "Deneysel"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "MetaMask Snaplerini keşfedin"
-  },
   "extendWalletWithSnaps": {
-    "message": "Cüzdan deneyimini kişiselleştirin."
+    "message": "Cüzdan deneyimini kişiselleştirin.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Harici uzantı"
@@ -1605,9 +1563,6 @@
   "fileImportFail": {
     "message": "Dosya içe aktarma çalışmıyor mu? Buraya tıklayın!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "Bırakılan dosya çok büyük."
   },
   "flaskWelcomeUninstall": {
     "message": "bu uzantıyı kaldırmalısın",
@@ -2268,9 +2223,6 @@
     "message": "Hiç kimsenin bakmadığından emin olun",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Hatalı biçimlendirilmiş veri"
-  },
   "max": {
     "message": "Maksimum"
   },
@@ -2345,9 +2297,6 @@
   },
   "missingSettingRequest": {
     "message": "Buradan talep et"
-  },
-  "mmiAddToken": {
-    "message": "$1 alanındaki sayfa MetaMask Institutional'daki aşağıdaki saklayıcı kurum tokenine yetki vermek istiyor"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional dünya çapında tasarlanmış ve yapılmıştır."
@@ -2428,9 +2377,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2488,12 +2434,6 @@
   },
   "newContract": {
     "message": "Yeni sözleşme"
-  },
-  "newNFTDetectedMessage": {
-    "message": "MetaMask'in Opensea'den NFT'leri otomatik olarak algılamasına ve cüzdanında görüntülemesine izin ver."
-  },
-  "newNFTsDetected": {
-    "message": "Yeni! NFT algılama"
   },
   "newNetworkAdded": {
     "message": "\"$1\" başarılı bir şekilde eklendi!"
@@ -2574,9 +2514,6 @@
   },
   "noSnaps": {
     "message": "Yüklü snapiniz yok."
-  },
-  "noThanksVariant2": {
-    "message": "Hayır, teşekkürler."
   },
   "noTransactions": {
     "message": "İşleminiz yok"
@@ -3069,9 +3006,6 @@
   "openInBlockExplorer": {
     "message": "Blok gezgininde aç"
   },
-  "openSea": {
-    "message": "OpenSea + Blockad (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3177,10 +3111,6 @@
     "message": "İnternete erişim sağla.",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "Snapin internete erişim sağlamasına izin verin. Üçüncü taraf sunucuları ile hem veri göndermek hem de veri almak için kullanılabilir.",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "$1 snape bağlan.",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3193,17 +3123,9 @@
     "message": "Periyodik eylemleri planla ve gerçekleştir.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "Snap'in sabit saat, tarih veya aralıklarda periyodik olarak çalışan eylemleri gerçekleştirmesine izin verin. Zamana duyarlı etkileşim ya da bildirimleri tetiklemek için kullanılabilir.",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "MetaMask'te iletişim kutusu pencerelerini göster.",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "Snapin bir eylemi onaylamak ya da reddetmek için özel metin, giriş alanı ve düğmelerle MetaMask açılır pencerelerini göstermesine izin verin.\nBir snap için ör. uyarı, onay ve talep edilen akış oluşturmak için kullanılabilir.",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "Adrese, hesap bakiyesine, aktiviteye bakın ve işlemleri başlatın",
@@ -3213,97 +3135,29 @@
     "message": "Ethereum sağlayıcısına ulaş.",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "Blokzincirinden veri okuyabilmesi ve mesaj ile işlemleri önerebilmesi için snap'in doğrudan MetaMask ile iletişim kurmasına izin verin.",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "Bu snap için eşsiz rastgele anahtarları türet.",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "Snapin, ifşa etmeden, bu snap'e özel rastgele anahtarlar türetmesine izin verin. Bu anahtarlar MetaMask hesap veya hesaplarınızdan ayrıdır ve özel anahtarlarınızla ya da Gizli Kurtarma İfadenizle bağlantılı değildir. Diğer snapler bu bilgilere erişim sağlayamaz.",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "Yaşam döngüsü kancalarını kullanın.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Bu yaşam döngüsü sırasında belirli zamanlarda kod çalıştırmak için snapin yaşam döngüsü kancalarını kullanmasına izin verin.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Süresiz çalıştır.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Snapin örneğin büyük miktarda veri işlerken belirsiz süreyle çalışmasına izin verin.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum hesaplarını ekle ve kontrol et",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "$1 ($2) altındaki hesaplarınızı ve varlıklarınızı kontrol edin.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Snap'in, ifşa etmeden, Gizli Kurtarma İfadenize göre BIP-32 anahtar çiftleri türetmesine izin verin. Bu işlem $1 üzerinde tüm hesaplara ve varlıklara tam erişim verir.\nSnap, anahtarları yönetme yetkisi ile Ethereum (EVM'ler) ötesinde çeşitli blokzinciri protokollerini destekleyebilir.",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "$1 hesaplarınızı ve varlıklarınızı kontrol edin.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Snap'in, ifşa etmeden, Gizli Kurtarma İfadenize göre BIP-44 anahtar çiftleri türetmesine izin verin. Bu işlem $1 üzerinde tüm hesaplara ve varlıklara tam erişim verir.\nSnap, anahtarları yönetme yetkisi ile Ethereum (EVM'ler) ötesinde çeşitli blokzinciri protokollerini destekleyebilir.",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "$1 hesaplarınızı ve varlıklarınızı kontrol edin.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Verilerini cihazında sakla ve yönet.",
     "description": "The description for the `snap_manageState` permission"
-  },
-  "permission_manageStateDescription": {
-    "message": "Snapin şifreleme ile güvenli bir şekilde veri depolamasına, güncellemesine ve almasına izin verin. Diğer snapler bu bilgilere erişim sağlayamaz.",
-    "description": "An extended description for the `snap_manageState` permission"
   },
   "permission_notifications": {
     "message": "Bildirimleri göster.",
     "description": "The description for the `snap_notify` permission"
   },
-  "permission_notificationsDescription": {
-    "message": "Snapin MetaMask dahilinde bildirim göstermesine izin verin. Eyleme geçirilebilir ya da zamana duyarlı bilgiler için bir snap tarafından kısa bir bildirim metni tetiklenebilir.",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "$1 bu snaple doğrudan iletişim kurabilsin.",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "$1 için snape mesaj gönderme ve snapten yanıt alma izni verin.",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
   "permission_transactionInsight": {
     "message": "İşlem içgörülerini al ve görüntüle.",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "Snapin işlemlerin şifresini çözmesine ve MetaMask Kullanıcı Arayüzü dahilinde içgörüleri göstermesine izin verin. Kimlik avından korunma ve güvenlik çözümleri için kullanılabilir.",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "İşlem öneren web sitelerinin kökenlerini gör",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "Snapin işlem öneren web sitelerinin asıl adresini (URI) görmesine izin verin. Kimlik avından korunma ve güvenlik çözümleri için kullanılabilir.",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Bilinmeyen izin: $1",
@@ -3313,10 +3167,6 @@
     "message": "$1 ($2) için genel anahtarınızı görüntüleyin.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "Snapin $1 için genel anahtarları (ve adresleri) görüntülemesine izin verin. Bu eylem, herhangi bir şekilde hesapların ya da varlıkların kontrolünü vermez.",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "$1 için genel anahtarınızı görüntüleyin.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3324,10 +3174,6 @@
   "permission_webAssembly": {
     "message": "WebAssembly desteği.",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "Snapin WebAssembly aracılığıyla düşük seviye gerçekleştirme ortamlarına erişim sağlamasına izin verin.",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "İzinler"
@@ -3886,9 +3732,6 @@
     "message": "Etherscan'in işlemler listesinde gelecek işlemleri göstermesi için bunu seçin",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Bu, Ethereum adresinize ve IP adresinize erişimi olacak olan her bir ağa dayalıdır."
-  },
   "showMore": {
     "message": "Daha fazlasını göster"
   },
@@ -3958,9 +3801,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Akıllı Swap'lar geçici olarak kullanılamıyor."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Akıllı Swap'lar, işleminizi birden çok kez özel olarak göndermeye çalışır. Tüm denemeler başarısız olursa Swap işleminin başarılı bir şekilde gerçekleşmesini sağlamak için işlem herkese açık olarak yayınlanacaktır."
-  },
   "snapConfigure": {
     "message": "Yapılandır"
   },
@@ -3977,7 +3817,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Bir $1 hesabı oluştur",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -4013,10 +3853,6 @@
   "snapDetailsInstalled": {
     "message": "Yüklendi"
   },
-  "snapError": {
-    "message": "Snap Hatası: '$1'. Hata Kodu: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
-  },
   "snapInstall": {
     "message": "Snap yükle"
   },
@@ -4027,24 +3863,8 @@
   "snapInstallSuccess": {
     "message": "Yükleme tamamlandı"
   },
-  "snapInstallWarningCheck": {
-    "message": "Anladığını doğrulamak için kutucuğu işaretle.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Anladığınızı kontrol etmek için tüm kutuları işaretleyin.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Dikkatle ilerleyin"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "\"$1\" için $2 anahtar erişimi veriyorsunuz. Bu iptal edilemez ve $2 hesaplarınıza ve varlıklarınıza \"$1\" kontrolü verir. İlerlemeden önce \"$1\" alanına güvendiğinizden emin olun.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "$2 için $1 genel anahtar erişimi ver",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "$1 yüklenemedi.",
@@ -4065,9 +3885,6 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1 kullanıma hazır"
-  },
-  "snapUpdate": {
-    "message": "Snapi güncelle"
   },
   "snapUpdateAvailable": {
     "message": "Güncelleme mevcut"
@@ -4102,9 +3919,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Üçüncü Taraf Hizmetleri ile paylaştığınız tüm bilgiler söz konusu Üçüncü Taraf Hizmetlerinin gizlilik politikalarına göre doğrudan üçüncü taraflar tarafından toplanacaktır. Daha fazla bilgi için lütfen üçüncü tarafların gizlilik politikalarına bakın.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Snaplerini yönet"
   },
   "snapsTermsOfUse": {
     "message": "Kullanım Şartları"
@@ -4362,9 +4176,6 @@
     "message": "Swap işleminin tamamlanmasına kalan süre <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "İşlem maliyetlerini azaltmak ve arızaları azaltmak için göndermeden önce işlemleri simüle et."
-  },
   "stxTryingToCancel": {
     "message": "İşlemin iptal edilmeye çalışılıyor..."
   },
@@ -4379,9 +4190,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "İşleminiz iptal edildi ve gereksiz gaz ücreti ödemediniz."
-  },
-  "stxYouCanOptOut": {
-    "message": "\nDilediğin zaman gelişmiş ayarlarda devre dışı bırakabilirsin."
   },
   "submit": {
     "message": "Gönder"
@@ -4700,9 +4508,6 @@
   "swapSource": {
     "message": "Likidite kaynağı"
   },
-  "swapSourceInfo": {
-    "message": "En iyi fiyatı ve en düşük ağ ücretlerini bulmak için birden fazla likidite kaynağında arama yaparız (borsalar, toplayıcılar ve profesyonel piyasa yapıcıları)."
-  },
   "swapSuggested": {
     "message": "Swap öneriliyor"
   },
@@ -4857,9 +4662,6 @@
   "termsOfService": {
     "message": "Hizmet şartları"
   },
-  "termsOfUse": {
-    "message": "kullanım şartları"
-  },
   "termsOfUseAgreeText": {
     "message": " MetaMask ve tüm özelliklerini kullanımım için geçerli olan Kullanım Şartları bölümünü kabul ediyorum"
   },
@@ -4887,10 +4689,6 @@
   },
   "thisCollection": {
     "message": "bu koleksiyon"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Hizmet deneyseldir. Bu özelliği etkinleştirerek OpenSea'nin $1 bölümünü kabul edersiniz.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Zaman"
@@ -5020,18 +4818,6 @@
   "transactionCreated": {
     "message": "İşlem $2 itibariyle $1 değeriyle oluşturuldu."
   },
-  "transactionData": {
-    "message": "İşlem verileri"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Truffle ile şifresi çözüldü"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Sözleşme $1 üzerinde doğrulandı"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "$1 zincir kimliği için işlem şifre çözme mümkün değil"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site önerisi"
   },
@@ -5107,12 +4893,6 @@
   "transactionResubmitted": {
     "message": "İşlem, $2 itibariyle $1 olarak artırılan tahmini gaz ücreti ile yeniden gönderildi"
   },
-  "transactionSecurityCheck": {
-    "message": "Güvenlik uyarılarını etkinleştir"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "İmzalanmamış işleme dahil olan riskleri ve onları imzalamadan önce imza taleplerini algılamak ve göstermek için üçüncü taraf API'lerini kullanırız. Bu hizmetler imzalanmamış işlem ve imza taleplerinize, hesap adresinize ve tercih ettiğiniz dile erişim sağlar."
-  },
   "transactionSettings": {
     "message": "İşlem ayarları"
   },
@@ -5169,9 +4949,6 @@
   "twelveHrTitle": {
     "message": "12 sa.:"
   },
-  "txInsightsNotSupported": {
-    "message": "Şu anda işlem içgörüleri bu sözleşme için desteklenmiyor."
-  },
   "typeYourSRP": {
     "message": "Gizli Kurtarma İfadenizi girin"
   },
@@ -5216,10 +4993,6 @@
     "message": "Bu özel ağ tanınmadı",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
-  "unrecognizedProtocol": {
-    "message": "$1 (Tanınmayan protokol)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
-  },
   "unsendableAsset": {
     "message": "NFT (ERC-721) tokenlerin gönderilmesi şu anda desteklenmiyor",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -5256,21 +5029,6 @@
   },
   "useNftDetection": {
     "message": "NFT'leri otomatik algıla"
-  },
-  "useNftDetectionDescription": {
-    "message": "Cüzdanınızdaki NFT'leri algılamak için üçüncü taraf API'leri kullanırız, yani IP adresinizin merkezi sunuculara açıklanmasına neden olabilir. Bu özelliği etkinleştirirken dikkat edilmesi gereken birkaç konu vardır."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Hesap adresiniz üçüncü taraf API'lerinde görüntülenebilir."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "NFT meta verileri dolandırıcılık veya kimlik avı sitelerine bağlantılar içerebilir."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Hesabınıza herkes NFT airdrop'u gerçekleştirebilir. Cüzdanınızda otomatik olarak gösterilebilen saldırgan içerik de buna dahil olabilir."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Uygulamanın bu hizmetlerden veri çekmesini istemiyorsanız bu özelliği kapalı bırakın."
   },
   "usePhishingDetection": {
     "message": "Kimlik avı algılama kullan"
@@ -5345,9 +5103,6 @@
   },
   "viewOnOpensea": {
     "message": "Opensea'de görüntüle"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Portföy Kontrol Panelini görüntüle"
   },
   "viewinCustodianApp": {
     "message": "Saklayıcı kurum uygulamasında görüntüle"

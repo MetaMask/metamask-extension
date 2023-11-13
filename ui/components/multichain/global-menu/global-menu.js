@@ -8,11 +8,13 @@ import {
   DEFAULT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
+  SNAPS_ROUTE,
   ///: END:ONLY_INCLUDE_IN(snaps)
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  Box,
   IconName,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   Text,
@@ -46,6 +48,7 @@ import {
   getSelectedAddress,
   getUnapprovedTransactions,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  getNotifySnaps,
   getUnreadNotificationsCount,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
@@ -53,6 +56,8 @@ import {
 import {
   AlignItems,
   BackgroundColor,
+  BlockSize,
+  BorderColor,
   Display,
   JustifyContent,
   TextAlign,
@@ -71,6 +76,10 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const history = useHistory();
   const address = useSelector(getSelectedAddress);
   const unapprovedTransactons = useSelector(getUnapprovedTransactions);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  const notifySnaps = useSelector(getNotifySnaps);
+  ///: END:ONLY_INCLUDE_IN
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactons).length > 0;
@@ -104,6 +113,11 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         closeMenu={closeMenu}
         address={address}
       />
+      <Box
+        borderColor={BorderColor.borderMuted}
+        width={BlockSize.Full}
+        style={{ height: '1px', borderBottomWidth: 0 }}
+      ></Box>
       <MenuItem
         iconName={IconName.Connect}
         disabled={hasUnapprovedTransactions}
@@ -167,40 +181,55 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       )}
       {
         ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-        <>
-          <MenuItem
-            iconName={IconName.Notification}
-            onClick={() => {
-              closeMenu();
-              history.push(NOTIFICATIONS_ROUTE);
-            }}
-          >
-            {t('notifications')}
-            {unreadNotificationsCount > 0 && (
-              <Text
-                as="span"
-                display={Display.InlineBlock}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-                backgroundColor={BackgroundColor.primaryDefault}
-                color={TextColor.primaryInverse}
-                padding={[0, 1, 0, 1]}
-                variant={TextVariant.bodyXs}
-                textAlign={TextAlign.Center}
-                data-testid="global-menu-notification-count"
-                style={{
-                  borderRadius: '16px',
-                  minWidth: '24px',
-                }}
-                marginInlineStart={2}
-              >
-                {unreadNotificationsCount > 99
-                  ? '99+'
-                  : unreadNotificationsCount}
-              </Text>
-            )}
-          </MenuItem>
-        </>
+        notifySnaps.length ? (
+          <>
+            <MenuItem
+              iconName={IconName.Notification}
+              onClick={() => {
+                closeMenu();
+                history.push(NOTIFICATIONS_ROUTE);
+              }}
+            >
+              {t('notifications')}
+              {unreadNotificationsCount > 0 && (
+                <Text
+                  as="span"
+                  display={Display.InlineBlock}
+                  justifyContent={JustifyContent.center}
+                  alignItems={AlignItems.center}
+                  backgroundColor={BackgroundColor.primaryDefault}
+                  color={TextColor.primaryInverse}
+                  padding={[0, 1, 0, 1]}
+                  variant={TextVariant.bodyXs}
+                  textAlign={TextAlign.Center}
+                  data-testid="global-menu-notification-count"
+                  style={{
+                    borderRadius: '16px',
+                    minWidth: '24px',
+                  }}
+                  marginInlineStart={2}
+                >
+                  {unreadNotificationsCount > 99
+                    ? '99+'
+                    : unreadNotificationsCount}
+                </Text>
+              )}
+            </MenuItem>
+          </>
+        ) : null
+        ///: END:ONLY_INCLUDE_IN(snaps)
+      }
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+        <MenuItem
+          iconName={IconName.Snaps}
+          onClick={() => {
+            history.push(SNAPS_ROUTE);
+            closeMenu();
+          }}
+        >
+          {t('snaps')}
+        </MenuItem>
         ///: END:ONLY_INCLUDE_IN(snaps)
       }
       <MenuItem
