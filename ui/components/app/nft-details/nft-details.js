@@ -143,11 +143,7 @@ export default function NftDetails({ nft }) {
       return <div style={{ height: '30px' }} />;
     }
     return (
-      <Box
-        display={Display.Flex}
-        width={inPopUp ? BlockSize.Full : BlockSize.Half}
-        margin={inPopUp ? [4, 0] : null}
-      >
+      <Box display={Display.Flex} margin={inPopUp ? [4, 0] : null}>
         <Button
           type="primary"
           onClick={onSend}
