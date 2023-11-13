@@ -20,11 +20,11 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       isDisabled,
       isOpen,
       onOpenChange,
-      isMultiSelect, // Prevents the uncontrolled open state from being toggled
+      isMultiSelect,
       triggerComponent,
       popoverProps,
       children,
-      onBlur, // Controlled onBlur prop
+      onBlur,
       ...props
     }: SelectWrapperProps<C>,
     ref?: PolymorphicRef<C>,
@@ -35,6 +35,7 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
     const [referenceElement, setReferenceElement] =
       useState<HTMLElement | null>();
     const popoverRef = useRef<HTMLDivElement | null>(null);
+    const wrapperRef = useRef<HTMLDivElement | null>(null);
 
     const setBoxRef = (anchorRef: HTMLElement | null) => {
       setReferenceElement(anchorRef);
@@ -44,21 +45,30 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       setIsUncontrolledOpen(!isUncontrolledOpen);
     };
 
+    const handleClickOutside = () => {
+      setIsUncontrolledOpen(false);
+      if (onOpenChange) {
+        onOpenChange(false);
+      }
+    };
+
     const handleBlur = (e: any) => {
-      const wrapper = e.currentTarget;
+      const wrapper = wrapperRef.current;
       const { relatedTarget } = e;
 
-      if (!wrapper.contains(relatedTarget)) {
-        // Close the popover only if the related target is not inside the wrapper
+      if (
+        wrapper &&
+        !wrapper.contains(relatedTarget) &&
+        !popoverRef.current?.contains(relatedTarget)
+      ) {
+        console.log('the if in handleBlur ran');
         setIsUncontrolledOpen(false);
-        // If you have a controlled isOpen state, update it to close
         if (onOpenChange) {
           onOpenChange(false);
         }
-        // Allow the dev to pass in a controlled onBlur prop
-        if (onBlur) {
-          onBlur(e);
-        }
+      }
+      if (onBlur) {
+        onBlur(e);
       }
     };
 
@@ -83,8 +93,8 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       >
         <Box
           className={classnames('mm-select-wrapper', className)}
-          onBlur={handleBlur} // This only works if the triggerComponent is a focusable element like a button so the onBlur event bubbles up
-          ref={ref}
+          onBlur={handleBlur}
+          ref={wrapperRef && ref}
           {...(props as BoxProps<C>)}
         >
           {triggerComponent &&
@@ -94,6 +104,7 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
           <Popover
             isOpen={isOpen || isUncontrolledOpen}
             position={PopoverPosition.Bottom}
+            onClickOutside={handleClickOutside}
             matchWidth
             referenceElement={referenceElement}
             padding={0}
