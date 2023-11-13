@@ -5,8 +5,8 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:ethereum-provider': 'endowment:ethereum-provider',
   'endowment:rpc': 'endowment:rpc',
   'endowment:webassembly': 'endowment:webassembly',
-  'endowment:page-home': 'endowment:page-home',
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  'endowment:page-home': 'endowment:page-home',
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
   'endowment:name-lookup': 'endowment:name-lookup',
   ///: END:ONLY_INCLUDE_IN
