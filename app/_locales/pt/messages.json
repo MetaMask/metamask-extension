@@ -3124,10 +3124,6 @@
     "message": "Acesse a internet.",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "Permitir que o snap acesse a internet. Isso pode ser usado para enviar e receber dados de servidores de terceiros.",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "Conecte-se ao snap $1.",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3140,17 +3136,9 @@
     "message": "Agende e execute ações periódicas.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "Permitir que o snap realize ações que são executadas periodicamente em horários, datas ou intervalos fixos. Isso pode ser usado para disparar interações ou notificações sensíveis ao tempo.",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "Exibir janelas de diálogo na MetaMask.",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "Permitir que o snap exiba pop-ups da MetaMask com texto personalizado, campo para entrada de informações e botões para aprovar ou recusar uma ação.\nPode ser usado, por exemplo, para criar alertas, confirmações e fluxos de adesão para um snap.",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "Ver endereço, saldo da conta, atividade e iniciar transações",
@@ -3160,25 +3148,9 @@
     "message": "Acesse o provedor do Ethereum.",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "Permitir que o snap se comunique diretamente com a MetaMask, para que possa ler dados da blockchain e sugerir mensagens e transações.",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "Derive chaves arbitrárias únicas para este snap.",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "Permitir que o snap derive chaves arbitrárias únicas a esse snap sem as expor. Essas chaves são separadas das suas contas na MetaMask e não estão relacionadas às suas chaves privadas ou à Frase de Recuperação Secreta. Os outros snaps não podem acessar essas informações.",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "Usar ganchos de ciclo de vida.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Permitir que o snap use ganchos de ciclo de vida para executar códigos em momentos específicos durante seu ciclo de vida.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_manageAccounts": {
     "message": "Adicionar e controlar contas Ethereum",
@@ -3188,41 +3160,21 @@
     "message": "Armazenar e gerenciar dados pertinentes em seu dispositivo.",
     "description": "The description for the `snap_manageState` permission"
   },
-  "permission_manageStateDescription": {
-    "message": "Permitir que o snap armazene, atualize e recupere dados de maneira segura usando criptografia. Os outros snaps não podem acessar essas informações.",
-    "description": "An extended description for the `snap_manageState` permission"
-  },
   "permission_notifications": {
     "message": "Mostrar notificações.",
     "description": "The description for the `snap_notify` permission"
   },
   "permission_notificationsDescription": {
     "message": "Permitir que o snap exiba notificações dentro da MetaMask. Um breve texto de notificação pode ser disparado por um snap para informações acionáveis ou sensíveis ao tempo.",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "Permitir que $1 se comuniquem diretamente com esse snap.",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "Permitir que $1 enviem mensagens ao snap e recebam resposta dele.",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
+    "description": "An extended description for the `snap_notify` permission. $1 is the snap name."
   },
   "permission_transactionInsight": {
     "message": "Busque e exiba insights de transações.",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "Permitir que o snap decodifique transações e exiba informações dentro da interface da MetaMask. Isso pode ser usado para soluções de segurança e antiphishing.",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "Verá as origens dos sites que sugerem transações",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "Permitir que o snap veja a origem (URI) dos sites que sugerirem transações. Isso pode ser usado para soluções de segurança e antiphishing.",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Permissão desconhecida: $1",
@@ -3232,10 +3184,6 @@
     "message": "Ver sua chave pública para $1 ($2).",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "Permitir que o snap veja suas chaves públicas (e endereços) referentes a $1. Isso não concede nenhum tipo de controle das contas ou ativos.",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "Veja sua chave pública para $1.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3243,10 +3191,6 @@
   "permission_webAssembly": {
     "message": "Suporte a WebAssembly.",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "Permitir que o snap acesse ambientes de execução de baixo nível via WebAssembly.",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "Permissões"

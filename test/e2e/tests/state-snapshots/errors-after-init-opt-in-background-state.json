@@ -130,6 +130,7 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
+    "useRequestQueue": false,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
@@ -162,7 +163,12 @@
     "isLineaMainnetReleased": true,
     "selectedAddress": "string"
   },
-  "SelectedNetworkController": { "domains": {}, "perDomainNetwork": "boolean" },
+  "SelectedNetworkController": {
+    "domains": {
+      "metamask": "networkConfigurationId"
+    },
+    "perDomainNetwork": "boolean"
+  },
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",

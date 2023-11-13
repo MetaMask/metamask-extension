@@ -3124,10 +3124,6 @@
     "message": "Πρόσβαση στο διαδίκτυο.",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "Επιτρέψτε στο snap να έχει πρόσβαση στο διαδίκτυο. Αυτό μπορεί να χρησιμοποιηθεί τόσο για την αποστολή όσο και για τη λήψη δεδομένων με διακομιστές τρίτων.",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "Συνδεθείτε στο snap $1.",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3140,17 +3136,9 @@
     "message": "Προγραμματισμός και εκτέλεση περιοδικών ενεργειών.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "Επιτρέψτε στο snap να εκτελεί ενέργειες που εκτελούνται περιοδικά σε καθορισμένες ώρες, ημερομηνίες ή διαστήματα. Αυτό μπορεί να χρησιμοποιηθεί για την ενεργοποίηση αλληλεπιδράσεων ή ειδοποιήσεων που σχετίζονται με το χρόνο.",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "Εμφάνιση παραθύρων διαλόγου στο MetaMask.",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "Επιτρέψτε στο snap να εμφανίζει αναδυόμενα παράθυρα του MetaMask με προσαρμοσμένο κείμενο, πεδίο εισαγωγής και κουμπιά για την έγκριση ή την απόρριψη μιας ενέργειας.\nΜπορεί να χρησιμοποιηθεί για τη δημιουργία π.χ. ειδοποιήσεων, επιβεβαιώσεων και ροών επιλογής για το snap.",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "Δείτε τη διεύθυνση, το υπόλοιπο του λογαριασμού, τη δραστηριότητα και προτείνετε συναλλαγές προς έγκριση.",
@@ -3160,25 +3148,9 @@
     "message": "Πρόσβαση στον πάροχο του Ethereum.",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "Επιτρέψτε στο snap να επικοινωνεί απευθείας με το MetaMask, προκειμένου να διαβάζει δεδομένα από το blockchain και να προτείνει μηνύματα και συναλλαγές.",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "Δημιουργία τυχαίων κλειδιών μοναδικών σε αυτό το snap.",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "Επιτρέψτε στο snap να παράγει τυχαία κλειδιά μοναδικά για αυτό το snap, χωρίς να τα εκθέτει. Αυτά τα κλειδιά είναι ξεχωριστά από τον λογαριασμό (-ους) σας στο MetaMask και δεν σχετίζονται με τα ιδιωτικά σας κλειδιά ή τη Μυστική Φράση Ανάκτησης. Άλλα snaps δεν μπορούν να έχουν πρόσβαση σε αυτές τις πληροφορίες.",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "Χρησιμοποιήστε επιχειρηματικά μοντέλα.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Επιτρέψτε στο snap να χρησιμοποιεί επιχειρηματικά μοντέλα για την εκτέλεση κώδικα σε συγκεκριμένες χρονικές στιγμές κατά τη διάρκεια του κύκλου ζωής του.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_manageAccounts": {
     "message": "Προσθήκη και έλεγχος λογαριασμών στο Ethereum",
@@ -3188,41 +3160,17 @@
     "message": "Αποθηκεύστε και διαχειριστείτε τα δεδομένα του στη συσκευή σας.",
     "description": "The description for the `snap_manageState` permission"
   },
-  "permission_manageStateDescription": {
-    "message": "Επιτρέψτε στο snap να αποθηκεύει, να ενημερώνει και να ανακτά δεδομένα με ασφάλεια και με κρυπτογράφηση. Άλλα snaps δεν μπορούν να έχουν πρόσβαση σε αυτές τις πληροφορίες.",
-    "description": "An extended description for the `snap_manageState` permission"
-  },
   "permission_notifications": {
     "message": "Εμφάνιση ειδοποιήσεων.",
     "description": "The description for the `snap_notify` permission"
-  },
-  "permission_notificationsDescription": {
-    "message": "Επιτρέψτε στο snap να εμφανίζει ειδοποιήσεις εντός του MetaMask. Ένα σύντομο κείμενο ειδοποίησης μπορεί να ενεργοποιηθεί από το snap για πληροφορίες που μπορούν να ληφθούν υπόψη ή σχετίζονται με το χρόνο.",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "Επιτρέψτε στο $1 να επικοινωνήσει απευθείας με αυτό το snap.",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "Επιτρέψτε στο $1 να στέλνει μηνύματα στο snap και να λαμβάνει απάντηση από το snap.",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
   },
   "permission_transactionInsight": {
     "message": "Λήψη και εμφάνιση πληροφοριών σχετικά με τις συναλλαγές.",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "Επιτρέψτε στο snap να αποκωδικοποιεί τις συναλλαγές και να εμφανίζει πληροφορίες εντός του MetaMask UI. Αυτό μπορεί να χρησιμοποιηθεί για λύσεις προστασίας κατά της εξαπάτησης και της ασφάλειας.",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "Δείτε την προέλευση των ιστότοπων που προτείνουν συναλλαγές",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "Επιτρέψτε στο snap να βλέπει την προέλευση (URI) των ιστότοπων που προτείνουν συναλλαγές. Αυτό μπορεί να χρησιμοποιηθεί για λύσεις προστασίας κατά της εξαπάτησης και της ασφάλειας.",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Άγνωστη άδεια: $1",
@@ -3232,10 +3180,6 @@
     "message": "Δείτε το δημόσιο κλειδί σας για το $1 ($2).",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "Επιτρέψτε στο snap να δει τα δημόσια κλειδιά (και τις διευθύνσεις) σας για το $1. Αυτό δεν παραχωρεί κανέναν έλεγχο λογαριασμών ή περιουσιακών στοιχείων.",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "Δείτε το δημόσιο κλειδί σας για το $1.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3243,10 +3187,6 @@
   "permission_webAssembly": {
     "message": "Υποστήριξη για το WebAssembly.",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "Επιτρέψτε στο snap να έχει πρόσβαση σε περιβάλλοντα εκτέλεσης χαμηλού επιπέδου μέσω του WebAssembly.",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "Άδειες"
