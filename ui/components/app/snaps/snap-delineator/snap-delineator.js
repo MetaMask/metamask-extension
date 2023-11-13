@@ -106,8 +106,7 @@ export const SnapDelineator = ({
         justifyContent={isLoading && JustifyContent.center}
         style={{ flexGrow: isLoading && '1' }}
       >
-        {!isLoading && children}
-        {isLoading && <PulseLoader />}
+        {isLoading ? <PulseLoader /> : children}
       </Box>
     </Box>
   );
