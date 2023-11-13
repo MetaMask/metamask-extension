@@ -2,6 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import { useSelector } from 'react-redux';
+import { getIsCustodianSupportedChain } from '../../../selectors/institutional/selectors';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
+///: END:ONLY_INCLUDE_IN
 import { ButtonBase, IconName } from '../../component-library';
 import {
   BackgroundColor,
@@ -30,9 +35,26 @@ export const AddressCopyButton = ({
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
   const t = useI18nContext();
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const isCustodianSupportedChain = useSelector(getIsCustodianSupportedChain);
+  const { nickname, type: networkType } = useSelector(getProviderConfig);
+  ///: END:ONLY_INCLUDE_IN
+
+  const tooltipText = copied ? t('copiedExclamation') : t('copyToClipboard');
+  let tooltipTitle = tooltipText;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  tooltipTitle = isCustodianSupportedChain
+    ? tooltipText
+    : t('custodyWrongChain', [nickname || networkType]);
+  ///: END:ONLY_INCLUDE_IN
+
   return (
-    <Tooltip position="bottom" title={copied ? t('copiedExclamation') : null}>
+    <Tooltip position="bottom" title={tooltipTitle}>
       <ButtonBase
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        disabled={!isCustodianSupportedChain}
+        ///: END:ONLY_INCLUDE_IN
         backgroundColor={BackgroundColor.primaryMuted}
         onClick={() => {
           handleCopy(checksummedAddress);
