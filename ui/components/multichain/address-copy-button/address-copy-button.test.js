@@ -18,7 +18,7 @@ jest.mock('copy-to-clipboard');
 jest.mock('../../../selectors/institutional/selectors', () => {
   const mockGetCustodyAccountDetails = jest.fn(() => undefined);
   const mockGetisCustodianSupportedChain = jest.fn(() => true);
-  const mockedGetCustodianIconForAddress = jest.fn(() => '');
+  const mockedGetCustodianIconForAddress = jest.fn();
 
   return {
     getCustodyAccountDetails: mockGetCustodyAccountDetails,

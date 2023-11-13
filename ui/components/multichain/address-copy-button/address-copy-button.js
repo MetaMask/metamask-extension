@@ -82,7 +82,7 @@ export const AddressCopyButton = ({
         alignItems={AlignItems.center}
         data-testid="address-copy-button-text"
       >
-        <Box display={Display.Flex} alignItems={AlignItems.center}>
+        <Box display={Display.Flex}>
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
             custodianIcon && (
