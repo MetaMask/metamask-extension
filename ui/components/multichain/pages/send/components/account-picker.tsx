@@ -24,6 +24,7 @@ export const SendPageAccountPicker = () => {
     <SendPageRow>
       <Label paddingBottom={2}>{t('from')}</Label>
       <AccountPicker
+        className="multichain-send-page__account-picker"
         address={identity.address}
         name={identity.name}
         onClick={() => setShowAccountPicker(true)}

@@ -500,6 +500,7 @@ export const createSwapsMockStore = () => {
       },
       smartTransactionsState: {
         userOptIn: true,
+        userOptInV2: true,
         liveness: true,
         fees: createGetSmartTransactionFeesApiResponse(),
         smartTransactions: {

@@ -157,7 +157,7 @@ describe('Petnames', function () {
           .withNoNames()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await login(driver);
@@ -193,7 +193,7 @@ describe('Petnames', function () {
           .withNoNames()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await login(driver);
@@ -232,7 +232,7 @@ describe('Petnames', function () {
           .withNoNames()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await login(driver);
@@ -244,7 +244,7 @@ describe('Petnames', function () {
         await switchToNotificationWindow(driver, 4);
         await expectProposedNames(driver, '0xCD2a3...DD826', [
           ['test.lens', 'Lens Protocol'],
-          ['example.domain - 0xcd2 / 0x539', 'Name Lookup Example Snap'],
+          ['cd2.1337.test.domain', 'Name Lookup Example Snap'],
         ]);
       },
     );

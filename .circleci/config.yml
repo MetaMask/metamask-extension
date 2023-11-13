@@ -3,16 +3,16 @@ version: 2.1
 executors:
   node-browsers:
     docker:
-      - image: cimg/node:18.17-browsers
+      - image: cimg/node:18.18-browsers
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:18.17-browsers
+      - image: cimg/node:18.18-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-large:
     docker:
-      - image: cimg/node:18.17-browsers
+      - image: cimg/node:18.18-browsers
     resource_class: large
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
@@ -811,13 +811,10 @@ jobs:
           command: yarn depcheck
 
   test-e2e-chrome:
-    executor: node-browsers
-    parallelism: 12
+    executor: node-browsers-large
+    parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -833,7 +830,7 @@ jobs:
             then
               yarn test:e2e:chrome --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -841,13 +838,10 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-multichain:
-    executor: node-browsers
-    parallelism: 12
+    executor: node-browsers-large
+    parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -863,20 +857,18 @@ jobs:
             then
               MULTICHAIN=1 yarn test:e2e:chrome --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
+
   test-e2e-chrome-mv3:
-    executor: node-browsers
-    parallelism: 12
+    executor: node-browsers-large
+    parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -892,7 +884,7 @@ jobs:
             then
               yarn test:e2e:chrome --retries 2 --debug || echo "Temporarily suppressing MV3 e2e test failures"
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -901,10 +893,7 @@ jobs:
     executor: node-browsers
     parallelism: 1
     steps:
-      - checkout
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -920,7 +909,7 @@ jobs:
             then
               yarn test:e2e:chrome:rpc --retries 2
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -930,10 +919,7 @@ jobs:
   test-e2e-chrome-rpc-mmi:
     executor: node-browsers
     steps:
-      - checkout
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -949,7 +935,7 @@ jobs:
             then
               yarn test:e2e:chrome:rpc --retries 2 --debug --build-type=mmi
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -957,13 +943,10 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-firefox-flask:
-    executor: node-browsers
-    parallelism: 8
+    executor: node-browsers-large
+    parallelism: 16
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -979,7 +962,7 @@ jobs:
             then
               yarn test:e2e:firefox:flask --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -987,13 +970,10 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-flask:
-    executor: node-browsers
-    parallelism: 8
+    executor: node-browsers-large
+    parallelism: 16
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1009,7 +989,7 @@ jobs:
             then
               yarn test:e2e:chrome:flask --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1017,13 +997,10 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-chrome-mmi:
-    executor: node-browsers
-    parallelism: 8
+    executor: node-browsers-large
+    parallelism: 16
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1039,7 +1016,7 @@ jobs:
             then
               yarn test:e2e:chrome:mmi --retries 2 --debug --build-type=mmi
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1047,13 +1024,10 @@ jobs:
           path: test/test-results/e2e
 
   test-e2e-firefox:
-    executor: node-browsers-medium-plus
-    parallelism: 12
+    executor: node-browsers-large
+    parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1069,7 +1043,7 @@ jobs:
             then
               yarn test:e2e:firefox --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1080,9 +1054,6 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1106,9 +1077,6 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1132,9 +1100,6 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:

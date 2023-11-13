@@ -20,6 +20,7 @@
     "pendingTokens": "object",
     "customNonceValue": "",
     "useBlockie": false,
+    "useRequestQueue": false,
     "featureFlags": {},
     "welcomeScreenSeen": false,
     "currentLocale": "en",
@@ -145,11 +146,14 @@
     "allNftContracts": "object",
     "allNfts": "object",
     "ignoredNfts": "object",
-    "domains": {},
+    "domains": {
+      "metamask": "networkConfigurationId"
+    },
     "perDomainNetwork": "boolean",
     "logs": "object",
     "snaps": "object",
     "snapStates": "object",
+    "unencryptedSnapStates": "object",
     "jobs": "object",
     "database": "object",
     "lastUpdated": "object",
@@ -199,7 +203,8 @@
     "storageMetadata": {},
     "chainStatus": {
       "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
-    }
+    },
+    "versionFileETag": "string"
   },
   "send": "object",
   "swaps": "object",

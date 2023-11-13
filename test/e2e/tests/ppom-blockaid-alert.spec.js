@@ -159,7 +159,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
           .build(),
         defaultGanacheOptions,
         testSpecificMock: mockInfura,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
@@ -222,7 +222,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
           .build(),
         defaultGanacheOptions,
         testSpecificMock: mockInfuraWithMaliciousResponses,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
@@ -277,7 +277,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {

@@ -180,44 +180,6 @@ const FEATURE_FLAGS_API_MOCK_RESULT = [
   },
 ];
 
-const NETWORKS_API_MOCK_RESULT = [
-  {
-    active: true,
-    chainId: 1,
-    chainName: 'Ethereum Mainnet',
-  },
-  {
-    active: true,
-    chainId: 3,
-    chainName: 'Ethereum Testnet Ropsten',
-  },
-  {
-    active: true,
-    chainId: 4,
-    chainName: 'Ethereum Testnet Rinkeby',
-  },
-  {
-    active: true,
-    chainId: 5,
-    chainName: 'Ethereum Testnet Görli',
-  },
-  {
-    active: true,
-    chainId: 10,
-    chainName: 'Optimistic Ethereum',
-  },
-  {
-    active: true,
-    chainId: 42,
-    chainName: 'Ethereum Testnet Kovan',
-  },
-  {
-    active: true,
-    chainId: 69,
-    chainName: 'Optimistic Ethereum Testnet Kovan',
-  },
-];
-
 const TRADES_API_MOCK_RESULT = [
   {
     trade: {
@@ -518,7 +480,6 @@ module.exports = {
   AGGREGATOR_METADATA_API_MOCK_RESULT,
   GAS_PRICE_API_MOCK_RESULT,
   FEATURE_FLAGS_API_MOCK_RESULT,
-  NETWORKS_API_MOCK_RESULT,
   TRADES_API_MOCK_RESULT,
   NETWORKS_2_API_MOCK_RESULT,
 };

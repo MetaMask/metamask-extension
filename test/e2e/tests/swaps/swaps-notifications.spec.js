@@ -60,7 +60,7 @@ describe('Swaps - notifications @no-mmi', function () {
       {
         ...withFixturesOptions,
         testSpecificMock: mockTradesApiPriceSlippageError,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await loadExtension(driver);
@@ -99,7 +99,7 @@ describe('Swaps - notifications @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await loadExtension(driver);
@@ -129,7 +129,7 @@ describe('Swaps - notifications @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await loadExtension(driver);
@@ -151,7 +151,7 @@ describe('Swaps - notifications @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await loadExtension(driver);

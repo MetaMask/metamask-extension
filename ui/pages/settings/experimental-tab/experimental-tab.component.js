@@ -20,14 +20,14 @@ import {
   TextColor,
   TextVariant,
   Display,
+  FlexDirection,
+  JustifyContent,
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   FontWeight,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   AlignItems,
-  FlexDirection,
   FlexWrap,
-  JustifyContent,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -52,6 +52,8 @@ export default class ExperimentalTab extends PureComponent {
     addSnapAccountEnabled: PropTypes.bool,
     setAddSnapAccountEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IN
+    useRequestQueue: PropTypes.bool,
+    setUseRequestQueue: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -144,95 +146,102 @@ export default class ExperimentalTab extends PureComponent {
           ref={this.settingsRefs[1]}
           className="settings-page__content-row settings-page__content-row-experimental"
         >
-          <div className="settings-page__content-item">
-            <Text
-              variant={TextVariant.inherit}
-              color={TextColor.textAlternative}
-            >
-              {t('securityAlerts')}
-            </Text>
-            <div className="settings-page__content-description">
-              <Text variant={TextVariant.bodySm}>
-                {t('securityAlertsDescription')}
-              </Text>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-                <>
-                  <Text
-                    variant={TextVariant.bodySmBold}
-                    color={TextColor.textAlternative}
-                    marginTop={4}
-                  >
-                    {t('preferredProvider')}
-                  </Text>
-                  <div
-                    data-testid="settings-toggle-security-alert-blockaid"
-                    className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
-                  >
-                    <div>
-                      <Box display={Display.Flex}>
-                        <Text
-                          variant={TextVariant.bodyMd}
-                          color={TextColor.textDefault}
-                        >
-                          {t('blockaid')}
-                        </Text>
-                        <Tag marginLeft={2} label="Recommended" />
-                      </Box>
+          <Text variant={TextVariant.inherit} color={TextColor.textAlternative}>
+            {t('securityAlerts')}
+          </Text>
+          <Text variant={TextVariant.bodySm}>
+            {t('securityAlertsDescription')}
+          </Text>
+          <div className="settings-page__content-description">
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+              <>
+                <Text
+                  variant={TextVariant.bodySmBold}
+                  color={TextColor.textAlternative}
+                  marginTop={4}
+                >
+                  {t('preferredProvider')}
+                </Text>
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
+                  justifyContent={JustifyContent.spaceBetween}
+                  gap={4}
+                  marginTop={3}
+                  marginBottom={3}
+                  data-testid="settings-toggle-security-alert-blockaid"
+                >
+                  <div>
+                    <Box display={Display.Flex}>
                       <Text
-                        variant={TextVariant.bodySm}
-                        as="h6"
-                        color={TextColor.textAlternative}
-                        marginTop={0}
-                        marginRight={1}
+                        variant={TextVariant.bodyMd}
+                        color={TextColor.textDefault}
                       >
-                        {t('blockaidMessage')}
+                        {t('blockaid')}
                       </Text>
-                    </div>
-                    <ToggleButton
-                      value={securityAlertsEnabled}
-                      onToggle={this.toggleSecurityAlert.bind(this)}
-                    />
-                  </div>
-                </>
-                ///: END:ONLY_INCLUDE_IN
-              }
-              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
-                <div>
-                  <Box display={Display.Flex}>
+                      <Tag marginLeft={2} label="Recommended" />
+                    </Box>
                     <Text
-                      variant={TextVariant.bodyMd}
-                      color={TextColor.textDefault}
+                      variant={TextVariant.bodySm}
+                      as="h6"
+                      color={TextColor.textAlternative}
+                      marginTop={0}
+                      marginRight={1}
                     >
-                      {t('openSeaLabel')}
+                      {t('blockaidMessage')}
                     </Text>
-                    <Tag marginLeft={2} label="Beta" />
-                  </Box>
+                  </div>
+                  <ToggleButton
+                    value={securityAlertsEnabled}
+                    onToggle={this.toggleSecurityAlert.bind(this)}
+                  />
+                </Box>
+              </>
+              ///: END:ONLY_INCLUDE_IN
+            }
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.spaceBetween}
+              gap={4}
+              marginTop={3}
+              marginBottom={3}
+            >
+              <div>
+                <Box display={Display.Flex}>
                   <Text
-                    variant={TextVariant.bodySm}
-                    as="h6"
-                    color={TextColor.textAlternative}
-                    marginTop={0}
-                    marginRight={1}
+                    variant={TextVariant.bodyMd}
+                    color={TextColor.textDefault}
                   >
-                    {t('openSeaMessage', [
-                      <ButtonLink
-                        variant="bodyMd"
-                        href={OPENSEA_TERMS_OF_USE}
-                        externalLink
-                        key="opensea-terms-of-use"
-                      >
-                        {t('terms')}
-                      </ButtonLink>,
-                    ])}
+                    {t('openSeaLabel')}
                   </Text>
-                </div>
-                <ToggleButton
-                  value={transactionSecurityCheckEnabled}
-                  onToggle={this.toggleTransactionSecurityCheck.bind(this)}
-                />
+                  <Tag marginLeft={2} label="Beta" />
+                </Box>
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
+                  color={TextColor.textAlternative}
+                  marginTop={0}
+                  marginRight={1}
+                >
+                  {t('openSeaMessage', [
+                    <ButtonLink
+                      variant="bodyMd"
+                      href={OPENSEA_TERMS_OF_USE}
+                      externalLink
+                      key="opensea-terms-of-use"
+                    >
+                      {t('terms')}
+                    </ButtonLink>,
+                  ])}
+                </Text>
               </div>
-            </div>
+              <ToggleButton
+                value={transactionSecurityCheckEnabled}
+                onToggle={this.toggleTransactionSecurityCheck.bind(this)}
+              />
+            </Box>
           </div>
         </div>
       </>
@@ -305,7 +314,7 @@ export default class ExperimentalTab extends PureComponent {
                 {t('snapAccountsDescription')}
               </Text>
 
-              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
+              <div className="settings-page__content-item-col">
                 <Text
                   variant={TextVariant.bodyMd}
                   as="h5"
@@ -344,7 +353,36 @@ export default class ExperimentalTab extends PureComponent {
       </>
     );
   }
+
   ///: END:ONLY_INCLUDE_IN
+  renderToggleRequestQueue() {
+    const { t } = this.context;
+    const { useRequestQueue, setUseRequestQueue } = this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[7]}
+        className="settings-page__content-row settings-page__content-row-experimental"
+        data-testid="experimental-setting-toggle-request-queue"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('toggleRequestQueueField')}</span>
+          <div className="settings-page__content-description">
+            {t('toggleRequestQueueDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            className="request-queue-toggle"
+            value={useRequestQueue || false}
+            onToggle={(value) => setUseRequestQueue(!value)}
+            offLabel={t('toggleRequestQueueOff')}
+            onLabel={t('toggleRequestQueueOn')}
+          />
+        </div>
+      </Box>
+    );
+  }
 
   render() {
     return (
@@ -360,6 +398,7 @@ export default class ExperimentalTab extends PureComponent {
           this.renderDesktopEnableButton()
           ///: END:ONLY_INCLUDE_IN
         }
+        {this.renderToggleRequestQueue()}
       </div>
     );
   }

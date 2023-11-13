@@ -24,6 +24,7 @@ const addEthereumChain = {
     requestUserApproval: true,
     startApprovalFlow: true,
     endApprovalFlow: true,
+    getProviderConfig: true,
   },
 };
 export default addEthereumChain;
@@ -42,6 +43,7 @@ async function addEthereumChainHandler(
     requestUserApproval,
     startApprovalFlow,
     endApprovalFlow,
+    getProviderConfig,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -163,10 +165,8 @@ async function addEthereumChainHandler(
         origin,
         type: ApprovalType.SwitchEthereumChain,
         requestData: {
-          rpcUrl: existingNetwork.rpcUrl,
-          chainId: existingNetwork.chainId,
-          nickname: existingNetwork.nickname,
-          ticker: existingNetwork.ticker,
+          toNetworkConfiguration: existingNetwork,
+          fromNetworkConfiguration: getProviderConfig(),
         },
       });
 
@@ -284,11 +284,14 @@ async function addEthereumChainHandler(
       origin,
       type: ApprovalType.SwitchEthereumChain,
       requestData: {
-        rpcUrl: firstValidRPCUrl,
-        chainId: _chainId,
-        nickname: _chainName,
-        ticker,
-        networkConfigurationId,
+        toNetworkConfiguration: {
+          rpcUrl: firstValidRPCUrl,
+          chainId: _chainId,
+          nickname: _chainName,
+          ticker,
+          networkConfigurationId,
+        },
+        fromNetworkConfiguration: getProviderConfig(),
       },
     });
   } catch (error) {

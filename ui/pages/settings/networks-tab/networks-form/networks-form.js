@@ -147,6 +147,7 @@ const NetworksForm = ({
   const prevRpcUrl = useRef();
   const prevTicker = useRef();
   const prevBlockExplorerUrl = useRef();
+  // This effect is used to reset the form when the user switches between networks
   useEffect(() => {
     if (!prevAddNewNetwork.current && addNewNetwork) {
       setNetworkName('');
@@ -156,16 +157,33 @@ const NetworksForm = ({
       setBlockExplorerUrl('');
       setErrors({});
       setIsSubmitting(false);
-    } else if (
-      (prevNetworkName.current !== selectedNetworkName ||
-        prevRpcUrl.current !== selectedNetwork.rpcUrl ||
-        prevChainId.current !== selectedNetwork.chainId ||
-        prevTicker.current !== selectedNetwork.ticker ||
-        prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl) &&
-      (!isEditing || !isEqual(selectedNetwork, previousNetwork))
-    ) {
-      resetForm(selectedNetwork);
+    } else {
+      const networkNameChanged =
+        prevNetworkName.current !== selectedNetworkName;
+      const rpcUrlChanged = prevRpcUrl.current !== selectedNetwork.rpcUrl;
+      const chainIdChanged = prevChainId.current !== selectedNetwork.chainId;
+      const tickerChanged = prevTicker.current !== selectedNetwork.ticker;
+      const blockExplorerUrlChanged =
+        prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl;
+
+      if (
+        (networkNameChanged ||
+          rpcUrlChanged ||
+          chainIdChanged ||
+          tickerChanged ||
+          blockExplorerUrlChanged) &&
+        (!isEditing || !isEqual(selectedNetwork, previousNetwork))
+      ) {
+        resetForm(selectedNetwork);
+      }
     }
+
+    prevAddNewNetwork.current = addNewNetwork;
+    prevNetworkName.current = selectedNetworkName;
+    prevRpcUrl.current = selectedNetwork.rpcUrl;
+    prevChainId.current = selectedNetwork.chainId;
+    prevTicker.current = selectedNetwork.ticker;
+    prevBlockExplorerUrl.current = selectedNetwork.blockExplorerUrl;
   }, [
     selectedNetwork,
     selectedNetworkName,
@@ -387,7 +405,6 @@ const NetworksForm = ({
           if (returnedTickerSymbol !== formTickerSymbol) {
             warningKey = 'chainListReturnedDifferentTickerSymbol';
             warningMessage = t('chainListReturnedDifferentTickerSymbol', [
-              formChainId,
               returnedTickerSymbol,
             ]);
           }
@@ -673,6 +690,12 @@ const NetworksForm = ({
         />
         <FormField
           warning={warnings.ticker?.msg || ''}
+          warningProps={{
+            'data-testid': 'network-form-ticker-warning',
+            style: {
+              color: 'var(--color-warning-default)',
+            },
+          }}
           onChange={(value) => {
             setIsEditing(true);
             setTicker(value);
