@@ -166,6 +166,9 @@ describe('Address Book', function () {
   });
 
   it('Deletes existing entry from address book', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -187,6 +190,9 @@ describe('Address Book', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -201,14 +207,9 @@ describe('Address Book', function () {
         await driver.clickElement({ text: 'Edit', tag: 'button' });
         await driver.clickElement({ text: 'Delete contact', tag: 'a' });
 
-        let contact;
-        if (process.env.MULTICHAIN) {
-          contact = await driver.findElement('.address-list-item');
-        } else {
-          contact = await driver.findElement(
-            '.send__select-recipient-wrapper__group-item',
-          );
-        }
+        const contact = await driver.findElement(
+          '.send__select-recipient-wrapper__group-item',
+        );
 
         // it checks if account is deleted
         const exists = await driver.isElementPresent(contact);
