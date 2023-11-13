@@ -3907,9 +3907,6 @@
   "snaps": {
     "message": "Snap"
   },
-  "snapsInsightLoading": {
-    "message": "Đang tải thông tin chi tiết về giao dịch..."
-  },
   "snapsInvalidUIError": {
     "message": "Giao diện người dùng được chỉ định bởi Snap không hợp lệ."
   },

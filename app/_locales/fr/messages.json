@@ -3907,9 +3907,6 @@
   "snaps": {
     "message": "Snaps"
   },
-  "snapsInsightLoading": {
-    "message": "Chargement de l’aperçu de transaction…"
-  },
   "snapsInvalidUIError": {
     "message": "L’interface utilisateur (IU) spécifiée par le snap n’est pas valide."
   },
