@@ -991,6 +991,7 @@ async function buildEventFragmentProperties({
       securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
     security_alert_reason:
       securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
+    ...additionalBlockaidParams,
     ///: END:ONLY_INCLUDE_IN
     gas_estimation_failed: Boolean(simulationFails),
   } as Record<string, any>;

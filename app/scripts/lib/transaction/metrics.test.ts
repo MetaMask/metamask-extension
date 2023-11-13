@@ -70,6 +70,9 @@ describe('Transaction metrics', () => {
     mockChainId,
     mockNetworkId,
     mockTransactionMeta,
+    mockTransactionMetaWithBlockaid,
+    expectedProperties,
+    expectedSensitiveProperties,
     mockActionId;
 
   beforeEach(() => {
@@ -226,36 +229,12 @@ describe('Transaction metrics', () => {
         uniqueIdentifier: 'transaction-added-1',
         persist: true,
         properties: {
-          account_snap_type: 'snaptype',
-          account_snap_version: 'snapversion',
-          account_type: undefined,
-          asset_type: AssetType.native,
-          chain_id: mockChainId,
-          device_model: undefined,
-          eip_1559_version: '0',
-          gas_edit_attempted: 'none',
-          gas_edit_type: 'none',
-          network: mockNetworkId,
-          referrer: ORIGIN_METAMASK,
-          security_alert_reason: BlockaidReason.notApplicable,
-          security_alert_response: BlockaidReason.notApplicable,
-          source: MetaMetricsTransactionEventSource.User,
-          status: 'unapproved',
-          token_standard: TokenStandard.none,
-          transaction_speed_up: false,
-          transaction_type: TransactionType.simpleSend,
-          ui_customizations: null,
+          ...expectedProperties,
+          ui_customizations: ['flagged_as_malicious'],
+          ppom_eth_call_count: 5,
+          ppom_eth_getCode_count: 3,
         },
-        sensitiveProperties: {
-          default_gas: '0.000031501',
-          default_gas_price: '2',
-          first_seen: 1624408066355,
-          gas_limit: '0x7b0d',
-          gas_price: '2',
-          transaction_contract_method: undefined,
-          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          transaction_replaced: undefined,
-        },
+        sensitiveProperties: expectedSensitiveProperties,
       });
     });
   });
@@ -281,38 +260,6 @@ describe('Transaction metrics', () => {
       });
 
       const expectedUniqueId = 'transaction-added-1';
-      const expectedProperties = {
-        account_snap_type: 'snaptype',
-        account_snap_version: 'snapversion',
-        account_type: undefined,
-        asset_type: AssetType.native,
-        chain_id: mockChainId,
-        device_model: undefined,
-        eip_1559_version: '0',
-        gas_edit_attempted: 'none',
-        gas_edit_type: 'none',
-        network: mockNetworkId,
-        referrer: ORIGIN_METAMASK,
-        security_alert_reason: BlockaidReason.notApplicable,
-        security_alert_response: BlockaidReason.notApplicable,
-        source: MetaMetricsTransactionEventSource.User,
-        status: 'unapproved',
-        token_standard: TokenStandard.none,
-        transaction_speed_up: false,
-        transaction_type: TransactionType.simpleSend,
-        ui_customizations: null,
-      };
-
-      const expectedSensitiveProperties = {
-        default_gas: '0.000031501',
-        default_gas_price: '2',
-        first_seen: 1624408066355,
-        gas_limit: '0x7b0d',
-        gas_price: '2',
-        transaction_contract_method: undefined,
-        transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-        transaction_replaced: undefined,
-      };
 
       expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
         1,
@@ -335,6 +282,57 @@ describe('Transaction metrics', () => {
         expectedUniqueId,
         {
           properties: expectedProperties,
+          sensitiveProperties: expectedSensitiveProperties,
+        },
+      );
+
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledWith(expectedUniqueId);
+    });
+
+    it('should create, update, finalize event fragment with blockaid', async () => {
+      await handleTransactionApproved(mockTransactionMetricsRequest, {
+        transactionMeta: mockTransactionMetaWithBlockaid as any,
+        actionId: mockActionId,
+      });
+
+      const expectedUniqueId = 'transaction-added-1';
+
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+        actionId: mockActionId,
+        category: MetaMetricsEventCategory.Transactions,
+        successEvent: TransactionMetaMetricsEvent.approved,
+        failureEvent: TransactionMetaMetricsEvent.rejected,
+        uniqueIdentifier: expectedUniqueId,
+        persist: true,
+        properties: {
+          ...expectedProperties,
+          ui_customizations: ['flagged_as_malicious'],
+          ppom_eth_call_count: 5,
+          ppom_eth_getCode_count: 3,
+        },
+        sensitiveProperties: expectedSensitiveProperties,
+      });
+
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
+        expectedUniqueId,
+        {
+          properties: {
+            ...expectedProperties,
+            ui_customizations: ['flagged_as_malicious'],
+            ppom_eth_call_count: 5,
+            ppom_eth_getCode_count: 3,
+          },
           sensitiveProperties: expectedSensitiveProperties,
         },
       );
@@ -560,41 +558,6 @@ describe('Transaction metrics', () => {
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
-      const expectedProperties = {
-        account_snap_type: 'snaptype',
-        account_snap_version: 'snapversion',
-        account_type: undefined,
-        asset_type: AssetType.native,
-        chain_id: mockChainId,
-        device_model: undefined,
-        eip_1559_version: '0',
-        gas_edit_attempted: 'none',
-        gas_edit_type: 'none',
-        network: mockNetworkId,
-        referrer: ORIGIN_METAMASK,
-        security_alert_reason: BlockaidReason.notApplicable,
-        security_alert_response: BlockaidReason.notApplicable,
-        source: MetaMetricsTransactionEventSource.User,
-        status: 'unapproved',
-        token_standard: TokenStandard.none,
-        transaction_speed_up: false,
-        transaction_type: TransactionType.simpleSend,
-        ui_customizations: null,
-      };
-
-      const expectedSensitiveProperties = {
-        completion_time: expect.any(String),
-        default_gas: '0.000031501',
-        default_gas_price: '2',
-        first_seen: 1624408066355,
-        gas_limit: '0x7b0d',
-        gas_price: '2',
-        gas_used: '0.000000291',
-        transaction_contract_method: undefined,
-        transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-        transaction_replaced: undefined,
-        status: METRICS_STATUS_FAILED,
-      };
 
       expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
         1,
@@ -606,7 +569,12 @@ describe('Transaction metrics', () => {
         uniqueIdentifier: expectedUniqueId,
         persist: true,
         properties: expectedProperties,
-        sensitiveProperties: expectedSensitiveProperties,
+        sensitiveProperties: {
+          ...expectedSensitiveProperties,
+          completion_time: expect.any(String),
+          gas_used: '0.000000291',
+          status: METRICS_STATUS_FAILED,
+        },
       });
 
       expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
@@ -721,39 +689,6 @@ describe('Transaction metrics', () => {
       } as any);
 
       const expectedUniqueId = 'transaction-submitted-1';
-      const expectedProperties = {
-        account_snap_type: 'snaptype',
-        account_snap_version: 'snapversion',
-        account_type: undefined,
-        asset_type: AssetType.native,
-        chain_id: mockChainId,
-        device_model: undefined,
-        eip_1559_version: '0',
-        gas_edit_attempted: 'none',
-        gas_edit_type: 'none',
-        network: mockNetworkId,
-        referrer: ORIGIN_METAMASK,
-        security_alert_reason: BlockaidReason.notApplicable,
-        security_alert_response: BlockaidReason.notApplicable,
-        source: MetaMetricsTransactionEventSource.User,
-        status: 'unapproved',
-        token_standard: TokenStandard.none,
-        transaction_speed_up: false,
-        transaction_type: TransactionType.simpleSend,
-        ui_customizations: null,
-      };
-
-      const expectedSensitiveProperties = {
-        default_gas: '0.000031501',
-        default_gas_price: '2',
-        dropped: true,
-        first_seen: 1624408066355,
-        gas_limit: '0x7b0d',
-        gas_price: '2',
-        transaction_contract_method: undefined,
-        transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-        transaction_replaced: 'other',
-      };
 
       expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
         1,
@@ -765,7 +700,11 @@ describe('Transaction metrics', () => {
         uniqueIdentifier: expectedUniqueId,
         persist: true,
         properties: expectedProperties,
-        sensitiveProperties: expectedSensitiveProperties,
+        sensitiveProperties: {
+          ...expectedSensitiveProperties,
+          dropped: true,
+          transaction_replaced: 'other',
+        },
       });
 
       expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
@@ -775,7 +714,69 @@ describe('Transaction metrics', () => {
         expectedUniqueId,
         {
           properties: expectedProperties,
-          sensitiveProperties: expectedSensitiveProperties,
+          sensitiveProperties: {
+            ...expectedSensitiveProperties,
+            dropped: true,
+            transaction_replaced: 'other',
+          },
+        },
+      );
+
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledWith(expectedUniqueId);
+    });
+
+    it('should create, update, finalize event fragment with blockaid', async () => {
+      await handleTransactionDropped(mockTransactionMetricsRequest, {
+        transactionMeta: mockTransactionMetaWithBlockaid,
+        actionId: mockActionId,
+      } as any);
+
+      const expectedUniqueId = 'transaction-submitted-1';
+
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+        actionId: mockActionId,
+        category: MetaMetricsEventCategory.Transactions,
+        successEvent: TransactionMetaMetricsEvent.finalized,
+        uniqueIdentifier: expectedUniqueId,
+        persist: true,
+        properties: {
+          ...expectedProperties,
+          ui_customizations: ['flagged_as_malicious'],
+          ppom_eth_call_count: 5,
+          ppom_eth_getCode_count: 3,
+        },
+        sensitiveProperties: {
+          ...expectedSensitiveProperties,
+          dropped: true,
+          transaction_replaced: 'other',
+        },
+      });
+
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
+        expectedUniqueId,
+        {
+          properties: {
+            ...expectedProperties,
+            ui_customizations: ['flagged_as_malicious'],
+            ppom_eth_call_count: 5,
+            ppom_eth_getCode_count: 3,
+          },
+          sensitiveProperties: {
+            ...expectedSensitiveProperties,
+            dropped: true,
+            transaction_replaced: 'other',
+          },
         },
       );
 
@@ -809,38 +810,6 @@ describe('Transaction metrics', () => {
       } as any);
 
       const expectedUniqueId = 'transaction-added-1';
-      const expectedProperties = {
-        account_snap_type: 'snaptype',
-        account_snap_version: 'snapversion',
-        account_type: undefined,
-        asset_type: AssetType.native,
-        chain_id: mockChainId,
-        device_model: undefined,
-        eip_1559_version: '0',
-        gas_edit_attempted: 'none',
-        gas_edit_type: 'none',
-        network: mockNetworkId,
-        referrer: ORIGIN_METAMASK,
-        security_alert_reason: BlockaidReason.notApplicable,
-        security_alert_response: BlockaidReason.notApplicable,
-        source: MetaMetricsTransactionEventSource.User,
-        status: 'unapproved',
-        token_standard: TokenStandard.none,
-        transaction_speed_up: false,
-        transaction_type: TransactionType.simpleSend,
-        ui_customizations: null,
-      };
-
-      const expectedSensitiveProperties = {
-        default_gas: '0.000031501',
-        default_gas_price: '2',
-        first_seen: 1624408066355,
-        gas_limit: '0x7b0d',
-        gas_price: '2',
-        transaction_contract_method: undefined,
-        transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-        transaction_replaced: undefined,
-      };
 
       expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
         1,
@@ -863,6 +832,59 @@ describe('Transaction metrics', () => {
         expectedUniqueId,
         {
           properties: expectedProperties,
+          sensitiveProperties: expectedSensitiveProperties,
+        },
+      );
+
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledTimes(1);
+      expect(
+        mockTransactionMetricsRequest.finalizeEventFragment,
+      ).toBeCalledWith(expectedUniqueId, {
+        abandoned: true,
+      });
+    });
+
+    it('should create, update, finalize event fragment with blockaid', async () => {
+      await handleTransactionRejected(mockTransactionMetricsRequest, {
+        transactionMeta: mockTransactionMetaWithBlockaid,
+        actionId: mockActionId,
+      } as any);
+
+      const expectedUniqueId = 'transaction-added-1';
+
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.createEventFragment).toBeCalledWith({
+        actionId: mockActionId,
+        category: MetaMetricsEventCategory.Transactions,
+        successEvent: TransactionMetaMetricsEvent.approved,
+        failureEvent: TransactionMetaMetricsEvent.rejected,
+        uniqueIdentifier: expectedUniqueId,
+        persist: true,
+        properties: {
+          ...expectedProperties,
+          ui_customizations: ['flagged_as_malicious'],
+          ppom_eth_call_count: 5,
+          ppom_eth_getCode_count: 3,
+        },
+        sensitiveProperties: expectedSensitiveProperties,
+      });
+
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledTimes(
+        1,
+      );
+      expect(mockTransactionMetricsRequest.updateEventFragment).toBeCalledWith(
+        expectedUniqueId,
+        {
+          properties: {
+            ...expectedProperties,
+            ui_customizations: ['flagged_as_malicious'],
+            ppom_eth_call_count: 5,
+            ppom_eth_getCode_count: 3,
+          },
           sensitiveProperties: expectedSensitiveProperties,
         },
       );
@@ -905,37 +927,8 @@ describe('Transaction metrics', () => {
         successEvent: TransactionMetaMetricsEvent.finalized,
         uniqueIdentifier: 'transaction-submitted-1',
         persist: true,
-        properties: {
-          account_snap_type: 'snaptype',
-          account_snap_version: 'snapversion',
-          account_type: undefined,
-          asset_type: AssetType.native,
-          chain_id: mockChainId,
-          device_model: undefined,
-          eip_1559_version: '0',
-          gas_edit_attempted: 'none',
-          gas_edit_type: 'none',
-          network: mockNetworkId,
-          referrer: ORIGIN_METAMASK,
-          security_alert_reason: BlockaidReason.notApplicable,
-          security_alert_response: BlockaidReason.notApplicable,
-          source: MetaMetricsTransactionEventSource.User,
-          status: 'unapproved',
-          token_standard: TokenStandard.none,
-          transaction_speed_up: false,
-          transaction_type: TransactionType.simpleSend,
-          ui_customizations: null,
-        },
-        sensitiveProperties: {
-          default_gas: '0.000031501',
-          default_gas_price: '2',
-          first_seen: 1624408066355,
-          gas_limit: '0x7b0d',
-          gas_price: '2',
-          transaction_contract_method: undefined,
-          transaction_envelope_type: TRANSACTION_ENVELOPE_TYPE_NAMES.LEGACY,
-          transaction_replaced: undefined,
-        },
+        properties: expectedProperties,
+        sensitiveProperties: expectedSensitiveProperties,
       });
 
       expect(

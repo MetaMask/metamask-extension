@@ -96,6 +96,7 @@ import { showCustodyConfirmLink } from '../../../store/institutional/institution
 import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessage';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IN
 
