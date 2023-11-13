@@ -987,7 +987,7 @@ jobs:
             then
               yarn test:e2e:chrome:multi-provider --retries 2
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
