@@ -14,8 +14,8 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  TextField,
 } from '../../../component-library';
+import { TextField } from '../../../component-library/text-field/deprecated';
 import {
   BlockSize,
   Display,

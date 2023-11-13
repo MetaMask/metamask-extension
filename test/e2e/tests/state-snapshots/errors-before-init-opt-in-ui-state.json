@@ -98,7 +98,8 @@
       "usePhishDetect": true,
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
-      "useMultiAccountBalanceChecker": true
+      "useMultiAccountBalanceChecker": true,
+      "useRequestQueue": false
     },
     "SmartTransactionsController": {
       "smartTransactionsState": {
