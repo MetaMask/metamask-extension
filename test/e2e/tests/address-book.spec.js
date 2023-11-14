@@ -5,6 +5,7 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
 } = require('../helpers');
+const { shortenAddress } = require('../../../ui/helpers/utils/util');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Address Book', function () {
@@ -134,8 +135,6 @@ describe('Address Book', function () {
           });
         }
 
-        console.log('Text is: [', await recipientUsername.getText(), ']');
-
         assert.equal(
           await recipientUsername.getText(),
           'Test Name Edit',
@@ -148,7 +147,7 @@ describe('Address Book', function () {
           );
           assert.equal(
             await recipientAddress.getText(),
-            '0x74cE91B75935D6Bedc27eE002DeFa566c5946f74',
+            shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
             'Recipient address is not edited correctly',
           );
         } else {
