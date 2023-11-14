@@ -4298,7 +4298,11 @@ export default class MetamaskController extends EventEmitter {
 
     pump(outStream, providerStream, outStream, (err) => {
       // handle any middleware cleanup
-      engine.destroy();
+      engine._middleware.forEach((mid) => {
+        if (mid.destroy && typeof mid.destroy === 'function') {
+          mid.destroy();
+        }
+      });
       connectionId && this.removeConnection(origin, connectionId);
       if (err) {
         log.error(err);
