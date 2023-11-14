@@ -919,10 +919,9 @@ async function onInstall() {
   const storeAlreadyExisted = Boolean(await localStore.get());
   // If the store doesn't exist, then this is the first time running this script,
   // and is therefore an install
-  if (
-    !storeAlreadyExisted &&
-    !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
-  ) {
+  if (process.env.IN_TEST) {
+    addAppInstalledEvent();
+  } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
