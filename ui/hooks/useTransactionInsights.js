@@ -78,6 +78,7 @@ const useTransactionInsights = ({ txData }) => {
         name={getSnapName(selectedSnap?.id, subjectMetadata[selectedSnap?.id])}
       >
         <SnapInsight
+          snapId={selectedInsightSnapId}
           ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
           data={data?.[0]}
           ///: END:ONLY_INCLUDE_IN
@@ -111,6 +112,7 @@ const useTransactionInsights = ({ txData }) => {
         onChange={(snapId) => setSelectedInsightSnapId(snapId)}
       >
         <SnapInsight
+          snapId={selectedInsightSnapId}
           loading={loading}
           ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
           data={selectedSnapData}

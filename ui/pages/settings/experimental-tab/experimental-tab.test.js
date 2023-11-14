@@ -37,7 +37,7 @@ describe('ExperimentalTab', () => {
     const { getAllByRole } = render({ desktopEnabled: true });
     const toggle = getAllByRole('checkbox');
 
-    expect(toggle).toHaveLength(3);
+    expect(toggle).toHaveLength(4);
   });
 
   it('should disable opensea when blockaid is enabled', () => {
@@ -71,10 +71,6 @@ describe('ExperimentalTab', () => {
       },
     );
     expect(getAllByRole('link', { name: 'Terms of use' })[0]).toHaveAttribute(
-      'href',
-      'https://blockaid.io/legal/metamask-ppom-privacy-policy/',
-    );
-    expect(getAllByRole('link', { name: 'Terms of use' })[1]).toHaveAttribute(
       'href',
       'https://opensea.io/securityproviderterms',
     );
