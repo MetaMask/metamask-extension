@@ -352,7 +352,9 @@ const CustodyPage = () => {
     setConnectError('');
     setSelectError('');
 
-    history.push(CUSTODY_ACCOUNT_ROUTE);
+    window.innerWidth > 400
+      ? history.push(CUSTODY_ACCOUNT_ROUTE)
+      : global.platform.closeCurrentWindow();
   };
 
   const setSelectAllAccounts = (e) => {
@@ -451,23 +453,25 @@ const CustodyPage = () => {
             className="page-container__content"
             width={BlockSize.Full}
           >
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              marginBottom={4}
-              marginTop={4}
-            >
-              <ButtonIcon
-                data-testid="custody-back-button"
-                ariaLabel={t('back')}
-                iconName={IconName.ArrowLeft}
-                size={IconSize.Sm}
-                color={Color.iconDefault}
-                onClick={cancelConnectCustodianToken}
-                display={[Display.Flex]}
-              />
-              <Text>{t('back')}</Text>
-            </Box>
+            {window.innerWidth > 400 && (
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                marginBottom={4}
+                marginTop={4}
+              >
+                <ButtonIcon
+                  data-testid="custody-back-button"
+                  ariaLabel={t('back')}
+                  iconName={IconName.ArrowLeft}
+                  size={IconSize.Sm}
+                  color={Color.iconDefault}
+                  onClick={cancelConnectCustodianToken}
+                  display={[Display.Flex]}
+                />
+                <Text>{t('back')}</Text>
+              </Box>
+            )}
             {selectedCustodianImage && (
               <Box display={Display.Flex} alignItems={AlignItems.center}>
                 <img
