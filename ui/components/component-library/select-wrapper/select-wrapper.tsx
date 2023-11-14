@@ -53,6 +53,9 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       if (onOpenChange) {
         onOpenChange(false);
       }
+      if (onBlur) {
+        onBlur();
+      }
     };
 
 
