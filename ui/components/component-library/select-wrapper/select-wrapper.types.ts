@@ -74,7 +74,7 @@ export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
    * Callback function that is called when the SelectWrapper component loses focus.
    * The event object is passed as an argument to the function.
    */
-  onBlur?: (event: React.FocusEvent) => void;
+  onBlur?: () => void;
   /**
    * The trigger component that will commonly be used with components like SelectButton.
    * SelectWrapper's popover will be anchored to this component.

@@ -108,7 +108,6 @@ describe('SelectWrapper', () => {
         isOpen={isOpen}
         onOpenChange={() => setIsOpen(!isOpen)}
         defaultValue={'Default Value'}
-        data-testid="wrapper-blur"
         triggerComponent={
           <SelectButton
             data-testid="trigger"
@@ -166,20 +165,28 @@ describe('SelectWrapper', () => {
   it('should call custom onBlur handler when provided', () => {
     const customOnBlur = jest.fn();
     const { getByTestId } = render(
-      <SelectWrapper
-        onBlur={customOnBlur}
-        triggerComponent={
-          <SelectButton data-testid="trigger">Test Button</SelectButton>
-        }
-      >
-        <div data-testid="content">Test</div>
-      </SelectWrapper>,
+      <>
+        <SelectWrapper
+          onBlur={customOnBlur}
+          triggerComponent={
+            <SelectButton data-testid="trigger">Test Button</SelectButton>
+          }
+        >
+          <div data-testid="content">Test</div>
+        </SelectWrapper>
+        <button data-testid="outside">Outside</button>
+      </>,
     );
 
     const triggerButton = getByTestId('trigger');
+    const outsideButton = getByTestId('outside');
 
     act(() => {
-      fireEvent.blur(triggerButton);
+      fireEvent.click(triggerButton);
+    });
+
+    act(() => {
+      fireEvent.click(outsideButton);
     });
 
     expect(customOnBlur).toHaveBeenCalled();
@@ -189,21 +196,23 @@ describe('SelectWrapper', () => {
     const [isOpen, setIsOpen] = React.useState(false);
 
     return (
-      <SelectWrapper
-        isOpen={isOpen}
-        onOpenChange={() => setIsOpen(!isOpen)}
-        data-testid="wrapper-blur"
-        triggerComponent={
-          <SelectButton
-            data-testid="trigger"
-            onClick={() => setIsOpen(!isOpen)}
-          >
-            Test Button
-          </SelectButton>
-        }
-      >
-        <div data-testid="content">Test</div>
-      </SelectWrapper>
+      <div>
+        <SelectWrapper
+          isOpen={isOpen}
+          onOpenChange={() => setIsOpen(!isOpen)}
+          triggerComponent={
+            <SelectButton
+              data-testid="trigger"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              Test Button
+            </SelectButton>
+          }
+        >
+          <div data-testid="content">Test</div>
+        </SelectWrapper>
+        <button data-testid="wrapper-blur">Outside</button>
+      </div>
     );
   };
 
@@ -236,7 +245,7 @@ describe('SelectWrapper', () => {
     const wrapperBlur = getByTestId('wrapper-blur');
 
     act(() => {
-      fireEvent.blur(wrapperBlur);
+      fireEvent.click(wrapperBlur);
     });
 
     // The content should not be visible after the blur event
