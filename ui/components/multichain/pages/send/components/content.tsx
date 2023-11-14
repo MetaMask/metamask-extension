@@ -19,6 +19,7 @@ import {
   setCustomGasLimit,
   setCustomGasPrice,
 } from '../../../../../ducks/gas/gas.duck';
+import { AssetPickerAmount } from '../../..';
 import { SendHexData, SendPageRow } from '.';
 
 export const SendPageContent = () => {
@@ -53,6 +54,9 @@ export const SendPageContent = () => {
 
   return (
     <Box>
+      <SendPageRow>
+        <AssetPickerAmount />
+      </SendPageRow>
       {showHexData ? <SendHexData /> : null}
       {gasInputMode === GAS_INPUT_MODES.INLINE ? (
         <SendPageRow>

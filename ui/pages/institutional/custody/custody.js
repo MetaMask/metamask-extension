@@ -35,6 +35,7 @@ import {
   TextColor,
   TextAlign,
   TextVariant,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -381,7 +382,10 @@ const CustodyPage = () => {
   }
 
   return (
-    <Box className="page-container">
+    <Box
+      className="main-container"
+      backgroundColor={BackgroundColor.backgroundDefault}
+    >
       {connectError && (
         <Text
           data-testid="connect-error"
@@ -404,7 +408,6 @@ const CustodyPage = () => {
           padding={4}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
-          className="page-container__content"
           width={BlockSize.Full}
         >
           <Box
@@ -708,7 +711,9 @@ const CustodyPage = () => {
         <ConfirmConnectCustodianModal
           onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
           custodianName={selectedCustodianDisplayName}
-          custodianURL={matchedCustodian?.website}
+          custodianURL={
+            matchedCustodian?.onboardingUrl || matchedCustodian?.website
+          }
         />
       )}
     </Box>
