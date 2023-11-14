@@ -17,7 +17,7 @@ import { SelectWrapper } from './select-wrapper';
 ### triggerComponent
 
 Use the `triggerComponent` prop to pass in a component that will be used as the trigger for the `SelectWrapper`.
-`SelectButton` is a component that can be used as the triggerComponent or used for reference when creating a custom triggerComponent.
+`SelectButton` is a component that can be used as the triggerComponent or used for reference when creating a custom `triggerComponent`.
 
 <Canvas>
   <Story id="components-componentlibrary-selectwrapper--trigger-component" />
@@ -108,7 +108,7 @@ const [isOpen, setIsOpen] = React.useState(false);
 See [isMultiSelect](/docs/components-componentlibrary-selectwrapper--docs#ismultiselect) for more info on how it impacts the open state.
 
 <Canvas>
-  <Story id="components-componentlibrary-selectwrapper--controlled-open" />
+  <Story id="components-componentlibrary-selectwrapper--uncontrolled-open" />
 </Canvas>
 
 ```jsx
@@ -332,7 +332,9 @@ import { BackgroundColor } from '../../../helpers/constants/design-system';
 ### onBlur
 
 By default onBlur is setup to close the `SelectWrapper` when the user clicks outside of the `SelectWrapper` or when the user tabs out of the `SelectWrapper`.
-You can use the `onBlur` prop to pass a custom function to handle the onBlur event. This will override the default onBlur behavior and will require you to have setup a controlled open environment. as well.
+You can use the `onBlur` prop to pass a custom function to handle the onBlur event. This will override the default onBlur behavior and will require you to have setup a controlled open environment as well.
+
+The onBlur fires based on the if the Popover is open or closed and is disconnected from the trigger component.
 
 <Canvas>
   <Story id="components-componentlibrary-selectwrapper--on-blur" />
