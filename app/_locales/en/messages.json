@@ -4062,6 +4062,16 @@
   "sendDescription": {
     "message": "Send crypto to any account"
   },
+  "sendNoContactsConversionText": {
+    "message": "click here"
+  },
+  "sendNoContactsDescription": {
+    "message": "Contacts allow you to safely send transactions to another account multiple times.  To create a contact, $1",
+    "description": "$1 represents the action text 'click here'"
+  },
+  "sendNoContactsTitle": {
+    "message": "You don't have any contacts yet"
+  },
   "sendSpecifiedTokens": {
     "message": "Send $1",
     "description": "Symbol of the specified token"

@@ -22,6 +22,7 @@ import { getAddressBookEntry } from '../../../../../selectors';
 import Identicon from '../../../../ui/identicon';
 import Confusable from '../../../../ui/confusable';
 import { ellipsify } from '../../../../../pages/send/send.utils';
+import { Tab, Tabs } from '../../../../ui/tabs';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccount } from '.';
 
 const renderExplicitAddress = (
@@ -100,26 +101,42 @@ export const SendPageRecipient = () => {
     );
   } else {
     contents = (
-      <>
-        {userInput ? null : <SendPageYourAccount />}
-        <SendPageAddressBook />
-      </>
+      <Tabs defaultActiveTabKey={userInput ? 'contacts' : 'accounts'}>
+        {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          <Tab tabKey="accounts" name={t('yourAccounts')}>
+            <SendPageYourAccount />
+          </Tab>
+        }
+        {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          <Tab tabKey="contacts" name={t('contacts')}>
+            <SendPageAddressBook />
+          </Tab>
+        }
+      </Tabs>
     );
   }
 
   return (
-    <SendPageRow>
+    <>
       {showErrorBanner ? (
-        <BannerAlert severity={BannerAlertSeverity.Danger} marginTop={6}>
-          {t(domainError ?? recipient.error)}
-        </BannerAlert>
+        <SendPageRow>
+          <BannerAlert severity={BannerAlertSeverity.Danger}>
+            {t(domainError ?? recipient.error)}
+          </BannerAlert>
+        </SendPageRow>
       ) : null}
       {showWarningBanner ? (
-        <BannerAlert severity={BannerAlertSeverity.Warning} marginTop={6}>
-          {t(domainWarning ?? recipient.warning)}
-        </BannerAlert>
+        <SendPageRow>
+          <BannerAlert severity={BannerAlertSeverity.Warning}>
+            {t(domainWarning ?? recipient.warning)}
+          </BannerAlert>
+        </SendPageRow>
       ) : null}
-      <Box marginTop={6}>{contents}</Box>
-    </SendPageRow>
+      <Box className="multichain-send-page__recipient">{contents}</Box>
+    </>
   );
 };
