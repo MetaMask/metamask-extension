@@ -627,8 +627,11 @@ export default class Routes extends Component {
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     isLoadingShown =
       isLoading &&
-      pendingConfirmations.type !==
-        SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect;
+      !pendingConfirmations.some(
+        (confirmation) =>
+          confirmation.type ===
+          SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+      );
     ///: END:ONLY_INCLUDE_IN
 
     return (
