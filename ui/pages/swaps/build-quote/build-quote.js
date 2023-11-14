@@ -170,12 +170,12 @@ export default function BuildQuote({
   const showSmartTransactionsOptInPopover =
     smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
 
-  const onCloseSmartTransactionsOptInPopover = (e) => {
+  const onManageStxInSettings = (e) => {
     e?.preventDefault();
     setSmartTransactionsOptInStatus(false, smartTransactionsOptInStatus);
   };
 
-  const onEnableSmartTransactionsClick = () =>
+  const onStartSwapping = () =>
     setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
@@ -185,7 +185,7 @@ export default function BuildQuote({
     ? defaultSwapsToken
     : sourceTokenInfo;
 
-  const { loading, tokensWithBalances } = useTokenTracker(tokens);
+  const { loading, tokensWithBalances } = useTokenTracker({ tokens });
 
   // If the fromToken was set in a call to `onFromSelect` (see below), and that from token has a balance
   // but is not in tokensWithBalances or tokens, then we want to add it to the usersTokens array so that
@@ -575,10 +575,8 @@ export default function BuildQuote({
     <div className="build-quote">
       <div className="build-quote__content">
         <SmartTransactionsPopover
-          onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
-          onCloseSmartTransactionsOptInPopover={
-            onCloseSmartTransactionsOptInPopover
-          }
+          onStartSwapping={onStartSwapping}
+          onManageStxInSettings={onManageStxInSettings}
           isOpen={showSmartTransactionsOptInPopover}
         />
 

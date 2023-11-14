@@ -6,11 +6,14 @@ import {
   PriorityLevels,
 } from '../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { ETH } from '../../../../helpers/constants/common';
 import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../../../shared/constants/network';
 import EditGasItem from './edit-gas-item';
 
 jest.mock('../../../../store/actions', () => ({
@@ -59,9 +62,11 @@ const renderComponent = ({
 } = {}) => {
   const store = configureStore({
     metamask: {
-      nativeCurrency: ETH,
+      currencyRates: {},
       providerConfig: {
         chainId: CHAIN_IDS.GOERLI,
+        nickname: GOERLI_DISPLAY_NAME,
+        type: NETWORK_TYPES.GOERLI,
       },
       cachedBalances: {},
       accounts: {

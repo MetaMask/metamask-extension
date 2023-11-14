@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
+import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Box, ButtonSecondary, IconName } from '../../component-library';
+import { Box, ButtonSecondary, IconName, Text } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
   getMmiPortfolioEnabled,
@@ -22,12 +23,9 @@ import {
   getCurrentChainId,
   getMetaMetricsId,
   ///: END:ONLY_INCLUDE_IN
-  getSelectedAccountCachedBalance,
   isBalanceCached,
 } from '../../../selectors';
 import Spinner from '../../ui/spinner';
-import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
-import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   AlignItems,
   Display,
@@ -38,8 +36,10 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 ///: END:ONLY_INCLUDE_IN
+import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
+import { PRIMARY } from '../../../helpers/constants/common';
 
-export const BalanceOverview = () => {
+export const BalanceOverview = ({ balance, loading }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
@@ -47,7 +47,6 @@ export const BalanceOverview = () => {
   const chainId = useSelector(getCurrentChainId);
   ///: END:ONLY_INCLUDE_IN
   const balanceIsCached = useSelector(isBalanceCached);
-  const balance = useSelector(getSelectedAccountCachedBalance);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -75,6 +74,7 @@ export const BalanceOverview = () => {
   };
 
   ///: END:ONLY_INCLUDE_IN
+
   return (
     <Box
       className="token-balance-overview"
@@ -85,56 +85,34 @@ export const BalanceOverview = () => {
     >
       <Box className="token-balance-overview__balance">
         {balance ? (
-          <UserPreferencedCurrencyDisplay
+          <Text
+            variant={TextVariant.headingLg}
+            color={TextColor.textDefault}
             className={classnames({
-              'token-balance-overview__cached-secondary-balance':
-                balanceIsCached,
               'token-balance-overview__secondary-balance': !balanceIsCached,
             })}
-            data-testid="token-balance-overview__secondary-currency"
-            value={balance}
-            type={PRIMARY}
-            ethNumberOfDecimals={4}
-            textProps={{
-              variant: TextVariant.headingLg,
-              color: TextColor.textDefault,
-            }}
-            suffixProps={{
-              variant: TextVariant.headingLg,
-              color: TextColor.textDefault,
-            }}
+          >
+            {loading ? (
+              ''
+            ) : (
+              <UserPreferencedCurrencyDisplay
+                ethNumberOfDecimals={4}
+                value={balance}
+                type={PRIMARY}
+                data-testid="token-balance-overview-currency-display"
+              />
+            )}
+          </Text>
+        ) : (
+          <Spinner
+            color="var(--color-secondary-default)"
+            className="loading-overlay__spinner"
           />
+        )}
+
+        {balanceIsCached ? (
+          <span className="token-balance-overview__cached-star">*</span>
         ) : null}
-        <Box className="token-balance-overview__primary-container">
-          {balance ? (
-            <UserPreferencedCurrencyDisplay
-              className={classnames('token-balance-overview__primary-balance', {
-                'token-balance-overview__cached-balance': balanceIsCached,
-              })}
-              data-testid="token-balance-overview__primary-currency"
-              value={balance}
-              type={SECONDARY}
-              ethNumberOfDecimals={4}
-              hideTitle
-              textProps={{
-                variant: TextVariant.bodyMd,
-                color: TextColor.textAlternative,
-              }}
-              suffixProps={{
-                variant: TextVariant.bodyMd,
-                color: TextColor.textAlternative,
-              }}
-            />
-          ) : (
-            <Spinner
-              color="var(--color-secondary-default)"
-              className="loading-overlay__spinner"
-            />
-          )}
-          {balanceIsCached ? (
-            <span className="token-balance-overview__cached-star">*</span>
-          ) : null}
-        </Box>
       </Box>
       {
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -145,6 +123,7 @@ export const BalanceOverview = () => {
         ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         <ButtonSecondary
           className="token-balance-portfolio"
+          data-testid="token-balance-portfolio"
           endIconName={IconName.Export}
           onClick={() => {
             const url = getPortfolioUrl(
@@ -171,4 +150,15 @@ export const BalanceOverview = () => {
       }
     </Box>
   );
+};
+
+BalanceOverview.propTypes = {
+  /**
+   * String balance of the account
+   */
+  balance: PropTypes.string.isRequired,
+  /**
+   * Represents if the token values are currently loading
+   */
+  loading: PropTypes.bool.isRequired,
 };

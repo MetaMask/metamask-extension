@@ -5,8 +5,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
-import { BannerAlert, Box } from '../../../components/component-library';
-import ActionableMessage from '../../../components/ui/actionable-message';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+} from '../../../components/component-library';
 import Button from '../../../components/ui/button';
 import TextField from '../../../components/ui/text-field';
 import ToggleButton from '../../../components/ui/toggle-button';
@@ -622,18 +625,23 @@ export default class AdvancedTab extends PureComponent {
             />
           </div>
           {showResultMessage && (
-            <ActionableMessage
-              type={restoreSuccessful ? 'success' : 'danger'}
-              message={restoreMessageToRender}
-              primaryActionV2={{
-                label: t('dismiss'),
-                onClick: () => {
-                  this.setState({
-                    showResultMessage: false,
-                    restoreSuccessful: true,
-                    restoreMessage: null,
-                  });
-                },
+            <BannerAlert
+              severity={
+                restoreSuccessful
+                  ? BannerAlertSeverity.Success
+                  : BannerAlertSeverity.Danger
+              }
+              description={restoreMessageToRender}
+              descriptionProps={{
+                'data-testid': 'restore-user-data-banner-alert-description',
+              }}
+              actionButtonLabel={t('dismiss')}
+              actionButtonOnClick={() => {
+                this.setState({
+                  showResultMessage: false,
+                  restoreSuccessful: true,
+                  restoreMessage: null,
+                });
               }}
             />
           )}

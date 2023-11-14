@@ -221,16 +221,12 @@ exports[`Add Network Modal should render 1`] = `
     >
       <button
         class="button btn--rounded btn-secondary"
-        role="button"
-        tabindex="0"
       >
         Cancel
       </button>
       <button
         class="button btn--rounded btn-primary"
         disabled=""
-        role="button"
-        tabindex="0"
       >
         Save
       </button>

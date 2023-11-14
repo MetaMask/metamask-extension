@@ -364,7 +364,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                           <div
                             class="tx-insight-component-address__name"
                           >
-                            0xCD2...D826
+                            0xCD2a3...DD826
                           </div>
                         </div>
                       </div>
@@ -440,7 +440,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                           <div
                             class="tx-insight-component-address__name"
                           >
-                            0xDea...beeF
+                            0xDeaDb...DbeeF
                           </div>
                         </div>
                       </div>
@@ -575,7 +575,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                               <div
                                 class="tx-insight-component-address__name"
                               >
-                                0xbBb...BBbB
+                                0xbBbBB...bBBbB
                               </div>
                             </div>
                           </div>
@@ -651,7 +651,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                               <div
                                 class="tx-insight-component-address__name"
                               >
-                                0xB0B...Ea57
+                                0xB0Bda...bEa57
                               </div>
                             </div>
                           </div>
@@ -727,7 +727,7 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
                               <div
                                 class="tx-insight-component-address__name"
                               >
-                                0xB0B...0000
+                                0xB0B0b...00000
                               </div>
                             </div>
                           </div>
@@ -749,16 +749,12 @@ exports[`Confirm Signature Request Component render should match snapshot 1`] = 
         <button
           class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
           data-testid="page-container-footer-cancel"
-          role="button"
-          tabindex="0"
         >
           Reject
         </button>
         <button
           class="button btn--rounded btn-primary page-container__footer-button"
           data-testid="page-container-footer-next"
-          role="button"
-          tabindex="0"
         >
           Sign
         </button>

@@ -10,14 +10,9 @@ import {
   TransactionType,
   SmartTransactionStatus,
 } from '../../shared/constants/transaction';
-import { transactionMatchesNetwork } from '../../shared/modules/transaction.utils';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
-import {
-  getCurrentChainId,
-  deprecatedGetCurrentNetworkId,
-  getSelectedAddress,
-} from './selectors';
+import { getCurrentChainId, getSelectedAddress } from './selectors';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 
@@ -30,7 +25,7 @@ export const unapprovedMsgsSelector = (state) => state.metamask.unapprovedMsgs;
 
 export const getCurrentNetworkTransactions = createDeepEqualSelector(
   (state) => {
-    const { transactions, networkId } = state.metamask ?? {};
+    const { transactions } = state.metamask ?? {};
 
     if (!transactions?.length) {
       return [];
@@ -38,8 +33,8 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
 
     const { chainId } = getProviderConfig(state);
 
-    return transactions.filter((transaction) =>
-      transactionMatchesNetwork(transaction, chainId, networkId),
+    return transactions.filter(
+      (transaction) => transaction.chainId === chainId,
     );
   },
   (transactions) => transactions,
@@ -119,7 +114,6 @@ export const unapprovedMessagesSelector = createSelector(
   unapprovedDecryptMsgsSelector,
   unapprovedEncryptionPublicKeyMsgsSelector,
   unapprovedTypedMessagesSelector,
-  deprecatedGetCurrentNetworkId,
   getCurrentChainId,
   (
     unapprovedMsgs = {},
@@ -127,7 +121,6 @@ export const unapprovedMessagesSelector = createSelector(
     unapprovedDecryptMsgs = {},
     unapprovedEncryptionPublicKeyMsgs = {},
     unapprovedTypedMessages = {},
-    network,
     chainId,
   ) =>
     txHelper(
@@ -137,7 +130,6 @@ export const unapprovedMessagesSelector = createSelector(
       unapprovedDecryptMsgs,
       unapprovedEncryptionPublicKeyMsgs,
       unapprovedTypedMessages,
-      network,
       chainId,
     ) || [],
 );
@@ -432,7 +424,7 @@ export const nonceSortedTransactionsSelector = createSelector(
 
         // Initial Transaction Logic Cases
         // --------------------------------------------------------------------
-        // Initial Transaction: The transaciton that most likely represents the
+        // Initial Transaction: The transaction that most likely represents the
         // user's intent when creating/approving the transaction. In most cases
         // this is the first transaction of a nonce group, by time, but this
         // breaks down in the case of users with the advanced setting enabled
@@ -584,9 +576,7 @@ const hasUnapprovedTransactionsInCurrentNetwork = (state) => {
   const chainId = getCurrentChainId(state);
 
   const filteredUnapprovedTxInCurrentNetwork = unapprovedTxRequests.filter(
-    ({ id }) =>
-      unapprovedTxs[id] &&
-      transactionMatchesNetwork(unapprovedTxs[id], chainId),
+    ({ id }) => unapprovedTxs[id] && unapprovedTxs[id].chainId === chainId,
   );
 
   return filteredUnapprovedTxInCurrentNetwork.length > 0;

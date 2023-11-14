@@ -6,7 +6,8 @@
  */
 export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
 export const NOTIFICATION_OPEN_BETA_SNAPS = 26;
-export const NOTIFICATION_U2F_LEDGER_LIVE = 27;
+export const NOTIFICATION_BUY_SELL_BUTTON = 27;
+export const NOTIFICATION_U2F_LEDGER_LIVE = 28;
 
 export const UI_NOTIFICATIONS = {
   1: {
@@ -135,7 +136,7 @@ export const UI_NOTIFICATIONS = {
     id: 23,
     date: null,
     image: {
-      src: 'images/blockaid-security-provider.png',
+      src: 'images/blockaid-security-provider.svg',
       width: '100%',
     },
   },
@@ -154,6 +155,14 @@ export const UI_NOTIFICATIONS = {
     date: null,
     image: {
       src: 'images/introducing-snaps.svg',
+      width: '100%',
+    },
+  },
+  [NOTIFICATION_BUY_SELL_BUTTON]: {
+    id: Number(NOTIFICATION_BUY_SELL_BUTTON),
+    date: null,
+    image: {
+      src: 'images/sell_button_whatsnew.png',
       width: '100%',
     },
   },
@@ -421,6 +430,17 @@ export const getTranslatedUINotifications = (t, locale) => {
       date: UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
             new Date(UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date),
+          )
+        : '',
+    },
+    [NOTIFICATION_BUY_SELL_BUTTON]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON],
+      title: t('notificationsBuySellTitle'),
+      description: t('notificationsBuySellDescription'),
+      actionText: t('notificationsBuySellActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON].date),
           )
         : '',
     },

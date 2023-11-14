@@ -109,6 +109,11 @@ const migrations = [
   require('./096'),
   require('./097'),
   require('./098'),
+  require('./099'),
+  require('./100'),
+  require('./101'),
+  require('./102'),
+  require('./103'),
 ];
 
 export default migrations;

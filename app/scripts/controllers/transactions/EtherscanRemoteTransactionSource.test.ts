@@ -3,7 +3,6 @@ import {
   TransactionStatus,
   TransactionType,
 } from '../../../../shared/constants/transaction';
-import createRandomId from '../../../../shared/modules/random-id';
 import type {
   EtherscanTokenTransactionMeta,
   EtherscanTransactionMeta,
@@ -21,9 +20,15 @@ jest.mock('./etherscan', () => ({
   fetchEtherscanTokenTransactions: jest.fn(),
 }));
 
-jest.mock('../../../../shared/modules/random-id');
+const ID_MOCK = '123';
+jest.mock('uuid', () => {
+  const actual = jest.requireActual('uuid');
 
-const ID_MOCK = 123;
+  return {
+    ...actual,
+    v1: () => ID_MOCK,
+  };
+});
 
 const ETHERSCAN_TRANSACTION_BASE_MOCK: EtherscanTransactionMetaBase = {
   blockNumber: '4535105',
@@ -93,7 +98,6 @@ const EXPECTED_NORMALISED_TRANSACTION_BASE = {
   chainId: undefined,
   hash: ETHERSCAN_TRANSACTION_SUCCESS_MOCK.hash,
   id: ID_MOCK,
-  metamaskNetworkId: undefined,
   status: TransactionStatus.confirmed,
   time: 1543596356000,
   txParams: {
@@ -105,6 +109,7 @@ const EXPECTED_NORMALISED_TRANSACTION_BASE = {
     value: '0xb1a2bc2ec50000',
   },
   type: TransactionType.incoming,
+  verifiedOnBlockchain: false,
 };
 
 const EXPECTED_NORMALISED_TRANSACTION_SUCCESS = {
@@ -135,8 +140,6 @@ describe('EtherscanRemoteTransactionSource', () => {
       typeof fetchEtherscanTokenTransactions
     >;
 
-  const createIdMock = createRandomId as jest.MockedFn<typeof createRandomId>;
-
   beforeEach(() => {
     jest.resetAllMocks();
 
@@ -147,8 +150,6 @@ describe('EtherscanRemoteTransactionSource', () => {
     fetchEtherscanTokenTransactionsMock.mockResolvedValue(
       ETHERSCAN_TOKEN_TRANSACTION_RESPONSE_EMPTY_MOCK,
     );
-
-    createIdMock.mockReturnValue(ID_MOCK);
   });
 
   describe('isSupportedNetwork', () => {
@@ -156,7 +157,6 @@ describe('EtherscanRemoteTransactionSource', () => {
       expect(
         new EtherscanRemoteTransactionSource().isSupportedNetwork(
           CHAIN_IDS.MAINNET,
-          '1',
         ),
       ).toBe(true);
     });
@@ -165,7 +165,6 @@ describe('EtherscanRemoteTransactionSource', () => {
       expect(
         new EtherscanRemoteTransactionSource().isSupportedNetwork(
           CHAIN_IDS.LOCALHOST,
-          '1',
         ),
       ).toBe(false);
     });

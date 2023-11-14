@@ -69,7 +69,6 @@ export const SENTRY_BACKGROUND_STATE = {
     qrHardware: true,
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
-    serviceWorkerLastActiveTime: true,
     showBetaHeader: true,
     showProductTour: true,
     showTestnetMessageInDropdown: true,
@@ -86,13 +85,8 @@ export const SENTRY_BACKGROUND_STATE = {
     jobs: false,
   },
   CurrencyController: {
-    conversionDate: true,
-    conversionRate: true,
     currentCurrency: true,
-    nativeCurrency: true,
-    pendingCurrentCurrency: true,
-    pendingNativeCurrency: true,
-    usdConversionRate: true,
+    currencyRates: true,
   },
   DecryptMessageController: {
     unapprovedDecryptMsgs: false,
@@ -113,7 +107,9 @@ export const SENTRY_BACKGROUND_STATE = {
   KeyringController: {
     isUnlocked: true,
     keyrings: false,
-    keyringTypes: false,
+  },
+  LoggingController: {
+    logs: false,
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
@@ -126,7 +122,6 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   NetworkController: {
     networkConfigurations: false,
-    networkId: true,
     networksMetadata: true,
     providerConfig: {
       chainId: true,
@@ -153,6 +148,13 @@ export const SENTRY_BACKGROUND_STATE = {
     onboardingTabs: false,
     seedPhraseBackedUp: true,
   },
+  PPOMController: {
+    chainStatus: true,
+    securityAlertsEnabled: false,
+    storageMetadata: [],
+    versionFileETag: false,
+    versionInfo: [],
+  },
   PermissionController: {
     subjects: false,
   },
@@ -170,7 +172,6 @@ export const SENTRY_BACKGROUND_STATE = {
     forgottenPassword: true,
     identities: false,
     incomingTransactionsPreferences: true,
-    infuraBlocked: true,
     ipfsGateway: false,
     isLineaMainnetReleased: true,
     knownMethodData: false,
@@ -197,7 +198,9 @@ export const SENTRY_BACKGROUND_STATE = {
     useNonceField: true,
     usePhishDetect: true,
     useTokenDetection: true,
+    useRequestQueue: true,
   },
+  SelectedNetworkController: { domains: true, perDomainNetwork: false },
   SignatureController: {
     unapprovedMsgCount: true,
     unapprovedMsgs: false,
@@ -215,10 +218,11 @@ export const SENTRY_BACKGROUND_STATE = {
       liveness: true,
       smartTransactions: false,
       userOptIn: true,
+      userOptInV2: true,
     },
   },
   SnapController: {
-    snapErrors: false,
+    unencryptedSnapStates: false,
     snapStates: false,
     snaps: false,
   },
@@ -317,6 +321,11 @@ export const SENTRY_UI_STATE = {
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    useSafeChainsListValidation: true,
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    addSnapAccountEnabled: false,
+    snapsAddSnapAccountModalDismissed: false,
+    ///: END:ONLY_INCLUDE_IN
   },
   unconnectedAccount: true,
 };

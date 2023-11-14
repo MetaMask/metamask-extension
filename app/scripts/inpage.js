@@ -32,6 +32,7 @@ cleanContextForImports();
 
 /* eslint-disable import/first */
 import log from 'loglevel';
+import { v4 as uuid } from 'uuid';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import { initializeProvider } from '@metamask/providers/dist/initializeInpageProvider';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
@@ -59,5 +60,11 @@ if (shouldInjectProvider()) {
     connectionStream: metamaskStream,
     logger: log,
     shouldShimWeb3: true,
+    providerInfo: {
+      uuid: uuid(),
+      name: process.env.METAMASK_BUILD_NAME,
+      icon: process.env.METAMASK_BUILD_ICON,
+      rdns: process.env.METAMASK_BUILD_APP_ID,
+    },
   });
 }

@@ -1,31 +1,29 @@
+import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import {
-  LedgerTransportTypes,
-  WebHIDConnectedStatuses,
   HardwareTransportStates,
   LEDGER_USB_VENDOR_ID,
+  LedgerTransportTypes,
+  WebHIDConnectedStatuses,
 } from '../../../../shared/constants/hardware-wallets';
-import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
-
 import {
-  setLedgerWebHidConnectedStatus,
+  getLedgerTransportStatus,
   getLedgerWebHidConnectedStatus,
   setLedgerTransportStatus,
-  getLedgerTransportStatus,
+  setLedgerWebHidConnectedStatus,
 } from '../../../ducks/app/app';
-
-import { BannerAlert, ButtonLink, Text } from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getLedgerTransportType } from '../../../ducks/metamask/metamask';
 import {
   SEVERITIES,
   TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { getLedgerTransportType } from '../../../ducks/metamask/metamask';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
+import { BannerAlert, ButtonLink, Text } from '../../component-library';
 
 const renderInstructionStep = (
   text,

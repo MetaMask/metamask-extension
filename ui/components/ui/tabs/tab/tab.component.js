@@ -62,6 +62,7 @@ Tab.defaultProps = {
   activeClassName: undefined,
   className: undefined,
   onClick: undefined,
+  'data-testid': undefined,
 };
 
 export default Tab;

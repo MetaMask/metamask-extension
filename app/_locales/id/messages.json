@@ -371,9 +371,6 @@
   "amount": {
     "message": "Jumlah"
   },
-  "apiUrl": {
-    "message": "URL API"
-  },
   "appDescription": {
     "message": "Dompet Ethereum pada Browser Anda",
     "description": "The description of the application"
@@ -444,10 +441,6 @@
   },
   "attemptSendingAssets": {
     "message": "Jika Anda mencoba untuk mengirim aset secara langsung dari satu jaringan ke jaringan lain, aset Anda berpotensi hilang secara permanen. Pastikan untuk menggunakan bridge."
-  },
-  "attemptToCancelSwap": {
-    "message": "Mencoba membatalkan pertukaran dengan biaya ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
   },
   "attemptingConnect": {
     "message": "Mencoba terhubung ke blockchain."
@@ -614,18 +607,9 @@
   "busy": {
     "message": "Sibuk"
   },
-  "buy": {
-    "message": "Beli"
-  },
   "buyAsset": {
     "message": "Beli $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
-  },
-  "buyDescription": {
-    "message": "Pertahankan kripto Anda dan dapatkan potensi keuntungan"
-  },
-  "buyDisabled": {
-    "message": "Beli tidak tersedia di jaringan ini"
   },
   "buyMoreAsset": {
     "message": "Beli lebih banyak $1",
@@ -674,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Jaringan dengan ID chain $1 dapat menggunakan simbol mata uang yang berbeda ($2) dari yang Anda masukkan. Harap verifikasikan sebelum melanjutkan.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Pilih jaringan Anda"
@@ -980,9 +964,6 @@
   },
   "custodian": {
     "message": "Kustodian"
-  },
-  "custodianAccount": {
-    "message": "Akun kustodian"
   },
   "custodianAccountAddedDesc": {
     "message": "Saat ini Anda dapat menggunakan akun kustodian di MetaMask Institutional."
@@ -1292,12 +1273,6 @@
   "dismissReminderField": {
     "message": "Lewatkan pengingat pencadangan Frasa Pemulihan Rahasia"
   },
-  "displayNftMedia": {
-    "message": "Tampilkan media NFT"
-  },
-  "displayNftMediaDescription": {
-    "message": "Alamat IP Anda dapat diketahui oleh OpenSea atau pihak ketiga lainnya saat Anda menampilkan media dan data NFT. Ini memungkinkan penyerang menghubungkan alamat IP dengan alamat Ethereum Anda. Deteksi otomatis NFT bergantung pada pengaturan ini, dan tidak akan tersedia saat dinonaktifkan."
-  },
   "domain": {
     "message": "Domain"
   },
@@ -1420,14 +1395,14 @@
   "enableAutoDetect": {
     "message": " Aktifkan deteksi otomatis"
   },
-  "enableForAllNetworks": {
-    "message": "Aktifkan untuk semua jaringan"
-  },
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
   },
-  "enableSmartSwaps": {
-    "message": "Aktifkan pertukaran cerdas"
+  "enableOpenSeaAPI": {
+    "message": "Aktifkan API OpenSea"
+  },
+  "enableOpenSeaAPIDescription": {
+    "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
   },
   "enableSnap": {
     "message": "Aktifkan"
@@ -1452,21 +1427,6 @@
   },
   "enhancedTokenDetectionAlertMessage": {
     "message": "Saat ini, deteksi token lanjutan tersedia di $1. $2"
-  },
-  "ensDomainsSettingDescriptionIntro": {
-    "message": "MetaMask memungkinkan Anda melihat domain ENS seperti \"https://metamask.eth\" tepat di bilah alamat browser Anda. Berikut cara kerjanya:"
-  },
-  "ensDomainsSettingDescriptionOutro": {
-    "message": "Browser biasa umumnya tidak menangani alamat ENS atau IPFS, tetapi MetaMask dapat menanganinya. Alamat IP Anda dapat dibagikan kepada layanan pihak ketiga IPFS saat menggunakan fitur ini."
-  },
-  "ensDomainsSettingDescriptionPoint1": {
-    "message": "MetaMask memeriksa kontrak ENS Ethereum untuk menemukan kode yang terhubung ke nama ENS."
-  },
-  "ensDomainsSettingDescriptionPoint2": {
-    "message": "Jika kode ditautkan ke IPFS, maka kode tersebut mendapatkan konten dari jaringan IPFS."
-  },
-  "ensDomainsSettingDescriptionPoint3": {
-    "message": "Kemudian, Anda dapat melihat kontennya, umumnya dalam bentuk situs web atau yang serupa."
   },
   "ensDomainsSettingTitle": {
     "message": "Tampilkan domain ENS di bilah alamat"
@@ -1571,11 +1531,9 @@
   "experimental": {
     "message": "Eksperimental"
   },
-  "exploreMetaMaskSnaps": {
-    "message": "Jelajahi MetaMask Snaps"
-  },
   "extendWalletWithSnaps": {
-    "message": "Perluas pengalaman dompet."
+    "message": "Perluas pengalaman dompet.",
+    "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
     "message": "Ekstensi eksternal"
@@ -1605,9 +1563,6 @@
   "fileImportFail": {
     "message": "Impor file tidak bekerja? Klik di sini!",
     "description": "Helps user import their account from a JSON file"
-  },
-  "fileTooBig": {
-    "message": "File yang didrop terlalu besar."
   },
   "flaskWelcomeUninstall": {
     "message": "Anda harus menghapus ekstensi ini",
@@ -2251,9 +2206,6 @@
     "message": "Pastikan tidak ada yang melihat layar Anda",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
-  "malformedData": {
-    "message": "Format data salah"
-  },
   "max": {
     "message": "Maks"
   },
@@ -2328,9 +2280,6 @@
   },
   "missingSettingRequest": {
     "message": "Minta di sini"
-  },
-  "mmiAddToken": {
-    "message": "Halaman di $1 ingin mengotorisasi token kustodian berikut di MetaMask Institutional"
   },
   "mmiBuiltAroundTheWorld": {
     "message": "MetaMask Institutional dirancang dan dibangun di seluruh dunia."
@@ -2411,9 +2360,6 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameOptimism": {
-    "message": "Optimism"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -2471,12 +2417,6 @@
   },
   "newContract": {
     "message": "Kontrak baru"
-  },
-  "newNFTDetectedMessage": {
-    "message": "Izinkan MetaMask mendeteksi NFT dari Opensea secara otomatis dan menampilkannya di dompet Anda."
-  },
-  "newNFTsDetected": {
-    "message": "Baru! Deteksi NFT"
   },
   "newNetworkAdded": {
     "message": "“$1” berhasil ditambahkan!"
@@ -2557,9 +2497,6 @@
   },
   "noSnaps": {
     "message": "Belum ada snap yang diinstal."
-  },
-  "noThanksVariant2": {
-    "message": "Tidak, terima kasih."
   },
   "noTransactions": {
     "message": "Anda tidak memiliki transaksi"
@@ -3052,9 +2989,6 @@
   "openInBlockExplorer": {
     "message": "Buka di block explorer"
   },
-  "openSea": {
-    "message": "OpenSea + Blockaid (Beta)"
-  },
   "openSeaNew": {
     "message": "OpenSea"
   },
@@ -3160,10 +3094,6 @@
     "message": "Akses internet.",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "Izinkan snap untuk mengakses internet. Ini dapat digunakan untuk mengirim dan menerima data dari server pihak ketiga.",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "Hubungkan ke Snap $1.",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3176,17 +3106,9 @@
     "message": "Jadwalkan dan lakukan tindakan berkala.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "Izinkan snap untuk melakukan tindakan yang diatur secara berkala pada waktu, tanggal, atau interval yang tetap. Ini dapat digunakan untuk memicu interaksi atau pemberitahuan yang peka terhadap waktu.",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "Tampilkan jendela dialog di MetaMask.",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "Izinkan snap untuk menampilkan sembulan MetaMask dengan teks khusus, kolom input, dan tombol untuk menyetujui atau menolak suatu tindakan.\nDapat digunakan untuk membuat, misalnya, peringatan, konfirmasi, dan alur keikutsertaan untuk snap.",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "Lihat alamat, saldo akun, aktivitas, dan mulai transaksi",
@@ -3196,97 +3118,29 @@
     "message": "Akses penyedia Ethereum.",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "Izinkan snap untuk berkomunikasi dengan MetaMask secara langsung, agar dapat membaca data dari blockchain serta menyarankan pesan dan transaksi.",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "Dapatkan kunci arbitrer unik untuk snap ini.",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "Izinkan snap untuk mendapatkan kunci arbitrer unik untuk snap ini, tanpa mengeksposnya. Kunci ini terpisah dari akun MetaMask dan tidak terkait dengan kunci pribadi atau Frasa Pemulihan Rahasia. Snap lain tidak dapat mengakses informasi ini.",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "Gunakan lifecycle hook.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Izinkan snap menggunakan lifecycle hook untuk menjalankan kode pada waktu tertentu selama siklus hidupnya.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_longRunning": {
-    "message": "Operasikan sepanjang waktu.",
-    "description": "The description for the `endowment:long-running` permission"
-  },
-  "permission_longRunningDescription": {
-    "message": "Izinkan snap beroperasi sepanjang waktu saat, sebagai contoh, memproses data dalam jumlah besar.",
-    "description": "An extended description for the `endowment:long-running` permission"
   },
   "permission_manageAccounts": {
     "message": "Tambah dan kontrol akun Ethereum",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "Kontrol akun dan aset Anda dengan $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Izinkan snap untuk mendapatkan pasangan kunci BIP-32 berdasarkan Frasa Pemulihan Rahasia tanpa mengeksposnya. Ini memberikan akses penuh ke semua akun dan aset di $1.\nDengan kemampuan untuk mengelola kunci, snap dapat mendukung berbagai protokol blockchain selain Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "Kontrol akun dan aset $1 Anda.",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Izinkan snap untuk mendapatkan pasangan kunci BIP-44 berdasarkan Frasa Pemulihan Rahasia tanpa mengeksposnya. Ini memberikan akses penuh ke semua akun dan aset di $1.\nDengan kemampuan untuk mengelola kunci, snap dapat mendukung berbagai protokol blockchain selain Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "Kontrol akun dan aset $1 Anda.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Simpan dan kelola datanya di perangkat Anda.",
     "description": "The description for the `snap_manageState` permission"
-  },
-  "permission_manageStateDescription": {
-    "message": "Izinkan snap untuk menyimpan, memperbarui, dan memulihkan data secara aman dengan enkripsi. Snap lain tidak dapat mengakses informasi ini.",
-    "description": "An extended description for the `snap_manageState` permission"
   },
   "permission_notifications": {
     "message": "Tampilkan pemberitahuan.",
     "description": "The description for the `snap_notify` permission"
   },
-  "permission_notificationsDescription": {
-    "message": "Izinkan snap untuk menampilkan pemberitahuan dalam MetaMask. Teks pemberitahuan singkat dapat dipicu oleh snap untuk informasi yang dapat ditindaklanjuti atau peka terhadap waktu.",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "Izinkan $1 untuk terhubung langsung dengan snap ini.",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "Izinkan $1 untuk mengirim pesan ke snap dan menerima tanggapan dari snap.",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
   "permission_transactionInsight": {
     "message": "Dapatkan dan tampilkan wawasan transaksi.",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "Izinkan snap untuk membaca kode transaksi dan menampilkan wawasan dalam UI MetaMask. Ini dapat digunakan sebagai solusi anti-phishing dan keamanan.",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "Lihat asal situs web yang mengirimkan transaksi",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "Izinkan snap untuk melihat asal (URI) situs web yang menyarankan transaksi. Ini dapat digunakan sebagai solusi anti-phishing dan keamanan.",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Izin tidak dikenal: $1",
@@ -3296,10 +3150,6 @@
     "message": "Lihat kunci publik Anda untuk $1 ($2).",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "Izinkan snap untuk melihat kunci publik (dan alamat) untuk $1. Ini tidak memberikan kendali atas akun atau aset.",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "Lihat kunci publik Anda untuk $1.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3307,10 +3157,6 @@
   "permission_webAssembly": {
     "message": "Mendukung WebAssembly.",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "Izinkan snap untuk mengakses lingkungan pelaksanaan tingkat rendah melalui WebAssembly.",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "Izin"
@@ -3869,9 +3715,6 @@
     "message": "Pilih ini untuk menggunakan Etherscan untuk menampilkan transaksi yang masuk di daftar transaksi",
     "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
   },
-  "showIncomingTransactionsInformation": {
-    "message": "Ini bergantung pada setiap jaringan yang akan memiliki akses ke alamat Ethereum dan alamat IP Anda."
-  },
   "showMore": {
     "message": "Tampilkan selengkapnya"
   },
@@ -3941,9 +3784,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swap tidak tersedia untuk sementara waktu."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Smart Swap akan mencoba mengirimkan transaksi Anda secara pribadi, beberapa kali. Jika semua upaya gagal, transaksi akan disiarkan secara publik untuk memastikan Swap telah berhasil dilakukan."
-  },
   "snapConfigure": {
     "message": "Konfigurasikan"
   },
@@ -3960,7 +3800,7 @@
   },
   "snapCreateAccountTitle": {
     "message": "Buat akun $1",
-    "description": "Title of the Create Snap Account Page, $1 is the text using a different color"
+    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
   },
   "snapCreateAccountTitle2": {
     "message": "snap",
@@ -3996,10 +3836,6 @@
   "snapDetailsInstalled": {
     "message": "Terinstal"
   },
-  "snapError": {
-    "message": "Kesalahan Snap: '$1'. Kode Kesalahan: '$2'",
-    "description": "This is shown when a snap encounters an error. $1 is the error message from the snap, and $2 is the error code."
-  },
   "snapInstall": {
     "message": "Instal Snap"
   },
@@ -4010,24 +3846,8 @@
   "snapInstallSuccess": {
     "message": "Instalasi selesai"
   },
-  "snapInstallWarningCheck": {
-    "message": "Luang waktu untuk meninjau izin yang diminta. Lanjutkan hanya jika Anda memercayai $1.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Luang waktu untuk meninjau izin yang diminta. Lanjutkan hanya jika Anda memercayai $1.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Lanjutkan dengan hati-hati"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Berikan $2 kendali akun ke $1.",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Berikan $2 akses kunci publik ke $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "$1 tidak dapat diinstal.",
@@ -4048,9 +3868,6 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1 siap digunakan"
-  },
-  "snapUpdate": {
-    "message": "Perbarui Snap"
   },
   "snapUpdateAvailable": {
     "message": "Pembaruan tersedia"
@@ -4073,9 +3890,6 @@
   "snaps": {
     "message": "Snap"
   },
-  "snapsInsightLoading": {
-    "message": "Memuat wawasan transaksi..."
-  },
   "snapsInvalidUIError": {
     "message": "UI yang ditentukan oleh snap tidak valid."
   },
@@ -4085,9 +3899,6 @@
   "snapsPrivacyWarningSecondMessage": {
     "message": "Setiap informasi yang Anda bagikan kepada Layanan Pihak Ketiga akan dikumpulkan langsung oleh Layanan Pihak Ketiga tersebut sesuai dengan kebijakan privasinya. Baca kebijakan privasinya untuk informasi lebih lanjut.",
     "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsSettingsDescription": {
-    "message": "Kelola Snap Anda"
   },
   "snapsTermsOfUse": {
     "message": "Ketentuan Penggunaan"
@@ -4345,9 +4156,6 @@
     "message": "Swap akan selesai dalam <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simulasikan transaksi sebelum dikirim untuk mengurangi biaya transaksi dan mengurangi kegagalan."
-  },
   "stxTryingToCancel": {
     "message": "Mencoba membatalkan transaksi Anda..."
   },
@@ -4362,9 +4170,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Transaksi Anda telah dibatalkan dan Anda tidak membayar biaya gas yang tidak perlu."
-  },
-  "stxYouCanOptOut": {
-    "message": "Anda dapat memilih keluar pada pengaturan lanjutan kapan saja."
   },
   "submit": {
     "message": "Kirim"
@@ -4683,9 +4488,6 @@
   "swapSource": {
     "message": "Sumber likuiditas"
   },
-  "swapSourceInfo": {
-    "message": "Kami mencari beberapa sumber likuiditas (penukaran, agregator, dan pembuat pasar profesional) untuk menemukan tarif terbaik dan biaya jaringan terendah."
-  },
   "swapSuggested": {
     "message": "Pertukaran yang disarankan"
   },
@@ -4840,9 +4642,6 @@
   "termsOfService": {
     "message": "Ketentuan layanan"
   },
-  "termsOfUse": {
-    "message": "ketentuan penggunaan"
-  },
   "termsOfUseAgreeText": {
     "message": " Saya menyetujui Syarat Penggunaan, yang berlaku untuk penggunaan atas MetaMask dan semua fiturnya"
   },
@@ -4870,10 +4669,6 @@
   },
   "thisCollection": {
     "message": "koleksi ini"
-  },
-  "thisServiceIsExperimental": {
-    "message": "Layanan ini bersifat eksperimental. Dengan mengaktifkan fitur ini, Anda menyetujui $1 OpenSea.",
-    "description": "$1 is link to open sea terms of use"
   },
   "time": {
     "message": "Waktu"
@@ -5003,18 +4798,6 @@
   "transactionCreated": {
     "message": "Transaksi dibuat dengan nilai sebesar $1 pada $2."
   },
-  "transactionData": {
-    "message": "Data transaksi"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Kode diuraikan oleh Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Kontrak diverifikasi pada $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Penguraian kode transaksi tidak tersedia untuk Id chain $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Situs yang disarankan"
   },
@@ -5090,12 +4873,6 @@
   "transactionResubmitted": {
     "message": "Transaksi dikirim kembali dengan estimasi biaya gas naik $1 pada $2"
   },
-  "transactionSecurityCheck": {
-    "message": "Aktifkan peringatan keamanan"
-  },
-  "transactionSecurityCheckDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi dan menampilkan berbagai risiko yang muncul dalam transaksi yang belum ditandatangani dan permintaan tanda tangan sebelum Anda menandatanganinya. Layanan ini akan dapat mengakses transaksi yang belum ditandatangani dan permintaan tanda tangan, alamat akun, serta bahasa pilihan Anda."
-  },
   "transactionSettings": {
     "message": "Pengaturan transaksi"
   },
@@ -5152,9 +4929,6 @@
   "twelveHrTitle": {
     "message": "12 j:"
   },
-  "txInsightsNotSupported": {
-    "message": "Wawasan transaksi tidak didukung untuk kontrak ini saat ini."
-  },
   "typeYourSRP": {
     "message": "Ketik Frasa Pemulihan Rahasia"
   },
@@ -5199,10 +4973,6 @@
     "message": "Jaringan kustom ini tidak dikenali",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
-  "unrecognizedProtocol": {
-    "message": "$1 (Protokol tak dikenal)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
-  },
   "unsendableAsset": {
     "message": "Tidak mendukung pengiriman token NFT (ERC-721) untuk saat ini",
     "description": "This is an error message we show the user if they attempt to send an NFT asset type, for which currently don't support sending"
@@ -5239,21 +5009,6 @@
   },
   "useNftDetection": {
     "message": "Deteksi otomatis NFT"
-  },
-  "useNftDetectionDescription": {
-    "message": "Kami menggunakan API pihak ketiga untuk mendeteksi NFT di dompet Anda, yang berarti alamat IP Anda dapat terpapar ke server pusat. Ada beberapa hal yang perlu diwaspadai saat mengaktifkan fitur ini,."
-  },
-  "useNftDetectionDescriptionLine2": {
-    "message": "Alamat akun Anda akan dapat dlihat oleh API pihak ketiga."
-  },
-  "useNftDetectionDescriptionLine3": {
-    "message": "Metadata NFT dapat berisi tautan ke situs penipuan atau pencurian."
-  },
-  "useNftDetectionDescriptionLine4": {
-    "message": "Siapa pun dapat mengirimkan NFT ke akun Anda. Ini mencakup konten ofensif yang dapat ditampilkan secara otomatis di dompet Anda."
-  },
-  "useNftDetectionDescriptionLine5": {
-    "message": "Biarkan fitur ini nonaktif jika Anda tidak ingin aplikasi mengambil data dari layanan tersebut."
   },
   "usePhishingDetection": {
     "message": "Gunakan deteksi phishing"
@@ -5328,9 +5083,6 @@
   },
   "viewOnOpensea": {
     "message": "Lihat di Opensea"
-  },
-  "viewPortfolioDashboard": {
-    "message": "Tampilkan Dasbor Portofolio"
   },
   "viewinCustodianApp": {
     "message": "Lihat di aplikasi kustodian"

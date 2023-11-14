@@ -1,11 +1,7 @@
-import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  Text,
-} from '../../component-library';
+import React, { useContext } from 'react';
+import { ETHERSCAN_SUPPORTED_NETWORKS } from '../../../../shared/constants/network';
+import { I18nContext } from '../../../contexts/i18n';
 import {
   AlignItems,
   BackgroundColor,
@@ -16,10 +12,14 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-
-import Tooltip from '../../ui/tooltip';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  Box,
+  Text,
+} from '../../component-library';
 import ToggleButton from '../../ui/toggle-button';
-import { I18nContext } from '../../../contexts/i18n';
+import Tooltip from '../../ui/tooltip';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
@@ -46,51 +46,98 @@ const NetworkToggle = ({
 
   const networkName = networkPreferences.label;
 
+  type SupportedChainId = keyof typeof ETHERSCAN_SUPPORTED_NETWORKS;
+
+  const networkDomainAndSubdomain =
+    ETHERSCAN_SUPPORTED_NETWORKS?.[chainId as SupportedChainId];
+
+  const domain = networkDomainAndSubdomain?.domain;
+
+  const upperCaseDomain = domain?.charAt(0)?.toUpperCase() + domain?.slice(1);
+
   return (
     <Box
       marginTop={6}
       marginBottom={6}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
+      gap={4}
       justifyContent={JustifyContent.spaceBetween}
       data-testid={`network-toggle-${chainId}`}
       className="network-toggle-wrapper"
     >
       <Box
-        gap={2}
         backgroundColor={BackgroundColor.transparent}
         display={Display.Flex}
         alignItems={AlignItems.center}
         width={BlockSize.Full}
+        gap={4}
+        className="network-toggle-wrapper__overflow-container"
       >
         <AvatarNetwork
           size={AvatarNetworkSize.Sm}
           src={networkPreferences.imageUrl}
           name={networkName}
         />
-        <Text
-          color={TextColor.textDefault}
-          backgroundColor={BackgroundColor.transparent}
-          variant={TextVariant.bodyMd}
-          ellipsis
-          marginLeft={2}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          className="network-toggle-wrapper__overflow-container"
         >
           {networkName.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
-            <Tooltip title={networkName} position="bottom">
-              {networkName}
+            <Tooltip position="bottom">
+              <Text
+                color={TextColor.textDefault}
+                backgroundColor={BackgroundColor.transparent}
+                variant={TextVariant.bodyMd}
+                ellipsis
+              >
+                {networkName}
+              </Text>
             </Tooltip>
           ) : (
-            networkName
+            <Text
+              color={TextColor.textDefault}
+              backgroundColor={BackgroundColor.transparent}
+              variant={TextVariant.bodyMd}
+              ellipsis
+            >
+              {networkName}
+            </Text>
           )}
-        </Text>
-      </Box>
 
-      <ToggleButton
-        value={isShowIncomingTransactions}
-        onToggle={(value) => toggleSingleNetwork(chainId, !value)}
-        offLabel={t('off')}
-        onLabel={t('on')}
-      />
+          <Text
+            color={TextColor.primaryDefault}
+            backgroundColor={BackgroundColor.transparent}
+            variant={TextVariant.bodySm}
+            ellipsis
+          >
+            {
+              // For tests, we have localhost in the network list, but obviously
+              // there's no 3rd party API for incoming transactions for such
+              // Chain ID (0x539). We don't show any link, then.
+              domain && (
+                <a
+                  key={`network_${domain}_link`}
+                  href={`https://${domain}`}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  {upperCaseDomain}
+                </a>
+              )
+            }
+          </Text>
+        </Box>
+      </Box>
+      <Box marginLeft="auto">
+        <ToggleButton
+          value={isShowIncomingTransactions}
+          onToggle={(value) => toggleSingleNetwork(chainId, !value)}
+          offLabel={t('off')}
+          onLabel={t('on')}
+        />
+      </Box>
     </Box>
   );
 };

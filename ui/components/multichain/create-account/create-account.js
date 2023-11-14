@@ -110,5 +110,8 @@ export const CreateAccount = ({ onActionComplete }) => {
 };
 
 CreateAccount.propTypes = {
+  /**
+   * Executes when the Create button is clicked
+   */
   onActionComplete: PropTypes.func.isRequired,
 };

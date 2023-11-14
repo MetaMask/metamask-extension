@@ -1,5 +1,5 @@
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { DialogType } from '@metamask/rpc-methods';
+import { DialogType } from '@metamask/snaps-sdk';
 ///: END:ONLY_INCLUDE_IN
 import { RestrictedMethods } from './permissions';
 
@@ -74,6 +74,14 @@ export const SNAP_DIALOG_TYPES = {
   [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
   [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
   [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+};
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
+  confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
+  confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',
+  showSnapAccountRedirect: 'showSnapAccountRedirect',
 };
 ///: END:ONLY_INCLUDE_IN
 

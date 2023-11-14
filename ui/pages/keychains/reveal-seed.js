@@ -16,11 +16,13 @@ import {
   HelpText,
   HelpTextSeverity,
   Label,
+  Text,
+} from '../../components/component-library';
+import {
+  TextField,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
-  Text,
-  TextField,
-} from '../../components/component-library';
+} from '../../components/component-library/text-field/deprecated';
 import Box from '../../components/ui/box';
 import ExportTextContainer from '../../components/ui/export-text-container';
 import { Tab, Tabs } from '../../components/ui/tabs';
@@ -133,7 +135,7 @@ export default function RevealSeedPage() {
           size={TEXT_FIELD_SIZES.LG}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          error={error}
+          error={Boolean(error)}
           width={BlockSize.Full}
         />
         {error && (

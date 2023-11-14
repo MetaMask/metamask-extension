@@ -5,7 +5,7 @@ import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
 } from '../../../selectors/transactions';
-import { getCurrentChainId } from '../../../selectors';
+import { getCurrentChainId, getSelectedAddress } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
@@ -113,6 +113,7 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
   const chainId = useSelector(getCurrentChainId);
+  const selectedAddress = useSelector(getSelectedAddress);
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
       <Text
@@ -168,6 +169,41 @@ export default function TransactionList({
     [],
   );
 
+  // Remove transactions within each date group that are incoming transactions
+  // to a user that not the current one.
+  const removeIncomingTxsButToAnotherAddress = (dateGroup) => {
+    const isIncomingTxsButToAnotherAddress = (transaction) =>
+      transaction.type === TransactionType.incoming &&
+      transaction.txParams.to.toLowerCase() !== selectedAddress.toLowerCase();
+
+    dateGroup.transactionGroups = dateGroup.transactionGroups.map(
+      (transactionGroup) => {
+        transactionGroup.transactions = transactionGroup.transactions.filter(
+          (transaction) => !isIncomingTxsButToAnotherAddress(transaction),
+        );
+
+        return transactionGroup;
+      },
+    );
+
+    return dateGroup;
+  };
+
+  // Remove transaction groups with no transactions
+  const removeTxGroupsWithNoTx = (dateGroup) => {
+    dateGroup.transactionGroups = dateGroup.transactionGroups.filter(
+      (transactionGroup) => {
+        return transactionGroup.transactions.length > 0;
+      },
+    );
+
+    return dateGroup;
+  };
+
+  // Remove date groups with no transaction groups
+  const dateGroupsWithTransactionGroups = (dateGroup) =>
+    dateGroup.transactionGroups.length > 0;
+
   return (
     <Box className="transaction-list" paddingTop={4}>
       <Box className="transaction-list__transactions">
@@ -209,32 +245,39 @@ export default function TransactionList({
         )}
         <Box className="transaction-list__completed-transactions">
           {completedTransactions.length > 0 ? (
-            completedTransactions.slice(0, limit).map((dateGroup) => {
-              return dateGroup.transactionGroups.map(
-                (transactionGroup, index) => {
-                  return (
-                    <>
-                      {renderDateStamp(index, dateGroup)}
-                      {transactionGroup.initialTransaction?.transactionType ===
-                      TransactionType.smart ? (
-                        <SmartTransactionListItem
-                          transactionGroup={transactionGroup}
-                          smartTransaction={transactionGroup.initialTransaction}
-                          key={`${transactionGroup.nonce}:${index}`}
-                        />
-                      ) : (
-                        <TransactionListItem
-                          transactionGroup={transactionGroup}
-                          key={`${transactionGroup.nonce}:${
-                            limit + index - 10
-                          }`}
-                        />
-                      )}
-                    </>
-                  );
-                },
-              );
-            })
+            completedTransactions
+              .map(removeIncomingTxsButToAnotherAddress)
+              .map(removeTxGroupsWithNoTx)
+              .filter(dateGroupsWithTransactionGroups)
+              .slice(0, limit)
+              .map((dateGroup) => {
+                return dateGroup.transactionGroups.map(
+                  (transactionGroup, index) => {
+                    return (
+                      <>
+                        {renderDateStamp(index, dateGroup)}
+                        {transactionGroup.initialTransaction
+                          ?.transactionType === TransactionType.smart ? (
+                          <SmartTransactionListItem
+                            transactionGroup={transactionGroup}
+                            smartTransaction={
+                              transactionGroup.initialTransaction
+                            }
+                            key={`${transactionGroup.nonce}:${index}`}
+                          />
+                        ) : (
+                          <TransactionListItem
+                            transactionGroup={transactionGroup}
+                            key={`${transactionGroup.nonce}:${
+                              limit + index - 10
+                            }`}
+                          />
+                        )}
+                      </>
+                    );
+                  },
+                );
+              })
           ) : (
             <Box className="transaction-list__empty">
               <Box className="transaction-list__empty-text">

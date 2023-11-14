@@ -50,11 +50,14 @@ import {
 } from '../../../shared/modules/conversion.utils';
 import TransactionAlerts from '../../components/app/transaction-alerts';
 import { ConfirmHexData } from '../../components/app/confirm-hexdata';
-import { ConfirmData } from '../../components/app/confirm-data';
 import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 import updateTxData from '../../../shared/modules/updateTxData';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { KeyringType } from '../../../shared/constants/keyring';
+///: END:ONLY_INCLUDE_IN
+import { isHardwareKeyring } from '../../helpers/utils/hardware';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -96,10 +99,10 @@ export default class ConfirmTransactionBase extends Component {
     unapprovedTxCount: PropTypes.number,
     customGas: PropTypes.object,
     addToAddressBookIfNew: PropTypes.func,
+    keyringForAccount: PropTypes.object,
     // Component props
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
-    dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     tokenAddress: PropTypes.string,
     customTokenAmount: PropTypes.string,
@@ -143,8 +146,11 @@ export default class ConfirmTransactionBase extends Component {
     showTransactionsFailedModal: PropTypes.func,
     showCustodianDeepLink: PropTypes.func,
     isNoteToTraderSupported: PropTypes.bool,
+    custodianPublishesTransaction: PropTypes.bool,
+    rpcUrl: PropTypes.string,
     isMainBetaFlask: PropTypes.bool,
     displayAccountBalanceHeader: PropTypes.bool,
+    tokenSymbol: PropTypes.string,
   };
 
   state = {
@@ -324,7 +330,9 @@ export default class ConfirmTransactionBase extends Component {
       nativeCurrency,
       isBuyableChain,
       useCurrencyRateCheck,
+      tokenSymbol,
     } = this.props;
+
     const { t } = this.context;
     const { userAcknowledgedGasMissing } = this.state;
 
@@ -461,6 +469,7 @@ export default class ConfirmTransactionBase extends Component {
           networkName={networkName}
           type={txData.type}
           isBuyableChain={isBuyableChain}
+          tokenSymbol={tokenSymbol}
         />
         <TransactionDetail
           disabled={isDisabled()}
@@ -508,23 +517,12 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-  renderData() {
-    const { txData, dataComponent } = this.props;
+  renderDataHex() {
+    const { txData, dataHexComponent } = this.props;
     const {
       txParams: { data },
     } = txData;
     if (!data) {
-      return null;
-    }
-    return <ConfirmData txData={txData} dataComponent={dataComponent} />;
-  }
-
-  renderDataHex() {
-    const { txData, dataHexComponent } = this.props;
-    const {
-      txParams: { data, to },
-    } = txData;
-    if (!data || !to) {
       return null;
     }
     return (
@@ -626,7 +624,27 @@ export default class ConfirmTransactionBase extends Component {
       addToAddressBookIfNew,
       toAccounts,
       toAddress,
+      keyringForAccount,
     } = this.props;
+
+    let loadingIndicatorMessage;
+
+    switch (keyringForAccount?.type) {
+      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      case KeyringType.snap:
+        loadingIndicatorMessage = this.context.t('loadingScreenSnapMessage');
+        break;
+      ///: END:ONLY_INCLUDE_IN
+      default:
+        if (isHardwareKeyring(keyringForAccount?.type)) {
+          loadingIndicatorMessage = this.context.t(
+            'loadingScreenHardwareWalletMessage',
+          );
+        } else {
+          loadingIndicatorMessage = null;
+        }
+        break;
+    }
 
     updateTxData({
       txData,
@@ -650,7 +668,11 @@ export default class ConfirmTransactionBase extends Component {
       () => {
         this._removeBeforeUnload();
 
-        sendTransaction(txData)
+        sendTransaction(
+          txData,
+          false, // hideLoadingIndicator
+          loadingIndicatorMessage, // loadingIndicatorMessage
+        )
           .then(() => {
             if (!this._isMounted) {
               return;
@@ -694,6 +716,8 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionsFailedModal,
       fromAddress,
       isNoteToTraderSupported,
+      custodianPublishesTransaction,
+      rpcUrl,
       methodData,
       maxFeePerGas,
       customTokenAmount,
@@ -717,6 +741,10 @@ export default class ConfirmTransactionBase extends Component {
           note: noteText,
         };
       }
+
+      txData.metadata.custodianPublishesTransaction =
+        custodianPublishesTransaction;
+      txData.metadata.rpcUrl = rpcUrl;
     }
 
     updateTxData({
@@ -991,7 +1019,6 @@ export default class ConfirmTransactionBase extends Component {
           titleComponent={this.renderTitleComponent()}
           subtitleComponent={this.renderSubtitleComponent()}
           detailsComponent={this.renderDetails()}
-          dataComponent={this.renderData(functionType)}
           dataHexComponent={this.renderDataHex(functionType)}
           contentComponent={contentComponent}
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)

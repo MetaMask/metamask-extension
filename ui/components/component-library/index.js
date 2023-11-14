@@ -38,7 +38,8 @@ export { Tag } from './tag';
 export { TagUrl } from './tag-url';
 export { Text, ValidTag, TextDirection, InvisibleCharacter } from './text';
 export { Input, InputType } from './input';
-export { TextField, TEXT_FIELD_TYPES, TEXT_FIELD_SIZES } from './text-field';
+export { TextField, TextFieldType, TextFieldSize } from './text-field';
+export { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from './text-field/deprecated';
 export { TextFieldSearch } from './text-field-search';
 export { ModalContent, ModalContentSize } from './modal-content';
 export { ModalOverlay } from './modal-overlay';
@@ -47,7 +48,7 @@ export { Modal, useModalContext } from './modal';
 
 // Molecules
 export { BannerBase } from './banner-base';
-export { BannerAlert, BANNER_ALERT_SEVERITIES } from './banner-alert';
+export { BannerAlert, BannerAlertSeverity } from './banner-alert';
 export { BannerTip, BannerTipLogoType } from './banner-tip';
 export { PopoverHeader } from './popover-header';
 export { Popover, PopoverPosition, PopoverRole } from './popover';

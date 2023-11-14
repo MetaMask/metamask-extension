@@ -1,8 +1,17 @@
-import React from 'react';
+import React, {
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  useEffect,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react';
+
 import PropTypes from 'prop-types';
 
-import { useSelector } from 'react-redux';
-import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
+import {
+  useSelector,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  useDispatch,
+  ///: END:ONLY_INCLUDE_IN
+} from 'react-redux';
 import { Text } from '../../../component-library';
 import {
   AlignItems,
@@ -13,7 +22,6 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTransactionInsightSnap } from '../../../../hooks/snaps/useTransactionInsightSnap';
 import Box from '../../../ui/box/box';
 import { SnapUIRenderer } from '../../snaps/snap-ui-renderer';
 import { SnapDelineator } from '../../snaps/snap-delineator';
@@ -21,30 +29,56 @@ import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../../snaps/copyable';
 import { getTargetSubjectMetadata } from '../../../../selectors';
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+import { trackInsightSnapUsage } from '../../../../store/actions';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+import { useTransactionInsightSnaps } from '../../../../hooks/snaps/useTransactionInsightSnaps';
+///: END:ONLY_INCLUDE_IN
 
-export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
+export const SnapInsight = ({
+  snapId,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  data,
+  ///: END:ONLY_INCLUDE_IN
+  loading,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+  insightHookParams,
+  ///: END:ONLY_INCLUDE_IN
+}) => {
   const t = useI18nContext();
-  const {
-    data: response,
-    error,
-    loading,
-  } = useTransactionInsightSnap({
-    transaction,
-    chainId,
-    origin,
-    snapId: selectedSnap.id,
-  });
+  let error, content;
+  let isLoading = loading;
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  error = data?.error;
+  content = data?.response?.content;
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const trackInsightUsage = async () => {
+      try {
+        await dispatch(trackInsightSnapUsage(snapId));
+      } catch {
+        /** no-op */
+      }
+    };
+    trackInsightUsage();
+  }, [snapId, dispatch]);
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+  const insights = useTransactionInsightSnaps(insightHookParams);
+  error = insights.data?.[0]?.error;
+  content = insights.data?.[0]?.response?.content;
+  isLoading = insights.loading;
+  ///: END:ONLY_INCLUDE_IN
 
   const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, selectedSnap.id),
+    getTargetSubjectMetadata(state, snapId),
   );
 
-  const snapName = getSnapName(selectedSnap.id, targetSubjectMetadata);
+  const snapName = getSnapName(snapId, targetSubjectMetadata);
 
-  const data = response?.content;
-
-  const hasNoData =
-    !error && (loading || !data || (data && Object.keys(data).length === 0));
+  const hasNoData = !error && !isLoading && !content;
   return (
     <Box
       flexDirection={FLEX_DIRECTION.COLUMN}
@@ -56,17 +90,19 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
       textAlign={hasNoData && TextAlign.Center}
       className="snap-insight"
     >
-      {!loading && !error && (
+      {!error && (
         <Box
           height="full"
+          width="full"
           flexDirection={FLEX_DIRECTION.COLUMN}
           className="snap-insight__container"
         >
-          {data && Object.keys(data).length > 0 ? (
+          {isLoading || content ? (
             <SnapUIRenderer
-              snapId={selectedSnap.id}
-              data={data}
+              snapId={snapId}
+              data={content}
               delineatorType={DelineatorType.Insights}
+              isLoading={isLoading}
             />
           ) : (
             <Text
@@ -80,7 +116,7 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
         </Box>
       )}
 
-      {!loading && error && (
+      {!isLoading && error && (
         <Box padding={4} className="snap-insight__container__error">
           <SnapDelineator snapName={snapName} type={DelineatorType.Error}>
             <Text variant={TextVariant.bodySm} marginBottom={4}>
@@ -90,39 +126,26 @@ export const SnapInsight = ({ transaction, origin, chainId, selectedSnap }) => {
           </SnapDelineator>
         </Box>
       )}
-
-      {loading && (
-        <>
-          <Preloader size={40} />
-          <Text
-            marginTop={3}
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
-            as="h6"
-          >
-            {t('snapsInsightLoading')}
-          </Text>
-        </>
-      )}
     </Box>
   );
 };
 
 SnapInsight.propTypes = {
+  snapId: PropTypes.string,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   /*
-   * The transaction data object
+   * The insight object
    */
-  transaction: PropTypes.object,
+  data: PropTypes.object,
+  ///: END:ONLY_INCLUDE_IN
   /*
-   * CAIP2 Chain ID
+   * Boolean as to whether or not the insights are loading
    */
-  chainId: PropTypes.string,
-  /*
-   *  The origin of the transaction
+  loading: PropTypes.bool,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+  /**
+   * Params object for the useTransactionInsightSnaps hook
    */
-  origin: PropTypes.string,
-  /*
-   * The insight snap selected
-   */
-  selectedSnap: PropTypes.object,
+  insightHookParams: PropTypes.object,
+  ///: END:ONLY_INCLUDE_IN
 };
