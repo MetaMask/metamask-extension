@@ -24,7 +24,7 @@ function backgroundToUiField(backgroundField) {
 }
 
 const maskedBackgroundFields = [
-  'CurrencyController.conversionDate', // This is a timestamp that changes each run
+  'CurrencyController.currencyRates.ETH.conversionDate', // This is a timestamp that changes each run
   // App metadata is masked so that we don't have to update the snapshot as
   // part of the release process
   'AppMetadataController.currentAppVersion',

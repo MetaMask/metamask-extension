@@ -14,8 +14,6 @@ export default class MetaFoxLogo extends PureComponent {
     src: PropTypes.string,
     ///: END:ONLY_INCLUDE_IN
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    custodyImgSrc: PropTypes.string,
-    isUnlocked: PropTypes.bool,
     theme: PropTypes.string,
     ///: END:ONLY_INCLUDE_IN
   };
@@ -23,22 +21,6 @@ export default class MetaFoxLogo extends PureComponent {
   static defaultProps = {
     onClick: undefined,
   };
-
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  renderCustodyIcon(iconProps, custodyImgSrc) {
-    return (
-      <img
-        {...iconProps}
-        src={custodyImgSrc}
-        className={classnames(
-          'app-header__custody-logo',
-          'app-header__custody-logo--icon',
-        )}
-        alt=""
-      />
-    );
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   render() {
     const {
@@ -49,8 +31,6 @@ export default class MetaFoxLogo extends PureComponent {
       src,
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      custodyImgSrc,
-      isUnlocked,
       theme,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
@@ -117,13 +97,6 @@ export default class MetaFoxLogo extends PureComponent {
           })}
           alt=""
         />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-          custodyImgSrc &&
-            isUnlocked &&
-            this.renderCustodyIcon(iconProps, custodyImgSrc)
-          ///: END:ONLY_INCLUDE_IN
-        }
       </Box>
     );
   }

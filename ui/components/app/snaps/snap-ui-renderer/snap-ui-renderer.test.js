@@ -1,4 +1,4 @@
-import { NodeType } from '@metamask/snaps-ui';
+import { NodeType } from '@metamask/snaps-sdk';
 import { UI_MAPPING } from './snap-ui-renderer';
 
 describe('Snap UI mapping', () => {
