@@ -934,6 +934,9 @@
   "continueMmiOnboarding": {
     "message": "Continue MetaMask Institutional onboarding"
   },
+  "continueToWallet": {
+    "message": "Continue to wallet"
+  },
   "contract": {
     "message": "Contract"
   },
