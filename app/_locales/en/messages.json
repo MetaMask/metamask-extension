@@ -480,9 +480,8 @@
   "attemptSendingAssets": {
     "message": "If you attempt to send assets directly from one network to another, this may result in permanent asset loss. Make sure to use a bridge."
   },
-  "attemptToCancelSwap": {
-    "message": "Attempt to cancel swap for ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
+  "attemptToCancelSwapForFree": {
+    "message": "Attempt to cancel swap for free"
   },
   "attemptingConnect": {
     "message": "Attempting to connect to blockchain."
@@ -717,8 +716,8 @@
     "message": "This Chain ID is currently used by the $1 network."
   },
   "chainListReturnedDifferentTickerSymbol": {
-    "message": "The network with chain ID $1 may use a different currency symbol ($2) than the one you have entered. Please verify before continuing.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "message": "This network doesn’t match its associated chain ID or name. Many popular tokens use the name [$1], making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Choose your network"
@@ -934,6 +933,9 @@
   },
   "continueMmiOnboarding": {
     "message": "Continue MetaMask Institutional onboarding"
+  },
+  "continueToWallet": {
+    "message": "Continue to wallet"
   },
   "contract": {
     "message": "Contract"
@@ -1502,9 +1504,6 @@
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
-  "enableSmartSwaps": {
-    "message": "Enable smart swaps"
-  },
   "enableSnap": {
     "message": "Enable"
   },
@@ -1677,6 +1676,9 @@
   },
   "failureMessage": {
     "message": "Something went wrong, and we were unable to complete the action"
+  },
+  "faqAndRiskDisclosures": {
+    "message": "FAQ and Risk Disclosures"
   },
   "fast": {
     "message": "Fast"
@@ -2387,6 +2389,9 @@
     "message": "Make sure nobody is looking",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
   },
+  "manageInSettings": {
+    "message": "Manage in settings"
+  },
   "max": {
     "message": "Max"
   },
@@ -2744,9 +2749,6 @@
   },
   "noSnaps": {
     "message": "You don't have any snaps installed."
-  },
-  "noThanksVariant2": {
-    "message": "No, thanks."
   },
   "noTransactions": {
     "message": "You have no transactions"
@@ -3426,6 +3428,14 @@
     "message": "Let $1 access your preferred language from your MetaMask settings. This can be used to localize and display $1's content using your language.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
+  "permission_homePage": {
+    "message": "Display a custom screen",
+    "description": "The description for the `endowment:page-home` permission"
+  },
+  "permission_homePageDescription": {
+    "message": "Let $1 display a custom home screen in MetaMask. This can be used for user interfaces, configuration, and dashboards.",
+    "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
+  },
   "permission_keyring": {
     "message": "Allow requests for adding and controlling Ethereum accounts",
     "description": "The description for the `endowment:keyring` permission"
@@ -4055,6 +4065,16 @@
   "sendDescription": {
     "message": "Send crypto to any account"
   },
+  "sendNoContactsConversionText": {
+    "message": "click here"
+  },
+  "sendNoContactsDescription": {
+    "message": "Contacts allow you to safely send transactions to another account multiple times.  To create a contact, $1",
+    "description": "$1 represents the action text 'click here'"
+  },
+  "sendNoContactsTitle": {
+    "message": "You don't have any contacts yet"
+  },
   "sendSpecifiedTokens": {
     "message": "Send $1",
     "description": "Symbol of the specified token"
@@ -4198,14 +4218,19 @@
   "smartSwapsDescription": {
     "message": "MetaMask Swaps just got a whole lot smarter! Enabling Smart Swaps will allow MetaMask to programmatically optimize your Swap to help:"
   },
+  "smartSwapsDescription2": {
+    "message": "*Smart Swaps will submit your transaction privately. You can opt-out in advanced settings at any time. To learn more about Smart Swaps, read our $1.",
+    "description": "$1 is an external link to FAQ and Risk Disclosures"
+  },
   "smartSwapsErrorNotEnoughFunds": {
     "message": "Not enough funds for a smart swap."
   },
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swaps are temporarily unavailable."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Smart Swaps will attempt to submit your transaction privately, multiple times. If all attempts fail, the transaction will be broadcast publicly to ensure your Swap successfully goes through."
+  "smartSwapsTooltip": {
+    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures. To learn more, read our $1",
+    "description": "$1 is an external link to FAQ and Risk Disclosures"
   },
   "snapAccountCreated": {
     "message": "Your account is ready!"
@@ -4384,9 +4409,6 @@
   },
   "snapsConnected": {
     "message": "Snaps connected"
-  },
-  "snapsInsightLoading": {
-    "message": "Loading transaction insight..."
   },
   "snapsInvalidUIError": {
     "message": "The UI specified by the snap is invalid."
@@ -4569,6 +4591,9 @@
   "stakeDescription": {
     "message": "Stake your crypto to earn rewards"
   },
+  "startSwapping": {
+    "message": "Start swapping"
+  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4669,9 +4694,6 @@
     "message": "Swap will complete in <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Simulate transactions before submitting to decrease transaction costs and reduce failures."
-  },
   "stxTryingToCancel": {
     "message": "Trying to cancel your transaction..."
   },
@@ -4686,9 +4708,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Your transaction has been cancelled and you did not pay any unnecessary gas fees."
-  },
-  "stxYouCanOptOut": {
-    "message": "You can opt-out in advanced settings any time."
   },
   "submit": {
     "message": "Submit"

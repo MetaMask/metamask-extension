@@ -431,7 +431,7 @@ export const getApproveTxParams = (state) => {
 };
 
 export const getSmartTransactionsOptInStatus = (state) => {
-  return state.metamask.smartTransactionsState?.userOptIn;
+  return state.metamask.smartTransactionsState?.userOptInV2;
 };
 
 export const getCurrentSmartTransactions = (state) => {
