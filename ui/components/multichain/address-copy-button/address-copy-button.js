@@ -9,12 +9,12 @@ import { getProviderConfig } from '../../../ducks/metamask/metamask';
 ///: END:ONLY_INCLUDE_IN
 import { ButtonBase, IconName } from '../../component-library';
 import {
-  BackgroundColor,
-  TextVariant,
-  TextColor,
-  Size,
-  BorderRadius,
   AlignItems,
+  BackgroundColor,
+  BorderRadius,
+  Size,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
