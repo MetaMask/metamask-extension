@@ -62,6 +62,7 @@
   "EnsController": { "ensResolutionsByAddress": "object" },
   "GasFeeController": {
     "gasFeeEstimates": {},
+    "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none"
   },

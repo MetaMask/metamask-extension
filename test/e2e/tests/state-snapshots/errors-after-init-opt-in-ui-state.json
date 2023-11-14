@@ -127,6 +127,7 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "gasFeeEstimates": {},
+    "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none",
     "tokenList": "object",
