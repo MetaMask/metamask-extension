@@ -41,10 +41,14 @@
     "@metamask/approval-controller": "4.1.0",
     "@metamask/base-controller": "^3.2.3",
     "@metamask/controller-utils": "5.0.2",
+    "@metamask/gas-fee-controller": "^10.0.0",
     "@metamask/transaction-controller": "16.0.0",
     "@metamask/utils": "^8.2.0",
     "async-mutex": "^0.2.6",
-    "immer": "^9.0.6"
+    "ethereumjs-util": "^7.0.10",
+    "immer": "^9.0.6",
+    "lodash": "^4.17.21",
+    "uuid": "^8.3.2"
   },
   "engines": {
     "node": ">=16.0.0"
@@ -53,5 +57,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "yalcSig": "806351fa1b3bce5016dbb77b58bdc060"
+  "yalcSig": "d463f0f345f4895f69e971f434cdb146"
 }
