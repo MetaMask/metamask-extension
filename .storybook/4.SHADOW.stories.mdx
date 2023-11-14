@@ -28,10 +28,10 @@ There are 4 different sizes of shadow in MetaMask
       display: 'grid',
       alignContent: 'center',
       justifyContent: 'center',
-      spanAlign: 'center',
+      color: 'var(--color-text-default)',
     }}
   >
-    XS
+    <span>XS</span>
   </div>
   <div
     style={{
@@ -42,10 +42,10 @@ There are 4 different sizes of shadow in MetaMask
       display: 'grid',
       alignContent: 'center',
       justifyContent: 'center',
-      spanAlign: 'center',
+      color: 'var(--color-text-default)',
     }}
   >
-    SM
+    <span>SM</span>
   </div>
   <div
     style={{
@@ -56,10 +56,10 @@ There are 4 different sizes of shadow in MetaMask
       display: 'grid',
       alignContent: 'center',
       justifyContent: 'center',
-      spanAlign: 'center',
+      color: 'var(--color-text-default)',
     }}
   >
-    MD
+    <span>MD</span>
   </div>
   <div
     style={{
@@ -70,10 +70,10 @@ There are 4 different sizes of shadow in MetaMask
       display: 'grid',
       alignContent: 'center',
       justifyContent: 'center',
-      spanAlign: 'center',
+      color: 'var(--color-text-default)',
     }}
   >
-    LG
+    <span>LG</span>
   </div>
 </div>
 
@@ -106,11 +106,10 @@ As well as the neutral colors for shadow 2 other colors exist that are used for 
       display: 'grid',
       alignContent: 'center',
       justifyContent: 'center',
-      spanAlign: 'center',
+      color: 'var(--color-text-default)',
     }}
-    color="default"
   >
-    Default
+    <span>Default</span>
   </div>
   <div
     style={{
@@ -121,11 +120,10 @@ As well as the neutral colors for shadow 2 other colors exist that are used for 
       display: 'grid',
       alignContent: 'center',
       justifyContent: 'center',
-      spanAlign: 'center',
       color: 'var(--color-primary-inverse)',
     }}
   >
-    Primary
+    <span>Primary</span>
   </div>
   <div
     style={{
@@ -136,11 +134,10 @@ As well as the neutral colors for shadow 2 other colors exist that are used for 
       display: 'grid',
       alignContent: 'center',
       justifyContent: 'center',
-      spanAlign: 'center',
       color: 'var(--color-error-inverse)',
     }}
   >
-    Error/Danger
+    <span>Error/Danger</span>
   </div>
 </div>
 
@@ -169,13 +166,13 @@ Using both size and color tokens, different shadows can be applied to components
         display: 'grid',
         alignContent: 'center',
         justifyContent: 'center',
-        spanAlign: 'center',
         height: 100,
         textAlign: 'center',
         boxShadow: 'var(--shadow-size-xs) var(--color-shadow-default)',
+        color: 'var(--color-text-default)',
       }}
     >
-      Card
+      <span>Card</span>
     </div>
     <div
       style={{
@@ -183,13 +180,13 @@ Using both size and color tokens, different shadows can be applied to components
         display: 'grid',
         alignContent: 'center',
         justifyContent: 'center',
-        spanAlign: 'center',
         height: 100,
         textAlign: 'center',
         boxShadow: 'var(--shadow-size-sm) var(--color-shadow-default)',
+        color: 'var(--color-text-default)',
       }}
     >
-      Dropdown
+      <span>Dropdown</span>
     </div>
     <div
       style={{
@@ -197,13 +194,13 @@ Using both size and color tokens, different shadows can be applied to components
         display: 'grid',
         alignContent: 'center',
         justifyContent: 'center',
-        spanAlign: 'center',
         height: 100,
         textAlign: 'center',
         boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
+        color: 'var(--color-text-default)',
       }}
     >
-      Toast
+      <span>Toast</span>
     </div>
     <div
       style={{
@@ -211,13 +208,13 @@ Using both size and color tokens, different shadows can be applied to components
         display: 'grid',
         alignContent: 'center',
         justifyContent: 'center',
-        spanAlign: 'center',
         height: 100,
         textAlign: 'center',
         boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+        color: 'var(--color-text-default)',
       }}
     >
-      Modal
+      <span>Modal</span>
     </div>
   </div>
   <div
@@ -233,7 +230,6 @@ Using both size and color tokens, different shadows can be applied to components
         display: 'grid',
         alignContent: 'center',
         justifyContent: 'center',
-        spanAlign: 'center',
         height: 100,
         textAlign: 'center',
         boxShadow: 'var(--component-button-primary-shadow)',
@@ -249,7 +245,6 @@ Using both size and color tokens, different shadows can be applied to components
         display: 'grid',
         alignContent: 'center',
         justifyContent: 'center',
-        spanAlign: 'center',
         height: 100,
         textAlign: 'center',
         boxShadow: 'var(--component-button-danger-shadow)',
