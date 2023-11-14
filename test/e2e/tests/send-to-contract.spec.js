@@ -21,7 +21,7 @@ describe('Send ERC20 token to contract address', function () {
         fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, contractRegistry }) => {
@@ -37,6 +37,9 @@ describe('Send ERC20 token to contract address', function () {
         await driver.clickElement(
           '[data-testid="multichain-token-list-button"]',
         );
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.clickElement('[data-testid="eth-overview-send"]');
 
         // Type contract address

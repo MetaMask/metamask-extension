@@ -5,14 +5,21 @@ export default {
   title: 'Pages/Confirmation/Components/ConfirmationNetworkSwitch',
 
   argTypes: {
-    newNetwork: {
+    toNetwork: {
+      controls: 'object',
+    },
+    fromNetwork: {
       controls: 'object',
     },
   },
   args: {
-    newNetwork: {
+    toNetwork: {
       chainId: 'chainId',
-      name: 'Binance Smart Chain Mainnet',
+      nickname: 'Binance Smart Chain Mainnet',
+    },
+    fromNetwork: {
+      chainId: '1',
+      nickname: 'Ethereum Mainnet',
     },
   },
 };

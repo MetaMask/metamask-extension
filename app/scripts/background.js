@@ -495,6 +495,7 @@ export function setupController(
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
+    featureFlags: {},
   });
 
   setupEnsIpfsResolver({
@@ -753,21 +754,42 @@ export function setupController(
   }
 
   function getUnapprovedTransactionCount() {
-    const pendingApprovalCount =
-      controller.approvalController.getTotalApprovalCount();
-    const waitingForUnlockCount =
-      controller.appStateController.waitingForUnlock.length;
-    return pendingApprovalCount + waitingForUnlockCount;
+    let count = controller.appStateController.waitingForUnlock.length;
+    if (controller.preferencesController.getUseRequestQueue()) {
+      count += controller.queuedRequestController.length();
+    } else {
+      count += controller.approvalController.getTotalApprovalCount();
+    }
+    return count;
   }
+
+  controller.controllerMessenger.subscribe(
+    'QueuedRequestController:countChanged',
+    (count) => {
+      updateBadge();
+      if (count > 0) {
+        triggerUi();
+      }
+    },
+  );
 
   notificationManager.on(
     NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
     ({ automaticallyClosed }) => {
+      if (controller.preferencesController.getUseRequestQueue()) {
+        // when the feature flag is on, rejecting unnapproved notifications in this way does nothing (since the controllers havent seen the requests yet)
+        // Also, the updating of badge / triggering of UI happens from the countChanged event when the feature flag is on, so we dont need that here either.
+        // The only thing that we might want to add here is possibly calling a method to empty the queue / do the same thing as rejecting all confirmed?
+        return;
+      }
+
       if (!automaticallyClosed) {
         rejectUnapprovedNotifications();
       } else if (getUnapprovedTransactionCount() > 0) {
         triggerUi();
       }
+
+      updateBadge();
     },
   );
 
@@ -816,8 +838,6 @@ export function setupController(
         }
       },
     );
-
-    updateBadge();
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(desktop)
@@ -899,10 +919,9 @@ async function onInstall() {
   const storeAlreadyExisted = Boolean(await localStore.get());
   // If the store doesn't exist, then this is the first time running this script,
   // and is therefore an install
-  if (
-    !storeAlreadyExisted &&
-    !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
-  ) {
+  if (process.env.IN_TEST) {
+    addAppInstalledEvent();
+  } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }

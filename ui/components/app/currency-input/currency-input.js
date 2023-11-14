@@ -25,12 +25,16 @@ import { EtherDenomination } from '../../../../shared/constants/common';
  * @param options0.featureSecondary
  * @param options0.onChange
  * @param options0.onPreferenceToggle
+ * @param options0.swapIcon
+ * @param options0.className
  */
 export default function CurrencyInput({
   hexValue,
   featureSecondary,
   onChange,
   onPreferenceToggle,
+  swapIcon,
+  className = '',
 }) {
   const t = useContext(I18nContext);
 
@@ -150,14 +154,19 @@ export default function CurrencyInput({
       suffix={shouldUseFiat ? secondarySuffix : primarySuffix}
       onChange={handleChange}
       value={initialDecimalValue}
+      className={className}
       actionComponent={
-        <button
-          className="currency-input__swap-component"
-          data-testid="currency-swap"
-          onClick={swap}
-        >
-          <i className="fa fa-retweet fa-lg" />
-        </button>
+        swapIcon ? (
+          swapIcon(swap)
+        ) : (
+          <button
+            className="currency-input__swap-component"
+            data-testid="currency-swap"
+            onClick={swap}
+          >
+            <i className="fa fa-retweet fa-lg" />
+          </button>
+        )
       }
     >
       {renderConversionComponent()}
@@ -170,4 +179,6 @@ CurrencyInput.propTypes = {
   featureSecondary: PropTypes.bool,
   onChange: PropTypes.func,
   onPreferenceToggle: PropTypes.func,
+  swapIcon: PropTypes.func,
+  className: PropTypes.string,
 };

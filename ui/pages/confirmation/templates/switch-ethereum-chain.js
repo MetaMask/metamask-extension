@@ -68,10 +68,8 @@ function getValues(pendingApproval, t, actions) {
           element: 'ConfirmationNetworkSwitch',
           key: 'network-being-switched',
           props: {
-            newNetwork: {
-              chainId: pendingApproval.requestData.chainId,
-              nickname: pendingApproval.requestData.nickname,
-            },
+            toNetwork: pendingApproval.requestData.toNetworkConfiguration,
+            fromNetwork: pendingApproval.requestData.fromNetworkConfiguration,
           },
         },
       },
@@ -81,7 +79,7 @@ function getValues(pendingApproval, t, actions) {
     onSubmit: () =>
       actions.resolvePendingApproval(
         pendingApproval.id,
-        pendingApproval.requestData,
+        pendingApproval.requestData.toNetworkConfiguration,
       ),
 
     onCancel: () =>
