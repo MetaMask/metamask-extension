@@ -44,6 +44,8 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
     case CHAIN_IDS.LINEA_GOERLI:
     case CHAIN_IDS.LINEA_MAINNET:
     case CHAIN_IDS.AURORA:
+    case CHAIN_IDS.ARBITRUM:
+    case CHAIN_IDS.OPTIMISM:
       return true;
     default:
       return false;
