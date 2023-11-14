@@ -7,7 +7,7 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Simple send', function () {
-  it('can send a simple transaction from one account to another @no-mmi', async function () {
+  it('can send a simple transaction from one account to another', async function () {
     const ganacheOptions = {
       accounts: [
         {
@@ -21,7 +21,7 @@ describe('Simple send', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();

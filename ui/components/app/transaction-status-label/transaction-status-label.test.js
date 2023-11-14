@@ -104,6 +104,7 @@ describe('TransactionStatusLabel Component', () => {
     const props = {
       status: 'approved',
       custodyStatus: 'approved',
+      custodyStatusDisplayText: 'Test',
     };
     const customMockStore = {
       metamask: {
@@ -138,7 +139,7 @@ describe('TransactionStatusLabel Component', () => {
       store,
     );
 
-    expect(getByText(mockShortText)).toBeVisible();
+    expect(getByText(props.custodyStatusDisplayText)).toBeVisible();
   });
   it('should display the error message when there is an error', () => {
     const mockShortText = 'Short Text Test';

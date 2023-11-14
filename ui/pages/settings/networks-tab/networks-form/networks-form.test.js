@@ -277,11 +277,9 @@ describe('NetworkForm Component', () => {
     fireEvent.change(chainIdField, {
       target: { value: '137' },
     });
-
-    const secondExpectedWarning =
-      'The network with chain ID 137 may use a different currency symbol (MATIC) than the one you have entered. Please verify before continuing.';
-
-    expect(await screen.findByText(secondExpectedWarning)).toBeInTheDocument();
+    expect(
+      await screen.findByTestId('network-form-ticker-warning'),
+    ).toBeInTheDocument();
   });
 
   it('should validate block explorer URL field correctly', async () => {
