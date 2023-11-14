@@ -93,7 +93,6 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       >
         <Box
           className={classnames('mm-select-wrapper', className)}
-          onBlur={handleBlur}
           ref={wrapperRef && ref}
           {...(props as BoxProps<C>)}
         >
