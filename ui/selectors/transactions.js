@@ -146,7 +146,10 @@ export const transactionsSelector = createSelector(
   transactionSubSelector,
   selectedAddressTxListSelector,
   (subSelectorTxList = [], selectedAddressTxList = []) => {
-    const txsToRender = selectedAddressTxList.concat(subSelectorTxList);
+    const txsToRender = selectedAddressTxList
+      // Incoming transactions are already included in the subSelectorTxList
+      .filter((tx) => tx.type !== TransactionType.incoming)
+      .concat(subSelectorTxList);
 
     return txsToRender.sort((a, b) => b.time - a.time);
   },
