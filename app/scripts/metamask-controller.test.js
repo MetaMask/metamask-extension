@@ -4,7 +4,7 @@
 import { cloneDeep } from 'lodash';
 import nock from 'nock';
 import { obj as createThoughStream } from 'through2';
-import EthQuery from 'eth-query';
+import EthQuery from '@metamask/eth-query';
 import { wordlist as englishWordlist } from '@metamask/scure-bip39/dist/wordlists/english';
 import {
   ListNames,
@@ -49,7 +49,7 @@ const browserPolyfillMock = {
     },
   },
   alarms: {
-    getAll: jest.fn(),
+    getAll: jest.fn(() => Promise.resolve([])),
     create: jest.fn(),
     clear: jest.fn(),
     onAlarm: {
@@ -105,7 +105,7 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
   },
 }));
 
-const currentNetworkId = '5';
+const currentChainId = '0x5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -774,6 +774,60 @@ describe('MetaMaskController', () => {
         );
       });
 
+      it('should remove the identities when the device is forgotten', async () => {
+        jest.spyOn(window, 'open').mockReturnValue();
+
+        const localMetaMaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: {
+            encrypt(_, object) {
+              this.object = object;
+              return Promise.resolve('mock-encrypted');
+            },
+            decrypt() {
+              return Promise.resolve(this.object);
+            },
+          },
+          initState: {
+            ...cloneDeep(firstTimeState),
+            KeyringController: {
+              keyrings: [{ type: KeyringType.trezor, accounts: ['0x123'] }],
+              isUnlocked: true,
+            },
+            PreferencesController: {
+              identities: {
+                '0x123': { name: 'Trezor 1', address: '0x123' },
+              },
+              selectedAddress: '0x123',
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        await localMetaMaskController.keyringController.createNewVaultAndKeychain(
+          'password',
+        );
+
+        await localMetaMaskController.keyringController.addNewKeyring(
+          'Trezor Hardware',
+          {
+            accounts: ['0x123'],
+          },
+        );
+
+        await localMetaMaskController.forgetDevice(HardwareDeviceNames.trezor);
+        const { identities: updatedIdentities } =
+          localMetaMaskController.preferencesController.store.getState();
+        expect(updatedIdentities['0x123']).toBeUndefined();
+      });
+
       it('should wipe all the keyring info', async () => {
         await metamaskController
           .connectHardware(HardwareDeviceNames.trezor, 0)
@@ -891,36 +945,33 @@ describe('MetaMaskController', () => {
     });
 
     describe('#resetAccount', () => {
-      it('wipes transactions from only the correct network id and with the selected address', async () => {
+      it('wipes transactions from only the correct chain id and with the selected address', async function () {
         jest
           .spyOn(metamaskController.preferencesController, 'getSelectedAddress')
           .mockReturnValue('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
-        jest
-          .spyOn(metamaskController.txController.txStateManager, 'getNetworkId')
-          .mockReturnValue(42);
 
         metamaskController.txController.txStateManager._addTransactionsToState([
           createTxMeta({
             id: 1,
             status: TransactionStatus.unapproved,
-            metamaskNetworkId: currentNetworkId,
+            chainId: currentChainId,
             txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
           }),
           createTxMeta({
             id: 1,
             status: TransactionStatus.unapproved,
-            metamaskNetworkId: currentNetworkId,
+            chainId: currentChainId,
             txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
           }),
           createTxMeta({
             id: 2,
             status: TransactionStatus.rejected,
-            metamaskNetworkId: '32',
+            chainId: '0x32',
           }),
           createTxMeta({
             id: 3,
             status: TransactionStatus.submitted,
-            metamaskNetworkId: currentNetworkId,
+            chainId: currentChainId,
             txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
           }),
         ]);

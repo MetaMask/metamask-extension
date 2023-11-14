@@ -319,7 +319,6 @@ const state = {
         id: 3111025347726181,
         time: 1620710815484,
         status: 'unapproved',
-        metamaskNetworkId: '5',
         msgParams: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
         chainId: '0x5',
         loadingDefaults: false,
@@ -339,7 +338,6 @@ const state = {
             id: 7786962153682822,
             time: 1620710815484,
             status: 'unapproved',
-            metamaskNetworkId: '5',
             chainId: '0x5',
             loadingDefaults: true,
             txParams: {
@@ -586,7 +584,6 @@ const state = {
             dappSuggestedGasFees: null,
             id: 2360388496987298,
             loadingDefaults: true,
-            metamaskNetworkId: '56',
             origin: 'metamask',
             status: 'unapproved',
             time: 1629582710520,
@@ -873,7 +870,6 @@ const state = {
         ],
         id: 7900715443136469,
         loadingDefaults: false,
-        metamaskNetworkId: '56',
         origin: 'metamask',
         r: '0x90a4dfb0646eef9815454d0ab543b5844acb8772101084565155c93ecce8ed69',
         rawTx:
@@ -1153,7 +1149,7 @@ const state = {
       '0x2de9256a7c604586f7ecfd87ae9509851e217f588f9f85feed793c54ed2ce0aa': {
         blockNumber: '8888976',
         id: 4678200543090532,
-        metamaskNetworkId: '1',
+        chainId: '0x1',
         status: 'confirmed',
         time: 1573114896000,
         txParams: {
@@ -1170,7 +1166,7 @@ const state = {
       '0x320a1fd769373578f78570e5d8f56e89bc7bce9657bb5f4c12d8fe790d471bfd': {
         blockNumber: '9453174',
         id: 4678200543090535,
-        metamaskNetworkId: '1',
+        chainId: '0x1',
         status: 'confirmed',
         time: 1581312411000,
         txParams: {
@@ -1187,7 +1183,7 @@ const state = {
       '0x8add6c1ea089a8de9b15fa2056b1875360f17916755c88ace9e5092b7a4b1239': {
         blockNumber: '10892417',
         id: 4678200543090542,
-        metamaskNetworkId: '1',
+        chainId: '0x1',
         status: 'confirmed',
         time: 1600515224000,
         txParams: {
@@ -1204,7 +1200,7 @@ const state = {
       '0x50be62ab1cabd03ff104c602c11fdef7a50f3d73c55006d5583ba97950ab1144': {
         blockNumber: '10902987',
         id: 4678200543090545,
-        metamaskNetworkId: '1',
+        chainId: '0x1',
         status: 'confirmed',
         time: 1600654021000,
         txParams: {
@@ -1385,7 +1381,6 @@ const state = {
     isLoading: false,
     warning: null,
     buyView: {},
-    isMouseUser: true,
     gasIsLoading: false,
     defaultHdPaths: {
       trezor: "m/44'/60'/0'/0",
@@ -1425,7 +1420,6 @@ const state = {
       id: 3111025347726181,
       time: 1620723786838,
       status: 'unapproved',
-      metamaskNetworkId: '5',
       chainId: '0x5',
       loadingDefaults: false,
       txParams: {
@@ -1444,7 +1438,6 @@ const state = {
           id: 3111025347726181,
           time: 1620723786838,
           status: 'unapproved',
-          metamaskNetworkId: '5',
           chainId: '0x5',
           loadingDefaults: true,
           txParams: {

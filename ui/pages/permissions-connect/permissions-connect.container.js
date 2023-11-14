@@ -1,6 +1,6 @@
 import { SubjectType } from '@metamask/permission-controller';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';

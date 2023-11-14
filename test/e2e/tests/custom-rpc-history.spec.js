@@ -24,7 +24,7 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions: { ...ganacheOptions, concurrent: { port, chainId } },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -70,7 +70,7 @@ describe('Stores custom RPC history', function () {
           '.networks-tab__add-network-form-footer .btn-primary',
         );
 
-        await driver.findElement({ text: networkName, tag: 'p' });
+        await driver.findElement({ text: networkName, tag: 'span' });
       },
     );
   });
@@ -80,7 +80,7 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -122,7 +122,7 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -160,7 +160,15 @@ describe('Stores custom RPC history', function () {
         });
 
         await rpcUrlInput.clear();
-        await rpcUrlInput.sendKeys(newRpcUrl);
+
+        // We cannot use sendKeys() here, because a network request will be fired after each
+        // keypress, and the privacy snapshot will show:
+        // `New hosts found: l,lo,loc,loca,local,localh,localho,localhos`
+        // In the longer term, we may want to debounce this
+        await driver.pasteIntoField(
+          '.form-field:nth-of-type(2) input[type="text"]',
+          newRpcUrl,
+        );
 
         await driver.findElement({
           text: 'Could not fetch chain ID. Is your RPC URL correct?',
@@ -175,7 +183,7 @@ describe('Stores custom RPC history', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -216,7 +224,7 @@ describe('Stores custom RPC history', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -268,7 +276,7 @@ describe('Stores custom RPC history', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {

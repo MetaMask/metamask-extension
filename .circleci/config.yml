@@ -3,16 +3,16 @@ version: 2.1
 executors:
   node-browsers:
     docker:
-      - image: cimg/node:18.17-browsers
+      - image: cimg/node:18.18-browsers
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:18.17-browsers
+      - image: cimg/node:18.18-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-large:
     docker:
-      - image: cimg/node:18.17-browsers
+      - image: cimg/node:18.18-browsers
     resource_class: large
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
@@ -119,6 +119,9 @@ workflows:
       - prep-build-test:
           requires:
             - prep-deps
+      - prep-build-multichain-test:
+          requires:
+            - prep-deps
       - prep-build-test-mv3:
           requires:
             - prep-deps
@@ -147,22 +150,19 @@ workflows:
       - test-e2e-chrome:
           requires:
             - prep-build-test
+      - test-e2e-chrome-multichain:
+          requires:
+            - prep-build-multichain-test
       - test-e2e-firefox:
           requires:
             - prep-build-test
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
-      - test-e2e-chrome-snaps:
-          requires:
-            - prep-build-test
-      - test-e2e-firefox-snaps:
-          requires:
-            - prep-build-test
-      - test-e2e-chrome-snaps-flask:
+      - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
-      - test-e2e-firefox-snaps-flask:
+      - test-e2e-firefox-flask:
           requires:
             - prep-build-test-flask
       - test-e2e-chrome-mmi:
@@ -252,11 +252,10 @@ workflows:
             - test-mozilla-lint-desktop
             - test-mozilla-lint-flask
             - test-e2e-chrome
+            - test-e2e-chrome-multichain
             - test-e2e-firefox
-            - test-e2e-chrome-snaps
-            - test-e2e-firefox-snaps
-            - test-e2e-chrome-snaps-flask
-            - test-e2e-firefox-snaps-flask
+            - test-e2e-chrome-flask
+            - test-e2e-firefox-flask
             - test-e2e-chrome-mmi
             - test-e2e-chrome-rpc-mmi
             - test-storybook
@@ -658,6 +657,27 @@ jobs:
             - dist-test
             - builds-test
 
+  prep-build-multichain-test:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for testing
+          command: MULTICHAIN=1 yarn build:test
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test-multichain
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-multichain
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-multichain
+            - builds-test-multichain
+
   prep-build-storybook:
     executor: node-browsers-large
     steps:
@@ -791,13 +811,10 @@ jobs:
           command: yarn depcheck
 
   test-e2e-chrome:
-    executor: node-browsers
-    parallelism: 8
+    executor: node-browsers-large
+    parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -813,28 +830,45 @@ jobs:
             then
               yarn test:e2e:chrome --retries 2 --debug
             fi
-          no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
 
-  test-e2e-chrome-mv3:
-    executor: node-browsers
-    parallelism: 8
+  test-e2e-chrome-multichain:
+    executor: node-browsers-large
+    parallelism: 24
     steps:
       - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
       - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+          name: Move test build to dist
+          command: mv ./dist-test-multichain ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test-multichain ./builds
+      - run:
+          name: test:e2e:chrome-multichain
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              MULTICHAIN=1 yarn test:e2e:chrome --retries 2 --debug
+            fi
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-mv3:
+    executor: node-browsers-large
+    parallelism: 24
+    steps:
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -848,9 +882,9 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2 --debug --mv3 || echo "Temporarily suppressing MV3 e2e test failures"
+              yarn test:e2e:chrome --retries 2 --debug || echo "Temporarily suppressing MV3 e2e test failures"
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -859,10 +893,7 @@ jobs:
     executor: node-browsers
     parallelism: 1
     steps:
-      - checkout
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -878,27 +909,17 @@ jobs:
             then
               yarn test:e2e:chrome:rpc --retries 2
             fi
-          no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
 
   test-e2e-chrome-rpc-mmi:
     executor: node-browsers
     steps:
-      - checkout
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
+      - run: *shallow-git-clone
       - attach_workspace:
           at: .
       - run:
@@ -914,102 +935,18 @@ jobs:
             then
               yarn test:e2e:chrome:rpc --retries 2 --debug --build-type=mmi
             fi
-          no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
 
-  test-e2e-firefox-snaps:
-    executor: node-browsers
-    parallelism: 4
+  test-e2e-firefox-flask:
+    executor: node-browsers-large
+    parallelism: 16
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: test:e2e:firefox:snaps
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              yarn test:e2e:firefox:snaps --retries 2 --debug --build-type=main
-            fi
-          no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e.xml
-
-  test-e2e-chrome-snaps:
-    executor: node-browsers
-    parallelism: 4
-    steps:
-      - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
-      - attach_workspace:
-          at: .
-      - run:
-          name: Move test build to dist
-          command: mv ./dist-test ./dist
-      - run:
-          name: Move test zips to builds
-          command: mv ./builds-test ./builds
-      - run:
-          name: test:e2e:chrome:snaps
-          command: |
-            if .circleci/scripts/test-run-e2e.sh
-            then
-              yarn test:e2e:chrome:snaps --retries 2 --debug --build-type=main
-            fi
-          no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-      - store_test_results:
-          path: test/test-results/e2e.xml
-
-  test-e2e-firefox-snaps-flask:
-    executor: node-browsers
-    parallelism: 4
-    steps:
-      - run: *shallow-git-clone
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1019,34 +956,24 @@ jobs:
           name: Move test zips to builds
           command: mv ./builds-test-flask ./builds
       - run:
-          name: test:e2e:firefox:snaps
+          name: test:e2e:firefox:flask
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox:snaps --retries 2 --debug --build-type=flask
+              yarn test:e2e:firefox:flask --retries 2 --debug
             fi
-          no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
 
-  test-e2e-chrome-snaps-flask:
-    executor: node-browsers
-    parallelism: 4
+  test-e2e-chrome-flask:
+    executor: node-browsers-large
+    parallelism: 16
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1056,34 +983,24 @@ jobs:
           name: Move test zips to builds
           command: mv ./builds-test-flask ./builds
       - run:
-          name: test:e2e:chrome:snaps
+          name: test:e2e:chrome:flask
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:snaps --retries 2 --debug --build-type=flask
+              yarn test:e2e:chrome:flask --retries 2 --debug
             fi
-          no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
 
   test-e2e-chrome-mmi:
-    executor: node-browsers
-    parallelism: 4
+    executor: node-browsers-large
+    parallelism: 16
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1099,28 +1016,18 @@ jobs:
             then
               yarn test:e2e:chrome:mmi --retries 2 --debug --build-type=mmi
             fi
-          no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
 
   test-e2e-firefox:
-    executor: node-browsers-medium-plus
-    parallelism: 8
+    executor: node-browsers-large
+    parallelism: 24
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1136,27 +1043,17 @@ jobs:
             then
               yarn test:e2e:firefox --retries 2 --debug
             fi
-          no_output_timeout: 20m
-      - run:
-          name: Merge JUnit report
-          command: |
-            if [ "$(ls -A test/test-results/e2e)" ]; then
-              yarn test:e2e:report
-            fi
-          when: always
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
-          path: test/test-results/e2e.xml
+          path: test/test-results/e2e
 
   benchmark:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1180,9 +1077,6 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:
@@ -1206,9 +1100,6 @@ jobs:
     executor: node-browsers-medium-plus
     steps:
       - run: *shallow-git-clone
-      - run:
-          name: Re-Install Chrome
-          command: ./.circleci/scripts/chrome-install.sh
       - attach_workspace:
           at: .
       - run:

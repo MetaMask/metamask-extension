@@ -8,7 +8,6 @@
 @import 'beta-header/index';
 @import 'cancel-speedup-popover/index';
 @import 'confirm-page-container/index';
-@import 'confirm-data/index';
 @import 'confirmation-warning-modal/index';
 @import 'custom-nonce/index';
 @import 'import-token/index';
@@ -35,9 +34,10 @@
 @import 'snaps/snap-ui-renderer/index';
 @import 'snaps/snap-ui-markdown/index';
 @import 'snaps/snap-delineator/index';
-@import 'snaps/snap-settings-card/index';
+@import 'snaps/snap-list-item/index';
 @import 'snaps/copyable/index';
 @import 'snaps/snap-version/index';
+@import 'snaps/tx-insight-warnings/index';
 @import 'gas-details-item/index';
 @import 'gas-details-item/gas-details-item-title/index';
 @import 'gas-timing/index';
@@ -49,6 +49,7 @@
 @import 'multilayer-fee-message/index';
 @import 'multiple-notifications/index';
 @import 'network-display/index';
+@import 'ui/components/app/incoming-trasaction-toggle/network-toggle';
 @import 'permission-page-container/index';
 @import 'permissions-connect-footer/index';
 @import 'permissions-connect-header/index';

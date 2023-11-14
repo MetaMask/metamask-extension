@@ -7,7 +7,7 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { shortenAddress } from '../../../helpers/utils/util';
 
-import { AccountListItemMenu } from '..';
+import { AccountListItemMenu, AvatarGroup } from '..';
 import {
   AvatarAccount,
   Box,
@@ -18,6 +18,8 @@ import {
   IconSize,
   AvatarAccountVariant,
   Text,
+  AvatarToken,
+  AvatarTokenSize,
 } from '../../component-library';
 import {
   Color,
@@ -37,14 +39,17 @@ import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wall
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
-import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
+import {
+  findKeyringForAddress,
+  getNativeCurrency,
+} from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getUseBlockie } from '../../../selectors';
+import { getNativeCurrencyImage, getUseBlockie } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -79,6 +84,7 @@ export const AccountListItem = ({
   closeMenu,
   connectedAvatar,
   connectedAvatarName,
+  showOptions = false,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -90,7 +96,9 @@ export const AccountListItem = ({
     setAccountListItemMenuElement(ref);
   };
 
-  const { totalWeiBalance } = useAccountTotalFiatBalance(identity.address);
+  const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
+    identity.address,
+  );
   const balanceToTranslate = process.env.MULTICHAIN
     ? totalWeiBalance
     : identity.balance;
@@ -110,6 +118,8 @@ export const AccountListItem = ({
   const label = getLabel(keyring, t);
 
   const trackEvent = useContext(MetaMetricsContext);
+  const primaryTokenImage = useSelector(getNativeCurrencyImage);
+  const nativeCurrency = useSelector(getNativeCurrency);
 
   return (
     <Box
@@ -223,18 +233,52 @@ export const AccountListItem = ({
               {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
           </Box>
-          <Text
-            variant={TextVariant.bodySm}
-            color={Color.textAlternative}
-            textAlign={TextAlign.End}
-            as="div"
-          >
-            <UserPreferencedCurrencyDisplay
-              ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-              value={balanceToTranslate}
-              type={SECONDARY}
-            />
-          </Text>
+          {process.env.MULTICHAIN ? (
+            <>
+              {orderedTokenList.length > 1 ? (
+                <AvatarGroup members={orderedTokenList} limit={4} />
+              ) : (
+                <Box
+                  display={Display.Flex}
+                  alignItems={AlignItems.center}
+                  justifyContent={JustifyContent.center}
+                  gap={1}
+                >
+                  <AvatarToken
+                    src={primaryTokenImage}
+                    name={nativeCurrency}
+                    size={AvatarTokenSize.Xs}
+                    borderColor={BorderColor.borderDefault}
+                  />
+                  <Text
+                    variant={TextVariant.bodySm}
+                    color={Color.textAlternative}
+                    textAlign={TextAlign.End}
+                    as="div"
+                  >
+                    <UserPreferencedCurrencyDisplay
+                      ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                      value={balanceToTranslate}
+                      type={SECONDARY}
+                    />
+                  </Text>
+                </Box>
+              )}
+            </>
+          ) : (
+            <Text
+              variant={TextVariant.bodySm}
+              color={Color.textAlternative}
+              textAlign={TextAlign.End}
+              as="div"
+            >
+              <UserPreferencedCurrencyDisplay
+                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                value={balanceToTranslate}
+                type={SECONDARY}
+              />
+            </Text>
+          )}
         </Box>
         {label ? (
           <Tag
@@ -246,34 +290,38 @@ export const AccountListItem = ({
           />
         ) : null}
       </Box>
-      <ButtonIcon
-        ariaLabel={`${identity.name} ${t('options')}`}
-        iconName={IconName.MoreVertical}
-        size={IconSize.Sm}
-        ref={setAccountListItemMenuRef}
-        onClick={(e) => {
-          e.stopPropagation();
-          if (!accountOptionsMenuOpen) {
-            trackEvent({
-              event: MetaMetricsEventName.AccountDetailMenuOpened,
-              category: MetaMetricsEventCategory.Navigation,
-              properties: {
-                location: 'Account Options',
-              },
-            });
-          }
-          setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
-        }}
-        data-testid="account-list-item-menu-button"
-      />
-      <AccountListItemMenu
-        anchorElement={accountListItemMenuElement}
-        identity={identity}
-        onClose={() => setAccountOptionsMenuOpen(false)}
-        isOpen={accountOptionsMenuOpen}
-        isRemovable={keyring?.type !== KeyringType.hdKeyTree}
-        closeMenu={closeMenu}
-      />
+      {showOptions ? (
+        <ButtonIcon
+          ariaLabel={`${identity.name} ${t('options')}`}
+          iconName={IconName.MoreVertical}
+          size={IconSize.Sm}
+          ref={setAccountListItemMenuRef}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (!accountOptionsMenuOpen) {
+              trackEvent({
+                event: MetaMetricsEventName.AccountDetailMenuOpened,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: 'Account Options',
+                },
+              });
+            }
+            setAccountOptionsMenuOpen(!accountOptionsMenuOpen);
+          }}
+          data-testid="account-list-item-menu-button"
+        />
+      ) : null}
+      {showOptions ? (
+        <AccountListItemMenu
+          anchorElement={accountListItemMenuElement}
+          identity={identity}
+          onClose={() => setAccountOptionsMenuOpen(false)}
+          isOpen={accountOptionsMenuOpen}
+          isRemovable={keyring?.type !== KeyringType.hdKeyTree}
+          closeMenu={closeMenu}
+        />
+      ) : null}
     </Box>
   );
 };
@@ -307,6 +355,10 @@ AccountListItem.propTypes = {
    * Text used as the avatar alt text
    */
   connectedAvatarName: PropTypes.string,
+  /**
+   * Represents if the "Options" 3-dot menu should display
+   */
+  showOptions: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

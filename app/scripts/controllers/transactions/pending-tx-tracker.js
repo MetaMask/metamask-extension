@@ -37,7 +37,10 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @param {object} config.nonceTracker - see nonce tracker
    * @param {object} config.provider - A network provider.
    * @param {object} config.query - An EthQuery instance.
-   * @param {Function} config.publishTransaction - Publishes a raw transaction,
+   * @param {Function} config.publishTransaction - Publishes a raw transaction.
+   * @param {object} config.hooks - The controller hooks.
+   * @param {Function} config.hooks.beforeCheckPendingTransaction - Additional logic to execute before checking pending transactions. Return false to prevent the broadcast of the transaction.
+   * @param {Function} config.hooks.beforePublish - Additional logic to execute before publishing a transaction. Return false to prevent the broadcast of the transaction.
    */
   constructor(config) {
     super();
@@ -48,6 +51,14 @@ export default class PendingTransactionTracker extends EventEmitter {
     this.publishTransaction = config.publishTransaction;
     this.approveTransaction = config.approveTransaction;
     this.confirmTransaction = config.confirmTransaction;
+
+    const { hooks } = config ?? {};
+    this.beforePublish = hooks?.beforePublish
+      ? hooks.beforePublish
+      : () => true;
+    this.beforeCheckPendingTransaction = hooks?.beforeCheckPendingTransaction
+      ? hooks.beforeCheckPendingTransaction
+      : () => true;
   }
 
   /**
@@ -144,12 +155,10 @@ export default class PendingTransactionTracker extends EventEmitter {
       return undefined;
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     // Don't ever resubmit custodian transactions
-    if (txMeta.custodyId) {
+    if (!this.beforePublish(txMeta)) {
       return undefined;
     }
-    ///: END:ONLY_INCLUDE_IN
 
     // Only auto-submit already-signed txs:
     if (!('rawTx' in txMeta)) {
@@ -193,10 +202,11 @@ export default class PendingTransactionTracker extends EventEmitter {
 
     let hasNoHash = !txHash;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    // Don't emit noTxHashErr for custodian transactions
-    hasNoHash ||= !txMeta.custodyId;
-    ///: END:ONLY_INCLUDE_IN
+    if (!this.beforeCheckPendingTransaction(txMeta)) {
+      // Some custodian transactions don't have a hash by the time they are
+      // marked as pending, so don't emit a noTxHash error for them
+      hasNoHash = false;
+    }
 
     if (hasNoHash) {
       const noTxHashErr = new Error(

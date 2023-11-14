@@ -6,15 +6,25 @@ const {
   error: webdriverError,
   Key,
   until,
+  ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
+  WebElement, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
+const { retry } = require('../../../development/lib/retry');
+
+const PAGES = {
+  BACKGROUND: 'background',
+  HOME: 'home',
+  NOTIFICATION: 'notification',
+  POPUP: 'popup',
+};
 
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
  *
  * @param {object} element - Selenium Element
- * @param driver
+ * @param {!ThenableWebDriver} driver
  * @returns {object} modified Selenium Element
  */
 function wrapElementWithAPI(element, driver) {
@@ -48,13 +58,14 @@ function wrapElementWithAPI(element, driver) {
 
 until.elementIsNotPresent = function elementIsNotPresent(locator) {
   return new Condition(`Element not present`, function (driver) {
-    return driver.findElements(By.css(locator)).then(function (elements) {
+    return driver.findElements(locator).then(function (elements) {
       return elements.length === 0;
     });
   });
 };
 
 /**
+ * This is MetaMask's custom E2E test driver, wrapping the Selenium WebDriver.
  * For Selenium WebDriver API documentation, see:
  * https://www.selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
  */
@@ -194,8 +205,9 @@ class Driver {
     }, this.timeout);
   }
 
-  async waitForElementNotPresent(element) {
-    return await this.driver.wait(until.elementIsNotPresent(element));
+  async waitForElementNotPresent(rawLocator) {
+    const locator = this.buildLocator(rawLocator);
+    return await this.driver.wait(until.elementIsNotPresent(locator));
   }
 
   async quit() {
@@ -204,6 +216,10 @@ class Driver {
 
   // Element interactions
 
+  /**
+   * @param {*} rawLocator
+   * @returns {WebElement}
+   */
   async findElement(rawLocator) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.driver.wait(
@@ -368,7 +384,7 @@ class Driver {
 
   // Navigation
 
-  async navigate(page = Driver.PAGES.HOME) {
+  async navigate(page = PAGES.HOME) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asyncronous JavaScript to load
     await this.driver.wait(
@@ -435,15 +451,25 @@ class Driver {
     initialWindowHandles,
     delayStep = 1000,
     timeout = this.timeout,
+    { retries = 8, retryDelay = 2500 } = {},
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
     let timeElapsed = 0;
+
     while (timeElapsed <= timeout) {
       for (const handle of windowHandles) {
-        await this.driver.switchTo().window(handle);
+        const handleTitle = await retry(
+          {
+            retries,
+            delay: retryDelay,
+          },
+          async () => {
+            await this.driver.switchTo().window(handle);
+            return await this.driver.getTitle();
+          },
+        );
 
-        const handleTitle = await this.driver.getTitle();
         if (handleTitle === title) {
           return handle;
         }
@@ -494,7 +520,17 @@ class Driver {
 
   // Error handling
 
-  async verboseReportOnFailure(title) {
+  async verboseReportOnFailure(title, error) {
+    if (process.env.CIRCLECI) {
+      console.error(
+        `Failure in ${title}, for more information see the artifacts tab in CI\n`,
+      );
+    } else {
+      console.error(
+        `Failure in ${title}, for more information see the test-artifacts folder\n`,
+      );
+    }
+    console.error(`${error}\n`);
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
@@ -603,11 +639,4 @@ function collectMetrics() {
   return results;
 }
 
-Driver.PAGES = {
-  BACKGROUND: 'background',
-  HOME: 'home',
-  NOTIFICATION: 'notification',
-  POPUP: 'popup',
-};
-
-module.exports = Driver;
+module.exports = { Driver, PAGES };

@@ -198,13 +198,13 @@ export default class ExtensionPlatform {
     let message = t(
       'notificationTransactionFailedMessage',
       nonce,
-      errorMessage || txMeta.err.message,
+      errorMessage || txMeta.error.message,
     );
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     if (isNaN(nonce)) {
       message = t(
         'notificationTransactionFailedMessageMMI',
-        errorMessage || txMeta.err.message,
+        errorMessage || txMeta.error.message,
       );
     }
     ///: END:ONLY_INCLUDE_IN

@@ -50,10 +50,7 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import {
-  ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_TOKEN_ADDRESSES,
-} from '../../shared/constants/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 
 import {
   shortenAddress,
@@ -101,8 +98,10 @@ import {
 } from './transactions';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 // eslint-disable-next-line import/order
-import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
-import { getPermissionSubjects } from './permissions';
+import {
+  getPermissionSubjects,
+  getConnectedSubjectsForAllAddresses,
+} from './permissions';
 ///: END:ONLY_INCLUDE_IN
 import { createDeepEqualSelector } from './util';
 
@@ -285,20 +284,6 @@ export function getAccountTypeForKeyring(keyring) {
 }
 
 /**
- * get the currently selected networkId which will be 'loading' when the
- * network changes. The network id should not be used in most cases,
- * instead use chainId in most situations. There are a limited number of
- * use cases to use this method still, such as when comparing transaction
- * metadata that predates the switch to using chainId.
- *
- * @deprecated - use getCurrentChainId instead
- * @param {object} state - redux state object
- */
-export function deprecatedGetCurrentNetworkId(state) {
-  return state.metamask.networkId ?? 'loading';
-}
-
-/**
  * Get MetaMask accounts, including account name and balance.
  */
 export const getMetaMaskAccounts = createSelector(
@@ -375,14 +360,7 @@ export function getMetaMaskAccountBalances(state) {
 export function getMetaMaskCachedBalances(state) {
   const chainId = getCurrentChainId(state);
 
-  // Fallback to fetching cached balances from network id
-  // this can eventually be removed
-  const network = deprecatedGetCurrentNetworkId(state);
-
-  return (
-    state.metamask.cachedBalances[chainId] ??
-    state.metamask.cachedBalances[network]
-  );
+  return state.metamask.cachedBalances[chainId];
 }
 
 /**
@@ -848,15 +826,6 @@ export function getIsBridgeChain(state) {
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
 
-export const getIsBridgeToken = (tokenAddress) => (state) => {
-  const chainId = getCurrentChainId(state);
-  const isBridgeChain = getIsBridgeChain(state);
-  return (
-    isBridgeChain &&
-    ALLOWED_BRIDGE_TOKEN_ADDRESSES[chainId].includes(tokenAddress.toLowerCase())
-  );
-};
-
 export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
@@ -944,6 +913,13 @@ export const getFullTxData = createDeepEqualSelector(
   },
 );
 
+export const getAllConnectedAccounts = createDeepEqualSelector(
+  getConnectedSubjectsForAllAddresses,
+  (connectedSubjects) => {
+    return Object.keys(connectedSubjects);
+  },
+);
+
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function getSnaps(state) {
   return state.metamask.snaps;
@@ -976,6 +952,11 @@ export const getInsightSnaps = createDeepEqualSelector(
   },
 );
 
+export const getInsightSnapIds = createDeepEqualSelector(
+  getInsightSnaps,
+  (snaps) => snaps.map((snap) => snap.id),
+);
+
 export const getNotifySnaps = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,
@@ -985,19 +966,6 @@ export const getNotifySnaps = createDeepEqualSelector(
     );
   },
 );
-
-export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
-  return Object.values(snaps).map((snap) => {
-    return {
-      id: snap.id,
-      tabMessage: () => snap.manifest.proposedName,
-      descriptionMessage: () => snap.manifest.description,
-      sectionMessage: () => snap.manifest.description,
-      route: `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`,
-      icon: 'fa fa-flask',
-    };
-  });
-});
 
 /**
  * @typedef {object} Notification
@@ -1462,6 +1430,10 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return POLYGON_DISPLAY_NAME;
     case CHAIN_IDS.AVALANCHE:
       return AVALANCHE_DISPLAY_NAME;
+    case CHAIN_IDS.LINEA_GOERLI:
+      return LINEA_GOERLI_DISPLAY_NAME;
+    case CHAIN_IDS.LINEA_MAINNET:
+      return LINEA_MAINNET_DISPLAY_NAME;
     case CHAIN_IDS.AURORA:
       return AURORA_DISPLAY_NAME;
     default:
@@ -1470,7 +1442,7 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
 };
 /**
  * To check if the chainId supports token detection,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
+ * currently it returns true for Ethereum Mainnet, BSC, Polygon, Avalanche, Linea and Aurora
  *
  * @param {*} state
  * @returns Boolean
@@ -1482,6 +1454,8 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.BSC,
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
+    CHAIN_IDS.LINEA_GOERLI,
+    CHAIN_IDS.LINEA_MAINNET,
     CHAIN_IDS.AURORA,
   ].includes(chainId);
 }
@@ -1560,6 +1534,16 @@ export function getIstokenDetectionInactiveOnNonMainnetSupportedNetwork(state) {
  */
 export function getIsTransactionSecurityCheckEnabled(state) {
   return state.metamask.transactionSecurityCheckEnabled;
+}
+
+/**
+ * To get the `useRequestQueue` value which determines whether we use a request queue infront of provider api calls. This will have the effect of implementing per-dapp network switching.
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseRequestQueue(state) {
+  return state.metamask.useRequestQueue;
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
@@ -1711,10 +1695,11 @@ export function getSnapsList(state) {
   const snaps = getSnaps(state);
   return Object.entries(snaps).map(([key, snap]) => {
     const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
-
     return {
       key,
       id: snap.id,
+      iconUrl: targetSubjectMetadata?.iconUrl,
+      subjectType: targetSubjectMetadata?.subjectType,
       packageName: removeSnapIdPrefix(snap.id),
       name: getSnapName(snap.id, targetSubjectMetadata),
     };
