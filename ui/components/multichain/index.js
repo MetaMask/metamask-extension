@@ -25,3 +25,4 @@ export { SelectActionModal } from './select-action-modal';
 export { SelectActionModalItem } from './select-action-modal-item';
 export { AssetListConversionButton } from './asset-list-conversion-button';
 export { AvatarGroup } from './avatar-group';
+export { AssetPickerAmount } from './asset-picker-amount';

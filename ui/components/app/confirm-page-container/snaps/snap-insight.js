@@ -12,7 +12,6 @@ import {
   useDispatch,
   ///: END:ONLY_INCLUDE_IN
 } from 'react-redux';
-import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import { Text } from '../../../component-library';
 import {
   AlignItems,
@@ -38,6 +37,7 @@ import { useTransactionInsightSnaps } from '../../../../hooks/snaps/useTransacti
 ///: END:ONLY_INCLUDE_IN
 
 export const SnapInsight = ({
+  snapId,
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   data,
   ///: END:ONLY_INCLUDE_IN
@@ -47,11 +47,10 @@ export const SnapInsight = ({
   ///: END:ONLY_INCLUDE_IN
 }) => {
   const t = useI18nContext();
-  let error, snapId, content;
+  let error, content;
   let isLoading = loading;
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   error = data?.error;
-  snapId = data?.snapId;
   content = data?.response?.content;
   const dispatch = useDispatch();
   useEffect(() => {
@@ -69,7 +68,6 @@ export const SnapInsight = ({
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
   const insights = useTransactionInsightSnaps(insightHookParams);
   error = insights.data?.[0]?.error;
-  snapId = insights.data?.[0]?.snapId;
   content = insights.data?.[0]?.response?.content;
   isLoading = insights.loading;
   ///: END:ONLY_INCLUDE_IN
@@ -80,9 +78,7 @@ export const SnapInsight = ({
 
   const snapName = getSnapName(snapId, targetSubjectMetadata);
 
-  const hasNoData =
-    !error &&
-    (isLoading || !content || (content && Object.keys(content).length === 0));
+  const hasNoData = !error && !isLoading && !content;
   return (
     <Box
       flexDirection={FLEX_DIRECTION.COLUMN}
@@ -94,17 +90,19 @@ export const SnapInsight = ({
       textAlign={hasNoData && TextAlign.Center}
       className="snap-insight"
     >
-      {!isLoading && !error && (
+      {!error && (
         <Box
           height="full"
+          width="full"
           flexDirection={FLEX_DIRECTION.COLUMN}
           className="snap-insight__container"
         >
-          {content ? (
+          {isLoading || content ? (
             <SnapUIRenderer
               snapId={snapId}
               data={content}
               delineatorType={DelineatorType.Insights}
+              isLoading={isLoading}
             />
           ) : (
             <Text
@@ -128,25 +126,12 @@ export const SnapInsight = ({
           </SnapDelineator>
         </Box>
       )}
-
-      {isLoading && (
-        <>
-          <Preloader size={40} />
-          <Text
-            marginTop={3}
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
-            as="h6"
-          >
-            {t('snapsInsightLoading')}
-          </Text>
-        </>
-      )}
     </Box>
   );
 };
 
 SnapInsight.propTypes = {
+  snapId: PropTypes.string,
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   /*
    * The insight object
