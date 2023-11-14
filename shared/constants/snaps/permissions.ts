@@ -6,6 +6,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:rpc': 'endowment:rpc',
   'endowment:webassembly': 'endowment:webassembly',
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  'endowment:page-home': 'endowment:page-home',
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
   'endowment:name-lookup': 'endowment:name-lookup',
   ///: END:ONLY_INCLUDE_IN
@@ -26,9 +27,9 @@ export const ExcludedSnapPermissions = Object.freeze({
 });
 
 export const ExcludedSnapEndowments = Object.freeze({
-  'endowment:page-home':
-    'This permission is still in development and therefore not available.',
   ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+  'endowment:page-home':
+    'This endowment is experimental and therefore not available.',
   'endowment:lifecycle-hooks':
     'This endowment is experimental and therefore not available.',
   'endowment:name-lookup':

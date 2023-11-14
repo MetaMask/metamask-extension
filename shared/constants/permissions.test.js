@@ -14,6 +14,7 @@ describe('EndowmentPermissions', () => {
       [
         'endowment:lifecycle-hooks',
         'endowment:name-lookup',
+        'endowment:page-home',
         ...Object.keys(endowmentPermissionBuilders).filter(
           (targetName) =>
             !Object.keys(ExcludedSnapEndowments).includes(targetName),
