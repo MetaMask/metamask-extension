@@ -20,8 +20,8 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
 import Box from '../../../components/ui/box';
