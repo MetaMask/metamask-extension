@@ -1,4 +1,4 @@
-const ganache = require('ganache');
+import { Server, server } from 'ganache';
 
 const defaultOptions = {
   blockTime: 2,
@@ -11,20 +11,22 @@ const defaultOptions = {
   quiet: true,
 };
 
-class Ganache {
-  async start(opts) {
+export class Ganache {
+  #server: Server | undefined;
+
+  async start(opts: any) {
     const options = { ...defaultOptions, ...opts };
-    const { port } = options;
-    this._server = ganache.server(options);
-    await this._server.listen(port);
+
+    this.#server = server(options);
+    await this.#server.listen(options.port);
   }
 
   getProvider() {
-    return this._server.provider;
+    return this.#server?.provider;
   }
 
   async getAccounts() {
-    return await this.getProvider().request({
+    return await this.getProvider()?.request({
       method: 'eth_accounts',
       params: [],
     });
@@ -32,7 +34,14 @@ class Ganache {
 
   async getBalance() {
     const accounts = await this.getAccounts();
-    const balanceHex = await this.getProvider().request({
+    const provider = await this.getProvider();
+
+    if (!accounts || !accounts[0] || !provider) {
+      console.log('No accounts found');
+      return 0;
+    }
+
+    const balanceHex = await provider.request({
       method: 'eth_getBalance',
       params: [accounts[0], 'latest'],
     });
@@ -45,11 +54,16 @@ class Ganache {
   }
 
   async quit() {
-    if (!this._server) {
+    if (!this.#server) {
       throw new Error('Server not running yet');
     }
-    await this._server.close();
+    try {
+      await this.#server.close();
+    } catch (e: any) {
+      // We can safely ignore the EBUSY error
+      if (e.code !== 'EBUSY') {
+        console.log('Caught error while Ganache closing:', e);
+      }
+    }
   }
 }
-
-module.exports = Ganache;
