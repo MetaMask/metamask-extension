@@ -134,11 +134,8 @@ export const AssetPickerAmount = () => {
           />
         )}
         {error ? (
-          <Text
-            variant={TextVariant.bodySm}
-            color={TextColor.errorDefault}
-          >
-            .{' '}{t(error)}
+          <Text variant={TextVariant.bodySm} color={TextColor.errorDefault}>
+            . {t(error)}
           </Text>
         ) : null}
       </Box>
