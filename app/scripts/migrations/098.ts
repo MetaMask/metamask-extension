@@ -1,11 +1,14 @@
-import { hasProperty, isObject } from '@metamask/utils';
-import { cloneDeep } from 'lodash';
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
+import { cloneDeep, isEmpty } from 'lodash';
 
-export const version = 98;
+type VersionedData = {
+  meta: { version: number };
+  data: Record<string, unknown>;
+};
+
+export const version = 98; // Increment the version number
 
 /**
- * Sets the default ledger transport method of Ledger U2F or Ledger Live on chrome to Webhid.
+ * Add `verifiedOnBlockchain` property to transactions based on the presence of `txReceipt`
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -13,30 +16,37 @@ export const version = 98;
  * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
  * @returns Updated versioned MetaMask extension state.
  */
-export async function migrate(originalVersionedData: {
-  meta: { version: number };
-  data: Record<string, unknown>;
-}) {
+export async function migrate(
+  originalVersionedData: VersionedData,
+): Promise<VersionedData> {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  versionedData.data = transformState(versionedData.data);
+  transformState(versionedData.data);
   return versionedData;
 }
 
-function transformState(state: Record<string, unknown>) {
-  if (
-    hasProperty(state, 'PreferencesController') &&
-    isObject(state.PreferencesController) &&
-    window.navigator.userAgent.includes('Chrome')
-  ) {
-    const preferencesControllerState = state.PreferencesController;
-    preferencesControllerState.ledgerTransportType =
-      LedgerTransportTypes.webhid;
-    return {
-      ...state,
-      PreferencesController: preferencesControllerState,
-    };
+function transformState(state: Record<string, any>) {
+  const transactionControllerState = state?.TransactionController || {};
+  const transactions = transactionControllerState?.transactions || {};
+
+  if (isEmpty(transactions)) {
+    return;
   }
 
-  return state;
+  const newTxs = Object.keys(transactions).reduce((txs, txId) => {
+    const transaction = transactions[txId];
+
+    // Add the `verifiedOnBlockchain` property based on the presence of `txReceipt`
+    transaction.verifiedOnBlockchain = Boolean(transaction.txReceipt);
+
+    return {
+      ...txs,
+      [txId]: transaction,
+    };
+  }, {});
+
+  state.TransactionController = {
+    ...transactionControllerState,
+    transactions: newTxs,
+  };
 }
