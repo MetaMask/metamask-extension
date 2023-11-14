@@ -3,7 +3,9 @@ import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import {
   DEFAULT_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
