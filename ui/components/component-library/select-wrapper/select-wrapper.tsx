@@ -42,6 +42,9 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
     };
 
     const toggleUncontrolledOpen = () => {
+    if (isUncontrolledOpen && onBlur) {
+        onBlur();
+      }
       setIsUncontrolledOpen(!isUncontrolledOpen);
     };
 
