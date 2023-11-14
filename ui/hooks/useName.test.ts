@@ -13,14 +13,13 @@ jest.mock('../selectors', () => ({
 
 const CHAIN_ID_MOCK = '0x1';
 const CHAIN_ID_2_MOCK = '0x2';
-const VALUE_MOCK = '0x0';
+const VALUE_MOCK = '0xabc123';
 const TYPE_MOCK = NameType.ETHEREUM_ADDRESS;
 const NAME_MOCK = 'TestName';
 const SOURCE_ID_MOCK = 'TestSourceId';
 const PROPOSED_NAMES_MOCK = {
   [SOURCE_ID_MOCK]: ['TestProposedName', 'TestProposedName2'],
 };
-const PROPOSED_NAMES_LAST_UPDATED_MOCK = 1234567890;
 
 describe('useName', () => {
   const getCurrentChainIdMock = jest.mocked(getCurrentChainId);
@@ -41,7 +40,6 @@ describe('useName', () => {
       name: null,
       sourceId: null,
       proposedNames: {},
-      proposedNamesLastUpdated: null,
     });
   });
 
@@ -53,7 +51,6 @@ describe('useName', () => {
             name: NAME_MOCK,
             proposedNames: PROPOSED_NAMES_MOCK,
             sourceId: SOURCE_ID_MOCK,
-            proposedNamesLastUpdated: PROPOSED_NAMES_LAST_UPDATED_MOCK,
           },
         },
       },
@@ -65,7 +62,6 @@ describe('useName', () => {
       name: null,
       sourceId: null,
       proposedNames: {},
-      proposedNamesLastUpdated: null,
     });
   });
 
@@ -77,7 +73,6 @@ describe('useName', () => {
             name: NAME_MOCK,
             proposedNames: PROPOSED_NAMES_MOCK,
             sourceId: SOURCE_ID_MOCK,
-            proposedNamesLastUpdated: PROPOSED_NAMES_LAST_UPDATED_MOCK,
           },
         },
       },
@@ -89,7 +84,6 @@ describe('useName', () => {
       name: NAME_MOCK,
       sourceId: SOURCE_ID_MOCK,
       proposedNames: PROPOSED_NAMES_MOCK,
-      proposedNamesLastUpdated: PROPOSED_NAMES_LAST_UPDATED_MOCK,
     });
   });
 
@@ -101,7 +95,6 @@ describe('useName', () => {
             name: NAME_MOCK,
             proposedNames: PROPOSED_NAMES_MOCK,
             sourceId: SOURCE_ID_MOCK,
-            proposedNamesLastUpdated: PROPOSED_NAMES_LAST_UPDATED_MOCK,
           },
         },
       },
@@ -113,7 +106,6 @@ describe('useName', () => {
       name: NAME_MOCK,
       sourceId: SOURCE_ID_MOCK,
       proposedNames: PROPOSED_NAMES_MOCK,
-      proposedNamesLastUpdated: PROPOSED_NAMES_LAST_UPDATED_MOCK,
     });
   });
 
@@ -127,7 +119,6 @@ describe('useName', () => {
             name: NAME_MOCK,
             proposedNames: PROPOSED_NAMES_MOCK,
             sourceId: SOURCE_ID_MOCK,
-            proposedNamesLastUpdated: PROPOSED_NAMES_LAST_UPDATED_MOCK,
           },
         },
       },
@@ -139,7 +130,28 @@ describe('useName', () => {
       name: NAME_MOCK,
       sourceId: SOURCE_ID_MOCK,
       proposedNames: PROPOSED_NAMES_MOCK,
-      proposedNamesLastUpdated: PROPOSED_NAMES_LAST_UPDATED_MOCK,
+    });
+  });
+
+  it('normalizes addresses to lowercase', () => {
+    getNamesMock.mockReturnValue({
+      [TYPE_MOCK]: {
+        [VALUE_MOCK]: {
+          [CHAIN_ID_MOCK]: {
+            name: NAME_MOCK,
+            proposedNames: PROPOSED_NAMES_MOCK,
+            sourceId: SOURCE_ID_MOCK,
+          },
+        },
+      },
+    });
+
+    const nameEntry = useName('0xAbC123', TYPE_MOCK);
+
+    expect(nameEntry).toStrictEqual({
+      name: NAME_MOCK,
+      sourceId: SOURCE_ID_MOCK,
+      proposedNames: PROPOSED_NAMES_MOCK,
     });
   });
 });

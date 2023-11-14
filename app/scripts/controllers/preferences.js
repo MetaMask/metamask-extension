@@ -55,7 +55,7 @@ export default class PreferencesController {
         eth_sign: false,
       },
       useMultiAccountBalanceChecker: true,
-
+      useSafeChainsListValidation: true,
       // set to true means the dynamic list from the API is being used
       // set to false will be using the static list from contract-metadata
       useTokenDetection: false,
@@ -106,6 +106,9 @@ export default class PreferencesController {
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IN
       isLineaMainnetReleased: false,
+      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      useExternalNameSources: true,
+      ///: END:ONLY_INCLUDE_IN
       ...opts.initState,
     };
 
@@ -169,6 +172,15 @@ export default class PreferencesController {
    */
   setUseMultiAccountBalanceChecker(val) {
     this.store.updateState({ useMultiAccountBalanceChecker: val });
+  }
+
+  /**
+   * Setter for the `useSafeChainsListValidation` property
+   *
+   * @param {boolean} val - Whether or not the user prefers to turn off/on validation for manually adding networks
+   */
+  setUseSafeChainsListValidation(val) {
+    this.store.updateState({ useSafeChainsListValidation: val });
   }
 
   /**
@@ -248,6 +260,19 @@ export default class PreferencesController {
   setAddSnapAccountEnabled(addSnapAccountEnabled) {
     this.store.updateState({
       addSnapAccountEnabled,
+    });
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  /**
+   * Setter for the `useExternalNameSources` property
+   *
+   * @param {boolean} useExternalNameSources - Whether or not to use external name providers in the name controller.
+   */
+  setUseExternalNameSources(useExternalNameSources) {
+    this.store.updateState({
+      useExternalNameSources,
     });
   }
   ///: END:ONLY_INCLUDE_IN

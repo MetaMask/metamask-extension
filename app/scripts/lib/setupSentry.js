@@ -69,7 +69,6 @@ export const SENTRY_BACKGROUND_STATE = {
     qrHardware: true,
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
-    serviceWorkerLastActiveTime: true,
     showBetaHeader: true,
     showProductTour: true,
     showTestnetMessageInDropdown: true,
@@ -113,7 +112,6 @@ export const SENTRY_BACKGROUND_STATE = {
   KeyringController: {
     isUnlocked: true,
     keyrings: false,
-    keyringTypes: false,
   },
   LoggingController: {
     logs: false,
@@ -129,7 +127,6 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   NetworkController: {
     networkConfigurations: false,
-    networkId: true,
     networksMetadata: true,
     providerConfig: {
       chainId: true,
@@ -155,6 +152,12 @@ export const SENTRY_BACKGROUND_STATE = {
     firstTimeFlowType: true,
     onboardingTabs: false,
     seedPhraseBackedUp: true,
+  },
+  PPOMController: {
+    chainStatus: true,
+    securityAlertsEnabled: false,
+    storageMetadata: [],
+    versionInfo: [],
   },
   PermissionController: {
     subjects: false,
@@ -221,7 +224,6 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   SnapController: {
-    snapErrors: false,
     snapStates: false,
     snaps: false,
   },
@@ -320,6 +322,11 @@ export const SENTRY_UI_STATE = {
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    useSafeChainsListValidation: true,
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    addSnapAccountEnabled: false,
+    snapsAddSnapAccountModalDismissed: false,
+    ///: END:ONLY_INCLUDE_IN
   },
   unconnectedAccount: true,
 };

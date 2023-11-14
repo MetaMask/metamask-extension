@@ -48,6 +48,11 @@ describe('AccountPicker', () => {
 
   it('should show the address in the account button for multichain', () => {
     const { getByText } = render({ showAddress: true });
-    expect(getByText('0x0DC...E7bc')).toBeInTheDocument();
+    expect(getByText('0x0DCD5...3E7bc')).toBeInTheDocument();
+  });
+
+  it('should allow for an additional class name via className prop', () => {
+    const { container } = render({ className: 'test-class' });
+    expect(container.querySelector('.test-class')).toBeInTheDocument();
   });
 });

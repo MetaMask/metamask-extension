@@ -5,11 +5,18 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
-import { NameType } from '@metamask/name-controller';
+import {
+  NameControllerState,
+  NameEntry,
+  NameType,
+  UpdateProposedNamesResult,
+} from '@metamask/name-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
+import { toChecksumAddress } from 'ethereumjs-util';
 import {
   Box,
   Button,
@@ -34,17 +41,123 @@ import {
   JustifyContent,
 } from '../../../../helpers/constants/design-system';
 import Name from '../name';
-import FormComboField from '../../../ui/form-combo-field/form-combo-field';
-import { getNameSources } from '../../../../selectors';
-import { setName as saveName } from '../../../../store/actions';
+import FormComboField, {
+  FormComboFieldOption,
+} from '../../../ui/form-combo-field/form-combo-field';
+import { getCurrentChainId, getNameSources } from '../../../../selectors';
+import {
+  setName as saveName,
+  updateProposedNames,
+} from '../../../../store/actions';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
 import { useName } from '../../../../hooks/useName';
 import { I18nContext } from '../../../../contexts/i18n';
+import { usePetnamesMetrics } from './metrics';
+
+const UPDATE_DELAY = 1000 * 2; // 2 Seconds
 
 export interface NameDetailsProps {
   onClose: () => void;
+  sourcePriority?: string[];
   type: NameType;
   value: string;
+}
+
+function formatValue(value: string, type: NameType): string {
+  switch (type) {
+    case NameType.ETHEREUM_ADDRESS:
+      return toChecksumAddress(value);
+
+    default:
+      return value;
+  }
+}
+
+function generateComboOptions(
+  proposedNameEntries: NameEntry['proposedNames'],
+  nameSources: NameControllerState['nameSources'],
+): FormComboFieldOption[] {
+  const sourceIds = Object.keys(proposedNameEntries);
+
+  const sourceIdsWithProposedNames = sourceIds.filter(
+    (sourceId) => proposedNameEntries[sourceId]?.proposedNames?.length,
+  );
+
+  const options = sourceIdsWithProposedNames
+    .map((sourceId: string) => {
+      const sourceProposedNames =
+        proposedNameEntries[sourceId]?.proposedNames ?? [];
+
+      return sourceProposedNames.map((proposedName: any) => ({
+        primaryLabel: proposedName,
+        secondaryLabel: nameSources[sourceId]?.label ?? sourceId,
+        sourceId,
+      }));
+    })
+    .flat();
+
+  return options.sort((a, b) =>
+    a.secondaryLabel
+      .toLowerCase()
+      .localeCompare(b.secondaryLabel.toLowerCase()),
+  );
+}
+
+function getInitialSources(
+  proposedNamesResult: Record<string, { proposedNames?: string[] }>,
+  proposedNamesState: Record<string, { proposedNames?: string[] }>,
+): string[] {
+  const resultSources = Object.keys(proposedNamesResult).filter(
+    (sourceId) => proposedNamesResult[sourceId].proposedNames?.length,
+  );
+
+  const stateSources = Object.keys(proposedNamesState).filter(
+    (sourceId) =>
+      !proposedNamesResult[sourceId]?.proposedNames &&
+      proposedNamesState[sourceId].proposedNames?.length,
+  );
+
+  return [...resultSources, ...stateSources].sort();
+}
+
+function useProposedNames(value: string, type: NameType, chainId: string) {
+  const dispatch = useDispatch();
+  const { proposedNames } = useName(value, type);
+  const updateInterval = useRef<any>();
+  const [initialSources, setInitialSources] = useState<string[]>();
+
+  useEffect(() => {
+    const reset = () => {
+      if (updateInterval.current) {
+        clearInterval(updateInterval.current);
+      }
+    };
+
+    const update = async () => {
+      const result = (await dispatch(
+        updateProposedNames({
+          value,
+          type,
+          onlyUpdateAfterDelay: true,
+          variation: chainId,
+        }),
+      )) as any as UpdateProposedNamesResult;
+
+      if (!initialSources) {
+        setInitialSources(
+          getInitialSources(result?.results ?? {}, proposedNames),
+        );
+      }
+    };
+
+    reset();
+    update();
+
+    updateInterval.current = setInterval(update, UPDATE_DELAY);
+    return reset;
+  }, [value, type, chainId, dispatch, initialSources, setInitialSources]);
+
+  return { proposedNames, initialSources };
 }
 
 export default function NameDetails({
@@ -52,27 +165,74 @@ export default function NameDetails({
   type,
   value,
 }: NameDetailsProps) {
-  const {
-    name: savedName,
-    proposedNames,
-    sourceId: savedSourceId,
-  } = useName(value, type);
-
+  const chainId = useSelector(getCurrentChainId);
+  const { name: savedName, sourceId: savedSourceId } = useName(value, type);
   const nameSources = useSelector(getNameSources, isEqual);
   const [name, setName] = useState('');
+  const [openMetricSent, setOpenMetricSent] = useState(false);
   const [selectedSourceId, setSelectedSourceId] = useState<string>();
+  const [selectedSourceName, setSelectedSourceName] = useState<string>();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
+  const hasSavedName = Boolean(savedName);
+  const formattedValue = formatValue(value, type);
+
+  const { proposedNames, initialSources } = useProposedNames(
+    value,
+    type,
+    chainId,
+  );
 
   const [copiedAddress, handleCopyAddress] = useCopyToClipboard() as [
     boolean,
     (value: string) => void,
   ];
 
+  useEffect(() => {
+    setName(savedName ?? '');
+    setSelectedSourceId(savedSourceId ?? undefined);
+    setSelectedSourceName(savedSourceId ? savedName ?? undefined : undefined);
+  }, [savedName, savedSourceId, setName, setSelectedSourceId]);
+
+  const proposedNameOptions = useMemo(
+    () => generateComboOptions(proposedNames, nameSources),
+    [proposedNames, nameSources],
+  );
+
+  const { trackPetnamesOpenEvent, trackPetnamesSaveEvent } = usePetnamesMetrics(
+    {
+      initialSources,
+      name,
+      proposedNameOptions,
+      savedName,
+      savedSourceId,
+      selectedSourceId,
+      type,
+    },
+  );
+
+  useEffect(() => {
+    if (initialSources && !openMetricSent) {
+      trackPetnamesOpenEvent();
+      setOpenMetricSent(true);
+    }
+  }, [initialSources, openMetricSent, trackPetnamesOpenEvent]);
+
   const handleSaveClick = useCallback(async () => {
-    await dispatch(saveName({ value, type, name, sourceId: selectedSourceId }));
+    trackPetnamesSaveEvent();
+
+    await dispatch(
+      saveName({
+        value,
+        type,
+        name: name?.length ? name : null,
+        sourceId: selectedSourceId,
+        variation: chainId,
+      }),
+    );
+
     onClose();
-  }, [name, selectedSourceId, onClose]);
+  }, [name, selectedSourceId, onClose, trackPetnamesSaveEvent, chainId]);
 
   const handleClose = useCallback(() => {
     onClose();
@@ -82,11 +242,9 @@ export default function NameDetails({
     (newName: string) => {
       setName(newName);
 
-      const selectedProposedName =
-        proposedNames?.[selectedSourceId as string]?.[0];
-
-      if (newName !== selectedProposedName) {
+      if (newName !== selectedSourceName) {
         setSelectedSourceId(undefined);
+        setSelectedSourceName(undefined);
       }
     },
     [setName, selectedSourceId],
@@ -95,40 +253,14 @@ export default function NameDetails({
   const handleProposedNameClick = useCallback(
     (option: any) => {
       setSelectedSourceId(option.sourceId);
+      setSelectedSourceName(option.primaryLabel);
     },
-    [setSelectedSourceId],
+    [setSelectedSourceId, setSelectedSourceName],
   );
 
-  const proposedNameOptions = useMemo(() => {
-    const sourceIds = Object.keys(proposedNames);
-
-    const sourceIdsWithProposedNames = sourceIds.filter(
-      (sourceId) => proposedNames[sourceId]?.length,
-    );
-
-    const options = sourceIdsWithProposedNames
-      .map((sourceId: string) => {
-        const sourceProposedNames = proposedNames[sourceId] ?? [];
-
-        return sourceProposedNames.map((proposedName: any) => ({
-          primaryLabel: proposedName,
-          secondaryLabel: nameSources[sourceId]?.label ?? sourceId,
-          sourceId,
-        }));
-      })
-      .flat();
-
-    return options.sort((a, b) =>
-      a.primaryLabel.toLowerCase().localeCompare(b.primaryLabel.toLowerCase()),
-    );
-  }, [proposedNames, nameSources]);
-
-  useEffect(() => {
-    setName(savedName ?? '');
-    setSelectedSourceId(savedSourceId ?? undefined);
-  }, [savedName, savedSourceId, setName, setSelectedSourceId]);
-
-  const hasSavedName = Boolean(savedName);
+  const handleCopyClick = useCallback(() => {
+    handleCopyAddress(formattedValue);
+  }, [handleCopyAddress, formattedValue]);
 
   return (
     <Box>
@@ -142,8 +274,8 @@ export default function NameDetails({
             <Name
               value={value}
               type={NameType.ETHEREUM_ADDRESS}
-              sourcePriority={['lens', 'token', 'ens', 'etherscan']}
               disableEdit
+              internal
             />
           </div>
           <Text marginBottom={4} justifyContent={JustifyContent.spaceBetween}>
@@ -157,7 +289,7 @@ export default function NameDetails({
             id="address"
             className="name-details__address"
             label={t('nameAddressLabel')}
-            value={value}
+            value={formattedValue}
             marginBottom={4}
             disabled
             endAccessory={
@@ -165,7 +297,7 @@ export default function NameDetails({
                 display={Display.Flex}
                 iconName={copiedAddress ? IconName.CopySuccess : IconName.Copy}
                 size={ButtonIconSize.Sm}
-                onClick={() => handleCopyAddress(value)}
+                onClick={handleCopyClick}
                 color={IconColor.iconMuted}
                 ariaLabel={t('copyAddress')}
               />

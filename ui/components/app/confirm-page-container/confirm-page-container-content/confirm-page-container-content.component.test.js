@@ -7,6 +7,7 @@ import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
 } from '../../../../helpers/constants/error-keys';
+import { shortenAddress } from '../../../../helpers/utils/util';
 import ConfirmPageContainerContent from './confirm-page-container-content.component';
 
 describe('Confirm Page Container Content', () => {
@@ -23,6 +24,17 @@ describe('Confirm Page Container Content', () => {
             name: 'Address Book Account 1',
             chainId: '0x5',
           },
+        },
+      },
+      identities: {},
+      tokenList: {},
+    },
+    confirmTransaction: {
+      txData: {
+        txParams: {
+          gas: '0x153e2',
+          value: '0x0',
+          to: '0x0BC30598F0F386371eB3d2195AcAA14C7566534b',
         },
       },
     },
@@ -106,7 +118,7 @@ describe('Confirm Page Container Content', () => {
     expect(props.onCancel).toHaveBeenCalledTimes(1);
   });
 
-  it('render contract address name from addressBook in title for contract', async () => {
+  it('render contract address in the content component', async () => {
     props.disabled = false;
     props.toAddress = '0x06195827297c7A80a443b6894d3BDB8824b43896';
     props.transactionType = TransactionType.contractInteraction;
@@ -114,8 +126,11 @@ describe('Confirm Page Container Content', () => {
       <ConfirmPageContainerContent {...props} />,
       store,
     );
+    const expectedAddress = shortenAddress(
+      mockStore.confirmTransaction.txData.txParams.to,
+    );
 
-    expect(queryByText('Address Book Account 1')).toBeInTheDocument();
+    expect(queryByText(`${expectedAddress}`)).toBeInTheDocument();
   });
 
   it('render simple title without address name for simple send', async () => {

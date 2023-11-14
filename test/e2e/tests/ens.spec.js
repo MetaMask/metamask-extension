@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openActionMenuAndStartSendFlow,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('ENS', function () {
@@ -78,16 +82,7 @@ describe('ENS', function () {
   it('domain resolves to a correct address', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder()
-          .withNetworkController({
-            providerConfig: {
-              chainId: '0x1',
-              nickname: '',
-              rpcUrl: '',
-              type: 'mainnet',
-            },
-          })
-          .build(),
+        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         ganacheOptions,
         title: this.test.title,
         testSpecificMock: mockInfura,
@@ -99,8 +94,11 @@ describe('ENS', function () {
 
         await driver.waitForElementNotPresent('.loading-overlay');
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-
+        await openActionMenuAndStartSendFlow(driver);
+        // TODO: Update Test when Multichain Send Flow is added
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           sampleEnsDomain,

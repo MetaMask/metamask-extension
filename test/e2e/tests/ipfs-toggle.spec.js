@@ -37,7 +37,6 @@ describe('Settings', function () {
           '.nft-item__container',
         );
         await importedNftImage.click();
-
         // check for default image
         const nftDefaultImage = await driver.findElement(
           '[data-testid=nft-default-image]',
@@ -57,7 +56,6 @@ describe('Settings', function () {
           text: 'Confirm',
           tag: 'button',
         });
-
         // should render image now
         const nftImage = await driver.findVisibleElement(
           '[data-testid="nft-image"]',

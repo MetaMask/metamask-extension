@@ -27,7 +27,6 @@ const Sqrl = require('squirrelly');
 const lavapack = require('@lavamoat/lavapack');
 const lavamoatBrowserify = require('lavamoat-browserify');
 const terser = require('terser');
-const moduleResolver = require('babel-plugin-module-resolver');
 
 const bifyModuleGroups = require('bify-module-groups');
 
@@ -41,6 +40,9 @@ const {
   getEnvironment,
   logError,
   wrapAgainstScuttling,
+  getBuildName,
+  getBuildAppId,
+  getBuildIcon,
 } = require('./utils');
 
 const {
@@ -931,9 +933,6 @@ function setupBundlerDefaults(
   const { bundlerOpts } = buildConfiguration;
   const extensions = ['.js', '.ts', '.tsx'];
 
-  const isSnapsFlask =
-    features.active.has('snaps') && features.active.has('build-flask');
-
   Object.assign(bundlerOpts, {
     // Source transforms
     transform: [
@@ -945,22 +944,6 @@ function setupBundlerDefaults(
         // Run TypeScript files through Babel
         {
           extensions,
-          plugins: isSnapsFlask
-            ? [
-                [
-                  moduleResolver,
-                  {
-                    alias: {
-                      '@metamask/snaps-controllers':
-                        '@metamask/snaps-controllers-flask',
-                      '@metamask/snaps-ui': '@metamask/snaps-ui-flask',
-                      '@metamask/snaps-utils': '@metamask/snaps-utils-flask',
-                      '@metamask/rpc-methods': '@metamask/rpc-methods-flask',
-                    },
-                  },
-                ],
-              ]
-            : [],
         },
       ],
       // Inline `fs.readFileSync` files
@@ -1201,6 +1184,16 @@ async function setEnvironmentVariables({
       testing,
     }),
     METAMASK_DEBUG: devMode || variables.getMaybe('METAMASK_DEBUG') === true,
+    METAMASK_BUILD_NAME: getBuildName({
+      environment,
+      buildType,
+    }),
+    METAMASK_BUILD_APP_ID: getBuildAppId({
+      buildType,
+    }),
+    METAMASK_BUILD_ICON: getBuildIcon({
+      buildType,
+    }),
     METAMASK_ENVIRONMENT: environment,
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,

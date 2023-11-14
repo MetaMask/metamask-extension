@@ -148,6 +148,53 @@ describe('PendingTransactionTracker', function () {
       assert.ok(resubmitTx.calledOnce, 'should call _resubmitTx');
       assert.ok(warningListener.calledOnce, "should emit 'tx:warning'");
     });
+
+    it('should NOT publish the given transaction if custodyId is in txMeta', async function () {
+      const txMeta = {
+        id: 1,
+        hash: '0x0593ee121b92e10d63150ad08b4b8f9c7857d1bd160195ee648fb9a0f8d00eeb',
+        status: TransactionStatus.signed,
+        txParams: {
+          from: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+          nonce: '0x1',
+          value: '0xfffff',
+        },
+        history: [{}],
+        rawTx:
+          '0xf86c808504a817c800827b0d940c62bb85faa3311a996e176d4d2593dd760e74ccac753e6a0ea0d00cc9789d0d7ff1f471d',
+        retryCount: 4,
+        firstRetryBlockNumber: '0x1',
+        custodyId: 'testid',
+      };
+      const approveTransaction = sinon.spy();
+      const publishTransaction = sinon.spy();
+      const pendingTxTracker = new PendingTransactionTracker({
+        query: {
+          getTransactionReceipt: sinon.stub(),
+        },
+        nonceTracker: {
+          getGlobalLock: sinon.stub().resolves({
+            releaseLock: sinon.spy(),
+          }),
+        },
+        getPendingTransactions: sinon.stub().returns([]),
+        getCompletedTransactions: sinon.stub().returns([]),
+        publishTransaction,
+        approveTransaction,
+        confirmTransaction: sinon.spy(),
+      });
+
+      await pendingTxTracker._resubmitTx(txMeta, '0x11' /* 16 */);
+
+      assert.ok(
+        publishTransaction.notCalled,
+        'should NOT try to publish transaction',
+      );
+      assert.ok(
+        approveTransaction.notCalled,
+        'should NOT try to approve transaction',
+      );
+    });
   });
 
   describe('#updatePendingTxs', function () {

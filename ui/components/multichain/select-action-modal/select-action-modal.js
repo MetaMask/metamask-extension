@@ -105,12 +105,12 @@ export const SelectActionModal = ({ onClose }) => {
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
             <SelectActionModalItem
-              actionIcon={IconName.Add}
+              actionIcon={IconName.PlusMinus}
               showIcon
-              primaryText={t('buy')}
-              secondaryText={t('buyDescription')}
+              primaryText={t('buyAndSell')}
+              secondaryText={t('buyAndSellDescription')}
               disabled={!isBuyableChain}
-              tooltipTitle={t('buyDisabled')}
+              tooltipTitle={t('buyAndSellDisabled')}
               onClick={() => {
                 openBuyCryptoInPdapp();
                 trackEvent({
@@ -180,6 +180,7 @@ export const SelectActionModal = ({ onClose }) => {
               ///: END:ONLY_INCLUDE_IN
               onClose();
             }}
+            data-testid="select-action-modal-item-swap"
           />
           <SelectActionModalItem
             actionIcon={IconName.Arrow2UpRight}
@@ -202,6 +203,7 @@ export const SelectActionModal = ({ onClose }) => {
               history.push(SEND_ROUTE);
               onClose();
             }}
+            data-testid="select-action-modal-item-send"
           />
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)

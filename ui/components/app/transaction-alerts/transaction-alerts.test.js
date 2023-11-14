@@ -1,10 +1,14 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
+import sinon from 'sinon';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 import { renderWithProvider } from '../../../../test/jest';
 import { submittedPendingTransactionsSelector } from '../../../selectors/transactions';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import configureStore from '../../../store/store';
+import mockState from '../../../../test/data/mock-state.json';
+import * as txUtil from '../../../../shared/modules/transaction.utils';
+import * as metamaskControllerUtils from '../../../../shared/lib/metamask-controller-utils';
 import TransactionAlerts from './transaction-alerts';
 
 jest.mock('../../../selectors/transactions', () => {
@@ -20,12 +24,13 @@ function render({
   componentProps = {},
   useGasFeeContextValue = {},
   submittedPendingTransactionsSelectorValue = null,
+  mockedStore = mockState,
 }) {
   useGasFeeContext.mockReturnValue(useGasFeeContextValue);
   submittedPendingTransactionsSelector.mockReturnValue(
     submittedPendingTransactionsSelectorValue,
   );
-  const store = configureStore({});
+  const store = configureStore(mockedStore);
   return renderWithProvider(<TransactionAlerts {...componentProps} />, store);
 }
 
@@ -44,6 +49,9 @@ describe('TransactionAlerts', () => {
               operator: '0x92a3b9773b1763efa556f55ccbeb20441962d9b2',
             },
           },
+          txParams: {
+            value: '0x1',
+          },
         },
       },
     });
@@ -58,6 +66,9 @@ describe('TransactionAlerts', () => {
             flagAsDangerous: '?',
             reason: 'Some reason...',
             reason_header: 'Some reason header...',
+          },
+          txParams: {
+            value: '0x1',
           },
         },
       },
@@ -78,6 +89,9 @@ describe('TransactionAlerts', () => {
         txData: {
           securityProviderResponse: {
             flagAsDangerous: SECURITY_PROVIDER_MESSAGE_SEVERITY.NOT_MALICIOUS,
+          },
+          txParams: {
+            value: '0x1',
           },
         },
       },
@@ -100,6 +114,13 @@ describe('TransactionAlerts', () => {
             supportsEIP1559: true,
             hasSimulationError: true,
           },
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
+          },
         });
 
         expect(
@@ -116,6 +137,13 @@ describe('TransactionAlerts', () => {
               supportsEIP1559: true,
               hasSimulationError: true,
             },
+            componentProps: {
+              txData: {
+                txParams: {
+                  value: '0x1',
+                },
+              },
+            },
           });
           expect(getByText('I want to proceed anyway')).toBeInTheDocument();
         });
@@ -127,7 +155,14 @@ describe('TransactionAlerts', () => {
               supportsEIP1559: true,
               hasSimulationError: true,
             },
-            componentProps: { setUserAcknowledgedGasMissing },
+            componentProps: {
+              setUserAcknowledgedGasMissing,
+              txData: {
+                txParams: {
+                  value: '0x1',
+                },
+              },
+            },
           });
           fireEvent.click(getByText('I want to proceed anyway'));
           expect(setUserAcknowledgedGasMissing).toHaveBeenCalled();
@@ -141,7 +176,14 @@ describe('TransactionAlerts', () => {
               supportsEIP1559: true,
               hasSimulationError: true,
             },
-            componentProps: { userAcknowledgedGasMissing: true },
+            componentProps: {
+              userAcknowledgedGasMissing: true,
+              txData: {
+                txParams: {
+                  value: '0x1',
+                },
+              },
+            },
           });
           expect(
             queryByText('I want to proceed anyway'),
@@ -155,6 +197,13 @@ describe('TransactionAlerts', () => {
         const { queryByText } = render({
           useGasFeeContextValue: {
             supportsEIP1559: true,
+          },
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
           },
         });
         expect(
@@ -170,6 +219,13 @@ describe('TransactionAlerts', () => {
         const { getByText } = render({
           useGasFeeContextValue: { supportsEIP1559: true },
           submittedPendingTransactionsSelectorValue: [{ some: 'transaction' }],
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
+          },
         });
         expect(
           getByText('You have (1) pending transaction.'),
@@ -185,6 +241,13 @@ describe('TransactionAlerts', () => {
             { some: 'transaction' },
             { some: 'transaction' },
           ],
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
+          },
         });
         expect(
           getByText('You have (2) pending transactions.'),
@@ -197,6 +260,13 @@ describe('TransactionAlerts', () => {
         const { queryByText } = render({
           useGasFeeContextValue: { supportsEIP1559: true },
           submittedPendingTransactionsSelectorValue: [],
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
+          },
         });
         expect(
           queryByText('You have (0) pending transactions.'),
@@ -211,6 +281,13 @@ describe('TransactionAlerts', () => {
             supportsEIP1559: true,
             balanceError: false,
           },
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
+          },
         });
         expect(queryByText('Insufficient funds.')).not.toBeInTheDocument();
       });
@@ -222,6 +299,13 @@ describe('TransactionAlerts', () => {
           useGasFeeContextValue: {
             supportsEIP1559: true,
             estimateUsed: 'low',
+          },
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
           },
         });
         expect(
@@ -237,6 +321,13 @@ describe('TransactionAlerts', () => {
             supportsEIP1559: true,
             estimateUsed: 'something_else',
           },
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
+          },
         });
         expect(
           queryByText('Future transactions will queue after this one.'),
@@ -250,6 +341,13 @@ describe('TransactionAlerts', () => {
           useGasFeeContextValue: {
             supportsEIP1559: true,
             isNetworkBusy: true,
+          },
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
           },
         });
         expect(
@@ -266,6 +364,13 @@ describe('TransactionAlerts', () => {
           useGasFeeContextValue: {
             supportsEIP1559: true,
             isNetworkBusy: false,
+          },
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
           },
         });
         expect(
@@ -285,6 +390,13 @@ describe('TransactionAlerts', () => {
             supportsEIP1559: false,
             hasSimulationError: true,
           },
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
+          },
         });
 
         expect(
@@ -300,6 +412,13 @@ describe('TransactionAlerts', () => {
         const { queryByText } = render({
           useGasFeeContextValue: { supportsEIP1559: false },
           submittedPendingTransactionsSelectorValue: [{ some: 'transaction' }],
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
+          },
         });
         expect(
           queryByText('You have (1) pending transaction.'),
@@ -314,6 +433,13 @@ describe('TransactionAlerts', () => {
             supportsEIP1559: false,
             balanceError: true,
           },
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
+          },
         });
         expect(queryByText('Insufficient funds.')).not.toBeInTheDocument();
       });
@@ -325,6 +451,13 @@ describe('TransactionAlerts', () => {
           useGasFeeContextValue: {
             supportsEIP1559: false,
             estimateUsed: 'low',
+          },
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
           },
         });
         expect(
@@ -342,6 +475,13 @@ describe('TransactionAlerts', () => {
             supportsEIP1559: false,
             isNetworkBusy: true,
           },
+          componentProps: {
+            txData: {
+              txParams: {
+                value: '0x1',
+              },
+            },
+          },
         });
         expect(
           queryByText(
@@ -349,6 +489,87 @@ describe('TransactionAlerts', () => {
           ),
         ).not.toBeInTheDocument();
       });
+    });
+  });
+
+  describe('when sending zero amount it should display a warning', () => {
+    it('should display alert if sending zero tokens', () => {
+      // Mock
+      const testTokenData = {
+        args: 'decoded-param',
+      };
+      const testTokenValue = '0';
+
+      const parseStandardTokenTransactionDataStub = sinon.stub(
+        txUtil,
+        'parseStandardTokenTransactionData',
+      );
+      const getTokenValueStub = sinon.stub(
+        metamaskControllerUtils,
+        'getTokenValueParam',
+      );
+
+      parseStandardTokenTransactionDataStub.callsFake(() => testTokenData);
+      getTokenValueStub.callsFake(() => testTokenValue);
+      // render
+      const { getByText } = render({
+        componentProps: {
+          txData: {
+            txParams: {
+              value: '0x0',
+            },
+            type: 'transfer',
+          },
+          tokenSymbol: 'DAI',
+        },
+      });
+      // assert
+      expect(getByText('You are sending 0 DAI.')).toBeInTheDocument();
+    });
+
+    it('should display alert if sending zero of native currency', () => {
+      const { getByText } = render({
+        componentProps: {
+          txData: {
+            txParams: {
+              value: '0x0',
+            },
+            type: 'simpleSend',
+          },
+          tokenSymbol: undefined,
+        },
+      });
+      expect(getByText('You are sending 0 ETH.')).toBeInTheDocument();
+    });
+  });
+
+  describe('when sending amount different than zero should not display alert', () => {
+    it('should not display alerts if sending amount different than zero in native currency', () => {
+      const { queryByText } = render({
+        componentProps: {
+          txData: {
+            txParams: {
+              value: '0x5af3107a4000',
+            },
+          },
+          tokenSymbol: undefined,
+        },
+      });
+      expect(queryByText('You are sending 0 ETH.')).not.toBeInTheDocument();
+    });
+
+    it('should not display alerts if sending amount different than zero in tokens', () => {
+      const { queryByText } = render({
+        componentProps: {
+          txData: {
+            txParams: {
+              value: '0x0',
+            },
+          },
+          tokenSymbol: 'DAI',
+        },
+      });
+      expect(queryByText('You are sending 0 DAI.')).not.toBeInTheDocument();
     });
   });
 });

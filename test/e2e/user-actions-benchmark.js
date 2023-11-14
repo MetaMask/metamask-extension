@@ -7,7 +7,11 @@ const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
-const { convertToHexValue, withFixtures } = require('./helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openActionMenuAndStartSendFlow,
+} = require('./helpers');
 const FixtureBuilder = require('./fixture-builder');
 
 const ganacheOptions = {
@@ -34,6 +38,9 @@ async function loadNewAccount() {
       await driver.press('#password', driver.Key.ENTER);
 
       await driver.clickElement('[data-testid="account-menu-icon"]');
+      await driver.clickElement(
+        '[data-testid="multichain-account-menu-popover-action-button"]',
+      );
       const timestampBeforeAction = new Date();
       await driver.clickElement(
         '[data-testid="multichain-account-menu-popover-add-account"]',
@@ -63,8 +70,10 @@ async function confirmTx() {
       await driver.fill('#password', 'correct horse battery staple');
       await driver.press('#password', driver.Key.ENTER);
 
-      await driver.clickElement('[data-testid="eth-overview-send"]');
-
+      await openActionMenuAndStartSendFlow(driver);
+      if (process.env.MULTICHAIN) {
+        return;
+      }
       await driver.fill(
         'input[placeholder="Enter public address (0x) or ENS name"]',
         '0x2f318C334780961FB129D2a6c30D0763d9a5C970',

@@ -85,7 +85,9 @@ export default function NftDetails({ nft }) {
     (state) => getSelectedIdentity(state).name,
   );
   const nftImageAlt = getNftImageAlt(nft);
+  const nftSrcUrl = imageOriginal ?? image;
   const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
+  const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
   const isImageHosted = image?.startsWith('https:');
 
   const formattedTimestamp = formatDate(
@@ -194,6 +196,7 @@ export default function NftDetails({ nft }) {
               tokenId={tokenId}
               networkName={currentChain.nickname}
               networkSrc={currentChain.rpcPrefs?.imageUrl}
+              isIpfsURL={isIpfsURL}
               clickable
             />
           </Box>

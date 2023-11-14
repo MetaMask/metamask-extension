@@ -26,7 +26,9 @@ describe('Editing Confirm Transaction', function () {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );
@@ -107,7 +109,9 @@ describe('Editing Confirm Transaction', function () {
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );

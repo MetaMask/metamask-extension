@@ -19,6 +19,7 @@ describe('MMIController', function () {
       })),
       registerActionHandler: jest.fn(),
       publish: jest.fn(),
+      subscribe: jest.fn(),
     };
 
     mmiController = new MMIController({
@@ -40,7 +41,6 @@ describe('MMIController', function () {
           type: 'rinkeby',
         },
         getCurrentChainId: jest.fn(),
-        getNetworkId: jest.fn(),
         onNetworkStateChange: jest.fn(),
       }),
       signatureController: new SignatureController({
@@ -73,9 +73,6 @@ describe('MMIController', function () {
               autoLockTimeLimit: 0,
             },
           })),
-        },
-        qrHardwareStore: {
-          subscribe: jest.fn(),
         },
         messenger: mockMessenger,
       }),

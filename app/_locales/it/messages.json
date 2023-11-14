@@ -380,9 +380,6 @@
   "busy": {
     "message": "Occupato"
   },
-  "buy": {
-    "message": "Compra"
-  },
   "buyAsset": {
     "message": "Compra $1",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"

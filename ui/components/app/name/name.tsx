@@ -1,67 +1,66 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { NameType } from '@metamask/name-controller';
 import classnames from 'classnames';
-import { useDispatch } from 'react-redux';
+import { toChecksumAddress } from 'ethereumjs-util';
 import { Icon, IconName, IconSize } from '../../component-library';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { useName } from '../../../hooks/useName';
-import { updateProposedNames } from '../../../store/actions';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import NameDetails from './name-details/name-details';
-
-const DEFAULT_UPDATE_DELAY = 60 * 5; // 5 Minutes
 
 export interface NameProps {
   /** Whether to prevent the modal from opening when the component is clicked. */
   disableEdit?: boolean;
 
-  /** Whether to disable updating the proposed names on render. */
-  disableUpdate?: boolean;
-
-  /** The order of source IDs to prioritise when choosing which proposed name to display. */
-  sourcePriority?: string[];
+  /** Whether this is being rendered inside the NameDetails modal. */
+  internal?: boolean;
 
   /** The type of value, e.g. NameType.ETHEREUM_ADDRESS */
   type: NameType;
-
-  /** The minimum number of seconds to wait between updates of the proposed names on render. */
-  updateDelay?: number;
 
   /** The raw value to display the name of. */
   value: string;
 }
 
+function formatValue(value: string, type: NameType): string {
+  switch (type) {
+    case NameType.ETHEREUM_ADDRESS:
+      return shortenAddress(toChecksumAddress(value));
+
+    default:
+      return value;
+  }
+}
+
 export default function Name({
   value,
   type,
-  sourcePriority,
   disableEdit,
-  updateDelay,
-  disableUpdate,
+  internal,
 }: NameProps) {
   const [modalOpen, setModalOpen] = useState(false);
-  const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
-  const { name, proposedNames, proposedNamesLastUpdated } = useName(
-    value,
-    type,
-  );
+  const { name } = useName(value, type);
 
   useEffect(() => {
-    if (disableUpdate) {
+    if (internal) {
       return;
     }
 
-    const nowMilliseconds = Date.now();
-    const nowSeconds = Math.floor(nowMilliseconds / 1000);
-    const secondsSinceLastUpdate = nowSeconds - (proposedNamesLastUpdated ?? 0);
-    const delay = updateDelay ?? DEFAULT_UPDATE_DELAY;
-
-    if (secondsSinceLastUpdate < delay) {
-      return;
-    }
-
-    dispatch(updateProposedNames({ value, type }));
-  });
+    trackEvent({
+      event: MetaMetricsEventName.PetnameDisplayed,
+      category: MetaMetricsEventCategory.Petnames,
+      properties: {
+        petname_category: type,
+        has_petname: Boolean(name?.length),
+      },
+    });
+  }, []);
 
   const handleClick = useCallback(() => {
     setModalOpen(true);
@@ -71,23 +70,8 @@ export default function Name({
     setModalOpen(false);
   }, [setModalOpen]);
 
-  const proposedName = useMemo((): string | undefined => {
-    for (const sourceId of sourcePriority ?? []) {
-      const sourceProposedNames = proposedNames[sourceId] ?? [];
-
-      if (sourceProposedNames.length) {
-        return sourceProposedNames[0];
-      }
-    }
-
-    return undefined;
-  }, [proposedNames, sourcePriority]);
-
-  const formattedValue =
-    type === NameType.ETHEREUM_ADDRESS ? shortenAddress(value) : value;
-
+  const formattedValue = formatValue(value, type);
   const hasName = Boolean(name);
-  const hasProposedName = Boolean(proposedName);
   const iconName = hasName ? IconName.Save : IconName.Warning;
 
   return (
@@ -106,9 +90,6 @@ export default function Name({
         <Icon name={iconName} className="name__icon" size={IconSize.Lg} />
         {!hasName && <span className="name__value">{formattedValue}</span>}
         {hasName && <span className="name__name">{name}</span>}
-        {!hasName && hasProposedName && (
-          <span className="name__proposed">“{proposedName}”</span>
-        )}
       </div>
     </div>
   );

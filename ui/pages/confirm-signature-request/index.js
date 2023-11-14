@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import log from 'loglevel';
@@ -60,7 +60,6 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTypedMessages,
-    networkId,
     blockGasLimit,
   } = useSelector((state) => state.metamask);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
@@ -81,82 +80,95 @@ const ConfirmTxScreen = ({ match }) => {
       {},
       {},
       {},
-      networkId,
+      {},
+      {},
       chainId,
     );
     if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
       navigateToMostRecentOverviewPage();
     }
-  }, []);
-
-  useEffect(() => {
-    if (!prevValue) {
-      setPrevValues({ index, unapprovedTxs });
-      return;
-    }
-
-    let prevTx;
-    const { params: { id: transactionId } = {} } = match;
-    if (transactionId) {
-      prevTx = currentNetworkTxList.find(({ id }) => `${id}` === transactionId);
-    } else {
-      const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } = prevValue;
-      const prevUnconfTxList = txHelper(
-        prevUnapprovedTxs,
-        {},
-        {},
-        {},
-        networkId,
-        chainId,
-      );
-      const prevTxData = prevUnconfTxList[prevIndex] || {};
-      prevTx =
-        currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {};
-    }
-
-    const unconfTxList = txHelper(
-      unapprovedTxs || {},
-      {},
-      {},
-      {},
-      networkId,
-      chainId,
-    );
-
-    if (prevTx && prevTx.status === TransactionStatus.dropped) {
-      dispatch(
-        actions.showModal({
-          name: 'TRANSACTION_CONFIRMED',
-          onSubmit: () => navigateToMostRecentOverviewPage(),
-        }),
-      );
-      return;
-    }
-
-    if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
-      navigateToMostRecentOverviewPage();
-    }
-
-    setPrevValues({ index, unapprovedTxs });
   }, [
     chainId,
-    currentNetworkTxList,
-    match,
-    networkId,
+    navigateToMostRecentOverviewPage,
     sendTo,
     unapprovedMessagesTotal,
     unapprovedTxs,
   ]);
 
-  const getTxData = () => {
+  useEffect(
+    () => {
+      if (!prevValue) {
+        setPrevValues({ index, unapprovedTxs });
+        return;
+      }
+
+      let prevTx;
+      const { params: { id: transactionId } = {} } = match;
+      if (transactionId) {
+        prevTx = currentNetworkTxList.find(
+          ({ id }) => `${id}` === transactionId,
+        );
+      } else {
+        const { index: prevIndex, unapprovedTxs: prevUnapprovedTxs } =
+          prevValue;
+        const prevUnconfTxList = txHelper(
+          prevUnapprovedTxs,
+          {},
+          {},
+          {},
+          {},
+          {},
+          chainId,
+        );
+        const prevTxData = prevUnconfTxList[prevIndex] || {};
+        prevTx =
+          currentNetworkTxList.find(({ id }) => id === prevTxData.id) || {};
+      }
+
+      const unconfTxList = txHelper(
+        unapprovedTxs || {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        chainId,
+      );
+
+      if (prevTx && prevTx.status === TransactionStatus.dropped) {
+        dispatch(
+          actions.showModal({
+            name: 'TRANSACTION_CONFIRMED',
+            onSubmit: () => navigateToMostRecentOverviewPage(),
+          }),
+        );
+        return;
+      }
+
+      if (
+        unconfTxList.length === 0 &&
+        !sendTo &&
+        unapprovedMessagesTotal === 0
+      ) {
+        navigateToMostRecentOverviewPage();
+      }
+
+      setPrevValues({ index, unapprovedTxs });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const getTxData = useCallback(() => {
     const { params: { id: transactionId } = {} } = match;
 
     const unconfTxList = txHelper(
       unapprovedTxs || {},
       unapprovedMsgs,
       unapprovedPersonalMsgs,
+      {},
+      {},
       unapprovedTypedMessages,
-      networkId,
       chainId,
     );
 
@@ -166,17 +178,23 @@ const ConfirmTxScreen = ({ match }) => {
       ? unconfTxList.find(({ id }) => `${id}` === transactionId)
       : unconfTxList[index];
     return cloneDeep(unconfirmedTx);
-  };
+  }, [
+    chainId,
+    index,
+    match,
+    unapprovedMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedTxs,
+    unapprovedTypedMessages,
+  ]);
 
-  const txData = getTxData() || {};
-
-  const { msgParams } = txData;
+  const txData = useMemo(() => getTxData() || {}, [getTxData]);
 
   const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, msgParams?.origin),
+    getTargetSubjectMetadata(state, txData.msgParams?.origin),
   );
 
-  if (!msgParams) {
+  if (!txData.msgParams) {
     return <Loading />;
   }
 

@@ -26,10 +26,12 @@ import {
   SecurityProvider,
   SECURITY_PROVIDER_CONFIG,
 } from '../../../../shared/constants/security-provider';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 function SecurityProviderBannerAlert({
   description,
   details,
+  onClickSupportLink,
   provider,
   severity,
   title,
@@ -49,6 +51,19 @@ function SecurityProviderBannerAlert({
       {details && (
         <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
           {details}
+          <Text marginTop={3} display={Display.Flex}>
+            {t('somethingDoesntLookRight', [
+              <ButtonLink
+                key={`security-provider-button-supporturl-${provider}`}
+                size={Size.inherit}
+                href={ZENDESK_URLS.SUPPORT_URL}
+                externalLink
+                onClick={onClickSupportLink}
+              >
+                {t('contactUs')}
+              </ButtonLink>,
+            ])}
+          </Text>
         </Disclosure>
       )}
 
@@ -103,6 +118,9 @@ SecurityProviderBannerAlert.propTypes = {
 
   /** Name of the security provider */
   provider: PropTypes.oneOf(Object.values(SecurityProvider)),
+
+  /** Function to be called when the support link is clicked */
+  onClickSupportLink: PropTypes.func,
 };
 
 export default SecurityProviderBannerAlert;

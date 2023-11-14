@@ -8,14 +8,14 @@ exports[`error template matches the snapshot 1`] = `
     <div
       class="confirmation-page__content"
     >
+      <h2
+        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h2 typography--weight-normal typography--style-normal typography--color-text-default"
+      >
+        Error mock
+      </h2>
       <div
         class="box box--padding-4 box--flex-direction-column box--align-items-center box--height-full box--display-flex"
       >
-        <h2
-          class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h2 typography--weight-normal typography--style-normal typography--color-text-default"
-        >
-          Error mock
-        </h2>
         <div
           class="box box--padding-top-2 box--padding-bottom-2 box--flex-direction-column box--justify-content-center box--align-items-center box--height-full box--display-flex"
         >
@@ -33,7 +33,7 @@ exports[`error template matches the snapshot 1`] = `
             Error
           </h3>
           <div
-            class="box box--flex-direction-row box--align-items-center box--text-align-center box--display-flex"
+            class="box box--gap-1 box--flex-direction-row box--align-items-center box--text-align-center box--display-flex"
           >
             <div
               class="actionable-message actionable-message--danger"
@@ -57,8 +57,7 @@ exports[`error template matches the snapshot 1`] = `
       >
         <button
           class="button btn--rounded btn-primary centered"
-          role="button"
-          tabindex="0"
+          data-testid="confirmation-submit-button"
         >
           Ok
         </button>

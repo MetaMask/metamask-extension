@@ -6,6 +6,6 @@ export default {
   component: BalanceOverview,
 };
 
-export const DefaultStory = () => <BalanceOverview />;
+export const DefaultStory = () => <BalanceOverview balance="14ba1e6a08a9ec" />;
 
 DefaultStory.storyName = 'Default';
