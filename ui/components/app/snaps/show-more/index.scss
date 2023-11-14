@@ -1,0 +1,9 @@
+.show-more {
+  &__wrapper {
+    max-height: 5.5rem;
+
+    @include screen-md-min {
+      max-height: 6rem;
+    }
+  }
+}

@@ -1,69 +1,122 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Box from '../../../ui/box';
-import Typography from '../../../ui/typography';
 import {
   AlignItems,
   BorderRadius,
   JustifyContent,
-  OVERFLOW_WRAP,
-  FLEX_DIRECTION,
-  TypographyVariant,
   BackgroundColor,
   TextColor,
   Color,
+  TextVariant,
+  Display,
+  OverflowWrap,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import { Icon, IconName, IconSize } from '../../../component-library';
+import {
+  Icon,
+  IconName,
+  IconSize,
+  Box,
+  Text,
+} from '../../../component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import Tooltip from '../../../ui/tooltip';
+import { ShowMore } from '../show-more';
 
-export const Copyable = ({ text }) => {
+export const Copyable = ({ text, sensitive = false }) => {
+  const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
+  const [visible, setIsVisible] = useState(false);
+
+  const handleVisibilityClick = () => setIsVisible(!visible);
+  const handleCopyClick = () => {
+    if (!copied) {
+      handleCopy(text);
+    }
+  };
   return (
     <Box
+      display={Display.Flex}
       className="copyable"
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      alignItems={AlignItems.stretch}
-      justifyContent={JustifyContent.spaceBetween}
-      borderRadius={BorderRadius.SM}
-      paddingLeft={4}
-      paddingRight={4}
-      paddingTop={2}
-      paddingBottom={2}
+      backgroundColor={
+        visible
+          ? BackgroundColor.errorMuted
+          : BackgroundColor.backgroundAlternative
+      }
+      borderRadius={BorderRadius.LG}
+      padding={4}
     >
-      <Typography
-        variant={TypographyVariant.H6}
-        color={TextColor.textAlternative}
-        marginRight={2}
-        overflowWrap={OVERFLOW_WRAP.ANYWHERE}
-      >
-        {text}
-      </Typography>
-      <Box
-        flexDirection={FLEX_DIRECTION.COLUMN}
-        alignItems={AlignItems.center}
-        justifyContent={JustifyContent.flexStart}
-        marginTop={2}
-        marginBottom={1}
-      >
-        {copied ? (
-          <Icon
-            name={IconName.CopySuccess}
-            size={IconSize.Lg}
-            color={Color.iconAlternative}
-          />
-        ) : (
-          <Icon
-            name={IconName.Copy}
-            size={IconSize.Lg}
-            color={Color.iconAlternative}
-            onClick={() => handleCopy(text)}
-          />
-        )}
-      </Box>
+      {sensitive && (
+        <Box
+          marginRight={4}
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+        >
+          <Tooltip
+            wrapperClassName="copyable__tooltip"
+            html={
+              <Text>
+                {visible ? t('hideSentitiveInfo') : t('revealSensitiveContent')}
+              </Text>
+            }
+            position="bottom"
+          >
+            <Icon
+              name={visible ? IconName.EyeSlash : IconName.Eye}
+              onClick={handleVisibilityClick}
+              color={
+                visible ? Color.errorAlternative : IconColor.iconAlternative
+              }
+            />
+          </Tooltip>
+        </Box>
+      )}
+      {sensitive && !visible && (
+        <Text
+          variant={TextVariant.bodyMd}
+          color={Color.textAlternative}
+          marginRight={4}
+          marginBottom={0}
+          overflowWrap={OverflowWrap.Anywhere}
+        >
+          {t('revealSensitiveContent')}
+        </Text>
+      )}
+      {(!sensitive || (sensitive && visible)) && (
+        <ShowMore
+          marginRight={4}
+          buttonBackground={
+            visible
+              ? BackgroundColor.errorMuted
+              : BackgroundColor.backgroundAlternative
+          }
+        >
+          <Text
+            variant={TextVariant.bodyMd}
+            color={visible ? Color.errorAlternative : TextColor.textAlternative}
+            marginBottom={0}
+            overflowWrap={OverflowWrap.Anywhere}
+          >
+            {text}
+          </Text>
+        </ShowMore>
+      )}
+      {(!sensitive || (sensitive && visible)) && (
+        <Icon
+          className="copyable__icon"
+          name={copied ? IconName.CopySuccess : IconName.Copy}
+          size={IconSize.Lg}
+          color={visible ? Color.errorAlternative : IconColor.iconAlternative}
+          onClick={handleCopyClick}
+          marginLeft="auto"
+        />
+      )}
     </Box>
   );
 };
 
 Copyable.propTypes = {
   text: PropTypes.string,
+  sensitive: PropTypes.bool,
 };
