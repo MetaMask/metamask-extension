@@ -4720,6 +4720,9 @@
   "suggestedBy": {
     "message": "Suggested by"
   },
+  "suggestedTokenSymbol":{
+    "message": "Suggested ticker symbol:"
+  },
   "support": {
     "message": "Support"
   },

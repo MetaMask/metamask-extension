@@ -42,6 +42,11 @@ import {
   showModal,
   upsertNetworkConfiguration,
 } from '../../../../store/actions';
+import { Text } from '../../../../components/component-library';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -93,6 +98,7 @@ const NetworksForm = ({
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
   const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
+  const [suggestedTicker, setSuggestedTicker] = useState('');
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     selectedNetwork?.blockExplorerUrl || '',
   );
@@ -407,6 +413,7 @@ const NetworksForm = ({
             warningMessage = t('chainListReturnedDifferentTickerSymbol', [
               returnedTickerSymbol,
             ]);
+            setSuggestedTicker(returnedTickerSymbol);
           }
         }
       }
@@ -704,6 +711,25 @@ const NetworksForm = ({
           value={ticker}
           disabled={viewOnly}
         />
+        {suggestedTicker ? (
+          <Text
+            as="span"
+            variant={TextVariant.bodySm}
+            color={TextColor.textDefault}
+          >
+            Suggested ticker symbol:{' '}
+            <Text
+              as="span"
+              variant={TextVariant.bodySm}
+              color={TextColor.primaryDefault}
+              onClick={() => {
+                setTicker(suggestedTicker);
+              }}
+            >
+              {suggestedTicker}
+            </Text>
+          </Text>
+        ) : null}
         <FormField
           error={errors.blockExplorerUrl?.msg || ''}
           onChange={(value) => {
