@@ -55,25 +55,6 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
       }
     };
 
-    const handleBlur = (e: any) => {
-      const wrapper = wrapperRef.current;
-      const { relatedTarget } = e;
-
-      if (
-        wrapper &&
-        !wrapper.contains(relatedTarget) &&
-        !popoverRef.current?.contains(relatedTarget)
-      ) {
-        console.log('the if in handleBlur ran');
-        setIsUncontrolledOpen(false);
-        if (onOpenChange) {
-          onOpenChange(false);
-        }
-      }
-      if (onBlur) {
-        onBlur(e);
-      }
-    };
 
     return (
       <SelectContext.Provider
