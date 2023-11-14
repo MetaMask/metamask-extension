@@ -115,7 +115,8 @@ describe('Test Snap manageState', function () {
         // repeat the same above steps to check unencrypted state management
         // enter data and send
         await driver.pasteIntoField('#dataUnencryptedManageState', '23');
-        await driver.scrollToElement(snapButton2);
+        const snapButton3 = await driver.findElement('#clearManageState');
+        await driver.scrollToElement(snapButton3);
         await driver.delay(1000);
         await driver.clickElement('#sendUnencryptedManageState');
 
