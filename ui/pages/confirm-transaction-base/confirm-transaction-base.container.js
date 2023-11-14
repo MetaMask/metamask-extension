@@ -54,6 +54,7 @@ import {
   getSendToAccounts,
   getProviderConfig,
   findKeyringForAddress,
+  getConversionRate,
 } from '../../ducks/metamask/metamask';
 import {
   addHexPrefix,
@@ -127,7 +128,8 @@ const mapStateToProps = (state, ownProps) => {
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
-  const { conversionRate, identities, addressBook, nextNonce } = metamask;
+  const conversionRate = getConversionRate(state);
+  const { identities, addressBook, nextNonce } = metamask;
   const unapprovedTxs = getUnapprovedTransactions(state);
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
