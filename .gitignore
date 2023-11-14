@@ -29,7 +29,8 @@ app/.DS_Store
 storybook-build/
 coverage/
 jest-coverage/
-dist
+dist/*
+!.yalc/dist
 builds/
 builds.zip
 development/ts-migration-dashboard/build
