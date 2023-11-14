@@ -3425,6 +3425,14 @@
     "message": "Let $1 access your preferred language from your MetaMask settings. This can be used to localize and display $1's content using your language.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
+  "permission_homePage": {
+    "message": "Display a custom screen",
+    "description": "The description for the `endowment:page-home` permission"
+  },
+  "permission_homePageDescription": {
+    "message": "Let $1 display a custom home screen in MetaMask. This can be used for user interfaces, configuration, and dashboards.",
+    "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
+  },
   "permission_keyring": {
     "message": "Allow requests for adding and controlling Ethereum accounts",
     "description": "The description for the `endowment:keyring` permission"
