@@ -1,7 +1,7 @@
 import {
   createScaffoldMiddleware,
   mergeMiddleware,
-} from '@metamask/json-rpc-engine';
+} from 'json-rpc-engine';
 import { createWalletMiddleware } from '@metamask/eth-json-rpc-middleware';
 import {
   createPendingNonceMiddleware,
