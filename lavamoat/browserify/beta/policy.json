@@ -36,15 +36,15 @@
     },
     "@ensdomains/content-hash>cids>multicodec": {
       "packages": {
-        "@ensdomains/content-hash>cids>multicodec>varint": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true
+        "@ensdomains/content-hash>cids>uint8arrays": true,
+        "@ensdomains/content-hash>multicodec>varint": true
       }
     },
     "@ensdomains/content-hash>cids>multihashes": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
-        "@ensdomains/content-hash>cids>uint8arrays": true,
-        "@ensdomains/content-hash>multihashes>varint": true
+        "@ensdomains/content-hash>cids>multihashes>varint": true,
+        "@ensdomains/content-hash>cids>uint8arrays": true
       }
     },
     "@ensdomains/content-hash>cids>uint8arrays": {
@@ -768,7 +768,6 @@
         "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console.info": true,
         "console.log": true,
         "setInterval": true,
         "setTimeout": true
@@ -778,13 +777,13 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/assets-controllers>@metamask/abi-utils": true,
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/metamask-eth-abis": true,
+        "@metamask/polling-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "eth-json-rpc-filters>async-mutex": true,
@@ -798,18 +797,6 @@
       "packages": {
         "@metamask/utils": true,
         "superstruct": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "uuid": true
       }
     },
     "@metamask/assets-controllers>multiformats": {
@@ -899,40 +886,24 @@
       },
       "packages": {
         "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": true,
-        "@metamask/eth-json-rpc-middleware>@metamask/utils": true,
-        "@metamask/eth-json-rpc-middleware>clone": true,
-        "@metamask/eth-json-rpc-middleware>pify": true,
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
-        "eth-rpc-errors": true,
-        "json-rpc-engine": true
+        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "pify": true,
+        "sass-loader>klona": true
       }
     },
     "@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "bn.js": true,
+        "@metamask/assets-controllers>@metamask/abi-utils": true,
+        "@metamask/utils": true,
         "browserify>buffer": true,
         "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "eth-sig-util>tweetnacl": true,
         "eth-sig-util>tweetnacl-util": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/eth-json-rpc-middleware>clone": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "@metamask/eth-keyring-controller": {
@@ -1567,7 +1538,7 @@
       "packages": {
         "@metamask/keyring-controller>ethereumjs-wallet>ethereum-cryptography": true,
         "@metamask/keyring-controller>ethereumjs-wallet>ethereumjs-util": true,
-        "@truffle/codec>utf8": true,
+        "@metamask/keyring-controller>ethereumjs-wallet>utf8": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
         "eth-lattice-keyring>gridplus-sdk>aes-js": true,
@@ -1683,9 +1654,9 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
+        "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-query": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
         "@metamask/network-controller>eth-block-tracker": true,
@@ -1701,59 +1672,25 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "node-fetch": true
       }
     },
-    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider": {
+    "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
       "packages": {
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": true,
         "@metamask/providers>@metamask/json-rpc-engine": true
       }
     },
-    "@metamask/network-controller>@metamask/eth-json-rpc-infura>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": {
+    "@metamask/network-controller>@metamask/eth-json-rpc-provider>@metamask/safe-event-emitter": {
       "globals": {
         "setTimeout": true
       },
       "packages": {
         "webpack>events": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "pify": true,
-        "sass-loader>klona": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-middleware>@metamask/eth-sig-util": {
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "@metamask/assets-controllers>@metamask/abi-utils": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
-        "eth-sig-util>tweetnacl": true,
-        "eth-sig-util>tweetnacl-util": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
-      "packages": {
-        "@metamask/network-controller>eth-block-tracker>@metamask/safe-event-emitter": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true
       }
     },
     "@metamask/network-controller>eth-block-tracker": {
@@ -1971,40 +1908,10 @@
         "@ethersproject/bignumber": true,
         "@ethersproject/providers": true,
         "@metamask/base-controller": true,
-        "@metamask/smart-transactions-controller>@metamask/controller-utils": true,
+        "@metamask/controller-utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
         "fast-json-patch": true,
         "lodash": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/controller-utils": {
-      "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/smart-transactions-controller>@metamask/controller-utils>@metamask/utils": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true
-      }
-    },
-    "@metamask/smart-transactions-controller>@metamask/controller-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/smart-transactions-controller>@metamask/controllers>nanoid": {
@@ -2033,35 +1940,32 @@
         "@metamask/key-tree": true,
         "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-ui": true,
+        "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/utils>@noble/hashes": true,
         "superstruct": true
       }
     },
-    "@metamask/snaps-ui": {
-      "globals": {
-        "URL": true
-      },
+    "@metamask/snaps-sdk": {
       "packages": {
-        "@metamask/snaps-ui>is-svg": true,
+        "@metamask/snaps-sdk>is-svg": true,
         "@metamask/utils": true,
         "superstruct": true
       }
     },
-    "@metamask/snaps-ui>is-svg": {
+    "@metamask/snaps-sdk>is-svg": {
       "packages": {
-        "@metamask/snaps-ui>is-svg>fast-xml-parser": true
+        "@metamask/snaps-sdk>is-svg>fast-xml-parser": true
       }
     },
-    "@metamask/snaps-ui>is-svg>fast-xml-parser": {
+    "@metamask/snaps-sdk>is-svg>fast-xml-parser": {
       "globals": {
         "entityName": true,
         "val": true
       },
       "packages": {
-        "@metamask/snaps-ui>is-svg>fast-xml-parser>strnum": true
+        "@metamask/snaps-sdk>is-svg>fast-xml-parser>strnum": true
       }
     },
     "@metamask/snaps-utils": {
@@ -2071,6 +1975,7 @@
         "console.error": true,
         "console.log": true,
         "console.warn": true,
+        "crypto": true,
         "document.body.appendChild": true,
         "document.createElement": true
       },
@@ -2078,8 +1983,8 @@
         "@metamask/key-tree": true,
         "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-ui": true,
-        "@metamask/snaps-ui>is-svg": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/snaps-sdk>is-svg": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>rfdc": true,
@@ -2357,457 +2262,6 @@
     "@storybook/addon-knobs>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
-      }
-    },
-    "@truffle/codec": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils": true,
-        "@truffle/codec>@truffle/compile-common": true,
-        "@truffle/codec>big.js": true,
-        "@truffle/codec>cbor": true,
-        "@truffle/codec>utf8": true,
-        "@truffle/codec>web3-utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "browserify>os-browserify": true,
-        "browserify>util": true,
-        "lodash": true,
-        "nock>debug": true,
-        "semver": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case": true,
-        "@truffle/codec>@truffle/abi-utils>fast-check": true,
-        "@truffle/codec>web3-utils": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>camel-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>constant-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>dot-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>header-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>is-lower-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>is-upper-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>lower-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>lower-case-first": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>no-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>param-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>pascal-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>path-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>sentence-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>snake-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>swap-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>title-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case-first": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>camel-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>no-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>constant-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>snake-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>dot-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>no-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>header-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>no-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>is-lower-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>lower-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>is-upper-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>lower-case-first": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>lower-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>no-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>lower-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>param-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>no-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>pascal-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>camel-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case-first": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>path-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>no-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>sentence-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>no-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case-first": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>snake-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>no-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>swap-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>lower-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>title-case": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>no-case": true,
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>change-case>upper-case-first": {
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>change-case>upper-case": true
-      }
-    },
-    "@truffle/codec>@truffle/abi-utils>fast-check": {
-      "globals": {
-        "clearTimeout": true,
-        "console.log": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@truffle/codec>@truffle/abi-utils>fast-check>pure-rand": true,
-        "browserify>buffer": true
-      }
-    },
-    "@truffle/codec>@truffle/compile-common": {
-      "packages": {
-        "@truffle/codec>@truffle/compile-common>@truffle/error": true,
-        "@truffle/codec>@truffle/compile-common>colors": true,
-        "browserify>path-browserify": true
-      }
-    },
-    "@truffle/codec>@truffle/compile-common>colors": {
-      "globals": {
-        "console.log": true
-      },
-      "packages": {
-        "browserify>os-browserify": true,
-        "browserify>process": true,
-        "browserify>util": true
-      }
-    },
-    "@truffle/codec>big.js": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@truffle/codec>cbor": {
-      "globals": {
-        "TextDecoder": true
-      },
-      "packages": {
-        "@truffle/codec>cbor>bignumber.js": true,
-        "@truffle/codec>cbor>nofilter": true,
-        "browserify>buffer": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "browserify>url": true,
-        "browserify>util": true,
-        "stream-browserify": true
-      }
-    },
-    "@truffle/codec>cbor>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@truffle/codec>cbor>nofilter": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>util": true,
-        "stream-browserify": true
-      }
-    },
-    "@truffle/codec>web3-utils": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "@truffle/codec>utf8": true,
-        "@truffle/codec>web3-utils>ethereum-bloom-filters": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "ethereumjs-util": true,
-        "ethjs>ethjs-unit": true,
-        "ethjs>number-to-bn": true,
-        "mocha>serialize-javascript>randombytes": true
-      }
-    },
-    "@truffle/codec>web3-utils>ethereum-bloom-filters": {
-      "packages": {
-        "@truffle/codec>web3-utils>ethereum-bloom-filters>js-sha3": true
-      }
-    },
-    "@truffle/codec>web3-utils>ethereum-bloom-filters>js-sha3": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "@truffle/decoder": {
-      "packages": {
-        "@truffle/codec": true,
-        "@truffle/codec>@truffle/abi-utils": true,
-        "@truffle/codec>@truffle/compile-common": true,
-        "@truffle/codec>web3-utils": true,
-        "@truffle/decoder>@truffle/encoder": true,
-        "@truffle/decoder>@truffle/source-map-utils": true,
-        "bn.js": true,
-        "nock>debug": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/address": true,
-        "@ethersproject/bignumber": true,
-        "@truffle/codec": true,
-        "@truffle/codec>@truffle/abi-utils": true,
-        "@truffle/codec>@truffle/compile-common": true,
-        "@truffle/codec>big.js": true,
-        "@truffle/codec>web3-utils": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs": true,
-        "@truffle/decoder>@truffle/encoder>bignumber.js": true,
-        "lodash": true,
-        "nock>debug": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs": {
-      "globals": {
-        "console.log": true,
-        "console.warn": true,
-        "registries": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>@ensdomains/address-encoder": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>@ensdomains/ens": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>@ensdomains/resolver": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>js-sha3": true,
-        "browserify>buffer": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check>bs58": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>@ensdomains/address-encoder": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "bn.js": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "ethereumjs-util>create-hash>ripemd160": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash": {
-      "packages": {
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>cids": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>multicodec": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>multihashes": true,
-        "browserify>buffer": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>cids": {
-      "packages": {
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>cids>class-is": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>cids>multibase": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>cids>multicodec": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>multihashes": true,
-        "browserify>buffer": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>cids>multibase": {
-      "packages": {
-        "@ensdomains/content-hash>multihashes>multibase>base-x": true,
-        "browserify>buffer": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>cids>multicodec": {
-      "packages": {
-        "@ensdomains/content-hash>multihashes>varint": true,
-        "browserify>buffer": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>multicodec": {
-      "packages": {
-        "@ensdomains/content-hash>multihashes>varint": true,
-        "browserify>buffer": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>multihashes": {
-      "packages": {
-        "@ensdomains/content-hash>multihashes>varint": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>multihashes>multibase": true,
-        "browserify>buffer": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>content-hash>multihashes>multibase": {
-      "packages": {
-        "@ensdomains/content-hash>multihashes>multibase>base-x": true,
-        "browserify>buffer": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers": {
-      "packages": {
-        "@ethersproject/abi": true,
-        "@ethersproject/abi>@ethersproject/address": true,
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/constants": true,
-        "@ethersproject/abi>@ethersproject/hash": true,
-        "@ethersproject/abi>@ethersproject/keccak256": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/properties": true,
-        "@ethersproject/abi>@ethersproject/strings": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/hdnode": true,
-        "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
-        "@ethersproject/hdnode>@ethersproject/basex": true,
-        "@ethersproject/hdnode>@ethersproject/sha2": true,
-        "@ethersproject/hdnode>@ethersproject/signing-key": true,
-        "@ethersproject/hdnode>@ethersproject/transactions": true,
-        "@ethersproject/hdnode>@ethersproject/wordlists": true,
-        "@ethersproject/providers": true,
-        "@ethersproject/providers>@ethersproject/base64": true,
-        "@ethersproject/providers>@ethersproject/random": true,
-        "@ethersproject/providers>@ethersproject/rlp": true,
-        "@ethersproject/providers>@ethersproject/web": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/json-wallets": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/solidity": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/units": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/wallet": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/json-wallets": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/address": true,
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/keccak256": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/properties": true,
-        "@ethersproject/abi>@ethersproject/strings": true,
-        "@ethersproject/hdnode": true,
-        "@ethersproject/hdnode>@ethersproject/pbkdf2": true,
-        "@ethersproject/hdnode>@ethersproject/transactions": true,
-        "@ethersproject/providers>@ethersproject/random": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/json-wallets>aes-js": true,
-        "ethereumjs-util>ethereum-cryptography>scrypt-js": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/json-wallets>aes-js": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/solidity": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/keccak256": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/strings": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/hdnode>@ethersproject/sha2": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/units": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/bignumber": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/wallet": {
-      "packages": {
-        "@ethersproject/abi>@ethersproject/address": true,
-        "@ethersproject/abi>@ethersproject/bytes": true,
-        "@ethersproject/abi>@ethersproject/hash": true,
-        "@ethersproject/abi>@ethersproject/keccak256": true,
-        "@ethersproject/abi>@ethersproject/logger": true,
-        "@ethersproject/abi>@ethersproject/properties": true,
-        "@ethersproject/contracts>@ethersproject/abstract-provider": true,
-        "@ethersproject/hdnode": true,
-        "@ethersproject/hdnode>@ethersproject/abstract-signer": true,
-        "@ethersproject/hdnode>@ethersproject/signing-key": true,
-        "@ethersproject/hdnode>@ethersproject/transactions": true,
-        "@ethersproject/providers>@ethersproject/random": true,
-        "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>ethers>@ethersproject/json-wallets": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>@ensdomains/ensjs>js-sha3": {
-      "globals": {
-        "define": true
-      },
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "@truffle/decoder>@truffle/encoder>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@truffle/decoder>@truffle/source-map-utils": {
-      "packages": {
-        "@truffle/codec": true,
-        "@truffle/codec>web3-utils": true,
-        "@truffle/decoder>@truffle/source-map-utils>@truffle/code-utils": true,
-        "@truffle/decoder>@truffle/source-map-utils>json-pointer": true,
-        "@truffle/decoder>@truffle/source-map-utils>node-interval-tree": true,
-        "nock>debug": true
-      }
-    },
-    "@truffle/decoder>@truffle/source-map-utils>@truffle/code-utils": {
-      "packages": {
-        "@truffle/codec>cbor": true,
-        "browserify>buffer": true
-      }
-    },
-    "@truffle/decoder>@truffle/source-map-utils>json-pointer": {
-      "packages": {
-        "@truffle/decoder>@truffle/source-map-utils>json-pointer>foreach": true
-      }
-    },
-    "@truffle/decoder>@truffle/source-map-utils>node-interval-tree": {
-      "packages": {
-        "@truffle/decoder>@truffle/source-map-utils>node-interval-tree>shallowequal": true
       }
     },
     "@zxing/browser": {
@@ -3095,12 +2549,6 @@
       "packages": {
         "browserify>stream-http": true,
         "browserify>url": true
-      }
-    },
-    "browserify>os-browserify": {
-      "globals": {
-        "location": true,
-        "navigator": true
       }
     },
     "browserify>path-browserify": {

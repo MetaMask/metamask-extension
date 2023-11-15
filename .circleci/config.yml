@@ -3,26 +3,31 @@ version: 2.1
 executors:
   node-browsers:
     docker:
-      - image: cimg/node:18.17-browsers
+      - image: cimg/node:18.18-browsers
   node-browsers-medium-plus:
     docker:
-      - image: cimg/node:18.17-browsers
+      - image: cimg/node:18.18-browsers
     resource_class: medium+
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   node-browsers-large:
     docker:
-      - image: cimg/node:18.17-browsers
+      - image: cimg/node:18.18-browsers
     resource_class: large
     environment:
       NODE_OPTIONS: --max_old_space_size=2048
   shellcheck:
     docker:
       - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
+  playwright:
+    docker:
+      - image: mcr.microsoft.com/playwright:v1.39.0-jammy
 
 orbs:
   gh: circleci/github-cli@2.0
   codecov: codecov/codecov@3.2.2
+  slack: circleci/slack@4.12.5
+
 
 rc_branch_only: &rc_branch_only
   filters:
@@ -131,6 +136,9 @@ workflows:
       - prep-build-test-mmi:
           requires:
             - prep-deps
+      - prep-build-test-mmi-playwright:
+          requires:
+            - prep-deps
       - prep-build-storybook:
           requires:
             - prep-deps
@@ -168,6 +176,9 @@ workflows:
       - test-e2e-chrome-mmi:
           requires:
             - prep-build-test-mmi
+      - test-e2e-mmi-playwright - OPTIONAL:
+          requires:
+            - prep-build-test-mmi-playwright
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
@@ -615,6 +626,32 @@ jobs:
             - dist-test-mmi
             - builds-test-mmi
 
+  prep-build-test-mmi-playwright:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build MMI extension for Playwright e2e
+          command: |
+            export MMI_CONFIGURATION_SERVICE_URL=$MMI_DEV_CONFIGURATION_SERVICE_URL
+            yarn dist:mmi
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test-mmi-playwright
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-mmi-playwright
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-mmi-playwright
+            - builds-test-mmi-playwright
+      - store_artifacts:
+          path: builds-test-mmi-playwright
+          destination: builds-test-mmi-playwright
+
   prep-build-test-mv3:
     executor: node-browsers-medium-plus
     steps:
@@ -830,7 +867,7 @@ jobs:
             then
               yarn test:e2e:chrome --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -857,7 +894,7 @@ jobs:
             then
               MULTICHAIN=1 yarn test:e2e:chrome --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -884,7 +921,7 @@ jobs:
             then
               yarn test:e2e:chrome --retries 2 --debug || echo "Temporarily suppressing MV3 e2e test failures"
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -909,7 +946,7 @@ jobs:
             then
               yarn test:e2e:chrome:rpc --retries 2
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -935,7 +972,7 @@ jobs:
             then
               yarn test:e2e:chrome:rpc --retries 2 --debug --build-type=mmi
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -962,7 +999,7 @@ jobs:
             then
               yarn test:e2e:firefox:flask --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -989,7 +1026,7 @@ jobs:
             then
               yarn test:e2e:chrome:flask --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -1016,12 +1053,50 @@ jobs:
             then
               yarn test:e2e:chrome:mmi --retries 2 --debug --build-type=mmi
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
+
+  test-e2e-mmi-playwright - OPTIONAL:
+    executor: playwright
+    parallelism: 2
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-mmi-playwright ./dist
+      - run:
+          name: Install chromium
+          command: |
+            yarn playwright install chromium
+      - run:
+          name: test:e2e:chrome:mmi
+          command: |
+            SHARD="$((${CIRCLE_NODE_INDEX}+1))"; xvfb-run yarn playwright test --shard=${SHARD}/${CIRCLE_NODE_TOTAL}
+          no_output_timeout: 20m
+      - slack/notify:
+          branch_pattern: Version-v*
+          event: fail
+          mentions: <@antonio.regadas>, <@ramon.acitores134>
+          template: basic_fail_1
+          channel: C01LUJL3T98
+      - slack/notify:
+          branch_pattern: develop
+          event: fail
+          mentions: <@antonio.regadas>, <@ramon.acitores134>
+          template: basic_fail_1
+          channel: C05QXJA7NP8
+      - store_artifacts:
+          name: html-report and artifacts
+          path: public/playwright/playwright-reports
+      - store_test_results:
+          name: report for pipeline integration
+          path: public/playwright/playwright-reports/junit/test-results.xml
 
   test-e2e-firefox:
     executor: node-browsers-large
@@ -1043,7 +1118,7 @@ jobs:
             then
               yarn test:e2e:firefox --retries 2 --debug
             fi
-          no_output_timeout: 20m
+          no_output_timeout: 5m
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts

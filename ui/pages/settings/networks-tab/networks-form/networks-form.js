@@ -226,7 +226,7 @@ const NetworksForm = ({
 
   const validateBlockExplorerURL = useCallback(
     (url) => {
-      if (url.length > 0 && !isWebUrl(url)) {
+      if (url?.length > 0 && !isWebUrl(url)) {
         if (isWebUrl(`https://${url}`)) {
           return {
             key: 'urlErrorMsg',
@@ -405,7 +405,6 @@ const NetworksForm = ({
           if (returnedTickerSymbol !== formTickerSymbol) {
             warningKey = 'chainListReturnedDifferentTickerSymbol';
             warningMessage = t('chainListReturnedDifferentTickerSymbol', [
-              formChainId,
               returnedTickerSymbol,
             ]);
           }
@@ -435,7 +434,7 @@ const NetworksForm = ({
       ] = networksToRender.filter((e) => e.rpcUrl === url);
       const { rpcUrl: selectedNetworkRpcUrl } = selectedNetwork;
 
-      if (url.length > 0 && !isWebUrl(url)) {
+      if (url?.length > 0 && !isWebUrl(url)) {
         if (isWebUrl(`https://${url}`)) {
           return {
             key: 'urlErrorMsg',
@@ -691,6 +690,12 @@ const NetworksForm = ({
         />
         <FormField
           warning={warnings.ticker?.msg || ''}
+          warningProps={{
+            'data-testid': 'network-form-ticker-warning',
+            style: {
+              color: 'var(--color-warning-default)',
+            },
+          }}
           onChange={(value) => {
             setIsEditing(true);
             setTicker(value);

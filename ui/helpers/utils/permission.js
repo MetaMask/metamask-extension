@@ -269,7 +269,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     description: t('permission_getLocaleDescription', [
       getSnapNameComponent(targetSubjectMetadata),
     ]),
-    leftIcon: IconName.Home,
+    leftIcon: IconName.Global,
     weight: 3,
   }),
   [RestrictedMethods.wallet_snap]: ({
@@ -317,7 +317,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     description: t('permission_accessNetworkDescription', [
       getSnapNameComponent(targetSubjectMetadata),
     ]),
-    leftIcon: IconName.Global,
+    leftIcon: IconName.Wifi,
     weight: 2,
   }),
   [EndowmentPermissions['endowment:webassembly']]: ({
@@ -501,6 +501,17 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
       getSnapNameComponent(targetSubjectMetadata),
     ]),
     leftIcon: IconName.Hierarchy,
+    weight: 3,
+  }),
+  [EndowmentPermissions['endowment:page-home']]: ({
+    t,
+    targetSubjectMetadata,
+  }) => ({
+    label: t('permission_homePage'),
+    description: t('permission_homePageDescription', [
+      getSnapNameComponent(targetSubjectMetadata),
+    ]),
+    leftIcon: IconName.Home,
     weight: 3,
   }),
   ///: END:ONLY_INCLUDE_IN

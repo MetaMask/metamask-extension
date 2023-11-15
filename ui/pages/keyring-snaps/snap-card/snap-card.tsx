@@ -118,7 +118,7 @@ export default function SnapCard({
               history.push(`/add-snap-account/${id}`);
             }}
           >
-            {t('install')}
+            {t('details')}
           </Button>
         )}
       </Box>

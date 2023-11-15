@@ -36,8 +36,6 @@
     "use4ByteResolution": true,
     "participateInMetaMetrics": true,
     "nextNonce": null,
-    "conversionRate": 1300,
-    "nativeCurrency": "ETH",
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": { "os": "string", "browser": "string" },
@@ -111,11 +109,14 @@
     "fragments": "object",
     "segmentApiCalls": "object",
     "previousUserTraits": "object",
-    "conversionDate": "number",
     "currentCurrency": "usd",
-    "pendingCurrentCurrency": null,
-    "pendingNativeCurrency": null,
-    "usdConversionRate": 1300,
+    "currencyRates": {
+      "ETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      }
+    },
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
     "unconnectedAccountAlertShownOrigins": "object",
     "web3ShimUsageOrigins": "object",
@@ -153,6 +154,7 @@
     "logs": "object",
     "snaps": "object",
     "snapStates": "object",
+    "unencryptedSnapStates": "object",
     "jobs": "object",
     "database": "object",
     "lastUpdated": "object",
@@ -202,7 +204,8 @@
     "storageMetadata": {},
     "chainStatus": {
       "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
-    }
+    },
+    "versionFileETag": "string"
   },
   "send": "object",
   "swaps": "object",

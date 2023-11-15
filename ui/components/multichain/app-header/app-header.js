@@ -34,9 +34,6 @@ import {
   Box,
   IconSize,
 } from '../../component-library';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IN
 import {
   getCurrentChainId,
   getCurrentNetwork,
@@ -85,10 +82,6 @@ export const AppHeader = ({ location }) => {
   const chainId = useSelector(getCurrentChainId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const selectedAddress = useSelector(getSelectedAddress);
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, selectedAddress),
-  );
   const theme = useSelector((state) => getTheme(state));
   ///: END:ONLY_INCLUDE_IN
 
@@ -187,8 +180,6 @@ export const AppHeader = ({ location }) => {
             unsetIconHeight
             onClick={async () => history.push(DEFAULT_ROUTE)}
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            custodyImgSrc={custodianIcon}
-            isUnlocked={isUnlocked}
             theme={theme}
             ///: END:ONLY_INCLUDE_IN
           />
@@ -343,24 +334,6 @@ export const AppHeader = ({ location }) => {
                         />
                       </Box>
                     ))}{' '}
-                  {
-                    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                    custodianIcon && (
-                      <Box
-                        display={Display.Flex}
-                        alignItems={AlignItems.center}
-                        className="custody-logo"
-                        data-testid="custody-logo"
-                      >
-                        <img
-                          src={custodianIcon}
-                          className="custody-logo--icon"
-                          alt=""
-                        />
-                      </Box>
-                    )
-                    ///: END:ONLY_INCLUDE_IN
-                  }
                   {popupStatus && multichainProductTourStep === 2 ? (
                     <ProductTour
                       className="multichain-app-header__product-tour"

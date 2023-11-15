@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "Попытка отправки активов напрямую из одной сети в другую может привести к необратимой потере активов. Следует использовать мост."
   },
-  "attemptToCancelSwap": {
-    "message": "Попытка отменить своп на ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "Попытка подключения к блокчейну..."
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Сеть с ID блокчейна $1 может использовать другой символ валюты ($2), чем тот, который вы ввели. Подтвердите, прежде чем продолжить.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Выберите свою сеть"
@@ -1402,15 +1398,6 @@
   "enableFromSettings": {
     "message": " Включите его в Настройках."
   },
-  "enableOpenSeaAPI": {
-    "message": "Включить API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
-  },
-  "enableSmartSwaps": {
-    "message": "Включить смарт-свопы"
-  },
   "enableSnap": {
     "message": "Включить"
   },
@@ -2119,25 +2106,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Включите «данные смарт-контракта» или «слепую подпись» в своем устройстве Ledger."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Включите «Использовать Ledger Live» в разделе «Настройки» > «Дополнительно»."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Убедитесь, что Ledger подключен, и выберите приложение Ethereum."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Откройте и разблокируйте приложение Ledger Live."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Настройте подключение Ledger к MetaMask. Рекомендуется $1, но возможны и другие варианты. См. подробнее здесь: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Не удалось открыть Ledger. Он может быть подключен к другой программе. Закройте Ledger Live или другие приложения, подключенные к Ledger, и снова попробуйте подключиться."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "приложение Ledger Live"
@@ -2147,9 +2120,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live слишком долго не отвечает, или время ожидания подключения истекло. Убедитесь, что приложение Ledger Live открыто и устройство разблокировано."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Если приложение Ledger Live открыто, отключите любое открытое соединение с Ledger Live и закройте это приложение."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger не подключен. Если хотите подключить Ledger, нажмите «Продолжить» еще раз и одобрите HID-подключение",
@@ -2229,9 +2199,6 @@
   "makeSureNoOneWatching": {
     "message": "Убедитесь, что никто не смотрит",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "malformedData": {
-    "message": "Искаженные данные"
   },
   "max": {
     "message": "Макс."
@@ -2524,9 +2491,6 @@
   },
   "noSnaps": {
     "message": "Snaps не установлены."
-  },
-  "noThanksVariant2": {
-    "message": "Нет, спасибо."
   },
   "noTransactions": {
     "message": "У вас нет транзакций"
@@ -3814,9 +3778,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Смарт-свопы временно недоступны."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Смарт-свопы попытаются отправить вашу транзакцию в частном порядке несколько раз. Если все попытки не увенчаются успехом, транзакция будет транслироваться публично, чтобы гарантировать успешное завершение вашего свопа."
-  },
   "snapConfigure": {
     "message": "Настроить"
   },
@@ -3922,9 +3883,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Загрузка аналитики по транзакции..."
   },
   "snapsInvalidUIError": {
     "message": "Пользовательский интерфейс, указанный snap, недействителен."
@@ -4192,9 +4150,6 @@
     "message": "Своп завершится через <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Моделируйте транзакции перед отправкой, чтобы снизить транзакционные издержки и сократить число отказов."
-  },
   "stxTryingToCancel": {
     "message": "Попытка отменить транзакцию..."
   },
@@ -4209,9 +4164,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Ваша транзакция была отменена, и вы не вносили никакой ненужной платы за газ."
-  },
-  "stxYouCanOptOut": {
-    "message": "Вы можете отказаться в любое время в расширенных настройках."
   },
   "submit": {
     "message": "Отправить"
@@ -4840,18 +4792,6 @@
   "transactionCreated": {
     "message": "В $2 создана транзакция на сумму $1."
   },
-  "transactionData": {
-    "message": "Данные транзакции"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Расшифровано Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Подтвержденный контракт на $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Расшифровка транзакции недоступна для ID блокчейна $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Рекомендовано сайтом"
   },
@@ -4982,9 +4922,6 @@
   },
   "twelveHrTitle": {
     "message": "12 ч:"
-  },
-  "txInsightsNotSupported": {
-    "message": "Для этого контракта сейчас не поддерживается аналитика транзакций."
   },
   "typeYourSRP": {
     "message": "Введите секретную фразу для восстановления"

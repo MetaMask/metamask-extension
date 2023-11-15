@@ -526,10 +526,6 @@ export default class MetamaskController extends EventEmitter {
     this.preferencesController = new PreferencesController({
       initState: initState.PreferencesController,
       initLangCode: opts.initLangCode,
-      onAccountRemoved: this.controllerMessenger.subscribe.bind(
-        this.controllerMessenger,
-        'KeyringController:accountRemoved',
-      ),
       tokenListController: this.tokenListController,
       provider: this.provider,
       networkConfigurations: this.networkController.state.networkConfigurations,
@@ -757,15 +753,18 @@ export default class MetamaskController extends EventEmitter {
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
       name: 'CurrencyRateController',
+      allowedActions: [`${this.networkController.name}:getNetworkClientById`],
     });
     this.currencyRateController = new CurrencyRateController({
       includeUsdRate: true,
       messenger: currencyRateMessenger,
-      state: {
-        ...initState.CurrencyController,
-        nativeCurrency: this.networkController.state.providerConfig.ticker,
-      },
+      state: initState.CurrencyController,
     });
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.currencyRateController.startPollingByNetworkClientId(
+        this.networkController.state.selectedNetworkClientId,
+      );
+    }
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
@@ -843,10 +842,12 @@ export default class MetamaskController extends EventEmitter {
         const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
         const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
         if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-          this.currencyRateController.start();
+          this.currencyRateController.startPollingByNetworkClientId(
+            this.networkController.state.selectedNetworkClientId,
+          );
           this.tokenRatesController.start();
         } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-          this.currencyRateController.stop();
+          this.currencyRateController.stopAllPolling();
           this.tokenRatesController.stop();
         }
       }, this.preferencesController.store.getState()),
@@ -878,12 +879,7 @@ export default class MetamaskController extends EventEmitter {
       },
       preferencesController: this.preferencesController,
       onboardingController: this.onboardingController,
-      initState:
-        isManifestV3 &&
-        isFirstMetaMaskControllerSetup === false &&
-        initState.AccountTracker?.accounts
-          ? { accounts: initState.AccountTracker.accounts }
-          : { accounts: {} },
+      initState: { accounts: {} },
       onAccountRemoved: this.controllerMessenger.subscribe.bind(
         this.controllerMessenger,
         'KeyringController:accountRemoved',
@@ -962,19 +958,30 @@ export default class MetamaskController extends EventEmitter {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    const snapKeyringBuildMessenger = this.controllerMessenger.getRestricted({
+      name: 'SnapKeyringBuilder',
+      allowedActions: [
+        'ApprovalController:addRequest',
+        'ApprovalController:acceptRequest',
+        'ApprovalController:rejectRequest',
+        'ApprovalController:startFlow',
+        'ApprovalController:endFlow',
+        'ApprovalController:showSuccess',
+        'ApprovalController:showError',
+        'PhishingController:test',
+        'PhishingController:maybeUpdateState',
+        'KeyringController:getAccounts',
+      ],
+    });
+
     const getSnapController = () => this.snapController;
-    const getApprovalController = () => this.approvalController;
-    const getKeyringController = () => this.keyringController;
-    const getPreferencesController = () => this.preferencesController;
-    const getPhishingController = () => this.phishingController;
 
     additionalKeyrings.push(
       snapKeyringBuilder(
+        snapKeyringBuildMessenger,
         getSnapController,
-        getApprovalController,
-        getKeyringController,
-        getPreferencesController,
-        getPhishingController,
+        async () => await this.keyringController.persistAllKeyrings(),
+        (address) => this.preferencesController.setSelectedAddress(address),
         (address) => this.removeAccount(address),
       ),
     );
@@ -1007,7 +1014,6 @@ export default class MetamaskController extends EventEmitter {
       keyringBuilders: additionalKeyrings,
       state: initState.KeyringController,
       encryptor: opts.encryptor || undefined,
-      cacheEncryptionKey: isManifestV3,
       messenger: keyringControllerMessenger,
       removeIdentity: this.preferencesController.removeAddress.bind(
         this.preferencesController,
@@ -1408,9 +1414,15 @@ export default class MetamaskController extends EventEmitter {
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        const { ticker } = this.networkController.state.providerConfig;
         try {
-          await this.currencyRateController.setNativeCurrency(ticker);
+          if (
+            this.preferencesController.store.getState().useCurrencyRateCheck
+          ) {
+            await this.currencyRateController.stopAllPolling();
+            this.currencyRateController.startPollingByNetworkClientId(
+              this.networkController.state.selectedNetworkClientId,
+            );
+          }
         } catch (error) {
           // TODO: Handle failure to get conversion rate more gracefully
           console.error(error);
@@ -1497,7 +1509,6 @@ export default class MetamaskController extends EventEmitter {
     this.mmiController = new MMIController({
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
-      txController: this.txController,
       securityProviderRequest: this.securityProviderRequest.bind(this),
       preferencesController: this.preferencesController,
       appStateController: this.appStateController,
@@ -1513,9 +1524,31 @@ export default class MetamaskController extends EventEmitter {
       signatureController: this.signatureController,
       platform: this.platform,
       extension: this.extension,
+      getTransactions: this.txController.getTransactions.bind(
+        this.txController,
+      ),
+      setTxStatusSigned:
+        this.txController.txStateManager.setTxStatusSigned.bind(
+          this.txController.txStateManager,
+        ),
+      setTxStatusSubmitted:
+        this.txController.txStateManager.setTxStatusSubmitted.bind(
+          this.txController.txStateManager,
+        ),
+      setTxStatusFailed:
+        this.txController.txStateManager.setTxStatusFailed.bind(
+          this.txController.txStateManager,
+        ),
       trackTransactionEvents: handleMMITransactionUpdate.bind(
         null,
         transactionMetricsRequest,
+      ),
+      updateTransaction:
+        this.txController.txStateManager.updateTransaction.bind(
+          this.txController.txStateManager,
+        ),
+      updateTransactionHash: this.txController.setTxHash.bind(
+        this.txController,
       ),
     });
     ///: END:ONLY_INCLUDE_IN
@@ -1911,7 +1944,9 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.start();
+      this.currencyRateController.startPollingByNetworkClientId(
+        this.networkController.state.selectedNetworkClientId,
+      );
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
@@ -1922,7 +1957,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.stop();
+      this.currencyRateController.stopAllPolling();
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.stop();
@@ -2419,6 +2454,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       // Snap state, source code and other files are stripped out to prevent piping to the MetaMask UI.
       snapStates: {},
+      unencryptedSnapStates: {},
       snaps: Object.values(flatState.snaps ?? {}).reduce((acc, snap) => {
         // eslint-disable-next-line no-unused-vars
         const { sourceCode, auxiliaryFiles, ...rest } = snap;
@@ -3366,10 +3402,7 @@ export default class MetamaskController extends EventEmitter {
       if (password && !process.env.IN_TEST) {
         await this.submitPassword(password);
       }
-      // Automatic login via storage encryption key
-      else if (isManifestV3) {
-        await this.submitEncryptionKey();
-      }
+
       // Updating accounts in this.accountTracker before starting UI syncing ensure that
       // state has account balance before it is synced with UI
       await this.accountTracker._updateAccounts();
@@ -3588,6 +3621,11 @@ export default class MetamaskController extends EventEmitter {
    */
   async forgetDevice(deviceName) {
     const keyring = await this.getKeyringForDevice(deviceName);
+
+    for (const address of keyring.accounts) {
+      await this.removeAccount(address);
+    }
+
     keyring.forgetDevice();
     return true;
   }
@@ -4757,19 +4795,11 @@ export default class MetamaskController extends EventEmitter {
    * @private
    */
   async _onKeyringControllerUpdate(state) {
-    const {
-      keyrings,
-      encryptionKey: loginToken,
-      encryptionSalt: loginSalt,
-    } = state;
+    const { keyrings } = state;
     const addresses = keyrings.reduce(
       (acc, { accounts }) => acc.concat(accounts),
       [],
     );
-
-    if (isManifestV3) {
-      await this.extension.storage.session.set({ loginToken, loginSalt });
-    }
 
     if (!addresses.length) {
       return;
@@ -5222,10 +5252,6 @@ export default class MetamaskController extends EventEmitter {
    * Locks MetaMask
    */
   setLocked() {
-    if (isManifestV3) {
-      this.clearLoginArtifacts();
-    }
-
     return this.keyringController.setLocked();
   }
 

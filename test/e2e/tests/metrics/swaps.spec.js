@@ -27,7 +27,6 @@ const {
   AGGREGATOR_METADATA_API_MOCK_RESULT,
   GAS_PRICE_API_MOCK_RESULT,
   FEATURE_FLAGS_API_MOCK_RESULT,
-  NETWORKS_API_MOCK_RESULT,
   TRADES_API_MOCK_RESULT,
   NETWORKS_2_API_MOCK_RESULT,
 } = require('./mock-data');
@@ -71,12 +70,6 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
       .thenCallback(() => ({
         statusCode: 200,
         json: FEATURE_FLAGS_API_MOCK_RESULT,
-      })),
-    await mockServer
-      .forGet('https://tx-insights.metaswap.codefi.network/networks')
-      .thenCallback(() => ({
-        statusCode: 200,
-        json: NETWORKS_API_MOCK_RESULT,
       })),
     await mockServer
       .forGet('https://swap.metaswap.codefi.network/networks/1/trades')
@@ -184,7 +177,7 @@ async function getQuoteAndSwapTokens(driver) {
 async function assertReqsNumAndFilterMetrics(driver, mockedEndpoints) {
   const events = await getEventPayloads(driver, mockedEndpoints);
 
-  const numberOfMetaswapRequests = 9;
+  const numberOfMetaswapRequests = 8;
   assert.equal(
     events.length,
     numberOfSegmentRequests + numberOfMetaswapRequests,
