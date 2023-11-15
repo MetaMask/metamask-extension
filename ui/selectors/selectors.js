@@ -81,7 +81,10 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { TransactionStatus } from '../../shared/constants/transaction';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '../../shared/constants/transaction';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -1660,6 +1663,18 @@ export function getEthereumAddressNames(state) {
 
 export function getNameSources(state) {
   return state.metamask.nameSources || {};
+}
+
+export function getIsUsingPaymaster(state) {
+  const { confirmTransaction } = state;
+  const { txData } = confirmTransaction;
+  const { txParams, type } = txData;
+
+  return (
+    type === TransactionType.userOperation &&
+    txParams?.maxFeePerGas === '0x0' &&
+    txParams?.maxPriorityFeePerGas === '0x0'
+  );
 }
 
 ///: BEGIN:ONLY_INCLUDE_IN(desktop)

@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { TextColor } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
+  getIsUsingPaymaster,
   getPreferences,
   getUseCurrencyRateCheck,
   transactionFeeSelector,
@@ -49,6 +50,8 @@ const GasDetailsItem = ({
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+
+  const isUsingPaymaster = useSelector(getIsUsingPaymaster);
 
   if (hasSimulationError && !userAcknowledgedGasMissing) {
     return null;
@@ -131,10 +134,12 @@ const GasDetailsItem = ({
         </>
       }
       subTitle={
-        <GasTiming
-          maxPriorityFeePerGas={maxPriorityFeePerGasToRender}
-          maxFeePerGas={maxFeePerGasToRender}
-        />
+        !isUsingPaymaster && (
+          <GasTiming
+            maxPriorityFeePerGas={maxPriorityFeePerGasToRender}
+            maxFeePerGas={maxFeePerGasToRender}
+          />
+        )
       }
     />
   );

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { getIsMainnet } from '../../../../selectors';
+import { getIsMainnet, getIsUsingPaymaster } from '../../../../selectors';
 import Box from '../../../ui/box';
 import InfoTooltip from '../../../ui/info-tooltip/info-tooltip';
 import { Text } from '../../../component-library';
@@ -11,13 +11,16 @@ import { Text } from '../../../component-library';
 const GasDetailsItemTitle = () => {
   const t = useI18nContext();
   const isMainnet = useSelector(getIsMainnet);
+  const isUsingPaymaster = useSelector(getIsUsingPaymaster);
 
   return (
     <Box display="flex">
       <Box marginRight={1}>{t('gas')}</Box>
-      <span className="gas-details-item-title__estimate">
-        ({t('transactionDetailGasInfoV2')})
-      </span>
+      {!isUsingPaymaster && (
+        <span className="gas-details-item-title__estimate">
+          ({t('transactionDetailGasInfoV2')})
+        </span>
+      )}
       <InfoTooltip
         contentText={
           <>

@@ -194,7 +194,9 @@ _UserOperationController_blockTracker = new WeakMap(), _UserOperationController_
         (0, logger_1.projectLogger)('Updating gas', id);
         const paymasterAddress = process.env.PAYMASTER_ADDRESS;
         const encodedValidUntilAfter = (0, ethereumjs_util_1.stripHexPrefix)(abi_1.defaultAbiCoder.encode(['uint48', 'uint48'], [0, 0]));
-        const dummyPaymasterData = `${paymasterAddress}${encodedValidUntilAfter}${(0, ethereumjs_util_1.stripHexPrefix)(DUMMY_SIGNATURE)}`;
+        const dummyPaymasterData = paymasterAddress
+            ? `${paymasterAddress}${encodedValidUntilAfter}${(0, ethereumjs_util_1.stripHexPrefix)(DUMMY_SIGNATURE)}`
+            : '0x';
         const payload = Object.assign(Object.assign({}, userOperation), { callGasLimit: '0x1', preVerificationGas: '0x1', verificationGasLimit: '0x1', signature: DUMMY_SIGNATURE, paymasterAndData: dummyPaymasterData });
         (0, logger_1.projectLogger)('Estimating gas', {
             paymasterAddress,
@@ -230,7 +232,8 @@ _UserOperationController_blockTracker = new WeakMap(), _UserOperationController_
         const transaction = __classPrivateFieldGet(this, _UserOperationController_getTransactions, "f").call(this).find((tx) => tx.id === metadata.id);
         const { userOperation } = metadata;
         if ((transaction === null || transaction === void 0 ? void 0 : transaction.txParams.maxFeePerGas) &&
-            (transaction === null || transaction === void 0 ? void 0 : transaction.txParams.maxPriorityFeePerGas)) {
+            (transaction === null || transaction === void 0 ? void 0 : transaction.txParams.maxPriorityFeePerGas) &&
+            userOperation.paymasterAndData === '0x') {
             userOperation.maxFeePerGas = transaction.txParams.maxFeePerGas;
             userOperation.maxPriorityFeePerGas =
                 transaction.txParams.maxPriorityFeePerGas;

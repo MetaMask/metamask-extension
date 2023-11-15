@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable no-nested-ternary */
 /* eslint-disable jsdoc/require-jsdoc */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTransactionMetadata = void 0;
@@ -7,7 +8,7 @@ const ethereumjs_util_1 = require("ethereumjs-util");
 const types_1 = require("../types");
 function getTransactionMetadata(metadata) {
     var _a;
-    const { actualGasCost, actualGasUsed, baseFeePerGas, chainId, error: rawError, transactionHash, id, time, transactionParams, userOperation, userFeeLevel, } = metadata;
+    const { actualGasCost, actualGasUsed, baseFeePerGas, chainId, error: rawError, transactionHash, id, time, transactionParams, userOperation, userFeeLevel: originalUserFeeLevel, } = metadata;
     if (!transactionParams) {
         return undefined;
     }
@@ -35,12 +36,20 @@ function getTransactionMetadata(metadata) {
         [types_1.UserOperationStatus.Failed]: transaction_controller_1.TransactionStatus.failed,
     }[metadata.status];
     const gas = addHex(userOperation === null || userOperation === void 0 ? void 0 : userOperation.preVerificationGas, userOperation === null || userOperation === void 0 ? void 0 : userOperation.verificationGasLimit, userOperation === null || userOperation === void 0 ? void 0 : userOperation.callGasLimit);
-    const maxFeePerGas = userOperation.maxFeePerGas === '0x'
-        ? undefined
-        : userOperation.maxFeePerGas;
-    const maxPriorityFeePerGas = userOperation.maxPriorityFeePerGas === '0x'
-        ? undefined
-        : userOperation.maxPriorityFeePerGas;
+    const hasPaymaster = userOperation.paymasterAndData !== '0x';
+    const maxFeePerGas = hasPaymaster
+        ? '0x0'
+        : userOperation.maxFeePerGas === '0x'
+            ? undefined
+            : userOperation.maxFeePerGas;
+    const maxPriorityFeePerGas = hasPaymaster
+        ? '0x0'
+        : userOperation.maxPriorityFeePerGas === '0x'
+            ? undefined
+            : userOperation.maxPriorityFeePerGas;
+    const userFeeLevel = hasPaymaster
+        ? transaction_controller_1.UserFeeLevel.CUSTOM
+        : originalUserFeeLevel;
     const txParams = Object.assign(Object.assign({}, transactionParams), { from: userOperation.sender, gas,
         nonce,
         maxFeePerGas,
