@@ -27,6 +27,7 @@ export type ConfirmInfoRowProps = {
   children: React.ReactNode | string;
   tooltip?: string;
   variant?: ConfirmInfoRowVariant;
+  style?: React.CSSProperties;
 };
 
 const BACKGROUND_COLORS = {
@@ -56,6 +57,7 @@ export const ConfirmInfoRow = ({
   children,
   variant = ConfirmInfoRowVariant.Default,
   tooltip,
+  style,
 }: ConfirmInfoRowProps) => (
   <ConfirmInfoRowContext.Provider value={{ variant }}>
     <Box
@@ -70,7 +72,11 @@ export const ConfirmInfoRow = ({
       paddingLeft={2}
       paddingRight={2}
       color={TEXT_COLORS[variant] as TextColor}
-      style={{ overflowWrap: OverflowWrap.Anywhere, minHeight: '24px' }}
+      style={{
+        overflowWrap: OverflowWrap.Anywhere,
+        minHeight: '24px',
+        ...style,
+      }}
     >
       <Box
         display={Display.Flex}

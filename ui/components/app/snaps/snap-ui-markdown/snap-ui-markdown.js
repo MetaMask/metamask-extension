@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import {
   TextVariant,
   OverflowWrap,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import { Text } from '../../../component-library';
 
@@ -13,6 +14,7 @@ const Paragraph = (props) => (
     variant={TextVariant.bodyMd}
     className="snap-ui-markdown__text"
     overflowWrap={OverflowWrap.BreakWord}
+    color={TextColor.inherit}
   />
 );
 

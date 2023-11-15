@@ -11,6 +11,7 @@ import {
   FontWeight,
   TextVariant,
   BorderColor,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -32,6 +33,7 @@ export const UI_MAPPING = {
       display: DISPLAY.FLEX,
       flexDirection: FLEX_DIRECTION.COLUMN,
       className: 'snap-ui-renderer__panel',
+      color: TextColor.textDefault,
     },
   }),
   heading: (props) => ({
@@ -75,6 +77,26 @@ export const UI_MAPPING = {
     element: 'SnapUIImage',
     props: {
       value: props.value,
+    },
+  }),
+  row: (props, elementKey) => ({
+    element: 'ConfirmInfoRow',
+    // eslint-disable-next-line no-use-before-define
+    children: [mapToTemplate(props.value, elementKey)],
+    props: {
+      label: props.label,
+      variant: props.variant,
+      style: {
+        // We do this to cause an overhang with certain confirmation row variants
+        marginLeft: '-8px',
+        marginRight: '-8px',
+      },
+    },
+  }),
+  address: (props) => ({
+    element: 'ConfirmInfoRowAddress',
+    props: {
+      address: props.value,
     },
   }),
 };
