@@ -1985,24 +1985,17 @@ export default class TransactionController extends EventEmitter {
     // get the confirmed transactions nonce and from address
     const txMeta = this.txStateManager.getTransaction(txId);
     const { nonce, from } = txMeta.txParams;
-    const sameNonceTxs = this.txStateManager.getTransactions({
-      searchCriteria: { nonce, from },
-    });
+    const sameNonceTxs = this.txStateManager
+      .getTransactions({
+        searchCriteria: { nonce, from },
+      })
+      .filter((otherTxMeta) => otherTxMeta.id !== txId)
+      .filter((otherTxMeta) => otherTxMeta.type === TransactionType.incoming);
     if (!sameNonceTxs.length) {
       return;
     }
     // mark all same nonce transactions as dropped and give i a replacedBy hash
     sameNonceTxs.forEach((otherTxMeta) => {
-      if (otherTxMeta.id === txId) {
-        return;
-      }
-      // We don't want to mark as dropped any transactions that are originally created by this account and are incoming
-      if (
-        otherTxMeta.type === TransactionType.incoming &&
-        otherTxMeta.txParams.from === txMeta.txParams.from
-      ) {
-        return;
-      }
       otherTxMeta.replacedBy = txMeta.hash;
       otherTxMeta.replacedById = txMeta.id;
       this.txStateManager.updateTransaction(
