@@ -101,7 +101,6 @@ export default class AccountTracker {
         }
       }, this.onboardingController.store.getState()),
     );
-    this.ethersProvider = new Web3Provider(this._provider);
   }
 
   start() {
@@ -326,12 +325,11 @@ export default class AccountTracker {
         newAccounts[address] = { address, balance: null };
       }
     });
-    this.ethersProvider = new Web3Provider(this._provider);
 
     const ethContract = await new Contract(
       deployedContractAddress,
       SINGLE_CALL_BALANCES_ABI,
-      this.ethersProvider,
+      new Web3Provider(this._provider)
     );
     const ethBalance = ['0x0000000000000000000000000000000000000000'];
 
