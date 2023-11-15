@@ -1504,9 +1504,6 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
-  "enableSmartSwaps": {
-    "message": "Enable smart swaps"
-  },
   "enableSnap": {
     "message": "Enable"
   },
