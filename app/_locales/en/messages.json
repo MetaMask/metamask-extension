@@ -526,7 +526,7 @@
     "message": "Back up your data"
   },
   "backupUserDataDescription": {
-    "message": "You can back up data like your contacts and preferences into a JSON file."
+    "message": "You can back up data like your contacts and preferences."
   },
   "balance": {
     "message": "Balance"
@@ -3800,7 +3800,7 @@
     "message": "Restore user data"
   },
   "restoreUserDataDescription": {
-    "message": "You can restore data like contacts and preferences from a backed up JSON file."
+    "message": "You can restore data like contacts and preferences from a backup file."
   },
   "resultPageError": {
     "message": "Error"
