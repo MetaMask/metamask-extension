@@ -658,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Το δίκτυο με αναγνωριστικό αλυσίδας $1 ενδέχεται να χρησιμοποιεί διαφορετικό σύμβολο νομίσματος ($2) από αυτό που έχετε εισαγάγει. Παρακαλούμε επιβεβαιώστε το πριν συνεχίσετε.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Επιλέξτε το δίκτυό σας"
@@ -1397,12 +1397,6 @@
   },
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Ενεργοποίηση OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
   },
   "enableSnap": {
     "message": "Ενεργοποίηση"
@@ -3906,9 +3900,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Φόρτωση πληροφοριών συναλλαγών..."
   },
   "snapsInvalidUIError": {
     "message": "Το UI που καθορίζεται από το snap δεν είναι έγκυρο."

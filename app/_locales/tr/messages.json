@@ -658,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Zincir kimliği $1 olan ağ, girdiğin para biriminden farklı bir para birimi sembolü ($2) kullanabilir. Lütfen devam etmeden önce doğrula.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Ağınızı seçin"
@@ -1397,12 +1397,6 @@
   },
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
-  },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API'yi etkinleştir"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
   },
   "enableSnap": {
     "message": "Etkinleştir"
@@ -3906,9 +3900,6 @@
   },
   "snaps": {
     "message": "Snapler"
-  },
-  "snapsInsightLoading": {
-    "message": "İşlem içgörüsü yükleniyor..."
   },
   "snapsInvalidUIError": {
     "message": "Snap tarafından belirtilen kullanıcı arayüzü geçersiz."

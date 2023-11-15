@@ -658,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "La red con ID de cadena $1 puede usar un símbolo de moneda diferente ($2) al que ingresó. Verifique antes de continuar.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Elija su red"
@@ -1397,12 +1397,6 @@
   },
   "enableFromSettings": {
     "message": " Actívela en Configuración."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Habilite el API de OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Utilice la API de OpenSea para obtener los datos de NFT. La autodetección de NFT depende de la API de OpenSea y no estará disponible si la API está desactivada."
   },
   "enableSnap": {
     "message": "Activar"
@@ -3906,9 +3900,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Cargando información de transacción..."
   },
   "snapsInvalidUIError": {
     "message": "La IU especificada por el snap no es válida."

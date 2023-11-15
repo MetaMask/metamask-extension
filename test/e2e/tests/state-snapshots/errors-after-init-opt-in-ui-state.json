@@ -36,8 +36,6 @@
     "use4ByteResolution": true,
     "participateInMetaMetrics": true,
     "nextNonce": null,
-    "conversionRate": 1300,
-    "nativeCurrency": "ETH",
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
@@ -112,11 +110,14 @@
     "fragments": "object",
     "segmentApiCalls": "object",
     "previousUserTraits": "object",
-    "conversionDate": "number",
     "currentCurrency": "usd",
-    "pendingCurrentCurrency": null,
-    "pendingNativeCurrency": null,
-    "usdConversionRate": 1300,
+    "currencyRates": {
+      "ETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      }
+    },
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
     "unconnectedAccountAlertShownOrigins": "object",
     "web3ShimUsageOrigins": "object",
@@ -154,6 +155,7 @@
     "logs": "object",
     "snaps": "object",
     "snapStates": "object",
+    "unencryptedSnapStates": "object",
     "jobs": "object",
     "database": "object",
     "lastUpdated": "object",

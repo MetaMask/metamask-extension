@@ -91,13 +91,8 @@ export const SENTRY_BACKGROUND_STATE = {
     jobs: false,
   },
   CurrencyController: {
-    conversionDate: true,
-    conversionRate: true,
     currentCurrency: true,
-    nativeCurrency: true,
-    pendingCurrentCurrency: true,
-    pendingNativeCurrency: true,
-    usdConversionRate: true,
+    currencyRates: true,
   },
   DecryptMessageController: {
     unapprovedDecryptMsgs: false,
@@ -233,6 +228,7 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   SnapController: {
+    unencryptedSnapStates: false,
     snapStates: false,
     snaps: false,
   },

@@ -658,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "चेन ID $1 वाला नेटवर्क आपके द्वारा एंटर किए गए करेंसी सिंबल ($2) से अलग करेंसी चिह्न का इस्तेमाल कर सकता है। कृपया जारी रखने से पहले वेरीफ़ाई करें।",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "अपना नेटवर्क चुनें"
@@ -1397,12 +1397,6 @@
   },
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
-  },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API इनेबल करें"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
   },
   "enableSnap": {
     "message": "इनेबल करें"
@@ -3906,9 +3900,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "ट्रांजैक्शन इनसाइट लोड हो रही है..."
   },
   "snapsInvalidUIError": {
     "message": "Snap द्वारा निर्दिष्ट किया गया UI ग़लत है।"

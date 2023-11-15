@@ -658,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Ang network na may ID ng chain na $1 ay maaaring gumamit ng ibang simbolo ng currency ($2) sa inilagay mo. Mag-verify bago magpatuloy.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Piliin ang iyong network"
@@ -1397,12 +1397,6 @@
   },
   "enableFromSettings": {
     "message": " Paganahin ito mula sa Mga Setting."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Paganahin sa OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Gamitin ang API ng Opensea upang kunin ang NFT data. ang NFT auto-detection ay umaasa sa API ng OpenSea, at hindi magiging available kapag ito ay isinara."
   },
   "enableSnap": {
     "message": "Paganahin"
@@ -3906,9 +3900,6 @@
   },
   "snaps": {
     "message": "Mga Snap"
-  },
-  "snapsInsightLoading": {
-    "message": "Naglo-load ng insight sa transaksyon..."
   },
   "snapsInvalidUIError": {
     "message": "Ang UI na tinukoy ng snap ay hindi wasto."
