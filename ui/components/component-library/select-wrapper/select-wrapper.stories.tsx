@@ -20,7 +20,46 @@ export default {
       },
     },
   },
-  argTypes: {},
+  argTypes: {
+    placeholder: {
+      control: {
+        type: 'text',
+      },
+    },
+    defaultValue: {
+      control: {
+        type: 'text',
+      },
+    },
+    value: {
+      control: {
+        type: 'text',
+      },
+    },
+    isUncontrolledOpen: {
+      control: {
+        type: 'boolean',
+      },
+    },
+    isDanger: {
+      control: {
+        type: 'boolean',
+      },
+    },
+    isDisabled: {
+      control: {
+        type: 'boolean',
+      },
+    },
+    isMultiSelect: {
+      control: {
+        type: 'boolean',
+      },
+    },
+    onBlur: {
+      action: 'onBlur',
+    },
+  },
   args: {
     placeholder: 'Select an option',
     triggerComponent: <SelectButton>Select an option</SelectButton>,
@@ -39,10 +78,6 @@ const Template: StoryFn<typeof SelectWrapper> = (args) => {
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
-DefaultStory.args = {
-  placeholder: 'Select an option',
-  triggerComponent: <SelectButton />,
-};
 
 export const TriggerComponent = Template.bind({});
 TriggerComponent.args = {
@@ -98,20 +133,10 @@ export const ControlledOpen: StoryFn<typeof SelectWrapper> = (args) => {
   );
 };
 
-export const UncontrolledOpen: StoryFn<typeof SelectWrapper> = (args) => {
-  return (
-    <>
-      <SelectWrapper
-        {...args}
-        placeholder="Uncontrolled Open Demo"
-        triggerComponent={<SelectButton>Uncontrolled Open Demo</SelectButton>}
-      >
-        <SelectOption value="Option 1">Option 1</SelectOption>
-        <SelectOption value="Option 2">Option 2</SelectOption>
-        <SelectOption value="Option 3">Option 3</SelectOption>
-      </SelectWrapper>
-    </>
-  );
+export const UncontrolledOpen = Template.bind({});
+
+UncontrolledOpen.args = {
+  placeholder: 'Uncontrolled Open Demo',
 };
 
 export const ControlledValue: StoryFn<typeof SelectWrapper> = (args) => {
@@ -207,18 +232,7 @@ Placeholder.args = {
   placeholder: 'Placeholder demo',
 };
 
-export const IsDisabled: StoryFn<typeof SelectWrapper> = (args) => {
-  return (
-    <SelectWrapper
-      {...args}
-      triggerComponent={<SelectButton>Demo</SelectButton>}
-    >
-      <SelectOption value="Option 1">Option 1</SelectOption>
-      <SelectOption value="Option 2">Option 2</SelectOption>
-      <SelectOption value="Option 3">Option 3</SelectOption>
-    </SelectWrapper>
-  );
-};
+export const IsDisabled = Template.bind({});
 
 IsDisabled.args = {
   placeholder: 'Select Option',
@@ -227,18 +241,7 @@ IsDisabled.args = {
 
 IsDisabled.storyName = 'isDisabled';
 
-export const IsDanger: StoryFn<typeof SelectWrapper> = (args) => {
-  return (
-    <SelectWrapper
-      {...args}
-      triggerComponent={<SelectButton>Demo</SelectButton>}
-    >
-      <SelectOption value="Option 1">Option 1</SelectOption>
-      <SelectOption value="Option 2">Option 2</SelectOption>
-      <SelectOption value="Option 3">Option 3</SelectOption>
-    </SelectWrapper>
-  );
-};
+export const IsDanger = Template.bind({});
 
 IsDanger.args = {
   placeholder: 'Select Option',
@@ -247,18 +250,7 @@ IsDanger.args = {
 
 IsDanger.storyName = 'isDanger';
 
-export const PopoverProps: StoryFn<typeof SelectWrapper> = (args) => {
-  return (
-    <SelectWrapper
-      {...args}
-      triggerComponent={<SelectButton>Demo</SelectButton>}
-    >
-      <SelectOption value="Option 1">Option 1</SelectOption>
-      <SelectOption value="Option 2">Option 2</SelectOption>
-      <SelectOption value="Option 3">Option 3</SelectOption>
-    </SelectWrapper>
-  );
-};
+export const PopoverProps = Template.bind({});
 
 PopoverProps.args = {
   placeholder: 'Select Option',
