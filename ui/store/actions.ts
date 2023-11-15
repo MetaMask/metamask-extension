@@ -3576,15 +3576,18 @@ export function removePermissionsFor(
   };
 }
 
+/**
+ * Updates the order of networks after drag and drop
+ *
+ * @param orderedNetworkList
+ */
 export function updateNetworksList(
-  networksList: [],
+  orderedNetworkList: [],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return (dispatch) => {
-    callBackgroundMethod('updateNetworksList', [networksList], (err) => {
-      if (err) {
-        dispatch(displayWarning(err));
-      }
-    });
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    await submitRequestToBackground('updateNetworksList', [orderedNetworkList])
+    dispatch(hideLoadingIndication());
   };
 }
 

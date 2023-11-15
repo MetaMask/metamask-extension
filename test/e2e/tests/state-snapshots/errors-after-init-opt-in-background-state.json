@@ -100,8 +100,8 @@
     },
     "networkConfigurations": "object"
   },
-  "NetworksOrderController": {
-    "networksList": { "0": "string", "1": "string", "2": "string" }
+  "NetworkOrderController": {
+    "orderedNetworkList": { "0": "string", "1": "string", "2": "string" }
   },
   "NftController": {
     "allNftContracts": "object",

@@ -6,7 +6,7 @@
       "web3ShimUsageOrigins": "object"
     },
     "AnnouncementController": { "announcements": "object" },
-    "NetworksOrderController": { "networksList": {} },
+    "NetworkOrderController": { "orderedNetworkList": {} },
     "AppStateController": {
       "browserEnvironment": {},
       "nftsDropdownState": {},

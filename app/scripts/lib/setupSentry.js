@@ -43,8 +43,8 @@ export const SENTRY_BACKGROUND_STATE = {
   AnnouncementController: {
     announcements: false,
   },
-  NetworksOrderController: {
-    networksList: [],
+  NetworkOrderController: {
+    orderedNetworkList: [],
   },
   AppMetadataController: {
     currentAppVersion: true,

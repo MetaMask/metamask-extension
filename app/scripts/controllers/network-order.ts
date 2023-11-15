@@ -10,51 +10,51 @@ import type { Patch } from 'immer';
 import { MAINNET_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
-const controllerName = 'NetworksOrderController';
+const controllerName = 'NetworkOrderController';
 
 /**
  * The network ID of a network.
  */
 export type NetworkId = string;
 
-// State shape for NetworksOrderController
-export type NetworksOrderControllerState = {
-  networksList: NetworkId[]; // Remove the union with null
+// State shape for NetworkOrderController
+export type NetworkOrderControllerState = {
+  orderedNetworkList: NetworkId[];
 };
 
 // Describes the structure of a state change event
-export type NetworksOrderStateChange = {
+export type NetworkOrderStateChange = {
   type: `${typeof controllerName}:stateChange`;
-  payload: [NetworksOrderControllerState, Patch[]];
+  payload: [NetworkOrderControllerState, Patch[]];
 };
 
 // Describes the action for updating the networks list
-export type NetworksOrderControllerupdateNetworksListAction = {
+export type NetworkOrderControllerupdateNetworksListAction = {
   type: `${typeof controllerName}:updateNetworksList`;
-  handler: NetworksOrderController['updateNetworksList'];
+  handler: NetworkOrderController['updateNetworksList'];
 };
 
 // Union of all possible actions for the messenger
-export type NetworksOrderControllerMessengerActions =
-  NetworksOrderControllerupdateNetworksListAction;
+export type NetworkOrderControllerMessengerActions =
+  NetworkOrderControllerupdateNetworksListAction;
 
-// Type for the messenger of NetworksOrderController
-export type NetworksOrderControllerMessenger = RestrictedControllerMessenger<
+// Type for the messenger of NetworkOrderController
+export type NetworkOrderControllerMessenger = RestrictedControllerMessenger<
   typeof controllerName,
-  NetworksOrderControllerMessengerActions,
-  NetworksOrderStateChange | NetworkControllerStateChangeEvent,
+  NetworkOrderControllerMessengerActions,
+  NetworkOrderStateChange | NetworkControllerStateChangeEvent,
   never,
-  NetworksOrderStateChange['type'] | NetworkControllerStateChangeEvent['type']
+  NetworkOrderStateChange['type'] | NetworkControllerStateChangeEvent['type']
 >;
 
 // Default state for the controller
 const defaultState = {
-  networksList: [],
+  orderedNetworkList: [],
 };
 
 // Metadata for the controller state
 const metadata = {
-  networksList: {
+  orderedNetworkList: {
     persist: true,
     anonymous: true,
   },
@@ -65,13 +65,13 @@ const metadata = {
  * This controller subscribes to network state changes and ensures
  * that the network list is updated based on the latest network configurations.
  */
-export class NetworksOrderController extends BaseControllerV2<
+export class NetworkOrderController extends BaseControllerV2<
   typeof controllerName,
-  NetworksOrderControllerState,
-  NetworksOrderControllerMessenger
+  NetworkOrderControllerState,
+  NetworkOrderControllerMessenger
 > {
   /**
-   * Creates a NetworksOrderController instance.
+   * Creates a NetworkOrderController instance.
    *
    * @param args - The arguments to this function.
    * @param args.messenger - Messenger used to communicate with BaseV2 controller.
@@ -81,8 +81,8 @@ export class NetworksOrderController extends BaseControllerV2<
     messenger,
     state,
   }: {
-    messenger: NetworksOrderControllerMessenger;
-    state?: NetworksOrderControllerState;
+    messenger: NetworkOrderControllerMessenger;
+    state?: NetworkOrderControllerState;
   }) {
     // Call the constructor of BaseControllerV2
     super({
@@ -95,13 +95,17 @@ export class NetworksOrderController extends BaseControllerV2<
     // Subscribe to network state changes
     this.messagingSystem.subscribe(
       'NetworkController:stateChange',
-      async (networkControllerState) => {
-        await this.onNetworkControllerStateChange(networkControllerState);
+      (networkControllerState) => {
+        this.onNetworkControllerStateChange(networkControllerState);
       },
     );
   }
 
-  // Callback for handling network state changes
+  /**
+   * Handles the state change of the network controller and updates the networks list.
+   *
+   * @param networkControllerState - The state of the network controller.
+   */
   onNetworkControllerStateChange(networkControllerState: NetworkState) {
     // Extract network configurations from the state
     const networkConfigurations = Object.values(
@@ -117,20 +121,24 @@ export class NetworksOrderController extends BaseControllerV2<
     // Update the state with the new networks list
     this.update((state) => {
       // Combine existing networks with unique chainIds, excluding duplicates
-      const updatedNetworksList = [
-        ...state.networksList,
-        ...uniqueChainIds.filter((id) => !state.networksList.includes(id)),
+      state.orderedNetworkList = [
+        ...state.orderedNetworkList,
+        ...uniqueChainIds.filter(
+          (id) => !state.orderedNetworkList.includes(id),
+        ),
       ];
-
-      // Return the updated state
-      return { ...state, networksList: updatedNetworksList };
     });
   }
 
-  // Action for updating the networks list
+  /**
+   * Updates the networks list in the state with the provided list of networks.
+   *
+   * @param networkList - The list of networks to update in the state.
+   */
+
   updateNetworksList(networkList: []) {
     this.update((state) => {
-      state.networksList = networkList;
+      state.orderedNetworkList = networkList;
       return state;
     });
   }
