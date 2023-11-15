@@ -53,6 +53,7 @@ export const Copyable = ({ text, sensitive = false }) => {
               color={
                 visible ? Color.errorAlternative : IconColor.iconAlternative
               }
+              data-testid="reveal-icon"
             />
           </Tooltip>
         </Box>
@@ -92,6 +93,7 @@ export const Copyable = ({ text, sensitive = false }) => {
           color={visible ? Color.errorAlternative : IconColor.iconAlternative}
           onClick={handleCopyClick}
           marginLeft="auto"
+          data-testid="copy-icon"
         />
       )}
     </Box>
