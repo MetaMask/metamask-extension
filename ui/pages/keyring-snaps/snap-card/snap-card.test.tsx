@@ -41,11 +41,11 @@ describe('SnapCard', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should show install button', async () => {
+  it('should show details button', async () => {
     const { getByText } = renderComponent({ ...snap, isInstalled: false });
     expect(getByText(snap.snapTitle)).toBeInTheDocument();
     expect(getByText(snap.snapSlug)).toBeInTheDocument();
-    const installButton = getByText(messages.install.message);
+    const installButton = getByText(messages.details.message);
 
     expect(installButton).toBeInTheDocument();
     fireEvent.click(installButton);
@@ -70,6 +70,31 @@ describe('SnapCard', () => {
       expect(
         getByText(messages.configureSnapPopupTitle.message),
       ).toBeInTheDocument();
+    });
+  });
+
+  it('should show `Update Available` tag', () => {
+    const { getByText } = renderComponent({
+      ...snap,
+      isInstalled: true,
+      updateAvailable: true,
+    });
+    expect(getByText(messages.snapUpdateAvailable.message)).toBeInTheDocument();
+  });
+
+  it('should direct to snap details when the card is clicked', async () => {
+    const { getByTestId } = renderComponent({
+      ...snap,
+      isInstalled: false,
+      updateAvailable: false,
+    });
+
+    const card = getByTestId('key-management-snap');
+
+    fireEvent.click(card);
+
+    await waitFor(() => {
+      expect(mockHistoryPush).toHaveBeenCalled();
     });
   });
 });

@@ -1,11 +1,18 @@
-import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Box, BannerAlert } from '../../../components/component-library';
-import ToggleButton from '../../../components/ui/toggle-button';
-import TextField from '../../../components/ui/text-field';
+import React, { PureComponent } from 'react';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Box,
+} from '../../../components/component-library';
 import Button from '../../../components/ui/button';
-import Dropdown from '../../../components/ui/dropdown';
-import Dialog from '../../../components/ui/dialog';
+import TextField from '../../../components/ui/text-field';
+import ToggleButton from '../../../components/ui/toggle-button';
 import {
   Display,
   FlexDirection,
@@ -13,29 +20,14 @@ import {
   Severity,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { getPlatform } from '../../../../app/scripts/lib/util';
-
-import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import {
+  ExportableContentType,
+  exportAsFile,
+} from '../../../helpers/utils/export-utils';
 import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-
-import {
-  LedgerTransportTypes,
-  LEDGER_USB_VENDOR_ID,
-} from '../../../../shared/constants/hardware-wallets';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../../shared/constants/preferences';
-import {
-  exportAsFile,
-  ExportableContentType,
-} from '../../../helpers/utils/export-utils';
-import ActionableMessage from '../../../components/ui/actionable-message';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 
 const CORRUPT_JSON_FILE = 'CORRUPT_JSON_FILE';
 
@@ -60,27 +52,20 @@ export default class AdvancedTab extends PureComponent {
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
-    ledgerTransportType: PropTypes.oneOf(Object.values(LedgerTransportTypes)),
-    setLedgerTransportPreference: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
-    userHasALedgerAccount: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
     restoreUserData: PropTypes.func.isRequired,
     setDisabledRpcMethodPreference: PropTypes.func.isRequired,
     disabledRpcMethodPreferences: PropTypes.shape({
       eth_sign: PropTypes.bool.isRequired,
     }),
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-    desktopEnabled: PropTypes.bool,
-    ///: END:ONLY_INCLUDE_IN
   };
 
   state = {
     autoLockTimeLimit: this.props.autoLockTimeLimit,
     autoLockTimeLimitBeforeNormalization: this.props.autoLockTimeLimit,
     lockTimeError: '',
-    showLedgerTransportWarning: false,
     showResultMessage: false,
     restoreSuccessful: true,
     restoreMessage: null,
@@ -434,114 +419,6 @@ export default class AdvancedTab extends PureComponent {
     );
   }
 
-  renderLedgerLiveControl() {
-    const { t } = this.context;
-    const {
-      ledgerTransportType,
-      setLedgerTransportPreference,
-      userHasALedgerAccount,
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-      desktopEnabled,
-      ///: END:ONLY_INCLUDE_IN
-    } = this.props;
-
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-    if (desktopEnabled) {
-      return null;
-    }
-    ///: END:ONLY_INCLUDE_IN
-
-    const LEDGER_TRANSPORT_NAMES = {
-      LIVE: t('ledgerLive'),
-      WEBHID: t('webhid'),
-      U2F: t('u2f'),
-    };
-
-    const transportTypeOptions = [
-      {
-        name: LEDGER_TRANSPORT_NAMES.LIVE,
-        value: LedgerTransportTypes.live,
-      },
-      {
-        name: LEDGER_TRANSPORT_NAMES.U2F,
-        value: LedgerTransportTypes.u2f,
-      },
-    ];
-
-    if (window.navigator.hid) {
-      transportTypeOptions.push({
-        name: LEDGER_TRANSPORT_NAMES.WEBHID,
-        value: LedgerTransportTypes.webhid,
-      });
-    }
-
-    const recommendedLedgerOption = window.navigator.hid
-      ? LEDGER_TRANSPORT_NAMES.WEBHID
-      : LEDGER_TRANSPORT_NAMES.U2F;
-
-    return (
-      <Box
-        ref={this.settingsRefs[7]}
-        className="settings-page__content-row"
-        data-testid="ledger-live-control"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('preferredLedgerConnectionType')}</span>
-          <div className="settings-page__content-description">
-            {t('ledgerConnectionPreferenceDescription', [
-              recommendedLedgerOption,
-              <Button
-                key="ledger-connection-settings-learn-more"
-                type="link"
-                href={ZENDESK_URLS.HARDWARE_CONNECTION}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="settings-page__inline-link"
-              >
-                {t('learnMore')}
-              </Button>,
-            ])}
-          </div>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
-            <Dropdown
-              id="select-ledger-transport-type"
-              options={transportTypeOptions}
-              selectedOption={ledgerTransportType}
-              onChange={async (transportType) => {
-                if (
-                  ledgerTransportType === LedgerTransportTypes.live &&
-                  transportType === LedgerTransportTypes.webhid
-                ) {
-                  this.setState({ showLedgerTransportWarning: true });
-                }
-                setLedgerTransportPreference(transportType);
-                if (
-                  transportType === LedgerTransportTypes.webhid &&
-                  userHasALedgerAccount
-                ) {
-                  await window.navigator.hid.requestDevice({
-                    filters: [{ vendorId: LEDGER_USB_VENDOR_ID }],
-                  });
-                }
-              }}
-            />
-            {this.state.showLedgerTransportWarning ? (
-              <Dialog type="message">
-                <div className="settings-page__content-item-dialog">
-                  {t('ledgerTransportChangeWarning')}
-                </div>
-              </Dialog>
-            ) : null}
-          </div>
-        </div>
-      </Box>
-    );
-  }
-
   renderDismissSeedBackupReminderControl() {
     const { t } = this.context;
     const { dismissSeedBackUpReminder, setDismissSeedBackUpReminder } =
@@ -748,18 +625,23 @@ export default class AdvancedTab extends PureComponent {
             />
           </div>
           {showResultMessage && (
-            <ActionableMessage
-              type={restoreSuccessful ? 'success' : 'danger'}
-              message={restoreMessageToRender}
-              primaryActionV2={{
-                label: t('dismiss'),
-                onClick: () => {
-                  this.setState({
-                    showResultMessage: false,
-                    restoreSuccessful: true,
-                    restoreMessage: null,
-                  });
-                },
+            <BannerAlert
+              severity={
+                restoreSuccessful
+                  ? BannerAlertSeverity.Success
+                  : BannerAlertSeverity.Danger
+              }
+              description={restoreMessageToRender}
+              descriptionProps={{
+                'data-testid': 'restore-user-data-banner-alert-description',
+              }}
+              actionButtonLabel={t('dismiss')}
+              actionButtonOnClick={() => {
+                this.setState({
+                  showResultMessage: false,
+                  restoreSuccessful: true,
+                  restoreMessage: null,
+                });
               }}
             />
           )}
@@ -770,8 +652,6 @@ export default class AdvancedTab extends PureComponent {
 
   render() {
     const { warning } = this.props;
-
-    const notUsingFirefox = getPlatform() !== PLATFORM_FIREFOX;
 
     return (
       <div className="settings-page__body">
@@ -785,7 +665,6 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}
         {this.renderRestoreUserData()}
-        {notUsingFirefox ? this.renderLedgerLiveControl() : null}
         {this.renderDismissSeedBackupReminderControl()}
         {this.renderToggleEthSignControl()}
       </div>

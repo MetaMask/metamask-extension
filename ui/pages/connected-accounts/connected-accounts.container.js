@@ -2,8 +2,11 @@ import { connect } from 'react-redux';
 import {
   getAccountToConnectToActiveTab,
   getOrderedConnectedAccountsForActiveTab,
+  getOriginOfCurrentTab,
   getPermissionsForActiveTab,
+  getPermissionSubjects,
   getSelectedAddress,
+  getSubjectMetadata,
 } from '../../selectors';
 import { isExtensionUrl } from '../../helpers/utils/util';
 import {
@@ -20,6 +23,9 @@ const mapStateToProps = (state) => {
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
   const permissions = getPermissionsForActiveTab(state);
   const selectedAddress = getSelectedAddress(state);
+  const subjectMetadata = getSubjectMetadata(state);
+  const originOfActiveTab = getOriginOfCurrentTab(state);
+  const permissionSubjects = getPermissionSubjects(state);
 
   const isActiveTabExtension = isExtensionUrl(activeTab);
   return {
@@ -30,6 +36,9 @@ const mapStateToProps = (state) => {
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     permissions,
     selectedAddress,
+    subjectMetadata,
+    originOfActiveTab,
+    permissionSubjects,
   };
 };
 

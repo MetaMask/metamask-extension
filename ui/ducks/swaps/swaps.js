@@ -61,6 +61,7 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   checkNetworkAndAccountSupports1559,
+  getSelectedNetworkClientId,
 } from '../../selectors';
 
 import {
@@ -208,7 +209,10 @@ const slice = createSlice({
       state.customGas.fallBackPrice = action.payload;
     },
     setCurrentSmartTransactionsError: (state, action) => {
-      const errorType = Object.values(StxErrorTypes).includes(action.payload)
+      const isValidCurrentStxError =
+        Object.values(StxErrorTypes).includes(action.payload) ||
+        action.payload === undefined;
+      const errorType = isValidCurrentStxError
         ? action.payload
         : StxErrorTypes.unavailable;
       state.currentSmartTransactionsError = errorType;
@@ -430,7 +434,7 @@ export const getApproveTxParams = (state) => {
 };
 
 export const getSmartTransactionsOptInStatus = (state) => {
-  return state.metamask.smartTransactionsState?.userOptIn;
+  return state.metamask.smartTransactionsState?.userOptInV2;
 };
 
 export const getCurrentSmartTransactions = (state) => {
@@ -595,6 +599,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
       if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId)) {
+        await dispatch(setCurrentSmartTransactionsError(undefined));
         await dispatch(fetchSmartTransactionsLiveness());
         const transactions = await getTransactions({
           searchCriteria: {
@@ -659,6 +664,7 @@ export const fetchQuotesAndSetQuoteState = (
 
     const fetchParams = getFetchParams(state);
     const selectedAccount = getSelectedAccount(state);
+    const networkClientId = getSelectedNetworkClientId(state);
     const balanceError = getBalanceError(state);
     const swapsDefaultToken = getSwapsDefaultToken(state);
     const fetchParamsFromToken =
@@ -700,10 +706,13 @@ export const fetchQuotesAndSetQuoteState = (
     ) {
       await dispatch(
         addToken(
-          toTokenAddress,
-          toTokenSymbol,
-          toTokenDecimals,
-          toTokenIconUrl,
+          {
+            address: toTokenAddress,
+            symbol: toTokenSymbol,
+            decimals: toTokenDecimals,
+            image: toTokenIconUrl,
+            networkClientId,
+          },
           true,
         ),
       );
@@ -725,10 +734,13 @@ export const fetchQuotesAndSetQuoteState = (
     ) {
       dispatch(
         addToken(
-          fromTokenAddress,
-          fromTokenSymbol,
-          fromTokenDecimals,
-          fromTokenIconUrl,
+          {
+            address: fromTokenAddress,
+            symbol: fromTokenSymbol,
+            decimals: fromTokenDecimals,
+            image: fromTokenIconUrl,
+            networkClientId,
+          },
           true,
         ),
       );

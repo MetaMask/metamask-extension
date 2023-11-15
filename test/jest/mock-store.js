@@ -153,13 +153,11 @@ export const createSwapsMockStore = () => {
       preferences: {
         showFiatInTestnets: true,
       },
-      currentCurrency: 'ETH',
       transactions: [
         {
           id: 6571648590592143,
           time: 1667403993369,
           status: 'confirmed',
-          metamaskNetworkId: '5',
           originalGasEstimate: '0x7548',
           userEditedGasLimit: false,
           chainId: CHAIN_IDS.MAINNET,
@@ -225,7 +223,12 @@ export const createSwapsMockStore = () => {
         },
       ],
       useCurrencyRateCheck: true,
-      conversionRate: 1,
+      currentCurrency: 'ETH',
+      currencyRates: {
+        ETH: {
+          conversionRate: 1,
+        },
+      },
       contractExchangeRates: {
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
         '0x1111111111111111111111111111111111111111': 0.1,
@@ -260,7 +263,6 @@ export const createSwapsMockStore = () => {
       },
       selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
       currentLocale: 'en',
-      keyringTypes: [KeyringType.imported, KeyringType.hdKeyTree],
       keyrings: [
         {
           type: KeyringType.hdKeyTree,
@@ -502,6 +504,7 @@ export const createSwapsMockStore = () => {
       },
       smartTransactionsState: {
         userOptIn: true,
+        userOptInV2: true,
         liveness: true,
         fees: createGetSmartTransactionFeesApiResponse(),
         smartTransactions: {

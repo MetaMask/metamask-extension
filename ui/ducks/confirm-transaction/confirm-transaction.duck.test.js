@@ -276,7 +276,7 @@ describe('Confirm Transaction Duck', () => {
         history: [],
         id: 2603411941761054,
         loadingDefaults: false,
-        metamaskNetworkId: '5',
+        chainId: '0x5',
         origin: 'faucet.metamask.io',
         status: TransactionStatus.unapproved,
         time: 1530838113716,
@@ -290,8 +290,12 @@ describe('Confirm Transaction Duck', () => {
       };
       const mockState = {
         metamask: {
-          conversionRate: 468.58,
           currentCurrency: 'usd',
+          currencyRates: {
+            ETH: {
+              conversionRate: 468.58,
+            },
+          },
           providerConfig: {
             ticker: 'ETH',
           },
@@ -343,9 +347,12 @@ describe('Confirm Transaction Duck', () => {
     it('updates confirmTransaction transaction', () => {
       const mockState = {
         metamask: {
-          conversionRate: 468.58,
           currentCurrency: 'usd',
-          networkId: '5',
+          currencyRates: {
+            ETH: {
+              conversionRate: 468.58,
+            },
+          },
           selectedNetworkClientId: NetworkType.goerli,
           networksMetadata: {
             [NetworkType.goerli]: {
@@ -355,13 +362,14 @@ describe('Confirm Transaction Duck', () => {
           },
           providerConfig: {
             chainId: '0x5',
+            ticker: 'ETH',
           },
           transactions: [
             {
               history: [],
               id: 2603411941761054,
               loadingDefaults: false,
-              metamaskNetworkId: '5',
+              chainId: '0x5',
               origin: 'faucet.metamask.io',
               status: TransactionStatus.unapproved,
               time: 1530838113716,

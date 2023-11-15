@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SnapAccountRedirect /> renders the url and message when provided and isBlockedUrl is false 1`] = `
+<div>
+  <div
+    class="mm-box create-snap-account-page mm-box--padding-right-4 mm-box--padding-left-4 mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full mm-box--height-full mm-box--border-style-none"
+  >
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--height-full"
+    >
+      <div
+        class="mm-box mm-box--padding-top-4 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--align-items-center"
+        >
+          <h2
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--color-text-default"
+            data-testid="snap-account-redirect-content-title"
+          >
+            [snapAccountRedirectFinishSigningTitle]
+          </h2>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
+            data-testid="snap-account-redirect-content-description"
+          >
+            [snapAccountRedirectSiteDescription]
+          </p>
+          <div
+            class="mm-box snap-delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-style-solid mm-box--border-color-border-default box--border-width-1"
+          >
+            <div
+              class="mm-box snap-delineator__header mm-box--padding-1 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+              style="border-bottom-width: 1px;"
+            >
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
+              >
+                <div
+                  class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-icon mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                >
+                  <span
+                    class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-info-inverse"
+                    style="mask-image: url('./images/icons/snaps.svg');"
+                  />
+                </div>
+                <p
+                  class="mm-box mm-text snap-delineator__header__text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-bottom-0 mm-box--margin-left-1 mm-box--color-text-alternative"
+                >
+                  [contentFromSnap]
+                </p>
+              </div>
+            </div>
+            <div
+              class="mm-box snap-delineator__content mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+                data-testid="snap-account-redirect-message"
+              >
+                Redirecting to Snap Simple Keyring
+              </p>
+              <div
+                class="mm-box mm-box--padding-top-2 mm-box--display-flex"
+              >
+                <div
+                  class="mm-box mm-box--padding-right-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+                >
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--padding-2 mm-box--color-primary-default"
+                    data-testid="snap-account-redirect-url-display-box"
+                  >
+                    https://metamask.github.io/snap-simple-keyring/1.0.0/
+                  </p>
+                  <button
+                    aria-label=""
+                    class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                      style="mask-image: url('./images/icons/export.svg');"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

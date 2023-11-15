@@ -1,4 +1,9 @@
 import React from 'react';
+import {
+  BorderColor,
+  BorderRadius,
+  TextAlign,
+} from '../../../helpers/constants/design-system';
 import { AccountPicker } from '.';
 
 const CHAOS_ACCOUNT = {
@@ -11,19 +16,39 @@ export default {
   component: AccountPicker,
   argTypes: {
     name: {
-      control: 'string',
+      control: 'text',
     },
     address: {
-      control: 'string',
+      control: 'text',
     },
     onClick: {
       action: 'onClick',
+    },
+    disabled: {
+      control: 'boolean',
+    },
+    showAddress: {
+      control: 'boolean',
+    },
+    block: {
+      control: 'boolean',
+    },
+    addressPops: {
+      control: 'object',
+    },
+    labelPros: {
+      control: 'object',
+    },
+    textProp: {
+      control: 'object',
+    },
+    classNam: {
+      control: 'text',
     },
   },
   args: {
     address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
     name: 'Account 1',
-    onClick: () => undefined,
   },
 };
 
@@ -55,3 +80,23 @@ export const ChaosWithAddressStory = (args) => (
 );
 ChaosWithAddressStory.storyName = 'Chaos with Address';
 ChaosWithAddressStory.args = { name: CHAOS_ACCOUNT.name, showAddress: true };
+
+export const CustomAccountPicker = (args) => (
+  <AccountPicker
+    {...args}
+    style={{ height: 'auto' }} // add via a custom className
+    showAddress
+    borderRadius={BorderRadius.MD}
+    borderColor={BorderColor.borderDefault}
+    paddingTop={3}
+    paddingBottom={3}
+    labelProps={{ textAlign: TextAlign.Left }}
+    block
+    endIconProps={{
+      marginLeft: 'auto',
+    }}
+    textProps={{
+      gap: 2,
+    }}
+  />
+);

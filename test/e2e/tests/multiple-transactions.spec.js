@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   regularDelayMs,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -27,12 +28,11 @@ describe('Multiple transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // initiates a transaction from the dapp
         await openDapp(driver);
@@ -62,7 +62,13 @@ describe('Multiple transactions', function () {
           tag: 'a',
         });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.waitForElementNotPresent('.loading-overlay__spinner');
+        await driver.switchToWindow(confirmation);
+
+        // wait for the "Reject 2 transactions" to disappear
+        await driver.waitForElementNotPresent(
+          '.page-container__footer-secondary a',
+        );
+
         // confirms first transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
@@ -91,12 +97,11 @@ describe('Multiple transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // initiates a transaction from the dapp
         await openDapp(driver);

@@ -1,5 +1,6 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
+import log from 'loglevel';
 import { infuraProjectId } from '../../../../shared/constants/network';
 import {
   Severity,
@@ -25,6 +26,20 @@ const UNRECOGNIZED_CHAIN = {
       element: 'MetaMaskTranslation',
       props: {
         translationKey: 'unrecognizedChain',
+      },
+    },
+  },
+};
+
+const SAFE_CHAIN_LIST_PROVIDER_ERROR = {
+  id: 'SAFE_CHAIN_LIST_PROVIDER_ERROR',
+  severity: Severity.Warning,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'errorGettingSafeChainList',
       },
     },
   },
@@ -133,11 +148,20 @@ const ERROR_CONNECTING_TO_RPC = {
 
 async function getAlerts(pendingApproval, state) {
   const alerts = [];
-  const safeChainsList =
-    (await fetchWithCache({
-      url: 'https://chainid.network/chains.json',
-      functionName: 'getSafeChainsList',
-    })) || [];
+  let safeChainsList = [];
+  let providerError;
+  if (state.useSafeChainsListValidation) {
+    try {
+      safeChainsList = await fetchWithCache({
+        url: 'https://chainid.network/chains.json',
+        functionName: 'getSafeChainsList',
+      });
+    } catch (error) {
+      providerError = error;
+      // Swallow the error here to not block the user from adding a custom network
+      log.warn('Failed to fetch the chainList from chainid.network', error);
+    }
+  }
   const matchedChain = safeChainsList.find(
     (chain) =>
       chain.chainId === parseInt(pendingApproval.requestData.chainId, 16),
@@ -168,7 +192,11 @@ async function getAlerts(pendingApproval, state) {
   }
 
   if (!matchedChain && state.useSafeChainsListValidation) {
-    alerts.push(UNRECOGNIZED_CHAIN);
+    if (providerError) {
+      alerts.push(SAFE_CHAIN_LIST_PROVIDER_ERROR);
+    } else {
+      alerts.push(UNRECOGNIZED_CHAIN);
+    }
   }
 
   if (alerts.length) {

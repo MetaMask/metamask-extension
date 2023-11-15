@@ -113,7 +113,6 @@ export enum IconName {
   PasswordCheck = 'password-check',
   People = 'people',
   ProgrammingArrows = 'programming-arrows',
-  MmmiPortfolioDashboard = 'portfolio-dashboard',
   Custody = 'custody',
   Question = 'question',
   Received = 'received',
@@ -175,6 +174,7 @@ export enum IconName {
   Upload = 'upload',
   Usb = 'usb',
   Wifi = 'wifi',
+  PlusMinus = 'plus-minus',
 }
 
 export interface IconStyleUtilityProps extends StyleUtilityProps {

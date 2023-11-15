@@ -98,7 +98,6 @@ const EXPECTED_NORMALISED_TRANSACTION_BASE = {
   chainId: undefined,
   hash: ETHERSCAN_TRANSACTION_SUCCESS_MOCK.hash,
   id: ID_MOCK,
-  metamaskNetworkId: undefined,
   status: TransactionStatus.confirmed,
   time: 1543596356000,
   txParams: {
@@ -158,7 +157,6 @@ describe('EtherscanRemoteTransactionSource', () => {
       expect(
         new EtherscanRemoteTransactionSource().isSupportedNetwork(
           CHAIN_IDS.MAINNET,
-          '1',
         ),
       ).toBe(true);
     });
@@ -167,7 +165,6 @@ describe('EtherscanRemoteTransactionSource', () => {
       expect(
         new EtherscanRemoteTransactionSource().isSupportedNetwork(
           CHAIN_IDS.LOCALHOST,
-          '1',
         ),
       ).toBe(false);
     });

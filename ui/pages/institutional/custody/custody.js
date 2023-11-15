@@ -35,6 +35,7 @@ import {
   TextColor,
   TextAlign,
   TextVariant,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -53,6 +54,7 @@ import {
 import PulseLoader from '../../../components/ui/pulse-loader/pulse-loader';
 import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
+import { setSelectedAddress } from '../../../store/actions';
 
 const GK8_DISPLAY_NAME = 'gk8';
 
@@ -262,7 +264,7 @@ const CustodyPage = () => {
         if (connectRequest && Object.keys(connectRequest).length) {
           const {
             token,
-            environment: custodianName,
+            environment: custodianName, // this is the env name
             service: custodianType,
             apiUrl: custodianApiUrl,
           } = connectRequest;
@@ -380,7 +382,10 @@ const CustodyPage = () => {
   }
 
   return (
-    <Box className="page-container">
+    <Box
+      className="main-container"
+      backgroundColor={BackgroundColor.backgroundDefault}
+    >
       {connectError && (
         <Text
           data-testid="connect-error"
@@ -403,7 +408,6 @@ const CustodyPage = () => {
           padding={4}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
-          className="page-container__content"
           width={BlockSize.Full}
         >
           <Box
@@ -610,6 +614,7 @@ const CustodyPage = () => {
                 const selectedCustodian = custodians.find(
                   (custodian) => custodian.envName === selectedCustodianName,
                 );
+                const firstAccountKey = Object.keys(selectedAccounts).shift();
 
                 await dispatch(
                   mmiActions.connectCustodyAddresses(
@@ -618,6 +623,8 @@ const CustodyPage = () => {
                     selectedAccounts,
                   ),
                 );
+
+                dispatch(setSelectedAddress(firstAccountKey.toLowerCase()));
 
                 trackEvent({
                   category: MetaMetricsEventCategory.MMI,
@@ -704,7 +711,9 @@ const CustodyPage = () => {
         <ConfirmConnectCustodianModal
           onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
           custodianName={selectedCustodianDisplayName}
-          custodianURL={matchedCustodian?.website}
+          custodianURL={
+            matchedCustodian?.onboardingUrl || matchedCustodian?.website
+          }
         />
       )}
     </Box>

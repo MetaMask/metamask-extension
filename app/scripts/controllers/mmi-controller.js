@@ -1,7 +1,6 @@
 import EventEmitter from 'events';
 import log from 'loglevel';
 import { captureException } from '@sentry/browser';
-import { isEqual } from 'lodash';
 import { CUSTODIAN_TYPES } from '@metamask-institutional/custody-keyring';
 import {
   updateCustodianTransactions,
@@ -11,17 +10,10 @@ import {
   REFRESH_TOKEN_CHANGE_EVENT,
   INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT,
 } from '@metamask-institutional/sdk';
-import {
-  handleMmiPortfolio,
-  setDashboardCookie,
-} from '@metamask-institutional/portfolio-dashboard';
+import { handleMmiPortfolio } from '@metamask-institutional/portfolio-dashboard';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import {
-  BUILD_QUOTE_ROUTE,
-  CONNECT_HARDWARE_ROUTE,
-} from '../../../ui/helpers/constants/routes';
-import { previousValueComparator } from '../lib/util';
+import { CONNECT_HARDWARE_ROUTE } from '../../../ui/helpers/constants/routes';
 import { getPermissionBackgroundApiMethods } from './permissions';
 
 export default class MMIController extends EventEmitter {
@@ -31,7 +23,6 @@ export default class MMIController extends EventEmitter {
     this.opts = opts;
     this.mmiConfigurationController = opts.mmiConfigurationController;
     this.keyringController = opts.keyringController;
-    this.txController = opts.txController;
     this.securityProviderRequest = opts.securityProviderRequest;
     this.preferencesController = opts.preferencesController;
     this.appStateController = opts.appStateController;
@@ -48,6 +39,16 @@ export default class MMIController extends EventEmitter {
     this.platform = opts.platform;
     this.extension = opts.extension;
 
+    this.updateTransactionHash = opts.updateTransactionHash;
+    this.trackTransactionEvents = opts.trackTransactionEvents;
+    this.txStateManager = {
+      getTransactions: opts.getTransactions,
+      setTxStatusSigned: opts.setTxStatusSigned,
+      setTxStatusSubmitted: opts.setTxStatusSubmitted,
+      setTxStatusFailed: opts.setTxStatusFailed,
+      updateTransaction: opts.updateTransaction,
+    };
+
     // Prepare event listener after transactionUpdateController gets initiated
     this.transactionUpdateController.prepareEventListener(
       this.custodianEventHandlerFactory.bind(this),
@@ -62,17 +63,6 @@ export default class MMIController extends EventEmitter {
         this.transactionUpdateController.subscribeToEvents();
       });
     }
-
-    this.preferencesController.store.subscribe(
-      previousValueComparator(async (prevState, currState) => {
-        const { identities: prevIdentities } = prevState;
-        const { identities: currIdentities } = currState;
-        if (isEqual(prevIdentities, currIdentities)) {
-          return;
-        }
-        await this.prepareMmiPortfolio();
-      }, this.preferencesController.store.getState()),
-    );
 
     this.signatureController.hub.on(
       'personal_sign:signed',
@@ -94,7 +84,13 @@ export default class MMIController extends EventEmitter {
   }
 
   async trackTransactionEventFromCustodianEvent(txMeta, event) {
-    this.txController._trackTransactionMetricsEvent(txMeta, event);
+    // transactionMetricsRequest parameter is already bound in the constructor
+    this.trackTransactionEvents(
+      {
+        transactionMeta: txMeta,
+      },
+      event,
+    );
   }
 
   async addKeyringIfNotExists(type) {
@@ -110,9 +106,9 @@ export default class MMIController extends EventEmitter {
       log,
       getState: () => this.getState(),
       getPendingNonce: (address) => this.getPendingNonce(address),
-      setTxHash: (txId, txHash) => this.txController.setTxHash(txId, txHash),
+      setTxHash: (txId, txHash) => this.updateTransactionHash(txId, txHash),
       signatureController: this.signatureController,
-      txStateManager: this.txController.txStateManager,
+      txStateManager: this.txStateManager,
       custodyController: this.custodyController,
       trackTransactionEvent:
         this.trackTransactionEventFromCustodianEvent.bind(this),
@@ -173,11 +169,7 @@ export default class MMIController extends EventEmitter {
           }
         }
 
-        const txList = this.txController.txStateManager.getTransactions(
-          {},
-          [],
-          false,
-        ); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
+        const txList = this.txStateManager.getTransactions({}, [], false); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
 
         try {
           updateCustodianTransactions({
@@ -186,8 +178,8 @@ export default class MMIController extends EventEmitter {
             txList,
             getPendingNonce: (address) => this.getPendingNonce(address),
             setTxHash: (txId, txHash) =>
-              this.txController.setTxHash(txId, txHash),
-            txStateManager: this.txController.txStateManager,
+              this.updateTransactionHash(txId, txHash),
+            txStateManager: this.txStateManager,
             custodyController: this.custodyController,
             transactionUpdateController: this.transactionUpdateController,
           });
@@ -430,7 +422,9 @@ export default class MMIController extends EventEmitter {
   }
 
   async getCustodianConfirmDeepLink(txId) {
-    const txMeta = this.txController.txStateManager.getTransaction(txId);
+    const txMeta = this.txStateManager
+      .getTransactions()
+      .find((tx) => tx.id === txId);
 
     const address = txMeta.txParams.from;
     const custodyType = this.custodyController.getCustodyTypeByAddress(
@@ -461,8 +455,8 @@ export default class MMIController extends EventEmitter {
   }
 
   // Based on a custodian name, get all the tokens associated with that custodian
-  async getCustodianJWTList(custodianName) {
-    console.log('getCustodianJWTList', custodianName);
+  async getCustodianJWTList(custodianEnvName) {
+    console.log('getCustodianJWTList', custodianEnvName);
 
     const { identities } = this.preferencesController.store.getState();
 
@@ -474,7 +468,9 @@ export default class MMIController extends EventEmitter {
 
     const { custodians } = mmiConfiguration;
 
-    const custodian = custodians.find((item) => item.name === custodianName);
+    const custodian = custodians.find(
+      (item) => item.envName === custodianEnvName,
+    );
 
     if (!custodian) {
       return [];
@@ -499,9 +495,11 @@ export default class MMIController extends EventEmitter {
 
         if (
           !custodyAccountDetails ||
-          custodyAccountDetails.custodianName !== custodianName
+          custodyAccountDetails.custodianName !== custodianEnvName
         ) {
-          log.debug(`${address} does not belong to ${custodianName} keyring`);
+          log.debug(
+            `${address} does not belong to ${custodianEnvName} keyring`,
+          );
           continue;
         }
 
@@ -584,20 +582,6 @@ export default class MMIController extends EventEmitter {
     });
   }
 
-  async prepareMmiPortfolio() {
-    if (!process.env.IN_TEST) {
-      try {
-        const mmiDashboardData = await this.handleMmiDashboardData();
-        const cookieSetUrls =
-          this.mmiConfigurationController.store.mmiConfiguration?.portfolio
-            ?.cookieSetUrls || [];
-        setDashboardCookie(mmiDashboardData, cookieSetUrls);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
-
   async newUnsignedMessage(msgParams, req, version) {
     // The code path triggered by deferSetAsSigned: true is for custodial accounts
     const accountDetails = this.custodyController.getAccountDetails(
@@ -670,12 +654,6 @@ export default class MMIController extends EventEmitter {
       this.permissionController,
     ).addPermittedAccount(origin, addressToLowerCase);
 
-    return true;
-  }
-
-  async handleMmiOpenSwaps(origin, address, chainId) {
-    await this.setAccountAndNetwork(origin, address, chainId);
-    this.platform.openExtensionInBrowser(BUILD_QUOTE_ROUTE);
     return true;
   }
 

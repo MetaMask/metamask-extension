@@ -86,7 +86,7 @@ describe('Custom network', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -163,8 +163,9 @@ describe('Custom network', function () {
           dapp: true,
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
+            .withPreferencesController({ useSafeChainsListValidation: true })
             .build(),
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -194,6 +195,27 @@ describe('Custom network', function () {
             'MetaMask Notification',
             windowHandles,
           );
+
+          const warningMsg1 =
+            'According to our record the network name may not correctly match this chain ID.';
+          await driver.findElement({
+            tag: 'span',
+            text: warningMsg1,
+          });
+
+          const errorMsg1 =
+            'The submitted currency symbol does not match what we expect for this chain ID.';
+          await driver.findElement({
+            tag: 'span',
+            text: errorMsg1,
+          });
+
+          const errorMsg2 =
+            'According to our records the submitted RPC URL value does not match a known provider for this chain ID.';
+          await driver.findElement({
+            tag: 'span',
+            text: errorMsg2,
+          });
 
           const errMsg1 = 'verify the network details';
           await driver.findElement({
@@ -227,6 +249,76 @@ describe('Custom network', function () {
       );
     });
 
+    it("don't validate bad rpc custom network when toggle is off", async function () {
+      async function mockRPCURLAndChainId(mockServer) {
+        return [
+          await mockServer
+            .forPost('https://responsive-rpc.url/')
+            .thenCallback(() => ({
+              statusCode: 200,
+              json: {
+                id: '1694444405781',
+                jsonrpc: '2.0',
+                result: TEST_CHAIN_ID,
+              },
+            })),
+        ];
+      }
+
+      await withFixtures(
+        {
+          dapp: true,
+          fixtures: new FixtureBuilder()
+            .withPermissionControllerConnectedToTestDapp()
+            .withPreferencesController({ useSafeChainsListValidation: false })
+            .build(),
+          title: this.test.fullTitle(),
+          testSpecificMock: mockRPCURLAndChainId,
+        },
+        async ({ driver }) => {
+          await driver.navigate();
+          await unlockWallet(driver);
+
+          await openDapp(driver);
+          await driver.executeScript(`
+          var params = [{
+            chainId: "${TEST_CHAIN_ID}",
+            chainName: "Antani",
+            nativeCurrency: {
+              name: "",
+              symbol: "ANTANI",
+              decimals: 18
+            },
+            rpcUrls: ["https://responsive-rpc.url/"],
+            blockExplorerUrls: [ "http://localhost:8080/api/customRPC" ]
+          }]
+          window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params
+          })
+        `);
+          const windowHandles = await driver.waitUntilXWindowHandles(3);
+
+          await driver.switchToWindowWithTitle(
+            'MetaMask Notification',
+            windowHandles,
+          );
+
+          await driver.clickElement({
+            tag: 'button',
+            text: 'Approve',
+          });
+
+          const switchNetworkBtn = await driver.findElement({
+            tag: 'button',
+            text: 'Switch network',
+          });
+
+          await switchNetworkBtn.click();
+        },
+      );
+    });
+
     it("don't add unreachable custom network", async function () {
       await withFixtures(
         {
@@ -235,7 +327,7 @@ describe('Custom network', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -296,7 +388,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -366,7 +458,7 @@ describe('Custom network', function () {
           });
           // verify network switched
           const networkDisplayed = await driver.findElement({
-            tag: 'p',
+            tag: 'span',
             text: 'Arbitrum One',
           });
           assert.equal(
@@ -383,7 +475,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -440,7 +532,7 @@ describe('Custom network', function () {
             })
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver }) => {
           await driver.navigate();
@@ -470,7 +562,7 @@ describe('Custom network', function () {
       );
     });
 
-    it('when the network details validation toggle is turned on, validate user inserted details against data from "chainid.network"', async function () {
+    it("when the network details validation toggle is turned on, validate user inserted details against data from 'chainid.network'", async function () {
       async function mockRPCURLAndChainId(mockServer) {
         return [
           await mockServer
@@ -491,7 +583,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
@@ -533,7 +625,7 @@ describe('Custom network', function () {
         {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
