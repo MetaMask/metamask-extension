@@ -1,5 +1,6 @@
 import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
+import { actions } from '@storybook/addon-actions';
 import { SelectButton } from '../select-button';
 import { SelectOption } from '../select-option';
 import { Button } from '../button';
@@ -81,6 +82,7 @@ DefaultStory.storyName = 'Default';
 
 export const TriggerComponent = Template.bind({});
 TriggerComponent.args = {
+  placeholder: '',
   triggerComponent: <SelectButton>Trigger component</SelectButton>,
 };
 
@@ -235,7 +237,6 @@ Placeholder.args = {
 export const IsDisabled = Template.bind({});
 
 IsDisabled.args = {
-  placeholder: 'Select Option',
   isDisabled: true,
 };
 
@@ -244,7 +245,6 @@ IsDisabled.storyName = 'isDisabled';
 export const IsDanger = Template.bind({});
 
 IsDanger.args = {
-  placeholder: 'Select Option',
   isDanger: true,
 };
 
@@ -253,7 +253,6 @@ IsDanger.storyName = 'isDanger';
 export const PopoverProps = Template.bind({});
 
 PopoverProps.args = {
-  placeholder: 'Select Option',
   popoverProps: {
     backgroundColor: BackgroundColor.goerli,
     padding: 4,
@@ -269,7 +268,11 @@ export const OnBlur: StoryFn<typeof SelectWrapper> = (args) => {
     <>
       <SelectWrapper
         {...args}
-        onBlur={() => setOnBlur(onBlur + 1)}
+        onBlur={() => {
+          setOnBlur(onBlur + 1);
+          actions('onBlur');
+        }}
+        placeholder=""
         triggerComponent={<SelectButton>onBlur Count: {onBlur}</SelectButton>}
       >
         <Text>This is a demo of controlled onBlur.</Text>
