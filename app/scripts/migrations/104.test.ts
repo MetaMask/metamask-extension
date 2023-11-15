@@ -99,7 +99,7 @@ describe('migration #104', () => {
       const oldData = createMockState();
 
       const oldStorage = {
-        meta: { version: 102 },
+        meta: { version: 103 },
         data: oldData,
       };
 
@@ -130,7 +130,7 @@ describe('migration #104', () => {
       const oldData = createMockState();
 
       const oldStorage = {
-        meta: { version: 102 },
+        meta: { version: 103 },
         data: oldData,
       };
 
@@ -159,7 +159,7 @@ describe('migration #104', () => {
         ]),
       );
       const oldStorage = {
-        meta: { version: 102 },
+        meta: { version: 103 },
         data: oldData,
       };
       const newStorage = await migrate(oldStorage);
@@ -189,7 +189,7 @@ describe('migration #104', () => {
       });
 
       const oldStorage = {
-        meta: { version: 102 },
+        meta: { version: 103 },
         data: oldData,
       };
 
@@ -220,7 +220,7 @@ describe('migration #104', () => {
     it('should select the same account as the selected address', async () => {
       const oldData = createMockState();
       const oldStorage = {
-        meta: { version: 102 },
+        meta: { version: 103 },
         data: oldData,
       };
       const newStorage = await migrate(oldStorage);
@@ -243,7 +243,7 @@ describe('migration #104', () => {
         },
       };
       const oldStorage = {
-        meta: { version: 102 },
+        meta: { version: 103 },
         data: oldData,
       };
       const newStorage = await migrate(oldStorage);
