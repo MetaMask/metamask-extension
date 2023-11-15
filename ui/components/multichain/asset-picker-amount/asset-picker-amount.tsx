@@ -35,7 +35,6 @@ import MaxClearButton from './max-clear-button';
 import AssetPicker from './asset-picker/asset-picker';
 
 // A component that combines an asset picker with an input for the amount to send.
-// Work in progress.
 export const AssetPickerAmount = () => {
   const dispatch = useDispatch();
   const t = useI18nContext();
@@ -45,6 +44,10 @@ export const AssetPickerAmount = () => {
   if (!asset) {
     throw new Error('No asset is drafted for sending');
   }
+
+  const balanceColor = error
+    ? TextColor.errorDefault
+    : TextColor.textAlternative;
 
   return (
     <Box className="asset-picker-amount">
@@ -98,11 +101,7 @@ export const AssetPickerAmount = () => {
         )}
       </Box>
       <Box display={Display.Flex}>
-        <Text
-          color={error ? TextColor.errorDefault : TextColor.textAlternative}
-          marginRight={1}
-          variant={TextVariant.bodySm}
-        >
+        <Text color={balanceColor} marginRight={1} variant={TextVariant.bodySm}>
           {t('balance')}:
         </Text>
         {asset.type === AssetType.native ? (
@@ -112,11 +111,11 @@ export const AssetPickerAmount = () => {
             value={asset.balance}
             type={PRIMARY}
             textProps={{
-              color: error ? TextColor.errorDefault : TextColor.textAlternative,
+              color: balanceColor,
               variant: TextVariant.bodySm,
             }}
             suffixProps={{
-              color: error ? TextColor.errorDefault : TextColor.textAlternative,
+              color: balanceColor,
               variant: TextVariant.bodySm,
             }}
           />
@@ -126,10 +125,10 @@ export const AssetPickerAmount = () => {
           <TokenBalance
             token={asset.details}
             textProps={{
-              color: error ? TextColor.errorDefault : TextColor.textAlternative,
+              color: balanceColor,
             }}
             suffixProps={{
-              color: error ? TextColor.errorDefault : TextColor.textAlternative,
+              color: balanceColor,
             }}
           />
         )}
