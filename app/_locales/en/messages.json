@@ -515,25 +515,25 @@
     "message": "Back"
   },
   "backup": {
-    "message": "Backup"
+    "message": "Back up"
   },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
   "backupApprovalNotice": {
-    "message": "Backup your Secret Recovery Phrase to keep your wallet and funds secure."
+    "message": "Back up your Secret Recovery Phrase to keep your wallet and funds secure."
   },
   "backupKeyringSnapReminder": {
     "message": "Be sure you can access any accounts created by this Snap on your own before removing it"
   },
   "backupNow": {
-    "message": "Backup now"
+    "message": "Back up now"
   },
   "backupUserData": {
-    "message": "Backup your data"
+    "message": "Back up your data"
   },
   "backupUserDataDescription": {
-    "message": "You can backup user settings containing preferences and account addresses into a JSON file."
+    "message": "You can back up data like your contacts and preferences."
   },
   "balance": {
     "message": "Balance"
@@ -3810,7 +3810,7 @@
     "message": "Restore user data"
   },
   "restoreUserDataDescription": {
-    "message": "You can restore user settings containing preferences and account addresses from a previously backed up JSON file."
+    "message": "You can restore data like contacts and preferences from a backup file."
   },
   "resultPageError": {
     "message": "Error"

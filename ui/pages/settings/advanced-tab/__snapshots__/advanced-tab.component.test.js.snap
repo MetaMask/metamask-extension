@@ -388,12 +388,12 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item"
       >
         <span>
-          Backup your data
+          Back up your data
         </span>
         <span
           class="settings-page__content-description"
         >
-          You can backup user settings containing preferences and account addresses into a JSON file.
+          You can back up data like your contacts and preferences.
         </span>
       </div>
       <div
@@ -406,7 +406,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             class="button btn--rounded btn-secondary btn--large"
             data-testid="backup-button"
           >
-            Backup
+            Back up
           </button>
         </div>
       </div>
@@ -424,7 +424,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         <span
           class="settings-page__content-description"
         >
-          You can restore user settings containing preferences and account addresses from a previously backed up JSON file.
+          You can restore data like contacts and preferences from a backup file.
         </span>
       </div>
       <div
