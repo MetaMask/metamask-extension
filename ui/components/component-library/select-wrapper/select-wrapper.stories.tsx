@@ -146,19 +146,10 @@ export const ControlledValue: StoryFn<typeof SelectWrapper> = (args) => {
   );
 };
 
-export const UncontrolledValue: StoryFn<typeof SelectWrapper> = (args) => {
-  return (
-    <>
-      <SelectWrapper
-        {...args}
-        triggerComponent={<SelectButton>Uncontrolled Example</SelectButton>}
-      >
-        <SelectOption value="Option 1">Option 1</SelectOption>
-        <SelectOption value="Option 2">Option 2</SelectOption>
-        <SelectOption value="Option 3">Option 3</SelectOption>
-      </SelectWrapper>
-    </>
-  );
+export const UncontrolledValue = Template.bind({});
+UncontrolledValue.args = {
+  triggerComponent: <SelectButton>Uncontrolled Value Demo</SelectButton>,
+  placeholder: 'Uncontrolled Value Demo',
 };
 
 export const UseSelectContext: StoryFn<typeof SelectWrapper> = (args) => {
