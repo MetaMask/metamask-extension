@@ -202,18 +202,9 @@ IsMultiSelect.args = {
 
 IsMultiSelect.storyName = 'isMultiSelect';
 
-export const Placeholder: StoryFn<typeof SelectWrapper> = (args) => {
-  return (
-    <SelectWrapper
-      placeholder={'This is a placeholder'}
-      {...args}
-      triggerComponent={<SelectButton>Demo</SelectButton>}
-    >
-      <SelectOption value="Option 1">Option 1</SelectOption>
-      <SelectOption value="Option 2">Option 2</SelectOption>
-      <SelectOption value="Option 3">Option 3</SelectOption>
-    </SelectWrapper>
-  );
+export const Placeholder = Template.bind({});
+Placeholder.args = {
+  placeholder: 'Placeholder demo',
 };
 
 export const IsDisabled: StoryFn<typeof SelectWrapper> = (args) => {
