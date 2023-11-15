@@ -28,7 +28,7 @@ import { deferredPromise } from './lib/util';
 import TransactionController from './controllers/transactions';
 import MetaMaskController from './metamask-controller';
 
-const Ganache = require('../../test/e2e/ganache');
+const { Ganache } = require('../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
 

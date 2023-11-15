@@ -1398,12 +1398,6 @@
   "enableFromSettings": {
     "message": " 从设置中启用它。"
   },
-  "enableOpenSeaAPI": {
-    "message": "启用 OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
-  },
   "enableSnap": {
     "message": "启用"
   },
@@ -2112,25 +2106,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "在您的 Ledger 设备上启用“智能合约数据”或“盲签”。"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "在“设置 > 高级”下启用使用 Ledger Live"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "请确保您的 Ledger 设备已插入并选择以太坊应用程序。"
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "打开并解锁 Ledger Live 应用程序。"
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "自定义连接您的 Ledger 到 MetaMask 的方式。建议使用 $1，但也可使用其他选项。请在这里阅读更多信息：$2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger 设备打开失败。您的 Ledger 可能已连接到其他软件。请关闭 Ledger Live 或其他连接到您的 Ledger 设备的应用程序，并尝试再次连接。"
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live 应用程序"
@@ -2140,9 +2120,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live 响应时间过长或连接超时。请确保 Ledger Live 应用程序已打开且您的设备已解锁。"
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "如果您的 Ledger Live 应用程序已打开，请断开任何打开的 Ledger Live 的连接并关闭 Ledger Live 应用程序。"
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger 设备未连接。如果您想要连接您的 Ledger，请再次点击“继续”并批准 HID 连接",
