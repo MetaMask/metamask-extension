@@ -182,7 +182,7 @@ export default class Routes extends Component {
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
-    pendingConfirmations: PropTypes.object.isRequired,
+    pendingConfirmations: PropTypes.array.isRequired,
     ///: END:ONLY_INCLUDE_IN
   };
 
