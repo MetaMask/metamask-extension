@@ -67,10 +67,6 @@ export interface SelectWrapperStyleUtilityProps extends StyleUtilityProps {
    */
   onOpenChange?: any; // TO DO: confirm type
   /**
-   * Callback function that is called when the SelectWrapper component receives focus.
-   */
-  onFocus?: () => void;
-  /**
    * Callback function that is called when the SelectWrapper component loses focus.
    * The event object is passed as an argument to the function.
    */
