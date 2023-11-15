@@ -43,9 +43,7 @@ export const Copyable = ({ text, sensitive = false }) => {
           <Tooltip
             wrapperClassName="copyable__tooltip"
             html={
-              <Text>
-                {visible ? t('hideSentitiveInfo') : t('revealSensitiveContent')}
-              </Text>
+              <Text>{visible ? t('hideSentitiveInfo') : t('doNotShare')}</Text>
             }
             position="bottom"
           >
