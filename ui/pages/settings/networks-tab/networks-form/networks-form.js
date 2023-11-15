@@ -42,8 +42,14 @@ import {
   showModal,
   upsertNetworkConfiguration,
 } from '../../../../store/actions';
-import { Text } from '../../../../components/component-library';
 import {
+  FormTextField,
+  HelpText,
+  HelpTextSeverity,
+  Text,
+} from '../../../../components/component-library';
+import {
+  FontWeight,
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
@@ -695,40 +701,53 @@ const NetworksForm = ({
           disabled={viewOnly}
           tooltipText={viewOnly ? null : t('networkSettingsChainIdDescription')}
         />
-        <FormField
-          warning={warnings.ticker?.msg || ''}
-          warningProps={{
-            'data-testid': 'network-form-ticker-warning',
-            style: {
-              color: 'var(--color-warning-default)',
-            },
-          }}
-          onChange={(value) => {
+        <FormTextField
+          data-testid="network-form-ticker"
+          helpText={
+            suggestedTicker ? (
+              <Text
+                as="span"
+                variant={TextVariant.bodySm}
+                color={TextColor.textDefault}
+              >
+                {t('suggestedTokenSymbol')}{' '}
+                <Text
+                  as="span"
+                  variant={TextVariant.bodySm}
+                  color={TextColor.primaryDefault}
+                  onClick={() => {
+                    setTicker(suggestedTicker);
+                  }}
+                >
+                  {suggestedTicker}
+                </Text>
+              </Text>
+            ) : null
+          }
+          onChange={(e) => {
             setIsEditing(true);
-            setTicker(value);
+            setTicker(e.target.value);
+            console.log(ticker, e.target.value);
           }}
-          titleText={t('currencySymbol')}
+          label={t('currencySymbol')}
+          labelProps={{
+            variant: TextVariant.bodySm,
+            fontWeight: FontWeight.Bold,
+            paddingBottom: 1,
+            paddingTop: 1,
+          }}
+          inputProps={{ paddingLeft: 2, variant: TextVariant.bodySm }}
           value={ticker}
           disabled={viewOnly}
         />
-        {suggestedTicker ? (
-          <Text
-            as="span"
-            variant={TextVariant.bodySm}
-            color={TextColor.textDefault}
+        {warnings.ticker?.msg ? (
+          <HelpText
+            severity={HelpTextSeverity.Warning}
+            marginTop={1}
+            data-testid="network-form-ticker-warning"
           >
-            Suggested ticker symbol:{' '}
-            <Text
-              as="span"
-              variant={TextVariant.bodySm}
-              color={TextColor.primaryDefault}
-              onClick={() => {
-                setTicker(suggestedTicker);
-              }}
-            >
-              {suggestedTicker}
-            </Text>
-          </Text>
+            {warnings.ticker?.msg}
+          </HelpText>
         ) : null}
         <FormField
           error={errors.blockExplorerUrl?.msg || ''}
