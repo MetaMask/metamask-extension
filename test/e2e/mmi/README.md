@@ -1,6 +1,6 @@
 # Playwright MMI E2E Testing
 
-This directory contains a subset of MMI end-to-end tests created using [Playwright](https://playwright.dev/).
+This directory contains a set of specific MMI end-to-end tests created using [Playwright](https://playwright.dev/). These tests are part of the MMI quality legacy framework.
 
 ## Setup
 
@@ -44,7 +44,7 @@ From the root of the project, you can use the following scripts to run the tests
 
 For more information on visual tests, refer to the [Playwright documentation](https://playwright.dev/docs/test-snapshots).
 
-To run visual tests, you need to generate a Docker image. This ensures that the screenshots are consistent with the operating system used in the pipeline. The `package.json` file in this directory simplifies the Docker image build process, as it only requires Playwright and test-related components. The Metamask build dependencies are not required as the extension is already built.
+Running visual tests requires the generation of a Docker image. This ensures that the screenshots are consistent with the operating system used in the pipeline. All required to build this image is described in file `test/e2e/mmi/Dockerfile`. The actual process to build, call the tests and tierdown files is defined in `test/e2e/mmi/scripts/run-visual-test.sh`.
 
 ## Reports
 
