@@ -1862,7 +1862,7 @@ describe('Transaction Controller', function () {
     });
   });
 
-  describe('#_markNonceDuplicatesDropped', function () {
+  describe.only('#_markNonceDuplicatesDropped', function () {
     it('should mark all nonce duplicates as dropped without marking the confirmed transaction as dropped', function () {
       txController.txStateManager._addTransactionsToState([
         {

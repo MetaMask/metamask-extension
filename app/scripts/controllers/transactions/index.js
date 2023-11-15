@@ -1990,7 +1990,7 @@ export default class TransactionController extends EventEmitter {
         searchCriteria: { nonce, from },
       })
       .filter((otherTxMeta) => otherTxMeta.id !== txId)
-      .filter((otherTxMeta) => otherTxMeta.type === TransactionType.incoming);
+      .filter((otherTxMeta) => otherTxMeta.type !== TransactionType.incoming);
     if (!sameNonceTxs.length) {
       return;
     }
