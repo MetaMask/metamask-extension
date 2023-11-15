@@ -1,4 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  useEffect,
+  ///: END:ONLY_INCLUDE_IN
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -51,8 +56,8 @@ import {
 import SnapPermissionsList from '../../../components/app/snaps/snap-permissions-list';
 import { SnapDelineator } from '../../../components/app/snaps/snap-delineator';
 import { DelineatorType } from '../../../helpers/constants/snaps';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { ShowMore } from '../../../components/app/snaps/show-more';
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IN
 
