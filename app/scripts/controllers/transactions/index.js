@@ -1996,6 +1996,13 @@ export default class TransactionController extends EventEmitter {
       if (otherTxMeta.id === txId) {
         return;
       }
+      // We don't want to mark as dropped any transactions that are originally created by this account and are incoming
+      if (
+        otherTxMeta.type === TransactionType.incoming &&
+        otherTxMeta.txParams.from === txMeta.txParams.from
+      ) {
+        return;
+      }
       otherTxMeta.replacedBy = txMeta.hash;
       otherTxMeta.replacedById = txMeta.id;
       this.txStateManager.updateTransaction(
