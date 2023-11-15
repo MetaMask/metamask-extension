@@ -21,6 +21,10 @@ export default {
     },
   },
   argTypes: {},
+  args: {
+    placeholder: 'Select an option',
+    triggerComponent: <SelectButton>Select an option</SelectButton>,
+  },
 } as Meta<typeof SelectWrapper>;
 
 const Template: StoryFn<typeof SelectWrapper> = (args) => {
