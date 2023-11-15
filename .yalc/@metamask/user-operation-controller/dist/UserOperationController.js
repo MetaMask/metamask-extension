@@ -42,7 +42,6 @@ const logger_1 = require("./logger");
 const snaps_1 = require("./snaps");
 const types_1 = require("./types");
 const gas_fees_1 = require("./utils/gas-fees");
-const signature_1 = require("./utils/signature");
 const transaction_1 = require("./utils/transaction");
 const DUMMY_SIGNATURE = '0xfffffffffffffffffffffffffffffff0000000000000000000000000000000007aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1c';
 const GAS_BUFFER = 2;
@@ -113,7 +112,7 @@ class UserOperationController extends base_controller_1.BaseControllerV2 {
                     yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_updateGas).call(this, metadata, bundler);
                     yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_addPaymasterData).call(this, metadata, snapId);
                     const resultCallbacks = yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_approveUserOperation).call(this, metadata);
-                    yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_signUserOperation).call(this, metadata);
+                    yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_signUserOperation).call(this, metadata, snapId);
                     yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_submitUserOperation).call(this, metadata, bundler);
                     resultCallbacks === null || resultCallbacks === void 0 ? void 0 : resultCallbacks.success();
                     return metadata.hash;
@@ -244,11 +243,15 @@ _UserOperationController_blockTracker = new WeakMap(), _UserOperationController_
         __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_updateMetadata).call(this, metadata);
         return resultCallbacks;
     });
-}, _UserOperationController_signUserOperation = function _UserOperationController_signUserOperation(metadata) {
+}, _UserOperationController_signUserOperation = function _UserOperationController_signUserOperation(metadata, snapId) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id, chainId, userOperation } = metadata;
         (0, logger_1.projectLogger)('Signing user operation', id, userOperation);
-        const signature = yield (0, signature_1.signUserOperation)(userOperation, constants_2.ENTRYPOINT, chainId, yield __classPrivateFieldGet(this, _UserOperationController_getPrivateKey, "f").call(this));
+        const { signature } = yield (0, snaps_1.sendSnapUserOperationSignatureRequest)(snapId, {
+            userOperation,
+            chainId,
+            privateKey: yield __classPrivateFieldGet(this, _UserOperationController_getPrivateKey, "f").call(this),
+        });
         userOperation.signature = signature;
         (0, logger_1.projectLogger)('Signed user operation', signature);
         metadata.status = types_1.UserOperationStatus.Signed;

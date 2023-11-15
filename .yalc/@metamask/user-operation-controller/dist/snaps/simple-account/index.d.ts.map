@@ -1,1 +1,1 @@
-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/snaps/simple-account/index.ts"],"names":[],"mappings":"AAOA,OAAO,KAAK,EAAE,kBAAkB,EAAE,sBAAsB,EAAE,MAAM,UAAU,CAAC;;;;;AA+D3E,wBAGE"}
+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../../src/snaps/simple-account/index.ts"],"names":[],"mappings":"AAQA,OAAO,KAAK,EACV,kBAAkB,EAClB,sBAAsB,EACtB,+BAA+B,EAChC,MAAM,UAAU,CAAC;;;;;;AAgFlB,wBAIE"}

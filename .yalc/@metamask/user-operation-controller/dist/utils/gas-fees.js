@@ -13,10 +13,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateGasFees = void 0;
 const controller_utils_1 = require("@metamask/controller-utils");
 const gas_fee_controller_1 = require("@metamask/gas-fee-controller");
+const transaction_controller_1 = require("@metamask/transaction-controller");
 const utils_1 = require("@metamask/utils");
 const ethereumjs_util_1 = require("ethereumjs-util");
 const logger_1 = require("../logger");
-const transaction_controller_1 = require("@metamask/transaction-controller");
 const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'gas-fees');
 function updateGasFees(request) {
     return __awaiter(this, void 0, void 0, function* () {

@@ -13,7 +13,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const providers_1 = require("@ethersproject/providers");
 const utils_1 = require("@metamask/utils");
+const constants_1 = require("../../constants");
 const logger_1 = require("../../logger");
+const ecdsa_1 = require("./ecdsa");
 const SimpleAccount_1 = require("./SimpleAccount");
 const VerifyingPaymaster_1 = require("./VerifyingPaymaster");
 const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'simple-account-snap');
@@ -36,7 +38,9 @@ const onUserOperationRequest = (request) => __awaiter(void 0, void 0, void 0, fu
     };
 });
 const onPaymasterRequest = (request) => __awaiter(void 0, void 0, void 0, function* () {
-    log('Received paymaster request', process.env.SIMPLE_ACCOUNT_OWNER, process.env.SIMPLE_ACCOUNT_SALT, process.env.PAYMASTER_ADDRESS);
+    log('Received paymaster request', {
+        paymasterAddress: process.env.PAYMASTER_ADDRESS,
+    });
     const { userOperation, ethereum, privateKey } = request;
     const provider = new providers_1.Web3Provider(ethereum);
     const paymasterAddress = process.env.PAYMASTER_ADDRESS;
@@ -48,8 +52,17 @@ const onPaymasterRequest = (request) => __awaiter(void 0, void 0, void 0, functi
     }
     return { paymasterAndData };
 });
+const onUserOperationSignatureRequest = (request) => __awaiter(void 0, void 0, void 0, function* () {
+    log('Received user operation signature request');
+    const { chainId, privateKey, userOperation } = request;
+    const signature = yield (0, ecdsa_1.signUserOperation)(userOperation, constants_1.ENTRYPOINT, chainId, privateKey);
+    return {
+        signature,
+    };
+});
 exports.default = {
     onUserOperationRequest,
     onPaymasterRequest,
+    onUserOperationSignatureRequest,
 };
 //# sourceMappingURL=index.js.map

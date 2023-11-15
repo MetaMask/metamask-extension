@@ -47,7 +47,7 @@ function verifyPaymasterData(userOperation, paymasterAndData, paymasterContract)
         const result = yield paymasterContract.callStatic.validatePaymasterUserOp(testUserOperation, '0x'.padEnd(66, '0'), 1, { from: constants_1.ENTRYPOINT });
         const packedResult = result[1].toHexString();
         const failed = packedResult.endsWith('1');
-        log('Validated paymaster data with contract', packedResult, failed);
+        log('Validated paymaster data with contract', { packedResult, failed });
         return !failed;
     });
 }

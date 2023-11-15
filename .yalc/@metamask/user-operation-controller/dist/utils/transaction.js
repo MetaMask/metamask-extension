@@ -1,9 +1,10 @@
 "use strict";
+/* eslint-disable jsdoc/require-jsdoc */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTransactionMetadata = void 0;
-const types_1 = require("../types");
 const transaction_controller_1 = require("@metamask/transaction-controller");
 const ethereumjs_util_1 = require("ethereumjs-util");
+const types_1 = require("../types");
 function getTransactionMetadata(metadata) {
     var _a;
     const { actualGasCost, actualGasUsed, baseFeePerGas, chainId, error: rawError, transactionHash, id, time, transactionParams, userOperation, userFeeLevel, } = metadata;

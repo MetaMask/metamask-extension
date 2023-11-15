@@ -16,6 +16,11 @@ export declare type OnPaymasterRequest = {
     privateKey: string;
     ethereum: SnapProvider;
 };
+export declare type OnUserOperationSignatureRequest = {
+    userOperation: UserOperation;
+    chainId: string;
+    privateKey: string;
+};
 export declare type OnUserOperationResponse = {
     callData: string;
     initCode: string;
@@ -25,10 +30,15 @@ export declare type OnUserOperationResponse = {
 export declare type OnPaymasterResponse = {
     paymasterAndData: string;
 };
+export declare type OnUserOperationSignatureResponse = {
+    signature: string;
+};
 export declare type OnUserOperationHandler = (request: OnUserOperationRequest) => Promise<OnUserOperationResponse>;
 export declare type OnPaymasterHandler = (request: OnPaymasterRequest) => Promise<OnPaymasterResponse>;
+export declare type OnUserOperationSignatureHandler = (request: OnUserOperationSignatureRequest) => Promise<OnUserOperationSignatureResponse>;
 export declare type AccountSnap = {
     onUserOperationRequest: OnUserOperationHandler;
     onPaymasterRequest: OnPaymasterHandler;
+    onUserOperationSignatureRequest: OnUserOperationSignatureHandler;
 };
 //# sourceMappingURL=types.d.ts.map

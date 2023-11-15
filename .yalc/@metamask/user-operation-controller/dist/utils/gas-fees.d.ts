@@ -1,7 +1,7 @@
+import type { Web3Provider } from '@ethersproject/providers';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
-import { UserOperationMetadata } from '../types';
-import { TransactionParams } from '@metamask/transaction-controller';
-import { Web3Provider } from '@ethersproject/providers';
+import type { TransactionParams } from '@metamask/transaction-controller';
+import type { UserOperationMetadata } from '../types';
 export declare type UpdateGasFeesRequest = {
     getGasFeeEstimates: () => Promise<GasFeeState>;
     metadata: UserOperationMetadata;

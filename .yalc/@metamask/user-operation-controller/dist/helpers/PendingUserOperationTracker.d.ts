@@ -1,9 +1,9 @@
 /// <reference types="node" />
+import type { Block } from '@ethersproject/providers';
 import type { BlockTracker } from '@metamask/network-controller';
 import EventEmitter from 'events';
-import { UserOperationMetadata } from '../types';
-import { UserOperationControllerState } from '../UserOperationController';
-import { Block } from '@ethersproject/providers';
+import type { UserOperationMetadata } from '../types';
+import type { UserOperationControllerState } from '../UserOperationController';
 declare type Events = {
     [key: `${string}:confirmed`]: [metadata: UserOperationMetadata];
     [key: `${string}:failed`]: [txMeta: UserOperationMetadata, error: Error];

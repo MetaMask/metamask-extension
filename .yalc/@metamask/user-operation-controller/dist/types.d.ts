@@ -1,4 +1,4 @@
-import { TransactionParams } from '@metamask/transaction-controller';
+import type { TransactionParams } from '@metamask/transaction-controller';
 export declare type UserOperation = {
     /** The data to pass to the sender during the main execution call. */
     callData: string;
