@@ -35,20 +35,26 @@ export const ShowMore = ({
     >
       {children}
       {shouldDisplayButton && (
-        <Button
+        <Box
           style={{
             position: 'absolute',
             bottom: 0,
             right: 0,
-            background: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-${buttonBackground}) 33%)`,
+            background: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-${BackgroundColor.backgroundDefault}) 33%)`,
           }}
-          padding={0}
-          paddingLeft={8}
-          variant={ButtonVariant.Link}
-          onClick={handleClick}
         >
-          <Text color={TextColor.infoDefault}>{t('more')}</Text>
-        </Button>
+          <Button
+            style={{
+              background: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-${buttonBackground}) 33%)`,
+            }}
+            padding={0}
+            paddingLeft={8}
+            variant={ButtonVariant.Link}
+            onClick={handleClick}
+          >
+            <Text color={TextColor.infoDefault}>{t('more')}</Text>
+          </Button>
+        </Box>
       )}
     </Box>
   );

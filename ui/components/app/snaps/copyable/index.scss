@@ -1,5 +1,14 @@
 .copyable {
   &__icon {
+    margin-top: 2px;
     cursor: pointer;
+  }
+
+  &__tooltip {
+    display: flex;
+    align-items: center;
+    & > div {
+      display: flex !important;
+    }
   }
 }

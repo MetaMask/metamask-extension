@@ -1,25 +1,16 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  AlignItems,
   BorderRadius,
-  JustifyContent,
   BackgroundColor,
   TextColor,
   Color,
-  TextVariant,
   Display,
   OverflowWrap,
   IconColor,
 } from '../../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../../hooks/useCopyToClipboard';
-import {
-  Icon,
-  IconName,
-  IconSize,
-  Box,
-  Text,
-} from '../../../component-library';
+import { Icon, IconName, Box, Text } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Tooltip from '../../../ui/tooltip';
 import { ShowMore } from '../show-more';
@@ -48,11 +39,7 @@ export const Copyable = ({ text, sensitive = false }) => {
       padding={4}
     >
       {sensitive && (
-        <Box
-          marginRight={4}
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-        >
+        <Box marginRight={4} className="copyable__icon">
           <Tooltip
             wrapperClassName="copyable__tooltip"
             html={
@@ -74,7 +61,6 @@ export const Copyable = ({ text, sensitive = false }) => {
       )}
       {sensitive && !visible && (
         <Text
-          variant={TextVariant.bodyMd}
           color={Color.textAlternative}
           marginRight={4}
           marginBottom={0}
@@ -93,7 +79,6 @@ export const Copyable = ({ text, sensitive = false }) => {
           }
         >
           <Text
-            variant={TextVariant.bodyMd}
             color={visible ? Color.errorAlternative : TextColor.textAlternative}
             marginBottom={0}
             overflowWrap={OverflowWrap.Anywhere}
@@ -106,7 +91,6 @@ export const Copyable = ({ text, sensitive = false }) => {
         <Icon
           className="copyable__icon"
           name={copied ? IconName.CopySuccess : IconName.Copy}
-          size={IconSize.Lg}
           color={visible ? Color.errorAlternative : IconColor.iconAlternative}
           onClick={handleCopyClick}
           marginLeft="auto"
