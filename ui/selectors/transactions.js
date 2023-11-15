@@ -104,6 +104,7 @@ export const selectedAddressTxListSelector = createSelector(
   (selectedAddress, transactions = [], smTransactions = []) => {
     return transactions
       .filter(({ txParams }) => txParams.from === selectedAddress)
+      .filter(({ type }) => type !== TransactionType.incoming)
       .concat(smTransactions);
   },
 );
@@ -146,10 +147,7 @@ export const transactionsSelector = createSelector(
   transactionSubSelector,
   selectedAddressTxListSelector,
   (subSelectorTxList = [], selectedAddressTxList = []) => {
-    const txsToRender = selectedAddressTxList
-      // Incoming transactions are already included in the subSelectorTxList
-      .filter((tx) => tx.type !== TransactionType.incoming)
-      .concat(subSelectorTxList);
+    const txsToRender = selectedAddressTxList.concat(subSelectorTxList);
 
     return txsToRender.sort((a, b) => b.time - a.time);
   },
