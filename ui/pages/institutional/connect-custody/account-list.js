@@ -219,4 +219,5 @@ CustodyAccountList.propTypes = {
   onAddAccounts: PropTypes.func,
   onCancel: PropTypes.func,
   rawList: PropTypes.bool,
+  children: PropTypes.node,
 };
