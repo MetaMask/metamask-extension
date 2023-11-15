@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 
-import { SINGLE_CALL_BALANCES_ADDRESS } from '../constants/contracts';
+import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
+import { CHAIN_IDS } from "shared/constants/network";
 
 import { createTestProviderTools } from '../../../test/stub/provider';
 import AccountTracker from './account-tracker';
@@ -180,7 +181,7 @@ describe('Account Tracker', () => {
 
       await accountTracker._updateAccountsViaBalanceChecker(
         [VALID_ADDRESS],
-        SINGLE_CALL_BALANCES_ADDRESS,
+        SINGLE_CALL_BALANCES_ADDRESSES[CHAIN_IDS.MAINNET],
       );
 
       const newAccounts = accountTracker.store.getState();
@@ -205,7 +206,7 @@ describe('Account Tracker', () => {
 
       await accountTracker._updateAccountsViaBalanceChecker(
         [VALID_ADDRESS, VALID_ADDRESS_TWO],
-        SINGLE_CALL_BALANCES_ADDRESS,
+        SINGLE_CALL_BALANCES_ADDRESSES[CHAIN_IDS.MAINNET],
       );
 
       const newAccounts = accountTracker.store.getState();

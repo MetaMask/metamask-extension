@@ -263,72 +263,14 @@ export default class AccountTracker {
     if (networkId === LOCALHOST_RPC_URL || networkId === rpcUrl) {
       await Promise.all(addresses.map(this._updateAccount.bind(this)));
     } else {
-      switch (chainId) {
-        case CHAIN_IDS.MAINNET:
-          await this._updateAccountsViaBalanceChecker(
-            addresses,
-            SINGLE_CALL_BALANCES_ADDRESS,
-          );
-          break;
-
-        case CHAIN_IDS.GOERLI:
-          await this._updateAccountsViaBalanceChecker(
-            addresses,
-            SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
-          );
-          break;
-
-        case CHAIN_IDS.SEPOLIA:
-          await this._updateAccountsViaBalanceChecker(
-            addresses,
-            SINGLE_CALL_BALANCES_ADDRESS_SEPOLIA,
-          );
-          break;
-
-        case CHAIN_IDS.BSC:
-          await this._updateAccountsViaBalanceChecker(
-            addresses,
-            SINGLE_CALL_BALANCES_ADDRESS_BSC,
-          );
-          break;
-
-        case CHAIN_IDS.OPTIMISM:
-          await this._updateAccountsViaBalanceChecker(
-            addresses,
-            SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM,
-          );
-          break;
-
-        case CHAIN_IDS.POLYGON:
-          await this._updateAccountsViaBalanceChecker(
-            addresses,
-            SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
-          );
-          break;
-
-        case CHAIN_IDS.AVALANCHE:
-          await this._updateAccountsViaBalanceChecker(
-            addresses,
-            SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
-          );
-          break;
-
-        case CHAIN_IDS.FANTOM:
-          await this._updateAccountsViaBalanceChecker(
-            addresses,
-            SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
-          );
-          break;
-
-        case CHAIN_IDS.ARBITRUM:
-          await this._updateAccountsViaBalanceChecker(
-            addresses,
-            SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
-          );
-          break;
-
-        default:
-          await Promise.all(addresses.map(this._updateAccount.bind(this)));
+      const singleCallBalancesAddress = SINGLE_CALL_BALANCES_ADDRESSES[chainId]
+      if (singleCallBalancesAddress) {
+        await this._updateAccountsViaBalanceChecker(
+          addresses,
+          singleCallBalancesAddress
+        );
+      } else {
+        await Promise.all(addresses.map(this._updateAccount.bind(this)));
       }
     }
   }
