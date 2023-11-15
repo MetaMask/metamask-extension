@@ -5009,19 +5009,13 @@ export default class MetamaskController extends EventEmitter {
       handleTransactionFailed.bind(null, transactionMetricsRequest),
     );
 
-    this.txController.hub.on(
-      TransactionEvent.newSwap,
-      ({ transactionMeta }) => {
-        this.swapsController.setTradeTxId(transactionMeta.id);
-      },
-    );
+    this.txController.hub.on('newSwap', (transactionMeta) => {
+      this.swapsController.setTradeTxId(transactionMeta.id);
+    });
 
-    this.txController.hub.on(
-      TransactionEvent.newSwapApproval,
-      ({ transactionMeta }) => {
-        this.swapsController.setApproveTxId(transactionMeta.id);
-      },
-    );
+    this.txController.hub.on('newSwapApproval', (transactionMeta) => {
+      this.swapsController.setApproveTxId(transactionMeta.id);
+    });
 
     this.txController.hub.on(
       TransactionEvent.rejected,
