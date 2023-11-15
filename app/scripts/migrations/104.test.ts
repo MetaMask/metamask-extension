@@ -82,16 +82,16 @@ function createMockState(
   };
 }
 
-describe('migration #103', () => {
+describe('migration #104', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: 102 },
+      meta: { version: 103 },
       data: createMockState(),
     };
 
     const newStorage = await migrate(oldStorage);
 
-    expect(newStorage.meta).toStrictEqual({ version: 103 });
+    expect(newStorage.meta).toStrictEqual({ version: 104 });
   });
 
   describe('createDefaultAccountsController', () => {
