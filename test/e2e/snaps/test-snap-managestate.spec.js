@@ -77,7 +77,6 @@ describe('Test Snap manageState', function () {
           text: 'Reconnect to Manage State Snap',
         });
 
-        // await driver.delay(1000);
         await driver.pasteIntoField('#dataManageState', '23');
         const snapButton2 = await driver.findElement(
           '#retrieveManageStateResult',
