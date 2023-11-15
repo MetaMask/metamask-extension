@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { SeverityLevel } from '@metamask/snaps-utils';
+import { SeverityLevel } from '@metamask/snaps-sdk';
 import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { TransactionType } from '../../shared/constants/transaction';
 import { Tab } from '../components/ui/tabs';

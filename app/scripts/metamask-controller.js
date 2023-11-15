@@ -753,15 +753,18 @@ export default class MetamaskController extends EventEmitter {
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
       name: 'CurrencyRateController',
+      allowedActions: [`${this.networkController.name}:getNetworkClientById`],
     });
     this.currencyRateController = new CurrencyRateController({
       includeUsdRate: true,
       messenger: currencyRateMessenger,
-      state: {
-        ...initState.CurrencyController,
-        nativeCurrency: this.networkController.state.providerConfig.ticker,
-      },
+      state: initState.CurrencyController,
     });
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.currencyRateController.startPollingByNetworkClientId(
+        this.networkController.state.selectedNetworkClientId,
+      );
+    }
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
@@ -839,10 +842,12 @@ export default class MetamaskController extends EventEmitter {
         const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
         const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
         if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-          this.currencyRateController.start();
+          this.currencyRateController.startPollingByNetworkClientId(
+            this.networkController.state.selectedNetworkClientId,
+          );
           this.tokenRatesController.start();
         } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-          this.currencyRateController.stop();
+          this.currencyRateController.stopAllPolling();
           this.tokenRatesController.stop();
         }
       }, this.preferencesController.store.getState()),
@@ -1409,9 +1414,15 @@ export default class MetamaskController extends EventEmitter {
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        const { ticker } = this.networkController.state.providerConfig;
         try {
-          await this.currencyRateController.setNativeCurrency(ticker);
+          if (
+            this.preferencesController.store.getState().useCurrencyRateCheck
+          ) {
+            await this.currencyRateController.stopAllPolling();
+            this.currencyRateController.startPollingByNetworkClientId(
+              this.networkController.state.selectedNetworkClientId,
+            );
+          }
         } catch (error) {
           // TODO: Handle failure to get conversion rate more gracefully
           console.error(error);
@@ -1933,7 +1944,9 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.start();
+      this.currencyRateController.startPollingByNetworkClientId(
+        this.networkController.state.selectedNetworkClientId,
+      );
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
@@ -1944,7 +1957,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.stop();
+      this.currencyRateController.stopAllPolling();
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.stop();
