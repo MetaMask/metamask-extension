@@ -18,7 +18,7 @@ export default class Tooltip extends PureComponent {
     trigger: 'mouseenter focus',
     wrapperClassName: undefined,
     theme: '',
-    tag: 'span',
+    tag: 'div',
   };
 
   static propTypes = {
