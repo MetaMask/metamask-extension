@@ -1524,32 +1524,19 @@ export default class MetamaskController extends EventEmitter {
       signatureController: this.signatureController,
       platform: this.platform,
       extension: this.extension,
-      getTransactions: this.txController.getTransactions.bind(
-        this.txController,
-      ),
-      setTxStatusSigned:
-        this.txController.txStateManager.setTxStatusSigned.bind(
-          this.txController.txStateManager,
-        ),
-      setTxStatusSubmitted:
-        this.txController.txStateManager.setTxStatusSubmitted.bind(
-          this.txController.txStateManager,
-        ),
-      setTxStatusFailed:
-        this.txController.txStateManager.setTxStatusFailed.bind(
-          this.txController.txStateManager,
-        ),
+      getTransactions: this.getTransactions.bind(this),
+      setTxStatusSigned: (id) =>
+        this.setTransactionStatus(id, TransactionStatus.signed),
+      setTxStatusSubmitted: (id) =>
+        this.setTransactionStatus(id, TransactionStatus.submitted),
+      setTxStatusFailed: (id) =>
+        this.setTransactionStatus(id, TransactionStatus.failed),
       trackTransactionEvents: handleMMITransactionUpdate.bind(
         null,
         transactionMetricsRequest,
       ),
-      updateTransaction:
-        this.txController.txStateManager.updateTransaction.bind(
-          this.txController.txStateManager,
-        ),
-      updateTransactionHash: this.txController.setTxHash.bind(
-        this.txController,
-      ),
+      updateTransaction: this.updateTransaction.bind(this),
+      updateTransactionHash: this.setTransactionHash.bind(this),
     });
     ///: END:ONLY_INCLUDE_IN
 
@@ -2804,22 +2791,6 @@ export default class MetamaskController extends EventEmitter {
           null,
           this.getTransactionMetricsRequest(),
         ),
-      getTransactions: ({ filterToCurrentNetwork, searchCriteria } = {}) => {
-        const currentChainId =
-          this.networkController.state.providerConfig.chainId;
-
-        const fromAddress = searchCriteria?.from;
-
-        return this.txController.state.transactions.filter((tx) => {
-          const matchesNetwork =
-            filterToCurrentNetwork === false ||
-            tx.txParams?.chainId === currentChainId;
-
-          const matchesFrom = !fromAddress || tx.txParams?.from === fromAddress;
-
-          return matchesNetwork && matchesFrom;
-        });
-      },
 
       updateEditableParams:
         txController.updateEditableParams.bind(txController),
@@ -3954,6 +3925,52 @@ export default class MetamaskController extends EventEmitter {
     return transactionMeta;
   }
 
+  getTransactions({ filterToCurrentNetwork, searchCriteria } = {}) {
+    const currentChainId = this.networkController.state.providerConfig.chainId;
+
+    const fromAddress = searchCriteria?.from;
+
+    return this.txController.state.transactions.filter((tx) => {
+      const matchesNetwork =
+        filterToCurrentNetwork === false ||
+        tx.txParams?.chainId === currentChainId;
+
+      const matchesFrom = !fromAddress || tx.txParams?.from === fromAddress;
+
+      return matchesNetwork && matchesFrom;
+    });
+  }
+
+  // TxMigrationToDo - Use new core methods.
+  setTransactionStatus(transactionId, status) {
+    const txMeta = this.txController.state.transactions.find(
+      (tx) => tx.id === transactionId,
+    );
+
+    txMeta.status = status;
+
+    this.updateTransaction(txMeta);
+  }
+
+  setTransactionHash(transactionId, hash) {
+    const txMeta = this.txController.state.transactions.find(
+      (tx) => tx.id === transactionId,
+    );
+
+    txMeta.hash = hash;
+
+    this.updateTransaction(txMeta);
+  }
+
+  updateTransaction(txMeta) {
+    const { state } = this.txController;
+    const index = state.transactions.findIndex((tx) => tx.id === txMeta.id);
+
+    state.transactions[index] = txMeta;
+
+    this.txController.update(state);
+  }
+
   /**
    * @returns {boolean} true if the keyring type supports EIP-1559
    */
@@ -5059,9 +5076,8 @@ export default class MetamaskController extends EventEmitter {
       getSelectedAddress: () =>
         this.preferencesController.store.getState().selectedAddress,
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
-      getTransaction: this.txController.txStateManager.getTransaction.bind(
-        this.txController,
-      ),
+      getTransaction: (id) =>
+        this.txController.state.transactions.find((tx) => tx.id === id),
     };
     return {
       ...controllerActions,

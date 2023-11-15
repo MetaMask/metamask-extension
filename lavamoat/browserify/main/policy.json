@@ -2401,7 +2401,7 @@
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/providers>@metamask/rpc-errors": true,
@@ -2422,7 +2422,7 @@
         "TextEncoder": true
       },
       "packages": {
-        "@metamask/key-tree>@noble/hashes": true,
+        "@metamask/utils>@noble/hashes": true,
         "browserify>buffer": true,
         "nock>debug": true,
         "semver": true,
