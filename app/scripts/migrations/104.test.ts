@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { sha256FromString } from 'ethereumjs-util';
 import { EthMethod, InternalAccount } from '@metamask/keyring-api';
-import { migrate } from './103';
+import { migrate } from './104';
 
 const MOCK_ADDRESS = '0x0';
 const MOCK_ADDRESS_2 = '0x1';
