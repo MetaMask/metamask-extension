@@ -154,6 +154,7 @@ export const TokenListItem = ({
               variant={TextVariant.bodyMd}
               width={BlockSize.TwoThirds}
               textAlign={TextAlign.End}
+              data-testid="multichain-token-list-item-secondary-value"
             >
               {secondary}
             </Text>

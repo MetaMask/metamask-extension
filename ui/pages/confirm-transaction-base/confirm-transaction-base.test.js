@@ -101,12 +101,12 @@ const baseStore = {
       useNativeCurrencyAsPrimaryCurrency: false,
     },
     currentCurrency: 'USD',
+    currencyRates: {},
     providerConfig: {
       chainId: CHAIN_IDS.GOERLI,
       nickname: GOERLI_DISPLAY_NAME,
       type: NETWORK_TYPES.GOERLI,
     },
-    nativeCurrency: 'ETH',
     featureFlags: {
       sendHexData: false,
     },

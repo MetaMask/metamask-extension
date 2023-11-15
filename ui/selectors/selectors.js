@@ -51,10 +51,7 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import {
-  ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_TOKEN_ADDRESSES,
-} from '../../shared/constants/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 
 import {
   shortenAddress,
@@ -101,7 +98,10 @@ import {
 } from './transactions';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 // eslint-disable-next-line import/order
-import { getPermissionSubjects } from './permissions';
+import {
+  getPermissionSubjects,
+  getConnectedSubjectsForAllAddresses,
+} from './permissions';
 ///: END:ONLY_INCLUDE_IN
 import { createDeepEqualSelector } from './util';
 
@@ -753,7 +753,8 @@ export function getInfuraBlocked(state) {
 }
 
 export function getUSDConversionRate(state) {
-  return state.metamask.usdConversionRate;
+  return state.metamask.currencyRates[getProviderConfig(state).ticker]
+    ?.usdConversionRate;
 }
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {
@@ -825,15 +826,6 @@ export function getIsBridgeChain(state) {
   const chainId = getCurrentChainId(state);
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
-
-export const getIsBridgeToken = (tokenAddress) => (state) => {
-  const chainId = getCurrentChainId(state);
-  const isBridgeChain = getIsBridgeChain(state);
-  return (
-    isBridgeChain &&
-    ALLOWED_BRIDGE_TOKEN_ADDRESSES[chainId].includes(tokenAddress.toLowerCase())
-  );
-};
 
 export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
@@ -922,6 +914,13 @@ export const getFullTxData = createDeepEqualSelector(
   },
 );
 
+export const getAllConnectedAccounts = createDeepEqualSelector(
+  getConnectedSubjectsForAllAddresses,
+  (connectedSubjects) => {
+    return Object.keys(connectedSubjects);
+  },
+);
+
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function getSnaps(state) {
   return state.metamask.snaps;
@@ -952,6 +951,11 @@ export const getInsightSnaps = createDeepEqualSelector(
       ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
     );
   },
+);
+
+export const getInsightSnapIds = createDeepEqualSelector(
+  getInsightSnaps,
+  (snaps) => snaps.map((snap) => snap.id),
 );
 
 export const getNotifySnaps = createDeepEqualSelector(
@@ -1533,6 +1537,16 @@ export function getIsTransactionSecurityCheckEnabled(state) {
   return state.metamask.transactionSecurityCheckEnabled;
 }
 
+/**
+ * To get the `useRequestQueue` value which determines whether we use a request queue infront of provider api calls. This will have the effect of implementing per-dapp network switching.
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseRequestQueue(state) {
+  return state.metamask.useRequestQueue;
+}
+
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 /**
  * To get the `getIsSecurityAlertsEnabled` value which determines whether security check is enabled
@@ -1682,10 +1696,11 @@ export function getSnapsList(state) {
   const snaps = getSnaps(state);
   return Object.entries(snaps).map(([key, snap]) => {
     const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
-
     return {
       key,
       id: snap.id,
+      iconUrl: targetSubjectMetadata?.iconUrl,
+      subjectType: targetSubjectMetadata?.subjectType,
       packageName: removeSnapIdPrefix(snap.id),
       name: getSnapName(snap.id, targetSubjectMetadata),
     };

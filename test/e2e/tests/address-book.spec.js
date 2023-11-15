@@ -3,6 +3,7 @@ const {
   convertToHexValue,
   withFixtures,
   logInWithBalanceValidation,
+  openActionMenuAndStartSendFlow,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -36,13 +37,17 @@ describe('Address Book', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+        await openActionMenuAndStartSendFlow(driver);
+        // TODO: Update Test when Multichain Send Flow is added
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         const recipientRowTitle = await driver.findElement(
           '.send__select-recipient-wrapper__group-item__title',
         );
@@ -93,7 +98,7 @@ describe('Address Book', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -156,7 +161,7 @@ describe('Address Book', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

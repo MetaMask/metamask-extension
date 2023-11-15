@@ -183,11 +183,14 @@ function defaultFixture() {
         },
       },
       CurrencyController: {
-        conversionDate: 1665507600.0,
-        conversionRate: 1300.0,
         currentCurrency: 'usd',
-        nativeCurrency: 'ETH',
-        usdConversionRate: 1300.0,
+        currencyRates: {
+          ETH: {
+            conversionDate: 1665507600.0,
+            conversionRate: 1300.0,
+            usdConversionRate: 1300.0,
+          },
+        },
       },
       GasFeeController: {
         estimatedGasFeeTimeBounds: {},
@@ -275,6 +278,7 @@ function defaultFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
+        useRequestQueue: false,
       },
       SmartTransactionsController: {
         smartTransactionsState: {
@@ -394,6 +398,7 @@ function onboardingFixture() {
         useTokenDetection: false,
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
+        useRequestQueue: false,
       },
       SmartTransactionsController: {
         smartTransactionsState: {

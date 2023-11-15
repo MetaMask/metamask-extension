@@ -64,7 +64,14 @@ describe('Confirm Transaction Selector', () => {
   describe('conversionRateSelector', () => {
     it('returns conversionRate from state', () => {
       const state = {
-        metamask: { conversionRate: 556.12 },
+        metamask: {
+          currencyRates: {
+            ETH: {
+              conversionRate: 556.12,
+            },
+          },
+          providerConfig: { ticker: 'ETH' },
+        },
       };
       expect(conversionRateSelector(state)).toStrictEqual(556.12);
     });

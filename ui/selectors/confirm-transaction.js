@@ -11,6 +11,7 @@ import {
   getGasEstimateType,
   getGasFeeEstimates,
   getNativeCurrency,
+  getProviderConfig,
 } from '../ducks/metamask/metamask';
 import {
   GasEstimateTypes,
@@ -140,8 +141,8 @@ export const use4ByteResolutionSelector = (state) =>
   state.metamask.use4ByteResolution;
 export const currentCurrencySelector = (state) =>
   state.metamask.currentCurrency;
-export const conversionRateSelector = (state) => state.metamask.conversionRate;
-
+export const conversionRateSelector = (state) =>
+  state.metamask.currencyRates[getProviderConfig(state).ticker]?.conversionRate;
 export const txDataSelector = (state) => state.confirmTransaction.txData;
 const tokenDataSelector = (state) => state.confirmTransaction.tokenData;
 const tokenPropsSelector = (state) => state.confirmTransaction.tokenProps;

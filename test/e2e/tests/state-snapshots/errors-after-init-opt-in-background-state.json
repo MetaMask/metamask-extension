@@ -43,13 +43,14 @@
   "CachedBalancesController": { "cachedBalances": "object" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
-    "conversionDate": "number",
-    "conversionRate": 1700,
-    "nativeCurrency": "ETH",
     "currentCurrency": "usd",
-    "pendingCurrentCurrency": null,
-    "pendingNativeCurrency": null,
-    "usdConversionRate": 1700
+    "currencyRates": {
+      "ETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      }
+    }
   },
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
@@ -116,7 +117,8 @@
     "storageMetadata": {},
     "chainStatus": {
       "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
-    }
+    },
+    "versionFileETag": "string"
   },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
@@ -130,6 +132,7 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
+    "useRequestQueue": false,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
@@ -162,7 +165,12 @@
     "isLineaMainnetReleased": true,
     "selectedAddress": "string"
   },
-  "SelectedNetworkController": { "domains": {}, "perDomainNetwork": "boolean" },
+  "SelectedNetworkController": {
+    "domains": {
+      "metamask": "networkConfigurationId"
+    },
+    "perDomainNetwork": "boolean"
+  },
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
@@ -178,7 +186,11 @@
       "smartTransactions": "object"
     }
   },
-  "SnapController": { "snaps": "object", "snapStates": "object" },
+  "SnapController": {
+    "snaps": "object",
+    "snapStates": "object",
+    "unencryptedSnapStates": "object"
+  },
   "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {

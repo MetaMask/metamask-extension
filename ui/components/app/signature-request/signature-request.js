@@ -274,7 +274,7 @@ const SignatureRequest = ({ txData }) => {
         },
       });
     }
-  }, [txData?.securityAlertResponse]);
+  }, []);
   ///: END:ONLY_INCLUDE_IN
 
   return (

@@ -424,7 +424,7 @@ export const nonceSortedTransactionsSelector = createSelector(
 
         // Initial Transaction Logic Cases
         // --------------------------------------------------------------------
-        // Initial Transaction: The transaciton that most likely represents the
+        // Initial Transaction: The transaction that most likely represents the
         // user's intent when creating/approving the transaction. In most cases
         // this is the first transaction of a nonce group, by time, but this
         // breaks down in the case of users with the advanced setting enabled

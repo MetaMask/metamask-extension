@@ -147,6 +147,7 @@ const jsonData = JSON.stringify({
     theme: 'light',
     customNetworkListEnabled: false,
     textDirection: 'auto',
+    useRequestQueue: false,
   },
 });
 
