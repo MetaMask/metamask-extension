@@ -16,21 +16,10 @@ import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
 import {
-  CHAIN_IDS,
   LOCALHOST_RPC_URL,
 } from '../../../shared/constants/network';
 
-import {
-  SINGLE_CALL_BALANCES_ADDRESS,
-  SINGLE_CALL_BALANCES_ADDRESS_GOERLI,
-  SINGLE_CALL_BALANCES_ADDRESS_SEPOLIA,
-  SINGLE_CALL_BALANCES_ADDRESS_BSC,
-  SINGLE_CALL_BALANCES_ADDRESS_OPTIMISM,
-  SINGLE_CALL_BALANCES_ADDRESS_POLYGON,
-  SINGLE_CALL_BALANCES_ADDRESS_AVALANCHE,
-  SINGLE_CALL_BALANCES_ADDRESS_FANTOM,
-  SINGLE_CALL_BALANCES_ADDRESS_ARBITRUM,
-} from '../constants/contracts';
+import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
 import { previousValueComparator } from './util';
 
 /**

@@ -1,7 +1,7 @@
 import EventEmitter from 'events';
 
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
-import { CHAIN_IDS } from "shared/constants/network";
+import { CHAIN_IDS } from '../../../shared/constants/network';
 
 import { createTestProviderTools } from '../../../test/stub/provider';
 import AccountTracker from './account-tracker';
