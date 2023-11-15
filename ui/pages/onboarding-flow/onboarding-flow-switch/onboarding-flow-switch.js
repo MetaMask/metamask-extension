@@ -3,7 +3,9 @@ import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import {
   DEFAULT_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
   ONBOARDING_UNLOCK_ROUTE,
   LOCK_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
@@ -11,6 +13,9 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-mmi)
   ONBOARDING_WELCOME_ROUTE, // eslint-disable-line no-unused-vars
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  MMI_ONBOARDING_COMPLETION_ROUTE,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import {
@@ -31,9 +36,17 @@ export default function OnboardingFlowSwitch() {
     return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   if (seedPhraseBackedUp !== null) {
     return <Redirect to={{ pathname: ONBOARDING_COMPLETION_ROUTE }} />;
   }
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  if (seedPhraseBackedUp !== null) {
+    return <Redirect to={{ pathname: MMI_ONBOARDING_COMPLETION_ROUTE }} />;
+  }
+  ///: END:ONLY_INCLUDE_IN
 
   if (isUnlocked) {
     return <Redirect to={{ pathname: LOCK_ROUTE }} />;

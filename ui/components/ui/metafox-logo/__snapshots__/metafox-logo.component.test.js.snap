@@ -14,13 +14,6 @@ exports[`MetaFoxLogo does match snapshot with custodyImgSrc 1`] = `
       src="./images/logo/metamask-fox.svg"
       width="42"
     />
-    <img
-      alt=""
-      class="app-header__custody-logo app-header__custody-logo--icon"
-      height="42"
-      src="/test"
-      width="42"
-    />
   </button>
 </div>
 `;

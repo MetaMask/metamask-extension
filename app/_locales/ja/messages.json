@@ -1398,12 +1398,6 @@
   "enableFromSettings": {
     "message": " 設定で有効にします。"
   },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea APIを有効にする"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
-  },
   "enableSnap": {
     "message": "有効にする"
   },
