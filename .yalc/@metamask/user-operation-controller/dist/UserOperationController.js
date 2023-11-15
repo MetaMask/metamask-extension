@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable n/no-process-env */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -26,12 +27,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 var _UserOperationController_instances, _UserOperationController_blockTracker, _UserOperationController_getGasFeeEstimates, _UserOperationController_getPrivateKey, _UserOperationController_getTransactions, _UserOperationController_pendingTracker, _UserOperationController_provider, _UserOperationController_createMetadata, _UserOperationController_applySnapData, _UserOperationController_updateGasFees, _UserOperationController_updateGas, _UserOperationController_addPaymasterData, _UserOperationController_approveUserOperation, _UserOperationController_signUserOperation, _UserOperationController_submitUserOperation, _UserOperationController_failUserOperation, _UserOperationController_createEmptyUserOperation, _UserOperationController_updateMetadata, _UserOperationController_updateTransaction, _UserOperationController_getState, _UserOperationController_requestApproval;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserOperationController = void 0;
-const abi_1 = require("@ethersproject/abi");
 const constants_1 = require("@ethersproject/constants");
 const providers_1 = require("@ethersproject/providers");
 const base_controller_1 = require("@metamask/base-controller");
 const controller_utils_1 = require("@metamask/controller-utils");
-const ethereumjs_util_1 = require("ethereumjs-util");
 const events_1 = __importDefault(require("events"));
 const lodash_1 = require("lodash");
 const uuid_1 = require("uuid");
@@ -43,7 +42,6 @@ const snaps_1 = require("./snaps");
 const types_1 = require("./types");
 const gas_fees_1 = require("./utils/gas-fees");
 const transaction_1 = require("./utils/transaction");
-const DUMMY_SIGNATURE = '0xfffffffffffffffffffffffffffffff0000000000000000000000000000000007aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1c';
 const GAS_BUFFER = 2;
 const controllerName = 'UserOperationController';
 const stateMetadata = {
@@ -102,12 +100,12 @@ class UserOperationController extends base_controller_1.BaseControllerV2 {
     }
     addUserOperationFromTransaction(transaction, { chainId, snapId }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const bundler = (0, Bundler_1.getBundler)(chainId);
             const metadata = __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_createMetadata).call(this, chainId);
             const { id } = metadata;
             const hash = (() => __awaiter(this, void 0, void 0, function* () {
                 try {
-                    yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_applySnapData).call(this, metadata, transaction, snapId);
+                    yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_applySnapData).call(this, metadata, transaction, chainId, snapId);
+                    const bundler = new Bundler_1.Bundler(metadata.bundlerUrl);
                     yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_updateGasFees).call(this, metadata);
                     yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_updateGas).call(this, metadata, bundler);
                     yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_addPaymasterData).call(this, metadata, snapId);
@@ -144,6 +142,7 @@ _UserOperationController_blockTracker = new WeakMap(), _UserOperationController_
         actualGasCost: null,
         actualGasUsed: null,
         baseFeePerGas: null,
+        bundlerUrl: null,
         chainId,
         error: null,
         hash: null,
@@ -158,7 +157,7 @@ _UserOperationController_blockTracker = new WeakMap(), _UserOperationController_
     __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_updateMetadata).call(this, metadata);
     (0, logger_1.projectLogger)('Added user operation', metadata.id);
     return metadata;
-}, _UserOperationController_applySnapData = function _UserOperationController_applySnapData(metadata, transaction, snapId) {
+}, _UserOperationController_applySnapData = function _UserOperationController_applySnapData(metadata, transaction, chainId, snapId) {
     return __awaiter(this, void 0, void 0, function* () {
         const { id, userOperation } = metadata;
         (0, logger_1.projectLogger)('Requesting data from snap', { id, snapId });
@@ -166,16 +165,23 @@ _UserOperationController_blockTracker = new WeakMap(), _UserOperationController_
         const ethereum = {
             request: ({ method, params }) => provider.send(method, params),
         };
-        const response = yield (0, snaps_1.sendSnapUserOperationRequest)(snapId, {
+        const { bundler: bundlerUrl, callData, dummyPaymasterAndData, dummySignature, initCode, nonce, sender, } = yield (0, snaps_1.sendSnapUserOperationRequest)(snapId, {
+            chainId,
             ethereum,
             to: transaction.to,
             value: transaction.value,
             data: transaction.data,
         });
-        userOperation.callData = response.callData;
-        userOperation.initCode = response.initCode;
-        userOperation.nonce = response.nonce;
-        userOperation.sender = response.sender;
+        if (!bundlerUrl) {
+            throw new Error(`No bundler specified for chain ID: ${chainId}`);
+        }
+        userOperation.callData = callData;
+        userOperation.initCode = initCode;
+        userOperation.nonce = nonce;
+        userOperation.sender = sender;
+        userOperation.signature = dummySignature !== null && dummySignature !== void 0 ? dummySignature : '0x';
+        userOperation.paymasterAndData = dummyPaymasterAndData !== null && dummyPaymasterAndData !== void 0 ? dummyPaymasterAndData : '0x';
+        metadata.bundlerUrl = bundlerUrl;
         metadata.transactionParams = transaction;
         __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_updateMetadata).call(this, metadata);
     });
@@ -192,18 +198,7 @@ _UserOperationController_blockTracker = new WeakMap(), _UserOperationController_
     return __awaiter(this, void 0, void 0, function* () {
         const { id, userOperation } = metadata;
         (0, logger_1.projectLogger)('Updating gas', id);
-        const paymasterAddress = process.env.PAYMASTER_ADDRESS;
-        const encodedValidUntilAfter = (0, ethereumjs_util_1.stripHexPrefix)(abi_1.defaultAbiCoder.encode(['uint48', 'uint48'], [0, 0]));
-        const dummyPaymasterData = paymasterAddress
-            ? `${paymasterAddress}${encodedValidUntilAfter}${(0, ethereumjs_util_1.stripHexPrefix)(DUMMY_SIGNATURE)}`
-            : '0x';
-        const payload = Object.assign(Object.assign({}, userOperation), { callGasLimit: '0x1', preVerificationGas: '0x1', verificationGasLimit: '0x1', signature: DUMMY_SIGNATURE, paymasterAndData: dummyPaymasterData });
-        (0, logger_1.projectLogger)('Estimating gas', {
-            paymasterAddress,
-            encodedValidUntilAfter,
-            dummySignature: payload.signature,
-            dummyPaymasterData: payload.paymasterAndData,
-        });
+        const payload = Object.assign(Object.assign({}, userOperation), { callGasLimit: '0x1', preVerificationGas: '0x1', verificationGasLimit: '0x1' });
         const estimatedGas = yield bundler.estimateUserOperationGas(payload, constants_2.ENTRYPOINT);
         userOperation.preVerificationGas = (0, controller_utils_1.toHex)(Math.round(estimatedGas.preVerificationGas * GAS_BUFFER));
         userOperation.verificationGasLimit = (0, controller_utils_1.toHex)(Math.round(estimatedGas.verificationGasLimit * GAS_BUFFER));

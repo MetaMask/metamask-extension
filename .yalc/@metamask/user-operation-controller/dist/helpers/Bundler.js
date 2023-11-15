@@ -22,8 +22,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _Bundler_instances, _Bundler_url, _Bundler_query;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBundler = exports.Bundler = void 0;
-const constants_1 = require("../constants");
+exports.Bundler = void 0;
 const logger_1 = require("../logger");
 const log = (0, logger_1.createModuleLogger)(logger_1.projectLogger, 'bundler');
 class Bundler {
@@ -38,18 +37,23 @@ class Bundler {
                 userOperation,
                 entrypoint,
             ]);
-            log('Estimated gas', response);
+            log('Estimated gas', { url: __classPrivateFieldGet(this, _Bundler_url, "f"), response });
             return response;
         });
     }
     getUserOperationReceipt(hash) {
         return __awaiter(this, void 0, void 0, function* () {
+            log('Getting user operation receipt', { url: __classPrivateFieldGet(this, _Bundler_url, "f"), hash });
             return yield __classPrivateFieldGet(this, _Bundler_instances, "m", _Bundler_query).call(this, 'eth_getUserOperationReceipt', [hash]);
         });
     }
     sendUserOperation(userOperation, entrypoint) {
         return __awaiter(this, void 0, void 0, function* () {
-            log('Sending user operation', { userOperation, entrypoint });
+            log('Sending user operation', {
+                url: __classPrivateFieldGet(this, _Bundler_url, "f"),
+                userOperation,
+                entrypoint,
+            });
             const hash = yield __classPrivateFieldGet(this, _Bundler_instances, "m", _Bundler_query).call(this, 'eth_sendUserOperation', [
                 userOperation,
                 entrypoint,
@@ -80,13 +84,4 @@ _Bundler_url = new WeakMap(), _Bundler_instances = new WeakSet(), _Bundler_query
         return responseJson.result;
     });
 };
-function getBundler(chainId) {
-    const chainIdKey = chainId;
-    const url = constants_1.BUNDLER_URL_BY_CHAIN_ID[chainIdKey];
-    if (!url) {
-        throw new Error(`No bundler found for chain ID: ${chainId}`);
-    }
-    return new Bundler(url);
-}
-exports.getBundler = getBundler;
 //# sourceMappingURL=Bundler.js.map

@@ -6,5 +6,4 @@ export declare class Bundler {
     getUserOperationReceipt(hash?: string): Promise<UserOperationReceipt | undefined>;
     sendUserOperation(userOperation: UserOperation, entrypoint: string): Promise<string>;
 }
-export declare function getBundler(chainId: string): Bundler;
 //# sourceMappingURL=Bundler.d.ts.map

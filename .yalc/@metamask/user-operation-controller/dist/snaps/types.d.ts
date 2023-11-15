@@ -9,6 +9,7 @@ export declare type OnUserOperationRequest = {
     to?: string;
     value?: string;
     data?: string;
+    chainId: string;
     ethereum: SnapProvider;
 };
 export declare type OnPaymasterRequest = {
@@ -22,7 +23,10 @@ export declare type OnUserOperationSignatureRequest = {
     privateKey: string;
 };
 export declare type OnUserOperationResponse = {
+    bundler?: string;
     callData: string;
+    dummyPaymasterAndData?: string;
+    dummySignature?: string;
     initCode: string;
     nonce: string;
     sender: string;

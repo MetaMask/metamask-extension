@@ -99,13 +99,13 @@ _PendingUserOperationTracker_blockTracker = new WeakMap(), _PendingUserOperation
     });
 }, _PendingUserOperationTracker_checkUserOperation = function _PendingUserOperationTracker_checkUserOperation(metadata) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { chainId, hash, id } = metadata;
-        if (!hash) {
-            log('Skipping user operation as no hash', id);
+        const { bundlerUrl, hash, id } = metadata;
+        if (!hash || !bundlerUrl) {
+            log('Skipping user operation as missing hash or bundler', id);
             return;
         }
         try {
-            const receipt = yield __classPrivateFieldGet(this, _PendingUserOperationTracker_instances, "m", _PendingUserOperationTracker_getUserOperationReceipt).call(this, hash, chainId);
+            const receipt = yield __classPrivateFieldGet(this, _PendingUserOperationTracker_instances, "m", _PendingUserOperationTracker_getUserOperationReceipt).call(this, hash, bundlerUrl);
             const isSuccess = receipt === null || receipt === void 0 ? void 0 : receipt.success;
             if (receipt && !isSuccess) {
                 __classPrivateFieldGet(this, _PendingUserOperationTracker_instances, "m", _PendingUserOperationTracker_onUserOperationFailed).call(this, metadata, receipt);
@@ -145,9 +145,9 @@ _PendingUserOperationTracker_blockTracker = new WeakMap(), _PendingUserOperation
     return (userOperations !== null && userOperations !== void 0 ? userOperations : __classPrivateFieldGet(this, _PendingUserOperationTracker_getUserOperations, "f").call(this)).filter((userOperation) => userOperation.status === types_1.UserOperationStatus.Submitted);
 }, _PendingUserOperationTracker_updateUserOperation = function _PendingUserOperationTracker_updateUserOperation(metadata) {
     this.hub.emit('user-operation-updated', metadata);
-}, _PendingUserOperationTracker_getUserOperationReceipt = function _PendingUserOperationTracker_getUserOperationReceipt(hash, chainId) {
+}, _PendingUserOperationTracker_getUserOperationReceipt = function _PendingUserOperationTracker_getUserOperationReceipt(hash, bundlerUrl) {
     return __awaiter(this, void 0, void 0, function* () {
-        const bundler = (0, Bundler_1.getBundler)(chainId);
+        const bundler = new Bundler_1.Bundler(bundlerUrl);
         return bundler.getUserOperationReceipt(hash);
     });
 };

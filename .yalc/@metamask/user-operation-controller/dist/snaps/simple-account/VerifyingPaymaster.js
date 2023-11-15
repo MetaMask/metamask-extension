@@ -1,4 +1,5 @@
 "use strict";
+/* eslint-disable n/no-process-env */
 /* eslint-disable jsdoc/require-jsdoc */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -13,13 +14,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPaymasterAndData = void 0;
+exports.getDummyPaymasterAndData = exports.getPaymasterAndData = void 0;
 const abi_1 = require("@ethersproject/abi");
 const contracts_1 = require("@ethersproject/contracts");
 const ethereumjs_util_1 = require("ethereumjs-util");
 const constants_1 = require("../../constants");
 const logger_1 = require("../../logger");
 const VerifyingPaymaster_json_1 = __importDefault(require("./abi/VerifyingPaymaster.json"));
+const constants_2 = require("./constants");
 const ecdsa_1 = require("./ecdsa");
 const log = (0, logger_1.createModuleLogger)(logger_1.projectLogger, 'verifying-paymaster');
 function getPaymasterAndData(paymasterAddress, validUntil, validAfter, userOperation, privateKey, provider) {
@@ -41,13 +43,25 @@ function getPaymasterAndData(paymasterAddress, validUntil, validAfter, userOpera
     });
 }
 exports.getPaymasterAndData = getPaymasterAndData;
+function getDummyPaymasterAndData() {
+    const paymasterAddress = process.env.PAYMASTER_ADDRESS;
+    if (!paymasterAddress) {
+        return '0x';
+    }
+    const encodedValidUntilAfter = (0, ethereumjs_util_1.stripHexPrefix)(abi_1.defaultAbiCoder.encode(['uint48', 'uint48'], [0, 0]));
+    return `${paymasterAddress}${encodedValidUntilAfter}${(0, ethereumjs_util_1.stripHexPrefix)(constants_2.DUMMY_SIGNATURE)}`;
+}
+exports.getDummyPaymasterAndData = getDummyPaymasterAndData;
 function verifyPaymasterData(userOperation, paymasterAndData, paymasterContract) {
     return __awaiter(this, void 0, void 0, function* () {
         const testUserOperation = Object.assign(Object.assign({}, userOperation), { paymasterAndData });
         const result = yield paymasterContract.callStatic.validatePaymasterUserOp(testUserOperation, '0x'.padEnd(66, '0'), 1, { from: constants_1.ENTRYPOINT });
         const packedResult = result[1].toHexString();
         const failed = packedResult.endsWith('1');
-        log('Validated paymaster data with contract', { packedResult, failed });
+        log('Validated paymaster data with contract', {
+            packedResult,
+            valid: !failed,
+        });
         return !failed;
     });
 }

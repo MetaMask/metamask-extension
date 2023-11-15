@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@metamask/user-operation-controller": {
-      "signature": "8f490758d5423b30612e5e9f2f741b4e",
+      "signature": "4b5a3abea458845af3667cc85f74be33",
       "file": true
     }
   }
