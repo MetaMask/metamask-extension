@@ -1398,12 +1398,6 @@
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
   },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API'yi etkinleştir"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
-  },
   "enableSnap": {
     "message": "Etkinleştir"
   },

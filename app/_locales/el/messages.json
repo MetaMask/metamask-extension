@@ -1398,12 +1398,6 @@
   "enableFromSettings": {
     "message": "Ενεργοποιήστε το από τις Ρυθμίσεις."
   },
-  "enableOpenSeaAPI": {
-    "message": "Ενεργοποίηση OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Χρησιμοποιήστε το API OpenSea για λήψη δεδομένων NFT. Η αυτόματη ανίχνευση NFT βασίζεται στο API του OpenSea, και δεν θα είναι διαθέσιμη όταν αυτό είναι απενεργοποιημένο."
-  },
   "enableSnap": {
     "message": "Ενεργοποίηση"
   },
