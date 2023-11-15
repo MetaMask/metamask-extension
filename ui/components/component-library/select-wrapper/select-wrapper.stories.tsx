@@ -44,17 +44,9 @@ DefaultStory.args = {
   triggerComponent: <SelectButton />,
 };
 
-export const TriggerComponent: StoryFn<typeof SelectWrapper> = (args) => {
-  return (
-    <>
-      <SelectWrapper
-        {...args}
-        triggerComponent={<SelectButton>Trigger Component</SelectButton>}
-      >
-        <SelectOption value="Value">Value</SelectOption>
-      </SelectWrapper>
-    </>
-  );
+export const TriggerComponent = Template.bind({});
+TriggerComponent.args = {
+  triggerComponent: <SelectButton>Trigger component</SelectButton>,
 };
 
 TriggerComponent.storyName = 'triggerComponent';
