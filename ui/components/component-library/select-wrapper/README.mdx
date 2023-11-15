@@ -17,7 +17,7 @@ import { SelectWrapper } from './select-wrapper';
 ### triggerComponent
 
 Use the `triggerComponent` prop to pass in a component that will be used as the trigger for the `SelectWrapper`.
-`SelectButton` is a component that can be used as the triggerComponent or used for reference when creating a custom `triggerComponent`.
+`SelectButton` is a component that can be used as the `triggerComponent` or used for reference when creating a custom `triggerComponent`.
 
 <Canvas>
   <Story id="components-componentlibrary-selectwrapper--trigger-component" />
@@ -31,9 +31,11 @@ import {
 } from '../../component-library';
 
 <SelectWrapper
-  triggerComponent={<SelectButton>Trigger Component</SelectButton>}
+  triggerComponent={<SelectButton>Trigger component</SelectButton>}
 >
-  <SelectOption value="Value">Value</SelectOption>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
 </SelectWrapper>;
 ```
 
@@ -54,7 +56,8 @@ import {
 } from '../../component-library';
 
 <SelectWrapper
-  triggerComponent={<SelectButton>Trigger Component</SelectButton>}
+  placeholder="Children demo"
+  triggerComponent={<SelectButton>Select an option</SelectButton>}
 >
   <Text paddingLeft={2} paddingRight={2}>
     All elements contained in SelectWrapper will be rendered within the popover
@@ -82,6 +85,7 @@ import {
   SelectWrapper,
   SelectButton,
   SelectOption,
+  Text,
 } from '../../component-library';
 
 const [isOpen, setIsOpen] = React.useState(false);
@@ -89,9 +93,10 @@ const [isOpen, setIsOpen] = React.useState(false);
 <SelectWrapper
   isOpen={isOpen}
   onOpenChange={setIsOpen}
+  placeholder="Controlled open demo"
   triggerComponent={
     <SelectButton onClick={() => setIsOpen(!isOpen)}>
-      Controlled Open Demo
+      Select an option
     </SelectButton>
   }
 >
@@ -119,7 +124,8 @@ import {
 } from '../../component-library';
 
 <SelectWrapper
-  triggerComponent={<SelectButton>Uncontrolled Open Demo</SelectButton>}
+  placeholder="Uncontrolled open demo"
+  triggerComponent={<SelectButton>Select an option</SelectButton>}
 >
   <SelectOption value="Option 1">Option 1</SelectOption>
   <SelectOption value="Option 2">Option 2</SelectOption>
@@ -142,7 +148,19 @@ import {
   SelectOption,
 } from '../../component-library';
 
-<SelectWrapper />;
+const [controlledValue, setControlledValue] = React.useState('');
+
+<SelectWrapper
+  defaultValue={'DefaultValue'}
+  value={controlledValue}
+  onValueChange={(value) => setControlledValue(value)}
+  placeholder="Controlled value demo"
+  triggerComponent={<SelectButton>Select an option</SelectButton>}
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
 ```
 
 ### Uncontrolled Value
@@ -164,6 +182,7 @@ import {
 } from '../../component-library';
 
 <SelectWrapper
+  placeholder="Uncontrolled value demo"
   triggerComponent={<SelectButton>Uncontrolled Example</SelectButton>}
 >
   <SelectOption value="Option 1">Option 1</SelectOption>
@@ -190,7 +209,8 @@ import {
 
 <SelectWrapper
   isMultiSelect
-  triggerComponent={<SelectButton>Demo</SelectButton>}
+  placeholder="isMultiSelect demo"
+  triggerComponent={<SelectButton>Select an option</SelectButton>}
 >
   <SelectOption value="Option 1">Option 1</SelectOption>
   <SelectOption value="Option 2">Option 2</SelectOption>
@@ -228,7 +248,8 @@ const CustomClose = () => {
 };
 
 <SelectWrapper
-  triggerComponent={<SelectButton>Uncontrolled Example</SelectButton>}
+  placeholder="useSelectContext demo"
+  triggerComponent={<SelectButton>Select an option</SelectButton>}
 >
   <CustomClose />
   <SelectOption value="Option 1">Option 1</SelectOption>
@@ -252,7 +273,7 @@ import {
   SelectOption,
 } from '../../component-library';
 
-<SelectWrapper />;
+<SelectWrapper placeholder="Placeholder demo" />;
 ```
 
 ### isDisabled
@@ -270,7 +291,10 @@ import {
   SelectOption,
 } from '../../component-library';
 
-<SelectWrapper isDisabled triggerComponent={<SelectButton>Demo</SelectButton>}>
+<SelectWrapper
+  isDisabled
+  triggerComponent={<SelectButton>Select an option</SelectButton>}
+>
   <SelectOption value="Option 1">Option 1</SelectOption>
   <SelectOption value="Option 2">Option 2</SelectOption>
   <SelectOption value="Option 3">Option 3</SelectOption>
@@ -292,7 +316,10 @@ import {
   SelectOption,
 } from '../../component-library';
 
-<SelectWrapper isDanger triggerComponent={<SelectButton>Demo</SelectButton>}>
+<SelectWrapper
+  isDanger
+  triggerComponent={<SelectButton>Select an option</SelectButton>}
+>
   <SelectOption value="Option 1">Option 1</SelectOption>
   <SelectOption value="Option 2">Option 2</SelectOption>
   <SelectOption value="Option 3">Option 3</SelectOption>
@@ -321,7 +348,8 @@ import { BackgroundColor } from '../../../helpers/constants/design-system';
     padding: 4,
     isPortal: false,
   }}
-  triggerComponent={<SelectButton>Demo</SelectButton>}
+  placeholder="Popover props demo"
+  triggerComponent={<SelectButton>Select an option</SelectButton>}
 >
   <SelectOption value="Option 1">Option 1</SelectOption>
   <SelectOption value="Option 2">Option 2</SelectOption>
@@ -351,7 +379,7 @@ const [onBlur, setOnBlur] = React.useState(0);
 
 <SelectWrapper
   onBlur={() => setOnBlur(onBlur + 1)}
-  triggerComponent={<SelectButton>onBlur Count: {onBlur}</SelectButton>}
+  triggerComponent={<SelectButton>onBlur count: {onBlur}</SelectButton>}
 >
   <Text>This is a demo of controlled onBlur.</Text>
 </SelectWrapper>;
