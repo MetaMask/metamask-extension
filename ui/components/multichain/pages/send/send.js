@@ -158,7 +158,7 @@ export const SendPage = () => {
       </Content>
       <Footer>
         <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
-          {t('cancel')}
+          {sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
         </ButtonSecondary>
         <ButtonPrimary
           onClick={onSubmit}
@@ -166,7 +166,7 @@ export const SendPage = () => {
           disabled={submitDisabled}
           block
         >
-          {t('confirm')}
+          {t('continue')}
         </ButtonPrimary>
       </Footer>
     </Page>

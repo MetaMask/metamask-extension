@@ -60,6 +60,7 @@ describe('Select Action Modal', () => {
       providerConfig: {
         type: 'test',
         chainId: CHAIN_IDS.MAINNET,
+        ticker: 'ETH',
       },
       cachedBalances: {
         '0x1': {
@@ -70,7 +71,11 @@ describe('Select Action Modal', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       useCurrencyRateCheck: true,
-      conversionRate: 2,
+      currencyRates: {
+        ETH: {
+          conversionRate: 2,
+        },
+      },
       identities: {
         '0x1': {
           address: '0x1',

@@ -23,13 +23,11 @@ import {
   ButtonLinkSize,
   Label,
   Text,
-  TextField,
   TextFieldSearch,
-  TEXT_FIELD_SIZES,
   ButtonIconSize,
   Box,
 } from '..';
-
+import { TextField, TEXT_FIELD_SIZES } from '../text-field/deprecated';
 import { Icon } from './icon';
 import { IconName, IconSize } from './icon.types';
 

@@ -28,7 +28,7 @@ import { deferredPromise } from './lib/util';
 import TransactionController from './controllers/transactions';
 import MetaMaskController from './metamask-controller';
 
-const Ganache = require('../../test/e2e/ganache');
+const { Ganache } = require('../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
 
@@ -772,6 +772,60 @@ describe('MetaMaskController', () => {
         await expect(result).rejects.toThrow(
           'MetamaskController:getKeyringForDevice - Unknown device',
         );
+      });
+
+      it('should remove the identities when the device is forgotten', async () => {
+        jest.spyOn(window, 'open').mockReturnValue();
+
+        const localMetaMaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: {
+            encrypt(_, object) {
+              this.object = object;
+              return Promise.resolve('mock-encrypted');
+            },
+            decrypt() {
+              return Promise.resolve(this.object);
+            },
+          },
+          initState: {
+            ...cloneDeep(firstTimeState),
+            KeyringController: {
+              keyrings: [{ type: KeyringType.trezor, accounts: ['0x123'] }],
+              isUnlocked: true,
+            },
+            PreferencesController: {
+              identities: {
+                '0x123': { name: 'Trezor 1', address: '0x123' },
+              },
+              selectedAddress: '0x123',
+            },
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+        });
+
+        await localMetaMaskController.keyringController.createNewVaultAndKeychain(
+          'password',
+        );
+
+        await localMetaMaskController.keyringController.addNewKeyring(
+          'Trezor Hardware',
+          {
+            accounts: ['0x123'],
+          },
+        );
+
+        await localMetaMaskController.forgetDevice(HardwareDeviceNames.trezor);
+        const { identities: updatedIdentities } =
+          localMetaMaskController.preferencesController.store.getState();
+        expect(updatedIdentities['0x123']).toBeUndefined();
       });
 
       it('should wipe all the keyring info', async () => {
