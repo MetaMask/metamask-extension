@@ -336,14 +336,12 @@ export default class TransactionStateManager extends EventEmitter {
         return;
       }
     }
-
-    this._updateTransactionHistory(txMeta, note);
+    if (txMeta.history) {
+      this._updateTransactionHistory(txMeta, note);
+    }
   }
 
   _updateTransactionHistory(txMeta, note) {
-    if (!txMeta.history) {
-      txMeta.history = [];
-    }
     // create txMeta snapshot for history
     const currentState = snapshotFromTxMeta(txMeta);
     // recover previous tx state obj
