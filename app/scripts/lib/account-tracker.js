@@ -38,7 +38,6 @@ import { previousValueComparator } from './util';
  * @property {EthQuery} _query An EthQuery instance used to access account information from the blockchain
  * @property {BlockTracker} _blockTracker A BlockTracker instance. Needed to ensure that accounts and their info updates
  * when a new block is created.
- * @property {object} _currentBlockNumber Reference to a property on the _blockTracker: the number (i.e. an id) of the the current block
  * @property {object} _currentBlockNumberByChainId Reference to a property on the _blockTracker: the number (i.e. an id) of the the current block keyed by chain id
  */
 export default class AccountTracker extends PollingControllerOnly {
@@ -76,23 +75,23 @@ export default class AccountTracker extends PollingControllerOnly {
     this.onboardingController = opts.onboardingController;
 
     // blockTracker.currentBlock may be null
-    this._currentBlockNumber = this._blockTracker.getCurrentBlock();
-    this._currentBlockNumberByChainId = {}
-    this._currentBlockNumberByChainId[this.getCurrentChainId()] = this._currentBlockNumber
+    const currentChainId = this.getCurrentChainId()
+    this._currentBlockNumberByChainId = {
+      [currentChainId]: this._blockTracker.getCurrentBlock()
+    }
     this._blockTracker.once('latest', (blockNumber) => {
-      this._currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber
-      this._currentBlockNumber = blockNumber;
+      this._currentBlockNumberByChainId[currentChainId] = blockNumber
     });
 
     // subscribe to account removal
-    opts.onAccountRemoved((address) => this.removeAccount([address]));
+    opts.onAccountRemoved((address) => this.removeAccounts([address])); // should this remove from all chainIds?
 
     this.onboardingController.store.subscribe(
       previousValueComparator(async (prevState, currState) => {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          this._updateAccounts();
+          this._updateAccounts(); // should call for all chainIds
         }
       }, this.onboardingController.store.getState()),
     );
@@ -108,7 +107,7 @@ export default class AccountTracker extends PollingControllerOnly {
           prevSelectedAddress !== currSelectedAddress &&
           !useMultiAccountBalanceChecker
         ) {
-          this._updateAccounts();
+          this._updateAccounts(); // should call for all chainIds
         }
       }, this.onboardingController.store.getState()),
     );
@@ -159,7 +158,7 @@ export default class AccountTracker extends PollingControllerOnly {
     return pollingKey
   }
 
-  // intentionally empty, see overrid
+  // intentionally empty
   _executePoll() {}
 
 
@@ -194,12 +193,12 @@ export default class AccountTracker extends PollingControllerOnly {
     });
 
     this.addAccounts(accountsToAdd, networkClientId);
-    this.removeAccount(accountsToRemove, networkClientId);
+    this.removeAccounts(accountsToRemove, networkClientId);
   }
 
   /**
    * Adds new addresses to track the balances of
-   * given a balance as long this._currentBlockNumber is defined.
+   * given a balance as long this._currentBlockNumberByChainId is defined for the chainId.
    *
    * @param {Array} addresses - An array of hex addresses of new accounts to track
    */
@@ -277,9 +276,6 @@ export default class AccountTracker extends PollingControllerOnly {
   async _updateForBlockByChainId(networkClientId, blockNumber) { // private
     const { chainId, provider } = this.getCorrectNetworkClient(networkClientId)
     this._currentBlockNumberByChainId[chainId] = blockNumber;
-    if (chainId === this.getCurrentChainId()) {
-      this._currentBlockNumber = blockNumber;
-    }
 
     // block gasLimit polling shouldn't be in account-tracker shouldn't be here...
     const currentBlock = await pify(new EthQuery(provider)).getBlockByNumber(blockNumber, false);
