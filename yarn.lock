@@ -4903,16 +4903,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-sdk@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/snaps-sdk@npm:1.0.0"
+"@metamask/snaps-sdk@npm:^1.0.0, @metamask/snaps-sdk@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@metamask/snaps-sdk@npm:1.1.0"
   dependencies:
     "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/providers": "npm:^13.0.0"
+    "@metamask/rpc-errors": "npm:^6.1.0"
     "@metamask/utils": "npm:^8.1.0"
     is-svg: "npm:^4.4.0"
     superstruct: "npm:^1.0.3"
-  checksum: 7b970d1bd46480be1738e7e34737e38d7a88e26f5d505401cab131a62aac2d9494e1cb72f02c77f9bf9815532831fe33d3073d3242baf0730fb92a5079eeef35
+  checksum: c0a5b57bb86c85f060e1430ece3d46b1b1590170c631288f520677998e4bcb4eaa950452f32305f080a5971525a23cfd01bb3d6e134b490e77b7a8043875c1ed
   languageName: node
   linkType: hard
 
@@ -4956,9 +4957,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/snaps-utils@npm:4.0.0"
+"@metamask/snaps-utils@npm:^4.0.0, @metamask/snaps-utils@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@metamask/snaps-utils@npm:4.0.1"
   dependencies:
     "@babel/core": "npm:^7.23.2"
     "@babel/types": "npm:^7.23.0"
@@ -4967,7 +4968,7 @@ __metadata:
     "@metamask/permission-controller": "npm:^5.0.0"
     "@metamask/rpc-errors": "npm:^6.1.0"
     "@metamask/snaps-registry": "npm:^2.1.0"
-    "@metamask/snaps-sdk": "npm:^1.0.0"
+    "@metamask/snaps-sdk": "npm:^1.1.0"
     "@metamask/utils": "npm:^8.1.0"
     "@noble/hashes": "npm:^1.3.1"
     "@scure/base": "npm:^1.1.1"
@@ -4981,7 +4982,7 @@ __metadata:
     ses: "npm:^0.18.8"
     superstruct: "npm:^1.0.3"
     validate-npm-package-name: "npm:^5.0.0"
-  checksum: bb54c1d765a70f2a61d4ee79e47c4e174329bda4076ae411f3c0f165ff98227047617ddd7dd4add74aa3bcf139de5b3bd892f2fb999ef29d71215ceee6491536
+  checksum: eecb6621c2ce94e9e145ede965298f3715b314691258d6f3e6e648d1db9dcf271c7481532e32443d5679559c734be48d432907a1e665c179642bac675dff8964
   languageName: node
   linkType: hard
 
@@ -24081,8 +24082,8 @@ __metadata:
     "@metamask/smart-transactions-controller": "npm:^6.2.2"
     "@metamask/snaps-controllers": "npm:^3.4.0"
     "@metamask/snaps-rpc-methods": "npm:^4.0.0"
-    "@metamask/snaps-sdk": "npm:^1.0.0"
-    "@metamask/snaps-utils": "npm:^4.0.0"
+    "@metamask/snaps-sdk": "npm:^1.1.0"
+    "@metamask/snaps-utils": "npm:^4.0.1"
     "@metamask/test-dapp": "npm:^7.2.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.6"
