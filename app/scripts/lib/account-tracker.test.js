@@ -199,6 +199,12 @@ describe('Account Tracker', () => {
           [currentChainId]: {
             ...mockAccounts,
           },
+          '0x1': {
+            ...mockAccounts,
+          },
+          '0x2': {
+            ...mockAccounts,
+          },
         },
       });
 
@@ -207,13 +213,15 @@ describe('Account Tracker', () => {
       const newState = accountTracker.store.getState();
 
       const accounts = {
-        [VALID_ADDRESS_TWO]: mockAccounts[VALID_ADDRESS_TWO]
-      }
+        [VALID_ADDRESS_TWO]: mockAccounts[VALID_ADDRESS_TWO],
+      };
 
       expect(newState).toStrictEqual({
         accounts,
         accountsByChainId: {
-          [currentChainId]: accounts
+          [currentChainId]: accounts,
+          '0x1': accounts,
+          '0x2': accounts,
         },
         currentBlockGasLimit: '',
         currentBlockGasLimitByChainId: {},

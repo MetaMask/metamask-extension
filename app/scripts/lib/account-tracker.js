@@ -30,11 +30,10 @@ import { previousValueComparator } from './util';
  * @typedef {object} AccountTracker
  * @property {object} store The stored object containing all accounts to track, as well as the current block's gas limit.
  * @property {object} store.accounts The accounts currently stored in this AccountTracker
- * @property {object} store.accountsByChain The accounts currently stored in this AccountTracker keyed by chain id
+ * @property {object} store.accountsByChainId The accounts currently stored in this AccountTracker keyed by chain id
  * @property {string} store.currentBlockGasLimit A hex string indicating the gas limit of the current block
  * @property {string} store.currentBlockGasLimitByChain A hex string indicating the gas limit of the current block keyed by chain id
  * @property {object} _provider A provider needed to create the EthQuery instance used within this AccountTracker.
- * @property {EthQuery} _query An EthQuery instance used to access account information from the blockchain
  * @property {BlockTracker} _blockTracker A BlockTracker instance. Needed to ensure that accounts and their info updates
  * when a new block is created.
  * @property {object} _currentBlockNumberByChainId Reference to a property on the _blockTracker: the number (i.e. an id) of the the current block keyed by chain id
@@ -45,7 +44,8 @@ export default class AccountTracker {
    * @param {object} opts.provider - An EIP-1193 provider instance that uses the current global network
    * @param {object} opts.blockTracker - A block tracker, which emits events for each new block
    * @param {Function} opts.getCurrentChainId - A function that returns the `chainId` for the current global network
-   * @param {Function} opts.getNetworkIdentifier - A function that returns the current network
+   * @param {Function} opts.getNetworkClientById - Gets the network client with the given id from the NetworkController.
+   * @param {Function} opts.getNetworkIdentifier - A function that returns the current network or passed nework configuration
    * @param {Function} opts.onAccountRemoved - Allows subscribing to keyring controller accountRemoved event
    */
   #pollingTokenSets = new Map();
@@ -111,7 +111,7 @@ export default class AccountTracker {
         ) {
           this._updateAccounts();
         }
-      }, this.onboardingController.store.getState()),
+      }, this.onboardingController.store.getState()), // is this right?
     );
   }
 
