@@ -3,17 +3,10 @@ import PropTypes from 'prop-types';
 
 import useIsOverflowing from '../../../../hooks/snaps/useIsOverflowing';
 import { Box, Button, ButtonVariant, Text } from '../../../component-library';
-import {
-  BackgroundColor,
-  TextColor,
-} from '../../../../helpers/constants/design-system';
+import { TextColor } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export const ShowMore = ({
-  children,
-  buttonBackground = BackgroundColor.backgroundDefault,
-  ...props
-}) => {
+export const ShowMore = ({ children, ...props }) => {
   const t = useI18nContext();
   const { contentRef, isOverflowing } = useIsOverflowing();
   const [isOpen, setIsOpen] = useState(false);
@@ -40,15 +33,10 @@ export const ShowMore = ({
             position: 'absolute',
             bottom: 0,
             right: 0,
-            background: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-${BackgroundColor.backgroundDefault}) 33%)`,
           }}
         >
           <Button
-            style={{
-              background: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-${buttonBackground}) 33%)`,
-            }}
             padding={0}
-            paddingLeft={8}
             variant={ButtonVariant.Link}
             onClick={handleClick}
           >

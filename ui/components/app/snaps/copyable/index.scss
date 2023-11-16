@@ -1,7 +1,39 @@
 .copyable {
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--color-background-alternative-hover);
+  }
+
+  &.clicked {
+    background-color: var(--color-background-alternative-pressed);
+
+    &:hover {
+      background-color: var(--color-background-alternative-pressed);
+    }
+  }
+
+  &.sensitive {
+    background-color: rgba(215, 56, 71, 0.2);
+
+    &:hover {
+      background-color: rgba(215, 56, 71, 0.25);
+    }
+
+    &.clicked {
+      background-color: rgba(215, 56, 71, 0.3);
+
+
+    &:hover {
+      background-color: rgba(215, 56, 71, 0.3);
+    }
+    }
+
+
+  }
+
   &__icon {
     margin-top: 2px;
-    cursor: pointer;
   }
 
   &__tooltip {

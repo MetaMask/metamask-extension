@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import {
   BorderRadius,
   BackgroundColor,
@@ -14,24 +15,41 @@ import { Icon, IconName, Box, Text } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Tooltip from '../../../ui/tooltip';
 import { ShowMore } from '../show-more';
+import { SECOND } from '../../../../../shared/constants/time';
+import { useTimeout } from '../../../../hooks/useTimeout';
 
 export const Copyable = ({ text, sensitive = false }) => {
   const t = useI18nContext();
-  const [copied, handleCopy] = useCopyToClipboard();
-  const [visible, setIsVisible] = useState(false);
+  const [, handleCopy] = useCopyToClipboard();
+  const [isVisible, setIsisVisible] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
 
-  const handleVisibilityClick = () => setIsVisible(!visible);
-  const handleCopyClick = () => {
-    if (!copied) {
-      handleCopy(text);
-    }
+  const startTimeout = useTimeout(() => setIsClicked(false), 3 * SECOND, false);
+
+  const handleVisibilityClick = (e) => {
+    e.stopPropagation();
+    setIsisVisible(!isVisible);
   };
+
+  const handleCopyClick = (e) => {
+    e.stopPropagation();
+    handleCopy(text);
+    setIsClicked(true);
+    startTimeout();
+  };
+
   return (
     <Box
       display={Display.Flex}
-      className="copyable"
+      onClick={
+        sensitive && !isVisible ? handleVisibilityClick : handleCopyClick
+      }
+      className={classnames('copyable', {
+        sensitive,
+        clicked: isClicked,
+      })}
       backgroundColor={
-        visible
+        isVisible
           ? BackgroundColor.errorMuted
           : BackgroundColor.backgroundAlternative
       }
@@ -43,22 +61,24 @@ export const Copyable = ({ text, sensitive = false }) => {
           <Tooltip
             wrapperClassName="copyable__tooltip"
             html={
-              <Text>{visible ? t('hideSentitiveInfo') : t('doNotShare')}</Text>
+              <Text>
+                {isVisible ? t('hideSentitiveInfo') : t('doNotShare')}
+              </Text>
             }
             position="bottom"
           >
             <Icon
-              name={visible ? IconName.EyeSlash : IconName.Eye}
+              name={isVisible ? IconName.EyeSlash : IconName.Eye}
               onClick={handleVisibilityClick}
               color={
-                visible ? Color.errorAlternative : IconColor.iconAlternative
+                isVisible ? Color.errorAlternative : IconColor.iconAlternative
               }
               data-testid="reveal-icon"
             />
           </Tooltip>
         </Box>
       )}
-      {sensitive && !visible && (
+      {sensitive && !isVisible && (
         <Text
           color={Color.textAlternative}
           marginRight={4}
@@ -68,17 +88,19 @@ export const Copyable = ({ text, sensitive = false }) => {
           {t('revealSensitiveContent')}
         </Text>
       )}
-      {(!sensitive || (sensitive && visible)) && (
+      {(!sensitive || (sensitive && isVisible)) && (
         <ShowMore
           marginRight={4}
           buttonBackground={
-            visible
+            isVisible
               ? BackgroundColor.errorMuted
               : BackgroundColor.backgroundAlternative
           }
         >
           <Text
-            color={visible ? Color.errorAlternative : TextColor.textAlternative}
+            color={
+              isVisible ? Color.errorAlternative : TextColor.textAlternative
+            }
             marginBottom={0}
             overflowWrap={OverflowWrap.Anywhere}
           >
@@ -86,12 +108,11 @@ export const Copyable = ({ text, sensitive = false }) => {
           </Text>
         </ShowMore>
       )}
-      {(!sensitive || (sensitive && visible)) && (
+      {(!sensitive || (sensitive && isVisible)) && (
         <Icon
           className="copyable__icon"
-          name={copied ? IconName.CopySuccess : IconName.Copy}
-          color={visible ? Color.errorAlternative : IconColor.iconAlternative}
-          onClick={handleCopyClick}
+          name={isClicked ? IconName.CopySuccess : IconName.Copy}
+          color={isVisible ? Color.errorAlternative : IconColor.iconAlternative}
           marginLeft="auto"
           data-testid="copy-icon"
         />
