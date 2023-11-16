@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -19,6 +19,13 @@ import {
   AvatarToken,
   BadgeWrapper,
   Box,
+  ButtonSecondary,
+  Icon,
+  IconName,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Text,
 } from '../../component-library';
 import {
@@ -44,6 +51,7 @@ export const TokenListItem = ({
   primary,
   secondary,
   title,
+  isNativeCurrency = false,
 }) => {
   const t = useI18nContext();
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
@@ -55,6 +63,10 @@ export const TokenListItem = ({
   // Used for badge icon
   const currentNetwork = useSelector(getCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+
+  // Scam warning
+  const IS_PROBLEM = true; // TEMPORARY: REMOVE ME
+  const [showScamWarningModal, setShowScamWarningModal] = useState(false);
 
   return (
     <Box
@@ -153,10 +165,44 @@ export const TokenListItem = ({
               fontWeight={FontWeight.Medium}
               variant={TextVariant.bodyMd}
               width={BlockSize.TwoThirds}
-              textAlign={TextAlign.End}
+              textAlign={IS_PROBLEM ? TextAlign.Center : TextAlign.End}
               data-testid="multichain-token-list-item-secondary-value"
             >
-              {secondary}
+              {isNativeCurrency && IS_PROBLEM ? (
+                <>
+                  N/A{' '}
+                  <Icon
+                    name={IconName.Info}
+                    onMouseEnter={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setShowScamWarningModal(true);
+                    }}
+                  />
+                  {showScamWarningModal ? (
+                    <Modal isOpen>
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalHeader
+                          onClose={() => setShowScamWarningModal(false)}
+                        >
+                          This is a potential scam
+                        </ModalHeader>
+                        <Box marginTop={4} marginBotton={4}>
+                          This network name ....
+                        </Box>
+                        <Box>
+                          <ButtonSecondary block>
+                            Edit network details
+                          </ButtonSecondary>
+                        </Box>
+                      </ModalContent>
+                    </Modal>
+                  ) : null}
+                </>
+              ) : (
+                secondary
+              )}
             </Text>
           </Box>
           <Text
@@ -200,4 +246,5 @@ TokenListItem.propTypes = {
    * secondary represents the balance in dollars
    */
   secondary: PropTypes.string,
+  isNativeCurrency: PropTypes.bool,
 };

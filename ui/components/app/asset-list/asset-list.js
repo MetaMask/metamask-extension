@@ -157,6 +157,7 @@ const AssetList = ({ onClickAsset }) => {
             tokenSymbol={primaryCurrencyProperties.suffix}
             secondary={showFiat ? secondaryCurrencyDisplay : undefined}
             tokenImage={balanceIsLoading ? null : primaryTokenImage}
+            isNativeCurrency
           />
           <TokenList
             tokens={tokensWithBalances}
