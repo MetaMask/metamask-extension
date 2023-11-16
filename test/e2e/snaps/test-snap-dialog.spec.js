@@ -217,8 +217,6 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check result is equal to '2323'
-        // result = await driver.findElement('#dialogResult');
-        // assert.equal(await result.getText(), '"2323"');
         await driver.waitForSelector({
           css: '#dialogResult',
           text: '"2323"',
