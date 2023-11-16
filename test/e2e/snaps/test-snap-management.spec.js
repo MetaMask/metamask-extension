@@ -123,10 +123,6 @@ describe('Test Snap Management', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-        // const notificationResult = await driver.findElement(
-        //   '[data-testid="global-menu-notification-count"]',
-        // );
-        // assert.equal(await notificationResult.getText(), '1');
         await driver.findElement({
           css: '[data-testid="global-menu-notification-count"]',
           text: '1',
