@@ -975,7 +975,7 @@ async function buildEventFragmentProperties({
     referrer,
     source,
     status,
-    network: parseInt(chainId, 16),
+    network: `${parseInt(chainId, 16)}`,
     eip_1559_version: eip1559Version,
     gas_edit_type: 'none',
     gas_edit_attempted: 'none',

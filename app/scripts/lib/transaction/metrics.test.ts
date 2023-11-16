@@ -80,7 +80,7 @@ describe('Transaction metrics', () => {
 
   beforeEach(() => {
     fromAccount = getTestAccounts()[0];
-    mockChainId = '5';
+    mockChainId = '0x5';
     mockNetworkId = '5';
     mockActionId = '2';
     mockTransactionMeta = {
