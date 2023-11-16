@@ -70,21 +70,14 @@ export const Copyable = ({ text, sensitive = false }) => {
             }
             position="bottom"
           >
-            {isVisible ? (
-              <Icon
-                name={IconName.EyeSlash}
-                onClick={handleVisibilityClick}
-                color={Color.errorAlternative}
-                data-testid="reveal-icon"
-              />
-            ) : (
-              <Icon
-                name={IconName.Eye}
-                onClick={handleVisibilityClick}
-                color={IconColor.iconAlternative}
-                data-testid="reveal-icon"
-              />
-            )}
+            <Icon
+              name={isVisible ? IconName.EyeSlash : IconName.Eye}
+              onClick={handleVisibilityClick}
+              color={
+                isVisible ? Color.errorAlternative : IconColor.iconAlternative
+              }
+              data-testid="reveal-icon"
+            />
           </Tooltip>
         </Box>
       )}
@@ -118,28 +111,15 @@ export const Copyable = ({ text, sensitive = false }) => {
           </Text>
         </ShowMore>
       )}
-      {shouldDisplayContent &&
-        (isClicked ? (
-          <Icon
-            className="copyable__icon"
-            name={IconName.CopySuccess}
-            color={
-              isVisible ? Color.errorAlternative : IconColor.iconAlternative
-            }
-            marginLeft="auto"
-            data-testid="copy-icon"
-          />
-        ) : (
-          <Icon
-            className="copyable__icon"
-            name={IconName.Copy}
-            color={
-              isVisible ? Color.errorAlternative : IconColor.iconAlternative
-            }
-            marginLeft="auto"
-            data-testid="copy-icon"
-          />
-        ))}
+      {shouldDisplayContent && (
+        <Icon
+          className="copyable__icon"
+          name={isClicked ? IconName.CopySuccess : IconName.Copy}
+          color={isVisible ? Color.errorAlternative : IconColor.iconAlternative}
+          marginLeft="auto"
+          data-testid="copy-icon"
+        />
+      )}
     </Box>
   );
 };
