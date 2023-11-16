@@ -1,13 +1,13 @@
 import { Snap } from '@metamask/snaps-utils';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import semver from 'semver';
 import {
   Box,
-  Text,
   ButtonLink,
   ButtonLinkSize,
+  Text,
 } from '../../../components/component-library';
 import {
   AlignItems,
@@ -22,9 +22,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getSnapRegistry,
   getSnaps,
   getsnapsAddSnapAccountModalDismissed,
-  getSnapRegistry,
 } from '../../../selectors';
 import {
   setSnapsAddSnapAccountModalDismissed,
