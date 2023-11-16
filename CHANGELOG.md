@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.5.1]
+### Fixed
+- Fix bug that caused users to be stuck on the loading screen when opening MetaMask if their selected network had stopped working ([#21854](https://github.com/MetaMask/metamask-extension/pull/21854))
+
 ## [11.5.0]
 ### Added
 - Updated logging so that signature requests are included in the MetaMask state logs, which can be downloaded from Settings. ([#21207)](https://github.com/MetaMask/metamask-extension/pull/21207))
@@ -4171,7 +4175,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.5.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.5.1...HEAD
+[11.5.1]: https://github.com/MetaMask/metamask-extension/compare/v11.5.0...v11.5.1
 [11.5.0]: https://github.com/MetaMask/metamask-extension/compare/v11.4.1...v11.5.0
 [11.4.1]: https://github.com/MetaMask/metamask-extension/compare/v11.4.0...v11.4.1
 [11.4.0]: https://github.com/MetaMask/metamask-extension/compare/v11.3.0...v11.4.0
