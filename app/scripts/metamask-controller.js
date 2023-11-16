@@ -11,6 +11,8 @@ import {
   throttle,
   memoize,
   wrap,
+  pickBy,
+  merge,
   ///: END:ONLY_INCLUDE_IN
 } from 'lodash';
 import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
@@ -178,7 +180,10 @@ import {
   fetchTokenBalance,
 } from '../../shared/lib/token-util.ts';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
+import {
+  determineTransactionType,
+  parseStandardTokenTransactionData,
+} from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
@@ -1526,17 +1531,26 @@ export default class MetamaskController extends EventEmitter {
       extension: this.extension,
       getTransactions: this.getTransactions.bind(this),
       setTxStatusSigned: (id) =>
-        this.setTransactionStatus(id, TransactionStatus.signed),
+        this.txController.updateCustodialTransaction(id, {
+          status: TransactionStatus.signed,
+        }),
       setTxStatusSubmitted: (id) =>
-        this.setTransactionStatus(id, TransactionStatus.submitted),
+        this.txController.updateCustodialTransaction(id, {
+          status: TransactionStatus.submitted,
+        }),
       setTxStatusFailed: (id) =>
-        this.setTransactionStatus(id, TransactionStatus.failed),
+        this.txController.updateCustodialTransaction(id, {
+          status: TransactionStatus.failed,
+        }),
       trackTransactionEvents: handleMMITransactionUpdate.bind(
         null,
         transactionMetricsRequest,
       ),
-      updateTransaction: this.updateTransaction.bind(this),
-      updateTransactionHash: this.setTransactionHash.bind(this),
+      updateTransaction: this.txController.updateCustodialTransaction.bind(
+        this.txController,
+      ),
+      updateTransactionHash: (id, hash) =>
+        this.txController.updateCustodialTransaction(id, { hash }),
     });
     ///: END:ONLY_INCLUDE_IN
 
@@ -2773,12 +2787,8 @@ export default class MetamaskController extends EventEmitter {
 
       // txController
       updateTransaction: txController.updateTransaction.bind(txController),
-
-      // TxMigrationToDo - Add approveTransactionsWithSameNonce controller method.
-      approveTransactionsWithSameNonce: () => undefined,
-      // approveTransactionsWithSameNonce:
-      //   txController.approveTransactionsWithSameNonce.bind(txController),
-
+      approveTransactionsWithSameNonce:
+        txController.approveTransactionsWithSameNonce.bind(txController),
       createCancelTransaction: this.createCancelTransaction.bind(this),
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
@@ -2792,16 +2802,11 @@ export default class MetamaskController extends EventEmitter {
           this.getTransactionMetricsRequest(),
         ),
       getTransactions: this.getTransactions.bind(this),
-
-      updateEditableParams:
-        txController.updateEditableParams.bind(txController),
-
+      updateEditableParams: this.updateEditableParams.bind(this),
       updateTransactionGasFees:
         txController.updateTransactionGasFees.bind(txController),
       updateTransactionSendFlowHistory:
         txController.updateTransactionSendFlowHistory.bind(txController),
-
-      // TxMigrationToDo - Add updatePreviousGasParams controller method.
       updatePreviousGasParams:
         txController.updatePreviousGasParams.bind(txController),
 
@@ -3260,7 +3265,7 @@ export default class MetamaskController extends EventEmitter {
       // clear cachedBalances
       this.cachedBalancesController.clearCachedBalances();
 
-      this.txController.clearUnapproved();
+      this.txController.clearUnapprovedTransactions();
 
       // create new vault
       const vault = await this.keyringController.createNewVaultAndRestore(
@@ -3942,34 +3947,46 @@ export default class MetamaskController extends EventEmitter {
     });
   }
 
-  // TxMigrationToDo - Use new core methods.
-  setTransactionStatus(transactionId, status) {
-    const txMeta = this.txController.state.transactions.find(
-      (tx) => tx.id === transactionId,
+  // TxMigrationToDo - Add updateEditableParams method.
+
+  async updateEditableParams(txId, { data, from, to, value, gas, gasPrice }) {
+    const transactionMeta = this.txController.state.transactions.find(
+      ({ id }) => id === txId,
     );
 
-    txMeta.status = status;
+    if (!transactionMeta) {
+      throw new Error(
+        `Cannot update editable params as no transaction metadata found`,
+      );
+    }
 
-    this.updateTransaction(txMeta);
-  }
+    const editableParams = {
+      txParams: {
+        data,
+        from,
+        to,
+        value,
+        gas,
+        gasPrice,
+      },
+    };
 
-  setTransactionHash(transactionId, hash) {
-    const txMeta = this.txController.state.transactions.find(
-      (tx) => tx.id === transactionId,
+    editableParams.txParams = pickBy(editableParams.txParams);
+
+    const updatedTransaction = merge(transactionMeta, editableParams);
+
+    // update transaction type in case it has changes
+    const { type } = await determineTransactionType(
+      updatedTransaction.txParams,
+      this.ethQuery,
     );
 
-    txMeta.hash = hash;
+    updatedTransaction.type = type;
 
-    this.updateTransaction(txMeta);
-  }
+    const note = `Update Editable Params for ${txId}`;
 
-  updateTransaction(txMeta) {
-    const { state } = this.txController;
-    const index = state.transactions.findIndex((tx) => tx.id === txMeta.id);
-
-    state.transactions[index] = txMeta;
-
-    this.txController.update(state);
+    this.txController.updateTransaction(updatedTransaction, note);
+    return updatedTransaction;
   }
 
   /**

@@ -2418,7 +2418,8 @@
     },
     "@metamask/transaction-controller": {
       "globals": {
-        "console.error": true
+        "console.error": true,
+        "setTimeout": true
       },
       "packages": {
         "@ethereumjs/common": true,

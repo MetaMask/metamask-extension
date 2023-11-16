@@ -8,8 +8,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
  * @param addTransactionToWatchList
  */
 export function afterTransactionSign(
-  // TxMigrationToDo - Update transaction types.
-  txMeta: any,
+  txMeta: TransactionMeta,
   signedEthTx: any,
   addTransactionToWatchList: (
     custodianTransactionId: string | undefined,
@@ -36,8 +35,7 @@ export function afterTransactionSign(
  *
  * @param txMeta - The transaction meta.
  */
-// TxMigrationToDo - Update transaction types.
-export function beforeTransactionPublish(txMeta: any): boolean {
+export function beforeTransactionPublish(txMeta: TransactionMeta): boolean {
   // MMI does not broadcast transactions, as that is the responsibility of the custodian
   return !txMeta?.custodyStatus;
 }
@@ -48,8 +46,7 @@ export function beforeTransactionPublish(txMeta: any): boolean {
  * @param txMeta - The transaction meta.
  */
 export function getAdditionalSignArguments(
-  // TxMigrationToDo - Update transaction types.
-  txMeta: any,
+  txMeta: TransactionMeta,
 ): (TransactionMeta | undefined)[] {
   return [txMeta.custodyStatus ? txMeta : undefined];
 }
@@ -61,8 +58,7 @@ export function getAdditionalSignArguments(
  */
 
 export function beforeTransactionApproveOnInit(
-  // TxMigrationToDo - Update transaction types.
-  txMeta: any,
+  txMeta: TransactionMeta,
 ): boolean {
   return !txMeta?.custodyStatus;
 }
@@ -73,8 +69,7 @@ export function beforeTransactionApproveOnInit(
  * @param txMeta - The transaction meta.
  */
 export function beforeCheckPendingTransaction(
-  // TxMigrationToDo - Update transaction types.
-  txMeta: any,
+  txMeta: TransactionMeta,
 ): boolean {
   return !txMeta?.custodyId;
 }

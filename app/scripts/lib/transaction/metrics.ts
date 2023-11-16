@@ -360,39 +360,37 @@ export const handlePostTransactionBalanceUpdate = async (
     approvalTransactionMeta?: TransactionMeta;
   },
 ) => {
-  // TxMigrationToDo - Update transaction types.
-  const rawTransactioMeta = transactionMeta as any;
-
-  if (getParticipateInMetrics() && rawTransactioMeta.swapMetaData) {
+  if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
     if (transactionMeta.txReceipt?.status === '0x0') {
       trackEvent({
         event: 'Swap Failed',
-        sensitiveProperties: { ...rawTransactioMeta.swapMetaData },
+        sensitiveProperties: { ...transactionMeta.swapMetaData },
         category: MetaMetricsEventCategory.Swaps,
       });
     } else {
       const tokensReceived = getSwapsTokensReceivedFromTxMeta(
-        rawTransactioMeta.destinationTokenSymbol,
+        transactionMeta.destinationTokenSymbol,
         transactionMeta,
-        rawTransactioMeta.destinationTokenAddress,
+        transactionMeta.destinationTokenAddress,
         transactionMeta.txParams.from,
-        rawTransactioMeta.destinationTokenDecimals,
+        transactionMeta.destinationTokenDecimals,
         approvalTransactionMeta,
         transactionMeta.chainId,
       );
 
       const quoteVsExecutionRatio = tokensReceived
         ? `${new BigNumber(tokensReceived, 10)
-            .div(rawTransactioMeta.swapMetaData.token_to_amount, 10)
+            // TxMigrationToDo - Verify swapMetaData type.
+            .div((transactionMeta.swapMetaData as any).token_to_amount, 10)
             .times(100)
             .round(2)}%`
         : null;
 
       const estimatedVsUsedGasRatio =
         transactionMeta.txReceipt?.gasUsed &&
-        rawTransactioMeta.swapMetaData.estimated_gas
+        transactionMeta.swapMetaData.estimated_gas
           ? `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
-              .div(rawTransactioMeta.swapMetaData.estimated_gas, 10)
+              .div((transactionMeta.swapMetaData as any).estimated_gas, 10)
               .times(100)
               .round(2)}%`
           : null;
@@ -406,7 +404,7 @@ export const handlePostTransactionBalanceUpdate = async (
         event: MetaMetricsEventName.SwapCompleted,
         category: MetaMetricsEventCategory.Swaps,
         sensitiveProperties: {
-          ...rawTransactioMeta.swapMetaData,
+          ...transactionMeta.swapMetaData,
           token_to_amount_received: tokensReceived,
           quote_vs_executionRatio: quoteVsExecutionRatio,
           estimated_vs_used_gasRatio: estimatedVsUsedGasRatio,
@@ -419,8 +417,9 @@ export const handlePostTransactionBalanceUpdate = async (
           // numbers are converted into number strings, on firefox they remain
           // Big Number objects. As such, we convert them here for both
           // browsers.
-          token_to_amount:
-            rawTransactioMeta.swapMetaData.token_to_amount.toString(10),
+          token_to_amount: (
+            transactionMeta.swapMetaData as any
+          ).token_to_amount.toString(10),
         },
       });
     }
@@ -758,7 +757,6 @@ async function buildEventFragmentProperties({
     defaultGasEstimates,
     originalType,
     replacedById,
-    metamaskNetworkId: network,
     customTokenAmount,
     dappProposedTokenAmount,
     currentTokenBalance,
@@ -770,12 +768,7 @@ async function buildEventFragmentProperties({
     securityAlertResponse,
     ///: END:ONLY_INCLUDE_IN
     simulationFails,
-    // TxMigrationToDo - Update transaction types.
-  } = transactionMeta as any;
-
-  // TxMigrationToDo - Update transaction types.
-  const rawTransactioMeta = transactionMeta as any;
-
+  } = transactionMeta;
   const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
 
@@ -799,16 +792,16 @@ async function buildEventFragmentProperties({
     if (estimateType) {
       gasParams.default_estimate = estimateType;
       let defaultMaxFeePerGas =
-        rawTransactioMeta.defaultGasEstimates.maxFeePerGas;
+        transactionMeta.defaultGasEstimates?.maxFeePerGas;
       let defaultMaxPriorityFeePerGas =
-        rawTransactioMeta.defaultGasEstimates.maxPriorityFeePerGas;
+        transactionMeta.defaultGasEstimates?.maxPriorityFeePerGas;
 
       if (
         [
           GasRecommendations.low,
           GasRecommendations.medium,
           GasRecommendations.high,
-        ].includes(estimateType)
+        ].includes(estimateType as any)
       ) {
         const { gasFeeEstimates } =
           await transactionMetricsRequest.getEIP1559GasFeeEstimates();
@@ -826,12 +819,12 @@ async function buildEventFragmentProperties({
       }
     }
 
-    if (rawTransactioMeta.defaultGasEstimates.gas) {
-      gasParams.default_gas = rawTransactioMeta.defaultGasEstimates.gas;
+    if (transactionMeta.defaultGasEstimates?.gas) {
+      gasParams.default_gas = transactionMeta.defaultGasEstimates.gas;
     }
-    if (rawTransactioMeta.defaultGasEstimates.gasPrice) {
+    if (transactionMeta.defaultGasEstimates?.gasPrice) {
       gasParams.default_gas_price =
-        rawTransactioMeta.defaultGasEstimates.gasPrice;
+        transactionMeta.defaultGasEstimates.gasPrice;
     }
   }
 
@@ -854,17 +847,19 @@ async function buildEventFragmentProperties({
     eip1559Version = '2';
   }
 
-  const contractInteractionTypes = [
-    TransactionType.contractInteraction,
-    TransactionType.tokenMethodApprove,
-    TransactionType.tokenMethodSafeTransferFrom,
-    TransactionType.tokenMethodSetApprovalForAll,
-    TransactionType.tokenMethodTransfer,
-    TransactionType.tokenMethodTransferFrom,
-    TransactionType.smart,
-    TransactionType.swap,
-    TransactionType.swapApproval,
-  ].includes(type);
+  const contractInteractionTypes =
+    type &&
+    [
+      TransactionType.contractInteraction,
+      TransactionType.tokenMethodApprove,
+      TransactionType.tokenMethodSafeTransferFrom,
+      TransactionType.tokenMethodSetApprovalForAll,
+      TransactionType.tokenMethodTransfer,
+      TransactionType.tokenMethodTransferFrom,
+      TransactionType.smart,
+      TransactionType.swap,
+      TransactionType.swapApproval,
+    ].includes(type);
 
   const contractMethodNames = {
     APPROVE: 'Approve',
@@ -877,7 +872,7 @@ async function buildEventFragmentProperties({
   let transactionType = TransactionType.simpleSend;
   if (type === TransactionType.cancel) {
     transactionType = TransactionType.cancel;
-  } else if (type === TransactionType.retry) {
+  } else if (type === TransactionType.retry && originalType) {
     transactionType = originalType;
   } else if (type === TransactionType.deployContract) {
     transactionType = TransactionType.deployContract;
@@ -980,7 +975,7 @@ async function buildEventFragmentProperties({
     referrer,
     source,
     status,
-    network,
+    network: parseInt(chainId, 16),
     eip_1559_version: eip1559Version,
     gas_edit_type: 'none',
     gas_edit_attempted: 'none',

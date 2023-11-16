@@ -1,5 +1,6 @@
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import {
   closeCurrentNotificationWindow,
   hideModal,
@@ -69,8 +70,7 @@ export function updateCustodyState(
   const oldCurrentNetworkTxList = getCurrentNetworkTransactions(state);
 
   const differentTxs = newCurrentNetworkTxList.filter(
-    // TxMigrationToDo - Use updated metadata with custody properties.
-    (item: any) =>
+    (item: TransactionMeta) =>
       oldCurrentNetworkTxList.filter(
         (tx: { [key: string]: any }) =>
           tx.custodyId === item.custodyId &&
@@ -79,8 +79,7 @@ export function updateCustodyState(
   );
 
   const txStateSaysDeepLinkShouldClose = Boolean(
-    // TxMigrationToDo - Use updated metadata with custody properties.
-    differentTxs.find((tx: any) => {
+    differentTxs.find((tx: TransactionMeta) => {
       const custodyAccountDetails =
         state.metamask.custodyAccountDetails[
           toChecksumHexAddress(tx.txParams.from)
@@ -94,6 +93,7 @@ export function updateCustodyState(
 
       return (
         tx.custodyId === state.appState.modal.modalState.props?.custodyId &&
+        tx.custodyStatus &&
         (state.metamask.custodyStatusMaps[custody][tx.custodyStatus]
           ?.mmStatus !== 'approved' ||
           tx.custodyStatus === 'created')

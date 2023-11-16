@@ -30,6 +30,7 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
   METRICS_STATUS_FAILED,
+  TransactionMetricsRequest,
 } from './metrics';
 
 const providerResultStub = {
@@ -65,7 +66,7 @@ const mockTransactionMetricsRequest = {
   provider: provider as Provider,
   snapAndHardwareMessenger: jest.fn() as any,
   trackEvent: jest.fn(),
-};
+} as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
   let fromAccount,
@@ -96,7 +97,6 @@ describe('Transaction metrics', () => {
       origin: ORIGIN_METAMASK,
       chainId: mockChainId,
       time: 1624408066355,
-      metamaskNetworkId: mockNetworkId,
       defaultGasEstimates: {
         gas: '0x7b0d',
         gasPrice: '0x77359400',

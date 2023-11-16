@@ -292,7 +292,8 @@ interface FormattedTransactionMeta {
   maxPriorityFeePerGas?: string;
   type: TransactionEnvelopeType;
   accessList: AccessList | null;
-  transactionIndex: string | null;
+  // TxMigrationToDo - Verify type of transaction index.
+  transactionIndex: number | null;
 }
 
 export function formatTxMetaForRpcResult(
@@ -307,11 +308,10 @@ export function formatTxMetaForRpcResult(
     from,
     value,
     gasPrice,
-    // TxMigrationToDo - Add accessList to metadata.
     accessList,
     maxFeePerGas,
     maxPriorityFeePerGas,
-  } = txParams as any;
+  } = txParams;
 
   const formattedTxMeta: FormattedTransactionMeta = {
     v,
@@ -327,8 +327,7 @@ export function formatTxMetaForRpcResult(
     accessList: accessList || null,
     blockHash: txReceipt?.blockHash || null,
     blockNumber: txReceipt?.blockNumber || null,
-    // TxMigrationToDo - Verify transactionIndex type in metadata.
-    transactionIndex: (txReceipt?.transactionIndex as any) || null,
+    transactionIndex: txReceipt?.transactionIndex || null,
     type:
       maxFeePerGas && maxPriorityFeePerGas
         ? TransactionEnvelopeType.feeMarket
