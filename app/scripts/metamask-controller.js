@@ -1914,7 +1914,7 @@ export default class MetamaskController extends EventEmitter {
       password &&
       !process.env.IN_TEST
     ) {
-      this._loginUser();
+      this._loginUser(password);
     } else {
       this._startUISync();
     }
