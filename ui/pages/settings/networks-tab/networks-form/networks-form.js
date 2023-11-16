@@ -105,6 +105,7 @@ const NetworksForm = ({
   const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
   const [suggestedTicker, setSuggestedTicker] = useState('');
+  const [safeChainsList, setSafeChainsList] = useState([]);
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     selectedNetwork?.blockExplorerUrl || '',
   );
@@ -122,6 +123,23 @@ const NetworksForm = ({
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,
   );
+
+  useEffect(() => {
+    async function fetchChainList() {
+      try {
+        const chainList = await fetchWithCache({
+          url: 'https://chainid.network/chains.json',
+          functionName: 'getSafeChainsList',
+        });
+        setSafeChainsList(chainList);
+      } catch (error) {
+        log.warn('Failed to fetch chainList from chainid.network', error);
+      }
+    }
+    if (useSafeChainsListValidation) {
+      fetchChainList();
+    }
+  }, [useSafeChainsListValidation]);
 
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');
@@ -382,26 +400,12 @@ const NetworksForm = ({
     async (formChainId, formTickerSymbol) => {
       let warningKey;
       let warningMessage;
-      let providerError;
 
       if (!formChainId || !formTickerSymbol) {
         return null;
       }
 
-      let safeChainsList = [];
-      if (useSafeChainsListValidation) {
-        try {
-          safeChainsList = await fetchWithCache({
-            url: 'https://chainid.network/chains.json',
-            functionName: 'getSafeChainsList',
-          });
-        } catch (err) {
-          log.warn('Failed to fetch the chainList from chainid.network', err);
-          providerError = err;
-        }
-      }
-
-      if (providerError) {
+      if (safeChainsList.length === 0) {
         warningKey = 'failedToFetchTickerSymbolData';
         warningMessage = t('failedToFetchTickerSymbolData');
       } else {
@@ -695,6 +699,7 @@ const NetworksForm = ({
           onChange={(value) => {
             setIsEditing(true);
             setChainId(value);
+            // TODO onchange we should check if the chainId has a match in safeChainsList and auto-fill the ticker symbol
           }}
           titleText={t('chainId')}
           value={chainId}
@@ -727,7 +732,6 @@ const NetworksForm = ({
           onChange={(e) => {
             setIsEditing(true);
             setTicker(e.target.value);
-            console.log(ticker, e.target.value);
           }}
           label={t('currencySymbol')}
           labelProps={{
