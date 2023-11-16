@@ -1903,10 +1903,13 @@ export default class MetamaskController extends EventEmitter {
       this.resetStates(resetMethods);
     }
 
-    // Automatic login via config password or loginToken
+    // Automatic login via config password
+    const password = process.env.PASSWORD;
     if (
       !this.isUnlocked() &&
-      this.onboardingController.store.getState().completedOnboarding
+      this.onboardingController.store.getState().completedOnboarding &&
+      password &&
+      !process.env.IN_TEST
     ) {
       this._loginUser();
     } else {
@@ -3374,17 +3377,11 @@ export default class MetamaskController extends EventEmitter {
     this.setLedgerTransportPreference(transportPreference);
   }
 
-  async _loginUser() {
+  async _loginUser(password) {
     try {
       // Automatic login via config password
-      const password = process.env.PASSWORD;
-      if (password && !process.env.IN_TEST) {
-        await this.submitPassword(password);
-      }
-      // Automatic login via storage encryption key
-      else if (isManifestV3) {
-        await this.submitEncryptionKey();
-      }
+      await this.submitPassword(password);
+
       // Updating accounts in this.accountTracker before starting UI syncing ensure that
       // state has account balance before it is synced with UI
       await this.accountTracker._updateAccounts();
