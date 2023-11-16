@@ -1,5 +1,4 @@
-const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { withFixtures, convertToHexValue } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -10,6 +9,7 @@ describe('Test Snap TxInsights', function () {
         {
           secretKey:
             '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };
@@ -109,14 +109,32 @@ describe('Test Snap TxInsights', function () {
         });
 
         // check that txinsightstest tab contains the right info
-        await driver.delay(1000);
-        const txInsightsResult = await driver.findElement(
-          '.snap-ui-renderer__content',
-        );
-        assert.equal(
-          await txInsightsResult.getText(),
-          'Transaction type:\nERC-20',
-        );
+        await driver.waitForSelector({
+          css: '.snap-ui-renderer__content',
+          text: 'ERC-20',
+        });
+
+        // click confirm to continue
+        await driver.clickElement({
+          text: 'Confirm',
+          tag: 'button',
+        });
+
+        // check for warning from txinsights
+        await driver.waitForSelector({
+          css: '.snap-delineator__header__text',
+          text: 'Warning from Insights Example Snap',
+        });
+
+        // click the warning confirm checkbox
+        await driver.clickElement('.mm-checkbox__input');
+
+        // click confirm button to send transaction
+        await driver.clickElement({
+          css: '.mm-box--color-error-inverse',
+          text: 'Confirm',
+          tag: 'button',
+        });
       },
     );
   });
