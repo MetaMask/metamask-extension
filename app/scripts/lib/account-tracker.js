@@ -118,7 +118,7 @@ export default class AccountTracker {
   start() {
     // public
     // remove first to avoid double add
-    this.stop();
+    this._blockTracker.removeListener('latest', this._updateForBlock);
     // add listener
     this._blockTracker.addListener('latest', this._updateForBlock);
     // fetch account balances
