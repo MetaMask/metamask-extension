@@ -873,8 +873,9 @@ export default class MetamaskController extends EventEmitter {
       blockTracker: this.blockTracker,
       getCurrentChainId: () =>
         this.networkController.state.providerConfig.chainId,
-      getNetworkIdentifier: () => {
-        const { type, rpcUrl } = this.networkController.state.providerConfig;
+      getNetworkIdentifier: (providerConfig) => {
+        const { type, rpcUrl } =
+          providerConfig ?? this.networkController.state.providerConfig;
         return type === NETWORK_TYPES.RPC ? rpcUrl : type;
       },
       preferencesController: this.preferencesController,
