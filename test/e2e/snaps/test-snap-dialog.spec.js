@@ -102,8 +102,6 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check result is null
-        // result = await driver.findElement('#dialogResult');
-        // await driver.delay(500);
         await driver.waitForSelector({
           css: '#dialogResult',
           text: 'null',
