@@ -37,7 +37,8 @@ describe('Account Tracker', () => {
     blockTrackerStub,
     providerResultStub,
     useMultiAccountBalanceChecker,
-    accountTracker;
+    accountTracker,
+    accountRemovedListener;
 
   beforeEach(() => {
     providerResultStub = {
@@ -71,7 +72,9 @@ describe('Account Tracker', () => {
           getState: noop,
         },
       },
-      onAccountRemoved: jest.fn(),
+      onAccountRemoved: (callback) => {
+        accountRemovedListener = callback;
+      },
       getCurrentChainId: () => currentChainId,
     });
   });
@@ -190,34 +193,31 @@ describe('Account Tracker', () => {
 
   describe('onAccountRemoved', () => {
     it('should remove an account from state', () => {
-      let accountRemovedListener;
-      const onAccountRemoved = (callback) => {
-        accountRemovedListener = callback;
-      };
-      accountTracker = new AccountTracker({
-        provider,
-        blockTracker: blockTrackerStub,
-        preferencesController: {
-          store: {
-            getState: () => ({
-              useMultiAccountBalanceChecker,
-            }),
-            subscribe: noop,
+      accountTracker.store.updateState({
+        accounts: { ...mockAccounts },
+        accountsByChainId: {
+          [currentChainId]: {
+            ...mockAccounts,
           },
         },
-        onboardingController: {
-          store: {
-            subscribe: noop,
-            getState: noop,
-          },
-        },
-        onAccountRemoved,
-        getCurrentChainId: () => currentChainId,
       });
+
       accountRemovedListener(VALID_ADDRESS);
-      expect(
-        accountTracker.store.getState().accounts[VALID_ADDRESS],
-      ).toStrictEqual(undefined);
+
+      const newState = accountTracker.store.getState();
+
+      const accounts = {
+        [VALID_ADDRESS_TWO]: mockAccounts[VALID_ADDRESS_TWO]
+      }
+
+      expect(newState).toStrictEqual({
+        accounts,
+        accountsByChainId: {
+          [currentChainId]: accounts
+        },
+        currentBlockGasLimit: '',
+        currentBlockGasLimitByChainId: {},
+      });
     });
   });
 
