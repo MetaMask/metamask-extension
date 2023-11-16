@@ -10,7 +10,8 @@ import {
   getCurrentChainId,
   getHardwareWalletType,
   getAccountTypeForKeyring,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  getPinnedAccountsList,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   getMetaMaskAccountsOrdered,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
@@ -59,7 +60,9 @@ export const AccountListItemMenu = ({
   );
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const pinnedAccountList = useSelector(getPinnedAccountsList);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
   const accounts = useSelector(getMetaMaskAccountsOrdered);
 
@@ -121,6 +124,11 @@ export const AccountListItemMenu = ({
     };
   }, [handleClickOutside]);
 
+  const handlePinning = (address) => {
+    const updatedPinnedAccountList = [...pinnedAccountList, address];
+    dispatch(updateAccountsList(updatedPinnedAccountList));
+  };
+
   return (
     <Popover
       className="multichain-account-list-item-menu__popover"
@@ -148,9 +156,9 @@ export const AccountListItemMenu = ({
             address={identity.address}
           />
           <MenuItem
-            data-testid="account-list-menu-remove"
+            data-testid="account-list-menu-pin"
             onClick={() => {
-              // dispatch(updateAccountsList());
+              handlePinning(identity.address);
               onClose();
               closeMenu?.();
             }}

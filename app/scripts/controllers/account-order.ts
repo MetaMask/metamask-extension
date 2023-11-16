@@ -9,11 +9,11 @@ const controllerName = 'AccountOrderController';
 /**
  * The account ID of a account.
  */
-export type AccountId = string;
+export type AccountAddress = string;
 
 // State shape for AccountOrderController
 export type AccountOrderControllerState = {
-  orderedAccountList: AccountId[];
+  pinnedAccountList: AccountAddress[];
 };
 
 // Describes the action for updating the accounts list
@@ -37,12 +37,12 @@ export type AccountOrderControllerMessenger = RestrictedControllerMessenger<
 
 // Default state for the controller
 const defaultState = {
-  orderedAccountList: [],
+  pinnedAccountList: [],
 };
 
 // Metadata for the controller state
 const metadata = {
-  orderedAccountList: {
+  pinnedAccountList: {
     persist: true,
     anonymous: true,
   },
@@ -89,7 +89,7 @@ export class AccountOrderController extends BaseControllerV2<
 
   updateAccountsList(accountList: []) {
     this.update((state) => {
-      state.orderedAccountList = accountList;
+      state.pinnedAccountList = accountList;
       return state;
     });
   }
