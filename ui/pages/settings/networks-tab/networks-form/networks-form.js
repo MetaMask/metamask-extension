@@ -105,7 +105,6 @@ const NetworksForm = ({
   const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');
   const [ticker, setTicker] = useState(selectedNetwork?.ticker || '');
   const [suggestedTicker, setSuggestedTicker] = useState('');
-  const [safeChainsList, setSafeChainsList] = useState([]);
   const [blockExplorerUrl, setBlockExplorerUrl] = useState(
     selectedNetwork?.blockExplorerUrl || '',
   );
@@ -123,6 +122,7 @@ const NetworksForm = ({
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,
   );
+  const safeChainsList = useRef([]);
 
   useEffect(() => {
     async function fetchChainList() {
@@ -131,7 +131,7 @@ const NetworksForm = ({
           url: 'https://chainid.network/chains.json',
           functionName: 'getSafeChainsList',
         });
-        setSafeChainsList(chainList);
+        safeChainsList.current = chainList;
       } catch (error) {
         log.warn('Failed to fetch chainList from chainid.network', error);
       }
@@ -242,6 +242,27 @@ const NetworksForm = ({
     setErrors,
     dispatch,
   ]);
+
+  const autoSuggestTicker = useCallback(
+    async (formChainId) => {
+      if (!formChainId || safeChainsList.current.length === 0) {
+        return;
+      }
+      const matchedChain = safeChainsList.current?.find(
+        (chain) => chain.chainId.toString() === formChainId,
+      );
+      if (matchedChain === undefined) {
+        setSuggestedTicker('');
+        return;
+      }
+
+      const returnedTickerSymbol = matchedChain.nativeCurrency?.symbol;
+      if (returnedTickerSymbol !== ticker) {
+        setSuggestedTicker(returnedTickerSymbol);
+      }
+    },
+    [ticker],
+  );
 
   const hasErrors = () => {
     return Object.keys(errors).some((key) => {
@@ -382,7 +403,7 @@ const NetworksForm = ({
           },
         };
       }
-
+      autoSuggestTicker(formChainId);
       return null;
     },
     [rpcUrl, networksToRender, t],
@@ -405,11 +426,11 @@ const NetworksForm = ({
         return null;
       }
 
-      if (safeChainsList.length === 0) {
+      if (safeChainsList.current.length === 0) {
         warningKey = 'failedToFetchTickerSymbolData';
         warningMessage = t('failedToFetchTickerSymbolData');
       } else {
-        const matchedChain = safeChainsList?.find(
+        const matchedChain = safeChainsList.current?.find(
           (chain) => chain.chainId.toString() === formChainId,
         );
 
@@ -699,7 +720,7 @@ const NetworksForm = ({
           onChange={(value) => {
             setIsEditing(true);
             setChainId(value);
-            // TODO onchange we should check if the chainId has a match in safeChainsList and auto-fill the ticker symbol
+            autoSuggestTicker(value);
           }}
           titleText={t('chainId')}
           value={chainId}
