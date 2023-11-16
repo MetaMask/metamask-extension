@@ -31,7 +31,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { showModal } from '../../../store/actions';
+import { showModal, updateAccountsList } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
@@ -147,6 +147,17 @@ export const AccountListItemMenu = ({
             textProps={{ variant: TextVariant.bodySm }}
             address={identity.address}
           />
+          <MenuItem
+            data-testid="account-list-menu-remove"
+            onClick={() => {
+              // dispatch(updateAccountsList());
+              onClose();
+              closeMenu?.();
+            }}
+            iconName={IconName.Add}
+          >
+            <Text variant={TextVariant.bodySm}>{t('pinToTop')}</Text>
+          </MenuItem>
           {isRemovable ? (
             <MenuItem
               ref={removeAccountItemRef}
