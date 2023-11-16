@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const commitMessage = commitMessageInput.value;
 
     if (!commitMessage) {
-      alert('Please enter a commit message.');
+      console.error('Please enter a commit message.');
       return;
     }
 
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
       displayResults(data);
     } catch (error) {
       console.error(error);
-      alert('An error occurred while fetching data.');
+      console.error('An error occurred while fetching data.');
     }
   }
 
@@ -39,10 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function replacePullRequestLinks(inputString) {
     // Define a regular expression pattern to match "(#XXXXX)"
-    const pattern = /\(\#(\d{5})\)/g;
+    const pattern = /\(#(\d{5})\)/gu;
 
     // Replace matched patterns with links
-    const replacedString = inputString.replace(pattern, (match, pullRequestNumber) => {
+    const replacedString = inputString.replace(pattern, (_, pullRequestNumber) => {
       const githubUrl = `https://github.com/MetaMask/metamask-extension/pull/${pullRequestNumber}`;
       return `<a href='${githubUrl}' target='_blank'>#${pullRequestNumber}</a>`;
     });
