@@ -116,7 +116,6 @@ export default class AccountTracker {
   }
 
   start() {
-    // public
     // remove first to avoid double add
     this._blockTracker.removeListener('latest', this._updateForBlock);
     // add listener
@@ -126,7 +125,6 @@ export default class AccountTracker {
   }
 
   stop() {
-    // public
     // remove listener
     this._blockTracker.removeListener('latest', this._updateForBlock);
   }
@@ -236,7 +234,6 @@ export default class AccountTracker {
    * in sync
    */
   syncWithAddresses(addresses) {
-    // public
     const { accounts } = this.store.getState();
     const locals = Object.keys(accounts);
 
@@ -265,7 +262,6 @@ export default class AccountTracker {
    * @param {Array} addresses - An array of hex addresses of new accounts to track
    */
   addAccounts(addresses) {
-    // private
     const { accounts, accountsByChainId } = this.store.getState();
 
     // add initial state for addresses
@@ -298,7 +294,6 @@ export default class AccountTracker {
    * @param {Array} addresses - An array of hex addresses to stop tracking.
    */
   removeAccounts(addresses) {
-    // private
     const { accounts, accountsByChainId } = this.store.getState();
 
     // remove each state object
@@ -319,7 +314,6 @@ export default class AccountTracker {
    */
 
   clearAccounts() {
-    // public
     const { accountsByChainId } = this.store.getState();
     Object.keys(accountsByChainId).forEach((chainId) => {
       accountsByChainId[chainId] = {};
@@ -336,12 +330,10 @@ export default class AccountTracker {
    * @fires 'block' The updated state, if all account updates are successful
    */
   async _updateForBlock(blockNumber) {
-    // private
     this._updateForBlockByChainId(null, blockNumber);
   }
 
   async _updateForBlockByChainId(networkClientId, blockNumber) {
-    // private
     const { chainId, provider } = this.getCorrectNetworkClient(networkClientId);
     this._currentBlockNumberByChainId[chainId] = blockNumber;
 
@@ -385,7 +377,6 @@ export default class AccountTracker {
    * @returns {Promise} after all account balances updated
    */
   async _updateAccountsWithNetworkClientId(networkClientId) {
-    // public
     const { completedOnboarding } = this.onboardingController.store.getState();
     if (!completedOnboarding) {
       return;
@@ -439,7 +430,6 @@ export default class AccountTracker {
    */
 
   async _updateAccount(address, provider, chainId) {
-    // private
     const { useMultiAccountBalanceChecker } =
       this.preferencesController.store.getState();
 
@@ -501,7 +491,6 @@ export default class AccountTracker {
     provider,
     chainId,
   ) {
-    // private
     const { accountsByChainId } = this.store.getState();
     const accounts = accountsByChainId[chainId];
 
