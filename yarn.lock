@@ -4158,18 +4158,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-token-tracker@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/eth-token-tracker@npm:7.0.0"
+"@metamask/eth-token-tracker@npm:^4.0.0":
+  version: 4.1.0
+  resolution: "@metamask/eth-token-tracker@npm:4.1.0"
   dependencies:
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/safe-event-emitter": "npm:^2.0.0"
     deep-equal: "npm:^2.2.0"
-    eth-block-tracker: "npm:^8.0.0"
+    eth-block-tracker: "npm:^5.0.1"
     ethjs: "npm:^0.4.0"
     ethjs-contract: "npm:^0.2.3"
     ethjs-query: "npm:^0.3.8"
     human-standard-token-abi: "npm:^2.0.0"
-  checksum: fd85e25fa69004eaf9166d4958c77376b79f19fe056b6c0e2af58334ed4653a8867c9adeafcd14d324bd02054e85c46f4a1aa027f1895ca1d2b7bb6cd72d95fc
+  checksum: 059e532aae0ac761c03bd9aa22ea77e7411d0419497808b4ce1fe83e09d67e958ea2da6f4e5b02861c05be58a5478f7a03123bafdb45114ec35630539d5424ff
   languageName: node
   linkType: hard
 
@@ -15971,6 +15971,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eth-block-tracker@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "eth-block-tracker@npm:5.0.1"
+  dependencies:
+    "@metamask/safe-event-emitter": "npm:^2.0.0"
+    json-rpc-random-id: "npm:^1.0.1"
+    pify: "npm:^3.0.0"
+  checksum: 64162323bfed49f2e94b5efc377dfb0e87dac22140f1f4c9923328b7261fc8a37563cb0e5f575590ecce174a53d6804aecd29293ba7f67a66094d29506a40ed9
+  languageName: node
+  linkType: hard
+
 "eth-block-tracker@npm:^8.0.0":
   version: 8.1.0
   resolution: "eth-block-tracker@npm:8.1.0"
@@ -23894,7 +23905,7 @@ __metadata:
     "@metamask/eth-ledger-bridge-keyring": "npm:^0.15.0"
     "@metamask/eth-query": "npm:^3.0.1"
     "@metamask/eth-snap-keyring": "npm:^1.0.0"
-    "@metamask/eth-token-tracker": "npm:^7.0.0"
+    "@metamask/eth-token-tracker": "npm:^4.0.0"
     "@metamask/eth-trezor-keyring": "npm:^2.0.0"
     "@metamask/etherscan-link": "npm:^2.2.0"
     "@metamask/ethjs-query": "npm:^0.5.0"
