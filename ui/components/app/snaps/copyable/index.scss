@@ -1,5 +1,6 @@
 .copyable {
   cursor: pointer;
+  transition: background-color 0.2s;
 
   &:hover {
     background-color: var(--color-background-alternative-hover);
@@ -14,18 +15,20 @@
   }
 
   &.sensitive {
-    background-color: rgba(215, 56, 71, 0.2);
-
-    &:hover {
-      background-color: rgba(215, 56, 71, 0.25);
-    }
-
-    &.clicked {
-      background-color: rgba(215, 56, 71, 0.3);
-
+    &.visible {
+      background-color: rgba(215, 56, 71, 0.2);
 
       &:hover {
+        background-color: rgba(215, 56, 71, 0.25);
+      }
+
+      &.clicked {
         background-color: rgba(215, 56, 71, 0.3);
+
+
+        &:hover {
+          background-color: rgba(215, 56, 71, 0.3);
+        }
       }
     }
   }

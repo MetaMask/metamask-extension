@@ -38,6 +38,8 @@ export const Copyable = ({ text, sensitive = false }) => {
     startTimeout();
   };
 
+  const shouldDisplayContent = !sensitive || (sensitive && isVisible);
+
   return (
     <Box
       display={Display.Flex}
@@ -47,6 +49,7 @@ export const Copyable = ({ text, sensitive = false }) => {
       className={classnames('copyable', {
         sensitive,
         clicked: isClicked,
+        visible: isVisible,
       })}
       backgroundColor={
         isVisible
@@ -67,14 +70,21 @@ export const Copyable = ({ text, sensitive = false }) => {
             }
             position="bottom"
           >
-            <Icon
-              name={isVisible ? IconName.EyeSlash : IconName.Eye}
-              onClick={handleVisibilityClick}
-              color={
-                isVisible ? Color.errorAlternative : IconColor.iconAlternative
-              }
-              data-testid="reveal-icon"
-            />
+            {isVisible ? (
+              <Icon
+                name={IconName.EyeSlash}
+                onClick={handleVisibilityClick}
+                color={Color.errorAlternative}
+                data-testid="reveal-icon"
+              />
+            ) : (
+              <Icon
+                name={IconName.Eye}
+                onClick={handleVisibilityClick}
+                color={IconColor.iconAlternative}
+                data-testid="reveal-icon"
+              />
+            )}
           </Tooltip>
         </Box>
       )}
@@ -88,7 +98,7 @@ export const Copyable = ({ text, sensitive = false }) => {
           {t('revealSensitiveContent')}
         </Text>
       )}
-      {(!sensitive || (sensitive && isVisible)) && (
+      {shouldDisplayContent && (
         <ShowMore
           marginRight={4}
           buttonBackground={
@@ -108,15 +118,28 @@ export const Copyable = ({ text, sensitive = false }) => {
           </Text>
         </ShowMore>
       )}
-      {(!sensitive || (sensitive && isVisible)) && (
-        <Icon
-          className="copyable__icon"
-          name={isClicked ? IconName.CopySuccess : IconName.Copy}
-          color={isVisible ? Color.errorAlternative : IconColor.iconAlternative}
-          marginLeft="auto"
-          data-testid="copy-icon"
-        />
-      )}
+      {shouldDisplayContent &&
+        (isClicked ? (
+          <Icon
+            className="copyable__icon"
+            name={IconName.CopySuccess}
+            color={
+              isVisible ? Color.errorAlternative : IconColor.iconAlternative
+            }
+            marginLeft="auto"
+            data-testid="copy-icon"
+          />
+        ) : (
+          <Icon
+            className="copyable__icon"
+            name={IconName.Copy}
+            color={
+              isVisible ? Color.errorAlternative : IconColor.iconAlternative
+            }
+            marginLeft="auto"
+            data-testid="copy-icon"
+          />
+        ))}
     </Box>
   );
 };
