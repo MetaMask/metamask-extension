@@ -2431,28 +2431,15 @@
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/transaction-controller>@metamask/utils": true,
         "@metamask/transaction-controller>eth-method-registry": true,
         "@metamask/transaction-controller>nonce-tracker": true,
+        "@metamask/utils": true,
         "eth-json-rpc-filters>async-mutex": true,
         "ethereumjs-util": true,
         "fast-json-patch": true,
         "lodash": true,
         "uuid": true,
         "webpack>events": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/transaction-controller>eth-method-registry": {
