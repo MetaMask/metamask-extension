@@ -57,7 +57,7 @@ export default class AccountTracker {
       accounts: {},
       currentBlockGasLimit: '',
       accountsByChainId: {},
-      currentBlockGasLimitByChainId: '',
+      currentBlockGasLimitByChainId: {},
     };
     this.store = new ObservableStore({ ...initState, ...opts.initState });
 
