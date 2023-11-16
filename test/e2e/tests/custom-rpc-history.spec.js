@@ -160,7 +160,15 @@ describe('Stores custom RPC history', function () {
         });
 
         await rpcUrlInput.clear();
-        await rpcUrlInput.sendKeys(newRpcUrl);
+
+        // We cannot use sendKeys() here, because a network request will be fired after each
+        // keypress, and the privacy snapshot will show:
+        // `New hosts found: l,lo,loc,loca,local,localh,localho,localhos`
+        // In the longer term, we may want to debounce this
+        await driver.pasteIntoField(
+          '.form-field:nth-of-type(2) input[type="text"]',
+          newRpcUrl,
+        );
 
         await driver.findElement({
           text: 'Could not fetch chain ID. Is your RPC URL correct?',

@@ -406,6 +406,12 @@ function TransactionListItemInner({
               date={date}
               status={displayedStatusKey}
               statusOnly
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
+              custodyStatusDisplayText={
+                transactionGroup.primaryTransaction.custodyStatusDisplayText
+              }
+              ///: END:ONLY_INCLUDE_IN
             />
           )}
         />

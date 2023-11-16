@@ -36,6 +36,7 @@ describe('EthOverview', () => {
         chainId: CHAIN_IDS.MAINNET,
         nickname: MAINNET_DISPLAY_NAME,
         type: NETWORK_TYPES.MAINNET,
+        ticker: 'ETH',
       },
       cachedBalances: {
         '0x1': {
@@ -46,7 +47,12 @@ describe('EthOverview', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       useCurrencyRateCheck: true,
-      conversionRate: 2,
+      currentCurrency: 'usd',
+      currencyRates: {
+        ETH: {
+          conversionRate: 2,
+        },
+      },
       identities: {
         '0x1': {
           address: '0x1',

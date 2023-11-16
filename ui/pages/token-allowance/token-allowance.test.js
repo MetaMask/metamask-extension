@@ -56,6 +56,7 @@ const state = {
     preferences: {
       showFiatInTestnets: true,
     },
+    currencyRates: {},
     knownMethodData: {},
     tokens: [
       {
