@@ -3,7 +3,7 @@
     max-height: 5.5rem;
 
     &:first-child {
-      text-overflow: ellipsis
+      text-overflow: ellipsis;
     }
 
     @include screen-md-min {
