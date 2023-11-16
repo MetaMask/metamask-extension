@@ -5091,7 +5091,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^17.0.0":
+"@metamask/transaction-controller@npm:17.0.0":
   version: 17.0.0
   resolution: "@metamask/transaction-controller@npm:17.0.0"
   dependencies:
@@ -5120,6 +5120,38 @@ __metadata:
     "@metamask/network-controller": ^16.0.0
     babel-runtime: ^6.26.0
   checksum: 5c1b4e4f2b8e72f8a44ac2623e5f36372faee1b71e07e80f045a6a091c829faafe5f4692fd91bb96d5b01d585cdbe6d19f0e84c60f585c75cd69aa9505224343
+  languageName: node
+  linkType: hard
+
+"@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A17.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-17.0.0-e8b7127203.patch":
+  version: 17.0.0
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A17.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-17.0.0-e8b7127203.patch::version=17.0.0&hash=d8cff8"
+  dependencies:
+    "@ethereumjs/common": "npm:^3.2.0"
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@metamask/approval-controller": "npm:^4.1.0"
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/controller-utils": "npm:^5.0.2"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/gas-fee-controller": "npm:^10.0.1"
+    "@metamask/metamask-eth-abis": "npm:^3.0.0"
+    "@metamask/network-controller": "npm:^16.0.0"
+    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/utils": "npm:^8.2.0"
+    async-mutex: "npm:^0.2.6"
+    eth-method-registry: "npm:1.1.0"
+    ethereumjs-util: "npm:^7.0.10"
+    fast-json-patch: "npm:^3.1.1"
+    lodash: "npm:^4.17.21"
+    nonce-tracker: "npm:^1.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/approval-controller": ^4.1.0
+    "@metamask/gas-fee-controller": ^10.0.1
+    "@metamask/network-controller": ^16.0.0
+    babel-runtime: ^6.26.0
+  checksum: ebdd4914eac83539792a7638a91cebb6a0910b88f8e114cef410f5014aae64a15f8540e57597be7581b4796bf46e8592d006c499b5fbcc732cf25d21a433c666
   languageName: node
   linkType: hard
 
@@ -24226,7 +24258,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^1.0.0"
     "@metamask/snaps-utils": "npm:^4.0.0"
     "@metamask/test-dapp": "npm:^7.2.0"
-    "@metamask/transaction-controller": "npm:^17.0.0"
+    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A17.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-17.0.0-e8b7127203.patch"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.6"
     "@playwright/test": "npm:^1.39.0"
