@@ -213,8 +213,7 @@
     "@metamask/signature-controller@^6.1.2": "patch:@metamask/signature-controller@npm%3A6.1.2#~/.yarn/patches/@metamask-signature-controller-npm-6.1.2-f60d8a4960.patch",
     "semver@7.3.7": "^7.5.4",
     "semver@7.3.8": "^7.5.4",
-    "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch",
-    "@metamask/transaction-controller/@metamask/utils": "8.2.1"
+    "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
@@ -290,7 +289,7 @@
     "@metamask/snaps-rpc-methods": "^4.0.0",
     "@metamask/snaps-sdk": "^1.0.0",
     "@metamask/snaps-utils": "^4.0.0",
-    "@metamask/transaction-controller": "patch:@metamask/transaction-controller@npm%3A13.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-13.0.0-2b217d0763.patch",
+    "@metamask/transaction-controller": "^17.0.0",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",
