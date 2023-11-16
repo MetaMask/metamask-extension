@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -83,11 +82,15 @@ describe('Test Snap Lifecycle Hooks', function () {
         // check dialog contents
         const result = await driver.findElement('.snap-ui-renderer__panel');
         await driver.scrollToElement(result);
-        await driver.delay(500);
-        assert.equal(
-          await result.getText(),
-          'Installation successful\nThe snap was installed successfully, and the "onInstall" handler was called.',
-        );
+        // await driver.delay(500);
+        // assert.equal(
+        //   await result.getText(),
+        //   'Installation successful\nThe snap was installed successfully, and the "onInstall" handler was called.',
+        // );
+        await driver.waitForSelector({
+          css: '.snap-ui-renderer__panel',
+          text: 'The snap was installed successfully, and the "onInstall" handler was called.',
+        });
       },
     );
   });

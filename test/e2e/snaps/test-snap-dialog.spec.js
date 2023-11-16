@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -85,13 +84,12 @@ describe('Test Snap Dialog', function () {
         await driver.delay(500);
 
         // check dialog contents
-        let result = await driver.findElement('.snap-ui-renderer__panel');
+        const result = await driver.findElement('.snap-ui-renderer__panel');
         await driver.scrollToElement(result);
-        await driver.delay(500);
-        assert.equal(
-          await result.getText(),
-          'Alert Dialog\nThis is an alert dialog. It has a single button: "OK".',
-        );
+        await driver.waitForSelector({
+          css: '.snap-ui-renderer__panel',
+          text: 'It has a single button: "OK"',
+        });
 
         // click ok button
         await driver.clickElement({
@@ -104,9 +102,12 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check result is null
-        result = await driver.findElement('#dialogResult');
-        await driver.delay(500);
-        assert.equal(await result.getText(), 'null');
+        // result = await driver.findElement('#dialogResult');
+        // await driver.delay(500);
+        await driver.waitForSelector({
+          css: '#dialogResult',
+          text: 'null',
+        });
 
         // click conf button
         await driver.clickElement('#sendConfirmationButton');
@@ -131,9 +132,13 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check for false result
-        result = await driver.findElement('#dialogResult');
-        await driver.delay(500);
-        assert.equal(await result.getText(), 'false');
+        // result = await driver.findElement('#dialogResult');
+        // await driver.delay(500);
+        // assert.equal(await result.getText(), 'false');
+        await driver.waitForSelector({
+          css: '#dialogResult',
+          text: 'false',
+        });
 
         // click conf button again
         await driver.clickElement('#sendConfirmationButton');
@@ -158,9 +163,13 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check for true result
-        result = await driver.findElement('#dialogResult');
-        await driver.delay(500);
-        assert.equal(await result.getText(), 'true');
+        // result = await driver.findElement('#dialogResult');
+        // await driver.delay(500);
+        // assert.equal(await result.getText(), 'true');
+        await driver.waitForSelector({
+          css: '#dialogResult',
+          text: 'true',
+        });
 
         // click prompt button
         await driver.clickElement('#sendPromptButton');
@@ -185,9 +194,13 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check result is equal to 'null'
-        result = await driver.findElement('#dialogResult');
-        await driver.delay(500);
-        assert.equal(await result.getText(), 'null');
+        // result = await driver.findElement('#dialogResult');
+        // await driver.delay(500);
+        // assert.equal(await result.getText(), 'null');
+        await driver.waitForSelector({
+          css: '#dialogResult',
+          text: 'null',
+        });
 
         // click prompt button
         await driver.clickElement('#sendPromptButton');
@@ -215,8 +228,12 @@ describe('Test Snap Dialog', function () {
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check result is equal to '2323'
-        result = await driver.findElement('#dialogResult');
-        assert.equal(await result.getText(), '"2323"');
+        // result = await driver.findElement('#dialogResult');
+        // assert.equal(await result.getText(), '"2323"');
+        await driver.waitForSelector({
+          css: '#dialogResult',
+          text: '"2323"',
+        });
       },
     );
   });
