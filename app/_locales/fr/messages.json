@@ -1398,12 +1398,6 @@
   "enableFromSettings": {
     "message": " Activez-la depuis les Paramètres."
   },
-  "enableOpenSeaAPI": {
-    "message": "Activer l’API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Utilisez l’API OpenSea pour récupérer les données de NFT. La détection automatique de NFT repose sur l’API OpenSea et ne sera pas disponible si elle est désactivée."
-  },
   "enableSnap": {
     "message": "Activer"
   },
@@ -2112,25 +2106,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Activez les « données de contrat intelligent » ou la « signature aveugle » sur votre dispositif Ledger."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Activez l’option « Utiliser Ledger Live » sous Paramètres > Avancé."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Assurez-vous que votre dispositif Ledger est branché et sélectionnez l'application Ethereum."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ouvrez et déverrouillez l’application Ledger Live."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Personnalisez la façon dont vous souhaitez connecter votre Ledger à MetaMask. $1 est recommandé, mais d’autres options sont disponibles. En savoir plus ici : $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Le dispositif Ledger n’a pas pu s’ouvrir. Il est peut-être connecté à d’autres logiciels. Veuillez fermer Ledger Live ou toute autre application déjà connectée à celui-ci, puis essayez de vous reconnecter."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Appli Ledger Live"
@@ -2140,9 +2120,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live met trop de temps à répondre ou la connexion est interrompue. Assurez-vous que l’application Ledger Live est bien ouverte et que votre appareil est déverrouillé."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Si l’application Ledger Live est ouverte, désactivez toute connexion en cours à celle-ci et fermez-la."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Le dispositif Ledger n’est pas connecté. Si vous souhaitez le connecter, veuillez cliquer à nouveau sur « Continuer » et approuver la connexion au HID",

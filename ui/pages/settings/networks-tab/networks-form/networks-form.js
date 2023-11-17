@@ -226,7 +226,7 @@ const NetworksForm = ({
 
   const validateBlockExplorerURL = useCallback(
     (url) => {
-      if (url.length > 0 && !isWebUrl(url)) {
+      if (url?.length > 0 && !isWebUrl(url)) {
         if (isWebUrl(`https://${url}`)) {
           return {
             key: 'urlErrorMsg',
@@ -434,7 +434,7 @@ const NetworksForm = ({
       ] = networksToRender.filter((e) => e.rpcUrl === url);
       const { rpcUrl: selectedNetworkRpcUrl } = selectedNetwork;
 
-      if (url.length > 0 && !isWebUrl(url)) {
+      if (url?.length > 0 && !isWebUrl(url)) {
         if (isWebUrl(`https://${url}`)) {
           return {
             key: 'urlErrorMsg',
