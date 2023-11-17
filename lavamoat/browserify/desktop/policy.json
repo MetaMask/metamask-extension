@@ -748,7 +748,8 @@
     },
     "@metamask/approval-controller": {
       "globals": {
-        "console.info": true
+        "console.info": true,
+        "console.log": true
       },
       "packages": {
         "@metamask/approval-controller>nanoid": true,
