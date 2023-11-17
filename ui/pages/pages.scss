@@ -14,12 +14,10 @@
 @import 'desktop-pairing/index';
 @import 'error/index';
 @import 'home/index';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 @import "institutional/connect-custody/index";
 @import "institutional/institutional-entity-done-page/index";
 @import "institutional/confirm-add-custodian-token/index";
 @import "institutional/interactive-replacement-token-page/index";
-///: END:ONLY_INCLUDE_IN
 @import 'send/gas-display/index';
 @import 'keychains/index';
 @import 'keyring-snaps/index';

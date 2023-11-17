@@ -64,7 +64,7 @@ describe('Backup and Restore', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -80,7 +80,7 @@ describe('Backup and Restore', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement({
-          text: 'Backup',
+          text: 'Back up',
           tag: 'button',
         });
 
@@ -109,7 +109,7 @@ describe('Backup and Restore', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

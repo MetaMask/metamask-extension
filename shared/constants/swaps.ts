@@ -164,6 +164,9 @@ const ARBITRUM_DEFAULT_BLOCK_EXPLORER_URL = 'https://arbiscan.io/';
 const ZKSYNC_DEFAULT_BLOCK_EXPLORER_URL = 'https://explorer.zksync.io/';
 const LINEA_DEFAULT_BLOCK_EXPLORER_URL = 'https://lineascan.build/';
 
+export const SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL =
+  'https://support.metamask.io/hc/articles/9184393821211';
+
 export const ALLOWED_PROD_SWAPS_CHAIN_IDS = [
   CHAIN_IDS.MAINNET,
   SWAPS_TESTNET_CHAIN_ID,

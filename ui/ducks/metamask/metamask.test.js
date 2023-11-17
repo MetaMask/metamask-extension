@@ -39,9 +39,12 @@ describe('MetaMask Reducers', () => {
         },
         cachedBalances: {},
         currentBlockGasLimit: '0x4c1878',
-        conversionRate: 1200.88200327,
-        nativeCurrency: 'ETH',
         useCurrencyRateCheck: true,
+        currencyRates: {
+          TestETH: {
+            conversionRate: 1200.88200327,
+          },
+        },
         selectedNetworkClientId: NetworkType.goerli,
         networksMetadata: {
           [NetworkType.goerli]: {
@@ -263,7 +266,7 @@ describe('MetaMask Reducers', () => {
 
     describe('getNativeCurrency()', () => {
       it('should return nativeCurrency when useCurrencyRateCheck is true', () => {
-        expect(getNativeCurrency(mockState)).toStrictEqual('ETH');
+        expect(getNativeCurrency(mockState)).toStrictEqual('TestETH');
       });
 
       it('should return the ticker symbol of the selected network when useCurrencyRateCheck is false', () => {

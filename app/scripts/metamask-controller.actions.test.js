@@ -13,7 +13,7 @@ import { ApprovalRequestNotFoundError } from '@metamask/approval-controller';
 import { PermissionsRequestNotFoundError } from '@metamask/permission-controller';
 import nock from 'nock';
 
-const Ganache = require('../../test/e2e/ganache');
+const { Ganache } = require('../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
 

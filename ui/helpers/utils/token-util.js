@@ -242,7 +242,7 @@ export async function getAssetDetails(
         isEqualCaseInsensitive(tokenAddress, address) && _tokenId === tokenId,
     );
 
-    if (existingNft) {
+    if (existingNft && (existingNft.name || existingNft.symbol)) {
       return {
         toAddress,
         ...existingNft,

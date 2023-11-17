@@ -211,7 +211,7 @@ export function addHexPrefixToObjectValues(obj) {
  * publishing via JSON RPC and web3
  *
  * @param {object} options
- * @param {boolean} [options.sendToken] - Indicates whether or not the transaciton is a token transaction
+ * @param {boolean} [options.sendToken] - Indicates whether or not the transaction is a token transaction
  * @param {string} options.data - A hex string containing the data to include in the transaction
  * @param {string} options.to - A hex address of the tx recipient address
  * @param options.amount

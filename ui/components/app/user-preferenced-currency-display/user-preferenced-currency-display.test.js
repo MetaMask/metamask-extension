@@ -17,6 +17,7 @@ describe('UserPreferencedCurrencyDisplay Component', () => {
           nickname: MAINNET_DISPLAY_NAME,
           type: NETWORK_TYPES.MAINNET,
         },
+        currencyRates: {},
         preferences: {
           useNativeCurrencyAsPrimaryCurrency: true,
         },

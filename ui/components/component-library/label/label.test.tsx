@@ -2,7 +2,7 @@
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
 import { Icon, IconName } from '..';
-import { TextField } from '../text-field';
+import { TextField } from '../text-field/deprecated';
 
 import { Label } from './label';
 
