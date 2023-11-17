@@ -136,7 +136,7 @@ export default class AccountTracker {
       return {
         chainId: networkClient.configuration.chainId,
         provider: networkClient.provider,
-        blockTracker: networkClient.blockNumber,
+        blockTracker: networkClient.blockTracker,
         identifier: this.getNetworkIdentifier(networkClient.configuration),
       };
     }
