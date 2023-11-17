@@ -697,14 +697,14 @@ async function failCandidateNetworkValidation(driver) {
     networkNameInputEl,
     newRPCURLInputEl,
     chainIDInputEl,
-    currencySymbolInputEl,
+    ,
     blockExplorerURLInputEl,
   ] = await driver.findElements('input');
 
   await networkNameInputEl.fill('cheapETH');
   await newRPCURLInputEl.fill('https://unresponsive-rpc.url');
   await chainIDInputEl.fill(toHex(777));
-  await currencySymbolInputEl.fill('cTH');
+  await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');
 
   const chainIdValidationMessageRawLocator = {
@@ -804,14 +804,14 @@ async function candidateNetworkIsNotValidated(driver) {
     networkNameInputEl,
     newRPCURLInputEl,
     chainIDInputEl,
-    currencySymbolInputEl,
+    ,
     blockExplorerURLInputEl,
   ] = await driver.findElements('input');
 
   await networkNameInputEl.fill('cheapETH');
   await newRPCURLInputEl.fill('https://responsive-rpc.url/');
   await chainIDInputEl.fill(TEST_CHAIN_ID);
-  await currencySymbolInputEl.fill('cTH');
+  await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');
 
   const saveButtonRawLocator = {
