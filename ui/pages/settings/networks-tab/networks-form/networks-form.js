@@ -243,26 +243,26 @@ const NetworksForm = ({
     dispatch,
   ]);
 
-  const autoSuggestTicker = useCallback(
-    async (formChainId) => {
-      if (!formChainId || safeChainsList.current.length === 0) {
-        return;
-      }
-      const matchedChain = safeChainsList.current?.find(
-        (chain) => chain.chainId.toString() === formChainId,
-      );
-      if (matchedChain === undefined) {
-        setSuggestedTicker('');
-        return;
-      }
-
-      const returnedTickerSymbol = matchedChain.nativeCurrency?.symbol;
-      if (returnedTickerSymbol !== ticker) {
-        setSuggestedTicker(returnedTickerSymbol);
-      }
-    },
-    [ticker],
-  );
+  const autoSuggestTicker = useCallback((formChainId) => {
+    const decimalChainId = getDisplayChainId(formChainId);
+    if (
+      !decimalChainId ||
+      decimalChainId.trim() === '' ||
+      safeChainsList.current.length === 0
+    ) {
+      setSuggestedTicker('');
+      return;
+    }
+    const matchedChain = safeChainsList.current?.find(
+      (chain) => chain.chainId.toString() === decimalChainId,
+    );
+    if (matchedChain === undefined) {
+      setSuggestedTicker('');
+      return;
+    }
+    const returnedTickerSymbol = matchedChain.nativeCurrency?.symbol;
+    setSuggestedTicker(returnedTickerSymbol);
+  }, []);
 
   const hasErrors = () => {
     return Object.keys(errors).some((key) => {
@@ -421,8 +421,9 @@ const NetworksForm = ({
     async (formChainId, formTickerSymbol) => {
       let warningKey;
       let warningMessage;
+      const decimalChainId = getDisplayChainId(formChainId);
 
-      if (!formChainId || !formTickerSymbol) {
+      if (!decimalChainId || !formTickerSymbol) {
         return null;
       }
 
@@ -431,7 +432,7 @@ const NetworksForm = ({
         warningMessage = t('failedToFetchTickerSymbolData');
       } else {
         const matchedChain = safeChainsList.current?.find(
-          (chain) => chain.chainId.toString() === formChainId,
+          (chain) => chain.chainId.toString() === decimalChainId,
         );
 
         if (matchedChain === undefined) {
@@ -761,7 +762,11 @@ const NetworksForm = ({
             paddingBottom: 1,
             paddingTop: 1,
           }}
-          inputProps={{ paddingLeft: 2, variant: TextVariant.bodySm }}
+          inputProps={{
+            paddingLeft: 2,
+            variant: TextVariant.bodySm,
+            'data-testid': 'network-form-ticker-input',
+          }}
           value={ticker}
           disabled={viewOnly}
         />

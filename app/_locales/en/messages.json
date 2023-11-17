@@ -4720,7 +4720,7 @@
   "suggestedBy": {
     "message": "Suggested by"
   },
-  "suggestedTokenSymbol":{
+  "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
   },
   "support": {
