@@ -996,6 +996,9 @@ export default class MetamaskController extends EventEmitter {
       setAccountLabel: (address, label) => {
         const accountToBeNamed =
           this.accountsController.getAccountByAddress(address);
+        if (accountToBeNamed === undefined) {
+          throw new Error(`No account found for address: ${address}`);
+        }
         this.accountsController.setAccountName(accountToBeNamed.id, label);
 
         this.preferencesController.setAccountLabel(address, label);
@@ -1003,10 +1006,11 @@ export default class MetamaskController extends EventEmitter {
       setSelectedAddress: (address) => {
         const accountToBeSet =
           this.accountsController.getAccountByAddress(address);
-        if (accountToBeSet) {
-          this.accountsController.setSelectedAccount(accountToBeSet.id);
+        if (accountToBeSet === undefined) {
+          throw new Error(`No account found for address: ${address}`);
         }
 
+        this.accountsController.setSelectedAccount(accountToBeSet.id);
         this.preferencesController.setSelectedAddress(address);
       },
       syncIdentities: async (identities) => {
@@ -2825,6 +2829,9 @@ export default class MetamaskController extends EventEmitter {
       setAccountLabel: (address, label) => {
         this.preferencesController.setAccountLabel(address, label);
         const account = this.accountsController.getAccountByAddress(address);
+        if (account === undefined) {
+          throw new Error(`Account for '${address}' not found`);
+        }
         this.accountsController.setAccountName(account.id, label);
       },
 
@@ -3420,13 +3427,14 @@ export default class MetamaskController extends EventEmitter {
 
       // remove extra zero balance account potentially created from seeking ahead
       if (accounts.length > 1 && lastBalance === '0x0') {
-        await this.removeAccount(
-          internalAccounts.find(
-            (account) =>
-              account.address.toLowerCase() ===
-              accounts[accounts.length - 1].toLowerCase(),
-          ).address,
+        const internalAccount = internalAccounts.find(
+          (account) =>
+            account.address.toLowerCase() ===
+            accounts[accounts.length - 1].toLowerCase(),
         );
+        if (internalAccount) {
+          await this.removeAccount(internalAccount.address);
+        }
         accounts = await this.keyringController.getAccounts();
       }
 
