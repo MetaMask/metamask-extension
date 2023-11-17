@@ -32,7 +32,6 @@ export const SelectOption: SelectOptionComponent = React.forwardRef(
     const handleClick = () => {
       // if there is an onValueChange prop, use that to set the value
       if (onValueChange) {
-        console.log('onValueChange');
         onValueChange(value);
       } else {
         setUncontrolledValue(value);
