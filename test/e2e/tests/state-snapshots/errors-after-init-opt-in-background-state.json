@@ -1,5 +1,8 @@
 {
-  "AccountTracker": { "accounts": "object" },
+  "AccountTracker": {
+    "accounts": "object",
+    "accountsByChainId": "object"
+  },
   "AddressBookController": { "addressBook": "object" },
   "AlertController": {
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
