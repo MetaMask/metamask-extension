@@ -32,7 +32,7 @@ import { previousValueComparator } from './util';
  * @property {object} store.accounts The accounts currently stored in this AccountTracker
  * @property {object} store.accountsByChainId The accounts currently stored in this AccountTracker keyed by chain id
  * @property {string} store.currentBlockGasLimit A hex string indicating the gas limit of the current block
- * @property {string} store.currentBlockGasLimitByChain A hex string indicating the gas limit of the current block keyed by chain id
+ * @property {string} store.currentBlockGasLimitByChainId A hex string indicating the gas limit of the current block keyed by chain id
  * @property {object} _provider A provider needed to create the EthQuery instance used within this AccountTracker.
  * @property {BlockTracker} _blockTracker A BlockTracker instance. Needed to ensure that accounts and their info updates
  * when a new block is created.

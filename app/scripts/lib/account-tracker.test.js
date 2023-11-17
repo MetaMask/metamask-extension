@@ -457,11 +457,6 @@ describe('Account Tracker', () => {
       useMultiAccountBalanceChecker = true;
       accountTracker.store.updateState({
         accounts: { ...mockAccounts },
-        accountsByChainId: {
-          [currentChainId]: {
-            ...mockAccounts,
-          },
-        },
       });
 
       await accountTracker._updateAccount(
@@ -493,11 +488,6 @@ describe('Account Tracker', () => {
     it('should not change accounts if the passed address is not in accounts', async () => {
       accountTracker.store.updateState({
         accounts: { ...mockAccounts },
-        accountsByChainId: {
-          [currentChainId]: {
-            ...mockAccounts,
-          },
-        },
       });
 
       await accountTracker._updateAccount(
@@ -521,9 +511,7 @@ describe('Account Tracker', () => {
 
       expect(newState).toStrictEqual({
         accounts,
-        accountsByChainId: {
-          [currentChainId]: accounts,
-        },
+        accountsByChainId: {},
         currentBlockGasLimit: '',
         currentBlockGasLimitByChainId: {},
       });
@@ -533,11 +521,6 @@ describe('Account Tracker', () => {
       useMultiAccountBalanceChecker = false;
       accountTracker.store.updateState({
         accounts: { ...mockAccounts },
-        accountsByChainId: {
-          [currentChainId]: {
-            ...mockAccounts,
-          },
-        },
       });
 
       await accountTracker._updateAccount(
@@ -676,11 +659,6 @@ describe('Account Tracker', () => {
 
         accountTracker.store.updateState({
           accounts: { ...mockAccounts },
-          accountsByChainId: {
-            '0x123': {
-              ...mockAccounts,
-            },
-          },
         });
       });
 
@@ -760,11 +738,6 @@ describe('Account Tracker', () => {
 
         accountTracker.store.updateState({
           accounts: { ...mockAccounts },
-          accountsByChainId: {
-            '0x1': {
-              ...mockAccounts,
-            },
-          },
         });
       });
 
@@ -808,11 +781,6 @@ describe('Account Tracker', () => {
       beforeEach(() => {
         accountTracker.store.updateState({
           accounts: { ...mockAccounts },
-          accountsByChainId: {
-            '0x1': {
-              ...mockAccounts,
-            },
-          },
         });
       });
 
@@ -927,11 +895,6 @@ describe('Account Tracker', () => {
       useMultiAccountBalanceChecker = true;
       accountTracker.store.updateState({
         accounts: { ...mockAccounts },
-        accountsByChainId: {
-          [currentChainId]: {
-            ...mockAccounts,
-          },
-        },
       });
 
       await accountTracker._updateAccountsViaBalanceChecker(
@@ -965,11 +928,6 @@ describe('Account Tracker', () => {
       useMultiAccountBalanceChecker = true;
       accountTracker.store.updateState({
         accounts: { ...mockAccounts },
-        accountsByChainId: {
-          [currentChainId]: {
-            ...mockAccounts,
-          },
-        },
       });
 
       await accountTracker._updateAccountsViaBalanceChecker(
