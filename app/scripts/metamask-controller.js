@@ -4049,11 +4049,11 @@ export default class MetamaskController extends EventEmitter {
   async estimateGas(estimateGasParams) {
     const result = await this.txController.estimateGas(estimateGasParams);
 
-    if (result.simulationFails) {
-      // The previous code only did a basic estimateGas query.
-      // This means we don't want to use the fallback value of 95% of the block gas limit.
-      throw new Error(result.simulationFails.reason);
-    }
+    // if (result.simulationFails) {
+    //   // The previous code only did a basic estimateGas query.
+    //   // This means we don't want to use the fallback value of 95% of the block gas limit.
+    //   throw new Error(result.simulationFails.reason);
+    // }
 
     return result.gas;
   }
