@@ -3584,10 +3584,8 @@ export function removePermissionsFor(
 export function updateNetworksList(
   orderedNetworkList: [],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('updateNetworksList', [orderedNetworkList])
-    dispatch(hideLoadingIndication());
+  return async () => {
+    await submitRequestToBackground('updateNetworksList', [orderedNetworkList]);
   };
 }
 
