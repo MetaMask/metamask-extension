@@ -4593,12 +4593,15 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
-    let proxyProviderForDomain = provider;
+    let proxyClient = {
+      provider,
+      blockTracker
+    };
     if (this.preferencesController.getUseRequestQueue()) {
-      proxyProviderForDomain =
+      proxyClient =
         this.selectedNetworkController.getProviderAndBlockTracker(
           origin,
-        ).provider;
+        );
     }
 
     const requestQueueMiddleware = createQueuedRequestMiddleware({
@@ -4611,13 +4614,13 @@ export default class MetamaskController extends EventEmitter {
     engine.push(requestQueueMiddleware);
 
     // create filter polyfill middleware
-    const filterMiddleware = createFilterMiddleware({ provider, blockTracker });
+    const filterMiddleware = createFilterMiddleware(proxyClient);
+    console.log('selectedNetworkClientId:', selectedNetworkClientIdForDomain);
+    console.log('proxyClient:', proxyClient);
+    debugger;
 
     // create subscription polyfill middleware
-    const subscriptionManager = createSubscriptionManager({
-      provider,
-      blockTracker,
-    });
+    const subscriptionManager = createSubscriptionManager(proxyClient);
     subscriptionManager.events.on('notification', (message) =>
       engine.emit('notification', message),
     );
@@ -4899,7 +4902,7 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push(this.metamaskMiddleware);
 
-    engine.push(providerAsMiddleware(proxyProviderForDomain));
+    engine.push(providerAsMiddleware(proxyClient.provider));
 
     return engine;
   }
