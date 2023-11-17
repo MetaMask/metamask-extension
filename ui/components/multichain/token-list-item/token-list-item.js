@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import {
   BlockSize,
   BorderColor,
@@ -13,6 +13,7 @@ import {
   TextColor,
   TextVariant,
   TextAlign,
+  IconColor,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -43,14 +44,13 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
-import {
-  NETWORKS_FORM_ROUTE,
-  NETWORKS_ROUTE,
-} from '../../../helpers/constants/routes';
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
 import { setSelectedNetworkConfigurationId } from '../../../store/actions';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { KNOWN_CHAINS } from '../../../../shared/constants/known-chains';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 export const TokenListItem = ({
   className,
@@ -74,7 +74,25 @@ export const TokenListItem = ({
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   // Scam warning
-  const IS_PROBLEM = true; // TEMPORARY: REMOVE ME
+  let showScamWarning = false;
+  const decimalChainId = Number(
+    chainId.startsWith('0x') ? hexToDecimal(chainId) : chainId,
+  );
+  if (isNativeCurrency) {
+    const knownChainEntry = KNOWN_CHAINS.find(
+      (entry) => entry.chainId === decimalChainId,
+    );
+    if (
+      // No entry for this chainID is problematic
+      !knownChainEntry ||
+      // A mismatching currency symbol would also be problematic
+      knownChainEntry.nativeCurrency.symbol.toLowerCase() !==
+        tokenSymbol.toLowerCase()
+    ) {
+      showScamWarning = true;
+    }
+  }
+
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
   const environmentType = getEnvironmentType();
@@ -186,12 +204,13 @@ export const TokenListItem = ({
               textAlign={TextAlign.End}
               data-testid="multichain-token-list-item-secondary-value"
             >
-              {isNativeCurrency && IS_PROBLEM ? (
-                <>
+              {isNativeCurrency && showScamWarning ? (
+                <Text color={TextColor.errorDefault}>
                   {t('nativeTokenScamWarningLabel')}{' '}
                   <Icon
-                    name={IconName.Info}
+                    name={IconName.Danger}
                     onMouseEnter={() => setShowScamWarningModal(true)}
+                    color={IconColor.errorDefault}
                   />
                   {showScamWarningModal ? (
                     <Modal isOpen>
@@ -231,7 +250,7 @@ export const TokenListItem = ({
                       </ModalContent>
                     </Modal>
                   ) : null}
-                </>
+                </Text>
               ) : (
                 secondary
               )}
