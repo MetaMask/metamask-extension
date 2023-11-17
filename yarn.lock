@@ -3891,6 +3891,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/browser-passworder@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@metamask/browser-passworder@npm:4.2.0"
+  dependencies:
+    "@metamask/utils": "npm:^8.2.0"
+  checksum: 1ab79bb8b1af7243a92fcedd03abb9c452670853d83d0751a80aa15f4336c02c8696dcf27b62d3bf70f27f8262842f29b2c52c385d4aa35162154bccd253e695
+  languageName: node
+  linkType: hard
+
 "@metamask/contract-metadata@npm:^2.3.1, @metamask/contract-metadata@npm:^2.4.0":
   version: 2.4.0
   resolution: "@metamask/contract-metadata@npm:2.4.0"
@@ -4026,6 +4035,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-hd-keyring@npm:^7.0.1":
+  version: 7.0.1
+  resolution: "@metamask/eth-hd-keyring@npm:7.0.1"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/eth-sig-util": "npm:^7.0.0"
+    "@metamask/scure-bip39": "npm:^2.1.0"
+    "@metamask/utils": "npm:^8.1.0"
+    ethereum-cryptography: "npm:^2.1.2"
+  checksum: adb6aa532168db69aa8569be00942a4b62751ce6bff6ef5fbcda0646cfc6baf13c3b20ab72e12622797cb6c5d6901289be943f5b27d55a5ae4a90fa00c2a29cf
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-json-rpc-infura@npm:^8.1.0":
   version: 8.1.1
   resolution: "@metamask/eth-json-rpc-infura@npm:8.1.1"
@@ -4122,6 +4144,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-keyring-controller@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@metamask/eth-keyring-controller@npm:15.0.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@metamask/browser-passworder": "npm:^4.2.0"
+    "@metamask/eth-hd-keyring": "npm:^7.0.1"
+    "@metamask/eth-sig-util": "npm:^7.0.0"
+    "@metamask/eth-simple-keyring": "npm:^6.0.1"
+    "@metamask/obs-store": "npm:^8.1.0"
+    "@metamask/utils": "npm:^8.2.0"
+  checksum: d832f3085630b59b4af0874a80d1c9a192b23a9a0841a249a751a58dad1a3c051ce0bffd852ffa5f89ce588318692673c7ed975753e6f79b2f081c9728ea8eeb
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-keyring-controller@patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch":
   version: 13.0.1
   resolution: "@metamask/eth-keyring-controller@patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch::version=13.0.1&hash=6c75cf"
@@ -4211,6 +4248,19 @@ __metadata:
     ethereum-cryptography: "npm:^1.1.2"
     randombytes: "npm:^2.1.0"
   checksum: e13880c67074920d47e3f35bb056792596f4579c2e61640c5859bec1f5fd4a479210e863e07431ce94af9d19545d84fa96f59ab0c408ff39df76781fa590032c
+  languageName: node
+  linkType: hard
+
+"@metamask/eth-simple-keyring@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "@metamask/eth-simple-keyring@npm:6.0.1"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/eth-sig-util": "npm:^7.0.0"
+    "@metamask/utils": "npm:^8.1.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    randombytes: "npm:^2.1.0"
+  checksum: 214470a237c9508097faad1df0de7b79300363325ca684182ea7e56d3ac06b030b9f77010b6587c281e8e113c36799f755c595d4bbcdadc45dda88f0a25f5f13
   languageName: node
   linkType: hard
 
@@ -4357,23 +4407,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^8.0.3":
-  version: 8.0.3
-  resolution: "@metamask/keyring-controller@npm:8.0.3"
+"@metamask/keyring-controller@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@metamask/keyring-controller@npm:9.0.0"
   dependencies:
     "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
     "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/eth-keyring-controller": "npm:^13.0.1"
+    "@metamask/eth-keyring-controller": "npm:^15.0.0"
     "@metamask/message-manager": "npm:^7.3.5"
     "@metamask/preferences-controller": "npm:^4.4.3"
-    "@metamask/utils": "npm:^8.1.0"
+    "@metamask/utils": "npm:^8.2.0"
     async-mutex: "npm:^0.2.6"
     ethereumjs-util: "npm:^7.0.10"
     ethereumjs-wallet: "npm:^1.0.1"
     immer: "npm:^9.0.6"
   peerDependencies:
     "@metamask/preferences-controller": ^4.4.3
-  checksum: 9739ff404f111d8b353a4fd7829f44f011effc436d773865038dcbb7c74b8e8818fcb567074cad897406bd799d1beb37ddd4f473d1c0164bc9937f9b2288861a
+  checksum: 0cefdd7d205ca5c2978f98af6eeda6c31fbad0393dea4e5587813a54337f3af09441afa677a49166676df5c93f93469e4082e8b6cab55ee3de69bc588b621713
   languageName: node
   linkType: hard
 
@@ -24032,7 +24082,7 @@ __metadata:
     "@metamask/assets-controllers": "npm:^18.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^3.2.0"
-    "@metamask/browser-passworder": "npm:^4.1.0"
+    "@metamask/browser-passworder": "npm:^4.2.0"
     "@metamask/contract-metadata": "npm:^2.3.1"
     "@metamask/controller-utils": "npm:^5.0.0"
     "@metamask/design-tokens": "npm:^1.12.0"
@@ -24056,7 +24106,7 @@ __metadata:
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/keyring-api": "npm:^1.0.0"
-    "@metamask/keyring-controller": "npm:^8.0.3"
+    "@metamask/keyring-controller": "npm:^9.0.0"
     "@metamask/logging-controller": "npm:^1.0.1"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
@@ -27182,6 +27232,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"playwright-core@npm:1.29.2":
+  version: 1.29.2
+  resolution: "playwright-core@npm:1.29.2"
+  bin:
+    playwright: cli.js
+  checksum: 03cfcdb8b29487c0099ae0cb05aa01aa7c57f24d75dd13dc33733d5dd6bb4e3dafe78538a514b365711d5bcf346d0f7cb55c5209116716ebfa6c541886ddf4d7
+  languageName: node
+  linkType: hard
+
 "playwright-core@npm:1.39.0, playwright-core@npm:>=1.2.0":
   version: 1.39.0
   resolution: "playwright-core@npm:1.39.0"
@@ -27191,7 +27250,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:1.39.0, playwright@npm:^1.14.0":
+"playwright@npm:1.39.0":
   version: 1.39.0
   resolution: "playwright@npm:1.39.0"
   dependencies:
@@ -27203,6 +27262,17 @@ __metadata:
   bin:
     playwright: cli.js
   checksum: 6f6b2f4381fccfbc560c4cd25e164f5093fec4e2046990587282e18618151d723b299b56c16741ce08e44a759c22e38c3e705b716d31238320e08e6ffcfa7319
+  languageName: node
+  linkType: hard
+
+"playwright@npm:^1.14.0":
+  version: 1.29.2
+  resolution: "playwright@npm:1.29.2"
+  dependencies:
+    playwright-core: "npm:1.29.2"
+  bin:
+    playwright: cli.js
+  checksum: 8f466f6afa58980f97f57d58a221f854a5f8b51e4ec78766b7bbf309243da7e3fb54362749f1306da1553f857f58e513aa343977d595091bcd6b6936422a8bd9
   languageName: node
   linkType: hard
 
