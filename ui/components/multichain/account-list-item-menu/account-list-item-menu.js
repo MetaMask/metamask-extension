@@ -135,7 +135,6 @@ export const AccountListItemMenu = ({
     if (indexToRemove !== -1) {
       const updatedPinnedAccountList = [...pinnedAccountList];
       updatedPinnedAccountList.splice(indexToRemove, 1);
-      console.log(updatedPinnedAccountList, 'updatedPinnedAccountList');
       dispatch(updateAccountsList(updatedPinnedAccountList));
     }
   };
