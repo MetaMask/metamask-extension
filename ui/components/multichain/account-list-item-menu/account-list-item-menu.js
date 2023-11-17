@@ -172,7 +172,6 @@ export const AccountListItemMenu = ({
                 ? handleUnpinning(identity.address)
                 : handlePinning(identity.address);
               onClose();
-              closeMenu?.();
             }}
             iconName={isPinned ? IconName.Unpin : IconName.Pin}
           >
