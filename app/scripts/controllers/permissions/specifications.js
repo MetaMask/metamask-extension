@@ -208,7 +208,8 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
     }
 
     if (
-      !internalAccounts.find(
+      !internalAccounts.some(
+
         (internalAccount) =>
           internalAccount.address.toLowerCase() === address.toLowerCase(),
       )
