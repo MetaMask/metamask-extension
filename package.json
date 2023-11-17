@@ -410,6 +410,7 @@
     "@storybook/addon-a11y": "^7.4.6",
     "@storybook/addon-actions": "^7.4.6",
     "@storybook/addon-designs": "^7.0.5",
+    "@storybook/addon-docs": "^7.4.6",
     "@storybook/addon-essentials": "^7.4.6",
     "@storybook/addon-knobs": "^7.0.2",
     "@storybook/addon-mdx-gfm": "^7.4.6",
