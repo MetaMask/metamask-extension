@@ -35,10 +35,12 @@ const mockAccounts = {
 describe('Account Tracker', () => {
   let provider,
     blockTrackerStub,
+    blockTrackerFromHookStub,
     providerResultStub,
     useMultiAccountBalanceChecker,
     accountTracker,
-    accountRemovedListener;
+    accountRemovedListener,
+    getNetworkClientByIdStub;
 
   beforeEach(() => {
     providerResultStub = {
@@ -55,9 +57,22 @@ describe('Account Tracker', () => {
     blockTrackerStub.getCurrentBlock = noop;
     blockTrackerStub.getLatestBlock = noop;
 
+    blockTrackerFromHookStub = new EventEmitter();
+    blockTrackerFromHookStub.getCurrentBlock = noop;
+    blockTrackerFromHookStub.getLatestBlock = noop;
+
+    getNetworkClientByIdStub = jest.fn().mockReturnValue({
+      configuration: {
+        chainId: '0x1',
+      },
+      blockTracker: blockTrackerFromHookStub,
+    });
+
     accountTracker = new AccountTracker({
       provider,
       blockTracker: blockTrackerStub,
+      getNetworkClientById: getNetworkClientByIdStub,
+      getNetworkIdentifier: jest.fn(),
       preferencesController: {
         store: {
           getState: () => ({
@@ -76,6 +91,336 @@ describe('Account Tracker', () => {
         accountRemovedListener = callback;
       },
       getCurrentChainId: () => currentChainId,
+    });
+  });
+
+  describe('start', () => {
+    it('restarts the subscription to the block tracker and update accounts', async () => {
+      jest.spyOn(blockTrackerStub, 'addListener').mockImplementation();
+      jest.spyOn(blockTrackerStub, 'removeListener').mockImplementation();
+      const updateAccountsWithNetworkClientIdSpy = jest
+        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .mockResolvedValue();
+
+      accountTracker.start();
+
+      expect(blockTrackerStub.removeListener).toHaveBeenNthCalledWith(
+        1,
+        'latest',
+        accountTracker._updateForBlock,
+      );
+      expect(blockTrackerStub.addListener).toHaveBeenNthCalledWith(
+        1,
+        'latest',
+        accountTracker._updateForBlock,
+      );
+      expect(updateAccountsWithNetworkClientIdSpy).toHaveBeenNthCalledWith(1); // called first time with no args
+
+      accountTracker.start();
+
+      expect(blockTrackerStub.removeListener).toHaveBeenNthCalledWith(
+        2,
+        'latest',
+        accountTracker._updateForBlock,
+      );
+      expect(blockTrackerStub.addListener).toHaveBeenNthCalledWith(
+        2,
+        'latest',
+        accountTracker._updateForBlock,
+      );
+      expect(updateAccountsWithNetworkClientIdSpy).toHaveBeenNthCalledWith(2); // called second time with no args
+
+      accountTracker.stop();
+    });
+  });
+
+  describe('stop', () => {
+    it('ends the subscription to the block tracker', async () => {
+      jest.spyOn(blockTrackerStub, 'removeListener').mockImplementation();
+
+      accountTracker.stop();
+
+      expect(blockTrackerStub.removeListener).toHaveBeenNthCalledWith(
+        1,
+        'latest',
+        accountTracker._updateForBlock,
+      );
+    });
+  });
+
+  describe('startPollingByNetworkClientId', () => {
+    it('should subscribe to the block tracker and update accounts if not already using the networkClientId', async () => {
+      jest.spyOn(blockTrackerFromHookStub, 'addListener').mockImplementation();
+      const updateAccountsWithNetworkClientIdSpy = jest
+        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .mockResolvedValue();
+
+      accountTracker.startPollingByNetworkClientId('mainnet');
+
+      expect(blockTrackerFromHookStub.addListener).toHaveBeenCalledWith(
+        'latest',
+        expect.any(Function),
+      );
+      expect(updateAccountsWithNetworkClientIdSpy).toHaveBeenCalledWith(
+        'mainnet',
+      );
+
+      accountTracker.startPollingByNetworkClientId('mainnet');
+
+      expect(blockTrackerFromHookStub.addListener).toHaveBeenCalledTimes(1);
+      expect(updateAccountsWithNetworkClientIdSpy).toHaveBeenCalledTimes(1);
+
+      accountTracker.stopAllPolling();
+    });
+
+    it('should subscribe to the block tracker and update accounts for each networkClientId', async () => {
+      const blockTrackerFromHookStub1 = new EventEmitter();
+      blockTrackerFromHookStub1.getCurrentBlock = noop;
+      blockTrackerFromHookStub1.getLatestBlock = noop;
+      jest.spyOn(blockTrackerFromHookStub1, 'addListener').mockImplementation();
+
+      const blockTrackerFromHookStub2 = new EventEmitter();
+      blockTrackerFromHookStub2.getCurrentBlock = noop;
+      blockTrackerFromHookStub2.getLatestBlock = noop;
+      jest.spyOn(blockTrackerFromHookStub2, 'addListener').mockImplementation();
+
+      const blockTrackerFromHookStub3 = new EventEmitter();
+      blockTrackerFromHookStub3.getCurrentBlock = noop;
+      blockTrackerFromHookStub3.getLatestBlock = noop;
+      jest.spyOn(blockTrackerFromHookStub3, 'addListener').mockImplementation();
+
+      getNetworkClientByIdStub = jest
+        .fn()
+        .mockImplementation((networkClientId) => {
+          switch (networkClientId) {
+            case 'mainnet':
+              return {
+                configuration: {
+                  chainId: '0x1',
+                },
+                blockTracker: blockTrackerFromHookStub1,
+              };
+            case 'goerli':
+              return {
+                configuration: {
+                  chainId: '0x5',
+                },
+                blockTracker: blockTrackerFromHookStub2,
+              };
+            case 'networkClientId1':
+              return {
+                configuration: {
+                  chainId: '0xa',
+                },
+                blockTracker: blockTrackerFromHookStub3,
+              };
+            default:
+              throw new Error('unexpected networkClientId');
+          }
+        });
+
+      accountTracker = new AccountTracker({
+        provider,
+        blockTracker: blockTrackerStub,
+        getNetworkClientById: getNetworkClientByIdStub,
+        getNetworkIdentifier: jest.fn(),
+        preferencesController: {
+          store: {
+            getState: () => ({
+              useMultiAccountBalanceChecker,
+            }),
+            subscribe: noop,
+          },
+        },
+        onboardingController: {
+          store: {
+            subscribe: noop,
+            getState: noop,
+          },
+        },
+        onAccountRemoved: (callback) => {
+          accountRemovedListener = callback;
+        },
+        getCurrentChainId: () => currentChainId,
+      });
+
+      const updateAccountsWithNetworkClientIdSpy = jest
+        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .mockResolvedValue();
+
+      accountTracker.startPollingByNetworkClientId('mainnet');
+
+      expect(blockTrackerFromHookStub1.addListener).toHaveBeenCalledWith(
+        'latest',
+        expect.any(Function),
+      );
+      expect(updateAccountsWithNetworkClientIdSpy).toHaveBeenCalledWith(
+        'mainnet',
+      );
+
+      accountTracker.startPollingByNetworkClientId('goerli');
+
+      expect(blockTrackerFromHookStub2.addListener).toHaveBeenCalledWith(
+        'latest',
+        expect.any(Function),
+      );
+      expect(updateAccountsWithNetworkClientIdSpy).toHaveBeenCalledWith(
+        'goerli',
+      );
+
+      accountTracker.startPollingByNetworkClientId('networkClientId1');
+
+      expect(blockTrackerFromHookStub3.addListener).toHaveBeenCalledWith(
+        'latest',
+        expect.any(Function),
+      );
+      expect(updateAccountsWithNetworkClientIdSpy).toHaveBeenCalledWith(
+        'networkClientId1',
+      );
+
+      accountTracker.stopAllPolling();
+    });
+  });
+
+  describe('stopPollingByPollingToken', () => {
+    it('should unsubscribe from the block tracker when called with a valid polling that was the only active pollingToken for a given networkClient', async () => {
+      jest
+        .spyOn(blockTrackerFromHookStub, 'removeListener')
+        .mockImplementation();
+      jest
+        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .mockResolvedValue();
+
+      const pollingToken =
+        accountTracker.startPollingByNetworkClientId('mainnet');
+
+      accountTracker.stopPollingByPollingToken(pollingToken);
+
+      expect(blockTrackerFromHookStub.removeListener).toHaveBeenCalledWith(
+        'latest',
+        expect.any(Function),
+      );
+    });
+
+    it('should not unsubscribe from the block tracker if called with one of multiple active polling tokens for a given networkClient', async () => {
+      jest
+        .spyOn(blockTrackerFromHookStub, 'removeListener')
+        .mockImplementation();
+      jest
+        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .mockResolvedValue();
+
+      const pollingToken1 =
+        accountTracker.startPollingByNetworkClientId('mainnet');
+      accountTracker.startPollingByNetworkClientId('mainnet');
+
+      accountTracker.stopPollingByPollingToken(pollingToken1);
+
+      expect(blockTrackerFromHookStub.removeListener).not.toHaveBeenCalled();
+
+      accountTracker.stopAllPolling();
+    });
+    it('should error if no pollingToken is passed', () => {
+      expect(() => {
+        accountTracker.stopPollingByPollingToken(undefined);
+      }).toThrow('pollingToken required');
+    });
+
+    it('should error if no matching pollingToken is found', () => {
+      expect(() => {
+        accountTracker.stopPollingByPollingToken('potato');
+      }).toThrow('pollingToken not found');
+    });
+  });
+
+  describe('stopAll', () => {
+    it('should end all subscriptions', async () => {
+      jest.spyOn(blockTrackerStub, 'removeListener').mockImplementation();
+
+      const blockTrackerFromHookStub1 = new EventEmitter();
+      blockTrackerFromHookStub1.getCurrentBlock = noop;
+      blockTrackerFromHookStub1.getLatestBlock = noop;
+      jest
+        .spyOn(blockTrackerFromHookStub1, 'removeListener')
+        .mockImplementation();
+
+      const blockTrackerFromHookStub2 = new EventEmitter();
+      blockTrackerFromHookStub2.getCurrentBlock = noop;
+      blockTrackerFromHookStub2.getLatestBlock = noop;
+      jest
+        .spyOn(blockTrackerFromHookStub2, 'removeListener')
+        .mockImplementation();
+
+      getNetworkClientByIdStub = jest
+        .fn()
+        .mockImplementation((networkClientId) => {
+          switch (networkClientId) {
+            case 'mainnet':
+              return {
+                configuration: {
+                  chainId: '0x1',
+                },
+                blockTracker: blockTrackerFromHookStub1,
+              };
+            case 'goerli':
+              return {
+                configuration: {
+                  chainId: '0x5',
+                },
+                blockTracker: blockTrackerFromHookStub2,
+              };
+            default:
+              throw new Error('unexpected networkClientId');
+          }
+        });
+
+      accountTracker = new AccountTracker({
+        provider,
+        blockTracker: blockTrackerStub,
+        getNetworkClientById: getNetworkClientByIdStub,
+        getNetworkIdentifier: jest.fn(),
+        preferencesController: {
+          store: {
+            getState: () => ({
+              useMultiAccountBalanceChecker,
+            }),
+            subscribe: noop,
+          },
+        },
+        onboardingController: {
+          store: {
+            subscribe: noop,
+            getState: noop,
+          },
+        },
+        onAccountRemoved: (callback) => {
+          accountRemovedListener = callback;
+        },
+        getCurrentChainId: () => currentChainId,
+      });
+
+      jest
+        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .mockResolvedValue();
+
+      accountTracker.startPollingByNetworkClientId('mainnet');
+
+      accountTracker.startPollingByNetworkClientId('goerli');
+
+      accountTracker.stopAllPolling();
+
+      expect(blockTrackerStub.removeListener).toHaveBeenCalledWith(
+        'latest',
+        accountTracker._updateForBlock,
+      );
+      expect(blockTrackerFromHookStub1.removeListener).toHaveBeenCalledWith(
+        'latest',
+        expect.any(Function),
+      );
+      expect(blockTrackerFromHookStub2.removeListener).toHaveBeenCalledWith(
+        'latest',
+        expect.any(Function),
+      );
     });
   });
 
