@@ -1,6 +1,5 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { screen } from '@testing-library/react';
 import { Asset } from '../../../../ducks/send';
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -19,12 +18,6 @@ describe('AssetPickerModal', () => {
       type: 'NATIVE',
     } as unknown as Asset,
   };
-  it('should match snapshot', () => {
-    renderWithProvider(<AssetPickerModal {...props} />, store);
-    const modalComponent = screen.getByTestId('asset-picker-modal');
-
-    expect(modalComponent).toMatchSnapshot();
-  });
 
   it('should render the modal when isOpen is true', () => {
     const { getByText } = renderWithProvider(

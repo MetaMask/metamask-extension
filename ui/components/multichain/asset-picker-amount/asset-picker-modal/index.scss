@@ -28,19 +28,6 @@
     }
   }
 
-  a:hover,
-  a:focus {
-    color: inherit;
-  }
-
-  &:hover,
-  &:focus,
-  &:focus-within {
-    .multichain-asset-picker-list-item__delete {
-      visibility: visible;
-    }
-  }
-
   &__selected-indicator {
     width: 4px;
     height: calc(100% - 8px);
@@ -50,15 +37,35 @@
   }
 }
 
-.multichain-token-list {
-  padding: 8px;
-  display: contents;
-  flex-flow: row nowrap;
-  align-items: center;
-  cursor: pointer;
-  padding: 8px;
+.modal-tab {
+  &__container {
+    display: flex;
+    min-height: 100px;
+  }
 
-  &__data {
-    margin-left: 8px;
+  &__main-view {
+    flex: 1 1 66.5%;
+    max-height: 564px;
+    background: var(--color-background-default);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  &__main-view &__tab {
+    @include H6;
+
+    flex-grow: 1;
+    color: var(--color-icon-default);
+    font-weight: 500;
+  }
+
+  &__main-view &__tab--active {
+    color: var(--color-primary-default);
+  }
+
+  &__main-view &__tab button {
+    padding: 8px;
   }
 }
