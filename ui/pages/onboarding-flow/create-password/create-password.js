@@ -16,11 +16,12 @@ import {
 import {
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   ONBOARDING_PIN_EXTENSION_ROUTE,
+  MMI_ONBOARDING_COMPLETION_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
 import Box from '../../../components/ui/box';
@@ -67,18 +68,21 @@ export default function CreatePassword({
   const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
 
-  const shouldInjectMetametricsIframe = useSelector(
-    (state) => state.metamask.participateInMetaMetrics,
+  const participateInMetaMetrics = useSelector((state) =>
+    Boolean(state.metamask.participateInMetaMetrics),
   );
   const metametricsId = useSelector(getMetaMetricsId);
   const base64MetametricsId = Buffer.from(metametricsId ?? '').toString(
     'base64',
   );
+  const shouldInjectMetametricsIframe = Boolean(
+    participateInMetaMetrics && base64MetametricsId,
+  );
   const analyticsIframeQuery = {
     mmi: base64MetametricsId,
     env: 'production',
   };
-  const analyticsIframeUrl = `https://start.metamask.io/${new URLSearchParams(
+  const analyticsIframeUrl = `https://start.metamask.io/?${new URLSearchParams(
     analyticsIframeQuery,
   )}`;
 
@@ -90,10 +94,16 @@ export default function CreatePassword({
         ///: END:ONLY_INCLUDE_IN
 
         ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
+        history.replace(ONBOARDING_PIN_EXTENSION_ROUTE);
         ///: END:ONLY_INCLUDE_IN
       } else {
+        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
+        ///: END:ONLY_INCLUDE_IN
+
+        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        history.replace(MMI_ONBOARDING_COMPLETION_ROUTE);
+        ///: END:ONLY_INCLUDE_IN
       }
     }
   }, [currentKeyring, history, firstTimeFlowType]);

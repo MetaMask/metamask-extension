@@ -4,6 +4,8 @@ import { withRouter } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
+import { CHAIN_ID_TO_RPC_URL_MAP } from '../../../shared/constants/network';
+
 ///: END:ONLY_INCLUDE_IN
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
@@ -52,6 +54,7 @@ import {
   getSendToAccounts,
   getProviderConfig,
   findKeyringForAddress,
+  getConversionRate,
 } from '../../ducks/metamask/metamask';
 import {
   addHexPrefix,
@@ -76,7 +79,10 @@ import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { getAccountType } from '../../selectors/selectors';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
-import { getIsNoteToTraderSupported } from '../../selectors/institutional/selectors';
+import {
+  getIsNoteToTraderSupported,
+  getIsCustodianPublishesTransactionSupported,
+} from '../../selectors/institutional/selectors';
 import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
 ///: END:ONLY_INCLUDE_IN
 import {
@@ -122,7 +128,8 @@ const mapStateToProps = (state, ownProps) => {
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
-  const { conversionRate, identities, addressBook, nextNonce } = metamask;
+  const conversionRate = getConversionRate(state);
+  const { identities, addressBook, nextNonce } = metamask;
   const unapprovedTxs = getUnapprovedTransactions(state);
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
@@ -217,6 +224,13 @@ const mapStateToProps = (state, ownProps) => {
     state,
     fromChecksumHexAddress,
   );
+  const custodianPublishesTransaction =
+    getIsCustodianPublishesTransactionSupported(state, fromChecksumHexAddress);
+  const builtinRpcUrl = CHAIN_ID_TO_RPC_URL_MAP[chainId];
+  const { rpcUrl: customRpcUrl } = getProviderConfig(state);
+
+  const rpcUrl = customRpcUrl || builtinRpcUrl;
+
   ///: END:ONLY_INCLUDE_IN
 
   const hardwareWalletRequiresConnection =
@@ -279,6 +293,8 @@ const mapStateToProps = (state, ownProps) => {
     accountType,
     isNoteToTraderSupported,
     isNotification,
+    custodianPublishesTransaction,
+    rpcUrl,
     ///: END:ONLY_INCLUDE_IN
   };
 };

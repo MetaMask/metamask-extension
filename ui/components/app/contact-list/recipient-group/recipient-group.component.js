@@ -9,6 +9,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { Text } from '../../../component-library';
+import { AddressListItem } from '../../../multichain';
 
 function addressesEqual(address1, address2) {
   return String(address1).toLowerCase() === String(address2).toLowerCase();
@@ -22,6 +23,17 @@ export default function RecipientGroup({
 }) {
   if (!items || !items.length) {
     return null;
+  }
+
+  if (process.env.MULTICHAIN) {
+    return items.map(({ address, name }) => (
+      <AddressListItem
+        address={address}
+        label={name}
+        onClick={() => onSelect(address, name)}
+        key={address}
+      />
+    ));
   }
 
   return (

@@ -1,10 +1,15 @@
 import { ListNames, PhishingController } from '@metamask/phishing-controller';
+import { ControllerMessenger } from '@metamask/base-controller';
 import { isBlockedUrl } from './isBlockedUrl';
 
 describe('isBlockedUrl', () => {
-  const phishingController = new PhishingController(
-    {},
-    {
+  const messenger = new ControllerMessenger();
+  const phishingControllerMessenger = messenger.getRestricted({
+    name: 'PhishingController',
+  });
+  const phishingController = new PhishingController({
+    messenger: phishingControllerMessenger,
+    state: {
       phishingLists: [
         {
           blocklist: ['https://metamask.test'],
@@ -17,7 +22,7 @@ describe('isBlockedUrl', () => {
         },
       ],
     },
-  );
+  });
 
   it.each([
     ['http://metamask.io', false],
@@ -32,7 +37,15 @@ describe('isBlockedUrl', () => {
     [0, true],
     [-1, true],
   ])('"%s" is blocked: %s', async (url: any, expected: boolean) => {
-    const result = await isBlockedUrl(url, phishingController);
+    const result = await isBlockedUrl(
+      url,
+      async () => {
+        return await phishingController.maybeUpdateState();
+      },
+      (origin: string) => {
+        return phishingController.test(origin);
+      },
+    );
     expect(result).toEqual(expected);
   });
 });

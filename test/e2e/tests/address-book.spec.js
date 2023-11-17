@@ -3,7 +3,9 @@ const {
   convertToHexValue,
   withFixtures,
   logInWithBalanceValidation,
+  openActionMenuAndStartSendFlow,
 } = require('../helpers');
+const { shortenAddress } = require('../../../ui/helpers/utils/util');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Address Book', function () {
@@ -36,13 +38,17 @@ describe('Address Book', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
+        await openActionMenuAndStartSendFlow(driver);
+        // TODO: Update Test when Multichain Send Flow is added
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         const recipientRowTitle = await driver.findElement(
           '.send__select-recipient-wrapper__group-item__title',
         );
@@ -93,7 +99,7 @@ describe('Address Book', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -116,28 +122,52 @@ describe('Address Book', function () {
 
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
-        const recipientUsername = await driver.findElement({
-          text: 'Test Name Edit',
-          tag: 'p',
-        });
+        let recipientUsername;
+        if (process.env.MULTICHAIN) {
+          recipientUsername = await driver.findElement({
+            text: 'Test Name Edit',
+            css: '.address-list-item__label',
+          });
+        } else {
+          recipientUsername = await driver.findElement({
+            text: 'Test Name Edit',
+            tag: 'p',
+          });
+        }
+
         assert.equal(
           await recipientUsername.getText(),
           'Test Name Edit',
           'Username is not edited correctly',
         );
 
-        const recipientAddress = await driver.findElement(
-          '.send__select-recipient-wrapper__group-item__subtitle',
-        );
-        assert.equal(
-          await recipientAddress.getText(),
-          '0x74cE...6f74',
-          'Recipient address is not edited correctly',
-        );
+        if (process.env.MULTICHAIN) {
+          const recipientAddress = await driver.findElement(
+            '[data-testid="address-list-item-address"]',
+          );
+          assert.equal(
+            await recipientAddress.getText(),
+            shortenAddress('0x74cE91B75935D6Bedc27eE002DeFa566c5946f74'),
+            'Recipient address is not edited correctly',
+          );
+        } else {
+          const recipientAddress = await driver.findElement(
+            '.send__select-recipient-wrapper__group-item__subtitle',
+          );
+          assert.equal(
+            await recipientAddress.getText(),
+            '0x74cE...6f74',
+            'Recipient address is not edited correctly',
+          );
+        }
       },
     );
   });
+
   it('Deletes existing entry from address book', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -156,9 +186,12 @@ describe('Address Book', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
@@ -172,10 +205,12 @@ describe('Address Book', function () {
         await driver.clickElement({ text: 'Test Name 1', tag: 'p' });
         await driver.clickElement({ text: 'Edit', tag: 'button' });
         await driver.clickElement({ text: 'Delete contact', tag: 'a' });
-        // it checks if account is deleted
+
         const contact = await driver.findElement(
           '.send__select-recipient-wrapper__group-item',
         );
+
+        // it checks if account is deleted
         const exists = await driver.isElementPresent(contact);
         assert.equal(exists, false, 'Contact is not deleted');
       },

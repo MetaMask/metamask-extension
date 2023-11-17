@@ -220,7 +220,7 @@
     "message": "यह महत्वपूर्ण है कि आपका प्रोवाइडर विश्वसनीय हो, क्योंकि उसके पास निम्नलिखित अधिकार हैं:"
   },
   "addEthereumChainWarningModalListPointOne": {
-    "message": "आपके एकाउंट्स और आईपी ​​एड्रेस देखने की, और उन्हें एक साथ जोड़ने की"
+    "message": "आपके एकाउंट्स और आईपी   एड्रेस देखने की, और उन्हें एक साथ जोड़ने की"
   },
   "addEthereumChainWarningModalListPointThree": {
     "message": "अकाउंट बैलेंस और अन्य ऑन-चेन स्टेट दिखाने की"
@@ -442,10 +442,6 @@
   "attemptSendingAssets": {
     "message": "यदि आप एसेट्स को सीधे एक नेटवर्क से दूसरे नेटवर्क पर भेजने की कोशिश करते हैं, तो इस वजह से स्थायी एसेट्स का नुकसान हो सकता है। ब्रिज का इस्तेमाल करना पक्का करें।"
   },
-  "attemptToCancelSwap": {
-    "message": "~$1 के लिए स्वैप कैंसिल करने की कोशिश करें",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
-  },
   "attemptingConnect": {
     "message": "ब्लॉकचेन से कनेक्ट करने की कोशिश कर रहे हैं।"
   },
@@ -662,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "चेन ID $1 वाला नेटवर्क आपके द्वारा एंटर किए गए करेंसी सिंबल ($2) से अलग करेंसी चिह्न का इस्तेमाल कर सकता है। कृपया जारी रखने से पहले वेरीफ़ाई करें।",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "अपना नेटवर्क चुनें"
@@ -1402,15 +1398,6 @@
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
   },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API इनेबल करें"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
-  },
-  "enableSmartSwaps": {
-    "message": "स्मार्ट स्वैप इनेबल करें"
-  },
   "enableSnap": {
     "message": "इनेबल करें"
   },
@@ -2119,25 +2106,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "अपने Ledger डिवाइस पर \"स्मार्ट कॉन्ट्रैक्ट डेटा\" या \"ब्लाइंड साइनिंग\" एनेबल करें"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "सेटिंग्स> एडवांस्ड के तहत यूज़ लेज़र लाइव एनेबल करें"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "अपने Ledger डिवाइस में प्लग इन करें और Ethereum ऐप चुनें"
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ledger लाइव ऐप खोलें और अनलॉक करें"
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "अपने Ledger को MetaMask से कैसे कनेक्ट करना है, यह कस्टमाइज़ करें। $1 की अनुशंसा की जाती है, लेकिन अन्य विकल्प उपलब्ध हैं। यहां और पढ़ें: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger डिवाइस खोलने में नहीं हो पाया। आपका Ledger अन्य सॉफ्टवेयर से कनेक्ट हो सकता है। कृपया Ledger लाइव या अपने Ledger डिवाइस से जुड़े अन्य ऐप्लिकेशन को बंद करें, और फिर से कनेक्ट करने की कोशिश करें।"
-  },
-  "ledgerLive": {
-    "message": "Ledger लाइव",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live ऐप"
@@ -2147,9 +2120,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live जवाब देने में बहुत अधिक समय ले रहा है या कनेक्शन टाइमआउट हो गया है। पक्का करें कि Ledger Live ऐप खुला है और आपका डिवाइस अनलॉक है।"
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "यदि आपका Ledger लाइव ऐप खुला है, तो कृपया किसी भी खुले Ledger लाइव कनेक्शन को डिस्कनेक्ट करें और Ledger लाइव ऐप को बंद करें।"
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger डिवाइस कनेक्ट नहीं था। यदि आप अपना Ledger कनेक्ट करना चाहते हैं, तो कृपया 'जारी रखें' पर फिर से क्लिक करें और HID कनेक्शन को एप्रूव करें",
@@ -2229,9 +2199,6 @@
   "makeSureNoOneWatching": {
     "message": "पक्का करें कि इसे कोई भी नहीं देख रहा है",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "malformedData": {
-    "message": "बिगड़ा डेटा"
   },
   "max": {
     "message": "अधिकतम"
@@ -2524,9 +2491,6 @@
   },
   "noSnaps": {
     "message": "आपके पास इंस्टाल किए गए Snap नहीं हैं।"
-  },
-  "noThanksVariant2": {
-    "message": "नहीं, धन्यवाद।"
   },
   "noTransactions": {
     "message": "आपके पास कोई ट्रांसेक्शन नहीं है"
@@ -3124,10 +3088,6 @@
     "message": "इंटरनेट एक्सेस करें।",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "Snap को इंटरनेट एक्सेस करने दें। इसका इस्तेमाल थर्ड-पार्टी सर्वर के साथ डेटा भेजने और प्राप्त करने दोनों के लिए किया जा सकता है।",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "$1 Snap से कनेक्ट करें।",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3140,17 +3100,9 @@
     "message": "समय-समय पर आने वाले क्रियाओं को शेड्यूल और निष्पादित करें।",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "Snap को अनुमति दें ताकि वह नियत समय, दिनांक या अंतराल पर चलने वाली कार्रवाइयां कर सके। इसका इस्तेमाल समय-संवेदी इंटरैक्शन या सूचनाओं को ट्रिगर करने के लिए किया जा सकता है।",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "MetaMask में डायलॉग विंडो प्रदर्शित करें।",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "Snap को MetaMask पॉपअप को कस्टम टेक्स्ट, इनपुट फील्ड और किसी कार्वराई को स्वीकृत या रिजेक्ट करने के बटन दिखाने की अनुमति दें।\nउदाहरण के लिए Snap के लिए अलर्ट, कन्फर्मेशन और ऑप्ट-इन प्रवाह सृजित करने के लिए इसका इस्तेमाल किया जा सकता है।",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "एड्रेस, अकाउंट का बैलेंस, एक्टिविटी देखें और ट्रांसेक्शन शुरू करें",
@@ -3160,89 +3112,29 @@
     "message": "Ethereum प्रोवाइडर को ऐक्सेस करें।",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "Snap को MetaMask के साथ सीधे संवाद करने की अनुमति दें, ताकि वह ब्लॉकचेन से डेटा पढ़ सके और मैसेज और ट्रांसेक्शन का सुझाव दे सके।",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "इस Snap के लिए अनूठी स्वेच्छित कुंजियां प्राप्त करें।",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "Snap को इस Snap के लिए विशिष्ट विवेकाधीन चाबियों को बिना उन्हें उजागर किए, प्राप्त करने की अनुमति दें। ये चाबियां आपके MetaMask अकाउंट (एकाउंट्स) से अलग हैं और आपकी निजी चाबियों या सीक्रेट रिकवरी फ्रेज से संबंधित नहीं हैं। इस जानकारी को अन्य Snaps एक्सेस नहीं कर सकते हैं।",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "लाइफसाइकल हुक्स का इस्तेमाल करें।",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Snap को उसके लाइफसाइकल के दौरान खास समयों पर कोड चलाने के लिए लाइफसाइकल हुक का इस्तेमाल करने की अनुमति दें।",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_manageAccounts": {
     "message": "Ethereum अकाउंट जोड़ें और नियंत्रित करें",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "$1($2) के तहत अपने एकाउंट्स और संपत्तियों को नियंत्रित करें।",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Snap को अपने सीक्रेट रिकवरी फ्रेज के आधार पर, उसे उजागर किए बिना BIP-32 चाबी के जोड़े प्राप्त करने की अनुमति दें। यह $1 पर सभी एकाउंट्स और संपत्तियों तक पूरा एक्सेस प्रदान करता है।\nचाबियों को प्रबंधित करने की शक्ति के साथ, Ethereum (ईवीएम) से परे विभिन्न प्रकार के ब्लॉकचेन प्रोटोकॉल का सपोर्ट Snap कर सकता है।",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "अपने $1 अकाउंट्स और एसेट्स नियंत्रित करें।",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Snap को अपने सीक्रेट रिकवरी फ्रेज के आधार पर, उसे उजागर किए बिना, BIP-44 चाबी के जोड़े को प्राप्त करने की अनुमति दें। यह $1 पर सभी एकाउंट्स और संपत्तियों तक पूरा एक्सेस प्रदान करता है।\nचाबियों को प्रबंधित करने की शक्ति के साथ, Ethereum (ईवीएम) से परे विभिन्न प्रकार के ब्लॉकचेन प्रोटोकॉल का सपोर्ट Snap कर सकता है।",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "आपके $1 एकाउंट्स और संपत्तियों को नियंत्रित करें।",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "उसके डेटा को अपने डिवाइस पर स्टोर करें और प्रबंधित करें।",
     "description": "The description for the `snap_manageState` permission"
-  },
-  "permission_manageStateDescription": {
-    "message": "Snap को एन्क्रिप्शन के साथ सुरक्षित रूप से डेटा को स्टोर करने, अपडेट करने और पुनः प्राप्त करने की अनुमति दें। अन्य Snaps इस जानकारी को एक्सेस नहीं कर सकते हैं।",
-    "description": "An extended description for the `snap_manageState` permission"
   },
   "permission_notifications": {
     "message": "नोटीफिकेशंस दिखाएं।",
     "description": "The description for the `snap_notify` permission"
   },
-  "permission_notificationsDescription": {
-    "message": "Snap को MetaMask के भीतर सूचनाएं दिखाने की अनुमति दें। कार्रवाई योग्य या समय-संवेदी जानकारी के लिए एक शॉर्ट नोटिफिकेशन टेक्स्ट को Snap द्वारा ट्रिगर किया जा सकता है।",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "$1 को इस Snap से सीधे संवाद करने की अनुमति दें।",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "Snap को मैसेज भेजने और Snap से प्रतिक्रिया प्राप्त करने के लिए $1 को अनुमति दें।",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
   "permission_transactionInsight": {
     "message": "ट्रांजैक्शन इनसाइट्स प्राप्त करें और प्रदर्शित करें।",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "Snap को ट्रांसेक्शन को डिकोड करने और MetaMask UI के भीतर इनसाइट्स दिखाने की अनुमति दें। इसका इस्तेमाल एंटी-फिशिंग और सुरक्षा समाधान के लिए किया जा सकता है।",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "ट्रांसेक्शन का सुझाव देने वाली वेबसाइटों की स्रोत देखें",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "Snap को ट्रांसेक्शन का सुझाव देने वाली वेबसाइटों की जड़ों (URI) को देखने की अनुमति दें। इसका इस्तेमाल एंटी-फिशिंग और सुरक्षा समाधान के लिए किया जा सकता है।",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "अज्ञात अनुमति: $1",
@@ -3252,10 +3144,6 @@
     "message": "$1 ($2) के लिए अपनी पब्लिक की को देखें।",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "Snap को $1 के लिए आपकी सार्वजनिक चाबियों (और पतों) को देखने की अनुमति दें। यह एकाउंट्स या संपत्तियों पर कोई नियंत्रण प्रदान नहीं करता है।",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "$1 के लिए अपनी पब्लिक की को देखें",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3263,10 +3151,6 @@
   "permission_webAssembly": {
     "message": "वेब असेंबली के लिए सपोर्ट।",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "Snap को WebAssembly के माध्यम से निम्न-स्तरीय निष्पादन वातावरण को एक्सेस करने की अनुमति दें।",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "अनुमतियाँ"
@@ -3894,9 +3778,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "स्मार्ट स्वैप अस्थायी रूप से अनुपलब्ध हैं।"
   },
-  "smartSwapsSubDescription": {
-    "message": "* स्मार्ट स्वैप कई बार आपके ट्रांसेक्शन को निजी तौर पर सबमिट करने की कोशिश करेगा। यदि सभी प्रयास विफल हो जाते हैं, तो यह सुनिश्चित करने के लिए ट्रांसेक्शन सार्वजनिक रूप से प्रसारित किया जाएगा कि आपका स्वैप सफलतापूर्वक पूरा हो गया है।"
-  },
   "snapConfigure": {
     "message": "कॉन्फिगर करें"
   },
@@ -3959,24 +3840,8 @@
   "snapInstallSuccess": {
     "message": "इंस्टॉलेशन समाप्त"
   },
-  "snapInstallWarningCheck": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं।",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "ये पुष्टि करने के लिए कि आप समझते हैं, सभी बॉक्स पर सही का निशान लगाएं:",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "सावधानी से आगे बढ़ें"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "आप स्नैप \"$1\" के लिए $2 कुंजी का एक्सेस प्रदान कर रहे हैं। यह अपरिवर्तनीय है और आपके $2 खातों और संपत्तियों पर \"$1\" नियंत्रण प्रदान करता है। आगे बढ़ने से पहले सुनिश्चित करें कि आप \"$1\" पर भरोसा करते हैं।",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "$1 को $2 की सार्वजनिक कुंजी का एक्सेस प्रदान करें",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "$1 इंस्टॉल नहीं किया जा सका.",
@@ -3998,9 +3863,6 @@
   "snapResultSuccessDescription": {
     "message": "$1 इस्तेमाल के लिए तैयार है"
   },
-  "snapUpdate": {
-    "message": "Snap अपडेट करें"
-  },
   "snapUpdateAvailable": {
     "message": "अपडेट उपलब्ध है"
   },
@@ -4021,9 +3883,6 @@
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "ट्रांजैक्शन इनसाइट लोड हो रही है..."
   },
   "snapsInvalidUIError": {
     "message": "Snap द्वारा निर्दिष्ट किया गया UI ग़लत है।"
@@ -4291,9 +4150,6 @@
     "message": "स्वैप पूरा होने में बैलेंस समय <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "ट्रांसेक्शन की लागतें घटाने और विफलताओं को कम करने के लिए सबमिट करने से पहले ट्रांसेक्शन को सिम्युलेट करें।"
-  },
   "stxTryingToCancel": {
     "message": "अपके ट्रांसेक्शन को कैंसिल करने की कोशिश कर रहा है..."
   },
@@ -4308,9 +4164,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "आपका ट्रांसेक्शन कैंसिल किया गया और आपने किसी भी तरह के अनावश्यक गैस फ़ीस का पेमेंट नहीं किया।"
-  },
-  "stxYouCanOptOut": {
-    "message": "एड्वांस्ड सेटिंग्स में आप कभी भी ऑप्ट-आउट कर सकते हैं।"
   },
   "submit": {
     "message": "सबमिट करें"
@@ -4629,9 +4482,6 @@
   "swapSource": {
     "message": "चलनिधि का स्रोत"
   },
-  "swapSourceInfo": {
-    "message": "हम सर्वोत्तम दरों और कम-से-कम नेटवर्क फ़ीस का पता लगाने के लिए कई चलनिधि स्रोतों (एक्सचेंज, एग्रीगेटर और पेशेवर बाजार निर्माताओं) की खोज करते हैं।"
-  },
   "swapSuggested": {
     "message": "विनिमय का सुझाव"
   },
@@ -4942,18 +4792,6 @@
   "transactionCreated": {
     "message": "$2 पर $1 के मूल्य के साथ ट्रांसेक्शन बनाया गया।"
   },
-  "transactionData": {
-    "message": "ट्रांसेक्शन का डेटा"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Truffle द्वारा डिकोड किया गया"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "$1 पर वेरीफ़ाई कॉन्ट्रैक्ट"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "ChainId $1 के लिए ट्रांसेक्शन डिकोडिंग उपलब्ध नहीं है"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "साइट का सुझाव दिया गया"
   },
@@ -5085,9 +4923,6 @@
   "twelveHrTitle": {
     "message": "12 घंटे:"
   },
-  "txInsightsNotSupported": {
-    "message": "इस समय इस कॉन्ट्रैक्ट के लिए ट्रांसेक्शन की जानकारी समर्थित नहीं है।"
-  },
   "typeYourSRP": {
     "message": "अपना गुप्त रिकवरी वाक्यांश लिखें"
   },
@@ -5131,10 +4966,6 @@
   "unrecognizedChain": {
     "message": "यह कस्टम नेटवर्क पहचाना नहीं गया है",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (अपरिचित प्रोटोकॉल)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "वर्तमान में NFT (ERC-721) टोकन भेजना समर्थित नहीं है",
