@@ -181,7 +181,6 @@ describe('Swaps - notifications @no-mmi', function () {
           title: 'Very high slippage',
           text: 'Slippage tolerance must be 15% or less. Anything higher will result in a bad rate.',
         });
-        await driver.fill('input[data-testid*="slippage"]', '4');
       },
     );
   });
