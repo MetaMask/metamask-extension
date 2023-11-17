@@ -10,7 +10,7 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { TextField } from '../text-field/deprecated';
+import { TextField } from '../text-field';
 import { HelpText, HelpTextSeverity } from '../help-text';
 import { Label } from '../label';
 

@@ -18,8 +18,8 @@ import {
   HelpText,
   Label,
   Text,
-  TEXT_FIELD_SIZES,
-  TEXT_FIELD_TYPES,
+  TextFieldSize,
+  TextFieldType,
   Icon,
   IconName,
   IconSize,
@@ -150,12 +150,12 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(TEXT_FIELD_SIZES),
+      options: Object.values(TextFieldSize),
       table: { category: 'text field base props' },
     },
     type: {
       control: 'select',
-      options: Object.values(TEXT_FIELD_TYPES),
+      options: Object.values(TextFieldType),
       table: { category: 'text field base props' },
     },
     truncate: {
