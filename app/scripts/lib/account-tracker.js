@@ -111,7 +111,7 @@ export default class AccountTracker {
         ) {
           this._updateAccounts();
         }
-      }, this.onboardingController.store.getState()), // is this right?
+      }, this.preferencesController.store.getState()),
     );
   }
 
@@ -330,10 +330,10 @@ export default class AccountTracker {
    * @fires 'block' The updated state, if all account updates are successful
    */
   async _updateForBlock(blockNumber) {
-    this._updateForBlockByChainId(null, blockNumber);
+    await this._updateForBlockByNetworkClientId(null, blockNumber);
   }
 
-  async _updateForBlockByChainId(networkClientId, blockNumber) {
+  async _updateForBlockByNetworkClientId(networkClientId, blockNumber) {
     const { chainId, provider } = this.getCorrectNetworkClient(networkClientId);
     this._currentBlockNumberByChainId[chainId] = blockNumber;
 
