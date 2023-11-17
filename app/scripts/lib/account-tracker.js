@@ -389,8 +389,7 @@ export default class AccountTracker {
 
     let addresses = [];
     if (useMultiAccountBalanceChecker) {
-      const { accountsByChainId } = this.store.getState();
-      const accounts = accountsByChainId[chainId];
+      const { accounts } = this.store.getState();
 
       addresses = Object.keys(accounts);
     } else {
@@ -446,8 +445,7 @@ export default class AccountTracker {
 
     const result = { address, balance };
     // update accounts state
-    const { accountsByChainId } = this.store.getState();
-    const accounts = accountsByChainId[chainId];
+    const { accounts, accountsByChainId } = this.store.getState();
     // only populate if the entry is still present
     if (!accounts[address]) {
       return;
@@ -491,8 +489,7 @@ export default class AccountTracker {
     provider,
     chainId,
   ) {
-    const { accountsByChainId } = this.store.getState();
-    const accounts = accountsByChainId[chainId];
+    const { accounts, accountsByChainId } = this.store.getState();
 
     const newAccounts = {};
     Object.keys(accounts).forEach((address) => {
