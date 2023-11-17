@@ -419,12 +419,12 @@ export const CustomLabelOrHelpText = () => (
       placeholder="Enter a number"
       endAccessory={<ButtonLink>Max</ButtonLink>}
       marginBottom={4}
-      type={TEXT_FIELD_TYPES.NUMBER}
+      type={TextFieldType.Number}
     />
     <FormTextField
       label="Swap from"
       placeholder="0"
-      type={TEXT_FIELD_TYPES.NUMBER}
+      type={TextFieldType.Number}
     />
     <Box
       display={Display.Flex}
