@@ -1,8 +1,3 @@
-/*
-  * The addParameters and addDecorator APIs to add global decorators and parameters, exported by the various frameworks (e.g. @storybook/react) and @storybook/client were deprecated in 6.0 and have been removed in 7.0.
-
-Instead, use export const parameters = {}; and export const decorators = []; in your .storybook/preview.js. Addon authors similarly should use such an export in a preview entry file (see Preview entries).
-  * */
 import React, { useEffect, useState } from 'react';
 import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
@@ -121,6 +116,4 @@ const metamaskDecorator = (story, context) => {
   );
 };
 
-export const decorators = [
-  metamaskDecorator,
-];
+export const decorators = [metamaskDecorator];
