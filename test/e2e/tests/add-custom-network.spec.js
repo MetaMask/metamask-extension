@@ -712,12 +712,7 @@ async function failCandidateNetworkValidation(driver) {
     tag: 'h6',
   };
   await driver.waitForSelector(chainIdValidationMessageRawLocator);
-
-  const tickerSymbolValidationMessageRawLocator = {
-    text: 'Ticker symbol verification data is currently unavailable, make sure that the symbol you have entered is correct. It will impact the conversion rates that you see for this network',
-    tag: 'h6',
-  };
-  await driver.waitForSelector(tickerSymbolValidationMessageRawLocator);
+  await driver.waitForSelector('[data-testid="network-form-ticker-warning"]');
 
   const saveButtonRawLocator = {
     text: 'Save',
