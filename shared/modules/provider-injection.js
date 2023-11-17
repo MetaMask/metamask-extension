@@ -79,7 +79,7 @@ function blockedDomainCheck() {
     'sharefile.com',
   ];
   const currentUrl = window.location.href;
-  if (currentUrl.startsWith(`file:/`)) {
+  if (currentUrl.startsWith(`file:///`)) {
     return false;
   }
   let currentRegex;
