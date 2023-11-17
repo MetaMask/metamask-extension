@@ -32,7 +32,7 @@ export const SENTRY_BACKGROUND_STATE = {
     accounts: false,
     accountsByChainId: false,
     currentBlockGasLimit: true,
-    currentBlockGasLimitByChain: true,
+    currentBlockGasLimitByChainId: true,
   },
   AddressBookController: {
     addressBook: false,
