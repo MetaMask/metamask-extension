@@ -2769,9 +2769,12 @@ export default class MetamaskController extends EventEmitter {
       // PreferencesController
       setSelectedAddress: (address) => {
         this.preferencesController.setSelectedAddress(address);
-        this.accountsController.setSelectedAccount(
-          this.accountsController.getAccountByAddress(address).id,
-        );
+        const account = this.accountsController.getAccountByAddress(address);
+        if (account) {
+          this.accountsController.setSelectedAccount(account.id);
+        } else {
+          throw new Error(`Account for '${address}' not found`);
+        }
       },
       addToken: tokensController.addToken.bind(tokensController),
       updateTokenType: tokensController.updateTokenType.bind(tokensController),
