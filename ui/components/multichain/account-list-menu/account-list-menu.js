@@ -33,7 +33,8 @@ import {
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  getPinnedAccountsList,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
@@ -75,6 +76,7 @@ export const AccountListMenu = ({
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const selectedAccount = useSelector(getSelectedAccount);
+  const pinnedAccounts = useSelector(getPinnedAccountsList);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
@@ -115,6 +117,25 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
+
+  if (pinnedAccounts.length > 0) {
+    accounts.forEach((account) => {
+      if (pinnedAccounts.includes(account.address)) {
+        account.pinned = true;
+      } else {
+        account.pinned = false;
+      }
+    });
+  }
+
+  const sortedSearchResults = searchResults.slice().sort((a, b) => {
+    if (a.pinned && !b.pinned) {
+      return -1; // a comes first
+    } else if (!a.pinned && b.pinned) {
+      return 1; // b comes first
+    }
+    return 0; // keep the order unchanged
+  });
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -309,7 +330,7 @@ export const AccountListMenu = ({
             ) : null}
             {/* Account list block */}
             <Box className="multichain-account-menu-popover__list">
-              {searchResults.length === 0 && searchQuery !== '' ? (
+              {sortedSearchResults.length === 0 && searchQuery !== '' ? (
                 <Text
                   paddingLeft={4}
                   paddingRight={4}
@@ -319,33 +340,36 @@ export const AccountListMenu = ({
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              {searchResults.map((account) => {
+              {sortedSearchResults.map((account) => {
                 const connectedSite = connectedSites[account.address]?.find(
                   ({ origin }) => origin === currentTabOrigin,
                 );
 
                 return (
-                  <AccountListItem
-                    onClick={() => {
-                      onClose();
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.NavAccountSwitched,
-                        properties: {
-                          location: 'Main Menu',
-                        },
-                      });
-                      dispatch(setSelectedAccount(account.address));
-                    }}
-                    identity={account}
-                    key={account.address}
-                    selected={selectedAccount.address === account.address}
-                    closeMenu={onClose}
-                    connectedAvatar={connectedSite?.iconUrl}
-                    connectedAvatarName={connectedSite?.name}
-                    showOptions
-                    {...accountListItemProps}
-                  />
+                  <>
+                    <AccountListItem
+                      onClick={() => {
+                        onClose();
+                        trackEvent({
+                          category: MetaMetricsEventCategory.Navigation,
+                          event: MetaMetricsEventName.NavAccountSwitched,
+                          properties: {
+                            location: 'Main Menu',
+                          },
+                        });
+                        dispatch(setSelectedAccount(account.address));
+                      }}
+                      identity={account}
+                      key={account.address}
+                      selected={selectedAccount.address === account.address}
+                      closeMenu={onClose}
+                      connectedAvatar={connectedSite?.iconUrl}
+                      connectedAvatarName={connectedSite?.name}
+                      showOptions
+                      isPinned={account.pinned}
+                      {...accountListItemProps}
+                    />
+                  </>
                 );
               })}
             </Box>

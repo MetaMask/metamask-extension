@@ -46,6 +46,7 @@ export const AccountListItemMenu = ({
   isRemovable,
   identity,
   isOpen,
+  isPinned,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -129,6 +130,16 @@ export const AccountListItemMenu = ({
     dispatch(updateAccountsList(updatedPinnedAccountList));
   };
 
+  const handleUnpinning = (address) => {
+    const indexToRemove = pinnedAccountList.indexOf(address);
+    if (indexToRemove !== -1) {
+      const updatedPinnedAccountList = [...pinnedAccountList];
+      updatedPinnedAccountList.splice(indexToRemove, 1);
+      console.log(updatedPinnedAccountList, 'updatedPinnedAccountList');
+      dispatch(updateAccountsList(updatedPinnedAccountList));
+    }
+  };
+
   return (
     <Popover
       className="multichain-account-list-item-menu__popover"
@@ -158,13 +169,17 @@ export const AccountListItemMenu = ({
           <MenuItem
             data-testid="account-list-menu-pin"
             onClick={() => {
-              handlePinning(identity.address);
+              isPinned
+                ? handleUnpinning(identity.address)
+                : handlePinning(identity.address);
               onClose();
               closeMenu?.();
             }}
-            iconName={IconName.Add}
+            iconName={isPinned ? IconName.Unpin : IconName.Pin}
           >
-            <Text variant={TextVariant.bodySm}>{t('pinToTop')}</Text>
+            <Text variant={TextVariant.bodySm}>
+              {isPinned ? t('unpin') : t('pinToTop')}
+            </Text>
           </MenuItem>
           {isRemovable ? (
             <MenuItem
@@ -260,6 +275,10 @@ AccountListItemMenu.propTypes = {
    * Represents if the account should be removable
    */
   isRemovable: PropTypes.bool.isRequired,
+  /**
+   * Represents pinned accounts
+   */
+  isPinned: PropTypes.bool,
   /**
    * Identity of the account
    */
