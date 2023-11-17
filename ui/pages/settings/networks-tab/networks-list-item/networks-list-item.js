@@ -80,11 +80,12 @@ const NetworksListItem = ({
         }
       }}
     >
-      {isCurrentRpcTarget ? (
-        <Icon name={IconName.Check} color={IconColor.successDefault} />
-      ) : (
-        <Icon name={IconName.Check} color={IconColor.transparent} />
-      )}
+      <Icon
+        name={IconName.Check}
+        color={
+          isCurrentRpcTarget ? IconColor.successDefault : IconColor.transparent
+        }
+      />
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
           className="networks-tab__content__custom-image"

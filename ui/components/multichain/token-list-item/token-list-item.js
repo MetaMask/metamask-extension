@@ -1,7 +1,8 @@
 import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
+import { useHistory } from 'react-router';
 import {
   BlockSize,
   BorderColor,
@@ -42,6 +43,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
+import {
+  NETWORKS_FORM_ROUTE,
+  NETWORKS_ROUTE,
+} from '../../../helpers/constants/routes';
+import { setSelectedNetworkConfigurationId } from '../../../store/actions';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 
 export const TokenListItem = ({
   className,
@@ -66,7 +75,12 @@ export const TokenListItem = ({
 
   // Scam warning
   const IS_PROBLEM = true; // TEMPORARY: REMOVE ME
+  const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+  const environmentType = getEnvironmentType();
+  const providerConfig = useSelector(getProviderConfig);
+  const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
+  const history = useHistory();
 
   return (
     <Box
@@ -86,6 +100,10 @@ export const TokenListItem = ({
         href="#"
         onClick={(e) => {
           e.preventDefault();
+          if (showScamWarningModal) {
+            return;
+          }
+
           onClick();
           trackEvent({
             category: MetaMetricsEventCategory.Tokens,
@@ -165,19 +183,15 @@ export const TokenListItem = ({
               fontWeight={FontWeight.Medium}
               variant={TextVariant.bodyMd}
               width={BlockSize.TwoThirds}
-              textAlign={IS_PROBLEM ? TextAlign.Center : TextAlign.End}
+              textAlign={TextAlign.End}
               data-testid="multichain-token-list-item-secondary-value"
             >
               {isNativeCurrency && IS_PROBLEM ? (
                 <>
-                  N/A{' '}
+                  {t('nativeTokenScamWarningLabel')}{' '}
                   <Icon
                     name={IconName.Info}
-                    onMouseEnter={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      setShowScamWarningModal(true);
-                    }}
+                    onMouseEnter={() => setShowScamWarningModal(true)}
                   />
                   {showScamWarningModal ? (
                     <Modal isOpen>
@@ -186,14 +200,32 @@ export const TokenListItem = ({
                         <ModalHeader
                           onClose={() => setShowScamWarningModal(false)}
                         >
-                          This is a potential scam
+                          {t('nativeTokenScamWarningTitle')}
                         </ModalHeader>
-                        <Box marginTop={4} marginBotton={4}>
-                          This network name ....
+                        <Box marginTop={4} marginBottom={4}>
+                          {t('nativeTokenScamWarningDescription', [
+                            tokenSymbol,
+                          ])}
                         </Box>
                         <Box>
-                          <ButtonSecondary block>
-                            Edit network details
+                          <ButtonSecondary
+                            onClick={() => {
+                              dispatch(
+                                setSelectedNetworkConfigurationId(
+                                  providerConfig.id,
+                                ),
+                              );
+                              if (isFullScreen) {
+                                history.push(NETWORKS_ROUTE);
+                              } else {
+                                global.platform.openExtensionInBrowser(
+                                  NETWORKS_ROUTE,
+                                );
+                              }
+                            }}
+                            block
+                          >
+                            {t('nativeTokenScamWarningConversion')}
                           </ButtonSecondary>
                         </Box>
                       </ModalContent>
