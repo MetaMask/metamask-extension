@@ -262,7 +262,7 @@ exports[`SendPage render renders correctly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
                       >
                         <div
-                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2"
+                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
                         >
                           <button
                             class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
@@ -381,7 +381,7 @@ exports[`SendPage render renders correctly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
                       >
                         <div
-                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2"
+                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
                         >
                           <button
                             class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
@@ -500,7 +500,7 @@ exports[`SendPage render renders correctly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
                       >
                         <div
-                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2"
+                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
                         >
                           <button
                             class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
@@ -628,7 +628,7 @@ exports[`SendPage render renders correctly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
                       >
                         <div
-                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2"
+                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
                         >
                           <button
                             class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"
@@ -756,7 +756,7 @@ exports[`SendPage render renders correctly 1`] = `
                         class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
                       >
                         <div
-                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2"
+                          class="mm-box multichain-account-list-item__account-name mm-box--margin-inline-end-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
                         >
                           <button
                             class="mm-box mm-text multichain-account-list-item__account-name__button mm-text--body-md-medium mm-text--ellipsis mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default mm-box--background-color-transparent"

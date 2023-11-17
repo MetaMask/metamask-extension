@@ -165,20 +165,22 @@ export const AccountListItemMenu = ({
             textProps={{ variant: TextVariant.bodySm }}
             address={identity.address}
           />
-          <MenuItem
-            data-testid="account-list-menu-pin"
-            onClick={() => {
-              isPinned
-                ? handleUnpinning(identity.address)
-                : handlePinning(identity.address);
-              onClose();
-            }}
-            iconName={isPinned ? IconName.Unpin : IconName.Pin}
-          >
-            <Text variant={TextVariant.bodySm}>
-              {isPinned ? t('unpin') : t('pinToTop')}
-            </Text>
-          </MenuItem>
+          {process.env.NETWORK_ACCOUNT_DND ? (
+            <MenuItem
+              data-testid="account-list-menu-pin"
+              onClick={() => {
+                isPinned
+                  ? handleUnpinning(identity.address)
+                  : handlePinning(identity.address);
+                onClose();
+              }}
+              iconName={isPinned ? IconName.Unpin : IconName.Pin}
+            >
+              <Text variant={TextVariant.bodySm}>
+                {isPinned ? t('unpin') : t('pinToTop')}
+              </Text>
+            </MenuItem>
+          ) : null}
           {isRemovable ? (
             <MenuItem
               ref={removeAccountItemRef}

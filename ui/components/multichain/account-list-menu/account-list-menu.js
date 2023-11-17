@@ -118,7 +118,7 @@ export const AccountListMenu = ({
     }
   }
 
-  if (pinnedAccounts.length > 0) {
+  if (process.env.NETWORK_ACCOUNT_DND && pinnedAccounts.length > 0) {
     accounts.forEach((account) => {
       if (pinnedAccounts.includes(account.address)) {
         account.pinned = true;
@@ -128,7 +128,7 @@ export const AccountListMenu = ({
     });
   }
 
-  const sortedSearchResults = searchResults.slice().sort((a, b) => {
+  let sortedSearchResults = searchResults.slice().sort((a, b) => {
     if (a.pinned && !b.pinned) {
       return -1; // a comes first
     } else if (!a.pinned && b.pinned) {
@@ -136,6 +136,10 @@ export const AccountListMenu = ({
     }
     return 0; // keep the order unchanged
   });
+
+  sortedSearchResults = process.env.NETWORK_ACCOUNT_DND
+    ? sortedSearchResults
+    : searchResults;
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -366,7 +370,9 @@ export const AccountListMenu = ({
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
                       showOptions
-                      isPinned={account.pinned}
+                      isPinned={
+                        process.env.NETWORK_ACCOUNT_DND ? account.pinned : null
+                      }
                       {...accountListItemProps}
                     />
                   </>
