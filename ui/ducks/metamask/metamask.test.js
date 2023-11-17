@@ -113,7 +113,7 @@ describe('MetaMask Reducers', () => {
               address: '0xd85a4b6a394794842887b8284293d69163007bbb',
             },
           },
-        }
+        },
         addressBook: {
           '0x5': {
             '0x06195827297c7a80a443b6894d3bdb8824b43896': {
