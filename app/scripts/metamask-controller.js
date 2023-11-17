@@ -1089,7 +1089,7 @@ export default class MetamaskController extends EventEmitter {
           ) => {
             const accountsMissingIdentities = accounts.filter(
               (address) =>
-                !internalAccounts.find(
+                !internalAccounts.some(
                   (account) =>
                     account.address.toLowerCase() === address.toLowerCase(),
                 ),
