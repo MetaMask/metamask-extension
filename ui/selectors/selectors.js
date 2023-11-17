@@ -91,6 +91,7 @@ import {
   NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
+  NOTIFICATION_U2F_LEDGER_LIVE,
 } from '../../shared/notifications';
 import {
   getCurrentNetworkTransactions,
@@ -753,7 +754,8 @@ export function getInfuraBlocked(state) {
 }
 
 export function getUSDConversionRate(state) {
-  return state.metamask.usdConversionRate;
+  return state.metamask.currencyRates[getProviderConfig(state).ticker]
+    ?.usdConversionRate;
 }
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {
@@ -1057,6 +1059,7 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
+    [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
   };
 }
 

@@ -19,9 +19,9 @@ import {
   Box,
 } from '../../../../component-library';
 import { getAddressBookEntry } from '../../../../../selectors';
-import Identicon from '../../../../ui/identicon';
 import Confusable from '../../../../ui/confusable';
-import { ellipsify } from '../../../../../pages/send/send.utils';
+import { Tab, Tabs } from '../../../../ui/tabs';
+import { AddressListItem } from '../../../address-list-item';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccount } from '.';
 
 const renderExplicitAddress = (
@@ -31,9 +31,9 @@ const renderExplicitAddress = (
   dispatch: any,
 ) => {
   return (
-    <div
-      key={address}
-      className="send__select-recipient-wrapper__group-item"
+    <AddressListItem
+      address={address}
+      label={<Confusable input={nickname} />}
       onClick={() => {
         dispatch(
           addHistoryEntry(
@@ -43,19 +43,7 @@ const renderExplicitAddress = (
         dispatch(updateRecipient({ address, nickname }));
         dispatch(updateRecipientUserInput(address));
       }}
-    >
-      <Identicon address={address} diameter={28} />
-      <div className="send__select-recipient-wrapper__group-item__content">
-        <div className="send__select-recipient-wrapper__group-item__title">
-          {nickname ? <Confusable input={nickname} /> : ellipsify(address)}
-        </div>
-        {nickname && (
-          <div className="send__select-recipient-wrapper__group-item__subtitle">
-            {ellipsify(address)}
-          </div>
-        )}
-      </div>
-    </div>
+    />
   );
 };
 
@@ -100,26 +88,42 @@ export const SendPageRecipient = () => {
     );
   } else {
     contents = (
-      <>
-        {userInput ? null : <SendPageYourAccount />}
-        <SendPageAddressBook />
-      </>
+      <Tabs defaultActiveTabKey={userInput ? 'contacts' : 'accounts'}>
+        {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          <Tab tabKey="accounts" name={t('yourAccounts')}>
+            <SendPageYourAccount />
+          </Tab>
+        }
+        {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          <Tab tabKey="contacts" name={t('contacts')}>
+            <SendPageAddressBook />
+          </Tab>
+        }
+      </Tabs>
     );
   }
 
   return (
-    <SendPageRow>
+    <>
       {showErrorBanner ? (
-        <BannerAlert severity={BannerAlertSeverity.Danger} marginTop={6}>
-          {t(domainError ?? recipient.error)}
-        </BannerAlert>
+        <SendPageRow>
+          <BannerAlert severity={BannerAlertSeverity.Danger}>
+            {t(domainError ?? recipient.error)}
+          </BannerAlert>
+        </SendPageRow>
       ) : null}
       {showWarningBanner ? (
-        <BannerAlert severity={BannerAlertSeverity.Warning} marginTop={6}>
-          {t(domainWarning ?? recipient.warning)}
-        </BannerAlert>
+        <SendPageRow>
+          <BannerAlert severity={BannerAlertSeverity.Warning}>
+            {t(domainWarning ?? recipient.warning)}
+          </BannerAlert>
+        </SendPageRow>
       ) : null}
-      <Box marginTop={6}>{contents}</Box>
-    </SendPageRow>
+      <Box className="multichain-send-page__recipient">{contents}</Box>
+    </>
   );
 };

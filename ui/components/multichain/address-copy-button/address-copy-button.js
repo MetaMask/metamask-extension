@@ -4,10 +4,14 @@ import classnames from 'classnames';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { useSelector } from 'react-redux';
-import { getIsCustodianSupportedChain } from '../../../selectors/institutional/selectors';
+import { getSelectedAddress } from '../../../selectors';
+import {
+  getIsCustodianSupportedChain,
+  getCustodianIconForAddress,
+} from '../../../selectors/institutional/selectors';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
 ///: END:ONLY_INCLUDE_IN
-import { ButtonBase, IconName } from '../../component-library';
+import { ButtonBase, IconName, Box } from '../../component-library';
 import {
   BackgroundColor,
   TextVariant,
@@ -15,6 +19,7 @@ import {
   Size,
   BorderRadius,
   AlignItems,
+  Display,
 } from '../../../helpers/constants/design-system';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -36,6 +41,10 @@ export const AddressCopyButton = ({
   const t = useI18nContext();
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const selectedAddress = useSelector(getSelectedAddress);
+  const custodianIcon = useSelector((state) =>
+    getCustodianIconForAddress(state, selectedAddress),
+  );
   const isCustodianSupportedChain = useSelector(getIsCustodianSupportedChain);
   const { nickname, type: networkType } = useSelector(getProviderConfig);
   ///: END:ONLY_INCLUDE_IN
@@ -73,7 +82,21 @@ export const AddressCopyButton = ({
         alignItems={AlignItems.center}
         data-testid="address-copy-button-text"
       >
-        {displayAddress}
+        <Box display={Display.Flex}>
+          {
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            custodianIcon && (
+              <img
+                src={custodianIcon}
+                data-testid="custody-logo"
+                className="custody-logo"
+                alt="custody logo"
+              />
+            )
+            ///: END:ONLY_INCLUDE_IN
+          }
+          {displayAddress}
+        </Box>
       </ButtonBase>
     </Tooltip>
   );

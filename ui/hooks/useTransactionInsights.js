@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { SeverityLevel } from '@metamask/snaps-utils';
+import { SeverityLevel } from '@metamask/snaps-sdk';
 import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { TransactionType } from '../../shared/constants/transaction';
 import { Tab } from '../components/ui/tabs';
@@ -78,6 +78,7 @@ const useTransactionInsights = ({ txData }) => {
         name={getSnapName(selectedSnap?.id, subjectMetadata[selectedSnap?.id])}
       >
         <SnapInsight
+          snapId={selectedInsightSnapId}
           ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
           data={data?.[0]}
           ///: END:ONLY_INCLUDE_IN
@@ -111,6 +112,7 @@ const useTransactionInsights = ({ txData }) => {
         onChange={(snapId) => setSelectedInsightSnapId(snapId)}
       >
         <SnapInsight
+          snapId={selectedInsightSnapId}
           loading={loading}
           ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
           data={selectedSnapData}
