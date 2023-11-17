@@ -150,13 +150,13 @@ export const getPermissionSpecifications = ({
               `Missing identity for address: "${secondAddress}".`,
             );
           } else if (
-            firstAccount.metadata?.lastSelected ===
-            secondAccount.metadata?.lastSelected
+            firstAccount.metadata.lastSelected ===
+            secondAccount.metadata.lastSelected
           ) {
             return 0;
-          } else if (firstAccount.metadata?.lastSelected === undefined) {
+          } else if (firstAccount.metadata.lastSelected === undefined) {
             return 1;
-          } else if (secondAccount.metadata?.lastSelected === undefined) {
+          } else if (secondAccount.metadata.lastSelected === undefined) {
             return -1;
           }
 
