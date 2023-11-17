@@ -30,7 +30,9 @@ export const ERROR_URL_ALLOWLIST = {
 export const SENTRY_BACKGROUND_STATE = {
   AccountTracker: {
     accounts: false,
+    accountsByChainId: false,
     currentBlockGasLimit: true,
+    currentBlockGasLimitByChain: true,
   },
   AddressBookController: {
     addressBook: false,
