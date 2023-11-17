@@ -1398,12 +1398,6 @@
   "enableFromSettings": {
     "message": " इसे सेटिंग्स से इनेबल करें।"
   },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API इनेबल करें"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "NFT डेटा लाने के लिए OpenSea के API का उपयोग करें। NFT ऑटो-डिटेक्शन OpenSea के API पर निर्भर करता है, और इसके बंद होने पर उपलब्ध नहीं होगा।"
-  },
   "enableSnap": {
     "message": "इनेबल करें"
   },
@@ -2112,25 +2106,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "अपने Ledger डिवाइस पर \"स्मार्ट कॉन्ट्रैक्ट डेटा\" या \"ब्लाइंड साइनिंग\" एनेबल करें"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "सेटिंग्स> एडवांस्ड के तहत यूज़ लेज़र लाइव एनेबल करें"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "अपने Ledger डिवाइस में प्लग इन करें और Ethereum ऐप चुनें"
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ledger लाइव ऐप खोलें और अनलॉक करें"
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "अपने Ledger को MetaMask से कैसे कनेक्ट करना है, यह कस्टमाइज़ करें। $1 की अनुशंसा की जाती है, लेकिन अन्य विकल्प उपलब्ध हैं। यहां और पढ़ें: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger डिवाइस खोलने में नहीं हो पाया। आपका Ledger अन्य सॉफ्टवेयर से कनेक्ट हो सकता है। कृपया Ledger लाइव या अपने Ledger डिवाइस से जुड़े अन्य ऐप्लिकेशन को बंद करें, और फिर से कनेक्ट करने की कोशिश करें।"
-  },
-  "ledgerLive": {
-    "message": "Ledger लाइव",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live ऐप"
@@ -2140,9 +2120,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live जवाब देने में बहुत अधिक समय ले रहा है या कनेक्शन टाइमआउट हो गया है। पक्का करें कि Ledger Live ऐप खुला है और आपका डिवाइस अनलॉक है।"
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "यदि आपका Ledger लाइव ऐप खुला है, तो कृपया किसी भी खुले Ledger लाइव कनेक्शन को डिस्कनेक्ट करें और Ledger लाइव ऐप को बंद करें।"
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger डिवाइस कनेक्ट नहीं था। यदि आप अपना Ledger कनेक्ट करना चाहते हैं, तो कृपया 'जारी रखें' पर फिर से क्लिक करें और HID कनेक्शन को एप्रूव करें",

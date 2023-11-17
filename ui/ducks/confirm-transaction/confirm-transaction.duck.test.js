@@ -290,8 +290,12 @@ describe('Confirm Transaction Duck', () => {
       };
       const mockState = {
         metamask: {
-          conversionRate: 468.58,
           currentCurrency: 'usd',
+          currencyRates: {
+            ETH: {
+              conversionRate: 468.58,
+            },
+          },
           providerConfig: {
             ticker: 'ETH',
           },
@@ -343,8 +347,12 @@ describe('Confirm Transaction Duck', () => {
     it('updates confirmTransaction transaction', () => {
       const mockState = {
         metamask: {
-          conversionRate: 468.58,
           currentCurrency: 'usd',
+          currencyRates: {
+            ETH: {
+              conversionRate: 468.58,
+            },
+          },
           selectedNetworkClientId: NetworkType.goerli,
           networksMetadata: {
             [NetworkType.goerli]: {
@@ -354,6 +362,7 @@ describe('Confirm Transaction Duck', () => {
           },
           providerConfig: {
             chainId: '0x5',
+            ticker: 'ETH',
           },
           transactions: [
             {

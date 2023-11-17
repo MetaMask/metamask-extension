@@ -1398,12 +1398,6 @@
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
   },
-  "enableOpenSeaAPI": {
-    "message": "Bật API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
-  },
   "enableSnap": {
     "message": "Bật"
   },
@@ -2112,25 +2106,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Bật \"dữ liệu hợp đồng thông minh\" hoặc \"ký mù\" trên thiết bị Ledger của bạn."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Bật Sử dụng Ledger Live trong Cài đặt > Nâng cao."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Nhớ cắm thiết bị Ledger và chọn ứng dụng Ethereum."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Mở và mở khóa Ứng dụng Ledger Live."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Tùy chỉnh cách thức kết nối Ledger với MetaMask. Nên dùng $1, nhưng cũng có sẵn các tùy chọn khác. Đọc thêm tại đây: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Mở thiết bị Ledger không thành công. Ledger của bạn có thể đã được kết nối với phần mềm khác. Vui lòng đóng Ledger Live hoặc các ứng dụng khác được kết nối với thiết bị Ledger của bạn và thử kết nối lại."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ứng dụng Ledger Live"
@@ -2140,9 +2120,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live mất quá nhiều thời gian để phản hồi hoặc đã hết thời gian chờ kết nối. Hãy đảm bảo bạn đã mở ứng dụng Ledger Live và đã mở khóa thiết bị."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Nếu ứng dụng Ledger Live của bạn đang mở, vui lòng ngắt mọi kết nối Ledger Live đang mở và đóng ứng dụng Ledger Live."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Thiết bị Ledger chưa được kết nối. Nếu bạn muốn kết nối với Ledger, vui lòng nhấp lại vào \"Tiếp tục\" và chấp thuận kết nối HID",

@@ -515,25 +515,25 @@
     "message": "Back"
   },
   "backup": {
-    "message": "Backup"
+    "message": "Back up"
   },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
   "backupApprovalNotice": {
-    "message": "Backup your Secret Recovery Phrase to keep your wallet and funds secure."
+    "message": "Back up your Secret Recovery Phrase to keep your wallet and funds secure."
   },
   "backupKeyringSnapReminder": {
     "message": "Be sure you can access any accounts created by this Snap on your own before removing it"
   },
   "backupNow": {
-    "message": "Backup now"
+    "message": "Back up now"
   },
   "backupUserData": {
-    "message": "Backup your data"
+    "message": "Back up your data"
   },
   "backupUserDataDescription": {
-    "message": "You can backup user settings containing preferences and account addresses into a JSON file."
+    "message": "You can back up data like your contacts and preferences."
   },
   "balance": {
     "message": "Balance"
@@ -1373,6 +1373,12 @@
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
+  "displayNftMedia": {
+    "message": "Display NFT media"
+  },
+  "displayNftMediaDescription": {
+    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
+  },
   "domain": {
     "message": "Domain"
   },
@@ -1497,12 +1503,6 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
-  },
-  "enableOpenSeaAPI": {
-    "message": "Enable OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
   "enableSnap": {
     "message": "Enable"
@@ -2272,25 +2272,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Enable Use Ledger Live under Settings > Advanced."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Be sure your Ledger is plugged in and to select the Ethereum app."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Open and unlock Ledger Live App."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Customize how you connect your Ledger to MetaMask. $1 is recommended, but other options are available. Read more here: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Please close Ledger Live or other applications connected to your Ledger device, and try to connect again."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
@@ -2300,9 +2286,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "If your Ledger Live app is open, please disconnect any open Ledger Live connection and close the Ledger Live app."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "The ledger device was not connected. If you wish to connect your Ledger, please click 'Continue' again and approve HID connection",
@@ -2651,12 +2634,12 @@
   "newContract": {
     "message": "New contract"
   },
-  "newNFTDetectedInImportNFTsMessage": {
-    "message": "To use Opensea see your NFT, turn on 'Enable OpenSea API' in $1.",
-    "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
-  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Security and privacy"
+  },
+  "newNFTDetectedInImportNFTsMsg": {
+    "message": "To use Opensea see your NFT, turn on 'Display NFT Media' in $1.",
+    "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInNFTsTabMessage": {
     "message": "Let MetaMask automatically detect and display NFTs in your wallet."
@@ -3095,6 +3078,14 @@
   },
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
+  },
+  "notificationsU2FLedgerLiveDescription": {
+    "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
+  },
+  "notificationsU2FLedgerLiveTitle": {
+    "message": "U2F and Ledger Live deprecation",
+    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
   },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
@@ -3810,7 +3801,7 @@
     "message": "Restore user data"
   },
   "restoreUserDataDescription": {
-    "message": "You can restore user settings containing preferences and account addresses from a previously backed up JSON file."
+    "message": "You can restore data like contacts and preferences from a backup file."
   },
   "resultPageError": {
     "message": "Error"
@@ -4032,8 +4023,8 @@
   "selectAnAction": {
     "message": "Select an action"
   },
-  "selectEnableOpenseaAPIPrivacyPreference": {
-    "message": "Turn on Enable Opensea API"
+  "selectEnableDisplayMediaPrivacyPreference": {
+    "message": "Turn on Display NFT Media"
   },
   "selectHdPath": {
     "message": "Select HD path"

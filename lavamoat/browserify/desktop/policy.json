@@ -768,7 +768,6 @@
         "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
-        "console.info": true,
         "console.log": true,
         "setInterval": true,
         "setTimeout": true
@@ -778,13 +777,13 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/assets-controllers>@metamask/abi-utils": true,
-        "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/metamask-eth-abis": true,
+        "@metamask/polling-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "eth-json-rpc-filters>async-mutex": true,
@@ -798,18 +797,6 @@
       "packages": {
         "@metamask/utils": true,
         "superstruct": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
-        "uuid": true
       }
     },
     "@metamask/assets-controllers>multiformats": {
@@ -2155,7 +2142,7 @@
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-rpc-methods": true,
-        "@metamask/snaps-ui": true,
+        "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "@metamask/utils": true,
@@ -2335,35 +2322,32 @@
         "@metamask/key-tree": true,
         "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-ui": true,
+        "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/utils>@noble/hashes": true,
         "superstruct": true
       }
     },
-    "@metamask/snaps-ui": {
-      "globals": {
-        "URL": true
-      },
+    "@metamask/snaps-sdk": {
       "packages": {
-        "@metamask/snaps-ui>is-svg": true,
+        "@metamask/snaps-sdk>is-svg": true,
         "@metamask/utils": true,
         "superstruct": true
       }
     },
-    "@metamask/snaps-ui>is-svg": {
+    "@metamask/snaps-sdk>is-svg": {
       "packages": {
-        "@metamask/snaps-ui>is-svg>fast-xml-parser": true
+        "@metamask/snaps-sdk>is-svg>fast-xml-parser": true
       }
     },
-    "@metamask/snaps-ui>is-svg>fast-xml-parser": {
+    "@metamask/snaps-sdk>is-svg>fast-xml-parser": {
       "globals": {
         "entityName": true,
         "val": true
       },
       "packages": {
-        "@metamask/snaps-ui>is-svg>fast-xml-parser>strnum": true
+        "@metamask/snaps-sdk>is-svg>fast-xml-parser>strnum": true
       }
     },
     "@metamask/snaps-utils": {
@@ -2373,6 +2357,7 @@
         "console.error": true,
         "console.log": true,
         "console.warn": true,
+        "crypto": true,
         "document.body.appendChild": true,
         "document.createElement": true
       },
@@ -2380,8 +2365,8 @@
         "@metamask/key-tree": true,
         "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-ui": true,
-        "@metamask/snaps-ui>is-svg": true,
+        "@metamask/snaps-sdk": true,
+        "@metamask/snaps-sdk>is-svg": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>rfdc": true,
