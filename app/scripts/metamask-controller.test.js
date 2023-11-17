@@ -485,7 +485,7 @@ describe('MetaMaskController', () => {
           metamaskController.accountsController.listAccounts();
 
         internalAccounts.forEach((account) => {
-          expect(addresses.includes(account.address) === true).toBe(true);
+          expect(addresses).toContain(account.address);
         });
 
         addresses.forEach((address) => {
