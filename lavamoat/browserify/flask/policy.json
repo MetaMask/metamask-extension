@@ -2465,6 +2465,7 @@
     "@metamask/transaction-controller": {
       "globals": {
         "console.error": true,
+        "console.log": true,
         "setTimeout": true
       },
       "packages": {
