@@ -5086,7 +5086,7 @@ __metadata:
 
 "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A17.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-17.0.0-e8b7127203.patch":
   version: 17.0.0
-  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A17.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-17.0.0-e8b7127203.patch::version=17.0.0&hash=0b97e5"
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A17.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-17.0.0-e8b7127203.patch::version=17.0.0&hash=33502f"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -5112,7 +5112,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^10.0.1
     "@metamask/network-controller": ^16.0.0
     babel-runtime: ^6.26.0
-  checksum: ee05109732f5bf8b46ed820b2e5b5aa78fd80ac4e1510955c9ab6dd21232617a484adf7e0cc9aeb04a731d045a1996a7d9be2815ec325ba44757538663901401
+  checksum: 122809d00e9c102dc98e34b730b885b7f2ce9cd02fda2cadc08bcfc388761f1cc501a5c7e7c494a633d8e89d6ed7fddb9eefd8b8747dac4de7d5e52847417ac9
   languageName: node
   linkType: hard
 
