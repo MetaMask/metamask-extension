@@ -817,7 +817,7 @@ export default class ConfirmTransactionBase extends Component {
               return;
             }
 
-            showTransactionsFailedModal(error.message, isNotification);
+            showTransactionsFailedModal(JSON.stringify(error), isNotification);
 
             this.setState({
               submitting: false,
