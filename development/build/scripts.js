@@ -598,7 +598,7 @@ function createFactoredBuild({
 
     // devMode options
     const reloadOnChange = isDevBuild(buildTarget);
-    const minify = !isDevBuild(buildTarget);
+    const minify = false;
 
     const environment = getEnvironment({ buildTarget });
     const config = await getConfig(buildType, environment);
@@ -848,7 +848,7 @@ function createNormalBundle({
     // devMode options
     const devMode = isDevBuild(buildTarget);
     const reloadOnChange = Boolean(devMode);
-    const minify = Boolean(devMode) === false;
+    const minify = false;
 
     const environment = getEnvironment({ buildTarget });
     const config = await getConfig(buildType, environment);
