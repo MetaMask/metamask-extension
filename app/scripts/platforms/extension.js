@@ -193,6 +193,10 @@ export default class ExtensionPlatform {
   }
 
   async _showFailedTransaction(txMeta, errorMessage) {
+    console.error(
+      `---------- WAT ${errorMessage} ${JSON.stringify(txMeta.error)}`,
+    );
+
     const nonce = parseInt(txMeta.txParams.nonce, 16);
     const title = t('notificationTransactionFailedTitle');
     let message = t(
@@ -204,7 +208,7 @@ export default class ExtensionPlatform {
     if (isNaN(nonce)) {
       message = t(
         'notificationTransactionFailedMessageMMI',
-        errorMessage || txMeta.error.message,
+        `---------- WAT ${errorMessage} ${JSON.stringify(txMeta.error)}`,
       );
     }
     ///: END:ONLY_INCLUDE_IN
