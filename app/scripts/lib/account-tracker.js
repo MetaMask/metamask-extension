@@ -115,6 +115,9 @@ export default class AccountTracker {
     );
   }
 
+  /**
+   * Starts polling with global selected network
+   */
   start() {
     // remove first to avoid double add
     this._blockTracker.removeListener('latest', this._updateForBlock);
@@ -124,11 +127,21 @@ export default class AccountTracker {
     this._updateAccountsWithNetworkClientId();
   }
 
+  /**
+   * Stops polling with global selected network
+   */
   stop() {
     // remove listener
     this._blockTracker.removeListener('latest', this._updateForBlock);
   }
 
+  /**
+   * Resolves a networkClientId to a network client config
+   * or globally selected network config if not provided
+   *
+   * @param networkClientId - Optional networkClientId to fetch a network client with
+   * @returns network client config
+   */
   getCorrectNetworkClient(networkClientId) {
     if (networkClientId) {
       const networkClient = this.getNetworkClientById(networkClientId);
@@ -148,6 +161,12 @@ export default class AccountTracker {
     };
   }
 
+  /**
+   * Starts polling for a networkClientId
+   *
+   * @param networkClientId - The networkClientId to start polling for
+   * @returns pollingToken
+   */
   startPollingByNetworkClientId(networkClientId) {
     const pollToken = random();
 
@@ -200,6 +219,11 @@ export default class AccountTracker {
     }
   }
 
+  /**
+   * Subscribes from the block tracker for the given networkClientId if not currently subscribed
+   *
+   * @param {string} networkClientId - network client ID to fetch a block tracker with
+   */
   subscribeWithNetworkClientId(networkClientId) {
     if (this.#listeners[networkClientId]) {
       return;
@@ -213,6 +237,11 @@ export default class AccountTracker {
     this._updateAccountsWithNetworkClientId(networkClientId);
   }
 
+  /**
+   * Unsubscribes from the block tracker for the given networkClientId if currently subscribed
+   *
+   * @param {string} networkClientId - The network client ID to fetch a block tracker with
+   */
   unsubscribeWithNetworkClientId(networkClientId) {
     if (!this.#listeners[networkClientId]) {
       return;
@@ -322,8 +351,8 @@ export default class AccountTracker {
   }
 
   /**
-   * Given a block, updates this AccountTracker's currentBlockGasLimit, and then updates each local account's balance
-   * via EthQuery
+   * Given a block, updates this AccountTracker's currentBlockGasLimit and currentBlockGasLimitByChainId and then updates
+   * each local account's balance via EthQuery
    *
    * @private
    * @param {number} blockNumber - the block number to update to.
@@ -333,6 +362,15 @@ export default class AccountTracker {
     await this._updateForBlockByNetworkClientId(null, blockNumber);
   }
 
+  /**
+   * Given a block, updates this AccountTracker's currentBlockGasLimitByChainId, and then updates each local account's balance
+   * via EthQuery
+   *
+   * @private
+   * @param {string} networkClientId - optional network client ID to use instead of the globally selected network.
+   * @param {number} blockNumber - the block number to update to.
+   * @fires 'block' The updated state, if all account updates are successful
+   */
   async _updateForBlockByNetworkClientId(networkClientId, blockNumber) {
     const { chainId, provider } = this.getCorrectNetworkClient(networkClientId);
     this._currentBlockNumberByChainId[chainId] = blockNumber;
@@ -373,7 +411,7 @@ export default class AccountTracker {
    * balanceChecker is deployed on main eth (test)nets and requires a single call
    * for all other networks, calls this._updateAccount for each account in this.store
    *
-   * @param networkClientId
+   * @param {string} networkClientId - optional network client ID to use instead of the globally selected network.
    * @returns {Promise} after all account balances updated
    */
   async _updateAccountsWithNetworkClientId(networkClientId) {
@@ -425,6 +463,8 @@ export default class AccountTracker {
    *
    * @private
    * @param {string} address - A hex address of a the account to be updated
+   * @param {object} provider - The provider instance to fetch the balance with
+   * @param {string} chainId - The chain ID to update in state
    * @returns {Promise} after the account balance is updated
    */
 
@@ -478,10 +518,11 @@ export default class AccountTracker {
   /**
    * Updates current address balances from balanceChecker deployed contract instance
    *
-   * @param {*} addresses
-   * @param {*} deployedContractAddress
-   * @param provider
-   * @param chainId
+   * @param {Array} addresses - A hex addresses of a the accounts to be updated
+   * @param {string} deployedContractAddress - The contract address to fetch balances with
+   * @param {object} provider - The provider instance to fetch the balance with
+   * @param {string} chainId - The chain ID to update in state
+   * @returns {Promise} after the account balance is updated
    */
   async _updateAccountsViaBalanceChecker(
     addresses,
