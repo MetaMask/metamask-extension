@@ -3978,7 +3978,7 @@ export default class MetamaskController extends EventEmitter {
     // update transaction type in case it has changes
     const { type } = await determineTransactionType(
       updatedTransaction.txParams,
-      this.ethQuery,
+      new EthQuery(this.provider),
     );
 
     updatedTransaction.type = type;
