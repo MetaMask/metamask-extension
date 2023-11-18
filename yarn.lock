@@ -4096,18 +4096,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-provider@npm:^2.1.0, @metamask/eth-json-rpc-provider@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@metamask/eth-json-rpc-provider@npm:2.2.0"
-  dependencies:
-    "@metamask/json-rpc-engine": "npm:^7.1.0"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^8.1.0"
-  checksum: f31c0952b4d2cefebbd83cd84b2d77783253febe302d2f43e8502c3bc474b04fb85d6d4da221779ff9b4400499cb6ad32b26eadc31a7845df53cd66a8d4c4d82
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-json-rpc-provider@npm:^2.3.0":
+"@metamask/eth-json-rpc-provider@npm:^2.1.0, @metamask/eth-json-rpc-provider@npm:^2.2.0, @metamask/eth-json-rpc-provider@npm:^2.3.0":
   version: 2.3.0
   resolution: "@metamask/eth-json-rpc-provider@npm:2.3.0"
   dependencies:
@@ -4358,18 +4347,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^7.1.0, @metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "@metamask/json-rpc-engine@npm:7.2.0"
-  dependencies:
-    "@metamask/rpc-errors": "npm:^6.0.0"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^8.1.0"
-  checksum: 235b51ab79ee23d645ab131d61593bb8b15ac0364fa29eb76cf4a24651c958c92e8bde702935c9b19bee801a47826990f46941a0ac38c9a5cafb8cb2563ecc9c
-  languageName: node
-  linkType: hard
-
-"@metamask/json-rpc-engine@npm:^7.3.0":
+"@metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.2.0, @metamask/json-rpc-engine@npm:^7.3.0":
   version: 7.3.0
   resolution: "@metamask/json-rpc-engine@npm:7.3.0"
   dependencies:
@@ -4686,24 +4664,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@metamask/polling-controller@npm:1.0.1"
-  dependencies:
-    "@metamask/base-controller": "npm:^3.2.3"
-    "@metamask/controller-utils": "npm:^5.0.2"
-    "@metamask/network-controller": "npm:^15.1.0"
-    "@metamask/utils": "npm:^8.1.0"
-    "@types/uuid": "npm:^8.3.0"
-    fast-json-stable-stringify: "npm:^2.1.0"
-    uuid: "npm:^8.3.2"
-  peerDependencies:
-    "@metamask/network-controller": ^15.1.0
-  checksum: a3db808306c8e1a5004374c94c459d48519d7091a0dff07925174e93c26e5d608aa2ad33604991d238b559a8754481a461177dfbda9cdf8f79c85a21eda43b67
-  languageName: node
-  linkType: hard
-
-"@metamask/polling-controller@npm:^1.0.2":
+"@metamask/polling-controller@npm:^1.0.1, @metamask/polling-controller@npm:^1.0.2":
   version: 1.0.2
   resolution: "@metamask/polling-controller@npm:1.0.2"
   dependencies:
@@ -5125,7 +5086,7 @@ __metadata:
 
 "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A17.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-17.0.0-e8b7127203.patch":
   version: 17.0.0
-  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A17.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-17.0.0-e8b7127203.patch::version=17.0.0&hash=a46b77"
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A17.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-17.0.0-e8b7127203.patch::version=17.0.0&hash=5e1e4a"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -5151,7 +5112,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^10.0.1
     "@metamask/network-controller": ^16.0.0
     babel-runtime: ^6.26.0
-  checksum: 38b6b2ba124ab2259e1e4a62bb9bd8cea9c46b39a6f0ca3abe403916dcf4d824a47bde6c0fd7f1288c3a482a689a7791385c713bede98997903c132b6b695458
+  checksum: 92ae9cb85dad0a0ce053cffc8d6688ca5a1312eddae3b6112e66553149a4940cbe673df7642cce51260269b4419e54ff554a8444e7430eaa676da5466bedd16a
   languageName: node
   linkType: hard
 
