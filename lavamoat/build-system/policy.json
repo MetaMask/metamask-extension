@@ -23,7 +23,12 @@
     },
     "@babel/code-frame>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "@babel/code-frame>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "@babel/code-frame>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "@babel/code-frame>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "@babel/code-frame>chalk>supports-color": {
@@ -38,7 +43,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "gulp-livereload>chalk>supports-color>has-flag": true
+        "@babel/code-frame>chalk>supports-color>has-flag": true
+      }
+    },
+    "@babel/code-frame>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "@babel/core": {
@@ -1195,11 +1205,6 @@
     "@metamask/jazzicon>color>clone": {
       "globals": {
         "Buffer": true
-      }
-    },
-    "@metamask/jazzicon>color>color-convert": {
-      "packages": {
-        "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
     "@sentry/cli>which": {
@@ -3498,7 +3503,12 @@
     },
     "gulp-livereload>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "gulp-livereload>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "gulp-livereload>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "gulp-livereload>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "gulp-livereload>chalk>supports-color": {
@@ -3772,7 +3782,12 @@
     },
     "gulp-rtlcss>rtlcss>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "gulp-rtlcss>rtlcss>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "gulp-rtlcss>rtlcss>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "gulp-rtlcss>rtlcss>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "gulp-rtlcss>rtlcss>chalk>supports-color": {
@@ -3787,7 +3802,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "gulp-livereload>chalk>supports-color>has-flag": true
+        "gulp-rtlcss>rtlcss>chalk>supports-color>has-flag": true
+      }
+    },
+    "gulp-rtlcss>rtlcss>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "gulp-rtlcss>rtlcss>postcss": {
@@ -6263,7 +6283,12 @@
     },
     "lavamoat>@babel/highlight>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "lavamoat>@babel/highlight>chalk>supports-color": {
@@ -6278,7 +6303,12 @@
         "process.versions.node.split": true
       },
       "packages": {
-        "gulp-livereload>chalk>supports-color>has-flag": true
+        "lavamoat>@babel/highlight>chalk>supports-color>has-flag": true
+      }
+    },
+    "lavamoat>@babel/highlight>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "lavamoat>@lavamoat/aa": {
@@ -6471,12 +6501,14 @@
         "process.platform": true
       },
       "packages": {
-        "mocha>supports-color>has-flag": true
+        "chalk>supports-color>has-flag": true
       }
     },
-    "mocha>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+    "mockttp>portfinder>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
       }
     },
     "nock>debug": {
@@ -8086,14 +8118,7 @@
         "path.dirname": true
       },
       "packages": {
-        "stylelint>file-entry-cache>flat-cache>write>mkdirp": true
-      }
-    },
-    "stylelint>file-entry-cache>flat-cache>write>mkdirp": {
-      "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
+        "mockttp>portfinder>mkdirp": true
       }
     },
     "stylelint>global-modules": {
@@ -8454,7 +8479,12 @@
     },
     "stylelint>table>slice-ansi>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "stylelint>table>slice-ansi>ansi-styles>color-convert": true
+      }
+    },
+    "stylelint>table>slice-ansi>ansi-styles>color-convert": {
+      "packages": {
+        "stylelint>table>slice-ansi>ansi-styles>color-convert>color-name": true
       }
     },
     "stylelint>table>string-width": {
