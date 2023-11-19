@@ -1049,6 +1049,7 @@ export function updateAndApproveTx(
   unknown,
   AnyAction
 > {
+  console.error('--- updateAndApproveTx', txMeta);
   return (dispatch: MetaMaskReduxDispatch) => {
     !dontShowLoadingIndicator &&
       dispatch(showLoadingIndication(loadingIndicatorMessage));
@@ -1058,6 +1059,7 @@ export function updateAndApproveTx(
         'resolvePendingApproval',
         [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
         (err) => {
+          console.error('--- Finished resolve pending Approval', err);
           dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
           dispatch(resetSendState());
 

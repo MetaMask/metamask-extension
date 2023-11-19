@@ -734,7 +734,11 @@ export default class ConfirmTransactionBase extends Component {
     } = this.props;
     const { noteText } = this.state;
 
+    console.error('--- Handle MMI SUbmit', { accountType });
+
     if (accountType === 'custody') {
+      console.error('--- Account type is custody');
+
       txData.custodyStatus = 'created';
 
       if (isNoteToTraderSupported) {
@@ -747,7 +751,11 @@ export default class ConfirmTransactionBase extends Component {
         custodianPublishesTransaction;
       txData.metadata.rpcUrl = rpcUrl;
 
+      console.error('--- About to update');
+
       await updateTransaction(txData, true);
+
+      console.error('--- Updated');
     }
 
     updateTxData({
@@ -772,9 +780,17 @@ export default class ConfirmTransactionBase extends Component {
       () => {
         this._removeBeforeUnload();
 
+        console.error('--- Checking for custody status', txData.custodyStatus);
+
         if (txData.custodyStatus) {
+          console.error(
+            '--- Waiting for confirm deep link dialog',
+            txData.custodyStatus,
+          );
           setWaitForConfirmDeepLinkDialog(true);
         }
+
+        console.error('--- Sending transaction', txData);
         sendTransaction(txData)
           .then(() => {
             if (txData.custodyStatus) {

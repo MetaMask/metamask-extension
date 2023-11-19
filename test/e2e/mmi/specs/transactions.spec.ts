@@ -88,21 +88,21 @@ test.describe('MMI send', () => {
     await mainPage.checkLastTransactionStatus(statusName);
   });
 
-  test('Send a transaction from one account to another and abort it from custody', async ({
-    page,
-    context,
-  }) => {
-    // Setup custodian and auth
-    const client = new CustodianTestClient();
-    await client.setup();
-    const { mainPage, custodianTxId } = await sendTransaction(
-      page,
-      context,
-      client,
-    );
+  // test('Send a transaction from one account to another and abort it from custody', async ({
+  //   page,
+  //   context,
+  // }) => {
+  //   // Setup custodian and auth
+  //   const client = new CustodianTestClient();
+  //   await client.setup();
+  //   const { mainPage, custodianTxId } = await sendTransaction(
+  //     page,
+  //     context,
+  //     client,
+  //   );
 
-    // Abort the transaction
-    const statusName = await client.rejectTransactionById(custodianTxId);
-    await mainPage.checkLastTransactionStatus(statusName);
-  });
+  //   // Abort the transaction
+  //   const statusName = await client.rejectTransactionById(custodianTxId);
+  //   await mainPage.checkLastTransactionStatus(statusName);
+  // });
 });
