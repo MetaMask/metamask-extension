@@ -39,7 +39,6 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
-  updateTransaction,
 } from '../../store/actions';
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
@@ -152,6 +151,7 @@ export default class ConfirmTransactionBase extends Component {
     isMainBetaFlask: PropTypes.bool,
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
+    updateTransaction: PropTypes.func,
   };
 
   state = {
@@ -706,6 +706,7 @@ export default class ConfirmTransactionBase extends Component {
   async handleMMISubmit() {
     const {
       sendTransaction,
+      updateTransaction,
       txData,
       history,
       mostRecentOverviewPage,
@@ -753,7 +754,7 @@ export default class ConfirmTransactionBase extends Component {
 
       console.error('--- About to update');
 
-      await updateTransaction(txData, true);
+      await updateTransaction(txData);
 
       console.error('--- Updated');
     }
