@@ -1550,7 +1550,7 @@ export default class MetamaskController extends EventEmitter {
         transactionMetricsRequest,
       ),
       updateTransaction: (txMeta, note) =>
-        this.txController.updateCustodialTransaction(txMeta.id, txMeta, note),
+        this.txController.updateTransaction(txMeta, note),
       updateTransactionHash: (id, hash) =>
         this.txController.updateCustodialTransaction(id, { hash }),
     });
