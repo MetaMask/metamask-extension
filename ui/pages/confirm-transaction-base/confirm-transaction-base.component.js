@@ -794,18 +794,30 @@ export default class ConfirmTransactionBase extends Component {
         console.error('--- Sending transaction', txData);
         sendTransaction(txData)
           .then(() => {
+            console.error('--- Sent transaction successfully', {
+              custodyStatus: txData.custodyStatus,
+            });
             if (txData.custodyStatus) {
+              console.error('--- Found custody status', {
+                custodyStatus: txData.custodyStatus,
+              });
               showCustodianDeepLink({
                 fromAddress,
                 closeNotification: isNotification && unapprovedTxCount === 1,
                 txId: txData.id,
                 onDeepLinkFetched: () => {
+                  console.error('--- Deep link fetched', {
+                    custodyStatus: txData.custodyStatus,
+                  });
                   this.context.trackEvent({
                     category: 'MMI',
                     event: 'Show deeplink for transaction',
                   });
                 },
                 onDeepLinkShown: () => {
+                  console.error('--- Deep link shown', {
+                    custodyStatus: txData.custodyStatus,
+                  });
                   clearConfirmTransaction();
                   if (!this._isMounted) {
                     return;
@@ -817,6 +829,7 @@ export default class ConfirmTransactionBase extends Component {
                 },
               });
             } else {
+              console.error('--- No custody status after send');
               if (!this._isMounted) {
                 return;
               }

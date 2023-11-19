@@ -1,0 +1,510 @@
+diff --git a/dist/ExtensionUtils.js b/dist/ExtensionUtils.js
+index de49fb53ee49f8e83ea7d85aa2e6ff77e8fe6754..ff63363a13ebb5c197da98421a2f0dc29052abad 100644
+--- a/dist/ExtensionUtils.js
++++ b/dist/ExtensionUtils.js
+@@ -1,195 +1,334 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.handleTxStatusUpdate = exports.getTxByCustodyId = exports.showCustodianDeepLink = exports.custodianEventHandlerFactory = exports.updateCustodianTransactions = void 0;
++exports.handleTxStatusUpdate =
++  exports.getTxByCustodyId =
++  exports.showCustodianDeepLink =
++  exports.custodianEventHandlerFactory =
++  exports.updateCustodianTransactions =
++    void 0;
+ const custody_controller_1 = require("@metamask-institutional/custody-controller");
+ const sdk_1 = require("@metamask-institutional/sdk");
+ const types_1 = require("@metamask-institutional/types");
+ const TRANSACTION_EVENTS = {
+-    [types_1.MetaMaskTransactionStatuses.ADDED]: "Transaction Added",
+-    [types_1.MetaMaskTransactionStatuses.APPROVED]: "Transaction Approved",
+-    [types_1.MetaMaskTransactionStatuses.SIGNED]: "Transaction Signed",
+-    [types_1.MetaMaskTransactionStatuses.REJECTED]: "Transaction Rejected",
+-    [types_1.MetaMaskTransactionStatuses.FAILED]: "Transaction Failed",
+-    [types_1.MetaMaskTransactionStatuses.SUBMITTED]: "Transaction Submitted",
+-    [types_1.MetaMaskTransactionStatuses.CONFIRMED]: "Transaction Confirmed",
+-    [types_1.MetaMaskTransactionStatuses.UNAPPROVED]: "Transaction Unapproved",
+-    [types_1.MetaMaskTransactionStatuses.DROPPED]: "Transaction Dropped",
+-    [types_1.MetaMaskTransactionStatuses.FINALIZED]: "Transaction Finalized",
++  [types_1.MetaMaskTransactionStatuses.ADDED]: "Transaction Added",
++  [types_1.MetaMaskTransactionStatuses.APPROVED]: "Transaction Approved",
++  [types_1.MetaMaskTransactionStatuses.SIGNED]: "Transaction Signed",
++  [types_1.MetaMaskTransactionStatuses.REJECTED]: "Transaction Rejected",
++  [types_1.MetaMaskTransactionStatuses.FAILED]: "Transaction Failed",
++  [types_1.MetaMaskTransactionStatuses.SUBMITTED]: "Transaction Submitted",
++  [types_1.MetaMaskTransactionStatuses.CONFIRMED]: "Transaction Confirmed",
++  [types_1.MetaMaskTransactionStatuses.UNAPPROVED]: "Transaction Unapproved",
++  [types_1.MetaMaskTransactionStatuses.DROPPED]: "Transaction Dropped",
++  [types_1.MetaMaskTransactionStatuses.FINALIZED]: "Transaction Finalized",
+ };
+-async function updateCustodianTransactions({ keyring, type, txList, custodyController, transactionUpdateController, txStateManager, getPendingNonce, setTxHash, }) {
+-    const txStatusMap = keyring.getStatusMap();
+-    await Promise.all(txList.map(async (tx) => {
+-        var _a;
+-        if (tx.custodyId && !(tx.custodyStatus && ((_a = txStatusMap[tx.custodyStatus]) === null || _a === void 0 ? void 0 : _a.finished))) {
+-            if (custodyController.getCustodyTypeByAddress((0, custody_controller_1.toChecksumHexAddress)(tx.txParams.from)) !== type) {
+-                return;
+-            }
+-            const custodyTx = await keyring.getTransaction(tx.txParams.from, tx.custodyId);
+-            if (custodyTx === null) {
+-                return;
+-            }
+-            const status = (0, sdk_1.mapTransactionStatus)(custodyTx.transactionStatus);
+-            const updateEvent = {
+-                transaction: {
+-                    id: custodyTx.custodian_transactionId,
+-                    hash: custodyTx.transactionHash,
+-                    status,
+-                    from: custodyTx.from,
+-                    gasPrice: custodyTx.gasPrice,
+-                    nonce: custodyTx.nonce,
+-                    to: custodyTx.to,
+-                    value: custodyTx.value,
+-                    data: custodyTx.data,
+-                    gas: custodyTx.gasLimit,
+-                    type: null,
+-                },
+-                metadata: null,
+-            };
+-            await handleTxStatusUpdate(updateEvent, txStateManager, getPendingNonce, setTxHash);
+-            if (!status.finished) {
+-                transactionUpdateController.addTransactionToWatchList(custodyTx.custodian_transactionId, custodyTx.from, null, false);
+-            }
++async function updateCustodianTransactions({
++  keyring,
++  type,
++  txList,
++  custodyController,
++  transactionUpdateController,
++  txStateManager,
++  getPendingNonce,
++  setTxHash,
++}) {
++  const txStatusMap = keyring.getStatusMap();
++  await Promise.all(
++    txList.map(async (tx) => {
++      var _a;
++      if (
++        tx.custodyId &&
++        !(
++          tx.custodyStatus &&
++          ((_a = txStatusMap[tx.custodyStatus]) === null || _a === void 0
++            ? void 0
++            : _a.finished)
++        )
++      ) {
++        if (
++          custodyController.getCustodyTypeByAddress(
++            (0, custody_controller_1.toChecksumHexAddress)(tx.txParams.from)
++          ) !== type
++        ) {
++          return;
+         }
+-    }));
+-    custodyController.storeCustodyStatusMap(keyring.type.split(" - ")[1], txStatusMap);
+-}
+-exports.updateCustodianTransactions = updateCustodianTransactions;
+-function custodianEventHandlerFactory({ getState, log, getPendingNonce, setTxHash, signatureController, txStateManager, custodyController, trackTransactionEvent, }) {
+-    return async (txData) => {
+-        let address;
+-        if (Object.hasOwnProperty.call(txData, "transaction") &&
+-            txData.transaction !== null &&
+-            Object.hasOwnProperty.call(txData.transaction, "from")) {
+-            address = txData.transaction.from;
+-        }
+-        else if (Object.hasOwnProperty.call(txData, "signedMessage") &&
+-            txData.signedMessage !== null &&
+-            Object.hasOwnProperty.call(txData.signedMessage, "address")) {
+-            address = txData.signedMessage.address;
+-        }
+-        const custodyType = custodyController.getCustodyTypeByAddress((0, custody_controller_1.toChecksumHexAddress)(address));
+-        if (!custodyType) {
+-            log.info(`Got an update for an address I do not own: ${address}`);
+-            return getState();
+-        }
+-        if (!Object.hasOwnProperty.call(txData, "signedMessage") && !txData.transaction) {
+-            return getState();
+-        }
+-        if (Object.hasOwnProperty.call(txData, "signedMessage") && txData.signedMessage !== null) {
+-            console.log("Update for message:", txData.signedMessage.id, txData.signedMessage.status);
+-            if (txData.signedMessage.signature) {
+-                custodyController.setWaitForConfirmDeepLinkDialog(false);
+-            }
+-            const allMessages = signatureController.messages;
+-            const filteredItem = Object.keys(allMessages)
+-                .map(key => allMessages[key])
+-                .find(item => { var _a; return ((_a = item.metadata) === null || _a === void 0 ? void 0 : _a.custodian_transactionId) === txData.signedMessage.id; });
+-            if (!filteredItem) {
+-                return;
+-            }
+-            const messageId = filteredItem.id;
+-            if (txData.signedMessage.signature && txData.signedMessage.signature != "0x") {
+-                return signatureController.setDeferredSignSuccess(messageId, txData.signedMessage.signature);
+-            }
+-            else if (txData.signedMessage.status.finished && !txData.signedMessage.status.success) {
+-                return signatureController.setDeferredSignError(messageId);
+-            }
+-            return;
++        const custodyTx = await keyring.getTransaction(
++          tx.txParams.from,
++          tx.custodyId
++        );
++        if (custodyTx === null) {
++          return;
+         }
+-        console.log("Update for transaction: ", txData.transaction.id, txData.transaction.status);
+-        const txMeta = await handleTxStatusUpdate(txData, txStateManager, getPendingNonce, setTxHash);
+-        if (!txMeta) {
+-            return;
++        const status = (0, sdk_1.mapTransactionStatus)(
++          custodyTx.transactionStatus
++        );
++        const updateEvent = {
++          transaction: {
++            id: custodyTx.custodian_transactionId,
++            hash: custodyTx.transactionHash,
++            status,
++            from: custodyTx.from,
++            gasPrice: custodyTx.gasPrice,
++            nonce: custodyTx.nonce,
++            to: custodyTx.to,
++            value: custodyTx.value,
++            data: custodyTx.data,
++            gas: custodyTx.gasLimit,
++            type: null,
++          },
++          metadata: null,
++        };
++        await handleTxStatusUpdate(
++          updateEvent,
++          txStateManager,
++          getPendingNonce,
++          setTxHash
++        );
++        if (!status.finished) {
++          transactionUpdateController.addTransactionToWatchList(
++            custodyTx.custodian_transactionId,
++            custodyTx.from,
++            null,
++            false
++          );
+         }
+-        if (TRANSACTION_EVENTS[txMeta.status]) {
+-            try {
+-                trackTransactionEvent(txMeta, TRANSACTION_EVENTS[txMeta.status]);
+-            }
+-            catch (error) {
+-                log.error(error);
+-            }
+-        }
+-        console.log("custodianEventHandler finished, txMeta:", txMeta);
+-    };
++      }
++    })
++  );
++  custodyController.storeCustodyStatusMap(
++    keyring.type.split(" - ")[1],
++    txStatusMap
++  );
+ }
+-exports.custodianEventHandlerFactory = custodianEventHandlerFactory;
+-async function showCustodianDeepLink({ dispatch, mmiActions, txId, fromAddress, closeNotification, isSignature, custodyId, onDeepLinkFetched, onDeepLinkShown, showCustodyConfirmLink, }) {
+-    let deepLink;
+-    let custodianTxId = custodyId;
+-    if (isSignature) {
+-        const link = await dispatch(mmiActions.getCustodianSignMessageDeepLink(fromAddress, custodyId));
+-        deepLink = link;
++exports.updateCustodianTransactions = updateCustodianTransactions;
++function custodianEventHandlerFactory({
++  getState,
++  log,
++  getPendingNonce,
++  setTxHash,
++  signatureController,
++  txStateManager,
++  custodyController,
++  trackTransactionEvent,
++}) {
++  return async (txData) => {
++    let address;
++    if (
++      Object.hasOwnProperty.call(txData, "transaction") &&
++      txData.transaction !== null &&
++      Object.hasOwnProperty.call(txData.transaction, "from")
++    ) {
++      address = txData.transaction.from;
++    } else if (
++      Object.hasOwnProperty.call(txData, "signedMessage") &&
++      txData.signedMessage !== null &&
++      Object.hasOwnProperty.call(txData.signedMessage, "address")
++    ) {
++      address = txData.signedMessage.address;
++    }
++    const custodyType = custodyController.getCustodyTypeByAddress(
++      (0, custody_controller_1.toChecksumHexAddress)(address)
++    );
++    if (!custodyType) {
++      log.info(`Got an update for an address I do not own: ${address}`);
++      return getState();
++    }
++    if (
++      !Object.hasOwnProperty.call(txData, "signedMessage") &&
++      !txData.transaction
++    ) {
++      return getState();
+     }
+-    else {
+-        const result = await dispatch(mmiActions.getCustodianConfirmDeepLink(txId));
+-        deepLink = result.deepLink;
+-        custodianTxId = result.custodyId;
++    if (
++      Object.hasOwnProperty.call(txData, "signedMessage") &&
++      txData.signedMessage !== null
++    ) {
++      console.log(
++        "Update for message:",
++        txData.signedMessage.id,
++        txData.signedMessage.status
++      );
++      if (txData.signedMessage.signature) {
++        custodyController.setWaitForConfirmDeepLinkDialog(false);
++      }
++      const allMessages = signatureController.messages;
++      const filteredItem = Object.keys(allMessages)
++        .map((key) => allMessages[key])
++        .find((item) => {
++          var _a;
++          return (
++            ((_a = item.metadata) === null || _a === void 0
++              ? void 0
++              : _a.custodian_transactionId) === txData.signedMessage.id
++          );
++        });
++      if (!filteredItem) {
++        return;
++      }
++      const messageId = filteredItem.id;
++      if (
++        txData.signedMessage.signature &&
++        txData.signedMessage.signature != "0x"
++      ) {
++        return signatureController.setDeferredSignSuccess(
++          messageId,
++          txData.signedMessage.signature
++        );
++      } else if (
++        txData.signedMessage.status.finished &&
++        !txData.signedMessage.status.success
++      ) {
++        return signatureController.setDeferredSignError(messageId);
++      }
++      return;
+     }
+-    onDeepLinkFetched();
+-    try {
+-        await dispatch(showCustodyConfirmLink({
+-            link: deepLink,
+-            address: fromAddress,
+-            closeNotification: closeNotification,
+-            custodyId: custodianTxId,
+-        }));
+-        dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
+-        onDeepLinkShown();
++    console.log(
++      "Update for transaction: ",
++      txData.transaction.id,
++      txData.transaction.status
++    );
++    const txMeta = await handleTxStatusUpdate(
++      txData,
++      txStateManager,
++      getPendingNonce,
++      setTxHash
++    );
++    if (!txMeta) {
++      return;
+     }
+-    catch (e) {
+-        dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(false));
++    if (TRANSACTION_EVENTS[txMeta.status]) {
++      try {
++        trackTransactionEvent(txMeta, TRANSACTION_EVENTS[txMeta.status]);
++      } catch (error) {
++        log.error(error);
++      }
+     }
++    console.log("custodianEventHandler finished, txMeta:", txMeta);
++  };
++}
++exports.custodianEventHandlerFactory = custodianEventHandlerFactory;
++async function showCustodianDeepLink({
++  dispatch,
++  mmiActions,
++  txId,
++  fromAddress,
++  closeNotification,
++  isSignature,
++  custodyId,
++  onDeepLinkFetched,
++  onDeepLinkShown,
++  showCustodyConfirmLink,
++}) {
++  let deepLink;
++  let custodianTxId = custodyId;
++  if (isSignature) {
++    const link = await dispatch(
++      mmiActions.getCustodianSignMessageDeepLink(fromAddress, custodyId)
++    );
++    deepLink = link;
++  } else {
++    const result = await dispatch(mmiActions.getCustodianConfirmDeepLink(txId));
++    deepLink = result.deepLink;
++    custodianTxId = result.custodyId;
++  }
++  onDeepLinkFetched();
++  try {
++    await dispatch(
++      showCustodyConfirmLink({
++        link: deepLink,
++        address: fromAddress,
++        closeNotification: closeNotification,
++        custodyId: custodianTxId,
++      })
++    );
++    dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(true));
++    onDeepLinkShown();
++  } catch (e) {
++    console.error(
++      `------- Show custodian deep link error ${e.message} ${JSON.stringify(
++        e.stack
++      )}`
++    );
++    dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(false));
++  }
+ }
+ exports.showCustodianDeepLink = showCustodianDeepLink;
+ function getTxByCustodyId(getTransactions, txCustodyId) {
+-    const searchCriteria = { custodyId: txCustodyId };
+-    const found = getTransactions({ searchCriteria });
+-    if (found.length) {
+-        return found[0];
+-    }
+-    return undefined;
++  const searchCriteria = { custodyId: txCustodyId };
++  const found = getTransactions({ searchCriteria });
++  if (found.length) {
++    return found[0];
++  }
++  return undefined;
+ }
+ exports.getTxByCustodyId = getTxByCustodyId;
+-async function handleTxStatusUpdate(txData, txStateManager, getPendingNonce, setTxHash) {
+-    var _a;
+-    const txMeta = getTxByCustodyId(({ searchCriteria }) => txStateManager.getTransactions({ searchCriteria }), txData.transaction.id);
+-    if (txMeta) {
+-        txMeta.custodyStatus = txData.transaction.status.displayText.toLowerCase();
+-        txMeta.custodyStatusDisplayText = (_a = txData.transaction) === null || _a === void 0 ? void 0 : _a.status.displayText;
+-        if (txData.transaction.hash && (!txMeta.hash || txMeta.hash === "0x")) {
+-            setTxHash(txMeta.id, txData.transaction.hash);
+-        }
+-        if (txData.transaction.status.signed &&
+-            !txData.transaction.status.finished &&
+-            txMeta.status !== types_1.MetaMaskTransactionStatuses.SIGNED) {
+-            txStateManager.setTxStatusSigned(txMeta.id);
+-        }
+-        if (!txMeta.txParams.nonce ||
+-            (txData.transaction.nonce && Number(txMeta.txParams.nonce) !== Number(txData.transaction.nonce))) {
+-            const nonce = "0x" + (parseInt(txData.transaction.nonce) || (await getPendingNonce(txData.transaction.from))).toString(16);
+-            const newTxParams = await {
+-                ...txMeta.txParams,
+-                nonce,
+-            };
+-            txMeta.txParams = newTxParams;
+-        }
+-        if (txData.transaction.status.submitted ||
+-            (txData.transaction.status.finished &&
+-                txData.transaction.status.success &&
+-                txMeta.status !== types_1.MetaMaskTransactionStatuses.CONFIRMED)) {
+-            txStateManager.setTxStatusSubmitted(txMeta.id);
+-        }
+-        else if (txData.transaction.status.finished && !txData.transaction.status.success) {
+-            let message = `Transaction status from custodian: ${txMeta.custodyStatusDisplayText}`;
+-            if (txData.transaction.status.reason) {
+-                message = txData.transaction.status.reason;
+-            }
+-            txStateManager.setTxStatusFailed(txMeta.id, message);
+-        }
+-        txStateManager.updateTransaction(txMeta, "Updated custody transaction status.");
+-        return txMeta;
++async function handleTxStatusUpdate(
++  txData,
++  txStateManager,
++  getPendingNonce,
++  setTxHash
++) {
++  var _a;
++  const txMeta = getTxByCustodyId(
++    ({ searchCriteria }) => txStateManager.getTransactions({ searchCriteria }),
++    txData.transaction.id
++  );
++  if (txMeta) {
++    txMeta.custodyStatus = txData.transaction.status.displayText.toLowerCase();
++    txMeta.custodyStatusDisplayText =
++      (_a = txData.transaction) === null || _a === void 0
++        ? void 0
++        : _a.status.displayText;
++    if (txData.transaction.hash && (!txMeta.hash || txMeta.hash === "0x")) {
++      setTxHash(txMeta.id, txData.transaction.hash);
++    }
++    if (
++      txData.transaction.status.signed &&
++      !txData.transaction.status.finished &&
++      txMeta.status !== types_1.MetaMaskTransactionStatuses.SIGNED
++    ) {
++      txStateManager.setTxStatusSigned(txMeta.id);
++    }
++    if (
++      !txMeta.txParams.nonce ||
++      (txData.transaction.nonce &&
++        Number(txMeta.txParams.nonce) !== Number(txData.transaction.nonce))
++    ) {
++      const nonce =
++        "0x" +
++        (
++          parseInt(txData.transaction.nonce) ||
++          (await getPendingNonce(txData.transaction.from))
++        ).toString(16);
++      const newTxParams = await {
++        ...txMeta.txParams,
++        nonce,
++      };
++      txMeta.txParams = newTxParams;
++    }
++    if (
++      txData.transaction.status.submitted ||
++      (txData.transaction.status.finished &&
++        txData.transaction.status.success &&
++        txMeta.status !== types_1.MetaMaskTransactionStatuses.CONFIRMED)
++    ) {
++      txStateManager.setTxStatusSubmitted(txMeta.id);
++    } else if (
++      txData.transaction.status.finished &&
++      !txData.transaction.status.success
++    ) {
++      let message = `Transaction status from custodian: ${txMeta.custodyStatusDisplayText}`;
++      if (txData.transaction.status.reason) {
++        message = txData.transaction.status.reason;
++      }
++      txStateManager.setTxStatusFailed(txMeta.id, message);
+     }
+-    return null;
++    txStateManager.updateTransaction(
++      txMeta,
++      "Updated custody transaction status."
++    );
++    return txMeta;
++  }
++  return null;
+ }
+ exports.handleTxStatusUpdate = handleTxStatusUpdate;
+ //# sourceMappingURL=ExtensionUtils.js.map

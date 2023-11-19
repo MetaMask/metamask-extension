@@ -3687,7 +3687,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/extension@npm:^0.3.10":
+"@metamask-institutional/extension@npm:0.3.10":
   version: 0.3.10
   resolution: "@metamask-institutional/extension@npm:0.3.10"
   dependencies:
@@ -3701,6 +3701,23 @@ __metadata:
     jest-create-mock-instance: "npm:^2.0.0"
     jest-fetch-mock: "npm:3.0.3"
   checksum: b2409991d238ded295cfed050ae829a5079dbe43d532bdccc23489b18b81d5da7e7163302143265f7c8a774b69cdc12ffe55c093f66d1dc2a62831e339ca2c75
+  languageName: node
+  linkType: hard
+
+"@metamask-institutional/extension@patch:@metamask-institutional/extension@npm%3A0.3.10#~/.yarn/patches/@metamask-institutional-extension-npm-0.3.10-2bbcfc3403.patch":
+  version: 0.3.10
+  resolution: "@metamask-institutional/extension@patch:@metamask-institutional/extension@npm%3A0.3.10#~/.yarn/patches/@metamask-institutional-extension-npm-0.3.10-2bbcfc3403.patch::version=0.3.10&hash=490dc0"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.0.5"
+    "@metamask-institutional/custody-controller": "npm:^0.2.17"
+    "@metamask-institutional/custody-keyring": "npm:^1.0.6"
+    "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"
+    "@metamask-institutional/sdk": "npm:^0.1.22"
+    "@metamask-institutional/transaction-update": "npm:^0.1.32"
+    "@metamask-institutional/types": "npm:^1.0.4"
+    jest-create-mock-instance: "npm:^2.0.0"
+    jest-fetch-mock: "npm:3.0.3"
+  checksum: 078f7458bd83b4f3921ba291ec9338913adf49225a43e6ee53f924e3b413788c926c13db0d27475041566f4de08d28f7e091be4bcc7455a6235f292ec54810d0
   languageName: node
   linkType: hard
 
@@ -24154,7 +24171,7 @@ __metadata:
     "@material-ui/core": "npm:^4.11.0"
     "@metamask-institutional/custody-controller": "npm:^0.2.18"
     "@metamask-institutional/custody-keyring": "npm:^1.0.7"
-    "@metamask-institutional/extension": "npm:^0.3.10"
+    "@metamask-institutional/extension": "patch:@metamask-institutional/extension@npm%3A0.3.10#~/.yarn/patches/@metamask-institutional-extension-npm-0.3.10-2bbcfc3403.patch"
     "@metamask-institutional/institutional-features": "npm:^1.2.9"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"

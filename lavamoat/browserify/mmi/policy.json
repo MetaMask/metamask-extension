@@ -736,6 +736,7 @@
     },
     "@metamask-institutional/extension": {
       "globals": {
+        "console.error": true,
         "console.log": true
       },
       "packages": {

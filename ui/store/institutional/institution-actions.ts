@@ -41,6 +41,7 @@ export function showCustodyConfirmLink({
   closeNotification: boolean;
   custodyId: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  console.error('---- Show custody confirm link');
   return (dispatch) => {
     dispatch(
       showModal({
