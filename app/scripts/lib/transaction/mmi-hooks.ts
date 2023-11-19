@@ -19,6 +19,7 @@ export function afterTransactionSign(
 ): boolean {
   // MMI does not broadcast transactions, as that is the responsibility of the custodian
   if (!txMeta?.custodyStatus) {
+    console.error('--------- afterTransactionSign rejected');
     return true;
   }
 
@@ -48,6 +49,9 @@ export function beforeTransactionPublish(txMeta: TransactionMeta): boolean {
 export function getAdditionalSignArguments(
   txMeta: TransactionMeta,
 ): (TransactionMeta | undefined)[] {
+  console.error(
+    `--------- getAdditionalSignArguments ${JSON.stringify(txMeta)}`,
+  );
   return [txMeta.custodyStatus ? txMeta : undefined];
 }
 
