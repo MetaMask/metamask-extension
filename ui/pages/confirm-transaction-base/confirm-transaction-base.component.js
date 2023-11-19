@@ -39,6 +39,7 @@ import {
   getGasFeeEstimatesAndStartPolling,
   addPollingTokenToAppState,
   removePollingTokenFromAppState,
+  updateTransaction,
 } from '../../store/actions';
 
 import { MIN_GAS_LIMIT_DEC } from '../send/send.constants';
@@ -702,7 +703,7 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-  handleMMISubmit() {
+  async handleMMISubmit() {
     const {
       sendTransaction,
       txData,
@@ -745,6 +746,8 @@ export default class ConfirmTransactionBase extends Component {
       txData.metadata.custodianPublishesTransaction =
         custodianPublishesTransaction;
       txData.metadata.rpcUrl = rpcUrl;
+
+      await updateTransaction(txData, true);
     }
 
     updateTxData({
@@ -772,7 +775,6 @@ export default class ConfirmTransactionBase extends Component {
         if (txData.custodyStatus) {
           setWaitForConfirmDeepLinkDialog(true);
         }
-
         sendTransaction(txData)
           .then(() => {
             if (txData.custodyStatus) {
