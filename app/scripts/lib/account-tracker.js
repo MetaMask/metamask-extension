@@ -142,7 +142,7 @@ export default class AccountTracker {
    * @param networkClientId - Optional networkClientId to fetch a network client with
    * @returns network client config
    */
-  getCorrectNetworkClient(networkClientId) {
+  #getCorrectNetworkClient(networkClientId) {
     if (networkClientId) {
       const networkClient = this.getNetworkClientById(networkClientId);
 
@@ -228,7 +228,7 @@ export default class AccountTracker {
     if (this.#listeners[networkClientId]) {
       return;
     }
-    const { blockTracker } = this.getCorrectNetworkClient(networkClientId);
+    const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
     const _updateForBlock = this._updateForBlock.bind(networkClientId);
     blockTracker.addListener('latest', _updateForBlock);
 
@@ -246,7 +246,7 @@ export default class AccountTracker {
     if (!this.#listeners[networkClientId]) {
       return;
     }
-    const { blockTracker } = this.getCorrectNetworkClient(networkClientId);
+    const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
     blockTracker.removeListener('latest', this.#listeners[networkClientId]);
 
     delete this.#listeners[networkClientId];
@@ -310,7 +310,7 @@ export default class AccountTracker {
       this._updateAccountsWithNetworkClientId();
     }
     this.#pollingTokenSets.forEach((_tokenSet, networkClientId) => {
-      const { chainId } = this.getCorrectNetworkClient(networkClientId);
+      const { chainId } = this.#getCorrectNetworkClient(networkClientId);
       if (this._currentBlockNumberByChainId[chainId]) {
         this._updateAccountsWithNetworkClientId(networkClientId);
       }
@@ -372,7 +372,7 @@ export default class AccountTracker {
    * @fires 'block' The updated state, if all account updates are successful
    */
   async _updateForBlockByNetworkClientId(networkClientId, blockNumber) {
-    const { chainId, provider } = this.getCorrectNetworkClient(networkClientId);
+    const { chainId, provider } = this.#getCorrectNetworkClient(networkClientId);
     this._currentBlockNumberByChainId[chainId] = blockNumber;
 
     // block gasLimit polling shouldn't be in account-tracker shouldn't be here...
@@ -421,7 +421,7 @@ export default class AccountTracker {
     }
 
     const { chainId, provider, identifier } =
-      this.getCorrectNetworkClient(networkClientId);
+      this.#getCorrectNetworkClient(networkClientId);
     const { useMultiAccountBalanceChecker } =
       this.preferencesController.store.getState();
 
