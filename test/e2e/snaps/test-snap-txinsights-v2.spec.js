@@ -113,6 +113,28 @@ describe('Test Snap TxInsights', function () {
           css: '.snap-ui-renderer__content',
           text: 'ERC-20',
         });
+
+        // click confirm to continue
+        await driver.clickElement({
+          text: 'Confirm',
+          tag: 'button',
+        });
+
+        // check for warning from txinsights
+        await driver.waitForSelector({
+          css: '.snap-delineator__header__text',
+          text: 'Warning from Insights Example Snap',
+        });
+
+        // click the warning confirm checkbox
+        await driver.clickElement('.mm-checkbox__input');
+
+        // click confirm button to send transaction
+        await driver.clickElement({
+          css: '.mm-box--color-error-inverse',
+          text: 'Confirm',
+          tag: 'button',
+        });
       },
     );
   });
