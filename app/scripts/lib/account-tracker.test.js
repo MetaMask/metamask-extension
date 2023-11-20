@@ -127,7 +127,7 @@ describe('Account Tracker', () => {
       jest.spyOn(blockTrackerStub, 'addListener').mockImplementation();
       jest.spyOn(blockTrackerStub, 'removeListener').mockImplementation();
       const updateAccountsWithNetworkClientIdSpy = jest
-        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .spyOn(accountTracker, '_updateAccounts')
         .mockResolvedValue();
 
       accountTracker.start();
@@ -180,7 +180,7 @@ describe('Account Tracker', () => {
     it('should subscribe to the block tracker and update accounts if not already using the networkClientId', async () => {
       jest.spyOn(blockTrackerFromHookStub, 'addListener').mockImplementation();
       const updateAccountsWithNetworkClientIdSpy = jest
-        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .spyOn(accountTracker, '_updateAccounts')
         .mockResolvedValue();
 
       accountTracker.startPollingByNetworkClientId('mainnet');
@@ -273,7 +273,7 @@ describe('Account Tracker', () => {
       });
 
       const updateAccountsWithNetworkClientIdSpy = jest
-        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .spyOn(accountTracker, '_updateAccounts')
         .mockResolvedValue();
 
       accountTracker.startPollingByNetworkClientId('mainnet');
@@ -316,7 +316,7 @@ describe('Account Tracker', () => {
         .spyOn(blockTrackerFromHookStub, 'removeListener')
         .mockImplementation();
       jest
-        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .spyOn(accountTracker, '_updateAccounts')
         .mockResolvedValue();
 
       const pollingToken =
@@ -335,7 +335,7 @@ describe('Account Tracker', () => {
         .spyOn(blockTrackerFromHookStub, 'removeListener')
         .mockImplementation();
       jest
-        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .spyOn(accountTracker, '_updateAccounts')
         .mockResolvedValue();
 
       const pollingToken1 =
@@ -428,7 +428,7 @@ describe('Account Tracker', () => {
       });
 
       jest
-        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .spyOn(accountTracker, '_updateAccounts')
         .mockResolvedValue();
 
       accountTracker.startPollingByNetworkClientId('mainnet');
@@ -550,7 +550,7 @@ describe('Account Tracker', () => {
   describe('_updateForBlockByNetworkClientId', () => {
     it('updates currentBlockGasLimit, currentBlockGasLimitByChainId, and accounts when no networkClientId is passed', async () => {
       const updateAccountsWithNetworkClientIdSpy = jest
-        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .spyOn(accountTracker, '_updateAccounts')
         .mockResolvedValue();
 
       await accountTracker._updateForBlockByNetworkClientId(
@@ -574,7 +574,7 @@ describe('Account Tracker', () => {
 
     it('updates only the currentBlockGasLimitByChainId and accounts when a networkClientId is passed', async () => {
       const updateAccountsWithNetworkClientIdSpy = jest
-        .spyOn(accountTracker, '_updateAccountsWithNetworkClientId')
+        .spyOn(accountTracker, '_updateAccounts')
         .mockResolvedValue();
 
       await accountTracker._updateForBlockByNetworkClientId(
@@ -599,7 +599,7 @@ describe('Account Tracker', () => {
     });
   });
 
-  describe('_updateAccountsWithNetworkClientId', () => {
+  describe('_updateAccounts', () => {
     let updateAccountSpy, updateAccountsViaBalanceCheckerSpy;
 
     beforeEach(() => {
