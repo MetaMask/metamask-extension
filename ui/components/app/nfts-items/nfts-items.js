@@ -5,7 +5,6 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import Box from '../../ui/box';
 import Typography from '../../ui/typography/typography';
-import Card from '../../ui/card';
 import {
   Color,
   TypographyVariant,
@@ -22,6 +21,8 @@ import {
   getCurrentChainId,
   getIpfsGateway,
   getSelectedAddress,
+  getCurrentNetwork,
+  getOpenSeaEnabled,
 } from '../../../selectors';
 import { ASSET_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
@@ -31,7 +32,7 @@ import { usePrevious } from '../../../hooks/usePrevious';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { Icon, IconName } from '../../component-library';
-import NftDefaultImage from '../nft-default-image';
+import { NftItem } from '../../multichain/nft-item';
 
 const width =
   getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
@@ -50,7 +51,10 @@ export default function NftsItems({
   const previousCollectionKeys = usePrevious(collectionsKeys);
   const selectedAddress = useSelector(getSelectedAddress);
   const chainId = useSelector(getCurrentChainId);
+  const currentChain = useSelector(getCurrentNetwork);
   const t = useI18nContext();
+  const ipfsGateway = useSelector(getIpfsGateway);
+  const openSeaEnabled = useSelector(getOpenSeaEnabled);
 
   useEffect(() => {
     if (
@@ -85,10 +89,24 @@ export default function NftsItems({
     dispatch,
   ]);
 
-  const ipfsGateway = useSelector(getIpfsGateway);
   const history = useHistory();
 
   const renderCollectionImage = (collectionImage, collectionName) => {
+    if (collectionImage?.startsWith('ipfs') && !ipfsGateway) {
+      return (
+        <div className="nfts-items__collection-image-alt">
+          {collectionName?.[0]?.toUpperCase() ?? null}
+        </div>
+      );
+    }
+    if (!openSeaEnabled && !collectionImage?.startsWith('ipfs')) {
+      return (
+        <div className="nfts-items__collection-image-alt">
+          {collectionName?.[0]?.toUpperCase() ?? null}
+        </div>
+      );
+    }
+
     if (collectionImage) {
       return (
         <img
@@ -168,12 +186,20 @@ export default function NftsItems({
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {nfts.map((nft, i) => {
-              const { image, address, tokenId, backgroundColor, name } = nft;
-              const nftImage = getAssetImageURL(image, ipfsGateway);
+              const { image, address, tokenId, name, imageOriginal } = nft;
+              const nftImage = getAssetImageURL(
+                imageOriginal ?? image,
+                ipfsGateway,
+              );
               const nftImageAlt = getNftImageAlt(nft);
+              const isImageHosted = image?.startsWith('https:');
+              const nftImageURL = imageOriginal?.startsWith('ipfs')
+                ? nftImage
+                : image;
+              const nftSrcUrl = imageOriginal ?? image;
+              const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
               const handleImageClick = () =>
                 history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
-
               return (
                 <Box
                   data-testid="nft-wrapper"
@@ -181,34 +207,18 @@ export default function NftsItems({
                   key={`nft-${i}`}
                   className="nfts-items__item-wrapper"
                 >
-                  <Card
-                    padding={0}
-                    justifyContent={JustifyContent.center}
-                    className="nfts-items__item-wrapper__card"
-                  >
-                    {nftImage ? (
-                      <button
-                        className="nfts-items__item"
-                        style={{
-                          backgroundColor,
-                        }}
-                        onClick={handleImageClick}
-                      >
-                        <img
-                          className="nfts-items__item-image"
-                          data-testid="nft-image"
-                          src={nftImage}
-                          alt={nftImageAlt}
-                        />
-                      </button>
-                    ) : (
-                      <NftDefaultImage
-                        name={name}
-                        tokenId={tokenId}
-                        handleImageClick={handleImageClick}
-                      />
-                    )}
-                  </Card>
+                  <NftItem
+                    nftImageURL={nftImageURL}
+                    alt={nftImageAlt}
+                    src={isImageHosted ? image : nftImage}
+                    name={name}
+                    tokenId={tokenId}
+                    networkName={currentChain.nickname}
+                    networkSrc={currentChain.rpcPrefs?.imageUrl}
+                    onClick={handleImageClick}
+                    isIpfsURL={isIpfsURL}
+                    clickable
+                  />
                 </Box>
               );
             })}

@@ -1,0 +1,125 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { ModalHeader } from './modal-header';
+
+# ModalHeader
+
+`ModalHeader` handles the title, close button and back button for all Modal components. It is built on top of the [HeaderBase](/docs/components-componentlibrary-headerbase--default-story) component
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-modalheader--default-story" />
+</Canvas>
+
+## Props
+
+The `ModalHeader` accepts all props below as well as all [Box](/docs/ui-components-ui-box-box-stories-js--default-story#props) component props
+
+<ArgsTable of={ModalHeader} />
+
+### Children
+
+The title of the `ModalHeader` component. Passing a `string` will render the content inside of a `Text` component. Passing any other type will render the content as is.
+
+<Canvas>
+  <Story id="components-componentlibrary-modalheader--children" />
+</Canvas>
+
+```jsx
+import {
+  TextVariant,
+  TextAlign,
+  DISPLAY,
+  FLEX_DIRECTION,
+  AlignItems,
+  JustifyContent,
+} from '../../../helpers/constants/design-system';
+
+import { ModalHeader,  AvatarAccount, Text } from '../../component-library';
+
+<ModalHeader {...args} marginBottom={4}>
+  Children as string
+</ModalHeader>
+<ModalHeader
+  {...args}
+  childrenWrapperProps={{
+    display: DISPLAY.FLEX,
+    flexDirection: FLEX_DIRECTION.COLUMN,
+    alignItems: AlignItems.center,
+    justifyContent: JustifyContent.center,
+  }}
+>
+  <AvatarAccount address="0x1234" />
+  <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
+    Custom header using multiple components
+  </Text>
+</ModalHeader>
+```
+
+### onBack
+
+Use the onClick handler `onBack` prop to render the `ButtonIcon` back button in the startAccessory position.
+
+Use the `backButtonProps` prop to pass additional props to the `ButtonIcon` back button.
+
+<Canvas>
+  <Story id="components-componentlibrary-modalheader--on-back" />
+</Canvas>
+
+```jsx
+import { ModalHeader } from '../../component-library';
+
+<ModalHeader onBack={() => console.log('Back button click')}>
+  OnBack Demo
+</ModalHeader>;
+```
+
+### onClose
+
+Use the onClick handler `onClose` prop to render the `ButtonIcon` back button in the endAccessory position.
+
+Use the `backButtonProps` prop to pass additional props to the `ButtonIcon` back button.
+
+<Canvas>
+  <Story id="components-componentlibrary-modalheader--on-close" />
+</Canvas>
+
+```jsx
+import { ModalHeader } from '../../component-library';
+
+<ModalHeader onClose={() => console.log('Back button click')}>
+  OnClose Demo
+</ModalHeader>;
+```
+
+### startAccessory
+
+Use the `startAccessory` prop to render a component in the startAccessory position. This will override the default back `ButtonIcon`.
+
+<Canvas>
+  <Story id="components-componentlibrary-modalheader--start-accessory" />
+</Canvas>
+
+```jsx
+import { ModalHeader, Button, ButtonSize } from '../../component-library';
+
+<ModalHeader startAccessory={<Button size={ButtonSize.Sm}>Demo</Button>}>
+  StartAccessory
+</ModalHeader>;
+```
+
+### endAccessory
+
+Use the `endAccessory` prop to render a component in the endAccessory position. This will override the default close `ButtonIcon`.
+
+<Canvas>
+  <Story id="components-componentlibrary-modalheader--end-accessory" />
+</Canvas>
+
+```jsx
+import { ModalHeader, Button, ButtonSize } from '../../component-library';
+
+<ModalHeader endAccessory={<Button size={ButtonSize.Sm}>Demo</Button>}>
+  EndAccessory
+</ModalHeader>;
+```

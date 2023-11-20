@@ -1,11 +1,21 @@
+import { ApprovalType, NetworkType } from '@metamask/controller-utils';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
   CHAIN_IDS,
   LOCALHOST_DISPLAY_NAME,
-  MAINNET_DISPLAY_NAME,
+  NETWORK_TYPES,
+  OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import * as selectors from './selectors';
+
+jest.mock('../../shared/modules/network.utils', () => {
+  const actual = jest.requireActual('../../shared/modules/network.utils');
+  return {
+    ...actual,
+    shouldShowLineaMainnet: jest.fn().mockResolvedValue(true),
+  };
+});
 
 describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
@@ -18,6 +28,184 @@ describe('Selectors', () => {
       expect(
         selectors.getSelectedAddress({ metamask: { selectedAddress } }),
       ).toStrictEqual(selectedAddress);
+    });
+  });
+
+  describe('#getSuggestedTokens', () => {
+    it('returns an empty array if pendingApprovals is undefined', () => {
+      expect(selectors.getSuggestedTokens({ metamask: {} })).toStrictEqual([]);
+    });
+
+    it('returns suggestedTokens from filtered pending approvals', () => {
+      const pendingApprovals = {
+        1: {
+          id: '1',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+              symbol: 'NEW',
+              decimals: 18,
+              image: 'metamark.svg',
+            },
+          },
+          requestState: null,
+        },
+        2: {
+          id: '2',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0xC8c77482e45F1F44dE1745F52C74426C631bDD51',
+              symbol: '0XYX',
+              decimals: 18,
+              image: '0x.svg',
+            },
+          },
+        },
+        3: {
+          id: '3',
+          origin: 'origin',
+          time: 1,
+          type: ApprovalType.Transaction,
+          requestData: {
+            // something that is not an asset
+          },
+        },
+        4: {
+          id: '4',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x1234abcd',
+              symbol: '0XYX',
+              tokenId: '123',
+            },
+          },
+        },
+      };
+
+      expect(
+        selectors.getSuggestedTokens({ metamask: { pendingApprovals } }),
+      ).toStrictEqual([
+        {
+          id: '1',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+              symbol: 'NEW',
+              decimals: 18,
+              image: 'metamark.svg',
+            },
+          },
+          requestState: null,
+        },
+        {
+          id: '2',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0xC8c77482e45F1F44dE1745F52C74426C631bDD51',
+              symbol: '0XYX',
+              decimals: 18,
+              image: '0x.svg',
+            },
+          },
+        },
+      ]);
+    });
+  });
+
+  describe('#getSuggestedNfts', () => {
+    it('returns an empty array if pendingApprovals is undefined', () => {
+      expect(selectors.getSuggestedNfts({ metamask: {} })).toStrictEqual([]);
+    });
+
+    it('returns suggestedNfts from filtered pending approvals', () => {
+      const pendingApprovals = {
+        1: {
+          id: '1',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x8b175474e89094c44da98b954eedeac495271d0a',
+              symbol: 'NEW',
+              decimals: 18,
+              image: 'metamark.svg',
+            },
+          },
+          requestState: null,
+        },
+        2: {
+          id: '2',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0xC8c77482e45F1F44dE1745F52C74426C631bDD51',
+              symbol: '0XYX',
+              decimals: 18,
+              image: '0x.svg',
+            },
+          },
+        },
+        3: {
+          id: '3',
+          origin: 'origin',
+          time: 1,
+          type: ApprovalType.Transaction,
+          requestData: {
+            // something that is not an asset
+          },
+        },
+        4: {
+          id: '4',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x1234abcd',
+              symbol: '0XYX',
+              tokenId: '123',
+              standard: 'ERC721',
+            },
+          },
+        },
+      };
+
+      expect(
+        selectors.getSuggestedNfts({ metamask: { pendingApprovals } }),
+      ).toStrictEqual([
+        {
+          id: '4',
+          origin: 'dapp',
+          time: 1,
+          type: ApprovalType.WatchAsset,
+          requestData: {
+            asset: {
+              address: '0x1234abcd',
+              symbol: '0XYX',
+              tokenId: '123',
+              standard: 'ERC721',
+            },
+          },
+        },
+      ]);
     });
   });
 
@@ -36,16 +224,18 @@ describe('Selectors', () => {
   });
 
   describe('#getRpcPrefsForCurrentProvider', () => {
-    it('returns an empty object if state.metamask.provider is undefined', () => {
+    it('returns an empty object if state.metamask.providerConfig is empty', () => {
       expect(
-        selectors.getRpcPrefsForCurrentProvider({ metamask: {} }),
+        selectors.getRpcPrefsForCurrentProvider({
+          metamask: { providerConfig: {} },
+        }),
       ).toStrictEqual({});
     });
-    it('returns rpcPrefs from the provider', () => {
+    it('returns rpcPrefs from the providerConfig', () => {
       expect(
         selectors.getRpcPrefsForCurrentProvider({
           metamask: {
-            provider: {
+            providerConfig: {
               rpcPrefs: { blockExplorerUrl: 'https://test-block-explorer' },
             },
           },
@@ -109,31 +299,6 @@ describe('Selectors', () => {
   });
 
   describe('#getAllNetworks', () => {
-    it('returns an array even if there are no custom networks', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: false,
-          },
-        },
-      });
-      expect(networks instanceof Array).toBe(true);
-      // The only returning item should be Ethereum Mainnet
-      expect(networks).toHaveLength(1);
-      expect(networks[0].nickname).toStrictEqual(MAINNET_DISPLAY_NAME);
-    });
-
-    it('returns more test networks with showTestNetworks on', () => {
-      const networks = selectors.getAllNetworks({
-        metamask: {
-          preferences: {
-            showTestNetworks: true,
-          },
-        },
-      });
-      expect(networks.length).toBeGreaterThan(1);
-    });
-
     it('sorts Localhost to the bottom of the test lists', () => {
       const networks = selectors.getAllNetworks({
         metamask: {
@@ -150,6 +315,119 @@ describe('Selectors', () => {
       });
       const lastItem = networks.pop();
       expect(lastItem.nickname.toLowerCase()).toContain('localhost');
+    });
+
+    it('properly assigns a network as removable', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+          networkConfigurations: {
+            'some-config-name': {
+              chainId: CHAIN_IDS.LOCALHOST,
+              nickname: LOCALHOST_DISPLAY_NAME,
+              id: 'some-config-name',
+            },
+          },
+        },
+      });
+
+      const mainnet = networks.find(
+        (network) => network.id === NETWORK_TYPES.MAINNET,
+      );
+      expect(mainnet.removable).toBe(false);
+
+      const customNetwork = networks.find(
+        (network) => network.id === 'some-config-name',
+      );
+      expect(customNetwork.removable).toBe(true);
+    });
+
+    it('properly proposes a known network image when not provided by adding function', () => {
+      const networks = selectors.getAllNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+          networkConfigurations: {
+            'some-config-name': {
+              chainId: CHAIN_IDS.OPTIMISM,
+              nickname: OPTIMISM_DISPLAY_NAME,
+              id: 'some-config-name',
+            },
+          },
+        },
+      });
+
+      const optimismConfig = networks.find(
+        ({ chainId }) => chainId === CHAIN_IDS.OPTIMISM,
+      );
+      expect(optimismConfig.rpcPrefs.imageUrl).toBe('./images/optimism.svg');
+    });
+  });
+
+  describe('#getCurrentNetwork', () => {
+    it('returns the correct custom network when there is a chainId collision', () => {
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          providerConfig: {
+            ...mockState.metamask.networkConfigurations
+              .testNetworkConfigurationId,
+            // 0x1 would collide with Ethereum Mainnet
+            chainId: '0x1',
+            // type of "rpc" signals custom network
+            type: 'rpc',
+          },
+        },
+      };
+
+      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+      expect(currentNetwork.nickname).toBe('Custom Mainnet RPC');
+      expect(currentNetwork.chainId).toBe('0x1');
+    });
+
+    it('returns the correct mainnet network when there is a chainId collision', () => {
+      const modifiedMockState = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          providerConfig: {
+            ...mockState.metamask.providerConfig,
+            chainId: '0x1',
+            // Changing type to 'mainnet' represents Ethereum Mainnet
+            type: 'mainnet',
+          },
+        },
+      };
+      const currentNetwork = selectors.getCurrentNetwork(modifiedMockState);
+      expect(currentNetwork.nickname).toBe('Ethereum Mainnet');
+    });
+  });
+
+  describe('#getAllEnabledNetworks', () => {
+    it('returns only Mainnet and Linea with showTestNetworks off', () => {
+      const networks = selectors.getAllEnabledNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: false,
+          },
+        },
+      });
+      expect(networks).toHaveLength(2);
+    });
+
+    it('returns networks with showTestNetworks on', () => {
+      const networks = selectors.getAllEnabledNetworks({
+        metamask: {
+          preferences: {
+            showTestNetworks: true,
+          },
+        },
+      });
+      expect(networks.length).toBeGreaterThan(2);
     });
   });
 
@@ -238,8 +516,10 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          networkDetails: {
-            EIPS: { 1559: false },
+          networksMetadata: {
+            [NetworkType.goerli]: {
+              EIPS: { 1559: false },
+            },
           },
         },
       });
@@ -248,8 +528,10 @@ describe('Selectors', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          networkDetails: {
-            EIPS: { 1559: false },
+          networksMetadata: {
+            [NetworkType.goerli]: {
+              EIPS: { 1559: false },
+            },
           },
         },
       });
@@ -274,7 +556,7 @@ describe('Selectors', () => {
   it('returns accounts with balance, address, and name from identity and accounts in state', () => {
     const accountsWithSendEther =
       selectors.accountsWithSendEtherInfoSelector(mockState);
-    expect(accountsWithSendEther).toHaveLength(4);
+    expect(accountsWithSendEther).toHaveLength(5);
     expect(accountsWithSendEther[0].balance).toStrictEqual(
       '0x346ba7725f412cbfdb',
     );
@@ -373,11 +655,6 @@ describe('Selectors', () => {
       priorityFee: '2',
     });
   });
-  it('#getIsAdvancedGasFeeDefault', () => {
-    const isAdvancedGasFeeDefault =
-      selectors.getIsAdvancedGasFeeDefault(mockState);
-    expect(isAdvancedGasFeeDefault).toStrictEqual(true);
-  });
   it('#getAppIsLoading', () => {
     const appIsLoading = selectors.getAppIsLoading(mockState);
     expect(appIsLoading).toStrictEqual(false);
@@ -442,31 +719,64 @@ describe('Selectors', () => {
   });
 
   it('#getIsBridgeChain', () => {
-    mockState.metamask.provider.chainId = '0xa';
+    mockState.metamask.providerConfig.chainId = '0xa';
     const isOptimismSupported = selectors.getIsBridgeChain(mockState);
     expect(isOptimismSupported).toBeTruthy();
 
-    mockState.metamask.provider.chainId = '0xfa';
+    mockState.metamask.providerConfig.chainId = '0xfa';
     const isFantomSupported = selectors.getIsBridgeChain(mockState);
     expect(isFantomSupported).toBeFalsy();
   });
 
-  it('#getIsBridgeToken', () => {
-    mockState.metamask.provider.chainId = '0xa';
-    const isOptimismTokenSupported = selectors.getIsBridgeToken(
-      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
-    )(mockState);
-    expect(isOptimismTokenSupported).toBeTruthy();
+  it('returns proper values for snaps privacy warning shown status', () => {
+    mockState.metamask.snapsInstallPrivacyWarningShown = false;
+    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
 
-    const isOptimismUnknownTokenSupported = selectors.getIsBridgeToken(
-      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e60',
-    )(mockState);
-    expect(isOptimismUnknownTokenSupported).toBeFalsy();
+    mockState.metamask.snapsInstallPrivacyWarningShown = true;
+    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(true);
 
-    mockState.metamask.provider.chainId = '0xfa';
-    const isFantomTokenSupported = selectors.getIsBridgeToken(
-      '0x94B008aa00579c1307b0ef2c499ad98a8ce58e58',
-    )(mockState);
-    expect(isFantomTokenSupported).toBeFalsy();
+    mockState.metamask.snapsInstallPrivacyWarningShown = undefined;
+    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+
+    mockState.metamask.snapsInstallPrivacyWarningShown = null;
+    expect(selectors.getSnapsInstallPrivacyWarningShown(mockState)).toBe(false);
+  });
+
+  it('#getInfuraBlocked', () => {
+    let isInfuraBlocked = selectors.getInfuraBlocked(mockState);
+    expect(isInfuraBlocked).toBe(false);
+
+    const modifiedMockState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        networksMetadata: {
+          ...mockState.metamask.networksMetadata,
+          goerli: {
+            status: 'blocked',
+          },
+        },
+      },
+    };
+    isInfuraBlocked = selectors.getInfuraBlocked(modifiedMockState);
+    expect(isInfuraBlocked).toBe(true);
+  });
+
+  it('#getSnapRegistryData', () => {
+    const mockSnapId = 'npm:@metamask/test-snap-bip44';
+    expect(selectors.getSnapRegistryData(mockState, mockSnapId)).toStrictEqual(
+      expect.objectContaining({
+        id: mockSnapId,
+        versions: {
+          '5.1.2': {
+            checksum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+          },
+        },
+        metadata: expect.objectContaining({
+          website: 'https://snaps.consensys.io/',
+          name: 'BIP-44',
+        }),
+      }),
+    );
   });
 });

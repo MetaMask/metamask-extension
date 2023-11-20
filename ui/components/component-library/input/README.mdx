@@ -6,13 +6,13 @@ import { Input } from './input';
 
 `Input` lets user enter a text data. It’s a light-weighted borderless input used inside of custom inputs. See [TextField](/docs/components-componentlibrary-textfield--default-story#textfield) for common text input.
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-input--default-story" />
 </Canvas>
 
 ## Props
-
-The `Input` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={Input} />
 
@@ -22,24 +22,24 @@ Use the `type` prop to change the type of input.
 
 Possible types include:
 
-- `INPUT_TYPES.TEXT`
-- `INPUT_TYPES.NUMBER`
-- `INPUT_TYPES.PASSWORD`
-- `INPUT_TYPES.SEARCH`
+- `InputType.Text`
+- `InputType.Number`
+- `InputType.Password`
+- `InputType.Search`
 
-Defaults to `INPUT_TYPES.TEXT`.
+Defaults to `InputType.Text`.
 
 <Canvas>
   <Story id="components-componentlibrary-input--type" />
 </Canvas>
 
 ```jsx
-import { Input, INPUT_TYPES } from '../../component-library';
+import { Input, InputType } from '../../component-library';
 
-<Input type={INPUT_TYPES.TEXT} />
-<Input type={INPUT_TYPES.NUMBER} />
-<Input type={INPUT_TYPES.PASSWORD} />
-<Input type={INPUT_TYPES.SEARCH} />
+<Input type={InputType.Text} />
+<Input type={InputType.Number} />
+<Input type={InputType.Password} />
+<Input type={InputType.Search} />
 ```
 
 ### Ref
@@ -81,9 +81,9 @@ Use the `autoComplete` prop to set the autocomplete html attribute. It allows th
 </Canvas>
 
 ```jsx
-import { Input } from '../../component-library';
+import { Input, InputType } from '../../component-library';
 
-<Input type={INPUT_TYPES.PASSWORD} autoComplete />;
+<Input type={InputType.Password} autoComplete />;
 ```
 
 ### Auto Focus

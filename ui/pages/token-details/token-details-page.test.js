@@ -209,10 +209,11 @@ const state = {
         symbol: 'UMA',
       },
     },
-    provider: {
+    providerConfig: {
       type: 'mainnet',
       nickname: '',
     },
+    currencyRates: {},
     preferences: {
       showFiatInTestnets: true,
     },

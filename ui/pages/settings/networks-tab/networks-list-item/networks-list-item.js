@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
+  CHAIN_IDS,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TYPES,
 } from '../../../../../shared/constants/network';
@@ -11,17 +12,18 @@ import { NETWORKS_ROUTE } from '../../../../helpers/constants/routes';
 import { setSelectedNetworkConfigurationId } from '../../../../store/actions';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
-import { getProvider } from '../../../../selectors';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import Identicon from '../../../../components/ui/identicon';
 import UrlIcon from '../../../../components/ui/url-icon';
 
 import { handleSettingsRefs } from '../../../../helpers/utils/settings-search';
 import {
   Icon,
-  ICON_NAMES,
-  ICON_SIZES,
-} from '../../../../components/component-library/icon/deprecated';
+  IconName,
+  IconSize,
+} from '../../../../components/component-library';
 import { IconColor } from '../../../../helpers/constants/design-system';
+import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
 
 const NetworksListItem = ({
   network,
@@ -34,7 +36,7 @@ const NetworksListItem = ({
   const dispatch = useDispatch();
   const environmentType = getEnvironmentType();
   const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
-  const provider = useSelector(getProvider);
+  const providerConfig = useSelector(getProviderConfig);
   const {
     label,
     labelKey,
@@ -46,10 +48,10 @@ const NetworksListItem = ({
   const listItemNetworkIsSelected =
     selectedNetworkConfigurationId &&
     selectedNetworkConfigurationId === networkConfigurationId;
-  const listItemUrlIsProviderUrl = rpcUrl === provider.rpcUrl;
+  const listItemUrlIsProviderUrl = rpcUrl === providerConfig.rpcUrl;
   const listItemTypeIsProviderNonRpcType =
-    provider.type !== NETWORK_TYPES.RPC &&
-    currentProviderType === provider.type;
+    providerConfig.type !== NETWORK_TYPES.RPC &&
+    currentProviderType === providerConfig.type;
   const listItemNetworkIsCurrentProvider =
     !networkIsSelected &&
     (listItemUrlIsProviderUrl || listItemTypeIsProviderNonRpcType);
@@ -79,9 +81,9 @@ const NetworksListItem = ({
       }}
     >
       {isCurrentRpcTarget ? (
-        <Icon name={ICON_NAMES.CHECK} color={IconColor.successDefault} />
+        <Icon name={IconName.Check} color={IconColor.successDefault} />
       ) : (
-        <Icon name={ICON_NAMES.CHECK} color={IconColor.transparent} />
+        <Icon name={IconName.Check} color={IconColor.transparent} />
       )}
       {network.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP ? (
         <Identicon
@@ -95,13 +97,13 @@ const NetworksListItem = ({
           <UrlIcon
             className="networks-tab__content__icon-with-fallback"
             fallbackClassName="networks-tab__content__icon-with-fallback"
-            name={label}
+            name={label || getNetworkLabelKey(labelKey)}
           />
         )
       )}
-      {network.isATestNetwork && (
+      {network.isATestNetwork && network.chainId !== CHAIN_IDS.LINEA_GOERLI && (
         <UrlIcon
-          name={label || labelKey}
+          name={label || getNetworkLabelKey(labelKey)}
           fallbackClassName={classnames(
             'networks-tab__content__icon-with-fallback',
             {
@@ -119,12 +121,12 @@ const NetworksListItem = ({
             !displayNetworkListItemAsSelected,
         })}
       >
-        {label || t(labelKey)}
+        {label || t(getNetworkLabelKey(labelKey))}
         {currentProviderType !== NETWORK_TYPES.RPC && (
           <Icon
-            name={ICON_NAMES.LOCK}
+            name={IconName.Lock}
             color={IconColor.iconMuted}
-            size={ICON_SIZES.AUTO}
+            size={IconSize.Inherit}
             marginInlineStart={2}
           />
         )}

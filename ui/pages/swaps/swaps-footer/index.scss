@@ -1,5 +1,9 @@
 .swaps-footer {
   width: 100%;
+  z-index: 50;
+  position: sticky;
+  bottom: 0;
+  background-color: var(--color-background-default);
 
   &--warning {
     .btn-primary {
@@ -7,7 +11,6 @@
       border-color: var(--color-error-default);
     }
   }
-
 
   @include screen-sm-max {
     &--border {

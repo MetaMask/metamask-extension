@@ -1,6 +1,8 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
@@ -71,9 +73,13 @@ describe('ConfirmGasDisplay', () => {
     render({
       contextProps: {
         metamask: {
-          networkDetails: {
-            EIPS: {
-              1559: false,
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {
+                1559: false,
+              },
+              status: NetworkStatus.Available,
             },
           },
         },

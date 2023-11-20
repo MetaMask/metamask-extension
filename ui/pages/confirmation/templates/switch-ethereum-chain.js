@@ -20,8 +20,12 @@ const PENDING_TX_DROP_NOTICE = {
   },
 };
 
-async function getAlerts() {
-  return [PENDING_TX_DROP_NOTICE];
+async function getAlerts(_pendingApproval, state) {
+  const alerts = [];
+  if (state.unapprovedTxsCount > 0) {
+    alerts.push(PENDING_TX_DROP_NOTICE);
+  }
+  return alerts;
 }
 
 function getValues(pendingApproval, t, actions) {
@@ -64,10 +68,8 @@ function getValues(pendingApproval, t, actions) {
           element: 'ConfirmationNetworkSwitch',
           key: 'network-being-switched',
           props: {
-            newNetwork: {
-              chainId: pendingApproval.requestData.chainId,
-              nickname: pendingApproval.requestData.nickname,
-            },
+            toNetwork: pendingApproval.requestData.toNetworkConfiguration,
+            fromNetwork: pendingApproval.requestData.fromNetworkConfiguration,
           },
         },
       },
@@ -77,7 +79,7 @@ function getValues(pendingApproval, t, actions) {
     onSubmit: () =>
       actions.resolvePendingApproval(
         pendingApproval.id,
-        pendingApproval.requestData,
+        pendingApproval.requestData.toNetworkConfiguration,
       ),
 
     onCancel: () =>

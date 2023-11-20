@@ -1,6 +1,6 @@
 import EventEmitter from '@metamask/safe-event-emitter';
 import log from 'loglevel';
-import EthQuery from 'ethjs-query';
+import EthQuery from '@metamask/ethjs-query';
 import { TransactionStatus } from '../../../../shared/constants/transaction';
 import { ERROR_SUBMITTING } from './tx-state-manager';
 
@@ -37,7 +37,10 @@ export default class PendingTransactionTracker extends EventEmitter {
    * @param {object} config.nonceTracker - see nonce tracker
    * @param {object} config.provider - A network provider.
    * @param {object} config.query - An EthQuery instance.
-   * @param {Function} config.publishTransaction - Publishes a raw transaction,
+   * @param {Function} config.publishTransaction - Publishes a raw transaction.
+   * @param {object} config.hooks - The controller hooks.
+   * @param {Function} config.hooks.beforeCheckPendingTransaction - Additional logic to execute before checking pending transactions. Return false to prevent the broadcast of the transaction.
+   * @param {Function} config.hooks.beforePublish - Additional logic to execute before publishing a transaction. Return false to prevent the broadcast of the transaction.
    */
   constructor(config) {
     super();
@@ -48,6 +51,14 @@ export default class PendingTransactionTracker extends EventEmitter {
     this.publishTransaction = config.publishTransaction;
     this.approveTransaction = config.approveTransaction;
     this.confirmTransaction = config.confirmTransaction;
+
+    const { hooks } = config ?? {};
+    this.beforePublish = hooks?.beforePublish
+      ? hooks.beforePublish
+      : () => true;
+    this.beforeCheckPendingTransaction = hooks?.beforeCheckPendingTransaction
+      ? hooks.beforeCheckPendingTransaction
+      : () => true;
   }
 
   /**
@@ -144,6 +155,11 @@ export default class PendingTransactionTracker extends EventEmitter {
       return undefined;
     }
 
+    // Don't ever resubmit custodian transactions
+    if (!this.beforePublish(txMeta)) {
+      return undefined;
+    }
+
     // Only auto-submit already-signed txs:
     if (!('rawTx' in txMeta)) {
       return this.approveTransaction(txMeta.id);
@@ -174,13 +190,25 @@ export default class PendingTransactionTracker extends EventEmitter {
     const txId = txMeta.id;
 
     // Only check submitted txs
-    if (txMeta.status !== TransactionStatus.submitted) {
+    if (
+      txMeta.status !== TransactionStatus.submitted ||
+      txMeta.verifiedOnBlockchain
+    ) {
       return;
     }
 
     // extra check in case there was an uncaught error during the
     // signature and submission process
-    if (!txHash) {
+
+    let hasNoHash = !txHash;
+
+    if (!this.beforeCheckPendingTransaction(txMeta)) {
+      // Some custodian transactions don't have a hash by the time they are
+      // marked as pending, so don't emit a noTxHash error for them
+      hasNoHash = false;
+    }
+
+    if (hasNoHash) {
       const noTxHashErr = new Error(
         'We had an error while submitting this transaction, please try again.',
       );

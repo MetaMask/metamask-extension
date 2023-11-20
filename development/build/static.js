@@ -3,8 +3,7 @@ const fs = require('fs-extra');
 const watch = require('gulp-watch');
 const glob = require('fast-glob');
 
-const locales = require('../../app/_locales/index.json');
-const { BuildType } = require('../lib/build-type');
+const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { TASKS } = require('./constants');
 const { createTask, composeSeries } = require('./task');
@@ -22,50 +21,33 @@ module.exports = function createStaticAssetTasks({
   const copyTargetsProds = {};
   const copyTargetsDevs = {};
 
+  const buildConfig = loadBuildTypesConfig();
+
+  const activeFeatures = buildConfig.buildTypes[buildType].features ?? [];
+
   browserPlatforms.forEach((browser) => {
     const [copyTargetsProd, copyTargetsDev] = getCopyTargets(
       shouldIncludeLockdown,
       shouldIncludeSnow,
+      activeFeatures,
     );
     copyTargetsProds[browser] = copyTargetsProd;
     copyTargetsDevs[browser] = copyTargetsDev;
   });
 
-  const additionalBuildTargets = {
-    [BuildType.beta]: [
-      {
-        src: './app/build-types/beta/images/',
-        dest: `images`,
-      },
-    ],
-    [BuildType.flask]: [
-      {
-        src: './app/build-types/flask/images/',
-        dest: `images`,
-      },
-    ],
-    [BuildType.desktop]: [
-      {
-        src: './app/build-types/desktop/images/',
-        dest: `images`,
-      },
-    ],
-    [BuildType.mmi]: [
-      {
-        src: './app/build-types/mmi/images/',
-        dest: `images`,
-      },
-    ],
-  };
+  const additionalAssets = activeFeatures.flatMap(
+    (feature) =>
+      buildConfig.features[feature].assets?.filter(
+        (asset) => !('exclusiveInclude' in asset),
+      ) ?? [],
+  );
 
-  if (Object.keys(additionalBuildTargets).includes(buildType)) {
-    Object.entries(copyTargetsProds).forEach(([_, copyTargetsProd]) =>
-      copyTargetsProd.push(...additionalBuildTargets[buildType]),
-    );
-    Object.entries(copyTargetsDevs).forEach(([_, copyTargetsDev]) =>
-      copyTargetsDev.push(...additionalBuildTargets[buildType]),
-    );
-  }
+  Object.entries(copyTargetsProds).forEach(([_, copyTargetsProd]) =>
+    copyTargetsProd.push(...additionalAssets),
+  );
+  Object.entries(copyTargetsDevs).forEach(([_, copyTargetsDev]) =>
+    copyTargetsDev.push(...additionalAssets),
+  );
 
   const prodTasks = [];
   Object.entries(copyTargetsProds).forEach(([browser, copyTargetsProd]) => {
@@ -120,13 +102,17 @@ module.exports = function createStaticAssetTasks({
     await Promise.all(
       sources.map(async (src) => {
         const relativePath = path.relative(baseDir, src);
-        await fs.copy(src, `${dest}${relativePath}`);
+        await fs.copy(src, `${dest}${relativePath}`, { overwrite: true });
       }),
     );
   }
 };
 
-function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
+function getCopyTargets(
+  shouldIncludeLockdown,
+  shouldIncludeSnow,
+  activeFeatures,
+) {
   const allCopyTargets = [
     {
       src: `./app/_locales/`,
@@ -193,6 +179,10 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
       dest: 'init-globals.js',
     },
     {
+      src: './app/scripts/load-app.js',
+      dest: 'load-app.js',
+    },
+    {
       src: shouldIncludeLockdown
         ? `./app/scripts/lockdown-run.js`
         : EMPTY_JS_FILE,
@@ -216,20 +206,11 @@ function getCopyTargets(shouldIncludeLockdown, shouldIncludeSnow) {
     },
   ];
 
-  const languageTags = new Set();
-  for (const locale of locales) {
-    const { code } = locale;
-    const tag = code.split('_')[0];
-    languageTags.add(tag);
-  }
-
-  for (const tag of languageTags) {
+  if (activeFeatures.includes('blockaid')) {
     allCopyTargets.push({
-      src: getPathInsideNodeModules(
-        '@formatjs/intl-relativetimeformat',
-        `dist/locale-data/${tag}.json`,
-      ),
-      dest: `intl/${tag}/relative-time-format-data.json`,
+      src: getPathInsideNodeModules('@blockaid/ppom_release', '/'),
+      pattern: '*.wasm',
+      dest: '',
     });
   }
 

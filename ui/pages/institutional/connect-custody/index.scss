@@ -1,0 +1,48 @@
+.custody-account-list {
+  flex: 1;
+  overflow: auto;
+
+  &__item {
+    border-bottom: 1px solid #d2d8dd;
+
+    input {
+      margin: 12px 0 0 4px;
+    }
+
+    &__title {
+      flex-flow: row;
+    }
+
+    &__name {
+      display: block;
+      white-space: nowrap;
+      max-width: 200px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    &__clipboard {
+      background-color: transparent;
+    }
+  }
+
+  &__item:first-child {
+    border-top: 1px solid #d2d8dd;
+  }
+
+  &__item:last-child {
+    border: 0;
+  }
+
+  &__item:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
+
+  &__buttons {
+    border-top: 1px solid #d2d8dd;
+  }
+
+  &__button:not(:last-child) {
+    margin-right: 16px;
+  }
+}

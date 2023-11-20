@@ -1,0 +1,586 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AdvancedTab Component should match snapshot 1`] = `
+<div>
+  <div
+    class="settings-page__body"
+  >
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
+      data-testid="advanced-setting-state-logs"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          State logs
+        </span>
+        <span
+          class="settings-page__content-description"
+        >
+          State logs contain your public account addresses and sent transactions.
+        </span>
+      </div>
+      <div
+        class="settings-page__content-item"
+      >
+        <div
+          class="settings-page__content-item-col"
+        >
+          <button
+            class="button btn--rounded btn-secondary btn--large"
+          >
+            Download state logs
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
+      data-testid="advanced-setting-reset-account"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Clear activity and nonce data
+        </span>
+        <span
+          class="settings-page__content-description"
+        >
+          This resets the account's nonce and erases data from the activity tab in your wallet. Only the current account and network will be affected. Your balances and incoming transactions won't change.
+        </span>
+      </div>
+      <div
+        class="settings-page__content-item"
+      >
+        <div
+          class="settings-page__content-item-col"
+        >
+          <button
+            class="button btn--rounded btn-danger btn--large settings-tab__button--red"
+          >
+            Clear activity tab data
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      data-testid="advanced-setting-hex-data"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Show hex data
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          Select this to show the hex data field on the send screen
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      >
+        <label
+          class="toggle-button toggle-button--off"
+          tabindex="0"
+        >
+          <div
+            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+          >
+            <div
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+            >
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+              />
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+              />
+            </div>
+            <div
+              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+            >
+              <div
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+              />
+            </div>
+            <input
+              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+              type="checkbox"
+              value="false"
+            />
+          </div>
+          <div
+            class="toggle-button__status"
+          >
+            <span
+              class="toggle-button__label-off"
+            >
+              Off
+            </span>
+            <span
+              class="toggle-button__label-on"
+            >
+              On
+            </span>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      data-testid="advanced-setting-show-testnet-conversion"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Show conversion on test networks
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          Select this to show fiat conversion on test networks
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      >
+        <label
+          class="toggle-button toggle-button--off"
+          tabindex="0"
+        >
+          <div
+            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+          >
+            <div
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+            >
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+              />
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+              />
+            </div>
+            <div
+              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+            >
+              <div
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+              />
+            </div>
+            <input
+              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+              type="checkbox"
+              value="false"
+            />
+          </div>
+          <div
+            class="toggle-button__status"
+          >
+            <span
+              class="toggle-button__label-off"
+            >
+              Off
+            </span>
+            <span
+              class="toggle-button__label-on"
+            >
+              On
+            </span>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      data-testid="advanced-setting-show-testnet-conversion"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Show test networks
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          Select this to show test networks in network list
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      >
+        <label
+          class="toggle-button toggle-button--on"
+          tabindex="0"
+        >
+          <div
+            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+          >
+            <div
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+            >
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
+              />
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 0;"
+              />
+            </div>
+            <div
+              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+            >
+              <div
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(3, 125, 214); left: 18px;"
+              />
+            </div>
+            <input
+              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+              type="checkbox"
+              value="true"
+            />
+          </div>
+          <div
+            class="toggle-button__status"
+          >
+            <span
+              class="toggle-button__label-off"
+            >
+              Off
+            </span>
+            <span
+              class="toggle-button__label-on"
+            >
+              On
+            </span>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      data-testid="advanced-setting-custom-nonce"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Customize transaction nonce
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          Turn this on to change the nonce (transaction number) on confirmation screens. This is an advanced feature, use cautiously.
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      >
+        <label
+          class="toggle-button toggle-button--off"
+          tabindex="0"
+        >
+          <div
+            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+          >
+            <div
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+            >
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+              />
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+              />
+            </div>
+            <div
+              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+            >
+              <div
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+              />
+            </div>
+            <input
+              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+              type="checkbox"
+              value="false"
+            />
+          </div>
+          <div
+            class="toggle-button__status"
+          >
+            <span
+              class="toggle-button__label-off"
+            >
+              Off
+            </span>
+            <span
+              class="toggle-button__label-on"
+            >
+              On
+            </span>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
+      data-testid="advanced-setting-auto-lock"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Auto-lock timer (minutes)
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          Set the idle time in minutes before MetaMask will become locked.
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item"
+      >
+        <div
+          class="settings-page__content-item-col"
+        >
+          <div
+            class="MuiFormControl-root MuiTextField-root MuiFormControl-marginDense MuiFormControl-fullWidth"
+          >
+            <div
+              class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense MuiInput-marginDense"
+            >
+              <input
+                aria-invalid="false"
+                class="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
+                data-testid="auto-lockout-time"
+                dir="auto"
+                id="autoTimeout"
+                min="0"
+                placeholder="0"
+                type="text"
+                value="0"
+              />
+            </div>
+            
+          </div>
+          <button
+            class="button btn--rounded btn-primary settings-tab__rpc-save-button"
+            data-testid="auto-lockout-button"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
+      data-testid="advanced-setting-data-backup"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Back up your data
+        </span>
+        <span
+          class="settings-page__content-description"
+        >
+          You can back up data like your contacts and preferences.
+        </span>
+      </div>
+      <div
+        class="settings-page__content-item"
+      >
+        <div
+          class="settings-page__content-item-col"
+        >
+          <button
+            class="button btn--rounded btn-secondary btn--large"
+            data-testid="backup-button"
+          >
+            Back up
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
+      data-testid="advanced-setting-data-restore"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Restore user data
+        </span>
+        <span
+          class="settings-page__content-description"
+        >
+          You can restore data like contacts and preferences from a backup file.
+        </span>
+      </div>
+      <div
+        class="settings-page__content-item"
+      >
+        <div
+          class="settings-page__content-item-col"
+        >
+          <label
+            class="button btn btn--rounded btn-secondary btn--large settings-page__button"
+            for="restore-file"
+          >
+            Restore
+          </label>
+          <input
+            accept=".json"
+            data-testid="restore-file"
+            id="restore-file"
+            style="visibility: hidden;"
+            type="file"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+      data-testid="advanced-setting-dismiss-reminder"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Dismiss Secret Recovery Phrase backup reminder
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          Turn this on to dismiss the Secret Recovery Phrase backup reminder message. We highly recommend that you back up your Secret Recovery Phrase to avoid loss of funds
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      >
+        <label
+          class="toggle-button toggle-button--off"
+          tabindex="0"
+        >
+          <div
+            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+          >
+            <div
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+            >
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+              />
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+              />
+            </div>
+            <div
+              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+            >
+              <div
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+              />
+            </div>
+            <input
+              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+              type="checkbox"
+              value="false"
+            />
+          </div>
+          <div
+            class="toggle-button__status"
+          >
+            <span
+              class="toggle-button__label-off"
+            >
+              Off
+            </span>
+            <span
+              class="toggle-button__label-on"
+            >
+              On
+            </span>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div
+      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
+      data-testid="advanced-setting-toggle-ethsign"
+    >
+      <div
+        class="settings-page__content-item"
+      >
+        <span>
+          Eth_sign requests
+        </span>
+        <div
+          class="settings-page__content-description"
+        >
+          If you enable this setting, you might get signature requests that aren’t readable. By signing a message you don't understand, you could be agreeing to give away your funds and NFTs.
+        </div>
+      </div>
+      <div
+        class="settings-page__content-item-col"
+      >
+        <label
+          class="toggle-button toggle-button--off eth-sign-toggle"
+          tabindex="0"
+        >
+          <div
+            style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
+          >
+            <div
+              style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(242, 244, 246);"
+            >
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 0; width: 26px; height: 20px; left: 4px;"
+              />
+              <div
+                style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgba(255, 255, 255, 0.6); bottom: 0px; margin-top: auto; margin-bottom: auto; padding-right: 5px; line-height: 0; width: 26px; height: 20px; opacity: 1;"
+              />
+            </div>
+            <div
+              style="position: absolute; height: 100%; top: 0px; left: 0px; display: flex; flex: 1; align-self: stretch; align-items: center; justify-content: flex-start;"
+            >
+              <div
+                style="width: 18px; height: 18px; display: flex; align-self: center; box-shadow: none; border-radius: 50%; box-sizing: border-box; position: relative; background-color: rgb(106, 115, 125); left: 3px;"
+              />
+            </div>
+            <input
+              style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
+              type="checkbox"
+              value="false"
+            />
+          </div>
+          <div
+            class="toggle-button__status"
+          >
+            <span
+              class="toggle-button__label-off"
+            >
+              OFF (Recommended)
+            </span>
+            <span
+              class="toggle-button__label-on"
+            >
+              ON (Not recommended)
+            </span>
+          </div>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -2,10 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 
 import { BackgroundColor } from '../../../helpers/constants/design-system';
+import { Text, Box } from '../../component-library';
 
 import Card from '../card';
-import Box from '../box';
-import Typography from '../typography';
 
 import LogoLedger from './logo-ledger';
 import LogoQRBased from './logo-qr-based';
@@ -16,7 +15,6 @@ import README from './README.mdx';
 
 export default {
   title: 'Components/UI/Logo',
-
   parameters: {
     docs: {
       page: README,
@@ -47,7 +45,7 @@ const LogoItem = ({ Component }) => {
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       <Box marginBottom={2}>{Component}</Box>
-      <Typography>{`${Component.type.__docgenInfo.displayName}`}</Typography>
+      <Text>{`${Component.type.__docgenInfo.displayName}`}</Text>
     </Card>
   );
 };

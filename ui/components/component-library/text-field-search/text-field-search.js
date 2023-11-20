@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
 import { ButtonIcon, ButtonIconSize, Icon, IconName, IconSize } from '..';
-import { TextField, TEXT_FIELD_TYPES } from '../text-field';
+import { TextField, TEXT_FIELD_TYPES } from '../text-field/deprecated';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const TextFieldSearch = ({
   className,
@@ -15,47 +16,50 @@ export const TextFieldSearch = ({
   value,
   onChange,
   ...props
-}) => (
-  <TextField
-    className={classnames('mm-text-field-search', className)}
-    value={value}
-    onChange={onChange}
-    type={TEXT_FIELD_TYPES.SEARCH}
-    endAccessory={
-      value && showClearButton ? (
-        <>
-          <ButtonIcon
-            className="mm-text-field__button-clear"
-            ariaLabel="Clear" // TODO: i18n
-            iconName={IconName.Close}
-            size={ButtonIconSize.SM}
-            onClick={clearButtonOnClick}
-            {...clearButtonProps}
-          />
-          {endAccessory}
-        </>
-      ) : (
-        endAccessory
-      )
-    }
-    startAccessory={<Icon name={IconName.Search} size={IconSize.Sm} />}
-    inputProps={{
-      marginRight: showClearButton ? 6 : 0,
-      ...inputProps,
-    }}
-    {...props}
-  />
-);
+}) => {
+  const t = useI18nContext();
+  return (
+    <TextField
+      className={classnames('mm-text-field-search', className)}
+      value={value}
+      onChange={onChange}
+      type={TEXT_FIELD_TYPES.SEARCH}
+      endAccessory={
+        value && showClearButton ? (
+          <>
+            <ButtonIcon
+              className="mm-text-field__button-clear"
+              ariaLabel={t('clear')}
+              iconName={IconName.Close}
+              size={ButtonIconSize.Sm}
+              onClick={clearButtonOnClick}
+              {...clearButtonProps}
+            />
+            {endAccessory}
+          </>
+        ) : (
+          endAccessory
+        )
+      }
+      startAccessory={<Icon name={IconName.Search} size={IconSize.Sm} />}
+      inputProps={{
+        marginRight: showClearButton ? 6 : 0,
+        ...inputProps,
+      }}
+      {...props}
+    />
+  );
+};
 
 TextFieldSearch.propTypes = {
   /**
    * The value of the TextFieldSearch
    */
-  value: TextField.propTypes.value,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   /**
    * The onChange handler of the TextFieldSearch
    */
-  onChange: TextField.propTypes.onChange,
+  onChange: PropTypes.func,
   /**
    * The clear button for the TextFieldSearch.
    * Defaults to true
@@ -83,7 +87,7 @@ TextFieldSearch.propTypes = {
   /**
    * The props to pass to the clear button
    */
-  clearButtonProps: PropTypes.shape(ButtonIcon.PropTypes),
+  clearButtonProps: PropTypes.object,
   /**
    * An additional className to apply to the TextFieldSearch
    */
@@ -96,10 +100,6 @@ TextFieldSearch.propTypes = {
    * Attributes applied to the `input` element.
    */
   inputProps: PropTypes.object,
-  /**
-   * FormTextField accepts all the props from TextField and Box
-   */
-  ...TextField.propTypes,
 };
 
 TextFieldSearch.displayName = 'TextFieldSearch';

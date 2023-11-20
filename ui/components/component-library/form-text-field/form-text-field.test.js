@@ -79,7 +79,9 @@ describe('FormTextField', () => {
       />,
     );
     expect(getByTestId('text-field')).toHaveClass('mm-text-field--error');
-    expect(getByText('test help text')).toHaveClass('box--color-error-default');
+    expect(getByText('test help text')).toHaveClass(
+      'mm-box--color-error-default',
+    );
   });
   // helpText
   it('should render with helpText', () => {

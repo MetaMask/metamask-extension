@@ -1,23 +1,17 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import classnames from 'classnames';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { SubjectType } from '@metamask/permission-controller';
+///: END:ONLY_INCLUDE_IN
 import SiteOrigin from '../../ui/site-origin';
 import Box from '../../ui/box';
 import {
   FLEX_DIRECTION,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import SnapAuthorship from '../flask/snap-authorship';
-///: END:ONLY_INCLUDE_IN
 
 export default class PermissionsConnectHeader extends Component {
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  static contextTypes = {
-    t: PropTypes.func,
-  };
-  ///: END:ONLY_INCLUDE_IN
-
   static propTypes = {
     className: PropTypes.string,
     iconUrl: PropTypes.string,
@@ -28,10 +22,7 @@ export default class PermissionsConnectHeader extends Component {
     headerText: PropTypes.string,
     leftIcon: PropTypes.node,
     rightIcon: PropTypes.node,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    snapVersion: PropTypes.string,
-    isSnapInstallOrUpdate: PropTypes.bool,
-    ///: END:ONLY_INCLUDE_IN
+    subjectType: PropTypes.string,
   };
 
   static defaultProps = {
@@ -48,13 +39,14 @@ export default class PermissionsConnectHeader extends Component {
       siteOrigin,
       leftIcon,
       rightIcon,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      isSnapInstallOrUpdate,
+      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      subjectType,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    if (isSnapInstallOrUpdate) {
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+
+    if (subjectType === SubjectType.Snap) {
       return null;
     }
     ///: END:ONLY_INCLUDE_IN
@@ -75,16 +67,7 @@ export default class PermissionsConnectHeader extends Component {
   }
 
   render() {
-    const {
-      boxProps,
-      className,
-      headerTitle,
-      headerText,
-      ///: BEGIN:ONLY_INCLUDE_IN(flask)
-      siteOrigin,
-      isSnapInstallOrUpdate,
-      ///: END:ONLY_INCLUDE_IN
-    } = this.props;
+    const { boxProps, className, headerTitle, headerText } = this.props;
     return (
       <Box
         className={classnames('permissions-connect-header', className)}
@@ -94,11 +77,6 @@ export default class PermissionsConnectHeader extends Component {
       >
         {this.renderHeaderIcon()}
         <div className="permissions-connect-header__title">{headerTitle}</div>
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          isSnapInstallOrUpdate && <SnapAuthorship snapId={siteOrigin} />
-          ///: END:ONLY_INCLUDE_IN
-        }
         <div className="permissions-connect-header__subtitle">{headerText}</div>
       </Box>
     );

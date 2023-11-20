@@ -1,5 +1,8 @@
-// polyfills
-import '@formatjs/intl-relativetimeformat/polyfill';
+// Disabled to allow setting up initial state hooks first
+
+// This import sets up global functions required for Sentry to function.
+// It must be run first in case an error is thrown later during initialization.
+import './lib/setup-initial-state-hooks';
 
 // dev only, "react-devtools" import is skipped in prod builds
 import 'react-devtools';
@@ -8,7 +11,7 @@ import PortStream from 'extension-port-stream';
 import browser from 'webextension-polyfill';
 
 import Eth from 'ethjs';
-import EthQuery from 'eth-query';
+import EthQuery from '@metamask/eth-query';
 import StreamProvider from 'web3-stream-provider';
 import log from 'loglevel';
 import launchMetaMaskUi, { updateBackgroundConnection } from '../../ui';
@@ -22,7 +25,7 @@ import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.ut
 import { SUPPORT_LINK } from '../../shared/lib/ui-utils';
 import {
   getErrorHtml,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   registerDesktopErrorActions,
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/lib/error-utils';
@@ -35,70 +38,12 @@ const container = document.getElementById('app-content');
 
 const ONE_SECOND_IN_MILLISECONDS = 1_000;
 
-// Service Worker Keep Alive Message Constants
-const WORKER_KEEP_ALIVE_INTERVAL = ONE_SECOND_IN_MILLISECONDS;
-const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
-const ACK_KEEP_ALIVE_WAIT_TIME = 60_000; // 1 minute
-const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
-
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
 
-let lastMessageReceivedTimestamp = Date.now();
-
 let extensionPort;
-let ackTimeoutToDisplayError;
-
-/*
- * As long as UI is open it will keep sending messages to service worker
- * In service worker as this message is received
- * if service worker is inactive it is reactivated and script re-loaded
- * Time has been kept to 1000ms but can be reduced for even faster re-activation of service worker
- */
-if (isManifestV3) {
-  // Checking for SW aliveness (or stuckness) flow
-  // 1. Check if we have an extensionPort, if yes
-  // 2a. Send a keep alive message to the background via extensionPort
-  // 2b. Add a listener to it (if not already added)
-  // 3a. Set a timeout to check if we have received an ACK from background
-  // 3b. If we have not received an ACK within ACK_KEEP_ALIVE_WAIT_TIME,
-  //     we know the background is stuck or dead
-  // 4. If we recieve an ACK_KEEP_ALIVE_MESSAGE from the service worker, we know it is alive
-
-  const ackKeepAliveListener = (message) => {
-    if (message.name === ACK_KEEP_ALIVE_MESSAGE) {
-      lastMessageReceivedTimestamp = Date.now();
-      clearTimeout(ackTimeoutToDisplayError);
-    }
-  };
-
-  const keepAliveInterval = setInterval(() => {
-    browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-
-    if (extensionPort !== null && extensionPort !== undefined) {
-      extensionPort.postMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-
-      if (extensionPort.onMessage.hasListener(ackKeepAliveListener) === false) {
-        extensionPort.onMessage.addListener(ackKeepAliveListener);
-      }
-    }
-
-    ackTimeoutToDisplayError = setTimeout(() => {
-      if (
-        Date.now() - lastMessageReceivedTimestamp >
-        ACK_KEEP_ALIVE_WAIT_TIME
-      ) {
-        clearInterval(keepAliveInterval);
-        displayCriticalError(
-          'somethingIsWrong',
-          new Error("Something's gone wrong. Try reloading the page."),
-        );
-      }
-    }, ACK_KEEP_ALIVE_WAIT_TIME);
-  }, WORKER_KEEP_ALIVE_INTERVAL);
-}
 
 start().catch(log.error);
 
@@ -241,10 +186,6 @@ async function start() {
         resetExtensionStreamAndListeners,
       );
 
-      // message below will try to activate service worker
-      // in MV3 is likely that reason of stream closing is service worker going in-active
-      browser.runtime.sendMessage({ name: WORKER_KEEP_ALIVE_MESSAGE });
-
       extensionPort = browser.runtime.connect({ name: windowType });
       connectionStream = new PortStream(extensionPort);
       extensionPort.onMessage.addListener(messageListener);
@@ -254,7 +195,13 @@ async function start() {
     extensionPort.onMessage.addListener(messageListener);
     extensionPort.onDisconnect.addListener(resetExtensionStreamAndListeners);
   } else {
-    initializeUiWithTab(activeTab);
+    const messageListener = async (message) => {
+      if (message?.data?.method === 'startUISync') {
+        initializeUiWithTab(activeTab);
+        extensionPort.onMessage.removeListener(messageListener);
+      }
+    };
+    extensionPort.onMessage.addListener(messageListener);
   }
 
   function initializeUiWithTab(tab) {
@@ -264,7 +211,7 @@ async function start() {
       (
         err,
         store,
-        ///: BEGIN:ONLY_INCLUDE_IN(flask)
+        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
         backgroundConnection,
         ///: END:ONLY_INCLUDE_IN
       ) => {
@@ -274,7 +221,7 @@ async function start() {
             'troubleStarting',
             err,
             store,
-            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(desktop)
             backgroundConnection,
             ///: END:ONLY_INCLUDE_IN
           );
@@ -302,7 +249,7 @@ async function start() {
         displayCriticalError(
           'troubleStarting',
           err,
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
           undefined,
           backgroundConnection,
           ///: END:ONLY_INCLUDE_IN
@@ -345,7 +292,7 @@ function initializeUi(activeTab, connectionStream, cb) {
       cb(
         err,
         null,
-        ///: BEGIN:ONLY_INCLUDE_IN(flask)
+        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
         backgroundConnection,
         ///: END:ONLY_INCLUDE_IN
       );
@@ -367,7 +314,7 @@ async function displayCriticalError(
   errorKey,
   err,
   metamaskState,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   backgroundConnection,
   ///: END:ONLY_INCLUDE_IN
 ) {
@@ -375,14 +322,14 @@ async function displayCriticalError(
     errorKey,
     SUPPORT_LINK,
     metamaskState,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     err,
     ///: END:ONLY_INCLUDE_IN
   );
 
   container.innerHTML = html;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   registerDesktopErrorActions(backgroundConnection, browser);
   ///: END:ONLY_INCLUDE_IN
 

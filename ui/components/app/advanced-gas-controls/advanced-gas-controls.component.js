@@ -1,11 +1,9 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 
 import { I18nContext } from '../../../contexts/i18n';
 import FormField from '../../ui/form-field';
 import { getGasFormErrorText } from '../../../helpers/constants/gas';
-import { getNetworkSupportsSettingGasFees } from '../../../selectors';
 
 export default function AdvancedGasControls({
   onManualChange,
@@ -17,10 +15,6 @@ export default function AdvancedGasControls({
   minimumGasLimit,
 }) {
   const t = useContext(I18nContext);
-
-  const networkSupportsSettingGasFees = useSelector(
-    getNetworkSupportsSettingGasFees,
-  );
 
   return (
     <div className="advanced-gas-controls">
@@ -38,7 +32,6 @@ export default function AdvancedGasControls({
         tooltipText={t('editGasLimitTooltip')}
         value={gasLimit}
         allowDecimals={false}
-        disabled={!networkSupportsSettingGasFees}
         numeric
       />
       <>
@@ -58,7 +51,6 @@ export default function AdvancedGasControls({
               ? getGasFormErrorText(gasErrors.gasPrice, t)
               : null
           }
-          disabled={!networkSupportsSettingGasFees}
         />
       </>
     </div>

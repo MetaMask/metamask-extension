@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Security Provider Banner Alert should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
+    data-testid="security-provider-banner-alert"
+  >
+    <span
+      class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+      style="mask-image: url('./images/icons/danger.svg');"
+    />
+    <div
+      class="mm-box mm-box--min-width-0"
+    >
+      <p
+        class="mm-box mm-text mm-text--body-lg-medium mm-box--color-text-default"
+      >
+        Malicious third party detected
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--margin-top-2 mm-box--color-text-default"
+      >
+        This is a description to warn the user of malicious or suspicious transactions.
+      </p>
+      <div
+        class="disclosure"
+      >
+        <details>
+          <summary
+            class="disclosure__summary is-arrow"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+            >
+              [seeDetails]
+            </p>
+            <span
+              class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-start-2 mm-box--display-inline-block mm-box--color-primary-default"
+              style="mask-image: url('./images/icons/arrow-up.svg');"
+            />
+          </summary>
+          <div
+            class="disclosure__content normal"
+          >
+            <ul>
+              <li>
+                List item
+              </li>
+              <li>
+                List item
+              </li>
+              <li>
+                List item
+              </li>
+            </ul>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
+            >
+              [somethingDoesntLookRight]
+            </p>
+          </div>
+          <div
+            class="disclosure__footer"
+          />
+        </details>
+      </div>
+      <p
+        class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
+      >
+        <span
+          class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-end-1 mm-box--display-inline-block mm-box--color-primary-default"
+          style="mask-image: url('./images/icons/security-tick.svg');"
+        />
+        [securityProviderPoweredBy]
+      </p>
+    </div>
+  </div>
+</div>
+`;

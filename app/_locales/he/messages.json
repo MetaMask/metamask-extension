@@ -93,9 +93,6 @@
   "back": {
     "message": "חזור"
   },
-  "backToAll": {
-    "message": "חזרה אל 'הכל'"
-  },
   "backupApprovalInfo": {
     "message": "קוד סודי זה נדרש כדי לשחזר את הארנק שלך במקרה שתאבד/י את מכשירך, תשכח/י את הססמה, תצטרכ/י להתקין מחדש את MetaMask או שתרצה/י לגשת לארנק שלך במכשיר אחר."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "התחברות"
   },
-  "connectHardwareWallet": {
-    "message": "חבר ארנק חומרה"
-  },
   "connectingTo": {
     "message": "מתחבר ל- $1 "
   },
   "connectingToGoerli": {
     "message": "מתחבר ל-Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "מתחבר ל-Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -181,9 +175,6 @@
   "copyAddress": {
     "message": "העתק כתובת ללוח"
   },
-  "copyPrivateKey": {
-    "message": "זה המפתח הפרטי שלך (נא להקיש כדי להעתיק)"
-  },
   "copyToClipboard": {
     "message": "העתק ללוח"
   },
@@ -192,9 +183,6 @@
   },
   "create": {
     "message": "צור"
-  },
-  "createAccount": {
-    "message": "פתיחת חשבון"
   },
   "createPassword": {
     "message": "יצירת ססמה"
@@ -220,14 +208,8 @@
   "delete": {
     "message": "מחיקה"
   },
-  "deleteAccount": {
-    "message": "מחק חשבון"
-  },
   "deleteNetwork": {
     "message": "למחוק את הרשת?"
-  },
-  "deleteNetworkDescription": {
-    "message": "הנך בטוח/ה שברצונך למחוק רשת זו?"
   },
   "details": {
     "message": "פרטים"
@@ -256,9 +238,6 @@
   "ensRegistrationError": {
     "message": "שגיאה ברישום שם ENS"
   },
-  "enterPassword": {
-    "message": "יש להזין ססמה"
-  },
   "enterPasswordContinue": {
     "message": "יש להזין ססמה כדי להמשיך"
   },
@@ -270,9 +249,6 @@
   },
   "expandView": {
     "message": "הרחב תצוגה"
-  },
-  "exportPrivateKey": {
-    "message": "יצא/י מפתח פרטי"
   },
   "failed": {
     "message": "נכשל"
@@ -415,7 +391,7 @@
   "likeToImportTokens": {
     "message": "האם ברצונך להוסיף טוקנים אלה?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "רשת בדיקה Linea Goerli"
   },
   "links": {
@@ -450,9 +426,6 @@
   },
   "mustSelectOne": {
     "message": "חובה לבחור לפחות אסימון אחד."
-  },
-  "myAccounts": {
-    "message": "החשבונות שלי"
   },
   "needImportFile": {
     "message": "יש לבחור קובץ לייצוא.",
@@ -572,14 +545,8 @@
   "privateNetwork": {
     "message": "רשת פרטית"
   },
-  "queue": {
-    "message": "תור"
-  },
   "readdToken": {
     "message": "באפשרותך להוסיף טוקן זה בחזרה בעתיד על ידי מעבר אל \"הוסף טוקן\" בתפריט אפשרויות החשבונות שלך."
-  },
-  "recents": {
-    "message": "אחרונים"
   },
   "recipientAddressPlaceholder": {
     "message": "חיפוש, כתובת ציבורית (0x), או ENS"
@@ -645,9 +612,6 @@
   "searchResults": {
     "message": "תוצאות חיפוש"
   },
-  "searchTokens": {
-    "message": "חיפוש טוקנים"
-  },
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
   },
@@ -686,9 +650,6 @@
   },
   "showHexDataDescription": {
     "message": "בחר/י בזה כדי להציג את שדה הנתונים ההקסדצימאלים על מסך השליחה"
-  },
-  "showPrivateKeys": {
-    "message": "הצג מפתחות פרטיים"
   },
   "sigRequest": {
     "message": "בקשת חתימה"
@@ -804,21 +765,11 @@
   "transfer": {
     "message": "העברה"
   },
-  "transferBetweenAccounts": {
-    "message": "בצע העברה בין חשבונותיי"
-  },
   "transferFrom": {
     "message": "העברה מ-"
   },
-  "troubleTokenBalances": {
-    "message": "לא הצלחנו לטעון את יתרות הטוקנים שלך. באפשרותך להציג אותן",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "ניסיון חוזר"
-  },
-  "typePassword": {
-    "message": "נא להקליד את סיסמת MetaMask שלך"
   },
   "unapproved": {
     "message": "לא אושר"

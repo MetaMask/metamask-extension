@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SnapCard should render 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--padding-4 mm-box--sm:padding-4 mm-box--md:padding-4 mm-box--lg:padding-4 mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+    data-testid="key-management-snap"
+  >
+    <div
+      class="mm-box mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <div
+        class="mm-box mm-box--margin-right-1 mm-box--padding-2 mm-box--sm:padding-2 mm-box--md:padding-2 mm-box--lg:padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+        style="border-radius: 50%; height: 32px; width: 32px;"
+      >
+        <div
+          class="mm-box snap-detail-icon mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            M
+          </p>
+        </div>
+      </div>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+        data-testid="install-snap-button"
+      >
+        Details
+      </button>
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-sm mm-box--margin-bottom-2 mm-box--color-text-alternative"
+    >
+      Metamask Simple Keyring
+    </p>
+    <h3
+      class="mm-box mm-text mm-text--heading-md mm-box--margin-bottom-auto mm-box--color-text-default"
+    >
+      Secure your account with MetaMask Mobile
+    </h3>
+    <div
+      class="mm-box mm-box--margin-top-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-alternative"
+        data-testid="to-snap-detail"
+        style="mask-image: url('./images/icons/arrow-2-right.svg');"
+      />
+    </div>
+  </div>
+</div>
+`;

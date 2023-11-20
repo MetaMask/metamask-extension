@@ -31,7 +31,7 @@ function upload_sourcemaps {
   local release="${1}"; shift
   local dist_directory="${1}"; shift
 
-  sentry-cli releases files "${release}" upload-sourcemaps "${dist_directory}"/chrome/*.js "${dist_directory}"/sourcemaps/ --rewrite --url-prefix 'metamask'
+  sentry-cli releases files "${release}" upload-sourcemaps "${dist_directory}"/chrome/*.js "${dist_directory}"/sourcemaps/ --rewrite --url-prefix '/metamask'
 }
 
 function main {

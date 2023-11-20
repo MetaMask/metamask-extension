@@ -1,12 +1,13 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
+import log from 'loglevel';
 import { infuraProjectId } from '../../../../shared/constants/network';
 import {
-  SEVERITIES,
+  Severity,
   TypographyVariant,
-  TEXT_ALIGN,
-  DISPLAY,
-  FLEX_DIRECTION,
+  TextAlign,
+  Display,
+  FlexDirection,
   AlignItems,
   JustifyContent,
   BackgroundColor,
@@ -18,7 +19,7 @@ import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
-  severity: SEVERITIES.WARNING,
+  severity: Severity.Warning,
   content: {
     element: 'span',
     children: {
@@ -30,8 +31,23 @@ const UNRECOGNIZED_CHAIN = {
   },
 };
 
+const SAFE_CHAIN_LIST_PROVIDER_ERROR = {
+  id: 'SAFE_CHAIN_LIST_PROVIDER_ERROR',
+  severity: Severity.Warning,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'errorGettingSafeChainList',
+      },
+    },
+  },
+};
+
 const MISMATCHED_CHAIN_RECOMMENDATION = {
   id: 'MISMATCHED_CHAIN_RECOMMENDATION',
+  severity: Severity.Warning,
   content: {
     element: 'span',
     children: {
@@ -62,7 +78,7 @@ const MISMATCHED_CHAIN_RECOMMENDATION = {
 
 const MISMATCHED_NETWORK_NAME = {
   id: 'MISMATCHED_NETWORK_NAME',
-  severity: SEVERITIES.WARNING,
+  severity: Severity.Warning,
   content: {
     element: 'span',
     children: {
@@ -76,7 +92,7 @@ const MISMATCHED_NETWORK_NAME = {
 
 const MISMATCHED_NETWORK_SYMBOL = {
   id: 'MISMATCHED_NETWORK_SYMBOL',
-  severity: SEVERITIES.DANGER,
+  severity: Severity.Danger,
   content: {
     element: 'span',
     children: {
@@ -90,7 +106,7 @@ const MISMATCHED_NETWORK_SYMBOL = {
 
 const MISMATCHED_NETWORK_RPC = {
   id: 'MISMATCHED_NETWORK_RPC',
-  severity: SEVERITIES.DANGER,
+  severity: Severity.Danger,
   content: {
     element: 'span',
     children: {
@@ -104,7 +120,7 @@ const MISMATCHED_NETWORK_RPC = {
 
 const MISMATCHED_NETWORK_RPC_CHAIN_ID = {
   id: 'MISMATCHED_NETWORK_RPC_CHAIN_ID',
-  severity: SEVERITIES.DANGER,
+  severity: Severity.Danger,
   content: {
     element: 'span',
     children: {
@@ -118,7 +134,7 @@ const MISMATCHED_NETWORK_RPC_CHAIN_ID = {
 
 const ERROR_CONNECTING_TO_RPC = {
   id: 'ERROR_CONNECTING_TO_RPC',
-  severity: SEVERITIES.DANGER,
+  severity: Severity.Danger,
   content: {
     element: 'span',
     children: {
@@ -130,10 +146,22 @@ const ERROR_CONNECTING_TO_RPC = {
   },
 };
 
-async function getAlerts(pendingApproval) {
+async function getAlerts(pendingApproval, state) {
   const alerts = [];
-  const safeChainsList =
-    (await fetchWithCache('https://chainid.network/chains.json')) || [];
+  let safeChainsList = [];
+  let providerError;
+  if (state.useSafeChainsListValidation) {
+    try {
+      safeChainsList = await fetchWithCache({
+        url: 'https://chainid.network/chains.json',
+        functionName: 'getSafeChainsList',
+      });
+    } catch (error) {
+      providerError = error;
+      // Swallow the error here to not block the user from adding a custom network
+      log.warn('Failed to fetch the chainList from chainid.network', error);
+    }
+  }
   const matchedChain = safeChainsList.find(
     (chain) =>
       chain.chainId === parseInt(pendingApproval.requestData.chainId, 16),
@@ -163,8 +191,12 @@ async function getAlerts(pendingApproval) {
     }
   }
 
-  if (!matchedChain) {
-    alerts.push(UNRECOGNIZED_CHAIN);
+  if (!matchedChain && state.useSafeChainsListValidation) {
+    if (providerError) {
+      alerts.push(SAFE_CHAIN_LIST_PROVIDER_ERROR);
+    } else {
+      alerts.push(UNRECOGNIZED_CHAIN);
+    }
   }
 
   if (alerts.length) {
@@ -191,8 +223,8 @@ function getValues(pendingApproval, t, actions, history) {
         element: 'Box',
         key: 'network-box',
         props: {
-          textAlign: TEXT_ALIGN.CENTER,
-          display: DISPLAY.FLEX,
+          textAlign: TextAlign.Center,
+          display: Display.Flex,
           justifyContent: JustifyContent.center,
           marginTop: 4,
           marginBottom: 2,
@@ -317,8 +349,8 @@ function getValues(pendingApproval, t, actions, history) {
           variant: TypographyVariant.H7,
           boxProps: {
             margin: originIsMetaMask ? [0, 8] : 0,
-            display: DISPLAY.FLEX,
-            flexDirection: FLEX_DIRECTION.COLUMN,
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
             alignItems: AlignItems.center,
           },
         },

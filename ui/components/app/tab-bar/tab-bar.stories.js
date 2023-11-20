@@ -54,7 +54,7 @@ export default {
         key: 'experimental',
       },
       {
-        icon: <i className="fa fa-info-circle" />,
+        icon: <Icon name={IconName.Info} />,
         content: 'About',
         key: 'about',
       },

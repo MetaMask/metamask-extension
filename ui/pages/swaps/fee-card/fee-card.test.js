@@ -1,12 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-  renderWithProvider,
-  setBackgroundConnection,
-  MOCKS,
-  fireEvent,
-} from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
+import { renderWithProvider, MOCKS, fireEvent } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 import {
@@ -95,7 +91,7 @@ describe('FeeCard', () => {
     useSelector.mockImplementation(generateUseSelectorRouter());
     const props = createProps();
     const { getByText } = renderWithProvider(<FeeCard {...props} />);
-    expect(getByText('Best of 6 quotes.')).toBeInTheDocument();
+    expect(getByText('6 quotes.')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
     expect(getByText('Max fee')).toBeInTheDocument();
     expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
@@ -116,7 +112,7 @@ describe('FeeCard', () => {
       maxFeePerGasDecGWEI: '4',
     });
     const { getByText } = renderWithProvider(<FeeCard {...props} />);
-    expect(getByText('Best of 6 quotes.')).toBeInTheDocument();
+    expect(getByText('6 quotes.')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
     expect(getByText('Max fee')).toBeInTheDocument();
     expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
@@ -138,7 +134,7 @@ describe('FeeCard', () => {
     const { getByText, queryByTestId } = renderWithProvider(
       <FeeCard {...props} />,
     );
-    expect(getByText('Best of 6 quotes.')).toBeInTheDocument();
+    expect(getByText('6 quotes.')).toBeInTheDocument();
     expect(getByText('Estimated gas fee')).toBeInTheDocument();
     expect(getByText(props.primaryFee.fee)).toBeInTheDocument();
     expect(getByText(props.secondaryFee.fee)).toBeInTheDocument();

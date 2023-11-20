@@ -93,9 +93,6 @@
   "back": {
     "message": "Kembali"
   },
-  "backToAll": {
-    "message": "Kembali kepada Semua"
-  },
   "backupApprovalInfo": {
     "message": "Kod rahsia ini diperlukan untuk memulihkan dompet anda sekiranya anda kehilangan peranti anda, terlupa kata laluan anda, perlu memasang semua MetaMask, atau mahu mengakses dompet anda menggunakan peranti lain."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Sambung"
   },
-  "connectHardwareWallet": {
-    "message": "Sambungkan Dompet Perkakasan"
-  },
   "connectingTo": {
     "message": "Menyambungkan kepada $1"
   },
   "connectingToGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Menyambung kepada Rangkaian Ujian Linea Goerli"
   },
   "connectingToMainnet": {
@@ -181,9 +175,6 @@
   "copyAddress": {
     "message": "Salin alamat kepada papan klip"
   },
-  "copyPrivateKey": {
-    "message": "Ini kunci persendirian anda (klik untuk menyalin)"
-  },
   "copyToClipboard": {
     "message": "Salin ke papan keratan"
   },
@@ -192,9 +183,6 @@
   },
   "create": {
     "message": "Cipta"
-  },
-  "createAccount": {
-    "message": "Cipta Akaun"
   },
   "createPassword": {
     "message": "Cipta Kata Laluan"
@@ -220,14 +208,8 @@
   "delete": {
     "message": "Padam"
   },
-  "deleteAccount": {
-    "message": "Hapus Akaun"
-  },
   "deleteNetwork": {
     "message": "Padamkan Rangkaian?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Anda pasti anda ingin padamkan rangkaian ini?"
   },
   "details": {
     "message": "Butiran"
@@ -253,9 +235,6 @@
   "ensRegistrationError": {
     "message": "Ralat dalam pendaftaran nama ENS"
   },
-  "enterPassword": {
-    "message": "Masukkan kata laluan"
-  },
   "enterPasswordContinue": {
     "message": "Masukkan kata laluan untuk teruskan"
   },
@@ -267,9 +246,6 @@
   },
   "expandView": {
     "message": "Kembangkan Paparan"
-  },
-  "exportPrivateKey": {
-    "message": "Eksport Kekunci Persendirian"
   },
   "failed": {
     "message": "Gagal"
@@ -404,7 +380,7 @@
   "likeToImportTokens": {
     "message": "Adakah anda ingin menambah token ini?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rangkaian Ujian Linea Goerli"
   },
   "links": {
@@ -436,9 +412,6 @@
   },
   "mustSelectOne": {
     "message": "Mesti memilih sekurang-kurangnya 1 token."
-  },
-  "myAccounts": {
-    "message": "Akaun Saya"
   },
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
@@ -555,14 +528,8 @@
   "privateNetwork": {
     "message": "Rangkaian Persendirian"
   },
-  "queue": {
-    "message": "Baris Gilir"
-  },
   "readdToken": {
     "message": "Anda boleh tambah token ini kembali pada masa depan dengan pergi ke \"Tambah token\" di dalam menu pilihan akaun anda."
-  },
-  "recents": {
-    "message": "Baru-baru ini"
   },
   "recipientAddressPlaceholder": {
     "message": "Cari, alamat awam (0x), atau ENS"
@@ -628,9 +595,6 @@
   "searchResults": {
     "message": "Hasil Carian"
   },
-  "searchTokens": {
-    "message": "Cari Token"
-  },
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
   },
@@ -669,9 +633,6 @@
   },
   "showHexDataDescription": {
     "message": "Pilih ini untuk menunjukkan medan data hex pada skrin hantar"
-  },
-  "showPrivateKeys": {
-    "message": "Tunjukkan Kunci Persendirian"
   },
   "sigRequest": {
     "message": "Permintaan Tandatangan"
@@ -784,21 +745,11 @@
   "transfer": {
     "message": "Pindah"
   },
-  "transferBetweenAccounts": {
-    "message": "Pindahkan antara akaun saya"
-  },
   "transferFrom": {
     "message": "Pindah Daripada"
   },
-  "troubleTokenBalances": {
-    "message": "Kami menghadapi masalah memuatkan baki token anda. Anda boleh melihatnya",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Cuba lagi"
-  },
-  "typePassword": {
-    "message": "Taip kata laluan MetaMask anda"
   },
   "unapproved": {
     "message": "Belum Diluluskan"

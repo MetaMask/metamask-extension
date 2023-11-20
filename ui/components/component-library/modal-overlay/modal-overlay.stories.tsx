@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import { StoryFn, Meta } from '@storybook/react';
 
 import { ModalOverlay } from './modal-overlay';
 
@@ -21,16 +21,16 @@ export default {
       action: 'onClick',
     },
   },
-} as ComponentMeta<typeof ModalOverlay>;
+} as Meta<typeof ModalOverlay>;
 
-const Template: ComponentStory<typeof ModalOverlay> = (args) => (
+const Template: StoryFn<typeof ModalOverlay> = (args) => (
   <ModalOverlay {...args} />
 );
 
 export const DefaultStory = Template.bind({});
 DefaultStory.storyName = 'Default';
 
-export const OnClick: ComponentStory<typeof ModalOverlay> = (args) => {
+export const OnClick: StoryFn<typeof ModalOverlay> = (args) => {
   const [open, setOpen] = useState(false);
   const handleOnClick = () => {
     setOpen(!open);

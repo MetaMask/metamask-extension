@@ -39,6 +39,7 @@ import {
   getEnsResolutionByAddress,
   getSelectedAccount,
   getSelectedAddress,
+  getUnapprovedTransactions,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -53,8 +54,9 @@ import {
   isNftOwner,
   getTokenStandardAndDetails,
   showModal,
-  addUnapprovedTransactionAndRouteToConfirmationPage,
+  addTransactionAndRouteToConfirmationPage,
   updateTransactionSendFlowHistory,
+  getCurrentNetworkEIP1559Compatibility,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
 import {
@@ -77,8 +79,8 @@ import {
 } from '../../helpers/utils/util';
 import {
   getGasEstimateType,
+  getProviderConfig,
   getTokens,
-  getUnapprovedTxs,
 } from '../metamask/metamask';
 
 import { resetDomainResolution } from '../domains';
@@ -497,7 +499,7 @@ export const computeEstimatedGasLimit = createAsyncThunk(
     const { send, metamask } = state;
     const draftTransaction =
       send.draftTransactions[send.currentTransactionUUID];
-    const unapprovedTxs = getUnapprovedTxs(state);
+    const unapprovedTxs = getUnapprovedTransactions(state);
     const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
     const transaction = unapprovedTxs[draftTransaction.id];
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
@@ -589,7 +591,10 @@ export const initializeSendState = createAsyncThunk(
     const state = thunkApi.getState();
     const isNonStandardEthChain = getIsNonStandardEthChain(state);
     const chainId = getCurrentChainId(state);
-    const eip1559support = checkNetworkAndAccountSupports1559(state);
+    let eip1559support = checkNetworkAndAccountSupports1559(state);
+    if (eip1559support === undefined) {
+      eip1559support = await getCurrentNetworkEIP1559Compatibility();
+    }
     const account = getSelectedAccount(state);
     const { send: sendState, metamask } = state;
     const draftTransaction =
@@ -959,6 +964,7 @@ const slice = createSlice({
         slice.caseReducers.updateAmountToMax(state);
       } else if (initialAssetSet === false) {
         slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
+        slice.caseReducers.updateUserInputHexData(state, { payload: '' });
       }
       // validate send state
       slice.caseReducers.validateSendState(state);
@@ -1631,6 +1637,19 @@ const slice = createSlice({
             if (draftTransaction?.asset.type === AssetType.native) {
               draftTransaction.asset.balance = action.payload.account.balance;
             }
+
+            // If selected account was changed and selected asset is a token then
+            // reset asset to native asset
+            if (draftTransaction?.asset.type === AssetType.token) {
+              draftTransaction.asset.type =
+                draftTransactionInitialState.asset.type;
+              draftTransaction.asset.error =
+                draftTransactionInitialState.asset.error;
+              draftTransaction.asset.details =
+                draftTransactionInitialState.asset.details;
+              draftTransaction.asset.balance = action.payload.account.balance;
+            }
+
             slice.caseReducers.validateAmountField(state);
             slice.caseReducers.validateGasField(state);
             slice.caseReducers.validateSendState(state);
@@ -1726,7 +1745,7 @@ export function editExistingTransaction(assetType, transactionId) {
   return async (dispatch, getState) => {
     await dispatch(actions.clearPreviousDrafts());
     const state = getState();
-    const unapprovedTransactions = getUnapprovedTxs(state);
+    const unapprovedTransactions = getUnapprovedTransactions(state);
     const transaction = unapprovedTransactions[transactionId];
     const account = getTargetAccount(state, transaction.txParams.from);
 
@@ -1963,7 +1982,7 @@ export function updateRecipientUserInput(userInput) {
 export function updateSendAmount(amount) {
   return async (dispatch, getState) => {
     const state = getState();
-    const { metamask } = state;
+    const { ticker } = getProviderConfig(state);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
     let logAmount = amount;
@@ -1988,9 +2007,7 @@ export function updateSendAmount(amount) {
         toCurrency: EtherDenomination.ETH,
         numberOfDecimals: 8,
       });
-      logAmount = `${ethValue} ${
-        metamask?.provider?.ticker || EtherDenomination.ETH
-      }`;
+      logAmount = `${ethValue} ${ticker || EtherDenomination.ETH}`;
     }
     await dispatch(
       addHistoryEntry(`sendFlow - user set amount to ${logAmount}`),
@@ -2012,14 +2029,16 @@ export function updateSendAmount(amount) {
  * @param {object} payload - action payload
  * @param {string} payload.type - type of asset to send
  * @param {TokenDetails} [payload.details] - ERC20 details if sending TOKEN asset
+ * @param payload.skipComputeEstimatedGasLimit
  * @returns {ThunkAction<void>}
  */
 export function updateSendAsset(
-  { type, details: providedDetails },
+  { type, details: providedDetails, skipComputeEstimatedGasLimit },
   { initialAssetSet = false } = {},
 ) {
   return async (dispatch, getState) => {
     const state = getState();
+    const { ticker } = getProviderConfig(state);
     const draftTransaction =
       state[name].draftTransactions[state[name].currentTransactionUUID];
     const sendingAddress =
@@ -2028,13 +2047,13 @@ export function updateSendAsset(
       getSelectedAddress(state);
     const account = getTargetAccount(state, sendingAddress);
     if (type === AssetType.native) {
-      const unapprovedTxs = getUnapprovedTxs(state);
+      const unapprovedTxs = getUnapprovedTransactions(state);
       const unapprovedTx = unapprovedTxs?.[draftTransaction.id];
 
       await dispatch(
         addHistoryEntry(
           `sendFlow - user set asset of type ${AssetType.native} with symbol ${
-            state.metamask.provider?.ticker ?? EtherDenomination.ETH
+            ticker ?? EtherDenomination.ETH
           }`,
         ),
       );
@@ -2145,7 +2164,7 @@ export function updateSendAsset(
 
       await dispatch(actions.updateAsset({ asset, initialAssetSet }));
     }
-    if (initialAssetSet === false) {
+    if (initialAssetSet === false && !skipComputeEstimatedGasLimit) {
       await dispatch(computeEstimatedGasLimit());
     }
   };
@@ -2269,7 +2288,7 @@ export function signTransaction() {
       // We first must grab the previous transaction object from state and then
       // merge in the modified txParams. Once the transaction has been modified
       // we can send that to the background to update the transaction in state.
-      const unapprovedTxs = getUnapprovedTxs(state);
+      const unapprovedTxs = getUnapprovedTransactions(state);
       const unapprovedTx = cloneDeep(unapprovedTxs[draftTransaction.id]);
       // We only update the tx params that can be changed via the edit flow UX
       const eip1559OnlyTxParamsToUpdate = {
@@ -2327,12 +2346,10 @@ export function signTransaction() {
       );
 
       dispatch(
-        addUnapprovedTransactionAndRouteToConfirmationPage(
-          undefined,
-          txParams,
-          transactionType,
-          draftTransaction.history,
-        ),
+        addTransactionAndRouteToConfirmationPage(txParams, {
+          sendFlowHistory: draftTransaction.history,
+          type: transactionType,
+        }),
       );
     }
   };
@@ -2389,6 +2406,7 @@ export function startNewDraftTransaction(asset) {
       updateSendAsset({
         type: asset.type ?? AssetType.native,
         details: asset.details,
+        skipComputeEstimatedGasLimit: true,
       }),
     );
 

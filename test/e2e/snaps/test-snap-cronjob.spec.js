@@ -1,5 +1,4 @@
-const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -19,22 +18,20 @@ describe('Test Snap Cronjob', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
 
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        const snapButton = await driver.findElement('#connectCronjobSnap');
+        const snapButton = await driver.findElement('#connectcronjobs');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
-        await driver.clickElement('#connectCronjobSnap');
+        await driver.clickElement('#connectcronjobs');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -52,17 +49,17 @@ describe('Test Snap Cronjob', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Approve & install' });
+        await driver.waitForSelector({ text: 'Install' });
 
         await driver.clickElement({
-          text: 'Approve & install',
+          text: 'Install',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Ok' });
+        await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 
@@ -71,8 +68,8 @@ describe('Test Snap Cronjob', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectCronjobSnap',
-          text: 'Reconnect to Cronjob Snap',
+          css: '#connectcronjobs',
+          text: 'Reconnect to Cronjobs Snap',
         });
 
         // switch to dialog popup, wait for a maximum of 65 seconds
@@ -84,13 +81,14 @@ describe('Test Snap Cronjob', function () {
         await driver.delay(1000);
 
         // look for the dialog popup to verify cronjob fired
-        const error = await driver.findElement('.snap-delineator__content');
-        const text = await error.getText();
-        assert.equal(text.includes(`Cronjob\nfired`), true);
+        await driver.findElement({
+          css: '.snap-delineator__content',
+          text: 'This dialog was triggered by a cronjob',
+        });
 
         // try to click on the Ok button and pass test if it works
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
       },

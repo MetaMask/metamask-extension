@@ -1,5 +1,5 @@
 .mm-button-primary {
-  &:hover {
+  &:hover:not(&--disabled) {
     color: var(--color-primary-inverse);
     box-shadow: var(--component-button-primary-shadow);
   }
@@ -10,7 +10,7 @@
   }
 
   // Danger type
-  &--type-danger {
+  &--type-danger:not(&--disabled) {
     &:hover {
       color: var(--color-error-inverse);
       box-shadow: var(--component-button-danger-shadow);

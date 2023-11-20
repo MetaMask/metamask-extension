@@ -19,6 +19,17 @@ import Chip from '../../ui/chip/chip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { isNetworkLoading } from '../../../selectors';
 import { Icon, IconName, IconSize } from '../../component-library';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getNetworkLabelKey } from '../../../helpers/utils/i18n-helper';
+
+/**
+ * @deprecated The `<NetworkDisplay />` component has been deprecated in favor of the new `<PickerNetwork>` component from the component-library.
+ * Please update your code to use the new `<PickerNetwork>` component instead, which can be found at ui/components/component-library/picker-network/picker-network.tsx.
+ * You can find documentation for the new `PickerNetwork` component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-pickernetwork--docs}
+ * If you would like to help with the replacement of the old `NetworkDisplay` component, please submit a pull request against this GitHub issue:
+ * {@link https://github.com/MetaMask/metamask-extension/issues/20485}
+ */
 
 export default function NetworkDisplay({
   indicatorSize,
@@ -28,13 +39,10 @@ export default function NetworkDisplay({
   onClick,
 }) {
   const networkIsLoading = useSelector(isNetworkLoading);
-  const currentNetwork = useSelector((state) => ({
-    nickname: state.metamask.provider.nickname,
-    type: state.metamask.provider.type,
-  }));
+  const providerConfig = useSelector(getProviderConfig);
   const t = useI18nContext();
 
-  const { nickname, type: networkType } = targetNetwork ?? currentNetwork;
+  const { nickname, type: networkType } = targetNetwork ?? providerConfig;
 
   return (
     <Chip
@@ -71,7 +79,7 @@ export default function NetworkDisplay({
       label={
         networkType === NETWORK_TYPES.RPC
           ? nickname ?? t('privateNetwork')
-          : t(networkType)
+          : t(getNetworkLabelKey(networkType))
       }
       className={classnames('network-display', {
         'network-display--disabled': disabled,

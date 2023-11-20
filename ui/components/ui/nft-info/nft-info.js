@@ -1,59 +1,44 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../contexts/i18n';
-import Box from '../box';
-import Typography from '../typography';
 import {
   BackgroundColor,
-  DISPLAY,
-  FONT_WEIGHT,
+  Display,
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-import Identicon from '../identicon';
-import Button from '../button';
+import {
+  Text,
+  Box,
+  ButtonLink,
+  AvatarAccount,
+  AvatarAccountSize,
+} from '../../component-library';
 
 export default function NftInfo({ assetName, tokenAddress, tokenId }) {
   const t = useContext(I18nContext);
-
   return (
     <Box
-      display={DISPLAY.FLEX}
       className="nft-info"
+      display={Display.Flex}
+      gap={4}
       backgroundColor={BackgroundColor.backgroundAlternative}
+      padding={4}
     >
-      <Box display={DISPLAY.FLEX} className="nft-info__content">
-        <Box margin={4}>
-          <Identicon address={tokenAddress} diameter={24} />
-        </Box>
-        <Box>
-          <Typography
-            fontWeight={FONT_WEIGHT.BOLD}
-            variant={TypographyVariant.H6}
-            marginTop={4}
-          >
-            {assetName}
-          </Typography>
-          <Typography
-            variant={TypographyVariant.H7}
-            marginBottom={4}
-            color={TextColor.textAlternative}
-          >
-            {t('tokenId')} #{tokenId}
-          </Typography>
-        </Box>
-      </Box>
-      <Box marginTop={4} marginRight={4}>
-        <Button className="nft-info__button" type="link">
-          <Typography
-            variant={TypographyVariant.H6}
-            marginTop={0}
-            color={TextColor.primaryDefault}
-          >
-            {t('view')}
-          </Typography>
-        </Button>
-      </Box>
+      <AvatarAccount address={tokenAddress} size={AvatarAccountSize.Md} />
+      <div style={{ overflow: 'hidden' }}>
+        <Text variant={TextVariant.bodySmBold} ellipsis>
+          {assetName}
+        </Text>
+        <Text
+          variant={TextVariant.bodySm}
+          color={TextColor.textAlternative}
+          ellipsis
+        >
+          {t('tokenId')} #{tokenId}
+        </Text>
+      </div>
+      <ButtonLink marginLeft="auto">{t('view')}</ButtonLink>
     </Box>
   );
 }

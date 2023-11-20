@@ -1,39 +1,44 @@
 import React from 'react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
-import Box from '../../ui/box/box';
-import Typography from '../../ui/typography/typography';
 import {
-  TypographyVariant,
+  TextVariant,
   Color,
-  BLOCK_SIZES,
-  DISPLAY,
+  BlockSize,
+  Display,
   AlignItems,
   IconColor,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { BETA_BUGS_URL } from '../../../helpers/constants/beta';
 
 import { hideBetaHeader } from '../../../store/actions';
-import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
+
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  Text,
+  Box,
+} from '../../component-library';
 
 const BetaHeader = () => {
   const t = useI18nContext();
 
   return (
     <Box
-      display={DISPLAY.FLEX}
-      width={BLOCK_SIZES.FULL}
+      display={Display.Flex}
+      width={BlockSize.Full}
       backgroundColor={Color.warningDefault}
       padding={2}
       className="beta-header"
       alignItems={AlignItems.center}
     >
-      <Typography
-        variant={TypographyVariant.H7}
-        marginTop={0}
-        marginBottom={0}
+      <Text
+        variant={TextVariant.bodySm}
+        as="h6"
         className="beta-header__message"
-        color={Color.warningInverse}
+        color={TextColor.warningInverse}
       >
         {t('betaHeaderText', [
           <a
@@ -45,7 +50,7 @@ const BetaHeader = () => {
             {t('here')}
           </a>,
         ])}
-      </Typography>
+      </Text>
       <ButtonIcon
         iconName={IconName.Close}
         size={ButtonIconSize.Sm}

@@ -13,27 +13,33 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   AvatarIcon,
-  Text,
+  AvatarIconSize,
   Icon,
   IconName,
   IconSize,
+  Text,
 } from '../../component-library';
 import { formatDate } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Tooltip from '../../ui/tooltip';
+import { PermissionCellOptions } from './permission-cell-options';
 
 const PermissionCell = ({
+  snapId,
+  permissionName,
   title,
   description,
   weight,
   avatarIcon,
   dateApproved,
   revoked,
+  showOptions,
+  hideStatus,
 }) => {
   const t = useI18nContext();
 
+  const infoIcon = IconName.Info;
   let infoIconColor = IconColor.iconMuted;
-  let infoIcon = IconName.Info;
   let iconColor = IconColor.primaryDefault;
   let iconBackgroundColor = Color.primaryMuted;
 
@@ -41,7 +47,6 @@ const PermissionCell = ({
     iconColor = IconColor.warningDefault;
     iconBackgroundColor = Color.warningMuted;
     infoIconColor = IconColor.warningDefault;
-    infoIcon = IconName.Danger;
   }
 
   if (dateApproved) {
@@ -73,7 +78,7 @@ const PermissionCell = ({
         {typeof permissionIcon === 'string' ? (
           <AvatarIcon
             iconName={permissionIcon}
-            size={IconSize.Md}
+            size={AvatarIconSize.Md}
             iconProps={{
               size: IconSize.Sm,
             }}
@@ -94,29 +99,51 @@ const PermissionCell = ({
         >
           {title}
         </Text>
-        <Text
-          size={Size.XS}
-          className="permission-cell__status"
-          variant={TextVariant.bodyXs}
-          color={TextColor.textAlternative}
-        >
-          {!revoked &&
-            (dateApproved
-              ? t('approvedOn', [formatDate(dateApproved, 'yyyy-MM-dd')])
-              : t('permissionRequested'))}
-          {revoked ? t('permissionRevoked') : ''}
-        </Text>
+        {!hideStatus && (
+          <Text
+            className="permission-cell__status"
+            variant={TextVariant.bodySm}
+            color={TextColor.textAlternative}
+          >
+            {!revoked &&
+              (dateApproved
+                ? t('approvedOn', [formatDate(dateApproved, 'yyyy-MM-dd')])
+                : t('permissionRequested'))}
+            {revoked ? t('permissionRevoked') : ''}
+          </Text>
+        )}
       </Box>
       <Box>
-        <Tooltip html={<div>{description}</div>} position="bottom">
-          <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
-        </Tooltip>
+        {showOptions && snapId ? (
+          <PermissionCellOptions
+            snapId={snapId}
+            permissionName={permissionName}
+            description={description}
+          />
+        ) : (
+          <Tooltip
+            html={
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {description}
+              </Text>
+            }
+            position="bottom"
+          >
+            <Icon color={infoIconColor} name={infoIcon} size={IconSize.Sm} />
+          </Tooltip>
+        )}
       </Box>
     </Box>
   );
 };
 
 PermissionCell.propTypes = {
+  snapId: PropTypes.string,
+  permissionName: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
+    .isRequired,
   title: PropTypes.oneOfType([
     PropTypes.string.isRequired,
     PropTypes.object.isRequired,
@@ -126,6 +153,8 @@ PermissionCell.propTypes = {
   avatarIcon: PropTypes.any.isRequired,
   dateApproved: PropTypes.number,
   revoked: PropTypes.bool,
+  showOptions: PropTypes.bool,
+  hideStatus: PropTypes.bool,
 };
 
 export default PermissionCell;

@@ -20,13 +20,16 @@ jest.mock('../../../../store/actions', () => ({
 const render = () => {
   const store = configureStore({
     metamask: {
-      provider: { chainId: CHAIN_IDS.MAINNET },
+      providerConfig: { chainId: CHAIN_IDS.MAINNET },
       cachedBalances: {},
       accounts: {
         '0xAddress': {
           address: '0xAddress',
           balance: '0x176e5b6f173ebe66',
         },
+      },
+      identities: {
+        '0xAddress': {},
       },
       selectedAddress: '0xAddress',
     },

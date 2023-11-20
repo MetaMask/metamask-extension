@@ -1,4 +1,4 @@
-import EthQuery from 'ethjs-query';
+import EthQuery from '@metamask/ethjs-query';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { TransactionType } from '../constants/transaction';
 import {
@@ -124,14 +124,14 @@ describe('Transaction.utils', function () {
 
       const result = await determineTransactionType(
         {
-          to: '0xabc',
+          to: '0xabcabcabcabcabcabcabcabcabcabcabcabcabca',
           data: '',
         },
         new EthQuery(_provider),
       );
       expect(result).toMatchObject({
         type: TransactionType.simpleSend,
-        getCodeResponse: null,
+        getCodeResponse: '0x',
       });
     });
 
@@ -182,6 +182,20 @@ describe('Transaction.utils', function () {
           new EthQuery(_provider),
         );
         expect(resultWithEmptyValue).toMatchObject({
+          type: TransactionType.tokenMethodTransfer,
+          getCodeResponse: '0xab',
+        });
+
+        const resultWithEmptyValue2 = await determineTransactionType(
+          {
+            value: '0x0000',
+            to: '0x9e673399f795D01116e9A8B2dD2F156705131ee9',
+            data: '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
+          },
+          new EthQuery(_provider),
+        );
+
+        expect(resultWithEmptyValue2).toMatchObject({
           type: TransactionType.tokenMethodTransfer,
           getCodeResponse: '0xab',
         });

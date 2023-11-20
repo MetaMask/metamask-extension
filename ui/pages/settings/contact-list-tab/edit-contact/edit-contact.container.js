@@ -2,6 +2,7 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { getAddressBookEntry } from '../../../../selectors';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 import {
   CONTACT_VIEW_ROUTE,
   CONTACT_LIST_ROUTE,
@@ -25,7 +26,7 @@ const mapStateToProps = (state, ownProps) => {
     getAddressBookEntry(state, address) || state.metamask.identities[address];
   const { memo, name } = contact || {};
 
-  const { chainId } = state.metamask.provider;
+  const { chainId } = getProviderConfig(state);
 
   return {
     address: contact ? address : null,

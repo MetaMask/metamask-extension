@@ -7,7 +7,7 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 
-import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from '../text-field';
+import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from '../text-field/deprecated';
 
 import { TextFieldSearch } from './text-field-search';
 import README from './README.mdx';

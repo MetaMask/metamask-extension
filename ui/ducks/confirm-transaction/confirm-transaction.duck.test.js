@@ -1,6 +1,8 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import sinon from 'sinon';
+import { NetworkStatus } from '@metamask/network-controller';
+import { NetworkType } from '@metamask/controller-utils';
 import { TransactionStatus } from '../../../shared/constants/transaction';
 
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck';
@@ -274,7 +276,7 @@ describe('Confirm Transaction Duck', () => {
         history: [],
         id: 2603411941761054,
         loadingDefaults: false,
-        metamaskNetworkId: '5',
+        chainId: '0x5',
         origin: 'faucet.metamask.io',
         status: TransactionStatus.unapproved,
         time: 1530838113716,
@@ -288,9 +290,13 @@ describe('Confirm Transaction Duck', () => {
       };
       const mockState = {
         metamask: {
-          conversionRate: 468.58,
           currentCurrency: 'usd',
-          provider: {
+          currencyRates: {
+            ETH: {
+              conversionRate: 468.58,
+            },
+          },
+          providerConfig: {
             ticker: 'ETH',
           },
         },
@@ -341,19 +347,29 @@ describe('Confirm Transaction Duck', () => {
     it('updates confirmTransaction transaction', () => {
       const mockState = {
         metamask: {
-          conversionRate: 468.58,
           currentCurrency: 'usd',
-          networkId: '5',
-          networkStatus: 'available',
-          provider: {
-            chainId: '0x5',
+          currencyRates: {
+            ETH: {
+              conversionRate: 468.58,
+            },
           },
-          unapprovedTxs: {
-            2603411941761054: {
+          selectedNetworkClientId: NetworkType.goerli,
+          networksMetadata: {
+            [NetworkType.goerli]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
+          },
+          providerConfig: {
+            chainId: '0x5',
+            ticker: 'ETH',
+          },
+          transactions: [
+            {
               history: [],
               id: 2603411941761054,
               loadingDefaults: false,
-              metamaskNetworkId: '5',
+              chainId: '0x5',
               origin: 'faucet.metamask.io',
               status: TransactionStatus.unapproved,
               time: 1530838113716,
@@ -365,7 +381,7 @@ describe('Confirm Transaction Duck', () => {
                 value: '0xde0b6b3a7640000',
               },
             },
-          },
+          ],
         },
         confirmTransaction: {},
       };

@@ -11,36 +11,35 @@ import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 
-import { MESSAGE_TYPE } from '../../../shared/constants/app';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { ApprovalType } from '@metamask/controller-utils';
+///: END:ONLY_INCLUDE_IN
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import {
-  AlignItems,
-  FLEX_DIRECTION,
-  Size,
-  TextColor,
-} from '../../helpers/constants/design-system';
+import { Size, TextColor } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { useOriginMetadata } from '../../hooks/useOriginMetadata';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getTargetSubjectMetadata,
   ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
+  getApprovalFlows,
+  getTotalUnapprovedCount,
+  useSafeChainsListValidationSelector,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
-import SiteOrigin from '../../components/ui/site-origin';
-import {
-  Icon,
-  ICON_NAMES,
-} from '../../components/component-library/icon/deprecated';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import SnapAuthorship from '../../components/app/flask/snap-authorship/snap-authorship';
+import { Icon, IconName } from '../../components/component-library';
+import Loading from '../../components/ui/loading-screen';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../helpers/utils/util';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IN
 import ConfirmationFooter from './components/confirmation-footer';
 import {
@@ -94,10 +93,16 @@ const alertStateReducer = produce((state, action) => {
  *
  * @param {object} pendingConfirmation - a pending confirmation waiting for
  * user approval
+ * @param {object} state - The state object consist of required info to determine alerts.
+ * @param state.unapprovedTxsCount
+ * @param state.useSafeChainsListValidation
  * @returns {[alertState: object, dismissAlert: Function]} A tuple with
  * the current alert state and function to dismiss an alert by id
  */
-function useAlertState(pendingConfirmation) {
+function useAlertState(
+  pendingConfirmation,
+  { unapprovedTxsCount, useSafeChainsListValidation } = {},
+) {
   const [alertState, dispatch] = useReducer(alertStateReducer, {});
 
   /**
@@ -111,7 +116,10 @@ function useAlertState(pendingConfirmation) {
   useEffect(() => {
     let isMounted = true;
     if (pendingConfirmation) {
-      getTemplateAlerts(pendingConfirmation).then((alerts) => {
+      getTemplateAlerts(pendingConfirmation, {
+        unapprovedTxsCount,
+        useSafeChainsListValidation,
+      }).then((alerts) => {
         if (isMounted && alerts.length > 0) {
           dispatch({
             type: 'set',
@@ -124,7 +132,7 @@ function useAlertState(pendingConfirmation) {
     return () => {
       isMounted = false;
     };
-  }, [pendingConfirmation]);
+  }, [pendingConfirmation, unapprovedTxsCount]);
 
   const dismissAlert = useCallback(
     (alertId) => {
@@ -172,14 +180,22 @@ export default function ConfirmationPage({
     getUnapprovedTemplatedConfirmations,
     isEqual,
   );
+  const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
+  const approvalFlows = useSelector(getApprovalFlows, isEqual);
+  const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
+  const useSafeChainsListValidation = useSelector(
+    useSafeChainsListValidationSelector,
+  );
+  const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
-  const originMetadata = useOriginMetadata(pendingConfirmation?.origin) || {};
-  const [alertState, dismissAlert] = useAlertState(pendingConfirmation);
+  const [alertState, dismissAlert] = useAlertState(pendingConfirmation, {
+    unapprovedTxsCount,
+    useSafeChainsListValidation,
+  });
   const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);
-  const unnaprovedTxsCount = useSelector(getUnapprovedTxCount);
 
   const [inputStates, setInputStates] = useState({});
   const setInputState = (key, value) => {
@@ -190,28 +206,37 @@ export default function ConfirmationPage({
 
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, pendingConfirmation?.origin),
   );
 
+  const SNAP_DIALOG_TYPE = [
+    ApprovalType.SnapDialogAlert,
+    ApprovalType.SnapDialogConfirmation,
+    ApprovalType.SnapDialogPrompt,
+  ];
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  SNAP_DIALOG_TYPE.push(
+    ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
+  );
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
+  const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
+
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName =
+    isSnapDialog &&
     targetSubjectMetadata &&
     getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
-
-  const SNAP_DIALOG_TYPE = [
-    MESSAGE_TYPE.SNAP_DIALOG_ALERT,
-    MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
-    MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
-  ];
-
-  const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
   ///: END:ONLY_INCLUDE_IN
 
   const INPUT_STATE_CONFIRMATIONS = [
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
-    MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    ApprovalType.SnapDialogPrompt,
     ///: END:ONLY_INCLUDE_IN
   ];
 
@@ -222,7 +247,7 @@ export default function ConfirmationPage({
     return pendingConfirmation
       ? getTemplateValues(
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             snapName: isSnapDialog && snapName,
             ///: END:ONLY_INCLUDE_IN
             ...pendingConfirmation,
@@ -238,7 +263,7 @@ export default function ConfirmationPage({
     t,
     dispatch,
     history,
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
     isSnapDialog,
     snapName,
     ///: END:ONLY_INCLUDE_IN
@@ -251,25 +276,45 @@ export default function ConfirmationPage({
     // viewed index, reset the index.
     if (
       pendingConfirmations.length === 0 &&
+      (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
       redirectToHomeOnZeroConfirmations
     ) {
       history.push(DEFAULT_ROUTE);
-    } else if (pendingConfirmations.length <= currentPendingConfirmation) {
+    } else if (
+      pendingConfirmations.length &&
+      pendingConfirmations.length <= currentPendingConfirmation
+    ) {
       setCurrentPendingConfirmation(pendingConfirmations.length - 1);
     }
   }, [
     pendingConfirmations,
+    approvalFlows,
+    totalUnapprovedCount,
     history,
     currentPendingConfirmation,
     redirectToHomeOnZeroConfirmations,
   ]);
 
+  useEffect(() => {
+    const childFlow = approvalFlows[approvalFlows.length - 1];
+
+    setApprovalFlowLoadingText(childFlow?.loadingText ?? null);
+  }, [approvalFlows]);
+
   if (!pendingConfirmation) {
+    if (approvalFlows.length > 0) {
+      return <Loading loadingMessage={approvalFlowLoadingText} />;
+    }
+
     return null;
   }
 
   const hasInputState = (type) => {
     return INPUT_STATE_CONFIRMATIONS.includes(type);
+  };
+
+  const getInputState = (type) => {
+    return inputStates[type] ?? '';
   };
 
   const handleSubmitResult = (submitResult) => {
@@ -287,7 +332,7 @@ export default function ConfirmationPage({
       setShowWarningModal(true);
     } else {
       const inputState = hasInputState(pendingConfirmation.type)
-        ? inputStates[MESSAGE_TYPE.SNAP_DIALOG_PROMPT]
+        ? getInputState(pendingConfirmation.type)
         : null;
       // submit result is an array of errors or empty on success
       const submitResult = await templatedValues.onSubmit(inputState);
@@ -312,7 +357,7 @@ export default function ConfirmationPage({
                 setCurrentPendingConfirmation(currentPendingConfirmation - 1)
               }
             >
-              <Icon name={ICON_NAMES.ARROW_LEFT} />
+              <Icon name={IconName.ArrowLeft} />
             </button>
           )}
           <button
@@ -324,7 +369,7 @@ export default function ConfirmationPage({
               setCurrentPendingConfirmation(currentPendingConfirmation + 1)
             }
           >
-            <Icon name={ICON_NAMES.ARROW_RIGHT} />
+            <Icon name={IconName.ArrowRight} />
           </button>
         </div>
       )}
@@ -338,38 +383,9 @@ export default function ConfirmationPage({
           </Box>
         ) : null}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          !isSnapDialog &&
-            ///: END:ONLY_INCLUDE_IN
-            pendingConfirmation.origin === 'metamask' && (
-              <Box
-                alignItems={AlignItems.center}
-                paddingTop={2}
-                paddingRight={4}
-                paddingLeft={4}
-                paddingBottom={4}
-                flexDirection={FLEX_DIRECTION.COLUMN}
-              >
-                <SiteOrigin
-                  chip
-                  siteOrigin={originMetadata.origin}
-                  title={originMetadata.origin}
-                  iconSrc={originMetadata.iconUrl}
-                  iconName={originMetadata.hostname}
-                />
-              </Box>
-            )
-        }
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
           isSnapDialog && (
-            <Box
-              alignItems="center"
-              margin={4}
-              flexDirection={FLEX_DIRECTION.COLUMN}
-            >
-              <SnapAuthorship snapId={pendingConfirmation?.origin} />
-            </Box>
+            <SnapAuthorshipHeader snapId={pendingConfirmation?.origin} />
           )
           ///: END:ONLY_INCLUDE_IN
         }
@@ -388,7 +404,6 @@ export default function ConfirmationPage({
       <ConfirmationFooter
         alerts={
           alertState[pendingConfirmation.id] &&
-          unnaprovedTxsCount > 0 &&
           Object.values(alertState[pendingConfirmation.id])
             .filter((alert) => alert.dismissed === false)
             .map((alert, idx, filtered) => (
@@ -404,6 +419,22 @@ export default function ConfirmationPage({
               </Callout>
             ))
         }
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
+        style={
+          isSnapDialog
+            ? {
+                boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+              }
+            : {}
+        }
+        actionsStyle={
+          isSnapDialog
+            ? {
+                borderTop: 0,
+              }
+            : {}
+        }
+        ///: END:ONLY_INCLUDE_IN
         onSubmit={handleSubmit}
         onCancel={templatedValues.onCancel}
         submitText={templatedValues.submitText}

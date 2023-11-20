@@ -2,19 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import Typography from '../typography/typography';
-import Box from '../box/box';
 import {
-  TEXT_ALIGN,
-  DISPLAY,
-  TypographyVariant,
-  FONT_WEIGHT,
+  TextAlign,
+  Display,
+  TextVariant,
   AlignItems,
   TextColor,
 } from '../../../helpers/constants/design-system';
 
 import NumericInput from '../numeric-input/numeric-input.component';
 import InfoTooltip from '../info-tooltip/info-tooltip';
+import { Text, Box } from '../../component-library';
+
+/**
+ * @deprecated The `<FormField />` component has been deprecated in favor of the new `<FormTextField>` component from the component-library.
+ * Please update your code to use the new `<FormTextField>` component instead, which can be found at ui/components/component-library/form-text-field/form-text-field.js.
+ * You can find documentation for the new FormTextField component in the MetaMask Storybook:
+ * {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-formtextfield--docs}
+ * If you would like to help with the replacement of the old FormField component, please submit a pull request against this GitHub issue:
+ * {@link https://github.com/MetaMask/metamask-extension/issues/19737}
+ */
 
 export default function FormField({
   dataTestId,
@@ -38,6 +45,7 @@ export default function FormField({
   disabled = false,
   placeholder,
   warning,
+  warningProps,
   passwordStrength,
   passwordStrengthText,
   id,
@@ -55,33 +63,30 @@ export default function FormField({
         <div className="form-field__heading">
           <Box
             className="form-field__heading-title"
-            display={DISPLAY.FLEX}
+            display={Display.Flex}
             alignItems={AlignItems.baseline}
             {...titleHeadingWrapperProps}
           >
             {TitleTextCustomComponent ||
               (titleText && (
-                <Typography
-                  tag="label"
-                  htmlFor={id}
-                  html
-                  fontWeight={FONT_WEIGHT.BOLD}
-                  variant={TypographyVariant.H6}
-                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                <Text
+                  as="h6"
+                  variant={TextVariant.bodySmBold}
+                  display={Display.InlineBlock}
                 >
                   {titleText}
-                </Typography>
+                </Text>
               ))}
             {TitleUnitCustomComponent ||
               (titleUnit && (
-                <Typography
-                  tag={TypographyVariant.H6}
-                  variant={TypographyVariant.H6}
+                <Text
+                  as="h6"
+                  variant={TextVariant.bodySm}
                   color={TextColor.textAlternative}
-                  boxProps={{ display: DISPLAY.INLINE_BLOCK }}
+                  display={Display.InlineBlock}
                 >
                   {titleUnit}
-                </Typography>
+                </Text>
               ))}
             {TooltipCustomComponent ||
               (tooltipText && (
@@ -91,7 +96,7 @@ export default function FormField({
           {titleDetail && (
             <Box
               className="form-field__heading-detail"
-              textAlign={TEXT_ALIGN.END}
+              textAlign={TextAlign.End}
               marginRight={2}
               {...titleDetailWrapperProps}
             >
@@ -132,40 +137,45 @@ export default function FormField({
           />
         )}
         {error && (
-          <Typography
+          <Text
             color={TextColor.errorDefault}
-            variant={TypographyVariant.H7}
+            variant={TextVariant.bodySm}
+            as="h6"
             className="form-field__error"
           >
             {error}
-          </Typography>
+          </Text>
         )}
         {warning && (
-          <Typography
+          <Text
             color={TextColor.textAlternative}
-            variant={TypographyVariant.H7}
+            variant={TextVariant.bodySm}
+            as="h6"
             className="form-field__warning"
+            {...warningProps}
           >
             {warning}
-          </Typography>
+          </Text>
         )}
         {passwordStrength && (
-          <Typography
+          <Text
             color={TextColor.textDefault}
-            variant={TypographyVariant.H7}
+            variant={TextVariant.bodySm}
+            as="h6"
             className="form-field__password-strength"
           >
             {passwordStrength}
-          </Typography>
+          </Text>
         )}
         {passwordStrengthText && (
-          <Typography
+          <Text
             color={TextColor.textAlternative}
-            variant={TypographyVariant.H8}
+            variant={TextVariant.bodyXs}
+            as="h6"
             className="form-field__password-strength-text"
           >
             {passwordStrengthText}
-          </Typography>
+          </Text>
         )}
       </Box>
     </div>
@@ -230,6 +240,13 @@ FormField.propTypes = {
    * Show warning message
    */
   warning: PropTypes.string,
+  /**
+   * Props to pass to the warning text component
+   * Accepts all props of the Text component
+   */
+  warningProps: PropTypes.shape({
+    ...Text.propTypes,
+  }),
   /**
    * Handler when fields change
    */

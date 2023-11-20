@@ -1,0 +1,26 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ButtonBase should render anchor element correctly by href and externalLink, href target and rel exist 1`] = `
+<div>
+  <a
+    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
+    data-testid="button-base"
+    href="https://www.test.com/"
+    rel="noopener noreferrer"
+    target="_blank"
+  >
+    Button Base
+  </a>
+</div>
+`;
+
+exports[`ButtonBase should render button element correctly and match snapshot 1`] = `
+<div>
+  <button
+    class="mm-box mm-text mm-button-base mm-button-base--size-md mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-pill"
+    data-testid="button-base"
+  >
+    Button base
+  </button>
+</div>
+`;

@@ -29,7 +29,7 @@ describe('TextFieldSearch', () => {
     });
     await user.type(getByRole('searchbox'), 'test value');
     expect(getByRole('searchbox')).toHaveValue('test value');
-    expect(getByRole('button', { name: /Clear/u })).toBeDefined();
+    expect(getByRole('button', { name: /clear/u })).toBeDefined();
   });
   it('should still render with the endAccessory if it exists', async () => {
     const fn = jest.fn();
@@ -43,7 +43,7 @@ describe('TextFieldSearch', () => {
     );
     await user.type(getByRole('searchbox'), 'test value');
     expect(getByRole('searchbox')).toHaveValue('test value');
-    expect(getByRole('button', { name: /Clear/u })).toBeDefined();
+    expect(getByRole('button', { name: /clear/u })).toBeDefined();
     expect(getByText('end-accessory')).toBeDefined();
   });
   it('should fire onClick event when passed to clearButtonOnClick when clear button is clicked', async () => {
@@ -53,7 +53,7 @@ describe('TextFieldSearch', () => {
       clearButtonOnClick: fn,
     });
     await user.type(getByRole('searchbox'), 'test value');
-    await user.click(getByRole('button', { name: /Clear/u }));
+    await user.click(getByRole('button', { name: /clear/u }));
     expect(fn).toHaveBeenCalledTimes(1);
   });
   it('should fire onClick event when passed to clearButtonProps.onClick prop', async () => {
@@ -64,7 +64,7 @@ describe('TextFieldSearch', () => {
       clearButtonOnClick: fn,
     });
     await user.type(getByRole('searchbox'), 'test value');
-    await user.click(getByRole('button', { name: /Clear/u }));
+    await user.click(getByRole('button', { name: /clear/u }));
     expect(fn).toHaveBeenCalledTimes(1);
   });
 });

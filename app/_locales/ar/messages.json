@@ -97,9 +97,6 @@
   "back": {
     "message": "الرجوع إلى الوراء"
   },
-  "backToAll": {
-    "message": "العودة إلى الجميع"
-  },
   "backupApprovalInfo": {
     "message": "هذا الرمز السري مطلوب لاسترداد محفظتك في حالة فقد جهازك أو نسيان كلمة مرورك أو إعادة تثبيت MetaMask أو الرغبة في الوصول إلى محفظتك عبر جهاز آخر."
   },
@@ -158,16 +155,13 @@
   "connect": {
     "message": "اتصال"
   },
-  "connectHardwareWallet": {
-    "message": "ربط محفظة الأجهزة"
-  },
   "connectingTo": {
     "message": "جارِ الاتصال بـ $1"
   },
   "connectingToGoerli": {
     "message": "الاتصال بشبكة اختبار Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "الاتصال بشبكة اختبار Linea Goerli"
   },
   "connectingToMainnet": {
@@ -185,9 +179,6 @@
   "copyAddress": {
     "message": "نسخ العنوان إلى الحافظة"
   },
-  "copyPrivateKey": {
-    "message": "هذا هو مفتاحك الخاص (انقر للنسخ)"
-  },
   "copyToClipboard": {
     "message": "نسخ إلى الحافظة"
   },
@@ -196,9 +187,6 @@
   },
   "create": {
     "message": "إنشاء"
-  },
-  "createAccount": {
-    "message": "إنشاء حساب"
   },
   "createPassword": {
     "message": "إنشاء كلمة مرور"
@@ -224,14 +212,8 @@
   "delete": {
     "message": "حذف"
   },
-  "deleteAccount": {
-    "message": "حذف الحساب"
-  },
   "deleteNetwork": {
     "message": "هل تريد حذف الشبكة؟"
-  },
-  "deleteNetworkDescription": {
-    "message": "هل أنت متأكد أنك تريد حذف هذه الشبكة؟"
   },
   "details": {
     "message": "التفاصيل"
@@ -260,9 +242,6 @@
   "ensRegistrationError": {
     "message": "خطأ في تسجيل اسم ENS"
   },
-  "enterPassword": {
-    "message": "أدخل كلمة مرور"
-  },
   "enterPasswordContinue": {
     "message": "أدخل كلمة المرور للمتابعة"
   },
@@ -274,9 +253,6 @@
   },
   "expandView": {
     "message": "توسيع العرض"
-  },
-  "exportPrivateKey": {
-    "message": "تصدير المفتاح الخاص"
   },
   "failed": {
     "message": "فشل"
@@ -415,7 +391,7 @@
   "likeToImportTokens": {
     "message": "هل ترغب في إضافة هذه الرموز؟"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "شبكة اختبار Linea Goerli"
   },
   "links": {
@@ -450,9 +426,6 @@
   },
   "mustSelectOne": {
     "message": "يجب تحديد عملة رمزية واحدة على الأقل."
-  },
-  "myAccounts": {
-    "message": "حساباتي"
   },
   "needImportFile": {
     "message": "يلزم تحديد ملف للاستيراد.",
@@ -572,14 +545,8 @@
   "privateNetwork": {
     "message": "شبكة خاصة"
   },
-  "queue": {
-    "message": "اللائحة"
-  },
   "readdToken": {
     "message": "يمكنك إضافة هذه العملة الرمزية مرة أخرى في المستقبل من خلال الانتقال إلى \"إضافة عملة رمزية\" في قائمة خيارات الحسابات الخاصة بك."
-  },
-  "recents": {
-    "message": "الحديث"
   },
   "recipientAddressPlaceholder": {
     "message": "البحث، العنوان العام (0x)، أو ENS"
@@ -645,9 +612,6 @@
   "searchResults": {
     "message": "نتائج البحث"
   },
-  "searchTokens": {
-    "message": "البحث عن العملات الرمزية"
-  },
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"
   },
@@ -686,9 +650,6 @@
   },
   "showHexDataDescription": {
     "message": "حدد هذا لإظهار حقل بيانات سداسي عشرية على شاشة الإرسال"
-  },
-  "showPrivateKeys": {
-    "message": "عرض المفاتيح الخاصة"
   },
   "sigRequest": {
     "message": "طلب التوقيع"
@@ -804,21 +765,11 @@
   "transfer": {
     "message": "تحويل"
   },
-  "transferBetweenAccounts": {
-    "message": "التحويل بين حساباتي"
-  },
   "transferFrom": {
     "message": "التحويل من"
   },
-  "troubleTokenBalances": {
-    "message": "واجهتنا مشكلة في تحميل أرصدتك من العملات الرمزية. يمكنك الاطلاع عليها",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "إعادة المحاولة"
-  },
-  "typePassword": {
-    "message": "أدخل كلمة مرور MetaMask الخاصة بك"
   },
   "unapproved": {
     "message": "تم الرفض"

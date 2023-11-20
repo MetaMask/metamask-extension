@@ -1,16 +1,9 @@
 import React from 'react';
-import README from './README.mdx';
 import ErrorMessage from '.';
 
 export default {
-  title: 'Components/UI/ErrorMessage',
-
+  title: 'Components/UI/ErrorMessage(deprecated)',
   component: ErrorMessage,
-  parameters: {
-    docs: {
-      page: README,
-    },
-  },
   argTypes: {
     errorMessage: { control: 'text' },
     errorKey: { control: 'text' },

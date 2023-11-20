@@ -50,6 +50,18 @@ $spacer-break-small: 16px;
     }
   }
 
+  &__nft-item {
+    margin-bottom: $spacer-break-small;
+
+    @include screen-sm-min {
+      margin-right: $spacer-break-large;
+      margin-bottom: 0;
+      max-width: $card-width-break-large;
+      flex: 0 0 $card-width-break-large;
+      height: $card-width-break-large;
+    }
+  }
+
   &__image {
     width: 100%;
     object-fit: contain;

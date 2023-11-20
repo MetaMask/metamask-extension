@@ -1,7 +1,6 @@
 import React from 'react';
 
-import Typography from '../typography';
-
+import { Text } from '../../component-library';
 import MetaFoxLogo from '.';
 
 export default {
@@ -23,10 +22,10 @@ export default {
 export const DefaultStory = (args) => (
   <>
     <MetaFoxLogo {...args} />
-    <Typography marginTop={4} as="p">
+    <Text marginTop={4} as="p">
       To view the different logo types change the build type in:
       ui/components/ui/metafox-logo/horizontal-logo.js
-    </Typography>
+    </Text>
   </>
 );
 

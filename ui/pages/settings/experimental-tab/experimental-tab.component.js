@@ -5,17 +5,35 @@ import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import Typography from '../../../components/ui/typography/typography';
-import { Text } from '../../../components/component-library';
 import {
-  FONT_WEIGHT,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+
+import {
+  Text,
+  Box,
+  Tag,
+  ButtonLink,
+} from '../../../components/component-library';
+import {
   TextColor,
-  TypographyVariant,
+  TextVariant,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  FontWeight,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  AlignItems,
+  FlexWrap,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
 ///: END:ONLY_INCLUDE_IN
+import { OPENSEA_TERMS_OF_USE } from '../../../../shared/lib/ui-utils';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -24,12 +42,18 @@ export default class ExperimentalTab extends PureComponent {
   };
 
   static propTypes = {
-    useNftDetection: PropTypes.bool,
-    setUseNftDetection: PropTypes.func,
-    setOpenSeaEnabled: PropTypes.func,
-    openSeaEnabled: PropTypes.bool,
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
+    securityAlertsEnabled: PropTypes.bool,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    setSecurityAlertsEnabled: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    addSnapAccountEnabled: PropTypes.bool,
+    setAddSnapAccountEnabled: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
+    useRequestQueue: PropTypes.bool,
+    setUseRequestQueue: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -53,221 +77,328 @@ export default class ExperimentalTab extends PureComponent {
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
   }
 
-  renderOpenSeaEnabledToggle() {
-    const { t } = this.context;
-    const {
-      openSeaEnabled,
-      setOpenSeaEnabled,
-      useNftDetection,
-      setUseNftDetection,
-    } = this.props;
+  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  /**
+   * toggleSecurityAlert
+   *
+   * @param {boolean} oldValue - the current securityAlertEnabled value.
+   */
+  toggleSecurityAlert(oldValue) {
+    const newValue = !oldValue;
+    const { setSecurityAlertsEnabled, transactionSecurityCheckEnabled } =
+      this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        blockaid_alerts_enabled: newValue,
+      },
+    });
+    setSecurityAlertsEnabled(newValue);
+    if (newValue && transactionSecurityCheckEnabled) {
+      this.toggleTransactionSecurityCheck(true);
+    }
+  }
+  ///: END:ONLY_INCLUDE_IN
 
-    return (
-      <>
-        <div ref={this.settingsRefs[0]} className="settings-page__content-row">
-          <div className="settings-page__content-item">
-            <span>{t('enableOpenSeaAPI')}</span>
-            <div className="settings-page__content-description">
-              {t('enableOpenSeaAPIDescription')}
-            </div>
-          </div>
-          <div className="settings-page__content-item">
-            <div className="settings-page__content-item-col">
-              <ToggleButton
-                value={openSeaEnabled}
-                onToggle={(value) => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Settings,
-                    event: 'Enabled/Disable OpenSea',
-                    properties: {
-                      action: 'Enabled/Disable OpenSea',
-                      legacy_event: true,
-                    },
-                  });
-                  // value is positive when being toggled off
-                  if (value && useNftDetection) {
-                    setUseNftDetection(false);
-                  }
-                  setOpenSeaEnabled(!value);
-                }}
-                offLabel={t('off')}
-                onLabel={t('on')}
-              />
-            </div>
-          </div>
-        </div>
-        <div ref={this.settingsRefs[1]} className="settings-page__content-row">
-          <div className="settings-page__content-item">
-            <span>{t('useNftDetection')}</span>
-            <div className="settings-page__content-description">
-              <Text color={TextColor.textAlternative}>
-                {t('useNftDetectionDescription')}
-              </Text>
-              <ul className="settings-page__content-unordered-list">
-                <li>{t('useNftDetectionDescriptionLine2')}</li>
-                <li>{t('useNftDetectionDescriptionLine3')}</li>
-                <li>{t('useNftDetectionDescriptionLine4')}</li>
-              </ul>
-              <Text color={TextColor.textAlternative} paddingTop={4}>
-                {t('useNftDetectionDescriptionLine5')}
-              </Text>
-            </div>
-          </div>
-          <div className="settings-page__content-item">
-            <div className="settings-page__content-item-col">
-              <ToggleButton
-                value={useNftDetection}
-                onToggle={(value) => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Settings,
-                    event: 'NFT Detected',
-                    properties: {
-                      action: 'NFT Detected',
-                      legacy_event: true,
-                    },
-                  });
-                  if (!value && !openSeaEnabled) {
-                    setOpenSeaEnabled(!value);
-                  }
-                  setUseNftDetection(!value);
-                }}
-                offLabel={t('off')}
-                onLabel={t('on')}
-              />
-            </div>
-          </div>
-        </div>
-      </>
-    );
+  /**
+   * toggleTransactionSecurityCheck
+   *
+   * @param {boolean} oldValue - the current transactionSecurityCheckEnabled value.
+   */
+  toggleTransactionSecurityCheck(oldValue) {
+    const newValue = !oldValue;
+    const { securityAlertsEnabled, setTransactionSecurityCheckEnabled } =
+      this.props;
+    this.context.trackEvent({
+      category: MetaMetricsEventCategory.Settings,
+      event: MetaMetricsEventName.SettingsUpdated,
+      properties: {
+        opensea_alerts_enabled: newValue,
+      },
+    });
+    setTransactionSecurityCheckEnabled(newValue);
+    if (newValue && securityAlertsEnabled && this.toggleSecurityAlert) {
+      this.toggleSecurityAlert(true);
+    }
   }
 
-  renderTransactionSecurityCheckToggle() {
+  renderSecurityAlertsToggle() {
     const { t } = this.context;
 
     const {
+      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      securityAlertsEnabled,
+      ///: END:ONLY_INCLUDE_IN
       transactionSecurityCheckEnabled,
-      setTransactionSecurityCheckEnabled,
     } = this.props;
 
     return (
       <>
-        <Typography
-          variant={TypographyVariant.H4}
+        <Text
+          variant={TextVariant.headingSm}
           color={TextColor.textAlternative}
           marginBottom={2}
-          fontWeight={FONT_WEIGHT.BOLD}
         >
-          {t('privacy')}
-        </Typography>
+          {t('security')}
+        </Text>
         <div
           ref={this.settingsRefs[1]}
           className="settings-page__content-row settings-page__content-row-experimental"
         >
-          <div className="settings-page__content-item">
-            <span>{t('transactionSecurityCheck')}</span>
-            <div className="settings-page__content-description">
-              <Typography
-                variant={TypographyVariant.H6}
-                color={TextColor.textAlternative}
-              >
-                {t('transactionSecurityCheckDescription')}
-              </Typography>
-              <Typography
-                marginTop={3}
-                marginBottom={1}
-                variant={TypographyVariant.H6}
-                color={TextColor.textAlternative}
-              >
-                {t('selectProvider')}
-              </Typography>
-              <div className="settings-page__content-item-col settings-page__content-item-col-open-sea">
-                <Typography
-                  variant={TypographyVariant.H5}
-                  color={TextColor.textDefault}
-                  fontWeight={FONT_WEIGHT.MEDIUM}
-                  marginBottom={0}
+          <Text variant={TextVariant.inherit} color={TextColor.textAlternative}>
+            {t('securityAlerts')}
+          </Text>
+          <Text variant={TextVariant.bodySm}>
+            {t('securityAlertsDescription')}
+          </Text>
+          <div className="settings-page__content-description">
+            {
+              ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+              <>
+                <Text
+                  variant={TextVariant.bodySmBold}
+                  color={TextColor.textAlternative}
+                  marginTop={4}
                 >
-                  {t('openSea')}
-                </Typography>
-                <ToggleButton
-                  value={transactionSecurityCheckEnabled}
-                  onToggle={(value) => {
-                    this.context.trackEvent({
-                      category: MetaMetricsEventCategory.Settings,
-                      event: 'Enabled/Disable TransactionSecurityCheck',
-                      properties: {
-                        action: 'Enabled/Disable TransactionSecurityCheck',
-                        legacy_event: true,
-                      },
-                    });
-                    setTransactionSecurityCheckEnabled(!value);
-                  }}
-                />
-              </div>
-              <Typography
-                variant={TypographyVariant.H6}
-                color={TextColor.textAlternative}
-                marginTop={0}
-              >
-                {t('thisServiceIsExperimental', [
-                  <a
-                    href="http://opensea.io/securityproviderterms"
-                    key="termsOfUse"
-                    rel="noopener noreferrer"
-                    target="_blank"
+                  {t('preferredProvider')}
+                </Text>
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
+                  justifyContent={JustifyContent.spaceBetween}
+                  gap={4}
+                  marginTop={3}
+                  marginBottom={3}
+                  data-testid="settings-toggle-security-alert-blockaid"
+                >
+                  <div>
+                    <Box display={Display.Flex}>
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        color={TextColor.textDefault}
+                      >
+                        {t('blockaid')}
+                      </Text>
+                      <Tag marginLeft={2} label="Recommended" />
+                    </Box>
+                    <Text
+                      variant={TextVariant.bodySm}
+                      as="h6"
+                      color={TextColor.textAlternative}
+                      marginTop={0}
+                      marginRight={1}
+                    >
+                      {t('blockaidMessage')}
+                    </Text>
+                  </div>
+                  <ToggleButton
+                    value={securityAlertsEnabled}
+                    onToggle={this.toggleSecurityAlert.bind(this)}
+                  />
+                </Box>
+              </>
+              ///: END:ONLY_INCLUDE_IN
+            }
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.spaceBetween}
+              gap={4}
+              marginTop={3}
+              marginBottom={3}
+            >
+              <div>
+                <Box display={Display.Flex}>
+                  <Text
+                    variant={TextVariant.bodyMd}
+                    color={TextColor.textDefault}
                   >
-                    {t('termsOfUse')}
-                  </a>,
-                ])}
-              </Typography>
-              <Typography
-                variant={TypographyVariant.H5}
-                color={TextColor.textMuted}
-                fontWeight={FONT_WEIGHT.MEDIUM}
-                marginTop={2}
-              >
-                {t('moreComingSoon')}
-              </Typography>
-            </div>
+                    {t('openSeaLabel')}
+                  </Text>
+                  <Tag marginLeft={2} label="Beta" />
+                </Box>
+                <Text
+                  variant={TextVariant.bodySm}
+                  as="h6"
+                  color={TextColor.textAlternative}
+                  marginTop={0}
+                  marginRight={1}
+                >
+                  {t('openSeaMessage', [
+                    <ButtonLink
+                      variant="bodyMd"
+                      href={OPENSEA_TERMS_OF_USE}
+                      externalLink
+                      key="opensea-terms-of-use"
+                    >
+                      {t('terms')}
+                    </ButtonLink>,
+                  ])}
+                </Text>
+              </div>
+              <ToggleButton
+                value={transactionSecurityCheckEnabled}
+                onToggle={this.toggleTransactionSecurityCheck.bind(this)}
+              />
+            </Box>
           </div>
         </div>
       </>
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   renderDesktopEnableButton() {
     const { t } = this.context;
 
     return (
-      <div
-        ref={this.settingsRefs[6]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-desktop-pairing"
-      >
-        <div className="settings-page__content-item">
-          <span>{t('desktopEnableButtonDescription')}</span>
-        </div>
-        <div className="settings-page__content-item">
-          <div className="settings-page__content-item-col">
+      <>
+        <Text
+          variant={TextVariant.headingSm}
+          color={TextColor.textAlternative}
+          marginBottom={2}
+        >
+          {t('desktopApp')}
+        </Text>
+        <Box
+          ref={this.settingsRefs[6]}
+          data-testid="advanced-setting-desktop-pairing"
+          display={Display.Flex}
+          alignItems={AlignItems.center}
+          flexDirection={FlexDirection.Row}
+          flexWrap={FlexWrap.Wrap}
+          justifyContent={JustifyContent.spaceBetween}
+        >
+          <Text marginTop={3} paddingRight={2}>
+            {t('desktopEnableButtonDescription')}
+          </Text>
+          <Box className="settings-page__content-item-col" paddingTop={3}>
             <DesktopEnableButton />
-          </div>
-        </div>
-      </div>
+          </Box>
+        </Box>
+      </>
     );
   }
   ///: END:ONLY_INCLUDE_IN
 
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  renderKeyringSnapsToggle() {
+    const { t, trackEvent } = this.context;
+    const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
+
+    return (
+      <>
+        <Text
+          variant={TextVariant.headingSm}
+          as="h4"
+          color={TextColor.textAlternative}
+          marginBottom={2}
+          fontWeight={FontWeight.Bold}
+        >
+          {t('snaps')}
+        </Text>
+        <Box
+          ref={this.settingsRefs[1]}
+          className="settings-page__content-row settings-page__content-row-experimental"
+          marginBottom={3}
+        >
+          <div className="settings-page__content-item">
+            <span>{t('snapAccounts')}</span>
+            <div className="settings-page__content-description">
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
+                color={TextColor.textAlternative}
+              >
+                {t('snapAccountsDescription')}
+              </Text>
+
+              <div className="settings-page__content-item-col">
+                <Text
+                  variant={TextVariant.bodyMd}
+                  as="h5"
+                  color={TextColor.textDefault}
+                  fontWeight={FontWeight.Medium}
+                  marginBottom={0}
+                >
+                  {t('addSnapAccountToggle')}
+                </Text>
+                <ToggleButton
+                  dataTestId="add-snap-account-toggle"
+                  value={addSnapAccountEnabled}
+                  onToggle={(value) => {
+                    trackEvent({
+                      event: MetaMetricsEventName.AddSnapAccountEnabled,
+                      category: MetaMetricsEventCategory.Settings,
+                      properties: {
+                        enabled: !value,
+                      },
+                    });
+                    setAddSnapAccountEnabled(!value);
+                  }}
+                />
+              </div>
+              <Text
+                variant={TextVariant.bodySm}
+                as="h6"
+                color={TextColor.textAlternative}
+                marginTop={0}
+              >
+                {t('addSnapAccountsDescription')}
+              </Text>
+            </div>
+          </div>
+        </Box>
+      </>
+    );
+  }
+
+  ///: END:ONLY_INCLUDE_IN
+  renderToggleRequestQueue() {
+    const { t } = this.context;
+    const { useRequestQueue, setUseRequestQueue } = this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[7]}
+        className="settings-page__content-row settings-page__content-row-experimental"
+        data-testid="experimental-setting-toggle-request-queue"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('toggleRequestQueueField')}</span>
+          <div className="settings-page__content-description">
+            {t('toggleRequestQueueDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            className="request-queue-toggle"
+            value={useRequestQueue || false}
+            onToggle={(value) => setUseRequestQueue(!value)}
+            offLabel={t('toggleRequestQueueOff')}
+            onLabel={t('toggleRequestQueueOn')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
   render() {
     return (
       <div className="settings-page__body">
-        {this.renderTransactionSecurityCheckToggle()}
-        {this.renderOpenSeaEnabledToggle()}
+        {this.renderSecurityAlertsToggle()}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
+          ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+          this.renderKeyringSnapsToggle()
+          ///: END:ONLY_INCLUDE_IN
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
           this.renderDesktopEnableButton()
           ///: END:ONLY_INCLUDE_IN
         }
+        {this.renderToggleRequestQueue()}
       </div>
     );
   }

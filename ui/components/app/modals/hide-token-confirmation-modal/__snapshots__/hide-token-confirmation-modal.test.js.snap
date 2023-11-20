@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Hide Token Confirmation Modal should match snapshot 1`] = `
+<div>
+  <div
+    class="hide-token-confirmation"
+  >
+    <div
+      class="hide-token-confirmation__container"
+    >
+      <div
+        class="hide-token-confirmation__title"
+      >
+        Hide token?
+      </div>
+      <div
+        class=""
+      >
+        <div
+          class="identicon hide-token-confirmation__identicon"
+          style="height: 45px; width: 45px; border-radius: 22.5px;"
+        >
+          <div
+            style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 45px; height: 45px; display: inline-block; background: rgb(24, 151, 242);"
+          >
+            <svg
+              height="45"
+              width="45"
+              x="0"
+              y="0"
+            >
+              <rect
+                fill="#2362E1"
+                height="45"
+                transform="translate(5.047495572364477 -7.501374313922141) rotate(458.4 22.5 22.5)"
+                width="45"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#F94301"
+                height="45"
+                transform="translate(-21.604864626070608 11.239244487403075) rotate(268.8 22.5 22.5)"
+                width="45"
+                x="0"
+                y="0"
+              />
+              <rect
+                fill="#FA7900"
+                height="45"
+                transform="translate(-12.763482299017626 41.456272332211) rotate(117.3 22.5 22.5)"
+                width="45"
+                x="0"
+                y="0"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div
+        class="hide-token-confirmation__symbol"
+      >
+        TKN
+      </div>
+      <div
+        class="hide-token-confirmation__copy"
+      >
+        You can add this token back in the future by going to “Import token” in your accounts options menu.
+      </div>
+      <div
+        class="hide-token-confirmation__buttons"
+      >
+        <button
+          class="button btn--rounded btn-secondary hide-token-confirmation__button"
+          data-testid="hide-token-confirmation__cancel"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary hide-token-confirmation__button"
+          data-testid="hide-token-confirmation__hide"
+        >
+          Hide
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

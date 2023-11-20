@@ -1,0 +1,60 @@
+.mascot-background-animation {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+
+  &__background-1,
+  &__background-2 {
+    width: 120px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    -webkit-animation: spin 38s linear infinite;
+    -moz-animation: spin 38s linear infinite;
+    animation: spin 38s linear infinite;
+
+    @-moz-keyframes spin {
+      100% {
+        -moz-transform: rotate(360deg);
+      }
+    }
+
+    @-webkit-keyframes spin {
+      100% {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+  }
+
+  &__background-2 {
+    width: 120px;
+    height: 128px;
+    -webkit-animation: spin 42s linear infinite;
+    -moz-animation: spin 42s linear infinite;
+    animation: spin 42s linear infinite;
+  }
+
+  &__mascot-container {
+    position: relative;
+  }
+
+  &__animation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-top: 40px;
+    margin-bottom: 40px;
+  }
+}

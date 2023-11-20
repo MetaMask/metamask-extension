@@ -1,22 +1,12 @@
 .nft-default {
-  background-color: var(--color-background-alternative);
-  padding-top: 100%; // retains 1:1 aspect ratio
+  padding-top: 100%;
   position: relative;
-  width: 100%;
+  background-image: url('/images/default_nft.png');
+  background-size: cover;
+  background-repeat: no-repeat;
 
-  &__text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: center;
+  &__button {
     position: absolute;
-    white-space: nowrap;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: calc(100% - 32px);
-  }
-
-  &--clickable {
-    cursor: pointer;
+    bottom: 16px;
   }
 }

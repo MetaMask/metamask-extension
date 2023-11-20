@@ -1,0 +1,82 @@
+.transaction-settings {
+  &__content {
+    @include screen-sm-max {
+      height: 100%;
+    }
+  }
+
+  &__button-group {
+    & &-custom-button {
+      cursor: text;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-width: 72px;
+      margin-right: 0;
+    }
+  }
+
+  &__custom-input {
+    display: flex;
+    justify-content: center;
+
+    input {
+      border: none;
+      width: 64px;
+      text-align: center;
+      background: var(--color-primary-default);
+      color: var(--color-primary-inverse);
+      font-weight: inherit;
+      outline: none;
+
+      &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+        color: var(--color-primary-inverse);
+      }
+
+      &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color: var(--color-primary-inverse);
+        opacity: 1;
+      }
+
+      &::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color: var(--color-primary-inverse);
+        opacity: 1;
+      }
+
+      &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        color: var(--color-primary-inverse);
+      }
+
+      &::-ms-input-placeholder { /* Microsoft Edge */
+        color: var(--color-primary-inverse);
+      }
+
+      &::placeholder { /* Most modern browsers support this now. */
+        color: var(--color-primary-inverse);
+      }
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      /* display: none; <- Crashes Chrome on hover */
+      -webkit-appearance: none;
+      margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    &--danger {
+      input {
+        background: var(--color-error-default);
+      }
+    }
+  }
+
+  &__percentage-suffix {
+    position: absolute;
+    right: 5px;
+  }
+}

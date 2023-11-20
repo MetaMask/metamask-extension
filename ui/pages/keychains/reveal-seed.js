@@ -1,47 +1,50 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
 import qrCode from 'qrcode-generator';
-import { requestRevealSeedWords, showModal } from '../../store/actions';
-import ExportTextContainer from '../../components/ui/export-text-container';
-import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
+import HoldToRevealModal from '../../components/app/modals/hold-to-reveal-modal/hold-to-reveal-modal';
 import {
-  TextVariant,
-  SEVERITIES,
-  Size,
-  BLOCK_SIZES,
-  JustifyContent,
-  AlignItems,
-  DISPLAY,
-} from '../../helpers/constants/design-system';
-
-import Box from '../../components/ui/box';
-import {
-  Text,
-  Label,
+  BUTTON_SIZES,
+  BUTTON_VARIANT,
   BannerAlert,
   Button,
-  TextField,
   HelpText,
-  BUTTON_TYPES,
+  HelpTextSeverity,
+  Label,
+  Text,
+} from '../../components/component-library';
+import {
+  TextField,
   TEXT_FIELD_SIZES,
   TEXT_FIELD_TYPES,
-  BUTTON_SIZES,
-} from '../../components/component-library';
-import { useI18nContext } from '../../hooks/useI18nContext';
+} from '../../components/component-library/text-field/deprecated';
+import Box from '../../components/ui/box';
+import ExportTextContainer from '../../components/ui/export-text-container';
+import { Tab, Tabs } from '../../components/ui/tabs';
 import { MetaMetricsContext } from '../../contexts/metametrics';
+import { getMostRecentOverviewPage } from '../../ducks/history/history';
+import {
+  AlignItems,
+  BlockSize,
+  Display,
+  JustifyContent,
+  Severity,
+  Size,
+  TextVariant,
+} from '../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { Tabs, Tab } from '../../components/ui/tabs';
+import { useI18nContext } from '../../hooks/useI18nContext';
+import { requestRevealSeedWords } from '../../store/actions';
 
 const PASSWORD_PROMPT_SCREEN = 'PASSWORD_PROMPT_SCREEN';
 const REVEAL_SEED_SCREEN = 'REVEAL_SEED_SCREEN';
 
-const RevealSeedPage = () => {
+export default function RevealSeedPage() {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useI18nContext();
@@ -53,6 +56,7 @@ const RevealSeedPage = () => {
   const [completedLongPress, setCompletedLongPress] = useState(false);
   const [error, setError] = useState(null);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const [isShowingHoldModal, setIsShowingHoldModal] = useState(false);
 
   useEffect(() => {
     const passwordBox = document.getElementById('password-box');
@@ -84,15 +88,7 @@ const RevealSeedPage = () => {
         });
         setSeedWords(revealedSeedWords);
 
-        dispatch(
-          showModal({
-            name: 'HOLD_TO_REVEAL_SRP',
-            onLongPressed: () => {
-              setCompletedLongPress(true);
-              setScreen(REVEAL_SEED_SCREEN);
-            },
-          }),
-        );
+        setIsShowingHoldModal(true);
       })
       .catch((e) => {
         trackEvent({
@@ -109,7 +105,7 @@ const RevealSeedPage = () => {
 
   const renderWarning = () => {
     return (
-      <BannerAlert severity={SEVERITIES.DANGER}>
+      <BannerAlert severity={Severity.Danger}>
         <Text variant={TextVariant.bodyMd}>
           {t('revealSeedWordsWarning', [
             <Text
@@ -127,7 +123,7 @@ const RevealSeedPage = () => {
 
   const renderPasswordPromptContent = () => {
     return (
-      <form onSubmit={(event) => handleSubmit(event)}>
+      <form onSubmit={handleSubmit}>
         <Label htmlFor="password-box">{t('enterPasswordContinue')}</Label>
         <TextField
           inputProps={{
@@ -139,18 +135,50 @@ const RevealSeedPage = () => {
           size={TEXT_FIELD_SIZES.LG}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          error={error}
-          width={BLOCK_SIZES.FULL}
+          error={Boolean(error)}
+          width={BlockSize.Full}
         />
-        {error && <HelpText severity={SEVERITIES.DANGER}>{error}</HelpText>}
+        {error && (
+          <HelpText severity={HelpTextSeverity.Danger}>{error}</HelpText>
+        )}
       </form>
     );
   };
 
   const renderRevealSeedContent = () => {
+    // default for SRP_VIEW_SRP_TEXT event because this is the first thing shown after rendering
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.SrpViewSrpText,
+      properties: {
+        key_type: MetaMetricsEventKeyType.Srp,
+      },
+    });
+
     return (
       <div>
-        <Tabs defaultActiveTabName={t('revealSeedWordsText')}>
+        <Tabs
+          defaultActiveTabName={t('revealSeedWordsText')}
+          onTabClick={(tabName) => {
+            if (tabName === 'text-seed') {
+              trackEvent({
+                category: MetaMetricsEventCategory.Keys,
+                event: MetaMetricsEventName.SrpViewSrpText,
+                properties: {
+                  key_type: MetaMetricsEventKeyType.Srp,
+                },
+              });
+            } else if (tabName === 'qr-srp') {
+              trackEvent({
+                category: MetaMetricsEventCategory.Keys,
+                event: MetaMetricsEventName.SrpViewsSrpQR,
+                properties: {
+                  key_type: MetaMetricsEventKeyType.Srp,
+                },
+              });
+            }
+          }}
+        >
           <Tab
             name={t('revealSeedWordsText')}
             className="reveal-seed__tab"
@@ -169,6 +197,14 @@ const RevealSeedPage = () => {
                     copy_method: 'clipboard',
                   },
                 });
+                trackEvent({
+                  category: MetaMetricsEventCategory.Keys,
+                  event: MetaMetricsEventName.SrpCopiedToClipboard,
+                  properties: {
+                    key_type: MetaMetricsEventKeyType.Srp,
+                    copy_method: 'clipboard',
+                  },
+                });
               }}
             />
           </Tab>
@@ -176,13 +212,14 @@ const RevealSeedPage = () => {
             name={t('revealSeedWordsQR')}
             className="reveal-seed__tab"
             activeClassName="reveal-seed__active-tab"
-            tabKey="qr-seed"
+            tabKey="qr-srp"
           >
             <Box
-              display={DISPLAY.FLEX}
+              display={Display.Flex}
               justifyContent={JustifyContent.center}
               alignItems={AlignItems.center}
               paddingTop={4}
+              data-testid="qr-srp"
             >
               <div
                 dangerouslySetInnerHTML={{
@@ -198,15 +235,22 @@ const RevealSeedPage = () => {
 
   const renderPasswordPromptFooter = () => {
     return (
-      <Box display={DISPLAY.FLEX} marginTop="auto" gap={4}>
+      <Box display={Display.Flex} marginTop="auto" gap={4}>
         <Button
-          width={BLOCK_SIZES.FULL}
+          width={BlockSize.Full}
           size={Size.LG}
-          type={BUTTON_TYPES.SECONDARY}
+          variant={BUTTON_VARIANT.SECONDARY}
           onClick={() => {
             trackEvent({
               category: MetaMetricsEventCategory.Keys,
               event: MetaMetricsEventName.KeyExportCanceled,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Srp,
+              },
+            });
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealCancelled,
               properties: {
                 key_type: MetaMetricsEventKeyType.Srp,
               },
@@ -217,12 +261,19 @@ const RevealSeedPage = () => {
           {t('cancel')}
         </Button>
         <Button
-          width={BLOCK_SIZES.FULL}
+          width={BlockSize.Full}
           size={Size.LG}
           onClick={(event) => {
             trackEvent({
               category: MetaMetricsEventCategory.Keys,
               event: MetaMetricsEventName.KeyExportRequested,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Srp,
+              },
+            });
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealNextClicked,
               properties: {
                 key_type: MetaMetricsEventKeyType.Srp,
               },
@@ -241,10 +292,19 @@ const RevealSeedPage = () => {
     return (
       <Box marginTop="auto">
         <Button
-          type={BUTTON_TYPES.SECONDARY}
-          width={BLOCK_SIZES.FULL}
+          variant={BUTTON_VARIANT.SECONDARY}
+          width={BlockSize.Full}
           size={Size.LG}
-          onClick={() => history.push(mostRecentOverviewPage)}
+          onClick={() => {
+            trackEvent({
+              category: MetaMetricsEventCategory.Keys,
+              event: MetaMetricsEventName.SrpRevealCloseClicked,
+              properties: {
+                key_type: MetaMetricsEventKeyType.Srp,
+              },
+            });
+            history.push(mostRecentOverviewPage);
+          }}
         >
           {t('close')}
         </Button>
@@ -278,7 +338,7 @@ const RevealSeedPage = () => {
         {t('revealSeedWordsDescription1', [
           <Button
             key="srp-learn-srp"
-            type={BUTTON_TYPES.LINK}
+            variant={BUTTON_VARIANT.LINK}
             size={BUTTON_SIZES.INHERIT}
             as="a"
             href={ZENDESK_URLS.SECRET_RECOVERY_PHRASE}
@@ -300,7 +360,7 @@ const RevealSeedPage = () => {
         {t('revealSeedWordsDescription2', [
           <Button
             key="srp-learn-more-non-custodial"
-            type={BUTTON_TYPES.LINK}
+            variant={BUTTON_VARIANT.LINK}
             size={BUTTON_SIZES.INHERIT}
             as="a"
             href={ZENDESK_URLS.NON_CUSTODIAL_WALLET}
@@ -314,8 +374,25 @@ const RevealSeedPage = () => {
       {renderWarning()}
       {renderContent()}
       {renderFooter()}
+      <HoldToRevealModal
+        isOpen={isShowingHoldModal}
+        onClose={() => {
+          trackEvent({
+            category: MetaMetricsEventCategory.Keys,
+            event: MetaMetricsEventName.SrpHoldToRevealCloseClicked,
+            properties: {
+              key_type: MetaMetricsEventKeyType.Srp,
+            },
+          });
+          setIsShowingHoldModal(false);
+        }}
+        onLongPressed={() => {
+          setCompletedLongPress(true);
+          setIsShowingHoldModal(false);
+          setScreen(REVEAL_SEED_SCREEN);
+        }}
+        holdToRevealType="SRP"
+      />
     </Box>
   );
-};
-
-export default RevealSeedPage;
+}

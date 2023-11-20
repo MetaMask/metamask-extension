@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PickerNetwork should render the label inside the PickerNetwork 1`] = `
+<div>
+  <button
+    class="mm-box mm-picker-network mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+    data-testid="picker-network"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+    >
+      I
+    </div>
+    <span
+      class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-default"
+    >
+      Imported
+    </span>
+    <span
+      class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-default"
+      style="mask-image: url('./images/icons/arrow-down.svg');"
+    />
+  </button>
+</div>
+`;

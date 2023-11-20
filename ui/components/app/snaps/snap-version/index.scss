@@ -1,0 +1,15 @@
+.snap-version {
+  &:hover {
+    opacity: 1;
+  }
+
+  &__wrapper {
+    &:hover {
+      background-color: var(--color-info-muted);
+
+      & * {
+        color: var(--color-info-default);
+      }
+    }
+  }
+}

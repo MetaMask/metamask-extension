@@ -1,11 +1,10 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   renderWithProvider,
   createSwapsMockStore,
-  setBackgroundConnection,
   fireEvent,
 } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -155,7 +154,7 @@ describe('SmartTransactionStatusLabel', () => {
       store,
     );
     expect(getByText('Publicly submitting your Swap...')).toBeInTheDocument();
-    const cancelLink = getByText('Cancel swap for ~0');
+    const cancelLink = getByText('Attempt to cancel swap for free');
     expect(cancelLink).toBeInTheDocument();
     fireEvent.click(cancelLink);
     expect(

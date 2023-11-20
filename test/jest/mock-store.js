@@ -1,3 +1,5 @@
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 
@@ -132,13 +134,18 @@ export const createSwapsMockStore = () => {
       swapsSTXLoading: false,
     },
     metamask: {
-      networkDetails: {
-        EIPS: {
-          1559: false,
+      selectedNetworkClientId: NetworkType.mainnet,
+      networksMetadata: {
+        [NetworkType.mainnet]: {
+          EIPS: {
+            1559: false,
+          },
+          status: NetworkStatus.Available,
         },
       },
-      provider: {
+      providerConfig: {
         chainId: CHAIN_IDS.MAINNET,
+        ticker: 'ETH',
       },
       cachedBalances: {
         [CHAIN_IDS.MAINNET]: 5,
@@ -146,16 +153,14 @@ export const createSwapsMockStore = () => {
       preferences: {
         showFiatInTestnets: true,
       },
-      currentCurrency: 'ETH',
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 6571648590592143,
           time: 1667403993369,
           status: 'confirmed',
-          metamaskNetworkId: '5',
           originalGasEstimate: '0x7548',
           userEditedGasLimit: false,
-          chainId: '0x5',
+          chainId: CHAIN_IDS.MAINNET,
           loadingDefaults: false,
           dappSuggestedGasFees: null,
           sendFlowHistory: null,
@@ -218,7 +223,12 @@ export const createSwapsMockStore = () => {
         },
       ],
       useCurrencyRateCheck: true,
-      conversionRate: 1,
+      currentCurrency: 'ETH',
+      currencyRates: {
+        ETH: {
+          conversionRate: 1,
+        },
+      },
       contractExchangeRates: {
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
         '0x1111111111111111111111111111111111111111': 0.1,
@@ -252,7 +262,7 @@ export const createSwapsMockStore = () => {
         },
       },
       selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-      keyringTypes: [KeyringType.imported, KeyringType.hdKeyTree],
+      currentLocale: 'en',
       keyrings: [
         {
           type: KeyringType.hdKeyTree,
@@ -285,6 +295,10 @@ export const createSwapsMockStore = () => {
       swapsState: {
         swapsFeatureFlags: {
           smartTransactions: {
+            mobileActive: true,
+            extensionActive: true,
+          },
+          swapRedesign: {
             mobileActive: true,
             extensionActive: true,
           },
@@ -490,6 +504,7 @@ export const createSwapsMockStore = () => {
       },
       smartTransactionsState: {
         userOptIn: true,
+        userOptInV2: true,
         liveness: true,
         fees: createGetSmartTransactionFeesApiResponse(),
         smartTransactions: {

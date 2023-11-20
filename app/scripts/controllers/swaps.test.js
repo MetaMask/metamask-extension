@@ -4,11 +4,8 @@ import sinon from 'sinon';
 import { BigNumber } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
 import BigNumberjs from 'bignumber.js';
-import {
-  CHAIN_IDS,
-  NETWORK_IDS,
-  NetworkStatus,
-} from '../../../shared/constants/network';
+import { NetworkType } from '@metamask/controller-utils';
+import { CHAIN_IDS, NetworkStatus } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
@@ -100,11 +97,17 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
 
 function getMockNetworkController() {
   return {
-    store: {
-      getState: sinon.stub().returns({
-        networkId: NETWORK_IDS.GOERLI,
-        networkStatus: NetworkStatus.Available,
-      }),
+    state: {
+      selectedNetworkClientId: NetworkType.goerli,
+      networksMetadata: {
+        [NetworkType.goerli]: {
+          EIPS: {},
+          status: NetworkStatus.Available,
+        },
+      },
+      providerConfig: {
+        chainId: CHAIN_IDS.GOERLI,
+      },
     },
   };
 }
@@ -208,7 +211,10 @@ describe('SwapsController', function () {
 
     it('should replace ethers instance when network changes', function () {
       const networkController = getMockNetworkController();
-      const onNetworkStateChange = sinon.stub();
+      let networkStateChangeListener;
+      const onNetworkStateChange = (listener) => {
+        networkStateChangeListener = listener;
+      };
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
@@ -220,13 +226,20 @@ describe('SwapsController', function () {
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
-      const changeNetwork = onNetworkStateChange.getCall(0).args[0];
 
-      networkController.store.getState.returns({
-        networkId: NETWORK_IDS.MAINNET,
-        networkStatus: NetworkStatus.Available,
-      });
-      changeNetwork(NETWORK_IDS.MAINNET);
+      networkController.state = {
+        selectedNetworkClientId: NetworkType.mainnet,
+        networksMetadata: {
+          [NetworkType.mainnet]: {
+            EIPS: {},
+            status: NetworkStatus.Available,
+          },
+        },
+        providerConfig: {
+          chainId: CHAIN_IDS.MAINNET,
+        },
+      };
+      networkStateChangeListener();
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.notStrictEqual(
@@ -238,7 +251,10 @@ describe('SwapsController', function () {
 
     it('should not replace ethers instance when network changes to loading', function () {
       const networkController = getMockNetworkController();
-      const onNetworkStateChange = sinon.stub();
+      let networkStateChangeListener;
+      const onNetworkStateChange = (listener) => {
+        networkStateChangeListener = listener;
+      };
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
@@ -250,13 +266,20 @@ describe('SwapsController', function () {
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
-      const changeNetwork = onNetworkStateChange.getCall(0).args[0];
 
-      networkController.store.getState.returns({
-        networkId: null,
-        networkStatus: NetworkStatus.Unknown,
-      });
-      changeNetwork('loading');
+      networkController.state = {
+        selectedNetworkClientId: NetworkType.goerli,
+        networksMetadata: {
+          [NetworkType.goerli]: {
+            EIPS: {},
+            status: NetworkStatus.Unknown,
+          },
+        },
+        providerConfig: {
+          chainId: CHAIN_IDS.GOERLI,
+        },
+      };
+      networkStateChangeListener();
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
@@ -268,7 +291,10 @@ describe('SwapsController', function () {
 
     it('should not replace ethers instance when network changes to the same network', function () {
       const networkController = getMockNetworkController();
-      const onNetworkStateChange = sinon.stub();
+      let networkStateChangeListener;
+      const onNetworkStateChange = (listener) => {
+        networkStateChangeListener = listener;
+      };
       const swapsController = new SwapsController({
         getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
         networkController,
@@ -280,13 +306,20 @@ describe('SwapsController', function () {
         getCurrentChainId: getCurrentChainIdStub,
       });
       const currentEthersInstance = swapsController.ethersProvider;
-      const changeNetwork = onNetworkStateChange.getCall(0).args[0];
 
-      networkController.store.getState.returns({
-        networkId: NETWORK_IDS.GOERLI,
-        networkStatus: NetworkStatus.Available,
-      });
-      changeNetwork(NETWORK_IDS.GOERLI);
+      networkController.state = {
+        selectedNetworkClientId: NetworkType.goerli,
+        networksMetadata: {
+          [NetworkType.goerli]: {
+            EIPS: {},
+            status: NetworkStatus.Available,
+          },
+        },
+        providerConfig: {
+          chainId: CHAIN_IDS.GOERLI,
+        },
+      };
+      networkStateChangeListener();
 
       const newEthersInstance = swapsController.ethersProvider;
       assert.strictEqual(
@@ -704,14 +737,14 @@ describe('SwapsController', function () {
           gasEstimateWithRefund: '0xb8cae',
           savings: {
             fee: '-0.061067',
-            metaMaskFee: '0.5050505050505050505',
+            metaMaskFee: '0.50505050505050505050505050505050505',
             performance: '6',
-            total: '5.4338824949494949495',
-            medianMetaMaskFee: '0.44444444444444444444',
+            total: '5.43388249494949494949494949494949495',
+            medianMetaMaskFee: '0.444444444444444444444444444444444444',
           },
           ethFee: '0.113536',
           overallValueOfQuote: '49.886464',
-          metaMaskFeeInEth: '0.5050505050505050505',
+          metaMaskFeeInEth: '0.50505050505050505050505050505050505',
           ethValueOfTokens: '50',
         });
         assert.strictEqual(
@@ -769,15 +802,15 @@ describe('SwapsController', function () {
           gasEstimateWithRefund: '0xb8cae',
           savings: {
             fee: '-0.061067',
-            metaMaskFee: '0.5050505050505050505',
+            metaMaskFee: '0.50505050505050505050505050505050505',
             performance: '6',
-            total: '5.4338824949494949495',
-            medianMetaMaskFee: '0.44444444444444444444',
+            total: '5.43388249494949494949494949494949495',
+            medianMetaMaskFee: '0.444444444444444444444444444444444444',
           },
           ethFee: '0.113822',
           multiLayerL1TradeFeeTotal: '0x0103c18816d4e8',
           overallValueOfQuote: '49.886178',
-          metaMaskFeeInEth: '0.5050505050505050505',
+          metaMaskFeeInEth: '0.50505050505050505050505050505050505',
           ethValueOfTokens: '50',
         });
         assert.strictEqual(
@@ -831,7 +864,10 @@ describe('SwapsController', function () {
 
         // Mocked quotes approvalNeeded is null, so it will only be called with the gas
         assert.strictEqual(
-          timedoutGasReturnStub.calledOnceWithExactly(MOCK_APPROVAL_NEEDED),
+          timedoutGasReturnStub.calledOnceWithExactly(
+            MOCK_APPROVAL_NEEDED,
+            TEST_AGG_ID_APPROVAL,
+          ),
           true,
         );
       });

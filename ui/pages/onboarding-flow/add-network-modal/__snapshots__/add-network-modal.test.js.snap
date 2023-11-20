@@ -40,16 +40,16 @@ exports[`Add Network Modal should render 1`] = `
         class="form-field"
       >
         <label
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <div
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
+              class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
-                class="box box--margin-top-1 box--margin-bottom-1 box--display-inline-block box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
               >
                 Network name
               </h6>
@@ -70,16 +70,16 @@ exports[`Add Network Modal should render 1`] = `
         class="form-field"
       >
         <label
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <div
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
+              class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
-                class="box box--margin-top-1 box--margin-bottom-1 box--display-inline-block box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
               >
                 New RPC URL
               </h6>
@@ -100,22 +100,23 @@ exports[`Add Network Modal should render 1`] = `
         class="form-field"
       >
         <label
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <div
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
+              class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
-                class="box box--margin-top-1 box--margin-bottom-1 box--display-inline-block box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
               >
                 Chain ID
               </h6>
               
               <div
                 class="info-tooltip"
+                data-testid="info-tooltip"
               >
                 <div>
                   <div
@@ -154,16 +155,16 @@ exports[`Add Network Modal should render 1`] = `
         class="form-field"
       >
         <label
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <div
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
+              class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
-                class="box box--margin-top-1 box--margin-bottom-1 box--display-inline-block box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
               >
                 Currency symbol
               </h6>
@@ -184,21 +185,21 @@ exports[`Add Network Modal should render 1`] = `
         class="form-field"
       >
         <label
-          class="box box--flex-direction-row"
+          class="mm-box"
         >
           <div
             class="form-field__heading"
           >
             <div
-              class="box form-field__heading-title box--display-flex box--flex-direction-row box--align-items-baseline"
+              class="mm-box form-field__heading-title mm-box--display-flex mm-box--align-items-baseline"
             >
               <h6
-                class="box box--margin-top-1 box--margin-bottom-1 box--display-inline-block box--flex-direction-row typography typography--h6 typography--weight-bold typography--style-normal typography--color-text-default"
+                class="mm-box mm-text mm-text--body-sm-bold mm-box--display-inline-block mm-box--color-text-default"
               >
                 Block explorer URL
               </h6>
               <h6
-                class="box box--margin-top-1 box--margin-bottom-1 box--display-inline-block box--flex-direction-row typography typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                class="mm-box mm-text mm-text--body-sm mm-box--display-inline-block mm-box--color-text-alternative"
               >
                 (Optional)
               </h6>
@@ -220,16 +221,12 @@ exports[`Add Network Modal should render 1`] = `
     >
       <button
         class="button btn--rounded btn-secondary"
-        role="button"
-        tabindex="0"
       >
         Cancel
       </button>
       <button
         class="button btn--rounded btn-primary"
         disabled=""
-        role="button"
-        tabindex="0"
       >
         Save
       </button>

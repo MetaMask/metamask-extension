@@ -1,0 +1,11 @@
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome screen is shown.,
+2,Agree to the Terms of use.,,,
+3,Proceed to Import an existing wallet.,,,
+4,Allow MetaMask to gather usage data.,,,
+5,Confirm your 12-word phrase.,12-word phrase.,,
+6,Create a password for your MetaMask wallet.,password (8 characters min).,,
+7,Proceed through the onboarding completion screens.,,,
+8,Dismiss the Whats new dialog.,,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",

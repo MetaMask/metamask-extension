@@ -1,0 +1,34 @@
+name: Close release bug report issue when release branch gets merged
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+
+jobs:
+  close-bug-report:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'Version-v')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+            fetch-depth: 1 # This retrieves only the latest commit.
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Close release bug report issue
+        id: close-release-bug-report-issue
+        env:
+          BUG_REPORT_REPO: MetaMask-planning
+          BUG_REPORT_TOKEN: ${{ secrets.BUG_REPORT_TOKEN }}
+        run: yarn run close-release-bug-report-issue

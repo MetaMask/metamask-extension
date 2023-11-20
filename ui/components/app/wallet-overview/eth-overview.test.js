@@ -2,7 +2,11 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  CHAIN_IDS,
+  MAINNET_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import EthOverview from './eth-overview';
@@ -28,9 +32,11 @@ let openTabSpy;
 describe('EthOverview', () => {
   const mockStore = {
     metamask: {
-      provider: {
-        type: 'test',
+      providerConfig: {
         chainId: CHAIN_IDS.MAINNET,
+        nickname: MAINNET_DISPLAY_NAME,
+        type: NETWORK_TYPES.MAINNET,
+        ticker: 'ETH',
       },
       cachedBalances: {
         '0x1': {
@@ -41,7 +47,12 @@ describe('EthOverview', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       useCurrencyRateCheck: true,
-      conversionRate: 2,
+      currentCurrency: 'usd',
+      currencyRates: {
+        ETH: {
+          conversionRate: 2,
+        },
+      },
       identities: {
         '0x1': {
           address: '0x1',
@@ -71,7 +82,8 @@ describe('EthOverview', () => {
   const store = configureMockStore([thunk])(mockStore);
   const ETH_OVERVIEW_BUY = 'eth-overview-buy';
   const ETH_OVERVIEW_BRIDGE = 'eth-overview-bridge';
-  const ETH_OVERVIEW_PORTFOLIO = 'home__portfolio-site';
+  const ETH_OVERVIEW_PORTFOLIO = 'eth-overview-portfolio';
+  const ETH_OVERVIEW_SWAP = 'token-overview-button-swap';
   const ETH_OVERVIEW_PRIMARY_CURRENCY = 'eth-overview__primary-currency';
   const ETH_OVERVIEW_SECONDARY_CURRENCY = 'eth-overview__secondary-currency';
 
@@ -150,7 +162,10 @@ describe('EthOverview', () => {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          provider: { ...mockStore.metamask.provider, chainId: '0xa86a' },
+          providerConfig: {
+            ...mockStore.metamask.providerConfig,
+            chainId: '0xa86a',
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedAvalancheStore);
@@ -188,12 +203,58 @@ describe('EthOverview', () => {
       );
     });
 
+    it('should open the MMI PD Swaps URI when clicking on Swap button with a Custody account', async () => {
+      const mockedStoreWithCustodyKeyring = {
+        metamask: {
+          ...mockStore.metamask,
+          mmiConfiguration: {
+            portfolio: {
+              enabled: true,
+              url: 'https://metamask-institutional.io',
+            },
+          },
+          keyrings: [
+            {
+              type: 'Custody',
+              accounts: ['0x1'],
+            },
+          ],
+        },
+      };
+
+      const mockedStore = configureMockStore([thunk])(
+        mockedStoreWithCustodyKeyring,
+      );
+
+      const { queryByTestId } = renderWithProvider(
+        <EthOverview />,
+        mockedStore,
+      );
+
+      const swapButton = queryByTestId(ETH_OVERVIEW_SWAP);
+
+      expect(swapButton).toBeInTheDocument();
+      expect(swapButton).not.toBeDisabled();
+
+      fireEvent.click(swapButton);
+      expect(openTabSpy).toHaveBeenCalledTimes(1);
+
+      await waitFor(() =>
+        expect(openTabSpy).toHaveBeenCalledWith({
+          url: 'https://metamask-institutional.io/swap',
+        }),
+      );
+    });
+
     it('should have the Bridge button disabled if chain id is not part of supported chains', () => {
       const mockedFantomStore = {
         ...mockStore,
         metamask: {
           ...mockStore.metamask,
-          provider: { ...mockStore.metamask.provider, chainId: '0xfa' },
+          providerConfig: {
+            ...mockStore.metamask.providerConfig,
+            chainId: '0xfa',
+          },
         },
       };
       const mockedStore = configureMockStore([thunk])(mockedFantomStore);
@@ -245,7 +306,7 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -265,7 +326,7 @@ describe('EthOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -285,7 +346,7 @@ describe('EthOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -306,7 +367,9 @@ describe('EthOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_button`),
+          url: expect.stringContaining(
+            `/buy?metamaskEntry=ext_buy_sell_button`,
+          ),
         }),
       );
     });

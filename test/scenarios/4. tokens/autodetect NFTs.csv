@@ -1,0 +1,9 @@
+Step,Test steps,Preconditions,Test data,Expected result,Notes
+1,Open the extension.,,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.        ,
+3,Keep Ethereum Mainnet as the selected network.,,,,
+4,Select or import an account with NFT balance.,,e.g.: orangefox.eth,,Please request access to this test account from George Balolong (Business Operations).
+5,Switch to the NFTs list.,Make sure the autodetect NFT toggle is OFF in Settings.,,A prompt is shown to Turn on NFT detection in Settings.,Note that NFT autodetection is only available on Ethereum Mainnet. The option will not appear in settings if you have a different network selected.
+6,Proceed to the Turn on NFT detection in Settings hyperlink.,,,The Security & Privacy Menu opens to Token autodetection.,
+7,Enable Autodetect NFTs.,,,,Display NFT Media toggle will turn ON automatically at this point.
+8,Go back to the NFTs list.,,,The tokens list is updated with all imported tokens.,

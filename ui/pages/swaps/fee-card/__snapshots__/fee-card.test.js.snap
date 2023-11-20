@@ -7,6 +7,7 @@ exports[`FeeCard renders the component with initial props 1`] = `null`;
 exports[`FeeCard renders the component with initial props 2`] = `
 <div
   class="info-tooltip"
+  data-testid="info-tooltip"
 >
   <div
     class="fee-card__row-label fee-card__info-tooltip-container"

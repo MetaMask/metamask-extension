@@ -1,5 +1,4 @@
 .hw-tutorial {
-  width: 375px;
   overflow: visible;
   display: block;
   padding: 15px 30px;
@@ -8,21 +7,8 @@
 .hw-connect {
   width: 100%;
 
-  &__header {
-    &__title {
-      @include H3;
-
-      margin-top: 5px;
-      margin-bottom: 15px;
-    }
-
-    &__msg {
-      @include H6;
-
-      color: var(--color-text-muted);
-      margin-top: 10px;
-      margin-bottom: 20px;
-    }
+  &__header__title-wrapper {
+    width: 100%;
   }
 
   &__QR-subtitle {
@@ -70,8 +56,8 @@
   &__btn {
     background: var(--color-background-alternative);
     border: 1px solid var(--color-border-muted);
-    height: 100px;
-    width: 150px;
+    height: 148px;
+    width: 199px;
     flex: 1;
     display: flex;
     align-items: center;
@@ -81,13 +67,13 @@
     margin-right: 15px;
 
     &__img {
-      width: 95px;
+      width: 136px;
     }
   }
 
   &__btn.selected {
     border-color: var(--color-primary-default);
-    width: 149px;
+    width: 199px;
   }
 
   &__btn:first-child {
@@ -118,13 +104,6 @@
     }
   }
 
-  &__title {
-    @include H4;
-
-    padding-top: 10px;
-    font-weight: 400;
-  }
-
   &__unlock-title {
     @include H3;
 
@@ -134,12 +113,6 @@
   }
 
   &__msg {
-    @include H6;
-
-    color: var(--color-text-muted);
-    margin-top: 10px;
-    margin-bottom: 15px;
-
     &-link {
       @include H6;
 
@@ -270,10 +243,9 @@
 }
 
 .new-external-account-form {
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  padding: 15px 30px 0;
+  &.footer {
+    width: 520px;
+  }
 
   &.unsupported-browser {
     height: 210px;

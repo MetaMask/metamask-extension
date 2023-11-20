@@ -7,7 +7,12 @@ const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
-const { convertToHexValue, withFixtures } = require('./helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openActionMenuAndStartSendFlow,
+  logInWithBalanceValidation,
+} = require('./helpers');
 const FixtureBuilder = require('./fixture-builder');
 
 const ganacheOptions = {
@@ -33,10 +38,15 @@ async function loadNewAccount() {
       await driver.fill('#password', 'correct horse battery staple');
       await driver.press('#password', driver.Key.ENTER);
 
-      await driver.clickElement('.account-menu__icon');
+      await driver.clickElement('[data-testid="account-menu-icon"]');
+      await driver.clickElement(
+        '[data-testid="multichain-account-menu-popover-action-button"]',
+      );
       const timestampBeforeAction = new Date();
-      await driver.clickElement({ text: 'Create account', tag: 'div' });
-      await driver.fill('.new-account-create-form input', '2nd account');
+      await driver.clickElement(
+        '[data-testid="multichain-account-menu-popover-add-account"]',
+      );
+      await driver.fill('[placeholder="Account 2"]', '2nd account');
       await driver.clickElement({ text: 'Create', tag: 'button' });
       await driver.waitForSelector({
         css: '.currency-display-component__text',
@@ -56,23 +66,28 @@ async function confirmTx() {
       fixtures: new FixtureBuilder().build(),
       ganacheOptions,
     },
-    async ({ driver }) => {
+    async ({ driver, ganacheServer }) => {
       await driver.navigate();
-      await driver.fill('#password', 'correct horse battery staple');
-      await driver.press('#password', driver.Key.ENTER);
+      await logInWithBalanceValidation(driver, ganacheServer);
 
-      await driver.clickElement('[data-testid="eth-overview-send"]');
-
+      await openActionMenuAndStartSendFlow(driver);
+      if (process.env.MULTICHAIN) {
+        return;
+      }
       await driver.fill(
-        'input[placeholder="Search, public address (0x), or ENS"]',
+        'input[placeholder="Enter public address (0x) or ENS name"]',
         '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
       );
 
       const inputAmount = await driver.findElement('.unit-input__input');
       await inputAmount.fill('1');
 
+      await driver.waitForSelector({ text: 'Next', tag: 'button' });
       await driver.clickElement({ text: 'Next', tag: 'button' });
+
       const timestampBeforeAction = new Date();
+
+      await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
       await driver.clickElement('[data-testid="home__activity-tab"]');

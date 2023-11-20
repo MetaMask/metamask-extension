@@ -59,6 +59,7 @@ exports[`SearchableItemList renders the component with initial props 2`] = `
     >
       <span
         class="searchable-item-list__primary-label"
+        data-testid="searchable-item-list-primary-label"
       >
         primaryLabel
       </span>

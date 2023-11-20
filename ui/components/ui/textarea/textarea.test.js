@@ -3,9 +3,9 @@ import { render, fireEvent } from '@testing-library/react';
 import {
   BorderColor,
   BorderStyle,
-  RESIZE,
   Size,
 } from '../../../helpers/constants/design-system';
+import { RESIZE } from './textarea.constants';
 import TextArea from '.';
 
 describe('TextArea', () => {

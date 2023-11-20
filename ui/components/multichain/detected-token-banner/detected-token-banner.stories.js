@@ -1,5 +1,5 @@
 import React from 'react';
-import { DetectedTokensBanner } from './detected-token-banner';
+import { DetectedTokensBanner } from '.';
 
 export default {
   title: 'Components/Multichain/DetectedTokensBanner',

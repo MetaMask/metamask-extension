@@ -48,6 +48,7 @@ export default function SignatureRequestSIWEHeader({
       {fromAccount && (
         <AccountListItem
           account={fromAccount}
+          hideDefaultMismatchWarning
           className="signature-request-siwe-header__account-list-item"
         />
       )}

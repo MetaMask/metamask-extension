@@ -1,0 +1,190 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CustodyAccountList renders accounts 1`] = `
+<div>
+  <div
+    class="mm-box page-container"
+  >
+    <div
+      class="mm-box page-container__content mm-box--padding-4"
+    >
+      <div
+        class="mm-box custody-account-list mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+        data-testid="custody-account-list"
+      >
+        <div
+          class="mm-box custody-account-list__item mm-box--display-flex"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-flex-start"
+            data-testid="custody-account-list-item-radio-button"
+          >
+            <input
+              id="address-0"
+              name="selectedAccount"
+              type="checkbox"
+            />
+          </div>
+          <div
+            class="mm-box mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+          >
+            <label
+              class="mm-box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-medium mm-box--margin-top-2 mm-box--display-flex mm-box--align-items-center mm-box--color-text-default"
+              for="address-0"
+            >
+              <span
+                class="mm-box mm-text custody-account-list__item__name mm-text--inherit mm-box--padding-right-1 mm-box--color-text-default"
+              >
+                Test Account 1
+              </span>
+            </label>
+            <label
+              class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-2 mm-box--display-flex mm-box--align-items-center mm-box--color-text-default"
+              for="address-0"
+            >
+              <span
+                class="mm-box mm-text custody-account-list__item mm-text--body-md mm-box--display-flex mm-box--color-text-default"
+              >
+                <a
+                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  href="https://etherscan.io/address/0x1234567890123456789012345678901234567890"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span
+                    class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+                  >
+                    0x12345...67890
+                    <span
+                      class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
+                      style="mask-image: url('./images/icons/undefined.svg');"
+                    />
+                  </span>
+                </a>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-1"
+                    class=""
+                    data-original-title="[copyToClipboard]"
+                    data-tooltipped=""
+                    style="display: inline; background-color: transparent;"
+                    tabindex="0"
+                  >
+                    <button
+                      class="custody-account-list__item__clipboard"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/undefined.svg');"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </span>
+            </label>
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+            />
+          </div>
+        </div>
+        <div
+          class="mm-box custody-account-list__item mm-box--display-flex"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-flex-start"
+            data-testid="custody-account-list-item-radio-button"
+          >
+            <input
+              id="address-1"
+              name="selectedAccount"
+              type="checkbox"
+            />
+          </div>
+          <div
+            class="mm-box mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+          >
+            <label
+              class="mm-box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-medium mm-box--margin-top-2 mm-box--display-flex mm-box--align-items-center mm-box--color-text-default"
+              for="address-1"
+            >
+              <span
+                class="mm-box mm-text custody-account-list__item__name mm-text--inherit mm-box--padding-right-1 mm-box--color-text-default"
+              >
+                Test Account 2
+              </span>
+            </label>
+            <label
+              class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--margin-top-2 mm-box--margin-right-3 mm-box--margin-left-2 mm-box--display-flex mm-box--align-items-center mm-box--color-text-default"
+              for="address-1"
+            >
+              <span
+                class="mm-box mm-text custody-account-list__item mm-text--body-md mm-box--display-flex mm-box--color-text-default"
+              >
+                <a
+                  class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                  href="https://etherscan.io/address/0x0987654321098765432109876543210987654321"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <span
+                    class="mm-box mm-text mm-text--inherit mm-box--color-primary-default"
+                  >
+                    0x09876...54321
+                    <span
+                      class="mm-box mm-icon mm-icon--size-md mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-primary-default"
+                      style="mask-image: url('./images/icons/undefined.svg');"
+                    />
+                  </span>
+                </a>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-2"
+                    class=""
+                    data-original-title="[copyToClipboard]"
+                    data-tooltipped=""
+                    style="display: inline; background-color: transparent;"
+                    tabindex="0"
+                  >
+                    <button
+                      class="custody-account-list__item__clipboard"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-muted"
+                        style="mask-image: url('./images/icons/undefined.svg');"
+                      />
+                    </button>
+                  </div>
+                </div>
+              </span>
+            </label>
+            <div
+              class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer
+      class="mm-box page-container__footer mm-box--padding-4"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-4"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block custody-account-list__button mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          data-testid="custody-account-cancel-button"
+        >
+          [cancel]
+        </button>
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block custody-account-list__button mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          data-testid="custody-account-connect-button"
+          disabled=""
+        >
+          [connect]
+        </button>
+      </div>
+    </footer>
+  </div>
+</div>
+`;

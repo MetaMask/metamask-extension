@@ -1,0 +1,95 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Eth Sign Modal should match snapshot 1`] = `
+<div>
+  <div
+    class="box eth-sign-modal box--padding-4 box--display-flex box--flex-direction-column box--justify-content-flex-start"
+  >
+    <div
+      class="box box--margin-bottom-4 box--display-flex box--flex-direction-row box--justify-content-center"
+    >
+      <span
+        class="mm-box eth-sign-modal__warning-icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+        style="mask-image: url('./images/icons/danger.svg');"
+      />
+      <button
+        aria-label="Close"
+        class="mm-box mm-button-icon mm-button-icon--size-sm eth-sign-modal__close mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/close.svg');"
+        />
+      </button>
+    </div>
+    <h3
+      class="mm-box mm-text mm-text--heading-md mm-text--text-align-center mm-box--margin-bottom-6 mm-box--color-text-default"
+    >
+      Use at your own risk
+    </h3>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+    >
+      Allowing eth_sign requests can make you vulnerable to phishing attacks. Always review the URL and be careful when signing  messages that contain code.
+      <a
+        class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        href="https://support.metamask.io/hc/en-us/articles/14764161421467"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        Learn more
+      </a>
+    </p>
+    <div
+      class="mm-box mm-banner-base mm-banner-alert mm-banner-alert--severity-danger mm-box--margin-top-6 mm-box--margin-bottom-6 mm-box--padding-3 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--background-color-error-muted mm-box--rounded-sm"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-error-default"
+        style="mask-image: url('./images/icons/danger.svg');"
+      />
+      <div
+        class="mm-box mm-box--min-width-0"
+      >
+        If you've been asked to turn this setting on,
+         you might be getting scammed
+      </div>
+    </div>
+    <div
+      class="box box--gap-2 box--flex-direction-row box--align-items-flex-start box--display-flex"
+    >
+      <input
+        class="check-box eth-sign__checkbox far fa-square"
+        data-testid="eth-sign__checkbox"
+        id="eth-sign__checkbox"
+        readonly=""
+        type="checkbox"
+      />
+      <label
+        class="mm-box mm-text mm-label mm-label--html-for mm-text--body-md mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+        for="eth-sign__checkbox"
+      >
+        <span
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          I understand that I can lose all of my funds and NFTs if I enable eth_sign requests. 
+        </span>
+      </label>
+    </div>
+    <div
+      class="box box--margin-top-6 box--display-flex box--gap-4 box--flex-direction-row box--justify-content-space-between"
+    >
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+      >
+        Cancel
+      </button>
+      <button
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--disabled mm-button-base--block mm-button-primary mm-button-primary--disabled mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+        disabled=""
+      >
+        Continue
+      </button>
+    </div>
+  </div>
+</div>
+`;

@@ -8,10 +8,9 @@ import {
   TextColor,
   TextTransform,
   TextVariant,
-  Color,
 } from '../../../helpers/constants/design-system';
-import { TextDirection, ValidTag } from './text.types';
-import { Text } from '.';
+import { TextDirection } from './text.types';
+import { Text } from './text';
 
 describe('Text', () => {
   it('should render the Text without crashing', () => {
@@ -21,20 +20,20 @@ describe('Text', () => {
   it('should render the Text with correct html elements', () => {
     const { getByText, container } = render(
       <>
-        <Text as={ValidTag.P}>p</Text>
-        <Text as={ValidTag.H1}>h1</Text>
-        <Text as={ValidTag.H2}>h2</Text>
-        <Text as={ValidTag.H3}>h3</Text>
-        <Text as={ValidTag.H4}>h4</Text>
-        <Text as={ValidTag.H5}>h5</Text>
-        <Text as={ValidTag.H6}>h6</Text>
-        <Text as={ValidTag.Span}>span</Text>
-        <Text as={ValidTag.Strong}>strong</Text>
-        <Text as={ValidTag.Em}>em</Text>
-        <Text as={ValidTag.Li}>li</Text>
-        <Text as={ValidTag.Div}>div</Text>
-        <Text as={ValidTag.Dt}>dt</Text>
-        <Text as={ValidTag.Dd}>dd</Text>
+        <Text as="p">p</Text>
+        <Text as="h1">h1</Text>
+        <Text as="h2">h2</Text>
+        <Text as="h3">h3</Text>
+        <Text as="h4">h4</Text>
+        <Text as="h5">h5</Text>
+        <Text as="h6">h6</Text>
+        <Text as="span">span</Text>
+        <Text as="strong">strong</Text>
+        <Text as="em">em</Text>
+        <Text as="li">li</Text>
+        <Text as="div">div</Text>
+        <Text as="dt">dt</Text>
+        <Text as="dd">dd</Text>
       </>,
     );
     expect(container.querySelector('p')).toBeDefined();
@@ -76,10 +75,13 @@ describe('Text', () => {
         <Text variant={TextVariant.headingSm}>heading-sm</Text>
         <Text variant={TextVariant.bodyLgMedium}>body-lg-medium</Text>
         <Text variant={TextVariant.bodyMd}>body-md</Text>
+        <Text variant={TextVariant.bodyMdMedium}>body-md-medium</Text>
         <Text variant={TextVariant.bodyMdBold}>body-md-bold</Text>
         <Text variant={TextVariant.bodySm}>body-sm</Text>
+        <Text variant={TextVariant.bodySmMedium}>body-sm-medium</Text>
         <Text variant={TextVariant.bodySmBold}>body-sm-bold</Text>
         <Text variant={TextVariant.bodyXs}>body-xs</Text>
+        <Text variant={TextVariant.bodyXsMedium}>body-xs-medium</Text>
       </>,
     );
 
@@ -89,10 +91,13 @@ describe('Text', () => {
     expect(getByText('heading-sm')).toHaveClass('mm-text--heading-sm');
     expect(getByText('body-lg-medium')).toHaveClass('mm-text--body-lg-medium');
     expect(getByText('body-md')).toHaveClass('mm-text--body-md');
+    expect(getByText('body-md-medium')).toHaveClass('mm-text--body-md-medium');
     expect(getByText('body-md-bold')).toHaveClass('mm-text--body-md-bold');
     expect(getByText('body-sm')).toHaveClass('mm-text--body-sm');
+    expect(getByText('body-sm-medium')).toHaveClass('mm-text--body-sm-medium');
     expect(getByText('body-sm-bold')).toHaveClass('mm-text--body-sm-bold');
     expect(getByText('body-xs')).toHaveClass('mm-text--body-xs');
+    expect(getByText('body-xs-medium')).toHaveClass('mm-text--body-xs-medium');
     expect(container).toMatchSnapshot();
   });
 
@@ -115,7 +120,7 @@ describe('Text', () => {
         <Text color={TextColor.textDefault}>text-default</Text>
         <Text color={TextColor.textAlternative}>text-alternative</Text>
         <Text color={TextColor.textMuted}>text-muted</Text>
-        <Text color={Color.overlayInverse}>overlay-inverse</Text>
+        <Text color={TextColor.overlayInverse}>overlay-inverse</Text>
         <Text color={TextColor.primaryDefault}>primary-default</Text>
         <Text color={TextColor.primaryInverse}>primary-inverse</Text>
         <Text color={TextColor.errorDefault}>error-default</Text>
@@ -127,30 +132,34 @@ describe('Text', () => {
         <Text color={TextColor.infoInverse}>info-inverse</Text>
       </>,
     );
-    expect(getByText('text-default')).toHaveClass('box--color-text-default');
+    expect(getByText('text-default')).toHaveClass('mm-box--color-text-default');
     expect(getByText('text-alternative')).toHaveClass(
-      'box--color-text-alternative',
+      'mm-box--color-text-alternative',
     );
-    expect(getByText('text-muted')).toHaveClass('box--color-text-muted');
+    expect(getByText('text-muted')).toHaveClass('mm-box--color-text-muted');
     expect(getByText('primary-default')).toHaveClass(
-      'box--color-primary-default',
+      'mm-box--color-primary-default',
     );
     expect(getByText('primary-inverse')).toHaveClass(
-      'box--color-primary-inverse',
+      'mm-box--color-primary-inverse',
     );
-    expect(getByText('error-default')).toHaveClass('box--color-error-default');
-    expect(getByText('error-inverse')).toHaveClass('box--color-error-inverse');
+    expect(getByText('error-default')).toHaveClass(
+      'mm-box--color-error-default',
+    );
+    expect(getByText('error-inverse')).toHaveClass(
+      'mm-box--color-error-inverse',
+    );
     expect(getByText('success-default')).toHaveClass(
-      'box--color-success-default',
+      'mm-box--color-success-default',
     );
     expect(getByText('success-inverse')).toHaveClass(
-      'box--color-success-inverse',
+      'mm-box--color-success-inverse',
     );
     expect(getByText('warning-inverse')).toHaveClass(
-      'box--color-warning-inverse',
+      'mm-box--color-warning-inverse',
     );
-    expect(getByText('info-default')).toHaveClass('box--color-info-default');
-    expect(getByText('info-inverse')).toHaveClass('box--color-info-inverse');
+    expect(getByText('info-default')).toHaveClass('mm-box--color-info-default');
+    expect(getByText('info-inverse')).toHaveClass('mm-box--color-info-inverse');
   });
 
   it('should render the Text with proper font style class name', () => {

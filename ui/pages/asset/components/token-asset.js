@@ -67,9 +67,6 @@ export default function TokenAsset({ token }) {
               });
               global.platform.openTab({ url: tokenTrackerLink });
             }}
-            onViewAccountDetails={() => {
-              dispatch(showModal({ name: 'ACCOUNT_DETAILS' }));
-            }}
             onViewTokenDetails={() => {
               history.push(`${TOKEN_DETAILS}/${token.address}`);
             }}

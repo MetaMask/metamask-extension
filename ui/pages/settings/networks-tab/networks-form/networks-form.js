@@ -1,11 +1,27 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
-import validUrl from 'valid-url';
-import log from 'loglevel';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
+import log from 'loglevel';
+import PropTypes from 'prop-types';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { isWebUrl } from '../../../../../app/scripts/lib/util';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+  MetaMetricsNetworkEventSource,
+} from '../../../../../shared/constants/metametrics';
+import {
+  FEATURED_RPCS,
+  infuraProjectId,
+} from '../../../../../shared/constants/network';
+import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
+import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import {
   isPrefixedFormattedHexString,
   isSafeChainId,
@@ -14,21 +30,18 @@ import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
 import ActionableMessage from '../../../../components/ui/actionable-message';
 import Button from '../../../../components/ui/button';
 import FormField from '../../../../components/ui/form-field';
-import {
-  setSelectedNetworkConfigurationId,
-  upsertNetworkConfiguration,
-  editAndSetNetworkConfiguration,
-  showModal,
-  setNewNetworkAdded,
-} from '../../../../store/actions';
-import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { getNetworkLabelKey } from '../../../../helpers/utils/i18n-helper';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { usePrevious } from '../../../../hooks/usePrevious';
-import { MetaMetricsNetworkEventSource } from '../../../../../shared/constants/metametrics';
+import { useSafeChainsListValidationSelector } from '../../../../selectors';
 import {
-  infuraProjectId,
-  FEATURED_RPCS,
-} from '../../../../../shared/constants/network';
-import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
+  editAndSetNetworkConfiguration,
+  setNewNetworkAdded,
+  setSelectedNetworkConfigurationId,
+  showModal,
+  upsertNetworkConfiguration,
+} from '../../../../store/actions';
 
 /**
  * Attempts to convert the given chainId to a decimal string, for display
@@ -62,11 +75,6 @@ const prefixChainId = (chainId) => {
   return prefixedChainId;
 };
 
-const isValidWhenAppended = (url) => {
-  const appendedRpc = `http://${url}`;
-  return validUrl.isWebUri(appendedRpc) && !url.match(/^https?:\/\/$/u);
-};
-
 const NetworksForm = ({
   addNewNetwork,
   restrictHeight,
@@ -79,7 +87,8 @@ const NetworksForm = ({
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { label, labelKey, viewOnly, rpcPrefs } = selectedNetwork;
-  const selectedNetworkName = label || (labelKey && t(labelKey));
+  const selectedNetworkName =
+    label || (labelKey && t(getNetworkLabelKey(labelKey)));
   const [networkName, setNetworkName] = useState(selectedNetworkName || '');
   const [rpcUrl, setRpcUrl] = useState(selectedNetwork?.rpcUrl || '');
   const [chainId, setChainId] = useState(selectedNetwork?.chainId || '');
@@ -95,6 +104,12 @@ const NetworksForm = ({
   );
   const [isEditing, setIsEditing] = useState(Boolean(addNewNetwork));
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
+
+  const trackEvent = useContext(MetaMetricsContext);
+
+  const useSafeChainsListValidation = useSelector(
+    useSafeChainsListValidationSelector,
+  );
 
   const resetForm = useCallback(() => {
     setNetworkName(selectedNetworkName || '');
@@ -132,6 +147,7 @@ const NetworksForm = ({
   const prevRpcUrl = useRef();
   const prevTicker = useRef();
   const prevBlockExplorerUrl = useRef();
+  // This effect is used to reset the form when the user switches between networks
   useEffect(() => {
     if (!prevAddNewNetwork.current && addNewNetwork) {
       setNetworkName('');
@@ -141,16 +157,33 @@ const NetworksForm = ({
       setBlockExplorerUrl('');
       setErrors({});
       setIsSubmitting(false);
-    } else if (
-      (prevNetworkName.current !== selectedNetworkName ||
-        prevRpcUrl.current !== selectedNetwork.rpcUrl ||
-        prevChainId.current !== selectedNetwork.chainId ||
-        prevTicker.current !== selectedNetwork.ticker ||
-        prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl) &&
-      (!isEditing || !isEqual(selectedNetwork, previousNetwork))
-    ) {
-      resetForm(selectedNetwork);
+    } else {
+      const networkNameChanged =
+        prevNetworkName.current !== selectedNetworkName;
+      const rpcUrlChanged = prevRpcUrl.current !== selectedNetwork.rpcUrl;
+      const chainIdChanged = prevChainId.current !== selectedNetwork.chainId;
+      const tickerChanged = prevTicker.current !== selectedNetwork.ticker;
+      const blockExplorerUrlChanged =
+        prevBlockExplorerUrl.current !== selectedNetwork.blockExplorerUrl;
+
+      if (
+        (networkNameChanged ||
+          rpcUrlChanged ||
+          chainIdChanged ||
+          tickerChanged ||
+          blockExplorerUrlChanged) &&
+        (!isEditing || !isEqual(selectedNetwork, previousNetwork))
+      ) {
+        resetForm(selectedNetwork);
+      }
     }
+
+    prevAddNewNetwork.current = addNewNetwork;
+    prevNetworkName.current = selectedNetworkName;
+    prevRpcUrl.current = selectedNetwork.rpcUrl;
+    prevChainId.current = selectedNetwork.chainId;
+    prevTicker.current = selectedNetwork.ticker;
+    prevBlockExplorerUrl.current = selectedNetwork.blockExplorerUrl;
   }, [
     selectedNetwork,
     selectedNetworkName,
@@ -193,23 +226,20 @@ const NetworksForm = ({
 
   const validateBlockExplorerURL = useCallback(
     (url) => {
-      if (!validUrl.isWebUri(url) && url !== '') {
-        let errorKey;
-        let errorMessage;
-
-        if (isValidWhenAppended(url)) {
-          errorKey = 'urlErrorMsg';
-          errorMessage = t('urlErrorMsg');
-        } else {
-          errorKey = 'invalidBlockExplorerURL';
-          errorMessage = t('invalidBlockExplorerURL');
+      if (url?.length > 0 && !isWebUrl(url)) {
+        if (isWebUrl(`https://${url}`)) {
+          return {
+            key: 'urlErrorMsg',
+            msg: t('urlErrorMsg'),
+          };
         }
 
         return {
-          key: errorKey,
-          msg: errorMessage,
+          key: 'invalidBlockExplorerURL',
+          msg: t('invalidBlockExplorerURL'),
         };
       }
+
       return null;
     },
     [t],
@@ -340,19 +370,23 @@ const NetworksForm = ({
     async (formChainId, formTickerSymbol) => {
       let warningKey;
       let warningMessage;
-      let safeChainsList;
       let providerError;
 
       if (!formChainId || !formTickerSymbol) {
         return null;
       }
 
-      try {
-        safeChainsList =
-          (await fetchWithCache('https://chainid.network/chains.json')) || [];
-      } catch (err) {
-        log.warn('Failed to fetch the chainList from chainid.network', err);
-        providerError = err;
+      let safeChainsList = [];
+      if (useSafeChainsListValidation) {
+        try {
+          safeChainsList = await fetchWithCache({
+            url: 'https://chainid.network/chains.json',
+            functionName: 'getSafeChainsList',
+          });
+        } catch (err) {
+          log.warn('Failed to fetch the chainList from chainid.network', err);
+          providerError = err;
+        }
       }
 
       if (providerError) {
@@ -371,7 +405,6 @@ const NetworksForm = ({
           if (returnedTickerSymbol !== formTickerSymbol) {
             warningKey = 'chainListReturnedDifferentTickerSymbol';
             warningMessage = t('chainListReturnedDifferentTickerSymbol', [
-              formChainId,
               returnedTickerSymbol,
             ]);
           }
@@ -392,7 +425,6 @@ const NetworksForm = ({
 
   const validateRPCUrl = useCallback(
     (url) => {
-      const isValidUrl = validUrl.isWebUri(url);
       const [
         {
           rpcUrl: matchingRPCUrl = null,
@@ -402,20 +434,16 @@ const NetworksForm = ({
       ] = networksToRender.filter((e) => e.rpcUrl === url);
       const { rpcUrl: selectedNetworkRpcUrl } = selectedNetwork;
 
-      if (!isValidUrl && url !== '') {
-        let errorKey;
-        let errorMessage;
-        if (isValidWhenAppended(url)) {
-          errorKey = 'urlErrorMsg';
-          errorMessage = t('urlErrorMsg');
-        } else {
-          errorKey = 'invalidRPC';
-          errorMessage = t('invalidRPC');
+      if (url?.length > 0 && !isWebUrl(url)) {
+        if (isWebUrl(`https://${url}`)) {
+          return {
+            key: 'urlErrorMsg',
+            msg: t('urlErrorMsg'),
+          };
         }
-
         return {
-          key: errorKey,
-          msg: errorMessage,
+          key: 'invalidRPC',
+          msg: t('invalidRPC'),
         };
       } else if (matchingRPCUrl && matchingRPCUrl !== selectedNetworkRpcUrl) {
         return {
@@ -543,6 +571,19 @@ const NetworksForm = ({
           }),
         );
 
+        trackEvent({
+          event: MetaMetricsEventName.CustomNetworkAdded,
+          category: MetaMetricsEventCategory.Network,
+          properties: {
+            block_explorer_url: blockExplorerUrl,
+            chain_id: prefixedChainId,
+            network_name: networkName,
+            source_connection_method:
+              MetaMetricsNetworkEventSource.CustomNetworkForm,
+            token_symbol: ticker,
+          },
+        });
+
         submitCallback?.();
       }
     } catch (error) {
@@ -649,6 +690,12 @@ const NetworksForm = ({
         />
         <FormField
           warning={warnings.ticker?.msg || ''}
+          warningProps={{
+            'data-testid': 'network-form-ticker-warning',
+            style: {
+              color: 'var(--color-warning-default)',
+            },
+          }}
           onChange={(value) => {
             setIsEditing(true);
             setTicker(value);

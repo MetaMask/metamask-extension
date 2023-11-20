@@ -1,7 +1,10 @@
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/rpc-methods';
+import { ApprovalType } from '@metamask/controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IN
 import { CaveatTypes } from '../../shared/constants/permissions';
+import { getApprovalRequestsByType } from './approvals';
+import { createDeepEqualSelector } from './util';
 import {
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
@@ -13,7 +16,29 @@ import {
 // selectors
 
 /**
- * Get the permission subjects object.
+ * Deep equal selector to get the permission subjects object.
+ *
+ * @param {object} state - The current state.
+ * @returns {object} The permissions subjects object.
+ */
+export const getPermissionSubjectsDeepEqual = createDeepEqualSelector(
+  (state) => state.metamask.subjects || {},
+  (subjects) => subjects,
+);
+
+/**
+ * Deep equal selector to get the subject metadata object.
+ *
+ * @param {object} state - The current state.
+ * @returns {object} The subject metadata object.
+ */
+export const getSubjectMetadataDeepEqual = createDeepEqualSelector(
+  (state) => state.metamask.subjectMetadata,
+  (metadata) => metadata,
+);
+
+/**
+ * Selector to get the permission subjects object.
  *
  * @param {object} state - The current state.
  * @returns {object} The permissions subjects object.
@@ -139,7 +164,7 @@ export function getSubjectsWithPermission(state, permissionName) {
   return connectedSubjects;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function getSubjectsWithSnapPermission(state, snapId) {
   const subjects = getPermissionSubjects(state);
 
@@ -323,7 +348,7 @@ export function getLastConnectedInfo(state) {
   }, {});
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function getSnapInstallOrUpdateRequests(state) {
   return Object.values(state.metamask.pendingApprovals)
     .filter(
@@ -341,9 +366,10 @@ export function getFirstSnapInstallOrUpdateRequest(state) {
 ///: END:ONLY_INCLUDE_IN
 
 export function getPermissionsRequests(state) {
-  return Object.values(state.metamask.pendingApprovals)
-    .filter(({ type }) => type === 'wallet_requestPermissions')
-    .map(({ requestData }) => requestData);
+  return getApprovalRequestsByType(
+    state,
+    ApprovalType.WalletRequestPermissions,
+  )?.map(({ requestData }) => requestData);
 }
 
 export function getFirstPermissionRequest(state) {

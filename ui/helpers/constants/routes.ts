@@ -14,39 +14,49 @@ const NETWORKS_FORM_ROUTE = '/settings/networks/form';
 const ADD_NETWORK_ROUTE = '/settings/networks/add-network';
 const ADD_POPULAR_CUSTOM_NETWORK =
   '/settings/networks/add-popular-custom-network';
-const SNAPS_LIST_ROUTE = '/settings/snaps-list';
-const SNAPS_VIEW_ROUTE = '/settings/snaps-view';
 const CONTACT_LIST_ROUTE = '/settings/contact-list';
 const CONTACT_EDIT_ROUTE = '/settings/contact-list/edit-contact';
 const CONTACT_ADD_ROUTE = '/settings/contact-list/add-contact';
 const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
-const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
-///: END:ONLY_INCLUDE_IN
 const REVEAL_SEED_ROUTE = '/seed';
 const RESTORE_VAULT_ROUTE = '/restore-vault';
 const IMPORT_TOKEN_ROUTE = '/import-token';
 const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
-const IMPORT_ACCOUNT_ROUTE = '/new-account/import';
+const CONFIRM_ADD_SUGGESTED_NFT_ROUTE = '/confirm-add-suggested-nft';
 const CONNECT_HARDWARE_ROUTE = '/new-account/connect';
-///: BEGIN:ONLY_INCLUDE_IN(mmi)
+///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+const CUSTODY_ACCOUNT_ROUTE = '/new-account/custody';
 const INSTITUTIONAL_FEATURES_DONE_ROUTE = '/institutional-features/done';
+const CUSTODY_ACCOUNT_DONE_ROUTE = '/new-account/custody/done';
+const CONFIRM_ADD_CUSTODIAN_TOKEN = '/confirm-add-custodian-token';
+const INTERACTIVE_REPLACEMENT_TOKEN_PAGE =
+  '/interactive-replacement-token-page';
 ///: END:ONLY_INCLUDE_IN
 const SEND_ROUTE = '/send';
+const CONNECTIONS = '/connections';
+const ALL_CONNECTIONS = '/all-connections';
 const TOKEN_DETAILS = '/token-details';
 const CONNECT_ROUTE = '/connect';
 const CONNECT_CONFIRM_PERMISSIONS_ROUTE = '/confirm-permissions';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+const CONNECT_SNAPS_CONNECT_ROUTE = '/snaps-connect';
 const CONNECT_SNAP_INSTALL_ROUTE = '/snap-install';
 const CONNECT_SNAP_UPDATE_ROUTE = '/snap-update';
 const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 const NOTIFICATIONS_ROUTE = '/notifications';
+const SNAPS_ROUTE = '/snaps';
+const SNAPS_VIEW_ROUTE = '/snaps/view';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+const ADD_SNAP_ACCOUNT_ROUTE = '/add-snap-account';
 ///: END:ONLY_INCLUDE_IN
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 const SWAPS_ROUTE = '/swaps';
+const PREPARE_SWAP_ROUTE = '/swaps/prepare-swap-page';
+const SWAPS_NOTIFICATION_ROUTE = '/swaps/notification-page';
 const BUILD_QUOTE_ROUTE = '/swaps/build-quote';
 const VIEW_QUOTE_ROUTE = '/swaps/view-quote';
 const LOADING_QUOTES_ROUTE = '/swaps/loading-quotes';
@@ -55,13 +65,13 @@ const SMART_TRANSACTION_STATUS_ROUTE = '/swaps/smart-transaction-status';
 const AWAITING_SWAP_ROUTE = '/swaps/awaiting-swap';
 const SWAPS_ERROR_ROUTE = '/swaps/swaps-error';
 const SWAPS_MAINTENANCE_ROUTE = '/swaps/maintenance';
-const ADD_NFT_ROUTE = '/add-nft';
 
 const ONBOARDING_ROUTE = '/onboarding';
 const ONBOARDING_REVIEW_SRP_ROUTE = '/onboarding/review-recovery-phrase';
 const ONBOARDING_CONFIRM_SRP_ROUTE = '/onboarding/confirm-recovery-phrase';
 const ONBOARDING_CREATE_PASSWORD_ROUTE = '/onboarding/create-password';
 const ONBOARDING_COMPLETION_ROUTE = '/onboarding/completion';
+const MMI_ONBOARDING_COMPLETION_ROUTE = '/onboarding/account-completion';
 const ONBOARDING_UNLOCK_ROUTE = '/onboarding/unlock';
 const ONBOARDING_HELP_US_IMPROVE_ROUTE = '/onboarding/help-us-improve';
 const ONBOARDING_IMPORT_WITH_SRP_ROUTE =
@@ -72,9 +82,11 @@ const ONBOARDING_PIN_EXTENSION_ROUTE = '/onboarding/pin-extension';
 const ONBOARDING_WELCOME_ROUTE = '/onboarding/welcome';
 const ONBOARDING_METAMETRICS = '/onboarding/metametrics';
 
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 const INITIALIZE_EXPERIMENTAL_AREA = '/initialize/experimental-area';
 const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 const DESKTOP_ERROR_ROUTE = '/desktop/error';
 const DESKTOP_PAIRING_ROUTE = '/desktop-pairing';
 ///: END:ONLY_INCLUDE_IN
@@ -122,12 +134,22 @@ const PATH_NAME_MAP = {
   [CONFIRM_IMPORT_TOKEN_ROUTE]: 'Confirm Import Token Page',
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
-  [IMPORT_ACCOUNT_ROUTE]: 'Import Account Page',
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  [ADD_SNAP_ACCOUNT_ROUTE]: 'Add Snap Account List Page',
+  [`${ADD_SNAP_ACCOUNT_ROUTE}/:snapId`]: `Add Snap Account Page`,
+  ///: END:ONLY_INCLUDE_IN
+  [CONFIRM_ADD_SUGGESTED_NFT_ROUTE]: 'Confirm Add Suggested NFT Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-  [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional features done',
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
+  [CUSTODY_ACCOUNT_ROUTE]: 'Connect Custody',
+  [CUSTODY_ACCOUNT_DONE_ROUTE]: 'Connect Custody Account done',
+  [CONFIRM_ADD_CUSTODIAN_TOKEN]: 'Confirm Add Custodian Token',
+  [INTERACTIVE_REPLACEMENT_TOKEN_PAGE]: 'Interactive replacement token page',
   ///: END:ONLY_INCLUDE_IN
   [SEND_ROUTE]: 'Send Page',
+  [CONNECTIONS]: 'Connections',
+  [ALL_CONNECTIONS]: 'All Connections',
   [`${TOKEN_DETAILS}/:address`]: 'Token Details Page',
   [`${CONNECT_ROUTE}/:id`]: 'Connect To Site Confirmation Page',
   [`${CONNECT_ROUTE}/:id${CONNECT_CONFIRM_PERMISSIONS_ROUTE}`]:
@@ -161,6 +183,8 @@ const PATH_NAME_MAP = {
   [`${CONFIRM_TRANSACTION_ROUTE}/:id${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`]:
     'Encryption Public Key Request Page',
   [BUILD_QUOTE_ROUTE]: 'Swaps Build Quote Page',
+  [PREPARE_SWAP_ROUTE]: 'Prepare Swap Page',
+  [SWAPS_NOTIFICATION_ROUTE]: 'Swaps Notification Page',
   [VIEW_QUOTE_ROUTE]: 'Swaps View Quotes Page',
   [LOADING_QUOTES_ROUTE]: 'Swaps Loading Quotes Page',
   [AWAITING_SWAP_ROUTE]: 'Swaps Awaiting Swaps Page',
@@ -180,12 +204,11 @@ export {
   CONFIRM_IMPORT_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
   NEW_ACCOUNT_ROUTE,
-  IMPORT_ACCOUNT_ROUTE,
+  CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
-  INSTITUTIONAL_FEATURES_DONE_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
   SEND_ROUTE,
+  CONNECTIONS,
+  ALL_CONNECTIONS,
   TOKEN_DETAILS,
   CONFIRM_TRANSACTION_ROUTE,
   CONFIRM_SEND_ETHER_PATH,
@@ -205,14 +228,16 @@ export {
   SECURITY_ROUTE,
   GENERAL_ROUTE,
   ABOUT_US_ROUTE,
-  SNAPS_LIST_ROUTE,
-  SNAPS_VIEW_ROUTE,
   CONTACT_LIST_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_ADD_ROUTE,
   CONTACT_VIEW_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(mmi)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  CUSTODY_ACCOUNT_DONE_ROUTE,
   CUSTODY_ACCOUNT_ROUTE,
+  INSTITUTIONAL_FEATURES_DONE_ROUTE,
+  CONFIRM_ADD_CUSTODIAN_TOKEN,
+  INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
   ///: END:ONLY_INCLUDE_IN
   NETWORKS_ROUTE,
   NETWORKS_FORM_ROUTE,
@@ -220,16 +245,24 @@ export {
   ADD_POPULAR_CUSTOM_NETWORK,
   CONNECT_ROUTE,
   CONNECT_CONFIRM_PERMISSIONS_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  CONNECT_SNAPS_CONNECT_ROUTE,
   CONNECT_SNAP_INSTALL_ROUTE,
   CONNECT_SNAP_UPDATE_ROUTE,
   CONNECT_SNAP_RESULT_ROUTE,
   NOTIFICATIONS_ROUTE,
+  SNAPS_ROUTE,
+  SNAPS_VIEW_ROUTE,
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IN
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,
   PATH_NAME_MAP,
   SWAPS_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  SWAPS_NOTIFICATION_ROUTE,
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   LOADING_QUOTES_ROUTE,
@@ -238,7 +271,6 @@ export {
   SWAPS_ERROR_ROUTE,
   SWAPS_MAINTENANCE_ROUTE,
   SMART_TRANSACTION_STATUS_ROUTE,
-  ADD_NFT_ROUTE,
   ONBOARDING_ROUTE,
   ONBOARDING_HELP_US_IMPROVE_ROUTE,
   ONBOARDING_CREATE_PASSWORD_ROUTE,
@@ -248,11 +280,12 @@ export {
   ONBOARDING_CONFIRM_SRP_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
+  MMI_ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_UNLOCK_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_WELCOME_ROUTE,
   ONBOARDING_METAMETRICS,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
   INITIALIZE_EXPERIMENTAL_AREA,
   ONBOARDING_EXPERIMENTAL_AREA,
   DESKTOP_ERROR_ROUTE,

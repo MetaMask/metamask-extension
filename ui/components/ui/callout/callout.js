@@ -2,10 +2,18 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import InfoIconInverted from '../icon/info-icon-inverted.component';
-import { SEVERITIES, Color } from '../../../helpers/constants/design-system';
+import { Severity, TextColor } from '../../../helpers/constants/design-system';
 import { MILLISECOND } from '../../../../shared/constants/time';
-import Typography from '../typography';
-import { ButtonIcon, IconName, IconSize } from '../../component-library';
+import { ButtonIcon, IconName, IconSize, Text } from '../../component-library';
+
+/**
+ * @deprecated `<Callout />` has been deprecated in favor of the `<BannerAlert />`
+ * component in ./ui/components/component-library/banner-alert/banner-alert.js.
+ * See storybook documentation for BannerAlert here:
+ * {@see {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-banneralert--default-story#banneralert}}
+ *
+ * Help to replace `Callout` with `BannerAlert` by submitting a PR
+ */
 
 export default function Callout({
   severity,
@@ -38,9 +46,9 @@ export default function Callout({
   return (
     <div className={calloutClassName}>
       <InfoIconInverted severity={severity} />
-      <Typography color={Color.textDefault} className="callout__content">
+      <Text color={TextColor.textDefault} className="callout__content">
         {children}
-      </Typography>
+      </Text>
       {dismiss && (
         <ButtonIcon
           iconName={IconName.Close}
@@ -61,7 +69,7 @@ export default function Callout({
 }
 
 Callout.propTypes = {
-  severity: PropTypes.oneOf(Object.values(SEVERITIES)).isRequired,
+  severity: PropTypes.oneOf(Object.values(Severity)).isRequired,
   children: PropTypes.node.isRequired,
   dismiss: PropTypes.func,
   isFirst: PropTypes.bool,

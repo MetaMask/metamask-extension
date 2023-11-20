@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import NetworksForm from '../networks-form';
 import NetworksList from '../networks-list';
-import { getProvider } from '../../../../selectors';
+import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 
 import {
   DEFAULT_ROUTE,
@@ -18,7 +18,7 @@ const NetworksTabContent = ({
   selectedNetwork,
   shouldRenderNetworkForm,
 }) => {
-  const provider = useSelector(getProvider);
+  const providerConfig = useSelector(getProviderConfig);
   const history = useHistory();
 
   return (
@@ -31,7 +31,7 @@ const NetworksTabContent = ({
       />
       {shouldRenderNetworkForm ? (
         <NetworksForm
-          isCurrentRpcTarget={provider.rpcUrl === selectedNetwork.rpcUrl}
+          isCurrentRpcTarget={providerConfig.rpcUrl === selectedNetwork.rpcUrl}
           networksToRender={networksToRender}
           selectedNetwork={selectedNetwork}
           submitCallback={() => history.push(DEFAULT_ROUTE)}

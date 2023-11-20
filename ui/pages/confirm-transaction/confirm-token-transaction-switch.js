@@ -46,6 +46,7 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
     fiatTransactionTotal,
     hexTransactionTotal,
     hexMaximumTransactionFee,
+    hexMinimumTransactionFee,
   } = useSelector((state) => transactionFeeSelector(state, transaction));
 
   return (
@@ -70,6 +71,7 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
             ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
             hexTransactionTotal={hexTransactionTotal}
+            hexMinimumTransactionFee={hexMinimumTransactionFee}
           />
         )}
       />
@@ -94,6 +96,7 @@ export default function ConfirmTokenTransactionSwitch({ transaction }) {
             ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
             hexTransactionTotal={hexTransactionTotal}
+            hexMinimumTransactionFee={hexMinimumTransactionFee}
           />
         )}
       />

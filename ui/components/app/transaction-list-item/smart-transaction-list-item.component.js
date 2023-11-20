@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import ListItem from '../../ui/list-item';
+import { useDispatch, useSelector } from 'react-redux';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -15,8 +14,20 @@ import {
 
 import CancelButton from '../cancel-button';
 import { cancelSwapsSmartTransaction } from '../../../ducks/swaps/swaps';
-import SiteOrigin from '../../ui/site-origin';
 import TransactionListItemDetails from '../transaction-list-item-details';
+import { ActivityListItem } from '../../multichain';
+import {
+  AvatarNetwork,
+  AvatarNetworkSize,
+  BadgeWrapper,
+  BadgeWrapperAnchorElementShape,
+  Box,
+} from '../../component-library';
+import {
+  BackgroundColor,
+  Display,
+} from '../../../helpers/constants/design-system';
+import { getCurrentNetwork } from '../../../selectors';
 
 export default function SmartTransactionListItem({
   smartTransaction,
@@ -29,6 +40,8 @@ export default function SmartTransactionListItem({
   const [showDetails, setShowDetails] = useState(false);
   const { primaryCurrency, recipientAddress, isPending, senderAddress } =
     useTransactionDisplayData(transactionGroup);
+  const currentChain = useSelector(getCurrentNetwork);
+
   const { sourceTokenSymbol, destinationTokenSymbol, time, status } =
     smartTransaction;
   const category = TransactionGroupCategory.swap;
@@ -36,8 +49,7 @@ export default function SmartTransactionListItem({
     sourceTokenSymbol,
     destinationTokenSymbol,
   ]);
-  const subtitle = 'metamask';
-  const date = formatDateWithYearContext(time);
+  const date = formatDateWithYearContext(time, 'MMM d, y', 'MMM d');
   let displayedStatusKey;
   if (status === SmartTransactionStatus.pending) {
     displayedStatusKey = TransactionGroupStatus.pending;
@@ -52,32 +64,45 @@ export default function SmartTransactionListItem({
   }, []);
   return (
     <>
-      <ListItem
+      <ActivityListItem
         className={className}
         title={title}
         onClick={toggleShowDetails}
         icon={
-          <TransactionIcon category={category} status={displayedStatusKey} />
+          <BadgeWrapper
+            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
+            positionObj={{ top: -4, right: -4 }}
+            display={Display.Block}
+            badge={
+              <AvatarNetwork
+                className="activity-tx__network-badge"
+                data-testid="activity-tx-network-badge"
+                size={AvatarNetworkSize.Xs}
+                name={currentChain?.nickname}
+                src={currentChain?.rpcPrefs?.imageUrl}
+                borderWidth={1}
+                borderColor={BackgroundColor.backgroundDefault}
+              />
+            }
+          >
+            <TransactionIcon category={category} status={displayedStatusKey} />
+          </BadgeWrapper>
         }
         subtitle={
-          <h3>
-            <TransactionStatusLabel
-              isPending
-              isEarliestNonce={isEarliestNonce}
-              date={date}
-              status={displayedStatusKey}
-            />
-            <SiteOrigin
-              className="transaction-list-item__origin"
-              siteOrigin={subtitle}
-              title={subtitle}
-            />
-          </h3>
+          <TransactionStatusLabel
+            isPending
+            isEarliestNonce={isEarliestNonce}
+            date={date}
+            status={displayedStatusKey}
+          />
         }
       >
         {displayedStatusKey === TransactionGroupStatus.pending &&
           showCancelSwapLink && (
-            <div className="transaction-list-item__pending-actions">
+            <Box
+              paddingTop={4}
+              className="transaction-list-item__pending-actions"
+            >
               <CancelButton
                 transaction={smartTransaction.uuid}
                 cancelTransaction={(e) => {
@@ -86,9 +111,9 @@ export default function SmartTransactionListItem({
                   setCancelSwapLinkClicked(true);
                 }}
               />
-            </div>
+            </Box>
           )}
-      </ListItem>
+      </ActivityListItem>
       {showDetails && (
         <TransactionListItemDetails
           title={title}

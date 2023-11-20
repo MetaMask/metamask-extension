@@ -5,7 +5,7 @@ import NetworksTab from '.';
 
 const mockState = {
   metamask: {
-    provider: {
+    providerConfig: {
       chainId: '0x539',
       nickname: '',
       rpcPrefs: {},

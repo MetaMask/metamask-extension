@@ -129,13 +129,13 @@ describe('Icon', () => {
       </>,
     );
     expect(getByTestId('icon-color-default')).toHaveClass(
-      'box--color-icon-default',
+      'mm-box--color-icon-default',
     );
     expect(getByTestId('icon-color-alternative')).toHaveClass(
-      'box--color-icon-alternative',
+      'mm-box--color-icon-alternative',
     );
     expect(getByTestId('icon-color-muted')).toHaveClass(
-      'box--color-icon-muted',
+      'mm-box--color-icon-muted',
     );
   });
 });

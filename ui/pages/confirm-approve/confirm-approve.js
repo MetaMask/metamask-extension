@@ -28,6 +28,7 @@ import {
   getIsMultiLayerFeeNetwork,
   checkNetworkAndAccountSupports1559,
   getUseCurrencyRateCheck,
+  getPreferences,
 } from '../../selectors';
 import { useApproveTransaction } from '../../hooks/useApproveTransaction';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
@@ -62,6 +63,7 @@ export default function ConfirmApprove({
   ethTransactionTotal,
   fiatTransactionTotal,
   hexTransactionTotal,
+  hexMinimumTransactionFee,
   isSetApproveForAll,
 }) {
   const dispatch = useDispatch();
@@ -83,6 +85,7 @@ export default function ConfirmApprove({
     isAddressLedgerByFromAddress(userAddress),
   );
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const [customPermissionAmount, setCustomPermissionAmount] = useState('');
   const [submitWarning, setSubmitWarning] = useState('');
   const [isContract, setIsContract] = useState(false);
@@ -173,7 +176,14 @@ export default function ConfirmApprove({
   if (assetStandard === undefined) {
     return <ConfirmContractInteraction />;
   }
-  if (assetStandard === TokenStandard.ERC20) {
+
+  let tokenAllowanceImprovements = true;
+
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  tokenAllowanceImprovements = false;
+  ///: END:ONLY_INCLUDE_IN
+
+  if (tokenAllowanceImprovements && assetStandard === TokenStandard.ERC20) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
@@ -187,6 +197,7 @@ export default function ConfirmApprove({
             ethTransactionTotal={ethTransactionTotal}
             fiatTransactionTotal={fiatTransactionTotal}
             hexTransactionTotal={hexTransactionTotal}
+            hexMinimumTransactionFee={hexMinimumTransactionFee}
             txData={transaction}
             isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
             supportsEIP1559={supportsEIP1559}
@@ -201,6 +212,7 @@ export default function ConfirmApprove({
             tokenSymbol={tokenSymbol}
             decimals={decimals}
             fromAddressIsLedger={fromAddressIsLedger}
+            warning={submitWarning}
           />
           {showCustomizeGasPopover && !supportsEIP1559 && (
             <EditGasPopover
@@ -219,6 +231,7 @@ export default function ConfirmApprove({
       </GasFeeContextProvider>
     );
   }
+
   return (
     <GasFeeContextProvider transaction={transaction}>
       <ConfirmTransactionBase
@@ -253,6 +266,7 @@ export default function ConfirmApprove({
               ethTransactionTotal={ethTransactionTotal}
               fiatTransactionTotal={fiatTransactionTotal}
               hexTransactionTotal={hexTransactionTotal}
+              hexMinimumTransactionFee={hexMinimumTransactionFee}
               useNonceField={useNonceField}
               nextNonce={nextNonce}
               customNonceValue={customNonceValue}
@@ -292,6 +306,9 @@ export default function ConfirmApprove({
               isMultiLayerFeeNetwork={isMultiLayerFeeNetwork}
               supportsEIP1559={supportsEIP1559}
               useCurrencyRateCheck={useCurrencyRateCheck}
+              useNativeCurrencyAsPrimaryCurrency={
+                useNativeCurrencyAsPrimaryCurrency
+              }
             />
             {showCustomizeGasPopover && !supportsEIP1559 && (
               <EditGasPopover
@@ -311,6 +328,7 @@ export default function ConfirmApprove({
         hideSenderToRecipient
         customTxParamsData={customData}
         assetStandard={assetStandard}
+        displayAccountBalanceHeader
       />
     </GasFeeContextProvider>
   );
@@ -339,5 +357,6 @@ ConfirmApprove.propTypes = {
   ethTransactionTotal: PropTypes.string,
   fiatTransactionTotal: PropTypes.string,
   hexTransactionTotal: PropTypes.string,
+  hexMinimumTransactionFee: PropTypes.string,
   isSetApproveForAll: PropTypes.bool,
 };

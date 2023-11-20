@@ -2,6 +2,12 @@
  * @file The entry point for the web extension singleton process.
  */
 
+// Disabled to allow setting up initial state hooks first
+
+// This import sets up global functions required for Sentry to function.
+// It must be run first in case an error is thrown later during initialization.
+import './lib/setup-initial-state-hooks';
+
 import EventEmitter from 'events';
 import endOfStream from 'end-of-stream';
 import pump from 'pump';
@@ -9,6 +15,10 @@ import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { storeAsStream } from '@metamask/obs-store';
+import { isObject } from '@metamask/utils';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { ApprovalType } from '@metamask/controller-utils';
+///: END:ONLY_INCLUDE_IN
 import PortStream from 'extension-port-stream';
 
 import { ethErrors } from 'eth-rpc-errors';
@@ -18,8 +28,8 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  MESSAGE_TYPE,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IN
 } from '../../shared/constants/app';
 import {
@@ -37,7 +47,7 @@ import Migrator from './lib/migrator';
 import ExtensionPlatform from './platforms/extension';
 import LocalStore from './lib/local-store';
 import ReadOnlyNetworkStore from './lib/network-store';
-import { SENTRY_STATE } from './lib/setupSentry';
+import { SENTRY_BACKGROUND_STATE } from './lib/setupSentry';
 
 import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
@@ -55,7 +65,7 @@ import { deferredPromise, getPlatform } from './lib/util';
 /* eslint-enable import/first */
 
 /* eslint-disable import/order */
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 import {
   CONNECTION_TYPE_EXTERNAL,
   CONNECTION_TYPE_INTERNAL,
@@ -63,6 +73,12 @@ import {
 import DesktopManager from '@metamask/desktop/dist/desktop-manager';
 ///: END:ONLY_INCLUDE_IN
 /* eslint-enable import/order */
+
+// Setup global hook for improved Sentry state snapshots during initialization
+const inTest = process.env.IN_TEST;
+const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
+global.stateHooks.getMostRecentPersistedState = () =>
+  localStore.mostRecentRetrievedState;
 
 const { sentry } = global;
 const firstTimeState = { ...rawFirstTimeState };
@@ -75,7 +91,7 @@ const metamaskInternalProcessHash = {
 
 const metamaskBlockedPorts = ['trezor-connect'];
 
-log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info');
+log.setLevel(process.env.METAMASK_DEBUG ? 'debug' : 'info', false);
 
 const platform = new ExtensionPlatform();
 const notificationManager = new NotificationManager();
@@ -86,10 +102,6 @@ let uiIsTriggering = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
-
-// state persistence
-const inTest = process.env.IN_TEST;
-const localStore = inTest ? new ReadOnlyNetworkStore() : new LocalStore();
 let versionedData;
 
 if (inTest || process.env.METAMASK_DEBUG) {
@@ -102,10 +114,7 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-const ACK_KEEP_ALIVE_MESSAGE = 'ACK_KEEP_ALIVE_MESSAGE';
-const WORKER_KEEP_ALIVE_MESSAGE = 'WORKER_KEEP_ALIVE_MESSAGE';
-
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(desktop)
 const OVERRIDE_ORIGIN = {
   EXTENSION: 'EXTENSION',
   DESKTOP: 'DESKTOP_APP',
@@ -196,6 +205,12 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
   connectExternal(...args);
 });
 
+function saveTimestamp() {
+  const timestamp = new Date().toISOString();
+
+  browser.storage.session.set({ timestamp });
+}
+
 /**
  * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
  */
@@ -209,7 +224,6 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {boolean} isAccountMenuOpen - Represents whether the main account selection UI is currently displayed.
  * @property {boolean} isNetworkMenuOpen - Represents whether the main network selection UI is currently displayed.
  * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
- * @property {object} unapprovedTxs - An object mapping transaction hashes to unapproved transactions.
  * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg chainId, rpcUrl, rpcPreferences).
  * @property {Array} addressBook - A list of previously sent to addresses.
  * @property {object} contractExchangeRates - Info about current token prices.
@@ -219,14 +233,12 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} featureFlags - An object for optional feature flags.
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
- * @property {object} provider - The current selected network provider.
- * @property {string} provider.rpcUrl - The address for the RPC API, if using an RPC API.
- * @property {string} provider.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
- * @property {string} networkId - The stringified number of the current network ID.
+ * @property {object} providerConfig - The current selected network provider.
+ * @property {string} providerConfig.rpcUrl - The address for the RPC API, if using an RPC API.
+ * @property {string} providerConfig.type - An identifier for the type of network selected, allows MetaMask to use custom provider strategies for known networks.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
  * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
- * @property {TransactionMeta[]} currentNetworkTxList - An array of transactions associated with the currently selected network.
  * @property {object} unapprovedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedMsgCount - The number of messages in unapprovedMsgs.
  * @property {object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
@@ -238,12 +250,10 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  * @property {object} unapprovedTypedMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedTypedMsgCount - The number of messages in unapprovedTypedMsgs.
  * @property {number} pendingApprovalCount - The number of pending request in the approval controller.
- * @property {string[]} keyringTypes - An array of unique keyring identifying strings, representing available strategies for creating accounts.
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
  * @property {string} selectedAddress - A lower case hex string of the currently selected address.
  * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
- * @property {number} conversionRate - A number representing the current exchange rate from the user's preferred currency to Ether.
- * @property {number} conversionDate - A unix epoch date (ms) for the time the current conversion rate was last retrieved.
+ * @property {number} currencyRates - An object mapping of nativeCurrency to conversion rate and date
  * @property {boolean} forgottenPassword - Returns true if the user has initiated the password recovery screen, is recovering from seed phrase.
  */
 
@@ -260,15 +270,23 @@ browser.runtime.onConnectExternal.addListener(async (...args) => {
  */
 async function initialize() {
   try {
-    const initState = await loadStateFromPersistence();
+    const initData = await loadStateFromPersistence();
+    const initState = initData.data;
     const initLangCode = await getFirstPreferredLangCode();
 
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     await DesktopManager.init(platform.getVersion());
     ///: END:ONLY_INCLUDE_IN
 
     let isFirstMetaMaskControllerSetup;
     if (isManifestV3) {
+      // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
+      // miliseconds. This keeps the service worker alive.
+      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+      saveTimestamp();
+      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+
       const sessionData = await browser.storage.session.get([
         'isFirstMetaMaskControllerSetup',
       ]);
@@ -283,12 +301,14 @@ async function initialize() {
       initLangCode,
       {},
       isFirstMetaMaskControllerSetup,
+      initData.meta,
     );
     if (!isManifestV3) {
       await loadPhishingWarningPage();
     }
     await sendReadyMessageToTabs();
     log.info('MetaMask initialization complete.');
+
     resolveInitialization();
   } catch (error) {
     rejectInitialization(error);
@@ -349,7 +369,7 @@ async function loadPhishingWarningPage() {
   } catch (error) {
     if (error instanceof PhishingWarningPageTimeoutError) {
       console.warn(
-        'Phishing warning page timeout; page not guaraneteed to work offline.',
+        'Phishing warning page timeout; page not guaranteed to work offline.',
       );
     } else {
       console.error('Failed to initialize phishing warning page', error);
@@ -405,6 +425,19 @@ export async function loadStateFromPersistence() {
   versionedData = await migrator.migrateData(versionedData);
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
+  } else if (!isObject(versionedData.meta)) {
+    throw new Error(
+      `MetaMask - migrator metadata has invalid type '${typeof versionedData.meta}'`,
+    );
+  } else if (typeof versionedData.meta.version !== 'number') {
+    throw new Error(
+      `MetaMask - migrator metadata version has invalid type '${typeof versionedData
+        .meta.version}'`,
+    );
+  } else if (!isObject(versionedData.data)) {
+    throw new Error(
+      `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
+    );
   }
   // this initializes the meta/version data as a class variable to be used for future writes
   localStore.setMetadata(versionedData.meta);
@@ -413,7 +446,7 @@ export async function loadStateFromPersistence() {
   localStore.set(versionedData.data);
 
   // return just the data
-  return versionedData.data;
+  return versionedData;
 }
 
 /**
@@ -426,12 +459,14 @@ export async function loadStateFromPersistence() {
  * @param {string} initLangCode - The region code for the language preferred by the current user.
  * @param {object} overrides - object with callbacks that are allowed to override the setup controller logic (usefull for desktop app)
  * @param isFirstMetaMaskControllerSetup
+ * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  */
 export function setupController(
   initState,
   initLangCode,
   overrides,
   isFirstMetaMaskControllerSetup,
+  stateMetadata,
 ) {
   //
   // MetaMask Controller
@@ -458,14 +493,19 @@ export function setupController(
     localStore,
     overrides,
     isFirstMetaMaskControllerSetup,
+    currentMigrationVersion: stateMetadata.version,
+    featureFlags: {},
   });
 
   setupEnsIpfsResolver({
     getCurrentChainId: () =>
-      controller.networkController.store.getState().provider.chainId,
+      controller.networkController.state.providerConfig.chainId,
     getIpfsGateway: controller.preferencesController.getIpfsGateway.bind(
       controller.preferencesController,
     ),
+    getUseAddressBarEnsResolution: () =>
+      controller.preferencesController.store.getState()
+        .useAddressBarEnsResolution,
     provider: controller.provider,
   });
 
@@ -525,7 +565,7 @@ export function setupController(
    * @param {Port} remotePort - The port provided by a new context.
    */
   connectRemote = async (remotePort) => {
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     if (
       DesktopManager.isDesktopEnabled() &&
       OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
@@ -570,20 +610,6 @@ export function setupController(
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
-
-      if (isManifestV3) {
-        // If we get a WORKER_KEEP_ALIVE message, we respond with an ACK
-        remotePort.onMessage.addListener((message) => {
-          if (message.name === WORKER_KEEP_ALIVE_MESSAGE) {
-            // To test un-comment this line and wait for 1 minute. An error should be shown on MetaMask UI.
-            remotePort.postMessage({ name: ACK_KEEP_ALIVE_MESSAGE });
-
-            controller.appStateController.setServiceWorkerLastActiveTime(
-              Date.now(),
-            );
-          }
-        });
-      }
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
@@ -651,7 +677,7 @@ export function setupController(
 
   // communication with page or other extension
   connectExternal = (remotePort) => {
-    ///: BEGIN:ONLY_INCLUDE_IN(flask)
+    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
     if (
       DesktopManager.isDesktopEnabled() &&
       OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()
@@ -676,13 +702,13 @@ export function setupController(
   //
   // User Interface setup
   //
-
   updateBadge();
+
   controller.txController.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.decryptMessageManager.on(
+  controller.decryptMessageController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -690,7 +716,7 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
-  controller.signController.hub.on(
+  controller.signatureController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
   );
@@ -703,6 +729,8 @@ export function setupController(
     METAMASK_CONTROLLER_EVENTS.APPROVAL_STATE_CHANGE,
     updateBadge,
   );
+
+  controller.txController.initApprovals();
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
@@ -725,24 +753,42 @@ export function setupController(
   }
 
   function getUnapprovedTransactionCount() {
-    const { unapprovedDecryptMsgCount } = controller.decryptMessageManager;
-    const pendingApprovalCount =
-      controller.approvalController.getTotalApprovalCount();
-    const waitingForUnlockCount =
-      controller.appStateController.waitingForUnlock.length;
-    return (
-      unapprovedDecryptMsgCount + pendingApprovalCount + waitingForUnlockCount
-    );
+    let count = controller.appStateController.waitingForUnlock.length;
+    if (controller.preferencesController.getUseRequestQueue()) {
+      count += controller.queuedRequestController.length();
+    } else {
+      count += controller.approvalController.getTotalApprovalCount();
+    }
+    return count;
   }
+
+  controller.controllerMessenger.subscribe(
+    'QueuedRequestController:countChanged',
+    (count) => {
+      updateBadge();
+      if (count > 0) {
+        triggerUi();
+      }
+    },
+  );
 
   notificationManager.on(
     NOTIFICATION_MANAGER_EVENTS.POPUP_CLOSED,
     ({ automaticallyClosed }) => {
+      if (controller.preferencesController.getUseRequestQueue()) {
+        // when the feature flag is on, rejecting unnapproved notifications in this way does nothing (since the controllers havent seen the requests yet)
+        // Also, the updating of badge / triggering of UI happens from the countChanged event when the feature flag is on, so we dont need that here either.
+        // The only thing that we might want to add here is possibly calling a method to empty the queue / do the same thing as rejecting all confirmed?
+        return;
+      }
+
       if (!automaticallyClosed) {
         rejectUnapprovedNotifications();
       } else if (getUnapprovedTransactionCount() > 0) {
         triggerUi();
       }
+
+      updateBadge();
     },
   );
 
@@ -752,15 +798,12 @@ export function setupController(
     ).forEach((txId) =>
       controller.txController.txStateManager.setTxStatusRejected(txId),
     );
-    controller.signController.rejectUnapproved(REJECT_NOTIFICATION_CLOSE_SIG);
-    controller.decryptMessageManager.messages
-      .filter((msg) => msg.status === 'unapproved')
-      .forEach((tx) =>
-        controller.decryptMessageManager.rejectMsg(
-          tx.id,
-          REJECT_NOTIFICATION_CLOSE,
-        ),
-      );
+    controller.signatureController.rejectUnapproved(
+      REJECT_NOTIFICATION_CLOSE_SIG,
+    );
+    controller.decryptMessageController.rejectUnapproved(
+      REJECT_NOTIFICATION_CLOSE,
+    );
     controller.encryptionPublicKeyController.rejectUnapproved(
       REJECT_NOTIFICATION_CLOSE,
     );
@@ -769,12 +812,19 @@ export function setupController(
     Object.values(controller.approvalController.state.pendingApprovals).forEach(
       ({ id, type }) => {
         switch (type) {
-          ///: BEGIN:ONLY_INCLUDE_IN(flask)
-          case MESSAGE_TYPE.SNAP_DIALOG_ALERT:
-          case MESSAGE_TYPE.SNAP_DIALOG_PROMPT:
+          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          case ApprovalType.SnapDialogAlert:
+          case ApprovalType.SnapDialogPrompt:
             controller.approvalController.accept(id, null);
             break;
-          case MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION:
+          case ApprovalType.SnapDialogConfirmation:
+            controller.approvalController.accept(id, false);
+            break;
+          ///: END:ONLY_INCLUDE_IN
+          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation:
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval:
+          case SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect:
             controller.approvalController.accept(id, false);
             break;
           ///: END:ONLY_INCLUDE_IN
@@ -787,15 +837,20 @@ export function setupController(
         }
       },
     );
-
-    updateBadge();
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
   if (OVERRIDE_ORIGIN.DESKTOP !== overrides?.getOrigin?.()) {
     controller.store.subscribe((state) => {
       DesktopManager.setState(state);
     });
+  }
+  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed.
+  if (Object.keys(controller.snapController.state.snaps).length > 0) {
+    controller.snapController.updateBlockedSnaps();
   }
   ///: END:ONLY_INCLUDE_IN
 }
@@ -859,29 +914,27 @@ const addAppInstalledEvent = () => {
 };
 
 // On first install, open a new tab with MetaMask
-browser.runtime.onInstalled.addListener(({ reason }) => {
-  if (
-    reason === 'install' &&
-    !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
-  ) {
+async function onInstall() {
+  const storeAlreadyExisted = Boolean(await localStore.get());
+  // If the store doesn't exist, then this is the first time running this script,
+  // and is therefore an install
+  if (process.env.IN_TEST) {
+    addAppInstalledEvent();
+  } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
-});
+}
 
 function setupSentryGetStateGlobal(store) {
-  global.stateHooks.getSentryState = function () {
-    const fullState = store.getState();
-    const debugState = maskObject({ metamask: fullState }, SENTRY_STATE);
-    return {
-      browser: window.navigator.userAgent,
-      store: debugState,
-      version: platform.getVersion(),
-    };
+  global.stateHooks.getSentryAppState = function () {
+    const backgroundState = store.memStore.getState();
+    return maskObject(backgroundState, SENTRY_BACKGROUND_STATE);
   };
 }
 
-function initBackground() {
+async function initBackground() {
+  await onInstall();
   initialize().catch(log.error);
 }
 

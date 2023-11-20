@@ -1,0 +1,35 @@
+name: Create release bug report issue when release branch gets created
+
+on: create
+
+jobs:
+  create-bug-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract version from branch name if release branch
+        id: extract_version
+        run: |
+          if [[ "$GITHUB_REF" == "refs/heads/Version-v"* ]]; then
+            version="${GITHUB_REF#refs/heads/Version-v}"
+            echo "New release branch($version), continue next steps"
+            echo "version=$version" >> "$GITHUB_ENV"
+          else
+            echo "Not a release branch, skip next steps"
+          fi
+
+      - name: Create bug report issue on planning repo
+        if: env.version
+        run: |
+          payload=$(cat <<EOF
+          {
+            "title": "v${{ env.version }} Bug Report",
+            "body": "This bug report was automatically created by a GitHub action upon the creation of release branch \`Version-v${{ env.version }}\` (release cut).\n\n**Expected actions for release engineers:**\n\n1. Convert this issue into a Zenhub epic and link all bugs identified during the release regression testing phase to this epic.\n\n2. After completing the first regression run, move this epic to \"Regression Completed\" on the [Extension Release Regression board](https://app.zenhub.com/workspaces/extension-release-regression-6478c62d937eaa15e95c33c5/board?filterLogic=any&labels=release-${{ env.version }},release-task).\n\nNote that once the release is prepared for store submission, meaning the \`Version-v${{ env.version }}\` branch merges into \`master\`, another GitHub action will automatically close this epic.",
+            "labels": ["type-bug", "regression-RC", "release-${{ env.version }}"]
+          }
+          EOF
+          )
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.BUG_REPORT_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/MetaMask/MetaMask-planning/issues \
+            -d "$payload"

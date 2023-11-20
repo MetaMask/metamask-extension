@@ -7,13 +7,13 @@ import { HeaderBase } from './header-base';
 
 The `HeaderBase` component is a reusable UI component for displaying a header with optional startAccessory, children (title) and endAccessory content areas. It is designed to be flexible and customizable for various use cases to keep a visually balanced appearance.
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-headerbase--default-story" />
 </Canvas>
 
 ## Props
-
-The `HeaderBase` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={HeaderBase} />
 
@@ -30,12 +30,12 @@ Use the `childrenWrapperProps` prop to customize the wrapper element around the 
 ```jsx
 import { HeaderBase, Text } from '../../component-library';
 import {
-  TEXT_ALIGN,
+  TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
 <HeaderBase>
-  <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+  <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
     Title is sentence case no period
   </Text>
 </HeaderBase>;
@@ -60,7 +60,7 @@ import {
   IconName,
 } from '../../component-library';
 import {
-  TEXT_ALIGN,
+  TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
@@ -73,7 +73,7 @@ import {
     />
   }
 >
-  <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+  <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
     Title is sentence case no period
   </Text>
 </HeaderBase>;
@@ -98,7 +98,7 @@ import {
   Text,
 } from '../../component-library';
 import {
-  TEXT_ALIGN,
+  TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
@@ -111,7 +111,7 @@ import {
     />
   }
 >
-  <Text variant={TextVariant.headingSm} textAlign={TEXT_ALIGN.CENTER}>
+  <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
     Title is sentence case no period
   </Text>
 </HeaderBase>;

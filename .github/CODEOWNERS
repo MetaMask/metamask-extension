@@ -1,20 +1,21 @@
 # Lines starting with '#' are comments.
 # Each line is a file pattern followed by one or more owners.
 # Owners bear a responsibility to the organization and the users of this
-# application. Repository administrators have the ability to merge pull 
-# requests that have not yet received the requisite reviews as outlined 
-# in this file. Do not force merge any PR without confidence that it 
-# follows all policies or without full understanding of the impact of 
+# application. Repository administrators have the ability to merge pull
+# requests that have not yet received the requisite reviews as outlined
+# in this file. Do not force merge any PR without confidence that it
+# follows all policies or without full understanding of the impact of
 # those changes on build, release and publishing outcomes.
 
 *                                    @MetaMask/extension-devs
+**/snaps/**                          @MetaMask/snaps-devs
 development/                         @MetaMask/extension-devs @kumavis
-lavamoat/                            @MetaMask/supply-chain
+lavamoat/                            @MetaMask/extension-devs @MetaMask/supply-chain @MetaMask/snaps-devs
 
 # The .circleci/ folder instructs Circle CI on the process by which it
 # should test, build and publish releases of our application. Due to the
 # impact that changes to the files contained within this folder may have
-# on our releases, only those with the knowledge and responsibility to 
+# on our releases, only those with the knowledge and responsibility to
 # publish libraries under the MetaMask name may approve those changes.
 # Note to reviewers: We employ the use of CircleCI "Orbs", which are
 # remotely hosted sections of CircleCI configuration and scripts, to
@@ -22,6 +23,17 @@ lavamoat/                            @MetaMask/supply-chain
 # should be brought to the attention of engineering leadership for
 # discussion
 .circleci/                           @MetaMask/library-admins @kumavis @brad-decker
+
+# The privacy-snapshot.json file includes a list of all hosts that the
+# extension communicates with during the E2E test suite runs. It is not a
+# complete list of all hosts that the extension communicates with until the E2E
+# test suite has full coverage. Anytime the privacy-snapshot file changes,
+# extra scrutiny should be applied to the pull request to confirm that it does
+# not broaden the number of hosts the extension communicates with without also
+# providing a path for users to avoid that communication. MetaMask strives to
+# make all such communication opt IN versus opt OUT.
+privacy-snapshot.json                @MetaMask/extension-privacy-reviewers
+
 # The CODEOWNERS file constitutes an agreement amongst organization
 # admins and maintainers to restrict approval capabilities to a subset
 # of contributors. Modifications to this file result in a modification of

@@ -3,7 +3,6 @@ import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { isEqual } from 'lodash';
-
 import { I18nContext } from '../../../contexts/i18n';
 import {
   getFetchParams,
@@ -21,13 +20,9 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getCurrentChainId,
-  getUSDConversionRate,
-  conversionRateSelector,
-  getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
   DEFAULT_ROUTE,
   BUILD_QUOTE_ROUTE,
@@ -40,7 +35,7 @@ import {
   TextVariant,
   JustifyContent,
   DISPLAY,
-  FONT_WEIGHT,
+  FontWeight,
   AlignItems,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -52,10 +47,7 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import { SmartTransactionStatus } from '../../../../shared/constants/transaction';
 
 import SwapsFooter from '../swaps-footer';
-import {
-  showRemainingTimeInMinAndSec,
-  getFeeForSmartTransaction,
-} from '../swaps.util';
+import { showRemainingTimeInMinAndSec } from '../swaps.util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
@@ -101,10 +93,6 @@ export default function SmartTransactionStatusPage() {
     rpcPrefs.blockExplorerUrl ??
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
     null;
-  const nativeCurrencySymbol = useSelector(getNativeCurrency);
-  const conversionRate = useSelector(conversionRateSelector);
-  const USDConversionRate = useSelector(getUSDConversionRate);
-  const currentCurrency = useSelector(getCurrentCurrency);
 
   let smartTransactionStatus = SmartTransactionStatus.pending;
   let latestSmartTransaction = {};
@@ -278,17 +266,6 @@ export default function SmartTransactionStatusPage() {
     latestSmartTransaction.cancellable && !cancelSwapLinkClicked;
 
   const CancelSwap = () => {
-    let feeInFiat;
-    if (cancellationFeeWei > 0) {
-      ({ feeInFiat } = getFeeForSmartTransaction({
-        chainId,
-        currentCurrency,
-        conversionRate,
-        USDConversionRate,
-        nativeCurrencySymbol,
-        feeInWeiDec: cancellationFeeWei,
-      }));
-    }
     return (
       <Box marginBottom={0}>
         <a
@@ -305,9 +282,7 @@ export default function SmartTransactionStatusPage() {
             dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
           }}
         >
-          {feeInFiat
-            ? t('cancelSwapForFee', [feeInFiat])
-            : t('cancelSwapForFree')}
+          {t('attemptToCancelSwapForFree')}
         </a>
       </Box>
     );
@@ -330,13 +305,19 @@ export default function SmartTransactionStatusPage() {
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.center}
         >
-          <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodySm}
+            as="h6"
+          >
             {`${fetchParams?.value && Number(fetchParams.value).toFixed(5)} `}
           </Text>
           <Text
             color={TextColor.textAlternative}
             variant={TextVariant.bodySmBold}
-            boxProps={{ marginLeft: 1, marginRight: 2 }}
+            as="h6"
+            marginLeft={1}
+            marginRight={2}
           >
             {fetchParamsSourceTokenInfo.symbol ??
               latestSmartTransaction?.sourceTokenSymbol}
@@ -369,14 +350,16 @@ export default function SmartTransactionStatusPage() {
           <Text
             color={TextColor.textAlternative}
             variant={TextVariant.bodySm}
-            boxProps={{ marginLeft: 2 }}
+            as="h6"
+            marginLeft={2}
           >
             {`~${destinationValue && Number(destinationValue).toFixed(5)} `}
           </Text>
           <Text
             color={TextColor.textAlternative}
             variant={TextVariant.bodySmBold}
-            boxProps={{ marginLeft: 1 }}
+            as="h6"
+            marginLeft={1}
           >
             {fetchParamsDestinationTokenInfo.symbol ??
               latestSmartTransaction?.destinationTokenSymbol}
@@ -403,14 +386,16 @@ export default function SmartTransactionStatusPage() {
             <Text
               color={TextColor.textAlternative}
               variant={TextVariant.bodySm}
-              boxProps={{ marginLeft: 1 }}
+              as="h6"
+              marginLeft={1}
             >
               {`${t('stxSwapCompleteIn')} `}
             </Text>
             <Text
               color={TextColor.textAlternative}
               variant={TextVariant.bodySmBold}
-              boxProps={{ marginLeft: 1 }}
+              as="h6"
+              marginLeft={1}
               className="smart-transaction-status__remaining-time"
             >
               {showRemainingTimeInMinAndSec(timeLeftForPendingStxInSec)}
@@ -420,7 +405,8 @@ export default function SmartTransactionStatusPage() {
         <Text
           color={TextColor.textDefault}
           variant={TextVariant.headingSm}
-          fontWeight={FONT_WEIGHT.BOLD}
+          as="h4"
+          fontWeight={FontWeight.Bold}
         >
           {headerText}
         </Text>
@@ -441,7 +427,8 @@ export default function SmartTransactionStatusPage() {
         {description && (
           <Text
             variant={TextVariant.bodySm}
-            boxProps={{ ...(blockExplorerUrl && { margin: [1, 0, 0] }) }}
+            as="h6"
+            marginTop={blockExplorerUrl && 1}
             color={TextColor.textAlternative}
           >
             {description}
@@ -460,7 +447,8 @@ export default function SmartTransactionStatusPage() {
         {subDescription && (
           <Text
             variant={TextVariant.bodySm}
-            boxProps={{ marginTop: 8 }}
+            as="h6"
+            marginTop={8}
             color={TextColor.textAlternative}
           >
             {subDescription}

@@ -1,0 +1,239 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { Modal } from './modal';
+
+# Modal
+
+The `Modal` focuses the user's attention exclusively on information via a window that is overlaid on primary content. It should be used with the `ModalOverlay`, `ModalContent` and `ModalHeader` components to create a complete modal.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-modal--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={Modal} />
+
+### Usage
+
+The `Modal` component is a very atomic level component that is meant to be used with `ModalOverlay`, `ModalContent` and `ModalHeader`.
+
+When the modal opens:
+
+- Focus is trapped within the modal and set to the first tabbable element.
+- Content behind a modal dialog is inert, meaning that users cannot interact with it.
+- Use the `isOpen` prop to control whether the modal is open or closed.
+- Use the `onClose` prop to fire a callback when the modal is closed. This is used for the `isClosedOnOutsideClick` prop and the `isClosedOnEscapeKey`.
+
+<Canvas>
+  <Story id="components-componentlibrary-modal--usage" />
+</Canvas>
+
+```jsx
+import React, { useState, useRef } from 'react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, Text, Button } from '../../component-library';
+
+const [open, setOpen] = useState(false);
+
+const handleOnClick = () => {
+  setOpen(true);
+};
+
+const handleOnClose = () => {
+  setOpen(false);
+};
+
+<Button onClick={handleOnClick}>OpenModal</Button>
+<Modal
+  isOpen={open}
+  onClose={handleOnClose}
+>
+  <ModalOverlay />
+  <ModalContent>
+    <ModalHeader onClose={handleOnClose} onBack={handleOnClose}>
+      Modal Header
+    </ModalHeader>
+    <Text>Children</Text>
+  </ModalContent>
+</Modal>
+```
+
+### Is Closed On Outside Click
+
+Use the `isClosedOnOutsideClick` prop to control whether the modal should close when the user clicks outside of the modal.
+
+Defaults to `true`.
+
+<Canvas>
+  <Story id="components-componentlibrary-modal--is-closed-on-outside-click" />
+</Canvas>
+
+```jsx
+import { Modal } from '../../component-library';
+
+<Modal isClosedOnOutsideClick={false} />;
+```
+
+### Is Closed On Escape Key
+
+Use the `isClosedOnEscapeKey` prop to control whether the modal should close when the user presses the escape key.
+
+Defaults to `true`.
+
+<Canvas>
+  <Story id="components-componentlibrary-modal--is-closed-on-escape-key" />
+</Canvas>
+
+```jsx
+import { Modal } from '../../component-library';
+
+<Modal isClosedOnEscapeKey={false} />;
+```
+
+### Initial Focus Ref
+
+Use the `initialFocusRef` to set the `ref` of the element to receive focus initially. This is useful for input elements that should receive focus when the modal opens.
+
+<Canvas>
+  <Story id="components-componentlibrary-modal--initial-focus-ref" />
+</Canvas>
+
+```jsx
+import React, { useState, useRef } from 'react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, TextFieldSearch, Button } from '../../component-library';
+
+// Ref to set initial focus
+const inputRef = React.useRef<HTMLDivElement>(null);
+
+const [open, setOpen] = useState(false);
+
+const handleOnClick = () => {
+  setOpen(true);
+};
+
+const handleOnClose = () => {
+  setOpen(false);
+};
+
+<Button onClick={handleOnClick}>Open modal</Button>
+<Modal
+  isOpen={isOpen}
+  onClose={handleOnClose}
+  initialFocusRef={inputRef}
+>
+  <ModalOverlay />
+  <ModalContent >
+    <ModalHeader
+      onClose={handleOnClose}
+      onBack={handleOnClose}
+      marginBottom={4}
+    >
+      Modal Header
+    </ModalHeader>
+    <TextFieldSearch
+      placeholder="Search"
+      inputProps={{ ref: inputRef }}
+      width={BLOCK_SIZES.FULL}
+    />
+  </ModalContent>
+</Modal>
+```
+
+### Final Focus Ref
+
+Use the `finalFocusRef` to set the `ref` of the element to receive focus when the modal closes.
+
+<Canvas>
+  <Story id="components-componentlibrary-modal--final-focus-ref" />
+</Canvas>
+
+```jsx
+import React, { useState, useRef } from 'react';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, TextFieldSearch, Button } from '../../component-library';
+
+// Ref to set focus after modal closes
+const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+const [open, setOpen] = useState(false);
+
+const handleOnClick = () => {
+  setOpen(true);
+};
+
+const handleOnClose = () => {
+  setOpen(false);
+};
+
+<Button onClick={handleOnClick} marginRight={4}>
+  Open modal
+</Button>
+<button ref={buttonRef}>Receives focus after close</button>
+<Modal
+  isOpen={isOpen}
+  onClose={handleOnClose}
+  finalFocusRef={buttonRef}
+>
+  <ModalOverlay />
+  <ModalContent >
+    <ModalHeader
+      onClose={handleOnClose}
+      onBack={handleOnClose}
+      marginBottom={4}
+    >
+      Modal Header
+    </ModalHeader>
+    <Text>{args.children}</Text>
+  </ModalContent>
+</Modal>
+```
+
+### Restore Focus
+
+Use the `restoreFocus` prop to restore focus to the element that triggered the `Modal` once it unmounts
+
+Defaults to `false`
+
+<Canvas>
+  <Story id="components-componentlibrary-modal--restore-focus" />
+</Canvas>
+
+```jsx
+import { Modal } from '../../component-library';
+
+<Modal restoreFocus={true} />;
+```
+
+### Auto Focus
+
+If `true`, the first focusable element within the `children` will auto-focused once `Modal` mounts. Depending on the content of `Modal` this is usually the back or close button in the `ModalHeader`.
+
+Defaults to `true`
+
+<Canvas>
+  <Story id="components-componentlibrary-modal--auto-focus" />
+</Canvas>
+
+```jsx
+import { Modal } from '../../component-library';
+
+<Modal autoFocus={false} />;
+```
+
+## Accessibility
+
+### Keyboard and Focus Management
+
+- When the modal opens, focus is trapped within it.
+- When the modal opens, focus is automatically set to the first enabled element, or the element from `initialFocusRef`.
+- When the modal closes, focus returns to the element that was focused before the modal activated, or the element from `finalFocusRef`.
+- Clicking on the overlay closes the Modal.
+- Pressing ESC closes the Modal.
+- Scrolling is blocked on the elements behind the modal.
+- The modal is rendered in a portal attached to the end of document.body to break it out of the source order and make it easy to add aria-hidden to its siblings.
+
+### ARIA
+
+- The `ModalContent` has aria-modal="true" and role="dialog"
+- The `ModalOverlay` has aria-hidden="true"

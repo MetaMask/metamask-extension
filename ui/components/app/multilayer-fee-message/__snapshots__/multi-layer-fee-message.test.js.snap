@@ -1,0 +1,170 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Multi layer fee message when balance and token price checker is disabled should match screenshot 1`] = `
+<div>
+  <div
+    class="multi-layer-fee-message"
+  >
+    <div
+      class="transaction-detail-item"
+    >
+      <div
+        class="transaction-detail-item__row"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
+        >
+          Layer 1 fees
+        </h6>
+        <div
+          class="transaction-detail-item__detail-values"
+        >
+          <h6
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
+          >
+            Unknown
+          </h6>
+        </div>
+      </div>
+      <div
+        class="transaction-detail-item__row"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        />
+        <h6
+          class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
+        />
+      </div>
+    </div>
+    <div
+      class="transaction-detail-item"
+    >
+      <div
+        class="transaction-detail-item__row"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
+        >
+          Total
+        </h6>
+        <div
+          class="transaction-detail-item__detail-values"
+        >
+          <h6
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
+          >
+            0.001000021000 ETH
+          </h6>
+        </div>
+      </div>
+      <div
+        class="transaction-detail-item__row"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          Amount + fees
+        </h6>
+        <h6
+          class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Multi layer fee message when balance and token price checker is enabled should match snapshot 1`] = `
+<div>
+  <div
+    class="multi-layer-fee-message"
+  >
+    <div
+      class="transaction-detail-item"
+    >
+      <div
+        class="transaction-detail-item__row"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
+        >
+          Layer 1 fees
+        </h6>
+        <div
+          class="transaction-detail-item__detail-values"
+        >
+          <h6
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          >
+            Unknown
+          </h6>
+          <h6
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
+          >
+            Unknown
+          </h6>
+        </div>
+      </div>
+      <div
+        class="transaction-detail-item__row"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        />
+        <h6
+          class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
+        />
+      </div>
+    </div>
+    <div
+      class="transaction-detail-item"
+    >
+      <div
+        class="transaction-detail-item__row"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
+        >
+          Total
+        </h6>
+        <div
+          class="transaction-detail-item__detail-values"
+        >
+          <h6
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+          >
+            <div
+              class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+              title="$0.56"
+            >
+              <span
+                class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+              >
+                $0.56
+              </span>
+            </div>
+          </h6>
+          <h6
+            class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-text--text-align-right mm-box--margin-left-1 mm-box--color-text-default"
+          >
+            0.001000021000 ETH
+          </h6>
+        </div>
+      </div>
+      <div
+        class="transaction-detail-item__row"
+      >
+        <h6
+          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+        >
+          Amount + fees
+        </h6>
+        <h6
+          class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Balance Overview and Portfolio for Tokens should output correct ETH total value 1`] = `
+<div>
+  <div
+    class="mm-box token-balance-overview mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+  >
+    <div
+      class="mm-box token-balance-overview__balance"
+    >
+      <h2
+        class="mm-box mm-text token-balance-overview__secondary-balance mm-text--heading-lg mm-box--color-text-default"
+      >
+        <div
+          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+          data-testid="token-balance-overview-currency-display"
+          title="0.0013 ETH"
+        >
+          <span
+            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+          >
+            0.0013
+          </span>
+          <span
+            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+          >
+            ETH
+          </span>
+        </div>
+      </h2>
+    </div>
+    <button
+      class="mm-box mm-text mm-button-base mm-button-base--size-md token-balance-portfolio mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+      data-testid="token-balance-portfolio"
+    >
+      Portfolio
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/export.svg');"
+      />
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Balance Overview and Portfolio for Tokens should output correct USD total value 1`] = `
+<div>
+  <div
+    class="mm-box token-balance-overview mm-box--padding-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+  >
+    <div
+      class="mm-box token-balance-overview__balance"
+    >
+      <h2
+        class="mm-box mm-text token-balance-overview__secondary-balance mm-text--heading-lg mm-box--color-text-default"
+      >
+        <div
+          class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
+          data-testid="token-balance-overview-currency-display"
+          title="$2.05 USD"
+        >
+          <span
+            class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+          >
+            $2.05
+          </span>
+          <span
+            class="mm-box mm-text currency-display-component__suffix mm-text--inherit mm-box--margin-inline-start-1 mm-box--color-text-default"
+          >
+            USD
+          </span>
+        </div>
+      </h2>
+    </div>
+    <button
+      class="mm-box mm-text mm-button-base mm-button-base--size-md token-balance-portfolio mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-pill mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+      data-testid="token-balance-portfolio"
+    >
+      Portfolio
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/export.svg');"
+      />
+    </button>
+  </div>
+</div>
+`;

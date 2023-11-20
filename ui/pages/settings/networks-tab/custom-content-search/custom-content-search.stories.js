@@ -1,5 +1,5 @@
 import React from 'react';
-import testData from '../../../../../.storybook/test-data';
+import { networkList } from '../../../../../.storybook/test-data';
 import CustomContentSearch from './custom-content-search';
 
 export default {
@@ -19,5 +19,5 @@ export default {
 };
 
 export const CustomContentSearchComponent = (args) => {
-  return <CustomContentSearch {...args} networksList={testData.networkList} />;
+  return <CustomContentSearch {...args} networksList={networkList} />;
 };

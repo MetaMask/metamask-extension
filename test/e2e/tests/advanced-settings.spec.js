@@ -19,14 +19,19 @@ describe('Advanced Settings', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-
-        await driver.clickElement('.account-menu__icon');
+        // TODO: Remove this test since we are not showing any secondary balance
+        if (process.env.MULTICHAIN) {
+          return;
+        }
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
 
@@ -56,7 +61,7 @@ describe('Advanced Settings', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

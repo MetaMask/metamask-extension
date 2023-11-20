@@ -1,5 +1,4 @@
 import React from 'react';
-import { object } from '@storybook/addon-knobs';
 import {
   TextColor,
   TypographyVariant,
@@ -8,6 +7,12 @@ import MetaMaskTemplateRenderer from '.';
 
 export default {
   title: 'Components/App/MetamaskTemplateRenderer',
+  component: MetaMaskTemplateRenderer,
+  argTypes: {
+    sections: {
+      control: 'object',
+    },
+  },
 };
 
 const SECTIONS = {
@@ -85,25 +90,12 @@ const SECTIONS = {
   ],
 };
 
-export const DefaultStory = () => (
-  <MetaMaskTemplateRenderer sections={object('sections', SECTIONS)} />
+export const DefaultStory = (args) => (
+  <MetaMaskTemplateRenderer sections={args.sections} />
 );
 
 DefaultStory.storyName = 'Default';
 
-export const WithInvalidElement = () => (
-  <MetaMaskTemplateRenderer
-    sections={object('sections', [
-      {
-        ...SECTIONS,
-        key: 'safe-tree',
-      },
-      {
-        element: 'Unsafe',
-        key: 'unsafe-tree',
-        children:
-          'I should be displayed, but I wont be due to unsafe component',
-      },
-    ])}
-  />
-);
+DefaultStory.args = {
+  sections: SECTIONS,
+};

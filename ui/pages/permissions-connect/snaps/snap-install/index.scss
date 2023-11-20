@@ -1,0 +1,23 @@
+.snap-install {
+  box-shadow: none;
+
+  &__content {
+    &__loader-container {
+      height: 100%;
+    }
+  }
+
+  &__scroll-button {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    right: 0;
+    left: 0;
+    bottom: 90px;
+  }
+
+  .page-container__footer {
+    width: 100%;
+    border-top: 0;
+  }
+}

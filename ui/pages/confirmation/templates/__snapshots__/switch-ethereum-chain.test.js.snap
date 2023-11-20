@@ -1,0 +1,272 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
+<div>
+  <div
+    class="confirmation-page"
+  >
+    <div
+      class="confirmation-page__content"
+    >
+      <div
+        class="box box--margin-top-2 box--flex-direction-row box--justify-content-center box--display-flex"
+      >
+        <div
+          class="network-display chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined chip--max-content"
+          data-testid="network-display"
+        >
+          <div
+            class="chip__left-icon"
+          >
+            <div
+              class="color-indicator color-indicator--filled color-indicator--color-icon-muted color-indicator--size-xs"
+              data-testid="color-icon-icon-muted"
+            >
+              <span
+                class="color-indicator__inner-circle"
+              />
+            </div>
+          </div>
+          <span
+            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+          >
+            Test initial state
+          </span>
+        </div>
+      </div>
+      <h3
+        class="box box--md:margin-2 box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h3 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+      >
+        Allow this site to switch the network?
+      </h3>
+      <h6
+        class="box box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+      >
+        This will switch the selected network within MetaMask to a previously added network:
+      </h6>
+      <div
+        class="box box--flex-direction-row box--justify-content-center box--display-flex"
+      >
+        <div
+          class="box confirmation-network-switch box--margin-top-8 box--display-flex box--flex-direction-row box--justify-content-center box--height-full"
+        >
+          <div
+            class="box confirmation-network-switch__icon box--display-block box--flex-direction-row"
+          >
+            <div
+              class="confirmation-network-switch__unknown-icon"
+            >
+              <i
+                class="fa fa-question fa-2x"
+              />
+            </div>
+            <h6
+              class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--justify-content-center typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+            >
+              Test initial state
+            </h6>
+          </div>
+          <div
+            class="box confirmation-network-switch__center-icon box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center"
+          >
+            <i
+              class="fa fa-angle-right fa-lg confirmation-network-switch__check"
+            />
+            <div
+              class="confirmation-network-switch__dashed-line"
+            />
+          </div>
+          <div
+            class="box confirmation-network-switch__icon box--display-block box--flex-direction-row"
+          >
+            <div
+              class="confirmation-network-switch__unknown-icon"
+            >
+              <i
+                class="fa fa-question fa-2x"
+              />
+            </div>
+            <h6
+              class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--justify-content-center typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+            >
+              Test chain
+            </h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="confirmation-footer"
+    >
+      <div
+        class="confirmation-footer__actions"
+      >
+        <button
+          class="button btn--rounded btn-secondary"
+          data-testid="confirmation-cancel-button"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary"
+          data-testid="confirmation-submit-button"
+        >
+          Switch network
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`switch-ethereum-chain confirmation should match snapshot 2`] = `<div />`;
+
+exports[`switch-ethereum-chain confirmation should show alert if there are pending txs 1`] = `
+<div>
+  <div
+    class="confirmation-page"
+  >
+    <div
+      class="confirmation-page__content"
+    >
+      <div
+        class="box box--margin-top-2 box--flex-direction-row box--justify-content-center box--display-flex"
+      >
+        <div
+          class="network-display chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined chip--max-content"
+          data-testid="network-display"
+        >
+          <div
+            class="chip__left-icon"
+          >
+            <div
+              class="color-indicator color-indicator--filled color-indicator--color-icon-muted color-indicator--size-xs"
+              data-testid="color-icon-icon-muted"
+            >
+              <span
+                class="color-indicator__inner-circle"
+              />
+            </div>
+          </div>
+          <span
+            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+          >
+            Test initial state
+          </span>
+        </div>
+      </div>
+      <h3
+        class="box box--md:margin-2 box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h3 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+      >
+        Allow this site to switch the network?
+      </h3>
+      <h6
+        class="box box--margin-top-1 box--margin-bottom-1 box--sm:padding-4 box--lg:padding-4 box--flex-direction-row typography typography--h7 typography--weight-normal typography--style-normal typography--align-center typography--color-text-alternative"
+      >
+        This will switch the selected network within MetaMask to a previously added network:
+      </h6>
+      <div
+        class="box box--flex-direction-row box--justify-content-center box--display-flex"
+      >
+        <div
+          class="box confirmation-network-switch box--margin-top-8 box--display-flex box--flex-direction-row box--justify-content-center box--height-full"
+        >
+          <div
+            class="box confirmation-network-switch__icon box--display-block box--flex-direction-row"
+          >
+            <div
+              class="confirmation-network-switch__unknown-icon"
+            >
+              <i
+                class="fa fa-question fa-2x"
+              />
+            </div>
+            <h6
+              class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--justify-content-center typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+            >
+              Test initial state
+            </h6>
+          </div>
+          <div
+            class="box confirmation-network-switch__center-icon box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center"
+          >
+            <i
+              class="fa fa-angle-right fa-lg confirmation-network-switch__check"
+            />
+            <div
+              class="confirmation-network-switch__dashed-line"
+            />
+          </div>
+          <div
+            class="box confirmation-network-switch__icon box--display-block box--flex-direction-row"
+          >
+            <div
+              class="confirmation-network-switch__unknown-icon"
+            >
+              <i
+                class="fa fa-question fa-2x"
+              />
+            </div>
+            <h6
+              class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--justify-content-center typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+            >
+              Test chain
+            </h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="confirmation-footer"
+    >
+      <div
+        class="callout callout--warning callout--dismissible callout--first callout--last"
+      >
+        <svg
+          class="info-icon info-icon--warning"
+          fill="none"
+          height="16"
+          viewBox="0 0 16 16"
+          width="16"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M15.75 8C15.75 3.75 12.25 0.25 8 0.25C3.71875 0.25 0.25 3.75 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.25 15.75 15.75 12.2812 15.75 8ZM8 9.5625C8.78125 9.5625 9.4375 10.2188 9.4375 11C9.4375 11.8125 8.78125 12.4375 8 12.4375C7.1875 12.4375 6.5625 11.8125 6.5625 11C6.5625 10.2188 7.1875 9.5625 8 9.5625ZM6.625 4.40625C6.59375 4.1875 6.78125 4 7 4H8.96875C9.1875 4 9.375 4.1875 9.34375 4.40625L9.125 8.65625C9.09375 8.875 8.9375 9 8.75 9H7.21875C7.03125 9 6.875 8.875 6.84375 8.65625L6.625 4.40625Z"
+          />
+        </svg>
+        <p
+          class="mm-box mm-text callout__content mm-text--body-md mm-box--color-text-default"
+        >
+          <span>
+            Switching networks will cancel all pending confirmations
+          </span>
+        </p>
+        <button
+          class="mm-box mm-button-icon mm-button-icon--size-sm callout__close-button mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/close.svg');"
+          />
+        </button>
+      </div>
+      <div
+        class="confirmation-footer__actions"
+      >
+        <button
+          class="button btn--rounded btn-secondary"
+          data-testid="confirmation-cancel-button"
+        >
+          Cancel
+        </button>
+        <button
+          class="button btn--rounded btn-primary"
+          data-testid="confirmation-submit-button"
+        >
+          Switch network
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

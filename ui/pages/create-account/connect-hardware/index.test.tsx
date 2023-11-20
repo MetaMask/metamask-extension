@@ -18,30 +18,42 @@ jest.mock('../../../store/actions', () => ({
 }));
 
 jest.mock('../../../selectors', () => ({
-  getCurrentChainId: () => jest.fn().mockResolvedValue('0x1'),
-  getRpcPrefsForCurrentProvider: () => jest.fn().mockResolvedValue({}),
-  getMetaMaskAccountsConnected: () => jest.fn().mockResolvedValue([]),
-  getMetaMaskAccounts: () => jest.fn().mockResolvedValue([]),
+  getCurrentChainId: () => '0x1',
+  getRpcPrefsForCurrentProvider: () => {
+    return {};
+  },
+  getMetaMaskAccountsConnected: () => [],
+  getMetaMaskAccounts: () => {
+    return {};
+  },
 }));
 
+const MOCK_RECENT_PAGE = '/home';
 jest.mock('../../../ducks/history/history', () => ({
-  getMostRecentOverviewPage: () => jest.fn().mockResolvedValue('/'),
+  getMostRecentOverviewPage: jest
+    .fn()
+    .mockImplementation(() => MOCK_RECENT_PAGE),
 }));
 
+const mockTrackEvent = jest.fn();
+const mockHistoryPush = jest.fn();
 const mockProps = {
-  forgetDevice: jest.fn(),
-  showAlert: jest.fn(),
-  hideAlert: jest.fn(),
-  unlockHardwareWalletAccount: jest.fn(),
-  setHardwareWalletDefaultHdPath: jest.fn(),
-  history: {},
+  forgetDevice: () => jest.fn(),
+  showAlert: () => jest.fn(),
+  hideAlert: () => jest.fn(),
+  unlockHardwareWalletAccount: () => jest.fn(),
+  setHardwareWalletDefaultHdPath: () => jest.fn(),
+  history: {
+    push: mockHistoryPush,
+  },
   defaultHdPath: "m/44'/60'/0'/0",
   mostRecentOverviewPage: '',
+  trackEvent: () => mockTrackEvent,
 };
 
 const mockState = {
   metamask: {
-    provider: {
+    providerConfig: {
       chainId: '0x1',
     },
   },
@@ -76,6 +88,7 @@ const mockState = {
 
 describe('ConnectHardwareForm', () => {
   const mockStore = configureMockStore([thunk])(mockState);
+
   it('should match snapshot', () => {
     const { container } = renderWithProvider(
       <ConnectHardwareForm {...mockProps} />,
@@ -83,6 +96,17 @@ describe('ConnectHardwareForm', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('should close the form when close button is clicked', () => {
+    const { getByTestId } = renderWithProvider(
+      <ConnectHardwareForm {...mockProps} />,
+      mockStore,
+    );
+    const closeButton = getByTestId('hardware-connect-close-btn');
+    fireEvent.click(closeButton);
+    expect(mockHistoryPush).toHaveBeenCalledTimes(1);
+    expect(mockHistoryPush).toHaveBeenCalledWith(MOCK_RECENT_PAGE);
   });
 
   describe('U2F Error', () => {
@@ -145,6 +169,26 @@ describe('ConnectHardwareForm', () => {
             { exact: false },
           ),
         ).toBeInTheDocument();
+      });
+    });
+  });
+
+  describe('QR Hardware Wallet Steps', () => {
+    it('should render the QR hardware wallet steps', async () => {
+      const { getByText, getByLabelText } = renderWithProvider(
+        <ConnectHardwareForm {...mockProps} />,
+        mockStore,
+      );
+
+      const qrButton = getByLabelText('QRCode');
+
+      fireEvent.click(qrButton);
+
+      await waitFor(() => {
+        expect(getByText('Keystone')).toBeInTheDocument();
+        expect(getByText('AirGap Vault')).toBeInTheDocument();
+        expect(getByText('CoolWallet')).toBeInTheDocument();
+        expect(getByText("D'Cent")).toBeInTheDocument();
       });
     });
   });

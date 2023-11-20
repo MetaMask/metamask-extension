@@ -1,0 +1,219 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SnapAccountDetails should take a snapshot 1`] = `
+<div>
+  <div
+    class="mm-box snap-details-page mm-box--padding-10 mm-box--sm:padding-10 mm-box--md:padding-10 mm-box--lg:padding-10 mm-box--display-flex mm-box--flex-direction-column"
+  >
+    <div
+      class="mm-box mm-box--margin-bottom-5"
+    >
+      <div
+        class="mm-box mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <button
+          class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--margin-right-4 mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+        >
+          Add an account Snap (Beta)
+        </button>
+        <span
+          class="mm-box mm-icon mm-icon--size-md mm-box--margin-right-4 mm-box--display-inline-block mm-box--color-inherit"
+          style="mask-image: url('./images/icons/arrow-right.svg');"
+        />
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+        >
+          Metamask Simple Keyring
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+        >
+          <h2
+            class="mm-box mm-text mm-text--heading-lg mm-box--margin-right-1 mm-box--color-text-default"
+          >
+            Metamask Simple Keyring
+          </h2>
+        </div>
+        <div
+          class="mm-box"
+        >
+          <button
+            class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
+          >
+            Install snap
+          </button>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box mm-box--margin-right-1 mm-box--padding-2 mm-box--sm:padding-2 mm-box--md:padding-2 mm-box--lg:padding-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+          style="border-radius: 50%; height: 32px; width: 32px;"
+        >
+          <img
+            class="snap-detail-icon"
+            src=""
+          />
+        </div>
+        <div
+          class="mm-box mm-tag mm-box--margin-right-1 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-pill mm-box--border-color-info-muted mm-box--border-width-1 box--border-style-solid"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+            style="mask-image: url('./images/icons/star.svg');"
+          />
+           
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
+          >
+            By MetaMask
+          </p>
+        </div>
+        <div
+          class="mm-box mm-tag mm-box--margin-right-1 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-info-muted mm-box--rounded-pill mm-box--border-color-info-muted mm-box--border-width-1 box--border-style-solid"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-info-default"
+            style="mask-image: url('./images/icons/star.svg');"
+          />
+           
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--color-info-default"
+          >
+            Audited
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box mm-box--display-flex"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-4/5"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md-bold mm-box--margin-bottom-2 mm-box--color-text-alternative"
+        >
+          Secure your account with MetaMask Mobile
+        </p>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+        >
+          A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.
+        </p>
+      </div>
+      <div
+        class="mm-box mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-1/5"
+      >
+        <div
+          class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
+          >
+            Tags
+          </p>
+          <div
+            class="mm-box mm-tag mm-box--margin-right-1 mm-box--padding-right-1 mm-box--padding-left-1 mm-box--display-inline-block mm-box--justify-content-center mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+          >
+            <p
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            >
+              EOA
+            </p>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
+          >
+            Developer
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--overflow-wrap-break-word mm-box--color-text-default"
+          >
+            Metamask
+          </p>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
+          >
+            Website
+          </p>
+          <a
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="https://www.consensys.net/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            https://www.consensys.net/
+          </a>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
+          >
+            Audit
+          </p>
+          <a
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="auditUrl1"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            auditUrl1
+          </a>
+          <a
+            class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+            href="auditUrl2"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            auditUrl2
+          </a>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
+          >
+            Version
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            1.0.0
+          </p>
+        </div>
+        <div
+          class="mm-box mm-box--margin-bottom-4 mm-box--flex-direction-column"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-sm-bold mm-text--overflow-wrap-break-word mm-box--margin-bottom-1 mm-box--color-text-default"
+          >
+            Updated
+          </p>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            April 20, 2023
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

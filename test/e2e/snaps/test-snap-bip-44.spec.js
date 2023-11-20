@@ -1,4 +1,9 @@
-const { withFixtures } = require('../helpers');
+const {
+  withFixtures,
+  unlockWallet,
+  switchToNotificationWindow,
+  WINDOW_TITLES,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -18,65 +23,57 @@ describe('Test Snap bip-44', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
 
         // find and scroll to the bip44 test and connect
-        const snapButton1 = await driver.findElement('#connectBip44Snap');
+        const snapButton1 = await driver.findElement('#connectbip44');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
-        await driver.clickElement('#connectBip44Snap');
+        await driver.clickElement('#connectbip44');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect and approve
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          2,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver, 2);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
         });
-        await driver.waitForSelector({ text: 'Approve & install' });
+        await driver.waitForSelector({ text: 'Install' });
+
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
         await driver.clickElement({
-          text: 'Approve & install',
+          text: 'Install',
           tag: 'button',
         });
 
         // deal with permissions popover
         await driver.delay(500);
-        await driver.clickElement('#key-access-bip44-1-0');
+        await driver.clickElement('.mm-checkbox__input');
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
         });
-        await driver.waitForSelector({ text: 'Ok' });
+        await driver.waitForSelector({ text: 'OK' });
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 
         // switch back to test-snaps window
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectBip44Snap',
+          css: '#connectbip44',
           text: 'Reconnect to BIP-44 Snap',
         });
 
@@ -98,19 +95,19 @@ describe('Test Snap bip-44', function () {
         await driver.clickElement('#signBip44Message');
 
         // Switch to approve signature message window and approve
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver, 2);
         await driver.clickElement({
           text: 'Approve',
           tag: 'button',
         });
 
         // switch back to test-snaps page
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        const windowHandles = await driver.waitUntilXWindowHandles(
+          1,
+          1000,
+          10000,
+        );
+        await driver.switchToWindow(windowHandles[0]);
 
         // check the results of the message signature using waitForSelector
         await driver.waitForSelector({

@@ -5,7 +5,7 @@ const { hideBin } = require('yargs/helpers');
 
 const { runCommand, runInShell } = require('./lib/run-command');
 const { getVersion } = require('./lib/get-version');
-const { BuildType } = require('./lib/build-type');
+const { loadBuildTypesConfig } = require('./lib/build-type');
 
 start().catch((error) => {
   console.error(error);
@@ -29,9 +29,9 @@ async function start() {
           type: 'string',
         })
         .option('build-type', {
-          default: BuildType.main,
+          default: loadBuildTypesConfig().default,
           description: 'The MetaMask extension build type',
-          choices: Object.values(BuildType),
+          choices: Object.keys(loadBuildTypesConfig().buildTypes),
         })
         .option('build-version', {
           default: 0,
@@ -86,7 +86,7 @@ async function start() {
   }
 
   const additionalUploadArgs = [];
-  if (buildType !== BuildType.main) {
+  if (buildType !== loadBuildTypesConfig().default) {
     additionalUploadArgs.push('--dist-directory', `dist-${buildType}`);
   }
   // upload sentry source and sourcemaps

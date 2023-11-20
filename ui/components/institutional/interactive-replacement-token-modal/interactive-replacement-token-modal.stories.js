@@ -42,7 +42,7 @@ const customData = {
         custodianName: 'saturn-dev',
       },
     },
-    provider: {
+    providerConfig: {
       type: 'test',
     },
     selectedAddress: '0xAddress',

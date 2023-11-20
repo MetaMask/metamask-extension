@@ -1,9 +1,6 @@
 import { ObservableStore } from '@metamask/obs-store';
-import log from 'loglevel';
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 import AppStateController from './app-state';
-
-jest.mock('loglevel');
 
 let appStateController, mockStore;
 
@@ -24,13 +21,11 @@ describe('AppStateController', () => {
           },
         })),
       },
-      qrHardwareStore: {
-        subscribe: jest.fn(),
-      },
       messenger: {
         call: jest.fn(() => ({
           catch: jest.fn(),
         })),
+        subscribe: jest.fn(),
       },
     });
   };
@@ -145,52 +140,6 @@ describe('AppStateController', () => {
       expect(appStateController.messagingSystem.call).toHaveBeenCalledWith(
         'ApprovalController:acceptRequest',
         expect.any(String),
-      );
-    });
-
-    it('logs if rejecting approval request throws', async () => {
-      appStateController._approvalRequestId = 'mock-approval-request-id';
-      appStateController = new AppStateController({
-        addUnlockListener: jest.fn(),
-        isUnlocked: jest.fn(() => true),
-        onInactiveTimeout: jest.fn(),
-        showUnlockRequest: jest.fn(),
-        preferencesStore: {
-          subscribe: jest.fn(),
-          getState: jest.fn(() => ({
-            preferences: {
-              autoLockTimeLimit: 0,
-            },
-          })),
-        },
-        qrHardwareStore: {
-          subscribe: jest.fn(),
-        },
-        messenger: {
-          call: jest.fn(() => {
-            throw new Error('mock error');
-          }),
-        },
-      });
-
-      appStateController.handleUnlock();
-
-      expect(log.error).toHaveBeenCalledTimes(1);
-      expect(log.error).toHaveBeenCalledWith(
-        'Attempted to accept missing unlock approval request',
-      );
-    });
-
-    it('returns without call messenger if no approval request in pending', async () => {
-      const emitSpy = jest.spyOn(appStateController, 'emit');
-
-      appStateController.handleUnlock();
-
-      expect(emitSpy).toHaveBeenCalledTimes(0);
-      expect(appStateController.messagingSystem.call).toHaveBeenCalledTimes(0);
-      expect(log.error).toHaveBeenCalledTimes(1);
-      expect(log.error).toHaveBeenCalledWith(
-        'Attempted to accept missing unlock approval request',
       );
     });
   });
@@ -344,6 +293,25 @@ describe('AppStateController', () => {
       expect(appStateController.store.getState().usedNetworks[chainId]).toBe(
         true,
       );
+    });
+  });
+
+  describe('setSnapsInstallPrivacyWarningShownStatus', () => {
+    it('updates the status of snaps install privacy warning', () => {
+      appStateController = createAppStateController();
+      const updateStateSpy = jest.spyOn(
+        appStateController.store,
+        'updateState',
+      );
+
+      appStateController.setSnapsInstallPrivacyWarningShownStatus(true);
+
+      expect(updateStateSpy).toHaveBeenCalledTimes(1);
+      expect(updateStateSpy).toHaveBeenCalledWith({
+        snapsInstallPrivacyWarningShown: true,
+      });
+
+      updateStateSpy.mockRestore();
     });
   });
 });

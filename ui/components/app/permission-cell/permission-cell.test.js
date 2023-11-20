@@ -19,6 +19,7 @@ describe('Permission Cell', () => {
   it('renders approved permission cell', () => {
     renderWithProvider(
       <PermissionCell
+        permissionName={mockPermissionData.permissionName}
         title={mockPermissionData.label}
         description={mockPermissionData.description}
         weight={mockPermissionData.weight}
@@ -36,6 +37,7 @@ describe('Permission Cell', () => {
   it('renders revoked permission cell', () => {
     renderWithProvider(
       <PermissionCell
+        permissionName={mockPermissionData.permissionName}
         title={mockPermissionData.label}
         description={mockPermissionData.description}
         weight={mockPermissionData.weight}
@@ -54,6 +56,7 @@ describe('Permission Cell', () => {
   it('renders requested permission cell', () => {
     renderWithProvider(
       <PermissionCell
+        permissionName={mockPermissionData.permissionName}
         title={mockPermissionData.label}
         description={mockPermissionData.description}
         weight={mockPermissionData.weight}

@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 const OPENSEA_URL =
@@ -83,7 +83,7 @@ describe('Transaction security provider', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) =>
           await mockSecurityProviderDetection(mockServer, 'malicious'),
         dapp: true,
@@ -94,7 +94,7 @@ describe('Transaction security provider', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
 
         await driver.clickElement('#personalSign');
@@ -106,7 +106,7 @@ describe('Transaction security provider', function () {
         );
         const warningHeader = await driver.isElementPresent({
           text: 'This could be a scam',
-          tag: 'h5',
+          tag: 'p',
         });
         assert.equal(warningHeader, true);
       },
@@ -123,7 +123,7 @@ describe('Transaction security provider', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) =>
           await mockSecurityProviderDetection(mockServer, 'notSafe'),
         dapp: true,
@@ -134,7 +134,7 @@ describe('Transaction security provider', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
 
         await driver.clickElement('#signTypedData');
@@ -146,7 +146,7 @@ describe('Transaction security provider', function () {
         );
         const warningHeader = await driver.isElementPresent({
           text: 'Request may not be safe',
-          tag: 'h5',
+          tag: 'p',
         });
         assert.equal(warningHeader, true);
       },
@@ -163,7 +163,7 @@ describe('Transaction security provider', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) =>
           await mockSecurityProviderDetection(mockServer, 'notMalicious'),
         dapp: true,
@@ -174,7 +174,7 @@ describe('Transaction security provider', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
 
         await driver.clickElement('#siwe');
@@ -186,7 +186,7 @@ describe('Transaction security provider', function () {
         );
         const warningHeader = await driver.isElementPresent({
           text: 'Request may not be safe',
-          tag: 'h5',
+          tag: 'p',
         });
         assert.equal(warningHeader, false);
       },
@@ -203,7 +203,7 @@ describe('Transaction security provider', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) =>
           await mockSecurityProviderDetection(mockServer, 'requestNotVerified'),
         dapp: true,
@@ -214,7 +214,7 @@ describe('Transaction security provider', function () {
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
 
         await driver.clickElement('#signTypedDataV4');
@@ -226,7 +226,7 @@ describe('Transaction security provider', function () {
         );
         const warningHeader = await driver.isElementPresent({
           text: 'Request not verified',
-          tag: 'h5',
+          tag: 'p',
         });
         assert.equal(warningHeader, true);
       },

@@ -1,27 +1,33 @@
-import { CHAIN_IDS, NETWORK_IDS } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import txHelper from './tx-helper';
 
 describe('txHelper', () => {
   it('always shows the oldest tx first', () => {
-    const metamaskNetworkId = NETWORK_IDS.MAINNET;
     const chainId = CHAIN_IDS.MAINNET;
-    const txs = {
-      a: { metamaskNetworkId, time: 3 },
-      b: { metamaskNetworkId, time: 1 },
-      c: { metamaskNetworkId, time: 2 },
+    const mockUnapprovedTxs = {
+      a: { chainId, time: 3 },
+      b: { chainId, time: 6 },
+      c: { chainId, time: 2 },
+    };
+
+    const mockUnapprovedMsgs = {
+      d: { chainId, time: 4 },
+      e: { chainId, time: 1 },
+      f: { chainId, time: 5 },
     };
 
     const sorted = txHelper(
-      txs,
+      mockUnapprovedTxs,
+      mockUnapprovedMsgs,
       null,
       null,
       null,
       null,
-      null,
-      metamaskNetworkId,
       chainId,
     );
+
     expect(sorted[0].time).toStrictEqual(1);
     expect(sorted[2].time).toStrictEqual(3);
+    expect(sorted[5].time).toStrictEqual(6);
   });
 });

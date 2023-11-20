@@ -1,0 +1,250 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { ModalFocus } from './modal-focus';
+
+# ModalFocus
+
+`ModalFocus` traps the focus within the modal. This greatly improves the experience for screen readers and keyboard only users.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-modalfocus--default-story" />
+</Canvas>
+
+## Props
+
+The `ModalFocus` is built with [react-focus-lock](https://github.com/theKashey/react-focus-lock) and accepts all of the props from that library.
+
+<ArgsTable of={ModalFocus} />
+
+### Children
+
+Use the `children` prop to render the component to lock focus to
+
+<Canvas>
+  <Story id="components-componentlibrary-modalfocus--children" />
+</Canvas>
+
+```jsx
+import React from 'react';
+import {
+  BorderColor,
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
+
+import { ModalFocus } from '../../component-library';
+
+const [open, setOpen] = React.useState(false);
+
+<button onClick={() => setOpen(true)} marginBottom={4}>
+  Open
+</button>;
+
+{
+  open && (
+    <ModalFocus>
+      <Box
+        padding={4}
+        borderColor={BorderColor.borderDefault}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        gap={4}
+      >
+        <p>Modal focus children</p>
+        <input />
+        <p>
+          Use the keyboard to try tabbing around you will notice that the focus
+          is locked to the content within modal focus
+        </p>
+        <button onClick={() => setOpen(false)}>Close</button>
+      </Box>
+    </ModalFocus>
+  );
+}
+```
+
+### Initial Focus Ref
+
+Use the `initialFocusRef` to pass the `ref` of the element to receive focus initially
+
+<Canvas>
+  <Story id="components-componentlibrary-modalfocus--initial-focus-ref" />
+</Canvas>
+
+```jsx
+import React from 'react';
+import {
+  BorderColor,
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
+
+import { ModalFocus } from '../../component-library';
+
+const [open, setOpen] = React.useState(false);
+const ref = React.useRef < HTMLButtonElement > null;
+
+<button onClick={() => setOpen(true)} marginBottom={4}>
+  Open
+</button>;
+
+{
+  open && (
+    <ModalFocus initialFocusRef={ref}>
+      <Box
+        padding={4}
+        borderColor={BorderColor.borderDefault}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        gap={4}
+      >
+        <input />
+        <p>Initial focus is on the close button</p>
+        <button ref={ref} onClick={() => setOpen(false)}>
+          Close
+        </button>
+      </Box>
+    </ModalFocus>
+  );
+}
+```
+
+### Final Focus Ref
+
+Use the `finalFocusRef` to pass the `ref` of the element to return focus to when `ModalFocus` unmounts
+
+<Canvas>
+  <Story id="components-componentlibrary-modalfocus--final-focus-ref" />
+</Canvas>
+
+```jsx
+import React from 'react';
+import {
+  BorderColor,
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
+
+import { ModalFocus } from '../../component-library';
+
+const [open, setOpen] = React.useState(false);
+const ref = React.useRef < HTMLInputElement > null;
+
+<button onClick={() => setOpen(true)} marginBottom={4}>
+  Open
+</button>;
+<input placeholder="Focus will return here" ref={ref} />;
+
+{
+  open && (
+    <ModalFocus finalFocusRef={ref}>
+      <Box
+        padding={4}
+        borderColor={BorderColor.borderDefault}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        gap={4}
+      >
+        <p>Focus will be returned to the input once closed</p>
+        <button onClick={() => setOpen(false)}>Close</button>
+      </Box>
+    </ModalFocus>
+  );
+}
+```
+
+### Restore Focus
+
+Use the `restoreFocus` to restore focus to the element that triggered the `ModalFocus` once it unmounts
+
+<Canvas>
+  <Story id="components-componentlibrary-modalfocus--restore-focus" />
+</Canvas>
+
+```jsx
+import React from 'react';
+import {
+  BorderColor,
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
+
+import { ModalFocus } from '../../component-library';
+
+const [open, setOpen] = React.useState(false);
+
+<button onClick={() => setOpen(true)} marginBottom={4}>
+  Open
+</button>;
+{
+  open && (
+    <ModalFocus restoreFocus>
+      <Box
+        padding={4}
+        borderColor={BorderColor.borderDefault}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        gap={4}
+      >
+        <p>Focus will be restored to the open button once closed</p>
+        <button onClick={() => setOpen(false)}>Close</button>
+      </Box>
+    </ModalFocus>
+  );
+}
+```
+
+### Auto Focus
+
+Use the `autoFocus` to auto focus to the first focusable element within the `ModalFocus` once it mounts
+
+Defaults to `true`
+
+<Canvas>
+  <Story id="components-componentlibrary-modalfocus--auto-focus" />
+</Canvas>
+
+```jsx
+import React from 'react';
+import {
+  BorderColor,
+  DISPLAY,
+  FLEX_DIRECTION,
+} from '../../../helpers/constants/design-system';
+
+import Box from '../../ui/box';
+
+import { ModalFocus } from '../../component-library';
+
+const [open, setOpen] = React.useState(false);
+
+<button onClick={() => setOpen(true)} marginBottom={4}>
+  Open
+</button>;
+{
+  open && (
+    <ModalFocus autoFocus={false}>
+      <Box
+        padding={4}
+        borderColor={BorderColor.borderDefault}
+        display={DISPLAY.FLEX}
+        flexDirection={FLEX_DIRECTION.COLUMN}
+        gap={4}
+      >
+        <p>auto focus set to false</p>
+        <button onClick={() => setOpen(false)}>Close</button>
+      </Box>
+    </ModalFocus>
+  );
+}
+```

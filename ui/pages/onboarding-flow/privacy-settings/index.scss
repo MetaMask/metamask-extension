@@ -23,9 +23,7 @@
 
   &__settings {
     display: flex;
-    justify-content: center;
     flex-direction: column;
-    text-align: center;
     max-width: 620px;
     margin-bottom: 20px;
 
@@ -63,10 +61,5 @@
       font-size: 14px !important;
       padding: 8px !important;
     }
-  }
-
-  & button {
-    max-width: 50%;
-    padding: 15px;
   }
 }

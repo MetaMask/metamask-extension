@@ -81,9 +81,6 @@
   "back": {
     "message": "Bumalik"
   },
-  "backToAll": {
-    "message": "Bumalik sa Lahat"
-  },
   "backupApprovalInfo": {
     "message": "Ang secret code na ito ay kinakailangan para ma-recover ang iyong wallet kung sakaling mawawala mo ang iyong device, nakalimutan mo ang iyong password, kailangan mong i-install ulit ang MetaMask, o gusto mong i-access ang iyong wallet sa ibang device."
   },
@@ -133,16 +130,13 @@
   "connect": {
     "message": "Kumonekta"
   },
-  "connectHardwareWallet": {
-    "message": "Magkonekta ng Hardware Wallet"
-  },
   "connectingTo": {
     "message": "Kumokonekta sa $1"
   },
   "connectingToGoerli": {
     "message": "Kumokonekta sa Goerli Test Network"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Kumokonekta sa Linea Goerli Test Network"
   },
   "connectingToMainnet": {
@@ -160,9 +154,6 @@
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
-  "copyPrivateKey": {
-    "message": "Ito ang iyong pribadong private key (i-click para kopyahin)"
-  },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
   },
@@ -171,9 +162,6 @@
   },
   "create": {
     "message": "Gumawa"
-  },
-  "createAccount": {
-    "message": "Gumawa ng Account"
   },
   "createPassword": {
     "message": "Gumawa ng Password"
@@ -196,14 +184,8 @@
   "delete": {
     "message": "I-delete"
   },
-  "deleteAccount": {
-    "message": "I-delete ang Account"
-  },
   "deleteNetwork": {
     "message": "I-delete ang Network?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
   },
   "details": {
     "message": "Mga Detalye"
@@ -232,9 +214,6 @@
   "ensRegistrationError": {
     "message": "May error sa pagrerehistro ng ENS name"
   },
-  "enterPassword": {
-    "message": "Ilagay ang password"
-  },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
   },
@@ -243,9 +222,6 @@
   },
   "expandView": {
     "message": "I-expand ang View"
-  },
-  "exportPrivateKey": {
-    "message": "I-export ang Private Key"
   },
   "failed": {
     "message": "Nabigo"
@@ -392,9 +368,6 @@
   "mustSelectOne": {
     "message": "Dapat pumili ng kahit 1 token."
   },
-  "myAccounts": {
-    "message": "Mga Account Ko"
-  },
   "needImportFile": {
     "message": "Dapat kang pumili ng file na ii-import.",
     "description": "User is important an account and needs to add a file to continue"
@@ -499,14 +472,8 @@
   "privateNetwork": {
     "message": "Pribadong Network"
   },
-  "queue": {
-    "message": "I-queue"
-  },
   "readdToken": {
     "message": "Puwede mong idagdag ulit ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Magdagdag ng token” sa menu ng mga opsyon ng iyong mga accounts."
-  },
-  "recents": {
-    "message": "Kamakailan"
   },
   "recipientAddressPlaceholder": {
     "message": "Maghanap, pampublikong address (0x), o ENS"
@@ -572,9 +539,6 @@
   "searchResults": {
     "message": "Mga Resulta ng Paghahanap"
   },
-  "searchTokens": {
-    "message": "Maghanap ng Mga Token"
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -613,9 +577,6 @@
   },
   "showHexDataDescription": {
     "message": "Piliin ito para ipakita ang hex data field sa screen ng pagpapadala"
-  },
-  "showPrivateKeys": {
-    "message": "Ipakita ang mga Private Key"
   },
   "sign": {
     "message": "I-sign"
@@ -719,21 +680,11 @@
   "transfer": {
     "message": "Mag-transfer"
   },
-  "transferBetweenAccounts": {
-    "message": "Mag-transfer sa pagitan ng aking mga account"
-  },
   "transferFrom": {
     "message": "I-transfer Mula Sa"
   },
-  "troubleTokenBalances": {
-    "message": "Nagkaroon kami ng problema sa pag-loading sa iyong mga token balance. Makikita mo ang mga iyon ",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Subukang muli"
-  },
-  "typePassword": {
-    "message": "I-type ang iyong password sa MetaMask"
   },
   "unapproved": {
     "message": "Hindi inaprubahan"

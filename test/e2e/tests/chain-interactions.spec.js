@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Chain Interactions', function () {
@@ -21,7 +21,7 @@ describe('Chain Interactions', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -29,7 +29,7 @@ describe('Chain Interactions', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // trigger add chain confirmation
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.clickElement('#addEthereumChain');
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
@@ -51,16 +51,19 @@ describe('Chain Interactions', function () {
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
         // switch to extension
-        await driver.waitUntilXWindowHandles(2);
+        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindow(extension);
 
         // verify networks
-        const networkDisplay = await driver.findElement('.network-display');
-        await networkDisplay.click();
-        assert.equal(await networkDisplay.getText(), 'Localhost 8545');
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: 'Localhost 8545',
+        });
+
+        await driver.clickElement('[data-testid="network-display"]');
         const ganacheChain = await driver.findElements({
           text: `Localhost ${port}`,
-          tag: 'span',
+          tag: 'button',
         });
         assert.ok(ganacheChain.length, 1);
       },
@@ -73,7 +76,7 @@ describe('Chain Interactions', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -81,7 +84,7 @@ describe('Chain Interactions', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // trigger add chain confirmation
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.clickElement('#addEthereumChain');
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
@@ -100,10 +103,10 @@ describe('Chain Interactions', function () {
         await driver.switchToWindow(extension);
 
         // verify current network
-        const networkDisplay = await driver.findElement(
-          '[data-testid="network-display"]',
-        );
-        assert.equal(await networkDisplay.getText(), `Localhost ${port}`);
+        await driver.findElement({
+          css: '[data-testid="network-display"]',
+          text: `Localhost ${port}`,
+        });
       },
     );
   });

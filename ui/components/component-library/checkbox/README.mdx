@@ -1,0 +1,218 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { Checkbox } from './checkbox';
+
+# Checkbox
+
+Checkbox is a graphical element that allows users to select one or more options from a set of choices.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-checkbox--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={Checkbox} />
+
+### Label
+
+Use the `label` string prop to set the label of the `Checkbox`
+
+<Canvas>
+  <Story id="components-componentlibrary-checkbox--label" />
+</Canvas>
+
+```jsx
+import { Checkbox } from '../../component-library';
+
+<Checkbox label="Checkbox Label" />;
+```
+
+### IsChecked
+
+Use the `isChecked` boolean prop to set the checked state of the `Checkbox`
+
+<Canvas>
+  <Story id="components-componentlibrary-checkbox--is-checked" />
+</Canvas>
+
+```jsx
+import { Checkbox } from '../../component-library';
+
+<Checkbox isChecked={true} label="isChecked demo" />;
+```
+
+### IsIndeterminate
+
+Use the `isIndeterminate` boolean prop to set the indeterminate state of the `Checkbox`
+
+<Canvas>
+  <Story id="components-componentlibrary-checkbox--is-indeterminate" />
+</Canvas>
+
+```jsx
+import React from 'react';
+import { Checkbox, Box } from '../../component-library';
+
+const [checkedItems, setCheckedItems] = React.useState([false, true, false]);
+
+const allChecked = checkedItems.every(Boolean);
+const isIndeterminate = checkedItems.some(Boolean) && !allChecked;
+
+const handleIndeterminateChange = () => {
+  if (allChecked || isIndeterminate) {
+    setCheckedItems([false, false, false]);
+  } else {
+    setCheckedItems([true, true, true]);
+  }
+};
+
+const handleCheckboxChange = (index, value) => {
+  const newCheckedItems = [...checkedItems];
+  newCheckedItems[index] = value;
+  setCheckedItems(newCheckedItems);
+};
+
+<Checkbox
+    label="isIndeterminate demo"
+    isChecked={allChecked}
+    isIndeterminate={isIndeterminate}
+    onChange={handleIndeterminateChange}
+    marginBottom={2}
+/>
+<Box
+  marginLeft={2}
+  gap={1}
+  display={Display.Flex}
+  flexDirection={FlexDirection.Column}
+>
+  <Checkbox
+    isChecked={checkedItems[0]}
+    onChange={(e) => handleCheckboxChange(0, e.target.checked)}
+    label="Checkbox 1"
+  />
+  <Checkbox
+    isChecked={checkedItems[1]}
+    onChange={(e) => handleCheckboxChange(1, e.target.checked)}
+    label="Checkbox 2"
+  />
+  <Checkbox
+    isChecked={checkedItems[2]}
+    onChange={(e) => handleCheckboxChange(2, e.target.checked)}
+    label="Checkbox 3"
+  />
+</Box>
+```
+
+### IsDisabled
+
+Use the `isDisabled` boolean prop to set the disabled state of the `Checkbox`
+
+<Canvas>
+  <Story id="components-componentlibrary-checkbox--is-disabled" />
+</Canvas>
+
+```jsx
+import { Checkbox } from '../../component-library';
+
+<Checkbox isDisabled={true} label="isDisabled demo" />;
+```
+
+### IsReadOnly
+
+Use the `isReadOnly` boolean prop to set the readOnly attribute of the `Checkbox`
+
+<Canvas>
+  <Story id="components-componentlibrary-checkbox--is-read-only" />
+</Canvas>
+
+```jsx
+import { Checkbox } from '../../component-library';
+
+<Checkbox isReadOnly={true} label="isReadOnly demo" />;
+```
+
+### OnChange
+
+Use the `onChange` function prop to set the onChange handler of the `Checkbox`
+
+<Canvas>
+  <Story id="components-componentlibrary-checkbox--on-change" />
+</Canvas>
+
+```jsx
+import React from 'react';
+import { Checkbox } from '../../component-library';
+
+const [isChecked, setIsChecked] = React.useState(false);
+
+<Checkbox
+  onChange={() => setIsChecked(!isChecked)}
+  isChecked={isChecked}
+  label="isReadOnly demo"
+/>;
+```
+
+### IsRequired
+
+Use the `isRequired` boolean prop to set the required attribute of the `Checkbox`
+
+<Canvas>
+  <Story id="components-componentlibrary-checkbox--is-required" />
+</Canvas>
+
+```jsx
+import { Checkbox } from '../../component-library';
+
+<Checkbox isRequired={true} label="isRequired demo" />;
+```
+
+### Title
+
+Use the `title` string prop to set the title attribute of the `Checkbox`
+The title attribute is used to provide additional context or information about the checkbox. It is primarily used for browser native tooltip functionality.
+
+<Canvas>
+  <Story id="components-componentlibrary-checkbox--title" />
+</Canvas>
+
+```jsx
+import { Checkbox } from '../../component-library';
+
+<Checkbox title="Apples" label="Inspect to see title attribute" />;
+```
+
+### Name
+
+Use the `name` string prop to set the name attribute of the `Checkbox`
+This is best used when working with a form and submitting the value of the `Checkbox`
+
+<Canvas>
+  <Story id="components-componentlibrary-checkbox--name" />
+</Canvas>
+
+```jsx
+import { Checkbox } from '../../component-library';
+
+<Checkbox name="pineapple" label="Inspect to see name attribute" />;
+```
+
+### InputProps
+
+Use the `inputProps` object prop to add additonal props or attributes to the hidden input element
+If needing to pass a ref to the input element, use the `inputRef` prop
+
+<Canvas>
+  <Story id="components-componentlibrary-checkbox--input-props" />
+</Canvas>
+
+```jsx
+import { Checkbox } from '../../component-library';
+
+<Checkbox
+  label="inputProps demo"
+  inputProps={{ borderColor: BorderColor.errorDefault }}
+/>;
+```

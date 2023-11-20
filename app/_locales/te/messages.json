@@ -103,9 +103,6 @@
   "password": {
     "message": "పాస్‌వర్డ్"
   },
-  "queue": {
-    "message": "క్రమ వరుస"
-  },
   "reject": {
     "message": "తిరస్కరించు"
   },

@@ -80,12 +80,9 @@ function runInChildProcess(
     );
 
     // forward logs to main process
-    // skip the first stdout event (announcing the process command)
-    childProcess.stdout.once('data', () => {
-      childProcess.stdout.on('data', (data) =>
-        process.stdout.write(`${taskName}: ${data}`),
-      );
-    });
+    childProcess.stdout.on('data', (data) =>
+      process.stdout.write(`${taskName}: ${data}`),
+    );
 
     childProcess.stderr.on('data', (data) =>
       process.stderr.write(`${taskName}: ${data}`),

@@ -1,0 +1,66 @@
+.snap-account-page {
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
+
+  @include screen-sm-min {
+    width: $width-screen-sm-min;
+  }
+
+  @include screen-md-min {
+    width: $width-screen-md-min;
+  }
+
+  @include screen-lg-min {
+    width: $width-screen-lg-min;
+  }
+
+  background-image: url('images/snap-account-page.svg');
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: bottom;
+}
+
+.snap-account-subtitle {
+  @include screen-sm-min {
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+
+  @include screen-md-min {
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+
+  text-align: center;
+}
+
+.snap-account-cards {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.snap-account-color-text {
+  background-image: linear-gradient(0.45deg, #f6851b, #43aefc);
+  background-clip: text;
+  color: transparent;
+}
+
+.snap-account-footer {
+  padding-top: 140px;
+}
+
+.legal-disclaimer {
+  padding-left: 48px;
+  padding-right: 48px;
+}
+
+.legal-disclaimer-element {
+  padding-top: 30px;
+  white-space: pre-line;
+}
+
+.feedback-link {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}

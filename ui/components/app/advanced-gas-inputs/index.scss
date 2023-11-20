@@ -22,12 +22,11 @@
         @include H8;
       }
 
-      .fa-info-circle {
-        color: var(--color-icon-alternative);
+      .info-circle {
         cursor: pointer;
       }
 
-      .fa-info-circle:hover {
+      .info-circle:hover {
         color: var(--color-icon-muted);
       }
     }

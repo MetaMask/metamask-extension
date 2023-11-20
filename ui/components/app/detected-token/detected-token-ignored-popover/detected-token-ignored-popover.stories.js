@@ -4,14 +4,23 @@ import DetectedTokenIgnoredPopover from './detected-token-ignored-popover';
 
 export default {
   title: 'Components/App/DetectedToken/DetectedTokenIgnoredPopover',
-
   argTypes: {
     onCancelIgnore: {
-      control: 'func',
+      action: 'onCancelIgnore',
     },
     handleClearTokensSelection: {
-      control: 'func',
+      action: 'handleClearTokensSelection',
     },
+    partiallyIgnoreDetectedTokens: {
+      control: 'boolean',
+    },
+    isOpen: {
+      control: 'boolean',
+    },
+  },
+  args: {
+    partiallyIgnoreDetectedTokens: false,
+    isOpen: true,
   },
 };
 
@@ -22,3 +31,9 @@ const Template = (args) => {
 export const DefaultStory = Template.bind({});
 
 DefaultStory.storyName = 'Default';
+
+export const PartiallyIgnoreDetectedTokens = Template.bind({});
+
+PartiallyIgnoreDetectedTokens.args = {
+  partiallyIgnoreDetectedTokens: true,
+};

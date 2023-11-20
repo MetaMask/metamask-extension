@@ -18,14 +18,16 @@ describe('Auto-Lock Timer', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
         // Set Auto Lock Timer
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         const sixSecsInMins = '0.1';
@@ -36,7 +38,7 @@ describe('Auto-Lock Timer', function () {
         await autoLockTimerInput.fill(10081);
         await driver.waitForSelector({
           css: '#autoTimeout-helper-text',
-          text: 'Lock time is too great',
+          text: 'Lock time must be a number between 0 and 10080',
         });
         await autoLockTimerInput.fill(sixSecsInMins);
         await driver.assertElementNotPresent('#autoTimeout-helper-text');

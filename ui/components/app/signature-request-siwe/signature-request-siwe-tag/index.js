@@ -1,37 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  TypographyVariant,
+  TextVariant,
   Size,
-  DISPLAY,
+  Display,
   AlignItems,
-  FONT_WEIGHT,
   BackgroundColor,
   TextColor,
 } from '../../../../helpers/constants/design-system';
 import Box from '../../../ui/box';
-import Typography from '../../../ui/typography/typography';
+import { Text } from '../../../component-library';
 
 const SignatureRequestSIWETag = ({ text }) => {
   return (
     <Box
       className="signature-request-siwe-tag"
       marginRight={1}
-      display={DISPLAY.INLINE_FLEX}
+      display={Display.InlineFlex}
       alignItems={AlignItems.center}
       backgroundColor={BackgroundColor.errorDefault}
       borderRadius={Size.XL}
       paddingLeft={4}
       paddingRight={4}
     >
-      <Typography
-        fontWeight={FONT_WEIGHT.BOLD}
+      <Text
         margin={0}
-        variant={TypographyVariant.H7}
+        variant={TextVariant.bodySmBold}
+        as="h6"
         color={TextColor.errorInverse}
       >
         {text}
-      </Typography>
+      </Text>
     </Box>
   );
 };

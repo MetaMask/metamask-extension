@@ -3,15 +3,23 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import copyToClipboard from 'copy-to-clipboard';
+import { toHex } from '@metamask/controller-utils';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
   removeAndIgnoreNft,
   setRemoveNftMessage,
 } from '../../../store/actions';
+import {
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+  MAINNET_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../../shared/constants/network';
 import NftDetails from './nft-details';
 
 jest.mock('copy-to-clipboard');
@@ -43,7 +51,7 @@ describe('NFT Details', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
   const nfts =
-    mockState.metamask.allNfts[mockState.metamask.selectedAddress][5];
+    mockState.metamask.allNfts[mockState.metamask.selectedAddress][toHex(5)];
 
   const props = {
     nft: nfts[5],
@@ -104,7 +112,7 @@ describe('NFT Details', () => {
     const copyAddressButton = queryByTestId('nft-address-copy');
     fireEvent.click(copyAddressButton);
 
-    expect(copyToClipboard).toHaveBeenCalledWith(nfts[5].address);
+    expect(copyToClipboard).toHaveBeenCalledWith(nfts[5].address, COPY_OPTIONS);
   });
 
   it('should navigate to draft transaction send route with ERC721 data', async () => {
@@ -158,7 +166,7 @@ describe('NFT Details', () => {
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://testnets.opensea.io/assets/${nfts[5].address}/${nfts[5].tokenId}`,
+          url: `https://testnets.opensea.io/assets/goerli/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
@@ -170,8 +178,11 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          provider: {
-            chainId: '0x1',
+          providerConfig: {
+            chainId: CHAIN_IDS.MAINNET,
+            type: NETWORK_TYPES.MAINNET,
+            ticker: CURRENCY_SYMBOLS.ETH,
+            nickname: MAINNET_DISPLAY_NAME,
           },
         },
       };
@@ -190,7 +201,7 @@ describe('NFT Details', () => {
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://opensea.io/assets/${nfts[5].address}/${nfts[5].tokenId}`,
+          url: `https://opensea.io/assets/ethereum/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
@@ -200,8 +211,19 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          provider: {
+          providerConfig: {
             chainId: '0x89',
+            type: 'rpc',
+            id: 'custom-mainnet',
+          },
+          networkConfigurations: {
+            testNetworkConfigurationId: {
+              rpcUrl: 'https://testrpc.com',
+              chainId: '0x89',
+              nickname: 'Custom Mainnet RPC',
+              type: 'rpc',
+              id: 'custom-mainnet',
+            },
           },
         },
       };
@@ -230,8 +252,9 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          provider: {
-            chainId: '0xaa36a7',
+          providerConfig: {
+            chainId: CHAIN_IDS.SEPOLIA,
+            type: NETWORK_TYPES.SEPOLIA,
           },
         },
       };
@@ -250,7 +273,7 @@ describe('NFT Details', () => {
 
       await waitFor(() => {
         expect(global.platform.openTab).toHaveBeenCalledWith({
-          url: `https://testnets.opensea.io/assets/${nfts[5].address}/${nfts[5].tokenId}`,
+          url: `https://testnets.opensea.io/assets/sepolia/${nfts[5].address}/${nfts[5].tokenId}`,
         });
       });
     });
@@ -260,8 +283,15 @@ describe('NFT Details', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          provider: {
+          providerConfig: {
             chainId: '0x99',
+          },
+          networkConfigurations: {
+            testNetworkConfigurationId: {
+              rpcUrl: 'https://testrpc.com',
+              chainId: '0x99',
+              nickname: 'Custom Mainnet RPC',
+            },
           },
         },
       };

@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import CustomContentSearch from '../custom-content-search';
-import Typography from '../../../../components/ui/typography';
 import {
   Color,
-  TypographyVariant,
+  TextVariant,
 } from '../../../../helpers/constants/design-system';
 import NetworksListItem from '../networks-list-item';
+import { Text } from '../../../../components/component-library';
 
 const NetworksList = ({
   networkIsSelected,
@@ -62,14 +62,15 @@ const NetworksList = ({
         />
       ))}
       {searchQuery === '' && (
-        <Typography
-          variant={TypographyVariant.H6}
+        <Text
+          variant={TextVariant.bodySm}
+          as="h6"
           marginTop={4}
           color={Color.textAlternative}
           className="networks-tab__networks-list__label"
         >
           {t('testNetworks')}
-        </Typography>
+        </Text>
       )}
       {searchedNetworksToRenderThatAreTestNetworks.map((network, _) => (
         <NetworksListItem

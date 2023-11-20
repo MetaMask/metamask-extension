@@ -1,5 +1,6 @@
 import { HttpProvider } from 'ethjs';
 import nock from 'nock';
+import { toHex } from '@metamask/controller-utils';
 import fetchEstimatedL1Fee from './fetchEstimatedL1Fee';
 
 describe('fetchEstimatedL1Fee', () => {
@@ -33,7 +34,7 @@ describe('fetchEstimatedL1Fee', () => {
         result: `0x0000000000000000000000000000000000000000000000000000${expectedGasFeeResult}`,
       });
 
-    const gasFee = await fetchEstimatedL1Fee('10', {
+    const gasFee = await fetchEstimatedL1Fee(toHex(10), {
       txParams: {
         gasPrice: '0xf4240',
         gas: '0xcf08',

@@ -1,5 +1,4 @@
-const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -19,24 +18,21 @@ describe('Test Snap Notification', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
-
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate to test snaps page
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
 
         // find and scroll down to snapId5 and connect
-        const snapButton = await driver.findElement('#connectNotification');
+        const snapButton = await driver.findElement('#connectnotifications');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
-        await driver.clickElement('#connectNotification');
+        await driver.clickElement('#connectnotifications');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -55,17 +51,17 @@ describe('Test Snap Notification', function () {
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Approve & install' });
+        await driver.waitForSelector({ text: 'Install' });
 
         await driver.clickElement({
-          text: 'Approve & install',
+          text: 'Install',
           tag: 'button',
         });
 
-        await driver.waitForSelector({ text: 'Ok' });
+        await driver.waitForSelector({ text: 'OK' });
 
         await driver.clickElement({
-          text: 'Ok',
+          text: 'OK',
           tag: 'button',
         });
 
@@ -74,8 +70,8 @@ describe('Test Snap Notification', function () {
 
         // wait for npm installation success
         await driver.waitForSelector({
-          css: '#connectNotification',
-          text: 'Reconnect to Notification Snap',
+          css: '#connectnotifications',
+          text: 'Reconnect to Notifications Snap',
         });
 
         await driver.clickElement('#sendInAppNotification');
@@ -85,30 +81,33 @@ describe('Test Snap Notification', function () {
         await driver.delay(1000);
 
         // check to see that there is one notification
-        const notificationResult = await driver.findElement(
-          '.account-menu__icon__notification-count',
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
         );
-        assert.equal(await notificationResult.getText(), '1');
+        await driver.findElement({
+          css: '[data-testid="global-menu-notification-count"]',
+          text: '1',
+        });
+        await driver.clickElement('.menu__background');
 
         // try to click on the account menu icon (via xpath)
-        await driver.clickElement('.account-menu__icon');
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.delay(500);
 
         // try to click on the notification item (via xpath)
         await driver.clickElement({
-          text: 'Notifications',
-          tag: 'div',
+          text: 'Notifications 1',
+          css: '.menu-item',
         });
         await driver.delay(500);
 
         // look for the correct text in notifications (via xpath)
-        const notificationResultMessage = await driver.findElement(
-          '.notifications__item__details__message',
-        );
-        assert.equal(
-          await notificationResultMessage.getText(),
-          'TEST INAPP NOTIFICATION',
-        );
+        await driver.findElement({
+          css: '.notifications__item__details__message',
+          text: 'Hello from within MetaMask!',
+        });
       },
     );
   });

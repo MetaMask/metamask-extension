@@ -1,0 +1,27 @@
+.nft-item {
+  &__container {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border-radius: 8px;
+    cursor: unset;
+  }
+
+  &__badge-wrapper {
+    max-width: 100%;
+    position: relative;
+    align-self: center;
+    cursor: unset;
+
+    &__clickable {
+      cursor: pointer;
+    }
+  }
+
+  &__item-image {
+    border-radius: 8px;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+  }
+}

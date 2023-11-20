@@ -1,0 +1,45 @@
+name: Main
+
+on:
+  push:
+    branches: [develop, master]
+  pull_request:
+
+jobs:
+  check-workflows:
+    name: Check workflows
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download actionlint
+        id: download-actionlint
+        run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/7fdc9630cc360ea1a469eed64ac6d78caeda1234/scripts/download-actionlint.bash) 1.6.23
+        shell: bash
+      - name: Check workflow files
+        run: ${{ steps.download-actionlint.outputs.executable }} -color
+        shell: bash
+
+  all-jobs-completed:
+    name: All jobs completed
+    runs-on: ubuntu-latest
+    needs:
+      - check-workflows
+    outputs:
+      PASSED: ${{ steps.set-output.outputs.PASSED }}
+    steps:
+      - name: Set PASSED output
+        id: set-output
+        run: echo "PASSED=true" >> "$GITHUB_OUTPUT"
+
+  all-jobs-pass:
+    name: All jobs pass
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    needs: all-jobs-completed
+    steps:
+      - name: Check that all jobs have passed
+        run: |
+          passed="${{ needs.all-jobs-completed.outputs.PASSED }}"
+          if [[ $passed != "true" ]]; then
+            exit 1
+          fi

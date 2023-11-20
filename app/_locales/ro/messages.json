@@ -93,9 +93,6 @@
   "back": {
     "message": "Înapoi"
   },
-  "backToAll": {
-    "message": "Înapoi la toate"
-  },
   "backupApprovalInfo": {
     "message": "Acest cod secret este necesar pentru recuperarea portofelului în cazul în care pierdeți dispozitivul, uitați parola, trebuie să reinstalați MetaMask sau vreți să accesați portofelul de pe alt dispozitiv."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Conectează-te"
   },
-  "connectHardwareWallet": {
-    "message": "Conectare portofel hardware"
-  },
   "connectingTo": {
     "message": "Se conectează la $1"
   },
   "connectingToGoerli": {
     "message": "Se conectează la rețeaua de test Goerli"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Se conectează la rețeaua de test Linea Goerli"
   },
   "connectingToMainnet": {
@@ -181,9 +175,6 @@
   "copyAddress": {
     "message": "Copiere adresă în clipboard"
   },
-  "copyPrivateKey": {
-    "message": "Aceasta este cheia dumneavoastră privată (clic pentru a copia)"
-  },
   "copyToClipboard": {
     "message": "Copiați în clipboard"
   },
@@ -192,9 +183,6 @@
   },
   "create": {
     "message": "Creați"
-  },
-  "createAccount": {
-    "message": "Creați cont"
   },
   "createPassword": {
     "message": "Creare parolă"
@@ -220,14 +208,8 @@
   "delete": {
     "message": "Șterge"
   },
-  "deleteAccount": {
-    "message": "Ștergeți cont"
-  },
   "deleteNetwork": {
     "message": "Ștergeți rețeaua?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Sigur vreți să ștergeți această rețea?"
   },
   "details": {
     "message": "Detalii"
@@ -256,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Eroare la înregistrarea numelui ENS"
   },
-  "enterPassword": {
-    "message": "Introduceți parola"
-  },
   "enterPasswordContinue": {
     "message": "Introduceți parola pentru a continua"
   },
@@ -270,9 +249,6 @@
   },
   "expandView": {
     "message": "Extindeți vizualizarea"
-  },
-  "exportPrivateKey": {
-    "message": "Exportați cheia privată"
   },
   "failed": {
     "message": "Eșuat"
@@ -405,7 +381,7 @@
   "likeToImportTokens": {
     "message": "Adăugați aceste indicative?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Rețea de test Linea Goerli"
   },
   "links": {
@@ -440,9 +416,6 @@
   },
   "mustSelectOne": {
     "message": "Trebuie să selectați cel puțin 1 simbol."
-  },
-  "myAccounts": {
-    "message": "Conturile mele"
   },
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
@@ -562,14 +535,8 @@
   "privateNetwork": {
     "message": "Rețea privată"
   },
-  "queue": {
-    "message": "Coadă"
-  },
   "readdToken": {
     "message": "Puteți adăuga din nou acest indicativ în viitor accesând „Adăugați indicativ” din meniul de opțiuni al contului dvs."
-  },
-  "recents": {
-    "message": "Recente"
   },
   "recipientAddressPlaceholder": {
     "message": "Căutare, adresa publică (0x) sau ENS"
@@ -635,9 +602,6 @@
   "searchResults": {
     "message": "Rezultate căutare"
   },
-  "searchTokens": {
-    "message": "Căutați token-uri"
-  },
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
   },
@@ -676,9 +640,6 @@
   },
   "showHexDataDescription": {
     "message": "Selectați această opțiune pentru a arăta câmpul de date hexazecimale în ecranul de trimitere."
-  },
-  "showPrivateKeys": {
-    "message": "Afișați cheile private"
   },
   "sigRequest": {
     "message": "Solicitare de semnătură"
@@ -788,21 +749,11 @@
   "transactionUpdated": {
     "message": "Tranzacție actualizată la $2."
   },
-  "transferBetweenAccounts": {
-    "message": "Transferă între conturile mele"
-  },
   "transferFrom": {
     "message": "Transferați de la"
   },
-  "troubleTokenBalances": {
-    "message": "Am avut dificultăți cu încărcarea soldurilor dvs. de tokenuri. Le puteți vizualiza",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Încearcă din nou"
-  },
-  "typePassword": {
-    "message": "Scrieți parola dvs. pentru MetaMask"
   },
   "unapproved": {
     "message": "Neaprobat"

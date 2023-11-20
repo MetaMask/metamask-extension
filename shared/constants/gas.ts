@@ -55,6 +55,7 @@ export enum PriorityLevels {
   high = 'high',
   custom = 'custom',
   dAppSuggested = 'dappSuggested',
+  dappSuggestedHigh = 'dappSuggestedHigh',
 }
 
 /**

@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`success template matches the snapshot 1`] = `
+<div>
+  <div
+    class="confirmation-page"
+  >
+    <div
+      class="confirmation-page__content"
+    >
+      <h2
+        class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h2 typography--weight-normal typography--style-normal typography--color-text-default"
+      >
+        Success mock
+      </h2>
+      <div
+        class="box box--padding-4 box--flex-direction-column box--align-items-center box--height-full box--display-flex"
+      >
+        <div
+          class="box box--padding-top-2 box--padding-bottom-2 box--flex-direction-column box--justify-content-center box--align-items-center box--height-full box--display-flex"
+        >
+          <div
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-icon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-success-default mm-box--background-color-success-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-xl mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/confirmation.svg');"
+            />
+          </div>
+          <h3
+            class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography typography--h3 typography--weight-bold typography--style-normal typography--color-text-default"
+          >
+            Success
+          </h3>
+          <div
+            class="box box--gap-1 box--flex-direction-row box--align-items-center box--text-align-center box--display-flex"
+          >
+            Success message
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="confirmation-footer"
+    >
+      <div
+        class="confirmation-footer__actions"
+      >
+        <button
+          class="button btn--rounded btn-primary centered"
+          data-testid="confirmation-submit-button"
+        >
+          Ok
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

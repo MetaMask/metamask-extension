@@ -28,10 +28,11 @@ let openTabSpy;
 describe('TokenOverview', () => {
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
         chainId: CHAIN_IDS.MAINNET,
       },
+      currencyRates: {},
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
@@ -52,6 +53,12 @@ describe('TokenOverview', () => {
         },
       ],
       contractExchangeRates: {},
+      mmiConfiguration: {
+        portfolio: {
+          enabled: true,
+        },
+        url: 'https://metamask-institutional.io',
+      },
     },
   };
 
@@ -110,7 +117,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.PALM },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.PALM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -143,7 +150,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithUnbuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -163,7 +170,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -188,7 +195,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -208,7 +215,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBuyableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -228,54 +235,14 @@ describe('TokenOverview', () => {
 
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`/buy?metamaskEntry=ext_buy_button`),
+          url: expect.stringContaining(
+            `/buy?metamaskEntry=ext_buy_sell_button`,
+          ),
         }),
       );
     });
 
-    it('should always show the Portfolio button', () => {
-      const mockToken = {
-        name: 'test',
-        isERC721: false,
-        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
-        symbol: 'test',
-      };
-      const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={mockToken} />,
-        store,
-      );
-      const portfolioButton = queryByTestId('home__portfolio-site');
-      expect(portfolioButton).toBeInTheDocument();
-    });
-
-    it('should open the Portfolio URI when clicking on Portfolio button', async () => {
-      const mockToken = {
-        name: 'test',
-        isERC721: false,
-        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
-        symbol: 'test',
-      };
-      const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={mockToken} />,
-        store,
-      );
-
-      const portfolioButton = queryByTestId('home__portfolio-site');
-
-      expect(portfolioButton).toBeInTheDocument();
-      expect(portfolioButton).not.toBeDisabled();
-
-      fireEvent.click(portfolioButton);
-      expect(openTabSpy).toHaveBeenCalledTimes(1);
-
-      await waitFor(() =>
-        expect(openTabSpy).toHaveBeenCalledWith({
-          url: expect.stringContaining(`?metamaskEntry=ext`),
-        }),
-      );
-    });
-
-    it('should show the Bridge button if chain id and token are supported', async () => {
+    it('should show the Bridge button if chain id is supported', async () => {
       const mockToken = {
         name: 'test',
         isERC721: false,
@@ -286,7 +253,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBridgeableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.POLYGON },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -307,7 +274,7 @@ describe('TokenOverview', () => {
       await waitFor(() =>
         expect(openTabSpy).toHaveBeenCalledWith({
           url: expect.stringContaining(
-            '/bridge?metamaskEntry=ext_bridge_button&token=0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
+            '/bridge?metamaskEntry=ext_bridge_button&metametricsId=&token=0x7ceb23fd6bc0add59e62ac25578270cff1B9f619',
           ),
         }),
       );
@@ -324,7 +291,7 @@ describe('TokenOverview', () => {
       const mockedStoreWithBridgeableChainId = {
         metamask: {
           ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.FANTOM },
+          providerConfig: { type: 'test', chainId: CHAIN_IDS.FANTOM },
         },
       };
       const mockedStore = configureMockStore([thunk])(
@@ -339,30 +306,16 @@ describe('TokenOverview', () => {
       expect(bridgeButton).not.toBeInTheDocument();
     });
 
-    it('should not show the Bridge button if token is not supported', async () => {
-      const mockToken = {
-        name: 'test',
-        isERC721: false,
-        address: '0x7ceb23fd6bc0add59e62ac25578270cff1B9f620',
-        symbol: 'test',
-      };
-
-      const mockedStoreWithBridgeableChainId = {
-        metamask: {
-          ...mockStore.metamask,
-          provider: { type: 'test', chainId: CHAIN_IDS.POLYGON },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(
-        mockedStoreWithBridgeableChainId,
-      );
-
+    it('should show the MMI Portfolio and Stake buttons', () => {
       const { queryByTestId } = renderWithProvider(
-        <TokenOverview token={mockToken} />,
-        mockedStore,
+        <TokenOverview token={token} />,
+        store,
       );
-      const bridgeButton = queryByTestId('token-overview-bridge');
-      expect(bridgeButton).not.toBeInTheDocument();
+      const mmiStakeButton = queryByTestId('token-overview-mmi-stake');
+      const mmiPortfolioButton = queryByTestId('token-overview-mmi-portfolio');
+
+      expect(mmiStakeButton).toBeInTheDocument();
+      expect(mmiPortfolioButton).toBeInTheDocument();
     });
   });
 });

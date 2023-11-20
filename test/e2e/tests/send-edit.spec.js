@@ -19,14 +19,16 @@ describe('Editing Confirm Transaction', function () {
           .withTransactionControllerTypeOneTransaction()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );
@@ -68,13 +70,13 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         const txValues = await driver.findElements(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         assert.equal(txValues.length, 1);
         assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));
@@ -99,7 +101,7 @@ describe('Editing Confirm Transaction', function () {
           .withTransactionControllerTypeTwoTransaction()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -107,7 +109,9 @@ describe('Editing Confirm Transaction', function () {
 
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
-
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );
@@ -159,13 +163,13 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         const txValues = await driver.findElements(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         assert.equal(txValues.length, 1);
         assert.ok(/-2.2\s*ETH/u.test(await txValues[0].getText()));

@@ -1,0 +1,70 @@
+
+.mm-popover {
+  box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+
+  /* Hide the popper when the reference is hidden */
+  &--reference-hidden[data-popper-reference-hidden="true"] {
+    visibility: hidden;
+    pointer-events: none;
+
+    > .mm-popover__arrow::before {
+      visibility: hidden;
+    }
+  }
+}
+
+.mm-popover__arrow,
+.mm-popover__arrow::before {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: inherit;
+}
+
+.mm-popover__arrow {
+  width: 40px;
+  height: 40px;
+  visibility: hidden;
+}
+
+.mm-popover__arrow::before {
+  display: block;
+  background-color: inherit;
+  border: 1px solid;
+  border-left-color: inherit;
+  border-top-color: inherit;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  visibility: visible;
+  content: '';
+  transform: rotate(45deg);
+  border-radius: 2px  0 0 0;
+}
+
+.mm-popover[data-popper-placement^='top'] > .mm-popover__arrow {
+  bottom: -20px;
+
+  &::before {
+    transform: rotate(-135deg);
+  }
+}
+
+.mm-popover[data-popper-placement^='bottom'] > .mm-popover__arrow {
+  top: -20px;
+}
+
+.mm-popover[data-popper-placement^='left'] > .mm-popover__arrow {
+  right: -20px;
+
+  &::before {
+    transform: rotate(135deg);
+  }
+}
+
+.mm-popover[data-popper-placement^='right'] > .mm-popover__arrow {
+  left: -20px;
+
+  &::before {
+    transform: rotate(-45deg);
+  }
+}

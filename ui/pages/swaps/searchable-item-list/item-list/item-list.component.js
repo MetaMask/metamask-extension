@@ -59,13 +59,21 @@ export default function ItemList({
           listContainerClassName,
         )}
         ref={containerRef}
+        data-testid="searchable-item-list-list-container"
       >
         {results.slice(0, maxListItems).map((result, i) => {
           if (hideItemIf?.(result)) {
             return null;
           }
+          const hasBalance = result.balance > 0;
+          if (result.blocked && !hasBalance && !searchQuery) {
+            return null;
+          }
 
           const onClick = () => {
+            if (result.blocked) {
+              return;
+            }
             if (result.notImported) {
               onOpenImportTokenModalClick(result);
             } else {
@@ -76,7 +84,7 @@ export default function ItemList({
             iconUrl,
             identiconAddress,
             selected,
-            disabled,
+            blocked,
             primaryLabel,
             secondaryLabel,
             rightPrimaryLabel,
@@ -88,12 +96,13 @@ export default function ItemList({
               tabIndex="0"
               className={classnames('searchable-item-list__item', {
                 'searchable-item-list__item--selected': selected,
-                'searchable-item-list__item--disabled': disabled,
+                'searchable-item-list__item--disabled': blocked,
               })}
               data-testid="searchable-item-list__item"
               onClick={onClick}
               onKeyUp={(e) => e.key === 'Enter' && onClick()}
               key={`searchable-item-list-item-${i}`}
+              title={blocked ? t('swapTokenNotAvailable') : null}
             >
               {iconUrl || primaryLabel ? (
                 <UrlIcon url={iconUrl} name={primaryLabel} />
@@ -107,7 +116,10 @@ export default function ItemList({
               <div className="searchable-item-list__labels">
                 <div className="searchable-item-list__item-labels">
                   {primaryLabel ? (
-                    <span className="searchable-item-list__primary-label">
+                    <span
+                      className="searchable-item-list__primary-label"
+                      data-testid="searchable-item-list-primary-label"
+                    >
                       {primaryLabel}
                     </span>
                   ) : null}
@@ -134,7 +146,11 @@ export default function ItemList({
                 ) : null}
               </div>
               {result.notImported && (
-                <Button type="primary" onClick={onClick}>
+                <Button
+                  type="primary"
+                  onClick={onClick}
+                  data-testid="searchable-item-list-import-button"
+                >
                   {t('import')}
                 </Button>
               )}
@@ -148,7 +164,7 @@ export default function ItemList({
             key="searchable-item-list-item-last"
           >
             <ActionableMessage
-              message={t('addCustomTokenByContractAddress', [
+              message={t('addTokenByContractAddress', [
                 <a
                   key="searchable-item-list__etherscan-link"
                   onClick={() => {
@@ -185,7 +201,7 @@ ItemList.propTypes = {
     PropTypes.shape({
       iconUrl: PropTypes.string,
       selected: PropTypes.bool,
-      disabled: PropTypes.bool,
+      blocked: PropTypes.bool,
       primaryLabel: PropTypes.string,
       secondaryLabel: PropTypes.string,
       rightPrimaryLabel: PropTypes.string,

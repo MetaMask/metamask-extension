@@ -3,11 +3,12 @@ const {
   convertToHexValue,
   getWindowHandles,
   withFixtures,
+  openDapp,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
-  it('allows selecting high, medium, low gas estimates on edit gas fee popover', async function () {
+  it('allows selecting high, medium, low gas estimates on edit gas fee popover @no-mmi', async function () {
     const ganacheOptions = {
       hardfork: 'london',
       accounts: [
@@ -24,7 +25,7 @@ describe('Editing Confirm Transaction', function () {
           .withTransactionControllerTypeTwoTransaction()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -79,13 +80,13 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         const txValues = await driver.findElements(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         assert.equal(txValues.length, 1);
         assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
@@ -110,7 +111,7 @@ describe('Editing Confirm Transaction', function () {
           .withTransactionControllerTypeTwoTransaction()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -164,13 +165,13 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         const txValues = await driver.findElements(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         assert.equal(txValues.length, 1);
         assert.ok(/-1\s*ETH/u.test(await txValues[0].getText()));
@@ -178,7 +179,7 @@ describe('Editing Confirm Transaction', function () {
     );
   });
 
-  it('should use dapp suggested estimates for transaction coming from dapp', async function () {
+  it('should use dapp suggested estimates for transaction coming from dapp @no-mmi', async function () {
     const ganacheOptions = {
       hardfork: 'london',
       accounts: [
@@ -195,7 +196,7 @@ describe('Editing Confirm Transaction', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         dapp: true,
       },
       async ({ driver }) => {
@@ -206,7 +207,7 @@ describe('Editing Confirm Transaction', function () {
         await driver.press('#password', driver.Key.ENTER);
 
         // open dapp and connect
-        await driver.openNewPage('http://127.0.0.1:8080/');
+        await openDapp(driver);
         await driver.clickElement({
           text: 'Send EIP 1559 Transaction',
           tag: 'button',
@@ -253,13 +254,13 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
-            '.transaction-list__completed-transactions .transaction-list-item',
+            '.transaction-list__completed-transactions .activity-list-item',
           );
           return confirmedTxes.length === 1;
         }, 10000);
 
         const txValues = await driver.findElements(
-          '.transaction-list-item__primary-currency',
+          '[data-testid="transaction-list-item-primary-currency"]',
         );
         assert.equal(txValues.length, 1);
         assert.ok(/-0\s*ETH/u.test(await txValues[0].getText()));

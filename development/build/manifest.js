@@ -1,16 +1,16 @@
 const { promises: fs } = require('fs');
 const path = require('path');
 const childProcess = require('child_process');
-const { mergeWith, cloneDeep, capitalize } = require('lodash');
+const { mergeWith, cloneDeep } = require('lodash');
 
 const baseManifest = process.env.ENABLE_MV3
   ? require('../../app/manifest/v3/_base.json')
   : require('../../app/manifest/v2/_base.json');
-const { BuildType } = require('../lib/build-type');
+const { loadBuildTypesConfig } = require('../lib/build-type');
 
 const { TASKS, ENVIRONMENT } = require('./constants');
 const { createTask, composeSeries } = require('./task');
-const { getEnvironment } = require('./utils');
+const { getEnvironment, getBuildName } = require('./utils');
 
 module.exports = createManifestTasks;
 
@@ -124,10 +124,6 @@ function createManifestTasks({
       return;
     }
 
-    const mv3Str = process.env.ENABLE_MV3 ? ' MV3' : '';
-    const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
-    const snowStr = shouldIncludeSnow ? ' snow' : '';
-
     // Get the first 8 characters of the git revision id
     const gitRevisionStr = childProcess
       .execSync('git rev-parse HEAD')
@@ -135,9 +131,13 @@ function createManifestTasks({
       .trim()
       .substring(0, 8);
 
-    manifest.name = `MetaMask ${capitalize(
+    manifest.name = getBuildName({
+      environment,
       buildType,
-    )}${mv3Str}${lavamoatStr}${snowStr}`;
+      applyLavaMoat,
+      shouldIncludeSnow,
+      shouldIncludeMV3: process.env.ENABLE_MV3,
+    });
 
     manifest.description = `${environment} build from git id: ${gitRevisionStr}`;
   }
@@ -165,25 +165,24 @@ async function writeJson(obj, file) {
  * Get manifest modifications for the given build type, including modifications specific to the
  * given platform.
  *
- * @param {BuildType} buildType - The build type.
+ * @param {string} buildType - The build type.
  * @param {string} platform - The platform (i.e. the browser).
- * @returns {object} The build modificantions for the given build type and platform.
+ * @returns {object} The build modifications for the given build type and platform.
  */
 async function getBuildModifications(buildType, platform) {
-  if (!Object.values(BuildType).includes(buildType)) {
+  const buildConfig = loadBuildTypesConfig();
+  if (!(buildType in buildConfig.buildTypes)) {
     throw new Error(`Invalid build type: ${buildType}`);
-  } else if (buildType === BuildType.main) {
+  }
+
+  const overridesPath = buildConfig.buildTypes[buildType].manifestOverrides;
+  if (!overridesPath) {
     return {};
   }
 
   const builtTypeManifestDirectoryPath = path.resolve(
-    __dirname,
-    '..',
-    '..',
-    'app',
-    'build-types',
-    buildType,
-    'manifest',
+    process.cwd(),
+    overridesPath,
   );
 
   const baseBuildTypeModificationsPath = path.join(

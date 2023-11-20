@@ -1,0 +1,18 @@
+.snap-delineator {
+  &__header {
+    border-bottom-width: 1px;
+    border-color: var(--color-border-default);
+    border-style: solid;
+    border-radius: 8px 8px 0 0;
+
+    &__text {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  &__expansion-icon {
+    cursor: pointer;
+  }
+}

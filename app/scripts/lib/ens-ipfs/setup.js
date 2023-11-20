@@ -13,6 +13,7 @@ export default function setupEnsIpfsResolver({
   provider,
   getCurrentChainId,
   getIpfsGateway,
+  getUseAddressBarEnsResolution,
 }) {
   // install listener
   const urlPatterns = supportedTopLevelDomains.map((tld) => `*://*.${tld}/*`);
@@ -33,7 +34,12 @@ export default function setupEnsIpfsResolver({
     const { tabId, url } = details;
     // ignore requests that are not associated with tabs
     // only attempt ENS resolution on mainnet
-    if (tabId === -1 || getCurrentChainId() !== '0x1') {
+    if (
+      (tabId === -1 || getCurrentChainId() !== '0x1') &&
+      // E2E tests use a chain other than 0x1, so for testing,
+      // allow the reuqest to pass through
+      !process.env.IN_TEST
+    ) {
       return;
     }
     // parse ens name
@@ -50,15 +56,38 @@ export default function setupEnsIpfsResolver({
 
   async function attemptResolve({ tabId, name, pathname, search, fragment }) {
     const ipfsGateway = getIpfsGateway();
+    const useAddressBarEnsResolution = getUseAddressBarEnsResolution();
 
-    browser.tabs.update(tabId, { url: `loading.html` });
-    let url = `https://app.ens.domains/name/${name}`;
+    const ensSiteUrl = `https://app.ens.domains/name/${name}`;
+
+    // We cannot show this if useAddressBarEnsResolution is off...
+    if (useAddressBarEnsResolution && ipfsGateway) {
+      browser.tabs.update(tabId, { url: 'loading.html' });
+    }
+
+    let url = ensSiteUrl;
+
+    // If we're testing ENS domain resolution support,
+    // we assume the ENS domains URL
+    if (process.env.IN_TEST) {
+      if (useAddressBarEnsResolution || ipfsGateway) {
+        browser.tabs.update(tabId, { url });
+      }
+      return;
+    }
+
     try {
       const { type, hash } = await resolveEnsToIpfsContentId({
         provider,
         name,
       });
       if (type === 'ipfs-ns' || type === 'ipns-ns') {
+        // If the ENS is via IPFS and that setting is disabled,
+        // Do not resolve the ENS
+        if (ipfsGateway === '') {
+          url = null;
+          return;
+        }
         const resolvedUrl = `https://${hash}.${type.slice(
           0,
           4,
@@ -101,7 +130,15 @@ export default function setupEnsIpfsResolver({
     } catch (err) {
       console.warn(err);
     } finally {
-      browser.tabs.update(tabId, { url });
+      // Only forward to destination URL if a URL exists and
+      // useAddressBarEnsResolution is properly
+      if (
+        url &&
+        (useAddressBarEnsResolution ||
+          (!useAddressBarEnsResolution && url !== ensSiteUrl))
+      ) {
+        browser.tabs.update(tabId, { url });
+      }
     }
   }
 }

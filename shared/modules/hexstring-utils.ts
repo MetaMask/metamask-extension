@@ -14,6 +14,16 @@ export function isBurnAddress(address: string) {
   return address === BURN_ADDRESS;
 }
 
+export function isEmptyHexString(value: string): boolean {
+  return [
+    undefined,
+    null,
+    '0x',
+    '0x0',
+    '0x0000000000000000000000000000000000000000000000000000000000000000',
+  ].includes(value);
+}
+
 /**
  * Validates that the input is a hex address. This utility method is a thin
  * wrapper around ethereumjs-util.isValidAddress, with the exception that it

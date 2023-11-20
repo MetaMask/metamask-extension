@@ -1,0 +1,136 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SignatureRequestHeader renders correctly with fromAccount 1`] = `
+<div>
+  <div
+    class="signature-request-header"
+  >
+    <div
+      class="signature-request-header--account"
+    >
+      <div
+        class="account-list-item undefined"
+        data-testid="account-list-item"
+      >
+        <div
+          class="account-list-item__top-row"
+        >
+          <div
+            class=""
+          >
+            <div
+              class="identicon account-list-item__identicon"
+              style="height: 18px; width: 18px; border-radius: 9px;"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 18px; height: 18px; display: inline-block; background: rgb(24, 151, 242);"
+              >
+                <svg
+                  height="18"
+                  width="18"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#2362E1"
+                    height="18"
+                    transform="translate(2.018998228945791 -3.0005497255688565) rotate(458.4 9 9)"
+                    width="18"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F94301"
+                    height="18"
+                    transform="translate(-8.641945850428243 4.495697794961231) rotate(268.8 9 9)"
+                    width="18"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FA7900"
+                    height="18"
+                    transform="translate(-5.10539291960705 16.582508932884398) rotate(117.3 9 9)"
+                    width="18"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="account-list-item__account-name"
+          >
+            0x
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="signature-request-header--network"
+    >
+      <div
+        class="network-display chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined chip--max-content"
+        data-testid="network-display"
+      >
+        <div
+          class="chip__left-icon"
+        >
+          <div
+            class="color-indicator color-indicator--filled color-indicator--color-icon-muted color-indicator--size-lg"
+            data-testid="color-icon-icon-muted"
+          >
+            <i
+              class="color-indicator__icon fa fa-question"
+            />
+          </div>
+        </div>
+        <span
+          class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+        >
+          goerli
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`SignatureRequestHeader renders correctly without fromAccount 1`] = `
+<div>
+  <div
+    class="signature-request-header"
+  >
+    <div
+      class="signature-request-header--account"
+    />
+    <div
+      class="signature-request-header--network"
+    >
+      <div
+        class="network-display chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined chip--max-content"
+        data-testid="network-display"
+      >
+        <div
+          class="chip__left-icon"
+        >
+          <div
+            class="color-indicator color-indicator--filled color-indicator--color-icon-muted color-indicator--size-lg"
+            data-testid="color-icon-icon-muted"
+          >
+            <i
+              class="color-indicator__icon fa fa-question"
+            />
+          </div>
+        </div>
+        <span
+          class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h7 typography--weight-normal typography--style-normal typography--color-text-alternative"
+        >
+          goerli
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;

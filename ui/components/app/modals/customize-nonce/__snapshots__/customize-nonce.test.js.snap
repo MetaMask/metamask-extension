@@ -1,0 +1,113 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Customize Nonce should match snapshot 1`] = `
+<div>
+  <div
+    class="modal-container customize-nonce-modal-container"
+  >
+    <div
+      class="modal-container__content customize-nonce-modal-content"
+    >
+      <div
+        class="customize-nonce-modal"
+      >
+        <div
+          class="customize-nonce-modal__main-header"
+        >
+          <h4
+            class="mm-box mm-text customize-nonce-modal__main-title mm-text--heading-sm mm-box--color-text-default"
+          >
+            Edit nonce
+          </h4>
+          <button
+            aria-label="Close"
+            class="mm-box mm-button-icon mm-button-icon--size-sm customize-nonce-modal__close mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/close.svg');"
+            />
+          </button>
+        </div>
+        <div
+          class="mm-box mm-box--margin-top-2 mm-box--display-inline-flex mm-box--align-items-center"
+        >
+          <h6
+            class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          >
+            This is an advanced feature, use cautiously.
+            <a
+              class="mm-box mm-text mm-button-base customize-nonce-modal__link mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+              href="https://metamask.zendesk.com/hc/en-us/articles/7417499333531-How-to-customize-a-transaction-nonce"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Learn more
+            </a>
+          </h6>
+        </div>
+        <div
+          class="mm-box mm-box--margin-top-4"
+        >
+          <div
+            class="mm-box mm-box--display-flex mm-box--align-items-center"
+          >
+            <h6
+              class="mm-box mm-text mm-text--body-md-bold mm-box--width-5/6 mm-box--color-text-default"
+            >
+              Edit nonce
+            </h6>
+            <div
+              class="mm-box mm-box--width-1/6"
+            >
+              <button
+                class="mm-box mm-text mm-button-base customize-nonce-modal__reset mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                data-testid="customize-nonce-reset"
+              >
+                Reset
+              </button>
+            </div>
+          </div>
+          <div
+            class="customize-nonce-modal__input"
+          >
+            <div
+              class="MuiFormControl-root MuiTextField-root MuiFormControl-marginDense MuiFormControl-fullWidth"
+            >
+              <div
+                class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense MuiInput-marginDense"
+              >
+                <input
+                  aria-invalid="false"
+                  class="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
+                  data-testid="custom-nonce-input"
+                  dir="auto"
+                  id="custom-nonce-id"
+                  min="0"
+                  placeholder="1"
+                  type="number"
+                  value=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal-container__footer"
+    >
+      <button
+        class="button btn--rounded btn-secondary modal-container__footer-button"
+      >
+        Cancel
+      </button>
+      <button
+        class="button btn--rounded btn-primary modal-container__footer-button"
+      >
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+`;

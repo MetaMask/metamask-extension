@@ -1,9 +1,21 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { renderWithProvider, fireEvent } from '../../../../test/jest';
+import { act, fireEvent } from '@testing-library/react';
+import { mmiActionsFactory } from '../../../store/institutional/institution-background';
+import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { AccountListItemMenu } from '.';
+
+const mockShowModal = jest.fn();
+
+jest.mock('../../../store/institutional/institution-background');
+
+jest.mock('../../../store/actions', () => {
+  return {
+    showModal: () => mockShowModal,
+  };
+});
 
 const identity = {
   ...mockState.metamask.identities[
@@ -17,6 +29,7 @@ const DEFAULT_PROPS = {
   onClose: jest.fn(),
   onHide: jest.fn(),
   isRemovable: false,
+  isOpen: true,
 };
 
 const render = (props = {}) => {
@@ -30,25 +43,46 @@ const render = (props = {}) => {
 };
 
 describe('AccountListItem', () => {
-  it('renders the URL for explorer', () => {
-    const blockExplorerDomain = 'etherscan.io';
-    const { getByText, getByTestId } = render({
-      blockExplorerUrlSubTitle: blockExplorerDomain,
-    });
-    expect(getByText(blockExplorerDomain)).toBeInTheDocument();
-
-    Object.defineProperty(global, 'platform', {
-      value: {
-        openTab: jest.fn(),
-      },
-    });
-    const openExplorerTabSpy = jest.spyOn(global.platform, 'openTab');
-    fireEvent.click(getByTestId('account-list-menu-open-explorer'));
-    expect(openExplorerTabSpy).toHaveBeenCalled();
-  });
-
   it('renders remove icon with isRemovable', () => {
     const { getByTestId } = render({ isRemovable: true });
     expect(getByTestId('account-list-menu-remove')).toBeInTheDocument();
+  });
+
+  it('should render remove JWT menu item if the user is custodian and click the button', async () => {
+    const mockedGetCustodianToken = jest
+      .fn()
+      .mockReturnValue({ type: 'Custody', payload: 'token' });
+    const mockedGetAllCustodianAccountsWithToken = jest
+      .fn()
+      .mockReturnValue({ type: 'Custody', payload: 'token' });
+
+    mmiActionsFactory.mockReturnValue({
+      getCustodianToken: mockedGetCustodianToken,
+      getAllCustodianAccountsWithToken: mockedGetAllCustodianAccountsWithToken,
+    });
+
+    const newIdentity = {
+      ...mockState.metamask.identities[
+        '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281'
+      ],
+      balance: '0x152387ad22c3f0',
+    };
+
+    const { getByTestId } = render({ identity: newIdentity });
+
+    const removeJWTButton = getByTestId('account-options-menu__remove-jwt');
+
+    expect(removeJWTButton).toBeInTheDocument();
+
+    fireEvent.click(removeJWTButton);
+
+    await act(async () => {
+      expect(mockedGetCustodianToken).toHaveBeenCalledWith(newIdentity.address);
+    });
+
+    await act(async () => {
+      expect(mockedGetAllCustodianAccountsWithToken).toHaveBeenCalled();
+      expect(mockShowModal).toHaveBeenCalled();
+    });
   });
 });

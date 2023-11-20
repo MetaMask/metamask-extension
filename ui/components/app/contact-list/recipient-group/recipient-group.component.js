@@ -3,6 +3,13 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import Identicon from '../../../ui/identicon';
 import { ellipsify } from '../../../../pages/send/send.utils';
+import Box from '../../../ui/box';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../../helpers/constants/design-system';
+import { Text } from '../../../component-library';
+import { AddressListItem } from '../../../multichain';
 
 function addressesEqual(address1, address2) {
   return String(address1).toLowerCase() === String(address2).toLowerCase();
@@ -18,18 +25,35 @@ export default function RecipientGroup({
     return null;
   }
 
+  if (process.env.MULTICHAIN) {
+    return items.map(({ address, name }) => (
+      <AddressListItem
+        address={address}
+        label={name}
+        onClick={() => onSelect(address, name)}
+        key={address}
+      />
+    ));
+  }
+
   return (
-    <div
+    <Box
       className="send__select-recipient-wrapper__group"
       data-testid="recipient-group"
     >
       {label && (
-        <div className="send__select-recipient-wrapper__group-label">
-          {label}
-        </div>
+        <Box
+          className="send__select-recipient-wrapper__group-label"
+          marginTop={2}
+          marginBottom={2}
+          marginLeft={4}
+          marginRight={4}
+        >
+          <Text variant={TextVariant.bodyMd}>{label}</Text>
+        </Box>
       )}
       {items.map(({ address, name }) => (
-        <div
+        <Box
           key={address}
           onClick={() => onSelect(address, name)}
           className={classnames({
@@ -40,24 +64,32 @@ export default function RecipientGroup({
             'send__select-recipient-wrapper__group-item--selected':
               addressesEqual(address, selectedAddress),
           })}
+          padding={4}
         >
           <Identicon address={address} diameter={28} />
-          <div
+          <Box
             className="send__select-recipient-wrapper__group-item__content"
             data-testid="recipient"
           >
-            <div className="send__select-recipient-wrapper__group-item__title">
+            <Text
+              variant={TextVariant.bodyLgMedium}
+              className="send__select-recipient-wrapper__group-item__title"
+            >
               {name || ellipsify(address)}
-            </div>
+            </Text>
             {name && (
-              <div className="send__select-recipient-wrapper__group-item__subtitle">
+              <Text
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+                className="send__select-recipient-wrapper__group-item__subtitle"
+              >
                 {ellipsify(address)}
-              </div>
+              </Text>
             )}
-          </div>
-        </div>
+          </Box>
+        </Box>
       ))}
-    </div>
+    </Box>
   );
 }
 

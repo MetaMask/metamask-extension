@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ModalHeader should render ModalHeader correctly 1`] = `
+<div>
+  <div
+    class="mm-box mm-header-base mm-modal-header mm-box--display-flex mm-box--justify-content-space-between"
+    data-testid="modal-header"
+  >
+    <div
+      class="mm-box"
+    >
+      <header
+        class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+      >
+        Modal header
+      </header>
+    </div>
+  </div>
+</div>
+`;

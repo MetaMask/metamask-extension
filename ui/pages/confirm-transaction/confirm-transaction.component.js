@@ -31,9 +31,9 @@ import {
 import { isTokenMethodAction } from '../../helpers/utils/transactions.util';
 import { usePrevious } from '../../hooks/usePrevious';
 import {
-  getUnapprovedTransactions,
   unconfirmedTransactionsListSelector,
   unconfirmedTransactionsHashSelector,
+  use4ByteResolutionSelector,
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -56,25 +56,23 @@ const ConfirmTransaction = () => {
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const sendTo = useSelector(getSendTo);
-  const unapprovedTxs = useSelector(getUnapprovedTransactions);
-  const unconfirmedTxs = useSelector(unconfirmedTransactionsListSelector);
-  const unconfirmedMessages = useSelector(unconfirmedTransactionsHashSelector);
 
-  const totalUnapproved = unconfirmedTxs.length || 0;
+  const unconfirmedTxsSorted = useSelector(unconfirmedTransactionsListSelector);
+  const unconfirmedTxs = useSelector(unconfirmedTransactionsHashSelector);
+
+  const totalUnapproved = unconfirmedTxsSorted.length || 0;
   const getTransaction = useCallback(() => {
     return totalUnapproved
-      ? unapprovedTxs[paramsTransactionId] ||
-          unconfirmedMessages[paramsTransactionId] ||
-          unconfirmedTxs[0]
+      ? unconfirmedTxs[paramsTransactionId] || unconfirmedTxsSorted[0]
       : {};
   }, [
     paramsTransactionId,
     totalUnapproved,
-    unapprovedTxs,
-    unconfirmedMessages,
     unconfirmedTxs,
+    unconfirmedTxsSorted,
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
+  const use4ByteResolution = useSelector(use4ByteResolutionSelector);
 
   useEffect(() => {
     const tx = getTransaction();
@@ -87,13 +85,12 @@ const ConfirmTransaction = () => {
     getTransaction,
     paramsTransactionId,
     totalUnapproved,
-    unapprovedTxs,
-    unconfirmedMessages,
     unconfirmedTxs,
+    unconfirmedTxsSorted,
   ]);
 
   const { id, type } = transaction;
-  const transactionId = id && String(id);
+  const transactionId = id;
   const isValidTokenMethod = isTokenMethodAction(type);
   const isValidTransactionId =
     transactionId &&
@@ -132,7 +129,7 @@ const ConfirmTransaction = () => {
       const { txParams: { data } = {}, origin } = transaction;
 
       if (origin !== ORIGIN_METAMASK) {
-        dispatch(getContractMethodData(data));
+        dispatch(getContractMethodData(data, use4ByteResolution));
       }
 
       const txId = transactionId || paramsTransactionId;
@@ -159,7 +156,7 @@ const ConfirmTransaction = () => {
       dispatch(clearConfirmTransaction());
       dispatch(setTransactionToConfirm(paramsTransactionId));
       if (origin !== ORIGIN_METAMASK) {
-        dispatch(getContractMethodData(data));
+        dispatch(getContractMethodData(data, use4ByteResolution));
       }
     } else if (prevTransactionId && !transactionId && !totalUnapproved) {
       dispatch(setDefaultHomeActiveTabName('activity')).then(() => {
@@ -183,6 +180,7 @@ const ConfirmTransaction = () => {
     totalUnapproved,
     transaction,
     transactionId,
+    use4ByteResolution,
   ]);
 
   if (isValidTokenMethod && isValidTransactionId) {

@@ -1,0 +1,290 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { Popover } from './popover';
+
+# Popover
+
+Popover is an overlay that appears by the trigger used for menus, additional contents, and contains at least one focusable element.
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas>
+  <Story id="components-componentlibrary-popover--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={Popover} />
+
+### Reference Element
+
+The `referenceElement` prop is required and used to position the popover relative to the reference element.
+
+```jsx
+import { useState } from 'react';
+import { BackgroundColor } from '../../../helpers/constants/design-system'
+import { Popover, Box } from '../../component-library';
+
+const [referenceElement, setReferenceElement] = useState();
+
+const setBoxRef = (ref) => {
+setReferenceElement(ref);
+};
+
+<Box
+  ref={setBoxRef}
+  backgroundColor={BackgroundColor.primaryDefault}
+  style={{ width: 200, height: 200 }}
+/>
+<Popover referenceElement={referenceElement}>Reference element</Popover>
+```
+
+### Children
+
+Popover accepts any children and has a default padding of `4` (16px).
+
+```jsx
+import {
+  Popover,
+  Text,
+  Icon,
+  IconSize,
+  IconName,
+} from '../../component-library';
+
+<Popover>
+  <Text>
+    Demo of popover with children.
+    <Icon size={IconSize.Inherit} name={IconName.Info} />
+  </Text>
+</Popover>;
+```
+
+### Position
+
+Use the `position` prop with the `PopoverPosition` enum to set the position of the popover relative to the reference element.
+
+Default is `PopoverPosition.Auto`
+
+```jsx
+import { Popover, PopoverPosition } from '../../component-library';
+
+<Popover position={PopoverPosition.Auto}>Auto</Popover>
+<Popover position={PopoverPosition.AutoStart}>AutoStart</Popover>
+<Popover position={PopoverPosition.AutoEnd}>AutoEnd</Popover>
+<Popover position={PopoverPosition.Top}>Top</Popover>
+<Popover position={PopoverPosition.TopStart}>TopStart</Popover>
+<Popover position={PopoverPosition.TopEnd}>TopEnd</Popover>
+<Popover position={PopoverPosition.Right}>Right</Popover>
+<Popover position={PopoverPosition.RightStart}>RightStart</Popover>
+<Popover position={PopoverPosition.RightEnd}>RightEnd</Popover>
+<Popover position={PopoverPosition.Bottom}>Bottom</Popover>
+<Popover position={PopoverPosition.BottomStart}>BottomStart</Popover>
+<Popover position={PopoverPosition.BottomEnd}>BottomEnd</Popover>
+<Popover position={PopoverPosition.Left}>Left</Popover>
+<Popover position={PopoverPosition.LeftStart}>LeftStart</Popover>
+<Popover position={PopoverPosition.LeftEnd}>LeftEnd</Popover>
+```
+
+### Is Portal
+
+The `isPortal` prop is a boolean that when set to true, causes the Popover to be rendered as a separate DOM element at the end of the document body.
+Default `false`
+
+```jsx
+import { Popover } from '../../component-library';
+
+<Popover isPortal={true}>Popover using create portal</Popover>;
+```
+
+### Has Arrow
+
+Use the `hasArrow` boolean to add an arrow to the popover.
+
+```jsx
+import { Popover } from '../../component-library';
+
+<Popover hasArrow>Popover with arrow</Popover>;
+```
+
+### Is Open
+
+Use the `isOpen` boolean to control the visibility of the popover.
+
+```jsx
+import { Popover } from '../../component-library';
+
+<Popover isOpen={true}>Popover with arrow</Popover>;
+```
+
+### Flip
+
+Use the `flip` boolean to flip the popover to the opposite side of the reference element if there is not enough space.
+For `PopoverPosition.Auto` this will become true.
+
+```jsx
+import { Popover } from '../../component-library';
+
+<Popover flip={true}>Flip demo</Popover>;
+```
+
+### Prevent Overflow
+
+Use the `preventOverflow` boolean to prevent the popover from overflowing the viewport.
+For `PopoverPosition.Auto` this will become true.
+
+```jsx
+import { Popover } from '../../component-library';
+
+<Popover preventOverflow={true}>Prevent overflow demo</Popover>;
+```
+
+### Reference Hidden
+
+Use the `referenceHidden` boolean to hide the Popover when the reference element is no longer visible in the viewport.
+
+```jsx
+import { Popover } from '../../component-library';
+
+<Popover referenceHidden={true}>Reference hidden demo</Popover>;
+```
+
+### Match Width
+
+Use the `matchWidth` boolean to match the width of the popover to the reference element.
+
+```jsx
+import { Popover } from '../../component-library';
+
+<Popover matchWidth={true}>Match width demo</Popover>;
+```
+
+### Role
+
+Use the `role` prop with `PopoverRole` enum to set the role of the popover.
+`PopoverRole.Dialog` if the content is interactive, or `PopoverRole.Tooltip` for purely informational popovers.
+
+Default: `PopoverRole.Tooltip`
+
+```jsx
+import { Popover, PopoverRole } from '../../component-library';
+
+<Popover role={PopoverRole.Tooltip}>PopoverRole.Tooltip</Popover>;
+<Popover role={PopoverRole.Dialog}>PopoverRole.Dialog</Popover>;
+```
+
+### Offset
+
+Use the `offset` prop to pass an array of two numbers to offset the popover from the reference element.
+Default is `[0, 8]`
+First number controls the skidding offset and the second number controls the distance offset.
+
+```jsx
+import { Popover } from '../../component-library';
+
+<Popover offset={[0, 32]}>offset override to [0,32]</Popover>;
+```
+
+### On Press Esc Key
+
+`onPressEscKey` is a callback function that is invoked when the 'Escape' key is pressed within the `Popover` component
+
+```jsx
+import { Popover } from '../../component-library';
+
+const [isOpen, setIsOpen] = useState(false);
+
+const handleClick = () => {
+  setIsOpen(!isOpen);
+};
+
+<Popover onPressEscKey={() => setIsOpen(false)}>
+  Press esc key to close
+</Popover>;
+```
+
+### onClickOutside
+
+`onClickOutside` is a callback function that is invoked when the user clicks outside of the `Popover` component
+
+```jsx
+import { Popover } from '../../component-library';
+
+const [isOpen, setIsOpen] = useState(false);
+
+const handleClick = () => {
+  setIsOpen(!isOpen);
+};
+
+<Popover onClickOutside={() => setIsOpen(false)}>
+  Press esc key to close
+</Popover>;
+```
+
+### With PopoverHeader
+
+Using the `PopoverHeader` component to add a header to the `Popover` component. The `PopoverHeader` is used to show common elements such as title, back button, and close button.
+
+```jsx
+import { Popover } from '../../component-library';
+
+<Popover>
+  <PopoverHeader
+    onClose={() => console.log('close')}
+    onBack={() => console.log('back')}
+  >
+    Popover Title
+  </PopoverHeader>
+  Title should be short and concise. It should be sentence case and no period.
+</Popover>;
+```
+
+### Mouse Event Demo
+
+Not built into the `Popover` component, but a demo of `onMouseEnter` and `onMouseLeave` events on the reference element to control the visibility of the popover
+
+```jsx
+import { Popover } from '../../component-library';
+
+const [isOpen, setIsOpen] = useState(false);
+
+const handleMouseEnter = () => {
+  setIsOpen(true);
+};
+
+const handleMouseLeave = () => {
+  setIsOpen(false);
+};
+
+<>
+  <Box onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    Hover
+  </Box>
+  <Popover isOpen={isOpen}>onMouseEnter and onMouseLeave</Popover>
+</>;
+```
+
+### On Focus/Blur Demo
+
+Not built into the `Popover` component, but a demo of `onFocus` and `onBlur` events on the reference element to control the visibility of the popover
+
+```jsx
+import { Popover } from '../../component-library';
+
+const [isOpen, setIsOpen] = useState(false);
+
+// Example of how open popover with focus and pair with onBlur to close popover
+const handleFocus = () => {
+  setIsOpen(true);
+};
+
+const handleClose = () => {
+  setIsOpen(false);
+};
+
+<>
+  <Box onFocus={handleFocus} onBlur={handleClose} as="button">
+    Focus to open
+  </Box>
+  <Popover>onFocus to open and onBlur to close</Popover>
+</>;
+```

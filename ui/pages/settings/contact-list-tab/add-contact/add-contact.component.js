@@ -115,7 +115,7 @@ export default class AddContact extends PureComponent {
           </div>
         )}
         <div className="address-book__add-contact__content">
-          <div className="address-book__view-contact__group">
+          <div className="address-book__view-contact__group address-book__add-contact__content__username">
             <div className="address-book__view-contact__group__label">
               {t('userName')}
             </div>

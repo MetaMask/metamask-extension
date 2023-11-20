@@ -6,16 +6,16 @@ import { useTransactionModalContext } from '../../../contexts/transaction-modal'
 import Box from '../../ui/box';
 import ErrorMessage from '../../ui/error-message';
 import Popover from '../../ui/popover';
-import Typography from '../../ui/typography/typography';
 
 import {
   TextColor,
-  TypographyVariant,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import AppLoadingSpinner from '../app-loading-spinner';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { Text } from '../../component-library';
 import EditGasItem from './edit-gas-item';
 import NetworkStatistics from './network-statistics';
 
@@ -84,12 +84,13 @@ const EditGasFeePopover = () => {
             </Box>
             <Box>
               <NetworkStatistics />
-              <Typography
+              <Text
                 className="edit-gas-fee-popover__know-more"
                 align="center"
                 color={TextColor.textAlternative}
-                tag={TypographyVariant.paragraph}
-                variant={TypographyVariant.H7}
+                tag={TextVariant.bodyMd}
+                variant={TextVariant.bodySm}
+                as="h6"
               >
                 {t('learnMoreAboutGas', [
                   <a
@@ -101,7 +102,7 @@ const EditGasFeePopover = () => {
                     {t('learnMore')}
                   </a>,
                 ])}
-              </Typography>
+              </Text>
             </Box>
           </div>
         </div>

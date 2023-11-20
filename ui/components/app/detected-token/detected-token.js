@@ -8,7 +8,11 @@ import {
   ignoreTokens,
   setNewTokensImported,
 } from '../../../store/actions';
-import { getDetectedTokensInCurrentNetwork } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getDetectedTokensInCurrentNetwork,
+  getSelectedNetworkClientId,
+} from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 import {
@@ -47,7 +51,9 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
 
+  const chainId = useSelector(getCurrentChainId);
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   const [tokensListDetected, setTokensListDetected] = useState(() =>
     detectedTokens.reduce((tokenObj, token) => {
@@ -72,10 +78,12 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
           source: MetaMetricsTokenEventSource.Detected,
           token_standard: TokenStandard.ERC20,
           asset_type: AssetType.token,
+          token_added_type: 'detected',
+          chain_id: chainId,
         },
       });
     });
-    await dispatch(addImportedTokens(selectedTokens));
+    await dispatch(addImportedTokens(selectedTokens, networkClientId));
     const tokenSymbols = selectedTokens.map(({ symbol }) => symbol);
     dispatch(setNewTokensImported(tokenSymbols.join(', ')));
   };
@@ -155,6 +163,7 @@ const DetectedToken = ({ setShowDetectedTokens }) => {
     <>
       {showDetectedTokenIgnoredPopover && (
         <DetectedTokenIgnoredPopover
+          isOpen
           onCancelIgnore={onCancelIgnore}
           handleClearTokensSelection={handleClearTokensSelection}
           partiallyIgnoreDetectedTokens={partiallyIgnoreDetectedTokens}

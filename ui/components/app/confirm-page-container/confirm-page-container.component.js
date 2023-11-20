@@ -1,4 +1,11 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  useContext,
+  ///: END:ONLY_INCLUDE_IN
+  useEffect,
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
@@ -11,7 +18,9 @@ import {
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import Button from '../../ui/button';
+///: END:ONLY_INCLUDE_IN
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 
@@ -23,16 +32,19 @@ import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-k
 import { Text } from '../../component-library';
 import {
   TextVariant,
-  TEXT_ALIGN,
+  TextAlign,
 } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
 import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import useTransactionInsights from '../../../hooks/useTransactionInsights';
-///: END:ONLY_INCLUDE_IN(flask)
+///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+import TxInsightWarnings from '../snaps/tx-insight-warnings/tx-insight-warnings';
+///: END:ONLY_INCLUDE_IN
 import {
   getAccountName,
   getAddressBookEntry,
@@ -43,11 +55,14 @@ import {
   getSwapsDefaultToken,
 } from '../../../selectors';
 import useRamps from '../../../hooks/experiences/useRamps';
+///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IN
+
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -73,7 +88,6 @@ const ConfirmPageContainer = (props) => {
     titleComponent,
     subtitleComponent,
     detailsComponent,
-    dataComponent,
     dataHexComponent,
     onCancelAll,
     onCancel,
@@ -96,13 +110,21 @@ const ConfirmPageContainer = (props) => {
     txData,
     assetStandard,
     isApprovalOrRejection,
+    displayAccountBalanceHeader,
+    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    noteComponent,
+    ///: END:ONLY_INCLUDE_IN
   } = props;
 
   const t = useI18nContext();
+  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   const trackEvent = useContext(MetaMetricsContext);
-
-  const [collectionBalance, setCollectionBalance] = useState(0);
-
+  ///: END:ONLY_INCLUDE_IN
+  const [collectionBalance, setCollectionBalance] = useState('0');
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  const [isShowingTxInsightWarnings, setIsShowingTxInsightWarnings] =
+    useState(false);
+  ///: END:ONLY_INCLUDE_IN
   const isBuyableChain = useSelector(getIsBuyableChain);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
   const networkIdentifier = useSelector(getNetworkIdentifier);
@@ -137,16 +159,32 @@ const ConfirmPageContainer = (props) => {
       fromAddress,
       global.ethereumProvider,
     );
-    setCollectionBalance(tokenBalance?.balance?.words?.[0] || 0);
+    setCollectionBalance(tokenBalance.toString() || '0');
   }, [fromAddress, tokenAddress]);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   // As confirm-transction-base is converted to functional component
   // this code can bemoved to it.
-  const insightComponent = useTransactionInsights({
-    txData,
-  });
+  const insightObject = useTransactionInsights({ txData });
+  const insightComponent = insightObject?.insightComponent;
   ///: END:ONLY_INCLUDE_IN
+
+  const handleSubmit = () => {
+    if (isSetApproveForAll && isApprovalOrRejection) {
+      return onSetApprovalForAll();
+    }
+    return onSubmit();
+  };
+
+  // TODO: Better name
+  const topLevelHandleSubmit = () => {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    if (insightObject?.warnings?.length > 0) {
+      return setIsShowingTxInsightWarnings(true);
+    }
+    ///: END:ONLY_INCLUDE_IN
+    return handleSubmit();
+  };
 
   useEffect(() => {
     if (isSetApproveForAll && assetStandard === TokenStandard.ERC721) {
@@ -164,9 +202,7 @@ const ConfirmPageContainer = (props) => {
     <GasFeeContextProvider transaction={currentTransaction}>
       <div className="page-container" data-testid="page-container">
         <ConfirmPageContainerNavigation />
-        {assetStandard === TokenStandard.ERC20 ||
-        assetStandard === TokenStandard.ERC721 ||
-        assetStandard === TokenStandard.ERC1155 ? (
+        {displayAccountBalanceHeader ? (
           <NetworkAccountBalanceHeader
             accountName={fromName}
             accountBalance={accountBalance}
@@ -204,9 +240,8 @@ const ConfirmPageContainer = (props) => {
             titleComponent={titleComponent}
             subtitleComponent={subtitleComponent}
             detailsComponent={detailsComponent}
-            dataComponent={dataComponent}
             dataHexComponent={dataHexComponent}
-            ///: BEGIN:ONLY_INCLUDE_IN(flask)
+            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             insightComponent={insightComponent}
             ///: END:ONLY_INCLUDE_IN
             errorMessage={errorMessage}
@@ -217,7 +252,7 @@ const ConfirmPageContainer = (props) => {
             onCancelAll={onCancelAll}
             onCancel={onCancel}
             cancelText={t('reject')}
-            onSubmit={onSubmit}
+            onSubmit={topLevelHandleSubmit}
             submitText={t('confirm')}
             disabled={disabled}
             unapprovedTxCount={unapprovedTxCount}
@@ -231,7 +266,11 @@ const ConfirmPageContainer = (props) => {
             toAddress={toAddress}
             transactionType={currentTransaction.type}
             isBuyableChain={isBuyableChain}
+            openBuyCryptoInPdapp={openBuyCryptoInPdapp}
             txData={txData}
+            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            noteComponent={noteComponent}
+            ///: END:ONLY_INCLUDE_IN
           />
         )}
         {shouldDisplayWarning && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY && (
@@ -241,12 +280,13 @@ const ConfirmPageContainer = (props) => {
                 isBuyableChain ? (
                   <Text
                     variant={TextVariant.bodySm}
-                    textAlign={TEXT_ALIGN.LEFT}
+                    textAlign={TextAlign.Left}
                     as="h6"
                   >
                     {t('insufficientCurrencyBuyOrDeposit', [
                       nativeCurrency,
                       networkName,
+                      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
                       <Button
                         type="inline"
                         className="confirm-page-container-content__link"
@@ -265,12 +305,13 @@ const ConfirmPageContainer = (props) => {
                       >
                         {t('buyAsset', [nativeCurrency])}
                       </Button>,
+                      ///: END:ONLY_INCLUDE_IN
                     ])}
                   </Text>
                 ) : (
                   <Text
                     variant={TextVariant.bodySm}
-                    textAlign={TEXT_ALIGN.LEFT}
+                    textAlign={TextAlign.Left}
                     as="h6"
                   >
                     {t('insufficientCurrencyDeposit', [
@@ -296,7 +337,7 @@ const ConfirmPageContainer = (props) => {
             collectionName={title}
             senderAddress={fromAddress}
             name={fromName}
-            isERC721={assetStandard === TokenStandard.ERC20}
+            isERC721={assetStandard === TokenStandard.ERC721}
             total={collectionBalance}
             onSubmit={onSubmit}
             onCancel={onCancel}
@@ -306,11 +347,7 @@ const ConfirmPageContainer = (props) => {
           <PageContainerFooter
             onCancel={onCancel}
             cancelText={t('reject')}
-            onSubmit={
-              isSetApproveForAll && isApprovalOrRejection
-                ? onSetApprovalForAll
-                : onSubmit
-            }
+            onSubmit={topLevelHandleSubmit}
             submitText={t('confirm')}
             submitButtonType={
               isSetApproveForAll && isApprovalOrRejection
@@ -339,6 +376,23 @@ const ConfirmPageContainer = (props) => {
             <AdvancedGasFeePopover />
           </>
         )}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+        }
+        {isShowingTxInsightWarnings && (
+          <TxInsightWarnings
+            warnings={insightObject.warnings}
+            origin={origin}
+            onCancel={() => setIsShowingTxInsightWarnings(false)}
+            onSubmit={() => {
+              handleSubmit();
+              setIsShowingTxInsightWarnings(false);
+            }}
+          />
+        )}
+        {
+          ///: END:ONLY_INCLUDE_IN
+        }
       </div>
     </GasFeeContextProvider>
   );
@@ -366,7 +420,6 @@ ConfirmPageContainer.propTypes = {
   contentComponent: PropTypes.node,
   errorKey: PropTypes.string,
   errorMessage: PropTypes.string,
-  dataComponent: PropTypes.node,
   dataHexComponent: PropTypes.node,
   detailsComponent: PropTypes.node,
   txData: PropTypes.object,
@@ -390,6 +443,10 @@ ConfirmPageContainer.propTypes = {
   supportsEIP1559: PropTypes.bool,
   nativeCurrency: PropTypes.string,
   isApprovalOrRejection: PropTypes.bool,
+  displayAccountBalanceHeader: PropTypes.bool,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  noteComponent: PropTypes.node,
+  ///: END:ONLY_INCLUDE_IN
 };
 
 export default ConfirmPageContainer;

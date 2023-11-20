@@ -24,7 +24,7 @@ describe('Secure Your Wallet Onboarding View', () => {
 
   const mockStore = {
     metamask: {
-      provider: {
+      providerConfig: {
         type: 'test',
       },
     },

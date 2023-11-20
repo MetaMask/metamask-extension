@@ -1,5 +1,6 @@
 import React from 'react';
 import { cloneDeep } from 'lodash';
+import { fireEvent } from '@testing-library/react';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -20,6 +21,14 @@ const mockStoreInitialState = {
     },
   },
 };
+
+const mockShowModal = jest.fn();
+
+jest.mock('../../../store/actions.ts', () => {
+  return {
+    showModal: () => mockShowModal,
+  };
+});
 
 const mockProps = {
   cancelPersonalMessage: jest.fn(),
@@ -135,5 +144,113 @@ describe('SignatureRequestSIWE (Sign in with Ethereum)', () => {
     expect(
       container.querySelector('.mock-ledger-instruction-field'),
     ).toBeTruthy();
+  });
+
+  describe('when there is only one unconfirmed tx', () => {
+    it('should not show multiple notifications header', () => {
+      const store = configureStore(mockStoreInitialState);
+      const txData = cloneDeep(mockProps.txData);
+
+      const { container } = renderWithProvider(
+        <SignatureRequestSIWE {...mockProps} txData={txData} />,
+        store,
+      );
+
+      expect(
+        container.querySelector('.confirm-page-container-navigation'),
+      ).toHaveStyle('display: none');
+    });
+
+    it('should not show Reject request button', () => {
+      const { container } = render();
+      expect(
+        container.querySelector('.request-signature__container__reject'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe('when there is more than one unconfirmed tx', () => {
+    let renderResult;
+
+    beforeEach(() => {
+      const store = configureStore({
+        ...mockStoreInitialState,
+        metamask: {
+          ...mockStoreInitialState.metamask,
+          transactions: [
+            ...mockStoreInitialState.metamask.transactions,
+            {
+              chainId: mockStoreInitialState.metamask.providerConfig.chainId,
+              status: 'unapproved',
+            },
+          ],
+          unapprovedMsgCount: 2,
+        },
+      });
+
+      const txData = cloneDeep(mockProps.txData);
+      renderResult = renderWithProvider(
+        <SignatureRequestSIWE {...mockProps} txData={txData} />,
+        store,
+      );
+    });
+
+    afterEach(() => {
+      renderResult = null;
+    });
+
+    it('should show multiple notifications header', () => {
+      const { container } = renderResult;
+      expect(
+        container.getElementsByClassName('signature-request-siwe-header'),
+      ).toHaveLength(1);
+
+      expect(
+        container.querySelector('.confirm-page-container-navigation'),
+      ).toHaveStyle('display: flex');
+    });
+
+    it('should show Reject request button', () => {
+      const { getByText } = renderResult;
+      const cancelAll = getByText('Reject 2 requests');
+
+      expect(cancelAll).toHaveClass('request-signature__container__reject');
+      expect(cancelAll).toBeInTheDocument();
+    });
+
+    it('should show cancel all modal on Reject request button click', () => {
+      const { getByText } = renderResult;
+      const cancelAll = getByText('Reject 2 requests');
+
+      fireEvent.click(cancelAll);
+      expect(mockShowModal).toHaveBeenCalled();
+    });
+  });
+
+  it('should display security alert if present', () => {
+    const store = configureStore(mockStoreInitialState);
+    const txData = cloneDeep(mockProps.txData);
+
+    const { getByText } = renderWithProvider(
+      <SignatureRequestSIWE
+        {...mockProps}
+        txData={{
+          ...txData,
+          securityAlertResponse: {
+            resultType: 'Malicious',
+            reason: 'blur_farming',
+            description:
+              'A SetApprovalForAll request was made on {contract}. We found the operator {operator} to be malicious',
+            args: {
+              contract: '0xa7206d878c5c3871826dfdb42191c49b1d11f466',
+              operator: '0x92a3b9773b1763efa556f55ccbeb20441962d9b2',
+            },
+          },
+        }}
+      />,
+      store,
+    );
+
+    expect(getByText('This is a deceptive request')).toBeInTheDocument();
   });
 });

@@ -13,13 +13,11 @@ import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics'
 import { SECOND } from '../../../shared/constants/time';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
-import {
-  Icon,
-  ICON_NAMES,
-} from '../../components/component-library/icon/deprecated';
+import { Icon, IconName } from '../../components/component-library';
 import { IconColor } from '../../helpers/constants/design-system';
 import { formatCurrency } from '../../helpers/utils/confirm-tx.util';
 import { getValueFromWeiHex } from '../../../shared/modules/conversion.utils';
+import { COPY_OPTIONS } from '../../../shared/constants/copy';
 
 export default class ConfirmDecryptMessage extends Component {
   static contextTypes = {
@@ -53,7 +51,7 @@ export default class ConfirmDecryptMessage extends Component {
   };
 
   copyMessage = () => {
-    copyToClipboard(this.state.rawMessage);
+    copyToClipboard(this.state.rawMessage, COPY_OPTIONS);
     this.context.trackEvent({
       category: MetaMetricsEventCategory.Messages,
       event: 'Copy',
@@ -224,7 +222,7 @@ export default class ConfirmDecryptMessage extends Component {
                 } else {
                   this.setState({
                     hasDecrypted: true,
-                    rawMessage: result.rawData,
+                    rawMessage: result.rawSig,
                   });
                 }
               });
@@ -259,7 +257,7 @@ export default class ConfirmDecryptMessage extends Component {
                 {t('decryptCopy')}
               </div>
               <Icon
-                name={hasCopied ? ICON_NAMES.COPY_SUCCESS : ICON_NAMES.COPY}
+                name={hasCopied ? IconName.CopySuccess : IconName.Copy}
                 color={IconColor.primaryDefault}
               />
             </Tooltip>

@@ -7,20 +7,15 @@ import { AvatarBase } from '../';
 
 The `AvatarAccount` is a type of avatar reserved for representing accounts.
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-avataraccount--default-story" />
 </Canvas>
 
 ## Props
 
-The `AvatarAccount` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
-
 <ArgsTable of={AvatarAccount} />
-
-`AvatarAccount` accepts all [AvatarBase](/docs/components-componentlibrary-avatarbase--default-story))
-component props
-
-<ArgsTable of={AvatarBase} />
 
 ### Size
 
@@ -41,7 +36,7 @@ Defaults to `AvatarAccountSize.MD`
 </Canvas>
 
 ```jsx
-import { AvatarAccount, AvatarAccountSize } from '../ui/component-library';
+import { AvatarAccount, AvatarAccountSize } from '../../component-library';
 
 <AvatarAccount size={AvatarAccountSize.Xs} />
 <AvatarAccount size={AvatarAccountSize.Sm} />
@@ -59,7 +54,7 @@ Use the `variant` prop and the `AvatarAccountVariant` enum from `../../component
 </Canvas>
 
 ```jsx
-import { AvatarAccount, AvatarAccountVariant } from '../ui/component-library';
+import { AvatarAccount, AvatarAccountVariant } from '../../component-library';
 
 <AvatarAccount variant={AvatarAccountVariant.Jazzicon} />
 <AvatarAccount variant={AvatarAccountVariant.Blockies} />
@@ -74,7 +69,7 @@ Use the required `address` for generating images
 </Canvas>
 
 ```jsx
-import { AvatarAccount, AvatarAccountVariant } from '../ui/component-library';
+import { AvatarAccount, AvatarAccountVariant } from '../../component-library';
 
 <AvatarAccount variant={AvatarAccountVariant.Jazzicon} address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1" />
 <AvatarAccount variant={AvatarAccountVariant.Blockies} address="0x0" />

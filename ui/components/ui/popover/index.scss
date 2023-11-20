@@ -51,7 +51,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1050;
+    z-index: $modal-z-index;
   }
 
   &-footer {
@@ -89,5 +89,9 @@
     position: absolute;
     transform: rotate(45deg);
     box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+  }
+
+  &-container .page-container {
+    width: auto;
   }
 }

@@ -1,7 +1,4 @@
 import React, { useState, useContext } from 'react';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { useSelector } from 'react-redux';
-///: END:ONLY_INCLUDE_IN
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -9,14 +6,8 @@ import TextField from '../../../components/ui/text-field';
 import { I18nContext } from '../../../contexts/i18n';
 import SearchIcon from '../../../components/ui/icon/search-icon';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
-import {
-  Icon,
-  ICON_NAMES,
-} from '../../../components/component-library/icon/deprecated';
+import { Icon, IconName } from '../../../components/component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(flask)
-import { getSnapsRouteObjects } from '../../../selectors';
-///: END:ONLY_INCLUDE_IN
 
 export default function SettingsSearch({
   onSearch,
@@ -31,10 +22,6 @@ export default function SettingsSearch({
   );
 
   const settingsRoutesListArray = Object.values(settingsRoutesList);
-  ///: BEGIN:ONLY_INCLUDE_IN(flask)
-  const snaps = useSelector(getSnapsRouteObjects);
-  settingsRoutesListArray.push(...snaps);
-  ///: END:ONLY_INCLUDE_IN
   const settingsSearchFuse = new Fuse(settingsRoutesListArray, {
     shouldSort: true,
     threshold: 0.3,
@@ -88,7 +75,7 @@ export default function SettingsSearch({
             onClick={() => handleSearch('')}
             style={{ cursor: 'pointer' }}
           >
-            <Icon name={ICON_NAMES.CLOSE} color={IconColor.iconDefault} />
+            <Icon name={IconName.Close} color={IconColor.iconDefault} />
           </InputAdornment>
         )}
       </>
@@ -98,7 +85,7 @@ export default function SettingsSearch({
   return (
     <TextField
       id="search-settings"
-      placeholder={t('searchSettings')}
+      placeholder={t('search')}
       type="text"
       value={searchQuery}
       onChange={(e) => handleSearch(e.target.value)}

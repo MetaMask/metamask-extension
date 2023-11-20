@@ -17,25 +17,29 @@ describe('Lock and unlock', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.clickElement('.account-menu__icon');
-        const lockButton = await driver.findClickableElement(
-          '.account-menu__lock-button',
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
         );
-        assert.equal(await lockButton.getText(), 'Lock');
+        const lockButton = await driver.findClickableElement(
+          '[data-testid="global-menu-lock"]',
+        );
+        assert.equal(await lockButton.getText(), 'Lock MetaMask');
         await lockButton.click();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        const walletBalance = await driver.findElement(
-          '[data-testid="wallet-balance"] .list-item__heading',
-        );
+        const walletBalance = process.env.MULTICHAIN
+          ? await driver.findElement(
+              '.token-balance-overview__secondary-balance',
+            )
+          : await driver.findElement('.eth-overview__primary-balance');
         assert.equal(/^25\s*ETH$/u.test(await walletBalance.getText()), true);
       },
     );

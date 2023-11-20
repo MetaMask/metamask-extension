@@ -1,0 +1,80 @@
+diff --git a/lib/jsdom/browser/Window.js b/lib/jsdom/browser/Window.js
+index 9b2d75f55050f865382e2f0e8a88f066e0bff2da..d4a635da8eae02eaf0543693356f1252f8b6bac0 100644
+--- a/lib/jsdom/browser/Window.js
++++ b/lib/jsdom/browser/Window.js
+@@ -24,7 +24,6 @@ const External = require("../living/generated/External");
+ const Navigator = require("../living/generated/Navigator");
+ const Performance = require("../living/generated/Performance");
+ const Screen = require("../living/generated/Screen");
+-const Storage = require("../living/generated/Storage");
+ const Selection = require("../living/generated/Selection");
+ const reportException = require("../living/helpers/runtime-script-errors");
+ const { getCurrentEventHandlerValue } = require("../living/helpers/create-event-accessor.js");
+@@ -285,40 +284,6 @@ function Window(options) {
+   this._pretendToBeVisual = options.pretendToBeVisual;
+   this._storageQuota = options.storageQuota;
+ 
+-  // Some properties (such as localStorage and sessionStorage) share data
+-  // between windows in the same origin. This object is intended
+-  // to contain such data.
+-  if (options.commonForOrigin && options.commonForOrigin[documentOrigin]) {
+-    this._commonForOrigin = options.commonForOrigin;
+-  } else {
+-    this._commonForOrigin = {
+-      [documentOrigin]: {
+-        localStorageArea: new Map(),
+-        sessionStorageArea: new Map(),
+-        windowsInSameOrigin: [this]
+-      }
+-    };
+-  }
+-
+-  this._currentOriginData = this._commonForOrigin[documentOrigin];
+-
+-  // ### WEB STORAGE
+-
+-  this._localStorage = Storage.create(window, [], {
+-    associatedWindow: this,
+-    storageArea: this._currentOriginData.localStorageArea,
+-    type: "localStorage",
+-    url: this._document.documentURI,
+-    storageQuota: this._storageQuota
+-  });
+-  this._sessionStorage = Storage.create(window, [], {
+-    associatedWindow: this,
+-    storageArea: this._currentOriginData.sessionStorageArea,
+-    type: "sessionStorage",
+-    url: this._document.documentURI,
+-    storageQuota: this._storageQuota
+-  });
+-
+   // ### SELECTION
+ 
+   // https://w3c.github.io/selection-api/#dfn-selection
+@@ -416,26 +381,6 @@ function Window(options) {
+         configurable: true
+       });
+     },
+-    get localStorage() {
+-      if (idlUtils.implForWrapper(this._document)._origin === "null") {
+-        throw DOMException.create(window, [
+-          "localStorage is not available for opaque origins",
+-          "SecurityError"
+-        ]);
+-      }
+-
+-      return this._localStorage;
+-    },
+-    get sessionStorage() {
+-      if (idlUtils.implForWrapper(this._document)._origin === "null") {
+-        throw DOMException.create(window, [
+-          "sessionStorage is not available for opaque origins",
+-          "SecurityError"
+-        ]);
+-      }
+-
+-      return this._sessionStorage;
+-    },
+     get customElements() {
+       return customElementRegistry;
+     },

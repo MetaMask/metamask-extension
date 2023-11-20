@@ -1,5 +1,9 @@
+/*
+  * The addParameters and addDecorator APIs to add global decorators and parameters, exported by the various frameworks (e.g. @storybook/react) and @storybook/client were deprecated in 6.0 and have been removed in 7.0.
+
+Instead, use export const parameters = {}; and export const decorators = []; in your .storybook/preview.js. Addon authors similarly should use such an export in a preview entry file (see Preview entries).
+  * */
 import React, { useEffect, useState } from 'react';
-import { addDecorator, addParameters } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
@@ -11,11 +15,11 @@ import MetaMetricsProviderStorybook from './metametrics';
 import testData from './test-data.js';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-import { _setBackgroundConnection } from '../ui/store/action-queue';
+import { setBackgroundConnection } from '../ui/store/background-connection';
 import MetaMaskStorybookTheme from './metamask-storybook-theme';
-import addons from '@storybook/addons';
+import { addons } from '@storybook/addons';
 
-addParameters({
+export const parameters = {
   backgrounds: {
     default: 'default',
     values: [
@@ -41,7 +45,7 @@ addParameters({
   controls: {
     expanded: true,
   },
-});
+};
 
 export const globalTypes = {
   locale: {
@@ -74,7 +78,7 @@ const proxiedBackground = new Proxy(
     },
   },
 );
-_setBackgroundConnection(proxiedBackground);
+setBackgroundConnection(proxiedBackground);
 
 const metamaskDecorator = (story, context) => {
   const [isDark, setDark] = useState(false);
@@ -117,4 +121,6 @@ const metamaskDecorator = (story, context) => {
   );
 };
 
-addDecorator(metamaskDecorator);
+export const decorators = [
+  metamaskDecorator,
+];

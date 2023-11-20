@@ -95,9 +95,9 @@ describe('BadgeWrapper', () => {
       <BadgeWrapper
         badge={<div>badge</div>}
         badgeContainerProps={{ 'data-testid': 'badge-custom' }}
-        position={{
-          top: -10,
-          right: -10,
+        positionObj={{
+          top: '-10px',
+          right: '-10px',
         }}
       >
         content custom
@@ -108,8 +108,8 @@ describe('BadgeWrapper', () => {
       'mm-badge-wrapper__badge-container--circular-top-right',
     );
     expect(getByTestId('badge-custom')).toHaveStyle({
-      top: -10,
-      right: -10,
+      top: '-10px',
+      right: '-10px',
     });
   });
 

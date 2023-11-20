@@ -3,7 +3,8 @@
 exports[`ModalOverlay should match snapshot 1`] = `
 <div>
   <div
-    class="box mm-modal-overlay box--flex-direction-row box--width-full box--height-full box--background-color-overlay-default"
+    aria-hidden="true"
+    class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
   />
 </div>
 `;

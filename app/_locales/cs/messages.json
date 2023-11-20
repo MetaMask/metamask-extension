@@ -72,17 +72,11 @@
   "copiedExclamation": {
     "message": "Zkopírováno!"
   },
-  "copyPrivateKey": {
-    "message": "Toto je váš privátní klíč (kliknutím zkopírujte)"
-  },
   "copyToClipboard": {
     "message": "Kopírovat do schránky"
   },
   "create": {
     "message": "Vytvořit"
-  },
-  "createAccount": {
-    "message": "Vytvořit účet"
   },
   "customToken": {
     "message": "Vlastní token"
@@ -108,14 +102,8 @@
   "edit": {
     "message": "Upravit"
   },
-  "enterPassword": {
-    "message": "Zadejte heslo"
-  },
   "etherscanView": {
     "message": "Prohlédněte si účet na Etherscan"
-  },
-  "exportPrivateKey": {
-    "message": "Exportovat privátní klíč"
   },
   "failed": {
     "message": "Neúspěšné"
@@ -209,9 +197,6 @@
   "mustSelectOne": {
     "message": "Musíte zvolit aspoň 1 token."
   },
-  "myAccounts": {
-    "message": "Moje účty"
-  },
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
     "description": "User is important an account and needs to add a file to continue"
@@ -295,9 +280,6 @@
   "search": {
     "message": "Hledat"
   },
-  "searchTokens": {
-    "message": "Hledat tokeny"
-  },
   "seedPhraseReq": {
     "message": "klíčové fráze mají 12 slov"
   },
@@ -312,9 +294,6 @@
   },
   "settings": {
     "message": "Nastavení"
-  },
-  "showPrivateKeys": {
-    "message": "Zobrazit privátní klíče"
   },
   "sigRequest": {
     "message": "Požadavek podpisu"
@@ -363,13 +342,6 @@
   },
   "transactionError": {
     "message": "Chyba transakce. Vyhozena výjimka v kódu kontraktu."
-  },
-  "troubleTokenBalances": {
-    "message": "Měli jsme problém s načtením vašich tokenových zůstatků. Můžete je vidět ",
-    "description": "Followed by a link (here) to view token balances"
-  },
-  "typePassword": {
-    "message": "Zadejte své heslo"
   },
   "unapproved": {
     "message": "Neschváleno"

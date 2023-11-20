@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -23,7 +23,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
@@ -34,10 +34,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         await driver.press('#password', driver.Key.ENTER);
 
         // deploy contract
-        await driver.openNewPage(
-          `http://127.0.0.1:8080/?contract=${contractAddress}`,
-        );
-
+        await openDapp(driver, contractAddress);
         // wait for deployed contract, calls and confirms a contract method where ETH is sent
         await driver.findClickableElement('#deployButton');
         await driver.clickElement('#depositButton');
@@ -73,14 +70,14 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
 
-        await driver.openNewPage(`http://127.0.0.1:8080/`);
+        await openDapp(driver);
         await driver.clickElement('#sendButton');
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();

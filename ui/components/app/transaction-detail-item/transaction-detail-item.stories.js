@@ -3,12 +3,12 @@ import InfoTooltip from '../../ui/info-tooltip/info-tooltip';
 
 import { TextColor } from '../../../helpers/constants/design-system';
 
+import { Icon, IconName } from '../../component-library';
 import README from './README.mdx';
 import TransactionDetailItem from '.';
 
 export default {
   title: 'Components/App/TransactionDetailItem',
-
   component: TransactionDetailItem,
   parameters: {
     docs: {
@@ -45,7 +45,7 @@ DefaultStory.args = {
     <>
       <strong>Estimated gas fee</strong>
       <InfoTooltip contentText="This is the tooltip text" position="top">
-        <i className="fa fa-info-circle" />
+        <Icon name={IconName.Info} />
       </InfoTooltip>
     </>
   ),

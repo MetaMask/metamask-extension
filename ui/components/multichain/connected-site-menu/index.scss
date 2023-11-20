@@ -1,0 +1,27 @@
+.multichain-connected-site-menu {
+  height: 24px;
+  width: 24px;
+  padding: 0;
+
+  &__badge {
+    height: 12px;
+    width: 12px;
+  }
+
+  &__badge.not-connected {
+    height: 8px;
+    width: 8px;
+  }
+
+  &__badge.not-connected::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: var(--color-background-default);
+    z-index: -1;
+    border-radius: 50%;
+  }
+}

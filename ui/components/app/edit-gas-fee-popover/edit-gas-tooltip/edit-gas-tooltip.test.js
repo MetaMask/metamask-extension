@@ -33,13 +33,16 @@ const HIGH_GAS_OPTION = {
 const renderComponent = (componentProps) => {
   const mockStore = {
     metamask: {
-      provider: {},
+      providerConfig: {},
       cachedBalances: {},
       accounts: {
         '0xAddress': {
           address: '0xAddress',
           balance: '0x176e5b6f173ebe66',
         },
+      },
+      identities: {
+        '0xAddress': {},
       },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },

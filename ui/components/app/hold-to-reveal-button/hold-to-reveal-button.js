@@ -2,13 +2,18 @@ import React, { useCallback, useContext, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { I18nContext } from '../../../contexts/i18n';
-import { Button } from '../../component-library';
-import Box from '../../ui/box';
 import {
   AlignItems,
-  DISPLAY,
+  Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventKeyType,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { Button, Box } from '../../component-library';
 
 const radius = 14;
 const strokeWidth = 2;
@@ -19,6 +24,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
   const isLongPressing = useRef(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [hasTriggeredUnlock, setHasTriggeredUnlock] = useState(false);
+  const trackEvent = useContext(MetaMetricsContext);
 
   /**
    * Prevent animation events from propogating up
@@ -34,6 +40,13 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
    */
   const onMouseDown = () => {
     isLongPressing.current = true;
+    trackEvent({
+      category: MetaMetricsEventCategory.Keys,
+      event: MetaMetricsEventName.SrpHoldToRevealClickStarted,
+      properties: {
+        key_type: MetaMetricsEventKeyType.Srp,
+      },
+    });
   };
 
   /**
@@ -57,11 +70,25 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
    */
   const triggerOnLongPressed = useCallback(
     (e) => {
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpHoldToRevealCompleted,
+        properties: {
+          key_type: MetaMetricsEventKeyType.Srp,
+        },
+      });
+      trackEvent({
+        category: MetaMetricsEventCategory.Keys,
+        event: MetaMetricsEventName.SrpRevealViewed,
+        properties: {
+          key_type: MetaMetricsEventKeyType.Srp,
+        },
+      });
       onLongPressed();
       setHasTriggeredUnlock(true);
       preventPropogation(e);
     },
-    [onLongPressed],
+    [onLongPressed, trackEvent],
   );
 
   /**
@@ -93,6 +120,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
         <Box className="hold-to-reveal-button__absolute-fill">
           <svg className="hold-to-reveal-button__circle-svg">
             <circle
+              aria-label={t('holdToRevealLockedLabel')}
               onTransitionEnd={onProgressComplete}
               className="hold-to-reveal-button__circle-foreground"
               cx={radius}
@@ -102,7 +130,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
           </svg>
         </Box>
         <Box
-          display={DISPLAY.FLEX}
+          display={Display.Flex}
           alignItems={AlignItems.center}
           justifyContent={JustifyContent.center}
           className="hold-to-reveal-button__lock-icon-container"
@@ -152,6 +180,7 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
           </svg>
         </div>
         <div
+          aria-label={t('holdToRevealUnlockedLabel')}
           className="hold-to-reveal-button__unlock-icon-container"
           onAnimationEnd={triggerOnLongPressed}
         >
@@ -167,10 +196,10 @@ export default function HoldToRevealButton({ buttonText, onLongPressed }) {
 
   return (
     <Button
-      onMouseDown={onMouseDown}
-      onMouseUp={onMouseUp}
+      onPointerDown={onMouseDown} // allows for touch and mouse events
+      onPointerUp={onMouseUp} // allows for touch and mouse events
       className="hold-to-reveal-button__button-hold"
-      textProps={{ display: DISPLAY.FLEX, alignItems: AlignItems.center }}
+      textProps={{ display: Display.Flex, alignItems: AlignItems.center }}
     >
       <Box className="hold-to-reveal-button__icon-container" marginRight={2}>
         {renderPreCompleteContent()}

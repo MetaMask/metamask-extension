@@ -1,6 +1,6 @@
 import React, { Component, createContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { getMessage } from '../ui/helpers/utils/i18n-helper';
+import { getMessage } from '../shared/modules/i18n';
 import { I18nContext } from '../ui/contexts/i18n';
 
 export { I18nContext };

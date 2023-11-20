@@ -93,9 +93,6 @@
   "back": {
     "message": "Vissza"
   },
-  "backToAll": {
-    "message": "Vissza az összeshez"
-  },
   "backupApprovalInfo": {
     "message": "Ez a titkos kód a tárca helyreállításához szükséges, ha elveszíti eszközét, elfelejti jelszavát, újra kell telepítenie a MetaMask alkalmazást, vagy ha a tárcájához egy másik eszközről szeretne hozzáférni."
   },
@@ -154,16 +151,13 @@
   "connect": {
     "message": "Csatlakozás"
   },
-  "connectHardwareWallet": {
-    "message": "Hardverpénztárca csatlakoztatása"
-  },
   "connectingTo": {
     "message": "Kapcsolódás: $1"
   },
   "connectingToGoerli": {
     "message": "Csatlakozás a Goerli teszthálózathoz"
   },
-  "connectingToLineaTestnet": {
+  "connectingToLineaGoerli": {
     "message": "Csatlakozás a Linea Goerli teszthálózathoz"
   },
   "connectingToMainnet": {
@@ -181,9 +175,6 @@
   "copyAddress": {
     "message": "Másolja a címet a vágólapra"
   },
-  "copyPrivateKey": {
-    "message": "Ez a saját titkos kulcsod (kattints rá a másoláshoz)"
-  },
   "copyToClipboard": {
     "message": "Másolás a vágólapra"
   },
@@ -192,9 +183,6 @@
   },
   "create": {
     "message": "Létrehozás"
-  },
-  "createAccount": {
-    "message": "Fiók létrehozása"
   },
   "createPassword": {
     "message": "Jelszó létrehozása"
@@ -220,14 +208,8 @@
   "delete": {
     "message": "Törlés"
   },
-  "deleteAccount": {
-    "message": "Fiók törlése"
-  },
   "deleteNetwork": {
     "message": "Törli a hálózatot?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Biztosan törli ezt a hálózatot?"
   },
   "details": {
     "message": "Részletek"
@@ -256,9 +238,6 @@
   "ensRegistrationError": {
     "message": "Hiba történt az ENS név regisztrációjakor"
   },
-  "enterPassword": {
-    "message": "Adja meg a jelszót"
-  },
   "enterPasswordContinue": {
     "message": "A folytatáshoz adja meg a jelszót"
   },
@@ -270,9 +249,6 @@
   },
   "expandView": {
     "message": "Nézet nagyítása"
-  },
-  "exportPrivateKey": {
-    "message": "Privát kulcs exportálása"
   },
   "failed": {
     "message": "Sikertelen"
@@ -411,7 +387,7 @@
   "likeToImportTokens": {
     "message": "Hozzá szeretné adni ezeket az érméket?"
   },
-  "lineatestnet": {
+  "lineaGoerli": {
     "message": "Linea Goerli teszthálózat"
   },
   "links": {
@@ -446,9 +422,6 @@
   },
   "mustSelectOne": {
     "message": "Legalább 1 tokent ki kell választania."
-  },
-  "myAccounts": {
-    "message": "Fiókjaim"
   },
   "needImportFile": {
     "message": "Ki kell választania az importálni kívánt fájlt.",
@@ -568,14 +541,8 @@
   "privateNetwork": {
     "message": "Magánhálózat"
   },
-  "queue": {
-    "message": "Nyomtatólista"
-  },
   "readdToken": {
     "message": "Ezt a tokent a jövőben is hozzáadhatja, ha a fiókbeállítások menü „Token hozzáadása” elemére lép."
-  },
-  "recents": {
-    "message": "Legutóbbiak"
   },
   "recipientAddressPlaceholder": {
     "message": "Keresés, nyilvános cím (0x) vagy ENS"
@@ -641,9 +608,6 @@
   "searchResults": {
     "message": "Keresési eredmények"
   },
-  "searchTokens": {
-    "message": "Keresés a tokenek között"
-  },
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
   },
@@ -682,9 +646,6 @@
   },
   "showHexDataDescription": {
     "message": "Válassza ezt, ha a hex adatmezőt a küldő képernyőn szeretné megnézni"
-  },
-  "showPrivateKeys": {
-    "message": "Mutassa a privát kulcsokat"
   },
   "sigRequest": {
     "message": "Aláírás kérése"
@@ -797,21 +758,11 @@
   "transfer": {
     "message": "Átutalás"
   },
-  "transferBetweenAccounts": {
-    "message": "Fiókok közötti küldés"
-  },
   "transferFrom": {
     "message": "Átvezetés innen: "
   },
-  "troubleTokenBalances": {
-    "message": "Gondjaink voltak tokenegyenlegeid betöltésével. Megtekintheted őket",
-    "description": "Followed by a link (here) to view token balances"
-  },
   "tryAgain": {
     "message": "Újra"
-  },
-  "typePassword": {
-    "message": "Írd be MetaMask jelszavadat"
   },
   "unapproved": {
     "message": "Jóvá nem hagyott"
