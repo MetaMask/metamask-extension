@@ -315,9 +315,7 @@ describe('Account Tracker', () => {
       jest
         .spyOn(blockTrackerFromHookStub, 'removeListener')
         .mockImplementation();
-      jest
-        .spyOn(accountTracker, '_updateAccounts')
-        .mockResolvedValue();
+      jest.spyOn(accountTracker, '_updateAccounts').mockResolvedValue();
 
       const pollingToken =
         accountTracker.startPollingByNetworkClientId('mainnet');
@@ -334,9 +332,7 @@ describe('Account Tracker', () => {
       jest
         .spyOn(blockTrackerFromHookStub, 'removeListener')
         .mockImplementation();
-      jest
-        .spyOn(accountTracker, '_updateAccounts')
-        .mockResolvedValue();
+      jest.spyOn(accountTracker, '_updateAccounts').mockResolvedValue();
 
       const pollingToken1 =
         accountTracker.startPollingByNetworkClientId('mainnet');
@@ -427,9 +423,7 @@ describe('Account Tracker', () => {
         getCurrentChainId: () => currentChainId,
       });
 
-      jest
-        .spyOn(accountTracker, '_updateAccounts')
-        .mockResolvedValue();
+      jest.spyOn(accountTracker, '_updateAccounts').mockResolvedValue();
 
       accountTracker.startPollingByNetworkClientId('mainnet');
 
