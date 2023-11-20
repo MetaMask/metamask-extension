@@ -23,6 +23,8 @@ export function afterTransactionSign(
     return true;
   }
 
+  console.error('------- After transaction sign success');
+
   txMeta.custodyId = signedEthTx.custodian_transactionId;
   txMeta.custodyStatus = signedEthTx.transactionStatus;
 
