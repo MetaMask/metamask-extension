@@ -54,7 +54,9 @@ export function NotificationItem({ notification, onItemClick }) {
         )}
       />
       <div className="notifications__item__details">
-        <SnapUIMarkdown markdown>{message}</SnapUIMarkdown>
+        <div className="notifications__item__details__message">
+          <SnapUIMarkdown markdown>{message}</SnapUIMarkdown>
+        </div>
         <p className="notifications__item__details__infos">
           {t('notificationsInfos', [
             formatDate(createdDate, "LLLL d',' yyyy 'at' t"),
