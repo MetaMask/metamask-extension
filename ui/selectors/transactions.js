@@ -33,9 +33,9 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
 
     const { chainId } = getProviderConfig(state);
 
-    return transactions.filter(
-      (transaction) => transaction.chainId === chainId,
-    );
+    return transactions
+      .filter((transaction) => transaction.chainId === chainId)
+      .reverse();
   },
   (transactions) => transactions,
 );
