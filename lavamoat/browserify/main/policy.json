@@ -183,7 +183,8 @@
       },
       "packages": {
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
+        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
@@ -204,6 +205,13 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
+      "packages": {
+        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
+        "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true
       }
     },
     "@ethersproject/abi": {
@@ -836,6 +844,7 @@
     },
     "@metamask/browser-passworder": {
       "globals": {
+        "CryptoKey": true,
         "btoa": true,
         "crypto.getRandomValues": true,
         "crypto.subtle.decrypt": true,
@@ -845,6 +854,7 @@
         "crypto.subtle.importKey": true
       },
       "packages": {
+        "@metamask/utils": true,
         "browserify>buffer": true
       }
     },
@@ -1571,11 +1581,60 @@
     "@metamask/keyring-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/eth-keyring-controller": true,
+        "@metamask/keyring-controller>@metamask/eth-keyring-controller": true,
         "@metamask/keyring-controller>ethereumjs-wallet": true,
         "@metamask/utils": true,
         "eth-json-rpc-filters>async-mutex": true,
         "ethereumjs-util": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-keyring-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/browser-passworder": true,
+        "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": true,
+        "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
+        "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": true,
+        "@metamask/obs-store": true,
+        "@metamask/utils": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-hd-keyring": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
+        "@metamask/scure-bip39": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/assets-controllers>@metamask/abi-utils": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "eth-sig-util>ethereumjs-util>ethjs-util": true,
+        "eth-sig-util>tweetnacl": true,
+        "eth-sig-util>tweetnacl-util": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": {
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util": true,
+        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/keyring-controller>@metamask/eth-keyring-controller>@metamask/eth-sig-util": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "mocha>serialize-javascript>randombytes": true
       }
     },
     "@metamask/keyring-controller>ethereumjs-wallet": {
