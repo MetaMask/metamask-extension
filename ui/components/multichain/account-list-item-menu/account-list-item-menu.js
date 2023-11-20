@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect, useCallback } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -21,9 +21,9 @@ import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { MenuItem } from '../../ui/menu';
 import {
   IconName,
+  ModalFocus,
   Popover,
   PopoverPosition,
-  ModalFocus,
   PopoverRole,
   Text,
 } from '../../component-library';

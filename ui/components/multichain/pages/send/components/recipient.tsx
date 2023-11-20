@@ -19,11 +19,13 @@ import {
   Box,
 } from '../../../../component-library';
 import { getAddressBookEntry } from '../../../../../selectors';
-import Identicon from '../../../../ui/identicon';
 import Confusable from '../../../../ui/confusable';
-import { ellipsify } from '../../../../../pages/send/send.utils';
 import { Tab, Tabs } from '../../../../ui/tabs';
+import { AddressListItem } from '../../../address-list-item';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccount } from '.';
+
+const CONTACTS_TAB_KEY = 'contacts';
+const ACCOUNTS_TAB_KEY = 'accounts';
 
 const renderExplicitAddress = (
   address: string,
@@ -32,9 +34,9 @@ const renderExplicitAddress = (
   dispatch: any,
 ) => {
   return (
-    <div
-      key={address}
-      className="send__select-recipient-wrapper__group-item"
+    <AddressListItem
+      address={address}
+      label={<Confusable input={nickname} />}
       onClick={() => {
         dispatch(
           addHistoryEntry(
@@ -44,19 +46,7 @@ const renderExplicitAddress = (
         dispatch(updateRecipient({ address, nickname }));
         dispatch(updateRecipientUserInput(address));
       }}
-    >
-      <Identicon address={address} diameter={28} />
-      <div className="send__select-recipient-wrapper__group-item__content">
-        <div className="send__select-recipient-wrapper__group-item__title">
-          {nickname ? <Confusable input={nickname} /> : ellipsify(address)}
-        </div>
-        {nickname && (
-          <div className="send__select-recipient-wrapper__group-item__subtitle">
-            {ellipsify(address)}
-          </div>
-        )}
-      </div>
-    </div>
+    />
   );
 };
 
@@ -101,18 +91,20 @@ export const SendPageRecipient = () => {
     );
   } else {
     contents = (
-      <Tabs defaultActiveTabKey={userInput ? 'contacts' : 'accounts'}>
+      <Tabs
+        defaultActiveTabKey={userInput ? CONTACTS_TAB_KEY : ACCOUNTS_TAB_KEY}
+      >
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          <Tab tabKey="accounts" name={t('yourAccounts')}>
+          <Tab tabKey={ACCOUNTS_TAB_KEY} name={t('yourAccounts')}>
             <SendPageYourAccount />
           </Tab>
         }
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          <Tab tabKey="contacts" name={t('contacts')}>
+          <Tab tabKey={CONTACTS_TAB_KEY} name={t('contacts')}>
             <SendPageAddressBook />
           </Tab>
         }

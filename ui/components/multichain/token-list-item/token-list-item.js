@@ -9,9 +9,9 @@ import {
   FlexDirection,
   FontWeight,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
-  TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
