@@ -36,7 +36,6 @@ const Link = ({ onClick, children, ...rest }) => (
 );
 
 export const SnapUIMarkdown = ({ children, markdown }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState(undefined);
 
   if (markdown === false) {
@@ -45,18 +44,16 @@ export const SnapUIMarkdown = ({ children, markdown }) => {
 
   const handleLinkClick = (url) => {
     setRedirectUrl(url);
-    setIsModalOpen(true);
   };
 
   const handleModalClose = () => {
-    setIsModalOpen(false);
     setRedirectUrl(undefined);
   };
 
   return (
     <>
       <SnapLinkWarning
-        isOpen={isModalOpen}
+        isOpen={Boolean(redirectUrl)}
         onClose={handleModalClose}
         url={redirectUrl}
       />
