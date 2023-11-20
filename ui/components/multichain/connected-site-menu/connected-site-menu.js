@@ -18,10 +18,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   BadgeWrapper,
+  Box,
   Icon,
   IconName,
   IconSize,
-  Box,
 } from '../../component-library';
 import { getSelectedIdentity } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';

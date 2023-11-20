@@ -7,8 +7,8 @@ import mockState from '../../../../test/data/mock-state.json';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import messages from '../../../../app/_locales/en/messages.json';
 import {
-  CONNECT_HARDWARE_ROUTE,
   ADD_SNAP_ACCOUNT_ROUTE,
+  CONNECT_HARDWARE_ROUTE,
 } from '../../../helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IN
 import { AccountListMenu } from '.';
