@@ -29,7 +29,7 @@ fi
 # Run the Docker container
 echo "Running the Docker container..."
 result=$(docker run --rm -it --privileged -v "$CONTAINER_VOLUME_1" -v "$CONTAINER_VOLUME_2" --network host $IMAGE_NAME $UPDATE_SNAPSHOTS | tee /dev/fd/2)
-if [ "$resultado" != "ok" ]; then
+if [ "$result" != "ok" ]; then
     echo "Visual tests failed"
 fi
 

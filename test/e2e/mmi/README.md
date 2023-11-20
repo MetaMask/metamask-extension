@@ -47,6 +47,16 @@ In some cases, you will need to update the visual screenshot. For that, you have
   yarn test:e2e:mmi:visual:update
   ```
 
+### Debug test
+
+If you're interested in [debugging tests](https://playwright.dev/docs/debug), we suggest installing the Visual Studio plugin. This will allow you to run each test individually, providing a more streamlined debugging process.
+
+For those who simply want to run tests locally to ensure no MMI functionality has been compromised, you can adjust the environment variable in your .env file:
+```
+HEADLESS=true
+```
+By doing this, all tests will run in headless mode. This allows you to continue with other tasks while the tests are running, optimizing your workflow.
+
 ## Visual Tests
 
 For more information on visual tests, refer to the [Playwright documentation](https://playwright.dev/docs/test-snapshots).
