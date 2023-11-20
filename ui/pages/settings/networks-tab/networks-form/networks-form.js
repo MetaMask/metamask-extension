@@ -17,6 +17,7 @@ import {
   MetaMetricsNetworkEventSource,
 } from '../../../../../shared/constants/metametrics';
 import {
+  BUILT_IN_NETWORKS,
   FEATURED_RPCS,
   infuraProjectId,
 } from '../../../../../shared/constants/network';
@@ -43,6 +44,7 @@ import {
   upsertNetworkConfiguration,
 } from '../../../../store/actions';
 import {
+  ButtonLink,
   FormTextField,
   HelpText,
   HelpTextSeverity,
@@ -131,6 +133,15 @@ const NetworksForm = ({
           url: 'https://chainid.network/chains.json',
           functionName: 'getSafeChainsList',
         });
+        Object.values(BUILT_IN_NETWORKS).forEach((network) => {
+          const index = chainList.findIndex(
+            (chain) =>
+              chain.chainId.toString() === getDisplayChainId(network.chainId),
+          );
+          if (network.ticker && index !== -1) {
+            chainList[index].nativeCurrency.symbol = network.ticker;
+          }
+        });
         safeChainsList.current = chainList;
       } catch (error) {
         log.warn('Failed to fetch chainList from chainid.network', error);
@@ -149,6 +160,7 @@ const NetworksForm = ({
     setBlockExplorerUrl(selectedNetwork?.blockExplorerUrl);
     setErrors({});
     setWarnings({});
+    setSuggestedTicker('');
     setIsSubmitting(false);
     setIsEditing(false);
     setPreviousNetwork(selectedNetwork);
@@ -245,11 +257,7 @@ const NetworksForm = ({
 
   const autoSuggestTicker = useCallback((formChainId) => {
     const decimalChainId = getDisplayChainId(formChainId);
-    if (
-      !decimalChainId ||
-      decimalChainId.trim() === '' ||
-      safeChainsList.current.length === 0
-    ) {
+    if (decimalChainId.trim() === '' || safeChainsList.current.length === 0) {
       setSuggestedTicker('');
       return;
     }
@@ -738,16 +746,17 @@ const NetworksForm = ({
                 color={TextColor.textDefault}
               >
                 {t('suggestedTokenSymbol')}{' '}
-                <Text
-                  as="span"
+                <ButtonLink
+                  as="button"
                   variant={TextVariant.bodySm}
                   color={TextColor.primaryDefault}
                   onClick={() => {
                     setTicker(suggestedTicker);
                   }}
+                  style={{ verticalAlign: 'baseline' }}
                 >
                   {suggestedTicker}
-                </Text>
+                </ButtonLink>
               </Text>
             ) : null
           }
