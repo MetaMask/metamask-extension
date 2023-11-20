@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -10,35 +10,35 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { AccountListItemMenu, AvatarGroup } from '..';
 import {
   AvatarAccount,
-  Box,
+  AvatarAccountVariant,
   AvatarFavicon,
-  Tag,
+  AvatarToken,
+  AvatarTokenSize,
+  Box,
   ButtonIcon,
   IconName,
   IconSize,
-  AvatarAccountVariant,
+  Tag,
   Text,
-  AvatarToken,
-  AvatarTokenSize,
 } from '../../component-library';
 import {
-  Color,
-  TextAlign,
   AlignItems,
-  TextVariant,
-  FlexDirection,
-  BorderRadius,
-  JustifyContent,
-  Size,
-  BorderColor,
-  Display,
   BackgroundColor,
   BlockSize,
+  BorderColor,
+  BorderRadius,
+  Color,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  Size,
+  TextAlign,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   findKeyringForAddress,
   getNativeCurrency,
@@ -55,8 +55,7 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
-function getLabel(keyring = {}, t) {
-  const { type } = keyring;
+function getLabel(t, { type }) {
   switch (type) {
     case KeyringType.qr:
       return HardwareKeyringNames.qr;
@@ -115,7 +114,7 @@ export const AccountListItem = ({
   const keyring = useSelector((state) =>
     findKeyringForAddress(state, identity.address),
   );
-  const label = getLabel(keyring, t);
+  const label = getLabel(t, keyring);
 
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
