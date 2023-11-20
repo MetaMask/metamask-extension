@@ -2120,13 +2120,20 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:updateSnapState',
         ),
-        maybeUpdatePhishingList: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'PhishingController:maybeUpdateState',
-        ),
+        maybeUpdatePhishingList: () => {
+          const { usePhishDetect } =
+            this.preferencesController.store.getState();
+
+          if (!usePhishDetect) {
+            return;
+          }
+
+          this.controllerMessenger.call('PhishingController:maybeUpdateState');
+        },
         isOnPhishingList: (origin) => {
           const { usePhishDetect } =
             this.preferencesController.store.getState();
+
           if (!usePhishDetect) {
             return false;
           }

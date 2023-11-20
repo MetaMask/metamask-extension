@@ -6,7 +6,7 @@
   }
 
   &__link {
-    span {
+    & > span:last-child {
       margin-inline-start: 2px;
     }
   }

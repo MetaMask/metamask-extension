@@ -12,12 +12,7 @@ import TextField from '../../ui/text-field';
 import ConfirmationNetworkSwitch from '../../../pages/confirmation/components/confirmation-network-switch';
 import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
-import {
-  AvatarIcon,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  ButtonLink,
-  ///: END:ONLY_INCLUDE_IN
-} from '../../component-library';
+import { AvatarIcon } from '../../component-library';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { SnapDelineator } from '../snaps/snap-delineator';
@@ -62,7 +57,6 @@ export const safeComponentList = {
   SnapUIMarkdown,
   SnapUIImage,
   Spinner,
-  ButtonLink,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   CreateSnapAccount,

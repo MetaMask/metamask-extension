@@ -5,7 +5,12 @@ import {
   TextVariant,
   OverflowWrap,
 } from '../../../../helpers/constants/design-system';
-import { ButtonLink, IconName, Text } from '../../../component-library';
+import {
+  ButtonLink,
+  ButtonLinkSize,
+  IconName,
+  Text,
+} from '../../../component-library';
 import SnapLinkWarning from '../snap-link-warning';
 
 const Paragraph = (props) => (
@@ -22,6 +27,7 @@ const Link = ({ onClick, children, ...rest }) => (
     {...rest}
     onClick={onClick}
     externalLink
+    size={ButtonLinkSize.Inherit}
     endIconName={IconName.Export}
     className="snap-ui-markdown__link"
   >
