@@ -77,12 +77,11 @@ export default class AccountTracker {
     this.onboardingController = opts.onboardingController;
 
     // blockTracker.currentBlock may be null
-    const currentChainId = this.getCurrentChainId();
     this._currentBlockNumberByChainId = {
-      [currentChainId]: this._blockTracker.getCurrentBlock(),
+      [this.getCurrentChainId()]: this._blockTracker.getCurrentBlock(),
     };
     this._blockTracker.once('latest', (blockNumber) => {
-      this._currentBlockNumberByChainId[currentChainId] = blockNumber;
+      this._currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
     });
 
     // subscribe to account removal
