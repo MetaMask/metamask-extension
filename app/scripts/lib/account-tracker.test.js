@@ -745,18 +745,18 @@ describe('Account Tracker', () => {
         it('updates all accounts directly', async () => {
           useMultiAccountBalanceChecker = true;
 
-          await accountTracker._updateForBlockByNetworkClientId('mainnet');
+          await accountTracker._updateForBlockByNetworkClientId();
 
           expect(updateAccountsViaBalanceCheckerSpy).not.toHaveBeenCalled();
           expect(updateAccountSpy).toHaveBeenCalledWith(
             VALID_ADDRESS,
-            providerFromHook,
-            '0x1',
+            provider,
+            '0x5',
           );
           expect(updateAccountSpy).toHaveBeenCalledWith(
             VALID_ADDRESS_TWO,
-            providerFromHook,
-            '0x1',
+            provider,
+            '0x5',
           );
         });
       });

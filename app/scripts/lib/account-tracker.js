@@ -157,7 +157,7 @@ export default class AccountTracker {
       chainId: this.getCurrentChainId(),
       provider: this._provider,
       blockTracker: this._blockTracker,
-      indentifier: this.getNetworkIdentifier(),
+      identifier: this.getNetworkIdentifier(),
     };
   }
 
