@@ -23,6 +23,7 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
   addToAddressBook,
+  updateTransaction,
 } from '../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
@@ -337,6 +338,9 @@ export const mapDispatchToProps = (dispatch) => {
           loadingIndicatorMessage,
         ),
       ),
+    updateTransaction: (txMeta) => {
+      dispatch(updateTransaction(txMeta, true));
+    },
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),

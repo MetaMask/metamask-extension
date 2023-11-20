@@ -151,6 +151,7 @@ export default class ConfirmTransactionBase extends Component {
     isMainBetaFlask: PropTypes.bool,
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
+    updateTransaction: PropTypes.func,
   };
 
   state = {
@@ -702,9 +703,10 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-  handleMMISubmit() {
+  async handleMMISubmit() {
     const {
       sendTransaction,
+      updateTransaction,
       txData,
       history,
       mostRecentOverviewPage,
@@ -745,6 +747,8 @@ export default class ConfirmTransactionBase extends Component {
       txData.metadata.custodianPublishesTransaction =
         custodianPublishesTransaction;
       txData.metadata.rpcUrl = rpcUrl;
+
+      await updateTransaction(txData);
     }
 
     updateTxData({

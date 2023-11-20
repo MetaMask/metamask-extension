@@ -1529,7 +1529,9 @@ export default class MetamaskController extends EventEmitter {
       signatureController: this.signatureController,
       platform: this.platform,
       extension: this.extension,
-      getTransactions: this.getTransactions.bind(this),
+      getTransactions: this.txController.getTransactions.bind(
+        this.txController,
+      ),
       setTxStatusSigned: (id) =>
         this.txController.updateCustodialTransaction(id, {
           status: TransactionStatus.signed,
@@ -1538,17 +1540,17 @@ export default class MetamaskController extends EventEmitter {
         this.txController.updateCustodialTransaction(id, {
           status: TransactionStatus.submitted,
         }),
-      setTxStatusFailed: (id) =>
+      setTxStatusFailed: (id, reason) =>
         this.txController.updateCustodialTransaction(id, {
           status: TransactionStatus.failed,
+          errorMessage: reason,
         }),
       trackTransactionEvents: handleMMITransactionUpdate.bind(
         null,
         transactionMetricsRequest,
       ),
-      updateTransaction: this.txController.updateCustodialTransaction.bind(
-        this.txController,
-      ),
+      updateTransaction: (txMeta, note) =>
+        this.txController.updateTransaction(txMeta, note),
       updateTransactionHash: (id, hash) =>
         this.txController.updateCustodialTransaction(id, { hash }),
     });
@@ -2801,7 +2803,9 @@ export default class MetamaskController extends EventEmitter {
           null,
           this.getTransactionMetricsRequest(),
         ),
-      getTransactions: this.getTransactions.bind(this),
+      getTransactions: this.txController.getTransactions.bind(
+        this.txController,
+      ),
       updateEditableParams: this.updateEditableParams.bind(this),
       updateTransactionGasFees:
         txController.updateTransactionGasFees.bind(txController),
@@ -3931,20 +3935,11 @@ export default class MetamaskController extends EventEmitter {
     return transactionMeta;
   }
 
-  getTransactions({ filterToCurrentNetwork, searchCriteria } = {}) {
-    const currentChainId = this.networkController.state.providerConfig.chainId;
-
-    const fromAddress = searchCriteria?.from;
-
-    return this.txController.state.transactions.filter((tx) => {
-      const matchesNetwork =
-        filterToCurrentNetwork === false ||
-        tx.txParams?.chainId === currentChainId;
-
-      const matchesFrom = !fromAddress || tx.txParams?.from === fromAddress;
-
-      return matchesNetwork && matchesFrom;
-    });
+  /**
+   * @returns {boolean} true if the keyring type supports EIP-1559
+   */
+  async getCurrentAccountEIP1559Compatibility() {
+    return true;
   }
 
   // TxMigrationToDo - Add updateEditableParams method.
@@ -3987,13 +3982,6 @@ export default class MetamaskController extends EventEmitter {
 
     this.txController.updateTransaction(updatedTransaction, note);
     return updatedTransaction;
-  }
-
-  /**
-   * @returns {boolean} true if the keyring type supports EIP-1559
-   */
-  async getCurrentAccountEIP1559Compatibility() {
-    return true;
   }
 
   //=============================================================================
