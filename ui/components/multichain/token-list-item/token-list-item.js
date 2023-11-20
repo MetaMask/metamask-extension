@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import classnames from 'classnames';
@@ -24,6 +24,7 @@ import {
   ButtonSecondary,
   Icon,
   IconName,
+  IconSize,
   Modal,
   ModalContent,
   ModalHeader,
@@ -74,24 +75,27 @@ export const TokenListItem = ({
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   // Scam warning
-  let showScamWarning = false;
-  const decimalChainId = Number(
-    chainId.startsWith('0x') ? hexToDecimal(chainId) : chainId,
-  );
-  if (isNativeCurrency) {
-    const knownChainEntry = KNOWN_CHAINS.find(
-      (entry) => entry.chainId === decimalChainId,
+  const showScamWarning = useRef(false);
+
+  useEffect(() => {
+    const decimalChainId = Number(
+      chainId.startsWith('0x') ? hexToDecimal(chainId) : chainId,
     );
-    if (
-      // No entry for this chainID is problematic
-      !knownChainEntry ||
-      // A mismatching currency symbol would also be problematic
-      knownChainEntry.nativeCurrency.symbol.toLowerCase() !==
-        tokenSymbol.toLowerCase()
-    ) {
-      showScamWarning = true;
+    if (isNativeCurrency) {
+      const knownChainEntry = KNOWN_CHAINS.find(
+        (entry) => entry.chainId === decimalChainId,
+      );
+
+      if (
+        // No entry for this chainID is problematic
+        !knownChainEntry ||
+        // A mismatching currency symbol would also be problematic
+        knownChainEntry.symbol.toLowerCase() !== tokenSymbol.toLowerCase()
+      ) {
+        showScamWarning.current = true;
+      }
     }
-  }
+  }, [chainId, isNativeCurrency, tokenSymbol]);
 
   const dispatch = useDispatch();
   const [showScamWarningModal, setShowScamWarningModal] = useState(false);
@@ -204,52 +208,15 @@ export const TokenListItem = ({
               textAlign={TextAlign.End}
               data-testid="multichain-token-list-item-secondary-value"
             >
-              {isNativeCurrency && showScamWarning ? (
-                <Text color={TextColor.errorDefault}>
+              {isNativeCurrency && showScamWarning.current ? (
+                <Text color={TextColor.errorDefault} as="span">
                   {t('nativeTokenScamWarningLabel')}{' '}
                   <Icon
                     name={IconName.Danger}
                     onMouseEnter={() => setShowScamWarningModal(true)}
                     color={IconColor.errorDefault}
+                    size={IconSize.Sm}
                   />
-                  {showScamWarningModal ? (
-                    <Modal isOpen>
-                      <ModalOverlay />
-                      <ModalContent>
-                        <ModalHeader
-                          onClose={() => setShowScamWarningModal(false)}
-                        >
-                          {t('nativeTokenScamWarningTitle')}
-                        </ModalHeader>
-                        <Box marginTop={4} marginBottom={4}>
-                          {t('nativeTokenScamWarningDescription', [
-                            tokenSymbol,
-                          ])}
-                        </Box>
-                        <Box>
-                          <ButtonSecondary
-                            onClick={() => {
-                              dispatch(
-                                setSelectedNetworkConfigurationId(
-                                  providerConfig.id,
-                                ),
-                              );
-                              if (isFullScreen) {
-                                history.push(NETWORKS_ROUTE);
-                              } else {
-                                global.platform.openExtensionInBrowser(
-                                  NETWORKS_ROUTE,
-                                );
-                              }
-                            }}
-                            block
-                          >
-                            {t('nativeTokenScamWarningConversion')}
-                          </ButtonSecondary>
-                        </Box>
-                      </ModalContent>
-                    </Modal>
-                  ) : null}
                 </Text>
               ) : (
                 secondary
@@ -264,6 +231,36 @@ export const TokenListItem = ({
           </Text>
         </Box>
       </Box>
+      {showScamWarningModal ? (
+        <Modal isOpen>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
+              {t('nativeTokenScamWarningTitle')}
+            </ModalHeader>
+            <Box marginTop={4} marginBottom={4}>
+              {t('nativeTokenScamWarningDescription', [tokenSymbol])}
+            </Box>
+            <Box>
+              <ButtonSecondary
+                onClick={() => {
+                  dispatch(
+                    setSelectedNetworkConfigurationId(providerConfig.id),
+                  );
+                  if (isFullScreen) {
+                    history.push(NETWORKS_ROUTE);
+                  } else {
+                    global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
+                  }
+                }}
+                block
+              >
+                {t('nativeTokenScamWarningConversion')}
+              </ButtonSecondary>
+            </Box>
+          </ModalContent>
+        </Modal>
+      ) : null}
     </Box>
   );
 };
