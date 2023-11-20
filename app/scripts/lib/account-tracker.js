@@ -371,7 +371,8 @@ export default class AccountTracker {
    * @fires 'block' The updated state, if all account updates are successful
    */
   async _updateForBlockByNetworkClientId(networkClientId, blockNumber) {
-    const { chainId, provider } = this.#getCorrectNetworkClient(networkClientId);
+    const { chainId, provider } =
+      this.#getCorrectNetworkClient(networkClientId);
     this._currentBlockNumberByChainId[chainId] = blockNumber;
 
     // block gasLimit polling shouldn't be in account-tracker shouldn't be here...
