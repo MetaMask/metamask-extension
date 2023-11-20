@@ -7,18 +7,18 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
 import {
   setActiveNetwork,
-  showModal,
-  setShowTestNetworks,
   setProviderType,
+  setShowTestNetworks,
+  showModal,
   toggleNetworkMenu,
 } from '../../../store/actions';
 import { TEST_CHAINS } from '../../../../shared/constants/network';
 import {
-  getShowTestNetworks,
   getCurrentChainId,
-  getNonTestNetworks,
-  getTestNetworks,
   getCurrentNetwork,
+  getNonTestNetworks,
+  getShowTestNetworks,
+  getTestNetworks,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -30,13 +30,13 @@ import {
   TextColor,
 } from '../../../helpers/constants/design-system';
 import {
-  ButtonSecondarySize,
+  Box,
   ButtonSecondary,
+  ButtonSecondarySize,
   Modal,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Box,
   Text,
   TextFieldSearch,
 } from '../../component-library';

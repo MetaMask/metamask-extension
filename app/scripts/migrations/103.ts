@@ -1,42 +1,42 @@
+import { hasProperty, isObject } from '@metamask/utils';
 import { cloneDeep } from 'lodash';
-
-type VersionedData = {
-  meta: { version: number };
-  data: Record<string, unknown>;
-};
+import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 
 export const version = 103;
 
 /**
- * This migration converts the transactions object used by the extension transaction controller
- * to an array of transactions used by the core transaction controller.
+ * Sets the default ledger transport method of Ledger U2F or Ledger Live on chrome to Webhid.
  *
- * @param originalVersionedData
+ * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
+ * @param originalVersionedData.meta - State metadata.
+ * @param originalVersionedData.meta.version - The current state version.
+ * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
+ * @returns Updated versioned MetaMask extension state.
  */
-export async function migrate(
-  originalVersionedData: VersionedData,
-): Promise<VersionedData> {
+export async function migrate(originalVersionedData: {
+  meta: { version: number };
+  data: Record<string, unknown>;
+}) {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  transformState(versionedData.data);
+  versionedData.data = transformState(versionedData.data);
   return versionedData;
 }
 
-function transformState(state: Record<string, any>) {
-  const transactionControllerState = state?.TransactionController;
-
-  if (!transactionControllerState) {
-    return;
+function transformState(state: Record<string, unknown>) {
+  if (
+    hasProperty(state, 'PreferencesController') &&
+    isObject(state.PreferencesController) &&
+    window.navigator.userAgent.includes('Chrome')
+  ) {
+    const preferencesControllerState = state.PreferencesController;
+    preferencesControllerState.ledgerTransportType =
+      LedgerTransportTypes.webhid;
+    return {
+      ...state,
+      PreferencesController: preferencesControllerState,
+    };
   }
 
-  const transactionsObject = transactionControllerState?.transactions || {};
-
-  const transactionsArray = Object.values(transactionsObject).sort(
-    (a: any, b: any) => (a.time > b.time ? -1 : 1), // Descending
-  );
-
-  state.TransactionController = {
-    ...transactionControllerState,
-    transactions: transactionsArray,
-  };
+  return state;
 }

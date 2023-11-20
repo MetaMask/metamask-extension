@@ -36,7 +36,7 @@ const BACKGROUND_COLORS = {
 };
 
 const TEXT_COLORS = {
-  [ConfirmInfoRowVariant.Default]: TextColor.textAlternative,
+  [ConfirmInfoRowVariant.Default]: TextColor.textDefault,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
   [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
 };

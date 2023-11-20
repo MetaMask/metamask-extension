@@ -19,10 +19,9 @@ import {
   Box,
 } from '../../../../component-library';
 import { getAddressBookEntry } from '../../../../../selectors';
-import Identicon from '../../../../ui/identicon';
 import Confusable from '../../../../ui/confusable';
-import { ellipsify } from '../../../../../pages/send/send.utils';
 import { Tab, Tabs } from '../../../../ui/tabs';
+import { AddressListItem } from '../../../address-list-item';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccount } from '.';
 
 const renderExplicitAddress = (
@@ -32,9 +31,9 @@ const renderExplicitAddress = (
   dispatch: any,
 ) => {
   return (
-    <div
-      key={address}
-      className="send__select-recipient-wrapper__group-item"
+    <AddressListItem
+      address={address}
+      label={<Confusable input={nickname} />}
       onClick={() => {
         dispatch(
           addHistoryEntry(
@@ -44,19 +43,7 @@ const renderExplicitAddress = (
         dispatch(updateRecipient({ address, nickname }));
         dispatch(updateRecipientUserInput(address));
       }}
-    >
-      <Identicon address={address} diameter={28} />
-      <div className="send__select-recipient-wrapper__group-item__content">
-        <div className="send__select-recipient-wrapper__group-item__title">
-          {nickname ? <Confusable input={nickname} /> : ellipsify(address)}
-        </div>
-        {nickname && (
-          <div className="send__select-recipient-wrapper__group-item__subtitle">
-            {ellipsify(address)}
-          </div>
-        )}
-      </div>
-    </div>
+    />
   );
 };
 
