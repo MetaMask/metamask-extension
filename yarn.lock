@@ -3706,7 +3706,7 @@ __metadata:
 
 "@metamask-institutional/extension@patch:@metamask-institutional/extension@npm%3A0.3.10#~/.yarn/patches/@metamask-institutional-extension-npm-0.3.10-2bbcfc3403.patch":
   version: 0.3.10
-  resolution: "@metamask-institutional/extension@patch:@metamask-institutional/extension@npm%3A0.3.10#~/.yarn/patches/@metamask-institutional-extension-npm-0.3.10-2bbcfc3403.patch::version=0.3.10&hash=490dc0"
+  resolution: "@metamask-institutional/extension@patch:@metamask-institutional/extension@npm%3A0.3.10#~/.yarn/patches/@metamask-institutional-extension-npm-0.3.10-2bbcfc3403.patch::version=0.3.10&hash=625099"
   dependencies:
     "@ethereumjs/util": "npm:^8.0.5"
     "@metamask-institutional/custody-controller": "npm:^0.2.17"
@@ -3717,7 +3717,7 @@ __metadata:
     "@metamask-institutional/types": "npm:^1.0.4"
     jest-create-mock-instance: "npm:^2.0.0"
     jest-fetch-mock: "npm:3.0.3"
-  checksum: 078f7458bd83b4f3921ba291ec9338913adf49225a43e6ee53f924e3b413788c926c13db0d27475041566f4de08d28f7e091be4bcc7455a6235f292ec54810d0
+  checksum: b88eadfacbea3ec02d4e36e183450db849235a090e6e702ec1cff91978a20bb4145f12b2ae48398ab4daeb2567ca6b28a904b4c4309355caccfa0df20219c646
   languageName: node
   linkType: hard
 

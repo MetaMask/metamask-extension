@@ -1,8 +1,8 @@
 diff --git a/dist/ExtensionUtils.js b/dist/ExtensionUtils.js
-index de49fb53ee49f8e83ea7d85aa2e6ff77e8fe6754..ff63363a13ebb5c197da98421a2f0dc29052abad 100644
+index de49fb53ee49f8e83ea7d85aa2e6ff77e8fe6754..8f5ae9245c5f9c0438d919e8558ebd08f27740d8 100644
 --- a/dist/ExtensionUtils.js
 +++ b/dist/ExtensionUtils.js
-@@ -1,195 +1,334 @@
+@@ -1,195 +1,341 @@
  "use strict";
  Object.defineProperty(exports, "__esModule", { value: true });
 -exports.handleTxStatusUpdate = exports.getTxByCustodyId = exports.showCustodianDeepLink = exports.custodianEventHandlerFactory = exports.updateCustodianTransactions = void 0;
@@ -443,11 +443,16 @@ index de49fb53ee49f8e83ea7d85aa2e6ff77e8fe6754..ff63363a13ebb5c197da98421a2f0dc2
 +  setTxHash
 +) {
 +  var _a;
++  console.error('--- Getting by custody id', txData.transaction.id);
 +  const txMeta = getTxByCustodyId(
-+    ({ searchCriteria }) => txStateManager.getTransactions({ searchCriteria }),
++    ({ searchCriteria }) => {
++      console.error(`---- Using search criteria ${JSON.stringify(searchCriteria)}`);
++      return txStateManager.getTransactions({ searchCriteria });
++    },
 +    txData.transaction.id
 +  );
 +  if (txMeta) {
++    console.error('--- Found tx with custody ID', txData.transaction.id);
 +    txMeta.custodyStatus = txData.transaction.status.displayText.toLowerCase();
 +    txMeta.custodyStatusDisplayText =
 +      (_a = txData.transaction) === null || _a === void 0
@@ -504,7 +509,10 @@ index de49fb53ee49f8e83ea7d85aa2e6ff77e8fe6754..ff63363a13ebb5c197da98421a2f0dc2
 +    );
 +    return txMeta;
 +  }
++  console.error('--- NOT found tx with custody ID', txData.transaction.id);
++  console.error(`---- All transactions ${JSON.stringify(txStateManager.getTransactions())}`);
 +  return null;
  }
  exports.handleTxStatusUpdate = handleTxStatusUpdate;
  //# sourceMappingURL=ExtensionUtils.js.map
+\ No newline at end of file
