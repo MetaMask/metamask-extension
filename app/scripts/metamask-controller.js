@@ -2777,7 +2777,7 @@ export default class MetamaskController extends EventEmitter {
         if (account) {
           this.accountsController.setSelectedAccount(account.id);
         } else {
-          throw new Error(`Account for '${address}' not found`);
+          throw new Error(`No account found for address: ${address}`);
         }
       },
       addToken: tokensController.addToken.bind(tokensController),
@@ -2830,7 +2830,7 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.setAccountLabel(address, label);
         const account = this.accountsController.getAccountByAddress(address);
         if (account === undefined) {
-          throw new Error(`Account for '${address}' not found`);
+          throw new Error(`No account found for address: ${address}`);
         }
         this.accountsController.setAccountName(account.id, label);
       },
