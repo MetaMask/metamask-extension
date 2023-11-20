@@ -31,9 +31,9 @@ import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsEventName,
-  MetaMetricsEventCategory,
   MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
