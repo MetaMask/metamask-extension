@@ -32,7 +32,7 @@ function transformState(state: Record<string, any>) {
   const transactionsObject = transactionControllerState?.transactions || {};
 
   const transactionsArray = Object.values(transactionsObject).sort(
-    (a: any, b: any) => (a.time > b.time ? -1 : 1),
+    (a: any, b: any) => (a.time > b.time ? -1 : 1), // Descending
   );
 
   state.TransactionController = {

@@ -35,7 +35,7 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
 
     return transactions
       .filter((transaction) => transaction.chainId === chainId)
-      .reverse();
+      .sort((a, b) => a.time - b.time); // Ascending
   },
   (transactions) => transactions,
 );
