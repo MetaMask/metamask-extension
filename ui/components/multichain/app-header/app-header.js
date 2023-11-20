@@ -1,9 +1,9 @@
-import React, { useContext, useState, useRef, useCallback } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, matchPath } from 'react-router-dom';
+import { matchPath, useHistory } from 'react-router-dom';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -27,12 +27,12 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
+  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  PickerNetwork,
-  Box,
   IconSize,
+  PickerNetwork,
 } from '../../component-library';
 import {
   getCurrentChainId,
@@ -48,7 +48,7 @@ import {
   getTheme,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
-import { GlobalMenu, ProductTour, AccountPicker } from '..';
+import { AccountPicker, GlobalMenu, ProductTour } from '..';
 
 import {
   hideProductTour,
@@ -64,7 +64,7 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../../../ducks/metamask/metamask';
-import { getSendStage, SEND_STAGES } from '../../../ducks/send';
+import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
