@@ -16,7 +16,6 @@ SNAPS
 - Remove legacy transaction insight ([#21027](https://github.com/MetaMask/metamask-extension/pull/21027))
 - Add simplified version of Snap install warning modal ([#21516](https://github.com/MetaMask/metamask-extension/pull/21516))
 - Resolve network names using SLIP44 when applicable ([#21674](https://github.com/MetaMask/metamask-extension/pull/21674))
-- Include Snap name in permissions and add `allowedOrigins` permission caveat ([#21682](https://github.com/MetaMask/metamask-extension/pull/21682))
 - [FLASK] Transaction Insights V2 Integration ([#20554](https://github.com/MetaMask/metamask-extension/pull/20554))
 
 MMI
