@@ -18,7 +18,6 @@ SNAPS
 - Resolve network names using SLIP44 when applicable ([#21674](https://github.com/MetaMask/metamask-extension/pull/21674))
 - Include Snap name in permissions and add `allowedOrigins` permission caveat ([#21682](https://github.com/MetaMask/metamask-extension/pull/21682))
 - [FLASK] Transaction Insights V2 Integration ([#20554](https://github.com/MetaMask/metamask-extension/pull/20554))
-- Add loading state for snap delineator ([#21792](https://github.com/MetaMask/metamask-extension/pull/21792))
 
 MMI
 - [MMI] Improves css styles in mmi view ([#21779](https://github.com/MetaMask/metamask-extension/pull/21779))
