@@ -5087,7 +5087,7 @@ __metadata:
 
 "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A17.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-17.0.0-e8b7127203.patch":
   version: 17.0.0
-  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A17.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-17.0.0-e8b7127203.patch::version=17.0.0&hash=6e6520"
+  resolution: "@metamask/transaction-controller@patch:@metamask/transaction-controller@npm%3A17.0.0#~/.yarn/patches/@metamask-transaction-controller-npm-17.0.0-e8b7127203.patch::version=17.0.0&hash=1fb6dd"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -5113,7 +5113,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^10.0.1
     "@metamask/network-controller": ^16.0.0
     babel-runtime: ^6.26.0
-  checksum: 60a1017e595df6ad01a4932f3612e8dd9e2cf19cda544c63f0511fc8c9498c1d259754d5b74ed8f555f4f4c428ca9892e1ba50a16dc1c21e2467e2767987986a
+  checksum: 87d81094113e42ae94fa7535c5dd21cefd549a6621fd4a8095b85194e47d96e8b77a4b5b3180d23d394d609e6d47ff397979553290eaa949c95eae79fc671211
   languageName: node
   linkType: hard
 
@@ -16629,7 +16629,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethjs-query@npm:0.3.8, ethjs-query@npm:^0.3.7, ethjs-query@npm:^0.3.8":
+"ethjs-query@npm:0.3.8, ethjs-query@npm:^0.3.7":
   version: 0.3.8
   resolution: "ethjs-query@npm:0.3.8"
   dependencies:
@@ -25944,13 +25944,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nonce-tracker@npm:^1.1.0":
-  version: 1.2.0
-  resolution: "nonce-tracker@npm:1.2.0"
+"nonce-tracker@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "nonce-tracker@npm:3.0.0"
   dependencies:
+    "@ethersproject/providers": "npm:^5.7.2"
     async-mutex: "npm:^0.3.1"
-    ethjs-query: "npm:^0.3.8"
-  checksum: 1d60c9175af7ca83bbec0ac6befd10d6075de527aaa9c80f612f11e97a544e40c6172532f0a4666ffca6a121918bfa8952e7785cffd6ffb5216cb33bd212bf45
+  checksum: 6e295845f70c2be1285cff42833104d70c0959d88a94163d1db98f8aa6cb925f1004e5b0e4a8248c2d5b93ee6103133c5e97293d89e6d95e9a860d3b60ed54ea
   languageName: node
   linkType: hard
 
