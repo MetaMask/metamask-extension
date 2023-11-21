@@ -16,7 +16,10 @@ export const ShowMore = ({ children, ...props }) => {
 
   const shouldDisplayButton = isOverflowing && !isOpen;
 
-  const handleClick = () => setIsOpen(true);
+  const handleClick = (e) => {
+    e.stopPropagation();
+    setIsOpen(true);
+  };
 
   return (
     <Box
