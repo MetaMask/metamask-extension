@@ -199,7 +199,7 @@ function defaultFixture() {
       },
       KeyringController: {
         vault:
-          '{"data":"Yok3x0CAqnTHv2D2JcY4NmHvSEo8Mp1CHeS1v0WaRd3qqX+uU4VF03ggFD+gxltNq3+KXFC3Wo76F0CMbzvH/BrpURYlJIWaAZ/NkORVNZUr2rOTUwRABnEuW0/3tJAHQLeuS7Q21gv8HYiCqQADQEIhOrlDiDmhRnbKg2XM03G1BMpJIRjS0P/B4HVfsjpsDDja8d9ww9z9JovxeZR8W5kERrJSZDASkOexafGWxoSuiPht6fFyOPh1X0wR","iv":"6F+uud2CzhtC1lVQPwgX+w==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":900000}},"salt":"69W+yLk2p7jzAiZoCIJ4ONBl3KzoU8O8RWNPd8IOUps="}',
+          '{"data":"9cpeOCifA+U3mO4RrkkPvzKzEO+KemZO7uRbRoFIS0Qg+5/uQWTNFXy/uC6078W1aGMBC8XVWYCTxPgmg4WmmW+vTlFBDAP/TyX9rdFueJ/NwnEBEtLzA6ooh2ulQUUsA+U+OjPQpTugupCCJbMEBM0/veZn2plEoJOqa8lkGWjhecIYtNU/SzuX7cc0V0KwjpRLkTyRd1+UjYox4UzEe/nitTvv7ZUSFnbprUDgzByQWTJBpK4i+1eQVxAX","iv":"jT+TWm7hFyLxHJagSJD2uQ==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":10000000}},"salt":"FwVjuNkywFMi8MBcK0MHBcIaPznaO968mchPD8ivgi0="}',
       },
       MetaMetricsController: {
         eventsBeforeMetricsOptIn: [],

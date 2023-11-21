@@ -213,7 +213,8 @@
     "@metamask/signature-controller@^6.1.2": "patch:@metamask/signature-controller@npm%3A6.1.2#~/.yarn/patches/@metamask-signature-controller-npm-6.1.2-f60d8a4960.patch",
     "semver@7.3.7": "^7.5.4",
     "semver@7.3.8": "^7.5.4",
-    "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch"
+    "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch",
+    "@metamask/browser-passworder@npm:^4.2.0": "patch:@metamask/browser-passworder@npm%3A4.2.0#~/.yarn/patches/@metamask-browser-passworder-npm-4.2.0-0f84159009.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
@@ -244,7 +245,7 @@
     "@metamask/approval-controller": "^3.4.0",
     "@metamask/assets-controllers": "^18.0.0",
     "@metamask/base-controller": "^3.2.0",
-    "@metamask/browser-passworder": "^4.2.0",
+    "@metamask/browser-passworder": "patch:@metamask/browser-passworder@npm%3A4.2.0#~/.yarn/patches/@metamask-browser-passworder-npm-4.2.0-0f84159009.patch",
     "@metamask/contract-metadata": "^2.3.1",
     "@metamask/controller-utils": "^5.0.0",
     "@metamask/design-tokens": "^1.12.0",

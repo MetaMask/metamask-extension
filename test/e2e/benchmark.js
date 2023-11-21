@@ -35,6 +35,23 @@ async function measurePage(pageName) {
   return metrics;
 }
 
+async function measureUnlock() {
+  let unlockTime;
+  await withFixtures(
+    { fixtures: new FixtureBuilder().build() },
+    async ({ driver }) => {
+      await driver.delay(tinyDelayMs);
+      await driver.navigate();
+      await driver.fill('#password', 'correct horse battery staple');
+      const start = new Date().getTime();
+      await driver.press('#password', driver.Key.ENTER);
+      await driver.waitForElementNotPresent('[data-testid="unlock-page"]');
+      unlockTime = new Date().getTime() - start;
+    },
+  );
+  return unlockTime;
+}
+
 function calculateResult(calc) {
   return (result) => {
     const calculatedResult = {};
@@ -115,6 +132,31 @@ async function profilePageLoad(pages, numSamples, retries) {
   return results;
 }
 
+const profileUnlock = async (numSamples, retries) => {
+  const results = [];
+  for (let i = 0; i < numSamples; i += 1) {
+    let result;
+    await retry({ retries }, async () => {
+      result = await measureUnlock();
+    });
+    results.push(result);
+  }
+
+  return {
+    min: Math.min(...results),
+    max: Math.max(...results),
+    average: calculateAverage(results),
+    standardDeviation: Math.sqrt(
+      calculateAverage(
+        results.map((result) =>
+          Math.pow(result - calculateAverage(results), 2),
+        ),
+      ),
+    ),
+    marginOfError: calculateMarginOfError(results),
+  };
+};
+
 async function main() {
   const { argv } = yargs(hideBin(process.argv)).usage(
     '$0 [options]',
@@ -163,6 +205,9 @@ async function main() {
 
   const results = await profilePageLoad(pages, samples, retries);
 
+  const unlockProfiling = await profileUnlock(samples, retries);
+  console.log('Unlock profiling results:', JSON.stringify(unlockProfiling));
+
   if (out) {
     if (outputDirectory !== existingParentDirectory) {
       await fs.mkdir(outputDirectory, { recursive: true });
@@ -170,6 +215,7 @@ async function main() {
     await fs.writeFile(out, JSON.stringify(results, null, 2));
   } else {
     console.log(JSON.stringify(results, null, 2));
+    console.log('Unlock profiling results:', unlockProfiling);
   }
 }
 
