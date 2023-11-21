@@ -292,8 +292,7 @@ interface FormattedTransactionMeta {
   maxPriorityFeePerGas?: string;
   type: TransactionEnvelopeType;
   accessList: AccessList | null;
-  // TxMigrationToDo - Verify type of transaction index.
-  transactionIndex: number | null;
+  transactionIndex: string | null;
 }
 
 export function formatTxMetaForRpcResult(

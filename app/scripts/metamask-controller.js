@@ -133,11 +133,7 @@ import {
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IN
 
-import {
-  AssetType,
-  TokenStandard,
-  TransactionEvent,
-} from '../../shared/constants/transaction';
+import { AssetType, TokenStandard } from '../../shared/constants/transaction';
 import {
   GAS_API_BASE_URL,
   GAS_DEV_API_BASE_URL,
@@ -4986,70 +4982,61 @@ export default class MetamaskController extends EventEmitter {
     const transactionMetricsRequest = this.getTransactionMetricsRequest();
 
     this.txController.hub.on(
-      TransactionEvent.postTransactionBalanceUpdated,
+      'post-transaction-balance-updated',
       handlePostTransactionBalanceUpdate.bind(null, transactionMetricsRequest),
     );
 
-    this.txController.hub.on(
-      TransactionEvent.added,
-      handleTransactionAdded.bind(null, transactionMetricsRequest),
+    this.txController.hub.on('unapprovedTransaction', (transactionMeta) =>
+      handleTransactionAdded(transactionMetricsRequest, { transactionMeta }),
     );
 
     this.txController.hub.on(
-      TransactionEvent.approved,
+      'transaction-approved',
       handleTransactionApproved.bind(null, transactionMetricsRequest),
     );
 
     this.txController.hub.on(
-      TransactionEvent.dropped,
+      'transaction-dropped',
       handleTransactionDropped.bind(null, transactionMetricsRequest),
     );
 
     this.txController.hub.on(
-      TransactionEvent.confirmed,
+      'transaction-confirmed',
       handleTransactionConfirmed.bind(null, transactionMetricsRequest),
     );
 
     this.txController.hub.on(
-      TransactionEvent.failed,
+      'transaction-failed',
       handleTransactionFailed.bind(null, transactionMetricsRequest),
     );
 
-    this.txController.hub.on(
-      TransactionEvent.newSwap,
-      ({ transactionMeta }) => {
-        this.swapsController.setTradeTxId(transactionMeta.id);
-      },
-    );
+    this.txController.hub.on('transaction-new-swap', ({ transactionMeta }) => {
+      this.swapsController.setTradeTxId(transactionMeta.id);
+    });
 
     this.txController.hub.on(
-      TransactionEvent.newSwapApproval,
+      'transaction-new-swap-approval',
       ({ transactionMeta }) => {
         this.swapsController.setApproveTxId(transactionMeta.id);
       },
     );
 
     this.txController.hub.on(
-      TransactionEvent.rejected,
+      'transaction-rejected',
       handleTransactionRejected.bind(null, transactionMetricsRequest),
     );
 
     this.txController.hub.on(
-      TransactionEvent.submitted,
+      'transaction-submitted',
       handleTransactionSubmitted.bind(null, transactionMetricsRequest),
     );
 
-    this.txController.hub.on('unapprovedTransaction', (txMeta) => {
-      this.txController.hub.once(
-        `${txMeta.id}:finished`,
-        this._onFinishedTransaction.bind(this),
-      );
-
-      this.txController.hub.once(
-        `${txMeta.id}:confirmed`,
-        this._onFinishedTransaction.bind(this),
-      );
-    });
+    this.txController.hub.on(
+      'transaction-status-update',
+      ({ transactionMeta }) => {
+        this._onFinishedTransaction(transactionMeta);
+      },
+    );
   }
 
   getTransactionMetricsRequest() {

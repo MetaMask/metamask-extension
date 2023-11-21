@@ -380,8 +380,7 @@ export const handlePostTransactionBalanceUpdate = async (
 
       const quoteVsExecutionRatio = tokensReceived
         ? `${new BigNumber(tokensReceived, 10)
-            // TxMigrationToDo - Verify swapMetaData type.
-            .div((transactionMeta.swapMetaData as any).token_to_amount, 10)
+            .div(transactionMeta.swapMetaData.token_to_amount, 10)
             .times(100)
             .round(2)}%`
         : null;
@@ -390,7 +389,7 @@ export const handlePostTransactionBalanceUpdate = async (
         transactionMeta.txReceipt?.gasUsed &&
         transactionMeta.swapMetaData.estimated_gas
           ? `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
-              .div((transactionMeta.swapMetaData as any).estimated_gas, 10)
+              .div(transactionMeta.swapMetaData.estimated_gas, 10)
               .times(100)
               .round(2)}%`
           : null;
@@ -417,9 +416,8 @@ export const handlePostTransactionBalanceUpdate = async (
           // numbers are converted into number strings, on firefox they remain
           // Big Number objects. As such, we convert them here for both
           // browsers.
-          token_to_amount: (
-            transactionMeta.swapMetaData as any
-          ).token_to_amount.toString(10),
+          token_to_amount:
+            transactionMeta.swapMetaData.token_to_amount.toString(10),
         },
       });
     }
@@ -801,7 +799,7 @@ async function buildEventFragmentProperties({
           GasRecommendations.low,
           GasRecommendations.medium,
           GasRecommendations.high,
-        ].includes(estimateType as any)
+        ].includes(estimateType as GasRecommendations)
       ) {
         const { gasFeeEstimates } =
           await transactionMetricsRequest.getEIP1559GasFeeEstimates();

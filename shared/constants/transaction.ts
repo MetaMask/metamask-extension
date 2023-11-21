@@ -182,19 +182,3 @@ export enum TokenStandard {
   /** Not a token, but rather the base asset of the selected chain. */
   none = 'NONE',
 }
-
-/**
- * Describes the event types emitted by the transaction controller.
- */
-export enum TransactionEvent {
-  added = 'transaction-added',
-  approved = 'transaction-approved',
-  confirmed = 'transaction-confirmed',
-  dropped = 'transaction-dropped',
-  failed = 'transaction-failed',
-  newSwap = 'transaction-new-swap',
-  newSwapApproval = 'transaction-new-swap-approval',
-  postTransactionBalanceUpdated = 'post-transaction-balance-updated',
-  rejected = 'transaction-rejected',
-  submitted = 'transaction-submitted',
-}
