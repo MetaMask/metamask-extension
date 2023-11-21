@@ -1,5 +1,6 @@
 export * from './confirm';
 export * from './confirm-transaction';
+export * from './confirm';
 export * from './custom-gas';
 export * from './first-time-flow';
 export * from './metametrics';
