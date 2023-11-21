@@ -31,7 +31,6 @@ import {
   getIsSwapsChain,
   getSelectedAccountCachedBalance,
   getCurrentChainId,
-  getIsTestnet,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
@@ -62,8 +61,8 @@ import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 ///: END:ONLY_INCLUDE_IN
-import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className, showAddress }) => {
@@ -81,20 +80,18 @@ const EthOverview = ({ className, showAddress }) => {
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
   ///: END:ONLY_INCLUDE_IN
   const balanceIsCached = useSelector(isBalanceCached);
-  const isTestNet = useSelector(getIsTestnet);
-  const balance = useSelector(getSelectedAccountCachedBalance);
-  const isSwapsChain = useSelector(getIsSwapsChain);
+  const showFiat = useSelector(getShouldShowFiat);
   const chainId = useSelector(getCurrentChainId);
-  const { ticker } = useSelector(getProviderConfig);
+  const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
     ticker,
+    type,
   );
-  const showFiatValue = useSelector(getShouldShowFiat);
 
-  const showFiat = isTestNet
-    ? showFiatValue
-    : showFiatValue && isOriginalNativeSymbol;
+  console.log('isOriginalNativeSymbol ----', isOriginalNativeSymbol);
+  const balance = useSelector(getSelectedAccountCachedBalance);
+  const isSwapsChain = useSelector(getIsSwapsChain);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -185,7 +182,7 @@ const EthOverview = ({ className, showAddress }) => {
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
             </div>
-            {showFiat && balance && (
+            {showFiat && isOriginalNativeSymbol && balance && (
               <UserPreferencedCurrencyDisplay
                 className={classnames({
                   'eth-overview__cached-secondary-balance': balanceIsCached,
