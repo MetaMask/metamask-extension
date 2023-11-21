@@ -209,7 +209,10 @@ const slice = createSlice({
       state.customGas.fallBackPrice = action.payload;
     },
     setCurrentSmartTransactionsError: (state, action) => {
-      const errorType = Object.values(StxErrorTypes).includes(action.payload)
+      const isValidCurrentStxError =
+        Object.values(StxErrorTypes).includes(action.payload) ||
+        action.payload === undefined;
+      const errorType = isValidCurrentStxError
         ? action.payload
         : StxErrorTypes.unavailable;
       state.currentSmartTransactionsError = errorType;
@@ -596,6 +599,7 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       const swapsFeatureFlags = await fetchSwapsFeatureFlags();
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
       if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId)) {
+        await dispatch(setCurrentSmartTransactionsError(undefined));
         await dispatch(fetchSmartTransactionsLiveness());
         const transactions = await getTransactions({
           searchCriteria: {
