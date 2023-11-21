@@ -25944,13 +25944,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nonce-tracker@npm:^3.0.0":
+"nonce-tracker@npm:3.0.0":
   version: 3.0.0
   resolution: "nonce-tracker@npm:3.0.0"
   dependencies:
     "@ethersproject/providers": "npm:^5.7.2"
     async-mutex: "npm:^0.3.1"
   checksum: 6e295845f70c2be1285cff42833104d70c0959d88a94163d1db98f8aa6cb925f1004e5b0e4a8248c2d5b93ee6103133c5e97293d89e6d95e9a860d3b60ed54ea
+  languageName: node
+  linkType: hard
+
+"nonce-tracker@patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch":
+  version: 3.0.0
+  resolution: "nonce-tracker@patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch::version=3.0.0&hash=8c505e"
+  dependencies:
+    "@ethersproject/providers": "npm:^5.7.2"
+    async-mutex: "npm:^0.3.1"
+  checksum: f8556fb19d07cac7818affaf0478876ed475bc600276e6cae4e2bffc8116e5dec78b64951c0c4e360a7f4ae07f91f86d25beb6f03e81144d4679443bf19f4d1f
   languageName: node
   linkType: hard
 
