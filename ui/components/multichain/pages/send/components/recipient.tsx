@@ -24,6 +24,9 @@ import { Tab, Tabs } from '../../../../ui/tabs';
 import { AddressListItem } from '../../../address-list-item';
 import { SendPageAddressBook, SendPageRow, SendPageYourAccount } from '.';
 
+const CONTACTS_TAB_KEY = 'contacts';
+const ACCOUNTS_TAB_KEY = 'accounts';
+
 const renderExplicitAddress = (
   address: string,
   nickname: string,
@@ -88,18 +91,20 @@ export const SendPageRecipient = () => {
     );
   } else {
     contents = (
-      <Tabs defaultActiveTabKey={userInput ? 'contacts' : 'accounts'}>
+      <Tabs
+        defaultActiveTabKey={userInput ? CONTACTS_TAB_KEY : ACCOUNTS_TAB_KEY}
+      >
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          <Tab tabKey="accounts" name={t('yourAccounts')}>
+          <Tab tabKey={ACCOUNTS_TAB_KEY} name={t('yourAccounts')}>
             <SendPageYourAccount />
           </Tab>
         }
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          <Tab tabKey="contacts" name={t('contacts')}>
+          <Tab tabKey={CONTACTS_TAB_KEY} name={t('contacts')}>
             <SendPageAddressBook />
           </Tab>
         }
