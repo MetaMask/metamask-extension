@@ -36,6 +36,8 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
   JustifyContent,
+  IconColor,
+  Color,
   ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
@@ -48,6 +50,8 @@ import {
   ButtonLink,
   ///: END:ONLY_INCLUDE_IF
   Text,
+  BannerBase,
+  Icon,
 } from '../../components/component-library';
 
 import {
@@ -185,6 +189,8 @@ export default class Home extends PureComponent {
     setNewTokensImported: PropTypes.func.isRequired,
     clearNewNetworkAdded: PropTypes.func,
     setActiveNetwork: PropTypes.func,
+    setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
+    showSurveyToast: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
     mmiPortfolioEnabled: PropTypes.bool,
@@ -721,6 +727,8 @@ export default class Home extends PureComponent {
       announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
+      setSurveyLinkLastClickedOrClosed,
+      showSurveyToast,
       ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       mmiPortfolioEnabled,
@@ -946,6 +954,28 @@ export default class Home extends PureComponent {
             }
           </div>
           {this.renderNotifications()}
+          {showSurveyToast ? (
+            <BannerBase
+              className="home__survey-banner"
+              backgroundColor={Color.iconDefault}
+              titleProps={{ color: Color.backgroundDefault }}
+              startAccessory={
+                <Icon name={IconName.Heart} color={IconColor.errorDefault} />
+              }
+              title={t('surveyTitle')}
+              actionButtonLabel={t('surveyConversion')}
+              actionButtonOnClick={() => {
+                global.platform.openTab({
+                  url: 'https://www.getfeedback.com/r/Oczu1vP0',
+                });
+                setSurveyLinkLastClickedOrClosed(Date.now());
+              }}
+              onClose={() => {
+                setSurveyLinkLastClickedOrClosed(Date.now());
+              }}
+              closeButtonProps={{ color: Color.backgroundDefault }}
+            />
+          ) : null}
         </div>
       </div>
     );

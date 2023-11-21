@@ -1230,6 +1230,14 @@ export function getShowTermsOfUse(state) {
   );
 }
 
+export function getShowSurveyToast(state) {
+  const { surveyLinkLastClickedOrClosed } = state.metamask;
+
+  // TODO: Add check for timeframe here!
+
+  return !surveyLinkLastClickedOrClosed;
+}
+
 export function getShowOutdatedBrowserWarning(state) {
   const { outdatedBrowserWarningLastShown } = state.metamask;
   if (!outdatedBrowserWarningLastShown) {
