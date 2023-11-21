@@ -34,6 +34,51 @@ describe('CachedBalancesController', function () {
         'mockNewCachedBalances',
       );
     });
+    it('should update the cached balances when networkClientId is passed', async function () {
+      const getNetworkClientById = (networkClientId) => {
+        switch (networkClientId) {
+          case 'goerli':
+            return {
+              configuration: {
+                chainId: CHAIN_IDS.GOERLI,
+              },
+            };
+          default:
+            throw new Error('Invalid network client id');
+        }
+      };
+      const controller = new CachedBalancesController({
+        getCurrentChainId: () => CHAIN_IDS.GOERLI,
+        getNetworkClientById,
+        accountTracker: {
+          store: {
+            subscribe: () => undefined,
+          },
+        },
+        initState: {
+          cachedBalances: 'mockCachedBalances',
+        },
+      });
+
+      controller._generateBalancesToCache = sinon
+        .stub()
+        .callsFake(() => Promise.resolve('mockNewCachedBalances'));
+
+      await controller.updateCachedBalances({
+        accounts: 'mockAccounts',
+        networkClientId: 'goerli',
+      });
+
+      assert.equal(controller._generateBalancesToCache.callCount, 1);
+      assert.deepEqual(controller._generateBalancesToCache.args[0], [
+        'mockAccounts',
+        CHAIN_IDS.GOERLI,
+      ]);
+      assert.equal(
+        controller.store.getState().cachedBalances,
+        'mockNewCachedBalances',
+      );
+    });
   });
 
   describe('_generateBalancesToCache', function () {

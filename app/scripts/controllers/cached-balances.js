@@ -4,6 +4,7 @@ import { ObservableStore } from '@metamask/obs-store';
  * @typedef {object} CachedBalancesOptions
  * @property {object} accountTracker An {@code AccountTracker} reference
  * @property {Function} getCurrentChainId A function to get the current chain id
+ * @property {Function} getNetworkClientById A function to get a NetworkClient by id
  * @property {object} initState The initial controller state
  */
 
@@ -18,10 +19,11 @@ export default class CachedBalancesController {
    * @param {CachedBalancesOptions} [opts] - Controller configuration parameters
    */
   constructor(opts = {}) {
-    const { accountTracker, getCurrentChainId } = opts;
+    const { accountTracker, getCurrentChainId, getNetworkClientById } = opts;
 
     this.accountTracker = accountTracker;
     this.getCurrentChainId = getCurrentChainId;
+    this.getNetworkClientById = getNetworkClientById;
 
     const initState = { cachedBalances: {}, ...opts.initState };
     this.store = new ObservableStore(initState);
@@ -35,14 +37,30 @@ export default class CachedBalancesController {
    *
    * @param {object} obj - The the recently updated accounts object for the current chain
    * @param obj.accounts
+   * @param obj.accountsByChainId - An object of accounts keyed by chainId
    * @returns {Promise<void>}
    */
-  async updateCachedBalances({ accounts }) {
+  async updateCachedBalances({ accounts, accountsByChainId }) {
+    if (accountsByChainId) {
+      const balancesToCache = accountsByChainId
+        .keys()
+        .reduce((acc, chainId) => {
+          const result = this._generateBalancesToCache(
+            accountsByChainId[chainId],
+            chainId,
+          );
+          return {
+            ...acc,
+            ...result,
+          };
+        }, {});
+      this.store.updateState({
+        cachedBalances: balancesToCache,
+      });
+      return;
+    }
     const chainId = this.getCurrentChainId();
-    const balancesToCache = await this._generateBalancesToCache(
-      accounts,
-      chainId,
-    );
+    const balancesToCache = this._generateBalancesToCache(accounts, chainId);
     this.store.updateState({
       cachedBalances: balancesToCache,
     });
