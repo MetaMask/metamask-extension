@@ -10,6 +10,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [11.5.2]
 ### Fixed
 - Fix bug that could cause the fetching quotes step of Swaps to fail ([#21923](https://github.com/MetaMask/metamask-extension/pull/21923))
+
+SNAPS
+- Bump snaps packages ([#21774](https://github.com/MetaMask/metamask-extension/pull/21774))
+- Remove legacy transaction insight ([#21027](https://github.com/MetaMask/metamask-extension/pull/21027))
+- Implement basic confirmation row components ([#19957](https://github.com/MetaMask/metamask-extension/pull/19957))
+- Add simplified version of Snap install warning modal ([#21516](https://github.com/MetaMask/metamask-extension/pull/21516))
+- Create E2E test for snap_getFile ([#21630](https://github.com/MetaMask/metamask-extension/pull/21630))
+- Fix `AvatarAccount` type ([#21671](https://github.com/MetaMask/metamask-extension/pull/21671))
+- Resolve network names using SLIP44 when applicable ([#21674](https://github.com/MetaMask/metamask-extension/pull/21674))
+- Bump snaps packages ([#21612](https://github.com/MetaMask/metamask-extension/pull/21612))
+- Include Snap name in permissions and add `allowedOrigins` permission caveat ([#21682](https://github.com/MetaMask/metamask-extension/pull/21682))
+- Remove derived `targetSubjectMetadata` from state and use props ([#21539](https://github.com/MetaMask/metamask-extension/pull/21539))
+- [FLASK] Transaction Insights V2 Integration ([#20554](https://github.com/MetaMask/metamask-extension/pull/20554))
+- Add loading state for snap delineator ([#21792](https://github.com/MetaMask/metamask-extension/pull/21792))
+
+MMI
+- [MMI] Improves css styles in mmi view ([#21779](https://github.com/MetaMask/metamask-extension/pull/21779))
+- [MMI] add missing mmi status in tx detail pane ([#21777](https://github.com/MetaMask/metamask-extension/pull/21777))
+- [MMI] show unsupported networks message in address tooltip ([#21745](https://github.com/MetaMask/metamask-extension/pull/21745))
+- [MMI] Updates custodian onboarding url ([#21726](https://github.com/MetaMask/metamask-extension/pull/21726))
+- MMI fix scope being passed to method ([#21752](https://github.com/MetaMask/metamask-extension/pull/21752))
+- [MMI] changes for supporting MMI ECA3 ([#21476](https://github.com/MetaMask/metamask-extension/pull/21476))
+- [MMI] enables some MM tests to run ([#21663](https://github.com/MetaMask/metamask-extension/pull/21663))
+- [MMI] passing the selectedAddress field (#21617) ([#21675](https://github.com/MetaMask/metamask-extension/pull/21675))
+- [MMI] passing the selectedAddress field ([#21617](https://github.com/MetaMask/metamask-extension/pull/21617))
+- [MMI] enables simple send test ([#21616](https://github.com/MetaMask/metamask-extension/pull/21616))
+
 ### Added
 - Introduced the Swedish Krona (SEK) as an available currency option. ([21782](https://github.com/MetaMask/metamask-extension/pull/21782))
 - Updated the content in the tooltip for 'Liquidity Source' within the Swaps feature. ([#21696](https://github.com/MetaMask/metamask-extension/pull/21696))
