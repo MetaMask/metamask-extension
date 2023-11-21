@@ -4335,8 +4335,6 @@ export default class MetamaskController extends EventEmitter {
       // handle any middleware cleanup
       engine._middleware.forEach((mid) => {
         if (mid.destroy && typeof mid.destroy === 'function') {
-          console.log('DESTROY MIDDLEWARE!!');
-          debugger;
           mid.destroy();
         }
       });
