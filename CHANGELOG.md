@@ -15,7 +15,6 @@ SNAPS
 - Bump snaps packages ([#21774](https://github.com/MetaMask/metamask-extension/pull/21774))
 - Remove legacy transaction insight ([#21027](https://github.com/MetaMask/metamask-extension/pull/21027))
 - Add simplified version of Snap install warning modal ([#21516](https://github.com/MetaMask/metamask-extension/pull/21516))
-- Create E2E test for snap_getFile ([#21630](https://github.com/MetaMask/metamask-extension/pull/21630))
 - Resolve network names using SLIP44 when applicable ([#21674](https://github.com/MetaMask/metamask-extension/pull/21674))
 - Bump snaps packages ([#21612](https://github.com/MetaMask/metamask-extension/pull/21612))
 - Include Snap name in permissions and add `allowedOrigins` permission caveat ([#21682](https://github.com/MetaMask/metamask-extension/pull/21682))
