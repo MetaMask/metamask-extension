@@ -3,7 +3,7 @@ import { captureException } from '@sentry/browser';
 import { cloneDeep } from 'lodash';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 
-export const version = 103;
+export const version = 104;
 
 /**
  * Sets the default ledger transport method of Ledger U2F or Ledger Live on chrome to Webhid.
