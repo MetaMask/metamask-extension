@@ -11,7 +11,6 @@ import {
   getInsightSnapIds,
   getInsightSnaps,
   getSnapMetadata,
-  getSubjectMetadataDeepEqual,
 } from '../selectors';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
