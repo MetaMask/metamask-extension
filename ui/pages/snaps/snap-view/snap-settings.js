@@ -39,9 +39,9 @@ import {
   getTargetSubjectMetadata,
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getMemoizedMetaMaskIdentities,
+  getSnapMetadata,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
-import { getSnapName } from '../../../helpers/utils/util';
 import {
   Box,
   Button,
@@ -95,6 +95,10 @@ function SnapSettings({ snapId }) {
     getTargetSubjectMetadata(state, snap?.id),
   );
 
+  const { name: snapName, description } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
+  );
+
   let isKeyringSnap = false;
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   isKeyringSnap = Boolean(subjects[snap?.id]?.permissions?.snap_manageAccounts);
@@ -139,8 +143,6 @@ function SnapSettings({ snapId }) {
     }
   };
 
-  const snapName = getSnapName(snap.id, targetSubjectMetadata);
-
   const shouldDisplayMoreButton = isOverflowing && !isDescriptionOpen;
   const handleMoreClick = () => {
     setIsDescriptionOpen(true);
@@ -157,7 +159,7 @@ function SnapSettings({ snapId }) {
             })}
             ref={descriptionRef}
           >
-            <Text>{snap?.manifest.description}</Text>
+            <Text>{description}</Text>
             {shouldDisplayMoreButton && (
               <Button
                 className="snap-view__content__description__more-button"

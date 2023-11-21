@@ -8,7 +8,6 @@ import {
   Display,
   FontWeight,
 } from '../../../../helpers/constants/design-system';
-import { getSnapName } from '../../../../helpers/utils/util';
 import {
   Icon,
   IconName,
@@ -19,14 +18,13 @@ import {
 import Tooltip from '../../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapAvatar from '../snap-avatar/snap-avatar';
-import { getTargetSubjectMetadata } from '../../../../selectors';
+import { getSnapManifest } from '../../../../selectors';
 
 export default function SnapConnectCell({ origin, snapId }) {
   const t = useI18nContext();
-  const snapMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
+  const { name: snapName } = useSelector((state) =>
+    getSnapManifest(state, snapId),
   );
-  const friendlyName = getSnapName(snapId, snapMetadata);
 
   return (
     <Box
@@ -40,7 +38,7 @@ export default function SnapConnectCell({ origin, snapId }) {
         <Text>
           {t('connectSnap', [
             <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Bold}>
-              {friendlyName}
+              {snapName}
             </Text>,
           ])}
         </Text>
@@ -51,7 +49,7 @@ export default function SnapConnectCell({ origin, snapId }) {
             <div>
               {t('snapConnectionWarning', [
                 <b key="0">{origin}</b>,
-                <b key="1">{friendlyName}</b>,
+                <b key="1">{snapName}</b>,
               ])}
             </div>
           }

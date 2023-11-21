@@ -29,10 +29,7 @@ import {
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import {
-  SNAPS_DERIVATION_PATHS,
-  SNAPS_METADATA,
-} from '../../../shared/constants/snaps';
+import { SNAPS_DERIVATION_PATHS } from '../../../shared/constants/snaps';
 ///: END:ONLY_INCLUDE_IN
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -612,14 +609,6 @@ export function getSnapDerivationPathName(path, curve) {
 
 export const removeSnapIdPrefix = (snapId) =>
   snapId?.replace(getSnapPrefix(snapId), '');
-
-export const getSnapName = (snapId, subjectMetadata) => {
-  if (SNAPS_METADATA[snapId]?.name) {
-    return SNAPS_METADATA[snapId].name;
-  }
-
-  return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
-};
 
 export const getSnapRoute = (snapId) => {
   return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;

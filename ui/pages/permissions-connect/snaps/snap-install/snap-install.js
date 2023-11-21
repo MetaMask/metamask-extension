@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -25,12 +26,12 @@ import {
   ValidTag,
   Text,
 } from '../../../../components/component-library';
-import { getSnapName } from '../../../../helpers/utils/util';
 import SnapPermissionsList from '../../../../components/app/snaps/snap-permissions-list';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 import SiteOrigin from '../../../../components/ui/site-origin/site-origin';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
+import { getSnapMetadata } from '../../../../selectors';
 
 export default function SnapInstall({
   request,
@@ -57,8 +58,11 @@ export default function SnapInstall({
     [request, approveSnapInstall],
   );
 
-  const hasError = !requestState.loading && requestState.error;
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, targetSubjectMetadata.origin),
+  );
 
+  const hasError = !requestState.loading && requestState.error;
   const isLoading = requestState.loading;
 
   const warnings = getSnapInstallWarnings(
@@ -68,11 +72,6 @@ export default function SnapInstall({
   );
 
   const shouldShowWarning = warnings.length > 0;
-
-  const snapName = getSnapName(
-    targetSubjectMetadata.origin,
-    targetSubjectMetadata,
-  );
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {
@@ -180,6 +179,7 @@ export default function SnapInstall({
             </Text>
             <SnapPermissionsList
               snapId={targetSubjectMetadata.origin}
+              snapName={snapName}
               permissions={requestState.permissions || {}}
               targetSubjectMetadata={targetSubjectMetadata}
             />

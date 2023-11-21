@@ -21,14 +21,12 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { Size, TextColor } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  getTargetSubjectMetadata,
-  ///: END:ONLY_INCLUDE_IN
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
   useSafeChainsListValidationSelector,
+  getSnapMetadata,
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
@@ -36,7 +34,6 @@ import { Icon, IconName } from '../../components/component-library';
 import Loading from '../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
-import { getSnapName } from '../../helpers/utils/util';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
@@ -207,8 +204,8 @@ export default function ConfirmationPage({
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, pendingConfirmation?.origin),
+  const { name } = useSelector((state) =>
+    getSnapMetadata(state, pendingConfirmation?.origin),
   );
 
   const SNAP_DIALOG_TYPE = [
@@ -228,10 +225,7 @@ export default function ConfirmationPage({
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
 
   // When pendingConfirmation is undefined, this will also be undefined
-  const snapName =
-    isSnapDialog &&
-    targetSubjectMetadata &&
-    getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
+  const snapName = isSnapDialog && name;
   ///: END:ONLY_INCLUDE_IN
 
   const INPUT_STATE_CONFIRMATIONS = [

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import SnapInstallWarning from '../../../../components/app/snaps/snap-install-warning';
@@ -29,8 +30,8 @@ import {
   Text,
 } from '../../../../components/component-library';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import { getSnapName } from '../../../../helpers/utils/util';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
+import { getSnapMetadata } from '../../../../selectors';
 
 export default function SnapUpdate({
   request,
@@ -57,6 +58,10 @@ export default function SnapUpdate({
     [request, approveSnapUpdate],
   );
 
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, targetSubjectMetadata.origin),
+  );
+
   const approvedPermissions = requestState.approvedPermissions ?? {};
   const revokedPermissions = requestState.unusedPermissions ?? {};
   const newPermissions = requestState.newPermissions ?? {};
@@ -72,11 +77,6 @@ export default function SnapUpdate({
   );
 
   const shouldShowWarning = warnings.length > 0;
-
-  const snapName = getSnapName(
-    targetSubjectMetadata.origin,
-    targetSubjectMetadata,
-  );
 
   const handleSubmit = () => {
     if (!hasError && shouldShowWarning) {

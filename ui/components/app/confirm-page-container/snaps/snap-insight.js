@@ -26,9 +26,8 @@ import Box from '../../../ui/box/box';
 import { SnapUIRenderer } from '../../snaps/snap-ui-renderer';
 import { SnapDelineator } from '../../snaps/snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
-import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../../snaps/copyable';
-import { getTargetSubjectMetadata } from '../../../../selectors';
+import { getSnapMetadata } from '../../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import { trackInsightSnapUsage } from '../../../../store/actions';
 ///: END:ONLY_INCLUDE_IN
@@ -72,11 +71,9 @@ export const SnapInsight = ({
   isLoading = insights.loading;
   ///: END:ONLY_INCLUDE_IN
 
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
-
-  const snapName = getSnapName(snapId, targetSubjectMetadata);
 
   const hasNoData = !error && !isLoading && !content;
   return (

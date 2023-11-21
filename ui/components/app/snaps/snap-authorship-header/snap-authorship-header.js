@@ -13,13 +13,13 @@ import {
   BlockSize,
   FontWeight,
 } from '../../../../helpers/constants/design-system';
+import { removeSnapIdPrefix } from '../../../../helpers/utils/util';
 import {
-  getSnapName,
-  removeSnapIdPrefix,
-} from '../../../../helpers/utils/util';
+  getSnapMetadata,
+  getTargetSubjectMetadata,
+} from '../../../../selectors';
 
 import { Text, Box } from '../../../component-library';
-import { getTargetSubjectMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 import SnapVersion from '../snap-version/snap-version';
 
@@ -40,14 +40,17 @@ const SnapAuthorshipHeader = ({
     getTargetSubjectMetadata(state, snapId),
   );
 
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
+  );
+
   const versionPath = subjectMetadata?.version
     ? `/v/${subjectMetadata?.version}`
     : '';
+
   const url = isNPM
     ? `https://www.npmjs.com/package/${packageName}${versionPath}`
     : packageName;
-
-  const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 
   return (
     <Box
@@ -72,7 +75,7 @@ const SnapAuthorshipHeader = ({
         style={{ overflow: 'hidden' }}
       >
         <Text ellipsis fontWeight={FontWeight.Medium}>
-          {friendlyName}
+          {snapName}
         </Text>
         <Text
           ellipsis

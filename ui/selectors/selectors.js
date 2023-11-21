@@ -9,6 +9,7 @@ import {
 } from 'lodash';
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
+import { getLocalizedSnapManifest } from '@metamask/snaps-utils';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -58,7 +59,6 @@ import {
   getURLHostName,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   removeSnapIdPrefix,
-  getSnapName,
   ///: END:ONLY_INCLUDE_IN
 } from '../helpers/utils/util';
 
@@ -935,6 +935,50 @@ export const getSnap = createDeepEqualSelector(
   },
 );
 
+/**
+ * Get a selector that returns the snap manifest for a given `snapId`.
+ *
+ * @param {object} state - The Redux state object.
+ * @param {string} snapId - The snap ID to get the manifest for.
+ * @returns {object | undefined} The snap manifest.
+ */
+export const getSnapManifest = createDeepEqualSelector(
+  (state) => state.metamask.currentLocale,
+  (state, snapId) => getSnap(state, snapId),
+  (locale, snap) => {
+    if (!snap?.localizationFiles) {
+      return snap?.manifest;
+    }
+
+    return getLocalizedSnapManifest(
+      snap.manifest,
+      locale,
+      snap.localizationFiles,
+    );
+  },
+);
+
+/**
+ * Get a selector that returns the snap metadata (name and description) for a
+ * given `snapId`.
+ *
+ * @param {object} state - The Redux state object.
+ * @param {string} snapId - The snap ID to get the metadata for.
+ * @returns {object} An object containing the snap name and description.
+ */
+export const getSnapMetadata = createDeepEqualSelector(
+  (state, snapId) => getSnapManifest(state, snapId),
+  (_, snapId) => snapId,
+  (manifest, snapId) => {
+    return {
+      // The snap manifest may not be available if the Snap is not installed, so
+      // we use the snap ID as the name in that case.
+      name: manifest?.proposedName ?? removeSnapIdPrefix(snapId),
+      description: manifest?.description,
+    };
+  },
+);
+
 export const getEnabledSnaps = createDeepEqualSelector(getSnaps, (snaps) => {
   return Object.values(snaps).reduce((acc, cur) => {
     if (cur.enabled) {
@@ -1704,7 +1748,7 @@ export function getSnapsList(state) {
       iconUrl: targetSubjectMetadata?.iconUrl,
       subjectType: targetSubjectMetadata?.subjectType,
       packageName: removeSnapIdPrefix(snap.id),
-      name: getSnapName(snap.id, targetSubjectMetadata),
+      name: getSnapMetadata(state, snap.id).name,
     };
   });
 }

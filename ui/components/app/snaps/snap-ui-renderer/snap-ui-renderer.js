@@ -15,8 +15,7 @@ import {
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../ui/box';
-import { getSnapName } from '../../../../helpers/utils/util';
-import { getTargetSubjectMetadata } from '../../../../selectors';
+import { getSnapMetadata } from '../../../../selectors';
 import { Text } from '../../../component-library';
 import { Copyable } from '../copyable';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
@@ -100,11 +99,9 @@ export const SnapUIRenderer = ({
   boxProps,
 }) => {
   const t = useI18nContext();
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
-
-  const snapName = getSnapName(snapId, targetSubjectMetadata);
 
   if (isLoading) {
     return (

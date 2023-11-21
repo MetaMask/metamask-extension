@@ -77,6 +77,7 @@ import {
   SnapController,
   IframeExecutionService,
 } from '@metamask/snaps-controllers';
+import { getLocalizedSnapManifest } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IN
 
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -2230,10 +2231,16 @@ export default class MetamaskController extends EventEmitter {
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapAdded`,
       (snap, svgIcon = null) => {
-        const {
-          manifest: { proposedName },
-          version,
-        } = snap;
+        const { manifest, localizationFiles, version } = snap;
+
+        // In case the Snap uses a localized manifest, we need to get the
+        // proposed name from the localized manifest.
+        const { proposedName } = getLocalizedSnapManifest(
+          manifest,
+          'en',
+          localizationFiles,
+        );
+
         this.subjectMetadataController.addSubjectMetadata({
           subjectType: SubjectType.Snap,
           name: proposedName,

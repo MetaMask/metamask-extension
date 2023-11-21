@@ -4,14 +4,10 @@ import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { SnapUIMarkdown } from '../../components/app/snaps/snap-ui-markdown';
-import {
-  formatDate,
-  getSnapName,
-  getSnapRoute,
-} from '../../helpers/utils/util';
+import { formatDate, getSnapRoute } from '../../helpers/utils/util';
 import {
   getNotifications,
-  getTargetSubjectMetadata,
+  getSnapMetadata,
   getUnreadNotifications,
 } from '../../selectors';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -32,11 +28,9 @@ export function NotificationItem({ notification, onItemClick }) {
   const { message, origin, createdDate, readDate } = notification;
   const history = useHistory();
   const t = useI18nContext();
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, origin),
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, origin),
   );
-
-  const snapName = getSnapName(origin, targetSubjectMetadata);
 
   const handleNameClick = (e) => {
     e.stopPropagation();

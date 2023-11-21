@@ -14,13 +14,10 @@ import {
   BorderColor,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
-import {
-  getSnapName,
-  removeSnapIdPrefix,
-} from '../../../../helpers/utils/util';
+import { removeSnapIdPrefix } from '../../../../helpers/utils/util';
 
 import { Box, Text } from '../../../component-library';
-import { getTargetSubjectMetadata } from '../../../../selectors';
+import { getSnapMetadata } from '../../../../selectors';
 import SnapAvatar from '../snap-avatar';
 
 const SnapLegacyAuthorshipHeader = ({
@@ -30,12 +27,9 @@ const SnapLegacyAuthorshipHeader = ({
   marginRight,
 }) => {
   const packageName = snapId && removeSnapIdPrefix(snapId);
-
-  const subjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
+  const { name: friendlyName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
-
-  const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 
   return (
     <Box

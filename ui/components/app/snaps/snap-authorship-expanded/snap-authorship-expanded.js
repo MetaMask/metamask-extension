@@ -19,17 +19,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  formatDate,
-  getSnapName,
-  removeSnapIdPrefix,
-} from '../../../../helpers/utils/util';
+import { formatDate, removeSnapIdPrefix } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import {
-  getSnapRegistryData,
-  getTargetSubjectMetadata,
-} from '../../../../selectors';
+import { getSnapMetadata, getSnapRegistryData } from '../../../../selectors';
 import {
   disableSnap,
   enableSnap,
@@ -58,12 +51,14 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
     ? `https://www.npmjs.com/package/${packageName}${versionPath}`
     : packageName;
 
-  const subjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
-  );
   const snapRegistryData = useSelector((state) =>
     getSnapRegistryData(state, snapId),
   );
+
+  const { name: friendlyName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
+  );
+
   const { website = undefined } = snapRegistryData?.metadata ?? {};
   const [safeWebsite, setSafeWebsite] = useState(null);
 
@@ -75,12 +70,11 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
         setSafeWebsite(website);
       }
     };
+
     if (website) {
       performPhishingCheck();
     }
   }, [website]);
-
-  const friendlyName = snapId && getSnapName(snapId, subjectMetadata);
 
   const versionHistory = snap?.versionHistory ?? [];
   const installInfo = versionHistory.length

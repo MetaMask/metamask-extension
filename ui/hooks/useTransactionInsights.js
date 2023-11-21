@@ -6,13 +6,13 @@ import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
 import { TransactionType } from '../../shared/constants/transaction';
 import { Tab } from '../components/ui/tabs';
 import DropdownTab from '../components/ui/tabs/snaps/dropdown-tab';
-import { SnapInsight } from '../components/app/confirm-page-container/snaps/snap-insight';
+import { SnapInsight } from '../components/app/confirm-page-container';
 import {
   getInsightSnapIds,
   getInsightSnaps,
+  getSnapMetadata,
   getSubjectMetadataDeepEqual,
 } from '../selectors';
-import { getSnapName } from '../helpers/utils/util';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
 const isAllowedTransactionTypes = (transactionType) =>
@@ -29,8 +29,22 @@ const useTransactionInsights = ({ txData }) => {
   const { txParams, chainId, origin } = txData;
   const caip2ChainId = `eip155:${stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
-  const subjectMetadata = useSelector(getSubjectMetadataDeepEqual);
   const insightSnapIds = useSelector(getInsightSnapIds);
+  const state = useSelector((value) => value);
+
+  /**
+   * Get the snap name from the snap ID.
+   *
+   * This is used to get the names for permissions which include snap IDs as
+   * caveat.
+   *
+   * @param id - The snap ID.
+   * @returns {string | undefined} The snap name if it exists, or `undefined`.
+   */
+  const getSnapName = (id) => {
+    const snap = getSnapMetadata(state, id);
+    return snap?.name;
+  };
 
   const [selectedInsightSnapId, setSelectedInsightSnapId] = useState(
     insightSnaps[0]?.id,
@@ -75,7 +89,7 @@ const useTransactionInsights = ({ txData }) => {
     insightComponent = (
       <Tab
         className="confirm-page-container-content__tab"
-        name={getSnapName(selectedSnap?.id, subjectMetadata[selectedSnap?.id])}
+        name={getSnapName(selectedSnap?.id)}
       >
         <SnapInsight
           snapId={selectedInsightSnapId}
@@ -91,7 +105,7 @@ const useTransactionInsights = ({ txData }) => {
     );
   } else if (insightSnaps.length > 1) {
     const dropdownOptions = insightSnaps?.map(({ id }) => {
-      const name = getSnapName(id, subjectMetadata[id]);
+      const name = getSnapName(id);
       return {
         value: id,
         name,

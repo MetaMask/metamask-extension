@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Box, Text } from '../../../component-library';
 import { SnapUIRenderer } from '../snap-ui-renderer';
-import { getTargetSubjectMetadata } from '../../../../selectors';
-import { getSnapName } from '../../../../helpers/utils/util';
+import { getSnapMetadata } from '../../../../selectors';
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { TextVariant } from '../../../../helpers/constants/design-system';
@@ -14,11 +13,10 @@ import { useSnapHome } from './useSnapHome';
 
 export const SnapHomeRenderer = ({ snapId }) => {
   const t = useI18nContext();
-  const targetSubjectMetadata = useSelector((state) =>
-    getTargetSubjectMetadata(state, snapId),
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, snapId),
   );
 
-  const snapName = getSnapName(snapId, targetSubjectMetadata);
   const { data, error, loading } = useSnapHome({ snapId });
 
   const content = !loading && !error && data?.content;

@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { PageContainerFooter } from '../../../../components/ui/page-container';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
@@ -25,7 +26,7 @@ import {
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
 import InstallError from '../../../../components/app/snaps/install-error/install-error';
 import SnapAuthorshipHeader from '../../../../components/app/snaps/snap-authorship-header';
-import { getSnapName } from '../../../../helpers/utils/util';
+import { getSnapMetadata } from '../../../../selectors';
 
 export default function SnapResult({
   request,
@@ -42,9 +43,8 @@ export default function SnapResult({
 
   const hasError = !requestState.loading && requestState.error;
   const isLoading = requestState.loading;
-  const snapName = getSnapName(
-    targetSubjectMetadata.origin,
-    targetSubjectMetadata,
+  const { name: snapName } = useSelector((state) =>
+    getSnapMetadata(state, targetSubjectMetadata.origin),
   );
 
   function getSuccessScreen(requestType, snapNameToRender) {
