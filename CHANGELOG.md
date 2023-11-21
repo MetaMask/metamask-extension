@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 SNAPS
 - Bump snaps packages ([#21774](https://github.com/MetaMask/metamask-extension/pull/21774))
 - Remove legacy transaction insight ([#21027](https://github.com/MetaMask/metamask-extension/pull/21027))
-- Implement basic confirmation row components ([#19957](https://github.com/MetaMask/metamask-extension/pull/19957))
 - Add simplified version of Snap install warning modal ([#21516](https://github.com/MetaMask/metamask-extension/pull/21516))
 - Create E2E test for snap_getFile ([#21630](https://github.com/MetaMask/metamask-extension/pull/21630))
 - Fix `AvatarAccount` type ([#21671](https://github.com/MetaMask/metamask-extension/pull/21671))
