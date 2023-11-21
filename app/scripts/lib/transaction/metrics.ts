@@ -944,27 +944,6 @@ async function buildEventFragmentProperties({
   }
   ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  const additionalBlockaidParams = {} as Record<string, any>;
-
-  if (securityProviderResponse?.providerRequestsCount) {
-    Object.keys(securityProviderResponse.providerRequestsCount).forEach(
-      (key) => {
-        const metricKey = `ppom_${key}_count`;
-        additionalBlockaidParams[metricKey] =
-          securityProviderResponse.providerRequestsCount[key];
-      },
-    );
-  }
-  ///: END:ONLY_INCLUDE_IN
-
-  if (simulationFails) {
-    if (uiCustomizations === null) {
-      uiCustomizations = ['gas_estimation_failed'];
-    } else {
-      uiCustomizations.push('gas_estimation_failed');
-    }
-  }
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -991,7 +970,6 @@ async function buildEventFragmentProperties({
       securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
     security_alert_reason:
       securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
-    ...additionalBlockaidParams,
     ///: END:ONLY_INCLUDE_IN
     gas_estimation_failed: Boolean(simulationFails),
   } as Record<string, any>;
