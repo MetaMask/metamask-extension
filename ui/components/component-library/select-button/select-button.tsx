@@ -26,7 +26,9 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
       placeholder,
       children,
       size = SelectButtonSize.Md,
-      onClick,
+      isBlock,
+      isDanger: isDangerProp,
+      isDisabled: isDisabledProp,
       ...props
     }: SelectButtonProps<C>,
     ref?: PolymorphicRef<C>,
@@ -75,8 +77,9 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         className={classnames(
           'mm-select-button',
           {
-            'mm-select-button--type-danger': isDanger,
-            'mm-select-button--disabled': isDisabled,
+            'mm-select-button--type-danger': isDanger || isDangerProp,
+            'mm-select-button--disabled': isDisabled || isDisabledProp,
+            'mm-select-button--block': isBlock,
             'mm-select-button--open': isOpen || isUncontrolledOpen,
             [`mm-select-button--size-${size}`]:
               Object.values(SelectButtonSize).includes(size),
@@ -84,11 +87,13 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
           className,
         )}
         ref={ref}
-        disabled={isDisabled}
+        disabled={isDisabled || isDisabledProp}
         as="button"
-        onClick={onClick || toggleUncontrolledOpen}
+        onClick={toggleUncontrolledOpen}
         borderColor={
-          isDanger ? BorderColor.errorDefault : BorderColor.borderDefault
+          isDanger || isDangerProp
+            ? BorderColor.errorDefault
+            : BorderColor.borderDefault
         }
         borderRadius={BorderRadius.MD}
         backgroundColor={BackgroundColor.backgroundDefault}
@@ -96,7 +101,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         paddingBottom={getPaddingBySize()}
         paddingLeft={4}
         paddingRight={4}
-        display={Display.Flex}
+        display={Display.InlineFlex}
         height={BlockSize.Full}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
