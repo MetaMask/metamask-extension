@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { IconName, Box, IconSize, Icon, Text } from '../../component-library';
+import { Box, Icon, IconName, IconSize, Text } from '../../component-library';
 import {
   AlignItems,
   BorderRadius,

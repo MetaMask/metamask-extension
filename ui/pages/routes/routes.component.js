@@ -12,7 +12,7 @@ import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
 import Home from '../home';
-import { Connections } from '../../components/multichain/pages';
+import { AllConnections, Connections } from '../../components/multichain/pages';
 import Settings from '../settings';
 import Authenticated from '../../helpers/higher-order-components/authenticated';
 import Initialized from '../../helpers/higher-order-components/initialized';
@@ -84,6 +84,7 @@ import {
   ONBOARDING_UNLOCK_ROUTE,
   TOKEN_DETAILS,
   CONNECTIONS,
+  ALL_CONNECTIONS,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   INSTITUTIONAL_FEATURES_DONE_ROUTE,
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -112,6 +113,9 @@ import { EXTENSION_ERROR_PAGE_TYPES } from '../../../shared/constants/desktop';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../shared/constants/app';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -178,6 +182,7 @@ export default class Routes extends Component {
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
+    pendingConfirmations: PropTypes.array.isRequired,
     ///: END:ONLY_INCLUDE_IN
   };
 
@@ -382,6 +387,13 @@ export default class Routes extends Component {
         {process.env.MULTICHAIN && (
           <Authenticated path={CONNECTIONS} component={Connections} />
         )}
+        {process.env.MULTICHAIN && (
+          <Authenticated
+            path={ALL_CONNECTIONS}
+            component={AllConnections}
+            exact
+          />
+        )}
         <Authenticated path={DEFAULT_ROUTE} component={Home} />
       </Switch>
     );
@@ -469,6 +481,17 @@ export default class Routes extends Component {
     const windowType = getEnvironmentType();
 
     if (windowType === ENVIRONMENT_TYPE_NOTIFICATION) {
+      return true;
+    }
+
+    const isAllConnectionsPage = Boolean(
+      matchPath(location.pathname, {
+        path: ALL_CONNECTIONS,
+        exact: false,
+      }),
+    );
+
+    if (isAllConnectionsPage) {
       return true;
     }
 
@@ -574,6 +597,7 @@ export default class Routes extends Component {
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
+      pendingConfirmations,
       ///: END:ONLY_INCLUDE_IN
     } = this.props;
 
@@ -597,6 +621,18 @@ export default class Routes extends Component {
       windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
       isUnlocked &&
       !shouldShowSeedPhraseReminder;
+
+    let isLoadingShown = isLoading;
+
+    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    isLoadingShown =
+      isLoading &&
+      !pendingConfirmations.some(
+        (confirmation) =>
+          confirmation.type ===
+          SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+      );
+    ///: END:ONLY_INCLUDE_IN
 
     return (
       <div
@@ -650,7 +686,7 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IN
         }
         <Box className="main-container-wrapper">
-          {isLoading ? <Loading loadingMessage={loadMessage} /> : null}
+          {isLoadingShown ? <Loading loadingMessage={loadMessage} /> : null}
           {!isLoading && isNetworkLoading ? <LoadingNetwork /> : null}
           {this.renderRoutes()}
         </Box>

@@ -1202,22 +1202,23 @@ exports[`Security Tab should match snapshot 1`] = `
       </div>
       <div
         class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+        id="display-nft-media"
       >
         <div
           class="settings-page__content-item"
         >
           <span>
-            Enable OpenSea API
+            Display NFT media
           </span>
           <div
             class="settings-page__content-description"
           >
-            Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off.
+            Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off.
           </div>
         </div>
         <div
           class="settings-page__content-item-col"
-          data-testid="enableOpenSeaAPI"
+          data-testid="displayNftMedia"
         >
           <label
             class="toggle-button toggle-button--on"

@@ -23,7 +23,6 @@ export default class MMIController extends EventEmitter {
     this.opts = opts;
     this.mmiConfigurationController = opts.mmiConfigurationController;
     this.keyringController = opts.keyringController;
-    this.txController = opts.txController;
     this.securityProviderRequest = opts.securityProviderRequest;
     this.preferencesController = opts.preferencesController;
     this.appStateController = opts.appStateController;
@@ -39,6 +38,16 @@ export default class MMIController extends EventEmitter {
     this.signatureController = opts.signatureController;
     this.platform = opts.platform;
     this.extension = opts.extension;
+
+    this.updateTransactionHash = opts.updateTransactionHash;
+    this.trackTransactionEvents = opts.trackTransactionEvents;
+    this.txStateManager = {
+      getTransactions: opts.getTransactions,
+      setTxStatusSigned: opts.setTxStatusSigned,
+      setTxStatusSubmitted: opts.setTxStatusSubmitted,
+      setTxStatusFailed: opts.setTxStatusFailed,
+      updateTransaction: opts.updateTransaction,
+    };
 
     // Prepare event listener after transactionUpdateController gets initiated
     this.transactionUpdateController.prepareEventListener(
@@ -75,7 +84,13 @@ export default class MMIController extends EventEmitter {
   }
 
   async trackTransactionEventFromCustodianEvent(txMeta, event) {
-    this.txController._trackTransactionMetricsEvent(txMeta, event);
+    // transactionMetricsRequest parameter is already bound in the constructor
+    this.trackTransactionEvents(
+      {
+        transactionMeta: txMeta,
+      },
+      event,
+    );
   }
 
   async addKeyringIfNotExists(type) {
@@ -91,9 +106,9 @@ export default class MMIController extends EventEmitter {
       log,
       getState: () => this.getState(),
       getPendingNonce: (address) => this.getPendingNonce(address),
-      setTxHash: (txId, txHash) => this.txController.setTxHash(txId, txHash),
+      setTxHash: (txId, txHash) => this.updateTransactionHash(txId, txHash),
       signatureController: this.signatureController,
-      txStateManager: this.txController.txStateManager,
+      txStateManager: this.txStateManager,
       custodyController: this.custodyController,
       trackTransactionEvent:
         this.trackTransactionEventFromCustodianEvent.bind(this),
@@ -154,11 +169,7 @@ export default class MMIController extends EventEmitter {
           }
         }
 
-        const txList = this.txController.txStateManager.getTransactions(
-          {},
-          [],
-          false,
-        ); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
+        const txList = this.txStateManager.getTransactions({}, [], false); // Includes all transactions, but we are looping through keyrings. Currently filtering is done in updateCustodianTransactions :-/
 
         try {
           updateCustodianTransactions({
@@ -167,8 +178,8 @@ export default class MMIController extends EventEmitter {
             txList,
             getPendingNonce: (address) => this.getPendingNonce(address),
             setTxHash: (txId, txHash) =>
-              this.txController.setTxHash(txId, txHash),
-            txStateManager: this.txController.txStateManager,
+              this.updateTransactionHash(txId, txHash),
+            txStateManager: this.txStateManager,
             custodyController: this.custodyController,
             transactionUpdateController: this.transactionUpdateController,
           });
@@ -411,7 +422,9 @@ export default class MMIController extends EventEmitter {
   }
 
   async getCustodianConfirmDeepLink(txId) {
-    const txMeta = this.txController.txStateManager.getTransaction(txId);
+    const txMeta = this.txStateManager
+      .getTransactions()
+      .find((tx) => tx.id === txId);
 
     const address = txMeta.txParams.from;
     const custodyType = this.custodyController.getCustodyTypeByAddress(

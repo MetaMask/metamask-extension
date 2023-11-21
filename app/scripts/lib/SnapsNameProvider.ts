@@ -8,11 +8,11 @@ import {
 } from '@metamask/name-controller';
 import { GetPermissionControllerState } from '@metamask/permission-controller';
 import {
-  OnNameLookupArgs,
-  HandlerType,
-  OnNameLookupResponse,
-  TruncatedSnap,
-} from '@metamask/snaps-utils';
+  AddressLookupArgs,
+  AddressLookupResult,
+  Snap as TruncatedSnap,
+} from '@metamask/snaps-sdk';
+import { HandlerType } from '@metamask/snaps-utils';
 import log from 'loglevel';
 import {
   GetAllSnaps,
@@ -111,7 +111,7 @@ export class SnapsNameProvider implements NameProvider {
     const sourceId = snap.id;
     const chainIdDecimal = parseInt(chainIdHex, 16);
 
-    const nameLookupRequest: OnNameLookupArgs = {
+    const nameLookupRequest: AddressLookupArgs = {
       chainId: `eip155:${chainIdDecimal}`,
       address: value,
     };
@@ -132,7 +132,7 @@ export class SnapsNameProvider implements NameProvider {
             params: nameLookupRequest,
           },
         },
-      )) as OnNameLookupResponse;
+      )) as AddressLookupResult;
 
       const domain = result?.resolvedDomain;
 
