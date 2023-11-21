@@ -16,6 +16,7 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
+// import { DAY } from '../../../../shared/constants/time';
 
 const UNRECOGNIZED_CHAIN = {
   id: 'UNRECOGNIZED_CHAIN',
@@ -146,21 +147,28 @@ const ERROR_CONNECTING_TO_RPC = {
   },
 };
 
+async function fetchSafeChainsList() {
+  try {
+    const response = await fetchWithCache({
+      url: 'https://chainid.network/chains.json',
+      // cacheOptions: { cacheRefreshTime: DAY },
+      functionName: 'getSafeChainsList',
+    });
+    return { data: response, error: null };
+  } catch (error) {
+    log.warn('Failed to fetch the chainList from chainid.network', error);
+    return { data: [], error };
+  }
+}
+
 async function getAlerts(pendingApproval, state) {
   const alerts = [];
   let safeChainsList = [];
-  let providerError;
+  let providerError = null;
   if (state.useSafeChainsListValidation) {
-    try {
-      safeChainsList = await fetchWithCache({
-        url: 'https://chainid.network/chains.json',
-        functionName: 'getSafeChainsList',
-      });
-    } catch (error) {
-      providerError = error;
-      // Swallow the error here to not block the user from adding a custom network
-      log.warn('Failed to fetch the chainList from chainid.network', error);
-    }
+    const fetchResult = await fetchSafeChainsList();
+    safeChainsList = fetchResult.data;
+    providerError = fetchResult.error;
   }
   const matchedChain = safeChainsList.find(
     (chain) =>
@@ -213,9 +221,25 @@ function getState(pendingApproval) {
   return {};
 }
 
-function getValues(pendingApproval, t, actions, history) {
+async function getValues(pendingApproval, t, actions, history) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
+  let safeChainsList = [];
+  let providerError = null;
+
+  // need to check for safeChainsListValidation flag, but no access to state yet
+  const fetchResult = await fetchSafeChainsList();
+  safeChainsList = fetchResult.data;
+  providerError = fetchResult.error;
+
+  console.log('safeChainsList', safeChainsList); // outputs good array if flag is true
+  const matchedChain = safeChainsList.find(
+    (chain) =>
+      chain.chainId === parseInt(pendingApproval.requestData.chainId, 16),
+  );
+  const mismatchedNetworkSymbol =
+    !providerError &&
+    matchedChain.nativeCurrency?.symbol !== pendingApproval.requestData.ticker;
   return {
     content: [
       {
@@ -366,6 +390,14 @@ function getValues(pendingApproval, t, actions, history) {
             [t('chainId')]: t('chainIdDefinition'),
             [t('currencySymbol')]: t('currencySymbolDefinition'),
             [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
+          },
+          warnings: {
+            [t('currencySymbol')]: mismatchedNetworkSymbol
+              ? [
+                  t('chainListReturnedDifferentTickerSymbol'),
+                  matchedChain.nativeCurrency?.symbol,
+                ]
+              : null,
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
