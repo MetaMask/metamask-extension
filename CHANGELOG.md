@@ -11,13 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fix bug that could cause the fetching quotes step of Swaps to fail ([#21923](https://github.com/MetaMask/metamask-extension/pull/21923))
 
-SNAPS
-- Bump snaps packages ([#21774](https://github.com/MetaMask/metamask-extension/pull/21774))
-- Remove legacy transaction insight ([#21027](https://github.com/MetaMask/metamask-extension/pull/21027))
-- Add simplified version of Snap install warning modal ([#21516](https://github.com/MetaMask/metamask-extension/pull/21516))
-- Resolve network names using SLIP44 when applicable ([#21674](https://github.com/MetaMask/metamask-extension/pull/21674))
-- [FLASK] Transaction Insights V2 Integration ([#20554](https://github.com/MetaMask/metamask-extension/pull/20554))
-
 MMI
 - [MMI] Improves css styles in mmi view ([#21779](https://github.com/MetaMask/metamask-extension/pull/21779))
 - [MMI] add missing mmi status in tx detail pane ([#21777](https://github.com/MetaMask/metamask-extension/pull/21777))
@@ -34,6 +27,8 @@ MMI
 - Introduced the Swedish Krona (SEK) as an available currency option. ([21782](https://github.com/MetaMask/metamask-extension/pull/21782))
 - Updated the content in the tooltip for 'Liquidity Source' within the Swaps feature. ([#21696](https://github.com/MetaMask/metamask-extension/pull/21696))
 - Update smart transactions controller and add smart transactions to the activity list. Updated the content for Smart Swaps tooltip. ([#21775](https://github.com/MetaMask/metamask-extension/pull/21775))
+- Add support for unencrypted snap state ([#21774](https://github.com/MetaMask/metamask-extension/pull/21774))
+- [FLASK] Expose the Transaction Insights V2 API ([#20554](https://github.com/MetaMask/metamask-extension/pull/20554))
 
 ### Changed
 - Improved UI by ensuring that signature content fully occupies the popup container. ([#21585](https://github.com/MetaMask/metamask-extension/pull/21585))
@@ -42,6 +37,9 @@ MMI
 - Switched to a new blockies identicon renderer, 'blo,' for faster and more accurate rendering, removing the need for library access to the document object. ([#21010](https://github.com/MetaMask/metamask-extension/pull/21010))
 - Improved the styling of the security provider section in the settings tab. ([#21629](https://github.com/MetaMask/metamask-extension/pull/21629))
 - Enhanced the Bridge button functionality by adding support for BASE_MAINNET and LINEA_MAINNET networks, and making the button visible for any token on allowlisted chains in the TokenOverview page. ([#21691](https://github.com/MetaMask/metamask-extension/pull/21691))
+- Remove legacy transaction insight tab ([#21027](https://github.com/MetaMask/metamask-extension/pull/21027))
+- Resolve snap derivation path names using SLIP44 when applicable ([#21674](https://github.com/MetaMask/metamask-extension/pull/21674))
+- Simplify Snap installation warning modal ([#21516](https://github.com/MetaMask/metamask-extension/pull/21516))
 
 ### Fixed
 - Enhanced the process of removing a hardware wallet by ensuring that all associated identities are also removed from the UI when the device is forgotten. ([#21755)](https://github.com/MetaMask/metamask-extension/pull/21755))
