@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useHistory, useParams } from 'react-router-dom';
+import { ApprovalType } from '@metamask/controller-utils';
 
 import Loading from '../../components/ui/loading-screen';
 import ConfirmContractInteraction from '../confirm-contract-interaction';
@@ -34,6 +35,11 @@ import {
   unconfirmedTransactionsListSelector,
   unconfirmedTransactionsHashSelector,
   use4ByteResolutionSelector,
+  ///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
+  latestPendingConfirmationSelector,
+  pendingConfirmationsSelector,
+  unapprovedPersonalMsgsSelector,
+  ///: END:ONLY_INCLUDE_IN(conf-redesign)
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
@@ -44,7 +50,11 @@ import {
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import ConfirmSignatureRequest from '../confirm-signature-request';
+///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
+import Confirm from '../confirm/confirm';
+///: END:ONLY_INCLUDE_IN(conf-redesign)
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
+import useCurrentConfirmation from '../../hooks/confirm/useCurrentConfirmation';
 
 const ConfirmTransaction = () => {
   const dispatch = useDispatch();
@@ -73,6 +83,15 @@ const ConfirmTransaction = () => {
   ]);
   const [transaction, setTransaction] = useState(getTransaction);
   const use4ByteResolution = useSelector(use4ByteResolutionSelector);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
+  const latestPendingConfirmation = useSelector(
+    latestPendingConfirmationSelector,
+  );
+  const pendingConfirmations = useSelector(pendingConfirmationsSelector);
+  const unapprovedPersonalMsgs = useSelector(unapprovedPersonalMsgsSelector);
+  const pendingConfirmation = useCurrentConfirmation();
+  ///: END:ONLY_INCLUDE_IN(conf-redesign)
 
   useEffect(() => {
     const tx = getTransaction();
@@ -182,6 +201,16 @@ const ConfirmTransaction = () => {
     transactionId,
     use4ByteResolution,
   ]);
+
+  ///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
+  // Code below is required as we need to support both new and old confirmation pages,
+  // It takes care to render <Confirm /> component for confirmations of type Personal Sign.
+  // Once we migrate all confirmations to new designs we can get rid of this code
+  // and render <Confirm /> component for all confirmation requests.
+  if (pendingConfirmation) {
+    return <Confirm />;
+  }
+  ///: END:ONLY_INCLUDE_IN(conf-redesign)
 
   if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
