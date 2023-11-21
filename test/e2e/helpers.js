@@ -516,7 +516,6 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
 };
 
 const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
-  await driver.navigate();
   await unlockWallet(driver);
 
   // navigate settings to reveal SRP
@@ -710,9 +709,15 @@ async function waitForAccountRendered(driver) {
   );
 }
 
-async function unlockWallet(driver) {
+async function unlockWallet(driver, waitLoginSuccess = true, navigate = true) {
+  if (navigate) {
+    await driver.navigate();
+  }
   await driver.fill('#password', WALLET_PASSWORD);
   await driver.press('#password', driver.Key.ENTER);
+  if (waitLoginSuccess) {
+    await driver.waitForElementNotPresent('[data-testid="unlock-page"]');
+  }
 }
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
