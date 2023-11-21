@@ -39,7 +39,7 @@ describe('Copyable', () => {
       <Copyable text={value} sensitive />,
     );
 
-    expect(getByText('Click to reveal sensitive content')).toBeInTheDocument();
+    expect(getByText('Reveal sensitive content')).toBeInTheDocument();
     expect(queryByTestId('copy-icon')).not.toBeInTheDocument();
   });
 

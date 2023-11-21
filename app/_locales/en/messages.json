@@ -3874,7 +3874,7 @@
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
-    "message": "Click to reveal sensitive content"
+    "message": "Reveal sensitive content"
   },
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
