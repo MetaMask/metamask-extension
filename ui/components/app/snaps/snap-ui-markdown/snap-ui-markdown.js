@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 import {
@@ -6,7 +6,13 @@ import {
   OverflowWrap,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import { Text } from '../../../component-library';
+import {
+  ButtonLink,
+  ButtonLinkSize,
+  IconName,
+  Text,
+} from '../../../component-library';
+import SnapLinkWarning from '../snap-link-warning';
 
 const Paragraph = (props) => (
   <Text
@@ -18,22 +24,62 @@ const Paragraph = (props) => (
   />
 );
 
+const Link = ({ onClick, children, ...rest }) => (
+  <ButtonLink
+    {...rest}
+    onClick={onClick}
+    externalLink
+    size={ButtonLinkSize.Inherit}
+    endIconName={IconName.Export}
+    className="snap-ui-markdown__link"
+  >
+    {children}
+  </ButtonLink>
+);
+
 export const SnapUIMarkdown = ({ children, markdown }) => {
+  const [redirectUrl, setRedirectUrl] = useState(undefined);
+
   if (markdown === false) {
     return <Paragraph>{children}</Paragraph>;
   }
 
+  const handleLinkClick = (url) => {
+    setRedirectUrl(url);
+  };
+
+  const handleModalClose = () => {
+    setRedirectUrl(undefined);
+  };
+
   return (
-    <ReactMarkdown
-      allowedElements={['p', 'strong', 'em']}
-      components={{ p: Paragraph }}
-    >
-      {children}
-    </ReactMarkdown>
+    <>
+      <SnapLinkWarning
+        isOpen={Boolean(redirectUrl)}
+        onClose={handleModalClose}
+        url={redirectUrl}
+      />
+      <ReactMarkdown
+        allowedElements={['p', 'strong', 'em', 'a']}
+        components={{
+          p: Paragraph,
+          a: ({ children: value, href }) => (
+            <Link onClick={() => handleLinkClick(href)}>{value ?? href}</Link>
+          ),
+        }}
+      >
+        {children}
+      </ReactMarkdown>
+    </>
   );
 };
 
 SnapUIMarkdown.propTypes = {
   children: PropTypes.string,
   markdown: PropTypes.bool,
+};
+
+Link.propTypes = {
+  onClick: PropTypes.func,
+  children: PropTypes.node,
 };

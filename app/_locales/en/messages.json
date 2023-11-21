@@ -2260,6 +2260,12 @@
   "learnScamRisk": {
     "message": "scams and security risks."
   },
+  "leaveMetaMask": {
+    "message": "Leave MetaMask?"
+  },
+  "leaveMetaMaskDesc": {
+    "message": "You're about to visit a site outside of MetaMask. Double-check the URL before continuing."
+  },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
@@ -5678,6 +5684,9 @@
   "viewinExplorer": {
     "message": "View $1 in explorer",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "visitSite": {
+    "message": "Visit site"
   },
   "visitWebSite": {
     "message": "Visit our website"
