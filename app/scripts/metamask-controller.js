@@ -4031,15 +4031,18 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async estimateGas(estimateGasParams) {
-    const result = await this.txController.estimateGas(estimateGasParams);
+    return new Promise((resolve, reject) => {
+      return new EthQuery(this.provider).estimateGas(
+        estimateGasParams,
+        (err, res) => {
+          if (err) {
+            return reject(err);
+          }
 
-    // if (result.simulationFails) {
-    //   // The previous code only did a basic estimateGas query.
-    //   // This means we don't want to use the fallback value of 95% of the block gas limit.
-    //   throw new Error(result.simulationFails.reason);
-    // }
-
-    return result.gas;
+          return resolve(res);
+        },
+      );
+    });
   }
 
   handleWatchAssetRequest = ({ asset, type, origin, networkClientId }) => {
