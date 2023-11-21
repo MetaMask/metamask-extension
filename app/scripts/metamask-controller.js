@@ -1109,7 +1109,7 @@ export default class MetamaskController extends EventEmitter {
     this.subjectMetadataController = new SubjectMetadataController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'SubjectMetadataController',
-        allowedActions: [`${this.permissionController.name}:hasPermissions`],
+        allowedActions: [`${this.permissionController.name}:hasAnyPermissions`],
       }),
       state: initState.SubjectMetadataController,
       subjectCacheLimit: 100,
@@ -1141,7 +1141,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.permissionController.name}:getEndowments`,
         `${this.permissionController.name}:getPermissions`,
         `${this.permissionController.name}:hasPermission`,
-        `${this.permissionController.name}:hasPermissions`,
+        `${this.permissionController.name}:hasAnyPermissions`,
         `${this.permissionController.name}:requestPermissions`,
         `${this.permissionController.name}:revokeAllPermissions`,
         `${this.permissionController.name}:revokePermissions`,

@@ -319,7 +319,7 @@ export function getPermissionsForActiveTab(state) {
   });
 }
 
-export function activeTabHasPermissions(state) {
+export function activeTabHasAnyPermissions(state) {
   const { activeTab, metamask } = state;
   const { subjects = {} } = metamask;
 

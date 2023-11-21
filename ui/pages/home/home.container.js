@@ -11,7 +11,7 @@ import { mmiActionsFactory } from '../../store/institutional/institution-backgro
 import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
 ///: END:ONLY_INCLUDE_IN
 import {
-  activeTabHasPermissions,
+  activeTabHasAnyPermissions,
   getFirstPermissionRequest,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getFirstSnapInstallOrUpdateRequest,
@@ -111,7 +111,7 @@ const mapStateToProps = (state) => {
   const shouldShowWeb3ShimUsageNotification =
     isPopup &&
     getWeb3ShimUsageAlertEnabledness(state) &&
-    activeTabHasPermissions(state) &&
+    activeTabHasAnyPermissions(state) &&
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       Web3ShimUsageAlertStates.recorded;
 
