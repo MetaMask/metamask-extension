@@ -15,6 +15,7 @@ import {
   getCurrentChainId,
   getSwapsDefaultToken,
   getSelectedAddress,
+  getPreferences,
 } from '../../../selectors';
 import {
   getNativeCurrency,
@@ -50,6 +51,7 @@ const AssetList = ({ onClickAsset }) => {
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
   const chainId = useSelector(getCurrentChainId);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
     chainId,
@@ -161,12 +163,17 @@ const AssetList = ({ onClickAsset }) => {
             onClick={() => onClickAsset(nativeCurrency)}
             title={nativeCurrency}
             primary={
-              primaryCurrencyProperties.value ??
-              secondaryCurrencyProperties.value
+              isOriginalNativeSymbol || useNativeCurrencyAsPrimaryCurrency
+                ? primaryCurrencyProperties.value ??
+                  secondaryCurrencyProperties.value
+                : null
             }
-            tokenSymbol={primaryCurrencyProperties.suffix}
+            tokenSymbol={
+              isOriginalNativeSymbol ? primaryCurrencyProperties.suffix : null
+            }
             secondary={
-              showFiat && isOriginalNativeSymbol
+              showFiat &&
+              (isOriginalNativeSymbol || !useNativeCurrencyAsPrimaryCurrency)
                 ? secondaryCurrencyDisplay
                 : undefined
             }

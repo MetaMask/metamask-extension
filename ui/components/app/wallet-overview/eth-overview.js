@@ -31,6 +31,7 @@ import {
   getIsSwapsChain,
   getSelectedAccountCachedBalance,
   getCurrentChainId,
+  getPreferences,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
@@ -81,6 +82,7 @@ const EthOverview = ({ className, showAddress }) => {
   ///: END:ONLY_INCLUDE_IN
   const balanceIsCached = useSelector(isBalanceCached);
   const showFiat = useSelector(getShouldShowFiat);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const chainId = useSelector(getCurrentChainId);
   const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
@@ -90,6 +92,7 @@ const EthOverview = ({ className, showAddress }) => {
   );
 
   const balance = useSelector(getSelectedAccountCachedBalance);
+
   const isSwapsChain = useSelector(getIsSwapsChain);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -167,7 +170,11 @@ const EthOverview = ({ className, showAddress }) => {
                   })}
                   data-testid="eth-overview__primary-currency"
                   value={balance}
-                  type={PRIMARY}
+                  type={
+                    isOriginalNativeSymbol || useNativeCurrencyAsPrimaryCurrency
+                      ? PRIMARY
+                      : SECONDARY
+                  }
                   ethNumberOfDecimals={4}
                   hideTitle
                 />

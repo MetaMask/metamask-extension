@@ -9,6 +9,7 @@ import {
   CHAIN_IDS,
   GOERLI_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import SendContent from '.';
 
 jest.mock('../../../store/actions', () => ({
@@ -20,7 +21,14 @@ jest.mock('../../../store/actions', () => ({
   getGasFeeTimeEstimate: jest.fn().mockResolvedValue('unknown'),
 }));
 
+jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+  return {
+    useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
+
 describe('SendContent Component', () => {
+  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
   describe('render', () => {
     const mockStore = configureMockStore()({
       ...mockSendState,
