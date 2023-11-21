@@ -475,10 +475,6 @@ export default class MetamaskController extends EventEmitter {
         this.metaMetricsController.trackEvent(...args),
     });
     this.networkController.initializeProvider();
-    this.provider =
-      this.networkController.getProviderAndBlockTracker().provider;
-    this.blockTracker =
-      this.networkController.getProviderAndBlockTracker().blockTracker;
 
     // TODO: Delete when ready to remove `networkVersion` from provider object
     this.deprecatedNetworkId = null;
@@ -511,6 +507,13 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     });
+
+    if (!this.selectedNetworkController.getNetworkClientIdForDomain('metamask')) {
+      this.selectedNetworkController.setNetworkClientIdForMetamask(this.networkController.state.selectedNetworkClientId);
+    }
+    const networkClient = this.selectedNetworkController.getProviderAndBlockTracker('metamask');
+    this.provider = networkClient.provider;
+    this.blockTracker = networkClient.blockTracker;
 
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
@@ -707,8 +710,7 @@ export default class MetamaskController extends EventEmitter {
       interval: 10000,
       messenger: gasFeeMessenger,
       clientId: SWAPS_CLIENT_ID,
-      getProvider: () =>
-        this.networkController.getProviderAndBlockTracker().provider,
+      getProvider: () => this.provider,
       // NOTE: This option is inaccurately named; it should be called
       // onNetworkDidChange
       onNetworkStateChange: (eventHandler) => {
@@ -4333,6 +4335,8 @@ export default class MetamaskController extends EventEmitter {
       // handle any middleware cleanup
       engine._middleware.forEach((mid) => {
         if (mid.destroy && typeof mid.destroy === 'function') {
+          console.log('DESTROY MIDDLEWARE!!');
+          debugger;
           mid.destroy();
         }
       });
@@ -4393,16 +4397,9 @@ export default class MetamaskController extends EventEmitter {
       );
     }
 
-    let proxyClient = {
-      provider,
-      blockTracker
-    };
-    if (this.preferencesController.getUseRequestQueue()) {
-      proxyClient =
-        this.selectedNetworkController.getProviderAndBlockTracker(
-          origin,
-        );
-    }
+    const proxyClient = this.selectedNetworkController.getProviderAndBlockTracker(
+        origin,
+      );
 
     const requestQueueMiddleware = createQueuedRequestMiddleware({
       messenger: this.controllerMessenger,
@@ -4417,7 +4414,6 @@ export default class MetamaskController extends EventEmitter {
     const filterMiddleware = createFilterMiddleware(proxyClient);
     console.log('selectedNetworkClientId:', selectedNetworkClientIdForDomain);
     console.log('proxyClient:', proxyClient);
-    debugger;
 
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager(proxyClient);
