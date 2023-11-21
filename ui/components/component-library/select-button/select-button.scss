@@ -40,3 +40,7 @@
     }
   }
 }
+
+.mm-select-wrapper:has(.mm-select-button--block) {
+  width: 100%;
+}
