@@ -1827,6 +1827,26 @@
         "punycode": true
       }
     },
+    "@metamask/phishing-warning>@metamask/object-multiplex": {
+      "globals": {
+        "console.warn": true
+      },
+      "packages": {
+        "@metamask/phishing-warning>@metamask/object-multiplex>readable-stream": true,
+        "pump>once": true
+      }
+    },
+    "@metamask/phishing-warning>@metamask/object-multiplex>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
+      }
+    },
     "@metamask/phishing-warning>eth-phishing-detect": {
       "packages": {
         "eslint>optionator>fast-levenshtein": true
@@ -1971,16 +1991,6 @@
         "webpack>events": true
       }
     },
-    "@metamask/providers>@metamask/object-multiplex": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "end-of-stream": true,
-        "pump>once": true,
-        "readable-stream": true
-      }
-    },
     "@metamask/providers>@metamask/rpc-errors": {
       "packages": {
         "@metamask/utils": true,
@@ -2104,9 +2114,9 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/permission-controller": true,
+        "@metamask/phishing-warning>@metamask/object-multiplex": true,
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/json-rpc-engine": true,
-        "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
@@ -2114,14 +2124,14 @@
         "@metamask/snaps-controllers>gunzip-maybe": true,
         "@metamask/snaps-controllers>json-rpc-middleware-stream": true,
         "@metamask/snaps-controllers>nanoid": true,
+        "@metamask/snaps-controllers>readable-stream": true,
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
         "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
-        "@metamask/utils": true,
-        "stream-browserify": true
+        "@metamask/utils": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -2131,22 +2141,11 @@
     },
     "@metamask/snaps-controllers>concat-stream": {
       "packages": {
-        "@metamask/snaps-controllers>concat-stream>readable-stream": true,
+        "@metamask/snaps-controllers>readable-stream": true,
         "browserify>buffer": true,
         "browserify>concat-stream>typedarray": true,
         "pumpify>inherits": true,
         "terser>source-map-support>buffer-from": true
-      }
-    },
-    "@metamask/snaps-controllers>concat-stream>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
       }
     },
     "@metamask/snaps-controllers>gunzip-maybe": {
@@ -2233,8 +2232,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/snaps-controllers>concat-stream>readable-stream": true,
-        "@metamask/snaps-controllers>json-rpc-middleware-stream>@metamask/safe-event-emitter": true
+        "@metamask/snaps-controllers>json-rpc-middleware-stream>@metamask/safe-event-emitter": true,
+        "@metamask/snaps-controllers>readable-stream": true
       }
     },
     "@metamask/snaps-controllers>json-rpc-middleware-stream>@metamask/safe-event-emitter": {
@@ -2248,6 +2247,17 @@
     "@metamask/snaps-controllers>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/snaps-controllers>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
       }
     },
     "@metamask/snaps-controllers>readable-web-to-node-stream": {
