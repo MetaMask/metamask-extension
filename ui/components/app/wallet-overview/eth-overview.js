@@ -89,7 +89,6 @@ const EthOverview = ({ className, showAddress }) => {
     type,
   );
 
-  console.log('isOriginalNativeSymbol ----', isOriginalNativeSymbol);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const isSwapsChain = useSelector(getIsSwapsChain);
 

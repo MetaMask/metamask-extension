@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
 import { BUILT_IN_NETWORKS } from '../../shared/constants/network';
+import { DAY } from '../../shared/constants/time';
 
 export function useIsOriginalNativeTokenSymbol(chainId, ticker, type) {
   const [isOriginalNativeSymbol, setIsOriginalNativeSymbol] = useState(null);
@@ -17,6 +18,7 @@ export function useIsOriginalNativeTokenSymbol(chainId, ticker, type) {
 
         const safeChainsList = await fetchWithCache({
           url: 'https://chainid.network/chains.json',
+          cacheOptions: { cacheRefreshTime: DAY },
           functionName: 'getSafeChainsList',
         });
 
