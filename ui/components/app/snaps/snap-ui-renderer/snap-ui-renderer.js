@@ -71,6 +71,7 @@ export const UI_MAPPING = {
     element: 'Copyable',
     props: {
       text: props.value,
+      sensitive: props.sensitive,
     },
   }),
   image: (props) => ({
