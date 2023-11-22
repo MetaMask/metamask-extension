@@ -40,7 +40,6 @@ import {
   signAndSendTransactions,
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
-  getSwapsQuoteRefreshTime,
   getReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
   signAndSendSwapsSmartTransaction,
@@ -68,9 +67,7 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
-  safeRefetchQuotes,
   setCustomApproveTxData,
-  setSwapsErrorKey,
   showModal,
   setSwapsQuotesPollingLimitEnabled,
 } from '../../../store/actions';
@@ -97,7 +94,6 @@ import {
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import {
-  QUOTES_EXPIRED_ERROR,
   SLIPPAGE_HIGH_ERROR,
   SLIPPAGE_LOW_ERROR,
   MAX_ALLOWED_SLIPPAGE,
@@ -156,7 +152,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false);
   const [submitClicked, setSubmitClicked] = useState(false);
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false);
   const [warningHidden] = useState(false); // TODO: Check when to use setWarningHidden
@@ -214,7 +209,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const topQuote = useSelector(getTopQuote, isEqual);
   const usedQuote = selectedQuote || topQuote;
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
-  const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
@@ -555,26 +549,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     dispatch,
     isSmartTransaction,
     balanceError,
-  ]);
-
-  useEffect(() => {
-    const currentTime = Date.now();
-    const timeSinceLastFetched = currentTime - quotesLastFetched;
-    if (
-      timeSinceLastFetched > swapsQuoteRefreshTime &&
-      !dispatchedSafeRefetch
-    ) {
-      setDispatchedSafeRefetch(true);
-      dispatch(safeRefetchQuotes());
-    } else if (timeSinceLastFetched > swapsQuoteRefreshTime) {
-      dispatch(setSwapsErrorKey(QUOTES_EXPIRED_ERROR));
-    }
-  }, [
-    quotesLastFetched,
-    dispatchedSafeRefetch,
-    dispatch,
-    history,
-    swapsQuoteRefreshTime,
   ]);
 
   useEffect(() => {
