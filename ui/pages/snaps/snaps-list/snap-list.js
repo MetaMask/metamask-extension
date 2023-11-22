@@ -50,10 +50,8 @@ const SnapList = () => {
     handleSettingsRefs(t, t('snaps'), settingsRef);
   }, [settingsRef, t]);
 
-  const snapsList = useSelector((state) => getSnapsList(state));
-  const snapUpdateMap = useSelector((state) =>
-    getAllSnapAvailableUpdates(state),
-  );
+  const snapsList = useSelector(getSnapsList);
+  const snapUpdateMap = useSelector(getAllSnapAvailableUpdates);
 
   return (
     <div className="snaps">

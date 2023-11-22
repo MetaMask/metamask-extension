@@ -93,9 +93,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
-  const snapsUpdatesAvailable = useSelector((state) =>
-    getAnySnapUpdateAvailable(state),
-  );
+  const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
   ///: END:ONLY_INCLUDE_IN
 
   let supportText = t('support');

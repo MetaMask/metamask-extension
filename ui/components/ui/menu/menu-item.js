@@ -38,7 +38,7 @@ const MenuItem = React.forwardRef(
       ref={ref}
       disabled={disabled}
     >
-      {iconName && showInfoDot ? (
+      {iconName && showInfoDot && (
         <BadgeWrapper
           anchorElementShape={BadgeWrapperAnchorElementShape.circular}
           display={Display.Block}
@@ -55,10 +55,10 @@ const MenuItem = React.forwardRef(
         >
           <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
         </BadgeWrapper>
-      ) : null}
-      {iconName && !showInfoDot ? (
+      )}
+      {iconName && !showInfoDot && (
         <Icon name={iconName} size={IconSize.Sm} marginRight={2} />
-      ) : null}
+      )}
       <div>
         <div>{children}</div>
         {subtitle ? <Text variant={TextVariant.bodyXs}>{subtitle}</Text> : null}
