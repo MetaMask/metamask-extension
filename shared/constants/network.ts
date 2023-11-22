@@ -671,7 +671,7 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     ticker: CURRENCY_SYMBOLS.ETH,
     rpcPrefs: {
       blockExplorerUrl: 'https://explorer.zksync.io/',
-      imageUrl: GNOSIS_TOKEN_IMAGE_URL,
+      imageUrl: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
     },
   },
   {
