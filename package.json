@@ -413,7 +413,7 @@
     "react-tippy": "^1.2.2",
     "react-toggle-button": "^2.2.0",
     "react-transition-group": "^1.2.1",
-    "readable-stream": "^2.3.3",
+    "readable-stream": "^3.6.2",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "remove-trailing-slash": "^0.1.1",
