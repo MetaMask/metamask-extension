@@ -36,9 +36,9 @@ import {
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
   JustifyContent,
+  ///: END:ONLY_INCLUDE_IF
   IconColor,
   Color,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -715,6 +715,7 @@ export default class Home extends PureComponent {
       forgottenPassword,
       history,
       setSurveyLinkLastClickedOrClosed,
+      showSurveyToast,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       connectedStatusPopoverHasBeenShown,
       isPopup,
@@ -728,7 +729,6 @@ export default class Home extends PureComponent {
       announcementsToShow,
       firstTimeFlowType,
       newNetworkAddedConfigurationId,
-      showSurveyToast,
       ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       mmiPortfolioEnabled,
