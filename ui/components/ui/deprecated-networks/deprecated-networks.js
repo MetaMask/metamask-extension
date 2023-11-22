@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { BackgroundColor, BorderRadius, Severity } from '../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  BorderRadius,
+  Severity,
+} from '../../../helpers/constants/design-system';
 
 import { getCurrentChainId } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
