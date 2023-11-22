@@ -140,7 +140,7 @@ describe('Test Snap TxInsights', function () {
         });
 
         // switch back to MetaMask tab and switch to activity pane
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
         await driver.clickElement({
           tag: 'button',
