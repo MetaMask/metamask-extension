@@ -38,8 +38,6 @@ export const Copyable = ({ text, sensitive = false }) => {
     startTimeout();
   };
 
-  const shouldDisplayContent = !sensitive || (sensitive && isVisible);
-
   return (
     <Box
       display={Display.Flex}
@@ -91,7 +89,7 @@ export const Copyable = ({ text, sensitive = false }) => {
           {t('revealSensitiveContent')}
         </Text>
       )}
-      {shouldDisplayContent && (
+      {isVisible && (
         <ShowMore
           marginRight={2}
           buttonBackground={
@@ -111,7 +109,7 @@ export const Copyable = ({ text, sensitive = false }) => {
           </Text>
         </ShowMore>
       )}
-      {shouldDisplayContent && (
+      {isVisible && (
         <Icon
           className="copyable__icon"
           name={isClicked ? IconName.CopySuccess : IconName.Copy}
