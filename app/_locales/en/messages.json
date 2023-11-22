@@ -1229,12 +1229,6 @@
   "deprecatedAuroraNetworkMsg": {
     "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Learn more"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Due to the protocol changes of Ethereum: Rinkeby, Ropsten and Kovan test networks may not work as reliably and will be deprecated soon."
-  },
   "description": {
     "message": "Description"
   },
