@@ -3782,6 +3782,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/abi-utils@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "@metamask/abi-utils@npm:1.2.0"
+  dependencies:
+    "@metamask/utils": "npm:^3.4.1"
+    superstruct: "npm:^1.0.3"
+  checksum: 94ef4c368adf9e062b90f2851c865ecfc0a8580a774cd5b4e29a382d31f97e51e4d2baf035b5f9f786031b0c1a4536fe2fdd2b7a1d01359a1e24c319debc4eb2
+  languageName: node
+  linkType: hard
+
 "@metamask/abi-utils@npm:^2.0.2":
   version: 2.0.2
   resolution: "@metamask/abi-utils@npm:2.0.2"
@@ -4174,31 +4184,31 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-sig-util@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "@metamask/eth-sig-util@npm:6.0.0"
+  version: 6.0.2
+  resolution: "@metamask/eth-sig-util@npm:6.0.2"
   dependencies:
-    "@ethereumjs/util": "npm:^8.0.6"
-    bn.js: "npm:^4.12.0"
-    ethereum-cryptography: "npm:^2.0.0"
+    "@ethereumjs/util": "npm:^8.1.0"
+    "@metamask/abi-utils": "npm:^1.2.0"
+    "@metamask/utils": "npm:^5.0.2"
+    ethereum-cryptography: "npm:^2.1.2"
     ethjs-util: "npm:^0.1.6"
     tweetnacl: "npm:^1.0.3"
     tweetnacl-util: "npm:^0.15.1"
-  checksum: ad257798831848f3fb82aba21d6ebc0cc15114a15a20bf288c785f722157646e71dc0dd6299d948b9c2c3d14fb56fa3c527d8c22fbb081640c87d967be2a0e75
+  checksum: e6072984d888389fe746834963be55c8b58c0698fcb5bb0a68d61ff885df9c2309a50b782fc0167a75438a2a3efd67321e5ce8a4a2a81b4d70ba07f40a875c09
   languageName: node
   linkType: hard
 
 "@metamask/eth-sig-util@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/eth-sig-util@npm:7.0.0"
+  version: 7.0.1
+  resolution: "@metamask/eth-sig-util@npm:7.0.1"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/utils": "npm:^8.1.0"
     ethereum-cryptography: "npm:^2.1.2"
-    ethjs-util: "npm:^0.1.6"
     tweetnacl: "npm:^1.0.3"
     tweetnacl-util: "npm:^0.15.1"
-  checksum: c399e615749ac78224d5e68883eff9bfb856eb26225d218937ac5ccb84e529157c0b1244dce449eb3dcb408a7830f2b4c0c1b2a6b1653049d93b3d76aae17860
+  checksum: e2aa3f0ad4db75b872705863a502414e17cd72d70c8b2a3f49c700ee237c428919161f345d42c6d00c5267fe87909ec021dee601cc02cb65bab04db2ec771997
   languageName: node
   linkType: hard
 
@@ -5025,6 +5035,18 @@ __metadata:
   version: 1.1.0
   resolution: "@metamask/types@npm:1.1.0"
   checksum: f1d17e21f6b83aefa9ccedd6489dbabe2508a5990f68a6a872aff5ff23ee8b0f6c7642c062df4689de59e4a535edd7db5647e7e15d99ecf39ceb55b36cba94c6
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^3.4.1":
+  version: 3.6.0
+  resolution: "@metamask/utils@npm:3.6.0"
+  dependencies:
+    "@types/debug": "npm:^4.1.7"
+    debug: "npm:^4.3.4"
+    semver: "npm:^7.3.8"
+    superstruct: "npm:^1.0.3"
+  checksum: f6a1cf9a2ddbdb9840ed3d93d961d3f7c3feb532361c84a3e54c88034d9a3149a11773948631a25c2b0355712848a6e0b226ad432844703e1f498e9602920879
   languageName: node
   linkType: hard
 
