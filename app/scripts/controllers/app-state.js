@@ -171,9 +171,9 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
-  setSurveyLinkLastClickedOrClosed(surveyLinkLastClickedOrClosed) {
+  setSurveyLinkLastClickedOrClosed(time) {
     this.store.updateState({
-      surveyLinkLastClickedOrClosed,
+      surveyLinkLastClickedOrClosed: time,
     });
   }
 
