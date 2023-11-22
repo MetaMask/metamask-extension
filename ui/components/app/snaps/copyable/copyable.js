@@ -57,10 +57,10 @@ export const Copyable = ({ text, sensitive = false }) => {
           : BackgroundColor.backgroundAlternative
       }
       borderRadius={BorderRadius.LG}
-      padding={4}
+      padding={2}
     >
       {sensitive && (
-        <Box marginRight={4} className="copyable__icon">
+        <Box marginRight={2} className="copyable__icon">
           <Tooltip
             wrapperClassName="copyable__tooltip"
             html={
@@ -84,7 +84,7 @@ export const Copyable = ({ text, sensitive = false }) => {
       {sensitive && !isVisible && (
         <Text
           color={Color.textAlternative}
-          marginRight={4}
+          marginRight={2}
           marginBottom={0}
           overflowWrap={OverflowWrap.Anywhere}
         >
@@ -93,7 +93,7 @@ export const Copyable = ({ text, sensitive = false }) => {
       )}
       {shouldDisplayContent && (
         <ShowMore
-          marginRight={4}
+          marginRight={2}
           buttonBackground={
             isVisible
               ? BackgroundColor.errorMuted
