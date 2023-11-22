@@ -78,7 +78,6 @@ import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
   AWAITING_SWAP_ROUTE,
-  SWAPS_NOTIFICATION_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -569,7 +568,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       dispatch(safeRefetchQuotes());
     } else if (timeSinceLastFetched > swapsQuoteRefreshTime) {
       dispatch(setSwapsErrorKey(QUOTES_EXPIRED_ERROR));
-      history.push(SWAPS_NOTIFICATION_ROUTE);
     }
   }, [
     quotesLastFetched,
