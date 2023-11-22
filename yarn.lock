@@ -4315,17 +4315,16 @@ __metadata:
   linkType: hard
 
 "@metamask/eth-sig-util@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@metamask/eth-sig-util@npm:7.0.0"
+  version: 7.0.1
+  resolution: "@metamask/eth-sig-util@npm:7.0.1"
   dependencies:
     "@ethereumjs/util": "npm:^8.1.0"
     "@metamask/abi-utils": "npm:^2.0.2"
     "@metamask/utils": "npm:^8.1.0"
     ethereum-cryptography: "npm:^2.1.2"
-    ethjs-util: "npm:^0.1.6"
     tweetnacl: "npm:^1.0.3"
     tweetnacl-util: "npm:^0.15.1"
-  checksum: c399e615749ac78224d5e68883eff9bfb856eb26225d218937ac5ccb84e529157c0b1244dce449eb3dcb408a7830f2b4c0c1b2a6b1653049d93b3d76aae17860
+  checksum: e2aa3f0ad4db75b872705863a502414e17cd72d70c8b2a3f49c700ee237c428919161f345d42c6d00c5267fe87909ec021dee601cc02cb65bab04db2ec771997
   languageName: node
   linkType: hard
 
