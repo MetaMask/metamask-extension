@@ -1379,6 +1379,9 @@
   "displayNftMediaDescription": {
     "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
   },
+  "doNotShare": {
+    "message": "Do not share this with anyone"
+  },
   "domain": {
     "message": "Domain"
   },
@@ -1899,6 +1902,10 @@
   "hideSeedPhrase": {
     "message": "Hide seed phrase"
   },
+  "hideSentitiveInfo": {
+    "message": "Hide sensitive information"
+  },
+
   "hideToken": {
     "message": "Hide token"
   },
@@ -3865,6 +3872,9 @@
   "revealSeedWordsWarning2": {
     "message": "MetaMask Support will never request this.",
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
+  },
+  "revealSensitiveContent": {
+    "message": "Reveal sensitive content"
   },
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
