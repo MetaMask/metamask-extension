@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Lock and unlock', function () {
@@ -20,9 +20,7 @@ describe('Lock and unlock', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
@@ -32,8 +30,7 @@ describe('Lock and unlock', function () {
         );
         assert.equal(await lockButton.getText(), 'Lock MetaMask');
         await lockButton.click();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         const walletBalance = process.env.MULTICHAIN
           ? await driver.findElement(

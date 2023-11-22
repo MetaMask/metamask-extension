@@ -88,7 +88,6 @@ describe('ENS', function () {
         testSpecificMock: mockInfura,
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.waitForElementNotPresent('.loading-overlay');

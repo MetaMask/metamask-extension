@@ -265,7 +265,6 @@ describe('PPOM Blockaid Alert - Set Approval to All @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
