@@ -573,6 +573,8 @@ export default class MetamaskController extends EventEmitter {
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
+      // used to update internal state and chainId
+      // would be more efficient as networkDidChange?
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:stateChange',
@@ -604,6 +606,7 @@ export default class MetamaskController extends EventEmitter {
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
+        // only used to keep internal chainId updated
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
@@ -659,6 +662,7 @@ export default class MetamaskController extends EventEmitter {
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
+      // only used to keep internal chainId tracker up to date
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:stateChange',
@@ -789,9 +793,12 @@ export default class MetamaskController extends EventEmitter {
       ppomProvider: { PPOM: PPOMModule.PPOM, ppomInit: PPOMModule.default },
       state: initState.PPOMController,
       chainId: this.networkController.state.providerConfig.chainId,
+      // unaffected
+      // doesn't internally check for chainId change
+      // would be more efficient on networkDidChange
       onNetworkChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        'NetworkController:stateChange',
+        'NetworkController:networkDidChange',
       ),
       securityAlertsEnabled:
         this.preferencesController.store.getState().securityAlertsEnabled,
@@ -821,6 +828,9 @@ export default class MetamaskController extends EventEmitter {
         selectedAddress: this.preferencesController.getSelectedAddress(),
         onTokensStateChange: (listener) =>
           this.tokensController.subscribe(listener),
+        // unaffected
+        // checks for chainId change internally
+        // doesn't rely on provider
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
@@ -1358,6 +1368,7 @@ export default class MetamaskController extends EventEmitter {
       getNetworkState: () => this.networkController.state,
       hasCompletedOnboarding: () =>
         this.onboardingController.store.getState().completedOnboarding,
+      // would benefit from changing to networkDidChange, but I'd rather not mess with this one
       onNetworkStateChange: (listener) => {
         networkControllerMessenger.subscribe(
           'NetworkController:stateChange',
@@ -1584,9 +1595,12 @@ export default class MetamaskController extends EventEmitter {
     );
     this.smartTransactionsController = new SmartTransactionsController(
       {
+        // used to update internal state based on chainId
+        // chainId change not explicitly checked
+        // more efficient to change away from stateChange
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
-          'NetworkController:stateChange',
+          'NetworkController:networkDidChange',
         ),
         getNetwork: () => this.networkController.state.networkId ?? 'loading',
         getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
