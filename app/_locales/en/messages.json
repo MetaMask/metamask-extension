@@ -1510,6 +1510,9 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
+  "enableSmartSwaps": {
+    "message": "Enable Smart Swaps"
+  },
   "enableSnap": {
     "message": "Enable"
   },
@@ -4602,9 +4605,6 @@
   },
   "stakeDescription": {
     "message": "Stake your crypto to earn rewards"
-  },
-  "startSwapping": {
-    "message": "Start swapping"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
