@@ -56,7 +56,7 @@ ErrorStory.decorators = [
     <Provider
       store={store({
         asset: { type: AssetType.native },
-        amount: { error: 'bad' },
+        amount: { error: 'insufficientFunds' },
       })}
     >
       {story()}
