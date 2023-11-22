@@ -5,8 +5,7 @@ import { hideBin } from 'yargs/helpers';
 import chokidar from 'chokidar';
 import browserify from 'browserify';
 import pify from 'pify';
-import endOfStream from 'end-of-stream';
-import pump from 'pump';
+import { finished, pipeline } from 'readable-stream';
 import gulp from 'gulp';
 import gulpSass from 'gulp-sass';
 import * as sass from 'sass-embedded';
@@ -25,7 +24,7 @@ import {
   FINAL_BUILD_DIRECTORY_PATH,
 } from '../common/constants';
 
-const promisifiedPump = pify(pump);
+const promisifiedPipeline = pify(pipeline);
 
 main().catch((error) => {
   console.error(error);
@@ -73,7 +72,7 @@ async function compileScripts(src: string, dest: string) {
   bundleStream.on('error', (error: unknown) => {
     console.error(`Couldn't compile scripts: ${error}`);
   });
-  await pify(endOfStream(bundleStream));
+  await pify(finished)(bundleStream);
 
   console.log(
     `- Compiled scripts: ${path.relative(
@@ -90,7 +89,7 @@ async function compileScripts(src: string, dest: string) {
  * @param dest - The path to the compiled CSS file.
  */
 async function compileStylesheets(src: string, dest: string): Promise<void> {
-  await promisifiedPump(
+  await promisifiedPipeline(
     gulp.src(src),
     sourcemaps.init(),
     gulpSass(sass)().on('error', (error: unknown) => {

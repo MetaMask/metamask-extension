@@ -1,5 +1,5 @@
 import EventEmitter from 'events';
-import pump from 'pump';
+import { pipeline } from 'readable-stream';
 import {
   AssetsContractController,
   CurrencyRateController,
@@ -5004,7 +5004,7 @@ export default class MetamaskController extends EventEmitter {
 
     const connectionId = this.addConnection(origin, { engine });
 
-    pump(outStream, dupeReqFilterStream, providerStream, outStream, (err) => {
+    pipeline(outStream, dupeReqFilterStream, providerStream, outStream, (err) => {
       // handle any middleware cleanup
       engine._middleware.forEach((mid) => {
         if (mid.destroy && typeof mid.destroy === 'function') {
@@ -5420,7 +5420,7 @@ export default class MetamaskController extends EventEmitter {
   setupPublicConfig(outStream) {
     const configStream = storeAsStream(this.publicConfigStore);
 
-    pump(configStream, outStream, (err) => {
+    pipeline(configStream, outStream, (err) => {
       configStream.destroy();
       if (err) {
         log.error(err);
