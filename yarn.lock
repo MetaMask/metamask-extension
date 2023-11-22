@@ -24260,7 +24260,7 @@ __metadata:
     ethereumjs-util: "npm:^7.0.10"
     ethjs: "npm:^0.4.0"
     ethjs-contract: "npm:^0.2.3"
-    extension-port-stream: "npm:^2.1.1"
+    extension-port-stream: "npm:^3.0.0"
     fake-indexeddb: "npm:^4.0.1"
     fancy-log: "npm:^1.3.3"
     fast-glob: "npm:^3.2.2"
