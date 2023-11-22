@@ -92,7 +92,6 @@ const EthOverview = ({ className, showAddress }) => {
   );
 
   const balance = useSelector(getSelectedAccountCachedBalance);
-
   const isSwapsChain = useSelector(getIsSwapsChain);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)

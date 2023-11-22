@@ -19,6 +19,7 @@ jest.mock('../../../store/actions', () => ({
   removePollingTokenFromAppState: jest.fn(),
   createTransactionEventFragment: jest.fn(),
   getGasFeeTimeEstimate: jest.fn().mockResolvedValue('unknown'),
+  getTokenSymbol: jest.fn().mockResolvedValue('ETH'),
 }));
 
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
