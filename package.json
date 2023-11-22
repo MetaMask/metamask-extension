@@ -279,7 +279,7 @@
     "@metamask/network-controller": "^17.2.0",
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/object-multiplex": "^2.0.0",
-    "@metamask/obs-store": "^8.1.0",
+    "@metamask/obs-store": "^9.0.0",
     "@metamask/permission-controller": "^8.0.0",
     "@metamask/permission-log-controller": "^1.0.0",
     "@metamask/phishing-controller": "^8.0.0",
