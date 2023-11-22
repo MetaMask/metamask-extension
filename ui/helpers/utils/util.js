@@ -120,6 +120,7 @@ export function isValidDomainName(address) {
     .match(
       /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
     );
+
   return match !== null;
 }
 
