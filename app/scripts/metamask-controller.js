@@ -509,11 +509,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    // turn on perDappSelectedNetwork feature flag
-    this.selectedNetworkController.update((state) => {
-      state.perDomainNetwork = true;
-    });
-
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
       preventPollingOnNetworkRestart: initState.TokenListController
@@ -2531,9 +2526,7 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IN
-      setUseRequestQueue: preferencesController.setUseRequestQueue.bind(
-        preferencesController,
-      ),
+      setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
@@ -4005,6 +3998,17 @@ export default class MetamaskController extends EventEmitter {
   unMarkPasswordForgotten() {
     this.preferencesController.setPasswordForgotten(false);
     this.sendUpdate();
+  }
+
+  //=============================================================================
+  // REQUEST QUEUE
+  //=============================================================================
+
+  setUseRequestQueue(value) {
+    this.preferencesController.setUseRequestQueue(value);
+    this.selectedNetworkController.update((state) => {
+      state.perDomainNetwork = value;
+    });
   }
 
   //=============================================================================
