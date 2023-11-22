@@ -53,7 +53,6 @@ export default {
     useContactListForRecipientSearch: {
       action: 'useContactListForRecipientSearch',
     },
-
     recipient: {
       control: 'object',
     },

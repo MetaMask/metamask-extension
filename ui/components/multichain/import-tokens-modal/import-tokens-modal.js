@@ -34,15 +34,15 @@ import {
 } from '../../../store/actions';
 import {
   BannerAlert,
+  Box,
   ButtonLink,
   ButtonPrimary,
-  Text,
   FormTextField,
-  Box,
   Modal,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
+  ModalOverlay,
+  Text,
 } from '../../component-library';
 import TokenSearch from '../../app/import-token/token-search';
 import TokenList from '../../app/import-token/token-list';

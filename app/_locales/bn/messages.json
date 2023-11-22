@@ -229,9 +229,6 @@
   "editContact": {
     "message": "পরিচিতি সম্পাদনা করুন"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS নাম বর্তমান নেটওয়ার্কে খুঁজে পাওয়া যায় নি। মূল Ethereum নেটওয়ার্কে বদলানোর চেষ্টা করুন।"
-  },
   "ensRegistrationError": {
     "message": "ENS নাম নিবন্ধীকরণে ত্রুটি হয়েছে"
   },

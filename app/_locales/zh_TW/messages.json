@@ -479,9 +479,6 @@
   "ensIllegalCharacter": {
     "message": "Illegal Character for ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "現有網路中找不到 ENS 名稱。嘗試轉換到主要以太坊網路。"
-  },
   "ensRegistrationError": {
     "message": "ENS 名稱註冊錯誤"
   },

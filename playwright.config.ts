@@ -42,12 +42,23 @@ const config: PlaywrightTestConfig = {
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on',
     video: 'off',
+    // Run tests headless in local
+    headless: process.env.HEADLESS === 'true',
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
+      name: 'mmi',
+      testMatch: '**/*.spec.ts',
+      testIgnore: '**/*visual.spec.ts',
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+    },
+    {
+      name: 'mmi.visual',
+      testMatch: '**/*visual.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
       },
