@@ -60,7 +60,6 @@ describe('Permissions Approved Event', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 

@@ -23,11 +23,15 @@ docker build -t $IMAGE_NAME test/e2e/mmi/
 UPDATE_SNAPSHOTS=""
 if [ "$1" == "update" ]; then
     UPDATE_SNAPSHOTS="--update-snapshots"
+    echo " >> Updating snapshots!! Check screenshots change before you push them"
 fi
 
 # Run the Docker container
 echo "Running the Docker container..."
-docker run --rm -it --privileged -v "$CONTAINER_VOLUME_1" -v "$CONTAINER_VOLUME_2" --network host $IMAGE_NAME $UPDATE_SNAPSHOTS
+result=$(docker run --rm -it --privileged -v "$CONTAINER_VOLUME_1" -v "$CONTAINER_VOLUME_2" --network host $IMAGE_NAME $UPDATE_SNAPSHOTS | tee /dev/fd/2)
+if [ "$result" != "ok" ]; then
+    echo "Visual tests failed"
+fi
 
 # Remove the Docker image
 echo "Removing the Docker image..."

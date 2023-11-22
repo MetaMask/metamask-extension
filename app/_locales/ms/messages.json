@@ -229,9 +229,6 @@
   "editContact": {
     "message": "Edit Kenalan"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nama ENS tidak ditemui di rangkaian semasa. Cuba beralih kepada Rangkaian Ethereum Utama."
-  },
   "ensRegistrationError": {
     "message": "Ralat dalam pendaftaran nama ENS"
   },

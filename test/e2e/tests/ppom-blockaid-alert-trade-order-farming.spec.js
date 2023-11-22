@@ -107,7 +107,6 @@ describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 

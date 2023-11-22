@@ -1,4 +1,3 @@
-const { strict: assert } = require('assert');
 const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
@@ -22,7 +21,6 @@ describe('Test Snap Management', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // open a new tab and navigate to test snaps page and connect
@@ -123,10 +121,10 @@ describe('Test Snap Management', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-        const notificationResult = await driver.findElement(
-          '[data-testid="global-menu-notification-count"]',
-        );
-        assert.equal(await notificationResult.getText(), '1');
+        await driver.findElement({
+          css: '[data-testid="global-menu-notification-count"]',
+          text: '1',
+        });
         await driver.clickElement('.menu__background');
 
         // try to remove snap
