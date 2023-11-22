@@ -221,25 +221,9 @@ function getState(pendingApproval) {
   return {};
 }
 
-async function getValues(pendingApproval, t, actions, history) {
+function getValues(pendingApproval, t, actions, history, _, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
-  let safeChainsList = [];
-  let providerError = null;
-
-  // need to check for safeChainsListValidation flag, but no access to state yet
-  const fetchResult = await fetchSafeChainsList();
-  safeChainsList = fetchResult.data;
-  providerError = fetchResult.error;
-
-  console.log('safeChainsList', safeChainsList); // outputs good array if flag is true
-  const matchedChain = safeChainsList.find(
-    (chain) =>
-      chain.chainId === parseInt(pendingApproval.requestData.chainId, 16),
-  );
-  const mismatchedNetworkSymbol =
-    !providerError &&
-    matchedChain.nativeCurrency?.symbol !== pendingApproval.requestData.ticker;
   return {
     content: [
       {
@@ -392,12 +376,7 @@ async function getValues(pendingApproval, t, actions, history) {
             [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
           },
           warnings: {
-            [t('currencySymbol')]: mismatchedNetworkSymbol
-              ? [
-                  t('chainListReturnedDifferentTickerSymbol'),
-                  matchedChain.nativeCurrency?.symbol,
-                ]
-              : null,
+            [t('currencySymbol')]: data.currencySymbolWarning,
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
