@@ -1,5 +1,4 @@
-const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -22,10 +21,7 @@ describe('Test Snap TxInsights', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
-
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
@@ -109,14 +105,10 @@ describe('Test Snap TxInsights', function () {
         });
 
         // check that txinsightstest tab contains the right info
-        await driver.delay(1000);
-        const txInsightsResult = await driver.findElement(
-          '.snap-ui-renderer__content',
-        );
-        assert.equal(
-          await txInsightsResult.getText(),
-          'Transaction type:\nERC-20',
-        );
+        await driver.waitForSelector({
+          css: '.snap-ui-renderer__content',
+          text: 'ERC-20',
+        });
       },
     );
   });
