@@ -4757,11 +4757,11 @@
   "supportCenter": {
     "message": "Visit our support center"
   },
-  "surveyTitle": {
-    "message": "Shape the future of MetaMask"
-  },
   "surveyConversion": {
     "message": "Take our survey"
+  },
+  "surveyTitle": {
+    "message": "Shape the future of MetaMask"
   },
   "swap": {
     "message": "Swap"

@@ -803,4 +803,52 @@ describe('Selectors', () => {
   it('#getAnySnapUpdateAvailable', () => {
     expect(selectors.getAnySnapUpdateAvailable(mockState)).toStrictEqual(true);
   });
+
+  describe('#getShowSurveyToast', () => {
+    const realDateNow = Date.now;
+
+    it('shows the survey link when not yet seen and within time bounds', () => {
+      Date.now = () => new Date('December 20 2023 12:25:00 GMT-0600').getTime();
+      const result = selectors.getShowSurveyToast({
+        metamask: {
+          surveyLinkLastClickedOrClosed: null,
+        },
+      });
+      expect(result).toStrictEqual(true);
+      Date.now = realDateNow;
+    });
+
+    it('does not show the survey link when seen and within time bounds', () => {
+      Date.now = () => new Date('December 20 2023 12:25:00 GMT-0600').getTime();
+      const result = selectors.getShowSurveyToast({
+        metamask: {
+          surveyLinkLastClickedOrClosed: 123456789,
+        },
+      });
+      expect(result).toStrictEqual(false);
+      Date.now = realDateNow;
+    });
+
+    it('does not show the survey link before time bounds', () => {
+      Date.now = () => new Date('December 20 2023 11:25:00 GMT-0600').getTime();
+      const result = selectors.getShowSurveyToast({
+        metamask: {
+          surveyLinkLastClickedOrClosed: null,
+        },
+      });
+      expect(result).toStrictEqual(false);
+      Date.now = realDateNow;
+    });
+
+    it('does not show the survey link after time bounds', () => {
+      Date.now = () => new Date('December 20 2023 14:25:00 GMT-0600').getTime();
+      const result = selectors.getShowSurveyToast({
+        metamask: {
+          surveyLinkLastClickedOrClosed: null,
+        },
+      });
+      expect(result).toStrictEqual(false);
+      Date.now = realDateNow;
+    });
+  });
 });

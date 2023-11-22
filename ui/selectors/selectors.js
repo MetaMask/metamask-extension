@@ -1232,10 +1232,10 @@ export function getShowTermsOfUse(state) {
 
 export function getShowSurveyToast(state) {
   const { surveyLinkLastClickedOrClosed } = state.metamask;
-
-  // TODO: Add check for timeframe here!
-
-  return !surveyLinkLastClickedOrClosed;
+  const startTime = new Date('December 20 2023 12:00:00 GMT-0600').getTime();
+  const endTime = new Date('December 20 2023 13:00:00 GMT-0600').getTime();
+  const now = Date.now();
+  return now > startTime && now < endTime && !surveyLinkLastClickedOrClosed;
 }
 
 export function getShowOutdatedBrowserWarning(state) {

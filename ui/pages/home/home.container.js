@@ -222,10 +222,8 @@ const mapDispatchToProps = (dispatch) => {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     ///: END:ONLY_INCLUDE_IF
-    setSurveyLinkLastClickedOrClosed: (time) => {
-      console.log('dispatching setSurveyLinkLastClickedOrClosed with: ', time);
-      dispatch(setSurveyLinkLastClickedOrClosed(time));
-    },
+    setSurveyLinkLastClickedOrClosed: (time) =>
+      dispatch(setSurveyLinkLastClickedOrClosed(time)),
   };
 };
 
