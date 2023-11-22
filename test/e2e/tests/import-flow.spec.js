@@ -86,7 +86,9 @@ describe('Import flow @no-mmi', function () {
         });
 
         // accepts the account password after lock
-        await unlockWallet(driver, true, false);
+        await unlockWallet(driver, {
+          waitLoginSuccess: false,
+        });
 
         // Create a new account
         // switches to localhost

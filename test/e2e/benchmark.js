@@ -23,7 +23,9 @@ async function measurePage(pageName) {
     { fixtures: new FixtureBuilder().build() },
     async ({ driver }) => {
       await driver.delay(tinyDelayMs);
-      await unlockWallet(driver, false);
+      await unlockWallet(driver, {
+        waitLoginSuccess: false,
+      });
       await driver.findElement('[data-testid="account-menu-icon"]');
       await driver.navigate(pageName);
       await driver.delay(1000);
