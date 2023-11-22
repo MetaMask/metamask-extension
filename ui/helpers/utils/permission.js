@@ -538,6 +538,14 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     weight: 2,
   }),
   ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  [EndowmentPermissions['endowment:name-lookup']]: ({ t }) => ({
+    label: t('permission_nameLookup'),
+    description: t('permission_nameLookupDescription'),
+    leftIcon: getLeftIcon(IconName.Search),
+    weight: 3,
+  }),
+  ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
     leftIcon: getLeftIcon(IconName.Question),
