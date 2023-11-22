@@ -1501,6 +1501,9 @@
   "enableOpenSeaAPIDescription": {
     "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
   },
+  "enableSmartSwaps": {
+    "message": "Enable Smart Swaps"
+  },
   "enableSnap": {
     "message": "Enable"
   },
@@ -4569,9 +4572,6 @@
   },
   "stakeDescription": {
     "message": "Stake your crypto to earn rewards"
-  },
-  "startSwapping": {
-    "message": "Start swapping"
   },
   "stateLogError": {
     "message": "Error in retrieving state logs."
