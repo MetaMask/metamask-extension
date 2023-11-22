@@ -37,6 +37,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
+import { getBlockaidMetricsParams } from '../../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IN
 import {
   getSnapAndHardwareInfoForMetrics,
@@ -926,36 +927,25 @@ async function buildEventFragmentProperties({
   }
 
   let uiCustomizations;
+  let additionalBlockaidParams;
+
+  // eslint-disable-next-line no-lonely-if
+  if (securityProviderResponse?.flagAsDangerous === 1) {
+    uiCustomizations = ['flagged_as_malicious'];
+  } else if (securityProviderResponse?.flagAsDangerous === 2) {
+    uiCustomizations = ['flagged_as_safety_unknown'];
+  } else {
+    uiCustomizations = null;
+  }
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   if (securityAlertResponse?.result_type === BlockaidResultType.Failed) {
     uiCustomizations = ['security_alert_failed'];
   } else {
-    ///: END:ONLY_INCLUDE_IN
-    // eslint-disable-next-line no-lonely-if
-    if (securityProviderResponse?.flagAsDangerous === 1) {
-      uiCustomizations = ['flagged_as_malicious'];
-    } else if (securityProviderResponse?.flagAsDangerous === 2) {
-      uiCustomizations = ['flagged_as_safety_unknown'];
-    } else {
-      uiCustomizations = null;
-    }
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    additionalBlockaidParams = getBlockaidMetricsParams(securityAlertResponse);
+    uiCustomizations = additionalBlockaidParams?.ui_customizations ?? null;
   }
-  ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  const additionalBlockaidParams = {} as Record<string, any>;
-
-  if (securityProviderResponse?.providerRequestsCount) {
-    Object.keys(securityProviderResponse.providerRequestsCount).forEach(
-      (key) => {
-        const metricKey = `ppom_${key}_count`;
-        additionalBlockaidParams[metricKey] =
-          securityProviderResponse.providerRequestsCount[key];
-      },
-    );
-  }
   ///: END:ONLY_INCLUDE_IN
 
   if (simulationFails) {
@@ -985,13 +975,13 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
-    ui_customizations: uiCustomizations,
+    ...additionalBlockaidParams,
+    ui_customizations: uiCustomizations?.length > 0 ? uiCustomizations : null,
     ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
     security_alert_response:
       securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
     security_alert_reason:
       securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
-    ...additionalBlockaidParams,
     ///: END:ONLY_INCLUDE_IN
     gas_estimation_failed: Boolean(simulationFails),
   } as Record<string, any>;
