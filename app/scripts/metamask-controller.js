@@ -2822,7 +2822,9 @@ export default class MetamaskController extends EventEmitter {
       getTransactions: this.txController.getTransactions.bind(
         this.txController,
       ),
-      updateEditableParams: this.updateEditableParams.bind(this),
+      updateEditableParams: this.txController.updateEditableParams.bind(
+        this.txController,
+      ),
       updateTransactionGasFees:
         txController.updateTransactionGasFees.bind(txController),
       updateTransactionSendFlowHistory:
@@ -3953,48 +3955,6 @@ export default class MetamaskController extends EventEmitter {
    */
   async getCurrentAccountEIP1559Compatibility() {
     return true;
-  }
-
-  // TxMigrationToDo - Add updateEditableParams method.
-
-  async updateEditableParams(txId, { data, from, to, value, gas, gasPrice }) {
-    const transactionMeta = this.txController.state.transactions.find(
-      ({ id }) => id === txId,
-    );
-
-    if (!transactionMeta) {
-      throw new Error(
-        `Cannot update editable params as no transaction metadata found`,
-      );
-    }
-
-    const editableParams = {
-      txParams: {
-        data,
-        from,
-        to,
-        value,
-        gas,
-        gasPrice,
-      },
-    };
-
-    editableParams.txParams = pickBy(editableParams.txParams);
-
-    const updatedTransaction = merge(transactionMeta, editableParams);
-
-    // update transaction type in case it has changes
-    const { type } = await determineTransactionType(
-      updatedTransaction.txParams,
-      new EthQuery(this.provider),
-    );
-
-    updatedTransaction.type = type;
-
-    const note = `Update Editable Params for ${txId}`;
-
-    this.txController.updateTransaction(updatedTransaction, note);
-    return updatedTransaction;
   }
 
   //=============================================================================

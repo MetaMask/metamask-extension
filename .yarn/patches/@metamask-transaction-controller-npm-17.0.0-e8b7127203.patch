@@ -1,5 +1,5 @@
 diff --git a/dist/TransactionController.d.ts b/dist/TransactionController.d.ts
-index c6885975354d86f8907605de8971b4b22fe4f14a..24633d8332ade2f1b841e772c93fd67724406fb7 100644
+index c6885975354d86f8907605de8971b4b22fe4f14a..0c361f1ea42421ededf9865ea27bc239b8600a61 100644
 --- a/dist/TransactionController.d.ts
 +++ b/dist/TransactionController.d.ts
 @@ -8,7 +8,7 @@ import type { GasFeeState } from '@metamask/gas-fee-controller';
@@ -20,7 +20,35 @@ index c6885975354d86f8907605de8971b4b22fe4f14a..24633d8332ade2f1b841e772c93fd677
          getCurrentNetworkEIP1559Compatibility: () => Promise<boolean>;
          getGasFeeEstimates?: () => Promise<GasFeeState>;
          getNetworkState: () => NetworkState;
-@@ -414,17 +414,35 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -402,6 +402,27 @@ export declare class TransactionController extends BaseController<TransactionCon
+      * @returns object with the `nextNonce` `nonceDetails`, and the releaseLock.
+      */
+     getNonceLock(address: string): Promise<NonceLock>;
++    /**
++     * Updates the editable parameters of a transaction.
++     *
++     * @param txId - The ID of the transaction to update.
++     * @param params - The editable parameters to update.
++     * @param params.data - Data to pass with the transaction.
++     * @param params.gas - Maximum number of units of gas to use for the transaction.
++     * @param params.gasPrice - Price per gas for legacy transactions.
++     * @param params.from - Address to send the transaction from.
++     * @param params.to - Address to send the transaction to.
++     * @param params.value - Value associated with the transaction.
++     * @returns The updated transaction metadata.
++     */
++    updateEditableParams(txId: string, { data, gas, gasPrice, from, to, value, }: {
++        data?: string;
++        gas?: string;
++        gasPrice?: string;
++        from?: string;
++        to?: string;
++        value?: string;
++    }): Promise<TransactionMeta | undefined>;
+     /**
+      * Signs and returns the raw transaction data for provided transaction params list.
+      *
+@@ -414,17 +435,35 @@ export declare class TransactionController extends BaseController<TransactionCon
       *
       * @param transactionId - The ID of the transaction to update.
       * @param options - The custodial transaction options to update.
@@ -59,7 +87,7 @@ index c6885975354d86f8907605de8971b4b22fe4f14a..24633d8332ade2f1b841e772c93fd677
      private signExternalTransaction;
      /**
       * Removes unapproved transactions from state.
-@@ -438,10 +456,6 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -438,10 +477,6 @@ export declare class TransactionController extends BaseController<TransactionCon
       * Create approvals for all unapproved transactions on current chain.
       */
      private createApprovalsForUnapprovedTransactions;
@@ -70,7 +98,7 @@ index c6885975354d86f8907605de8971b4b22fe4f14a..24633d8332ade2f1b841e772c93fd677
      /**
       * Force to submit approved transactions on current chain.
       */
-@@ -551,6 +565,10 @@ export declare class TransactionController extends BaseController<TransactionCon
+@@ -551,6 +586,10 @@ export declare class TransactionController extends BaseController<TransactionCon
      private getEIP1559Compatibility;
      private addPendingTransactionTrackerListeners;
      private signTransaction;
@@ -92,7 +120,7 @@ index 25152afbacb9738a753cb5e9d4259b2de8832ffb..00000000000000000000000000000000
 -{"version":3,"file":"TransactionController.d.ts","sourceRoot":"","sources":["../src/TransactionController.ts"],"names":[],"mappings":"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"}
 \ No newline at end of file
 diff --git a/dist/TransactionController.js b/dist/TransactionController.js
-index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908fcabb8ce3 100644
+index 48780bcd0e1e722dfa557b41a830588b8b11bef2..6bb1fa737d9b86f30875f69e73376fa113f05050 100644
 --- a/dist/TransactionController.js
 +++ b/dist/TransactionController.js
 @@ -24,7 +24,7 @@ const eth_method_registry_1 = __importDefault(require("eth-method-registry"));
@@ -225,7 +253,52 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
              }
          });
      }
-@@ -801,14 +795,12 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -749,6 +743,44 @@ class TransactionController extends base_controller_1.BaseController {
+             return this.nonceTracker.getNonceLock(address);
+         });
+     }
++    /**
++     * Updates the editable parameters of a transaction.
++     *
++     * @param txId - The ID of the transaction to update.
++     * @param params - The editable parameters to update.
++     * @param params.data - Data to pass with the transaction.
++     * @param params.gas - Maximum number of units of gas to use for the transaction.
++     * @param params.gasPrice - Price per gas for legacy transactions.
++     * @param params.from - Address to send the transaction from.
++     * @param params.to - Address to send the transaction to.
++     * @param params.value - Value associated with the transaction.
++     * @returns The updated transaction metadata.
++     */
++    updateEditableParams(txId, { data, gas, gasPrice, from, to, value, }) {
++        return __awaiter(this, void 0, void 0, function* () {
++            const transactionMeta = this.getTransaction(txId);
++            if (!transactionMeta) {
++                throw new Error(`Cannot update editable params as no transaction metadata found`);
++            }
++            (0, utils_1.validateIfTransactionUnapproved)(transactionMeta, 'updateEditableParams');
++            const editableParams = {
++                txParams: {
++                    data,
++                    from,
++                    to,
++                    value,
++                    gas,
++                    gasPrice,
++                },
++            };
++            editableParams.txParams = (0, lodash_1.pickBy)(editableParams.txParams);
++            const updatedTransaction = (0, lodash_1.merge)(transactionMeta, editableParams);
++            const { type } = yield (0, transaction_type_1.determineTransactionType)(updatedTransaction.txParams, this.ethQuery);
++            updatedTransaction.type = type;
++            this.updateTransaction(updatedTransaction, `Update Editable Params for ${txId}`);
++            return this.getTransaction(txId);
++        });
++    }
+     /**
+      * Signs and returns the raw transaction data for provided transaction params list.
+      *
+@@ -801,14 +833,12 @@ class TransactionController extends base_controller_1.BaseController {
       *
       * @param transactionId - The ID of the transaction to update.
       * @param options - The custodial transaction options to update.
@@ -242,7 +315,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
          if (!transactionMeta) {
              throw new Error(`Cannot update custodial transaction as no transaction metadata found`);
          }
-@@ -823,23 +815,112 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -823,23 +853,112 @@ class TransactionController extends base_controller_1.BaseController {
              ].includes(status)) {
              throw new Error(`Cannot update custodial transaction with status: ${status}`);
          }
@@ -366,7 +439,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
      }
      signExternalTransaction(transactionParams) {
          return __awaiter(this, void 0, void 0, function* () {
-@@ -874,7 +955,8 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -874,7 +993,8 @@ class TransactionController extends base_controller_1.BaseController {
      }
      updateGasProperties(transactionMeta) {
          return __awaiter(this, void 0, void 0, function* () {
@@ -376,7 +449,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
              const chainId = this.getChainId();
              yield (0, gas_1.updateGas)({
                  ethQuery: this.ethQuery,
-@@ -895,8 +977,6 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -895,8 +1015,6 @@ class TransactionController extends base_controller_1.BaseController {
          return this.state.transactions.filter((transaction) => transaction.status === status && transaction.chainId === chainId);
      }
      onBootCleanup() {
@@ -385,7 +458,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
          this.submitApprovedTransactions();
      }
      /**
-@@ -916,26 +996,6 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -916,26 +1034,6 @@ class TransactionController extends base_controller_1.BaseController {
              });
          }
      }
@@ -412,7 +485,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
      /**
       * Force to submit approved transactions on current chain.
       */
-@@ -965,6 +1025,13 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -965,6 +1063,13 @@ class TransactionController extends base_controller_1.BaseController {
                              shouldShowRequest,
                          });
                          resultCallbacks = acceptResult.resultCallbacks;
@@ -426,7 +499,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
                      }
                      const { isCompleted: isTxCompleted } = this.isTransactionCompleted(transactionId);
                      if (!isTxCompleted) {
-@@ -1036,7 +1103,6 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -1036,7 +1141,6 @@ class TransactionController extends base_controller_1.BaseController {
                      (0, logger_1.projectLogger)('Skipping approval as signing in progress', transactionId);
                      return;
                  }
@@ -434,7 +507,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
                  let nonceToUse = nonce;
                  // if a nonce already exists on the transactionMeta it means this is a speedup or cancel transaction
                  // so we want to reuse that nonce and hope that it beats the previous attempt to chain. Otherwise use a new locked nonce
-@@ -1044,23 +1110,19 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -1044,23 +1148,19 @@ class TransactionController extends base_controller_1.BaseController {
                      nonceLock = yield this.nonceTracker.getNonceLock(from);
                      nonceToUse = (0, ethereumjs_util_1.addHexPrefix)(nonceLock.nextNonce.toString(16));
                  }
@@ -463,7 +536,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
                      return;
                  }
                  if (!rawTx) {
-@@ -1070,11 +1132,12 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -1070,11 +1170,12 @@ class TransactionController extends base_controller_1.BaseController {
                  transactionMeta.hash = hash;
                  transactionMeta.status = types_1.TransactionStatus.submitted;
                  transactionMeta.submittedTime = new Date().getTime();
@@ -477,7 +550,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
              }
              catch (error) {
                  this.failTransaction(transactionMeta, error);
-@@ -1107,13 +1170,14 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -1107,13 +1208,14 @@ class TransactionController extends base_controller_1.BaseController {
              return;
          }
          transactionMeta.status = types_1.TransactionStatus.rejected;
@@ -494,7 +567,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
      }
      /**
       * Trim the amount of transactions that are set on the state. Checks
-@@ -1288,25 +1352,23 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -1288,25 +1390,23 @@ class TransactionController extends base_controller_1.BaseController {
       */
      addExternalTransaction(transactionMeta) {
          var _a, _b;
@@ -536,7 +609,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
          });
      }
      /**
-@@ -1351,6 +1413,7 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -1351,6 +1451,7 @@ class TransactionController extends base_controller_1.BaseController {
              transactionMeta,
          });
          this.updateTransaction(transactionMeta, 'TransactionController#setTransactionStatusDropped - Transaction dropped');
@@ -544,7 +617,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
      }
      /**
       * Get transaction with provided actionId.
-@@ -1391,26 +1454,22 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -1391,26 +1492,22 @@ class TransactionController extends base_controller_1.BaseController {
          });
      }
      getEIP1559Compatibility() {
@@ -575,7 +648,7 @@ index 48780bcd0e1e722dfa557b41a830588b8b11bef2..df86a6cc2a838483bb119c199ac1908f
              const unsignedEthTx = this.prepareUnsignedEthTx(txParams);
              this.inProcessOfSigning.add(transactionMeta.id);
              const signedTx = yield ((_a = this.sign) === null || _a === void 0 ? void 0 : _a.call(this, unsignedEthTx, txParams.from, ...this.getAdditionalSignArguments(transactionMeta)));
-@@ -1419,19 +1478,58 @@ class TransactionController extends base_controller_1.BaseController {
+@@ -1419,19 +1516,58 @@ class TransactionController extends base_controller_1.BaseController {
                  return undefined;
              }
              if (!this.afterSign(transactionMeta, signedTx)) {
