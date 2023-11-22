@@ -50,7 +50,7 @@ export const Copyable = ({ text, sensitive = false }) => {
         visible: isVisible,
       })}
       backgroundColor={
-        isVisible
+        isVisible && sensitive
           ? BackgroundColor.errorMuted
           : BackgroundColor.backgroundAlternative
       }
@@ -72,7 +72,9 @@ export const Copyable = ({ text, sensitive = false }) => {
               name={isVisible ? IconName.EyeSlash : IconName.Eye}
               onClick={handleVisibilityClick}
               color={
-                isVisible ? Color.errorAlternative : IconColor.iconAlternative
+                isVisible && sensitive
+                  ? Color.errorAlternative
+                  : IconColor.iconAlternative
               }
               data-testid="reveal-icon"
             />
@@ -93,14 +95,16 @@ export const Copyable = ({ text, sensitive = false }) => {
         <ShowMore
           marginRight={2}
           buttonBackground={
-            isVisible
+            isVisible && sensitive
               ? BackgroundColor.errorMuted
               : BackgroundColor.backgroundAlternative
           }
         >
           <Text
             color={
-              isVisible ? Color.errorAlternative : TextColor.textAlternative
+              isVisible && sensitive
+                ? Color.errorAlternative
+                : TextColor.textAlternative
             }
             marginBottom={0}
             overflowWrap={OverflowWrap.Anywhere}
@@ -113,7 +117,11 @@ export const Copyable = ({ text, sensitive = false }) => {
         <Icon
           className="copyable__icon"
           name={isClicked ? IconName.CopySuccess : IconName.Copy}
-          color={isVisible ? Color.errorAlternative : IconColor.iconAlternative}
+          color={
+            isVisible && sensitive
+              ? Color.errorAlternative
+              : IconColor.iconAlternative
+          }
           marginLeft="auto"
           data-testid="copy-icon"
         />
