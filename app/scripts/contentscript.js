@@ -1,8 +1,7 @@
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
 import PortStream from 'extension-port-stream';
 import ObjectMultiplex from 'obj-multiplex';
-import pump from 'pump';
-import { obj as createThoughStream } from 'through2';
+import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
 import { EXTENSION_MESSAGES } from '../../shared/constants/app';
 import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
@@ -67,7 +66,7 @@ function setupPhishingPageStreams() {
   phishingPageMux = new ObjectMultiplex();
   phishingPageMux.setMaxListeners(25);
 
-  pump(phishingPageMux, phishingPageStream, phishingPageMux, (err) =>
+  pipeline(phishingPageMux, phishingPageStream, phishingPageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
@@ -85,7 +84,7 @@ const setupPhishingExtStreams = () => {
   phishingExtMux = new ObjectMultiplex();
   phishingExtMux.setMaxListeners(25);
 
-  pump(phishingExtMux, phishingExtStream, phishingExtMux, (err) => {
+  pipeline(phishingExtMux, phishingExtStream, phishingExtMux, (err) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     window.postMessage(
       {
@@ -105,11 +104,15 @@ const setupPhishingExtStreams = () => {
 
   // forward communication across inpage-background for these channels only
   phishingExtChannel = phishingExtMux.createStream(PHISHING_SAFELIST);
-  pump(phishingPageChannel, phishingExtChannel, phishingPageChannel, (error) =>
-    console.debug(
-      `MetaMask: Muxed traffic for channel "${PHISHING_SAFELIST}" failed.`,
-      error,
-    ),
+  pipeline(
+    phishingPageChannel,
+    phishingExtChannel,
+    phishingPageChannel,
+    (error) =>
+      console.debug(
+        `MetaMask: Muxed traffic for channel "${PHISHING_SAFELIST}" failed.`,
+        error,
+      ),
   );
 
   // eslint-disable-next-line no-use-before-define
@@ -203,7 +206,7 @@ const setupPageStreams = () => {
   pageMux = new ObjectMultiplex();
   pageMux.setMaxListeners(25);
 
-  pump(pageMux, pageStream, pageMux, (err) =>
+  pipeline(pageMux, pageStream, pageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
   );
 
@@ -225,14 +228,14 @@ const setupExtensionStreams = () => {
   extensionMux.setMaxListeners(25);
   extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
 
-  pump(extensionMux, extensionStream, extensionMux, (err) => {
+  pipeline(extensionMux, extensionStream, extensionMux, (err) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
     notifyInpageOfStreamFailure();
   });
 
   // forward communication across inpage-background for these channels only
   extensionChannel = extensionMux.createStream(PROVIDER);
-  pump(pageChannel, extensionChannel, pageChannel, (error) =>
+  pipeline(pageChannel, extensionChannel, pageChannel, (error) =>
     console.debug(
       `MetaMask: Muxed traffic for channel "${PROVIDER}" failed.`,
       error,
@@ -275,7 +278,7 @@ const setupLegacyPageStreams = () => {
   legacyPageMux = new ObjectMultiplex();
   legacyPageMux.setMaxListeners(25);
 
-  pump(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
+  pipeline(legacyPageMux, legacyPageStream, legacyPageMux, (err) =>
     logStreamDisconnectWarning('MetaMask Legacy Inpage Multiplex', err),
   );
 
@@ -291,7 +294,7 @@ const setupLegacyExtensionStreams = () => {
   legacyExtMux.setMaxListeners(25);
 
   notificationTransformStream = getNotificationTransformStream();
-  pump(
+  pipeline(
     legacyExtMux,
     extensionStream,
     notificationTransformStream,
@@ -303,7 +306,7 @@ const setupLegacyExtensionStreams = () => {
   );
 
   legacyExtChannel = legacyExtMux.createStream(PROVIDER);
-  pump(
+  pipeline(
     legacyPageMuxLegacyProviderChannel,
     legacyExtChannel,
     legacyPageMuxLegacyProviderChannel,
@@ -316,7 +319,7 @@ const setupLegacyExtensionStreams = () => {
 
   legacyExtPublicConfigChannel =
     legacyExtMux.createStream(LEGACY_PUBLIC_CONFIG);
-  pump(
+  pipeline(
     legacyPagePublicConfigChannel,
     legacyExtPublicConfigChannel,
     legacyPagePublicConfigChannel,
@@ -409,15 +412,17 @@ const initStreams = () => {
 
 // TODO:LegacyProvider: Delete
 function getNotificationTransformStream() {
-  return createThoughStream((chunk, _, cb) => {
-    if (chunk?.name === PROVIDER) {
-      if (chunk.data?.method === 'metamask_accountsChanged') {
-        chunk.data.method = 'wallet_accountsChanged';
-        chunk.data.result = chunk.data.params;
-        delete chunk.data.params;
+  return new Transform({
+    transform: (chunk, _, cb) => {
+      if (chunk?.name === PROVIDER) {
+        if (chunk.data?.method === 'metamask_accountsChanged') {
+          chunk.data.method = 'wallet_accountsChanged';
+          chunk.data.result = chunk.data.params;
+          delete chunk.data.params;
+        }
       }
-    }
-    cb(null, chunk);
+      cb(null, chunk);
+    },
   });
 }
 
@@ -467,7 +472,7 @@ function extensionStreamMessageListener(msg) {
 }
 
 /**
- * This function must ONLY be called in pump destruction/close callbacks.
+ * This function must ONLY be called in pipeline destruction/close callbacks.
  * Notifies the inpage context that streams have failed, via window.postMessage.
  * Relies on obj-multiplex and post-message-stream implementation details.
  */

@@ -1,5 +1,5 @@
 import ObjectMultiplex from 'obj-multiplex';
-import pump from 'pump';
+import { pipeline } from 'readable-stream';
 
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
 
@@ -17,7 +17,7 @@ export function setupMultiplex(connectionStream) {
    * https://github.com/MetaMask/object-multiplex/blob/280385401de84f57ef57054d92cfeb8361ef2680/src/ObjectMultiplex.ts#L63
    */
   mux.ignoreStream(EXTENSION_MESSAGES.CONNECTION_READY);
-  pump(connectionStream, mux, connectionStream, (err) => {
+  pipeline(connectionStream, mux, connectionStream, (err) => {
     if (err) {
       console.error(err);
     }

@@ -9,8 +9,7 @@
 import './lib/setup-initial-state-hooks';
 
 import EventEmitter from 'events';
-import endOfStream from 'end-of-stream';
-import pump from 'pump';
+import { finished, pipeline } from 'readable-stream';
 import debounce from 'debounce-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
@@ -555,7 +554,7 @@ export function setupController(
   });
 
   // setup state persistence
-  pump(
+  pipeline(
     storeAsStream(controller.store),
     debounce(1000),
     createStreamSink(async (state) => {
@@ -658,7 +657,7 @@ export function setupController(
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         popupIsOpen = true;
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           popupIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -669,7 +668,7 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_NOTIFICATION) {
         notificationIsOpen = true;
 
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           notificationIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -684,7 +683,7 @@ export function setupController(
         const tabId = remotePort.sender.tab.id;
         openMetamaskTabsIDs[tabId] = true;
 
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           delete openMetamaskTabsIDs[tabId];
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
