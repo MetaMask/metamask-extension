@@ -1,7 +1,6 @@
-const { withFixtures } = require('../../helpers');
+const { withFixtures, unlockWallet } = require('../../helpers');
 const {
   withFixturesOptions,
-  loadExtension,
   buildQuote,
   reviewQuote,
   waitForTransactionToComplete,
@@ -20,7 +19,7 @@ describe('Swap Eth for another Token @no-mmi', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loadExtension(driver);
+        await unlockWallet(driver);
         await buildQuote(driver, {
           amount: 0.001,
           swapTo: 'USDC',
@@ -65,7 +64,7 @@ describe('Swap Eth for another Token @no-mmi', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loadExtension(driver);
+        await unlockWallet(driver);
         await buildQuote(driver, {
           amount: 2,
           swapTo: 'DAI',

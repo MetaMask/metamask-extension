@@ -29,7 +29,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
-        await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
         // Send ETH
@@ -75,7 +74,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
-        await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
         // Send ETH
@@ -135,7 +133,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
-        await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
         // Send TST
@@ -198,7 +195,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
-        await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
         if (process.env.MULTICHAIN) {
           return;

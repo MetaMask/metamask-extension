@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Advanced Settings', function () {
@@ -22,9 +22,7 @@ describe('Advanced Settings', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         // TODO: Remove this test since we are not showing any secondary balance
         if (process.env.MULTICHAIN) {
           return;
@@ -64,9 +62,7 @@ describe('Advanced Settings', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         const secondaryCurrency = await driver.isElementPresent(
           '[data-testid="eth-overview__secondary-currency"]',
