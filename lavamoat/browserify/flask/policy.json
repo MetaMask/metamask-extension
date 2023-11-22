@@ -431,6 +431,9 @@
       }
     },
     "@ethersproject/providers>@ethersproject/random": {
+      "globals": {
+        "crypto.getRandomValues": true
+      },
       "packages": {
         "@ethersproject/abi>@ethersproject/bytes": true,
         "@ethersproject/abi>@ethersproject/logger": true
@@ -3972,11 +3975,6 @@
       }
     },
     "ethereumjs-wallet>randombytes": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
-    "ethers>@ethersproject/random": {
       "globals": {
         "crypto.getRandomValues": true
       }
