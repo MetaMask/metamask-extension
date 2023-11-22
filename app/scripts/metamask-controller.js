@@ -513,9 +513,9 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // turn on perDappSelectedNetwork feature flag
-    this.selectedNetworkController.update((state) => {
-      state.perDomainNetwork = true;
-    });
+    // this.selectedNetworkController.update((state) => {
+    //   state.perDomainNetwork = true;
+    // });
 
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
@@ -576,11 +576,11 @@ export default class MetamaskController extends EventEmitter {
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      // used to update internal state and chainId
-      // would be more efficient as networkDidChange?
+      // Still works correctly listening to stateChange, but is more
+      // more correct/efficient listening to networkDidChange instead
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        'NetworkController:stateChange',
+        'NetworkController:networkDidChange',
       ),
       onTokenListStateChange: (listener) =>
         this.controllerMessenger.subscribe(
@@ -609,7 +609,8 @@ export default class MetamaskController extends EventEmitter {
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
-        // only used to keep internal chainId updated
+        // only used to keep internal chainId updated.
+        // doesn't immediately trigger any other side effects.
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
@@ -665,7 +666,8 @@ export default class MetamaskController extends EventEmitter {
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      // only used to keep internal chainId tracker up to date
+        // only used to keep internal chainId updated.
+        // doesn't immediately trigger any other side effects.
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:stateChange',
@@ -834,6 +836,7 @@ export default class MetamaskController extends EventEmitter {
         // unaffected
         // checks for chainId change internally
         // doesn't rely on provider
+        // can stay as is, but may benefit from networkDidChange
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
