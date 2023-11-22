@@ -198,9 +198,7 @@ describe('NetworkForm Component', () => {
     renderComponent(propNewNetwork);
     const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
     const rpcUrlField = screen.getByRole('textbox', { name: 'New RPC URL' });
-    const currencySymbolField = screen.getByRole('textbox', {
-      name: 'Currency symbol',
-    });
+    const currencySymbolField = screen.getByTestId('network-form-ticker-input');
 
     fireEvent.change(chainIdField, {
       target: { value: '1' },
@@ -258,9 +256,7 @@ describe('NetworkForm Component', () => {
     renderComponent(propNewNetwork);
 
     const chainIdField = screen.getByRole('textbox', { name: 'Chain ID' });
-    const currencySymbolField = screen.getByRole('textbox', {
-      name: 'Currency symbol',
-    });
+    const currencySymbolField = screen.getByTestId('network-form-ticker-input');
 
     fireEvent.change(chainIdField, {
       target: { value: '1234' },
