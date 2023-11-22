@@ -513,9 +513,9 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // turn on perDappSelectedNetwork feature flag
-    // this.selectedNetworkController.update((state) => {
-    //   state.perDomainNetwork = true;
-    // });
+    this.selectedNetworkController.update((state) => {
+      state.perDomainNetwork = true;
+    });
 
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
