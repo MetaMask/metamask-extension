@@ -29,7 +29,10 @@ import {
   TrezorConnectBridge,
   TrezorKeyring,
 } from '@metamask/eth-trezor-keyring';
-import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
+import {
+  LedgerKeyring,
+  LedgerIframeBridge,
+} from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from '@metamask/eth-query';
@@ -920,7 +923,6 @@ export default class MetamaskController extends EventEmitter {
       const keyringOverrides = this.opts.overrides?.keyrings;
 
       const additionalKeyringTypes = [
-        keyringOverrides?.ledger || LedgerBridgeKeyring,
         keyringOverrides?.lattice || LatticeKeyring,
         QRHardwareKeyring,
       ];
@@ -929,6 +931,10 @@ export default class MetamaskController extends EventEmitter {
         {
           keyring: keyringOverrides?.trezor || TrezorKeyring,
           bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
+        },
+        {
+          keyring: keyringOverrides?.ledger || LedgerKeyring,
+          bridge: keyringOverrides?.ledgerBridge || LedgerIframeBridge,
         },
       ];
 
@@ -3537,8 +3543,7 @@ export default class MetamaskController extends EventEmitter {
         keyringName = keyringOverrides?.trezor?.type || TrezorKeyring.type;
         break;
       case HardwareDeviceNames.ledger:
-        keyringName =
-          keyringOverrides?.ledger?.type || LedgerBridgeKeyring.type;
+        keyringName = keyringOverrides?.ledger?.type || LedgerKeyring.type;
         break;
       case HardwareDeviceNames.qr:
         keyringName = QRHardwareKeyring.type;

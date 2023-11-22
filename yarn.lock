@@ -2204,7 +2204,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ethereumjs/rlp@npm:^4.0.1":
+"@ethereumjs/rlp@npm:^4.0.0, @ethereumjs/rlp@npm:^4.0.1":
   version: 4.0.1
   resolution: "@ethereumjs/rlp@npm:4.0.1"
   bin:
@@ -4147,15 +4147,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-ledger-bridge-keyring@npm:^0.15.0":
-  version: 0.15.0
-  resolution: "@metamask/eth-ledger-bridge-keyring@npm:0.15.0"
+"@metamask/eth-ledger-bridge-keyring@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@metamask/eth-ledger-bridge-keyring@npm:2.0.0"
   dependencies:
+    "@ethereumjs/rlp": "npm:^4.0.0"
     "@ethereumjs/tx": "npm:^4.1.1"
-    eth-sig-util: "npm:^2.0.0"
-    ethereumjs-util: "npm:^7.0.9"
-    hdkey: "npm:0.8.0"
-  checksum: d856b820806bfd3a9a030b2116b082b5089531e21a5e4ca53e5af027d83b2935013a853a5c18bc6c374555467d4e8e9f1a1712c263e891a7cd3cf0a4388968ae
+    "@ethereumjs/util": "npm:^8.0.0"
+    "@metamask/eth-sig-util": "npm:^7.0.0"
+    hdkey: "npm:^2.1.0"
+  checksum: 0cb4f549c40855aaa80cab1a01bccbaab988cb69ae73c92dc1fd0e66c30ab5ce9060aa30d44a1ed53e6303d527b09bf663e285540a473bcdafbe6dccc05da232
   languageName: node
   linkType: hard
 
@@ -16274,18 +16275,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-sig-util@npm:^2.0.0":
-  version: 2.5.4
-  resolution: "eth-sig-util@npm:2.5.4"
-  dependencies:
-    ethereumjs-abi: "npm:0.6.8"
-    ethereumjs-util: "npm:^5.1.1"
-    tweetnacl: "npm:^1.0.3"
-    tweetnacl-util: "npm:^0.15.0"
-  checksum: c6a01dbae95e325ec6d380673e659caf8472dcfb9dd614619083c0f47bd95fb3fb11f9ca330395f753b69efcb0275753523b55c190b596fb51e3e9bb8b6961cf
-  languageName: node
-  linkType: hard
-
 "eth-sig-util@npm:^3.0.0":
   version: 3.0.1
   resolution: "eth-sig-util@npm:3.0.1"
@@ -16352,7 +16341,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethereumjs-abi@npm:0.6.8, ethereumjs-abi@npm:^0.6.4, ethereumjs-abi@npm:^0.6.8":
+"ethereumjs-abi@npm:^0.6.4, ethereumjs-abi@npm:^0.6.8":
   version: 0.6.8
   resolution: "ethereumjs-abi@npm:0.6.8"
   dependencies:
@@ -19200,14 +19189,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hdkey@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "hdkey@npm:2.0.1"
+"hdkey@npm:^2.0.1, hdkey@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "hdkey@npm:2.1.0"
   dependencies:
     bs58check: "npm:^2.1.2"
+    ripemd160: "npm:^2.0.2"
     safe-buffer: "npm:^5.1.1"
     secp256k1: "npm:^4.0.0"
-  checksum: ddaaef5ae692c244a04eaf5f535e731e70e2d20ecf1dc5be02b9525114b1e173d95e8d4394d967d3a8738791bd7b0f9ffac9f486ade47faa68e84d5aff144ed1
+  checksum: c4ee2189ea3d87070ebd14ad7368e292b1e0b30e4d8a107eb8f33624634df6e57b8a3b2cda65b3bd97e88474f6798cfdbe7b63b6037429f0e169321d84a0db58
   languageName: node
   linkType: hard
 
@@ -24097,7 +24087,7 @@ __metadata:
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eth-json-rpc-middleware": "npm:^12.0.1"
     "@metamask/eth-keyring-controller": "npm:^13.0.1"
-    "@metamask/eth-ledger-bridge-keyring": "npm:^0.15.0"
+    "@metamask/eth-ledger-bridge-keyring": "npm:^2.0.0"
     "@metamask/eth-query": "npm:^3.0.1"
     "@metamask/eth-snap-keyring": "npm:^1.0.0"
     "@metamask/eth-token-tracker": "npm:^4.0.0"
@@ -29970,7 +29960,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ripemd160@npm:^2.0.0, ripemd160@npm:^2.0.1":
+"ripemd160@npm:^2.0.0, ripemd160@npm:^2.0.1, ripemd160@npm:^2.0.2":
   version: 2.0.2
   resolution: "ripemd160@npm:2.0.2"
   dependencies:
