@@ -140,6 +140,10 @@ const PATH_NAME_MAP = {
   ///: END:ONLY_INCLUDE_IN
   [CONFIRM_ADD_SUGGESTED_NFT_ROUTE]: 'Confirm Add Suggested NFT Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
+  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  [SNAPS_ROUTE]: 'Snaps List Page',
+  [`${SNAPS_VIEW_ROUTE}/:snapId`]: `Snap View Page`,
+  ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',
   [CUSTODY_ACCOUNT_ROUTE]: 'Connect Custody',
