@@ -1382,6 +1382,9 @@
   "domain": {
     "message": "Domain"
   },
+  "domainNotSupportedOnNetwork": {
+    "message": "Network does not support domain lookup"
+  },
   "done": {
     "message": "Done"
   },
@@ -1545,12 +1548,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS name not found on the current network. Try switching to Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Network does not support ENS"
   },
   "ensRegistrationError": {
     "message": "Error in ENS name registration"
@@ -3477,6 +3474,14 @@
     "message": "Allow $1 to store, update, and retrieve data securely with encryption. Other snaps cannot access this information.",
     "description": "An extended description for the `snap_manageState` permission. $1 is the snap name."
   },
+  "permission_nameLookup": {
+    "message": "Provide domain and address lookups.",
+    "description": "The description for the `endowment:name-lookup` permission."
+  },
+  "permission_nameLookupDescription": {
+    "message": "Allow the snap to fetch and display address and domain lookups in different parts of the MetaMask UI.",
+    "description": "An extended description for the `endowment:name-lookup` permission."
+  },
   "permission_notifications": {
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
@@ -4711,6 +4716,9 @@
   },
   "submitted": {
     "message": "Submitted"
+  },
+  "suggestedBy": {
+    "message": "Suggested by"
   },
   "support": {
     "message": "Support"
