@@ -11,8 +11,6 @@ import {
   throttle,
   memoize,
   wrap,
-  pickBy,
-  merge,
   ///: END:ONLY_INCLUDE_IN
 } from 'lodash';
 import { keyringBuilderFactory } from '@metamask/eth-keyring-controller';
@@ -177,10 +175,7 @@ import {
   fetchTokenBalance,
 } from '../../shared/lib/token-util.ts';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import {
-  determineTransactionType,
-  parseStandardTokenTransactionData,
-} from '../../shared/modules/transaction.utils';
+import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
