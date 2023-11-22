@@ -25069,7 +25069,7 @@ __metadata:
     react-toggle-button: "npm:^2.2.0"
     react-transition-group: "npm:^1.2.1"
     read-installed: "npm:^4.0.3"
-    readable-stream: "npm:^2.3.3"
+    readable-stream: "npm:^3.6.2"
     redux: "npm:^4.0.5"
     redux-mock-store: "npm:^1.5.4"
     redux-thunk: "npm:^2.3.0"
