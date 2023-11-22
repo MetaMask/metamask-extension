@@ -3868,10 +3868,6 @@
     "message": "Nabigo ang pag-update",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "Gustong i-update ng $1 ang $2 sa $3 na nagbibigay dito ng mga sumusunod na pahintulot. Magpatuloy lang kung pinagkakatiwalaan mo ang $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "Tapos na ang pag-update"
   },

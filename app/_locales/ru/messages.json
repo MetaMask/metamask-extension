@@ -3868,10 +3868,6 @@
     "message": "Ошибка обновления",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1 хочет обновить $2 до $3, что дает ему следующие разрешения. Продолжайте, только если доверяете $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "Обновление завершено"
   },

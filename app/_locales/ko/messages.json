@@ -3868,10 +3868,6 @@
     "message": "업데이트 실패",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1에서 $2 스냅을 $3 버전으로 업데이트하기 원하여 다음 권한을 요청합니다. $2 스냅을 신뢰하는 경우에만 진행하세요.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "업데이트 완료"
   },
