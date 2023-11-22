@@ -42,6 +42,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getPermissionSubjects,
+  getFirstSnapInstallOrUpdateRequest,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
@@ -1133,6 +1134,22 @@ export function enableSnap(
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('enableSnap', [snapId]);
     await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function updateSnap(
+  origin: string,
+  snap: { [snapId: string]: { version: string } },
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    await submitRequestToBackground('updateSnap', [origin, snap]);
+    await forceUpdateMetamaskState(dispatch);
+
+    const state = getState();
+
+    const approval = getFirstSnapInstallOrUpdateRequest(state);
+
+    return approval?.metadata.id;
   };
 }
 

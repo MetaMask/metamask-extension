@@ -3868,10 +3868,6 @@
     "message": "更新失败",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1希望将$2更新为$3，更新后将获得下列权限。只有在您信任$2的情况下才可继续。",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "更新完成"
   },

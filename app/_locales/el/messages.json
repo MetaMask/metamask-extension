@@ -3868,10 +3868,6 @@
     "message": "Η ενημέρωση απέτυχε",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "Το $1 θέλει να ενημερώσει το $2 στο $3, το οποίο του δίνει τις ακόλουθες άδειες. Συνεχίστε μόνο αν εμπιστεύεστε το $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "Η ενημέρωση ολοκληρώθηκε"
   },
