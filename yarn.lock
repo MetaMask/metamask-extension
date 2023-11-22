@@ -3895,10 +3895,10 @@ __metadata:
 
 "@metamask/browser-passworder@patch:@metamask/browser-passworder@npm%3A4.2.0#~/.yarn/patches/@metamask-browser-passworder-npm-4.2.0-0f84159009.patch":
   version: 4.2.0
-  resolution: "@metamask/browser-passworder@patch:@metamask/browser-passworder@npm%3A4.2.0#~/.yarn/patches/@metamask-browser-passworder-npm-4.2.0-0f84159009.patch::version=4.2.0&hash=9ae5a8"
+  resolution: "@metamask/browser-passworder@patch:@metamask/browser-passworder@npm%3A4.2.0#~/.yarn/patches/@metamask-browser-passworder-npm-4.2.0-0f84159009.patch::version=4.2.0&hash=bb799a"
   dependencies:
     "@metamask/utils": "npm:^8.2.0"
-  checksum: e71c7c1abd045513f45bfa552d0f6c7468eaae5392637f9a4153c52f40a3320802130d013f9d9daeb91ecafc37b2204b0fd66aad5b7dc4e0d444ff76c0032cea
+  checksum: a7b3f6e162052ba3a8c265ea6154de7a2c74297b94372258b33889a012e7c7b7e8b50f8ca592704454c30e4125db3c35dc9bde39cfdfad29d61909595b83cd77
   languageName: node
   linkType: hard
 
