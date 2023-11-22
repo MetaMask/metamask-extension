@@ -17,6 +17,7 @@ import {
   AvatarNetwork,
   Box,
   ButtonIcon,
+  Icon,
   IconName,
   Text,
 } from '../../component-library';
@@ -33,6 +34,7 @@ export const NetworkListItem = ({
   focus = true,
   onClick,
   onDeleteClick,
+  isDeprecatedNetwork,
 }) => {
   const t = useI18nContext();
   const networkRef = useRef();
@@ -69,7 +71,11 @@ export const NetworkListItem = ({
         name={name}
         src={iconSrc}
       />
-      <Box className="multichain-network-list-item__network-name">
+      <Box
+        className="multichain-network-list-item__network-name"
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+      >
         <Text
           ref={networkRef}
           as="button"
@@ -93,6 +99,11 @@ export const NetworkListItem = ({
             name
           )}
         </Text>
+        {isDeprecatedNetwork ? (
+          <Tooltip title={t('auroraDeprecationWarning')} position="top">
+            <Icon name={IconName.Danger} color={IconColor.warningDefault} />
+          </Tooltip>
+        ) : null}
       </Box>
       {onDeleteClick ? (
         <ButtonIcon
@@ -136,4 +147,5 @@ NetworkListItem.propTypes = {
    * Represents if the network item should be keyboard selected
    */
   focus: PropTypes.bool,
+  isDeprecatedNetwork: PropTypes.bool,
 };

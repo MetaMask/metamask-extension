@@ -489,6 +489,9 @@
   "attributions": {
     "message": "Attributions"
   },
+  "auroraDeprecationWarning": {
+    "message": "MetaMask will be deprecating support for Aurora network"
+  },
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"
   },
@@ -1222,6 +1225,9 @@
   },
   "deposit": {
     "message": "Deposit"
+  },
+  "deprecatedAuroraNetworkMsg": {
+    "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
   },
   "deprecatedTestNetworksLink": {
     "message": "Learn more"
