@@ -1110,7 +1110,6 @@
         "@metamask/assets-controllers>@metamask/abi-utils": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "eth-sig-util>tweetnacl": true,
         "eth-sig-util>tweetnacl-util": true
       }
