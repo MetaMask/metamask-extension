@@ -4059,12 +4059,12 @@ export default class MetamaskController extends EventEmitter {
   // REQUEST QUEUE
   //=============================================================================
 
-  setUseRequestQueue = (value) => {
+  setUseRequestQueue(value) {
     this.preferencesController.setUseRequestQueue(value);
     this.selectedNetworkController.update((state) => {
       state.perDomainNetwork = value;
     });
-  };
+  }
 
   //=============================================================================
   // SETUP
