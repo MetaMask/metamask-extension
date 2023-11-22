@@ -92,6 +92,15 @@ export default class DetectTokensController extends PollingControllerOnly {
       },
     );
 
+    preferences?.store.subscribe(({ useTokenDetection }) => {
+      if (this.useTokenDetection !== useTokenDetection) {
+        this.useTokenDetection = useTokenDetection;
+        this.restartTokenDetection({
+          selectedAddress: this.selectedAddress,
+        });
+      }
+    });
+
     tokensController?.subscribe(
       ({ tokens = [], ignoredTokens = [], detectedTokens = [] }) => {
         this.tokenAddresses = tokens.map((token) => {
