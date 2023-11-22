@@ -1428,12 +1428,6 @@
   "ensIllegalCharacter": {
     "message": "Ký tự không hợp lệ đối với ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Không tìm thấy tên ENS trên mạng hiện tại. Đang chuyển sang Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Mạng không hỗ trợ ENS"
-  },
   "ensRegistrationError": {
     "message": "Lỗi khi đăng ký tên ENS"
   },
@@ -3873,10 +3867,6 @@
   "snapUpdateErrorTitle": {
     "message": "Cập nhật thất bại",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1 muốn cập nhật $2 lên $3 để được cấp các quyền sau. Chỉ tiếp tục nếu bạn tin tưởng $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Cập nhật hoàn tất"

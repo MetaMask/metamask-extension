@@ -27,7 +27,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // open two dapps
@@ -98,9 +97,7 @@ describe('Switch Ethereum Chain for two dapps', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // open two dapps
         await openDapp(driver, undefined, DAPP_URL);
@@ -171,7 +168,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // open two dapps
@@ -244,7 +240,6 @@ describe('Switch Ethereum Chain for two dapps', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // open two dapps

@@ -3,6 +3,7 @@ const {
   convertToHexValue,
   withFixtures,
   regularDelayMs,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -27,9 +28,7 @@ describe('Stores custom RPC history', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Ganache Testnet';
@@ -83,9 +82,7 @@ describe('Stores custom RPC history', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // duplicate network
         const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
@@ -126,9 +123,7 @@ describe('Stores custom RPC history', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // duplicate network
         const newRpcUrl = 'http://localhost:8544';
@@ -186,9 +181,7 @@ describe('Stores custom RPC history', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
@@ -227,9 +220,7 @@ describe('Stores custom RPC history', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
@@ -280,9 +271,7 @@ describe('Stores custom RPC history', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
