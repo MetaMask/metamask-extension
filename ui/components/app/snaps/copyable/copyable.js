@@ -21,14 +21,14 @@ import { useTimeout } from '../../../../hooks/useTimeout';
 export const Copyable = ({ text, sensitive = false }) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
-  const [isVisible, setIsisVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(!sensitive);
   const [isClicked, setIsClicked] = useState(false);
 
   const startTimeout = useTimeout(() => setIsClicked(false), 3 * SECOND, false);
 
   const handleVisibilityClick = (e) => {
     e.stopPropagation();
-    setIsisVisible(!isVisible);
+    setIsVisible((state) => !state);
   };
 
   const handleCopyClick = (e) => {
