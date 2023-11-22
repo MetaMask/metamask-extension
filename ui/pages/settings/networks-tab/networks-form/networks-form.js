@@ -745,7 +745,7 @@ const NetworksForm = ({
                 variant={TextVariant.bodySm}
                 color={TextColor.textDefault}
               >
-                {t('suggestedTokenSymbol')}{' '}
+                {t('suggestedTokenSymbol')}
                 <ButtonLink
                   as="button"
                   variant={TextVariant.bodySm}
@@ -753,6 +753,8 @@ const NetworksForm = ({
                   onClick={() => {
                     setTicker(suggestedTicker);
                   }}
+                  paddingLeft={1}
+                  paddingRight={1}
                   style={{ verticalAlign: 'baseline' }}
                 >
                   {suggestedTicker}
@@ -785,7 +787,7 @@ const NetworksForm = ({
             marginTop={1}
             data-testid="network-form-ticker-warning"
           >
-            {warnings.ticker?.msg}
+            {warnings.ticker.msg}
           </HelpText>
         ) : null}
         <FormField
