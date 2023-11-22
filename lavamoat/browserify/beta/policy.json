@@ -901,7 +901,6 @@
         "@metamask/assets-controllers>@metamask/abi-utils": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "eth-sig-util>tweetnacl": true,
         "eth-sig-util>tweetnacl-util": true
       }
@@ -973,11 +972,49 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
-        "bn.js": true,
+        "@metamask/eth-keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": true,
+        "@metamask/eth-keyring-controller>@metamask/eth-sig-util>@metamask/utils": true,
+        "@metamask/eth-keyring-controller>@metamask/eth-sig-util>ethjs-util": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "eth-sig-util>tweetnacl": true,
         "eth-sig-util>tweetnacl-util": true
+      }
+    },
+    "@metamask/eth-keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils": {
+      "packages": {
+        "@metamask/eth-keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/eth-keyring-controller>@metamask/eth-sig-util>@metamask/abi-utils>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/eth-keyring-controller>@metamask/eth-sig-util>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/eth-keyring-controller>@metamask/eth-sig-util>ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethjs>ethjs-util>is-hex-prefixed": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "@metamask/eth-keyring-controller>@metamask/eth-simple-keyring": {
@@ -1035,11 +1072,11 @@
     "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util": {
       "packages": {
         "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util>ethereum-cryptography": true,
+        "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util>ethjs-util": true,
         "@metamask/ppom-validator>elliptic": true,
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>rlp": true,
         "koa>content-disposition>safe-buffer": true
@@ -1051,6 +1088,13 @@
         "ethereumjs-util>ethereum-cryptography>keccak": true,
         "ethereumjs-util>ethereum-cryptography>secp256k1": true,
         "mocha>serialize-javascript>randombytes": true
+      }
+    },
+    "@metamask/eth-ledger-bridge-keyring>eth-sig-util>ethereumjs-util>ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethjs>ethjs-util>is-hex-prefixed": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "@metamask/eth-ledger-bridge-keyring>hdkey": {
@@ -1129,12 +1173,12 @@
         "@metamask/eth-token-tracker>ethjs>ethjs-abi": true,
         "@metamask/eth-token-tracker>ethjs>ethjs-contract": true,
         "@metamask/eth-token-tracker>ethjs>ethjs-query": true,
-        "@metamask/eth-token-tracker>ethjs>ethjs-util": true,
         "bn.js": true,
         "browserify>buffer": true,
         "ethjs>ethjs-filter": true,
         "ethjs>ethjs-provider-http": true,
         "ethjs>ethjs-unit": true,
+        "ethjs>ethjs-util": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
       }
@@ -1150,9 +1194,9 @@
     "@metamask/eth-token-tracker>ethjs>ethjs-contract": {
       "packages": {
         "@metamask/eth-token-tracker>ethjs>ethjs-contract>ethjs-abi": true,
-        "@metamask/eth-token-tracker>ethjs>ethjs-util": true,
         "ethjs-contract>babel-runtime": true,
         "ethjs>ethjs-filter": true,
+        "ethjs>ethjs-util": true,
         "ethjs>js-sha3": true,
         "promise-to-callback": true
       }
@@ -1174,13 +1218,6 @@
         "@metamask/ethjs-query>ethjs-rpc": true,
         "ethjs-contract>babel-runtime": true,
         "promise-to-callback": true
-      }
-    },
-    "@metamask/eth-token-tracker>ethjs>ethjs-util": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs>ethjs-util>is-hex-prefixed": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "@metamask/eth-token-tracker>safe-event-emitter": {
@@ -1210,11 +1247,18 @@
       "packages": {
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>ethjs-util": true,
         "bn.js": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "eth-sig-util>tweetnacl": true,
         "eth-sig-util>tweetnacl-util": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@metamask/eth-sig-util>ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethjs>ethjs-util>is-hex-prefixed": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-plugin-ethereum": {
@@ -1391,16 +1435,9 @@
     "@metamask/ethjs-query>ethjs-format": {
       "packages": {
         "@metamask/ethjs-query>ethjs-format>ethjs-schema": true,
-        "@metamask/ethjs-query>ethjs-format>ethjs-util": true,
+        "ethjs>ethjs-util": true,
         "ethjs>ethjs-util>strip-hex-prefix": true,
         "ethjs>number-to-bn": true
-      }
-    },
-    "@metamask/ethjs-query>ethjs-format>ethjs-util": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs>ethjs-util>is-hex-prefixed": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "@metamask/ethjs-query>ethjs-rpc": {
@@ -1611,7 +1648,6 @@
         "@metamask/assets-controllers>@metamask/abi-utils": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "eth-sig-util>tweetnacl": true,
         "eth-sig-util>tweetnacl-util": true
       }
@@ -3161,8 +3197,8 @@
         "bn.js": true,
         "browserify>assert": true,
         "browserify>buffer": true,
-        "eth-sig-util>ethereumjs-util>ethjs-util": true,
         "ethereumjs-abi>ethereumjs-util>ethereum-cryptography": true,
+        "ethereumjs-abi>ethereumjs-util>ethjs-util": true,
         "ethereumjs-util>create-hash": true,
         "ethereumjs-util>rlp": true
       }
@@ -3173,6 +3209,13 @@
         "ethereumjs-util>ethereum-cryptography>keccak": true,
         "ethereumjs-util>ethereum-cryptography>secp256k1": true,
         "mocha>serialize-javascript>randombytes": true
+      }
+    },
+    "ethereumjs-abi>ethereumjs-util>ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethjs>ethjs-util>is-hex-prefixed": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "ethereumjs-util": {
@@ -3346,8 +3389,8 @@
       "packages": {
         "ethjs-contract>babel-runtime": true,
         "ethjs-contract>ethjs-abi": true,
-        "ethjs-contract>ethjs-util": true,
         "ethjs>ethjs-filter": true,
+        "ethjs>ethjs-util": true,
         "ethjs>js-sha3": true,
         "promise-to-callback": true
       }
@@ -3379,13 +3422,6 @@
         "browserify>buffer": true,
         "ethjs>js-sha3": true,
         "ethjs>number-to-bn": true
-      }
-    },
-    "ethjs-contract>ethjs-util": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethjs>ethjs-util>is-hex-prefixed": true,
-        "ethjs>ethjs-util>strip-hex-prefix": true
       }
     },
     "ethjs-query>babel-runtime": {
