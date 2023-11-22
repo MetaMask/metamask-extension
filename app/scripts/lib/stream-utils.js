@@ -1,4 +1,4 @@
-import ObjectMultiplex from 'obj-multiplex';
+import ObjectMultiplex from '@metamask/object-multiplex';
 import { pipeline } from 'readable-stream';
 
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';

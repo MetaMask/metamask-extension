@@ -24810,6 +24810,7 @@ __metadata:
     "@metamask/name-controller": "npm:^4.2.0"
     "@metamask/network-controller": "npm:^17.2.0"
     "@metamask/notification-controller": "npm:^3.0.0"
+    "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^8.0.0"
     "@metamask/permission-log-controller": "npm:^1.0.0"
