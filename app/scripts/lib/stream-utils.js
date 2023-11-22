@@ -1,4 +1,4 @@
-import ObjectMultiplex from 'obj-multiplex';
+import ObjectMultiplex from '@metamask/object-multiplex';
 import pump from 'pump';
 
 import { EXTENSION_MESSAGES } from '../../../shared/constants/app';
