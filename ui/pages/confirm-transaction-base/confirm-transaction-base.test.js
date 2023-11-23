@@ -246,7 +246,7 @@ describe('Confirm Transaction Base', () => {
     expect(getByTestId('note-tab')).toBeInTheDocument();
   });
 
-  it('handleMMISubmit calls sendTransaction correctly when isNoteToTraderSupported is not defined', async () => {
+  it('handleMMISubmit calls sendTransaction correctly when isNoteToTraderSupported is false', async () => {
     const newMockedStore = {
       ...mockedStore,
       appState: {
