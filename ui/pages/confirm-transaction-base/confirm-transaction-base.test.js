@@ -22,6 +22,7 @@ import {
 import { domainInitialState } from '../../ducks/domains';
 
 import ConfirmTransactionBase from './confirm-transaction-base.container';
+import { act } from 'react-dom/test-utils';
 
 const middleware = [thunk];
 
@@ -332,6 +333,7 @@ describe('Confirm Transaction Base', () => {
     const sendTransaction = jest
       .fn()
       .mockResolvedValue(newMockedStore.confirmTransaction.txData);
+    const updateTransaction = jest.fn().mockResolvedValue();
     const showCustodianDeepLink = jest.fn();
     const setWaitForConfirmDeepLinkDialog = jest.fn();
 
@@ -339,6 +341,7 @@ describe('Confirm Transaction Base', () => {
       <ConfirmTransactionBase
         actionKey="confirm"
         sendTransaction={sendTransaction}
+        updateTransaction={updateTransaction}
         showCustodianDeepLink={showCustodianDeepLink}
         setWaitForConfirmDeepLinkDialog={setWaitForConfirmDeepLinkDialog}
         toAddress={mockPropsToAddress}
@@ -347,8 +350,13 @@ describe('Confirm Transaction Base', () => {
       />,
       store,
     );
+
     const confirmButton = getByTestId('page-container-footer-next');
-    fireEvent.click(confirmButton);
+
+    await act(async () => {
+      fireEvent.click(confirmButton);
+    });
+
     expect(sendTransaction).toHaveBeenCalled();
   });
 
