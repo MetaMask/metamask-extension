@@ -117,7 +117,10 @@ export default function SnapInstall({
           />
         </Box>
       ) : (
-        <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
+        <SnapAuthorshipHeader
+          snapId={targetSubjectMetadata.origin}
+          installOrigin={request?.metadata?.dappOrigin}
+        />
       )}
       <Box
         ref={!isLoading && !hasError ? ref : undefined}
