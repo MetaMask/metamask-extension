@@ -110,6 +110,10 @@ describe('Show account details', function () {
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: tEn('create'), tag: 'button' });
+        await driver.waitForElementNotPresent({
+          text: tEn('create'),
+          tag: 'button',
+        });
 
         const key = await revealPrivateKey(driver);
         assert.equal(
@@ -159,6 +163,10 @@ describe('Show account details', function () {
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: tEn('create'), tag: 'button' });
+        await driver.waitForElementNotPresent({
+          text: tEn('create'),
+          tag: 'button',
+        });
 
         const key = await revealPrivateKey(driver, false);
         assert.equal(
