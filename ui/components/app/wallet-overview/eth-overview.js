@@ -64,6 +64,7 @@ import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 ///: END:ONLY_INCLUDE_IN
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className, showAddress }) => {
@@ -170,7 +171,10 @@ const EthOverview = ({ className, showAddress }) => {
                   data-testid="eth-overview__primary-currency"
                   value={balance}
                   type={
-                    isOriginalNativeSymbol || useNativeCurrencyAsPrimaryCurrency
+                    showPrimaryCurrency(
+                      isOriginalNativeSymbol,
+                      useNativeCurrencyAsPrimaryCurrency,
+                    )
                       ? PRIMARY
                       : SECONDARY
                   }

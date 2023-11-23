@@ -44,6 +44,10 @@ import { ReceiveModal } from '../../multichain/receive-modal';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import {
+  showPrimaryCurrency,
+  showSecondaryCurrency,
+} from '../../../../shared/modules/currency-display.utils';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -163,24 +167,34 @@ const AssetList = ({ onClickAsset }) => {
             onClick={() => onClickAsset(nativeCurrency)}
             title={nativeCurrency}
             primary={
-              isOriginalNativeSymbol || useNativeCurrencyAsPrimaryCurrency
+              showPrimaryCurrency(
+                isOriginalNativeSymbol,
+                useNativeCurrencyAsPrimaryCurrency,
+              )
                 ? primaryCurrencyProperties.value ??
                   secondaryCurrencyProperties.value
                 : null
             }
             tokenSymbol={
-              isOriginalNativeSymbol || useNativeCurrencyAsPrimaryCurrency
+              showPrimaryCurrency(
+                isOriginalNativeSymbol,
+                useNativeCurrencyAsPrimaryCurrency,
+              )
                 ? primaryCurrencyProperties.suffix
                 : null
             }
             secondary={
               showFiat &&
-              (isOriginalNativeSymbol || !useNativeCurrencyAsPrimaryCurrency)
+              showSecondaryCurrency(
+                isOriginalNativeSymbol,
+                useNativeCurrencyAsPrimaryCurrency,
+              )
                 ? secondaryCurrencyDisplay
                 : undefined
             }
             tokenImage={balanceIsLoading ? null : primaryTokenImage}
             isOriginalTokenSymbol={isOriginalNativeSymbol}
+            isNativeCurrency
           />
           <TokenList
             tokens={tokensWithBalances}
