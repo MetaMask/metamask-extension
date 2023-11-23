@@ -1,261 +1,152 @@
-import { v4 as uuid } from 'uuid';
-import { sha256FromString } from 'ethereumjs-util';
-import { EthMethod, InternalAccount } from '@metamask/keyring-api';
-import { migrate } from './104';
+import { migrate, version } from './104';
 
-const MOCK_ADDRESS = '0x0';
-const MOCK_ADDRESS_2 = '0x1';
-
-function addressToUUID(address: string): string {
-  return uuid({
-    random: sha256FromString(address).slice(0, 16),
-  });
-}
-
-interface Identity {
-  name: string;
-  address: string;
-  lastSelected?: number;
-}
-
-interface Identities {
-  [key: string]: Identity;
-}
-
-function createMockPreferenceControllerState(
-  identities: Identity[] = [{ name: 'Account 1', address: MOCK_ADDRESS }],
-  selectedAddress: string = MOCK_ADDRESS,
-): {
-  identities: Identities;
-  selectedAddress: string;
-} {
-  const state: {
-    identities: Identities;
-    selectedAddress: string;
-  } = {
-    identities: {},
-    selectedAddress,
-  };
-
-  identities.forEach(({ address, name, lastSelected }) => {
-    state.identities[address] = {
-      address,
-      name,
-      lastSelected,
-    };
-  });
-
-  return state;
-}
-
-function expectedInternalAccount(
-  address: string,
-  nickname: string,
-  lastSelected?: number,
-): InternalAccount {
-  return {
-    address,
-    id: addressToUUID(address),
-    metadata: {
-      name: nickname,
-      keyring: {
-        type: 'HD Key Tree',
-      },
-      lastSelected: lastSelected ? expect.any(Number) : undefined,
-    },
-    options: {},
-    methods: [...Object.values(EthMethod)],
-    type: 'eip155:eoa',
-  };
-}
-
-function createMockState(
-  preferenceState: {
-    identities: Identities;
-    selectedAddress: string;
-  } = createMockPreferenceControllerState(),
-) {
-  return {
-    PreferencesController: {
-      ...preferenceState,
-    },
-  };
-}
+const oldVersion = 103;
 
 describe('migration #104', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: 103 },
-      data: createMockState(),
+      meta: { version: oldVersion },
+      data: {},
     };
 
     const newStorage = await migrate(oldStorage);
 
-    expect(newStorage.meta).toStrictEqual({ version: 104 });
+    expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  describe('createDefaultAccountsController', () => {
-    it('creates default state for accounts controller', async () => {
-      const oldData = createMockState();
+  it('does nothing if no TransactionController state', async () => {
+    const oldState = {
+      OtherController: {},
+    };
 
-      const oldStorage = {
-        meta: { version: 103 },
-        data: oldData,
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      const expectedUUID = addressToUUID(MOCK_ADDRESS);
-      const resultInternalAccount = expectedInternalAccount(
-        MOCK_ADDRESS,
-        'Account 1',
-      );
-
-      expect(newStorage.data.AccountsController).toStrictEqual({
-        internalAccounts: {
-          accounts: {
-            [expectedUUID]: resultInternalAccount,
-          },
-          selectedAccount: expectedUUID,
-        },
-      });
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
     });
+
+    expect(transformedState.data).toEqual(oldState);
   });
 
-  describe('createInternalAccountsForAccountsController', () => {
-    const expectedUUID = addressToUUID(MOCK_ADDRESS);
-    const expectedUUID2 = addressToUUID(MOCK_ADDRESS_2);
+  it('sets empty array if no transactions', async () => {
+    const oldState = {
+      TransactionController: {
+        transactions: {},
+      },
+    };
 
-    it('should create the identities into AccountsController as internal accounts', async () => {
-      const oldData = createMockState();
-
-      const oldStorage = {
-        meta: { version: 103 },
-        data: oldData,
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual({
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [expectedUUID]: expectedInternalAccount(
-                MOCK_ADDRESS,
-                `Account 1`,
-              ),
-            },
-            selectedAccount: expectedUUID,
-          },
-        },
-        PreferencesController: expect.any(Object),
-      });
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
     });
 
-    it('should keep the same name from the identities', async () => {
-      const oldData = createMockState(
-        createMockPreferenceControllerState([
-          { name: 'a random name', address: MOCK_ADDRESS },
-        ]),
-      );
-      const oldStorage = {
-        meta: { version: 103 },
-        data: oldData,
-      };
-      const newStorage = await migrate(oldStorage);
-      expect(newStorage.data).toStrictEqual({
-        PreferencesController: expect.any(Object),
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [expectedUUID]: expectedInternalAccount(
-                MOCK_ADDRESS,
-                `a random name`,
-              ),
-            },
-            selectedAccount: expectedUUID,
-          },
-        },
-      });
-    });
-
-    it('should be able to handle multiple identities', async () => {
-      const oldData = createMockState({
-        identities: {
-          [MOCK_ADDRESS]: { name: 'Account 1', address: MOCK_ADDRESS },
-          [MOCK_ADDRESS_2]: { name: 'Account 2', address: MOCK_ADDRESS_2 },
-        },
-        selectedAddress: MOCK_ADDRESS,
-      });
-
-      const oldStorage = {
-        meta: { version: 103 },
-        data: oldData,
-      };
-
-      const newStorage = await migrate(oldStorage);
-
-      expect(newStorage.data).toStrictEqual({
-        AccountsController: {
-          internalAccounts: {
-            accounts: {
-              [expectedUUID]: expectedInternalAccount(
-                MOCK_ADDRESS,
-                `Account 1`,
-              ),
-              [expectedUUID2]: expectedInternalAccount(
-                MOCK_ADDRESS_2,
-                `Account 2`,
-              ),
-            },
-            selectedAccount: expectedUUID,
-          },
-        },
-        PreferencesController: expect.any(Object),
-      });
+    expect(transformedState.data).toEqual({
+      TransactionController: {
+        transactions: [],
+      },
     });
   });
 
-  describe('createSelectedAccountForAccountsController', () => {
-    it('should select the same account as the selected address', async () => {
-      const oldData = createMockState();
-      const oldStorage = {
-        meta: { version: 103 },
-        data: oldData,
-      };
-      const newStorage = await migrate(oldStorage);
-      expect(newStorage.data).toStrictEqual({
-        PreferencesController: expect.any(Object),
-        AccountsController: {
-          internalAccounts: {
-            accounts: expect.any(Object),
-            selectedAccount: addressToUUID(MOCK_ADDRESS),
+  it('sets array if existing transactions', async () => {
+    const oldState = {
+      TransactionController: {
+        transactions: {
+          testId1: {
+            id: 'testId1',
+            status: 'submitted',
+          },
+          testId2: {
+            id: 'testId2',
+            status: 'unapproved',
+          },
+          testId3: {
+            id: 'testId3',
+            status: 'confirmed',
           },
         },
-      });
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
     });
 
-    it("should leave selectedAccount as empty if there aren't any selectedAddress", async () => {
-      const oldData = {
-        PreferencesController: {
-          identities: {},
-          selectedAddress: '',
-        },
-      };
-      const oldStorage = {
-        meta: { version: 103 },
-        data: oldData,
-      };
-      const newStorage = await migrate(oldStorage);
-      expect(newStorage.data).toStrictEqual({
-        PreferencesController: expect.any(Object),
-        AccountsController: {
-          internalAccounts: {
-            accounts: expect.any(Object),
-            selectedAccount: '',
+    expect(transformedState.data).toEqual({
+      TransactionController: {
+        transactions: [
+          {
+            id: 'testId1',
+            status: 'submitted',
+          },
+          {
+            id: 'testId2',
+            status: 'unapproved',
+          },
+          {
+            id: 'testId3',
+            status: 'confirmed',
+          },
+        ],
+      },
+    });
+  });
+
+  it('sorts array by descending time', async () => {
+    const oldState = {
+      TransactionController: {
+        transactions: {
+          testId1: {
+            id: 'testId1',
+            status: 'submitted',
+            time: 1,
+          },
+          testId2: {
+            id: 'testId2',
+            status: 'unapproved',
+            time: 3,
+          },
+          testId3: {
+            id: 'testId3',
+            status: 'failed',
+          },
+          testId4: {
+            id: 'testId4',
+            status: 'confirmed',
+            time: 2,
           },
         },
-      });
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual({
+      TransactionController: {
+        transactions: [
+          {
+            id: 'testId2',
+            status: 'unapproved',
+            time: 3,
+          },
+          {
+            id: 'testId4',
+            status: 'confirmed',
+            time: 2,
+          },
+          {
+            id: 'testId1',
+            status: 'submitted',
+            time: 1,
+          },
+          {
+            id: 'testId3',
+            status: 'failed',
+          },
+        ],
+      },
     });
   });
 });

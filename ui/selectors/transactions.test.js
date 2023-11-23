@@ -1,6 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
-import { TransactionStatus } from '../../shared/constants/transaction';
 import {
   unapprovedMessagesSelector,
   transactionsSelector,

@@ -238,5 +238,9 @@
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
   },
-  "TxController": { "transactions": "object" }
+  "TxController": {
+    "lastFetchedBlockNumbers": "object",
+    "methodData": "object",
+    "transactions": "object"
+  }
 }

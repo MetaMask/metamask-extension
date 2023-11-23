@@ -5,7 +5,6 @@ import { TransactionUpdateController } from '@metamask-institutional/transaction
 import { SignatureController } from '@metamask/signature-controller';
 
 import MMIController from './mmi-controller';
-import TransactionController from './transactions';
 import PreferencesController from './preferences';
 import AppStateController from './app-state';
 

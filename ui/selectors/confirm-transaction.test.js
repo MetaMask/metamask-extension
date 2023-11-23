@@ -1,4 +1,4 @@
-import { TransactionType } from '../../shared/constants/transaction';
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   sendTokenTokenAmountAndToAddressSelector,
   contractExchangeRateSelector,
