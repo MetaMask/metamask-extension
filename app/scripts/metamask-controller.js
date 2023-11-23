@@ -1561,14 +1561,6 @@ export default class MetamaskController extends EventEmitter {
 
           return { gasLimit, simulationFails };
         },
-        networkController: this.networkController,
-        // This handler is misnamed. We must listen to networkDidChange
-        // to ensure the network provider has been set by the time we
-        // try to use it in this controller
-        onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-          networkControllerMessenger,
-          'NetworkController:networkDidChange',
-        ),
         provider: this.provider,
         getProviderConfig: () => this.networkController.state.providerConfig,
         getTokenRatesState: () => this.tokenRatesController.state,
