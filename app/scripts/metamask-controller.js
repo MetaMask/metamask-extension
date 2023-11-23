@@ -1013,7 +1013,7 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setSelectedAccount(accountToBeSet.id);
         this.preferencesController.setSelectedAddress(address);
       },
-      syncIdentities: async (identities) => {
+      syncIdentities: (identities) => {
         this.preferencesController.syncAddresses(identities);
       },
       updateIdentities: this.preferencesController.setAddresses.bind(
