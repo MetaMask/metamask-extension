@@ -89,7 +89,6 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -168,7 +167,6 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -276,7 +274,6 @@ describe('Custom network', function () {
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -330,7 +327,6 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -391,7 +387,6 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           // Avoid a stale element error
@@ -478,7 +473,6 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           // Avoid a stale element error
@@ -535,7 +529,6 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await driver.clickElement(
@@ -587,8 +580,6 @@ describe('Custom network', function () {
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
-          await driver.navigate();
-
           await unlockWallet(driver);
 
           await checkThatSafeChainsListValidationToggleIsOn(driver);
@@ -629,8 +620,6 @@ describe('Custom network', function () {
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
-          await driver.navigate();
-
           await unlockWallet(driver);
 
           await toggleOffSafeChainsListValidation(driver);

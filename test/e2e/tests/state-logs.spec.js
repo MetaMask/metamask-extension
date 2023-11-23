@@ -4,6 +4,7 @@ const {
   convertToHexValue,
   withFixtures,
   createDownloadFolder,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -45,9 +46,7 @@ describe('State logs', function () {
       },
       async ({ driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Download state logs
         await driver.clickElement(

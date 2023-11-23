@@ -34,7 +34,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
@@ -162,7 +161,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
@@ -258,7 +256,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
@@ -309,7 +306,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
@@ -380,7 +376,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
@@ -450,7 +445,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
