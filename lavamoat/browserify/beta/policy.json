@@ -1732,14 +1732,45 @@
         "console.error": true
       },
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
+        "@metamask/permission-controller>@metamask/base-controller": true,
+        "@metamask/permission-controller>@metamask/controller-utils": true,
         "@metamask/permission-controller>nanoid": true,
         "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "deep-freeze-strict": true,
         "immer": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/permission-controller>@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true
+      }
+    },
+    "@metamask/permission-controller>@metamask/controller-utils>@metamask/ethjs-unit": {
+      "packages": {
+        "bn.js": true,
+        "ethjs>number-to-bn": true
       }
     },
     "@metamask/permission-controller>nanoid": {
@@ -1931,13 +1962,33 @@
     "@metamask/snaps-rpc-methods": {
       "packages": {
         "@metamask/key-tree": true,
-        "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/snaps-rpc-methods>@metamask/permission-controller": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/utils>@noble/hashes": true,
         "superstruct": true
+      }
+    },
+    "@metamask/snaps-rpc-methods>@metamask/permission-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": true,
+        "@metamask/utils": true,
+        "deep-freeze-strict": true,
+        "immer": true
+      }
+    },
+    "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/snaps-sdk": {
@@ -1974,10 +2025,10 @@
       },
       "packages": {
         "@metamask/key-tree": true,
-        "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>is-svg": true,
+        "@metamask/snaps-utils>@metamask/permission-controller": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>rfdc": true,
@@ -1991,6 +2042,26 @@
         "chalk": true,
         "semver": true,
         "superstruct": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/snaps-utils>@metamask/permission-controller>nanoid": true,
+        "@metamask/utils": true,
+        "deep-freeze-strict": true,
+        "immer": true
+      }
+    },
+    "@metamask/snaps-utils>@metamask/permission-controller>nanoid": {
+      "globals": {
+        "crypto.getRandomValues": true
       }
     },
     "@metamask/snaps-utils>cron-parser": {

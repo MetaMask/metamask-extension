@@ -3894,6 +3894,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@metamask/base-controller@npm:4.0.0"
+  dependencies:
+    "@metamask/utils": "npm:^8.2.0"
+    immer: "npm:^9.0.6"
+  checksum: 9e8819289a159ed3b91b1629f273cf33bb4034b872984c15eafcfc07a9ab1ed9b7c27c61839f7ebbfc5c259718f771d6f92362ad3c6a0c2434aecd840e9b239a
+  languageName: node
+  linkType: hard
+
 "@metamask/browser-passworder@npm:^4.1.0":
   version: 4.1.0
   resolution: "@metamask/browser-passworder@npm:4.1.0"
@@ -3936,6 +3946,20 @@ __metadata:
     ethjs-unit: "npm:^0.1.6"
     fast-deep-equal: "npm:^3.1.3"
   checksum: fde3d4893ddd408e1b6138180d53568e27626b5884a404473a3e75d4615ba4525aa33deb21a24a438ff0928431d278efd9c084e9aca7eeaaf2a1c300691318d5
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/controller-utils@npm:6.0.0"
+  dependencies:
+    "@metamask/ethjs-unit": "npm:^0.2.1"
+    "@metamask/utils": "npm:^8.2.0"
+    "@spruceid/siwe-parser": "npm:1.1.3"
+    eth-ens-namehash: "npm:^2.0.8"
+    ethereumjs-util: "npm:^7.0.10"
+    fast-deep-equal: "npm:^3.1.3"
+  checksum: 712da93d3068df0ac420a3e15da637088e4b471963e98abf64b6591ba0c234ff8719945d2246278f11f6adf56eeef9a383b61d9c385c9f99635a17c2363656eb
   languageName: node
   linkType: hard
 
@@ -4289,6 +4313,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/ethjs-unit@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@metamask/ethjs-unit@npm:0.2.1"
+  dependencies:
+    bn.js: "npm:4.11.6"
+    number-to-bn: "npm:1.7.0"
+  checksum: a67792099e316c102d640782a538359b30937db5d9f3b796e3dc1a03415063632765828cfe1f6b0c37ed8584a3a92f3f1522a2ced40ba0a96766114036db21f3
+  languageName: node
+  linkType: hard
+
 "@metamask/forwarder@npm:^1.1.0":
   version: 1.1.0
   resolution: "@metamask/forwarder@npm:1.1.0"
@@ -4590,6 +4624,26 @@ __metadata:
   peerDependencies:
     "@metamask/approval-controller": ^4.1.0
   checksum: 864c83c5e590a4ba251904b7d164a10413185db7f6e6fb474874a7eadac2261af773e796d75fc782c6add1f544e860b35e3f9a0c1d4c3e5bf2b66935ed207b49
+  languageName: node
+  linkType: hard
+
+"@metamask/permission-controller@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/permission-controller@npm:6.0.0"
+  dependencies:
+    "@metamask/approval-controller": "npm:^5.0.0"
+    "@metamask/base-controller": "npm:^4.0.0"
+    "@metamask/controller-utils": "npm:^6.0.0"
+    "@metamask/json-rpc-engine": "npm:^7.3.0"
+    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/utils": "npm:^8.2.0"
+    "@types/deep-freeze-strict": "npm:^1.1.0"
+    deep-freeze-strict: "npm:^1.1.1"
+    immer: "npm:^9.0.6"
+    nanoid: "npm:^3.1.31"
+  peerDependencies:
+    "@metamask/approval-controller": ^5.0.0
+  checksum: 7c4379afdcb290958958ef60d1a9c2e48ce5f10f5f246620d5f8a24d8ca3fa028231c8dcebd4543c6c1835e20c38fa7fb4e73d9574eba1407a38f7a1e466bc57
   languageName: node
   linkType: hard
 
@@ -24108,7 +24162,7 @@ __metadata:
     "@metamask/network-controller": "npm:^15.2.0"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
-    "@metamask/permission-controller": "npm:^5.0.0"
+    "@metamask/permission-controller": "npm:^6.0.0"
     "@metamask/phishing-controller": "npm:^7.0.1"
     "@metamask/phishing-warning": "npm:^3.0.0"
     "@metamask/polling-controller": "npm:^1.0.1"
