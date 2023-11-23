@@ -96,7 +96,7 @@ body:
   - type: checkboxes
     id: stakeholder-review
     attributes:
-      label: Stakeholder review needed before the work gets merged
+      label: Stakeholder review needed before the work gets merged (for MetaMask employees only)
       options:
         - label: Engineering (needed in most cases)
         - label: Design
