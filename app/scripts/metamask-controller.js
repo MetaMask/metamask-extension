@@ -72,7 +72,6 @@ import {
 import { LoggingController, LogType } from '@metamask/logging-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
 import {
@@ -289,6 +288,7 @@ import { updateCurrentLocale } from './translate';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IN
+import { encryptorFactory } from './lib/encryptor-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1003,7 +1003,7 @@ export default class MetamaskController extends EventEmitter {
     this.keyringController = new KeyringController({
       keyringBuilders: additionalKeyrings,
       state: initState.KeyringController,
-      encryptor: opts.encryptor || undefined,
+      encryptor: opts.encryptor || encryptorFactory(900_000),
       messenger: keyringControllerMessenger,
       removeIdentity: this.preferencesController.removeAddress.bind(
         this.preferencesController,
@@ -2202,11 +2202,13 @@ export default class MetamaskController extends EventEmitter {
    * Constructor helper for getting Snap permission specifications.
    */
   getSnapPermissionSpecifications() {
+    const snapEncryptor = encryptorFactory(10_000);
+
     return {
       ...buildSnapEndowmentSpecifications(),
       ...buildSnapRestrictedMethodSpecifications({
-        encrypt,
-        decrypt,
+        encrypt: snapEncryptor.encrypt,
+        decrypt: snapEncryptor.decrypt,
         getLocale: this.getLocale.bind(this),
         clearSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
