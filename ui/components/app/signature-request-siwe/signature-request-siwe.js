@@ -89,7 +89,7 @@ export default function SignatureRequestSIWE({ txData }) {
         },
       });
     }
-  }, [txData?.securityAlertResponse]);
+  }, []);
   ///: END:ONLY_INCLUDE_IN
 
   const {

@@ -29,7 +29,6 @@ describe('View NFT details', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Click to open the NFT details page and check title
