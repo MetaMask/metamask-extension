@@ -835,7 +835,7 @@ describe('SwapsController', function () {
           chainId: CHAIN_IDS.MAINNET,
         });
 
-        const newEthersInstance = swapsController.ethersProvider;
+        const newEthersInstance = _swapsController.ethersProvider;
         assert.strictEqual(
           currentEthersInstance,
           newEthersInstance,
