@@ -35,11 +35,6 @@ import {
   unconfirmedTransactionsListSelector,
   unconfirmedTransactionsHashSelector,
   use4ByteResolutionSelector,
-  ///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
-  latestPendingConfirmationSelector,
-  pendingConfirmationsSelector,
-  unapprovedPersonalMsgsSelector,
-  ///: END:ONLY_INCLUDE_IN(conf-redesign)
 } from '../../selectors';
 import {
   disconnectGasFeeEstimatePoller,
