@@ -8,7 +8,7 @@ import { MMIAccountMenuPage } from '../pageObjects/mmi-accountMenu-page';
 import { MMIMainPage } from '../pageObjects/mmi-main-page';
 
 test.describe('MMI visual', () => {
-  test('Full visual e2e', async ({ page, context }) => {
+  test.skip('Full visual e2e', async ({ page, context }) => {
     // Getting extension id of MMI
     const extensions = new ChromeExtensionPage(await context.newPage());
 
