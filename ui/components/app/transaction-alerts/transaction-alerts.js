@@ -2,7 +2,6 @@ import React, {
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   useCallback,
   useContext,
-  useEffect,
   ///: END:ONLY_INCLUDE_IN
 } from 'react';
 import PropTypes from 'prop-types';
@@ -33,7 +32,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IN
 
 const TransactionAlerts = ({
@@ -72,25 +70,6 @@ const TransactionAlerts = ({
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   const trackEvent = useContext(MetaMetricsContext);
-  ///: END:ONLY_INCLUDE_IN
-
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  useEffect(() => {
-    if (txData.securityAlertResponse) {
-      const blockaidMetricsParams = getBlockaidMetricsParams(
-        txData.securityAlertResponse,
-      );
-
-      trackEvent({
-        category: MetaMetricsEventCategory.Transactions,
-        event: MetaMetricsEventName.SignatureRequested,
-        properties: {
-          action: 'Sign Request',
-          ...blockaidMetricsParams,
-        },
-      });
-    }
-  }, [txData?.securityAlertResponse]);
   ///: END:ONLY_INCLUDE_IN
 
   ///: BEGIN:ONLY_INCLUDE_IN(blockaid)

@@ -21,7 +21,6 @@ describe('Test Snap Get File', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect to dialog snap

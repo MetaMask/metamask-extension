@@ -22,7 +22,6 @@ describe('Test Snap manageState', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // navigate to test snaps page, then fill in the snapId
