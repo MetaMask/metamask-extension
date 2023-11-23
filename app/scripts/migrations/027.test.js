@@ -1,5 +1,5 @@
+import { TransactionStatus } from '@metamask/transaction-controller';
 import firstTimeState from '../first-time-state';
-import { TransactionStatus } from '../../../shared/constants/transaction';
 import migration27 from './027';
 
 const oldStorage = {

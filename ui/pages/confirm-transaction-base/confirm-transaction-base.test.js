@@ -5,6 +5,10 @@ import { fireEvent } from '@testing-library/react';
 
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
@@ -15,10 +19,6 @@ import {
   GOERLI_DISPLAY_NAME,
   NETWORK_TYPES,
 } from '../../../shared/constants/network';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '../../../shared/constants/transaction';
 import { domainInitialState } from '../../ducks/domains';
 
 import ConfirmTransactionBase from './confirm-transaction-base.container';

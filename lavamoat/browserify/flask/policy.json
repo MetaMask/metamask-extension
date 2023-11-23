@@ -1368,7 +1368,7 @@
       },
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "mockttp>graphql-tag>tslib": true
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>tslib": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": {
@@ -1438,6 +1438,11 @@
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs>@protobufjs/aspromise": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs>@protobufjs/inquire": true
+      }
+    },
+    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>tslib": {
+      "globals": {
+        "define": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": {
@@ -2531,6 +2536,141 @@
       "packages": {
         "browserify>process": true,
         "semver": true
+      }
+    },
+    "@metamask/transaction-controller": {
+      "globals": {
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@ethereumjs/common": true,
+        "@ethereumjs/tx": true,
+        "@ethersproject/abi": true,
+        "@metamask/gas-fee-controller": true,
+        "@metamask/metamask-eth-abis": true,
+        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/transaction-controller>@metamask/base-controller": true,
+        "@metamask/transaction-controller>@metamask/controller-utils": true,
+        "@metamask/transaction-controller>@metamask/eth-query": true,
+        "@metamask/transaction-controller>eth-method-registry": true,
+        "@metamask/transaction-controller>nonce-tracker": true,
+        "@metamask/utils": true,
+        "eth-json-rpc-filters>async-mutex": true,
+        "ethereumjs-util": true,
+        "fast-json-patch": true,
+        "lodash": true,
+        "uuid": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/permission-controller>@metamask/controller-utils>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/eth-query": {
+      "packages": {
+        "@metamask/eth-query>json-rpc-random-id": true,
+        "watchify>xtend": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry": {
+      "packages": {
+        "@metamask/transaction-controller>eth-method-registry>ethjs": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>ethjs": {
+      "globals": {
+        "clearInterval": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-abi": true,
+        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-contract": true,
+        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-query": true,
+        "bn.js": true,
+        "browserify>buffer": true,
+        "ethjs>ethjs-filter": true,
+        "ethjs>ethjs-provider-http": true,
+        "ethjs>ethjs-unit": true,
+        "ethjs>ethjs-util": true,
+        "ethjs>js-sha3": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-abi": {
+      "packages": {
+        "bn.js": true,
+        "browserify>buffer": true,
+        "ethjs>js-sha3": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-contract": {
+      "packages": {
+        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": true,
+        "ethjs-contract>babel-runtime": true,
+        "ethjs>ethjs-filter": true,
+        "ethjs>ethjs-util": true,
+        "ethjs>js-sha3": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
+      "packages": {
+        "bn.js": true,
+        "browserify>buffer": true,
+        "ethjs>js-sha3": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-query": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/ethjs-query>ethjs-format": true,
+        "@metamask/ethjs-query>ethjs-rpc": true,
+        "ethjs-contract>babel-runtime": true,
+        "promise-to-callback": true
+      }
+    },
+    "@metamask/transaction-controller>nonce-tracker": {
+      "packages": {
+        "@ethersproject/providers": true,
+        "@metamask/network-controller>eth-block-tracker": true,
+        "@metamask/transaction-controller>nonce-tracker>async-mutex": true,
+        "browserify>assert": true
+      }
+    },
+    "@metamask/transaction-controller>nonce-tracker>async-mutex": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "mockttp>graphql-tag>tslib": true
       }
     },
     "@metamask/utils": {
@@ -4136,6 +4276,7 @@
     },
     "mockttp>graphql-tag>tslib": {
       "globals": {
+        "SuppressedError": true,
         "define": true
       }
     },
@@ -4165,13 +4306,6 @@
         "Request": true,
         "Response": true,
         "fetch": true
-      }
-    },
-    "nonce-tracker": {
-      "packages": {
-        "await-semaphore": true,
-        "browserify>assert": true,
-        "ethjs>ethjs-query": true
       }
     },
     "obj-multiplex": {

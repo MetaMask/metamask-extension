@@ -17,15 +17,13 @@ import {
 import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
-import { TransactionStatus } from '../../shared/constants/transaction';
-import createTxMeta from '../../test/lib/createTxMeta';
+import { TransactionController } from '@metamask/transaction-controller';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import { deferredPromise } from './lib/util';
-import TransactionController from './controllers/transactions';
 import MetaMaskController from './metamask-controller';
 
 const { Ganache } = require('../../test/e2e/ganache');
@@ -105,7 +103,6 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
   },
 }));
 
-const currentChainId = '0x5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -945,42 +942,24 @@ describe('MetaMaskController', () => {
     });
 
     describe('#resetAccount', () => {
-      it('wipes transactions from only the correct chain id and with the selected address', async function () {
+      it('wipes transactions from only the correct network id and with the selected address', async () => {
+        const selectedAddressMock =
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
         jest
           .spyOn(metamaskController.preferencesController, 'getSelectedAddress')
-          .mockReturnValue('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
+          .mockReturnValue(selectedAddressMock);
 
-        metamaskController.txController.txStateManager._addTransactionsToState([
-          createTxMeta({
-            id: 1,
-            status: TransactionStatus.unapproved,
-            chainId: currentChainId,
-            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
-          }),
-          createTxMeta({
-            id: 1,
-            status: TransactionStatus.unapproved,
-            chainId: currentChainId,
-            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
-          }),
-          createTxMeta({
-            id: 2,
-            status: TransactionStatus.rejected,
-            chainId: '0x32',
-          }),
-          createTxMeta({
-            id: 3,
-            status: TransactionStatus.submitted,
-            chainId: currentChainId,
-            txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
-          }),
-        ]);
+        jest.spyOn(metamaskController.txController, 'wipeTransactions');
 
         await metamaskController.resetAccount();
 
         expect(
-          metamaskController.txController.txStateManager.getTransaction(1),
-        ).toBeUndefined();
+          metamaskController.txController.wipeTransactions,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          metamaskController.txController.wipeTransactions,
+        ).toHaveBeenCalledWith(true, selectedAddressMock);
       });
     });
 

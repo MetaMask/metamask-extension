@@ -212,7 +212,7 @@ function saveTimestamp() {
 }
 
 /**
- * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
+ * @typedef {import('@metamask/transaction-controller').TransactionMeta} TransactionMeta
  */
 
 /**
@@ -704,10 +704,6 @@ export function setupController(
   //
   updateBadge();
 
-  controller.txController.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
-    updateBadge,
-  );
   controller.decryptMessageController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
@@ -793,11 +789,6 @@ export function setupController(
   );
 
   function rejectUnapprovedNotifications() {
-    Object.keys(
-      controller.txController.txStateManager.getUnapprovedTxList(),
-    ).forEach((txId) =>
-      controller.txController.txStateManager.setTxStatusRejected(txId),
-    );
     controller.signatureController.rejectUnapproved(
       REJECT_NOTIFICATION_CLOSE_SIG,
     );
