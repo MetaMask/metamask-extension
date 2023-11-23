@@ -29,7 +29,10 @@ import {
   TrezorConnectBridge,
   TrezorKeyring,
 } from '@metamask/eth-trezor-keyring';
-import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
+import {
+  LedgerKeyring,
+  LedgerIframeBridge,
+} from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from '@metamask/eth-query';
@@ -509,11 +512,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    // turn on perDappSelectedNetwork feature flag
-    this.selectedNetworkController.update((state) => {
-      state.perDomainNetwork = true;
-    });
-
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
       preventPollingOnNetworkRestart: initState.TokenListController
@@ -753,15 +751,18 @@ export default class MetamaskController extends EventEmitter {
 
     const currencyRateMessenger = this.controllerMessenger.getRestricted({
       name: 'CurrencyRateController',
+      allowedActions: [`${this.networkController.name}:getNetworkClientById`],
     });
     this.currencyRateController = new CurrencyRateController({
       includeUsdRate: true,
       messenger: currencyRateMessenger,
-      state: {
-        ...initState.CurrencyController,
-        nativeCurrency: this.networkController.state.providerConfig.ticker,
-      },
+      state: initState.CurrencyController,
     });
+    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
+      this.currencyRateController.startPollingByNetworkClientId(
+        this.networkController.state.selectedNetworkClientId,
+      );
+    }
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
@@ -839,10 +840,12 @@ export default class MetamaskController extends EventEmitter {
         const { useCurrencyRateCheck: prevUseCurrencyRateCheck } = prevState;
         const { useCurrencyRateCheck: currUseCurrencyRateCheck } = currState;
         if (currUseCurrencyRateCheck && !prevUseCurrencyRateCheck) {
-          this.currencyRateController.start();
+          this.currencyRateController.startPollingByNetworkClientId(
+            this.networkController.state.selectedNetworkClientId,
+          );
           this.tokenRatesController.start();
         } else if (!currUseCurrencyRateCheck && prevUseCurrencyRateCheck) {
-          this.currencyRateController.stop();
+          this.currencyRateController.stopAllPolling();
           this.tokenRatesController.stop();
         }
       }, this.preferencesController.store.getState()),
@@ -915,7 +918,6 @@ export default class MetamaskController extends EventEmitter {
       const keyringOverrides = this.opts.overrides?.keyrings;
 
       const additionalKeyringTypes = [
-        keyringOverrides?.ledger || LedgerBridgeKeyring,
         keyringOverrides?.lattice || LatticeKeyring,
         QRHardwareKeyring,
       ];
@@ -924,6 +926,10 @@ export default class MetamaskController extends EventEmitter {
         {
           keyring: keyringOverrides?.trezor || TrezorKeyring,
           bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
+        },
+        {
+          keyring: keyringOverrides?.ledger || LedgerKeyring,
+          bridge: keyringOverrides?.ledgerBridge || LedgerIframeBridge,
         },
       ];
 
@@ -953,19 +959,30 @@ export default class MetamaskController extends EventEmitter {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    const snapKeyringBuildMessenger = this.controllerMessenger.getRestricted({
+      name: 'SnapKeyringBuilder',
+      allowedActions: [
+        'ApprovalController:addRequest',
+        'ApprovalController:acceptRequest',
+        'ApprovalController:rejectRequest',
+        'ApprovalController:startFlow',
+        'ApprovalController:endFlow',
+        'ApprovalController:showSuccess',
+        'ApprovalController:showError',
+        'PhishingController:test',
+        'PhishingController:maybeUpdateState',
+        'KeyringController:getAccounts',
+      ],
+    });
+
     const getSnapController = () => this.snapController;
-    const getApprovalController = () => this.approvalController;
-    const getKeyringController = () => this.keyringController;
-    const getPreferencesController = () => this.preferencesController;
-    const getPhishingController = () => this.phishingController;
 
     additionalKeyrings.push(
       snapKeyringBuilder(
+        snapKeyringBuildMessenger,
         getSnapController,
-        getApprovalController,
-        getKeyringController,
-        getPreferencesController,
-        getPhishingController,
+        async () => await this.keyringController.persistAllKeyrings(),
+        (address) => this.preferencesController.setSelectedAddress(address),
         (address) => this.removeAccount(address),
       ),
     );
@@ -1249,8 +1266,8 @@ export default class MetamaskController extends EventEmitter {
       refetchOnAllowlistMiss: requireAllowlist,
       failOnUnavailableRegistry: requireAllowlist,
       url: {
-        registry: 'https://acl.execution.consensys.io/latest/registry.json',
-        signature: 'https://acl.execution.consensys.io/latest/signature.json',
+        registry: 'https://acl.execution.metamask.io/latest/registry.json',
+        signature: 'https://acl.execution.metamask.io/latest/signature.json',
       },
       publicKey:
         '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
@@ -1398,9 +1415,15 @@ export default class MetamaskController extends EventEmitter {
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       async () => {
-        const { ticker } = this.networkController.state.providerConfig;
         try {
-          await this.currencyRateController.setNativeCurrency(ticker);
+          if (
+            this.preferencesController.store.getState().useCurrencyRateCheck
+          ) {
+            await this.currencyRateController.stopAllPolling();
+            this.currencyRateController.startPollingByNetworkClientId(
+              this.networkController.state.selectedNetworkClientId,
+            );
+          }
         } catch (error) {
           // TODO: Handle failure to get conversion rate more gracefully
           console.error(error);
@@ -1487,7 +1510,6 @@ export default class MetamaskController extends EventEmitter {
     this.mmiController = new MMIController({
       mmiConfigurationController: this.mmiConfigurationController,
       keyringController: this.keyringController,
-      txController: this.txController,
       securityProviderRequest: this.securityProviderRequest.bind(this),
       preferencesController: this.preferencesController,
       appStateController: this.appStateController,
@@ -1503,9 +1525,31 @@ export default class MetamaskController extends EventEmitter {
       signatureController: this.signatureController,
       platform: this.platform,
       extension: this.extension,
+      getTransactions: this.txController.getTransactions.bind(
+        this.txController,
+      ),
+      setTxStatusSigned:
+        this.txController.txStateManager.setTxStatusSigned.bind(
+          this.txController.txStateManager,
+        ),
+      setTxStatusSubmitted:
+        this.txController.txStateManager.setTxStatusSubmitted.bind(
+          this.txController.txStateManager,
+        ),
+      setTxStatusFailed:
+        this.txController.txStateManager.setTxStatusFailed.bind(
+          this.txController.txStateManager,
+        ),
       trackTransactionEvents: handleMMITransactionUpdate.bind(
         null,
         transactionMetricsRequest,
+      ),
+      updateTransaction:
+        this.txController.txStateManager.updateTransaction.bind(
+          this.txController.txStateManager,
+        ),
+      updateTransactionHash: this.txController.setTxHash.bind(
+        this.txController,
       ),
     });
     ///: END:ONLY_INCLUDE_IN
@@ -1517,9 +1561,12 @@ export default class MetamaskController extends EventEmitter {
             this.txController.txGasUtil,
           ),
         networkController: this.networkController,
+        // This handler is misnamed. We must listen to networkDidChange
+        // to ensure the network provider has been set by the time we
+        // try to use it in this controller
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
-          'NetworkController:stateChange',
+          'NetworkController:networkDidChange',
         ),
         provider: this.provider,
         getProviderConfig: () => this.networkController.state.providerConfig,
@@ -1863,12 +1910,15 @@ export default class MetamaskController extends EventEmitter {
       this.resetStates(resetMethods);
     }
 
-    // Automatic login via config password or loginToken
+    // Automatic login via config password
+    const password = process.env.PASSWORD;
     if (
       !this.isUnlocked() &&
-      this.onboardingController.store.getState().completedOnboarding
+      this.onboardingController.store.getState().completedOnboarding &&
+      password &&
+      !process.env.IN_TEST
     ) {
-      this._loginUser();
+      this._loginUser(password);
     } else {
       this._startUISync();
     }
@@ -1901,7 +1951,9 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.start();
     this.txController.startIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.start();
+      this.currencyRateController.startPollingByNetworkClientId(
+        this.networkController.state.selectedNetworkClientId,
+      );
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.start();
@@ -1912,7 +1964,7 @@ export default class MetamaskController extends EventEmitter {
     this.accountTracker.stop();
     this.txController.stopIncomingTransactionPolling();
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.stop();
+      this.currencyRateController.stopAllPolling();
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.stop();
@@ -2072,13 +2124,29 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:updateSnapState',
         ),
-        maybeUpdatePhishingList: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'PhishingController:maybeUpdateState',
-        ),
-        isOnPhishingList: (origin) =>
-          this.controllerMessenger.call('PhishingController:testOrigin', origin)
-            .result,
+        maybeUpdatePhishingList: () => {
+          const { usePhishDetect } =
+            this.preferencesController.store.getState();
+
+          if (!usePhishDetect) {
+            return;
+          }
+
+          this.controllerMessenger.call('PhishingController:maybeUpdateState');
+        },
+        isOnPhishingList: (origin) => {
+          const { usePhishDetect } =
+            this.preferencesController.store.getState();
+
+          if (!usePhishDetect) {
+            return false;
+          }
+
+          return this.controllerMessenger.call(
+            'PhishingController:testOrigin',
+            origin,
+          ).result;
+        },
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
@@ -2409,6 +2477,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       // Snap state, source code and other files are stripped out to prevent piping to the MetaMask UI.
       snapStates: {},
+      unencryptedSnapStates: {},
       snaps: Object.values(flatState.snaps ?? {}).reduce((acc, snap) => {
         // eslint-disable-next-line no-unused-vars
         const { sourceCode, auxiliaryFiles, ...rest } = snap;
@@ -2516,9 +2585,7 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IN
-      setUseRequestQueue: preferencesController.setUseRequestQueue.bind(
-        preferencesController,
-      ),
+      setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
@@ -2879,6 +2946,16 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:enable',
       ),
+      updateSnap: (origin, requestedSnaps) => {
+        // We deliberately do not await this promise as that would mean waiting for the update to complete
+        // Instead we return null to signal to the UI that it is safe to redirect to the update flow
+        this.controllerMessenger.call(
+          'SnapController:install',
+          origin,
+          requestedSnaps,
+        );
+        return null;
+      },
       removeSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:remove',
@@ -3349,13 +3426,10 @@ export default class MetamaskController extends EventEmitter {
     this.setLedgerTransportPreference(transportPreference);
   }
 
-  async _loginUser() {
+  async _loginUser(password) {
     try {
       // Automatic login via config password
-      const password = process.env.PASSWORD;
-      if (password && !process.env.IN_TEST) {
-        await this.submitPassword(password);
-      }
+      await this.submitPassword(password);
 
       // Updating accounts in this.accountTracker before starting UI syncing ensure that
       // state has account balance before it is synced with UI
@@ -3475,8 +3549,7 @@ export default class MetamaskController extends EventEmitter {
         keyringName = keyringOverrides?.trezor?.type || TrezorKeyring.type;
         break;
       case HardwareDeviceNames.ledger:
-        keyringName =
-          keyringOverrides?.ledger?.type || LedgerBridgeKeyring.type;
+        keyringName = keyringOverrides?.ledger?.type || LedgerKeyring.type;
         break;
       case HardwareDeviceNames.qr:
         keyringName = QRHardwareKeyring.type;
@@ -3996,6 +4069,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   //=============================================================================
+  // REQUEST QUEUE
+  //=============================================================================
+
+  setUseRequestQueue(value) {
+    this.preferencesController.setUseRequestQueue(value);
+    this.selectedNetworkController.update((state) => {
+      state.perDomainNetwork = value;
+    });
+  }
+
+  //=============================================================================
   // SETUP
   //=============================================================================
 
@@ -4455,7 +4539,11 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController,
             { origin },
           ),
-
+        revokePermissionsForOrigin: (permissionKeys) => {
+          this.permissionController.revokePermissions({
+            [origin]: permissionKeys,
+          });
+        },
         getCurrentChainId: () =>
           this.networkController.state.providerConfig.chainId,
         getCurrentRpcUrl: () =>

@@ -3,23 +3,25 @@
 exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
 <div>
   <div
-    class="mm-box jwt-url-form mm-box--margin-bottom-8 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start"
+    class="mm-box mm-box--margin-bottom-8 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-flex-start"
   >
     <div
-      class="mm-box jwt-url-form__jwt-container mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
+      class="mm-box mm-box--margin-top-4 mm-box--margin-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-full"
     >
       <div
         class="mm-box mm-box--width-full"
       >
         <p
-          class="mm-box mm-text jwt-url-form__instruction mm-text--body-md mm-box--margin-bottom-4 mm-box--display-block mm-box--color-text-default"
+          class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-4 mm-box--display-block mm-box--color-text-default"
         >
           input text
         </p>
         <textarea
-          class="jwt-url-form__input-jwt"
+          class="box box--padding-2 box--flex-direction-row box--width-full box--color-text-default box--background-color-background-default box--rounded-sm box--border-style-solid box--border-color-border-default box--border-width-1 textarea textarea--resize-both textarea--not-scrollable"
           data-testid="jwt-input"
           id="jwt-box"
+          required=""
+          style="height: 154px;"
         />
       </div>
     </div>
@@ -27,18 +29,28 @@ exports[`JwtUrlForm shows JWT text area when no jwt token exists 1`] = `
       class="mm-box mm-box--width-full"
     >
       <p
-        class="mm-box mm-text jwt-url-form__instruction mm-text--body-md mm-box--display-block mm-box--color-text-default"
+        class="mm-box mm-text mm-text--body-md mm-box--display-block mm-box--color-text-default"
       />
       <div
         class="mm-box mm-box--margin-top-4"
       >
-        <input
-          class="jwt-url-form__input"
-          data-testid="jwt-api-url-input"
-          id="api-url-box"
-          type="text"
-          value="url"
-        />
+        <div
+          class="MuiFormControl-root MuiTextField-root MuiFormControl-fullWidth"
+        >
+          <div
+            class="MuiInputBase-root MuiInput-root TextField-inputRoot-57 MuiInputBase-fullWidth MuiInput-fullWidth MuiInputBase-formControl MuiInput-formControl"
+          >
+            <input
+              aria-invalid="false"
+              class="MuiInputBase-input MuiInput-input"
+              data-testid="jwt-api-url-input"
+              dir="auto"
+              id="api-url-box"
+              type="text"
+              value="url"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>

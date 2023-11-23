@@ -18,7 +18,7 @@ const mapStateToProps = (state, ownProps) => {
   } = state;
   const {
     currentCurrency,
-    nativeCurrency,
+    providerConfig: { ticker: nativeCurrency },
     useBlockie,
     currentLocale,
     selectedAddress,

@@ -1,36 +1,37 @@
-import React, { useContext, useMemo, useRef, useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
-import { I18nContext } from '../../../contexts/i18n';
-import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
-import Popover from '../../ui/popover';
-import { Text, ButtonPrimary } from '../../component-library';
-import { updateViewedNotifications } from '../../../store/actions';
-import {
-  NOTIFICATION_BUY_SELL_BUTTON,
-  NOTIFICATION_DROP_LEDGER_FIREFOX,
-  NOTIFICATION_OPEN_BETA_SNAPS,
-  getTranslatedUINotifications,
-} from '../../../../shared/notifications';
-import { getSortedAnnouncementsToShow } from '../../../selectors';
-import {
-  BUILD_QUOTE_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  ADVANCED_ROUTE,
-  EXPERIMENTAL_ROUTE,
-  SECURITY_ROUTE,
-} from '../../../helpers/constants/routes';
-import { TextVariant } from '../../../helpers/constants/design-system';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import {
+  NOTIFICATION_BUY_SELL_BUTTON,
+  NOTIFICATION_DROP_LEDGER_FIREFOX,
+  NOTIFICATION_OPEN_BETA_SNAPS,
+  NOTIFICATION_U2F_LEDGER_LIVE,
+  getTranslatedUINotifications,
+} from '../../../../shared/notifications';
+import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
+import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  ADVANCED_ROUTE,
+  BUILD_QUOTE_ROUTE,
+  EXPERIMENTAL_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  SECURITY_ROUTE,
+} from '../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
+import { getSortedAnnouncementsToShow } from '../../../selectors';
+import { updateViewedNotifications } from '../../../store/actions';
+import { ButtonPrimary, Text } from '../../component-library';
+import Popover from '../../ui/popover';
 
 function getActionFunctionById(id, history) {
   const actionFunctions = {
@@ -120,6 +121,9 @@ function getActionFunctionById(id, history) {
       global.platform.openTab({
         url: 'https://portfolio.metamask.io/sell/build-quote',
       });
+    },
+    [NOTIFICATION_U2F_LEDGER_LIVE]: () => {
+      updateViewedNotifications({ [NOTIFICATION_U2F_LEDGER_LIVE]: true });
     },
   };
 
@@ -347,6 +351,7 @@ export default function WhatsNewPopup({ onClose }) {
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
     [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
     [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
+    [NOTIFICATION_U2F_LEDGER_LIVE]: renderFirstNotification,
   };
 
   return (

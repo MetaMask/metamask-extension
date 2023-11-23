@@ -10,7 +10,7 @@ import {
 
 import Box from '../../ui/box/box';
 
-import { TextField } from '../text-field';
+import { TextField } from '../text-field/deprecated';
 import { HelpText, HelpTextSeverity } from '../help-text';
 import { Label } from '../label';
 
@@ -147,7 +147,7 @@ FormTextField.propTypes = {
   /**
    * The content of the HelpText component
    */
-  helpText: PropTypes.string,
+  helpText: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
   /**
    * Props that are applied to the HelpText component
    */

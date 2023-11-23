@@ -388,12 +388,12 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         class="settings-page__content-item"
       >
         <span>
-          Backup your data
+          Back up your data
         </span>
         <span
           class="settings-page__content-description"
         >
-          You can backup user settings containing preferences and account addresses into a JSON file.
+          You can back up data like your contacts and preferences.
         </span>
       </div>
       <div
@@ -406,7 +406,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             class="button btn--rounded btn-secondary btn--large"
             data-testid="backup-button"
           >
-            Backup
+            Back up
           </button>
         </div>
       </div>
@@ -424,7 +424,7 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
         <span
           class="settings-page__content-description"
         >
-          You can restore user settings containing preferences and account addresses from a previously backed up JSON file.
+          You can restore data like contacts and preferences from a backup file.
         </span>
       </div>
       <div
@@ -446,68 +446,6 @@ exports[`AdvancedTab Component should match snapshot 1`] = `
             style="visibility: hidden;"
             type="file"
           />
-        </div>
-      </div>
-    </div>
-    <div
-      class="mm-box settings-page__content-row mm-box--display-flex mm-box--flex-direction-column"
-      data-testid="ledger-live-control"
-    >
-      <div
-        class="settings-page__content-item"
-      >
-        <span>
-          Preferred Ledger connection type
-        </span>
-        <div
-          class="settings-page__content-description"
-        >
-          <span>
-             
-            Customize how you connect your Ledger to MetaMask. 
-            U2F
-             is recommended, but other options are available. Read more here: 
-            <a
-              class="button btn-link settings-page__inline-link"
-              href="https://metamask.zendesk.com/hc/en-us/articles/360020394612-How-to-connect-a-Trezor-or-Ledger-Hardware-Wallet"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              learn more
-            </a>
-            
-             
-          </span>
-        </div>
-      </div>
-      <div
-        class="settings-page__content-item"
-      >
-        <div
-          class="settings-page__content-item-col"
-        >
-          <div
-            class="dropdown"
-          >
-            <select
-              class="dropdown__select"
-            >
-              <option
-                value="ledgerLive"
-              >
-                Ledger Live
-              </option>
-              <option
-                value="u2f"
-              >
-                U2F
-              </option>
-            </select>
-            <span
-              class="mm-box dropdown__icon-caret-down mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-              style="mask-image: url('./images/icons/arrow-down.svg');"
-            />
-          </div>
         </div>
       </div>
     </div>

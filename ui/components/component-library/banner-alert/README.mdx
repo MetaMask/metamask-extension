@@ -6,6 +6,8 @@ import { BannerBase } from '..';
 
 `BannerAlert` is an inline notification that notifies users of important information & sometimes time-sensitive changes.
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-banneralert--default-story" />
 </Canvas>
@@ -93,7 +95,11 @@ import { BannerAlert, ButtonLinkSize } from '../../component-library';
 
 <BannerAlert>
   {`Description shouldn't repeat title. 1-3 lines. Can contain a `}
-  <ButtonLink size={ButtonLinkSize.Auto} href="https://metamask.io/" target="_blank">
+  <ButtonLink
+    size={ButtonLinkSize.Auto}
+    href="https://metamask.io/"
+    target="_blank"
+  >
     hyperlink.
   </ButtonLink>
 </BannerAlert>;

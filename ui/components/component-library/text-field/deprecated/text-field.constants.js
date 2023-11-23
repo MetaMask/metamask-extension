@@ -1,4 +1,4 @@
-import { Size } from '../../../helpers/constants/design-system';
+import { Size } from '../../../../helpers/constants/design-system';
 
 export const TEXT_FIELD_SIZES = {
   SM: Size.SM,

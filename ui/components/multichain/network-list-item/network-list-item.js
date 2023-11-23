@@ -3,22 +3,22 @@ import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import {
   AlignItems,
-  IconColor,
-  BorderRadius,
-  Color,
-  Size,
-  JustifyContent,
-  TextColor,
   BackgroundColor,
   BlockSize,
+  BorderRadius,
+  Color,
   Display,
+  IconColor,
+  JustifyContent,
+  Size,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
-  ButtonIcon,
-  Text,
-  IconName,
   Box,
+  ButtonIcon,
+  IconName,
+  Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
