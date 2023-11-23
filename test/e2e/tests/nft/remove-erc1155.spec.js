@@ -40,7 +40,6 @@ describe('Remove ERC1155 NFT', function () {
         testSpecificMock: mockIPFSRequest,
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open the details page and click remove nft button

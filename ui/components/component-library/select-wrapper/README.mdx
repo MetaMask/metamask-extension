@@ -1,0 +1,370 @@
+import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+
+import { SelectWrapper } from './select-wrapper';
+
+# SelectWrapper
+
+`SelectWrapper` wraps and handles the state and logic for `SelectOption` and `SelectButton`
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--default-story" />
+</Canvas>
+
+## Props
+
+<ArgsTable of={SelectWrapper} />
+
+### triggerComponent
+
+Use the `triggerComponent` prop to pass in a component that will be used as the trigger for the `SelectWrapper`.
+`SelectButton` is a component that can be used as the `triggerComponent` or used for reference when creating a custom `triggerComponent`.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--trigger-component" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper
+  triggerComponent={<SelectButton>Trigger Component</SelectButton>}
+>
+  <SelectOption value="Value">Value</SelectOption>
+</SelectWrapper>;
+```
+
+### Children
+
+Elements passed in as children will be used in the `Popover`(dropdown) for the `SelectWrapper`.
+`SelectOption` is a component that can be used as a child or used for reference when creating a custom child.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--children" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+  Text,
+} from '../../component-library';
+
+<SelectWrapper
+  triggerComponent={<SelectButton>Trigger Component</SelectButton>}
+>
+  <Text paddingLeft={2} paddingRight={2}>
+    All elements contained in SelectWrapper will be rendered within the popover
+  </Text>
+  <SelectOption value="Child 1">Child 1</SelectOption>
+  <SelectOption value="Child 2">Child 2</SelectOption>
+  <SelectOption value="Child 3">Child 3</SelectOption>
+</SelectWrapper>;
+```
+
+### Controlled Open (isOpen, onOpenChange)
+
+For a controlled open experience use the `isOpen` and `onOpenChange` props.
+Pass a boolean to `isOpen` to control the open state of the `SelectWrapper`.
+Pass a function to `onOpenChange` to handle the open state of the `SelectWrapper`.
+
+See [isMultiSelect](/docs/components-componentlibrary-selectwrapper--docs#ismultiselect) for more info on how it impacts the onOpenChange.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--controlled-open" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+const [isOpen, setIsOpen] = React.useState(false);
+
+<SelectWrapper
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+  triggerComponent={
+    <SelectButton onClick={() => setIsOpen(!isOpen)}>
+      Controlled Open Demo
+    </SelectButton>
+  }
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### Uncontrolled Open
+
+`SelectWrapper` will control the open state internally if the `isOpen` prop is not passed. By default the `SelectButton` will toggle the open/close state and when selecting an option with `SelectOption` that will trigger a close.
+
+See [isMultiSelect](/docs/components-componentlibrary-selectwrapper--docs#ismultiselect) for more info on how it impacts the open state.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--uncontrolled-open" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper
+  triggerComponent={<SelectButton>Uncontrolled Open Demo</SelectButton>}
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### Controlled Value (value, onValueChange, defaultValue)
+
+For a controlled value dev experience use the `value`, `onValueChange`, and `defaultValue` props.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--controlled-value" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+const [controlledValue, setControlledValue] = React.useState('');
+
+<SelectWrapper
+  defaultValue={'DefaultValue'}
+  value={controlledValue}
+  onValueChange={(value) => setControlledValue(value)}
+  triggerComponent={<SelectButton>Controlled </SelectButton>}
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### Uncontrolled Value
+
+By default the `SelectWrapper` will control the value internally if the `value` prop is not passed.
+
+When using `SelectOption` as a child of `SelectWrapper` the `value` prop of `SelectOption` will be used as the value of the `SelectWrapper` when selected.
+Additionally when using `SelectButton` it will display the value of the `SelectWrapper`.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--uncontrolled-value" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper
+  triggerComponent={<SelectButton>Uncontrolled Example</SelectButton>}
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### isMultiSelect
+
+Setting the `isMultiSelect` to true will disabled the controlled open and uncontrolled open behavior of the `SelectWrapper`.
+When `isMultiSelect` is true the `SelectWrapper` will not control the open state internally and will not close when an option is selected.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--is-multi-select" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper
+  isMultiSelect
+  triggerComponent={<SelectButton>Demo</SelectButton>}
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### useSelectContext
+
+When building a component to be used inside `SelectWrapper` you can use `useSelectContext` to access the `SelectWrapper` state and logic.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--use-select-context" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+  useSelectContext,
+} from '../../component-library';
+
+const CustomClose = () => {
+  const { toggleUncontrolledOpen } = useSelectContext();
+
+  return (
+    <>
+      <Text>Custom close button using SelectContext</Text>
+      <Button block onClick={toggleUncontrolledOpen}>
+        Close
+      </Button>
+    </>
+  );
+};
+
+<SelectWrapper
+  triggerComponent={<SelectButton>Uncontrolled Example</SelectButton>}
+>
+  <CustomClose />
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### Placeholder
+
+Use the `placeholder` prop to set the placeholder value in `SelectWrapper` to be accessed for components within it.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--placeholder" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper placeholder="This is a placeholder" />;
+```
+
+### isDisabled
+
+Use the `isDisabled` prop to set the disable `SelectWrapper` so it can be accessed to components within it.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--is-disabled" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper isDisabled triggerComponent={<SelectButton>Demo</SelectButton>}>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### isDanger
+
+Use the `isDanger` prop to set the danger `SelectWrapper` so it can be accessed to components within it.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--is-danger" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+<SelectWrapper isDanger triggerComponent={<SelectButton>Demo</SelectButton>}>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### popoverProps
+
+Use the `popoverProps` prop to pass props to the `Popover` component that wraps the `SelectWrapper` children.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--popover-props" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+import { BackgroundColor } from '../../../helpers/constants/design-system';
+
+<SelectWrapper
+  popoverProps={{
+    backgroundColor: BackgroundColor.goerli,
+    padding: 4,
+    isPortal: false,
+  }}
+  triggerComponent={<SelectButton>Demo</SelectButton>}
+>
+  <SelectOption value="Option 1">Option 1</SelectOption>
+  <SelectOption value="Option 2">Option 2</SelectOption>
+  <SelectOption value="Option 3">Option 3</SelectOption>
+</SelectWrapper>;
+```
+
+### onBlur
+
+By default onBlur is setup to close the `SelectWrapper` when the user clicks outside of the `SelectWrapper` or when the user tabs out of the `SelectWrapper`.
+You can use the `onBlur` prop to pass a custom function to handle the onBlur event. This will override the default onBlur behavior and will require you to have setup a controlled open environment as well.
+
+The onBlur fires based on the if the Popover is open or closed and is disconnected from the trigger component.
+
+<Canvas>
+  <Story id="components-componentlibrary-selectwrapper--on-blur" />
+</Canvas>
+
+```jsx
+import {
+  SelectWrapper,
+  SelectButton,
+  SelectOption,
+} from '../../component-library';
+
+const [onBlur, setOnBlur] = React.useState(0);
+
+<SelectWrapper
+  onBlur={() => setOnBlur(onBlur + 1)}
+  triggerComponent={<SelectButton>onBlur Count: {onBlur}</SelectButton>}
+>
+  <Text>This is a demo of controlled onBlur.</Text>
+</SelectWrapper>;
+```
