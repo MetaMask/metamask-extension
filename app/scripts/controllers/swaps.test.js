@@ -4,8 +4,7 @@ import sinon from 'sinon';
 import { BigNumber } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
 import BigNumberjs from 'bignumber.js';
-import { NetworkType } from '@metamask/controller-utils';
-import { CHAIN_IDS, NetworkStatus } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
@@ -807,13 +806,10 @@ describe('SwapsController', function () {
 
         const currentEthersInstance = _swapsController.ethersProvider;
 
-        await _swapsController.fetchAndSetQuotes(
-          MOCK_FETCH_PARAMS,
-          {
-            ...MOCK_FETCH_METADATA,
-            chainId: CHAIN_IDS.GOERLI,
-          },
-        );
+        await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
+          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.GOERLI,
+        });
 
         const newEthersInstance = _swapsController.ethersProvider;
         assert.notStrictEqual(
@@ -824,7 +820,7 @@ describe('SwapsController', function () {
       });
 
       it('should not replace ethers instance when called with the same chainId that was current when the controller was instantiated', async function () {
-        const swapsController = new SwapsController({
+        const _swapsController = new SwapsController({
           getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
           provider,
           getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
@@ -832,15 +828,12 @@ describe('SwapsController', function () {
           fetchTradesInfo: fetchTradesInfoStub,
           getCurrentChainId: getCurrentChainIdStub,
         });
-        const currentEthersInstance = swapsController.ethersProvider;
+        const currentEthersInstance = _swapsController.ethersProvider;
 
-        await swapsController.fetchAndSetQuotes(
-          MOCK_FETCH_PARAMS,
-          {
-            ...MOCK_FETCH_METADATA,
-            chainId: CHAIN_IDS.MAINNET,
-          },
-        );
+        await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
+          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.MAINNET,
+        });
 
         const newEthersInstance = swapsController.ethersProvider;
         assert.strictEqual(
@@ -850,8 +843,8 @@ describe('SwapsController', function () {
         );
       });
 
-      it('should replace ethers instance twice when called twice with two different chainIds, and success set the ethers instance when returning to the original chain', async function () {
-        const swapsController = new SwapsController({
+      it('should replace ethers instance, and _ethersProviderChainId, twice when called twice with two different chainIds, and successfully set the _ethersProviderChainId when returning to the original chain', async function () {
+        const _swapsController = new SwapsController({
           getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
           provider,
           getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
@@ -859,34 +852,41 @@ describe('SwapsController', function () {
           fetchTradesInfo: fetchTradesInfoStub,
           getCurrentChainId: getCurrentChainIdStub,
         });
-        const firstEthersInstance = swapsController.ethersProvider;
+        const firstEthersInstance = _swapsController.ethersProvider;
+        const firstEthersProviderChainId =
+          _swapsController._ethersProviderChainId;
 
-        await swapsController.fetchAndSetQuotes(
-          MOCK_FETCH_PARAMS,
-          {
-            ...MOCK_FETCH_METADATA,
-            chainId: CHAIN_IDS.GOERLI,
-          },
-        );
+        await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
+          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.GOERLI,
+        });
 
-        const secondEthersInstance = swapsController.ethersProvider;
+        const secondEthersInstance = _swapsController.ethersProvider;
+        const secondEthersProviderChainId =
+          _swapsController._ethersProviderChainId;
+
         assert.notStrictEqual(
           firstEthersInstance,
           secondEthersInstance,
           'Ethers provider should be replaced',
         );
-
-        await swapsController.fetchAndSetQuotes(
-          MOCK_FETCH_PARAMS,
-          {
-            ...MOCK_FETCH_METADATA,
-            chainId: CHAIN_IDS.LOCALHOST,
-          },
-        );
-
-        const thirdEthersInstance = swapsController.ethersProvider;
         assert.notStrictEqual(
           firstEthersInstance,
+          secondEthersProviderChainId,
+          'Ethers provider chainId should be replaced',
+        );
+
+        await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
+          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.LOCALHOST,
+        });
+
+        const thirdEthersInstance = _swapsController.ethersProvider;
+        const thirdEthersProviderChainId =
+          _swapsController._ethersProviderChainId;
+
+        assert.notStrictEqual(
+          firstEthersProviderChainId,
           thirdEthersInstance,
           'Ethers provider should be replaced',
         );
@@ -895,20 +895,29 @@ describe('SwapsController', function () {
           thirdEthersInstance,
           'Ethers provider should be replaced',
         );
-
-        await swapsController.fetchAndSetQuotes(
-          MOCK_FETCH_PARAMS,
-          {
-            ...MOCK_FETCH_METADATA,
-            chainId: CHAIN_IDS.MAINNET,
-          },
-        );
-
-        const lastEthersInstance = swapsController.ethersProvider;
         assert.notStrictEqual(
           firstEthersInstance,
-          lastEthersInstance,
-          'Ethers provider should be replaced',
+          thirdEthersProviderChainId,
+          'Ethers provider chainId should be replaced',
+        );
+        assert.notStrictEqual(
+          secondEthersProviderChainId,
+          thirdEthersProviderChainId,
+          'Ethers provider chainId should be replaced',
+        );
+
+        await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
+          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        const lastEthersProviderChainId =
+          _swapsController._ethersProviderChainId;
+
+        assert.strictEqual(
+          firstEthersProviderChainId,
+          lastEthersProviderChainId,
+          'Ethers provider chainId should match what it was originally',
         );
       });
     });

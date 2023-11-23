@@ -259,6 +259,7 @@ export default class SwapsController {
 
     if (chainId !== this._ethersProviderChainId) {
       this.ethersProvider = new Web3Provider(this.provider);
+      this._ethersProviderChainId = chainId;
     }
 
     const {
