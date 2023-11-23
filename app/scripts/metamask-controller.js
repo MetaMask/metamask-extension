@@ -1427,21 +1427,21 @@ export default class MetamaskController extends EventEmitter {
     });
 
     // This gets used as a ...spread parameter in two places: new TransactionController() and createRPCMethodTrackingMiddleware()
-    };
     this.snapAndHardwareMetricsParams = {
       getSelectedAccount: this.accountsController.getSelectedAccount.bind(
         this.accountsController,
       ),
       getAccountType: this.getAccountType.bind(this),
       getDeviceModel: this.getDeviceModel.bind(this),
+      snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
+        name: 'SnapAndHardwareMessenger',
         allowedActions: [
+          'KeyringController:getKeyringForAccount',
           'SnapController:get',
+          'AccountsController:getSelectedAccount',
         ],
       }),
-          'AccountsController:getSelectedAccount',
-          'KeyringController:getKeyringForAccount',
-        name: 'SnapAndHardwareMessenger',
-      snapAndHardwareMessenger: this.controllerMessenger.getRestricted({
+    };
 
     this.txController = new TransactionController(
       {
@@ -3948,9 +3948,9 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<string>} The current selected address.
    */
   async resetAccount() {
-    this.txController.wipeTransactions(true, selectedAddress);
     const selectedAddress =
       this.accountsController.getSelectedAccount().address;
+    this.txController.wipeTransactions(true, selectedAddress);
     this.networkController.resetConnection();
 
     return selectedAddress;
