@@ -23,7 +23,7 @@ const syncConfirmPath = () => {
     }
     if (paramsTransactionId !== currentConfirmation.id) {
       history.replace(
-        `${CONFIRM_TRANSACTION_ROUTE}/${currentConfirmation.id}?${SIGNATURE_REQUEST_PATH}`,
+        `${CONFIRM_TRANSACTION_ROUTE}/${currentConfirmation.id}/${SIGNATURE_REQUEST_PATH}`,
       );
     }
   }, [currentConfirmation, paramsTransactionId]);

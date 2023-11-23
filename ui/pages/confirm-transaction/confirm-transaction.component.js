@@ -79,7 +79,7 @@ const ConfirmTransaction = () => {
   const use4ByteResolution = useSelector(use4ByteResolutionSelector);
 
   ///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
-  const pendingConfirmation = useCurrentConfirmation();
+  const { currentConfirmation } = useCurrentConfirmation();
   ///: END:ONLY_INCLUDE_IN(conf-redesign)
 
   useEffect(() => {
@@ -196,7 +196,7 @@ const ConfirmTransaction = () => {
   // It takes care to render <Confirm /> component for confirmations of type Personal Sign.
   // Once we migrate all confirmations to new designs we can get rid of this code
   // and render <Confirm /> component for all confirmation requests.
-  if (pendingConfirmation) {
+  if (currentConfirmation) {
     return <Confirm />;
   }
   ///: END:ONLY_INCLUDE_IN(conf-redesign)

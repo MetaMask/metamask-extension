@@ -2,10 +2,10 @@ import React from 'react';
 
 import { Box } from '../../components/component-library';
 import syncConfirmPath from '../../hooks/confirm/syncConfirmPath';
-import updateCurrentConfirmation from '../../hooks/confirm/useCurrentConfirmation';
+import setCurrentConfirmation from '../../hooks/confirm/setCurrentConfirmation';
 
 const Confirm = () => {
-  updateCurrentConfirmation();
+  setCurrentConfirmation();
   syncConfirmPath();
 
   return <Box>NEW IMPLEMENTATION TO COME HERE</Box>;
