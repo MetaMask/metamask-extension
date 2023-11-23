@@ -1,6 +1,11 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  unlockWallet,
+} = require('../helpers');
 
 describe('Switch ethereum chain', function () {
   const ganacheOptions = {
@@ -26,9 +31,7 @@ describe('Switch ethereum chain', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];

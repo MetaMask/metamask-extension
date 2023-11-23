@@ -516,7 +516,6 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
 };
 
 const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
-  await driver.navigate();
   await unlockWallet(driver);
 
   // navigate settings to reveal SRP
@@ -710,9 +709,31 @@ async function waitForAccountRendered(driver) {
   );
 }
 
-async function unlockWallet(driver) {
+/**
+ * Unlock the wallet with the default password.
+ *
+ * @param {WebDriver} driver - The webdriver instance
+ * @param {object} options - Options for unlocking the wallet
+ * @param {boolean} options.navigate - Whether to navigate to the root page prior to unlocking. Defaults to true.
+ * @param {boolean} options.waitLoginSuccess - Whether to wait for the login to succeed. Defaults to true.
+ */
+async function unlockWallet(
+  driver,
+  options = {
+    navigate: true,
+    waitLoginSuccess: true,
+  },
+) {
+  if (options.navigate !== false) {
+    await driver.navigate();
+  }
+
   await driver.fill('#password', WALLET_PASSWORD);
   await driver.press('#password', driver.Key.ENTER);
+
+  if (options.waitLoginSuccess !== false) {
+    await driver.waitForElementNotPresent('[data-testid="unlock-page"]');
+  }
 }
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {

@@ -39,6 +39,10 @@ export const getBlockaidMetricsParams = (securityAlertResponse = null) => {
       additionalParams.ui_customizations = ['flagged_as_malicious'];
     }
 
+    if (resultType === BlockaidResultType.Failed) {
+      additionalParams.ui_customizations = ['security_alert_failed'];
+    }
+
     if (resultType !== BlockaidResultType.Benign) {
       additionalParams.security_alert_reason = BlockaidReason.notApplicable;
 
