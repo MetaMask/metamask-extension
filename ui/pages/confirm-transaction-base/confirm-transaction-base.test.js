@@ -31,6 +31,7 @@ setBackgroundConnection({
   promisifiedBackground: jest.fn(),
   tryReverseResolveAddress: jest.fn(),
   getNextNonce: jest.fn(),
+  updateTransaction: jest.fn().mockResolvedValue(),
 });
 
 const mockTxParamsFromAddress = '0x123456789';
@@ -348,7 +349,8 @@ describe('Confirm Transaction Base', () => {
       store,
     );
     const confirmButton = getByTestId('page-container-footer-next');
-    fireEvent.click(confirmButton);
+    await fireEvent.click(confirmButton);
+
     expect(sendTransaction).toHaveBeenCalled();
   });
 
