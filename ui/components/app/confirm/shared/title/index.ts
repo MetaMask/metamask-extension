@@ -1,0 +1,1 @@
+export { ConfirmTitle } from './title';
