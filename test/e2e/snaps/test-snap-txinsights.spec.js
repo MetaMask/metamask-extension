@@ -20,7 +20,6 @@ describe('Test Snap TxInsights', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect

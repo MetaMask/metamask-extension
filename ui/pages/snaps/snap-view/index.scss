@@ -24,10 +24,8 @@
   }
 
   &__content {
-    padding: 32px;
-
     @include screen-sm-max {
-      padding: 16px;
+      padding: 0 16px 16px 16px;
     }
 
     &__permissions {

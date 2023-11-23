@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const { keccak } = require('ethereumjs-util');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -28,9 +28,7 @@ describe('eth_call', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // eth_call
         await driver.openNewPage(`http://127.0.0.1:8080`);

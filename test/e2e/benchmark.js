@@ -10,7 +10,7 @@ const {
   isWritable,
   getFirstParentDirectoryThatExists,
 } = require('../helpers/file');
-const { withFixtures, tinyDelayMs } = require('./helpers');
+const { withFixtures, tinyDelayMs, unlockWallet } = require('./helpers');
 const { PAGES } = require('./webdriver/driver');
 const FixtureBuilder = require('./fixture-builder');
 
@@ -23,9 +23,9 @@ async function measurePage(pageName) {
     { fixtures: new FixtureBuilder().build() },
     async ({ driver }) => {
       await driver.delay(tinyDelayMs);
-      await driver.navigate();
-      await driver.fill('#password', 'correct horse battery staple');
-      await driver.press('#password', driver.Key.ENTER);
+      await unlockWallet(driver, {
+        waitLoginSuccess: false,
+      });
       await driver.findElement('[data-testid="account-menu-icon"]');
       await driver.navigate(pageName);
       await driver.delay(1000);
