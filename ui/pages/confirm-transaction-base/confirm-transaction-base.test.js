@@ -9,6 +9,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { act } from 'react-dom/test-utils';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
@@ -332,6 +333,7 @@ describe('Confirm Transaction Base', () => {
     const sendTransaction = jest
       .fn()
       .mockResolvedValue(newMockedStore.confirmTransaction.txData);
+    const updateTransaction = jest.fn().mockResolvedValue();
     const showCustodianDeepLink = jest.fn();
     const setWaitForConfirmDeepLinkDialog = jest.fn();
 
@@ -339,6 +341,7 @@ describe('Confirm Transaction Base', () => {
       <ConfirmTransactionBase
         actionKey="confirm"
         sendTransaction={sendTransaction}
+        updateTransaction={updateTransaction}
         showCustodianDeepLink={showCustodianDeepLink}
         setWaitForConfirmDeepLinkDialog={setWaitForConfirmDeepLinkDialog}
         toAddress={mockPropsToAddress}
@@ -347,8 +350,13 @@ describe('Confirm Transaction Base', () => {
       />,
       store,
     );
+
     const confirmButton = getByTestId('page-container-footer-next');
-    fireEvent.click(confirmButton);
+
+    await act(async () => {
+      fireEvent.click(confirmButton);
+    });
+
     expect(sendTransaction).toHaveBeenCalled();
   });
 
