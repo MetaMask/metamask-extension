@@ -141,8 +141,14 @@ const PATH_NAME_MAP = {
   [CONFIRM_ADD_SUGGESTED_NFT_ROUTE]: 'Confirm Add Suggested NFT Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  [NOTIFICATIONS_ROUTE]: 'Notifications Page',
+  [`${CONNECT_ROUTE}/:id${CONNECT_SNAPS_CONNECT_ROUTE}`]: 'Snaps Connect Page',
+  [`${CONNECT_ROUTE}/:id${CONNECT_SNAP_INSTALL_ROUTE}`]: 'Snap Install Page',
+  [`${CONNECT_ROUTE}/:id${CONNECT_SNAP_UPDATE_ROUTE}`]: 'Snap Update Page',
+  [`${CONNECT_ROUTE}/:id${CONNECT_SNAP_RESULT_ROUTE}`]:
+    'Snap Install Result Page',
   [SNAPS_ROUTE]: 'Snaps List Page',
-  [`${SNAPS_VIEW_ROUTE}/:snapId`]: `Snap View Page`,
+  [`${SNAPS_VIEW_ROUTE}/:snapId`]: 'Snap View Page',
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   [INSTITUTIONAL_FEATURES_DONE_ROUTE]: 'Institutional Features Done Page',

@@ -22,7 +22,6 @@ describe('NFT detection', function () {
         testSpecificMock: setupAutoDetectMocking,
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await driver.clickElement('[data-testid="home__nfts-tab"]');
         const collection = await driver.findElement(

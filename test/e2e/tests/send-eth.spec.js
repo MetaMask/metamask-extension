@@ -29,7 +29,6 @@ describe('Send ETH from inside MetaMask using default gas', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
-        await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await openActionMenuAndStartSendFlow(driver);
@@ -119,7 +118,6 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
-        await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await openActionMenuAndStartSendFlow(driver);
@@ -173,7 +171,6 @@ describe('Send ETH from inside MetaMask using advanced gas modal', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.delay(1000);
@@ -243,7 +240,6 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // initiates a send from the dapp
@@ -319,7 +315,6 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // initiates a transaction from the dapp
@@ -412,7 +407,6 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await openActionMenuAndStartSendFlow(driver);

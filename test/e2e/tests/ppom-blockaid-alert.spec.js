@@ -163,7 +163,6 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
@@ -226,7 +225,6 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
@@ -281,7 +279,6 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
