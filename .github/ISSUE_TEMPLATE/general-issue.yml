@@ -91,12 +91,12 @@ body:
   - type: markdown
     attributes:
       value: |
-        ## **Stakeholder Review**
+        ## **Stakeholder Review (for MetaMask employees only)**
 
   - type: checkboxes
     id: stakeholder-review
     attributes:
-      label: Stakeholder review needed before the work gets merged (for MetaMask employees only)
+      label: Stakeholder review needed before the work gets merged
       options:
         - label: Engineering (needed in most cases)
         - label: Design
