@@ -99,7 +99,7 @@ export default function SmartTransactionsPopover({
             onClick={onStartSwapping}
             width={BlockSize.Full}
           >
-            {t('startSwapping')}
+            {t('enableSmartSwaps')}
           </Button>
           <Button
             type="link"

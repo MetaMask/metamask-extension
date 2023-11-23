@@ -25,7 +25,6 @@ describe('Test Snap update', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // open a new tab and navigate to test snaps page and connect

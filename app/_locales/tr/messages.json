@@ -3868,10 +3868,6 @@
     "message": "Güncelleme başarısız oldu",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1, $2 için aşağıdaki izinleri verecek şekilde $3 güncellemesi yapmak istiyor. Sadece $2 sürümüne güveniyorsanız devam edin.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "Güncelleme tamamlandı"
   },
