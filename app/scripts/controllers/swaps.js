@@ -113,7 +113,6 @@ export default class SwapsController {
   constructor(
     {
       getBufferedGasLimit,
-      networkController,
       provider,
       getProviderConfig,
       getTokenRatesState,
@@ -155,8 +154,7 @@ export default class SwapsController {
 
     this.provider = provider;
     this.ethersProvider = new Web3Provider(provider);
-    this._ethersProviderChainId =
-      networkController.state.providerConfig.chainId;
+    this._ethersProviderChainId = this._getCurrentChainId();
   }
 
   async fetchSwapsNetworkConfig(chainId) {
