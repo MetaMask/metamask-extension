@@ -284,6 +284,7 @@ import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 import { updateCurrentLocale } from './translate';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
+import setupAccountLabelsPetnamesBridge from './lib/setupAccountLabelsPetnamesBridge';
 ///: END:ONLY_INCLUDE_IN
 
 export const METAMASK_CONTROLLER_EVENTS = {
@@ -1647,6 +1648,11 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: ['NameController:stateChange'],
       }),
     }).init();
+
+    setupAccountLabelsPetnamesBridge(
+      this.preferencesController,
+      this.nameController,
+    );
     ///: END:ONLY_INCLUDE_IN
 
     // ensure accountTracker updates balances after network change
