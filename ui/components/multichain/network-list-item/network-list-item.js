@@ -147,5 +147,8 @@ NetworkListItem.propTypes = {
    * Represents if the network item should be keyboard selected
    */
   focus: PropTypes.bool,
+  /**
+   * Boolean to know if the network is deprecated
+   */
   isDeprecatedNetwork: PropTypes.bool,
 };

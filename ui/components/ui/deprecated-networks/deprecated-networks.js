@@ -24,27 +24,25 @@ export default function DeprecatedNetworks() {
     }
   }, [currentChainID, completedOnboarding]);
 
-  return (
-    isShowingWarning && (
-      <Box
-        className="deprecated-networks"
-        backgroundColor={BackgroundColor.backgroundDefault}
-        padding={4}
-        borderRadius={BorderRadius.SM}
-      >
-        <BannerAlert
-          severity={Severity.Warning}
-          description={t('deprecatedAuroraNetworkMsg')}
-          onClose={() => setIsShowingWarning(false)}
-          actionButtonLabel={t('learnMoreUpperCase')}
-          actionButtonProps={{
-            className: 'deprecated-networks__content__inline-link',
-            href: 'https://mainnet.aurora.dev/',
-            variant: ButtonLink,
-            externalLink: true,
-          }}
-        />
-      </Box>
-    )
-  );
+  return isShowingWarning ? (
+    <Box
+      className="deprecated-networks"
+      backgroundColor={BackgroundColor.backgroundDefault}
+      padding={4}
+      borderRadius={BorderRadius.SM}
+    >
+      <BannerAlert
+        severity={Severity.Warning}
+        description={t('deprecatedAuroraNetworkMsg')}
+        onClose={() => setIsShowingWarning(false)}
+        actionButtonLabel={t('learnMoreUpperCase')}
+        actionButtonProps={{
+          className: 'deprecated-networks__content__inline-link',
+          href: 'https://mainnet.aurora.dev/',
+          variant: ButtonLink,
+          externalLink: true,
+        }}
+      />
+    </Box>
+  ) : null;
 }

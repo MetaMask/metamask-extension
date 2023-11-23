@@ -642,7 +642,7 @@ export default class Routes extends Component {
         })}
         dir={textDirection}
       >
-        {shouldShowNetworkDeprecationWarning && <DeprecatedNetworks />}
+        {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />
