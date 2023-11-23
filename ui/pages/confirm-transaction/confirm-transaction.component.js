@@ -12,7 +12,9 @@ import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
+///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
 import useCurrentConfirmation from '../../hooks/confirm/useCurrentConfirmation';
+///: END:ONLY_INCLUDE_IN(conf-redesign)
 import {
   clearConfirmTransaction,
   setTransactionToConfirm,
