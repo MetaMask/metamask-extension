@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Switch, Route, useHistory, useParams } from 'react-router-dom';
-import { ApprovalType } from '@metamask/controller-utils';
 
 import Loading from '../../components/ui/loading-screen';
 import ConfirmContractInteraction from '../confirm-contract-interaction';
@@ -13,6 +12,7 @@ import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
+import useCurrentConfirmation from '../../hooks/confirm/useCurrentConfirmation';
 import {
   clearConfirmTransaction,
   setTransactionToConfirm,
@@ -54,7 +54,6 @@ import ConfirmSignatureRequest from '../confirm-signature-request';
 import Confirm from '../confirm/confirm';
 ///: END:ONLY_INCLUDE_IN(conf-redesign)
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
-import useCurrentConfirmation from '../../hooks/confirm/useCurrentConfirmation';
 
 const ConfirmTransaction = () => {
   const dispatch = useDispatch();
@@ -85,11 +84,6 @@ const ConfirmTransaction = () => {
   const use4ByteResolution = useSelector(use4ByteResolutionSelector);
 
   ///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
-  const latestPendingConfirmation = useSelector(
-    latestPendingConfirmationSelector,
-  );
-  const pendingConfirmations = useSelector(pendingConfirmationsSelector);
-  const unapprovedPersonalMsgs = useSelector(unapprovedPersonalMsgsSelector);
   const pendingConfirmation = useCurrentConfirmation();
   ///: END:ONLY_INCLUDE_IN(conf-redesign)
 
