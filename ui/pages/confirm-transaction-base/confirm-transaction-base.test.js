@@ -9,6 +9,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { act } from 'react-dom/test-utils';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
@@ -22,7 +23,6 @@ import {
 import { domainInitialState } from '../../ducks/domains';
 
 import ConfirmTransactionBase from './confirm-transaction-base.container';
-import { act } from 'react-dom/test-utils';
 
 const middleware = [thunk];
 
