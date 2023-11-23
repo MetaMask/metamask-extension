@@ -95,6 +95,7 @@ function SnapView() {
         <Content
           backgroundColor={BackgroundColor.backgroundDefault}
           className="snap-view__content"
+          paddingTop={0}
         >
           {showSettings ? (
             <SnapSettings snapId={snapId} />

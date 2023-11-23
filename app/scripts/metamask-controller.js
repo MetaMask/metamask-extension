@@ -29,7 +29,10 @@ import {
   TrezorConnectBridge,
   TrezorKeyring,
 } from '@metamask/eth-trezor-keyring';
-import LedgerBridgeKeyring from '@metamask/eth-ledger-bridge-keyring';
+import {
+  LedgerKeyring,
+  LedgerIframeBridge,
+} from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { MetaMaskKeyring as QRHardwareKeyring } from '@keystonehq/metamask-airgapped-keyring';
 import EthQuery from '@metamask/eth-query';
@@ -511,11 +514,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    // turn on perDappSelectedNetwork feature flag
-    this.selectedNetworkController.update((state) => {
-      state.perDomainNetwork = true;
-    });
-
     this.tokenListController = new TokenListController({
       chainId: this.networkController.state.providerConfig.chainId,
       preventPollingOnNetworkRestart: initState.TokenListController
@@ -895,7 +893,6 @@ export default class MetamaskController extends EventEmitter {
       const keyringOverrides = this.opts.overrides?.keyrings;
 
       const additionalKeyringTypes = [
-        keyringOverrides?.ledger || LedgerBridgeKeyring,
         keyringOverrides?.lattice || LatticeKeyring,
         QRHardwareKeyring,
       ];
@@ -904,6 +901,10 @@ export default class MetamaskController extends EventEmitter {
         {
           keyring: keyringOverrides?.trezor || TrezorKeyring,
           bridge: keyringOverrides?.trezorBridge || TrezorConnectBridge,
+        },
+        {
+          keyring: keyringOverrides?.ledger || LedgerKeyring,
+          bridge: keyringOverrides?.ledgerBridge || LedgerIframeBridge,
         },
       ];
 
@@ -1287,8 +1288,8 @@ export default class MetamaskController extends EventEmitter {
       refetchOnAllowlistMiss: requireAllowlist,
       failOnUnavailableRegistry: requireAllowlist,
       url: {
-        registry: 'https://acl.execution.consensys.io/latest/registry.json',
-        signature: 'https://acl.execution.consensys.io/latest/signature.json',
+        registry: 'https://acl.execution.metamask.io/latest/registry.json',
+        signature: 'https://acl.execution.metamask.io/latest/signature.json',
       },
       publicKey:
         '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
@@ -1662,9 +1663,12 @@ export default class MetamaskController extends EventEmitter {
             this.txController.txGasUtil,
           ),
         networkController: this.networkController,
+        // This handler is misnamed. We must listen to networkDidChange
+        // to ensure the network provider has been set by the time we
+        // try to use it in this controller
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
-          'NetworkController:stateChange',
+          'NetworkController:networkDidChange',
         ),
         provider: this.provider,
         getProviderConfig: () => this.networkController.state.providerConfig,
@@ -2224,13 +2228,29 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:updateSnapState',
         ),
-        maybeUpdatePhishingList: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'PhishingController:maybeUpdateState',
-        ),
-        isOnPhishingList: (origin) =>
-          this.controllerMessenger.call('PhishingController:testOrigin', origin)
-            .result,
+        maybeUpdatePhishingList: () => {
+          const { usePhishDetect } =
+            this.preferencesController.store.getState();
+
+          if (!usePhishDetect) {
+            return;
+          }
+
+          this.controllerMessenger.call('PhishingController:maybeUpdateState');
+        },
+        isOnPhishingList: (origin) => {
+          const { usePhishDetect } =
+            this.preferencesController.store.getState();
+
+          if (!usePhishDetect) {
+            return false;
+          }
+
+          return this.controllerMessenger.call(
+            'PhishingController:testOrigin',
+            origin,
+          ).result;
+        },
         ///: END:ONLY_INCLUDE_IN
         ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
         getSnapKeyring: this.getSnapKeyring.bind(this),
@@ -2676,9 +2696,7 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IN
-      setUseRequestQueue: preferencesController.setUseRequestQueue.bind(
-        preferencesController,
-      ),
+      setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
       ),
@@ -3058,6 +3076,16 @@ export default class MetamaskController extends EventEmitter {
         this.controllerMessenger,
         'SnapController:enable',
       ),
+      updateSnap: (origin, requestedSnaps) => {
+        // We deliberately do not await this promise as that would mean waiting for the update to complete
+        // Instead we return null to signal to the UI that it is safe to redirect to the update flow
+        this.controllerMessenger.call(
+          'SnapController:install',
+          origin,
+          requestedSnaps,
+        );
+        return null;
+      },
       removeSnap: this.controllerMessenger.call.bind(
         this.controllerMessenger,
         'SnapController:remove',
@@ -3665,8 +3693,7 @@ export default class MetamaskController extends EventEmitter {
         keyringName = keyringOverrides?.trezor?.type || TrezorKeyring.type;
         break;
       case HardwareDeviceNames.ledger:
-        keyringName =
-          keyringOverrides?.ledger?.type || LedgerBridgeKeyring.type;
+        keyringName = keyringOverrides?.ledger?.type || LedgerKeyring.type;
         break;
       case HardwareDeviceNames.qr:
         keyringName = QRHardwareKeyring.type;
@@ -4189,6 +4216,17 @@ export default class MetamaskController extends EventEmitter {
   }
 
   //=============================================================================
+  // REQUEST QUEUE
+  //=============================================================================
+
+  setUseRequestQueue(value) {
+    this.preferencesController.setUseRequestQueue(value);
+    this.selectedNetworkController.update((state) => {
+      state.perDomainNetwork = value;
+    });
+  }
+
+  //=============================================================================
   // SETUP
   //=============================================================================
 
@@ -4646,7 +4684,11 @@ export default class MetamaskController extends EventEmitter {
             this.permissionController,
             { origin },
           ),
-
+        revokePermissionsForOrigin: (permissionKeys) => {
+          this.permissionController.revokePermissions({
+            [origin]: permissionKeys,
+          });
+        },
         getCurrentChainId: () =>
           this.networkController.state.providerConfig.chainId,
         getCurrentRpcUrl: () =>

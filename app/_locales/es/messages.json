@@ -1428,12 +1428,6 @@
   "ensIllegalCharacter": {
     "message": "Caracter ilegal para ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "El nombre de ENS no se encuentra en la red actual. Intente cambiar a la red principal de Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "La red no admite ENS"
-  },
   "ensRegistrationError": {
     "message": "Error en el registro del nombre de ENS"
   },
@@ -3873,10 +3867,6 @@
   "snapUpdateErrorTitle": {
     "message": "Actualización fallida",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1 quiere actualizar $2 a $3, lo que le otorga los siguientes permisos. Continúe solo si confía en $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Actualización completa"

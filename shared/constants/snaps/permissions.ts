@@ -26,7 +26,7 @@ export const ExcludedSnapEndowments = Object.freeze({
   'endowment:page-home':
     'This endowment is experimental and therefore not available.',
   'endowment:name-lookup':
-    'This permission is still in development and therefore not available.',
+    'This endowment is experimental and therefore not available.',
   ///: END:ONLY_INCLUDE_IN
 });
 
