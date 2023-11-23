@@ -490,7 +490,8 @@
     "message": "Attributions"
   },
   "auroraDeprecationWarning": {
-    "message": "MetaMask will be deprecating support for Aurora network"
+    "message": "MetaMask will be deprecating support for $1 network",
+    "description": "$1 is name of deprecated network"
   },
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"

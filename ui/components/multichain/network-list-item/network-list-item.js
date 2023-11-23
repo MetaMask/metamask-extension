@@ -24,6 +24,7 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
+import { AURORA_ETH_DISPLAY_NAME } from '../../../../shared/constants/network';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
@@ -100,7 +101,10 @@ export const NetworkListItem = ({
           )}
         </Text>
         {isDeprecatedNetwork ? (
-          <Tooltip title={t('auroraDeprecationWarning')} position="top">
+          <Tooltip
+            title={t('auroraDeprecationWarning', [AURORA_ETH_DISPLAY_NAME])}
+            position="top"
+          >
             <Icon name={IconName.Danger} color={IconColor.warningDefault} />
           </Tooltip>
         ) : null}
