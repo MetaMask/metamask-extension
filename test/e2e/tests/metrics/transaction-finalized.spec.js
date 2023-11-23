@@ -133,8 +133,7 @@ const eventHasUserIdWithoutAnonymousId = (payload) =>
 const eventHasZeroAddressAnonymousId = (payload) =>
   payload.anonymousId === '0x0000000000000000';
 
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Transaction Finalized Event', function () {
+describe('Transaction Finalized Event', function () {
   it('Successfully tracked when sending a transaction @no-mmi', async function () {
     await withFixtures(
       {
