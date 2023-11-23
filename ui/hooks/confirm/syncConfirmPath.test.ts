@@ -1,5 +1,3 @@
-import * as router from 'react-router-dom';
-
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import syncConfirmPath from './syncConfirmPath';
 
