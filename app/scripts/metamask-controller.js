@@ -1003,7 +1003,7 @@ export default class MetamaskController extends EventEmitter {
     this.keyringController = new KeyringController({
       keyringBuilders: additionalKeyrings,
       state: initState.KeyringController,
-      encryptor: opts.encryptor || encryptorFactory(900_000),
+      encryptor: opts.encryptor || encryptorFactory(600_000),
       messenger: keyringControllerMessenger,
       removeIdentity: this.preferencesController.removeAddress.bind(
         this.preferencesController,
