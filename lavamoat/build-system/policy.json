@@ -1638,43 +1638,6 @@
         "watchify>xtend": true
       }
     },
-    "browserify": {
-      "builtin": {
-        "events.EventEmitter": true,
-        "fs.realpath": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.relative": true,
-        "path.resolve": true,
-        "path.sep": true
-      },
-      "globals": {
-        "__dirname": true,
-        "process.cwd": true,
-        "process.nextTick": true,
-        "process.platform": true
-      },
-      "packages": {
-        "brfs>resolve": true,
-        "browserify>browser-pack": true,
-        "browserify>browser-resolve": true,
-        "browserify>cached-path-relative": true,
-        "browserify>concat-stream": true,
-        "browserify>deps-sort": true,
-        "browserify>has": true,
-        "browserify>insert-module-globals": true,
-        "browserify>module-deps": true,
-        "browserify>read-only-stream": true,
-        "browserify>shasum-object": true,
-        "browserify>syntax-error": true,
-        "browserify>through2": true,
-        "labeled-stream-splicer": true,
-        "lavamoat>htmlescape": true,
-        "pumpify>inherits": true,
-        "watchify>defined": true,
-        "watchify>xtend": true
-      }
-    },
     "browserify>JSONStream": {
       "globals": {
         "Buffer": true
