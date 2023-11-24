@@ -7342,7 +7342,6 @@
         "fs": true
       },
       "globals": {
-        "console.log": true,
         "process.version": true
       },
       "packages": {
