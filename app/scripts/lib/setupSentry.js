@@ -529,7 +529,13 @@ export default function setupSentry({ release, getState }) {
   const startSession = async () => {
     const isHubDefined = Boolean(Sentry.getCurrentHub());
     const { isSessionStarted } = global.sentry;
-    if (isHubDefined && !isSessionStarted) {
+    const isMetaMetricsEnabled = await getMetaMetricsEnabled();
+
+    if (
+      isHubDefined &&
+      (isSessionStarted === undefined || isSessionStarted === false) &&
+      isMetaMetricsEnabled === true
+    ) {
       Sentry.getCurrentHub().startSession();
       Sentry.getCurrentHub().captureSession();
 
@@ -544,7 +550,13 @@ export default function setupSentry({ release, getState }) {
   const endSession = async () => {
     const isHubDefined = Boolean(Sentry.getCurrentHub());
     const { isSessionStarted } = global.sentry;
-    if (isHubDefined && isSessionStarted) {
+    const isMetaMetricsEnabled = await getMetaMetricsEnabled();
+
+    if (
+      isHubDefined &&
+      isSessionStarted === true &&
+      isMetaMetricsEnabled === false
+    ) {
       Sentry.getCurrentHub().captureSession(true);
       Sentry.getCurrentHub().endSession();
 
@@ -562,12 +574,13 @@ export default function setupSentry({ release, getState }) {
   const toggleSession = async () => {
     const { isSessionStarted } = global.sentry;
     const isMetaMetricsEnabled = await getMetaMetricsEnabled();
+
     if (
-      (isSessionStarted === undefined && isMetaMetricsEnabled === true) ||
-      isSessionStarted === false
+      (isSessionStarted === undefined || isSessionStarted === false) &&
+      isMetaMetricsEnabled === false
     ) {
       await startSession();
-    } else if (isSessionStarted === true) {
+    } else if (isSessionStarted === true && isMetaMetricsEnabled === true) {
       await endSession();
     }
   };
