@@ -5,6 +5,7 @@ import { useHistory, withRouter } from 'react-router-dom';
 import log from 'loglevel';
 import { cloneDeep } from 'lodash';
 import { SubjectType } from '@metamask/permission-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
@@ -22,7 +23,6 @@ import {
   getUnapprovedTransactions,
 } from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 
