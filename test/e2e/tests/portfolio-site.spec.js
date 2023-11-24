@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { emptyHtmlPage } = require('../mock-e2e');
 
@@ -39,9 +39,7 @@ describe('Portfolio site', function () {
         testSpecificMock: mockPortfolioSite,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Click Portfolio site
         if (process.env.MULTICHAIN) {

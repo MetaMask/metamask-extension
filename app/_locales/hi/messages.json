@@ -1428,12 +1428,6 @@
   "ensIllegalCharacter": {
     "message": "ENS के लिए गैर-कानूनी कैरेक्टर।"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "वर्तमान नेटवर्क पर ENS नाम नहीं मिला।  Ethereum Mainnet पर स्विच करने की कोशिश करें।"
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "नेटवर्क ENS को सपोर्ट नहीं करता है"
-  },
   "ensRegistrationError": {
     "message": "ENS नाम रजिस्ट्रेशन में गड़बड़ी"
   },
@@ -3873,10 +3867,6 @@
   "snapUpdateErrorTitle": {
     "message": "अपडेट नहीं हो पाया",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1 $2 को $3 से अपडेट करना चाहते हैं जो इसे निम्नलिखित अनुमतियां देती है। यदि आप $2 पर भरोसा करते हैं तो ही जारी रखें।",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "अपडेट समाप्त"

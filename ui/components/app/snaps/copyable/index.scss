@@ -1,5 +1,80 @@
 .copyable {
+  cursor: pointer;
+  transition: background-color background 0.2s;
+
+  & .show-more__button {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative) 33%);
+  }
+
+  &:hover {
+    background-color: var(--color-background-alternative-hover);
+
+    & .show-more__button {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative-hover) 33%);
+    }
+  }
+
+  &.clicked {
+    background-color: var(--color-background-alternative-pressed);
+
+    & .show-more__button {
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative-pressed) 33%);
+    }
+
+    &:hover {
+      background-color: var(--color-background-alternative-pressed);
+
+      & .show-more__button {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative-pressed) 33%);
+      }
+    }
+  }
+
+  &.sensitive {
+    &.visible {
+      background-color: rgba(215, 56, 71, 0.2);
+
+      & .show-more__button {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(215, 56, 71, 0.2) 33%);
+      }
+
+      &:hover {
+        background-color: rgba(215, 56, 71, 0.25);
+
+        & .show-more__button {
+          background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(215, 56, 71, 0.25) 33%);
+        }
+      }
+
+      &.clicked {
+        background-color: rgba(215, 56, 71, 0.3);
+
+        & .show-more__button {
+          background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(215, 56, 71, 0.3) 33%);
+        }
+
+
+        &:hover {
+          background-color: rgba(215, 56, 71, 0.3);
+
+          & .show-more__button {
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(215, 56, 71, 0.3) 33%);
+          }
+        }
+      }
+    }
+  }
+
   &__icon {
-    cursor: pointer;
+    margin-top: 2px;
+  }
+
+  &__tooltip {
+    display: flex;
+    align-items: center;
+
+    & > div {
+      display: flex !important;
+    }
   }
 }

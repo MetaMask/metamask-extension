@@ -29,7 +29,6 @@ describe('Send NFT', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Fill the send NFT form and confirm the transaction

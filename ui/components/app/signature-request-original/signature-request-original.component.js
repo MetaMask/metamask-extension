@@ -44,11 +44,6 @@ import {
   ///: END:ONLY_INCLUDE_IN
 } from '../../component-library';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IN
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
@@ -95,26 +90,6 @@ export default class SignatureRequestOriginal extends Component {
   state = {
     showSignatureRequestWarning: false,
   };
-
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  componentDidMount() {
-    const { txData } = this.props;
-    if (txData.securityAlertResponse) {
-      const blockaidMetricsParams = getBlockaidMetricsParams(
-        txData.securityAlertResponse,
-      );
-
-      this.context.trackEvent({
-        category: MetaMetricsEventCategory.Transactions,
-        event: MetaMetricsEventName.SignatureRequested,
-        properties: {
-          action: 'Sign Request',
-          ...blockaidMetricsParams,
-        },
-      });
-    }
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   msgHexToText = (hex) => {
     try {

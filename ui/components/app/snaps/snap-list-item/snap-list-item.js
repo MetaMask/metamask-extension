@@ -8,11 +8,24 @@ import {
   Display,
   BlockSize,
   TextVariant,
+  IconColor,
 } from '../../../../helpers/constants/design-system';
-import { Text, Box } from '../../../component-library';
+import {
+  Text,
+  Box,
+  IconName,
+  IconSize,
+  Icon,
+} from '../../../component-library';
 import SnapAvatar from '../snap-avatar';
 
-const SnapListItem = ({ name, packageName, onClick, snapId }) => {
+const SnapListItem = ({
+  name,
+  packageName,
+  onClick,
+  snapId,
+  showUpdateDot,
+}) => {
   return (
     <Box
       className="snap-list-item"
@@ -51,6 +64,15 @@ const SnapListItem = ({ name, packageName, onClick, snapId }) => {
           </Text>
         </Box>
       </Box>
+      {showUpdateDot && (
+        <Box display={Display.Flex}>
+          <Icon
+            name={IconName.FullCircle}
+            size={IconSize.Xs}
+            color={IconColor.primaryDefault}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
@@ -72,5 +94,9 @@ SnapListItem.propTypes = {
    * ID of a snap.
    */
   snapId: PropTypes.string.isRequired,
+  /**
+   * Boolean value used as indicator for available update represented as a simple dot.
+   */
+  showUpdateDot: PropTypes.bool,
 };
 export default SnapListItem;

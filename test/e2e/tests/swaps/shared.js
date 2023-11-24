@@ -17,12 +17,6 @@ const withFixturesOptions = {
   ganacheOptions,
 };
 
-const loadExtension = async (driver) => {
-  await driver.navigate();
-  await driver.fill('#password', 'correct horse battery staple');
-  await driver.press('#password', driver.Key.ENTER);
-};
-
 const buildQuote = async (driver, options) => {
   if (process.env.MULTICHAIN) {
     await driver.clickElement('[data-testid="app-footer-actions-button"]');
@@ -196,7 +190,6 @@ const changeExchangeRate = async (driver) => {
 
 module.exports = {
   withFixturesOptions,
-  loadExtension,
   buildQuote,
   reviewQuote,
   waitForTransactionToComplete,
