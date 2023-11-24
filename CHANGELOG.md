@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.6.0]
+## [11.5.2]
+### Fixed
+- Fix bug that could cause the fetching quotes step of Swaps to fail ([#21923](https://github.com/MetaMask/metamask-extension/pull/21923))
 
 ## [11.5.1]
 ### Fixed
@@ -4180,6 +4183,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.5.1...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.6.0...HEAD
 [11.6.0]: https://github.com/MetaMask/metamask-extension/compare/v11.5.1...v11.6.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.5.2...HEAD
+[11.5.2]: https://github.com/MetaMask/metamask-extension/compare/v11.5.1...v11.5.2
 [11.5.1]: https://github.com/MetaMask/metamask-extension/compare/v11.5.0...v11.5.1
 [11.5.0]: https://github.com/MetaMask/metamask-extension/compare/v11.4.1...v11.5.0
 [11.4.1]: https://github.com/MetaMask/metamask-extension/compare/v11.4.0...v11.4.1

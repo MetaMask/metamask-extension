@@ -1522,11 +1522,6 @@ export default class MetamaskController extends EventEmitter {
           this.txController.txGasUtil.getBufferedGasLimit.bind(
             this.txController.txGasUtil,
           ),
-        networkController: this.networkController,
-        onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-          networkControllerMessenger,
-          'NetworkController:stateChange',
-        ),
         provider: this.provider,
         getProviderConfig: () => this.networkController.state.providerConfig,
         getTokenRatesState: () => this.tokenRatesController.state,

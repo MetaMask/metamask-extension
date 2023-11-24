@@ -4147,6 +4147,9 @@
       }
     },
     "pump": {
+      "globals": {
+        "console.log": true
+      },
       "packages": {
         "browserify>browser-resolve": true,
         "browserify>process": true,
