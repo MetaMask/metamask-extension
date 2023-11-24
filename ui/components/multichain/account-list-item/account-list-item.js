@@ -84,7 +84,7 @@ export const AccountListItem = ({
   closeMenu,
   connectedAvatar,
   connectedAvatarName,
-  isPinned,
+  isPinned = false,
   showOptions = false,
 }) => {
   const t = useI18nContext();

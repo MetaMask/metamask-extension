@@ -1771,6 +1771,25 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
+export function getUpdatedAndSortedAccounts(state) {
+  const accounts = getMetaMaskAccountsOrdered(state);
+  const pinnedAccounts = getPinnedAccountsList(state);
+  accounts.forEach((account) => {
+    account.pinned = Boolean(pinnedAccounts.includes(account.address));
+  });
+
+  const sortedSearchResults = accounts.slice().sort((a, b) => {
+    if (a.pinned && !b.pinned) {
+      return -1; // a comes first
+    } else if (!a.pinned && b.pinned) {
+      return 1; // b comes first
+    }
+    return 0; // keep the order unchanged
+  });
+
+  return sortedSearchResults;
+}
+
 export function getOnboardedInThisUISession(state) {
   return state.appState.onboardedInThisUISession;
 }

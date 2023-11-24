@@ -33,7 +33,7 @@ import {
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
-  getPinnedAccountsList,
+  getUpdatedAndSortedAccounts,
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -76,7 +76,6 @@ export const AccountListMenu = ({
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const selectedAccount = useSelector(getSelectedAccount);
-  const pinnedAccounts = useSelector(getPinnedAccountsList);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
@@ -118,27 +117,9 @@ export const AccountListMenu = ({
     }
   }
 
-  if (process.env.NETWORK_ACCOUNT_DND && pinnedAccounts.length > 0) {
-    accounts.forEach((account) => {
-      if (pinnedAccounts.includes(account.address)) {
-        account.pinned = true;
-      } else {
-        account.pinned = false;
-      }
-    });
-  }
-
-  let sortedSearchResults = searchResults.slice().sort((a, b) => {
-    if (a.pinned && !b.pinned) {
-      return -1; // a comes first
-    } else if (!a.pinned && b.pinned) {
-      return 1; // b comes first
-    }
-    return 0; // keep the order unchanged
-  });
-
-  sortedSearchResults = process.env.NETWORK_ACCOUNT_DND
-    ? sortedSearchResults
+  const sortedSearchResults = process.env.NETWORK_ACCOUNT_DND
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useSelector(getUpdatedAndSortedAccounts)
     : searchResults;
 
   return (
@@ -350,32 +331,32 @@ export const AccountListMenu = ({
                 );
 
                 return (
-                  <>
-                    <AccountListItem
-                      onClick={() => {
-                        onClose();
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.NavAccountSwitched,
-                          properties: {
-                            location: 'Main Menu',
-                          },
-                        });
-                        dispatch(setSelectedAccount(account.address));
-                      }}
-                      identity={account}
-                      key={account.address}
-                      selected={selectedAccount.address === account.address}
-                      closeMenu={onClose}
-                      connectedAvatar={connectedSite?.iconUrl}
-                      connectedAvatarName={connectedSite?.name}
-                      showOptions
-                      isPinned={
-                        process.env.NETWORK_ACCOUNT_DND ? account.pinned : null
-                      }
-                      {...accountListItemProps}
-                    />
-                  </>
+                  <AccountListItem
+                    onClick={() => {
+                      onClose();
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.NavAccountSwitched,
+                        properties: {
+                          location: 'Main Menu',
+                        },
+                      });
+                      dispatch(setSelectedAccount(account.address));
+                    }}
+                    identity={account}
+                    key={account.address}
+                    selected={selectedAccount.address === account.address}
+                    closeMenu={onClose}
+                    connectedAvatar={connectedSite?.iconUrl}
+                    connectedAvatarName={connectedSite?.name}
+                    showOptions
+                    isPinned={
+                      process.env.NETWORK_ACCOUNT_DND
+                        ? Boolean(account.pinned)
+                        : null
+                    }
+                    {...accountListItemProps}
+                  />
                 );
               })}
             </Box>
