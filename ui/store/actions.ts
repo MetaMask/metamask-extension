@@ -21,6 +21,11 @@ import {
   UpdateProposedNamesRequest,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
+import {
+  TransactionMeta,
+  TransactionParams,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { NetworkClientId } from '@metamask/network-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
@@ -86,19 +91,13 @@ import {
 } from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '../../shared/constants/transaction';
 import { NetworkType, RPCDefinition } from '../../shared/constants/network';
 import { EtherDenomination } from '../../shared/constants/common';
 import {
   isErrorWithMessage,
   logErrorWithMessage,
 } from '../../shared/modules/error';
-import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-manager';
 import { ThemeType } from '../../shared/constants/preferences';
-import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -113,6 +112,13 @@ import {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+
+type CustomGasSettings = {
+  gas?: string;
+  gasPrice?: string;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
+};
 
 export function goHome() {
   return {
@@ -800,7 +806,7 @@ export function updatePreviousGasParams(
 
 export function updateEditableParams(
   txId: string,
-  editableParams: Partial<TxParams>,
+  editableParams: Partial<TransactionParams>,
 ): ThunkAction<
   Promise<TransactionMeta>,
   MetaMaskReduxState,
@@ -960,7 +966,7 @@ export function updateTransaction(
  * @returns
  */
 export function addTransactionAndRouteToConfirmationPage(
-  txParams: TxParams,
+  txParams: TransactionParams,
   options?: {
     sendFlowHistory?: DraftTransaction['history'];
     type?: TransactionType;
@@ -1009,7 +1015,7 @@ export function addTransactionAndRouteToConfirmationPage(
  * @returns
  */
 export async function addTransactionAndWaitForPublish(
-  txParams: TxParams,
+  txParams: TransactionParams,
   options: {
     method?: string;
     requireApproval?: boolean;
@@ -1089,7 +1095,7 @@ export function updateAndApproveTx(
 export async function getTransactions(
   filters: {
     filterToCurrentNetwork?: boolean;
-    searchCriteria?: Partial<TransactionMeta> & Partial<TxParams>;
+    searchCriteria?: Partial<TransactionMeta> & Partial<TransactionParams>;
   } = {},
 ): Promise<TransactionMeta[]> {
   return await submitRequestToBackground<TransactionMeta[]>('getTransactions', [
@@ -1110,7 +1116,10 @@ export function completedTx(
   };
 }
 
-export function updateTransactionParams(txId: string, txParams: TxParams) {
+export function updateTransactionParams(
+  txId: string,
+  txParams: TransactionParams,
+) {
   return {
     type: actionConstants.UPDATE_TRANSACTION_PARAMS,
     id: txId,
@@ -4047,7 +4056,7 @@ export function captureSingleException(
  * point in the future.
  */
 
-export function estimateGas(params: TxParams): Promise<Hex> {
+export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
 }
 
@@ -4235,8 +4244,8 @@ export function clearSmartTransactionFees() {
 }
 
 export function fetchSmartTransactionFees(
-  unsignedTransaction: Partial<TxParams> & { chainId: string },
-  approveTxParams: TxParams,
+  unsignedTransaction: Partial<TransactionParams> & { chainId: string },
+  approveTxParams: TransactionParams,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     if (approveTxParams) {
@@ -4274,10 +4283,10 @@ interface TemporarySmartTransactionGasFees {
 }
 
 const createSignedTransactions = async (
-  unsignedTransaction: Partial<TxParams> & { chainId: string },
+  unsignedTransaction: Partial<TransactionParams> & { chainId: string },
   fees: TemporarySmartTransactionGasFees[],
   areCancelTransactions?: boolean,
-): Promise<TxParams[]> => {
+): Promise<TransactionParams[]> => {
   const unsignedTransactionsWithFees = fees.map((fee) => {
     const unsignedTransactionWithFees = {
       ...unsignedTransaction,
@@ -4294,10 +4303,9 @@ const createSignedTransactions = async (
     }
     return unsignedTransactionWithFees;
   });
-  const signedTransactions = await submitRequestToBackground<TxParams[]>(
-    'approveTransactionsWithSameNonce',
-    [unsignedTransactionsWithFees],
-  );
+  const signedTransactions = await submitRequestToBackground<
+    TransactionParams[]
+  >('approveTransactionsWithSameNonce', [unsignedTransactionsWithFees]);
   return signedTransactions;
 };
 
@@ -4305,7 +4313,7 @@ export function signAndSendSmartTransaction({
   unsignedTransaction,
   smartTransactionFees,
 }: {
-  unsignedTransaction: Partial<TxParams> & { chainId: string };
+  unsignedTransaction: Partial<TransactionParams> & { chainId: string };
   smartTransactionFees: {
     fees: TemporarySmartTransactionGasFees[];
     cancelFees: TemporarySmartTransactionGasFees[];

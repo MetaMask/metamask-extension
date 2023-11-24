@@ -1,6 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   getDetectedTokensInCurrentNetwork,
   getKnownMethodData,
   getTokenList,
@@ -27,11 +31,7 @@ import {
   TOKEN_CATEGORY_HASH,
 } from '../helpers/constants/transactions';
 import { getNfts, getTokens } from '../ducks/metamask/metamask';
-import {
-  TransactionType,
-  TransactionGroupCategory,
-  TransactionStatus,
-} from '../../shared/constants/transaction';
+import { TransactionGroupCategory } from '../../shared/constants/transaction';
 import { captureSingleException } from '../store/actions';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';

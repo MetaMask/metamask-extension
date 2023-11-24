@@ -3,6 +3,10 @@ import EthQuery, { Provider } from '@metamask/eth-query';
 import { BigNumber } from 'bignumber.js';
 import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   determineTransactionAssetType,
@@ -13,11 +17,9 @@ import {
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
 import {
-  TransactionType,
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
-  TransactionMeta,
 } from '../../../../shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
@@ -196,7 +198,7 @@ export const handleTransactionConfirmed = async (
   const { transactionMeta } = transactionEventPayload;
   const { txReceipt } = transactionMeta;
 
-  extraParams.gas_used = txReceipt.gasUsed;
+  extraParams.gas_used = txReceipt?.gasUsed;
 
   const { submittedTime } = transactionMeta;
 
@@ -204,7 +206,7 @@ export const handleTransactionConfirmed = async (
     extraParams.completion_time = getTransactionCompletionTime(submittedTime);
   }
 
-  if (txReceipt.status === '0x0') {
+  if (txReceipt?.status === '0x0') {
     extraParams.status = METRICS_STATUS_FAILED;
   }
   await createUpdateFinalizeTransactionEventFragment({
@@ -360,7 +362,7 @@ export const handlePostTransactionBalanceUpdate = async (
   },
 ) => {
   if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
-    if (transactionMeta.txReceipt.status === '0x0') {
+    if (transactionMeta.txReceipt?.status === '0x0') {
       trackEvent({
         event: 'Swap Failed',
         sensitiveProperties: { ...transactionMeta.swapMetaData },
@@ -385,7 +387,7 @@ export const handlePostTransactionBalanceUpdate = async (
         : null;
 
       const estimatedVsUsedGasRatio =
-        transactionMeta.txReceipt.gasUsed &&
+        transactionMeta.txReceipt?.gasUsed &&
         transactionMeta.swapMetaData.estimated_gas
           ? `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
               .div(transactionMeta.swapMetaData.estimated_gas, 10)
@@ -461,8 +463,8 @@ function calculateTransactionsCost(
     );
   }
   const tradeGasCost = calcGasTotal(
-    transactionMeta.txReceipt.gasUsed,
-    transactionMeta.txReceipt.effectiveGasPrice,
+    transactionMeta.txReceipt?.gasUsed,
+    transactionMeta.txReceipt?.effectiveGasPrice,
   );
   const tradeAndApprovalGasCost = new BigNumber(tradeGasCost, 16)
     .plus(approvalGasCost, 16)
@@ -754,7 +756,6 @@ async function buildEventFragmentProperties({
     defaultGasEstimates,
     originalType,
     replacedById,
-    metamaskNetworkId: network,
     customTokenAmount,
     dappProposedTokenAmount,
     currentTokenBalance,
@@ -767,7 +768,6 @@ async function buildEventFragmentProperties({
     ///: END:ONLY_INCLUDE_IN
     simulationFails,
   } = transactionMeta;
-
   const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
 
@@ -791,16 +791,16 @@ async function buildEventFragmentProperties({
     if (estimateType) {
       gasParams.default_estimate = estimateType;
       let defaultMaxFeePerGas =
-        transactionMeta.defaultGasEstimates.maxFeePerGas;
+        transactionMeta.defaultGasEstimates?.maxFeePerGas;
       let defaultMaxPriorityFeePerGas =
-        transactionMeta.defaultGasEstimates.maxPriorityFeePerGas;
+        transactionMeta.defaultGasEstimates?.maxPriorityFeePerGas;
 
       if (
         [
           GasRecommendations.low,
           GasRecommendations.medium,
           GasRecommendations.high,
-        ].includes(estimateType)
+        ].includes(estimateType as GasRecommendations)
       ) {
         const { gasFeeEstimates } =
           await transactionMetricsRequest.getEIP1559GasFeeEstimates();
@@ -818,10 +818,10 @@ async function buildEventFragmentProperties({
       }
     }
 
-    if (transactionMeta.defaultGasEstimates.gas) {
+    if (transactionMeta.defaultGasEstimates?.gas) {
       gasParams.default_gas = transactionMeta.defaultGasEstimates.gas;
     }
-    if (transactionMeta.defaultGasEstimates.gasPrice) {
+    if (transactionMeta.defaultGasEstimates?.gasPrice) {
       gasParams.default_gas_price =
         transactionMeta.defaultGasEstimates.gasPrice;
     }
@@ -846,17 +846,19 @@ async function buildEventFragmentProperties({
     eip1559Version = '2';
   }
 
-  const contractInteractionTypes = [
-    TransactionType.contractInteraction,
-    TransactionType.tokenMethodApprove,
-    TransactionType.tokenMethodSafeTransferFrom,
-    TransactionType.tokenMethodSetApprovalForAll,
-    TransactionType.tokenMethodTransfer,
-    TransactionType.tokenMethodTransferFrom,
-    TransactionType.smart,
-    TransactionType.swap,
-    TransactionType.swapApproval,
-  ].includes(type);
+  const contractInteractionTypes =
+    type &&
+    [
+      TransactionType.contractInteraction,
+      TransactionType.tokenMethodApprove,
+      TransactionType.tokenMethodSafeTransferFrom,
+      TransactionType.tokenMethodSetApprovalForAll,
+      TransactionType.tokenMethodTransfer,
+      TransactionType.tokenMethodTransferFrom,
+      TransactionType.smart,
+      TransactionType.swap,
+      TransactionType.swapApproval,
+    ].includes(type);
 
   const contractMethodNames = {
     APPROVE: 'Approve',
@@ -869,7 +871,7 @@ async function buildEventFragmentProperties({
   let transactionType = TransactionType.simpleSend;
   if (type === TransactionType.cancel) {
     transactionType = TransactionType.cancel;
-  } else if (type === TransactionType.retry) {
+  } else if (type === TransactionType.retry && originalType) {
     transactionType = originalType;
   } else if (type === TransactionType.deployContract) {
     transactionType = TransactionType.deployContract;
@@ -942,7 +944,9 @@ async function buildEventFragmentProperties({
   if (securityAlertResponse?.result_type === BlockaidResultType.Failed) {
     uiCustomizations = ['security_alert_failed'];
   } else {
-    additionalBlockaidParams = getBlockaidMetricsParams(securityAlertResponse);
+    additionalBlockaidParams = getBlockaidMetricsParams(
+      securityAlertResponse as any,
+    );
     uiCustomizations = additionalBlockaidParams?.ui_customizations ?? null;
   }
 
@@ -961,7 +965,7 @@ async function buildEventFragmentProperties({
     referrer,
     source,
     status,
-    network,
+    network: `${parseInt(chainId, 16)}`,
     eip_1559_version: eip1559Version,
     gas_edit_type: 'none',
     gas_edit_attempted: 'none',
