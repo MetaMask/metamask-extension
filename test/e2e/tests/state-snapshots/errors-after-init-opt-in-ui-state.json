@@ -4,7 +4,6 @@
   "appState": "object",
   "confirm": "object",
   "confirmTransaction": "object",
-  "confirm": "object",
   "gas": { "customData": { "price": null, "limit": null } },
   "history": { "mostRecentOverviewPage": "/" },
   "invalidCustomNetwork": "object",
