@@ -242,6 +242,8 @@ async function verifyEnglishLocale() {
     'appNameFlask',
     'appNameMmi',
     'appDescription',
+    'rejected',
+    'signed',
   ];
 
   const englishMessages = Object.keys(englishLocale);

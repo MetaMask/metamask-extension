@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import txHelper from '../helpers/utils/tx-helper';
 import {
   roundExponential,
@@ -12,7 +13,6 @@ import {
   getNativeCurrency,
   getProviderConfig,
 } from '../ducks/metamask/metamask';
-import { TransactionEnvelopeType } from '../../shared/constants/transaction';
 import {
   GasEstimateTypes,
   CUSTOM_GAS_ESTIMATE,
