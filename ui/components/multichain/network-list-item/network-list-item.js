@@ -43,9 +43,15 @@ export const NetworkListItem = ({
     }
   }, [networkRef, focus]);
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.stopPropagation(); // Prevent the event from reaching the parent container
+      onClick();
+    }
+  };
+
   return (
     <Box
-      onClick={onClick}
       padding={4}
       gap={2}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
@@ -56,6 +62,7 @@ export const NetworkListItem = ({
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
+      onClick={onClick}
     >
       {selected && (
         <Box
@@ -75,6 +82,8 @@ export const NetworkListItem = ({
           color={TextColor.textDefault}
           backgroundColor={BackgroundColor.transparent}
           ellipsis
+          onKeyDown={handleKeyPress}
+          tabIndex="0" // Enable keyboard focus
         >
           {name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
             <Tooltip

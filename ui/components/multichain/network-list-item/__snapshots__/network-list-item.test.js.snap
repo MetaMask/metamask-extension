@@ -19,6 +19,7 @@ exports[`NetworkListItem renders properly 1`] = `
     >
       <p
         class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+        tabindex="0"
       >
         Polygon
       </p>
