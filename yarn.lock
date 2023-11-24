@@ -3802,7 +3802,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^4.0.0":
+"@metamask/accounts-controller@npm:4.0.0":
   version: 4.0.0
   resolution: "@metamask/accounts-controller@npm:4.0.0"
   dependencies:
@@ -3818,6 +3818,25 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^8.1.0
   checksum: 7fa3e19e7ad049a59e26fe0988932043705e24e67b9e7df44a5be4b3c4fe6c1cfcbc0687f2e8cd41e26b05113c172ae55fd2e23a586afbbdf021de7bacdb7f2a
+  languageName: node
+  linkType: hard
+
+"@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-4.0.0-3127b56d14.patch":
+  version: 4.0.0
+  resolution: "@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-4.0.0-3127b56d14.patch::version=4.0.0&hash=aa3146"
+  dependencies:
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/eth-snap-keyring": "npm:^2.0.0"
+    "@metamask/keyring-api": "npm:^1.0.0"
+    "@metamask/snaps-utils": "npm:^3.0.0"
+    "@metamask/utils": "npm:^8.1.0"
+    deepmerge: "npm:^4.2.2"
+    ethereumjs-util: "npm:^7.0.10"
+    immer: "npm:^9.0.6"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/keyring-controller": ^8.1.0
+  checksum: 37152bb1cc007694d5887e4aeb01382b175ab8c4b7cb7b64b63b774a3e246d102f7f7fcc8d3956d3b3b0a7cbd883919f404b8afbbc9bf77db4b2394f9156c2fa
   languageName: node
   linkType: hard
 

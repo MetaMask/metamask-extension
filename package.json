@@ -216,7 +216,8 @@
     "semver@7.3.7": "^7.5.4",
     "semver@7.3.8": "^7.5.4",
     "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch",
-    "nonce-tracker@npm:^3.0.0": "patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch"
+    "nonce-tracker@npm:^3.0.0": "patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch",
+    "@metamask/accounts-controller@npm:^4.0.0": "patch:@metamask/accounts-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-4.0.0-3127b56d14.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
