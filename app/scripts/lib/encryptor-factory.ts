@@ -1,4 +1,13 @@
-import * as browserPassworder from '@metamask/browser-passworder';
+import {
+  encrypt,
+  encryptWithDetail,
+  encryptWithKey,
+  decrypt,
+  decryptWithDetail,
+  decryptWithKey,
+  keyFromPassword,
+  EncryptionKey,
+} from '@metamask/browser-passworder';
 
 /**
  * A factory function for the encrypt method of the browser-passworder library,
@@ -12,16 +21,15 @@ const encryptFactory =
   async (
     password: string,
     data: unknown,
-    key?: browserPassworder.EncryptionKey,
+    key?: EncryptionKey | CryptoKey,
     salt?: string,
-  ): Promise<string> => {
-    return browserPassworder.encrypt(password, data, key, salt, {
+  ): Promise<string> =>
+    encrypt(password, data, key, salt, {
       algorithm: 'PBKDF2',
       params: {
         iterations,
       },
     });
-  };
 
 /**
  * A factory function for the encryptWithDetail method of the browser-passworder library,
@@ -31,15 +39,13 @@ const encryptFactory =
  * @returns A function that encrypts with the given number of iterations.
  */
 const encryptWithDetailFactory =
-  (iterations: number) =>
-  (password: string, object: unknown, salt?: string) => {
-    return browserPassworder.encryptWithDetail(password, object, salt, {
+  (iterations: number) => (password: string, object: unknown, salt?: string) =>
+    encryptWithDetail(password, object, salt, {
       algorithm: 'PBKDF2',
       params: {
         iterations,
       },
     });
-  };
 
 /**
  * A factory function that returns an alternative to the updateVault method
@@ -56,7 +62,7 @@ const updateVaultFactory =
     if (!keyMetadata || keyMetadata.params.iterations !== iterations) {
       return encryptFactory(iterations)(
         password,
-        await browserPassworder.decrypt(password, vault),
+        await decrypt(password, vault),
       );
     }
 
@@ -73,8 +79,12 @@ const updateVaultFactory =
  * @returns An encryptor set with the given number of iterations.
  */
 export const encryptorFactory = (iterations: number) => ({
-  ...browserPassworder,
   encrypt: encryptFactory(iterations),
+  encryptWithKey,
   encryptWithDetail: encryptWithDetailFactory(iterations),
+  decrypt,
+  decryptWithKey,
+  decryptWithDetail,
+  keyFromPassword,
   updateVault: updateVaultFactory(iterations),
 });
