@@ -236,9 +236,6 @@
   "editContact": {
     "message": "تعديل جهة الاتصال"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "لم يتم العثور على اسم ENS على الشبكة الحالية. حاول التبديل إلى شبكة الإيثيريوم الرئيسية."
-  },
   "ensRegistrationError": {
     "message": "خطأ في تسجيل اسم ENS"
   },

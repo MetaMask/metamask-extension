@@ -7,11 +7,15 @@ import CurrencyInput from '.';
 describe('CurrencyInput Component', () => {
   const mockStore = {
     metamask: {
-      nativeCurrency: 'ETH',
       currentCurrency: 'usd',
-      conversionRate: 231.06,
+      currencyRates: {
+        ETH: {
+          conversionRate: 231.06,
+        },
+      },
       providerConfig: {
         chainId: '0x5',
+        ticker: 'ETH',
       },
       preferences: {
         showFiatInTestnets: true,
