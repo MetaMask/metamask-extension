@@ -18,7 +18,7 @@ interface Identity {
   lastSelected?: number;
 }
 
-export const version = 104;
+export const version = 105;
 
 /**
  * This migration does the following:

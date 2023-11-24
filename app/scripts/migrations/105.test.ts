@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 import { sha256FromString } from 'ethereumjs-util';
 import { EthMethod, InternalAccount } from '@metamask/keyring-api';
-import { migrate } from './104';
+import { migrate } from './105';
 
 const MOCK_ADDRESS = '0x0';
 const MOCK_ADDRESS_2 = '0x1';
@@ -82,7 +82,7 @@ function createMockState(
   };
 }
 
-describe('migration #104', () => {
+describe('migration #105', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: 103 },
@@ -91,7 +91,7 @@ describe('migration #104', () => {
 
     const newStorage = await migrate(oldStorage);
 
-    expect(newStorage.meta).toStrictEqual({ version: 104 });
+    expect(newStorage.meta).toStrictEqual({ version: 105 });
   });
 
   describe('createDefaultAccountsController', () => {

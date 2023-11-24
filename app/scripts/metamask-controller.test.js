@@ -993,8 +993,8 @@ describe('MetaMaskController', () => {
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
         jest
-          .spyOn(metamaskController.preferencesController, 'getSelectedAddress')
-          .mockReturnValue(selectedAddressMock);
+          .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+          .mockReturnValue({ address: selectedAddressMock });
 
         jest.spyOn(metamaskController.txController, 'wipeTransactions');
 
