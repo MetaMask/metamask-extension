@@ -7,12 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.6.0]
-## [11.5.2]
-### Fixed
-- Fix bug that could cause the fetching quotes step of Swaps to fail ([#21923](https://github.com/MetaMask/metamask-extension/pull/21923))
-
-MMI
-
 ### Added
 - Introduced the Swedish Krona (SEK) as an available currency option. ([21782](https://github.com/MetaMask/metamask-extension/pull/21782))
 - Updated the content in the tooltip for 'Liquidity Source' within the Swaps feature. ([#21696](https://github.com/MetaMask/metamask-extension/pull/21696))
@@ -37,6 +31,10 @@ MMI
 - Enhanced the process of removing a hardware wallet by ensuring that all associated identities are also removed from the UI when the device is forgotten. ([#21755)](https://github.com/MetaMask/metamask-extension/pull/21755))
 - Fixed an issue to prevent duplicate NFT imports by ensuring address checksum validation during the import process. ([#21593](https://github.com/MetaMask/metamask-extension/pull/21593))
 - Fixed a bug in the 'Add Network' form where warnings and error messages were disappearing prematurely. ([21660](https://github.com/MetaMask/metamask-extension/pull/21660))
+
+## [11.5.2]
+### Fixed
+- Fix bug that could cause the fetching quotes step of Swaps to fail ([#21923](https://github.com/MetaMask/metamask-extension/pull/21923))
 
 ## [11.5.1]
 ### Fixed
@@ -4207,10 +4205,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.5.1...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.6.0...HEAD
-[11.6.0]: https://github.com/MetaMask/metamask-extension/compare/v11.5.1...v11.6.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.5.2...HEAD
+[11.6.0]: https://github.com/MetaMask/metamask-extension/compare/v11.5.2...v11.6.0
 [11.5.2]: https://github.com/MetaMask/metamask-extension/compare/v11.5.1...v11.5.2
 [11.5.1]: https://github.com/MetaMask/metamask-extension/compare/v11.5.0...v11.5.1
 [11.5.0]: https://github.com/MetaMask/metamask-extension/compare/v11.4.1...v11.5.0
