@@ -12,16 +12,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix bug that could cause the fetching quotes step of Swaps to fail ([#21923](https://github.com/MetaMask/metamask-extension/pull/21923))
 
 MMI
-- [MMI] Improves css styles in mmi view ([#21779](https://github.com/MetaMask/metamask-extension/pull/21779))
-- [MMI] add missing mmi status in tx detail pane ([#21777](https://github.com/MetaMask/metamask-extension/pull/21777))
-- [MMI] show unsupported networks message in address tooltip ([#21745](https://github.com/MetaMask/metamask-extension/pull/21745))
-- [MMI] Updates custodian onboarding url ([#21726](https://github.com/MetaMask/metamask-extension/pull/21726))
-- MMI fix scope being passed to method ([#21752](https://github.com/MetaMask/metamask-extension/pull/21752))
-- [MMI] changes for supporting MMI ECA3 ([#21476](https://github.com/MetaMask/metamask-extension/pull/21476))
-- [MMI] enables some MM tests to run ([#21663](https://github.com/MetaMask/metamask-extension/pull/21663))
-- [MMI] passing the selectedAddress field (#21617) ([#21675](https://github.com/MetaMask/metamask-extension/pull/21675))
-- [MMI] passing the selectedAddress field ([#21617](https://github.com/MetaMask/metamask-extension/pull/21617))
-- [MMI] enables simple send test ([#21616](https://github.com/MetaMask/metamask-extension/pull/21616))
 
 ### Added
 - Introduced the Swedish Krona (SEK) as an available currency option. ([21782](https://github.com/MetaMask/metamask-extension/pull/21782))
@@ -40,6 +30,8 @@ MMI
 - Remove legacy transaction insight tab ([#21027](https://github.com/MetaMask/metamask-extension/pull/21027))
 - Resolve snap derivation path names using SLIP44 when applicable ([#21674](https://github.com/MetaMask/metamask-extension/pull/21674))
 - Simplify Snap installation warning modal ([#21516](https://github.com/MetaMask/metamask-extension/pull/21516))
+- [MMI] Show unsupported networks message in address tooltip ([#21745](https://github.com/MetaMask/metamask-extension/pull/21745))
+- [MMI] Updates custodian onboarding url ([#21726](https://github.com/MetaMask/metamask-extension/pull/21726))
 
 ### Fixed
 - Enhanced the process of removing a hardware wallet by ensuring that all associated identities are also removed from the UI when the device is forgotten. ([#21755)](https://github.com/MetaMask/metamask-extension/pull/21755))
