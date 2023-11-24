@@ -37,7 +37,7 @@ describe('Settings', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: (mockServer) => {
           server = mockServer;
         },

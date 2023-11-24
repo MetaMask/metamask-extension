@@ -204,6 +204,7 @@ async function main() {
   for (let testPath of myTestList) {
     if (testPath !== '') {
       testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
+      console.log(`\nExecuting testPath: ${testPath}\n`);
       await runInShell('node', [...args, testPath]);
     }
   }

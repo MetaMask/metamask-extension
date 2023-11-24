@@ -26,6 +26,8 @@ export const ExcludedSnapPermissions = Object.freeze({
 });
 
 export const ExcludedSnapEndowments = Object.freeze({
+  'endowment:page-home':
+    'This permission is still in development and therefore not available.',
   ///: BEGIN:ONLY_INCLUDE_IN(build-main)
   'endowment:lifecycle-hooks':
     'This endowment is experimental and therefore not available.',

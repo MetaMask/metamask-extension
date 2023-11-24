@@ -19,14 +19,14 @@ describe('Send NFT', function () {
     ],
   };
 
-  it('should be able to send ERC721 NFT @no-mmi', async function () {
+  it('should be able to send ERC721 NFT', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

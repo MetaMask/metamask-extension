@@ -58,6 +58,7 @@ import SignatureRequestOriginalWarning from './signature-request-original-warnin
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
+    trackEvent: PropTypes.func,
   };
 
   static propTypes = {

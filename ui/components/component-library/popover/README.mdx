@@ -200,6 +200,24 @@ const handleClick = () => {
 </Popover>;
 ```
 
+### onClickOutside
+
+`onClickOutside` is a callback function that is invoked when the user clicks outside of the `Popover` component
+
+```jsx
+import { Popover } from '../../component-library';
+
+const [isOpen, setIsOpen] = useState(false);
+
+const handleClick = () => {
+  setIsOpen(!isOpen);
+};
+
+<Popover onClickOutside={() => setIsOpen(false)}>
+  Press esc key to close
+</Popover>;
+```
+
 ### With PopoverHeader
 
 Using the `PopoverHeader` component to add a header to the `Popover` component. The `PopoverHeader` is used to show common elements such as title, back button, and close button.

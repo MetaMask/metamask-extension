@@ -84,7 +84,7 @@ describe('ENS', function () {
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({ driver }) => {

@@ -6,7 +6,6 @@ import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import UrlIcon from '../../../components/ui/url-icon';
 import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
 import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
@@ -35,6 +34,7 @@ import {
   Icon,
   IconName,
   Text,
+  Box,
 } from '../../../components/component-library';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
@@ -46,6 +46,9 @@ import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    trackEvent: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IN
   };
 
   static propTypes = {
@@ -301,26 +304,33 @@ export default class ConfirmApproveContent extends Component {
     ///: END:ONLY_INCLUDE_IN
 
     return (
-      <div className="flex-column">
-        <div className="confirm-approve-content__small-text">
+      <Box className="flex-column">
+        <Text className="confirm-approve-content__small-text">
           {isSetApproveForAll
             ? t('functionSetApprovalForAll')
             : t('functionApprove')}
-        </div>
+        </Text>
         {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
-          <div className="confirm-approve-content__small-text">
-            {`${t('parameters')}: ${isApprovalOrRejection}`}
+          <>
+            <Text className="confirm-approve-content__small-text">
+              {`${t('parameters')}: ${isApprovalOrRejection}`}
+            </Text>
             {
               ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-              `${t('tokenContractAddress')}: ${tokenAddress}`
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {`${t('tokenContractAddress')}: ${tokenAddress}`}
+              </Text>
               ///: END:ONLY_INCLUDE_IN
             }
-          </div>
+          </>
         ) : null}
-        <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
+        <Text className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
           {data}
-        </div>
-      </div>
+        </Text>
+      </Box>
     );
   }
 

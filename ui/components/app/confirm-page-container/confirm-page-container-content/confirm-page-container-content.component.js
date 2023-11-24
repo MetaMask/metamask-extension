@@ -26,12 +26,9 @@ export default class ConfirmPageContainerContent extends Component {
 
   static propTypes = {
     action: PropTypes.string,
-    dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     detailsComponent: PropTypes.node,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
     insightComponent: PropTypes.node,
-    ///: END:ONLY_INCLUDE_IN
     errorKey: PropTypes.string,
     errorMessage: PropTypes.string,
     tokenAddress: PropTypes.string,
@@ -67,15 +64,11 @@ export default class ConfirmPageContainerContent extends Component {
   };
 
   renderContent() {
-    const { detailsComponent, dataComponent } = this.props;
+    const { detailsComponent, dataHexComponent, insightComponent } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    const { insightComponent } = this.props;
-
-    if (insightComponent && (detailsComponent || dataComponent)) {
+    if (insightComponent && (detailsComponent || dataHexComponent)) {
       return this.renderTabs();
     }
-    ///: END:ONLY_INCLUDE_IN
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
     const { noteComponent } = this.props;
@@ -85,24 +78,17 @@ export default class ConfirmPageContainerContent extends Component {
     }
     ///: END:ONLY_INCLUDE_IN
 
-    if (detailsComponent && dataComponent) {
+    if (detailsComponent && dataHexComponent) {
       return this.renderTabs();
     }
 
-    return (
-      detailsComponent ||
-      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-      insightComponent ||
-      ///: END:ONLY_INCLUDE_IN
-      dataComponent
-    );
+    return detailsComponent || insightComponent;
   }
 
   renderTabs() {
     const { t } = this.context;
     const {
       detailsComponent,
-      dataComponent,
       dataHexComponent,
       ///: BEGIN:ONLY_INCLUDE_IN(snaps)
       insightComponent,
@@ -141,15 +127,6 @@ export default class ConfirmPageContainerContent extends Component {
           )
           ///: END:ONLY_INCLUDE_IN
         }
-        {dataComponent && (
-          <Tab
-            className="confirm-page-container-content__tab"
-            name={t('data')}
-            tabKey="data"
-          >
-            {dataComponent}
-          </Tab>
-        )}
         {dataHexComponent && (
           <Tab
             className="confirm-page-container-content__tab"
@@ -180,7 +157,6 @@ export default class ConfirmPageContainerContent extends Component {
       tokenAddress,
       nonce,
       detailsComponent,
-      dataComponent,
       warning,
       onCancelAll,
       onCancel,
@@ -221,8 +197,7 @@ export default class ConfirmPageContainerContent extends Component {
         )}
         <ConfirmPageContainerSummary
           className={classnames({
-            'confirm-page-container-summary--border':
-              !detailsComponent || !dataComponent,
+            'confirm-page-container-summary--border': !detailsComponent,
           })}
           action={action}
           image={image}

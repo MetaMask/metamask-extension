@@ -27,12 +27,12 @@ import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import { TransactionType } from '../../../../shared/constants/transaction';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
+///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
+///: END:ONLY_INCLUDE_IN
 
 const TransactionAlerts = ({
   userAcknowledgedGasMissing,

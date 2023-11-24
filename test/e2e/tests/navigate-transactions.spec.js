@@ -25,7 +25,7 @@ describe('Navigate transactions', function () {
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -116,7 +116,7 @@ describe('Navigate transactions', function () {
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -162,7 +162,7 @@ describe('Navigate transactions', function () {
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -192,7 +192,7 @@ describe('Navigate transactions', function () {
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -222,7 +222,7 @@ describe('Navigate transactions', function () {
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
         await driver.navigate();
