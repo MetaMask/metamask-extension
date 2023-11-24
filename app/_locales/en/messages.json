@@ -515,25 +515,25 @@
     "message": "Back"
   },
   "backup": {
-    "message": "Backup"
+    "message": "Back up"
   },
   "backupApprovalInfo": {
     "message": "This secret code is required to recover your wallet in case you lose your device, forget your password, have to re-install MetaMask, or want to access your wallet on another device."
   },
   "backupApprovalNotice": {
-    "message": "Backup your Secret Recovery Phrase to keep your wallet and funds secure."
+    "message": "Back up your Secret Recovery Phrase to keep your wallet and funds secure."
   },
   "backupKeyringSnapReminder": {
     "message": "Be sure you can access any accounts created by this Snap on your own before removing it"
   },
   "backupNow": {
-    "message": "Backup now"
+    "message": "Back up now"
   },
   "backupUserData": {
-    "message": "Backup your data"
+    "message": "Back up your data"
   },
   "backupUserDataDescription": {
-    "message": "You can backup user settings containing preferences and account addresses into a JSON file."
+    "message": "You can back up data like your contacts and preferences."
   },
   "balance": {
     "message": "Balance"
@@ -716,8 +716,8 @@
     "message": "This Chain ID is currently used by the $1 network."
   },
   "chainListReturnedDifferentTickerSymbol": {
-    "message": "The network with chain ID $1 may use a different currency symbol ($2) than the one you have entered. Please verify before continuing.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "message": "This network doesn’t match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Choose your network"
@@ -933,6 +933,9 @@
   },
   "continueMmiOnboarding": {
     "message": "Continue MetaMask Institutional onboarding"
+  },
+  "continueToWallet": {
+    "message": "Continue to wallet"
   },
   "contract": {
     "message": "Contract"
@@ -1370,8 +1373,20 @@
   "dismissReminderField": {
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
+  "displayNftMedia": {
+    "message": "Display NFT media"
+  },
+  "displayNftMediaDescription": {
+    "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
+  },
+  "doNotShare": {
+    "message": "Do not share this with anyone"
+  },
   "domain": {
     "message": "Domain"
+  },
+  "domainNotSupportedOnNetwork": {
+    "message": "Network does not support domain lookup"
   },
   "done": {
     "message": "Done"
@@ -1495,12 +1510,6 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
-  "enableOpenSeaAPI": {
-    "message": "Enable OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off."
-  },
   "enableSmartSwaps": {
     "message": "Enable Smart Swaps"
   },
@@ -1545,12 +1554,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS name not found on the current network. Try switching to Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Network does not support ENS"
   },
   "ensRegistrationError": {
     "message": "Error in ENS name registration"
@@ -1902,6 +1905,10 @@
   "hideSeedPhrase": {
     "message": "Hide seed phrase"
   },
+  "hideSentitiveInfo": {
+    "message": "Hide sensitive information"
+  },
+
   "hideToken": {
     "message": "Hide token"
   },
@@ -2260,6 +2267,12 @@
   "learnScamRisk": {
     "message": "scams and security risks."
   },
+  "leaveMetaMask": {
+    "message": "Leave MetaMask?"
+  },
+  "leaveMetaMaskDesc": {
+    "message": "You're about to visit a site outside of MetaMask. Double-check the URL before continuing."
+  },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
   },
@@ -2272,25 +2285,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Enable \"smart contract data\" or \"blind signing\" on your Ledger device."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Enable Use Ledger Live under Settings > Advanced."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Be sure your Ledger is plugged in and to select the Ethereum app."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Open and unlock Ledger Live App."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Customize how you connect your Ledger to MetaMask. $1 is recommended, but other options are available. Read more here: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Please close Ledger Live or other applications connected to your Ledger device, and try to connect again."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
@@ -2300,9 +2299,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live is taking too long to respond or connection timeout. Make sure Ledger Live app is opened and your device is unlocked."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "If your Ledger Live app is open, please disconnect any open Ledger Live connection and close the Ledger Live app."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "The ledger device was not connected. If you wish to connect your Ledger, please click 'Continue' again and approve HID connection",
@@ -2651,12 +2647,12 @@
   "newContract": {
     "message": "New contract"
   },
-  "newNFTDetectedInImportNFTsMessage": {
-    "message": "To use Opensea see your NFT, turn on 'Enable OpenSea API' in $1.",
-    "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
-  },
   "newNFTDetectedInImportNFTsMessageStrongText": {
     "message": "Settings > Security and privacy"
+  },
+  "newNFTDetectedInImportNFTsMsg": {
+    "message": "To use Opensea see your NFT, turn on 'Display NFT Media' in $1.",
+    "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInNFTsTabMessage": {
     "message": "Let MetaMask automatically detect and display NFTs in your wallet."
@@ -3096,6 +3092,14 @@
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
   },
+  "notificationsU2FLedgerLiveDescription": {
+    "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
+    "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"
+  },
+  "notificationsU2FLedgerLiveTitle": {
+    "message": "U2F and Ledger Live deprecation",
+    "description": "Title for a notification in the 'See What's New' popup. Tells ledger and chrome users that U2F and Ledger Live options are now deprecated."
+  },
   "numberOfNewTokensDetectedPlural": {
     "message": "$1 new tokens found in this account",
     "description": "$1 is the number of new tokens detected"
@@ -3428,6 +3432,14 @@
     "message": "Let $1 access your preferred language from your MetaMask settings. This can be used to localize and display $1's content using your language.",
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
+  "permission_homePage": {
+    "message": "Display a custom screen",
+    "description": "The description for the `endowment:page-home` permission"
+  },
+  "permission_homePageDescription": {
+    "message": "Let $1 display a custom home screen in MetaMask. This can be used for user interfaces, configuration, and dashboards.",
+    "description": "An extended description for the `endowment:page-home` permission. $1 is the snap name."
+  },
   "permission_keyring": {
     "message": "Allow requests for adding and controlling Ethereum accounts",
     "description": "The description for the `endowment:keyring` permission"
@@ -3471,6 +3483,14 @@
   "permission_manageStateDescription": {
     "message": "Allow $1 to store, update, and retrieve data securely with encryption. Other snaps cannot access this information.",
     "description": "An extended description for the `snap_manageState` permission. $1 is the snap name."
+  },
+  "permission_nameLookup": {
+    "message": "Provide domain and address lookups.",
+    "description": "The description for the `endowment:name-lookup` permission."
+  },
+  "permission_nameLookupDescription": {
+    "message": "Allow the snap to fetch and display address and domain lookups in different parts of the MetaMask UI.",
+    "description": "An extended description for the `endowment:name-lookup` permission."
   },
   "permission_notifications": {
     "message": "Show notifications.",
@@ -3802,7 +3822,7 @@
     "message": "Restore user data"
   },
   "restoreUserDataDescription": {
-    "message": "You can restore user settings containing preferences and account addresses from a previously backed up JSON file."
+    "message": "You can restore data like contacts and preferences from a backup file."
   },
   "resultPageError": {
     "message": "Error"
@@ -3855,6 +3875,9 @@
   "revealSeedWordsWarning2": {
     "message": "MetaMask Support will never request this.",
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
+  },
+  "revealSensitiveContent": {
+    "message": "Reveal sensitive content"
   },
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
@@ -4024,8 +4047,8 @@
   "selectAnAction": {
     "message": "Select an action"
   },
-  "selectEnableOpenseaAPIPrivacyPreference": {
-    "message": "Turn on Enable Opensea API"
+  "selectEnableDisplayMediaPrivacyPreference": {
+    "message": "Turn on Display NFT Media"
   },
   "selectHdPath": {
     "message": "Select HD path"
@@ -4056,6 +4079,16 @@
   },
   "sendDescription": {
     "message": "Send crypto to any account"
+  },
+  "sendNoContactsConversionText": {
+    "message": "click here"
+  },
+  "sendNoContactsDescription": {
+    "message": "Contacts allow you to safely send transactions to another account multiple times.  To create a contact, $1",
+    "description": "$1 represents the action text 'click here'"
+  },
+  "sendNoContactsTitle": {
+    "message": "You don't have any contacts yet"
   },
   "sendSpecifiedTokens": {
     "message": "Send $1",
@@ -4365,6 +4398,10 @@
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
   },
+  "snapUpdateAlertDescription": {
+    "message": "Get the latest version of $1",
+    "description": "Description used in Snap update alert banner when snap update is available. $1 is the Snap name."
+  },
   "snapUpdateAvailable": {
     "message": "Update available"
   },
@@ -4377,8 +4414,8 @@
     "description": "Error title used when snap update fails."
   },
   "snapUpdateRequest": {
-    "message": "$1 wants to update $2 to $3 which gives it the following permissions. Only continue if you trust $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+    "message": "Updating $1 to $2 gives it the following permissions. Only continue if you trust $1.",
+    "description": "$1 is the snap name and $2 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Update complete"
@@ -4693,6 +4730,12 @@
   },
   "submitted": {
     "message": "Submitted"
+  },
+  "suggestedBy": {
+    "message": "Suggested by"
+  },
+  "suggestedTokenSymbol": {
+    "message": "Suggested ticker symbol:"
   },
   "support": {
     "message": "Support"
@@ -5666,6 +5709,9 @@
   "viewinExplorer": {
     "message": "View $1 in explorer",
     "description": "$1 is the action type. e.g (Account, Transaction, Swap)"
+  },
+  "visitSite": {
+    "message": "Visit site"
   },
   "visitWebSite": {
     "message": "Visit our website"

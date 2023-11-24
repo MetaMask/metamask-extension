@@ -771,6 +771,12 @@ describe('Selectors', () => {
           '5.1.2': {
             checksum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
           },
+          '5.1.3': {
+            checksum: '21k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+          },
+          '6.0.0': {
+            checksum: '31k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+          },
         },
         metadata: expect.objectContaining({
           website: 'https://snaps.consensys.io/',
@@ -778,5 +784,23 @@ describe('Selectors', () => {
         }),
       }),
     );
+  });
+
+  it('#getSnapLatestVersion', () => {
+    const mockSnapId = 'npm:@metamask/test-snap-bip44';
+    expect(selectors.getSnapLatestVersion(mockState, mockSnapId)).toStrictEqual(
+      '6.0.0',
+    );
+  });
+
+  it('#getAllSnapAvailableUpdates', () => {
+    const snapMap = selectors.getAllSnapAvailableUpdates(mockState);
+    expect(Object.fromEntries(snapMap)).toStrictEqual({
+      'npm:@metamask/test-snap-bip44': true,
+    });
+  });
+
+  it('#getAnySnapUpdateAvailable', () => {
+    expect(selectors.getAnySnapUpdateAvailable(mockState)).toStrictEqual(true);
   });
 });

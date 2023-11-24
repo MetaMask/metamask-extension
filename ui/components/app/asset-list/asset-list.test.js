@@ -58,8 +58,12 @@ const render = (
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      providerConfig: { chainId },
-      conversionRate: CONVERSION_RATE,
+      providerConfig: { chainId, ticker: 'ETH' },
+      currencyRates: {
+        ETH: {
+          conversionRate: CONVERSION_RATE,
+        },
+      },
       cachedBalances: {
         [CHAIN_IDS.MAINNET]: {
           [selectedAddress]: balance,

@@ -26,7 +26,6 @@ describe('Import flow', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Token list is only on mainnet

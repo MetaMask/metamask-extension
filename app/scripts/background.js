@@ -212,7 +212,7 @@ function saveTimestamp() {
 }
 
 /**
- * @typedef {import('../../shared/constants/transaction').TransactionMeta} TransactionMeta
+ * @typedef {import('@metamask/transaction-controller').TransactionMeta} TransactionMeta
  */
 
 /**
@@ -253,8 +253,7 @@ function saveTimestamp() {
  * @property {Keyring[]} keyrings - An array of keyring descriptions, summarizing the accounts that are available for use, and what keyrings they belong to.
  * @property {string} selectedAddress - A lower case hex string of the currently selected address.
  * @property {string} currentCurrency - A string identifying the user's preferred display currency, for use in showing conversion rates.
- * @property {number} conversionRate - A number representing the current exchange rate from the user's preferred currency to Ether.
- * @property {number} conversionDate - A unix epoch date (ms) for the time the current conversion rate was last retrieved.
+ * @property {number} currencyRates - An object mapping of nativeCurrency to conversion rate and date
  * @property {boolean} forgottenPassword - Returns true if the user has initiated the password recovery screen, is recovering from seed phrase.
  */
 
@@ -705,10 +704,6 @@ export function setupController(
   //
   updateBadge();
 
-  controller.txController.on(
-    METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
-    updateBadge,
-  );
   controller.decryptMessageController.hub.on(
     METAMASK_CONTROLLER_EVENTS.UPDATE_BADGE,
     updateBadge,
@@ -794,11 +789,6 @@ export function setupController(
   );
 
   function rejectUnapprovedNotifications() {
-    Object.keys(
-      controller.txController.txStateManager.getUnapprovedTxList(),
-    ).forEach((txId) =>
-      controller.txController.txStateManager.setTxStatusRejected(txId),
-    );
     controller.signatureController.rejectUnapproved(
       REJECT_NOTIFICATION_CLOSE_SIG,
     );
@@ -919,10 +909,9 @@ async function onInstall() {
   const storeAlreadyExisted = Boolean(await localStore.get());
   // If the store doesn't exist, then this is the first time running this script,
   // and is therefore an install
-  if (
-    !storeAlreadyExisted &&
-    !(process.env.METAMASK_DEBUG || process.env.IN_TEST)
-  ) {
+  if (process.env.IN_TEST) {
+    addAppInstalledEvent();
+  } else if (!storeAlreadyExisted && !process.env.METAMASK_DEBUG) {
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }

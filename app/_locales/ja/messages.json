@@ -658,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "チェーンID $1 のネットワークは、入力されたものとは異なる通貨記号 ($2) を使用している可能性があります。続行する前に確認してください。",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "ネットワークを選択してください"
@@ -1398,12 +1398,6 @@
   "enableFromSettings": {
     "message": " 設定で有効にします。"
   },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea APIを有効にする"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
-  },
   "enableSnap": {
     "message": "有効にする"
   },
@@ -1433,12 +1427,6 @@
   },
   "ensIllegalCharacter": {
     "message": "ENSにサポートされていない文字が使用されています。"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS名が現在のネットワーク上に見つかりませんでした。イーサリアムメインネットへの切り替えを試みてください。"
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "ネットワークがENSをサポートしていません"
   },
   "ensRegistrationError": {
     "message": "ENS名の登録エラー"
@@ -2112,25 +2100,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Ledgerデバイスで「スマートコントラクトデータ」または「ブラインド署名」を有効にしてください。"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "「設定」>「高度な設定」でLedger Liveを有効にしてください。"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledgerが接続されていて、イーサリアムアプリを選択していることを確認してください。"
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ledger Liveアプリを開いてロックを解除してください。"
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "LedgerをMetaMaskに接続する方法をカスタマイズします。$1が推奨されますが、他のオプションも利用できます。詳細はこちらをご覧ください: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledgerデバイスを開けませんでした。Ledgerが他のソフトウェアに接続されている可能性があります。Ledger LiveまたはLedgerデバイスに接続されている他のアプリケーションを閉じて、もう一度接続してみてください。"
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Liveアプリ"
@@ -2140,9 +2114,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Liveが応答に時間がかかりすぎているか、接続がタイムアウトしました。Ledger Liveのアプリが開かれていて、デバイスのロックが解除されていることを確認してください。"
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Ledger Liveアプリが開いている場合は、開いているLedger Live接続をすべて切断し、Ledger Liveアプリを閉じてください。"
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledgerデバイスが接続されていません。Ledgerに接続する場合は、もう一度「続行」をクリックして、HID接続を承認してください。",
@@ -3896,10 +3867,6 @@
   "snapUpdateErrorTitle": {
     "message": "更新失敗",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1が$2の$3への更新を要求しています。これにより、次のアクセス許可が付与されます。$2を信頼できる場合にのみ続行してください。",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "更新完了"
