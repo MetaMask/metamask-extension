@@ -523,53 +523,52 @@ export default function setupSentry({ release, getState }) {
   });
 
   /**
-   * As long as a reference to the Sentry Hub can be found, and the user has
-   * opted into MetaMetrics, change the autoSessionTracking option and start
-   * a new sentry session.
+   * As long as a reference to the Sentry Hub can be found, and the session has
+   * not been started, start a new sentry session.
    */
   const startSession = async () => {
-    const hub = Sentry.getCurrentHub?.();
-    const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getMetaMetricsEnabled()) === true) {
-      options.autoSessionTracking = true;
-      hub.startSession();
+    const isHubDefined = !!Sentry.getCurrentHub();
+    const isSessionStarted = global.sentry.isSessionStarted;
+    if (isHubDefined && !isSessionStarted) {
+      Sentry.getCurrentHub().startSession();
+      Sentry.getCurrentHub().captureSession();
+
+      global.sentry.isSessionStarted = true;
     }
   };
 
   /**
-   * As long as a reference to the Sentry Hub can be found, and the user has
-   * opted out of MetaMetrics, change the autoSessionTracking option and end
-   * the current sentry session.
+   * As long as a reference to the Sentry Hub can be found, and the session has
+   * already been started, end the current sentry session.
    */
   const endSession = async () => {
-    const hub = Sentry.getCurrentHub?.();
-    const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getMetaMetricsEnabled()) === false) {
-      options.autoSessionTracking = false;
-      hub.endSession();
+    const isHubDefined = !!Sentry.getCurrentHub();
+    const isSessionStarted = global.sentry.isSessionStarted;
+    if (isHubDefined && isSessionStarted) {
+      const endSession = true;
+      Sentry.getCurrentHub().captureSession(endSession);
+      Sentry.getCurrentHub().endSession();
+
+      global.sentry.isSessionStarted = false;
     }
   };
 
   /**
-   * Call the appropriate method (either startSession or endSession) depending
-   * on the state of metaMetrics optin and the state of autoSessionTracking on
-   * the Sentry client.
+   * Call the appropriate method (either startSession or endSession). Start a
+   * Sentry session if the `toggleSession` function is being called for the
+   * first time and MetaMetrics was enabled during onboarding, or if a session
+   * has previously been ended. End the Sentry session if a session has
+   * previously been started.
    */
   const toggleSession = async () => {
-    const hub = Sentry.getCurrentHub?.();
-    const options = hub.getClient?.().getOptions?.() ?? {
-      autoSessionTracking: false,
-    };
-    const isMetaMetricsEnabled = await getMetaMetricsEnabled();
+    const isSessionStarted = global.sentry.isSessionStarted;
+    const isMetaMetricsEnabled = (await getMetaMetricsEnabled()) === true;
     if (
-      isMetaMetricsEnabled === true &&
-      options.autoSessionTracking === false
+      (isSessionStarted === undefined && isMetaMetricsEnabled) ||
+      isSessionStarted === false
     ) {
       await startSession();
-    } else if (
-      isMetaMetricsEnabled === false &&
-      options.autoSessionTracking === true
-    ) {
+    } else if (isSessionStarted === true) {
       await endSession();
     }
   };
