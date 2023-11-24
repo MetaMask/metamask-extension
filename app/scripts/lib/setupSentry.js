@@ -527,8 +527,8 @@ export default function setupSentry({ release, getState }) {
    * not been started, start a new sentry session.
    */
   const startSession = async () => {
-    const isHubDefined = !!Sentry.getCurrentHub();
-    const isSessionStarted = global.sentry.isSessionStarted;
+    const isHubDefined = Boolean(Sentry.getCurrentHub());
+    const { isSessionStarted } = global.sentry;
     if (isHubDefined && !isSessionStarted) {
       Sentry.getCurrentHub().startSession();
       Sentry.getCurrentHub().captureSession();
@@ -542,11 +542,10 @@ export default function setupSentry({ release, getState }) {
    * already been started, end the current sentry session.
    */
   const endSession = async () => {
-    const isHubDefined = !!Sentry.getCurrentHub();
-    const isSessionStarted = global.sentry.isSessionStarted;
+    const isHubDefined = Boolean(Sentry.getCurrentHub());
+    const { isSessionStarted } = global.sentry;
     if (isHubDefined && isSessionStarted) {
-      const endSession = true;
-      Sentry.getCurrentHub().captureSession(endSession);
+      Sentry.getCurrentHub().captureSession(true);
       Sentry.getCurrentHub().endSession();
 
       global.sentry.isSessionStarted = false;
@@ -561,10 +560,10 @@ export default function setupSentry({ release, getState }) {
    * previously been started.
    */
   const toggleSession = async () => {
-    const isSessionStarted = global.sentry.isSessionStarted;
-    const isMetaMetricsEnabled = (await getMetaMetricsEnabled()) === true;
+    const { isSessionStarted } = global.sentry;
+    const isMetaMetricsEnabled = await getMetaMetricsEnabled();
     if (
-      (isSessionStarted === undefined && isMetaMetricsEnabled) ||
+      (isSessionStarted === undefined && isMetaMetricsEnabled === true) ||
       isSessionStarted === false
     ) {
       await startSession();
