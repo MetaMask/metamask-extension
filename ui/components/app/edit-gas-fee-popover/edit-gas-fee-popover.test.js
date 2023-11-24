@@ -1,15 +1,15 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { EditGasModes } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 
-import {
-  TransactionStatus,
-  TransactionType,
-} from '../../../../shared/constants/transaction';
 import {
   NETWORK_TYPES,
   CHAIN_IDS,
