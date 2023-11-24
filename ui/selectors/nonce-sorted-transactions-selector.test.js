@@ -1,9 +1,9 @@
 import { head, last } from 'lodash';
-import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   TransactionStatus,
   TransactionType,
-} from '../../shared/constants/transaction';
+} from '@metamask/transaction-controller';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { nonceSortedTransactionsSelector } from './transactions';
 
 const RECIPIENTS = {

@@ -1,4 +1,4 @@
-const { withFixtures, unlockWallet, convertToHexValue } = require('../helpers');
+const { withFixtures, convertToHexValue, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -21,10 +21,11 @@ describe('Test Snap TxInsights', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
+        await driver.navigate();
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect
-        await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
+        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
 
         // find and scroll to the bip32 test and connect
@@ -38,7 +39,7 @@ describe('Test Snap TxInsights', function () {
 
         // switch to metamask extension and click connect
         let windowHandles = await driver.waitUntilXWindowHandles(
-          2,
+          3,
           1000,
           10000,
         );
@@ -71,7 +72,7 @@ describe('Test Snap TxInsights', function () {
         await driver.delay(1000);
 
         // switch back to MetaMask window and deal with dialogs
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -87,13 +88,13 @@ describe('Test Snap TxInsights', function () {
         });
 
         // switch to test-snaps page and send tx
-        windowHandles = await driver.waitUntilXWindowHandles(1, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
         await driver.clickElement('#sendInsights');
         await driver.delay(1000);
 
         // switch back to MetaMask window and switch to tx insights pane
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
           'MetaMask Notification',
           windowHandles,
@@ -108,6 +109,48 @@ describe('Test Snap TxInsights', function () {
         await driver.waitForSelector({
           css: '.snap-ui-renderer__content',
           text: 'ERC-20',
+        });
+
+        // click confirm to continue
+        await driver.clickElement({
+          text: 'Confirm',
+          tag: 'button',
+        });
+
+        // check for warning from txinsights
+        await driver.waitForSelector({
+          css: '.snap-delineator__header__text',
+          text: 'Warning from Insights Example Snap',
+        });
+
+        // check info in warning
+        await driver.waitForSelector({
+          css: '.snap-ui-markdown__text',
+          text: 'ERC-20',
+        });
+
+        // click the warning confirm checkbox
+        await driver.clickElement('.mm-checkbox__input');
+
+        // click confirm button to send transaction
+        await driver.clickElement({
+          css: '.mm-box--color-error-inverse',
+          text: 'Confirm',
+          tag: 'button',
+        });
+
+        // switch back to MetaMask tab and switch to activity pane
+        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
+        await driver.switchToWindowWithTitle('MetaMask', windowHandles);
+        await driver.clickElement({
+          tag: 'button',
+          text: 'Activity',
+        });
+
+        // wait for transaction confirmation
+        await driver.waitForSelector({
+          css: '.transaction-status-label',
+          text: 'Confirmed',
         });
       },
     );
