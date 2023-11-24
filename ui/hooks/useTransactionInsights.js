@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { SeverityLevel } from '@metamask/snaps-utils';
+import { SeverityLevel } from '@metamask/snaps-sdk';
+import { TransactionType } from '@metamask/transaction-controller';
 import { stripHexPrefix } from '../../shared/modules/hexstring-utils';
-import { TransactionType } from '../../shared/constants/transaction';
 import { Tab } from '../components/ui/tabs';
 import DropdownTab from '../components/ui/tabs/snaps/dropdown-tab';
 import { SnapInsight } from '../components/app/confirm-page-container/snaps/snap-insight';

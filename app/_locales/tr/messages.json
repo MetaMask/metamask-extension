@@ -658,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Zincir kimliği $1 olan ağ, girdiğin para biriminden farklı bir para birimi sembolü ($2) kullanabilir. Lütfen devam etmeden önce doğrula.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Ağınızı seçin"
@@ -1398,12 +1398,6 @@
   "enableFromSettings": {
     "message": " Ayarlardan etkinleştir."
   },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea API'yi etkinleştir"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "NFT verilerini almak için OpenSea API'sini kullanın. NFT otomatik algılama OpenSea API'ye dayalıdır ve bu kapatılırsa mevcut olmayacaktır."
-  },
   "enableSnap": {
     "message": "Etkinleştir"
   },
@@ -1433,12 +1427,6 @@
   },
   "ensIllegalCharacter": {
     "message": "ENS için uygun olmayan karakter."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS adı geçerli ağda bulunamadı. Ethereum Ana Ağına geçmeyi deneyin."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Ağ ENS desteklemiyor"
   },
   "ensRegistrationError": {
     "message": "ENS adı kaydında hata"
@@ -2112,25 +2100,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Ledger cihazınızda \"akıllı sözleşme verilerini\" ya da \"kör imzalama\" özelliğini etkinleştirin."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Ayarlar > Gelişmiş kısmının altında Ledger Live'i Kullan seçeneğini etkinleştirin."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledger'ınızın bağlı olduğundan emin olun ve Ethereum uygulamasını seçin."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ledger Live Uygulamasını açıp kilidini açın."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Ledger'ınızı MetaMask'a nasıl bağladığınızı özelleştirin. $1 önerilir ancak başka seçenekler de mevcuttur. Buradan daha fazlasını okuyun: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger cihazı açılamadı. Ledger'ınız başka bir yazılıma bağlanmış olabilir. Lütfen Ledger Live'ı ya da Ledger cihazınızla bağlantılı diğer uygulamaları kapatıp tekrar bağlanmayı deneyin."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live Uygulaması"
@@ -2140,9 +2114,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live'ın yanıt vermesi çok uzun sürdü ya da bağlantı zaman aşımına uğradı. Ledger Live uygulamasının açık olduğundan ve cihazınızın kilidinin açık olduğundan emin olun."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Ledger Live uygulamanız açıksa lütfen her türlü açık Ledger Live bağlantısını kesin ve Ledger Live uygulamasını kapatın."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger cihazı bağlı değil. Kayıt Defterinizi bağlamak istiyorsanız lütfen \"Devam Et\" düğmesine yeniden tıklayın ve HID bağlantısını onaylayın",
@@ -3896,10 +3867,6 @@
   "snapUpdateErrorTitle": {
     "message": "Güncelleme başarısız oldu",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1, $2 için aşağıdaki izinleri verecek şekilde $3 güncellemesi yapmak istiyor. Sadece $2 sürümüne güveniyorsanız devam edin.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Güncelleme tamamlandı"

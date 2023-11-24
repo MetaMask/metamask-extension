@@ -105,10 +105,6 @@
       flex-direction: column;
       margin-left: 12px;
 
-      &__message {
-        overflow-wrap: anywhere;
-      }
-
       &__infos {
         color: var(--color-text-muted);
         font-size: 12px;

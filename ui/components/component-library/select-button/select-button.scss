@@ -1,0 +1,13 @@
+.mm-select-button {
+  box-sizing: border-box;
+  // size settings
+  &--type-danger {
+    // placeholder
+  }
+
+  &:active,
+  &:focus {
+    border-color: var(--color-primary-default);
+    box-shadow: inset 0 0 0 1px var(--color-primary-default);
+  }
+}

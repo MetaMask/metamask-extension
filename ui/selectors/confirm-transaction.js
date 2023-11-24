@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import txHelper from '../helpers/utils/tx-helper';
 import {
   roundExponential,
@@ -10,8 +11,8 @@ import {
   getGasEstimateType,
   getGasFeeEstimates,
   getNativeCurrency,
+  getProviderConfig,
 } from '../ducks/metamask/metamask';
-import { TransactionEnvelopeType } from '../../shared/constants/transaction';
 import {
   GasEstimateTypes,
   CUSTOM_GAS_ESTIMATE,
@@ -140,8 +141,8 @@ export const use4ByteResolutionSelector = (state) =>
   state.metamask.use4ByteResolution;
 export const currentCurrencySelector = (state) =>
   state.metamask.currentCurrency;
-export const conversionRateSelector = (state) => state.metamask.conversionRate;
-
+export const conversionRateSelector = (state) =>
+  state.metamask.currencyRates[getProviderConfig(state).ticker]?.conversionRate;
 export const txDataSelector = (state) => state.confirmTransaction.txData;
 const tokenDataSelector = (state) => state.confirmTransaction.tokenData;
 const tokenPropsSelector = (state) => state.confirmTransaction.tokenProps;

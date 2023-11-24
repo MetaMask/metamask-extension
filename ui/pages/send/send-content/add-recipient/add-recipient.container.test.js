@@ -21,6 +21,8 @@ jest.mock('../../../../selectors', () => ({
 
 jest.mock('../../../../ducks/domains', () => ({
   getDomainResolution: (s) => `mockSendDomainResolution:${s}`,
+  getDomainType: (s) => `mockSendDomainType:${s}`,
+  getResolvingSnap: (s) => `mockSendResolvingSnap:${s}`,
   getDomainError: (s) => `mockSendDomainResolutionError:${s}`,
   getDomainWarning: (s) => `mockSendDomainResolutionWarning:${s}`,
   useMyAccountsForRecipientSearch: (s) =>
@@ -58,6 +60,8 @@ describe('add-recipient container', () => {
         ],
         userInput: 'mockRecipientUserInput:mockState',
         recipient: 'mockRecipient:mockState',
+        resolvingSnap: 'mockSendResolvingSnap:mockState',
+        domainType: 'mockSendDomainType:mockState',
       });
     });
   });

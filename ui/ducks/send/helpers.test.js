@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   AssetType,
   TokenStandard,
-  TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import { BURN_ADDRESS } from '../../../shared/modules/hexstring-utils';
 import { getInitialSendStateWithExistingTxState } from '../../../test/jest/mocks';
