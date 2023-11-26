@@ -181,7 +181,6 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 

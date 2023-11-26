@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import {
   AvatarTokenSize,
@@ -23,7 +22,6 @@ import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
 
 // A component that lets the user pick from a list of assets.
-// Work in progress.
 export default function AssetPicker({ asset }: { asset: Asset }) {
   const nativeCurrency = useSelector(getNativeCurrency);
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
@@ -57,7 +55,3 @@ export default function AssetPicker({ asset }: { asset: Asset }) {
     </Box>
   );
 }
-
-AssetPicker.propTypes = {
-  asset: PropTypes.object,
-};

@@ -3,7 +3,11 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
-import { NETWORK_TYPES, CHAIN_IDS } from '../../../../shared/constants/network';
+import {
+  NETWORK_TYPES,
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+} from '../../../../shared/constants/network';
 import TokenInput from '.';
 
 describe('TokenInput Component', () => {
@@ -61,7 +65,11 @@ describe('TokenInput Component', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          nativeCurrency: 'MATIC',
+          currencyRates: {
+            [CURRENCY_SYMBOLS.MATIC]: {
+              conversionRate: 1,
+            },
+          },
           preferences: {
             ...mockState.metamask.preferences,
             showFiatInTestnets: true,
@@ -69,6 +77,7 @@ describe('TokenInput Component', () => {
           providerConfig: {
             chainId: CHAIN_IDS.POLYGON,
             type: NETWORK_TYPES.MAINNET,
+            ticker: CURRENCY_SYMBOLS.MATIC,
           },
         },
       };

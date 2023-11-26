@@ -18,6 +18,7 @@ module.exports = {
     'storybook-build/**/*',
     'jest-coverage/**/*',
     'coverage/**/*',
+    'public/**/*',
   ],
   overrides: [
     /**
@@ -390,6 +391,28 @@ module.exports = {
           'asc',
           {
             natural: true,
+          },
+        ],
+      },
+    },
+    {
+      files: ['ui/components/multichain/**/*.{js,ts,tsx}'],
+      extends: [
+        path.resolve(__dirname, '.eslintrc.base.js'),
+        path.resolve(__dirname, '.eslintrc.node.js'),
+        path.resolve(__dirname, '.eslintrc.babel.js'),
+        path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
+        '@metamask/eslint-config-typescript',
+      ],
+      rules: {
+        'sort-imports': [
+          'error',
+          {
+            ignoreCase: false,
+            ignoreDeclarationSort: true,
+            ignoreMemberSort: true,
+            memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+            allowSeparatedGroups: false,
           },
         ],
       },

@@ -208,9 +208,6 @@
   "editContact": {
     "message": "I-edit ang Contact"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Hindi nakita ang ENS name sa kasalukuyang network. Subukang lumipat sa Ethereum Mainnet."
-  },
   "ensRegistrationError": {
     "message": "May error sa pagrerehistro ng ENS name"
   },

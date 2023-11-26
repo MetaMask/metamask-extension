@@ -34,7 +34,6 @@ describe('Unlock wallet', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await waitForAccountRendered(driver);
 

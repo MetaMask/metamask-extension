@@ -182,7 +182,6 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
         const expectedDescription =
           'If you approve this request, a third party known for scams will take all your assets.';
 
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 

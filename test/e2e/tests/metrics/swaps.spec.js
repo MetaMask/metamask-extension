@@ -116,8 +116,6 @@ describe('Swap Eth for another Token @no-mmi', function () {
         testSpecificMock: mockSegmentAndMetaswapRequests,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
-
         await unlockWallet(driver);
 
         await getQuoteAndSwapTokens(driver);
