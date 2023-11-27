@@ -1279,6 +1279,10 @@
   "disconnectThisAccount": {
     "message": "이 계정 연결 해제"
   },
+  "discoverSnaps": {
+    "message": "Snaps 찾아보기",
+    "description": "Text that links to the Snaps website. Displayed in a banner on Snaps list page in settings."
+  },
   "dismiss": {
     "message": "해지"
   },
@@ -1535,7 +1539,7 @@
     "message": "실험적"
   },
   "extendWalletWithSnaps": {
-    "message": "지갑 경험을 개인 맞춤하세요.",
+    "message": "커뮤니티에서 제작된 스냅들을 탐색해보고 당신의 web3 경험을 개인화하세요.",
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalExtension": {
