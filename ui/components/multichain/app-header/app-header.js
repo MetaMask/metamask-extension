@@ -22,11 +22,17 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../component-library';
-import { getUnapprovedTransactions } from '../../../selectors';
+import {
+  getUnapprovedTransactions,
+  getUnapprovedConfirmations,
+} from '../../../selectors';
 
 import { toggleNetworkMenu } from '../../../store/actions';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import { getMultichainNetwork } from '../../../selectors/multichain';
@@ -38,6 +44,7 @@ import { AppHeaderLockedContent } from './app-header-locked-content';
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const menuRef = useRef(null);
+  const pendingConfirmations = useSelector(getUnapprovedConfirmations);
   const isUnlocked = useSelector(getIsUnlocked);
 
   const {
@@ -50,6 +57,7 @@ export const AppHeader = ({ location }) => {
 
   const dispatch = useDispatch();
 
+  const isSidePanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   // Disable the network and account pickers if the user is in
@@ -101,6 +109,8 @@ export const AppHeader = ({ location }) => {
     });
   }, [chainId, dispatch, trackEvent]);
 
+  const hideAppHeader = isSidePanel && pendingConfirmations.length > 0;
+
   // This is required to ensure send and confirmation screens
   // look as desired
   const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
@@ -135,6 +145,7 @@ export const AppHeader = ({ location }) => {
       >
         <>
           <Box
+            display={hideAppHeader ? Display.None : Display.Flex}
             className={classnames(
               isUnlocked
                 ? 'multichain-app-header__contents'

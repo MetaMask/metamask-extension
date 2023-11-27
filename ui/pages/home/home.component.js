@@ -158,6 +158,7 @@ export default class Home extends PureComponent {
     ///: END:ONLY_INCLUDE_IF
     newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
+    isSidepanel: PropTypes.bool.isRequired,
     firstPermissionsRequestId: PropTypes.string,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
@@ -386,13 +387,18 @@ export default class Home extends PureComponent {
       cleanCustodianDeepLink,
       accountType,
       ///: END:ONLY_INCLUDE_IF
+      isSidepanel,
     } = this.props;
 
     const { notificationClosing } = this.state;
 
     if (notificationClosing && !prevState.notificationClosing) {
       closeNotificationPopup();
-    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
+    } else if (
+      isNotification ||
+      hasAllowedPopupRedirectApprovals ||
+      isSidepanel
+    ) {
       this.checkStatusAndNavigate();
     }
 
