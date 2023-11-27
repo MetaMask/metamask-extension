@@ -15,6 +15,7 @@ import {
 } from 'react-router-dom';
 import { shuffle, isEqual } from 'lodash';
 import classnames from 'classnames';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { I18nContext } from '../../contexts/i18n';
 
 import {
@@ -88,7 +89,6 @@ import {
 import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import { TransactionStatus } from '../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import { getSwapsTokensReceivedFromTxMeta } from '../../../shared/lib/transactions-controller-utils';
 import { Icon, IconName, IconSize } from '../../components/component-library';

@@ -201,6 +201,8 @@
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
+    "lastFetchedBlockNumbers": "object",
+    "methodData": "object",
     "versionInfo": {},
     "storageMetadata": {},
     "chainStatus": {

@@ -716,7 +716,7 @@
     "message": "This Chain ID is currently used by the $1 network."
   },
   "chainListReturnedDifferentTickerSymbol": {
-    "message": "This network doesn’t match its associated chain ID or name. Many popular tokens use the name [$1], making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
+    "message": "This network doesn’t match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
     "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
@@ -1509,6 +1509,9 @@
   },
   "enableFromSettings": {
     "message": " Enable it from Settings."
+  },
+  "enableSmartSwaps": {
+    "message": "Enable Smart Swaps"
   },
   "enableSnap": {
     "message": "Enable"
@@ -4395,6 +4398,10 @@
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
   },
+  "snapUpdateAlertDescription": {
+    "message": "Get the latest version of $1",
+    "description": "Description used in Snap update alert banner when snap update is available. $1 is the Snap name."
+  },
   "snapUpdateAvailable": {
     "message": "Update available"
   },
@@ -4407,8 +4414,8 @@
     "description": "Error title used when snap update fails."
   },
   "snapUpdateRequest": {
-    "message": "$1 wants to update $2 to $3 which gives it the following permissions. Only continue if you trust $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+    "message": "Updating $1 to $2 gives it the following permissions. Only continue if you trust $1.",
+    "description": "$1 is the snap name and $2 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Update complete"
@@ -4603,9 +4610,6 @@
   "stakeDescription": {
     "message": "Stake your crypto to earn rewards"
   },
-  "startSwapping": {
-    "message": "Start swapping"
-  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4729,6 +4733,9 @@
   },
   "suggestedBy": {
     "message": "Suggested by"
+  },
+  "suggestedTokenSymbol": {
+    "message": "Suggested ticker symbol:"
   },
   "support": {
     "message": "Support"
