@@ -607,6 +607,18 @@
   "busy": {
     "message": "바쁨"
   },
+  "buy": {
+    "message": "구매"
+  },
+  "buyAndSell": {
+    "message": "구매 & 판매"
+  },
+  "buyAndSellDescription": {
+    "message": "crypto를 구매하거나 당신의 crypto를 판매해서 현금으로 바꾸세요."
+  },
+  "buyAndSellDisabled": {
+    "message": "구매 & 판매는 이 네트워크에서 사용할 수 없습니다."
+  },
   "buyAsset": {
     "message": "$1 구매",
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
