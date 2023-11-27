@@ -270,7 +270,7 @@ TokenListItem.propTypes = {
    */
   isOriginalTokenSymbol: PropTypes.bool,
   /**
-   * isOriginalTokenSymbol represents if this item is the native currency
+   * isNativeCurrency represents if this item is the native currency
    */
   isNativeCurrency: PropTypes.bool,
 };
