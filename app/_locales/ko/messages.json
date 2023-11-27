@@ -2916,18 +2916,18 @@
     "message": "맞춤 네트워크 추가"
   },
   "onboardingMetametricsNeverCollect": {
-    "message": "$1에서는 서비스 제공에 필요하지 않은 정보(예: 키, 주소, 트랜잭션 해시 또는 잔액)를 수집합니다.",
+    "message": "$1 서비스 제공에 필요하지 않은 정보(예: 키, 주소, 트랜잭션 해시 또는 잔액)를 수집하지 않습니다.",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
   "onboardingMetametricsNeverCollectIP": {
-    "message": "$1에서는 사용자의 IP 주소 전체를 수집합니다.",
+    "message": "$1 사용자의 IP 주소 전체를 수집하지 않습니다.",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
   "onboardingMetametricsNeverEmphasis": {
     "message": "절대로"
   },
   "onboardingMetametricsNeverSellData": {
-    "message": "$1에서는 데이터를 판매합니다. 항상요!",
+    "message": "$1 데이터를 판매하지 않습니다. 항상요!",
     "description": "$1 represents `onboardingMetametricsNeverEmphasis`"
   },
   "onboardingMetametricsSendAnonymize": {
