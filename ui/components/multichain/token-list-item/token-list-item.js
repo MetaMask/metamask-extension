@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import {
+  BackgroundColor,
   BlockSize,
   BorderColor,
   Display,
@@ -193,6 +194,7 @@ export const TokenListItem = ({
                 }}
                 color={IconColor.errorDefault}
                 size={IconSize.Lg}
+                backgroundColor={BackgroundColor.transparent}
               />
             ) : (
               secondary
