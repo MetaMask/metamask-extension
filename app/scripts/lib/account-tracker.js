@@ -340,7 +340,6 @@ export default class AccountTracker {
   /**
    * Removes all addresses and associated balances
    */
-
   clearAccounts() {
     const { accountsByChainId } = this.store.getState();
     Object.keys(accountsByChainId).forEach((chainId) => {
@@ -400,6 +399,10 @@ export default class AccountTracker {
     }
   }
 
+  /**
+   * Updates accounts for the globally selected network
+   * and all networks that are currently being polled.
+   */
   async _updateAccountsAllActiveNetworks() {
     this._updateAccounts();
     this.#pollingTokenSets.forEach((_tokenSet, networkClientId) => {
