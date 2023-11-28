@@ -11,8 +11,8 @@ import {
 } from '../../component-library';
 import {
   Size,
-  TextVariant,
   TextAlign,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';

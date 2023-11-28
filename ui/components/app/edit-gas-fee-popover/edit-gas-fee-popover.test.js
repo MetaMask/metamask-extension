@@ -1,16 +1,15 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
-import { EditGasModes } from '../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { ETH } from '../../../helpers/constants/common';
-import configureStore from '../../../store/store';
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
-
 import {
   TransactionStatus,
   TransactionType,
-} from '../../../../shared/constants/transaction';
+} from '@metamask/transaction-controller';
+import { EditGasModes } from '../../../../shared/constants/gas';
+import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import configureStore from '../../../store/store';
+import { GasFeeContextProvider } from '../../../contexts/gasFee';
+
 import {
   NETWORK_TYPES,
   CHAIN_IDS,
@@ -61,7 +60,7 @@ const MOCK_FEE_ESTIMATE = {
 const render = ({ txProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
-      nativeCurrency: ETH,
+      currencyRates: {},
       providerConfig: {
         chainId: CHAIN_IDS.GOERLI,
         nickname: GOERLI_DISPLAY_NAME,

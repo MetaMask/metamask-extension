@@ -14,7 +14,7 @@ const {
   openActionMenuAndStartSendFlow,
 } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
-const Ganache = require('./ganache');
+const { Ganache } = require('./ganache');
 
 const ganacheServer = new Ganache();
 const dappPort = 8080;

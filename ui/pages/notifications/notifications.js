@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { SnapUIMarkdown } from '../../components/app/snaps/snap-ui-markdown';
 import {
   formatDate,
   getSnapName,
@@ -53,7 +54,9 @@ export function NotificationItem({ notification, onItemClick }) {
         )}
       />
       <div className="notifications__item__details">
-        <p className="notifications__item__details__message">{message}</p>
+        <div className="notifications__item__details__message">
+          <SnapUIMarkdown markdown>{message}</SnapUIMarkdown>
+        </div>
         <p className="notifications__item__details__infos">
           {t('notificationsInfos', [
             formatDate(createdDate, "LLLL d',' yyyy 'at' t"),
