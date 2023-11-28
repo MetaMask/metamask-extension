@@ -123,7 +123,7 @@ import ConfirmationPage from '../confirmation';
 import OnboardingFlow from '../onboarding-flow/onboarding-flow';
 import QRHardwarePopover from '../../components/app/qr-hardware-popover';
 import { SEND_STAGES } from '../../ducks/send';
-import DeprecatedTestNetworks from '../../components/ui/deprecated-test-networks/deprecated-test-networks';
+import DeprecatedNetworks from '../../components/ui/deprecated-networks/deprecated-networks';
 import NewNetworkInfo from '../../components/ui/new-network-info/new-network-info';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { Box } from '../../components/component-library';
@@ -642,7 +642,7 @@ export default class Routes extends Component {
         })}
         dir={textDirection}
       >
-        {shouldShowNetworkDeprecationWarning && <DeprecatedTestNetworks />}
+        {shouldShowNetworkDeprecationWarning ? <DeprecatedNetworks /> : null}
         {shouldShowNetworkInfo && <NewNetworkInfo />}
         <QRHardwarePopover />
         <Modal />
