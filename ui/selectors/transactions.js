@@ -104,6 +104,7 @@ export const selectedAddressTxListSelector = createSelector(
   (selectedAddress, transactions = [], smTransactions = []) => {
     return transactions
       .filter(({ txParams }) => txParams.from === selectedAddress)
+      .filter(({ type }) => type !== TransactionType.incoming)
       .concat(smTransactions);
   },
 );
