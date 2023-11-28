@@ -402,12 +402,16 @@ export default class AccountTracker {
   /**
    * Updates accounts for the globally selected network
    * and all networks that are currently being polled.
+   *
+   * @returns {Promise} after all account balances updated
    */
   async _updateAccountsAllActiveNetworks() {
-    this._updateAccounts();
-    this.#pollingTokenSets.forEach((_tokenSet, networkClientId) => {
-      this._updateAccounts(networkClientId);
-    });
+    await this._updateAccounts();
+    await Promise.all(
+      Array.from(this.#pollingTokenSets).map(([networkClientId]) => {
+        return this._updateAccounts(networkClientId);
+      }),
+    );
   }
 
   /**

@@ -593,6 +593,27 @@ describe('Account Tracker', () => {
     });
   });
 
+  describe('_updateAccountsAllActiveNetworks', () => {
+    it('updates accounts for the globally selected network and all currently polling networks', async () => {
+      const updateAccountsSpy = jest
+        .spyOn(accountTracker, '_updateAccounts')
+        .mockResolvedValue();
+      await accountTracker.startPollingByNetworkClientId('networkClientId1');
+      await accountTracker.startPollingByNetworkClientId('networkClientId2');
+      await accountTracker.startPollingByNetworkClientId('networkClientId3');
+
+      expect(updateAccountsSpy).toHaveBeenCalledTimes(3);
+
+      await accountTracker._updateAccountsAllActiveNetworks();
+
+      expect(updateAccountsSpy).toHaveBeenCalledTimes(7);
+      expect(updateAccountsSpy).toHaveBeenNthCalledWith(4);
+      expect(updateAccountsSpy).toHaveBeenNthCalledWith(5, 'networkClientId1');
+      expect(updateAccountsSpy).toHaveBeenNthCalledWith(6, 'networkClientId2');
+      expect(updateAccountsSpy).toHaveBeenNthCalledWith(7, 'networkClientId3');
+    });
+  });
+
   describe('_updateAccounts', () => {
     let updateAccountSpy, updateAccountsViaBalanceCheckerSpy;
 
