@@ -23,14 +23,14 @@
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
+      "surveyLinkLastClickedOrClosed": null,
       "trezorModel": null,
       "usedNetworks": {
         "0x1": true,
         "0xe708": true,
         "0x5": true,
         "0x539": true
-      },
-      "snapsInstallPrivacyWarningShown": true
+      }
     },
     "CachedBalancesController": { "cachedBalances": "object" },
     "CurrencyController": {
