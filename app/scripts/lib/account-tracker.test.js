@@ -443,6 +443,9 @@ describe('Account Tracker', () => {
       useMultiAccountBalanceChecker = true;
       accountTracker.store.updateState({
         accounts: { ...mockAccounts },
+        accountsByChainId: {
+          [currentChainId]: { ...mockAccounts }
+        }
       });
 
       await accountTracker._updateAccount(
@@ -886,8 +889,6 @@ describe('Account Tracker', () => {
         accounts: {},
         accountsByChainId: {
           [currentChainId]: {},
-          '0x1': {},
-          '0x2': {},
         },
         currentBlockGasLimit: '',
         currentBlockGasLimitByChainId: {},
