@@ -35,6 +35,8 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   ARBITRUM_DISPLAY_NAME,
   OPTIMISM_DISPLAY_NAME,
+  BASE_DISPLAY_NAME,
+  ZK_SYNC_ERA_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -1554,14 +1556,19 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return ARBITRUM_DISPLAY_NAME;
     case CHAIN_IDS.OPTIMISM:
       return OPTIMISM_DISPLAY_NAME;
+
+    // case CHAIN_IDS.BASE:
+    //   return BASE_DISPLAY_NAME;
+    // case CHAIN_IDS.ZKSYNC_ERA:
+    //   return ZK_SYNC_ERA_DISPLAY_NAME;
     default:
       return '';
   }
 };
 /**
  * To check if the chainId supports token detection,
- * currently it returns true for Ethereum Mainnet, BSC,
- * Polygon, Avalanche, Linea, Aurora, Arbitrum, and Optimism
+ * currently it returns true for Ethereum Mainnet, BSC, Polygon,
+ * Avalanche, Linea, Aurora, Arbitrum, Optimism, Base, and zkSync
  *
  * @param {*} state
  * @returns Boolean
@@ -1578,6 +1585,8 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.AURORA,
     CHAIN_IDS.ARBITRUM,
     CHAIN_IDS.OPTIMISM,
+    // CHAIN_IDS.BASE,
+    // CHAIN_IDS.ZKSYNC_ERA,
   ].includes(chainId);
 }
 

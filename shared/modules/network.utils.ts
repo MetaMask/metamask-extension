@@ -46,6 +46,8 @@ export function isTokenDetectionEnabledForNetwork(chainId: string | undefined) {
     case CHAIN_IDS.AURORA:
     case CHAIN_IDS.ARBITRUM:
     case CHAIN_IDS.OPTIMISM:
+    // case CHAIN_IDS.BASE:
+    // case CHAIN_IDS.ZKSYNC_ERA:
       return true;
     default:
       return false;
