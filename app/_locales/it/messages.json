@@ -418,7 +418,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "La rete con chain ID $1 può utilizzare un simbolo diverso ($2) da quello che hai inserito. Si prega di verificare prima di continuare.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Devi usare MetaMask con Google Chrome per connettere il tuo Portafoglio Hardware"
@@ -818,9 +818,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "L'endpoint ha restituito un chain ID diverso: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nome ENS non trovato sulla rete attuale. Prova a passare alla rete principale di Ethereum."
   },
   "ensRegistrationError": {
     "message": "Errore nella registrazione del nome ENS"
@@ -1619,9 +1616,6 @@
   },
   "swapSource": {
     "message": "Sorgente di liquidità"
-  },
-  "swapSourceInfo": {
-    "message": "Cerchiamo sorgenti di liquidità multiple (siti di scambio, aggregatori, market maker professionisti) per trovare le tariffe migliori e le tasse di rete minori."
   },
   "swapSwapFrom": {
     "message": "Scambia da"

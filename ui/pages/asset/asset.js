@@ -3,14 +3,18 @@ import { useSelector } from 'react-redux';
 import { Redirect, useParams } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/nft-details/nft-details';
-import { getNfts, getTokens } from '../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getNfts,
+  getTokens,
+} from '../../ducks/metamask/metamask';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
 
 const Asset = () => {
-  const nativeCurrency = useSelector((state) => state.metamask.nativeCurrency);
+  const nativeCurrency = useSelector(getNativeCurrency);
   const tokens = useSelector(getTokens);
   const nfts = useSelector(getNfts);
   const { asset, id } = useParams();

@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
-const { keccak256 } = require('@truffle/codec/dist/lib/evm/utils');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { keccak } = require('ethereumjs-util');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -24,19 +24,17 @@ describe('eth_call', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // eth_call
         await driver.openNewPage(`http://127.0.0.1:8080`);
-        const balanceOf = `0x${keccak256('balanceOf(address)').toString(
-          'hex',
-        )}`;
+        const balanceOf = `0x${keccak(
+          Buffer.from('balanceOf(address)'),
+        ).toString('hex')}`;
         const walletAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
         const request = JSON.stringify({
           jsonrpc: '2.0',

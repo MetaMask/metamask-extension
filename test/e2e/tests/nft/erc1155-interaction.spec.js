@@ -30,12 +30,11 @@ describe('ERC1155 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
@@ -87,12 +86,11 @@ describe('ERC1155 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         await openDapp(driver, contract);
@@ -131,7 +129,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
     );
   });
 
-  it('should enable approval for a third party address to manage all ERC1155 token @no-mmi', async function () {
+  it('should enable approval for a third party address to manage all ERC1155 token', async function () {
     const expectedMessageTitle =
       'Allow access to and transfer all of your NFTs from this collection?';
     const expectedDescription =
@@ -145,11 +143,10 @@ describe('ERC1155 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Create a set approval for all erc1155 token request in test dapp
@@ -220,7 +217,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
     );
   });
 
-  it('should revoke approval for a third party address to manage all ERC1155 token @no-mmi', async function () {
+  it('should revoke approval for a third party address to manage all ERC1155 token', async function () {
     const expectedMessageTitle =
       'Revoke permission to access and transfer all of your NFTs from this collection?';
     const expectedDescription =
@@ -233,11 +230,10 @@ describe('ERC1155 NFTs testdapp interaction', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Create a revoke approval for all erc1155 token request in test dapp

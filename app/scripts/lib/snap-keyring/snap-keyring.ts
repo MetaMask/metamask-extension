@@ -1,16 +1,22 @@
 import { SnapKeyring } from '@metamask/eth-snap-keyring';
 import type { SnapController } from '@metamask/snaps-controllers';
 import type {
-  ApprovalController,
+  AcceptRequest,
+  AddApprovalRequest,
+  EndFlow,
+  RejectRequest,
   ResultComponent,
+  ShowError,
+  ShowSuccess,
+  StartFlow,
 } from '@metamask/approval-controller';
-import type { KeyringController } from '@metamask/keyring-controller';
-import { PhishingController } from '@metamask/phishing-controller';
+import type { KeyringControllerGetAccountsAction } from '@metamask/keyring-controller';
 import browser from 'webextension-polyfill';
+import { RestrictedControllerMessenger } from '@metamask/base-controller';
+import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
-import PreferencesController from '../../controllers/preferences';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 
 /**
@@ -28,14 +34,33 @@ export const getAccountsBySnapId = async (
   return await snapKeyring.getAccountsBySnapId(snapId);
 };
 
+type SnapKeyringBuilderAllowActions =
+  | StartFlow
+  | EndFlow
+  | ShowSuccess
+  | ShowError
+  | AddApprovalRequest
+  | AcceptRequest
+  | RejectRequest
+  | MaybeUpdateState
+  | TestOrigin
+  | KeyringControllerGetAccountsAction;
+
+type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
+  'SnapKeyringBuilder',
+  SnapKeyringBuilderAllowActions,
+  never,
+  string,
+  string
+>;
+
 /**
  * Constructs a SnapKeyring builder with specified handlers for managing snap accounts.
  *
+ * @param controllerMessenger - The controller messenger instance.
  * @param getSnapController - A function that retrieves the Snap Controller instance.
- * @param getApprovalController - A function that retrieves the Approval Controller instance.
- * @param getKeyringController - A function that retrieves the Keyring Controller instance.
- * @param getPreferencesController - A function that retrieves the Preferences Controller instance.
- * @param getPhishingController - A function that retrieves the Phishing Controller instance
+ * @param persistKeyringHelper - A function that retrieves the Keyring Controller instance.
+ * @param setSelectedAccountHelper - A function that retrieves the Preferences Controller instance.
  * @param removeAccountHelper - A function to help remove an account based on its address.
  * @returns The constructed SnapKeyring builder instance with the following methods:
  * - `saveState`: Persists all keyrings in the keyring controller.
@@ -43,32 +68,49 @@ export const getAccountsBySnapId = async (
  * - `removeAccount`: Initiates the process of removing an account with user confirmation and handling the user input.
  */
 export const snapKeyringBuilder = (
+  controllerMessenger: snapKeyringBuilderMessenger,
   getSnapController: () => SnapController,
-  getApprovalController: () => ApprovalController,
-  getKeyringController: () => KeyringController,
-  getPreferencesController: () => PreferencesController,
-  getPhishingController: () => PhishingController,
+  persistKeyringHelper: () => Promise<void>,
+  setSelectedAccountHelper: (address: string) => void,
   removeAccountHelper: (address: string) => Promise<any>,
 ) => {
   const builder = (() => {
     return new SnapKeyring(getSnapController() as any, {
       addressExists: async (address) => {
-        const addresses = await getKeyringController().getAccounts();
+        const addresses = await controllerMessenger.call(
+          'KeyringController:getAccounts',
+        );
         return addresses.includes(address.toLowerCase());
       },
       redirectUser: async (snapId: string, url: string, message: string) => {
         // Either url or message must be defined
         if (url.length > 0 || message.length > 0) {
-          const isBlocked = await isBlockedUrl(url, getPhishingController());
+          const isBlocked = await isBlockedUrl(
+            url,
+            async () => {
+              return await controllerMessenger.call(
+                'PhishingController:maybeUpdateState',
+              );
+            },
+            (urlToTest: string) => {
+              return controllerMessenger.call(
+                'PhishingController:testOrigin',
+                urlToTest,
+              );
+            },
+          );
 
-          const confirmationResult: boolean =
-            (await getApprovalController().addAndShowApprovalRequest({
+          const confirmationResult = await controllerMessenger.call(
+            'ApprovalController:addRequest',
+            {
               origin: snapId,
               requestData: { url, message, isBlockedUrl: isBlocked },
               type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
-            })) as boolean;
+            },
+            true,
+          );
 
-          if (confirmationResult && url.length > 0) {
+          if (Boolean(confirmationResult) && url.length > 0) {
             browser.tabs.create({ url });
           } else {
             console.log('User refused snap account redirection to:', url);
@@ -80,15 +122,16 @@ export const snapKeyringBuilder = (
         }
       },
       saveState: async () => {
-        await getKeyringController().persistAllKeyrings();
+        await persistKeyringHelper();
       },
       addAccount: async (
         address: string,
         origin: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
       ) => {
-        const { id: addAccountApprovalId } =
-          getApprovalController().startFlow();
+        const { id: addAccountApprovalId } = controllerMessenger.call(
+          'ApprovalController:startFlow',
+        );
 
         const snapAuthorshipHeader: ResultComponent = {
           name: 'SnapAuthorshipHeader',
@@ -97,23 +140,28 @@ export const snapKeyringBuilder = (
         };
 
         try {
-          const confirmationResult: boolean =
-            (await getApprovalController().addAndShowApprovalRequest({
-              origin,
-              type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
-            })) as boolean;
+          const confirmationResult = Boolean(
+            await controllerMessenger.call(
+              'ApprovalController:addRequest',
+              {
+                origin,
+                type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
+              },
+              true,
+            ),
+          );
 
           if (confirmationResult) {
             try {
               await handleUserInput(confirmationResult);
-              await getKeyringController().persistAllKeyrings();
-              getPreferencesController().setSelectedAddress(address);
-              await getApprovalController().success({
-                message: t('snapAccountCreated') ?? 'Your account is ready!',
+              await persistKeyringHelper();
+              setSelectedAccountHelper(address);
+              await controllerMessenger.call('ApprovalController:showSuccess', {
+                message: t('snapAccountCreated') as string,
                 header: [snapAuthorshipHeader],
               });
             } catch (error) {
-              await getApprovalController().error({
+              await controllerMessenger.call('ApprovalController:showError', {
                 error: (error as Error).message,
                 header: [snapAuthorshipHeader],
               });
@@ -128,7 +176,7 @@ export const snapKeyringBuilder = (
             throw new Error('User denied account creation');
           }
         } finally {
-          getApprovalController().endFlow({
+          controllerMessenger.call('ApprovalController:endFlow', {
             id: addAccountApprovalId,
           });
         }
@@ -138,8 +186,9 @@ export const snapKeyringBuilder = (
         snapId: string,
         handleUserInput: (accepted: boolean) => Promise<void>,
       ) => {
-        const { id: removeAccountApprovalId } =
-          getApprovalController().startFlow();
+        const { id: removeAccountApprovalId } = controllerMessenger.call(
+          'ApprovalController:startFlow',
+        );
 
         const snapAuthorshipHeader: ResultComponent = {
           name: 'SnapAuthorshipHeader',
@@ -148,24 +197,29 @@ export const snapKeyringBuilder = (
         };
 
         try {
-          const confirmationResult: boolean =
-            (await getApprovalController().addAndShowApprovalRequest({
-              origin: snapId,
-              type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
-              requestData: { publicAddress: address },
-            })) as boolean;
+          const confirmationResult = Boolean(
+            await controllerMessenger.call(
+              'ApprovalController:addRequest',
+              {
+                origin: snapId,
+                type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
+                requestData: { publicAddress: address },
+              },
+              true,
+            ),
+          );
 
           if (confirmationResult) {
             try {
               await removeAccountHelper(address);
               await handleUserInput(confirmationResult);
-              await getKeyringController().persistAllKeyrings();
-              await getApprovalController().success({
+              await persistKeyringHelper();
+              await controllerMessenger.call('ApprovalController:showSuccess', {
                 message: t('snapAccountRemoved') ?? 'Account removed',
                 header: [snapAuthorshipHeader],
               });
             } catch (error) {
-              await getApprovalController().error({
+              await controllerMessenger.call('ApprovalController:showError', {
                 error: (error as Error).message,
                 header: [snapAuthorshipHeader],
               });
@@ -180,7 +234,7 @@ export const snapKeyringBuilder = (
             throw new Error('User denied account removal');
           }
         } finally {
-          getApprovalController().endFlow({
+          controllerMessenger.call('ApprovalController:endFlow', {
             id: removeAccountApprovalId,
           });
         }

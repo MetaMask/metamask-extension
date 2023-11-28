@@ -117,7 +117,6 @@ import {
   Icon,
   IconName,
   IconSize,
-  TextField,
   ButtonLink,
   ButtonLinkSize,
   Modal,
@@ -127,6 +126,7 @@ import {
   BannerAlert,
   Text,
 } from '../../../components/component-library';
+import { TextField } from '../../../components/component-library/text-field/deprecated';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import ImportToken from '../import-token';
 import TransactionSettings from '../transaction-settings/transaction-settings';
@@ -223,13 +223,15 @@ export default function PrepareSwapPage({
   const showSmartTransactionsOptInPopover =
     smartTransactionsEnabled && !smartTransactionsOptInPopoverDisplayed;
 
-  const onCloseSmartTransactionsOptInPopover = (e) => {
+  const onManageStxInSettings = (e) => {
     e?.preventDefault();
-    setSmartTransactionsOptInStatus(false, smartTransactionsOptInStatus);
+    setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
+    dispatch(setTransactionSettingsOpened(true));
   };
 
-  const onEnableSmartTransactionsClick = () =>
+  const onStartSwapping = () => {
     setSmartTransactionsOptInStatus(true, smartTransactionsOptInStatus);
+  };
 
   const fetchParamsFromToken = isSwapsDefaultTokenSymbol(
     sourceTokenInfo?.symbol,
@@ -865,10 +867,8 @@ export default function PrepareSwapPage({
         </Modal>
 
         <SmartTransactionsPopover
-          onEnableSmartTransactionsClick={onEnableSmartTransactionsClick}
-          onCloseSmartTransactionsOptInPopover={
-            onCloseSmartTransactionsOptInPopover
-          }
+          onStartSwapping={onStartSwapping}
+          onManageStxInSettings={onManageStxInSettings}
           isOpen={showSmartTransactionsOptInPopover}
         />
 

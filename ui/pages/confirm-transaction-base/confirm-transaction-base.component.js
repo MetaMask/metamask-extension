@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -15,10 +19,6 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import {
-  TransactionType,
-  TransactionStatus,
-} from '../../../shared/constants/transaction';
 import { getMethodName } from '../../helpers/utils/metrics';
 import {
   getTransactionTypeTitle,
@@ -50,7 +50,6 @@ import {
 } from '../../../shared/modules/conversion.utils';
 import TransactionAlerts from '../../components/app/transaction-alerts';
 import { ConfirmHexData } from '../../components/app/confirm-hexdata';
-import { ConfirmData } from '../../components/app/confirm-data';
 import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
@@ -104,7 +103,6 @@ export default class ConfirmTransactionBase extends Component {
     // Component props
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
-    dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     tokenAddress: PropTypes.string,
     customTokenAmount: PropTypes.string,
@@ -148,9 +146,12 @@ export default class ConfirmTransactionBase extends Component {
     showTransactionsFailedModal: PropTypes.func,
     showCustodianDeepLink: PropTypes.func,
     isNoteToTraderSupported: PropTypes.bool,
+    custodianPublishesTransaction: PropTypes.bool,
+    rpcUrl: PropTypes.string,
     isMainBetaFlask: PropTypes.bool,
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
+    updateTransaction: PropTypes.func,
   };
 
   state = {
@@ -517,23 +518,12 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-  renderData() {
-    const { txData, dataComponent } = this.props;
+  renderDataHex() {
+    const { txData, dataHexComponent } = this.props;
     const {
       txParams: { data },
     } = txData;
     if (!data) {
-      return null;
-    }
-    return <ConfirmData txData={txData} dataComponent={dataComponent} />;
-  }
-
-  renderDataHex() {
-    const { txData, dataHexComponent } = this.props;
-    const {
-      txParams: { data, to },
-    } = txData;
-    if (!data || !to) {
       return null;
     }
     return (
@@ -713,9 +703,10 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-  handleMMISubmit() {
+  async handleMMISubmit() {
     const {
       sendTransaction,
+      updateTransaction,
       txData,
       history,
       mostRecentOverviewPage,
@@ -727,6 +718,8 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionsFailedModal,
       fromAddress,
       isNoteToTraderSupported,
+      custodianPublishesTransaction,
+      rpcUrl,
       methodData,
       maxFeePerGas,
       customTokenAmount,
@@ -744,12 +737,17 @@ export default class ConfirmTransactionBase extends Component {
 
     if (accountType === 'custody') {
       txData.custodyStatus = 'created';
+      txData.metadata = txData.metadata || {};
 
       if (isNoteToTraderSupported) {
-        txData.metadata = {
-          note: noteText,
-        };
+        txData.metadata.note = noteText;
       }
+
+      txData.metadata.custodianPublishesTransaction =
+        custodianPublishesTransaction;
+      txData.metadata.rpcUrl = rpcUrl;
+
+      await updateTransaction(txData);
     }
 
     updateTxData({
@@ -1024,7 +1022,6 @@ export default class ConfirmTransactionBase extends Component {
           titleComponent={this.renderTitleComponent()}
           subtitleComponent={this.renderSubtitleComponent()}
           detailsComponent={this.renderDetails()}
-          dataComponent={this.renderData(functionType)}
           dataHexComponent={this.renderDataHex(functionType)}
           contentComponent={contentComponent}
           ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)

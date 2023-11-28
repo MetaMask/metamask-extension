@@ -5,6 +5,7 @@ const {
   openDapp,
   DAPP_URL,
   convertToHexValue,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -71,14 +72,12 @@ describe('Sign Typed Data Signature Request', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver, ganacheServer }) => {
           const addresses = await ganacheServer.getAccounts();
           const publicAddress = addresses[0];
-          await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+          await unlockWallet(driver);
 
           await openDapp(driver);
 
@@ -124,7 +123,7 @@ describe('Sign Typed Data Signature Request', function () {
   });
 
   testData.forEach((data) => {
-    it(`can queue multiple Signature Requests of ${data.type} and confirm @no-mmi`, async function () {
+    it(`can queue multiple Signature Requests of ${data.type} and confirm`, async function () {
       await withFixtures(
         {
           dapp: true,
@@ -132,14 +131,12 @@ describe('Sign Typed Data Signature Request', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver, ganacheServer }) => {
           const addresses = await ganacheServer.getAccounts();
           const publicAddress = addresses[0];
-          await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+          await unlockWallet(driver);
 
           await openDapp(driver);
 
@@ -231,6 +228,7 @@ async function verifyAndAssertSignTypedData(
 
 async function approveSignatureRequest(driver, type, buttonElementId) {
   if (type !== signatureRequestType.signTypedData) {
+    await driver.delay(regularDelayMs);
     await driver.clickElement(buttonElementId);
   }
   await driver.delay(regularDelayMs);

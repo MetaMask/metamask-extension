@@ -1,7 +1,6 @@
-const { withFixtures } = require('../../helpers');
+const { withFixtures, unlockWallet } = require('../../helpers');
 const {
   withFixturesOptions,
-  loadExtension,
   buildQuote,
   reviewQuote,
   checkNotification,
@@ -60,10 +59,10 @@ describe('Swaps - notifications @no-mmi', function () {
       {
         ...withFixturesOptions,
         testSpecificMock: mockTradesApiPriceSlippageError,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loadExtension(driver);
+        await unlockWallet(driver);
         await buildQuote(driver, {
           amount: 2,
           swapTo: 'INUINU',
@@ -99,10 +98,10 @@ describe('Swaps - notifications @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loadExtension(driver);
+        await unlockWallet(driver);
         await buildQuote(driver, {
           amount: 50,
           swapTo: 'USDC',
@@ -129,10 +128,10 @@ describe('Swaps - notifications @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loadExtension(driver);
+        await unlockWallet(driver);
         await buildQuote(driver, {
           amount: 2,
           swapToContractAddress: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf',
@@ -151,10 +150,10 @@ describe('Swaps - notifications @no-mmi', function () {
     await withFixtures(
       {
         ...withFixturesOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await loadExtension(driver);
+        await unlockWallet(driver);
         await buildQuote(driver, {
           amount: '.0001',
           swapTo: 'DAI',
@@ -181,7 +180,6 @@ describe('Swaps - notifications @no-mmi', function () {
           title: 'Very high slippage',
           text: 'Slippage tolerance must be 15% or less. Anything higher will result in a bad rate.',
         });
-        await driver.fill('input[data-testid*="slippage"]', '4');
       },
     );
   });

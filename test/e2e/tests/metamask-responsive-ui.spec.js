@@ -5,6 +5,7 @@ const {
   withFixtures,
   locateAccountBalanceDOM,
   openActionMenuAndStartSendFlow,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -16,7 +17,7 @@ describe('MetaMask Responsive UI', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         driverOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -89,7 +90,7 @@ describe('MetaMask Responsive UI', function () {
       {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver, ganacheServer }) => {
@@ -133,12 +134,12 @@ describe('MetaMask Responsive UI', function () {
         fixtures: new FixtureBuilder().build(),
         driverOptions,
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
+
+        await driver.delay(1000);
 
         // Send ETH from inside MetaMask
         // starts to send a transaction

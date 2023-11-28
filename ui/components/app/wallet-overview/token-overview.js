@@ -30,7 +30,7 @@ import {
   getIsSwapsChain,
   getCurrentChainId,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-  getIsBridgeToken,
+  getIsBridgeChain,
   getCurrentKeyring,
   getIsBuyableChain,
   getMetaMetricsId,
@@ -51,6 +51,7 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { Icon, IconName } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 
+import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
 import WalletOverview from './wallet-overview';
 
 const TokenOverview = ({ className, token }) => {
@@ -70,10 +71,15 @@ const TokenOverview = ({ className, token }) => {
     balanceToRender,
     token.symbol,
   );
+
+  const isOriginalTokenSymbol = useIsOriginalTokenSymbol(
+    token.address,
+    token.symbol,
+  );
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-  const isBridgeToken = useSelector(getIsBridgeToken(token.address));
+  const isBridgeChain = useSelector(getIsBridgeChain);
   const isBuyableChain = useSelector(getIsBuyableChain);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
@@ -123,7 +129,7 @@ const TokenOverview = ({ className, token }) => {
               suffix={token.symbol}
             />
           </div>
-          {formattedFiatBalance ? (
+          {formattedFiatBalance && isOriginalTokenSymbol ? (
             <CurrencyDisplay
               className="token-overview__secondary-balance"
               displayValue={formattedFiatBalance}
@@ -294,7 +300,7 @@ const TokenOverview = ({ className, token }) => {
 
           {
             ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-            isBridgeToken && (
+            isBridgeChain && (
               <IconButton
                 className="token-overview__button"
                 data-testid="token-overview-bridge"

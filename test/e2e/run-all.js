@@ -9,9 +9,8 @@ const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = [
-  'test-snap-lifecycle.spec.js',
-  'test-snap-get-locale.spec.js',
   'petnames.spec.js',
+  'test-snap-txinsights-v2.spec.js',
 ];
 
 const getTestPathsForTestDir = async (testDir) => {
@@ -26,7 +25,7 @@ const getTestPathsForTestDir = async (testDir) => {
     if (itemInDirectory.isDirectory()) {
       const subDirPaths = await getTestPathsForTestDir(fullPath);
       testPaths.push(...subDirPaths);
-    } else if (fullPath.endsWith('.spec.js')) {
+    } else if (fullPath.endsWith('.spec.js') || fullPath.endsWith('.spec.ts')) {
       testPaths.push(fullPath);
     }
   }
@@ -204,6 +203,7 @@ async function main() {
   for (let testPath of myTestList) {
     if (testPath !== '') {
       testPath = testPath.replace('\n', ''); // sometimes there's a newline at the end of the testPath
+      console.log(`\nExecuting testPath: ${testPath}\n`);
       await runInShell('node', [...args, testPath]);
     }
   }

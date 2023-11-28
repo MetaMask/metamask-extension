@@ -1,12 +1,14 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { I18nContext } from '../../../contexts/i18n';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   TextColor,
   Display,
   FlexDirection,
   FontWeight,
   BlockSize,
+  AlignItems,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
   Modal,
@@ -17,28 +19,39 @@ import {
   Box,
   Button,
   ButtonVariant,
+  ButtonLink,
+  ButtonLinkSize,
 } from '../../../components/component-library';
+import { SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL } from '../../../../shared/constants/swaps';
 
 interface Props {
-  onEnableSmartTransactionsClick: () => void;
-  onCloseSmartTransactionsOptInPopover: () => void;
+  onStartSwapping: () => void;
+  onManageStxInSettings: () => void;
   isOpen: boolean;
 }
 
 export default function SmartTransactionsPopover({
-  onEnableSmartTransactionsClick,
-  onCloseSmartTransactionsOptInPopover,
+  onStartSwapping,
+  onManageStxInSettings,
   isOpen,
 }: Props) {
-  const t = useContext(I18nContext);
+  const t = useI18nContext();
   return (
-    <Modal isOpen={isOpen} onClose={onCloseSmartTransactionsOptInPopover}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onStartSwapping}
+      isClosedOnOutsideClick={false}
+      isClosedOnEscapeKey={false}
+      className="mm-modal__custom-scrollbar"
+    >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onCloseSmartTransactionsOptInPopover}>
+        <ModalHeader
+          alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
+        >
           {t('smartSwapsAreHere')}
         </ModalHeader>
-
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -47,7 +60,7 @@ export default function SmartTransactionsPopover({
         >
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
             <img
-              src="./images/logo/smart-transactions-header.png"
+              src="./images/logo/metamask-smart-transactions.png"
               alt={t('swapSwapSwitch')}
             />
           </Box>
@@ -58,10 +71,10 @@ export default function SmartTransactionsPopover({
             marginBottom={3}
             style={{ listStyle: 'inside' }}
           >
-            <li>{t('stxBenefit1')}</li>
-            <li>{t('stxBenefit2')}</li>
-            <li>{t('stxBenefit3')}</li>
-            <li>
+            <li key="stxBenefit1">{t('stxBenefit1')}</li>
+            <li key="stxBenefit2">{t('stxBenefit2')}</li>
+            <li key="stxBenefit3">{t('stxBenefit3')}</li>
+            <li key="stxBenefit4">
               {t('stxBenefit4')}
               <Text as="span" fontWeight={FontWeight.Normal}>
                 {' *'}
@@ -69,31 +82,32 @@ export default function SmartTransactionsPopover({
             </li>
           </Text>
           <Text color={TextColor.textAlternative}>
-            {t('smartSwapsSubDescription')}&nbsp;
-            <Text
-              as="span"
-              fontWeight={FontWeight.Bold}
-              color={TextColor.textAlternative}
-            >
-              {t('stxYouCanOptOut')}&nbsp;
-            </Text>
+            {t('smartSwapsDescription2', [
+              <ButtonLink
+                size={ButtonLinkSize.Inherit}
+                href={SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL}
+                externalLink
+                display={Display.Inline}
+                key="smartSwapsDescription2"
+              >
+                {t('faqAndRiskDisclosures')}
+              </ButtonLink>,
+            ])}
           </Text>
-
           <Button
             variant={ButtonVariant.Primary}
-            onClick={onEnableSmartTransactionsClick}
+            onClick={onStartSwapping}
             width={BlockSize.Full}
           >
             {t('enableSmartSwaps')}
           </Button>
-
           <Button
             type="link"
             variant={ButtonVariant.Link}
-            onClick={onCloseSmartTransactionsOptInPopover}
+            onClick={onManageStxInSettings}
             width={BlockSize.Full}
           >
-            {t('noThanksVariant2')}
+            {t('manageInSettings')}
           </Button>
         </Box>
       </ModalContent>

@@ -16,10 +16,9 @@ describe('Settings', function () {
         fixtures: new FixtureBuilder().build(),
         defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="home__asset-tab"]');
@@ -49,10 +48,9 @@ describe('Settings', function () {
         fixtures: new FixtureBuilder().build(),
         defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement(

@@ -2,13 +2,13 @@
 import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IN
 import { ApprovalType } from '@metamask/controller-utils';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  memoize,
-  ///: END:ONLY_INCLUDE_IN
-} from 'lodash';
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+import { memoize } from 'lodash';
+import semver from 'semver';
+///: END:ONLY_INCLUDE_IN
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -52,10 +52,7 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import {
-  ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_TOKEN_ADDRESSES,
-} from '../../shared/constants/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 
 import {
   shortenAddress,
@@ -86,7 +83,6 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { TransactionStatus } from '../../shared/constants/transaction';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -96,6 +92,7 @@ import {
   NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
+  NOTIFICATION_U2F_LEDGER_LIVE,
 } from '../../shared/notifications';
 import {
   getCurrentNetworkTransactions,
@@ -103,7 +100,10 @@ import {
 } from './transactions';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 // eslint-disable-next-line import/order
-import { getPermissionSubjects } from './permissions';
+import {
+  getPermissionSubjects,
+  getConnectedSubjectsForAllAddresses,
+} from './permissions';
 ///: END:ONLY_INCLUDE_IN
 import { createDeepEqualSelector } from './util';
 
@@ -712,6 +712,44 @@ export function getTargetSubjectMetadata(state, origin) {
   return metadata;
 }
 
+///: BEGIN:ONLY_INCLUDE_IN(snaps)
+/**
+ * Input selector for reusing the same state object.
+ * Used in memoized selectors created with createSelector
+ * when raw state is needed to be passed to other selectors
+ * used to achieve re-usability.
+ *
+ * @param state - Redux state object.
+ * @returns Object - Redux state object.
+ */
+export const rawStateSelector = (state) => state;
+
+/**
+ * Input selector used to retrieve Snaps that are added to Snaps Directory.
+ *
+ * @param state - Redux state object.
+ * @returns Object - Containing verified Snaps from the Directory.
+ */
+const selectVerifiedSnapsRegistry = (state) =>
+  state.metamask.database?.verifiedSnaps;
+
+/**
+ * Input selector providing a way to pass a snapId as an argument.
+ *
+ * @param _state - Redux state object.
+ * @param snapId - ID of a Snap.
+ * @returns string - ID of a Snap that can be used as input selector.
+ */
+const selectSnapId = (_state, snapId) => snapId;
+
+/**
+ * Input selector for retrieving all installed Snaps.
+ *
+ * @param state - Redux state object.
+ * @returns Object - Installed Snaps.
+ */
+export const selectInstalledSnaps = (state) => state.metamask.snaps;
+
 /**
  * Retrieve registry data for requested Snap.
  *
@@ -719,10 +757,72 @@ export function getTargetSubjectMetadata(state, origin) {
  * @param snapId - ID of a Snap.
  * @returns Object containing metadata stored in Snaps registry for requested Snap.
  */
-export function getSnapRegistryData(state, snapId) {
-  const snapsRegistryData = state.metamask.database.verifiedSnaps;
-  return snapsRegistryData ? snapsRegistryData[snapId] : null;
-}
+export const getSnapRegistryData = createSelector(
+  [selectVerifiedSnapsRegistry, selectSnapId],
+  (snapsRegistryData, snapId) => {
+    return snapsRegistryData ? snapsRegistryData[snapId] : null;
+  },
+);
+
+/**
+ * Find and return Snap's latest version available in registry.
+ *
+ * @param state - Redux state object.
+ * @param snapId - ID of a Snap.
+ * @returns String SemVer version.
+ */
+export const getSnapLatestVersion = createSelector(
+  [getSnapRegistryData],
+  (snapRegistryData) => {
+    if (!snapRegistryData) {
+      return null;
+    }
+
+    return Object.keys(snapRegistryData.versions).reduce((latest, version) => {
+      return semver.gt(version, latest) ? version : latest;
+    }, '0.0.0');
+  },
+);
+
+/**
+ * Return a Map of all installed Snaps with available update status.
+ *
+ * @param state - Redux state object.
+ * @returns Map Snap IDs mapped to a boolean value (true if update is available, false otherwise).
+ */
+export const getAllSnapAvailableUpdates = createSelector(
+  [selectInstalledSnaps, rawStateSelector],
+  (installedSnaps, state) => {
+    const snapMap = new Map();
+
+    Object.keys(installedSnaps).forEach((snapId) => {
+      const latestVersion = getSnapLatestVersion(state, snapId);
+
+      snapMap.set(
+        snapId,
+        latestVersion
+          ? semver.gt(latestVersion, installedSnaps[snapId].version)
+          : false,
+      );
+    });
+
+    return snapMap;
+  },
+);
+
+/**
+ * Return status of Snaps update availability for any installed Snap.
+ *
+ * @param state - Redux state object.
+ * @returns boolean true if update is available, false otherwise.
+ */
+export const getAnySnapUpdateAvailable = createSelector(
+  [getAllSnapAvailableUpdates],
+  (snapMap) => {
+    return [...snapMap.values()].some((value) => value === true);
+  },
+);
+///: END:ONLY_INCLUDE_IN
 
 export function getRpcPrefsForCurrentProvider(state) {
   const { rpcPrefs } = getProviderConfig(state);
@@ -760,7 +860,8 @@ export function getInfuraBlocked(state) {
 }
 
 export function getUSDConversionRate(state) {
-  return state.metamask.usdConversionRate;
+  return state.metamask.currencyRates[getProviderConfig(state).ticker]
+    ?.usdConversionRate;
 }
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {
@@ -832,15 +933,6 @@ export function getIsBridgeChain(state) {
   const chainId = getCurrentChainId(state);
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
-
-export const getIsBridgeToken = (tokenAddress) => (state) => {
-  const chainId = getCurrentChainId(state);
-  const isBridgeChain = getIsBridgeChain(state);
-  return (
-    isBridgeChain &&
-    ALLOWED_BRIDGE_TOKEN_ADDRESSES[chainId].includes(tokenAddress.toLowerCase())
-  );
-};
 
 export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
@@ -929,6 +1021,13 @@ export const getFullTxData = createDeepEqualSelector(
   },
 );
 
+export const getAllConnectedAccounts = createDeepEqualSelector(
+  getConnectedSubjectsForAllAddresses,
+  (connectedSubjects) => {
+    return Object.keys(connectedSubjects);
+  },
+);
+
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 export function getSnaps(state) {
   return state.metamask.snaps;
@@ -958,6 +1057,21 @@ export const getInsightSnaps = createDeepEqualSelector(
     return Object.values(snaps).filter(
       ({ id }) => subjects[id]?.permissions['endowment:transaction-insight'],
     );
+  },
+);
+
+export const getInsightSnapIds = createDeepEqualSelector(
+  getInsightSnaps,
+  (snaps) => snaps.map((snap) => snap.id),
+);
+
+export const getNameLookupSnapsIds = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps)
+      .filter(({ id }) => subjects[id]?.permissions['endowment:name-lookup'])
+      .map((snap) => snap.id);
   },
 );
 
@@ -1061,6 +1175,7 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
+    [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
   };
 }
 
@@ -1546,6 +1661,16 @@ export function getIsTransactionSecurityCheckEnabled(state) {
   return state.metamask.transactionSecurityCheckEnabled;
 }
 
+/**
+ * To get the `useRequestQueue` value which determines whether we use a request queue infront of provider api calls. This will have the effect of implementing per-dapp network switching.
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseRequestQueue(state) {
+  return state.metamask.useRequestQueue;
+}
+
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 /**
  * To get the `getIsSecurityAlertsEnabled` value which determines whether security check is enabled
@@ -1695,10 +1820,11 @@ export function getSnapsList(state) {
   const snaps = getSnaps(state);
   return Object.entries(snaps).map(([key, snap]) => {
     const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
-
     return {
       key,
       id: snap.id,
+      iconUrl: targetSubjectMetadata?.iconUrl,
+      subjectType: targetSubjectMetadata?.subjectType,
       packageName: removeSnapIdPrefix(snap.id),
       name: getSnapName(snap.id, targetSubjectMetadata),
     };

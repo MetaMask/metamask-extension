@@ -18,6 +18,7 @@ module.exports = {
     'storybook-build/**/*',
     'jest-coverage/**/*',
     'coverage/**/*',
+    'public/**/*',
   ],
   overrides: [
     /**
@@ -238,6 +239,7 @@ module.exports = {
       excludedFiles: [
         'app/scripts/controllers/app-state.test.js',
         'app/scripts/controllers/mmi-controller.test.js',
+        'app/scripts/controllers/detect-tokens.test.js',
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',
         'app/scripts/lib/**/*.test.js',
@@ -272,6 +274,7 @@ module.exports = {
         'app/scripts/controllers/permissions/**/*.test.js',
         'app/scripts/controllers/preferences.test.js',
         'app/scripts/lib/**/*.test.js',
+        'app/scripts/controllers/detect-tokens.test.js',
         'app/scripts/metamask-controller.test.js',
         'app/scripts/migrations/*.test.js',
         'app/scripts/platforms/*.test.js',
@@ -388,6 +391,28 @@ module.exports = {
           'asc',
           {
             natural: true,
+          },
+        ],
+      },
+    },
+    {
+      files: ['ui/components/multichain/**/*.{js,ts,tsx}'],
+      extends: [
+        path.resolve(__dirname, '.eslintrc.base.js'),
+        path.resolve(__dirname, '.eslintrc.node.js'),
+        path.resolve(__dirname, '.eslintrc.babel.js'),
+        path.resolve(__dirname, '.eslintrc.typescript-compat.js'),
+        '@metamask/eslint-config-typescript',
+      ],
+      rules: {
+        'sort-imports': [
+          'error',
+          {
+            ignoreCase: false,
+            ignoreDeclarationSort: true,
+            ignoreMemberSort: true,
+            memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
+            allowSeparatedGroups: false,
           },
         ],
       },

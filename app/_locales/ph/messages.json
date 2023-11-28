@@ -474,9 +474,6 @@
     "message": "Nagbalik ang endpoint ng ibang chain ID: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Hindi nahanap ang ENS name sa kasalukuyang network. Subukang lumipat sa Ethereum Mainnet."
-  },
   "ensRegistrationError": {
     "message": "Nagka-error sa pag-register ng ENS name"
   },
@@ -1558,9 +1555,6 @@
   },
   "swapSource": {
     "message": "Pinagkunan ng liquidity"
-  },
-  "swapSourceInfo": {
-    "message": "Naghahanap kami ng maraming pinagkukunan ng liquidity (mga exchange, aggregator at propesyonal na market maker) para mahanap ang mga pinakasulit na rate at pinakamababang bayarin sa network."
   },
   "swapSwapFrom": {
     "message": "I-swap mula sa"

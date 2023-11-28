@@ -60,11 +60,10 @@ describe('Signature Approved Event @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
@@ -109,11 +108,10 @@ describe('Signature Approved Event @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
@@ -158,11 +156,10 @@ describe('Signature Approved Event @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
@@ -206,11 +203,10 @@ describe('Signature Approved Event @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
@@ -259,11 +255,10 @@ describe('Signature Approved Event @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 

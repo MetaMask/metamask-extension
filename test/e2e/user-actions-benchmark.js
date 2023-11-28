@@ -11,6 +11,8 @@ const {
   convertToHexValue,
   withFixtures,
   openActionMenuAndStartSendFlow,
+  logInWithBalanceValidation,
+  unlockWallet,
 } = require('./helpers');
 const FixtureBuilder = require('./fixture-builder');
 
@@ -33,9 +35,7 @@ async function loadNewAccount() {
       ganacheOptions,
     },
     async ({ driver }) => {
-      await driver.navigate();
-      await driver.fill('#password', 'correct horse battery staple');
-      await driver.press('#password', driver.Key.ENTER);
+      await unlockWallet(driver);
 
       await driver.clickElement('[data-testid="account-menu-icon"]');
       await driver.clickElement(
@@ -65,10 +65,8 @@ async function confirmTx() {
       fixtures: new FixtureBuilder().build(),
       ganacheOptions,
     },
-    async ({ driver }) => {
-      await driver.navigate();
-      await driver.fill('#password', 'correct horse battery staple');
-      await driver.press('#password', driver.Key.ENTER);
+    async ({ driver, ganacheServer }) => {
+      await logInWithBalanceValidation(driver, ganacheServer);
 
       await openActionMenuAndStartSendFlow(driver);
       if (process.env.MULTICHAIN) {
@@ -82,8 +80,12 @@ async function confirmTx() {
       const inputAmount = await driver.findElement('.unit-input__input');
       await inputAmount.fill('1');
 
+      await driver.waitForSelector({ text: 'Next', tag: 'button' });
       await driver.clickElement({ text: 'Next', tag: 'button' });
+
       const timestampBeforeAction = new Date();
+
+      await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
       await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
       await driver.clickElement('[data-testid="home__activity-tab"]');

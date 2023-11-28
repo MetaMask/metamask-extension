@@ -65,10 +65,9 @@ describe('Gas API fallback', function () {
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockGasApiDown,
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
-        await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await openActionMenuAndStartSendFlow(driver);
