@@ -1364,6 +1364,7 @@ export default class MetamaskController extends EventEmitter {
           'KeyringController:lock',
           'KeyringController:unlock',
           'AccountsController:selectedAccountChange',
+          'TokenListController:stateChange',
         ],
       });
     this.detectTokensController = new DetectTokensController({

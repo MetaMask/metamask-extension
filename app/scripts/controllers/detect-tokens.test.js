@@ -50,6 +50,7 @@ describe('DetectTokensController', function () {
         'KeyringController:lock',
         'KeyringController:unlock',
         'AccountsController:selectedAccountChange',
+        'TokenListController:stateChange',
       ],
     });
   };
