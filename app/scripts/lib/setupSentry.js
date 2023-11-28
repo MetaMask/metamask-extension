@@ -84,6 +84,7 @@ export const SENTRY_BACKGROUND_STATE = {
     showProductTour: true,
     showTestnetMessageInDropdown: true,
     snapsInstallPrivacyWarningShown: true,
+    surveyLinkLastClickedOrClosed: true,
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,
     trezorModel: true,
