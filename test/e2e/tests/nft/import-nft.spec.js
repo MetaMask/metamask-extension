@@ -33,7 +33,6 @@ describe('Import NFT', function () {
       async ({ driver, _, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // After login, go to NFTs tab, open the import NFT form
@@ -81,7 +80,6 @@ describe('Import NFT', function () {
       async ({ driver, _, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // After login, go to NFTs tab, open the import NFT form

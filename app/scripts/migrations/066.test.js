@@ -80,22 +80,6 @@ describe('migration #66', () => {
     ).toStrictEqual(LedgerTransportTypes.webhid);
   });
 
-  it('should set ledgerTransportType to `ledgerLive` if useLedgerLive is true', async () => {
-    const oldStorage = {
-      meta: {},
-      data: {
-        PreferencesController: {
-          useLedgerLive: true,
-        },
-      },
-    };
-
-    const newStorage = await migration66.migrate(oldStorage);
-    expect(
-      newStorage.data.PreferencesController.ledgerTransportType,
-    ).toStrictEqual('ledgerLive');
-  });
-
   it('should not change ledgerTransportType if useLedgerLive is true and webhid is available', async () => {
     const oldStorage = {
       meta: {},

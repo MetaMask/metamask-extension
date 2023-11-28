@@ -38,7 +38,8 @@ export { Tag } from './tag';
 export { TagUrl } from './tag-url';
 export { Text, ValidTag, TextDirection, InvisibleCharacter } from './text';
 export { Input, InputType } from './input';
-export { TextField, TEXT_FIELD_TYPES, TEXT_FIELD_SIZES } from './text-field';
+export { TextField, TextFieldType, TextFieldSize } from './text-field';
+export { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from './text-field/deprecated';
 export { TextFieldSearch } from './text-field-search';
 export { ModalContent, ModalContentSize } from './modal-content';
 export { ModalOverlay } from './modal-overlay';
@@ -52,3 +53,10 @@ export { BannerTip, BannerTipLogoType } from './banner-tip';
 export { PopoverHeader } from './popover-header';
 export { Popover, PopoverPosition, PopoverRole } from './popover';
 export { ModalHeader } from './modal-header';
+export { SelectButton } from './select-button';
+export { SelectOption } from './select-option';
+export {
+  SelectWrapper,
+  SelectContext,
+  useSelectContext,
+} from './select-wrapper';

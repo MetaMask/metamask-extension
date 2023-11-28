@@ -23,8 +23,8 @@ import {
   IconName,
   IconSize,
   ButtonLink,
-  BUTTON_VARIANT,
-  BUTTON_SIZES,
+  ButtonSize,
+  ButtonVariant,
   Text,
 } from '../../../components/component-library';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -42,6 +42,7 @@ export default function CustodyAccountList({
   onCancel,
   onAddAccounts,
   custody,
+  children,
 }) {
   const t = useI18nContext();
   const [copied, handleCopy] = useCopyToClipboard();
@@ -52,6 +53,7 @@ export default function CustodyAccountList({
   return (
     <Box className="page-container">
       <Box padding={4} className="page-container__content">
+        {children}
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -103,7 +105,6 @@ export default function CustodyAccountList({
                   <Label
                     display={Display.Flex}
                     marginTop={2}
-                    marginLeft={2}
                     htmlFor={`address-${idx}`}
                     className="custody-account-list__item__title"
                   >
@@ -185,8 +186,8 @@ export default function CustodyAccountList({
             <Button
               data-testid="custody-account-cancel-button"
               block
-              variant={BUTTON_VARIANT.SECONDARY}
-              size={BUTTON_SIZES.LG}
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
               className="custody-account-list__button"
               onClick={onCancel}
             >
@@ -195,8 +196,8 @@ export default function CustodyAccountList({
             <Button
               data-testid="custody-account-connect-button"
               block
-              variant={BUTTON_VARIANT.PRIMARY}
-              size={BUTTON_SIZES.LG}
+              variant={ButtonVariant.Primary}
+              size={ButtonSize.Lg}
               className="custody-account-list__button"
               disabled={disabled}
               onClick={() => onAddAccounts(custody)}
@@ -218,4 +219,5 @@ CustodyAccountList.propTypes = {
   onAddAccounts: PropTypes.func,
   onCancel: PropTypes.func,
   rawList: PropTypes.bool,
+  children: PropTypes.node,
 };

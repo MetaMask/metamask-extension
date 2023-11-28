@@ -294,7 +294,7 @@ async function userBelongsToMetaMaskOrg(
   return Boolean(userBelongsToMetaMaskOrgResult?.user?.organization?.id);
 }
 
-// This function checks if issue is a release candidate (RC) issue, discovered during release regression testing phase. If so, it meanse it is not a production issue.
+// This function checks if issue is a release candidate (RC) issue, discovered during release regression testing phase. If so, it means it is not a production issue.
 function isReleaseCandidateIssue(
   issue: Labelable,
 ): boolean {

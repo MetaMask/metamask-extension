@@ -12,7 +12,6 @@ import {
   IconName,
 } from '../../../component-library';
 import { Content, Footer, Header, Page } from '../page';
-import { AssetPickerAmount } from '../../asset-picker-amount/asset-picker-amount';
 import {
   SEND_STAGES,
   getDraftTransactionExists,
@@ -36,10 +35,10 @@ import { MetaMetricsEventCategory } from '../../../../../shared/constants/metame
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import {
   SendPageAccountPicker,
-  SendPageRecipientInput,
+  SendPageContent,
   SendPageNetworkPicker,
   SendPageRecipient,
-  SendPageContent,
+  SendPageRecipientInput,
 } from './components';
 
 export const SendPage = () => {
@@ -156,11 +155,10 @@ export const SendPage = () => {
         ) : (
           <SendPageRecipient />
         )}
-        <AssetPickerAmount />
       </Content>
       <Footer>
         <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
-          {t('cancel')}
+          {sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
         </ButtonSecondary>
         <ButtonPrimary
           onClick={onSubmit}
@@ -168,7 +166,7 @@ export const SendPage = () => {
           disabled={submitDisabled}
           block
         >
-          {t('confirm')}
+          {t('continue')}
         </ButtonPrimary>
       </Footer>
     </Page>

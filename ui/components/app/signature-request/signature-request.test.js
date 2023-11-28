@@ -52,9 +52,12 @@ const mockStore = {
       },
     },
     selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
-    nativeCurrency: 'ETH',
     currentCurrency: 'usd',
-    conversionRate: null,
+    currencyRates: {
+      ETH: {
+        conversionRate: null,
+      },
+    },
     unapprovedTypedMessagesCount: 2,
   },
 };
@@ -85,13 +88,14 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     case getCurrentCurrency:
       return opts.metamask.currentCurrency;
     case getNativeCurrency:
-      return opts.metamask.nativeCurrency;
+      return opts.metamask.providerConfig.ticker;
     case getTotalUnapprovedMessagesCount:
       return opts.metamask.unapprovedTypedMessagesCount;
     case getPreferences:
       return opts.metamask.preferences;
     case conversionRateSelector:
-      return opts.metamask.conversionRate;
+      return opts.metamask.currencyRates[opts.metamask.providerConfig.ticker]
+        ?.conversionRate;
     case getSelectedAccount:
       return opts.metamask.accounts[opts.metamask.selectedAddress];
     case getMemoizedAddressBook:
@@ -169,7 +173,13 @@ describe('Signature Request Component', () => {
           ...mockStore,
           metamask: {
             ...mockStore.metamask,
-            conversionRate: 231.06,
+            currencyRates: {
+              ...mockStore.metamask.currencyRates,
+              ETH: {
+                ...(mockStore.metamask.currencyRates.ETH || {}),
+                conversionRate: 231.06,
+              },
+            },
           },
         }),
       );

@@ -5,6 +5,11 @@ import { fireEvent } from '@testing-library/react';
 
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { act } from 'react-dom/test-utils';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { INITIAL_SEND_STATE_FOR_EXISTING_DRAFT } from '../../../test/jest/mocks';
@@ -15,10 +20,6 @@ import {
   GOERLI_DISPLAY_NAME,
   NETWORK_TYPES,
 } from '../../../shared/constants/network';
-import {
-  TransactionStatus,
-  TransactionType,
-} from '../../../shared/constants/transaction';
 import { domainInitialState } from '../../ducks/domains';
 
 import ConfirmTransactionBase from './confirm-transaction-base.container';
@@ -101,12 +102,12 @@ const baseStore = {
       useNativeCurrencyAsPrimaryCurrency: false,
     },
     currentCurrency: 'USD',
+    currencyRates: {},
     providerConfig: {
       chainId: CHAIN_IDS.GOERLI,
       nickname: GOERLI_DISPLAY_NAME,
       type: NETWORK_TYPES.GOERLI,
     },
-    nativeCurrency: 'ETH',
     featureFlags: {
       sendHexData: false,
     },
@@ -244,6 +245,119 @@ describe('Confirm Transaction Base', () => {
     );
 
     expect(getByTestId('note-tab')).toBeInTheDocument();
+  });
+
+  it('handleMMISubmit calls sendTransaction correctly when isNoteToTraderSupported is false', async () => {
+    const newMockedStore = {
+      ...mockedStore,
+      appState: {
+        ...mockedStore.appState,
+        gasLoadingAnimationIsShowing: false,
+      },
+      confirmTransaction: {
+        ...mockedStore.confirmTransaction,
+        txData: {
+          ...mockedStore.confirmTransaction.txData,
+          custodyStatus: true,
+        },
+      },
+      metamask: {
+        ...mockedStore.metamask,
+        accounts: {
+          [mockTxParamsFromAddress]: {
+            balance: '0x1000000000000000000',
+            address: mockTxParamsFromAddress,
+          },
+        },
+        gasEstimateType: GasEstimateTypes.feeMarket,
+        selectedNetworkClientId: NetworkType.mainnet,
+        networksMetadata: {
+          ...mockedStore.metamask.networksMetadata,
+          [NetworkType.mainnet]: {
+            EIPS: {
+              1559: true,
+            },
+            status: NetworkStatus.Available,
+          },
+        },
+        customGas: {
+          gasLimit: '0x5208',
+          gasPrice: '0x59682f00',
+        },
+        noGasPrice: false,
+        keyrings: [
+          {
+            type: 'Custody',
+            accounts: ['0x123456789'],
+          },
+        ],
+        custodyAccountDetails: {
+          [mockTxParamsFromAddress]: {
+            address: mockTxParamsFromAddress,
+            details: 'details',
+            custodyType: 'testCustody - Saturn',
+            custodianName: 'saturn-dev',
+          },
+        },
+        mmiConfiguration: {
+          custodians: [
+            {
+              envName: 'saturn-dev',
+              displayName: 'Saturn Custody',
+              isNoteToTraderSupported: false,
+            },
+          ],
+        },
+      },
+      send: {
+        ...mockedStore.send,
+        gas: {
+          ...mockedStore.send.gas,
+          gasEstimateType: GasEstimateTypes.legacy,
+          gasFeeEstimates: {
+            low: '0',
+            medium: '1',
+            high: '2',
+          },
+        },
+        hasSimulationError: false,
+        userAcknowledgedGasMissing: false,
+        submitting: false,
+        hardwareWalletRequiresConnection: false,
+        gasIsLoading: false,
+        gasFeeIsCustom: true,
+      },
+    };
+
+    const store = configureMockStore(middleware)(newMockedStore);
+    const sendTransaction = jest
+      .fn()
+      .mockResolvedValue(newMockedStore.confirmTransaction.txData);
+    const updateTransaction = jest.fn().mockResolvedValue();
+    const showCustodianDeepLink = jest.fn();
+    const setWaitForConfirmDeepLinkDialog = jest.fn();
+
+    const { getByTestId } = renderWithProvider(
+      <ConfirmTransactionBase
+        actionKey="confirm"
+        sendTransaction={sendTransaction}
+        updateTransaction={updateTransaction}
+        showCustodianDeepLink={showCustodianDeepLink}
+        setWaitForConfirmDeepLinkDialog={setWaitForConfirmDeepLinkDialog}
+        toAddress={mockPropsToAddress}
+        toAccounts={[{ address: mockPropsToAddress }]}
+        isMainBetaFlask={false}
+      />,
+      store,
+    );
+
+    const confirmButton = getByTestId('page-container-footer-next');
+
+    await act(async () => {
+      fireEvent.click(confirmButton);
+    });
+
+    expect(sendTransaction).toHaveBeenCalled();
   });
 
   it('handleMainSubmit calls sendTransaction correctly', async () => {

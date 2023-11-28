@@ -24,7 +24,6 @@ describe('Simple send', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
-        await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await sendTransaction(

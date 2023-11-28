@@ -1,21 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { useSelector } from 'react-redux';
-///: END:ONLY_INCLUDE_IN
+import { TransactionStatus } from '@metamask/transaction-controller';
 import Tooltip from '../../ui/tooltip';
-
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  TransactionGroupStatus,
-  TransactionStatus,
-} from '../../../../shared/constants/transaction';
-
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { getTransactionStatusMap } from '../../../selectors/institutional/selectors';
-import { getCurrentKeyring } from '../../../selectors';
-///: END:ONLY_INCLUDE_IN
+import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
 
 const QUEUED_PSEUDO_STATUS = 'queued';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -83,19 +72,7 @@ export default function TransactionStatusLabel({
   }
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const transactionStatusMap = useSelector(getTransactionStatusMap);
-  const currentKeyring = useSelector(getCurrentKeyring);
-  const custodyType = currentKeyring?.type.split(' - ')[1]?.toLowerCase();
-
-  if (
-    custodyStatus &&
-    transactionStatusMap &&
-    transactionStatusMap[custodyType]
-  ) {
-    const custodyStatusInfo = transactionStatusMap[custodyType][custodyStatus];
-    const shortText = custodyStatusInfo?.shortText || custodyStatus;
-    const longText = custodyStatusInfo?.longText;
-
+  if (custodyStatus) {
     if (error) {
       tooltipText = error.message;
       statusText =
@@ -103,11 +80,10 @@ export default function TransactionStatusLabel({
           ? custodyStatusDisplayText
           : t('snapResultError');
     } else {
-      tooltipText = custodyStatusDisplayText || longText || custodyStatus;
-      statusText = custodyStatusDisplayText || shortText;
+      tooltipText = custodyStatusDisplayText || custodyStatus;
+      statusText = custodyStatusDisplayText || custodyStatus;
     }
   }
-
   ///: END:ONLY_INCLUDE_IN
 
   return (

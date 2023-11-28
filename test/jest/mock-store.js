@@ -153,7 +153,6 @@ export const createSwapsMockStore = () => {
       preferences: {
         showFiatInTestnets: true,
       },
-      currentCurrency: 'ETH',
       transactions: [
         {
           id: 6571648590592143,
@@ -224,7 +223,12 @@ export const createSwapsMockStore = () => {
         },
       ],
       useCurrencyRateCheck: true,
-      conversionRate: 1,
+      currentCurrency: 'ETH',
+      currencyRates: {
+        ETH: {
+          conversionRate: 1,
+        },
+      },
       contractExchangeRates: {
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
         '0x1111111111111111111111111111111111111111': 0.1,
@@ -500,6 +504,7 @@ export const createSwapsMockStore = () => {
       },
       smartTransactionsState: {
         userOptIn: true,
+        userOptInV2: true,
         liveness: true,
         fees: createGetSmartTransactionFeesApiResponse(),
         smartTransactions: {
