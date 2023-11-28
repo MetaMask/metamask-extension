@@ -3309,9 +3309,6 @@ export default class MetamaskController extends EventEmitter {
             selectedAddress: address,
           });
 
-
-          // TODO: tokens are being detected incorrectly
-          // tokens are spilling over from the 'current' account
           const tokens =
             this.tokensController.state.allTokens?.[chainId]?.[address];
           const detectedTokens =
@@ -3329,7 +3326,7 @@ export default class MetamaskController extends EventEmitter {
           }
         }
 
-        // The current account has assets, so check the next one
+        // This account has assets, so check the next one
         ({ addedAccountAddress: address } =
           await this.keyringController.addNewAccount(count));
       }
