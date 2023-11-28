@@ -1570,6 +1570,7 @@ export default class MetamaskController extends EventEmitter {
 
     this.swapsController = new SwapsController(
       {
+        // TODO pass networkClientId once txController.estimatGasBuffered accepts it
         getBufferedGasLimit: async (txMeta, multiplier) => {
           const { gas: gasLimit, simulationFails } =
             await this.txController.estimateGasBuffered(
