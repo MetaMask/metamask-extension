@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { fireEvent, screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import mockState from '../../../../test/data/mock-state.json';
 import transactionGroup from '../../../../test/data/mock-pending-transaction-data.json';
 import {
@@ -12,11 +13,8 @@ import {
   getShouldShowFiat,
   getCurrentNetwork,
 } from '../../../selectors';
-import {
-  renderWithProvider,
-  setBackgroundConnection,
-} from '../../../../test/jest';
-
+import { renderWithProvider } from '../../../../test/jest';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import { getTokens } from '../../../ducks/metamask/metamask';
@@ -25,7 +23,6 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { TransactionStatus } from '../../../../shared/constants/transaction';
 import TransactionListItem from '.';
 
 const FEE_MARKET_ESTIMATE_RETURN_VALUE = {

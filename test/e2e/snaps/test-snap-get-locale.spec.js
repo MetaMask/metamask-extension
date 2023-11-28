@@ -1,5 +1,4 @@
-const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -19,14 +18,10 @@ describe('Test Snap Get Locale', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate to test snaps page and connect to dialog snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
@@ -74,44 +69,16 @@ describe('Test Snap Get Locale', function () {
         // wait for npm installation success
         await driver.waitForSelector({
           css: '#connectgetlocale',
-          text: 'Reconnect to Get Locale Snap',
+          text: 'Reconnect to Localization Snap',
         });
 
         // click on alert dialog
         await driver.clickElement('#sendGetLocaleHelloButton');
-        await driver.delay(500);
-
-        // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.delay(500);
-
-        // check dialog contents
-        const result = await driver.findElement('.snap-ui-renderer__panel');
-        await driver.scrollToElement(result);
-        await driver.delay(500);
-        assert.equal(
-          await result.getText(),
-          'Hello https://metamask.github.io!\nThis is a dialog!',
-        );
-
-        // click ok button
-        await driver.clickElement({
-          text: 'OK',
-          tag: 'button',
-        });
-
-        // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check for result correctness
         await driver.waitForSelector({
           css: '#getLocaleResult',
-          text: 'null',
+          text: '"Hello, world!"',
         });
 
         // try switching language to dansk
@@ -149,24 +116,12 @@ describe('Test Snap Get Locale', function () {
 
         // click on alert dialog
         await driver.clickElement('#sendGetLocaleHelloButton');
-        await driver.delay(500);
 
-        // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.delay(500);
-
-        // check dialog contents for dansk result
-        const result2 = await driver.findElement('.snap-ui-renderer__panel');
-        await driver.scrollToElement(result2);
-        await driver.delay(500);
-        assert.equal(
-          await result2.getText(),
-          'Hej https://metamask.github.io!\nDette er en dialog!',
-        );
+        // check for result correctness
+        await driver.waitForSelector({
+          css: '#getLocaleResult',
+          text: '"Hej, verden!"',
+        });
       },
     );
   });

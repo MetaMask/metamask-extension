@@ -29,7 +29,7 @@ describe('Dapp interactions', function () {
           ...ganacheOptions,
           concurrent: { port: 8546, chainId: 1338 },
         },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -59,7 +59,7 @@ describe('Dapp interactions', function () {
           .build(),
         ganacheOptions,
         dappOptions: { numberOfDapps: 2 },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();
@@ -71,7 +71,10 @@ describe('Dapp interactions', function () {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
 
-        await unlockWallet(driver);
+        await unlockWallet(driver, {
+          navigate: false,
+          waitLoginSuccess: false,
+        });
         await driver.clickElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -84,7 +87,10 @@ describe('Dapp interactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await unlockWallet(driver);
+        await unlockWallet(driver, {
+          navigate: false,
+          waitLoginSuccess: false,
+        });
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
         );

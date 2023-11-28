@@ -1964,6 +1964,39 @@ describe('Box', () => {
       expect(getByText('Box content')).toHaveClass('mm-box--md:width-max');
       expect(getByText('Box content')).toHaveClass('mm-box--lg:width-min');
     });
+    it('should render the Box with the min-width class', () => {
+      const { getByText } = render(
+        <>
+          <Box width={BlockSize.Zero}>Box zero</Box>
+          <Box width={BlockSize.OneFourth}>Box one fourth</Box>
+          <Box width={BlockSize.Max}>Box max</Box>
+          <Box width={BlockSize.Min}>Box min</Box>
+        </>,
+      );
+      expect(getByText('Box zero')).toHaveClass('mm-box--width-0');
+      expect(getByText('Box one fourth')).toHaveClass('mm-box--width-1/4');
+      expect(getByText('Box max')).toHaveClass('mm-box--width-max');
+      expect(getByText('Box min')).toHaveClass('mm-box--width-min');
+    });
+    it('should render the Box with the responsive min-width classes', () => {
+      const { getByText } = render(
+        <Box
+          width={[
+            BlockSize.Zero,
+            BlockSize.OneFourth,
+            BlockSize.Screen,
+            BlockSize.Max,
+          ]}
+        >
+          Box content
+        </Box>,
+      );
+      const boxElement = getByText('Box content');
+      expect(boxElement).toHaveClass('mm-box--width-0');
+      expect(boxElement).toHaveClass('mm-box--sm:width-1/4');
+      expect(boxElement).toHaveClass('mm-box--md:width-screen');
+      expect(boxElement).toHaveClass('mm-box--lg:width-max');
+    });
     it('should render the Box with the height class', () => {
       const { getByText } = render(
         <>

@@ -1,7 +1,11 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { CONNECTIONS, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import {
+  ALL_CONNECTIONS,
+  CONNECTIONS,
+  DEFAULT_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   AvatarFavicon,
   AvatarNetwork,
@@ -37,6 +41,8 @@ import {
   getSelectedAddress,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { showSelectActionModal } from './app-footer-actions';
 
 export const AppFooter = () => {
@@ -48,7 +54,7 @@ export const AppFooter = () => {
   const activeWallet = location.pathname === DEFAULT_ROUTE;
   const activeConnections = location.pathname === CONNECTIONS;
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
-
+  const isFullScreen = getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN;
   const selectedAddress = useSelector(getSelectedAddress);
 
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -144,6 +150,7 @@ export const AppFooter = () => {
                   borderRadius={BorderRadius.full}
                   size={ButtonIconSize.Lg}
                   onClick={() => dispatch(showSelectActionModal())}
+                  ariaLabel={t('selectActionButton')}
                 />
               </Box>
               <Box
@@ -151,7 +158,7 @@ export const AppFooter = () => {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  history.push(CONNECTIONS);
+                  history.push(isFullScreen ? ALL_CONNECTIONS : CONNECTIONS);
                 }}
                 className="app-footer__button"
                 width={BlockSize.OneThird}

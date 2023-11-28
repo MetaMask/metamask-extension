@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
+import { TransactionType } from '@metamask/transaction-controller';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import Disclosure from '../../ui/disclosure';
@@ -12,16 +13,14 @@ import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import Box from '../../ui/box/box';
-import { Icon, IconName, Text } from '../../component-library';
+import { Box, Icon, IconName, Text } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 ///: END:ONLY_INCLUDE_IN
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { TransactionType } from '../../../../shared/constants/transaction';
 import { getURLHostName } from '../../../helpers/utils/util';
-import TransactionDecoding from '../transaction-decoding';
 import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 
 export default class TransactionListItemDetails extends PureComponent {
   static contextTypes = {
@@ -131,7 +130,7 @@ export default class TransactionListItemDetails extends PureComponent {
     });
 
     this.setState({ justCopied: true }, () => {
-      copyToClipboard(hash);
+      copyToClipboard(hash, COPY_OPTIONS);
       setTimeout(() => this.setState({ justCopied: false }), SECOND);
     });
   };
@@ -391,17 +390,6 @@ export default class TransactionListItemDetails extends PureComponent {
                   />
                 </Disclosure>
               )}
-              {transactionGroup.initialTransaction?.txParams?.data ? (
-                <Disclosure title="Transaction data" size="small">
-                  <TransactionDecoding
-                    title={t('transactionData')}
-                    to={transactionGroup.initialTransaction.txParams?.to}
-                    inputData={
-                      transactionGroup.initialTransaction.txParams?.data
-                    }
-                  />
-                </Disclosure>
-              ) : null}
             </div>
           </div>
         </div>

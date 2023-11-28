@@ -9,13 +9,13 @@ const {
   convertToHexValue,
   regularDelayMs,
   unlockWallet,
+  WALLET_PASSWORD,
 } = require('../helpers');
 
 const FixtureBuilder = require('../fixture-builder');
 const { shortenAddress } = require('../../../ui/helpers/utils/util');
 
 describe('Add account', function () {
-  const testPassword = 'correct horse battery staple';
   const firstAccount = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
   const secondAccount = '0x3ED0eE22E0685Ebbf07b2360A8331693c413CC59';
 
@@ -34,10 +34,9 @@ describe('Add account', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -59,11 +58,14 @@ describe('Add account', function () {
   });
 
   it('should not affect public address when using secret recovery phrase to recover account with non-zero balance @no-mmi', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -73,13 +75,15 @@ describe('Add account', function () {
         await completeImportSRPOnboardingFlow(
           driver,
           TEST_SEED_PHRASE,
-          testPassword,
+          WALLET_PASSWORD,
         );
 
         // Check address of 1st account
         await waitForAccountRendered(driver);
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(firstAccount),
         });
 
@@ -93,12 +97,13 @@ describe('Add account', function () {
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
-        await waitForAccountRendered(driver);
 
         // Check address of 2nd account
         await waitForAccountRendered(driver);
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(secondAccount),
         });
 
@@ -143,11 +148,16 @@ describe('Add account', function () {
 
         // Land in 1st account home page
         await driver.findElement('.home__main-view');
-        await waitForAccountRendered(driver);
+
+        if (!process.env.MULTICHAIN) {
+          await waitForAccountRendered(driver);
+        }
 
         // Check address of 1st account
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(firstAccount),
         });
 
@@ -160,7 +170,9 @@ describe('Add account', function () {
         await driver.clickElement(accountTwoSelector);
 
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(secondAccount),
         });
       },
@@ -175,10 +187,9 @@ describe('Add account', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');

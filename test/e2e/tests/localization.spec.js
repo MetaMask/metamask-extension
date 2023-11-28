@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Localization', function () {
@@ -26,15 +26,18 @@ describe('Localization', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-        const secondaryBalance = await driver.findElement(
-          '[data-testid="eth-overview__secondary-currency"]',
-        );
+        await unlockWallet(driver);
+
+        const secondaryBalance = process.env.MULTICHAIN
+          ? await driver.findElement(
+              '[data-testid="multichain-token-list-item-secondary-value"]',
+            )
+          : await driver.findElement(
+              '[data-testid="eth-overview__secondary-currency"]',
+            );
         const secondaryBalanceText = await secondaryBalance.getText();
         const [fiatAmount, fiatUnit] = secondaryBalanceText
           .trim()

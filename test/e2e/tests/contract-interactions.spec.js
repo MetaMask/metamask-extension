@@ -30,13 +30,12 @@ describe('Deploy contract and call contract methods', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry, ganacheServer }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
         await unlockWallet(driver);
 
         // deploy contract

@@ -1,9 +1,9 @@
-import React, { useContext, useState, useRef, useCallback } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, matchPath } from 'react-router-dom';
+import { matchPath, useHistory } from 'react-router-dom';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -23,19 +23,17 @@ import {
   BackgroundColor,
   BlockSize,
   Display,
+  FontWeight,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
+  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  PickerNetwork,
-  Box,
   IconSize,
+  PickerNetwork,
 } from '../../component-library';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IN
 import {
   getCurrentChainId,
   getCurrentNetwork,
@@ -50,7 +48,7 @@ import {
   getTheme,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
-import { GlobalMenu, ProductTour, AccountPicker } from '..';
+import { AccountPicker, GlobalMenu, ProductTour } from '..';
 
 import {
   hideProductTour,
@@ -62,8 +60,11 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
-import { getSendStage, SEND_STAGES } from '../../../ducks/send';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../../../ducks/metamask/metamask';
+import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
@@ -76,15 +77,11 @@ export const AppHeader = ({ location }) => {
   const origin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const isHomePage = location.pathname === DEFAULT_ROUTE;
-  const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
+  const isUnlocked = useSelector(getIsUnlocked);
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const selectedAddress = useSelector(getSelectedAddress);
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, selectedAddress),
-  );
   const theme = useSelector((state) => getTheme(state));
   ///: END:ONLY_INCLUDE_IN
 
@@ -183,8 +180,6 @@ export const AppHeader = ({ location }) => {
             unsetIconHeight
             onClick={async () => history.push(DEFAULT_ROUTE)}
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            custodyImgSrc={custodianIcon}
-            isUnlocked={isUnlocked}
             theme={theme}
             ///: END:ONLY_INCLUDE_IN
           />
@@ -231,6 +226,9 @@ export const AppHeader = ({ location }) => {
                       src={currentNetwork?.rpcPrefs?.imageUrl}
                       label={currentNetwork?.nickname}
                       aria-label={t('networkMenu')}
+                      labelProps={{
+                        display: Display.None,
+                      }}
                       onClick={(e) => {
                         e.stopPropagation();
                         e.preventDefault();
@@ -298,6 +296,7 @@ export const AppHeader = ({ location }) => {
                   }}
                   disabled={disableAccountPicker}
                   showAddress={Boolean(process.env.MULTICHAIN)}
+                  labelProps={{ fontWeight: FontWeight.Bold }}
                 />
               ) : null}
               <Box
@@ -335,24 +334,6 @@ export const AppHeader = ({ location }) => {
                         />
                       </Box>
                     ))}{' '}
-                  {
-                    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                    custodianIcon && (
-                      <Box
-                        display={Display.Flex}
-                        alignItems={AlignItems.center}
-                        className="custody-logo"
-                        data-testid="custody-logo"
-                      >
-                        <img
-                          src={custodianIcon}
-                          className="custody-logo--icon"
-                          alt=""
-                        />
-                      </Box>
-                    )
-                    ///: END:ONLY_INCLUDE_IN
-                  }
                   {popupStatus && multichainProductTourStep === 2 ? (
                     <ProductTour
                       className="multichain-app-header__product-tour"

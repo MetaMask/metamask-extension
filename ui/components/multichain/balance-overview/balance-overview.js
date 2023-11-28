@@ -96,9 +96,10 @@ export const BalanceOverview = ({ balance, loading }) => {
               ''
             ) : (
               <UserPreferencedCurrencyDisplay
-                ethNumberOfDecimals={3}
+                ethNumberOfDecimals={4}
                 value={balance}
                 type={PRIMARY}
+                data-testid="token-balance-overview-currency-display"
               />
             )}
           </Text>
@@ -122,6 +123,7 @@ export const BalanceOverview = ({ balance, loading }) => {
         ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
         <ButtonSecondary
           className="token-balance-portfolio"
+          data-testid="token-balance-portfolio"
           endIconName={IconName.Export}
           onClick={() => {
             const url = getPortfolioUrl(

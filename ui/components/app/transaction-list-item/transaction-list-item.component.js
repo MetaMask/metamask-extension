@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -38,10 +39,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  TransactionGroupCategory,
-  TransactionStatus,
-} from '../../../../shared/constants/transaction';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { EditGasModes } from '../../../../shared/constants/gas';
 import {
   GasFeeContextProvider,
@@ -87,7 +85,7 @@ function TransactionListItemInner({
 
   const {
     initialTransaction: { id },
-    primaryTransaction: { err, status },
+    primaryTransaction: { error, status },
   } = transactionGroup;
 
   const trackEvent = useContext(MetaMetricsContext);
@@ -313,7 +311,7 @@ function TransactionListItemInner({
             statusOnly
             isPending={isPending}
             isEarliestNonce={isEarliestNonce}
-            error={err}
+            error={error}
             date={date}
             status={displayedStatusKey}
             ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
@@ -402,10 +400,16 @@ function TransactionListItemInner({
             <TransactionStatusLabel
               isPending={isPending}
               isEarliestNonce={isEarliestNonce}
-              error={err}
+              error={error}
               date={date}
               status={displayedStatusKey}
               statusOnly
+              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
+              custodyStatusDisplayText={
+                transactionGroup.primaryTransaction.custodyStatusDisplayText
+              }
+              ///: END:ONLY_INCLUDE_IN
             />
           )}
         />

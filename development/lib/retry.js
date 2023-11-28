@@ -6,16 +6,18 @@
  * @param {object} args - A set of arguments and options.
  * @param {number} args.retries - The maximum number of times to re-run the
  * function on failure.
- * @param {number} args.delay - The amount of time (in milliseconds) to wait in
+ * @param {number} [args.delay] - The amount of time (in milliseconds) to wait in
  * between retries. (Default: 0)
- * @param {string} args.rejectionMessage - The message for the rejected promise
+ * @param {string} [args.rejectionMessage] - The message for the rejected promise
  * this function will return in the event of failure. (Default: "Retry limit
  * reached")
- * @param {string} args.retryUntilFailure - Retries until the function fails.
+ * @param {boolean} [args.retryUntilFailure] - Retries until the function fails.
  * @param {Function} functionToRetry - The function that is run and tested for
  * failure.
- * @returns {Promise<null | Error>} a promise that either resolves to null if
- * the function is successful or is rejected with rejectionMessage otherwise.
+ * @returns {Promise<* | null | Error>} a promise that either resolves with one of the following:
+ * - If successful, resolves with the return value of functionToRetry.
+ * - If functionToRetry fails while retryUntilFailure is true, resolves with null.
+ * - Otherwise it is rejected with rejectionMessage.
  */
 async function retry(
   {
@@ -33,14 +35,23 @@ async function retry(
     }
 
     try {
-      await functionToRetry();
+      const result = await functionToRetry();
       if (!retryUntilFailure) {
-        return;
+        return result;
       }
     } catch (error) {
-      console.error(error);
+      if (error.message === "Exited with code '1'") {
+        console.log("retry() received: Exited with code '1'");
+      } else {
+        console.error('error caught in retry():', error);
+      }
+
+      if (attempts < retries) {
+        console.log('Ready to retry() again');
+      }
+
       if (retryUntilFailure) {
-        return;
+        return null;
       }
     } finally {
       attempts += 1;

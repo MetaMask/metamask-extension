@@ -3,6 +3,7 @@ const {
   openDapp,
   switchToNotificationWindow,
   withFixtures,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
@@ -21,12 +22,6 @@ const ganacheOptions = {
     },
   ],
 };
-
-async function login(driver) {
-  await driver.navigate();
-  await driver.fill('#password', 'correct horse battery staple');
-  await driver.press('#password', driver.Key.ENTER);
-}
 
 async function openTestSnaps(driver) {
   const handle = await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
@@ -157,10 +152,10 @@ describe('Petnames', function () {
           .withNoNames()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
         await switchToNotificationWindow(driver, 3);
@@ -193,10 +188,10 @@ describe('Petnames', function () {
           .withNoNames()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await switchToNotificationWindow(driver, 3);
@@ -232,10 +227,10 @@ describe('Petnames', function () {
           .withNoNames()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
         await openTestSnaps(driver);
         await installNameLookupSnap(driver);
@@ -244,7 +239,7 @@ describe('Petnames', function () {
         await switchToNotificationWindow(driver, 4);
         await expectProposedNames(driver, '0xCD2a3...DD826', [
           ['test.lens', 'Lens Protocol'],
-          ['example.domain - 0xcd2 / 0x539', 'Name Lookup Example Snap'],
+          ['cd2.1337.test.domain', 'Name Lookup Example Snap'],
         ]);
       },
     );

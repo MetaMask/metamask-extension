@@ -9,9 +9,9 @@ import {
   FlexDirection,
   FontWeight,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
-  TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
@@ -154,6 +154,7 @@ export const TokenListItem = ({
               variant={TextVariant.bodyMd}
               width={BlockSize.TwoThirds}
               textAlign={TextAlign.End}
+              data-testid="multichain-token-list-item-secondary-value"
             >
               {secondary}
             </Text>

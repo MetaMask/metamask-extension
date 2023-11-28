@@ -30,11 +30,14 @@
     },
     "CachedBalancesController": { "cachedBalances": "object" },
     "CurrencyController": {
-      "conversionDate": "number",
-      "conversionRate": 1300,
       "currentCurrency": "usd",
-      "nativeCurrency": "ETH",
-      "usdConversionRate": 1300
+      "currencyRates": {
+        "ETH": {
+          "conversionDate": "number",
+          "conversionRate": 1300,
+          "usdConversionRate": 1300
+        }
+      }
     },
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
@@ -50,7 +53,6 @@
       "traits": "object"
     },
     "NetworkController": {
-      "networkId": "1337",
       "selectedNetworkClientId": "string",
       "networksMetadata": {
         "networkConfigurationId": { "EIPS": {}, "status": "available" }
@@ -99,7 +101,8 @@
       "usePhishDetect": true,
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
-      "useMultiAccountBalanceChecker": true
+      "useMultiAccountBalanceChecker": true,
+      "useRequestQueue": false
     },
     "SmartTransactionsController": {
       "smartTransactionsState": {

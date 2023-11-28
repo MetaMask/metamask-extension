@@ -1,11 +1,15 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { EditGasModes } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
-import { ETH } from '../../../helpers/constants/common';
 import configureStore from '../../../store/store';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
+
 import {
   NETWORK_TYPES,
   CHAIN_IDS,
@@ -56,7 +60,7 @@ const MOCK_FEE_ESTIMATE = {
 const render = ({ txProps, contextProps } = {}) => {
   const store = configureStore({
     metamask: {
-      nativeCurrency: ETH,
+      currencyRates: {},
       providerConfig: {
         chainId: CHAIN_IDS.GOERLI,
         nickname: GOERLI_DISPLAY_NAME,
@@ -120,13 +124,25 @@ describe('EditGasFeePopover', () => {
   });
 
   it('should not show insufficient balance message if transaction value is less than balance', () => {
-    render({ txProps: { userFeeLevel: 'high', txParams: { value: '0x64' } } });
+    render({
+      txProps: {
+        status: TransactionStatus.unapproved,
+        type: TransactionType.simpleSend,
+        userFeeLevel: 'high',
+        txParams: { value: '0x64', from: '0xAddress' },
+      },
+    });
     expect(screen.queryByText('Insufficient funds.')).not.toBeInTheDocument();
   });
 
   it('should show insufficient balance message if transaction value is more than balance', () => {
     render({
-      txProps: { userFeeLevel: 'high', txParams: { value: '0x5208' } },
+      txProps: {
+        status: TransactionStatus.unapproved,
+        type: TransactionType.simpleSend,
+        userFeeLevel: 'high',
+        txParams: { value: '0x5208', from: '0xAddress' },
+      },
     });
     expect(screen.queryByText('Insufficient funds.')).toBeInTheDocument();
   });

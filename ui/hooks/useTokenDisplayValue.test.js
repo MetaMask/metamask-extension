@@ -115,6 +115,17 @@ const tests = [
     tokenValue: '25500000',
     displayValue: '25.5',
   },
+  {
+    token: {
+      symbol: 'MTK',
+      decimals: 0,
+    },
+    tokenData: {
+      args: 'decoded-params11',
+    },
+    tokenValue: '25',
+    displayValue: '25',
+  },
 ];
 
 describe('useTokenDisplayValue', () => {

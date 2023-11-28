@@ -1,0 +1,16 @@
+Step,Test steps,Preconditions,Test data,Expected result,Notes
+1,Open the extension.,,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,,password (8 characters min).,"The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.  ",
+3,Login to Tenderly. Go to Forks tab in the left menu.,"Have a tenderly account. (If not, sign up on https://tenderly.co for a free version)",,,
+4,"Click ""Fork a network"". Leave network field as default Mainnet, click ""Create"".",,,,
+5,"Click ""Add RPC to MetaMask"". Proceed to add new network and switch to new network on MetaMask notification screen.",,,"The selected network is the fork of Ethereum Mainnet started in previous step.  The Ether balance is shown on the overview. The wallet address is shown on the overview. ",Take a note of the wallet address.
+6,"Go back to Tenderly, click ""Fund Accounts"". Enter wallet address we copied in previous step and click ""Submit"".",,,Wait a bit and see the balance on MeteMask has been funded with more Ether.,
+7,"Click ""Swap"" button on MetaMask home screen.",,,Swap screen is shown. Default swap from currency is ETH. Settings button is shown.,
+8,Click on settings button on swap screen. Make sure smart swap in settings is set to OFF.,,,"Slippage tolerance section is displayed. User can choose between 2%, 3%, or enter a custom value.",
+9,"Close the settings modal. On swap screen, enter a value for ETH that user wants to swap, then select a token to swap to.",,"e.g.  0.1 ETH to swap, and choose DAI to swap to",The amount for selected token user will obtain is displayed. Swap quote rate is shown. Estimated gas fee and max fee are shown. Included MetaMask fee is shown.,Take a note for the amount of selected token that user will obtain.
+10,Proceed to confirm swap.,,,"After processing, transaction complete screen is shown.",
+11,"Close the transaction complete screen. Go to tokens tab. ",,,The token we selected to swap to is displayed with the expected amount on tokens list.,
+12,Go to MetaMask activity tab.,,,Swap transaction appears in the activity list. The swapped amount is shown in the activity list item.,
+13,Open the activity list item.,,,"The status, recipient's address, nonce, amount, gas and total are shown in the item details.",
+14,Expand the activity log for the transaction.,,,"The created, submitted and confirmed activities are shown in the activity log.",
+15,Proceed to view the transaction on the block explorer.,,,The block explorer opens in a new tab.,

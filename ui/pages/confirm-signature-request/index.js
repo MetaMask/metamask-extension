@@ -5,6 +5,7 @@ import { useHistory, withRouter } from 'react-router-dom';
 import log from 'loglevel';
 import { cloneDeep } from 'lodash';
 import { SubjectType } from '@metamask/permission-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
@@ -22,7 +23,6 @@ import {
   getUnapprovedTransactions,
 } from '../../selectors';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
-import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getSendTo } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 
@@ -60,7 +60,6 @@ const ConfirmTxScreen = ({ match }) => {
     unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTypedMessages,
-    networkId,
     blockGasLimit,
   } = useSelector((state) => state.metamask);
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
@@ -81,7 +80,8 @@ const ConfirmTxScreen = ({ match }) => {
       {},
       {},
       {},
-      networkId,
+      {},
+      {},
       chainId,
     );
     if (unconfTxList.length === 0 && !sendTo && unapprovedMessagesTotal === 0) {
@@ -90,7 +90,6 @@ const ConfirmTxScreen = ({ match }) => {
   }, [
     chainId,
     navigateToMostRecentOverviewPage,
-    networkId,
     sendTo,
     unapprovedMessagesTotal,
     unapprovedTxs,
@@ -117,7 +116,8 @@ const ConfirmTxScreen = ({ match }) => {
           {},
           {},
           {},
-          networkId,
+          {},
+          {},
           chainId,
         );
         const prevTxData = prevUnconfTxList[prevIndex] || {};
@@ -130,7 +130,8 @@ const ConfirmTxScreen = ({ match }) => {
         {},
         {},
         {},
-        networkId,
+        {},
+        {},
         chainId,
       );
 
@@ -165,8 +166,9 @@ const ConfirmTxScreen = ({ match }) => {
       unapprovedTxs || {},
       unapprovedMsgs,
       unapprovedPersonalMsgs,
+      {},
+      {},
       unapprovedTypedMessages,
-      networkId,
       chainId,
     );
 
@@ -180,7 +182,6 @@ const ConfirmTxScreen = ({ match }) => {
     chainId,
     index,
     match,
-    networkId,
     unapprovedMsgs,
     unapprovedPersonalMsgs,
     unapprovedTxs,

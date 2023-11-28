@@ -1,5 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
 
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 
 import { useGasFeeErrors } from './useGasFeeErrors';
@@ -24,10 +28,20 @@ jest.mock('react-redux', () => {
   };
 });
 
+const mockTransaction = {
+  status: TransactionStatus.unapproved,
+  type: TransactionType.simpleSend,
+  txParams: {
+    from: '0x000000000000000000000000000000000000dead',
+    type: '0x2',
+    value: '100',
+  },
+};
+
 const renderUseGasFeeErrorsHook = (props) => {
   return renderHook(() =>
     useGasFeeErrors({
-      transaction: { txParams: { type: '0x2', value: '100' } },
+      transaction: mockTransaction,
       gasLimit: '21000',
       gasPrice: '10',
       maxPriorityFeePerGas: '10',
@@ -273,7 +287,13 @@ describe('useGasFeeErrors', () => {
     it('is true if balance is less than transaction value', () => {
       configureLegacy();
       const { result } = renderUseGasFeeErrorsHook({
-        transaction: { txParams: { type: '0x2', value: '0x440aa47cc2556' } },
+        transaction: {
+          ...mockTransaction,
+          txParams: {
+            ...mockTransaction.txParams,
+            value: '0x440aa47cc2556',
+          },
+        },
         ...LEGACY_GAS_ESTIMATE_RETURN_VALUE,
       });
       expect(result.current.balanceError).toBe(true);

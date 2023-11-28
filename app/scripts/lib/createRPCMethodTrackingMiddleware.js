@@ -1,6 +1,7 @@
 import { detectSIWE } from '@metamask/controller-utils';
 import { errorCodes } from 'eth-rpc-errors';
 import { isValidAddress } from 'ethereumjs-util';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { MESSAGE_TYPE, ORIGIN_METAMASK } from '../../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -8,7 +9,6 @@ import {
   MetaMetricsEventUiCustomization,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
-import { TransactionStatus } from '../../../shared/constants/transaction';
 
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
 import {
@@ -17,7 +17,7 @@ import {
 } from '../../../shared/constants/security-provider';
 ///: END:ONLY_INCLUDE_IN
 
-import getSnapAndHardwareInfoForMetrics from './snap-keyring/metrics';
+import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
 /**
  * These types determine how the method tracking middleware handles incoming
@@ -199,6 +199,16 @@ export default function createRPCMethodTrackingMiddleware({
         const paramsExamplePassword = req?.params?.[2];
 
         ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        if (req.securityAlertResponse?.providerRequestsCount) {
+          Object.keys(req.securityAlertResponse.providerRequestsCount).forEach(
+            (key) => {
+              const metricKey = `ppom_${key}_count`;
+              eventProperties[metricKey] =
+                req.securityAlertResponse.providerRequestsCount[key];
+            },
+          );
+        }
+
         eventProperties.security_alert_response =
           req.securityAlertResponse?.result_type ??
           BlockaidResultType.NotApplicable;

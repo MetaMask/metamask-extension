@@ -20,10 +20,15 @@ import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUIImage } from '../snaps/snap-ui-image';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowAddress,
+} from '../confirm/shared/info/row';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
 import { RemoveSnapAccount } from '../../../pages/remove-snap-account';
+import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 ///: END:ONLY_INCLUDE_IN
 
@@ -56,10 +61,13 @@ export const safeComponentList = {
   SnapUIMarkdown,
   SnapUIImage,
   Spinner,
+  ConfirmInfoRow,
+  ConfirmInfoRowAddress,
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   CreateSnapAccount,
   RemoveSnapAccount,
   SnapAuthorshipHeader,
+  SnapAccountRedirect,
   ///: END:ONLY_INCLUDE_IN
 };

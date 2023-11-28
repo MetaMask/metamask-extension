@@ -1,19 +1,20 @@
 import { Snap } from '@metamask/snaps-utils';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import semver from 'semver';
 import {
   Box,
-  Text,
   ButtonLink,
   ButtonLinkSize,
+  Text,
 } from '../../../components/component-library';
 import {
   AlignItems,
   Display,
   FlexDirection,
   FlexWrap,
+  FontWeight,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -21,9 +22,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  getSnapRegistry,
   getSnaps,
   getsnapsAddSnapAccountModalDismissed,
-  getSnapRegistry,
 } from '../../../selectors';
 import {
   setSnapsAddSnapAccountModalDismissed,
@@ -32,6 +33,7 @@ import {
 import AddSnapAccountModal from '../add-snap-account-modal';
 import SnapCard from '../snap-card/snap-card';
 import { FEEDBACK_FORM } from '../constants';
+import { CONSENSYS_TERMS_OF_USE } from '../../../../shared/lib/ui-utils';
 
 export interface SnapDetails {
   id: string;
@@ -76,6 +78,29 @@ export default function NewSnapAccountPage() {
   const snapsAddSnapAccountModalDismissed = useSelector(
     getsnapsAddSnapAccountModalDismissed,
   );
+
+  const legalDisclaimerContent = [
+    {
+      title: t('snapAccountLegalDisclaimerThirdPartySubtitle'),
+      description: t('snapAccountLegalDisclaimerThirdPartyDescription', [
+        <ButtonLink
+          href={CONSENSYS_TERMS_OF_USE}
+          variant={TextVariant.bodyXs}
+          externalLink
+        >
+          {t('snapAccountLegalDisclaimerTermsOfUseLink')}
+        </ButtonLink>,
+      ]),
+    },
+    {
+      title: t('snapAccountLegalDisclaimerPrivacySubtitle'),
+      description: t('snapAccountLegalDisclaimerPrivacyDescription'),
+    },
+    {
+      title: t('snapAccountLegalDisclaimerExperimentalBetaSubtitle'),
+      description: t('snapAccountLegalDisclaimerExperimentalBetaDescription'),
+    },
+  ];
 
   return (
     <Box
@@ -153,14 +178,49 @@ export default function NewSnapAccountPage() {
         )}
       </Box>
       <Box className="snap-account-footer">
+        <Box className="legal-disclaimer">
+          <Text
+            variant={TextVariant.bodyXsMedium}
+            color={TextColor.textAlternative}
+            textAlign={TextAlign.Left}
+            fontWeight={FontWeight.Bold}
+          >
+            {t('snapAccountLegalDisclaimerTitle').toUpperCase()}
+          </Text>
+          <>
+            {legalDisclaimerContent.map((element, index) => (
+              <Box
+                id={`legal-disclaimer-element-${index}`}
+                className="legal-disclaimer-element"
+              >
+                <Text
+                  variant={TextVariant.bodyXsMedium}
+                  color={TextColor.textAlternative}
+                  textAlign={TextAlign.Left}
+                  fontWeight={FontWeight.Bold}
+                >
+                  {element.title}
+                </Text>
+                <Text
+                  variant={TextVariant.bodyXs}
+                  color={TextColor.textAlternative}
+                  textAlign={TextAlign.Left}
+                >
+                  {element.description}
+                </Text>
+              </Box>
+            ))}
+          </>
+        </Box>
         <ButtonLink
-          size={ButtonLinkSize.Md}
+          className="feedback-link"
+          size={ButtonLinkSize.Sm}
           data-testid="snap-account-link"
           href={FEEDBACK_FORM}
           display={Display.Flex}
-          justifyContent={JustifyContent.flexStart}
           paddingLeft={4}
           marginBottom={4}
+          textAlign={TextAlign.Center}
           externalLink
         >
           {t('accountSnapsFeedback')}

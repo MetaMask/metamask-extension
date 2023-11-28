@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Chain Interactions', function () {
@@ -15,18 +20,16 @@ describe('Chain Interactions', function () {
     ],
     concurrent: { port, chainId },
   };
-  it('should add the Ganache test chain and not switch the network @no-mmi', async function () {
+  it('should add the Ganache test chain and not switch the network', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // trigger add chain confirmation
         await openDapp(driver);
@@ -51,7 +54,7 @@ describe('Chain Interactions', function () {
         await driver.clickElement({ text: 'Cancel', tag: 'button' });
 
         // switch to extension
-        await driver.waitUntilXWindowHandles(2);
+        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindow(extension);
 
         // verify networks
@@ -76,12 +79,10 @@ describe('Chain Interactions', function () {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // trigger add chain confirmation
         await openDapp(driver);

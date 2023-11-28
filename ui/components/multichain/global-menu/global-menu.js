@@ -8,6 +8,7 @@ import {
   DEFAULT_ROUTE,
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   NOTIFICATIONS_ROUTE,
+  SNAPS_ROUTE,
   ///: END:ONLY_INCLUDE_IN(snaps)
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
@@ -30,9 +31,9 @@ import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsEventName,
-  MetaMetricsEventCategory,
   MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import {
@@ -49,6 +50,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   getNotifySnaps,
   getUnreadNotificationsCount,
+  getAnySnapUpdateAvailable,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
@@ -91,6 +93,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
 
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
+  const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
   ///: END:ONLY_INCLUDE_IN
 
   let supportText = t('support');
@@ -216,6 +219,20 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             </MenuItem>
           </>
         ) : null
+        ///: END:ONLY_INCLUDE_IN(snaps)
+      }
+      {
+        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+        <MenuItem
+          iconName={IconName.Snaps}
+          onClick={() => {
+            history.push(SNAPS_ROUTE);
+            closeMenu();
+          }}
+          showInfoDot={snapsUpdatesAvailable}
+        >
+          {t('snaps')}
+        </MenuItem>
         ///: END:ONLY_INCLUDE_IN(snaps)
       }
       <MenuItem

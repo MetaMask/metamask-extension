@@ -21,6 +21,11 @@ import {
   UpdateProposedNamesRequest,
   UpdateProposedNamesResult,
 } from '@metamask/name-controller';
+import {
+  TransactionMeta,
+  TransactionParams,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { NetworkClientId } from '@metamask/network-controller';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
@@ -42,6 +47,7 @@ import {
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   getPermissionSubjects,
+  getFirstSnapInstallOrUpdateRequest,
   ///: END:ONLY_INCLUDE_IN
 } from '../selectors';
 import {
@@ -85,20 +91,13 @@ import {
 } from '../../shared/modules/i18n';
 import { decimalToHex } from '../../shared/modules/conversion.utils';
 import { TxGasFees, PriorityLevels } from '../../shared/constants/gas';
-import {
-  TransactionMeta,
-  TransactionMetaMetricsEvent,
-  TransactionType,
-} from '../../shared/constants/transaction';
 import { NetworkType, RPCDefinition } from '../../shared/constants/network';
 import { EtherDenomination } from '../../shared/constants/common';
 import {
   isErrorWithMessage,
   logErrorWithMessage,
 } from '../../shared/modules/error';
-import { TxParams } from '../../app/scripts/controllers/transactions/tx-state-manager';
 import { ThemeType } from '../../shared/constants/preferences';
-import { CustomGasSettings } from '../../app/scripts/controllers/transactions';
 import * as actionConstants from './actionConstants';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { updateCustodyState } from './institutional/institution-actions';
@@ -107,12 +106,19 @@ import {
   generateActionId,
   callBackgroundMethod,
   submitRequestToBackground,
-} from './action-queue';
+} from './background-connection';
 import {
   MetaMaskReduxDispatch,
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+
+type CustomGasSettings = {
+  gas?: string;
+  gasPrice?: string;
+  maxFeePerGas?: string;
+  maxPriorityFeePerGas?: string;
+};
 
 export function goHome() {
   return {
@@ -800,7 +806,7 @@ export function updatePreviousGasParams(
 
 export function updateEditableParams(
   txId: string,
-  editableParams: Partial<TxParams>,
+  editableParams: Partial<TransactionParams>,
 ): ThunkAction<
   Promise<TransactionMeta>,
   MetaMaskReduxState,
@@ -960,7 +966,7 @@ export function updateTransaction(
  * @returns
  */
 export function addTransactionAndRouteToConfirmationPage(
-  txParams: TxParams,
+  txParams: TransactionParams,
   options?: {
     sendFlowHistory?: DraftTransaction['history'];
     type?: TransactionType;
@@ -980,7 +986,6 @@ export function addTransactionAndRouteToConfirmationPage(
       const transactionMeta = await submitRequestToBackground<TransactionMeta>(
         'addTransaction',
         [txParams, { ...options, actionId, origin: ORIGIN_METAMASK }],
-        actionId,
       );
 
       dispatch(showConfTxPage());
@@ -1010,7 +1015,7 @@ export function addTransactionAndRouteToConfirmationPage(
  * @returns
  */
 export async function addTransactionAndWaitForPublish(
-  txParams: TxParams,
+  txParams: TransactionParams,
   options: {
     method?: string;
     requireApproval?: boolean;
@@ -1032,7 +1037,6 @@ export async function addTransactionAndWaitForPublish(
         actionId,
       },
     ],
-    actionId,
   );
 }
 
@@ -1091,7 +1095,7 @@ export function updateAndApproveTx(
 export async function getTransactions(
   filters: {
     filterToCurrentNetwork?: boolean;
-    searchCriteria?: Partial<TransactionMeta> & Partial<TxParams>;
+    searchCriteria?: Partial<TransactionMeta> & Partial<TransactionParams>;
   } = {},
 ): Promise<TransactionMeta[]> {
   return await submitRequestToBackground<TransactionMeta[]>('getTransactions', [
@@ -1112,7 +1116,10 @@ export function completedTx(
   };
 }
 
-export function updateTransactionParams(txId: string, txParams: TxParams) {
+export function updateTransactionParams(
+  txId: string,
+  txParams: TransactionParams,
+) {
   return {
     type: actionConstants.UPDATE_TRANSACTION_PARAMS,
     id: txId,
@@ -1136,6 +1143,22 @@ export function enableSnap(
   return async (dispatch: MetaMaskReduxDispatch) => {
     await submitRequestToBackground('enableSnap', [snapId]);
     await forceUpdateMetamaskState(dispatch);
+  };
+}
+
+export function updateSnap(
+  origin: string,
+  snap: { [snapId: string]: { version: string } },
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    await submitRequestToBackground('updateSnap', [origin, snap]);
+    await forceUpdateMetamaskState(dispatch);
+
+    const state = getState();
+
+    const approval = getFirstSnapInstallOrUpdateRequest(state);
+
+    return approval?.metadata.id;
   };
 }
 
@@ -2089,7 +2112,6 @@ export function createCancelTransaction(
             resolve(newState);
           }
         },
-        actionId,
       );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -2125,7 +2147,6 @@ export function createSpeedUpTransaction(
             resolve(newState);
           }
         },
-        actionId,
       );
     })
       .then((newState) => dispatch(updateMetamaskState(newState)))
@@ -2174,7 +2195,6 @@ export function setProviderType(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setProviderType`, type);
-
     try {
       await submitRequestToBackground('setProviderType', [type]);
     } catch (error) {
@@ -2852,15 +2872,6 @@ export function setCompletedOnboarding(): ThunkAction<
 export function completeOnboarding() {
   return {
     type: actionConstants.COMPLETE_ONBOARDING,
-  };
-}
-
-export function setMouseUserState(
-  isMouseUser: boolean,
-): PayloadAction<boolean> {
-  return {
-    type: actionConstants.SET_MOUSE_USER_STATE,
-    payload: isMouseUser,
   };
 }
 
@@ -4045,7 +4056,7 @@ export function captureSingleException(
  * point in the future.
  */
 
-export function estimateGas(params: TxParams): Promise<Hex> {
+export function estimateGas(params: TransactionParams): Promise<Hex> {
   return submitRequestToBackground('estimateGas', [params]);
 }
 
@@ -4139,13 +4150,13 @@ export function createEventFragment(
 
 export function createTransactionEventFragment(
   transactionId: string,
-  event: TransactionMetaMetricsEvent,
 ): Promise<string> {
   const actionId = generateActionId();
   return submitRequestToBackground('createTransactionEventFragment', [
-    transactionId,
-    event,
-    actionId,
+    {
+      transactionId,
+      actionId,
+    },
   ]);
 }
 
@@ -4233,8 +4244,8 @@ export function clearSmartTransactionFees() {
 }
 
 export function fetchSmartTransactionFees(
-  unsignedTransaction: Partial<TxParams> & { chainId: string },
-  approveTxParams: TxParams,
+  unsignedTransaction: Partial<TransactionParams> & { chainId: string },
+  approveTxParams: TransactionParams,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     if (approveTxParams) {
@@ -4272,10 +4283,10 @@ interface TemporarySmartTransactionGasFees {
 }
 
 const createSignedTransactions = async (
-  unsignedTransaction: Partial<TxParams> & { chainId: string },
+  unsignedTransaction: Partial<TransactionParams> & { chainId: string },
   fees: TemporarySmartTransactionGasFees[],
   areCancelTransactions?: boolean,
-): Promise<TxParams[]> => {
+): Promise<TransactionParams[]> => {
   const unsignedTransactionsWithFees = fees.map((fee) => {
     const unsignedTransactionWithFees = {
       ...unsignedTransaction,
@@ -4292,10 +4303,9 @@ const createSignedTransactions = async (
     }
     return unsignedTransactionWithFees;
   });
-  const signedTransactions = await submitRequestToBackground<TxParams[]>(
-    'approveTransactionsWithSameNonce',
-    [unsignedTransactionsWithFees],
-  );
+  const signedTransactions = await submitRequestToBackground<
+    TransactionParams[]
+  >('approveTransactionsWithSameNonce', [unsignedTransactionsWithFees]);
   return signedTransactions;
 };
 
@@ -4303,7 +4313,7 @@ export function signAndSendSmartTransaction({
   unsignedTransaction,
   smartTransactionFees,
 }: {
-  unsignedTransaction: Partial<TxParams> & { chainId: string };
+  unsignedTransaction: Partial<TransactionParams> & { chainId: string };
   smartTransactionFees: {
     fees: TemporarySmartTransactionGasFees[];
     cancelFees: TemporarySmartTransactionGasFees[];
@@ -4495,6 +4505,14 @@ export async function getSnapAccountsById(snapId: string): Promise<string[]> {
 }
 ///: END:ONLY_INCLUDE_IN
 
+export function setUseRequestQueue(val: boolean): void {
+  try {
+    submitRequestToBackground('setUseRequestQueue', [val]);
+  } catch (error) {
+    logErrorWithMessage(error);
+  }
+}
+
 ///: BEGIN:ONLY_INCLUDE_IN(petnames)
 export function setUseExternalNameSources(val: boolean): void {
   try {
@@ -4638,6 +4656,14 @@ export function setSnapsInstallPrivacyWarningShownStatus(shown: boolean) {
       'setSnapsInstallPrivacyWarningShownStatus',
       [shown],
     );
+  };
+}
+///: END:ONLY_INCLUDE_IN
+
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+export function trackInsightSnapUsage(snapId: string) {
+  return async () => {
+    await submitRequestToBackground('trackInsightSnapView', [snapId]);
   };
 }
 ///: END:ONLY_INCLUDE_IN

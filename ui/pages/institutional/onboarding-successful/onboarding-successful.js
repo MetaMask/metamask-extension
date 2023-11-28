@@ -1,11 +1,19 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Text } from '../../../components/component-library';
-import Button from '../../../components/ui/button';
+import {
+  Box,
+  Button,
+  Text,
+  ButtonVariant,
+  ButtonSize,
+  ButtonSecondarySize,
+} from '../../../components/component-library';
 import {
   TextVariant,
   TextAlign,
   FontWeight,
+  Display,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setCompletedOnboarding } from '../../../store/actions';
@@ -31,18 +39,31 @@ export default function OnboardingSuccessful() {
         </Text>
       </Box>
 
-      <Box marginTop={6}>
+      <Box
+        marginTop={6}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+      >
         <Button
           data-testid="onboarding-continue-button"
-          type="primary"
-          large
-          rounded
+          size={ButtonSize.Lg}
           onClick={async () => {
             await dispatch(setCompletedOnboarding());
             window.open(portfolio.url);
           }}
         >
           {t('continueMmiOnboarding')}
+        </Button>
+        <Button
+          marginTop={4}
+          data-testid="onboarding-continue-to-wallet"
+          variant={ButtonVariant.Link}
+          size={ButtonSecondarySize.Lg}
+          onClick={async () => {
+            await dispatch(setCompletedOnboarding());
+          }}
+        >
+          {t('continueToWallet')}
         </Button>
       </Box>
     </div>
