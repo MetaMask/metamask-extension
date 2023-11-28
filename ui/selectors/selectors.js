@@ -1556,11 +1556,10 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return ARBITRUM_DISPLAY_NAME;
     case CHAIN_IDS.OPTIMISM:
       return OPTIMISM_DISPLAY_NAME;
-
-    // case CHAIN_IDS.BASE:
-    //   return BASE_DISPLAY_NAME;
-    // case CHAIN_IDS.ZKSYNC_ERA:
-    //   return ZK_SYNC_ERA_DISPLAY_NAME;
+    case CHAIN_IDS.BASE:
+      return BASE_DISPLAY_NAME;
+    case CHAIN_IDS.ZKSYNC_ERA:
+      return ZK_SYNC_ERA_DISPLAY_NAME;
     default:
       return '';
   }
@@ -1585,8 +1584,8 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.AURORA,
     CHAIN_IDS.ARBITRUM,
     CHAIN_IDS.OPTIMISM,
-    // CHAIN_IDS.BASE,
-    // CHAIN_IDS.ZKSYNC_ERA,
+    CHAIN_IDS.BASE,
+    CHAIN_IDS.ZKSYNC_ERA,
   ].includes(chainId);
 }
 
