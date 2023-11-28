@@ -521,6 +521,7 @@ export default class AccountTracker {
   /**
    * Updates current address balances from balanceChecker deployed contract instance
    *
+   * @private
    * @param {Array} addresses - A hex addresses of a the accounts to be updated
    * @param {string} deployedContractAddress - The contract address to fetch balances with
    * @param {object} provider - The provider instance to fetch the balance with
