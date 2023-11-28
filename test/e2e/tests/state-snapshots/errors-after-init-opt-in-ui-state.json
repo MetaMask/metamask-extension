@@ -130,7 +130,7 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "string", "1": "string", "2": "string" },
-    "pinnedAccountList": "object",
+    "pinnedAccountList": {},
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},

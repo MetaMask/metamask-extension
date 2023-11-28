@@ -183,6 +183,8 @@ function defaultFixture() {
       },
       NetworkOrderController: {
         orderedNetworkList: [],
+      AccountOrderController: {
+        pinnedAccountList: [],
       },
       AppStateController: {
         browserEnvironment: {},
@@ -489,6 +491,11 @@ class FixtureBuilder {
 
   withAppStateController(data) {
     merge(this.fixture.data.AppStateController, data);
+        return this;
+  }
+
+  withAccountOrderController(data) {
+    merge(this.fixture.data.AccountOrderController, data);
     return this;
   }
 

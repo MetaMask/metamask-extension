@@ -3,6 +3,7 @@
     "accounts": "object",
     "accountsByChainId": "object"
   },
+  "AccountOrderController": { "pinnedAccountList": {} },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
@@ -86,8 +87,7 @@
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object",
-    "previousUserTraits": "object"
+    "segmentApiCalls": "object"
   },
   "NetworkController": {
     "selectedNetworkClientId": "string",

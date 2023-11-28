@@ -53,6 +53,8 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   NetworkOrderController: {
     orderedNetworkList: [],
+  AccountOrderController: {
+    pinnedAccountList: [],
   },
   AppMetadataController: {
     currentAppVersion: true,
