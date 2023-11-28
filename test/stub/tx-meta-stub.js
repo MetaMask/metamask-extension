@@ -1,8 +1,8 @@
-import { GAS_LIMITS } from '../../shared/constants/gas';
 import {
   TransactionStatus,
   TransactionType,
-} from '../../shared/constants/transaction';
+} from '@metamask/transaction-controller';
+import { GAS_LIMITS } from '../../shared/constants/gas';
 
 export const txMetaStub = {
   firstRetryBlockNumber: '0x51a402',

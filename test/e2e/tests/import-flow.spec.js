@@ -86,14 +86,9 @@ describe('Import flow @no-mmi', function () {
         });
 
         // accepts the account password after lock
-        await unlockWallet(driver);
-
-        // Create a new account
-        // switches to localhost
-        await driver.delay(largeDelayMs);
-        await driver.clickElement('[data-testid="network-display"]');
-        await driver.clickElement('.toggle-button');
-        await driver.clickElement({ text: 'Localhost', tag: 'button' });
+        await unlockWallet(driver, {
+          waitLoginSuccess: false,
+        });
 
         // choose Create account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -208,7 +203,6 @@ describe('Import flow @no-mmi', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -293,7 +287,6 @@ describe('Import flow @no-mmi', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Imports an account with JSON file
@@ -358,7 +351,6 @@ describe('Import flow @no-mmi', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // choose Import Account from the account menu
@@ -397,7 +389,6 @@ describe('Import flow @no-mmi', function () {
         testSpecificMock: mockTrezor,
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // choose Connect hardware wallet from the account menu

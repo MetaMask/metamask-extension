@@ -4,6 +4,7 @@ const {
   withFixtures,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
+  unlockWallet,
 } = require('../helpers');
 const { shortenAddress } = require('../../../ui/helpers/utils/util');
 const FixtureBuilder = require('../fixture-builder');
@@ -41,7 +42,6 @@ describe('Address Book', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
-        await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await openActionMenuAndStartSendFlow(driver);
@@ -102,9 +102,7 @@ describe('Address Book', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
@@ -192,9 +190,7 @@ describe('Address Book', function () {
         if (process.env.MULTICHAIN) {
           return;
         }
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
