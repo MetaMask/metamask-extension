@@ -20,8 +20,8 @@ import {
   AvatarToken,
   BadgeWrapper,
   Box,
+  ButtonIcon,
   ButtonSecondary,
-  Icon,
   IconName,
   IconSize,
   Modal,
@@ -184,9 +184,13 @@ export const TokenListItem = ({
               )}
             </Box>
             {showScamWarning ? (
-              <Icon
-                name={IconName.Danger}
-                onMouseEnter={() => setShowScamWarningModal(true)}
+              <ButtonIcon
+                iconName={IconName.Danger}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowScamWarningModal(true);
+                }}
                 color={IconColor.errorDefault}
                 size={IconSize.Lg}
               />
