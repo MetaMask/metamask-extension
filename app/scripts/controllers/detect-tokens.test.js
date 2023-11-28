@@ -42,6 +42,7 @@ describe('DetectTokensController', function () {
         'NetworkController:stateChange',
         'KeyringController:lock',
         'KeyringController:unlock',
+        'TokenListController:stateChange',
       ],
     });
   };

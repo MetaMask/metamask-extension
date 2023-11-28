@@ -1612,6 +1612,89 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('getTokenSymbol', () => {
+      it('should gets token symbol for given address', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        const tokenData = {
+          standard: 'ERC20',
+          decimals: 18,
+          symbol: 'DAI',
+          balance: '333',
+        };
+
+        metamaskController.tokenListController.update(() => {
+          return {
+            tokenList: {
+              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            },
+          };
+        });
+
+        metamaskController.provider = provider;
+
+        jest
+          .spyOn(
+            metamaskController.assetsContractController,
+            'getTokenStandardAndDetails',
+          )
+          .mockReturnValue(tokenData);
+
+        const tokenSymbol = await metamaskController.getTokenSymbol(
+          '0xNotInTokenList',
+        );
+
+        expect(tokenSymbol).toStrictEqual(tokenData.symbol);
+      });
+
+      it('should return null for given token address', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        metamaskController.tokenListController.update(() => {
+          return {
+            tokenList: {
+              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            },
+          };
+        });
+
+        metamaskController.provider = provider;
+
+        jest
+          .spyOn(
+            metamaskController.assetsContractController,
+            'getTokenStandardAndDetails',
+          )
+          .mockImplementation(() => {
+            throw new Error('error');
+          });
+
+        const tokenSymbol = await metamaskController.getTokenSymbol(
+          '0xNotInTokenList',
+        );
+
+        expect(tokenSymbol).toStrictEqual(null);
+      });
+    });
+
     describe('incoming transactions', () => {
       it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
         expect(
