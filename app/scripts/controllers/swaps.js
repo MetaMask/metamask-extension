@@ -18,7 +18,7 @@ import {
   SWAPS_CHAINID_CONTRACT_ADDRESS_MAP,
 } from '../../../shared/constants/swaps';
 import { GasEstimateTypes } from '../../../shared/constants/gas';
-import { CHAIN_IDS, NetworkStatus } from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -113,14 +113,12 @@ export default class SwapsController {
   constructor(
     {
       getBufferedGasLimit,
-      networkController,
       provider,
       getProviderConfig,
       getTokenRatesState,
       fetchTradesInfo = defaultFetchTradesInfo,
       getCurrentChainId,
       getEIP1559GasFeeEstimates,
-      onNetworkStateChange,
       trackMetaMetricsEvent,
     },
     state,
@@ -154,24 +152,9 @@ export default class SwapsController {
 
     this.indexOfNewestCallInFlight = 0;
 
+    this.provider = provider;
     this.ethersProvider = new Web3Provider(provider);
-    this._currentChainId = networkController.state.providerConfig.chainId;
-    onNetworkStateChange(() => {
-      const {
-        networksMetadata,
-        selectedNetworkClientId,
-        providerConfig: { chainId },
-      } = networkController.state;
-      const selectedNetworkStatus =
-        networksMetadata[selectedNetworkClientId]?.status;
-      if (
-        selectedNetworkStatus === NetworkStatus.Available &&
-        chainId !== this._currentChainId
-      ) {
-        this._currentChainId = chainId;
-        this.ethersProvider = new Web3Provider(provider);
-      }
-    });
+    this._ethersProviderChainId = this._getCurrentChainId();
   }
 
   async fetchSwapsNetworkConfig(chainId) {
@@ -273,6 +256,12 @@ export default class SwapsController {
     isPolledRequest,
   ) {
     const { chainId } = fetchParamsMetaData;
+
+    if (chainId !== this._ethersProviderChainId) {
+      this.ethersProvider = new Web3Provider(this.provider);
+      this._ethersProviderChainId = chainId;
+    }
+
     const {
       swapsState: { quotesPollingLimitEnabled, saveFetchedQuotes },
     } = this.store.getState();

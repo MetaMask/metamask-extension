@@ -1,4 +1,4 @@
-import { TransactionStatus } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import migration22 from './022';
 
 const properTime = new Date().getTime();

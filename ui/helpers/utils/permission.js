@@ -269,7 +269,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     description: t('permission_getLocaleDescription', [
       getSnapNameComponent(targetSubjectMetadata),
     ]),
-    leftIcon: IconName.Home,
+    leftIcon: IconName.Global,
     weight: 3,
   }),
   [RestrictedMethods.wallet_snap]: ({
@@ -317,7 +317,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     description: t('permission_accessNetworkDescription', [
       getSnapNameComponent(targetSubjectMetadata),
     ]),
-    leftIcon: IconName.Global,
+    leftIcon: IconName.Wifi,
     weight: 2,
   }),
   [EndowmentPermissions['endowment:webassembly']]: ({
@@ -503,6 +503,17 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Hierarchy,
     weight: 3,
   }),
+  [EndowmentPermissions['endowment:page-home']]: ({
+    t,
+    targetSubjectMetadata,
+  }) => ({
+    label: t('permission_homePage'),
+    description: t('permission_homePageDescription', [
+      getSnapNameComponent(targetSubjectMetadata),
+    ]),
+    leftIcon: IconName.Home,
+    weight: 3,
+  }),
   ///: END:ONLY_INCLUDE_IN
   ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
   [RestrictedMethods.snap_manageAccounts]: ({ t, targetSubjectMetadata }) => ({
@@ -525,6 +536,14 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: getLeftIcon(IconName.UserCircleAdd),
     rightIcon: null,
     weight: 2,
+  }),
+  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  [EndowmentPermissions['endowment:name-lookup']]: ({ t }) => ({
+    label: t('permission_nameLookup'),
+    description: t('permission_nameLookupDescription'),
+    leftIcon: getLeftIcon(IconName.Search),
+    weight: 3,
   }),
   ///: END:ONLY_INCLUDE_IN
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
