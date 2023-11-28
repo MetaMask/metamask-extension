@@ -189,9 +189,7 @@ describe('Account Tracker', () => {
         'latest',
         expect.any(Function),
       );
-      expect(updateAccountsSpy).toHaveBeenCalledWith(
-        'mainnet',
-      );
+      expect(updateAccountsSpy).toHaveBeenCalledWith('mainnet');
 
       accountTracker.startPollingByNetworkClientId('mainnet');
 
@@ -282,9 +280,7 @@ describe('Account Tracker', () => {
         'latest',
         expect.any(Function),
       );
-      expect(updateAccountsSpy).toHaveBeenCalledWith(
-        'mainnet',
-      );
+      expect(updateAccountsSpy).toHaveBeenCalledWith('mainnet');
 
       accountTracker.startPollingByNetworkClientId('goerli');
 
@@ -292,9 +288,7 @@ describe('Account Tracker', () => {
         'latest',
         expect.any(Function),
       );
-      expect(updateAccountsSpy).toHaveBeenCalledWith(
-        'goerli',
-      );
+      expect(updateAccountsSpy).toHaveBeenCalledWith('goerli');
 
       accountTracker.startPollingByNetworkClientId('networkClientId1');
 
@@ -302,9 +296,7 @@ describe('Account Tracker', () => {
         'latest',
         expect.any(Function),
       );
-      expect(updateAccountsSpy).toHaveBeenCalledWith(
-        'networkClientId1',
-      );
+      expect(updateAccountsSpy).toHaveBeenCalledWith('networkClientId1');
 
       accountTracker.stopAllPolling();
     });
@@ -576,9 +568,7 @@ describe('Account Tracker', () => {
         'blockNumber',
       );
 
-      expect(updateAccountsSpy).toHaveBeenCalledWith(
-        'mainnet',
-      );
+      expect(updateAccountsSpy).toHaveBeenCalledWith('mainnet');
 
       const newState = accountTracker.store.getState();
 
