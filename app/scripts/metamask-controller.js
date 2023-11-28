@@ -4541,9 +4541,18 @@ export default class MetamaskController extends EventEmitter {
             { origin },
           ),
         revokePermissionsForOrigin: (permissionKeys) => {
-          this.permissionController.revokePermissions({
-            [origin]: permissionKeys,
-          });
+          try {
+            this.permissionController.revokePermissions({
+              [origin]: permissionKeys,
+            });
+          } catch (e) {
+            // we dont want to handle errors here because
+            // the revokePermissions api methd should just
+            // return `null` if the permissions were not
+            // successfully revoked or if the permissions
+            // for the origin do not exist
+            console.log(e);
+          }
         },
         getCurrentChainId: () =>
           this.networkController.state.providerConfig.chainId,
