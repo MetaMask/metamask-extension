@@ -6,6 +6,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 import { PriorityLevels } from '../../../../shared/constants/gas';
 import { submittedPendingTransactionsSelector } from '../../../selectors';
 import { useGasFeeContext } from '../../../contexts/gasFee';
@@ -24,7 +25,6 @@ import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-bann
 ///: END:ONLY_INCLUDE_IN
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
-import { TransactionType } from '../../../../shared/constants/transaction';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
