@@ -444,8 +444,8 @@ describe('Account Tracker', () => {
       accountTracker.store.updateState({
         accounts: { ...mockAccounts },
         accountsByChainId: {
-          [currentChainId]: { ...mockAccounts }
-        }
+          [currentChainId]: { ...mockAccounts },
+        },
       });
 
       await accountTracker._updateAccount(

@@ -260,14 +260,14 @@ export default class AccountTracker {
   getAccountsForChainId(chainId) {
     const { accounts, accountsByChainId } = this.store.getState();
     if (accountsByChainId[chainId]) {
-      return accountsByChainId[chainId]
+      return accountsByChainId[chainId];
     }
 
-    const newAccounts = {}
+    const newAccounts = {};
     Object.keys(accounts).forEach((address) => {
-      newAccounts[address] = {}
-    })
-    return newAccounts
+      newAccounts[address] = {};
+    });
+    return newAccounts;
   }
 
   /**
@@ -360,9 +360,12 @@ export default class AccountTracker {
    * Removes all addresses and associated balances
    */
   clearAccounts() {
-    this.store.updateState({ accounts: {}, accountsByChainId: {
-      [this.getCurrentChainId()]: {}
-    } });
+    this.store.updateState({
+      accounts: {},
+      accountsByChainId: {
+        [this.getCurrentChainId()]: {},
+      },
+    });
   }
 
   /**
@@ -509,7 +512,7 @@ export default class AccountTracker {
 
     const result = { address, balance };
     // update accounts state
-    const accounts = this.getAccountsForChainId(chainId)
+    const accounts = this.getAccountsForChainId(chainId);
     // only populate if the entry is still present
     if (!accounts[address]) {
       return;
@@ -556,7 +559,7 @@ export default class AccountTracker {
     provider,
     chainId,
   ) {
-    const accounts = this.getAccountsForChainId(chainId)
+    const accounts = this.getAccountsForChainId(chainId);
 
     const newAccounts = {};
     Object.keys(accounts).forEach((address) => {
