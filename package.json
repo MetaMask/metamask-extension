@@ -15,6 +15,7 @@
     "dist": "yarn build dist",
     "dist:mv3": "ENABLE_MV3=true yarn build dist",
     "dist:mmi": "yarn dist --build-type mmi",
+    "dist:mmi:debug": "yarn dist --build-type mmi --apply-lavamoat=false",
     "build": "yarn lavamoat:build",
     "build:dev": "node development/build/index.js",
     "start:test": "BLOCKAID_FILE_CDN=static.metafi-dev.codefi.network/api/v1/confirmations/ppom SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn build:dev testDev --apply-lavamoat=false --snow=false",
