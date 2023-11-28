@@ -255,6 +255,7 @@ export default class AccountTracker {
    * Returns the accounts object for the chain ID, or initializes it from the globally selected
    * if it doesn't already exist.
    *
+   * @private
    * @param {string} chainId - The chain ID
    */
   getAccountsForChainId(chainId) {
