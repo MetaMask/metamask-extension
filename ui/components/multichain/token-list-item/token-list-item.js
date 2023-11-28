@@ -44,13 +44,17 @@ export const TokenListItem = ({
   primary,
   secondary,
   title,
+  isOriginalTokenSymbol,
 }) => {
   const t = useI18nContext();
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
+
   const tokenTitle =
-    title === CURRENCY_SYMBOLS.ETH ? t('networkNameEthereum') : title;
+    title === CURRENCY_SYMBOLS.ETH && isOriginalTokenSymbol
+      ? t('networkNameEthereum')
+      : title;
 
   // Used for badge icon
   const currentNetwork = useSelector(getCurrentNetwork);
@@ -200,4 +204,8 @@ TokenListItem.propTypes = {
    * secondary represents the balance in dollars
    */
   secondary: PropTypes.string,
+  /**
+   * isOriginalTokenSymbol represents a boolean value to check if the token symbol is original or not
+   */
+  isOriginalTokenSymbol: PropTypes.bool,
 };

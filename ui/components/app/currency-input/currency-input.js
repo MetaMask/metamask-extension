@@ -7,13 +7,19 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   getConversionRate,
   getNativeCurrency,
+  getProviderConfig,
 } from '../../../ducks/metamask/metamask';
-import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getCurrentCurrency,
+  getShouldShowFiat,
+} from '../../../selectors';
 import {
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
 } from '../../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -42,6 +48,13 @@ export default function CurrencyInput({
   const secondaryCurrency = useSelector(getCurrentCurrency);
   const conversionRate = useSelector(getConversionRate);
   const showFiat = useSelector(getShouldShowFiat);
+  const chainId = useSelector(getCurrentChainId);
+  const { ticker, type } = useSelector(getProviderConfig);
+  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
+    chainId,
+    ticker,
+    type,
+  );
   const hideSecondary = !showFiat;
   const primarySuffix = preferredCurrency || EtherDenomination.ETH;
   const secondarySuffix = secondaryCurrency.toUpperCase();
@@ -107,6 +120,20 @@ export default function CurrencyInput({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [featureSecondary, initialDecimalValue]);
 
+  const renderSwapButton = () => {
+    if (!isOriginalNativeSymbol) {
+      return null;
+    }
+    return (
+      <button
+        className="currency-input__swap-component"
+        data-testid="currency-swap"
+        onClick={swap}
+      >
+        <i className="fa fa-retweet fa-lg" />
+      </button>
+    );
+  };
   const renderConversionComponent = () => {
     let currency, numberOfDecimals;
 
@@ -117,6 +144,9 @@ export default function CurrencyInput({
         </div>
       );
     }
+    if (!isOriginalNativeSymbol) {
+      return null;
+    }
 
     if (shouldUseFiat) {
       // Display ETH
@@ -124,7 +154,7 @@ export default function CurrencyInput({
       numberOfDecimals = 8;
     } else {
       // Display Fiat
-      currency = secondaryCurrency;
+      currency = isOriginalNativeSymbol ? secondaryCurrency : null;
       numberOfDecimals = 2;
     }
 
@@ -151,23 +181,15 @@ export default function CurrencyInput({
         onPreferenceToggle,
       }}
       dataTestId="currency-input"
-      suffix={shouldUseFiat ? secondarySuffix : primarySuffix}
+      suffix={
+        shouldUseFiat && isOriginalNativeSymbol
+          ? secondarySuffix
+          : primarySuffix
+      }
       onChange={handleChange}
       value={initialDecimalValue}
       className={className}
-      actionComponent={
-        swapIcon ? (
-          swapIcon(swap)
-        ) : (
-          <button
-            className="currency-input__swap-component"
-            data-testid="currency-swap"
-            onClick={swap}
-          >
-            <i className="fa fa-retweet fa-lg" />
-          </button>
-        )
-      }
+      actionComponent={swapIcon ? swapIcon(swap) : renderSwapButton()}
     >
       {renderConversionComponent()}
     </UnitInput>
