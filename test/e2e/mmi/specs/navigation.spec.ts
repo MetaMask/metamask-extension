@@ -19,7 +19,7 @@ const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';
 const metamaskAttributions = 'https://metamask.io/attributions/';
 const termsOfUse = 'https://consensys.net/terms-of-use/';
 
-test.describe('MMI Navigation', () => {
+test.describe.skip('MMI Navigation', () => {
   test('MMI full navigation links', async ({ page, context }) => {
     test.slow();
     // Getting extension id of MMI

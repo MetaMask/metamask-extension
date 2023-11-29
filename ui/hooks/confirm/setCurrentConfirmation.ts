@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { updatCurrentConfirmation } from '../../ducks/confirm/confirm';
+import { updateCurrentConfirmation } from '../../ducks/confirm/confirm';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
 /*
  * This hook is called from <Confirm /> component to set current transaction.
- * This hook should be required to be invoked only when we are setting or re-setting
+ * This hook should be invoked only when we are setting or resetting the
  * current confirmation displayed to the user.
  */
 const setCurrentConfirmation = () => {
@@ -15,13 +15,13 @@ const setCurrentConfirmation = () => {
 
   useEffect(() => {
     if (currentConfirmation) {
-      dispatch(updatCurrentConfirmation(currentConfirmation));
+      dispatch(updateCurrentConfirmation(currentConfirmation));
     }
   }, [currentConfirmation]);
 
   useEffect(() => {
     return () => {
-      dispatch(updatCurrentConfirmation(undefined));
+      dispatch(updateCurrentConfirmation(undefined));
     };
   }, []);
 };

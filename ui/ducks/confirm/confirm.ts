@@ -28,7 +28,7 @@ export default function confirmReducer(
   }
 }
 
-export function updatCurrentConfirmation(
+export function updateCurrentConfirmation(
   currentConfirmation: Record<string, unknown> | undefined,
 ) {
   return {

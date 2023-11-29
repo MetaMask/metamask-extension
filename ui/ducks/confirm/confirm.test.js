@@ -1,15 +1,9 @@
 import confirmReducer, { UPDATE_CURRENT_CONFIRMATION } from './confirm';
 
-describe('App State', () => {
+describe('Confirm State', () => {
   const metamaskConfirmState = {
     currentConfirmation: undefined,
   };
-
-  it('app init state', () => {
-    const initState = confirmReducer(metamaskConfirmState, {});
-
-    expect.anything(initState);
-  });
 
   it('sets currentConfirmation', () => {
     const currentConfirmation = {
