@@ -4258,24 +4258,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gas-fee-controller@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "@metamask/gas-fee-controller@npm:10.0.0"
+"@metamask/gas-fee-controller@npm:^10.0.1":
+  version: 10.0.1
+  resolution: "@metamask/gas-fee-controller@npm:10.0.1"
   dependencies:
     "@metamask/base-controller": "npm:^3.2.3"
     "@metamask/controller-utils": "npm:^5.0.2"
-    "@metamask/eth-query": "npm:^3.0.1"
-    "@metamask/network-controller": "npm:^15.1.0"
-    "@metamask/polling-controller": "npm:^1.0.0"
-    "@metamask/utils": "npm:^8.1.0"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/network-controller": "npm:^16.0.0"
+    "@metamask/polling-controller": "npm:^1.0.2"
+    "@metamask/utils": "npm:^8.2.0"
     "@types/uuid": "npm:^8.3.0"
     ethereumjs-util: "npm:^7.0.10"
     ethjs-unit: "npm:^0.1.6"
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/network-controller": ^15.1.0
-  checksum: b1730553ecac69f752e9394fdde8057bd580fbd69c965ea116364aad997136e549d7f622a87977ec787ee68441d2a85997d17006e53fcbc239c0951655441329
+    "@metamask/network-controller": ^16.0.0
+  checksum: de4ad5178a3569ceb3559c03720800285cb45d538982e645033b8b167798a496a33e348b69a49e363d974a386c376b448259c47697809ff814257c2ad28e8102
   languageName: node
   linkType: hard
 
@@ -4645,7 +4645,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^1.0.0, @metamask/polling-controller@npm:^1.0.1":
+"@metamask/polling-controller@npm:^1.0.1, @metamask/polling-controller@npm:^1.0.2":
   version: 1.0.2
   resolution: "@metamask/polling-controller@npm:1.0.2"
   dependencies:
@@ -24190,7 +24190,7 @@ __metadata:
     "@metamask/etherscan-link": "npm:^2.2.0"
     "@metamask/ethjs-query": "npm:^0.5.0"
     "@metamask/forwarder": "npm:^1.1.0"
-    "@metamask/gas-fee-controller": "npm:^10.0.0"
+    "@metamask/gas-fee-controller": "npm:^10.0.1"
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/keyring-api": "npm:^1.0.0"
