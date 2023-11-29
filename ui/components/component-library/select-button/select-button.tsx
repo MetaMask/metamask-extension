@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import classnames from 'classnames';
 import { SelectContext } from '../select-wrapper';
 import type { PolymorphicRef } from '../box';
-import { Text, Icon, IconName, IconSize } from '..';
+import { Box, Icon, IconName, IconSize, Label, Text } from '..';
 import type { TextProps } from '../text';
 import {
   AlignItems,
@@ -12,52 +12,95 @@ import {
   BorderRadius,
   Display,
   JustifyContent,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   SelectButtonProps,
   SelectButtonComponent,
   SelectButtonSize,
 } from './select-button.types';
+import { de } from './.storybook/locales';
+
+// Utility function to check for plain objects
+const isPlainObject = (obj: any) => {
+  return (
+    Boolean(obj) &&
+    typeof obj === 'object' &&
+    obj.constructor === Object &&
+    !React.isValidElement(obj)
+  );
+};
 
 export const SelectButton: SelectButtonComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(
     {
       className = '',
-      placeholder,
+      placeholder: placeholderProp,
       children,
       size = SelectButtonSize.Md,
       isBlock,
       isDanger: isDangerProp,
       isDisabled: isDisabledProp,
+      startAccessory,
+      endAccessory,
+      title,
+      description,
+      caretIconProps,
+      value: valueProp,
+      uncontrolledValue: uncontrolledValueProp,
+      defaultValue: defaultValueProp,
       ...props
     }: SelectButtonProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
     const selectContext = useContext(SelectContext);
-
-    if (!selectContext) {
-      throw new Error('SelectButton must be used within a SelectWrapper.');
-    }
+    const isWithinSelectWrapper = Boolean(selectContext);
 
     const {
-      isOpen,
-      isUncontrolledOpen,
+      isOpen = false, // Default values for when not in SelectWrapper
+      isUncontrolledOpen = false,
       toggleUncontrolledOpen,
-      isDanger,
-      isDisabled,
-      value,
-      uncontrolledValue,
-      defaultValue,
-      placeholder: WrapperPlaceholder,
-    } = selectContext;
+      isDanger = false,
+      isDisabled = false,
+      value = '',
+      uncontrolledValue = '',
+      defaultValue = '',
+      placeholder = '',
+    } = selectContext || {};
 
     const contentToRender =
+      valueProp ||
+      uncontrolledValueProp ||
+      defaultValueProp ||
       value ||
       uncontrolledValue ||
       defaultValue ||
+      placeholderProp ||
       placeholder ||
-      WrapperPlaceholder ||
       children;
+
+    let titleRender = title;
+    let descriptionRender = description;
+    let startAccessoryRender = startAccessory;
+    let endAccessoryRender = endAccessory;
+
+    const contentIsPlainObject = isPlainObject(contentToRender);
+
+    if (contentIsPlainObject) {
+      if (contentToRender.title) {
+        titleRender = contentToRender.title;
+      }
+      if (contentToRender.description) {
+        descriptionRender = contentToRender.description;
+      }
+      if (contentToRender.startAccessory) {
+        startAccessoryRender = contentToRender.startAccessory;
+      }
+      if (contentToRender.endAccessory) {
+        endAccessoryRender = contentToRender.endAccessory;
+      }
+    }
 
     const getPaddingBySize = () => {
       switch (size) {
@@ -77,24 +120,23 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         className={classnames(
           'mm-select-button',
           {
-            'mm-select-button--type-danger': isDanger || isDangerProp,
-            'mm-select-button--disabled': isDisabled || isDisabledProp,
-            'mm-select-button--block': isBlock,
-            'mm-select-button--open': isOpen || isUncontrolledOpen,
+            'mm-select-button--type-danger':
+              Boolean(isDanger) || Boolean(isDangerProp),
+            'mm-select-button--disabled':
+              Boolean(isDisabled) || Boolean(isDisabledProp),
+            'mm-select-button--block': Boolean(isBlock),
+            'mm-select-button--open':
+              Boolean(isOpen) || Boolean(isUncontrolledOpen),
             [`mm-select-button--size-${size}`]:
               Object.values(SelectButtonSize).includes(size),
-          } as Record<string, boolean>, // To Do: In SelectButton PR confirm and adjust this
+          },
           className,
         )}
         ref={ref}
         disabled={isDisabled || isDisabledProp}
         as="button"
-        onClick={toggleUncontrolledOpen}
-        borderColor={
-          isDanger || isDangerProp
-            ? BorderColor.errorDefault
-            : BorderColor.borderDefault
-        }
+        onClick={isWithinSelectWrapper ? toggleUncontrolledOpen : undefined}
+        borderColor={BorderColor.borderDefault}
         borderRadius={BorderRadius.MD}
         backgroundColor={BackgroundColor.backgroundDefault}
         paddingTop={getPaddingBySize()}
@@ -108,8 +150,28 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         gap={2}
         {...(props as TextProps<C>)}
       >
-        <span>{contentToRender}</span>
-        <Icon name={IconName.ArrowDown} size={IconSize.Sm} />
+        <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
+          {startAccessoryRender}
+          <div style={{ background: 'lightblue', flex: 1 }}>
+            {titleRender && <Label ellipsis>{titleRender}</Label>}
+            {descriptionRender && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                ellipsis
+              >
+                {descriptionRender}
+              </Text>
+            )}
+            {!contentIsPlainObject && contentToRender}
+          </div>
+          {endAccessoryRender}
+        </Box>
+        <Icon
+          name={IconName.ArrowDown}
+          size={IconSize.Sm}
+          {...caretIconProps}
+        />
       </Text>
     );
   },

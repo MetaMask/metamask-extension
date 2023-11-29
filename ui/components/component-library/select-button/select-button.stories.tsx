@@ -1,11 +1,8 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
 import { SelectWrapper } from '../select-wrapper';
-import { Box } from '../box';
-import {
-  Display,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
+import { Box, AvatarBase } from '..';
+import { Display } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 
 import { SelectButtonSize } from './select-button.types';
@@ -21,52 +18,79 @@ export default {
   },
   argTypes: {},
   args: {
-    children: 'Select Button',
+    startAccessory: <AvatarBase />,
+    title: 'Label',
+    description: 'Lorem ipsum Lorem ipsum',
+    endAccessory: <AvatarBase />,
   },
 } as Meta<typeof SelectButton>;
 
-const SelectButtonStory: StoryFn<typeof SelectButton> = (args) => {
-  return (
-    <SelectWrapper triggerComponent={<SelectButton {...args} />}>
-      Demo
-    </SelectWrapper>
-  );
+const Template: StoryFn<typeof SelectWrapper> = (args) => {
+  return <SelectButton {...args} />;
 };
 
-export const DefaultStory = SelectButtonStory.bind({});
+export const DefaultStory = Template.bind({});
+DefaultStory.args = {
+  startAccessory: <AvatarBase />,
+  title: 'Label',
+  description: 'Lorem ipsum Lorem ipsum',
+  endAccessory: <AvatarBase />,
+};
 DefaultStory.storyName = 'Default';
 
 export const Size: StoryFn<typeof SelectButton> = (args) => {
   return (
     <Box display={Display.Flex} gap={3}>
-      <SelectWrapper
-        triggerComponent={
-          <SelectButton size={SelectButtonSize.Sm} isBlock {...args}>
-            {SelectButtonSize.Sm}
-          </SelectButton>
-        }
-      >
-        Small Demo
-      </SelectWrapper>
-      <SelectWrapper
-        triggerComponent={
-          <SelectButton size={SelectButtonSize.Md} {...args}>
-            {SelectButtonSize.Md}
-          </SelectButton>
-        }
-      >
-        Medium Demo
-      </SelectWrapper>
-      <SelectWrapper
-        triggerComponent={
-          <SelectButton size={SelectButtonSize.Lg} {...args}>
-            {SelectButtonSize.Lg}
-          </SelectButton>
-        }
-      >
-        Large Demo
-      </SelectWrapper>
+      <SelectButton
+        {...args}
+        size={SelectButtonSize.Sm}
+        title={SelectButtonSize.Sm}
+      />
+      <SelectButton
+        {...args}
+        size={SelectButtonSize.Md}
+        title={SelectButtonSize.Md}
+      />
+      <SelectButton
+        {...args}
+        size={SelectButtonSize.Lg}
+        title={SelectButtonSize.Lg}
+      />
     </Box>
   );
 };
 Size.args = {};
+
+export const IsBlock = Template.bind({});
+IsBlock.args = {
+  isBlock: true,
+};
+IsBlock.storyName = 'isBlock';
+
+export const IsDanger = Template.bind({});
+IsDanger.args = {
+  isDanger: true,
+};
+IsDanger.storyName = 'isDanger';
+
+export const Test: StoryFn<typeof SelectButton> = (args) => {
+  return (
+    <SelectButton {...args}>
+      <Box>
+        <Box>one</Box>
+        <Box>two</Box>
+      </Box>
+    </SelectButton>
+  );
+};
+Test.args = {};
+
+// To Do Storybook List:
+// title
+// description
+// startAccessory
+// endAccessory
+// children
+// placeholder
+// value
+// defaultValue

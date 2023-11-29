@@ -2,6 +2,7 @@ import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
 } from '../box';
+import { IconProps } from '../icon';
 
 export enum SelectButtonSize {
   Sm = 'sm',
@@ -26,6 +27,9 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
   isBlock?: boolean;
   isDanger?: boolean;
   isDisabled?: boolean;
+  caretIconProps?: IconProps<'span'>;
+  title?: string | React.ReactNode;
+  description?: string | React.ReactNode;
   // isLoading?: boolean;
 }
 
