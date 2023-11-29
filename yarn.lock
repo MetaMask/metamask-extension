@@ -6385,21 +6385,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:7.53.0, @sentry/types@npm:^7.53.0":
+"@sentry/types@npm:7.53.0":
   version: 7.53.0
   resolution: "@sentry/types@npm:7.53.0"
   checksum: ea05e60594529bd7b59c6ba9cfecb5066a2a20af60194b67772769e4e02d54fd2da2e8124c90b3f0b4fbabd47499e7ccea833efaa819f7643b9d45c50aead5c3
   languageName: node
   linkType: hard
 
-"@sentry/types@npm:7.83.0":
+"@sentry/types@npm:7.83.0, @sentry/types@npm:^7.53.0":
   version: 7.83.0
   resolution: "@sentry/types@npm:7.83.0"
   checksum: 257b37678c7ea8624d4cdd9a18ccacbdb53a84be90ab6c0f3a6d6d30e8bc021f72a02a09dcf17ba6b1a9f6797580b89b827a3fcd0bc851185e7fc695ae68fbc3
   languageName: node
   linkType: hard
 
-"@sentry/utils@npm:7.53.0, @sentry/utils@npm:^7.53.0":
+"@sentry/utils@npm:7.53.0":
   version: 7.53.0
   resolution: "@sentry/utils@npm:7.53.0"
   dependencies:
@@ -6409,7 +6409,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/utils@npm:7.83.0":
+"@sentry/utils@npm:7.83.0, @sentry/utils@npm:^7.53.0":
   version: 7.83.0
   resolution: "@sentry/utils@npm:7.83.0"
   dependencies:

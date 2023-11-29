@@ -2493,7 +2493,7 @@
         "@sentry/browser>@sentry-internal/tracing": true,
         "@sentry/browser>@sentry/core": true,
         "@sentry/browser>@sentry/replay": true,
-        "@sentry/browser>@sentry/utils": true
+        "@sentry/utils": true
       }
     },
     "@sentry/browser>@sentry-internal/tracing": {
@@ -2509,37 +2509,8 @@
         "setTimeout": true
       },
       "packages": {
-        "@sentry/browser>@sentry-internal/tracing>@sentry/utils": true,
-        "@sentry/browser>@sentry/core": true
-      }
-    },
-    "@sentry/browser>@sentry-internal/tracing>@sentry/utils": {
-      "globals": {
-        "CustomEvent": true,
-        "DOMError": true,
-        "DOMException": true,
-        "EdgeRuntime": true,
-        "Element": true,
-        "ErrorEvent": true,
-        "Event": true,
-        "Headers": true,
-        "Request": true,
-        "Response": true,
-        "TextEncoder": true,
-        "URL": true,
-        "XMLHttpRequest.prototype": true,
-        "__SENTRY_BROWSER_BUNDLE__": true,
-        "__SENTRY_DEBUG__": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "document": true,
-        "new": true,
-        "setInterval": true,
-        "setTimeout": true,
-        "target": true
-      },
-      "packages": {
-        "browserify>process": true
+        "@sentry/browser>@sentry/core": true,
+        "@sentry/utils": true
       }
     },
     "@sentry/browser>@sentry/core": {
@@ -2553,36 +2524,7 @@
         "setTimeout": true
       },
       "packages": {
-        "@sentry/browser>@sentry/core>@sentry/utils": true
-      }
-    },
-    "@sentry/browser>@sentry/core>@sentry/utils": {
-      "globals": {
-        "CustomEvent": true,
-        "DOMError": true,
-        "DOMException": true,
-        "EdgeRuntime": true,
-        "Element": true,
-        "ErrorEvent": true,
-        "Event": true,
-        "Headers": true,
-        "Request": true,
-        "Response": true,
-        "TextEncoder": true,
-        "URL": true,
-        "XMLHttpRequest.prototype": true,
-        "__SENTRY_BROWSER_BUNDLE__": true,
-        "__SENTRY_DEBUG__": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "document": true,
-        "new": true,
-        "setInterval": true,
-        "setTimeout": true,
-        "target": true
-      },
-      "packages": {
-        "browserify>process": true
+        "@sentry/utils": true
       }
     },
     "@sentry/browser>@sentry/replay": {
@@ -2631,65 +2573,7 @@
       "packages": {
         "@sentry/browser>@sentry-internal/tracing": true,
         "@sentry/browser>@sentry/core": true,
-        "@sentry/browser>@sentry/replay>@sentry/utils": true
-      }
-    },
-    "@sentry/browser>@sentry/replay>@sentry/utils": {
-      "globals": {
-        "CustomEvent": true,
-        "DOMError": true,
-        "DOMException": true,
-        "EdgeRuntime": true,
-        "Element": true,
-        "ErrorEvent": true,
-        "Event": true,
-        "Headers": true,
-        "Request": true,
-        "Response": true,
-        "TextEncoder": true,
-        "URL": true,
-        "XMLHttpRequest.prototype": true,
-        "__SENTRY_BROWSER_BUNDLE__": true,
-        "__SENTRY_DEBUG__": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "document": true,
-        "new": true,
-        "setInterval": true,
-        "setTimeout": true,
-        "target": true
-      },
-      "packages": {
-        "browserify>process": true
-      }
-    },
-    "@sentry/browser>@sentry/utils": {
-      "globals": {
-        "CustomEvent": true,
-        "DOMError": true,
-        "DOMException": true,
-        "EdgeRuntime": true,
-        "Element": true,
-        "ErrorEvent": true,
-        "Event": true,
-        "Headers": true,
-        "Request": true,
-        "Response": true,
-        "TextEncoder": true,
-        "URL": true,
-        "XMLHttpRequest.prototype": true,
-        "__SENTRY_BROWSER_BUNDLE__": true,
-        "__SENTRY_DEBUG__": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "document": true,
-        "new": true,
-        "setInterval": true,
-        "setTimeout": true,
-        "target": true
-      },
-      "packages": {
-        "browserify>process": true
+        "@sentry/utils": true
       }
     },
     "@sentry/integrations": {
@@ -2699,11 +2583,11 @@
         "console.log": true
       },
       "packages": {
-        "@sentry/utils": true,
+        "@sentry/integrations>@sentry/utils": true,
         "localforage": true
       }
     },
-    "@sentry/utils": {
+    "@sentry/integrations>@sentry/utils": {
       "globals": {
         "CustomEvent": true,
         "DOMError": true,
@@ -2723,6 +2607,35 @@
         "console.error": true,
         "document": true,
         "new": true,
+        "setTimeout": true,
+        "target": true
+      },
+      "packages": {
+        "browserify>process": true
+      }
+    },
+    "@sentry/utils": {
+      "globals": {
+        "CustomEvent": true,
+        "DOMError": true,
+        "DOMException": true,
+        "EdgeRuntime": true,
+        "Element": true,
+        "ErrorEvent": true,
+        "Event": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true,
+        "TextEncoder": true,
+        "URL": true,
+        "XMLHttpRequest.prototype": true,
+        "__SENTRY_BROWSER_BUNDLE__": true,
+        "__SENTRY_DEBUG__": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "document": true,
+        "new": true,
+        "setInterval": true,
         "setTimeout": true,
         "target": true
       },
