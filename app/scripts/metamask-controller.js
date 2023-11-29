@@ -240,6 +240,7 @@ import {
 } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
+import { NetworkOrderController } from './controllers/network-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { setupMultiplex } from './lib/stream-utils';
 import EnsController from './controllers/ens';
@@ -696,6 +697,10 @@ export default class MetamaskController extends EventEmitter {
 
     const gasFeeMessenger = this.controllerMessenger.getRestricted({
       name: 'GasFeeController',
+      allowedActions: [
+        'NetworkController:getEIP1559Compatibility',
+        'NetworkController:getNetworkClientById',
+      ],
     });
 
     const gasApiBaseUrl = process.env.SWAPS_USE_DEV_APIS
@@ -811,6 +816,14 @@ export default class MetamaskController extends EventEmitter {
       state: initState.AnnouncementController,
     });
 
+    const networkOrderMessenger = this.controllerMessenger.getRestricted({
+      name: 'NetworkOrderController',
+      allowedEvents: ['NetworkController:stateChange'],
+    });
+    this.networkOrderController = new NetworkOrderController({
+      messenger: networkOrderMessenger,
+      state: initState.NetworkOrderController,
+    });
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
@@ -1581,11 +1594,13 @@ export default class MetamaskController extends EventEmitter {
     );
     this.smartTransactionsController = new SmartTransactionsController(
       {
+        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+          this.networkController,
+        ),
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
           'NetworkController:stateChange',
         ),
-        getNetwork: () => this.networkController.state.networkId ?? 'loading',
         getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
           this.txController.nonceTracker,
         ),
@@ -1793,6 +1808,7 @@ export default class MetamaskController extends EventEmitter {
       PermissionLogController: this.permissionLogController.store,
       SubjectMetadataController: this.subjectMetadataController,
       AnnouncementController: this.announcementController,
+      NetworkOrderController: this.networkOrderController,
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
@@ -1843,6 +1859,7 @@ export default class MetamaskController extends EventEmitter {
         PermissionLogController: this.permissionLogController.store,
         SubjectMetadataController: this.subjectMetadataController,
         AnnouncementController: this.announcementController,
+        NetworkOrderController: this.networkOrderController,
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
@@ -2962,6 +2979,7 @@ export default class MetamaskController extends EventEmitter {
       dismissNotifications: this.dismissNotifications.bind(this),
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       updateCaveat: this.updateCaveat.bind(this),
+      updateNetworksList: this.updateNetworksList.bind(this),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
 
@@ -4543,9 +4561,18 @@ export default class MetamaskController extends EventEmitter {
             { origin },
           ),
         revokePermissionsForOrigin: (permissionKeys) => {
-          this.permissionController.revokePermissions({
-            [origin]: permissionKeys,
-          });
+          try {
+            this.permissionController.revokePermissions({
+              [origin]: permissionKeys,
+            });
+          } catch (e) {
+            // we dont want to handle errors here because
+            // the revokePermissions api method should just
+            // return `null` if the permissions were not
+            // successfully revoked or if the permissions
+            // for the origin do not exist
+            console.log(e);
+          }
         },
         getCurrentChainId: () =>
           this.networkController.state.providerConfig.chainId,
@@ -5255,6 +5282,15 @@ export default class MetamaskController extends EventEmitter {
     }
   };
   ///: END:ONLY_INCLUDE_IN
+
+  updateNetworksList = (sortedNetworkList) => {
+    try {
+      this.networkOrderController.updateNetworksList(sortedNetworkList);
+    } catch (err) {
+      log.error(err.message);
+      throw err;
+    }
+  };
 
   rejectPermissionsRequest = (requestId) => {
     try {
