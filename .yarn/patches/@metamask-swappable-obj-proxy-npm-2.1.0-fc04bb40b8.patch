@@ -1,0 +1,12 @@
+diff --git a/dist/createEventEmitterProxy.js b/dist/createEventEmitterProxy.js
+index 2294896fa4aa719dc4ecb2e910b786543dd07561..bdb6b612eabbd8d9026ae8e78ff18548d5bf49dc 100644
+--- a/dist/createEventEmitterProxy.js
++++ b/dist/createEventEmitterProxy.js
+@@ -35,6 +35,7 @@ function createEventEmitterProxy(initialTarget, { eventFilter: givenEventFilter
+      * @param newTarget - The new object.
+      */
+     let setTarget = (newTarget) => {
++        console.log('[swappable-obj-proxy] Swapping', (target.networkClientId ?? target), 'for', (newTarget.networkClientId ?? newTarget), 'and migrating existing event listeners');
+         const oldTarget = target;
+         target = newTarget;
+         // migrate listeners

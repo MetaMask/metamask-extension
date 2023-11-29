@@ -83,7 +83,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/compat-data@npm:^7.17.7, @babel/compat-data@npm:^7.22.6, @babel/compat-data@npm:^7.22.9, @babel/compat-data@npm:^7.23.2":
+"@babel/compat-data@npm:^7.22.6, @babel/compat-data@npm:^7.22.9, @babel/compat-data@npm:^7.23.2":
   version: 7.23.2
   resolution: "@babel/compat-data@npm:7.23.2"
   checksum: c18eccd13975c1434a65d04f721075e30d03ba1608f4872d84e8538c16552b878aaac804ff31243d8c2c0e91524f3bc98de6305e117ba1a55c9956871973b4dc
@@ -192,7 +192,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-compilation-targets@npm:^7.17.7, @babel/helper-compilation-targets@npm:^7.22.15, @babel/helper-compilation-targets@npm:^7.22.5, @babel/helper-compilation-targets@npm:^7.22.6":
+"@babel/helper-compilation-targets@npm:^7.22.15, @babel/helper-compilation-targets@npm:^7.22.5, @babel/helper-compilation-targets@npm:^7.22.6":
   version: 7.22.15
   resolution: "@babel/helper-compilation-targets@npm:7.22.15"
   dependencies:
@@ -234,22 +234,6 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0
   checksum: 886b675e82f1327b4f7a2c69a68eefdb5dbb0b9d4762c2d4f42a694960a9ccf61e1a3bcad601efd92c110033eb1a944fcd1e5cac188aa6b2e2076b541e210e20
-  languageName: node
-  linkType: hard
-
-"@babel/helper-define-polyfill-provider@npm:^0.3.1, @babel/helper-define-polyfill-provider@npm:^0.3.2, @babel/helper-define-polyfill-provider@npm:^0.3.3":
-  version: 0.3.3
-  resolution: "@babel/helper-define-polyfill-provider@npm:0.3.3"
-  dependencies:
-    "@babel/helper-compilation-targets": "npm:^7.17.7"
-    "@babel/helper-plugin-utils": "npm:^7.16.7"
-    debug: "npm:^4.1.1"
-    lodash.debounce: "npm:^4.0.8"
-    resolve: "npm:^1.14.2"
-    semver: "npm:^6.1.2"
-  peerDependencies:
-    "@babel/core": ^7.4.0-0
-  checksum: a32b09f9d3827145347fca5105a33bc1a52ff8eb3d63e8eb4acc515f9b54a371862cc6ae376c275cdfa97ff9828975dde88fd6105a8d01107364200b52dfc9ad
   languageName: node
   linkType: hard
 
@@ -303,7 +287,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-module-imports@npm:^7.16.7, @babel/helper-module-imports@npm:^7.18.6, @babel/helper-module-imports@npm:^7.22.15, @babel/helper-module-imports@npm:^7.22.5":
+"@babel/helper-module-imports@npm:^7.16.7, @babel/helper-module-imports@npm:^7.22.15, @babel/helper-module-imports@npm:^7.22.5":
   version: 7.22.15
   resolution: "@babel/helper-module-imports@npm:7.22.15"
   dependencies:
@@ -336,7 +320,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-plugin-utils@npm:^7.0.0, @babel/helper-plugin-utils@npm:^7.10.4, @babel/helper-plugin-utils@npm:^7.12.13, @babel/helper-plugin-utils@npm:^7.14.5, @babel/helper-plugin-utils@npm:^7.16.7, @babel/helper-plugin-utils@npm:^7.18.6, @babel/helper-plugin-utils@npm:^7.18.9, @babel/helper-plugin-utils@npm:^7.20.2, @babel/helper-plugin-utils@npm:^7.22.5, @babel/helper-plugin-utils@npm:^7.8.0, @babel/helper-plugin-utils@npm:^7.8.3":
+"@babel/helper-plugin-utils@npm:^7.0.0, @babel/helper-plugin-utils@npm:^7.10.4, @babel/helper-plugin-utils@npm:^7.12.13, @babel/helper-plugin-utils@npm:^7.14.5, @babel/helper-plugin-utils@npm:^7.18.6, @babel/helper-plugin-utils@npm:^7.20.2, @babel/helper-plugin-utils@npm:^7.22.5, @babel/helper-plugin-utils@npm:^7.8.0, @babel/helper-plugin-utils@npm:^7.8.3":
   version: 7.22.5
   resolution: "@babel/helper-plugin-utils@npm:7.22.5"
   checksum: ab220db218089a2aadd0582f5833fd17fa300245999f5f8784b10f5a75267c4e808592284a29438a0da365e702f05acb369f99e1c915c02f9f9210ec60eab8ea
@@ -1316,22 +1300,6 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 3ffd7dbc425fe8132bfec118b9817572799cab1473113a635d25ab606c1f5a2341a636c04cf6b22df3813320365ed5a965b5eeb3192320a10e4cc2c137bd8bfc
-  languageName: node
-  linkType: hard
-
-"@babel/plugin-transform-runtime@npm:^7.5.5":
-  version: 7.18.9
-  resolution: "@babel/plugin-transform-runtime@npm:7.18.9"
-  dependencies:
-    "@babel/helper-module-imports": "npm:^7.18.6"
-    "@babel/helper-plugin-utils": "npm:^7.18.9"
-    babel-plugin-polyfill-corejs2: "npm:^0.3.1"
-    babel-plugin-polyfill-corejs3: "npm:^0.5.2"
-    babel-plugin-polyfill-regenerator: "npm:^0.3.1"
-    semver: "npm:^6.3.0"
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: 305390112745489bb3c4aaa55825b403d97e331607c56ca5ea714ed61f9faf16092baa31d960913db51b1c0307f793feef3f90d38d1bfd96406d572f092fec89
   languageName: node
   linkType: hard
 
@@ -4950,7 +4918,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@npm:^3.1.0":
+"@metamask/selected-network-controller@npm:3.1.0":
   version: 3.1.0
   resolution: "@metamask/selected-network-controller@npm:3.1.0"
   dependencies:
@@ -4961,6 +4929,20 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^15.1.0
   checksum: 1ad1bebcefa5a41b388daad834fa1c64dcd46335d146044ae8ce19e523bc1bf28558f8a8305a115c9bcef358edd101c7fd99b06f6ba7d6a974a22dcee5ec6b18
+  languageName: node
+  linkType: hard
+
+"@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch":
+  version: 3.1.0
+  resolution: "@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch::version=3.1.0&hash=ee7dd7"
+  dependencies:
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/json-rpc-engine": "npm:^7.1.1"
+    "@metamask/network-controller": "npm:^15.1.0"
+    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
+  peerDependencies:
+    "@metamask/network-controller": ^15.1.0
+  checksum: 5ab6f100cac1460185ee68c1382e99bf0a74a6e521c07a5c8a497c83be86fb600d41f22f053cd620ec9f9b7eb3136f8a1fc9c8a991ff55374e80173f2a9e03d5
   languageName: node
   linkType: hard
 
@@ -5176,10 +5158,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/swappable-obj-proxy@npm:^2.1.0":
+"@metamask/swappable-obj-proxy@npm:2.1.0":
   version: 2.1.0
   resolution: "@metamask/swappable-obj-proxy@npm:2.1.0"
   checksum: e6628ffbb9c34c07aee2e7f97f00f06eba2d00fcd3f6cac555256dd1b37a73d81eff53030cd129c9dd6db711c9e10c41e857082816f8a0e3de724448c1f2edaa
+  languageName: node
+  linkType: hard
+
+"@metamask/swappable-obj-proxy@patch:@metamask/swappable-obj-proxy@npm%3A2.1.0#~/.yarn/patches/@metamask-swappable-obj-proxy-npm-2.1.0-fc04bb40b8.patch":
+  version: 2.1.0
+  resolution: "@metamask/swappable-obj-proxy@patch:@metamask/swappable-obj-proxy@npm%3A2.1.0#~/.yarn/patches/@metamask-swappable-obj-proxy-npm-2.1.0-fc04bb40b8.patch::version=2.1.0&hash=bb5b50"
+  checksum: a6a4fe13d2a6940ffd724ebf06953369d3ad92df9313199cf57b7f72a0a206710c37d466626880c718d79ceb6d182eb39661532945ab6750b8d90cd09dc91a4b
   languageName: node
   linkType: hard
 
@@ -11155,19 +11144,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-polyfill-corejs2@npm:^0.3.1":
-  version: 0.3.3
-  resolution: "babel-plugin-polyfill-corejs2@npm:0.3.3"
-  dependencies:
-    "@babel/compat-data": "npm:^7.17.7"
-    "@babel/helper-define-polyfill-provider": "npm:^0.3.3"
-    semver: "npm:^6.1.1"
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: 78584305a614325894b47b88061621b442f3fd7ccf7c61c68e49522e9ec5da300f4e5f09d8738abf7f2e93e578560587bc0af19a3a0fd815cdd0fb16c23442ab
-  languageName: node
-  linkType: hard
-
 "babel-plugin-polyfill-corejs2@npm:^0.4.6":
   version: 0.4.6
   resolution: "babel-plugin-polyfill-corejs2@npm:0.4.6"
@@ -11181,18 +11157,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-polyfill-corejs3@npm:^0.5.2":
-  version: 0.5.3
-  resolution: "babel-plugin-polyfill-corejs3@npm:0.5.3"
-  dependencies:
-    "@babel/helper-define-polyfill-provider": "npm:^0.3.2"
-    core-js-compat: "npm:^3.21.0"
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: ff941519257842c0976144d17824e284b14c6051e289271a708d1831b4f4803bc2e9c234298ccba11701956768da8aaf85322c5b4408b5e7a5aacc30fa188d4f
-  languageName: node
-  linkType: hard
-
 "babel-plugin-polyfill-corejs3@npm:^0.8.5":
   version: 0.8.5
   resolution: "babel-plugin-polyfill-corejs3@npm:0.8.5"
@@ -11202,17 +11166,6 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.4.0 || ^8.0.0-0 <8.0.0
   checksum: 5c2ac3615bd064f294a0b36bf6a1939995ec510173602e317fb18b1c015d31f46e2dd885faa3376e4da22785a515e5ba37e069f0008e5eea830d2fe3b0e66a27
-  languageName: node
-  linkType: hard
-
-"babel-plugin-polyfill-regenerator@npm:^0.3.1":
-  version: 0.3.1
-  resolution: "babel-plugin-polyfill-regenerator@npm:0.3.1"
-  dependencies:
-    "@babel/helper-define-polyfill-provider": "npm:^0.3.1"
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: f1473df7b700d6795ca41301b1e65a0aff15ce6c1463fc0ce2cf0c821114b0330920f59d4cebf52976363ee817ba29ad2758544a4661a724b08191080b9fe1da
   languageName: node
   linkType: hard
 
@@ -13515,7 +13468,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js-compat@npm:^3.21.0, core-js-compat@npm:^3.31.0, core-js-compat@npm:^3.32.2":
+"core-js-compat@npm:^3.31.0, core-js-compat@npm:^3.32.2":
   version: 3.33.0
   resolution: "core-js-compat@npm:3.33.0"
   dependencies:
@@ -16339,34 +16292,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-block-tracker@npm:^4.4.2":
-  version: 4.4.2
-  resolution: "eth-block-tracker@npm:4.4.2"
-  dependencies:
-    "@babel/plugin-transform-runtime": "npm:^7.5.5"
-    "@babel/runtime": "npm:^7.5.5"
-    eth-query: "npm:^2.1.0"
-    json-rpc-random-id: "npm:^1.0.1"
-    pify: "npm:^3.0.0"
-    safe-event-emitter: "npm:^1.0.1"
-  checksum: 006d6bf360b3aac5cdc56c9b8d82c1dc18ec074790f03b4cbd508b196359c89a15eb643343f0641b5d31547cd571c33581612f4724c7e8cc1cab9543db6b1434
-  languageName: node
-  linkType: hard
-
-"eth-block-tracker@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "eth-block-tracker@npm:7.0.1"
-  dependencies:
-    "@metamask/eth-json-rpc-provider": "npm:^1.0.0"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^5.0.1"
-    json-rpc-random-id: "npm:^1.0.1"
-    pify: "npm:^3.0.0"
-  checksum: cb34612c452a6af5a87ad6d5898f6131af58dc9d73a399cd2a74b49117ce71f54cdf9dad25d5b4ee6b65e5c059c5a7f6ea549d73f7663b0ae6c58feb549d6766
-  languageName: node
-  linkType: hard
-
-"eth-block-tracker@npm:^8.0.0":
+"eth-block-tracker@npm:8.1.0":
   version: 8.1.0
   resolution: "eth-block-tracker@npm:8.1.0"
   dependencies:
@@ -16376,6 +16302,19 @@ __metadata:
     json-rpc-random-id: "npm:^1.0.1"
     pify: "npm:^5.0.0"
   checksum: 94d81a0f5ed62bb7fd70b99a3a6172f416a574dc9fcaa96c9bdedb4d98c52b257ee505957d4a5b248ce73220b96083420acdd2dd702a0330d016018a59bd0b2e
+  languageName: node
+  linkType: hard
+
+"eth-block-tracker@patch:eth-block-tracker@npm%3A8.1.0#~/.yarn/patches/eth-block-tracker-npm-8.1.0-9bb5237fb5.patch":
+  version: 8.1.0
+  resolution: "eth-block-tracker@patch:eth-block-tracker@npm%3A8.1.0#~/.yarn/patches/eth-block-tracker-npm-8.1.0-9bb5237fb5.patch::version=8.1.0&hash=2c6291"
+  dependencies:
+    "@metamask/eth-json-rpc-provider": "npm:^2.1.0"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^8.1.0"
+    json-rpc-random-id: "npm:^1.0.1"
+    pify: "npm:^5.0.0"
+  checksum: 32bf9656cb8be06cd460033037831bdb2646f090b3ffeb7a879fb4cf0310d418e01e9dfffbe94ef1ba4f15301a13252e39439472709d5f0fc7411df8bf14f3bf
   languageName: node
   linkType: hard
 
@@ -24315,7 +24254,7 @@ __metadata:
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "npm:^3.1.0"
+    "@metamask/selected-network-controller": "patch:@metamask/selected-network-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch"
     "@metamask/signature-controller": "npm:^6.1.2"
     "@metamask/slip44": "npm:^3.1.0"
     "@metamask/smart-transactions-controller": "npm:^6.2.2"
@@ -30684,7 +30623,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^6.0.0, semver@npm:^6.1.0, semver@npm:^6.1.1, semver@npm:^6.1.2, semver@npm:^6.2.0, semver@npm:^6.3.0, semver@npm:^6.3.1":
+"semver@npm:^6.0.0, semver@npm:^6.1.0, semver@npm:^6.2.0, semver@npm:^6.3.0, semver@npm:^6.3.1":
   version: 6.3.1
   resolution: "semver@npm:6.3.1"
   bin:

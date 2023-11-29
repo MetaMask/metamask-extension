@@ -216,7 +216,12 @@
     "semver@7.3.7": "^7.5.4",
     "semver@7.3.8": "^7.5.4",
     "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch",
-    "nonce-tracker@npm:^3.0.0": "patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch"
+    "nonce-tracker@npm:^3.0.0": "patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch",
+    "@metamask/swappable-obj-proxy@npm:^2.1.0": "patch:@metamask/swappable-obj-proxy@npm%3A2.1.0#~/.yarn/patches/@metamask-swappable-obj-proxy-npm-2.1.0-fc04bb40b8.patch",
+    "eth-block-tracker@npm:^4.4.2": "patch:eth-block-tracker@npm%3A8.1.0#~/.yarn/patches/eth-block-tracker-npm-8.1.0-9bb5237fb5.patch",
+    "eth-block-tracker@npm:^8.0.0": "patch:eth-block-tracker@npm%3A8.1.0#~/.yarn/patches/eth-block-tracker-npm-8.1.0-9bb5237fb5.patch",
+    "eth-block-tracker@npm:^7.0.1": "patch:eth-block-tracker@npm%3A8.1.0#~/.yarn/patches/eth-block-tracker-npm-8.1.0-9bb5237fb5.patch",
+    "@metamask/selected-network-controller@npm:^3.1.0": "patch:@metamask/selected-network-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
@@ -285,7 +290,7 @@
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/scure-bip39": "^2.0.3",
-    "@metamask/selected-network-controller": "^3.1.0",
+    "@metamask/selected-network-controller": "patch:@metamask/selected-network-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch",
     "@metamask/signature-controller": "^6.1.2",
     "@metamask/slip44": "^3.1.0",
     "@metamask/smart-transactions-controller": "^6.2.2",

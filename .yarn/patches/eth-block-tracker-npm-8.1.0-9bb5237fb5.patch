@@ -1,0 +1,12 @@
+diff --git a/dist/PollingBlockTracker.js b/dist/PollingBlockTracker.js
+index 88d086b53e4dee4d3d060795011ff3ee99ee5e5a..8ba767269e37a5fb7b21770bd79459bff6ea516c 100644
+--- a/dist/PollingBlockTracker.js
++++ b/dist/PollingBlockTracker.js
+@@ -212,6 +212,7 @@ class PollingBlockTracker extends safe_event_emitter_1.default {
+             req.skipCache = true;
+         }
+         log('Making request', req);
++        console.log('[PollingBlockTracker._fetchLatestBlock] provider.networkClientId = ', this._provider.networkClientId);
+         const res = await (0, pify_1.default)((cb) => this._provider.sendAsync(req, cb))();
+         log('Got response', res);
+         if (res.error) {

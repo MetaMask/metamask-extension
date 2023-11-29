@@ -508,10 +508,15 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    if (!this.selectedNetworkController.getNetworkClientIdForDomain('metamask')) {
-      this.selectedNetworkController.setNetworkClientIdForMetamask(this.networkController.state.selectedNetworkClientId);
+    if (
+      !this.selectedNetworkController.getNetworkClientIdForDomain('metamask')
+    ) {
+      this.selectedNetworkController.setNetworkClientIdForMetamask(
+        this.networkController.state.selectedNetworkClientId,
+      );
     }
-    const networkClient = this.selectedNetworkController.getProviderAndBlockTracker('metamask');
+    const networkClient =
+      this.selectedNetworkController.getProviderAndBlockTracker('metamask');
     this.provider = networkClient.provider;
     this.blockTracker = networkClient.blockTracker;
 
@@ -2647,11 +2652,17 @@ export default class MetamaskController extends EventEmitter {
 
       // network management
       setProviderType: (type) => {
+        console.log(
+          `[MetamaskController.setProviderType] Setting network to "${type}"`,
+        );
         // when using this format, type happens to be the same as the networkClientId...
         this.selectedNetworkController.setNetworkClientIdForMetamask(type);
         return this.networkController.setProviderType(type);
       },
       setActiveNetwork: (networkConfigurationId) => {
+        console.log(
+          `[MetamaskController.setActiveNetwork] Setting network to "${type}"`,
+        );
         this.selectedNetworkController.setNetworkClientIdForMetamask(
           networkConfigurationId,
         );
@@ -4374,7 +4385,7 @@ export default class MetamaskController extends EventEmitter {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
 
-    const { blockTracker, provider } = this;
+    // const { blockTracker, provider } = this;
 
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
@@ -4384,20 +4395,35 @@ export default class MetamaskController extends EventEmitter {
 
     const { selectedNetworkClientId } = this.networkController.state;
 
+    console.log(
+      '[MetamaskController.setupProviderEngine] Globally selected network client ID',
+      selectedNetworkClientId,
+    );
+
     const selectedNetworkClientIdForDomain =
       this.selectedNetworkController.getNetworkClientIdForDomain(origin);
 
     // Not sure that this will happen anymore
     if (selectedNetworkClientIdForDomain === undefined) {
+      console.log(
+        `[MetamaskController.setupProviderEngine] No network client ID for "${origin}" seems to be registered, so setting it to "${selectedNetworkClientId}"`,
+      );
       this.selectedNetworkController.setNetworkClientIdForDomain(
         origin,
         selectedNetworkClientId,
       );
+    } else {
+      console.log(
+        `[MetamaskController.setupProviderEngine] Using network client ID "${selectedNetworkClientIdForDomain}" for "${origin}"`,
+      );
     }
 
-    const proxyClient = this.selectedNetworkController.getProviderAndBlockTracker(
-        origin,
-      );
+    const proxyClient =
+      this.selectedNetworkController.getProviderAndBlockTracker(origin);
+    console.log(
+      `[MetamaskController.setupProviderEngine] Selected proxies for origin "${origin}"`,
+      proxyClient,
+    );
 
     const requestQueueMiddleware = createQueuedRequestMiddleware({
       messenger: this.controllerMessenger,
@@ -4410,14 +4436,13 @@ export default class MetamaskController extends EventEmitter {
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware(proxyClient);
-    console.log('selectedNetworkClientId:', selectedNetworkClientIdForDomain);
-    console.log('proxyClient:', proxyClient);
 
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager(proxyClient);
-    subscriptionManager.events.on('notification', (message) =>
-      engine.emit('notification', message),
-    );
+    subscriptionManager.events.on('notification', (message) => {
+      // console.log('subscriptionManager message', message);
+      engine.emit('notification', message);
+    });
 
     if (isManifestV3) {
       engine.push(createDupeReqFilterMiddleware());
