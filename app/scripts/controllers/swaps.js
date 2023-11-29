@@ -255,6 +255,16 @@ export default class SwapsController extends PollingControllerOnly {
     // TODO get current state for the chainId/networkClientId in question
     // add state indicating what chainId/networkClientId swaps is currently using
     // and throw an error here if an attempt is made to poll for a different chainId/networkClientId
+    const chainId = this.getChainId({ networkClientId });
+    const { swapsStateByChainId } = this.store.getState();
+    const swapsStateToUpdate = swapsStateByChainId[chainId];
+
+    this.fetchAndSetQuotes(
+      swapsStateToUpdate.fetchParams,
+      swapsStateToUpdate.fetchParams?.metaData,
+      true,
+    );
+
     return networkClientId;
     // call fetchAndSetQuotes with the current state
   }
