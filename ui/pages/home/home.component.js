@@ -38,7 +38,7 @@ import {
   JustifyContent,
   ///: END:ONLY_INCLUDE_IF
   IconColor,
-  Color,
+  BackgroundColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -957,8 +957,8 @@ export default class Home extends PureComponent {
           {showSurveyToast ? (
             <BannerBase
               className="home__survey-banner"
-              backgroundColor={Color.iconDefault}
-              titleProps={{ color: Color.backgroundDefault }}
+              data-theme="dark"
+              backgroundColor={BackgroundColor.backgroundAlternative}
               startAccessory={
                 <Icon name={IconName.Heart} color={IconColor.errorDefault} />
               }
@@ -973,7 +973,6 @@ export default class Home extends PureComponent {
               onClose={() => {
                 setSurveyLinkLastClickedOrClosed(Date.now());
               }}
-              closeButtonProps={{ color: Color.backgroundDefault }}
             />
           ) : null}
         </div>
