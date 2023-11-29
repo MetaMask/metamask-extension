@@ -300,7 +300,7 @@
     "@popperjs/core": "^2.4.0",
     "@reduxjs/toolkit": "^1.6.2",
     "@segment/loosely-validate-event": "^2.0.0",
-    "@sentry/browser": "^7.53.0",
+    "@sentry/browser": "^7.81.1",
     "@sentry/integrations": "^7.53.0",
     "@sentry/types": "^7.53.0",
     "@sentry/utils": "^7.53.0",
