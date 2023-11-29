@@ -311,12 +311,12 @@ export default function ConfirmationPage({
   useEffect(() => {
     async function fetchSafeChainsList() {
       try {
-        const response = await fetchWithCache({
-          url: 'https://chainid.network/chains.json',
-          cacheOptions: { cacheRefreshTime: DAY },
-          functionName: 'getSafeChainsList',
-        });
         if (useSafeChainsListValidation) {
+          const response = await fetchWithCache({
+            url: 'https://chainid.network/chains.json',
+            cacheOptions: { cacheRefreshTime: DAY },
+            functionName: 'getSafeChainsList',
+          });
           const safeChainsList = response;
           const _matchedChain = safeChainsList.find(
             (chain) =>
