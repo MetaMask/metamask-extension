@@ -4,10 +4,10 @@
   position: relative;
   cursor: pointer;
   text-align: start;
-  // vertical-align: middle;
-  // user-select: none;
   height: min-content;
   min-height: var(--select-button-height);
+  overflow: hidden;
+  max-width: 100%;
 
   &--size-sm {
     --size: 32px;

@@ -1,8 +1,19 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
 import { SelectWrapper } from '../select-wrapper';
-import { Box, AvatarBase } from '..';
-import { Display } from '../../../helpers/constants/design-system';
+import {
+  AvatarBase,
+  AvatarBaseSize,
+  AvatarAccount,
+  AvatarAccountSize,
+  Box,
+  Text,
+} from '..';
+import {
+  Display,
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 
 import { SelectButtonSize } from './select-button.types';
@@ -18,10 +29,10 @@ export default {
   },
   argTypes: {},
   args: {
-    startAccessory: <AvatarBase />,
-    title: 'Label',
+    startAccessory: <AvatarBase size={AvatarBaseSize.Sm} />,
+    label: 'Label',
     description: 'Lorem ipsum Lorem ipsum',
-    endAccessory: <AvatarBase />,
+    endAccessory: <AvatarBase size={AvatarBaseSize.Sm} />,
   },
 } as Meta<typeof SelectButton>;
 
@@ -30,12 +41,6 @@ const Template: StoryFn<typeof SelectWrapper> = (args) => {
 };
 
 export const DefaultStory = Template.bind({});
-DefaultStory.args = {
-  startAccessory: <AvatarBase />,
-  title: 'Label',
-  description: 'Lorem ipsum Lorem ipsum',
-  endAccessory: <AvatarBase />,
-};
 DefaultStory.storyName = 'Default';
 
 export const Size: StoryFn<typeof SelectButton> = (args) => {
@@ -45,6 +50,8 @@ export const Size: StoryFn<typeof SelectButton> = (args) => {
         {...args}
         size={SelectButtonSize.Sm}
         title={SelectButtonSize.Sm}
+        startAccessory={<AvatarBase size={AvatarBaseSize.Xs} />}
+        endAccessory={<AvatarBase size={AvatarBaseSize.Xs} />}
       />
       <SelectButton
         {...args}
@@ -73,6 +80,83 @@ IsDanger.args = {
 };
 IsDanger.storyName = 'isDanger';
 
+export const Label = Template.bind({});
+Label.args = {
+  label: 'This is the label',
+  description: '',
+  endAccessory: '',
+};
+
+export const Description = Template.bind({});
+Description.args = {
+  label: 'This is a label',
+  description: 'This is a demo of description',
+  endAccessory: '',
+};
+
+export const StartAccessory = Template.bind({});
+StartAccessory.args = {
+  startAccessory: (
+    <AvatarAccount
+      address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+      size={AvatarAccountSize.Sm}
+    />
+  ),
+  endAccessory: '',
+};
+
+export const EndAccessory = Template.bind({});
+EndAccessory.args = {
+  endAccessory: (
+    <AvatarAccount
+      address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+      size={AvatarAccountSize.Sm}
+    />
+  ),
+  startAccessory: '',
+};
+
+export const Children = Template.bind({});
+Children.args = {
+  description: '',
+  startAccessory: '',
+  endAccessory: '',
+  children: (
+    <Text variant={TextVariant.bodySm} color={TextColor.sepolia}>
+      Children demo text
+    </Text>
+  ),
+};
+
+export const Placeholder: StoryFn<typeof SelectButton> = (args) => {
+  return (
+    <Box display={Display.Flex} gap={3}>
+      <SelectButton {...args} />
+      <SelectButton
+        {...args}
+        placeholder={{
+          startAccessory: (
+            <AvatarAccount
+              address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+              size={AvatarAccountSize.Sm}
+            />
+          ),
+          label: 'Placeholder label',
+          description: 'Placeholder example using prop shape recommendation',
+        }}
+      />
+    </Box>
+  );
+};
+
+Placeholder.args = {
+  label: '',
+  description: '',
+  startAccessory: '',
+  endAccessory: '',
+  placeholder: 'Placeholder as simple string',
+};
+
 export const Test: StoryFn<typeof SelectButton> = (args) => {
   return (
     <SelectButton {...args}>
@@ -86,10 +170,6 @@ export const Test: StoryFn<typeof SelectButton> = (args) => {
 Test.args = {};
 
 // To Do Storybook List:
-// title
-// description
-// startAccessory
-// endAccessory
 // children
 // placeholder
 // value

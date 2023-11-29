@@ -28,9 +28,8 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
   isDanger?: boolean;
   isDisabled?: boolean;
   caretIconProps?: IconProps<'span'>;
-  title?: string | React.ReactNode;
+  label?: string | React.ReactNode;
   description?: string | React.ReactNode;
-  // isLoading?: boolean;
 }
 
 export type SelectButtonProps<C extends React.ElementType> =

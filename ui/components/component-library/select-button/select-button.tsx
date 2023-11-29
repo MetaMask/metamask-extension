@@ -11,6 +11,7 @@ import {
   BorderColor,
   BorderRadius,
   Display,
+  FlexDirection,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -20,7 +21,6 @@ import {
   SelectButtonComponent,
   SelectButtonSize,
 } from './select-button.types';
-import { de } from './.storybook/locales';
 
 // Utility function to check for plain objects
 const isPlainObject = (obj: any) => {
@@ -44,7 +44,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
       isDisabled: isDisabledProp,
       startAccessory,
       endAccessory,
-      title,
+      label,
       description,
       caretIconProps,
       value: valueProp,
@@ -80,7 +80,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
       placeholder ||
       children;
 
-    let titleRender = title;
+    let labelRender = label;
     let descriptionRender = description;
     let startAccessoryRender = startAccessory;
     let endAccessoryRender = endAccessory;
@@ -88,8 +88,8 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
     const contentIsPlainObject = isPlainObject(contentToRender);
 
     if (contentIsPlainObject) {
-      if (contentToRender.title) {
-        titleRender = contentToRender.title;
+      if (contentToRender.label) {
+        labelRender = contentToRender.label;
       }
       if (contentToRender.description) {
         descriptionRender = contentToRender.description;
@@ -143,33 +143,38 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         paddingBottom={getPaddingBySize()}
         paddingLeft={4}
         paddingRight={4}
-        display={Display.InlineFlex}
+        display={Display.Flex}
         height={BlockSize.Full}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
         gap={2}
         {...(props as TextProps<C>)}
       >
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={2}>
-          {startAccessoryRender}
-          <div style={{ background: 'lightblue', flex: 1 }}>
-            {titleRender && <Label ellipsis>{titleRender}</Label>}
-            {descriptionRender && (
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-                ellipsis
-              >
-                {descriptionRender}
-              </Text>
-            )}
-            {!contentIsPlainObject && contentToRender}
-          </div>
-          {endAccessoryRender}
+        {startAccessoryRender}
+        <Box
+          as="span"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          width={BlockSize.Full}
+          style={{ overflow: 'auto' }}
+        >
+          {labelRender && <Label>{labelRender}</Label>}
+          {descriptionRender && (
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+              ellipsis
+            >
+              {descriptionRender}
+            </Text>
+          )}
+          {!contentIsPlainObject && contentToRender}
         </Box>
+
+        {endAccessoryRender}
         <Icon
           name={IconName.ArrowDown}
-          size={IconSize.Sm}
+          size={size === SelectButtonSize.Sm ? IconSize.Xs : IconSize.Sm}
           {...caretIconProps}
         />
       </Text>
