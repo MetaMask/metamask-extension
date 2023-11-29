@@ -92,7 +92,7 @@ export default class AccountTracker {
         const { completedOnboarding: prevCompletedOnboarding } = prevState;
         const { completedOnboarding: currCompletedOnboarding } = currState;
         if (!prevCompletedOnboarding && currCompletedOnboarding) {
-          this._updateAccountsAllActiveNetworks();
+          this.updateAccountsAllActiveNetworks();
         }
       }, this.onboardingController.store.getState()),
     );
@@ -108,7 +108,7 @@ export default class AccountTracker {
           prevSelectedAddress !== currSelectedAddress &&
           !useMultiAccountBalanceChecker
         ) {
-          this._updateAccountsAllActiveNetworks();
+          this.updateAccountsAllActiveNetworks();
         }
       }, this.preferencesController.store.getState()),
     );
@@ -123,7 +123,7 @@ export default class AccountTracker {
     // add listener
     this._blockTracker.addListener('latest', this._updateForBlock);
     // fetch account balances
-    this._updateAccounts();
+    this.updateAccounts();
   }
 
   /**
@@ -233,7 +233,7 @@ export default class AccountTracker {
 
     this.#listeners[networkClientId] = _updateForBlock;
 
-    this._updateAccounts(networkClientId);
+    this.updateAccounts(networkClientId);
   }
 
   /**
@@ -326,12 +326,12 @@ export default class AccountTracker {
 
     // fetch balances for the accounts if there is block number ready
     if (this._currentBlockNumberByChainId[this.getCurrentChainId()]) {
-      this._updateAccounts();
+      this.updateAccounts();
     }
     this.#pollingTokenSets.forEach((_tokenSet, networkClientId) => {
       const { chainId } = this.#getCorrectNetworkClient(networkClientId);
       if (this._currentBlockNumberByChainId[chainId]) {
-        this._updateAccounts(networkClientId);
+        this.updateAccounts(networkClientId);
       }
     });
   }
@@ -414,7 +414,7 @@ export default class AccountTracker {
     }
 
     try {
-      await this._updateAccounts(networkClientId);
+      await this.updateAccounts(networkClientId);
     } catch (err) {
       log.error(err);
     }
@@ -426,11 +426,11 @@ export default class AccountTracker {
    *
    * @returns {Promise} after all account balances updated
    */
-  async _updateAccountsAllActiveNetworks() {
-    await this._updateAccounts();
+  async updateAccountsAllActiveNetworks() {
+    await this.updateAccounts();
     await Promise.all(
       Array.from(this.#pollingTokenSets).map(([networkClientId]) => {
-        return this._updateAccounts(networkClientId);
+        return this.updateAccounts(networkClientId);
       }),
     );
   }
@@ -442,7 +442,7 @@ export default class AccountTracker {
    * @param {string} networkClientId - optional network client ID to use instead of the globally selected network.
    * @returns {Promise} after all account balances updated
    */
-  async _updateAccounts(networkClientId) {
+  async updateAccounts(networkClientId) {
     const { completedOnboarding } = this.onboardingController.store.getState();
     if (!completedOnboarding) {
       return;

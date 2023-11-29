@@ -127,7 +127,7 @@ describe('Account Tracker', () => {
       jest.spyOn(blockTrackerStub, 'addListener').mockImplementation();
       jest.spyOn(blockTrackerStub, 'removeListener').mockImplementation();
       const updateAccountsSpy = jest
-        .spyOn(accountTracker, '_updateAccounts')
+        .spyOn(accountTracker, 'updateAccounts')
         .mockResolvedValue();
 
       accountTracker.start();
@@ -180,7 +180,7 @@ describe('Account Tracker', () => {
     it('should subscribe to the block tracker and update accounts if not already using the networkClientId', async () => {
       jest.spyOn(blockTrackerFromHookStub, 'addListener').mockImplementation();
       const updateAccountsSpy = jest
-        .spyOn(accountTracker, '_updateAccounts')
+        .spyOn(accountTracker, 'updateAccounts')
         .mockResolvedValue();
 
       accountTracker.startPollingByNetworkClientId('mainnet');
@@ -271,7 +271,7 @@ describe('Account Tracker', () => {
       });
 
       const updateAccountsSpy = jest
-        .spyOn(accountTracker, '_updateAccounts')
+        .spyOn(accountTracker, 'updateAccounts')
         .mockResolvedValue();
 
       accountTracker.startPollingByNetworkClientId('mainnet');
@@ -307,7 +307,7 @@ describe('Account Tracker', () => {
       jest
         .spyOn(blockTrackerFromHookStub, 'removeListener')
         .mockImplementation();
-      jest.spyOn(accountTracker, '_updateAccounts').mockResolvedValue();
+      jest.spyOn(accountTracker, 'updateAccounts').mockResolvedValue();
 
       const pollingToken =
         accountTracker.startPollingByNetworkClientId('mainnet');
@@ -324,7 +324,7 @@ describe('Account Tracker', () => {
       jest
         .spyOn(blockTrackerFromHookStub, 'removeListener')
         .mockImplementation();
-      jest.spyOn(accountTracker, '_updateAccounts').mockResolvedValue();
+      jest.spyOn(accountTracker, 'updateAccounts').mockResolvedValue();
 
       const pollingToken1 =
         accountTracker.startPollingByNetworkClientId('mainnet');
@@ -415,7 +415,7 @@ describe('Account Tracker', () => {
         getCurrentChainId: () => currentChainId,
       });
 
-      jest.spyOn(accountTracker, '_updateAccounts').mockResolvedValue();
+      jest.spyOn(accountTracker, 'updateAccounts').mockResolvedValue();
 
       accountTracker.startPollingByNetworkClientId('mainnet');
 
@@ -539,7 +539,7 @@ describe('Account Tracker', () => {
   describe('_updateForBlockByNetworkClientId', () => {
     it('updates currentBlockGasLimit, currentBlockGasLimitByChainId, and accounts when no networkClientId is passed', async () => {
       const updateAccountsSpy = jest
-        .spyOn(accountTracker, '_updateAccounts')
+        .spyOn(accountTracker, 'updateAccounts')
         .mockResolvedValue();
 
       await accountTracker._updateForBlockByNetworkClientId(
@@ -563,7 +563,7 @@ describe('Account Tracker', () => {
 
     it('updates only the currentBlockGasLimitByChainId and accounts when a networkClientId is passed', async () => {
       const updateAccountsSpy = jest
-        .spyOn(accountTracker, '_updateAccounts')
+        .spyOn(accountTracker, 'updateAccounts')
         .mockResolvedValue();
 
       await accountTracker._updateForBlockByNetworkClientId(
@@ -586,10 +586,10 @@ describe('Account Tracker', () => {
     });
   });
 
-  describe('_updateAccountsAllActiveNetworks', () => {
+  describe('updateAccountsAllActiveNetworks', () => {
     it('updates accounts for the globally selected network and all currently polling networks', async () => {
       const updateAccountsSpy = jest
-        .spyOn(accountTracker, '_updateAccounts')
+        .spyOn(accountTracker, 'updateAccounts')
         .mockResolvedValue();
       await accountTracker.startPollingByNetworkClientId('networkClientId1');
       await accountTracker.startPollingByNetworkClientId('networkClientId2');
@@ -597,7 +597,7 @@ describe('Account Tracker', () => {
 
       expect(updateAccountsSpy).toHaveBeenCalledTimes(3);
 
-      await accountTracker._updateAccountsAllActiveNetworks();
+      await accountTracker.updateAccountsAllActiveNetworks();
 
       expect(updateAccountsSpy).toHaveBeenCalledTimes(7);
       expect(updateAccountsSpy).toHaveBeenNthCalledWith(4); // called with no args
@@ -607,7 +607,7 @@ describe('Account Tracker', () => {
     });
   });
 
-  describe('_updateAccounts', () => {
+  describe('updateAccounts', () => {
     let updateAccountSpy, updateAccountsViaBalanceCheckerSpy;
 
     beforeEach(() => {

@@ -1648,7 +1648,7 @@ export default class MetamaskController extends EventEmitter {
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
       () => {
-        this.accountTracker._updateAccounts();
+        this.accountTracker.updateAccounts();
       },
     );
 
@@ -3435,7 +3435,7 @@ export default class MetamaskController extends EventEmitter {
 
       // Updating accounts in this.accountTracker before starting UI syncing ensure that
       // state has account balance before it is synced with UI
-      await this.accountTracker._updateAccountsAllActiveNetworks();
+      await this.accountTracker.updateAccountsAllActiveNetworks();
     } finally {
       this._startUISync();
     }
