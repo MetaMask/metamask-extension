@@ -2,8 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { ButtonIcon, ButtonIconSize, Icon, IconName, IconSize } from '..';
-import { TextField, TEXT_FIELD_TYPES } from '../text-field/deprecated';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconName,
+  IconSize,
+  TextField,
+  TextFieldType,
+} from '..';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 export const TextFieldSearch = ({
@@ -23,7 +30,7 @@ export const TextFieldSearch = ({
       className={classnames('mm-text-field-search', className)}
       value={value}
       onChange={onChange}
-      type={TEXT_FIELD_TYPES.SEARCH}
+      type={TextFieldType.Search}
       endAccessory={
         value && showClearButton ? (
           <>

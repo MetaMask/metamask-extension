@@ -16,6 +16,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   Text,
+  TextField,
   ButtonLink,
   Icon,
   IconName,
@@ -24,7 +25,6 @@ import {
   HelpText,
   Box,
 } from '../../component-library';
-import { TextField } from '../../component-library/text-field/deprecated';
 import { setCustomTokenAmount } from '../../../ducks/app/app';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
