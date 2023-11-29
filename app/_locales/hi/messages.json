@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "डिपॉज़िट करें"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "अधिक जानें"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Ethereum प्रोटोकॉल परिवर्तनों के कारण: हो सकता है कि Rinkeby, Ropsten, और Kovan टेस्ट नेटवर्क मज़बूती से काम न करें और जल्द ही हटा दिए जाएंगे।"
-  },
   "description": {
     "message": "जानकारी"
   },
