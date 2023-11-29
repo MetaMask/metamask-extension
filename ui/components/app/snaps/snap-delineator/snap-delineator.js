@@ -12,6 +12,7 @@ import {
   TextColor,
   Display,
   JustifyContent,
+  FlexDirection,
 } from '../../../../helpers/constants/design-system';
 import {
   AvatarIcon,
@@ -26,10 +27,12 @@ import {
   DelineatorType,
   getDelineatorTitle,
 } from '../../../../helpers/constants/snaps';
+import PulseLoader from '../../../ui/pulse-loader/pulse-loader';
 
 export const SnapDelineator = ({
   snapName,
   type = DelineatorType.default,
+  isLoading = false,
   isCollapsable = false,
   isCollapsed = false,
   children,
@@ -43,6 +46,8 @@ export const SnapDelineator = ({
   return (
     <Box
       className="snap-delineator__wrapper"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
       borderStyle={BorderStyle.solid}
       borderColor={BorderColor.borderDefault}
       borderRadius={BorderRadius.LG}
@@ -50,6 +55,7 @@ export const SnapDelineator = ({
         isError ? BackgroundColor.errorMuted : BackgroundColor.backgroundDefault
       }
       {...boxProps}
+      style={{ minHeight: isLoading && '180px', ...boxProps?.style }}
     >
       <Box
         className="snap-delineator__header"
@@ -94,9 +100,13 @@ export const SnapDelineator = ({
       <Box
         className="snap-delineator__content"
         padding={4}
-        display={isCollapsable && isCollapsed ? Display.None : Display.Block}
+        display={isCollapsable && isCollapsed ? Display.None : Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={isLoading && AlignItems.center}
+        justifyContent={isLoading && JustifyContent.center}
+        style={{ flexGrow: isLoading && '1' }}
       >
-        {children}
+        {isLoading ? <PulseLoader /> : children}
       </Box>
     </Box>
   );
@@ -107,6 +117,7 @@ SnapDelineator.propTypes = {
   type: PropTypes.string,
   isCollapsable: PropTypes.bool,
   isCollapsed: PropTypes.bool,
+  isLoading: PropTypes.bool,
   onClick: PropTypes.func,
   boxProps: PropTypes.object,
   children: PropTypes.node,

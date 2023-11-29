@@ -22,7 +22,6 @@ import {
   JustifyContent,
   AlignItems,
   SEVERITIES,
-  Size,
   TextVariant,
   BLOCK_SIZES,
 } from '../../../helpers/constants/design-system';
@@ -117,7 +116,6 @@ import {
   Icon,
   IconName,
   IconSize,
-  TextField,
   ButtonLink,
   ButtonLinkSize,
   Modal,
@@ -126,6 +124,8 @@ import {
   ModalHeader,
   BannerAlert,
   Text,
+  TextField,
+  TextFieldSize,
 } from '../../../components/component-library';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import ImportToken from '../import-token';
@@ -889,7 +889,7 @@ export default function PrepareSwapPage({
                 className={classnames('prepare-swap-page__from-token-amount', {
                   [fromTokenAmountClassName]: fromTokenAmountClassName,
                 })}
-                size={Size.SM}
+                size={TextFieldSize.Sm}
                 placeholder="0"
                 onChange={onTextFieldChange}
                 value={fromTokenInputValue}

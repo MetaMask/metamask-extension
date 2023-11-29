@@ -1,37 +1,29 @@
+import PropTypes from 'prop-types';
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import {
-  LedgerTransportTypes,
-  WebHIDConnectedStatuses,
   HardwareTransportStates,
   LEDGER_USB_VENDOR_ID,
+  LedgerTransportTypes,
+  WebHIDConnectedStatuses,
 } from '../../../../shared/constants/hardware-wallets';
 import {
-  PLATFORM_FIREFOX,
-  ENVIRONMENT_TYPE_FULLSCREEN,
-} from '../../../../shared/constants/app';
-
-import {
-  setLedgerWebHidConnectedStatus,
+  getLedgerTransportStatus,
   getLedgerWebHidConnectedStatus,
   setLedgerTransportStatus,
-  getLedgerTransportStatus,
+  setLedgerWebHidConnectedStatus,
 } from '../../../ducks/app/app';
-
-import { BannerAlert, ButtonLink, Text } from '../../component-library';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getLedgerTransportType } from '../../../ducks/metamask/metamask';
 import {
   SEVERITIES,
   TextAlign,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import {
-  getPlatform,
-  getEnvironmentType,
-} from '../../../../app/scripts/lib/util';
-import { getLedgerTransportType } from '../../../ducks/metamask/metamask';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { attemptLedgerTransportCreation } from '../../../store/actions';
+import { BannerAlert, ButtonLink, Text } from '../../component-library';
 
 const renderInstructionStep = (
   text,
@@ -121,10 +113,7 @@ export default function LedgerInstructionField({ showDataInstruction }) {
     };
   }, [dispatch]);
 
-  const usingLedgerLive = ledgerTransportType === LedgerTransportTypes.live;
   const usingWebHID = ledgerTransportType === LedgerTransportTypes.webhid;
-
-  const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 
   return (
     <div>
@@ -132,14 +121,6 @@ export default function LedgerInstructionField({ showDataInstruction }) {
         <BannerAlert severity={SEVERITIES.INFO}>
           <div className="ledger-live-dialog">
             {renderInstructionStep(t('ledgerConnectionInstructionHeader'))}
-            {renderInstructionStep(
-              `• ${t('ledgerConnectionInstructionStepOne')}`,
-              !isFirefox && usingLedgerLive,
-            )}
-            {renderInstructionStep(
-              `• ${t('ledgerConnectionInstructionStepTwo')}`,
-              !isFirefox && usingLedgerLive,
-            )}
             {renderInstructionStep(
               `• ${t('ledgerConnectionInstructionStepThree')}`,
             )}
