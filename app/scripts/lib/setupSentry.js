@@ -106,6 +106,7 @@ export const SENTRY_BACKGROUND_STATE = {
     estimatedGasFeeTimeBounds: true,
     gasEstimateType: true,
     gasFeeEstimates: true,
+    gasFeeEstimatesByChainId: true,
   },
   KeyringController: {
     isUnlocked: true,
