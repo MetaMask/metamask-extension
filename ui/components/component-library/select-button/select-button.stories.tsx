@@ -1,12 +1,13 @@
 import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
-import { SelectWrapper } from '../select-wrapper';
 import {
   AvatarBase,
   AvatarBaseSize,
   AvatarAccount,
   AvatarAccountSize,
   Box,
+  SelectWrapper,
+  SelectOption,
   Text,
 } from '..';
 import {
@@ -134,6 +135,9 @@ export const Placeholder: StoryFn<typeof SelectButton> = (args) => {
       <SelectButton {...args} />
       <SelectButton
         {...args}
+        onClick={() => console.log('clicked')}
+        onBlur={() => console.log('blurred')}
+        onFocus={() => console.log('focused')}
         placeholder={{
           startAccessory: (
             <AvatarAccount
@@ -157,20 +161,95 @@ Placeholder.args = {
   placeholder: 'Placeholder as simple string',
 };
 
-export const Test: StoryFn<typeof SelectButton> = (args) => {
+export const Value = Template.bind({});
+Value.args = {
+  value: {
+    startAccessory: (
+      <AvatarAccount
+        address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+        size={AvatarAccountSize.Sm}
+      />
+    ),
+    label: 'Option 1',
+    description: 'Option 1 using prop shape recommendation',
+  },
+  endAccessory: '',
+};
+
+export const DefaultValue = Template.bind({});
+DefaultValue.args = {
+  defaultValue: {
+    startAccessory: (
+      <AvatarAccount
+        address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+        size={AvatarAccountSize.Sm}
+      />
+    ),
+    label: 'Option 1',
+    description: 'Option 1 using prop shape recommendation',
+  },
+  endAccessory: '',
+};
+
+export const SelectWrapperDemo: StoryFn<typeof SelectButton> = (args) => {
   return (
-    <SelectButton {...args}>
-      <Box>
-        <Box>one</Box>
-        <Box>two</Box>
-      </Box>
-    </SelectButton>
+    <SelectWrapper
+      placeholder={{
+        label: 'Please select an option',
+        description:
+          'This demo is using SelectWrapper and utilizing the prop shape recommendation',
+      }}
+      triggerComponent={<SelectButton {...args} />}
+    >
+      <SelectOption
+        value={{
+          startAccessory: (
+            <AvatarAccount
+              address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+              size={AvatarAccountSize.Sm}
+            />
+          ),
+          label: 'Option 1',
+          description: 'You have selected option 1',
+        }}
+      >
+        Option 1
+      </SelectOption>
+      <SelectOption
+        value={{
+          startAccessory: (
+            <AvatarAccount
+              address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+              size={AvatarAccountSize.Sm}
+            />
+          ),
+          label: 'Option 2',
+          description: 'You have selected option 2',
+        }}
+      >
+        Option 2
+      </SelectOption>
+      <SelectOption
+        value={{
+          startAccessory: (
+            <AvatarAccount
+              address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+              size={AvatarAccountSize.Sm}
+            />
+          ),
+          label: 'Option 3',
+          description: 'You have selected option 3',
+        }}
+      >
+        Option 3
+      </SelectOption>
+    </SelectWrapper>
   );
 };
-Test.args = {};
 
-// To Do Storybook List:
-// children
-// placeholder
-// value
-// defaultValue
+SelectWrapperDemo.args = {
+  startAccessory: '',
+  endAccessory: '',
+};
+
+SelectWrapperDemo.storyName = 'Using SelectWrapper';
