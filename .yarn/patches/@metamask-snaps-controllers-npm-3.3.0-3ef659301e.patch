@@ -1,0 +1,36 @@
+diff --git a/dist/cjs/snaps/SnapController.js b/dist/cjs/snaps/SnapController.js
+index aa27e91be65db39e9ae29527b65f8b804c2a9039..7fea7d4adfe9523be48d2507553ffdd7cdd6b4a1 100644
+--- a/dist/cjs/snaps/SnapController.js
++++ b/dist/cjs/snaps/SnapController.js
+@@ -1614,13 +1614,9 @@ async function assertSnapRpcRequestResult(handlerType, result) {
+     switch(handlerType){
+         case _snapsutils.HandlerType.OnTransaction:
+             (0, _utils.assertStruct)(result, _snapsutils.OnTransactionResponseStruct);
+-            await _class_private_method_get(this, _triggerPhishingListUpdate, triggerPhishingListUpdate).call(this);
+-            (0, _snapsui.assertUILinksAreSafe)(result.content, _class_private_method_get(this, _checkPhishingList, checkPhishingList).bind(this));
+             break;
+         case _snapsutils.HandlerType.OnHomePage:
+             (0, _utils.assertStruct)(result, _snapsutils.OnHomePageResponseStruct);
+-            await _class_private_method_get(this, _triggerPhishingListUpdate, triggerPhishingListUpdate).call(this);
+-            (0, _snapsui.assertUILinksAreSafe)(result.content, _class_private_method_get(this, _checkPhishingList, checkPhishingList).bind(this));
+             break;
+         default:
+             break;
+diff --git a/dist/esm/snaps/SnapController.js b/dist/esm/snaps/SnapController.js
+index f07c31e764aeaf2e79f5a0e84b9d0f0d8fd5cd93..cb70a7292b74c33a5364ce2cd4f3d1af18368594 100644
+--- a/dist/esm/snaps/SnapController.js
++++ b/dist/esm/snaps/SnapController.js
+@@ -1593,13 +1593,9 @@ async function assertSnapRpcRequestResult(handlerType, result) {
+     switch(handlerType){
+         case HandlerType.OnTransaction:
+             assertStruct(result, OnTransactionResponseStruct);
+-            await _class_private_method_get(this, _triggerPhishingListUpdate, triggerPhishingListUpdate).call(this);
+-            assertUILinksAreSafe(result.content, _class_private_method_get(this, _checkPhishingList, checkPhishingList).bind(this));
+             break;
+         case HandlerType.OnHomePage:
+             assertStruct(result, OnHomePageResponseStruct);
+-            await _class_private_method_get(this, _triggerPhishingListUpdate, triggerPhishingListUpdate).call(this);
+-            assertUILinksAreSafe(result.content, _class_private_method_get(this, _checkPhishingList, checkPhishingList).bind(this));
+             break;
+         default:
+             break;
