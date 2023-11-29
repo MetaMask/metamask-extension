@@ -15,6 +15,7 @@ import {
 import {
   lockMetamask,
   showConfirmTurnOnMetamaskNotifications,
+  setBackgroundShowFavourites,
 } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -270,6 +271,18 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         )
         ///: END:ONLY_INCLUDE_IF
       }
+      {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
+        <MenuItem
+          iconName={IconName.Star}
+          onClick={() => {
+            setBackgroundShowFavourites({ showFavourites: true });
+            closeMenu();
+          }}
+          data-testid="global-menu-favourites"
+        >
+          Favourites
+        </MenuItem>
+      )}
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
           iconName={IconName.Expand}

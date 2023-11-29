@@ -161,8 +161,11 @@ export default class ExtensionPlatform {
     return tab;
   }
 
-  async switchToTab(tabId) {
-    const tab = await browser.tabs.update(tabId, { highlighted: true });
+  async switchToTab(tabId, props = {}) {
+    const tab = await browser.tabs.update(tabId, {
+      highlighted: true,
+      ...props,
+    });
     return tab;
   }
 

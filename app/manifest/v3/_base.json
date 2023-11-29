@@ -22,8 +22,17 @@
         "windows": "Alt+Shift+M",
         "mac": "Alt+Shift+M",
         "chromeos": "Alt+Shift+M",
-        "linux": "Alt+Shift+M"
+        "linux": "Alt+Shift+M",
+        "default": "Alt+Shift+M"
       }
+    },
+    "open-favourites": {
+      "suggested_key": "Alt+Shift+F",
+      "description": "Open the favourites page within MetaMask"
+    },
+    "add-to-favourites": {
+      "suggested_key": "Alt+Shift+S",
+      "description": "Add the page in the current tab to MetaMask favourites"
     }
   },
   "content_scripts": [

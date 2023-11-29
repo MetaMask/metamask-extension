@@ -73,6 +73,8 @@ export default class AppStateController extends EventEmitter {
       switchedNetworkDetails: null,
       switchedNetworkNeverShowMessage: false,
       currentExtensionPopupId: 0,
+      showFavourites: false,
+      showFavouriteNumbers: false,
     });
     this.timer = null;
 
@@ -469,6 +471,25 @@ export default class AppStateController extends EventEmitter {
    */
   setTrezorModel(trezorModel) {
     this.store.updateState({ trezorModel });
+  }
+
+  setShowFavourites({ showFavourites, revertTimeout }) {
+    clearTimeout(this.showFavouritesTimeout);
+    this.store.updateState({ showFavourites });
+    if (revertTimeout) {
+      this.showFavouritesTimeout = setTimeout(
+        () => this.store.updateState({ showFavourites: false }),
+        revertTimeout,
+      );
+    }
+  }
+
+  setShowFavouriteNumbers({ showFavouriteNumbers }) {
+    this.store.updateState({ showFavouriteNumbers });
+  }
+
+  setAppActiveTab(appActiveTab) {
+    this.store.updateState({ appActiveTab });
   }
 
   /**

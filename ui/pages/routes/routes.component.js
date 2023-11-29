@@ -24,9 +24,11 @@ import CreateAccountPage from '../create-account/create-account.component';
 import ConfirmAddSuggestedNftPage from '../confirm-add-suggested-nft';
 import Loading from '../../components/ui/loading-screen';
 import LoadingNetwork from '../../components/app/loading-network-screen';
+import Favourites from '../../components/app/favourites';
 import { Modal } from '../../components/app/modals';
 import Alert from '../../components/ui/alert';
 import { SURVEY_LINK, PRIVACY_POLICY_LINK } from '../../../shared/lib/ui-utils';
+import { setBackgroundShowFavourites } from '../../store/actions';
 import {
   AppHeader,
   AccountListMenu,
@@ -93,6 +95,7 @@ import {
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -212,11 +215,13 @@ export default class Routes extends Component {
     setNewPrivacyPolicyToastShownDate: PropTypes.func.isRequired,
     clearEditedNetwork: PropTypes.func.isRequired,
     setNewPrivacyPolicyToastClickedOrClosed: PropTypes.func.isRequired,
+    favourites: PropTypes.object,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal: PropTypes.bool.isRequired,
     hideShowKeyringSnapRemovalResultModal: PropTypes.func.isRequired,
     pendingConfirmations: PropTypes.array.isRequired,
     ///: END:ONLY_INCLUDE_IF
+    backgroundShowFavourites: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -226,6 +231,7 @@ export default class Routes extends Component {
 
   state = {
     hideConnectAccountToast: false,
+    showFavouriteNumbers: false,
   };
 
   getTheme() {
@@ -246,6 +252,46 @@ export default class Routes extends Component {
 
   componentDidMount() {
     this.updateNewPrivacyPolicyToastDate();
+
+    window.addEventListener('keydown', this.handleKeyDown);
+    window.addEventListener('keyup', this.handleKeyUp);
+
+    window.focus();
+  }
+
+  handleKeyDown = (event) => {
+    const { backgroundShowFavourites, favourites } = this.props;
+
+    if (backgroundShowFavourites) {
+      if (event.key === 'Escape') {
+        setBackgroundShowFavourites({ showFavourites: false });
+      } else if (event.altKey && event.shiftKey) {
+        if (event.code >= 'Digit1' && event.code <= 'Digit9') {
+          const pressedNumber = event.code.replace('Digit', '');
+          const favouriteHref = Object.values(favourites).find(
+            (favourite) => Number(favourite.number) === Number(pressedNumber),
+          )?.href;
+          if (favouriteHref) {
+            global.platform.openTab({ url: favouriteHref });
+          }
+        } else {
+          this.setState({ showFavouriteNumbers: true });
+        }
+      }
+    }
+  };
+
+  handleKeyUp = (event) => {
+    if (event.key === 'Alt') {
+      this.setState({ showFavouriteNumbers: false });
+    } else if (event.key === 'Shift') {
+      this.setState({ showFavouriteNumbers: false });
+    }
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keydown', this.handleKeyUp);
   }
 
   componentDidUpdate(prevProps) {
@@ -811,13 +857,14 @@ export default class Routes extends Component {
       clearSwitchedNetworkDetails,
       networkMenuRedesign,
       clearEditedNetwork,
+      backgroundShowFavourites,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       isShowKeyringSnapRemovalResultModal,
       hideShowKeyringSnapRemovalResultModal,
       pendingConfirmations,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
-
+    const { showFavouriteNumbers } = this.state;
     const loadMessage =
       loadingMessage || isNetworkLoading
         ? this.getConnectingLabel(loadingMessage)
@@ -840,6 +887,7 @@ export default class Routes extends Component {
       switchedNetworkDetails === null;
 
     const windowType = getEnvironmentType();
+    const isSidePanel = ENVIRONMENT_TYPE_SIDEPANEL;
 
     const shouldShowNetworkDeprecationWarning =
       windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
@@ -878,6 +926,14 @@ export default class Routes extends Component {
         {location.pathname === DEFAULT_ROUTE && shouldShowNetworkInfo ? (
           <NewNetworkInfo />
         ) : null}
+        {backgroundShowFavourites && isSidePanel && (
+          <Favourites
+            showFavouriteNumbers={showFavouriteNumbers}
+            onClose={() =>
+              setBackgroundShowFavourites({ showFavourites: false })
+            }
+          />
+        )}
         <QRHardwarePopover />
         <Modal />
         <Alert visible={this.props.alertOpen} msg={alertMessage} />

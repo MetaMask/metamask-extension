@@ -1742,7 +1742,8 @@ export function setSelectedAccount(
     const state = getState();
     const unconnectedAccountAccountAlertIsEnabled =
       getUnconnectedAccountAlertEnabledness(state);
-    const activeTabOrigin = state.activeTab.origin;
+    const activeTabOrigin = (state.metamask.appActiveTab || state.activeTab)
+      .origin;
     const internalAccount = getInternalAccountByAddress(state, address);
     const permittedAccountsForCurrentTab =
       getPermittedAccountsForCurrentTab(state);
@@ -4943,6 +4944,20 @@ export function neverShowSwitchedNetworkMessage() {
   return submitRequestToBackground('setSwitchedNetworkNeverShowMessage', [
     true,
   ]);
+}
+
+export function setBackgroundShowFavourites({ showFavourites }) {
+  return submitRequestToBackground('setShowFavourites', [{ showFavourites }]);
+}
+
+export function setBackgroundShowFavouriteNumbers({ showFavouriteNumbers }) {
+  return setBackgroundShowFavouriteNumbers('setShowFavourites', [
+    { showFavouriteNumbers },
+  ]);
+}
+
+export function openFavourite(href) {
+  return submitRequestToBackground('openFavourite', [{ href }]);
 }
 
 /**

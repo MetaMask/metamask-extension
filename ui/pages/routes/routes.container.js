@@ -12,6 +12,7 @@ import {
   getCurrentChainId,
   getShouldShowSeedPhraseReminder,
   isCurrentProviderCustom,
+  getFavourites,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getUnapprovedConfirmations,
   ///: END:ONLY_INCLUDE_IF
@@ -70,7 +71,7 @@ function mapStateToProps(state) {
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
     getPreferences(state);
-  const { completedOnboarding } = state.metamask;
+  const { completedOnboarding, showFavourites } = state.metamask;
 
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
@@ -143,6 +144,9 @@ function mapStateToProps(state) {
     showPrivacyPolicyToast: getShowPrivacyPolicyToast(state),
     showSurveyToast: getShowSurveyToast(state),
     networkMenuRedesign: getLocalNetworkMenuRedesignFeatureFlag(state),
+    isSelectActionModalOpen: state.appState.showSelectActionModal,
+    backgroundShowFavourites: showFavourites,
+    favourites: getFavourites(state),
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,

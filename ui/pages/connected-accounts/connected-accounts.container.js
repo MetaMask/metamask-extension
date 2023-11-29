@@ -19,7 +19,11 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ConnectedAccounts from './connected-accounts.component';
 
 const mapStateToProps = (state) => {
-  const { activeTab } = state;
+  const {
+    activeTab: _activeTab,
+    metamask: { appActiveTab },
+  } = state;
+  const activeTab = appActiveTab || _activeTab;
   const accountToConnect = getAccountToConnectToActiveTab(state);
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
   const internalAccounts = getInternalAccounts(state);
