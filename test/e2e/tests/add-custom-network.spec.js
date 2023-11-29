@@ -502,7 +502,7 @@ describe('Custom network', function () {
 
           const arbitrumNetwork = await driver.findElements({
             text: 'Arbitrum One',
-            tag: 'button',
+            tag: 'p',
           });
           assert.ok(arbitrumNetwork.length, 1);
         },
