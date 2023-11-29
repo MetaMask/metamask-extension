@@ -5,12 +5,6 @@ describe('Confirm State', () => {
     currentConfirmation: undefined,
   };
 
-  it('app init state', () => {
-    const initState = confirmReducer(metamaskConfirmState, {});
-
-    expect.anything(initState);
-  });
-
   it('sets currentConfirmation', () => {
     const currentConfirmation = {
       id: '123',
