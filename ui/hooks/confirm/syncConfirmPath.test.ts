@@ -1,9 +1,11 @@
 import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import syncConfirmPath from './syncConfirmPath';
 
+const mockHistoryReplace = jest.fn();
+
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({ replace: jest.fn() }),
+  useHistory: () => ({ replace: mockHistoryReplace }),
 }));
 
 const mockState = {
@@ -21,13 +23,9 @@ describe('syncConfirmPath', () => {
     expect(result).toBeDefined();
   });
 
-  // for some weird reason this test is failing
-  // it('should replace history route', () => {
-  //   const historyReplaceMock = jest.fn();
-  //   jest
-  //     .spyOn(router, 'useHistory')
-  //     .mockReturnValue({ replace: historyReplaceMock } as any);
-  //   renderHookWithProvider(() => syncConfirmPath(), mockState);
-  //   expect(router.useHistory().replace).toHaveBeenCalled();
-  // });
+  it('should replace history route', async () => {
+    mockHistoryReplace.mockClear();
+    renderHookWithProvider(() => syncConfirmPath(), mockState);
+    expect(mockHistoryReplace).toHaveBeenCalled();
+  });
 });

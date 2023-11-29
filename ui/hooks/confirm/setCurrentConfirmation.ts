@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
-import { updatCurrentConfirmation } from '../../ducks/confirm/confirm';
+import { updateCurrentConfirmation } from '../../ducks/confirm/confirm';
 import useCurrentConfirmation from './useCurrentConfirmation';
 
 /*
@@ -15,13 +15,13 @@ const setCurrentConfirmation = () => {
 
   useEffect(() => {
     if (currentConfirmation) {
-      dispatch(updatCurrentConfirmation(currentConfirmation));
+      dispatch(updateCurrentConfirmation(currentConfirmation));
     }
   }, [currentConfirmation]);
 
   useEffect(() => {
     return () => {
-      dispatch(updatCurrentConfirmation(undefined));
+      dispatch(updateCurrentConfirmation(undefined));
     };
   }, []);
 };

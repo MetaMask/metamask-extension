@@ -13,7 +13,7 @@ jest.mock('react-redux', () => ({
 }));
 
 describe('setCurrentConfirmation', () => {
-  it('should dispatch updatCurrentConfirmation', () => {
+  it('should dispatch updateCurrentConfirmation', () => {
     const useDispatchSpy = jest.spyOn(redux, 'useDispatch');
     renderHook(() => setCurrentConfirmation());
     expect(useDispatchSpy).toHaveBeenCalled();
