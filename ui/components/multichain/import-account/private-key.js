@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   FormTextField,
-  TEXT_FIELD_SIZES,
-  TEXT_FIELD_TYPES,
+  TextFieldSize,
+  TextFieldType,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import BottomButtons from './bottom-buttons';
@@ -33,9 +33,9 @@ export default function PrivateKeyImportView({
     <>
       <FormTextField
         id="private-key-box"
-        size={TEXT_FIELD_SIZES.LARGE}
+        size={TextFieldSize.Lg}
         autoFocus
-        type={TEXT_FIELD_TYPES.PASSWORD}
+        type={TextFieldType.Password}
         helpText={warning}
         error
         label={t('pastePrivateKey')}

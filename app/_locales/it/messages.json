@@ -704,12 +704,6 @@
   "deleteNetwork": {
     "message": "Cancella la rete?"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Scopri di più"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "A causa delle modifiche al protocollo di Ethereum: le reti di test Rinkeby, Ropsten e Kovan potrebbero non funzionare in modo affidabile e saranno presto rimosse."
-  },
   "description": {
     "message": "Descrizione"
   },
