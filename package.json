@@ -209,8 +209,8 @@
     "semver@7.3.7": "^7.5.4",
     "semver@7.3.8": "^7.5.4",
     "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch",
-    "@metamask/snaps-controllers@npm:^3.0.0": "patch:@metamask/snaps-controllers@npm%3A3.3.0#~/.yarn/patches/@metamask-snaps-controllers-npm-3.3.0-3ef659301e.patch",
-    "@metamask/snaps-rpc-methods@npm:^3.3.0": "patch:@metamask/snaps-rpc-methods@npm%3A3.3.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-3.3.0-51796eb3cb.patch"
+    "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A3.3.0#~/.yarn/patches/@metamask-snaps-controllers-npm-3.3.0-3ef659301e.patch",
+    "@metamask/snaps-rpc-methods": "patch:@metamask/snaps-rpc-methods@npm%3A3.3.0#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-3.3.0-51796eb3cb.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
