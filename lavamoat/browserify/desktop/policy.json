@@ -4336,6 +4336,56 @@
         "react>object-assign": true
       }
     },
+    "react-beautiful-dnd": {
+      "globals": {
+        "Element.prototype": true,
+        "__REDUX_DEVTOOLS_EXTENSION_COMPOSE__": true,
+        "addEventListener": true,
+        "cancelAnimationFrame": true,
+        "clearTimeout": true,
+        "console": true,
+        "document": true,
+        "getComputedStyle": true,
+        "pageXOffset": true,
+        "pageYOffset": true,
+        "removeEventListener": true,
+        "requestAnimationFrame": true,
+        "scrollBy": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@babel/runtime": true,
+        "react": true,
+        "react-beautiful-dnd>css-box-model": true,
+        "react-beautiful-dnd>memoize-one": true,
+        "react-beautiful-dnd>raf-schd": true,
+        "react-beautiful-dnd>use-memo-one": true,
+        "react-dom": true,
+        "react-redux": true,
+        "redux": true
+      }
+    },
+    "react-beautiful-dnd>css-box-model": {
+      "globals": {
+        "getComputedStyle": true,
+        "pageXOffset": true,
+        "pageYOffset": true
+      },
+      "packages": {
+        "react-router-dom>tiny-invariant": true
+      }
+    },
+    "react-beautiful-dnd>raf-schd": {
+      "globals": {
+        "cancelAnimationFrame": true,
+        "requestAnimationFrame": true
+      }
+    },
+    "react-beautiful-dnd>use-memo-one": {
+      "packages": {
+        "react": true
+      }
+    },
     "react-devtools": {
       "packages": {
         "react-devtools>react-devtools-core": true
