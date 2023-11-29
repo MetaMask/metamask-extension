@@ -24,10 +24,48 @@ export async function checkLinkURL(
     const pagePromise = context.waitForEvent('page');
     await link.click();
     const newPage = await pagePromise;
-    await newPage.waitForLoadState();
     const regex = new RegExp(`.*${escapeRegExp(URLlink)}.*`, 'iu');
     await expect.soft(newPage).toHaveURL(regex);
     console.log(`click in ${textToSearch} and opening page ${newPage.url()}`);
     await newPage.close();
   }
+}
+
+export async function closePages(
+  context: BrowserContext,
+  URLpatterns: string[],
+) {
+  const pages = context.pages();
+  for (const page of pages) {
+    const url = page.url();
+    for (const pattern of URLpatterns) {
+      if (url.includes(pattern)) {
+        await page.close();
+        break;
+      }
+    }
+  }
+}
+
+// It returns the page in the pattern and close the others that follow the same pattern
+export async function getPageAndCloseRepeated(
+  context: BrowserContext,
+  URLpattern: string,
+): Promise<Page> {
+  let pageFound;
+  const pages = context.pages();
+  for (const page of pages) {
+    const url = page.url();
+    if (url.includes(URLpattern)) {
+      if (pageFound) {
+        page.close();
+      } else {
+        pageFound = page;
+      }
+    }
+  }
+  if (pageFound) {
+    return pageFound;
+  }
+  throw Error(`Page pattern ${URLpattern} not found`);
 }
