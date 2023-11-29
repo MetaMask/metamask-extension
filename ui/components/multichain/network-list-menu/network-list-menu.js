@@ -12,7 +12,7 @@ import {
   showModal,
   toggleNetworkMenu,
 } from '../../../store/actions';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
+import { CHAIN_IDS, TEST_CHAINS } from '../../../../shared/constants/network';
 import {
   getCurrentChainId,
   getCurrentNetwork,
@@ -119,6 +119,8 @@ export const NetworkListMenu = ({ onClose }) => {
       const canDeleteNetwork =
         isUnlocked && !isCurrentNetwork && network.removable;
 
+      const isDeprecatedNetwork = network.chainId === CHAIN_IDS.AURORA;
+
       return (
         <NetworkListItem
           name={network.nickname}
@@ -144,6 +146,7 @@ export const NetworkListMenu = ({ onClose }) => {
               },
             });
           }}
+          isDeprecatedNetwork={isDeprecatedNetwork}
           onDeleteClick={
             canDeleteNetwork
               ? () => {

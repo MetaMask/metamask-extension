@@ -2076,6 +2076,10 @@ export async function getTokenStandardAndDetails(
   ]);
 }
 
+export async function getTokenSymbol(address: string): Promise<string | null> {
+  return await submitRequestToBackground('getTokenSymbol', [address]);
+}
+
 export function clearPendingTokens(): Action {
   return {
     type: actionConstants.CLEAR_PENDING_TOKENS,
