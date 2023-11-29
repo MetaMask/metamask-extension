@@ -3457,14 +3457,13 @@ export function setSwapsQuotesPollingLimitEnabled(
   };
 }
 
-export function safeRefetchQuotes(): ThunkAction<
-  void,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+export function safeRefetchQuotes(
+  selectedNetworkClientId: NetworkClientId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('safeRefetchQuotes');
+    await submitRequestToBackground('safeRefetchQuotes', [
+      selectedNetworkClientId,
+    ]);
     await forceUpdateMetamaskState(dispatch);
   };
 }

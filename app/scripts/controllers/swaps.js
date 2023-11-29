@@ -273,6 +273,8 @@ export default class SwapsController extends PollingControllerOnly {
   // that quotes will no longer be available after 1 or 2 minutes. When fetchAndSetQuotes is first called, it receives fetch parameters that are stored in
   // state. These stored parameters are used on subsequent calls made during polling.
   // Note: we stop polling after 3 requests, until new quotes are explicitly asked for. The logic that enforces that maximum is in the body of fetchAndSetQuotes
+
+  // TODO add networkClientId as arg
   pollForNewQuotes() {
     const {
       singleChainSwapsState: {
@@ -306,22 +308,18 @@ export default class SwapsController extends PollingControllerOnly {
     fetchParamsMetaData = {},
     isPolledRequest,
   ) {
-    let { chainId } = fetchParamsMetaData;
-
-    if (chainId !== this._ethersProviderChainId) {
-      this.ethersProvider = new Web3Provider(this.provider);
-      this._ethersProviderChainId = chainId;
-    }
-
-    let { ethersProvider } = this;
-    // TODO we should perhaps remove the chainId and just use the networkClientId in the fetchParamsMetaData
     const { networkClientId } = fetchParamsMetaData;
-    if (networkClientId) {
-      const { provider: networkProvider, configuration } =
-        this._getNetworkClientById(networkClientId);
-      ethersProvider = new Web3Provider(networkProvider);
-      chainId = configuration.chainId;
+
+    if (!networkClientId) {
+      throw new Error('networkClientId is required in fetchParamsMetaData');
     }
+
+    const {
+      provider: networkProvider,
+      configuration: { chainId },
+    } = this._getNetworkClientById(networkClientId);
+    const ethersProvider = new Web3Provider(networkProvider);
+
     const {
       singleChainSwapsState: { quotesPollingLimitEnabled, saveFetchedQuotes },
     } = this.store.getState();
@@ -468,6 +466,8 @@ export default class SwapsController extends PollingControllerOnly {
       throw new Error(SWAPS_FETCH_ORDER_CONFLICT);
     }
 
+    // TODO this need to also update per chainId state
+
     const { singleChainSwapsState } = this.store.getState();
     let { selectedAggId } = singleChainSwapsState;
     if (!newQuotes[selectedAggId]) {
@@ -492,7 +492,6 @@ export default class SwapsController extends PollingControllerOnly {
     }
 
     if (!quotesPollingLimitEnabled || this.pollCount < POLL_COUNT_LIMIT + 1) {
-      // TODO add networkClientId here
       this.pollForNewQuotes({ networkClientId });
     } else {
       this.resetPostFetchState();
@@ -503,10 +502,13 @@ export default class SwapsController extends PollingControllerOnly {
     return [newQuotes, topAggId];
   }
 
-  safeRefetchQuotes() {
+  // TODO all these methods need to also update per chainId state
+  safeRefetchQuotes(networkClientId) {
     const { singleChainSwapsState } = this.store.getState();
     if (!this.pollingTimeout && singleChainSwapsState.fetchParams) {
-      this.fetchAndSetQuotes(singleChainSwapsState.fetchParams);
+      this.fetchAndSetQuotes(singleChainSwapsState.fetchParams, {
+        networkClientId,
+      });
     }
   }
 
