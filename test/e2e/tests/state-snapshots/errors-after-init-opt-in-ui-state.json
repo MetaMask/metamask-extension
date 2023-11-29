@@ -129,6 +129,7 @@
     "announcements": "object",
     "orderedNetworkList": { "0": "string", "1": "string", "2": "string" },
     "gasFeeEstimates": {},
+    "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none",
     "tokenList": "object",
