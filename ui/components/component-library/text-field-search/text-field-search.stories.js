@@ -7,7 +7,7 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 
-import { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from '../text-field/deprecated';
+import { TextFieldSize, TextFieldType } from '../text-field';
 
 import { TextFieldSearch } from './text-field-search';
 import README from './README.mdx';
@@ -130,12 +130,12 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(TEXT_FIELD_SIZES),
+      options: Object.values(TextFieldSize),
       table: { category: 'text field base props' },
     },
     type: {
       control: 'select',
-      options: Object.values(TEXT_FIELD_TYPES),
+      options: Object.values(TextFieldType),
       table: { category: 'text field base props' },
     },
     truncate: {
