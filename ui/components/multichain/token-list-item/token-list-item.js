@@ -12,6 +12,7 @@ import {
   FontWeight,
   IconColor,
   JustifyContent,
+  TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
@@ -197,7 +198,15 @@ export const TokenListItem = ({
                 backgroundColor={BackgroundColor.transparent}
               />
             ) : (
-              secondary
+              <Text
+                fontWeight={FontWeight.Medium}
+                variant={TextVariant.bodyMd}
+                width={BlockSize.TwoThirds}
+                textAlign={TextAlign.End}
+                data-testid="multichain-token-list-item-secondary-value"
+              >
+                {secondary}
+              </Text>
             )}
           </Box>
           <Text
