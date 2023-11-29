@@ -30,7 +30,8 @@
         "0xe708": true,
         "0x5": true,
         "0x539": true
-      }
+      },
+      "snapsInstallPrivacyWarningShown": true
     },
     "CachedBalancesController": { "cachedBalances": "object" },
     "CurrencyController": {
