@@ -131,6 +131,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 
+import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
 ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IN
@@ -1127,6 +1128,20 @@ export default class MetamaskController extends EventEmitter {
       }),
       state: initState.SubjectMetadataController,
       subjectCacheLimit: 100,
+    });
+
+    // This runtime stream will be used by snaps in MV3 for communication
+    // between the snaps running in the offscreen document and the metamask
+    // controller running in the mv3 service worker.
+    this.runtimeStream = new BrowserRuntimePostMessageStream({
+      name: 'parent',
+      target: 'child',
+    });
+
+    // This listener is a placeholder and should be removed once snaps is added
+    // to the MV3 offscreen document solution.
+    this.runtimeStream.on('data', (data) => {
+      console.log('Service worker received data from offscreen document', data);
     });
 
     ///: BEGIN:ONLY_INCLUDE_IN(snaps)
