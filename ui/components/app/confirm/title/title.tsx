@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Text } from '../../../component-library';
 import {
   TextVariant,
@@ -8,7 +8,7 @@ import {
 import useTitle from './useTitle';
 import useDescription from './useDescription';
 
-export const ConfirmTitle: React.FC = () => {
+export const ConfirmTitle: React.FC = memo(() => {
   const title = useTitle();
   const description = useDescription();
 
@@ -31,4 +31,4 @@ export const ConfirmTitle: React.FC = () => {
       </Text>
     </>
   );
-};
+});
