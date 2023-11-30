@@ -807,6 +807,10 @@ describe('Selectors', () => {
   describe('#getShowSurveyToast', () => {
     const realDateNow = Date.now;
 
+    afterEach(() => {
+      Date.now = realDateNow;
+    });
+
     it('shows the survey link when not yet seen and within time bounds', () => {
       Date.now = () => new Date('December 20 2023 12:25:00 GMT-0600').getTime();
       const result = selectors.getShowSurveyToast({
@@ -815,7 +819,6 @@ describe('Selectors', () => {
         },
       });
       expect(result).toStrictEqual(true);
-      Date.now = realDateNow;
     });
 
     it('does not show the survey link when seen and within time bounds', () => {
@@ -826,7 +829,6 @@ describe('Selectors', () => {
         },
       });
       expect(result).toStrictEqual(false);
-      Date.now = realDateNow;
     });
 
     it('does not show the survey link before time bounds', () => {
@@ -837,7 +839,6 @@ describe('Selectors', () => {
         },
       });
       expect(result).toStrictEqual(false);
-      Date.now = realDateNow;
     });
 
     it('does not show the survey link after time bounds', () => {
@@ -848,7 +849,6 @@ describe('Selectors', () => {
         },
       });
       expect(result).toStrictEqual(false);
-      Date.now = realDateNow;
     });
   });
 });
