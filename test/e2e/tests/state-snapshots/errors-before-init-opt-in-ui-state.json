@@ -23,7 +23,6 @@
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
       "showTestnetMessageInDropdown": true,
-      "surveyLinkLastClickedOrClosed": null,
       "trezorModel": null,
       "usedNetworks": {
         "0x1": true,
