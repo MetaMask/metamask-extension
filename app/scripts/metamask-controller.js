@@ -1713,7 +1713,7 @@ export default class MetamaskController extends EventEmitter {
         ),
         onNetworkStateChange: networkControllerMessenger.subscribe.bind(
           networkControllerMessenger,
-          'NetworkController:stateChange',
+          'NetworkController:networkDidChange',
         ),
         getNonceLock: this.txController.nonceTracker.getNonceLock.bind(
           this.txController.nonceTracker,
