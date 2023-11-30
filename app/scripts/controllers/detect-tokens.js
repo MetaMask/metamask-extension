@@ -110,7 +110,7 @@ export default class DetectTokensController extends PollingControllerOnly {
         this.detectedTokens = detectedTokens;
       },
     );
-    messenger.subscribe('NetworkController:stateChange', () => {
+    messenger.subscribe('NetworkController:networkDidChange', () => {
       if (this.chainId !== this.getChainIdFromNetworkStore()) {
         const chainId = this.getChainIdFromNetworkStore();
         this.chainId = chainId;
