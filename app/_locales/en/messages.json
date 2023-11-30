@@ -794,6 +794,12 @@
   "confirmRecoveryPhrase": {
     "message": "Confirm Secret Recovery Phrase"
   },
+  "confirmTitleSignature": {
+    "message": "Signature request"
+  },
+  "confirmTitleDescSignature": {
+    "message": "Only sign this message if you fully understand the content and trust the requesting site."
+  },
   "confirmed": {
     "message": "Confirmed"
   },

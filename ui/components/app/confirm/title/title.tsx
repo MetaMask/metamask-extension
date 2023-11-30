@@ -5,16 +5,13 @@ import {
   TextAlign,
   TextColor,
 } from '../../../../helpers/constants/design-system';
+import useTitle from './useTitle';
+import useDescription from './useDescription';
 
-interface ConfirmTitleProps {
-  title: string;
-  description: string;
-}
+export const ConfirmTitle: React.FC = () => {
+  const title = useTitle();
+  const description = useDescription();
 
-export const ConfirmTitle: React.FC<ConfirmTitleProps> = ({
-  title,
-  description,
-}) => {
   return (
     <>
       <Text
