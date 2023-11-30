@@ -3935,12 +3935,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/browser-passworder@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "@metamask/browser-passworder@npm:4.2.0"
+"@metamask/browser-passworder@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "@metamask/browser-passworder@npm:4.3.0"
   dependencies:
     "@metamask/utils": "npm:^8.2.0"
-  checksum: 1ab79bb8b1af7243a92fcedd03abb9c452670853d83d0751a80aa15f4336c02c8696dcf27b62d3bf70f27f8262842f29b2c52c385d4aa35162154bccd253e695
+  checksum: 8ba5c50cd6274b0cc0f90a1ee16b960ee150f14c29083f3515f4abe018a28ead32c21f5f4a62a6e27a946b1228adc2ff1f195e71e38782fa39fa8fff116173e6
   languageName: node
   linkType: hard
 
@@ -4146,18 +4146,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-keyring-controller@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@metamask/eth-keyring-controller@npm:15.0.0"
+"@metamask/eth-keyring-controller@npm:^15.0.0, @metamask/eth-keyring-controller@npm:^15.1.0":
+  version: 15.1.0
+  resolution: "@metamask/eth-keyring-controller@npm:15.1.0"
   dependencies:
     "@ethereumjs/tx": "npm:^4.2.0"
-    "@metamask/browser-passworder": "npm:^4.2.0"
+    "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/eth-hd-keyring": "npm:^7.0.1"
     "@metamask/eth-sig-util": "npm:^7.0.0"
     "@metamask/eth-simple-keyring": "npm:^6.0.1"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/utils": "npm:^8.2.0"
-  checksum: d832f3085630b59b4af0874a80d1c9a192b23a9a0841a249a751a58dad1a3c051ce0bffd852ffa5f89ce588318692673c7ed975753e6f79b2f081c9728ea8eeb
+  checksum: f7d9abf56c42aa34542ceb3ea9f33c2a8b52a77699b57ee224df06883590a317f889dd2f231ebad465806538da97b31384cad91fd4faee627a258dd1f279d2c8
   languageName: node
   linkType: hard
 
@@ -24266,7 +24266,7 @@ __metadata:
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A19.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-19.0.0-38db9af3ac.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^3.2.0"
-    "@metamask/browser-passworder": "npm:^4.2.0"
+    "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^1.0.0"
     "@metamask/contract-metadata": "npm:^2.3.1"
     "@metamask/controller-utils": "npm:^5.0.0"
@@ -24278,7 +24278,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": "npm:^9.0.0"
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eth-json-rpc-middleware": "npm:^12.0.1"
-    "@metamask/eth-keyring-controller": "npm:^15.0.0"
+    "@metamask/eth-keyring-controller": "npm:^15.1.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:^2.0.1"
     "@metamask/eth-query": "npm:^3.0.1"
     "@metamask/eth-snap-keyring": "npm:^2.0.0"
