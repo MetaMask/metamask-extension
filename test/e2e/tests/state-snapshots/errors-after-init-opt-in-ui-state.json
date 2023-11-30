@@ -36,6 +36,7 @@
     "use4ByteResolution": true,
     "participateInMetaMetrics": true,
     "nextNonce": null,
+    "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
     "browserEnvironment": { "os": "string", "browser": "string" },

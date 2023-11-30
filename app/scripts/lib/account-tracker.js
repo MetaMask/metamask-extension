@@ -75,6 +75,7 @@ export default class AccountTracker {
     this.getNetworkIdentifier = opts.getNetworkIdentifier;
     this.preferencesController = opts.preferencesController;
     this.onboardingController = opts.onboardingController;
+    this.controllerMessenger = opts.controllerMessenger;
 
     // blockTracker.currentBlock may be null
     this._currentBlockNumberByChainId = {
@@ -97,20 +98,24 @@ export default class AccountTracker {
       }, this.onboardingController.store.getState()),
     );
 
-    this.preferencesController.store.subscribe(
-      previousValueComparator(async (prevState, currState) => {
-        const { selectedAddress: prevSelectedAddress } = prevState;
-        const {
-          selectedAddress: currSelectedAddress,
-          useMultiAccountBalanceChecker,
-        } = currState;
+    this.selectedAccount = this.controllerMessenger.call(
+      'AccountsController:getSelectedAccount',
+    );
+
+    this.controllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (newAccount) => {
+        const { useMultiAccountBalanceChecker } =
+          this.preferencesController.store.getState();
+
         if (
-          prevSelectedAddress !== currSelectedAddress &&
+          this.selectedAccount.id !== newAccount.id &&
           !useMultiAccountBalanceChecker
         ) {
+          this.selectedAccount = newAccount;
           this.updateAccountsAllActiveNetworks();
         }
-      }, this.preferencesController.store.getState()),
+      },
     );
   }
 
@@ -459,7 +464,9 @@ export default class AccountTracker {
 
       addresses = Object.keys(accounts);
     } else {
-      const selectedAddress = this.preferencesController.getSelectedAddress();
+      const selectedAddress = this.controllerMessenger.call(
+        'AccountsController:getSelectedAccount',
+      ).address;
 
       addresses = [selectedAddress];
     }

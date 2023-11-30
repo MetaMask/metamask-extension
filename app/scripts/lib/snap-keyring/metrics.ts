@@ -1,9 +1,13 @@
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { KeyringControllerGetKeyringForAccountAction } from '@metamask/keyring-controller';
+import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import { GetSnap } from '@metamask/snaps-controllers';
 import { Snap } from '@metamask/snaps-utils';
 
-type AllowedActions = GetSnap | KeyringControllerGetKeyringForAccountAction;
+type AllowedActions =
+  | GetSnap
+  | KeyringControllerGetKeyringForAccountAction
+  | AccountsControllerGetSelectedAccountAction;
 
 export type SnapAndHardwareMessenger = RestrictedControllerMessenger<
   'SnapAndHardwareMessenger',
@@ -14,7 +18,6 @@ export type SnapAndHardwareMessenger = RestrictedControllerMessenger<
 >;
 
 export async function getSnapAndHardwareInfoForMetrics(
-  getSelectedAddress: () => string,
   getAccountType: (address: string) => Promise<string>,
   getDeviceModel: (address: string) => Promise<string>,
   messenger: SnapAndHardwareMessenger,
@@ -25,28 +28,16 @@ export async function getSnapAndHardwareInfoForMetrics(
     return {};
   }
 
-  const selectedAddress = getSelectedAddress();
+  const account = messenger.call('AccountsController:getSelectedAccount');
+  const selectedAddress = account.address;
+  const { keyring } = account.metadata;
 
-  const keyring: any = await getKeyringForAccount(selectedAddress);
-
-  const account = await getAccountFromAddress(selectedAddress);
-
-  const snap: Snap = (await messenger.call(
-    'SnapController:get',
-    account?.metadata.snap.id,
-  )) as Snap;
-
-  async function getAccountFromAddress(address: string) {
-    const lowercaseAddress = address.toLowerCase();
-
-    if (keyring.listAccounts) {
-      const accounts = await keyring.listAccounts();
-      return accounts.find(
-        (_account: any) => _account.address.toLowerCase() === lowercaseAddress,
-      );
-    }
-
-    return undefined;
+  let snap;
+  if (account.metadata.snap?.id) {
+    snap = messenger.call(
+      'SnapController:get',
+      account.metadata.snap?.id,
+    ) as Snap;
   }
 
   async function getHardwareWalletType() {
@@ -55,13 +46,6 @@ export async function getSnapAndHardwareInfoForMetrics(
     }
 
     return undefined;
-  }
-
-  async function getKeyringForAccount(address: string) {
-    return await messenger.call(
-      'KeyringController:getKeyringForAccount',
-      address,
-    );
   }
 
   return {

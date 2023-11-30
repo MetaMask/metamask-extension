@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import { ControllerMessenger } from '@metamask/base-controller';
 
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
 
@@ -48,7 +49,8 @@ describe('Account Tracker', () => {
     accountTracker,
     accountRemovedListener,
     getNetworkIdentifierStub,
-    getNetworkClientByIdStub;
+    getNetworkClientByIdStub,
+    controllerMessenger;
 
   beforeEach(() => {
     provider = createTestProviderTools({
@@ -89,6 +91,15 @@ describe('Account Tracker', () => {
 
     getNetworkIdentifierStub = jest.fn();
 
+    controllerMessenger = new ControllerMessenger();
+    controllerMessenger.registerActionHandler(
+      'AccountsController:getSelectedAccount',
+      () => ({
+        id: 'accountId',
+        address: SELECTED_ADDRESS,
+      }),
+    );
+
     accountTracker = new AccountTracker({
       provider,
       blockTracker: blockTrackerStub,
@@ -101,7 +112,6 @@ describe('Account Tracker', () => {
           }),
           subscribe: noop,
         },
-        getSelectedAddress: () => SELECTED_ADDRESS,
       },
       onboardingController: {
         store: {
@@ -111,6 +121,7 @@ describe('Account Tracker', () => {
           }),
         },
       },
+      controllerMessenger,
       onAccountRemoved: (callback) => {
         accountRemovedListener = callback;
       },
@@ -264,6 +275,7 @@ describe('Account Tracker', () => {
             getState: noop,
           },
         },
+        controllerMessenger,
         onAccountRemoved: (callback) => {
           accountRemovedListener = callback;
         },
@@ -409,6 +421,7 @@ describe('Account Tracker', () => {
             getState: noop,
           },
         },
+        controllerMessenger,
         onAccountRemoved: (callback) => {
           accountRemovedListener = callback;
         },
@@ -643,7 +656,6 @@ describe('Account Tracker', () => {
               }),
               subscribe: noop,
             },
-            getSelectedAddress: () => SELECTED_ADDRESS,
           },
           onboardingController: {
             store: {
@@ -653,6 +665,7 @@ describe('Account Tracker', () => {
               }),
             },
           },
+          controllerMessenger,
           onAccountRemoved: (callback) => {
             accountRemovedListener = callback;
           },
@@ -722,7 +735,6 @@ describe('Account Tracker', () => {
               }),
               subscribe: noop,
             },
-            getSelectedAddress: () => SELECTED_ADDRESS,
           },
           onboardingController: {
             store: {
@@ -732,6 +744,7 @@ describe('Account Tracker', () => {
               }),
             },
           },
+          controllerMessenger,
           onAccountRemoved: (callback) => {
             accountRemovedListener = callback;
           },
