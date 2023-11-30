@@ -1,0 +1,60 @@
+diff --git a/dist/SelectedNetworkController.js b/dist/SelectedNetworkController.js
+index 2564d49706d13b24572c6f63a308c79c235bcf81..675ae02ee3a5cb5bb49362f0f218d5db4c47ffab 100644
+--- a/dist/SelectedNetworkController.js
++++ b/dist/SelectedNetworkController.js
+@@ -9,6 +9,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.SelectedNetworkController = exports.SelectedNetworkControllerEventTypes = exports.SelectedNetworkControllerActionTypes = void 0;
+ const base_controller_1 = require("@metamask/base-controller");
+ const swappable_obj_proxy_1 = require("@metamask/swappable-obj-proxy");
++const network_controller_1 = require("@metamask/network-controller");
+ const controllerName = 'SelectedNetworkController';
+ const stateMetadata = {
+     domains: { persist: true, anonymous: false },
+@@ -53,11 +54,12 @@ class SelectedNetworkController extends base_controller_1.BaseControllerV2 {
+     }
+     setNetworkClientIdForDomain(domain, networkClientId) {
+         const networkClient = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId);
++        const newNetworkClient = network_controller_1.createAutoManagedNetworkClient(networkClient.configuration, networkClientId);
+         const networkProxy = __classPrivateFieldGet(this, _SelectedNetworkController_proxies, "f").get(domain);
+         if (networkProxy === undefined) {
+             console.log(`[SelectedNetworkController.setNetworkClientIdForDomain] No proxies have been created for "${domain}" yet, so creating them to point to "${networkClientId}"`);
+-            const providerProxy = (0, swappable_obj_proxy_1.createSwappableProxy)(networkClient.provider);
+-            const blockTrackerProxy = (0, swappable_obj_proxy_1.createSwappableProxy)(networkClient.blockTracker);
++            const providerProxy = (0, swappable_obj_proxy_1.createSwappableProxy)(newNetworkClient.provider);
++            const blockTrackerProxy = (0, swappable_obj_proxy_1.createSwappableProxy)(newNetworkClient.blockTracker);
+             __classPrivateFieldGet(this, _SelectedNetworkController_proxies, "f").set(domain, {
+                 provider: providerProxy,
+                 blockTracker: blockTrackerProxy,
+@@ -66,8 +68,8 @@ class SelectedNetworkController extends base_controller_1.BaseControllerV2 {
+         }
+         else {
+             console.log(`[SelectedNetworkController.setNetworkClientIdForDomain] Proxies have been created for "${domain}", so retargeting them to point to "${networkClientId}"`);
+-            networkProxy.provider.setTarget(networkClient.provider);
+-            networkProxy.blockTracker.setTarget(networkClient.blockTracker);
++            networkProxy.provider.setTarget(newNetworkClient.provider);
++            networkProxy.blockTracker.setTarget(newNetworkClient.blockTracker);
+             networkProxy.networkClientId = networkClientId;
+         }
+         console.log(`[SelectedNetworkController.setNetworkClientIdForDomain] Now proxies are`, __classPrivateFieldGet(this, _SelectedNetworkController_proxies, "f"));
+@@ -108,14 +110,16 @@ class SelectedNetworkController extends base_controller_1.BaseControllerV2 {
+     getProviderAndBlockTracker(domain) {
+         let networkProxy = __classPrivateFieldGet(this, _SelectedNetworkController_proxies, "f").get(domain);
+         if (networkProxy === undefined) {
+-            const networkClient = this.messagingSystem.call('NetworkController:getNetworkClientById', this.getNetworkClientIdForDomain(domain));
+-            console.log(`SelectedNetworkController.getProviderAndBlockTracker: No proxies created yet for domain "${domain}", so creating them for "${networkClient.id}"`);
+-            const providerProxy = (0, swappable_obj_proxy_1.createSwappableProxy)(networkClient.provider);
+-            const blockTrackerProxy = (0, swappable_obj_proxy_1.createSwappableProxy)(networkClient.blockTracker);
++            const networkClientId = this.getNetworkClientIdForDomain(domain);
++            const networkClient = this.messagingSystem.call('NetworkController:getNetworkClientById', networkClientId);
++            const newNetworkClient = network_controller_1.createAutoManagedNetworkClient(networkClient.configuration, networkClientId);
++            console.log(`SelectedNetworkController.getProviderAndBlockTracker: No proxies created yet for domain "${domain}", so creating them for "${networkClientId}"`);
++            const providerProxy = (0, swappable_obj_proxy_1.createSwappableProxy)(newNetworkClient.provider);
++            const blockTrackerProxy = (0, swappable_obj_proxy_1.createSwappableProxy)(newNetworkClient.blockTracker);
+             networkProxy = {
+                 provider: providerProxy,
+                 blockTracker: blockTrackerProxy,
+-                networkClientId: networkClient.id,
++                networkClientId,
+             };
+             __classPrivateFieldGet(this, _SelectedNetworkController_proxies, "f").set(domain, networkProxy);
+         } else {

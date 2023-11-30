@@ -4631,7 +4631,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@patch:@metamask/network-controller@npm%3A15.2.0#~/.yarn/patches/@metamask-network-controller-npm-15.2.0-deaf5ce0c9.patch":
+"@metamask/network-controller@patch:@metamask/network-controller@npm%3A15.2.0#~/.yarn/patches/@metamask-network-controller-npm-15.2.0-deaf5ce0c9.patch::version=15.2.0&hash=a22e24":
   version: 15.2.0
   resolution: "@metamask/network-controller@patch:@metamask/network-controller@npm%3A15.2.0#~/.yarn/patches/@metamask-network-controller-npm-15.2.0-deaf5ce0c9.patch::version=15.2.0&hash=a22e24"
   dependencies:
@@ -4650,6 +4650,28 @@ __metadata:
     immer: "npm:^9.0.6"
     uuid: "npm:^8.3.2"
   checksum: b16dd67345e0a6a6c290842ad15bdd3654d38d4db918cbf54ef0e84229324cace7fcb5002da84e2adb4ab056a6f2df9321b751215dfb67d1e592e658c2473440
+  languageName: node
+  linkType: hard
+
+"@metamask/network-controller@patch:@metamask/network-controller@patch%3A@metamask/network-controller@npm%253A15.2.0%23~/.yarn/patches/@metamask-network-controller-npm-15.2.0-deaf5ce0c9.patch%3A%3Aversion=15.2.0&hash=a22e24#~/.yarn/patches/@metamask-network-controller-patch-6106a606b4.patch":
+  version: 15.2.0
+  resolution: "@metamask/network-controller@patch:@metamask/network-controller@patch%3A@metamask/network-controller@npm%253A15.2.0%23~/.yarn/patches/@metamask-network-controller-npm-15.2.0-deaf5ce0c9.patch%3A%3Aversion=15.2.0&hash=a22e24#~/.yarn/patches/@metamask-network-controller-patch-6106a606b4.patch::version=15.2.0&hash=694bb2"
+  dependencies:
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/controller-utils": "npm:^5.0.2"
+    "@metamask/eth-json-rpc-infura": "npm:^9.0.0"
+    "@metamask/eth-json-rpc-middleware": "npm:^12.0.1"
+    "@metamask/eth-json-rpc-provider": "npm:^2.2.0"
+    "@metamask/eth-query": "npm:^3.0.1"
+    "@metamask/json-rpc-engine": "npm:^7.2.0"
+    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
+    "@metamask/utils": "npm:^8.2.0"
+    async-mutex: "npm:^0.2.6"
+    eth-block-tracker: "npm:^8.0.0"
+    immer: "npm:^9.0.6"
+    uuid: "npm:^8.3.2"
+  checksum: 047e0f157d8fbd459ca72519f09707ca94b33013337822eb98506be3007a56d3e349ae3ad8e8b483a4290e5f3ba6b25fc7cf092ba1a08af810322b6b1a83ebf0
   languageName: node
   linkType: hard
 
@@ -5007,7 +5029,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch":
+"@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch::version=3.1.0&hash=729479":
   version: 3.1.0
   resolution: "@metamask/selected-network-controller@patch:@metamask/selected-network-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch::version=3.1.0&hash=729479"
   dependencies:
@@ -5018,6 +5040,20 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^15.1.0
   checksum: 974ad737537eb967fb67fcca18df5ef0083f274ebe3feadca9ee2f477ef2e69e0a55418054f00ac6cdc8a35bc0f181fe25dba81580010edd8c1939973fb1a017
+  languageName: node
+  linkType: hard
+
+"@metamask/selected-network-controller@patch:@metamask/selected-network-controller@patch%3A@metamask/selected-network-controller@npm%253A3.1.0%23~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch%3A%3Aversion=3.1.0&hash=729479#~/.yarn/patches/@metamask-selected-network-controller-patch-fcea37217f.patch":
+  version: 3.1.0
+  resolution: "@metamask/selected-network-controller@patch:@metamask/selected-network-controller@patch%3A@metamask/selected-network-controller@npm%253A3.1.0%23~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch%3A%3Aversion=3.1.0&hash=729479#~/.yarn/patches/@metamask-selected-network-controller-patch-fcea37217f.patch::version=3.1.0&hash=d4b799"
+  dependencies:
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/json-rpc-engine": "npm:^7.1.1"
+    "@metamask/network-controller": "npm:^15.1.0"
+    "@metamask/swappable-obj-proxy": "npm:^2.1.0"
+  peerDependencies:
+    "@metamask/network-controller": ^15.1.0
+  checksum: 28bd6f7fec05ee11e513ef0789fb882b6db2566464fc112496124eb9c446365946cf0c8b11d103d6448ffa5a49e916aed878d7163b666b7eeb004102473cbbbc
   languageName: node
   linkType: hard
 
@@ -24342,7 +24378,7 @@ __metadata:
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
     "@metamask/name-controller": "npm:^3.0.0"
-    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A15.2.0#~/.yarn/patches/@metamask-network-controller-npm-15.2.0-deaf5ce0c9.patch"
+    "@metamask/network-controller": "patch:@metamask/network-controller@patch%3A@metamask/network-controller@npm%253A15.2.0%23~/.yarn/patches/@metamask-network-controller-npm-15.2.0-deaf5ce0c9.patch%3A%3Aversion=15.2.0&hash=a22e24#~/.yarn/patches/@metamask-network-controller-patch-6106a606b4.patch"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^6.0.0"
@@ -24356,7 +24392,7 @@ __metadata:
     "@metamask/rate-limit-controller": "npm:^3.0.0"
     "@metamask/safe-event-emitter": "npm:^2.0.0"
     "@metamask/scure-bip39": "npm:^2.0.3"
-    "@metamask/selected-network-controller": "patch:@metamask/selected-network-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch"
+    "@metamask/selected-network-controller": "patch:@metamask/selected-network-controller@patch%3A@metamask/selected-network-controller@npm%253A3.1.0%23~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch%3A%3Aversion=3.1.0&hash=729479#~/.yarn/patches/@metamask-selected-network-controller-patch-fcea37217f.patch"
     "@metamask/signature-controller": "npm:^6.1.2"
     "@metamask/slip44": "npm:^3.1.0"
     "@metamask/smart-transactions-controller": "npm:^6.2.2"

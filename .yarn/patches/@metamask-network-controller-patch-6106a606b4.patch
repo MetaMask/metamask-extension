@@ -1,0 +1,12 @@
+diff --git a/dist/NetworkController.js b/dist/NetworkController.js
+index 45e8e4e2ccbcb4ef61ac2581ad6ac2168e160c89..ab15081c32e217fc810386922a93b7d83621d468 100644
+--- a/dist/NetworkController.js
++++ b/dist/NetworkController.js
+@@ -38,6 +38,7 @@ const create_auto_managed_network_client_1 = require("./create-auto-managed-netw
+ const logger_1 = require("./logger");
+ const types_1 = require("./types");
+ const log = (0, logger_1.createModuleLogger)(logger_1.projectLogger, 'NetworkController');
++exports.createAutoManagedNetworkClient = create_auto_managed_network_client_1.createAutoManagedNetworkClient;
+ /**
+  * `Object.keys()` is intentionally generic: it returns the keys of an object,
+  * but it cannot make guarantees about the contents of that object, so the type
