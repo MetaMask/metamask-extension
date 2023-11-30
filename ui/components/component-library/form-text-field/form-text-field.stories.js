@@ -18,8 +18,8 @@ import {
   HelpText,
   Label,
   Text,
-  TEXT_FIELD_SIZES,
-  TEXT_FIELD_TYPES,
+  TextFieldSize,
+  TextFieldType,
   Icon,
   IconName,
   IconSize,
@@ -150,12 +150,12 @@ export default {
     },
     size: {
       control: 'select',
-      options: Object.values(TEXT_FIELD_SIZES),
+      options: Object.values(TextFieldSize),
       table: { category: 'text field base props' },
     },
     type: {
       control: 'select',
-      options: Object.values(TEXT_FIELD_TYPES),
+      options: Object.values(TextFieldType),
       table: { category: 'text field base props' },
     },
     truncate: {
@@ -419,12 +419,12 @@ export const CustomLabelOrHelpText = () => (
       placeholder="Enter a number"
       endAccessory={<ButtonLink>Max</ButtonLink>}
       marginBottom={4}
-      type={TEXT_FIELD_TYPES.NUMBER}
+      type={TextFieldType.Number}
     />
     <FormTextField
       label="Swap from"
       placeholder="0"
-      type={TEXT_FIELD_TYPES.NUMBER}
+      type={TextFieldType.Number}
     />
     <Box
       display={Display.Flex}

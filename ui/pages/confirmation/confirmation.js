@@ -10,10 +10,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
+import log from 'loglevel';
 
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
@@ -41,6 +43,7 @@ import { getSnapName } from '../../helpers/utils/util';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IN
+import { DAY } from '../../../shared/constants/time';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -205,7 +208,8 @@ export default function ConfirmationPage({
   const [loadingText, setLoadingText] = useState();
 
   const [submitAlerts, setSubmitAlerts] = useState([]);
-
+  const [matchedChain, setMatchedChain] = useState({});
+  const [currencySymbolWarning, setCurrencySymbolWarning] = useState(null);
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, pendingConfirmation?.origin),
@@ -256,6 +260,7 @@ export default function ConfirmationPage({
           dispatch,
           history,
           setInputState,
+          { matchedChain, currencySymbolWarning },
         )
       : {};
   }, [
@@ -263,6 +268,8 @@ export default function ConfirmationPage({
     t,
     dispatch,
     history,
+    matchedChain,
+    currencySymbolWarning,
     ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
     isSnapDialog,
     snapName,
@@ -300,6 +307,47 @@ export default function ConfirmationPage({
 
     setApprovalFlowLoadingText(childFlow?.loadingText ?? null);
   }, [approvalFlows]);
+
+  useEffect(() => {
+    async function fetchSafeChainsList() {
+      try {
+        if (useSafeChainsListValidation) {
+          const response = await fetchWithCache({
+            url: 'https://chainid.network/chains.json',
+            cacheOptions: { cacheRefreshTime: DAY },
+            functionName: 'getSafeChainsList',
+          });
+          const safeChainsList = response;
+          const _matchedChain = safeChainsList.find(
+            (chain) =>
+              chain.chainId ===
+              parseInt(pendingConfirmation.requestData.chainId, 16),
+          );
+          setMatchedChain(_matchedChain);
+          if (
+            _matchedChain?.nativeCurrency?.symbol ===
+            pendingConfirmation.requestData.ticker
+          ) {
+            setCurrencySymbolWarning(null);
+          } else {
+            setCurrencySymbolWarning(
+              t('chainListReturnedDifferentTickerSymbol', [
+                _matchedChain?.nativeCurrency?.symbol,
+              ]),
+            );
+          }
+        }
+      } catch (error) {
+        log.warn('Failed to fetch the chainList from chainid.network', error);
+        setMatchedChain(null);
+        setCurrencySymbolWarning(null);
+        // Swallow the error here to not block the user from adding a custom network
+      }
+    }
+    if (pendingConfirmation?.type === ApprovalType.AddEthereumChain) {
+      fetchSafeChainsList();
+    }
+  }, [pendingConfirmation, t, useSafeChainsListValidation]);
 
   if (!pendingConfirmation) {
     if (approvalFlows.length > 0) {

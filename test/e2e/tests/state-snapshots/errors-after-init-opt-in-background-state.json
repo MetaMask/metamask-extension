@@ -1,5 +1,8 @@
 {
   "AccountTracker": { "accounts": "object" },
+  "AccountsController": {
+    "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
+  },
   "AddressBookController": { "addressBook": "object" },
   "AlertController": {
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
@@ -63,6 +66,7 @@
   "EnsController": { "ensResolutionsByAddress": "object" },
   "GasFeeController": {
     "gasFeeEstimates": {},
+    "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none"
   },
@@ -99,6 +103,9 @@
       }
     },
     "networkConfigurations": "object"
+  },
+  "NetworkOrderController": {
+    "orderedNetworkList": { "0": "string", "1": "string", "2": "string" }
   },
   "NftController": {
     "allNftContracts": "object",
