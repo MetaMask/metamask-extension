@@ -184,13 +184,11 @@ export default function SnapInstallWarning({
 
   const criticalPermissions = {
     snap_getBip32PublicKey: {
-      weight: 2,
       name: 'snapInstallWarningPermissionNameForViewPublicKey',
       title: 'snapInstallWarningPermissionNameForViewPublicKey',
       description: 'snapInstallWarningPermissionDescriptionForBip32View',
     },
     snap_getBip32Entropy_snap_getBip44Entropy: {
-      weight: 1,
       name: 'snapInstallWarningPermissionNameForEntropy',
       title: 'snapInstallWarningPermissionNameForEntropy',
       description: 'snapInstallWarningPermissionDescriptionForEntropy',
