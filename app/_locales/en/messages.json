@@ -4238,8 +4238,8 @@
   "smartContracts": {
     "message": "Smart contracts"
   },
-  "smartSwap": {
-    "message": "Smart swap"
+  "smartSwaps": {
+    "message": "Smart Swaps"
   },
   "smartSwapsAreHere": {
     "message": "Smart Swaps are here!"
