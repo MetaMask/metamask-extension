@@ -146,22 +146,16 @@ export default function SnapInstallWarning({
   }
 
   function constructWarningPermissionCell(permissionWarnings, permission) {
+    const warningElementComponentArray =
+      constructWarningElementComponentArray(permissionWarnings);
     return (
       <Box as="span" marginBottom={4}>
         <PermissionCell
           permissionName={
-            <Text>
-              {t(permission.name, [
-                constructWarningElementComponentArray(permissionWarnings),
-              ])}
-            </Text>
+            <Text>{t(permission.name, [warningElementComponentArray])}</Text>
           }
           title={
-            <Text>
-              {t(permission.title, [
-                constructWarningElementComponentArray(permissionWarnings),
-              ])}
-            </Text>
+            <Text>{t(permission.title, [warningElementComponentArray])}</Text>
           }
           description={t(permission.description, [
             <Text
