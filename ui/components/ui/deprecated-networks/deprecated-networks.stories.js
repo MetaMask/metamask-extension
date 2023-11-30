@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
 
-import DeprecatedTestNetworks from './deprecated-test-networks';
+import DeprecatedNetworks from './deprecated-networks';
 
 const store = configureStore({
   ...testData,
@@ -15,10 +15,10 @@ const store = configureStore({
 });
 
 export default {
-  title: 'Components/UI/DeprecatedTestNetworks',
+  title: 'Components/UI/DeprecatedNetworks',
   decorators: [(story) => <Provider store={store}>{story()}</Provider>],
 };
 
-export const DefaultStory = () => <DeprecatedTestNetworks />;
+export const DefaultStory = () => <DeprecatedNetworks />;
 
 DefaultStory.storyName = 'Default';

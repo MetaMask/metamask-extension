@@ -2076,6 +2076,10 @@ export async function getTokenStandardAndDetails(
   ]);
 }
 
+export async function getTokenSymbol(address: string): Promise<string | null> {
+  return await submitRequestToBackground('getTokenSymbol', [address]);
+}
+
 export function clearPendingTokens(): Action {
   return {
     type: actionConstants.CLEAR_PENDING_TOKENS,
@@ -3573,6 +3577,19 @@ export function removePermissionsFor(
         dispatch(displayWarning(err));
       }
     });
+  };
+}
+
+/**
+ * Updates the order of networks after drag and drop
+ *
+ * @param orderedNetworkList
+ */
+export function updateNetworksList(
+  orderedNetworkList: [],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateNetworksList', [orderedNetworkList]);
   };
 }
 
