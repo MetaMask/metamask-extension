@@ -75,11 +75,26 @@ export default function SnapInstallWarning({
       const secondWarningSubject = permissionWarnings[1].warningMessageSubject;
       return [
         <Text
-          fontWeight={FontWeight.Medium}
+          fontWeight={FontWeight.Normal}
           as="span"
           key="warningMessageSubject"
         >
-          {t('andForTwoItems', [firstWarningSubject, secondWarningSubject])}
+          {t('andForTwoItems', [
+            <Text
+              fontWeight={FontWeight.Medium}
+              as="span"
+              key={`${firstWarningSubject}_and_first`}
+            >
+              {firstWarningSubject}
+            </Text>,
+            <Text
+              fontWeight={FontWeight.Medium}
+              as="span"
+              key={`${secondWarningSubject}_and_second`}
+            >
+              {secondWarningSubject}
+            </Text>,
+          ])}
         </Text>,
       ];
     }
@@ -92,14 +107,28 @@ export default function SnapInstallWarning({
       if (permissionWarnings.length - 2 === index) {
         return [
           <Text
-            fontWeight={FontWeight.Medium}
+            fontWeight={FontWeight.Normal}
             as="span"
             key={`${warning.permissionName}_and_${index}`}
           >
             {t('andForListItems', [
-              warning.warningMessageSubject,
-              permissionWarnings[permissionWarnings.length - 1]
-                .warningMessageSubject,
+              <Text
+                fontWeight={FontWeight.Medium}
+                as="span"
+                key={`${warning.permissionName}_and_first_${index}`}
+              >
+                {warning.warningMessageSubject}
+              </Text>,
+              <Text
+                fontWeight={FontWeight.Medium}
+                as="span"
+                key={`${warning.permissionName}_and_second_first_${index}`}
+              >
+                {
+                  permissionWarnings[permissionWarnings.length - 1]
+                    .warningMessageSubject
+                }
+              </Text>,
             ])}
           </Text>,
         ];
@@ -178,33 +207,20 @@ export default function SnapInstallWarning({
       warning.permissionName === 'snap_getBip44Entropy',
   );
 
-  const warningPermissionCells = {
-    snap_getBip32PublicKey: {
-      weight: criticalPermissions.snap_getBip32PublicKey.weight,
-      cell: bip32PublicKeyPermissionWarnings.length
-        ? constructWarningPermissionCell(
-            bip32PublicKeyPermissionWarnings,
-            criticalPermissions.snap_getBip32PublicKey,
-          )
-        : null,
-    },
-    snap_getBip32Entropy_snap_getBip44Entropy: {
-      weight:
-        criticalPermissions.snap_getBip32Entropy_snap_getBip44Entropy.weight,
-      cell: bip32bip44EntropyPermissionWarnings.length
-        ? constructWarningPermissionCell(
-            bip32bip44EntropyPermissionWarnings,
-            criticalPermissions.snap_getBip32Entropy_snap_getBip44Entropy,
-          )
-        : null,
-    },
-  };
-
-  const sortedPermissionCellsArray = Object.entries(warningPermissionCells)
-    .map(([key, value]) => ({ permissionName: key, ...value }))
-    .filter((permission) => permission.cell !== null)
-    .sort((a, b) => a.weight - b.weight)
-    .map((permission) => permission.cell);
+  const bip32PublicKeyPermissionCellWarning =
+    bip32PublicKeyPermissionWarnings.length
+      ? constructWarningPermissionCell(
+          bip32PublicKeyPermissionWarnings,
+          criticalPermissions.snap_getBip32PublicKey,
+        )
+      : null;
+  const bip32bip44PermissionCellWarning =
+    bip32bip44EntropyPermissionWarnings.length
+      ? constructWarningPermissionCell(
+          bip32bip44EntropyPermissionWarnings,
+          criticalPermissions.snap_getBip32Entropy_snap_getBip44Entropy,
+        )
+      : null;
 
   return (
     <Popover
@@ -251,7 +267,8 @@ export default function SnapInstallWarning({
           </Text>,
         ])}
       </Text>
-      {sortedPermissionCellsArray}
+      {bip32bip44PermissionCellWarning}
+      {bip32PublicKeyPermissionCellWarning}
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.flexStart}
