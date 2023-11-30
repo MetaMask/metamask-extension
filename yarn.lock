@@ -3841,9 +3841,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^18.0.0":
-  version: 18.0.0
-  resolution: "@metamask/assets-controllers@npm:18.0.0"
+"@metamask/assets-controllers@npm:^19.0.0":
+  version: 19.0.0
+  resolution: "@metamask/assets-controllers@npm:19.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -3854,13 +3854,13 @@ __metadata:
     "@metamask/base-controller": "npm:^3.2.3"
     "@metamask/contract-metadata": "npm:^2.4.0"
     "@metamask/controller-utils": "npm:^5.0.2"
-    "@metamask/eth-query": "npm:^3.0.1"
+    "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:3.0.0"
-    "@metamask/network-controller": "npm:^15.1.0"
-    "@metamask/polling-controller": "npm:^1.0.1"
+    "@metamask/network-controller": "npm:^16.0.0"
+    "@metamask/polling-controller": "npm:^1.0.2"
     "@metamask/preferences-controller": "npm:^4.4.3"
     "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/utils": "npm:^8.1.0"
+    "@metamask/utils": "npm:^8.2.0"
     "@types/uuid": "npm:^8.3.0"
     async-mutex: "npm:^0.2.6"
     ethereumjs-util: "npm:^7.0.10"
@@ -3870,9 +3870,9 @@ __metadata:
     uuid: "npm:^8.3.2"
   peerDependencies:
     "@metamask/approval-controller": ^4.1.0
-    "@metamask/network-controller": ^15.1.0
+    "@metamask/network-controller": ^16.0.0
     "@metamask/preferences-controller": ^4.4.3
-  checksum: 68022501c23edf218b168b9b4e445a09850a49da2f1af533ba1aa1e3fc0bd575b5dd36932e9f3a1b3501fee61a0cf31eefea9cff84f70bc0fb544109f653e9c4
+  checksum: 5598d3f553c84340e6c1e4e5458ced0a7248c2f6c07662f8a5c717b6b6314fc78c219b69135b9fc34884b808fb2b5b5dc6a926718d076f891f5edb176f60627b
   languageName: node
   linkType: hard
 
@@ -24266,7 +24266,7 @@ __metadata:
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^4.0.0"
     "@metamask/approval-controller": "npm:^3.4.0"
-    "@metamask/assets-controllers": "npm:^18.0.0"
+    "@metamask/assets-controllers": "npm:^19.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^3.2.0"
     "@metamask/browser-passworder": "npm:^4.1.0"
@@ -24299,7 +24299,7 @@ __metadata:
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
     "@metamask/name-controller": "npm:^3.0.0"
-    "@metamask/network-controller": "npm:^15.2.0"
+    "@metamask/network-controller": "npm:^16.0.0"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^6.0.0"
