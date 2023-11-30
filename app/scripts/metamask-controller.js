@@ -585,7 +585,7 @@ export default class MetamaskController extends EventEmitter {
         ),
       onNetworkStateChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        'NetworkController:stateChange',
+        'NetworkController:networkDidChange',
       ),
       onTokenListStateChange: (listener) =>
         this.controllerMessenger.subscribe(
