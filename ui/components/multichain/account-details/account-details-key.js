@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   BannerAlert,
+  Box,
   ButtonIcon,
   ButtonPrimary,
   IconName,
-  Box,
   Text,
 } from '../../component-library';
 

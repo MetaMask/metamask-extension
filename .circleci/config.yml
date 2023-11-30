@@ -4,18 +4,20 @@ executors:
   node-browsers:
     docker:
       - image: cimg/node:18.18-browsers
+    environment:
+      NODE_OPTIONS: --max_old_space_size=3072
   node-browsers-medium-plus:
     docker:
       - image: cimg/node:18.18-browsers
     resource_class: medium+
     environment:
-      NODE_OPTIONS: --max_old_space_size=2048
+      NODE_OPTIONS: --max_old_space_size=4096
   node-browsers-large:
     docker:
       - image: cimg/node:18.18-browsers
     resource_class: large
     environment:
-      NODE_OPTIONS: --max_old_space_size=2048
+      NODE_OPTIONS: --max_old_space_size=4096
   shellcheck:
     docker:
       - image: koalaman/shellcheck-alpine@sha256:dfaf08fab58c158549d3be64fb101c626abc5f16f341b569092577ae207db199
@@ -1077,18 +1079,20 @@ jobs:
       - run:
           name: test:e2e:chrome:mmi
           command: |
-            SHARD="$((${CIRCLE_NODE_INDEX}+1))"; xvfb-run yarn playwright test --shard=${SHARD}/${CIRCLE_NODE_TOTAL}
-          no_output_timeout: 20m
+            TESTFILES=$(circleci tests glob "test/e2e/mmi/**/*.spec.ts")
+            echo "$TESTFILES"
+            echo "$TESTFILES" | circleci tests run --command="xvfb-run xargs yarn playwright test" verbose --split-by=timings
+          no_output_timeout: 10m
       - slack/notify:
           branch_pattern: Version-v*
           event: fail
-          mentions: <@antonio.regadas>, <@ramon.acitores134>
+          mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
           channel: C01LUJL3T98
       - slack/notify:
           branch_pattern: develop
           event: fail
-          mentions: <@antonio.regadas>, <@ramon.acitores134>
+          mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
           channel: C05QXJA7NP8
       - store_artifacts:
@@ -1474,7 +1478,7 @@ jobs:
           at: .
       - run:
           name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=4096 yarn mozilla-lint
 
   test-mozilla-lint-desktop:
     executor: node-browsers
@@ -1490,7 +1494,7 @@ jobs:
           command: mv ./builds-desktop ./builds
       - run:
           name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=4096 yarn mozilla-lint
 
   test-mozilla-lint-flask:
     executor: node-browsers
@@ -1506,7 +1510,7 @@ jobs:
           command: mv ./builds-flask ./builds
       - run:
           name: test:mozilla-lint
-          command: NODE_OPTIONS=--max_old_space_size=3072 yarn mozilla-lint
+          command: NODE_OPTIONS=--max_old_space_size=4096 yarn mozilla-lint
 
   all-tests-pass:
     executor: node-browsers

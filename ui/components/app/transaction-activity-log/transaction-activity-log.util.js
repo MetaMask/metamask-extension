@@ -1,4 +1,4 @@
-import { TransactionType } from '../../../../shared/constants/transaction';
+import { TransactionType } from '@metamask/transaction-controller';
 import { sumHexes } from '../../../../shared/modules/conversion.utils';
 import { getHexGasTotal } from '../../../helpers/utils/confirm-tx.util';
 

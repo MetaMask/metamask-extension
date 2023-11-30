@@ -1,13 +1,11 @@
 import { addHexPrefix } from 'ethereumjs-util';
 import abi from 'human-standard-token-abi';
 import BigNumber from 'bignumber.js';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
-import {
-  AssetType,
-  TransactionEnvelopeType,
-} from '../../../shared/constants/transaction';
+import { AssetType } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import {
   addGasBuffer,
@@ -164,9 +162,7 @@ export async function estimateGasLimitForSend({
  * Generates a txParams from the send slice.
  *
  * @param {import('.').SendState} sendState - the state of the send slice
- * @returns {import(
- *  '../../../shared/constants/transaction'
- * ).TxParams} A txParams object that can be used to create a transaction or
+ * @returns {import('@metamask/transaction-controller').TransactionParams} A txParams object that can be used to create a transaction or
  *  update an existing transaction.
  */
 export function generateTransactionParams(sendState) {

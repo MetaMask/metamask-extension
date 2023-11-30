@@ -1,4 +1,4 @@
-import { TransactionType } from '../../../shared/constants/transaction';
+import { TransactionType } from '@metamask/transaction-controller';
 import migration53 from './053';
 
 const SENT_ETHER = 'sentEther'; // a legacy transaction type replaced now by TransactionType.simpleSend
