@@ -413,8 +413,16 @@ export function getTargetAccount(state, targetAddress) {
   return accounts[targetAddress];
 }
 
-export const getTokenExchangeRates = (state) =>
-  state.metamask.contractExchangeRates;
+export const getTokenExchangeRatesForCurrentChain = (state) => {
+  const chainId = getCurrentChainId(state);
+  const nativeCurrency = getNativeCurrency(state);
+
+  return (
+    state.metamask.contractExchangeRatesByChainId?.[chainId]?.[
+      nativeCurrency
+    ] || {}
+  );
+};
 
 export function getAddressBook(state) {
   const chainId = getCurrentChainId(state);

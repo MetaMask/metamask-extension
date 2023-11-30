@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import {
-  getTokenExchangeRates,
+  getTokenExchangeRatesForCurrentChain,
   getCurrentCurrency,
   getShouldShowFiat,
 } from '../selectors';
@@ -29,21 +29,22 @@ export function useTokenFiatAmount(
   overrides = {},
   hideCurrencySymbol,
 ) {
-  const contractExchangeRates = useSelector(
-    getTokenExchangeRates,
+  const contractExchangeRatesForCurrentChain = useSelector(
+    getTokenExchangeRatesForCurrentChain,
     shallowEqual,
   );
+
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const userPrefersShownFiat = useSelector(getShouldShowFiat);
   const showFiat = overrides.showFiat ?? userPrefersShownFiat;
-  const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
-    (key) => isEqualCaseInsensitive(key, tokenAddress),
-  );
+  const contractExchangeTokenKey = Object.keys(
+    contractExchangeRatesForCurrentChain,
+  ).find((key) => isEqualCaseInsensitive(key, tokenAddress));
   const tokenExchangeRate =
     overrides.exchangeRate ??
     (contractExchangeTokenKey &&
-      contractExchangeRates[contractExchangeTokenKey]);
+      contractExchangeRatesForCurrentChain[contractExchangeTokenKey]);
   const formattedFiat = useMemo(
     () =>
       getTokenFiatAmount(

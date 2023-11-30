@@ -229,9 +229,13 @@ export const createSwapsMockStore = () => {
           conversionRate: 1,
         },
       },
-      contractExchangeRates: {
-        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
-        '0x1111111111111111111111111111111111111111': 0.1,
+      contractExchangeRatesByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          ETH: {
+            '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
+            '0x1111111111111111111111111111111111111111': 0.1,
+          },
+        },
       },
       identities: {
         '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {

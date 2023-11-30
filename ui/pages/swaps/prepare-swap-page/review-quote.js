@@ -56,7 +56,7 @@ import {
   conversionRateSelector,
   getSelectedAccount,
   getCurrentCurrency,
-  getTokenExchangeRates,
+  getTokenExchangeRatesForCurrentChain,
   getSwapsDefaultToken,
   getCurrentChainId,
   isHardwareWallet,
@@ -191,8 +191,13 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const customMaxFeePerGas = useSelector(getCustomMaxFeePerGas);
   const customMaxPriorityFeePerGas = useSelector(getCustomMaxPriorityFeePerGas);
   const swapsUserFeeLevel = useSelector(getSwapsUserFeeLevel);
-  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
-  const memoizedTokenConversionRates = useEqualityCheck(tokenConversionRates);
+  const tokenConversionRatesForCurrentChain = useSelector(
+    getTokenExchangeRatesForCurrentChain,
+    isEqual,
+  );
+  const memoizedTokenConversionRates = useEqualityCheck(
+    tokenConversionRatesForCurrentChain,
+  );
   const { balance: ethBalance } = useSelector(getSelectedAccount, shallowEqual);
   const conversionRate = useSelector(conversionRateSelector);
   const USDConversionRate = useSelector(getUSDConversionRate);
@@ -373,7 +378,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       conversionRate,
       currentCurrency,
       approveGas,
-      tokenConversionRates: memoizedTokenConversionRates,
+      tokenConversionRatesForCurrentChain: memoizedTokenConversionRates,
       chainId,
       smartTransactionEstimatedGas:
         smartTransactionsEnabled &&

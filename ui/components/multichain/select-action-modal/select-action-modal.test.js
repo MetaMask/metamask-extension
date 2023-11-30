@@ -98,7 +98,7 @@ describe('Select Action Modal', () => {
           accounts: [],
         },
       ],
-      contractExchangeRates: {},
+      contractExchangeRatesByChainId: {},
     },
   };
   const store = configureMockStore([thunk])(mockState);

@@ -8,10 +8,10 @@ import transactionGroup from '../../../../test/data/mock-pending-transaction-dat
 import {
   getConversionRate,
   getSelectedAccount,
-  getTokenExchangeRates,
   getPreferences,
   getShouldShowFiat,
   getCurrentNetwork,
+  getTokenExchangeRatesForCurrentChain,
 } from '../../../selectors';
 import { renderWithProvider } from '../../../../test/jest';
 import { setBackgroundConnection } from '../../../store/background-connection';
@@ -99,7 +99,7 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     return {
       balance: opts.balance ?? '2AA1EFB94E0000',
     };
-  } else if (selector === getTokenExchangeRates) {
+  } else if (selector === getTokenExchangeRatesForCurrentChain) {
     return opts.tokenExchangeRates ?? {};
   } else if (selector === getCurrentNetwork) {
     return { nickname: 'Ethereum Mainnet' };

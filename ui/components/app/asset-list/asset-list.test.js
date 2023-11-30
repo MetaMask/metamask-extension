@@ -83,10 +83,14 @@ const render = (
           [selectedAddress]: balance,
         },
       },
-      contractExchangeRates: {
-        [USDC_CONTRACT]: 0.00062566,
-        [LINK_CONTRACT]: 0.00423239,
-        [WBTC_CONTRACT]: 16.66575,
+      contractExchangeRatesByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          ETH: {
+            [USDC_CONTRACT]: 0.0006189,
+            [LINK_CONTRACT]: 0.00423239,
+            [WBTC_CONTRACT]: 16.66575,
+          },
+        },
       },
       selectedAddress,
     },

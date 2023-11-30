@@ -4,7 +4,7 @@ import {
   getCurrentChainId,
   getCurrentCurrency,
   getMetaMaskCachedBalances,
-  getTokenExchangeRates,
+  getTokenExchangeRatesForCurrentChain,
   getNativeCurrencyImage,
   getTokenList,
 } from '../selectors';
@@ -29,9 +29,10 @@ export const useAccountTotalFiatBalance = (
   const currentChainId = useSelector(getCurrentChainId);
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
+  const nativeCurrency = useSelector(getNativeCurrency);
 
-  const contractExchangeRates = useSelector(
-    getTokenExchangeRates,
+  const contractExchangeRatesForCurrentChain = useSelector(
+    getTokenExchangeRatesForCurrentChain,
     shallowEqual,
   );
 
@@ -50,7 +51,6 @@ export const useAccountTotalFiatBalance = (
   const allTokenList = useSelector(getTokenList);
   const allTokenListValues = Object.values(allTokenList);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const nativeCurrency = useSelector(getNativeCurrency);
 
   const { loading, tokensWithBalances } = useTokenTracker({
     tokens,
@@ -61,12 +61,12 @@ export const useAccountTotalFiatBalance = (
 
   // Create fiat values for token balances
   const tokenFiatBalances = tokensWithBalances.map((token) => {
-    const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
-      (key) => isEqualCaseInsensitive(key, token.address),
-    );
+    const contractExchangeTokenKey = Object.keys(
+      contractExchangeRatesForCurrentChain,
+    ).find((key) => isEqualCaseInsensitive(key, token.address));
     const tokenExchangeRate =
       (contractExchangeTokenKey &&
-        contractExchangeRates[contractExchangeTokenKey]) ??
+        contractExchangeRatesForCurrentChain[contractExchangeTokenKey]) ??
       0;
 
     const totalFiatValue = getTokenFiatAmount(

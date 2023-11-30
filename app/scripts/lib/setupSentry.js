@@ -282,6 +282,7 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   TokenRatesController: {
+    contractExchangeRatesByChainId: false,
     contractExchangeRates: false,
   },
   TokensController: {

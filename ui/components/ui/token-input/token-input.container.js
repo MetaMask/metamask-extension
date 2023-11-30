@@ -1,6 +1,9 @@
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getTokenExchangeRates, getShouldShowFiat } from '../../../selectors';
+import {
+  getTokenExchangeRatesForCurrentChain,
+  getShouldShowFiat,
+} from '../../../selectors';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import TokenInput from './token-input.component';
 
@@ -11,7 +14,8 @@ const mapStateToProps = (state) => {
 
   return {
     currentCurrency,
-    tokenExchangeRates: getTokenExchangeRates(state),
+    tokenExchangeRatesForCurrentChain:
+      getTokenExchangeRatesForCurrentChain(state),
     hideConversion: !getShouldShowFiat(state),
     nativeCurrency: getNativeCurrency(state),
     tokens,

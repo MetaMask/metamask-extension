@@ -5,7 +5,7 @@ import { isEqual, uniqBy } from 'lodash';
 import { formatIconUrlWithProxy } from '@metamask/assets-controllers';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import {
-  getTokenExchangeRates,
+  getTokenExchangeRatesForCurrentChain,
   getCurrentCurrency,
   getSwapsDefaultToken,
   getCurrentChainId,
@@ -22,7 +22,7 @@ import { useEqualityCheck } from './useEqualityCheck';
 
 export function getRenderableTokenData(
   token,
-  contractExchangeRates,
+  contractExchangeRatesForCurrentChain,
   conversionRate,
   currentCurrency,
   chainId,
@@ -35,7 +35,8 @@ export function getRenderableTokenData(
   } else if (string && conversionRate > 0) {
     // This condition improves performance significantly, because it only gets a contract exchange rate
     // if a token amount is truthy and conversion rate is higher than 0.
-    contractExchangeRate = contractExchangeRates[toChecksumHexAddress(address)];
+    contractExchangeRate =
+      contractExchangeRatesForCurrentChain[toChecksumHexAddress(address)];
   }
   const formattedFiat =
     getTokenFiatAmount(
@@ -102,7 +103,10 @@ export function useTokensToSearch({
   tokenBucketPriority = TokenBucketPriority.owned,
 }) {
   const chainId = useSelector(getCurrentChainId);
-  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
+  const tokenConversionRatesForCurrentChain = useSelector(
+    getTokenExchangeRatesForCurrentChain,
+    isEqual,
+  );
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, shallowEqual);
@@ -113,7 +117,7 @@ export function useTokensToSearch({
 
   const defaultToken = getRenderableTokenData(
     defaultSwapsToken,
-    tokenConversionRates,
+    tokenConversionRatesForCurrentChain,
     conversionRate,
     currentCurrency,
     chainId,
@@ -153,7 +157,7 @@ export function useTokensToSearch({
     memoizedSwapsAndUserTokensWithoutDuplicities.forEach((token) => {
       const renderableDataToken = getRenderableTokenData(
         { ...usersTokensAddressMap[token.address.toLowerCase()], ...token },
-        tokenConversionRates,
+        tokenConversionRatesForCurrentChain,
         conversionRate,
         currentCurrency,
         chainId,
@@ -208,7 +212,7 @@ export function useTokensToSearch({
     memoizedTokensToSearch,
     memoizedUsersToken,
     memoizedTopTokens,
-    tokenConversionRates,
+    tokenConversionRatesForCurrentChain,
     conversionRate,
     currentCurrency,
     memoizedDefaultToken,

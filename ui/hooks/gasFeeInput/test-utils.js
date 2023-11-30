@@ -12,7 +12,7 @@ import {
   getPreferences,
   txDataSelector,
   getCurrentKeyring,
-  getTokenExchangeRates,
+  getTokenExchangeRatesForCurrentChain,
 } from '../../selectors';
 
 import { useGasFeeEstimates } from '../useGasFeeEstimates';
@@ -138,7 +138,7 @@ export const generateUseSelectorRouter =
     if (selector === getCurrentKeyring) {
       return { type: '' };
     }
-    if (selector === getTokenExchangeRates) {
+    if (selector === getTokenExchangeRatesForCurrentChain) {
       return { '0x1': '1' };
     }
     return undefined;

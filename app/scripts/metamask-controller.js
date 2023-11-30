@@ -863,6 +863,9 @@ export default class MetamaskController extends EventEmitter {
               });
             },
           ),
+        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+          this.networkController,
+        ),
       },
       {},
       initState.TokenRatesController,
@@ -1697,8 +1700,8 @@ export default class MetamaskController extends EventEmitter {
         provider: this.provider,
         getProviderConfig: () => this.networkController.state.providerConfig,
         getTokenRatesState: () => this.tokenRatesController.state,
-        getCurrentChainId: () =>
-          this.networkController.state.providerConfig.chainId,
+        getCurrentProviderConfig: () =>
+          this.networkController.state.providerConfig,
         getEIP1559GasFeeEstimates:
           this.gasFeeController.fetchGasFeeEstimates.bind(
             this.gasFeeController,

@@ -52,7 +52,7 @@ import {
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
-  getTokenExchangeRates,
+  getTokenExchangeRatesForCurrentChain,
   getCurrentCurrency,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
@@ -147,7 +147,10 @@ export default function BuildQuote({
   const areQuotesPresent = Object.keys(quotes).length > 0;
   const latestAddedTokenTo = useSelector(getLatestAddedTokenTo, isEqual);
 
-  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
+  const tokenConversionRatesForCurrentChain = useSelector(
+    getTokenExchangeRatesForCurrentChain,
+    isEqual,
+  );
   const conversionRate = useSelector(getConversionRate);
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
@@ -202,7 +205,7 @@ export default function BuildQuote({
 
   const selectedFromToken = getRenderableTokenData(
     fromToken || fetchParamsFromToken,
-    tokenConversionRates,
+    tokenConversionRatesForCurrentChain,
     conversionRate,
     currentCurrency,
     chainId,

@@ -28,7 +28,7 @@ const initialState = {
   transactions: [],
   networkConfigurations: {},
   addressBook: [],
-  contractExchangeRates: {},
+  contractExchangeRatesByChainId: {},
   pendingTokens: {},
   customNonceValue: '',
   useBlockie: false,

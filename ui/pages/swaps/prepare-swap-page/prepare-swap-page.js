@@ -57,7 +57,7 @@ import {
 } from '../../../ducks/swaps/swaps';
 import {
   getSwapsDefaultToken,
-  getTokenExchangeRates,
+  getTokenExchangeRatesForCurrentChain,
   getCurrentCurrency,
   getCurrentChainId,
   getRpcPrefsForCurrentProvider,
@@ -198,7 +198,10 @@ export default function PrepareSwapPage({
     ? Object.keys(aggregatorMetadata).length
     : 0;
 
-  const tokenConversionRates = useSelector(getTokenExchangeRates, isEqual);
+  const tokenConversionRatesForCurrentChain = useSelector(
+    getTokenExchangeRatesForCurrentChain,
+    isEqual,
+  );
   const conversionRate = useSelector(getConversionRate);
   const hardwareWalletUsed = useSelector(isHardwareWallet);
   const hardwareWalletType = useSelector(getHardwareWalletType);
@@ -257,7 +260,7 @@ export default function PrepareSwapPage({
 
   const selectedFromToken = getRenderableTokenData(
     fromToken || fetchParamsFromToken,
-    tokenConversionRates,
+    tokenConversionRatesForCurrentChain,
     conversionRate,
     currentCurrency,
     chainId,

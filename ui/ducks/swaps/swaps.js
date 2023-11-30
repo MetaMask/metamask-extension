@@ -55,7 +55,7 @@ import {
 } from '../../../shared/modules/conversion.utils';
 import {
   getSelectedAccount,
-  getTokenExchangeRates,
+  getTokenExchangeRatesForCurrentChain,
   getUSDConversionRate,
   getSwapsDefaultToken,
   getCurrentChainId,
@@ -696,12 +696,13 @@ export const fetchQuotesAndSetQuoteState = (
     }
     dispatch(setFetchingQuotes(true));
 
-    const contractExchangeRates = getTokenExchangeRates(state);
+    const contractExchangeRatesForCurrentChain =
+      getTokenExchangeRatesForCurrentChain(state);
 
     if (
       toTokenAddress &&
       toTokenSymbol !== swapsDefaultToken.symbol &&
-      contractExchangeRates[toTokenAddress] === undefined &&
+      contractExchangeRatesForCurrentChain[toTokenAddress] === undefined &&
       !isTokenAlreadyAdded(toTokenAddress, getTokens(state))
     ) {
       await dispatch(
@@ -728,7 +729,7 @@ export const fetchQuotesAndSetQuoteState = (
     if (
       fromTokenAddress &&
       fromTokenSymbol !== swapsDefaultToken.symbol &&
-      !contractExchangeRates[fromTokenAddress] &&
+      !contractExchangeRatesForCurrentChain[fromTokenAddress] &&
       fromTokenBalance &&
       new BigNumber(fromTokenBalance, 16).gt(0)
     ) {

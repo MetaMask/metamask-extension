@@ -40,11 +40,19 @@ describe('Confirm Transaction Selector', () => {
     });
   });
 
-  describe('contractExchangeRateSelector', () => {
+  describe('contractExchangeRateForCurrentChainSelector', () => {
     const state = {
       metamask: {
-        contractExchangeRates: {
-          '0xTokenAddress': '10',
+        providerConfig: {
+          chainId: '0x1',
+          ticker: 'ETH',
+        },
+        contractExchangeRatesByChainId: {
+          '0x1': {
+            ETH: {
+              '0xTokenAddress': '10',
+            },
+          },
         },
       },
       confirmTransaction: {

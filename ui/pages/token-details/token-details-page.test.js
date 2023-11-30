@@ -10,8 +10,12 @@ const testTokenAddress = '0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F';
 const state = {
   metamask: {
     selectedAddress: '0xAddress',
-    contractExchangeRates: {
-      '0xAnotherToken': 0.015,
+    contractExchangeRatesByChainId: {
+      '0x1': {
+        ETH: {
+          '0xAnotherToken': 0.015,
+        },
+      },
     },
     useTokenDetection: true,
     tokenList: {

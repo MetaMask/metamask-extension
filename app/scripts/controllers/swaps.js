@@ -117,7 +117,7 @@ export default class SwapsController {
       getProviderConfig,
       getTokenRatesState,
       fetchTradesInfo = defaultFetchTradesInfo,
-      getCurrentChainId,
+      getCurrentProviderConfig,
       getEIP1559GasFeeEstimates,
       trackMetaMetricsEvent,
     },
@@ -140,7 +140,7 @@ export default class SwapsController {
     };
 
     this._fetchTradesInfo = fetchTradesInfo;
-    this._getCurrentChainId = getCurrentChainId;
+    this._getCurrentProviderConfig = getCurrentProviderConfig;
     this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
 
     this.getBufferedGasLimit = getBufferedGasLimit;
@@ -154,7 +154,7 @@ export default class SwapsController {
 
     this.provider = provider;
     this.ethersProvider = new Web3Provider(provider);
-    this._ethersProviderChainId = this._getCurrentChainId();
+    this._ethersProviderChainId = this._getCurrentProviderConfig().chainId;
   }
 
   async fetchSwapsNetworkConfig(chainId) {
@@ -187,7 +187,7 @@ export default class SwapsController {
 
   // Sets the network config from the MetaSwap API.
   async _setSwapsNetworkConfig() {
-    const chainId = this._getCurrentChainId();
+    const { chainId } = this._getCurrentProviderConfig();
     let swapsNetworkConfig;
     try {
       swapsNetworkConfig = await this.fetchSwapsNetworkConfig(chainId);
@@ -704,12 +704,16 @@ export default class SwapsController {
   }
 
   async _findTopQuoteAndCalculateSavings(quotes = {}) {
-    const { contractExchangeRates: tokenConversionRates } =
+    const { contractExchangeRatesByChainId: tokenConversionRates } =
+      // TODO, this function should take a networkClientId and use that to get the tokenConversionRates for that chain/client
       this.getTokenRatesState();
     const {
       swapsState: { customGasPrice, customMaxPriorityFeePerGas },
     } = this.store.getState();
-    const chainId = this._getCurrentChainId();
+    const { chainId, ticker } = this._getCurrentProviderConfig();
+
+    const tokenConversionRatesForCurrentChain =
+      tokenConversionRates?.[chainId]?.[ticker] || {};
 
     const numQuotes = Object.keys(quotes).length;
     if (!numQuotes) {
@@ -830,9 +834,10 @@ export default class SwapsController {
       );
 
       const tokenConversionRate =
-        tokenConversionRates[
-          Object.keys(tokenConversionRates).find((tokenAddress) =>
-            isEqualCaseInsensitive(tokenAddress, destinationToken),
+        tokenConversionRatesForCurrentChain[
+          Object.keys(tokenConversionRatesForCurrentChain).find(
+            (tokenAddress) =>
+              isEqualCaseInsensitive(tokenAddress, destinationToken),
           )
         ];
       const conversionRateForSorting = tokenConversionRate || 1;
@@ -879,12 +884,13 @@ export default class SwapsController {
         chainId,
       ) ||
       Boolean(
-        tokenConversionRates[
-          Object.keys(tokenConversionRates).find((tokenAddress) =>
-            isEqualCaseInsensitive(
-              tokenAddress,
-              newQuotes[topAggId]?.destinationToken,
-            ),
+        tokenConversionRatesForCurrentChain[
+          Object.keys(tokenConversionRatesForCurrentChain).find(
+            (tokenAddress) =>
+              isEqualCaseInsensitive(
+                tokenAddress,
+                newQuotes[topAggId]?.destinationToken,
+              ),
           )
         ],
       );

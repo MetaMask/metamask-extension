@@ -408,7 +408,7 @@ export function quotesToRenderableData({
   conversionRate,
   currentCurrency,
   approveGas,
-  tokenConversionRates,
+  tokenConversionRatesForCurrentChain,
   chainId,
   smartTransactionEstimatedGas,
   nativeCurrencySymbol,
@@ -419,7 +419,7 @@ export function quotesToRenderableData({
   conversionRate: number;
   currentCurrency: string;
   approveGas: string;
-  tokenConversionRates: Record<string, any>;
+  tokenConversionRatesForCurrentChain: Record<string, any>;
   chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
   smartTransactionEstimatedGas: IndividualTxFees;
   nativeCurrencySymbol: string;
@@ -496,7 +496,7 @@ export function quotesToRenderableData({
       .toFixed(6);
 
     const tokenConversionRate =
-      tokenConversionRates[destinationTokenInfo.address];
+      tokenConversionRatesForCurrentChain[destinationTokenInfo.address];
     const ethValueOfTrade = isSwapsDefaultTokenSymbol(
       destinationTokenInfo.symbol,
       chainId,

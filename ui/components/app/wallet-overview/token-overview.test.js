@@ -52,7 +52,7 @@ describe('TokenOverview', () => {
           accounts: [],
         },
       ],
-      contractExchangeRates: {},
+      contractExchangeRatesByChainId: {},
       mmiConfiguration: {
         portfolio: {
           enabled: true,

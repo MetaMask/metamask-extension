@@ -33,8 +33,12 @@ describe('Token Cell', () => {
   const mockState = {
     metamask: {
       selectedAddress: '0xAddress',
-      contractExchangeRates: {
-        '0xAnotherToken': 0.015,
+      contractExchangeRatesByChainId: {
+        '0x1': {
+          ETH: {
+            '0xAnotherToken': 0.00423239,
+          },
+        },
       },
       currentCurrency: 'usd',
       currencyRates: {

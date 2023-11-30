@@ -81,9 +81,13 @@ const MOCK_FETCH_METADATA = {
 };
 
 const MOCK_TOKEN_RATES_STORE = () => ({
-  contractExchangeRates: {
-    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
-    '0x1111111111111111111111111111111111111111': 0.1,
+  contractExchangeRatesByChainId: {
+    '0x1': {
+      ETH: {
+        '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
+        '0x1111111111111111111111111111111111111111': 0.1,
+      },
+    },
   },
 });
 
@@ -127,8 +131,11 @@ const EMPTY_INIT_STATE = {
 
 const sandbox = sinon.createSandbox();
 let fetchTradesInfoStub = sandbox.stub();
-const getCurrentChainIdStub = sandbox.stub();
-getCurrentChainIdStub.returns(CHAIN_IDS.MAINNET);
+const getCurrentProviderConfigStub = sandbox.stub();
+getCurrentProviderConfigStub.returns({
+  chainId: CHAIN_IDS.MAINNET,
+  ticker: 'ETH',
+});
 const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
   return {
     gasFeeEstimates: {
@@ -148,7 +155,7 @@ describe('SwapsController', function () {
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       getTokenRatesState: MOCK_TOKEN_RATES_STORE,
       fetchTradesInfo: fetchTradesInfoStub,
-      getCurrentChainId: getCurrentChainIdStub,
+      getCurrentProviderConfig: getCurrentProviderConfigStub,
       getEIP1559GasFeeEstimates: getEIP1559GasFeeEstimatesStub,
     });
   };
@@ -788,7 +795,7 @@ describe('SwapsController', function () {
           .resolves(BigNumber.from(1));
 
         swapsController.getTokenRatesState = () => ({
-          contractExchangeRates: {},
+          contractExchangeRatesByChainId: {},
         });
 
         const [newQuotes, topAggId] = await swapsController.fetchAndSetQuotes(
@@ -826,7 +833,7 @@ describe('SwapsController', function () {
           getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
           getTokenRatesState: MOCK_TOKEN_RATES_STORE,
           fetchTradesInfo: fetchTradesInfoStub,
-          getCurrentChainId: getCurrentChainIdStub,
+          getCurrentProviderConfig: getCurrentProviderConfigStub,
         });
         const currentEthersInstance = _swapsController.ethersProvider;
 
@@ -850,7 +857,7 @@ describe('SwapsController', function () {
           getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
           getTokenRatesState: MOCK_TOKEN_RATES_STORE,
           fetchTradesInfo: fetchTradesInfoStub,
-          getCurrentChainId: getCurrentChainIdStub,
+          getCurrentProviderConfig: getCurrentProviderConfigStub,
         });
         const firstEthersInstance = _swapsController.ethersProvider;
         const firstEthersProviderChainId =
