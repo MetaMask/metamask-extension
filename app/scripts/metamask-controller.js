@@ -1409,8 +1409,7 @@ export default class MetamaskController extends EventEmitter {
             ),
           beforeCheckPendingTransaction:
             beforeCheckPendingTransactionMMI.bind(this),
-            beforeApproveOnInit:
-            beforeApproveOnInitMMI.bind(this),
+          beforeApproveOnInit: beforeApproveOnInitMMI.bind(this),
           beforePublish: beforeTransactionPublishMMI.bind(this),
           getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
           ///: END:ONLY_INCLUDE_IN
