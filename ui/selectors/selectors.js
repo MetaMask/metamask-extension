@@ -1775,7 +1775,7 @@ export function getUpdatedAndSortedAccounts(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const pinnedAccounts = getPinnedAccountsList(state);
   accounts.forEach((account) => {
-    account.pinned = Boolean(pinnedAccounts.includes(account.address));
+    account.pinned = Boolean(pinnedAccounts?.includes(account.address));
   });
 
   const sortedSearchResults = accounts.slice().sort((a, b) => {
