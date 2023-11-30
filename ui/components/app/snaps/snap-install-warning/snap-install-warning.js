@@ -173,7 +173,7 @@ export default function SnapInstallWarning({
               {snapName}
             </Text>,
           ])}
-          weight={permission.weight}
+          weight={1}
           avatarIcon={IconName.Key}
           key={`snapInstallWarningPermissionCellKeyEntropy_${permission.permissionName}`}
           hideStatus
