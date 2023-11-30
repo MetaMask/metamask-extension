@@ -146,21 +146,28 @@ const ERROR_CONNECTING_TO_RPC = {
   },
 };
 
+async function fetchSafeChainsList() {
+  try {
+    const response = await fetchWithCache({
+      url: 'https://chainid.network/chains.json',
+      // cacheOptions: { cacheRefreshTime: DAY },
+      functionName: 'getSafeChainsList',
+    });
+    return { data: response, error: null };
+  } catch (error) {
+    log.warn('Failed to fetch the chainList from chainid.network', error);
+    return { data: [], error };
+  }
+}
+
 async function getAlerts(pendingApproval, state) {
   const alerts = [];
   let safeChainsList = [];
-  let providerError;
+  let providerError = null;
   if (state.useSafeChainsListValidation) {
-    try {
-      safeChainsList = await fetchWithCache({
-        url: 'https://chainid.network/chains.json',
-        functionName: 'getSafeChainsList',
-      });
-    } catch (error) {
-      providerError = error;
-      // Swallow the error here to not block the user from adding a custom network
-      log.warn('Failed to fetch the chainList from chainid.network', error);
-    }
+    const fetchResult = await fetchSafeChainsList();
+    safeChainsList = fetchResult.data;
+    providerError = fetchResult.error;
   }
   const matchedChain = safeChainsList.find(
     (chain) =>
@@ -213,7 +220,7 @@ function getState(pendingApproval) {
   return {};
 }
 
-function getValues(pendingApproval, t, actions, history) {
+function getValues(pendingApproval, t, actions, history, _, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
   return {
@@ -366,6 +373,9 @@ function getValues(pendingApproval, t, actions, history) {
             [t('chainId')]: t('chainIdDefinition'),
             [t('currencySymbol')]: t('currencySymbolDefinition'),
             [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
+          },
+          warnings: {
+            [t('currencySymbol')]: data.currencySymbolWarning,
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,
