@@ -82,14 +82,14 @@ export default function SnapInstallWarning({
           {t('andForTwoItems', [
             <Text
               fontWeight={FontWeight.Medium}
-              as="span"
+              variant={TextVariant.inherit}
               key={`${firstWarningSubject}_and_first`}
             >
               {firstWarningSubject}
             </Text>,
             <Text
               fontWeight={FontWeight.Medium}
-              as="span"
+              variant={TextVariant.inherit}
               key={`${secondWarningSubject}_and_second`}
             >
               {secondWarningSubject}
@@ -114,14 +114,14 @@ export default function SnapInstallWarning({
             {t('andForListItems', [
               <Text
                 fontWeight={FontWeight.Medium}
-                as="span"
+                variant={TextVariant.inherit}
                 key={`${warning.permissionName}_and_first_${index}`}
               >
                 {warning.warningMessageSubject}
               </Text>,
               <Text
                 fontWeight={FontWeight.Medium}
-                as="span"
+                variant={TextVariant.inherit}
                 key={`${warning.permissionName}_and_second_first_${index}`}
               >
                 {
