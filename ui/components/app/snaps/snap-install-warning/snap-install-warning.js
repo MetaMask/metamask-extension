@@ -183,12 +183,12 @@ export default function SnapInstallWarning({
   }
 
   const criticalPermissions = {
-    snap_getBip32PublicKey: {
+    publicKey: {
       name: 'snapInstallWarningPermissionNameForViewPublicKey',
       title: 'snapInstallWarningPermissionNameForViewPublicKey',
       description: 'snapInstallWarningPermissionDescriptionForBip32View',
     },
-    snap_getBip32Entropy_snap_getBip44Entropy: {
+    entropy: {
       name: 'snapInstallWarningPermissionNameForEntropy',
       title: 'snapInstallWarningPermissionNameForEntropy',
       description: 'snapInstallWarningPermissionDescriptionForEntropy',
@@ -204,21 +204,6 @@ export default function SnapInstallWarning({
       warning.permissionName === 'snap_getBip32Entropy' ||
       warning.permissionName === 'snap_getBip44Entropy',
   );
-
-  const bip32PublicKeyPermissionCellWarning =
-    bip32PublicKeyPermissionWarnings.length
-      ? constructWarningPermissionCell(
-          bip32PublicKeyPermissionWarnings,
-          criticalPermissions.snap_getBip32PublicKey,
-        )
-      : null;
-  const bip32bip44PermissionCellWarning =
-    bip32bip44EntropyPermissionWarnings.length
-      ? constructWarningPermissionCell(
-          bip32bip44EntropyPermissionWarnings,
-          criticalPermissions.snap_getBip32Entropy_snap_getBip44Entropy,
-        )
-      : null;
 
   return (
     <Popover
@@ -265,8 +250,16 @@ export default function SnapInstallWarning({
           </Text>,
         ])}
       </Text>
-      {bip32bip44PermissionCellWarning}
-      {bip32PublicKeyPermissionCellWarning}
+      {bip32bip44EntropyPermissionWarnings.length > 0 &&
+        constructWarningPermissionCell(
+          bip32bip44EntropyPermissionWarnings,
+          criticalPermissions.entropy,
+        )}
+      {bip32PublicKeyPermissionWarnings.length > 0 &&
+        constructWarningPermissionCell(
+          bip32PublicKeyPermissionWarnings,
+          criticalPermissions.publicKey,
+        )}
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.flexStart}
