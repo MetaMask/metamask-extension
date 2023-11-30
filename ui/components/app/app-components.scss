@@ -106,4 +106,6 @@
 @import '../institutional/custody-confirm-link-modal/index';
 @import '../institutional/transaction-failed-modal/index';
 ///: END:ONLY_INCLUDE_IN
+/// : BEGIN:ONLY_INCLUDE_IN(conf-redesign)
 @import 'confirm/header/header.scss';
+///: END:ONLY_INCLUDE_IN
