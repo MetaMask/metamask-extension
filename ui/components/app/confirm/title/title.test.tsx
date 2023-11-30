@@ -1,17 +1,27 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import configureMockStore from 'redux-mock-store';
+import { TransactionType } from '@metamask/transaction-controller';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { ConfirmTitle } from './title';
 
+const mockState = {
+  confirm: {
+    currentConfirmation: {
+      type: TransactionType.personalSign,
+    },
+  },
+};
+
 describe('ConfirmTitle', () => {
-  it('renders the title and description correctly', () => {
-    const title = 'Confirmation Title';
-    const description = 'Confirmation Description';
+  it('should render the title and description', () => {
+    const mockStore = configureMockStore([])(mockState);
+    const { getByText } = renderWithProvider(<ConfirmTitle />, mockStore);
 
-    const { getByText } = render(
-      <ConfirmTitle title={title} description={description} />,
-    );
-
-    expect(getByText(title)).toBeInTheDocument();
-    expect(getByText(description)).toBeInTheDocument();
+    expect(getByText('Signature request')).toBeInTheDocument();
+    expect(
+      getByText(
+        'Only sign this message if you fully understand the content and trust the requesting site.',
+      ),
+    ).toBeInTheDocument();
   });
 });
