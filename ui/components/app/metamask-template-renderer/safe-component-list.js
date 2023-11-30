@@ -20,10 +20,7 @@ import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUIImage } from '../snaps/snap-ui-image';
-import {
-  ConfirmInfoRow,
-  ConfirmInfoRowAddress,
-} from '../confirm/shared/info/row';
+import { ConfirmInfoRow, ConfirmInfoRowAddress } from '../confirm/info/row';
 ///: END:ONLY_INCLUDE_IN
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
