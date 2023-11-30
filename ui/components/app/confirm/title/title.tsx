@@ -8,12 +8,12 @@ import {
 
 interface ConfirmTitleProps {
   title: string;
-  subtitle: string;
+  description: string;
 }
 
 export const ConfirmTitle: React.FC<ConfirmTitleProps> = ({
   title,
-  subtitle,
+  description,
 }) => {
   return (
     <>
@@ -30,7 +30,7 @@ export const ConfirmTitle: React.FC<ConfirmTitleProps> = ({
         color={TextColor.textAlternative}
         textAlign={TextAlign.Center}
       >
-        {subtitle}
+        {description}
       </Text>
     </>
   );
