@@ -43,6 +43,9 @@ export const SENTRY_BACKGROUND_STATE = {
   AnnouncementController: {
     announcements: false,
   },
+  NetworkOrderController: {
+    orderedNetworkList: [],
+  },
   AppMetadataController: {
     currentAppVersion: true,
     currentMigrationVersion: true,
@@ -103,6 +106,7 @@ export const SENTRY_BACKGROUND_STATE = {
     estimatedGasFeeTimeBounds: true,
     gasEstimateType: true,
     gasFeeEstimates: true,
+    gasFeeEstimatesByChainId: true,
   },
   KeyringController: {
     isUnlocked: true,

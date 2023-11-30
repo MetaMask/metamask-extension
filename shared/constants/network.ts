@@ -260,6 +260,11 @@ export const TEST_CHAINS = [
   CHAIN_IDS.LOCALHOST,
 ];
 
+export const MAINNET_CHAINS = [
+  { chainId: CHAIN_IDS.MAINNET },
+  { chainId: CHAIN_IDS.LINEA_MAINNET },
+];
+
 const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>
   capitalize(k) as Capitalize<typeof k>;
 

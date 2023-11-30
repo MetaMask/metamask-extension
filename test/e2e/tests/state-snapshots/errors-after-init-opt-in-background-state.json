@@ -63,6 +63,7 @@
   "EnsController": { "ensResolutionsByAddress": "object" },
   "GasFeeController": {
     "gasFeeEstimates": {},
+    "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none"
   },
@@ -99,6 +100,9 @@
       }
     },
     "networkConfigurations": "object"
+  },
+  "NetworkOrderController": {
+    "orderedNetworkList": { "0": "string", "1": "string", "2": "string" }
   },
   "NftController": {
     "allNftContracts": "object",
