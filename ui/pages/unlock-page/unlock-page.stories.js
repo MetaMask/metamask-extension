@@ -30,7 +30,7 @@ DefaultStory.storyName = 'Default';
 
 DefaultStory.args = {
   forceUpdateMetamaskState: () => ({
-    participateInMetaMetrics: true,
+    metaMetricsParticipationMode: true,
   }),
 };
 

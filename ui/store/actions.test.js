@@ -7,7 +7,10 @@ import MetaMaskController from '../../app/scripts/metamask-controller';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
-import { MetaMetricsNetworkEventSource } from '../../shared/constants/metametrics';
+import {
+  MetaMetricsNetworkEventSource,
+  MetaMetricsParticipation,
+} from '../../shared/constants/metametrics';
 import * as actions from './actions';
 import { setBackgroundConnection } from './background-connection';
 
@@ -1626,26 +1629,30 @@ describe('Actions', () => {
     });
   });
 
-  describe('#setParticipateInMetaMetrics', () => {
+  describe('#setMetaMetricsParticipation', () => {
     beforeAll(() => {
       window.sentry = {
         toggleSession: jest.fn(),
         endSession: jest.fn(),
       };
     });
-    it('sets participateInMetaMetrics to true', async () => {
+    it('sets metaMetricsParticipationMode to `Participate`', async () => {
       const store = mockStore();
-      const setParticipateInMetaMetricsStub = jest.fn((_, cb) => cb());
+      const setMetaMetricsParticipationStub = jest.fn((_, cb) => cb());
 
       background.getApi.returns({
-        setParticipateInMetaMetrics: setParticipateInMetaMetricsStub,
+        setMetaMetricsParticipation: setMetaMetricsParticipationStub,
       });
 
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.setParticipateInMetaMetrics(true));
-      expect(setParticipateInMetaMetricsStub).toHaveBeenCalledWith(
-        true,
+      await store.dispatch(
+        actions.setMetaMetricsParticipation(
+          MetaMetricsParticipation.Participate,
+        ),
+      );
+      expect(setMetaMetricsParticipationStub).toHaveBeenCalledWith(
+        MetaMetricsParticipation.Participate,
         expect.anything(),
       );
       expect(window.sentry.toggleSession).toHaveBeenCalled();

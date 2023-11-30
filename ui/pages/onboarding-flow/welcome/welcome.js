@@ -21,12 +21,15 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  MetaMetricsParticipation,
+  ///: END:ONLY_INCLUDE_IN
 } from '../../../../shared/constants/metametrics';
 import {
   setFirstTimeFlowType,
   setTermsOfUseLastAgreed,
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  setParticipateInMetaMetrics,
+  setMetaMetricsParticipation,
   ///: END:ONLY_INCLUDE_IN
 } from '../../../store/actions';
 import {
@@ -81,7 +84,9 @@ export default function OnboardingWelcome() {
     ///: END:ONLY_INCLUDE_IN
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    await dispatch(setParticipateInMetaMetrics(false));
+    await dispatch(
+      setMetaMetricsParticipation(MetaMetricsParticipation.DoNotParticipate),
+    );
     history.push(ONBOARDING_CREATE_PASSWORD_ROUTE);
     ///: END:ONLY_INCLUDE_IN
   };
@@ -116,7 +121,9 @@ export default function OnboardingWelcome() {
     ///: END:ONLY_INCLUDE_IN
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-    await dispatch(setParticipateInMetaMetrics(false));
+    await dispatch(
+      setMetaMetricsParticipation(MetaMetricsParticipation.DoNotParticipate),
+    );
     history.push(ONBOARDING_IMPORT_WITH_SRP_ROUTE);
     ///: END:ONLY_INCLUDE_IN
   };

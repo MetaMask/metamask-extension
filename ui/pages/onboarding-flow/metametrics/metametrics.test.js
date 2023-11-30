@@ -8,7 +8,8 @@ import {
   onboardingMetametricsAgree,
   onboardingMetametricsDisagree,
 } from '../../../../app/_locales/en/messages.json';
-import { setParticipateInMetaMetrics } from '../../../store/actions';
+import { setMetaMetricsParticipation } from '../../../store/actions';
+import { MetaMetricsParticipation } from '../../../../shared/constants/metametrics';
 import OnboardingMetametrics from './metametrics';
 
 const mockPushHistory = jest.fn();
@@ -25,7 +26,7 @@ jest.mock('react-router-dom', () => {
 });
 
 jest.mock('../../../store/actions.ts', () => ({
-  setParticipateInMetaMetrics: jest
+  setMetaMetricsParticipation: jest
     .fn()
     .mockReturnValue(jest.fn((val) => Promise.resolve([val]))),
 }));
@@ -36,7 +37,7 @@ describe('Onboarding Metametrics Component', () => {
   const mockState = {
     metamask: {
       firstTimeFlowType: 'create',
-      participateInMetaMetrics: '',
+      metaMetricsParticipationMode: '',
     },
   };
 
@@ -57,7 +58,7 @@ describe('Onboarding Metametrics Component', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should set setParticipateInMetaMetrics to true when clicking agree', async () => {
+  it('should set `setMetaMetricsParticipation` to `Participate` when clicking agree', async () => {
     const { queryByText } = renderWithProvider(
       <OnboardingMetametrics />,
       mockStore,
@@ -68,14 +69,16 @@ describe('Onboarding Metametrics Component', () => {
     fireEvent.click(confirmAgree);
 
     await waitFor(() => {
-      expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(true);
+      expect(setMetaMetricsParticipation).toHaveBeenCalledWith(
+        MetaMetricsParticipation.Participate,
+      );
       expect(mockPushHistory).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );
     });
   });
 
-  it('should set setParticipateInMetaMetrics to false when clicking cancel', async () => {
+  it('should set `setMetaMetricsParticipation` to `DoNotParticipate` when clicking cancel', async () => {
     const { queryByText } = renderWithProvider(
       <OnboardingMetametrics />,
       mockStore,
@@ -86,7 +89,9 @@ describe('Onboarding Metametrics Component', () => {
     fireEvent.click(confirmCancel);
 
     await waitFor(() => {
-      expect(setParticipateInMetaMetrics).toHaveBeenCalledWith(false);
+      expect(setMetaMetricsParticipation).toHaveBeenCalledWith(
+        MetaMetricsParticipation.DoNotParticipate,
+      );
       expect(mockPushHistory).toHaveBeenCalledWith(
         ONBOARDING_CREATE_PASSWORD_ROUTE,
       );

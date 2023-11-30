@@ -46,6 +46,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsParticipation,
 } from '../../../../shared/constants/metametrics';
 import { Icon, IconName } from '../../../components/component-library';
 
@@ -68,15 +69,18 @@ export default function CreatePassword({
   const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
 
-  const participateInMetaMetrics = useSelector((state) =>
-    Boolean(state.metamask.participateInMetaMetrics),
+  const metaMetricsParticipationMode = useSelector(
+    (state) =>
+      // TODO PEDRO FIG: where is this value being set on the metamask state?
+      state.metamask.metaMetricsParticipationMode,
   );
   const metametricsId = useSelector(getMetaMetricsId);
   const base64MetametricsId = Buffer.from(metametricsId ?? '').toString(
     'base64',
   );
   const shouldInjectMetametricsIframe = Boolean(
-    participateInMetaMetrics && base64MetametricsId,
+    metaMetricsParticipationMode === MetaMetricsParticipation.Participate &&
+      base64MetametricsId,
   );
   const analyticsIframeQuery = {
     mmi: base64MetametricsId,

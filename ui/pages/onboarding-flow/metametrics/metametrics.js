@@ -11,7 +11,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import Button from '../../../components/ui/button';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { setParticipateInMetaMetrics } from '../../../store/actions';
+import { setMetaMetricsParticipation } from '../../../store/actions';
 import {
   getFirstTimeFlowTypeRoute,
   getFirstTimeFlowType,
@@ -21,6 +21,7 @@ import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
+  MetaMetricsParticipation,
 } from '../../../../shared/constants/metametrics';
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -43,7 +44,9 @@ export default function OnboardingMetametrics() {
   const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
-    const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));
+    const [, metaMetricsId] = await dispatch(
+      setMetaMetricsParticipation(MetaMetricsParticipation.Participate),
+    );
     try {
       trackEvent(
         {
@@ -68,7 +71,9 @@ export default function OnboardingMetametrics() {
   };
 
   const onCancel = async () => {
-    await dispatch(setParticipateInMetaMetrics(false));
+    await dispatch(
+      setMetaMetricsParticipation(MetaMetricsParticipation.DoNotParticipate),
+    );
     history.push(nextRoute);
   };
 

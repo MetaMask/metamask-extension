@@ -485,7 +485,7 @@ export default function setupSentry({ release, getState }) {
      *
      * In the MetaMetricsController the session is manually started or stopped
      * when the user opts in or out of MetaMetrics. This occurs in the
-     * setParticipateInMetaMetrics function which is exposed to the UI via the
+     * `setMetaMetricsParticipation` function which is exposed to the UI via the
      * MetaMaskController.
      *
      * In actions.ts, after sending the updated participateInMetaMetrics flag

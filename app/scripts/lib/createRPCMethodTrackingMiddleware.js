@@ -7,6 +7,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
+  MetaMetricsParticipation,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 
@@ -148,11 +149,12 @@ export default function createRPCMethodTrackingMiddleware({
       rateLimitType === RATE_LIMIT_TYPES.RATE_LIMITED &&
       typeof rateLimitTimeouts[method] !== 'undefined';
 
-    // Get the participateInMetaMetrics state to determine if we should track
-    // anything. This is extra redundancy because this value is checked in
-    // the metametrics controller's trackEvent method as well.
+    // Get the `metaMetricsParticipationMode` from state to determine if we
+    // should track anything. This is extra redundancy because this value is
+    // checked in the metametrics controller's trackEvent method as well.
     const userParticipatingInMetaMetrics =
-      getMetricsState().participateInMetaMetrics === true;
+      getMetricsState().metaMetricsParticipationMode ===
+      MetaMetricsParticipation.Participate;
 
     // Get the event type, each of which has APPROVED, REJECTED and REQUESTED
     // keys for the various events in the flow.

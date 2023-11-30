@@ -16,6 +16,7 @@ import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
+  MetaMetricsParticipation,
   MetaMetricsUserTrait,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
@@ -89,16 +90,17 @@ const exceptionsToFilter = {
  * @typedef {object} MetaMetricsControllerState
  * @property {string} [metaMetricsId] - The user's metaMetricsId that will be
  *  attached to all non-anonymized event payloads
- * @property {boolean} [participateInMetaMetrics] - The user's preference for
- *  participating in the MetaMetrics analytics program. This setting controls
- *  whether or not events are tracked
+ * @property {boolean} [metaMetricsParticipationMode] - The user's preference for
+ *  participating in the MetaMetrics analytics program. Events are tracked only
+ *  if this property is 'Participate'.
  * @property {{[string]: MetaMetricsEventFragment}} [fragments] - Object keyed
  *  by UUID with stored fragments as values.
- * @property {Array} [eventsBeforeMetricsOptIn] - Array of queued events added before
- *  a user opts into metrics.
- * @property {object} [traits] - Traits that are not derived from other state keys.
- * @property {Record<string any>} [previousUserTraits] - The user traits the last
- *  time they were computed.
+ * @property {Array} [eventsBeforeMetricsOptIn] - Array of queued events added
+ *  before a user opts into metrics.
+ * @property {object} [traits] - Traits that are not derived from other state
+ * keys.
+ * @property {Record<string any>} [previousUserTraits] - The user traits the
+ *  last time they were computed.
  */
 
 export default class MetaMetricsController {
@@ -152,7 +154,7 @@ export default class MetaMetricsController {
     const segmentApiCalls = initState?.segmentApiCalls || {};
 
     this.store = new ObservableStore({
-      participateInMetaMetrics: null,
+      metaMetricsParticipation: MetaMetricsParticipation.NotChosen,
       metaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
@@ -402,9 +404,13 @@ export default class MetaMetricsController {
    * @param {object} userTraits
    */
   identify(userTraits) {
-    const { metaMetricsId, participateInMetaMetrics } = this.state;
+    const { metaMetricsId, metaMetricsParticipationMode } = this.state;
 
-    if (!participateInMetaMetrics || !metaMetricsId || !userTraits) {
+    if (
+      metaMetricsParticipationMode !== MetaMetricsParticipation.Participate ||
+      !metaMetricsId ||
+      !userTraits
+    ) {
       return;
     }
     if (typeof userTraits !== 'object') {
@@ -421,9 +427,9 @@ export default class MetaMetricsController {
 
   // It sets an uninstall URL ("Sorry to see you go!" page),
   // which is opened if a user uninstalls the extension.
-  updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId) {
+  updateExtensionUninstallUrl(metaMetricsParticipationMode, metaMetricsId) {
     const query = {};
-    if (participateInMetaMetrics) {
+    if (metaMetricsParticipationMode === MetaMetricsParticipation.Participate) {
       // We only want to track these things if a user opted into metrics.
       query.mmi = Buffer.from(metaMetricsId).toString('base64');
       query.env = this.environment;
@@ -439,33 +445,34 @@ export default class MetaMetricsController {
     }
   }
 
-  /**
-   * Setter for the `participateInMetaMetrics` property
-   *
-   * @param {boolean} participateInMetaMetrics - Whether or not the user wants
-   *  to participate in MetaMetrics
-   * @returns {Promise<string|null>} the string of the new metametrics id, or null
-   *  if not set
-   */
-  async setParticipateInMetaMetrics(participateInMetaMetrics) {
+  async setMetaMetricsParticipation(metaMetricsParticipationMode) {
     let { metaMetricsId } = this.state;
-    if (participateInMetaMetrics && !metaMetricsId) {
-      // We also need to start sentry automatic session tracking at this point
+    if (
+      metaMetricsParticipationMode === MetaMetricsParticipation.Participate &&
+      !metaMetricsId
+    ) {
+      // We manually start the sentry session at this point
       await globalThis.sentry?.startSession();
       metaMetricsId = this.generateMetaMetricsId();
-    } else if (participateInMetaMetrics === false) {
-      // We also need to stop sentry automatic session tracking at this point
+    } else if (
+      metaMetricsParticipationMode === MetaMetricsParticipation.DoNotParticipate
+    ) {
+      // We manually stop the sentry session at this point
       await globalThis.sentry?.endSession();
-      metaMetricsId = null;
     }
-    this.store.updateState({ participateInMetaMetrics, metaMetricsId });
-    if (participateInMetaMetrics) {
+
+    this.store.updateState({ metaMetricsParticipationMode, metaMetricsId });
+
+    if (metaMetricsParticipationMode === MetaMetricsParticipation.Participate) {
       this.trackEventsAfterMetricsOptIn();
       this.clearEventsAfterMetricsOptIn();
     }
 
     ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-    this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
+    this.updateExtensionUninstallUrl(
+      metaMetricsParticipationMode,
+      metaMetricsId,
+    );
     ///: END:ONLY_INCLUDE_IN
 
     return metaMetricsId;
@@ -487,12 +494,16 @@ export default class MetaMetricsController {
     options,
   ) {
     try {
-      if (this.state.participateInMetaMetrics === false) {
+      if (
+        this.state.metaMetricsParticipationMode ===
+        MetaMetricsParticipation.DoNotParticipate
+      ) {
         return;
       }
 
       if (
-        this.state.participateInMetaMetrics === null &&
+        this.state.metaMetricsParticipationMode ===
+          MetaMetricsParticipation.NotChosen &&
         !options?.isOptInPath
       ) {
         return;
@@ -544,7 +555,11 @@ export default class MetaMetricsController {
   async submitEvent(payload, options) {
     this.validatePayload(payload);
 
-    if (!this.state.participateInMetaMetrics && !options?.isOptIn) {
+    if (
+      this.state.metaMetricsParticipationMode !==
+        MetaMetricsParticipation.Participate &&
+      !options?.isOptIn
+    ) {
       return;
     }
 
@@ -1061,8 +1076,11 @@ export default class MetaMetricsController {
   // Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
   // even if service worker terminates before events are submiteed to segment.
   _submitSegmentAPICall(eventType, payload, callback) {
-    const { metaMetricsId, participateInMetaMetrics } = this.state;
-    if (!participateInMetaMetrics || !metaMetricsId) {
+    const { metaMetricsId, metaMetricsParticipationMode } = this.state;
+    if (
+      metaMetricsParticipationMode !== MetaMetricsParticipation.Participate ||
+      !metaMetricsId
+    ) {
       return;
     }
 

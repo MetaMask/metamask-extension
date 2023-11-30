@@ -4,7 +4,7 @@ import { compose } from 'redux';
 import {
   setIncomingTransactionsPreferences,
   setIpfsGateway,
-  setParticipateInMetaMetrics,
+  setMetaMetricsParticipation,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
@@ -29,7 +29,7 @@ const mapStateToProps = (state) => {
 
   const {
     incomingTransactionsPreferences,
-    participateInMetaMetrics,
+    metaMetricsParticipationMode,
     usePhishDetect,
     useTokenDetection,
     ipfsGateway,
@@ -51,7 +51,7 @@ const mapStateToProps = (state) => {
     warning,
     incomingTransactionsPreferences,
     allNetworks,
-    participateInMetaMetrics,
+    metaMetricsParticipationMode,
     usePhishDetect,
     useTokenDetection,
     ipfsGateway,
@@ -72,8 +72,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setIncomingTransactionsPreferences: (chainId, value) =>
       dispatch(setIncomingTransactionsPreferences(chainId, value)),
-    setParticipateInMetaMetrics: (val) =>
-      dispatch(setParticipateInMetaMetrics(val)),
+    setMetaMetricsParticipation: (val) =>
+      dispatch(setMetaMetricsParticipation(val)),
     setUsePhishDetect: (val) => dispatch(setUsePhishDetect(val)),
     setUseCurrencyRateCheck: (val) => dispatch(setUseCurrencyRateCheck(val)),
     setUseTokenDetection: (val) => dispatch(setUseTokenDetection(val)),

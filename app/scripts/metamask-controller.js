@@ -2750,8 +2750,8 @@ export default class MetamaskController extends EventEmitter {
         preferencesController.setUseAddressBarEnsResolution.bind(
           preferencesController,
         ),
-      setParticipateInMetaMetrics:
-        metaMetricsController.setParticipateInMetaMetrics.bind(
+      setMetaMetricsParticipation:
+        metaMetricsController.setMetaMetricsParticipation.bind(
           metaMetricsController,
         ),
       setCurrentLocale: preferencesController.setCurrentLocale.bind(
@@ -5271,7 +5271,7 @@ export default class MetamaskController extends EventEmitter {
           this.metaMetricsController,
         ),
       getParticipateInMetrics: () =>
-        this.metaMetricsController.state.participateInMetaMetrics,
+        this.metaMetricsController.state.metaMetricsParticipationMode,
       trackEvent: this.metaMetricsController.trackEvent.bind(
         this.metaMetricsController,
       ),

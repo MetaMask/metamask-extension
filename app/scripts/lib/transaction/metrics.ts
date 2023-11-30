@@ -26,6 +26,7 @@ import {
   MetaMetricsEventFragment,
   MetaMetricsEventName,
   MetaMetricsPageObject,
+  MetaMetricsParticipation,
   MetaMetricsReferrerObject,
 } from '../../../../shared/constants/metametrics';
 import { GasRecommendations } from '../../../../shared/constants/gas';
@@ -73,7 +74,7 @@ export type TransactionMetricsRequest = {
   // doesn't include some properties used in buildEventFragmentProperties,
   // hence returning any here to avoid type errors.
   getEIP1559GasFeeEstimates(options?: FetchGasFeeEstimateOptions): Promise<any>;
-  getParticipateInMetrics: () => boolean;
+  getParticipateInMetrics: () => MetaMetricsParticipation;
   getSelectedAddress: () => string;
   getTokenStandardAndDetails: () => {
     decimals?: string;
@@ -361,7 +362,10 @@ export const handlePostTransactionBalanceUpdate = async (
     approvalTransactionMeta?: TransactionMeta;
   },
 ) => {
-  if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
+  if (
+    getParticipateInMetrics() === MetaMetricsParticipation.Participate &&
+    transactionMeta.swapMetaData
+  ) {
     if (transactionMeta.txReceipt?.status === '0x0') {
       trackEvent({
         event: 'Swap Failed',

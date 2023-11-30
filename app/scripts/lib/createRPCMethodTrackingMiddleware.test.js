@@ -4,6 +4,7 @@ import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import {
   MetaMetricsEventName,
   MetaMetricsEventUiCustomization,
+  MetaMetricsParticipation,
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -13,7 +14,9 @@ import {
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
 
 const trackEvent = jest.fn();
-const metricsState = { participateInMetaMetrics: null };
+const metricsState = {
+  metaMetricsParticipationMode: MetaMetricsParticipation.NotChosen,
+};
 const getMetricsState = () => metricsState;
 
 let flagAsDangerous = 0;
@@ -69,10 +72,11 @@ jest.mock('@metamask/controller-utils', () => ({
 describe('createRPCMethodTrackingMiddleware', () => {
   afterEach(() => {
     jest.resetAllMocks();
-    metricsState.participateInMetaMetrics = null;
+    metricsState.metaMetricsParticipationMode =
+      MetaMetricsParticipation.NotChosen;
   });
 
-  describe('before participateInMetaMetrics is set', () => {
+  describe('before metaMetricsParticipationMode is set', () => {
     it('should not track an event for a signature request', async () => {
       const req = {
         method: MESSAGE_TYPE.ETH_SIGN,
@@ -89,9 +93,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
     });
   });
 
-  describe('participateInMetaMetrics is set to false', () => {
+  describe('metaMetricsParticipationMode is set to `DoNotParticipate`', () => {
     beforeEach(() => {
-      metricsState.participateInMetaMetrics = false;
+      metricsState.metaMetricsParticipationMode =
+        MetaMetricsParticipation.DoNotParticipate;
     });
 
     it('should not track an event for a signature request', async () => {
@@ -110,9 +115,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
     });
   });
 
-  describe('participateInMetaMetrics is set to true', () => {
+  describe('metaMetricsParticipationMode is set to `Participate`', () => {
     beforeEach(() => {
-      metricsState.participateInMetaMetrics = true;
+      metricsState.metaMetricsParticipationMode =
+        MetaMetricsParticipation.Participate;
     });
 
     it(`should immediately track a ${MetaMetricsEventName.SignatureRequested} event`, async () => {

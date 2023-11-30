@@ -8,6 +8,7 @@ import {
   ONBOARDING_COMPLETION_ROUTE,
 } from '../../../helpers/constants/routes';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
+import { MetaMetricsParticipation } from '../../../../shared/constants/metametrics';
 import CreatePassword from './create-password';
 
 const mockHistoryPush = jest.fn();
@@ -400,7 +401,7 @@ describe('Onboarding Create Password', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          participateInMetaMetrics: true,
+          metaMetricsParticipationMode: MetaMetricsParticipation.Participate,
         },
       };
       const mockStore = configureMockStore()(state);
@@ -416,7 +417,8 @@ describe('Onboarding Create Password', () => {
         ...mockState,
         metamask: {
           ...mockState.metamask,
-          participateInMetaMetrics: false,
+          metaMetricsParticipationMode:
+            MetaMetricsParticipation.DoNotParticipate,
         },
       };
       const mockStore = configureMockStore()(state);

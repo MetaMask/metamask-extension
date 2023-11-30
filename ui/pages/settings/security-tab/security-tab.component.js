@@ -10,6 +10,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
   MetaMetricsEventName,
+  MetaMetricsParticipation,
 } from '../../../../shared/constants/metametrics';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
 import {
@@ -56,8 +57,8 @@ export default class SecurityTab extends PureComponent {
     setOpenSeaEnabled: PropTypes.func,
     useNftDetection: PropTypes.bool,
     setUseNftDetection: PropTypes.func,
-    participateInMetaMetrics: PropTypes.bool.isRequired,
-    setParticipateInMetaMetrics: PropTypes.func.isRequired,
+    metaMetricsParticipationMode: PropTypes.bool.isRequired,
+    setMetaMetricsParticipation: PropTypes.func.isRequired,
     incomingTransactionsPreferences: PropTypes.object.isRequired,
     allNetworks: PropTypes.array.isRequired,
     setIncomingTransactionsPreferences: PropTypes.func.isRequired,
@@ -265,7 +266,7 @@ export default class SecurityTab extends PureComponent {
 
   renderMetaMetricsOptIn() {
     const { t } = this.context;
-    const { participateInMetaMetrics, setParticipateInMetaMetrics } =
+    const { metaMetricsParticipationMode, setMetaMetricsParticipation } =
       this.props;
 
     return (
@@ -286,11 +287,17 @@ export default class SecurityTab extends PureComponent {
 
         <div
           className="settings-page__content-item-col"
-          data-testid="participateInMetaMetrics"
+          data-testid="metaMetricsParticipationMode"
         >
           <ToggleButton
-            value={participateInMetaMetrics}
-            onToggle={(value) => setParticipateInMetaMetrics(!value)}
+            value={metaMetricsParticipationMode}
+            onToggle={(value) => {
+              setMetaMetricsParticipation(
+                value === MetaMetricsParticipation.Participate
+                  ? MetaMetricsParticipation.DoNotParticipate
+                  : MetaMetricsParticipation.Participate,
+              );
+            }}
             offLabel={t('off')}
             onLabel={t('on')}
           />

@@ -465,6 +465,15 @@ export enum MetaMetricsUserTrait {
 }
 
 /**
+ * Describes the participation mode that a user has opted into for MetaMetrics.
+ */
+export enum MetaMetricsParticipation {
+  NotChosen = 'Not Chosen',
+  Participate = 'Participate',
+  DoNotParticipate = 'Do Not Participate',
+}
+
+/**
  * Mixpanel converts the zero address value to a truly anonymous event, which
  * speeds up reporting
  */

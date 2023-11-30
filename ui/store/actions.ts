@@ -78,6 +78,7 @@ import {
   MetaMetricsPageObject,
   MetaMetricsPageOptions,
   MetaMetricsPagePayload,
+  MetaMetricsParticipation,
   MetaMetricsReferrerObject,
 } from '../../shared/constants/metametrics';
 import { parseSmartTransactionsError } from '../pages/swaps/swaps.util';
@@ -2917,20 +2918,20 @@ export function setAccountDetailsAddress(address: string) {
   };
 }
 
-export function setParticipateInMetaMetrics(
-  participationPreference: boolean,
+export function setMetaMetricsParticipation(
+  participationMode: MetaMetricsParticipation,
 ): ThunkAction<
-  Promise<[boolean, string]>,
+  Promise<[MetaMetricsParticipation, string]>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return (dispatch: MetaMaskReduxDispatch) => {
-    log.debug(`background.setParticipateInMetaMetrics`);
+    log.debug(`background.setMetaMetricsParticipation`);
     return new Promise((resolve, reject) => {
       callBackgroundMethod<string>(
-        'setParticipateInMetaMetrics',
-        [participationPreference],
+        'setMetaMetricsParticipation',
+        [participationMode],
         (err, metaMetricsId) => {
           log.debug(err);
           if (err) {
@@ -2947,9 +2948,9 @@ export function setParticipateInMetaMetrics(
 
           dispatch({
             type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
-            value: participationPreference,
+            value: participationMode,
           });
-          resolve([participationPreference, metaMetricsId as string]);
+          resolve([participationMode, metaMetricsId as string]);
         },
       );
     });

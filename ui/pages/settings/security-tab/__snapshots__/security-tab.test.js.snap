@@ -1436,7 +1436,7 @@ exports[`Security Tab should match snapshot 1`] = `
         </div>
         <div
           class="settings-page__content-item-col"
-          data-testid="participateInMetaMetrics"
+          data-testid="metaMetricsParticipationMode"
         >
           <label
             class="toggle-button toggle-button--off"

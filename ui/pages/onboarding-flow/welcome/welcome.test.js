@@ -29,7 +29,7 @@ jest.mock('../../../store/actions.ts', () => ({
       return type;
     }),
   ),
-  setParticipateInMetaMetrics: jest.fn().mockReturnValue(
+  setMetaMetricsParticipation: jest.fn().mockReturnValue(
     jest.fn((type) => {
       return type;
     }),

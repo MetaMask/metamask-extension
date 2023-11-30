@@ -18,6 +18,7 @@ import {
 import * as actionConstants from '../../store/actionConstants';
 import { updateTransactionGasFees } from '../../store/actions';
 import { setCustomGasLimit, setCustomGasPrice } from '../gas/gas.duck';
+import { MetaMetricsParticipation } from '../../../shared/constants/metametrics';
 
 const initialState = {
   isInitialized: false,
@@ -47,7 +48,7 @@ const initialState = {
   completedOnboarding: false,
   knownMethodData: {},
   use4ByteResolution: true,
-  participateInMetaMetrics: null,
+  metaMetricsParticipationMode: MetaMetricsParticipation.NotChosen,
   nextNonce: null,
   currencyRates: {
     ETH: {
@@ -135,7 +136,7 @@ export default function reduceMetamask(state = initialState, action) {
     case actionConstants.SET_PARTICIPATE_IN_METAMETRICS:
       return {
         ...metamaskState,
-        participateInMetaMetrics: action.value,
+        metaMetricsParticipationMode: action.value,
       };
 
     case actionConstants.CLOSE_WELCOME_SCREEN:

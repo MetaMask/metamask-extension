@@ -98,7 +98,9 @@ describe('Security Tab', () => {
   });
 
   it('toggles metaMetrics', async () => {
-    expect(await toggleCheckbox('participateInMetaMetrics', false)).toBe(true);
+    expect(await toggleCheckbox('metaMetricsParticipationMode', false)).toBe(
+      true,
+    );
   });
 
   it('toggles SRP Quiz', async () => {
