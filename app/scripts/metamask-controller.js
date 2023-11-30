@@ -811,7 +811,7 @@ export default class MetamaskController extends EventEmitter {
       chainId: this.networkController.state.providerConfig.chainId,
       onNetworkChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
-        'NetworkController:stateChange',
+        'NetworkController:networkDidChange',
       ),
       securityAlertsEnabled:
         this.preferencesController.store.getState().securityAlertsEnabled,
