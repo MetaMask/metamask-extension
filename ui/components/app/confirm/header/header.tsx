@@ -24,9 +24,7 @@ const Header = () => {
     <Box
       alignItems={AlignItems.center}
       display={Display.Flex}
-      paddingBottom={4}
-      paddingInline={1}
-      paddingTop={4}
+      padding={4}
       className="confirm_header-wrapper"
     >
       <Box display={Display.Flex}>
