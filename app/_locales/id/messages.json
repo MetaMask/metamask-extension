@@ -3757,9 +3757,6 @@
   "smartContracts": {
     "message": "Kontrak cerdas"
   },
-  "smartSwap": {
-    "message": "Pertukaran cerdas"
-  },
   "smartSwapsAreHere": {
     "message": "Smart Swap telah hadir!"
   },

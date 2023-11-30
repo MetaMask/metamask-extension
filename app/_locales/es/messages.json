@@ -3757,9 +3757,6 @@
   "smartContracts": {
     "message": "Contratos inteligentes"
   },
-  "smartSwap": {
-    "message": "Intercambio inteligente"
-  },
   "smartSwapsAreHere": {
     "message": "¡Los intercambios inteligentes ya están aquí!"
   },
