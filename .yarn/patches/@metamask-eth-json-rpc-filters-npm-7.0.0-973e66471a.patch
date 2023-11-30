@@ -1,0 +1,46 @@
+diff --git a/subscriptionManager.js b/subscriptionManager.js
+index d9de3de6c44052631f97a6759bd50291f191c0c5..556f9710cf2d50785efaa33691ecbee43649e849 100644
+--- a/subscriptionManager.js
++++ b/subscriptionManager.js
+@@ -60,7 +60,32 @@ function createSubscriptionMiddleware({ blockTracker, provider }) {
+         destroy: async () => {
+           blockTracker.removeListener('sync', sub.update)
+         },
+-        update: async ({ oldBlock, newBlock }) => {
++        update: async ({ oldBlock, newBlock, blockTracker: insideBlockTracker }) => {
++          console.log(
++            '[subscriptionManager] Received event.',
++            'oldBlock',
++            oldBlock,
++            'newBlock',
++            newBlock,
++            'blockTracker',
++            blockTracker,
++            'blockTracker (details)',
++            {
++              id: blockTracker._id,
++              networkClientId: blockTracker.networkClientId,
++              eventsCount: blockTracker._eventsCount,
++              providerNetworkClientId: blockTracker._provider.networkClientId,
++            },
++            'insideBlockTracker',
++            insideBlockTracker,
++            'insideBlockTracker (details)',
++            {
++              id: insideBlockTracker._id,
++              networkClientId: insideBlockTracker.networkClientId,
++              eventsCount: insideBlockTracker._eventsCount,
++              providerNetworkClientId: insideBlockTracker._provider.networkClientId,
++            },
++          );
+           // for newHeads
+           const toBlock = newBlock
+           const fromBlock = incrementHexInt(oldBlock)
+@@ -71,6 +96,7 @@ function createSubscriptionMiddleware({ blockTracker, provider }) {
+           })
+         }
+       }
++      console.log(`[subscriptionManager] (blockTracker ${blockTracker._id}) Starting eth_subscribe, networkClientId = `, blockTracker.networkClientId);
+       // check for subscription updates on new block
+       blockTracker.on('sync', sub.update)
+       return sub

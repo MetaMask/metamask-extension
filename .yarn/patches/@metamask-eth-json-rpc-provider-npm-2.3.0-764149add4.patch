@@ -1,0 +1,12 @@
+diff --git a/dist/safe-event-emitter-provider.js b/dist/safe-event-emitter-provider.js
+index 234c4fbaeeb2a2ea6e630a76db4c65cbdf901a09..3e6085a48be4d5563df53c56156e9fa73fe5c793 100644
+--- a/dist/safe-event-emitter-provider.js
++++ b/dist/safe-event-emitter-provider.js
+@@ -33,6 +33,7 @@ class SafeEventEmitterProvider extends safe_event_emitter_1.default {
+     constructor({ engine }) {
+         super();
+         _SafeEventEmitterProvider_engine.set(this, void 0);
++        this._id = `prv_${new Date().getTime()}`;
+         /**
+          * Send a provider request asynchronously.
+          *

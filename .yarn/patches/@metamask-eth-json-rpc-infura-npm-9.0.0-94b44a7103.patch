@@ -1,0 +1,12 @@
+diff --git a/dist/create-infura-middleware.js b/dist/create-infura-middleware.js
+index 7030c43464d04fb28c16e99eef562215990c60b7..254b217f5f91508b5ee8ba4be089d9971087fea5 100644
+--- a/dist/create-infura-middleware.js
++++ b/dist/create-infura-middleware.js
+@@ -97,6 +97,7 @@ exports.createInfuraMiddleware = createInfuraMiddleware;
+  * outside 2xx, and especially if it is 405, 429, 503, or 504.
+  */
+ async function performFetch(network, projectId, extraHeaders, req, res, source) {
++    console.log('[eth-json-rpc-infura] network', network, 'req', req);
+     const { fetchUrl, fetchParams } = (0, fetch_config_from_req_1.fetchConfigFromReq)({
+         network,
+         projectId,

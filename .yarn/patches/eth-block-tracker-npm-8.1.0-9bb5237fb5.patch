@@ -1,12 +1,43 @@
 diff --git a/dist/PollingBlockTracker.js b/dist/PollingBlockTracker.js
-index 88d086b53e4dee4d3d060795011ff3ee99ee5e5a..8ba767269e37a5fb7b21770bd79459bff6ea516c 100644
+index 88d086b53e4dee4d3d060795011ff3ee99ee5e5a..54619c6ef0103480517e4c1be7bbc62bc2dee2ea 100644
 --- a/dist/PollingBlockTracker.js
 +++ b/dist/PollingBlockTracker.js
-@@ -212,6 +212,7 @@ class PollingBlockTracker extends safe_event_emitter_1.default {
+@@ -39,6 +39,9 @@ class PollingBlockTracker extends safe_event_emitter_1.default {
+         this._keepEventLoopActive =
+             opts.keepEventLoopActive === undefined ? true : opts.keepEventLoopActive;
+         this._setSkipCacheFlag = opts.setSkipCacheFlag || false;
++        this._id = new Date().getTime();
++        console.warn(`Creating a new PollingBlockTracker (${this._id}) with interval ${this._pollingInterval}`);
++        this._extraRequestOptions = opts.extraRequestOptions || {};
+     }
+     async destroy() {
+         this._cancelBlockResetTimeout();
+@@ -142,7 +145,7 @@ class PollingBlockTracker extends safe_event_emitter_1.default {
+         const oldBlock = this._currentBlock;
+         this._currentBlock = newBlock;
+         this.emit('latest', newBlock);
+-        this.emit('sync', { oldBlock, newBlock });
++        this.emit('sync', { oldBlock, newBlock, blockTracker: this });
+     }
+     _setupBlockResetTimeout() {
+         // clear any existing timeout
+@@ -202,16 +205,17 @@ class PollingBlockTracker extends safe_event_emitter_1.default {
+         this._newPotentialLatest(latestBlock);
+     }
+     async _fetchLatestBlock() {
+-        const req = {
++        const req = Object.assign({}, {
+             jsonrpc: '2.0',
+             id: createRandomId(),
+             method: 'eth_blockNumber',
+             params: [],
+-        };
++        }, this._extraRequestOptions);
+         if (this._setSkipCacheFlag) {
              req.skipCache = true;
          }
          log('Making request', req);
-+        console.log('[PollingBlockTracker._fetchLatestBlock] provider.networkClientId = ', this._provider.networkClientId);
++        console.log(`[PollingBlockTracker._fetchLatestBlock] (${this._id}) provider.networkClientId = `, this._provider.networkClientId, 'provider', this._provider);
          const res = await (0, pify_1.default)((cb) => this._provider.sendAsync(req, cb))();
          log('Got response', res);
          if (res.error) {

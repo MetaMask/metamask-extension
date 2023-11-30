@@ -1,0 +1,107 @@
+diff --git a/dist/NetworkController.js b/dist/NetworkController.js
+index 4bce7f59a13e31d775582c4aca5016500f40667b..5ad300454486b1a3d2bd8ef07230fcce183bc723 100644
+--- a/dist/NetworkController.js
++++ b/dist/NetworkController.js
+@@ -647,7 +647,7 @@ class NetworkController extends base_controller_1.BaseControllerV2 {
+                         chainId,
+                         rpcUrl,
+                         ticker,
+-                    });
++                    }, networkClientId);
+             }
+             if (!existingNetworkConfiguration) {
+                 __classPrivateFieldGet(this, _NetworkController_trackMetaMetricsEvent, "f").call(this, {
+@@ -789,7 +789,7 @@ _NetworkController_ethQuery = new WeakMap(), _NetworkController_infuraProjectId
+         ...__classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_buildIdentifiedCustomNetworkClientConfigurations).call(this),
+         ...__classPrivateFieldGet(this, _NetworkController_instances, "m", _NetworkController_buildIdentifiedNetworkClientConfigurationsFromProviderConfig).call(this),
+     ].reduce((registry, [networkClientType, networkClientId, networkClientConfiguration]) => {
+-        const autoManagedNetworkClient = (0, create_auto_managed_network_client_1.createAutoManagedNetworkClient)(networkClientConfiguration);
++        const autoManagedNetworkClient = (0, create_auto_managed_network_client_1.createAutoManagedNetworkClient)(networkClientConfiguration, networkClientId);
+         if (networkClientId in registry[networkClientType]) {
+             return registry;
+         }
+diff --git a/dist/create-auto-managed-network-client.js b/dist/create-auto-managed-network-client.js
+index 75972689e6f19548f61833441b3064d9af3899eb..2a5662580f77a70c5b9fe09cb1010d33e8c02eac 100644
+--- a/dist/create-auto-managed-network-client.js
++++ b/dist/create-auto-managed-network-client.js
+@@ -28,14 +28,14 @@ const UNINITIALIZED_TARGET = { __UNINITIALIZED__: true };
+  * used to instantiate the network client when it is needed.
+  * @returns The auto-managed network client.
+  */
+-function createAutoManagedNetworkClient(networkClientConfiguration) {
++function createAutoManagedNetworkClient(networkClientConfiguration, networkClientId) {
+     let networkClient;
+     const providerProxy = new Proxy(UNINITIALIZED_TARGET, {
+         get(_target, propertyName, receiver) {
+             if (propertyName === REFLECTIVE_PROPERTY_NAME) {
+                 return networkClient === null || networkClient === void 0 ? void 0 : networkClient.provider;
+             }
+-            networkClient !== null && networkClient !== void 0 ? networkClient : (networkClient = (0, create_network_client_1.createNetworkClient)(networkClientConfiguration));
++            networkClient !== null && networkClient !== void 0 ? networkClient : (networkClient = (0, create_network_client_1.createNetworkClient)(networkClientConfiguration, networkClientId));
+             if (networkClient === undefined) {
+                 throw new Error("It looks like `createNetworkClient` didn't return anything. Perhaps it's being mocked?");
+             }
+@@ -63,7 +63,7 @@ function createAutoManagedNetworkClient(networkClientConfiguration) {
+             if (propertyName === REFLECTIVE_PROPERTY_NAME) {
+                 return true;
+             }
+-            networkClient !== null && networkClient !== void 0 ? networkClient : (networkClient = (0, create_network_client_1.createNetworkClient)(networkClientConfiguration));
++            networkClient !== null && networkClient !== void 0 ? networkClient : (networkClient = (0, create_network_client_1.createNetworkClient)(networkClientConfiguration, networkClientId));
+             const { provider } = networkClient;
+             return propertyName in provider;
+         },
+@@ -73,7 +73,7 @@ function createAutoManagedNetworkClient(networkClientConfiguration) {
+             if (propertyName === REFLECTIVE_PROPERTY_NAME) {
+                 return networkClient === null || networkClient === void 0 ? void 0 : networkClient.blockTracker;
+             }
+-            networkClient !== null && networkClient !== void 0 ? networkClient : (networkClient = (0, create_network_client_1.createNetworkClient)(networkClientConfiguration));
++            networkClient !== null && networkClient !== void 0 ? networkClient : (networkClient = (0, create_network_client_1.createNetworkClient)(networkClientConfiguration, networkClientId));
+             if (networkClient === undefined) {
+                 throw new Error("It looks like createNetworkClient returned undefined. Perhaps it's mocked?");
+             }
+@@ -101,7 +101,7 @@ function createAutoManagedNetworkClient(networkClientConfiguration) {
+             if (propertyName === REFLECTIVE_PROPERTY_NAME) {
+                 return true;
+             }
+-            networkClient !== null && networkClient !== void 0 ? networkClient : (networkClient = (0, create_network_client_1.createNetworkClient)(networkClientConfiguration));
++            networkClient !== null && networkClient !== void 0 ? networkClient : (networkClient = (0, create_network_client_1.createNetworkClient)(networkClientConfiguration, networkClientId));
+             const { blockTracker } = networkClient;
+             return propertyName in blockTracker;
+         },
+diff --git a/dist/create-network-client.js b/dist/create-network-client.js
+index 8078c3f3f9df539238d68583b790df8d2ba59034..20ab1a0be647d9128cd31f9266bf33707ef7f465 100644
+--- a/dist/create-network-client.js
++++ b/dist/create-network-client.js
+@@ -24,7 +24,7 @@ const SECOND = 1000;
+  * @param networkConfig - The network configuration.
+  * @returns The network client.
+  */
+-function createNetworkClient(networkConfig) {
++function createNetworkClient(networkConfig, networkClientId) {
+     const rpcApiMiddleware = networkConfig.type === types_1.NetworkClientType.Infura
+         ? (0, eth_json_rpc_infura_1.createInfuraMiddleware)({
+             network: networkConfig.network,
+@@ -38,12 +38,14 @@ function createNetworkClient(networkConfig) {
+             rpcUrl: networkConfig.rpcUrl,
+         });
+     const rpcProvider = (0, eth_json_rpc_provider_1.providerFromMiddleware)(rpcApiMiddleware);
++    rpcProvider.networkClientId = networkClientId;
+     const blockTrackerOpts = 
+     // eslint-disable-next-line n/no-process-env
+     process.env.IN_TEST && networkConfig.type === 'custom'
+         ? { pollingInterval: SECOND }
+         : {};
+-    const blockTracker = new eth_block_tracker_1.PollingBlockTracker(Object.assign(Object.assign({}, blockTrackerOpts), { provider: rpcProvider }));
++    const blockTracker = new eth_block_tracker_1.PollingBlockTracker(Object.assign(Object.assign({}, blockTrackerOpts), { provider: rpcProvider, extraRequestOptions: { networkClientId } }));
++    blockTracker.networkClientId = networkClientId;
+     const networkMiddleware = networkConfig.type === types_1.NetworkClientType.Infura
+         ? createInfuraNetworkMiddleware({
+             blockTracker,
+@@ -59,6 +61,7 @@ function createNetworkClient(networkConfig) {
+     const engine = new json_rpc_engine_1.JsonRpcEngine();
+     engine.push(networkMiddleware);
+     const provider = (0, eth_json_rpc_provider_1.providerFromEngine)(engine);
++    provider.networkClientId = networkClientId;
+     const destroy = () => {
+         blockTracker.destroy();
+     };

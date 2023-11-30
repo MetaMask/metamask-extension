@@ -219,7 +219,10 @@
     "nonce-tracker@npm:^3.0.0": "patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch",
     "@metamask/swappable-obj-proxy@npm:^2.1.0": "patch:@metamask/swappable-obj-proxy@npm%3A2.1.0#~/.yarn/patches/@metamask-swappable-obj-proxy-npm-2.1.0-fc04bb40b8.patch",
     "eth-block-tracker@npm:^8.0.0": "patch:eth-block-tracker@npm%3A8.1.0#~/.yarn/patches/eth-block-tracker-npm-8.1.0-9bb5237fb5.patch",
-    "@metamask/selected-network-controller@npm:^3.1.0": "patch:@metamask/selected-network-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch"
+    "@metamask/selected-network-controller@npm:^3.1.0": "patch:@metamask/selected-network-controller@npm%3A3.1.0#~/.yarn/patches/@metamask-selected-network-controller-npm-3.1.0-9d2a46f1cf.patch",
+    "@metamask/network-controller@npm:^15.1.0": "patch:@metamask/network-controller@npm%3A15.2.0#~/.yarn/patches/@metamask-network-controller-npm-15.2.0-deaf5ce0c9.patch",
+    "@metamask/eth-json-rpc-infura@npm:^9.0.0": "patch:@metamask/eth-json-rpc-infura@npm%3A9.0.0#~/.yarn/patches/@metamask-eth-json-rpc-infura-npm-9.0.0-94b44a7103.patch",
+    "@metamask/eth-json-rpc-provider@npm:^2.3.0": "patch:@metamask/eth-json-rpc-provider@npm%3A2.3.0#~/.yarn/patches/@metamask-eth-json-rpc-provider-npm-2.3.0-764149add4.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
@@ -255,7 +258,7 @@
     "@metamask/controller-utils": "^5.0.0",
     "@metamask/design-tokens": "^1.12.0",
     "@metamask/desktop": "^0.3.0",
-    "@metamask/eth-json-rpc-filters": "^7.0.0",
+    "@metamask/eth-json-rpc-filters": "patch:@metamask/eth-json-rpc-filters@npm%3A7.0.0#~/.yarn/patches/@metamask-eth-json-rpc-filters-npm-7.0.0-973e66471a.patch",
     "@metamask/eth-json-rpc-middleware": "^12.0.1",
     "@metamask/eth-keyring-controller": "^13.0.1",
     "@metamask/eth-ledger-bridge-keyring": "^2.0.0",
@@ -275,7 +278,7 @@
     "@metamask/message-manager": "^7.3.0",
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/name-controller": "^3.0.0",
-    "@metamask/network-controller": "^15.2.0",
+    "@metamask/network-controller": "patch:@metamask/network-controller@npm%3A15.2.0#~/.yarn/patches/@metamask-network-controller-npm-15.2.0-deaf5ce0c9.patch",
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/obs-store": "^8.1.0",
     "@metamask/permission-controller": "^6.0.0",
