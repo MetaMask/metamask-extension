@@ -44,6 +44,10 @@
     border-color: var(--color-error-default);
     box-shadow: inset 0 0 0 1px var(--color-error-default);
   }
+
+  &__content {
+    overflow: auto;
+  }
 }
 
 .mm-select-wrapper:has(.mm-select-button--block) {

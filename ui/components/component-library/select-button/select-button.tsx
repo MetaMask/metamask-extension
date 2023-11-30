@@ -45,7 +45,9 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
       startAccessory,
       endAccessory,
       label,
+      labelProps,
       description,
+      descriptionProps,
       caretIconProps,
       value: valueProp,
       uncontrolledValue: uncontrolledValueProp,
@@ -156,7 +158,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
           width={BlockSize.Full}
-          style={{ overflow: 'auto' }}
+          className="mm-select-button__content"
         >
           {labelRender && <Label>{labelRender}</Label>}
           {descriptionRender && (
@@ -164,6 +166,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
               variant={TextVariant.bodySm}
               color={TextColor.textAlternative}
               ellipsis
+              {...descriptionProps}
             >
               {descriptionRender}
             </Text>

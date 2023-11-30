@@ -3,6 +3,7 @@ import type {
   PolymorphicComponentPropWithRef,
 } from '../box';
 import { IconProps } from '../icon';
+import { TextStyleUtilityProps } from '../text';
 
 export enum SelectButtonSize {
   Sm = 'sm',
@@ -24,12 +25,18 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
    * Placeholder for SelectButton component
    */
   placeholder?: any;
+  value?: any;
+  defaultValue?: any;
   isBlock?: boolean;
   isDanger?: boolean;
   isDisabled?: boolean;
-  caretIconProps?: IconProps<'span'>;
   label?: string | React.ReactNode;
+  labelProps?: TextStyleUtilityProps;
   description?: string | React.ReactNode;
+  descriptionProps?: TextStyleUtilityProps;
+  startAccessory?: string | React.ReactNode;
+  endAccessory?: string | React.ReactNode;
+  caretIconProps?: IconProps<'span'>;
 }
 
 export type SelectButtonProps<C extends React.ElementType> =
