@@ -1001,6 +1001,7 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.keyringController = new KeyringController({
+      cacheEncryptionKey: true,
       keyringBuilders: additionalKeyrings,
       state: initState.KeyringController,
       encryptor: opts.encryptor || encryptorFactory(600_000),

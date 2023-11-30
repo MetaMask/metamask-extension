@@ -5,7 +5,9 @@ import {
   decrypt,
   decryptWithDetail,
   decryptWithKey,
+  isVaultUpdated,
   keyFromPassword,
+  importKey,
   EncryptionKey,
 } from '@metamask/browser-passworder';
 
@@ -23,7 +25,7 @@ const encryptFactory =
     data: unknown,
     key?: EncryptionKey | CryptoKey,
     salt?: string,
-  ): Promise<string> =>
+  ) =>
     encrypt(password, data, key, salt, {
       algorithm: 'PBKDF2',
       params: {
@@ -39,7 +41,8 @@ const encryptFactory =
  * @returns A function that encrypts with the given number of iterations.
  */
 const encryptWithDetailFactory =
-  (iterations: number) => (password: string, object: unknown, salt?: string) =>
+  (iterations: number) =>
+  async (password: string, object: unknown, salt?: string) =>
     encryptWithDetail(password, object, salt, {
       algorithm: 'PBKDF2',
       params: {
@@ -48,26 +51,19 @@ const encryptWithDetailFactory =
     });
 
 /**
- * A factory function that returns an alternative to the updateVault method
- * of the browser-passworder library, that updates the vault to the given number of iterations.
+ * A factory function for the isVaultUpdated method of the browser-passworder library,
+ * that checks if the given vault was encrypted with the given number of iterations.
  *
  * @param iterations - The number of iterations to use for the PBKDF2 algorithm.
- * @returns A function that updates the vault to the given number of iterations.
+ * @returns A function that checks if the vault was encrypted with the given number of iterations.
  */
-const updateVaultFactory =
-  (iterations: number) =>
-  async (vault: string, password: string): Promise<string> => {
-    const { keyMetadata } = JSON.parse(vault);
-
-    if (!keyMetadata || keyMetadata.params.iterations !== iterations) {
-      return encryptFactory(iterations)(
-        password,
-        await decrypt(password, vault),
-      );
-    }
-
-    return vault;
-  };
+const isVaultUpdatedFactory = (iterations: number) => async (vault: string) =>
+  isVaultUpdated(vault, {
+    algorithm: 'PBKDF2',
+    params: {
+      iterations,
+    },
+  });
 
 /**
  * A factory function that returns an encryptor with the given number of iterations.
@@ -86,5 +82,6 @@ export const encryptorFactory = (iterations: number) => ({
   decryptWithKey,
   decryptWithDetail,
   keyFromPassword,
-  updateVault: updateVaultFactory(iterations),
+  isVaultUpdated: isVaultUpdatedFactory(iterations),
+  importKey,
 });
