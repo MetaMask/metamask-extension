@@ -31,6 +31,7 @@ import {
   getIsSwapsChain,
   getSelectedAccountCachedBalance,
   getCurrentChainId,
+  getPreferences,
   ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
@@ -61,6 +62,9 @@ import { IconColor } from '../../../helpers/constants/design-system';
 import useRamps from '../../../hooks/experiences/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 ///: END:ONLY_INCLUDE_IN
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { showPrimaryCurrency } from '../../../../shared/modules/currency-display.utils';
 import WalletOverview from './wallet-overview';
 
 const EthOverview = ({ className, showAddress }) => {
@@ -79,9 +83,17 @@ const EthOverview = ({ className, showAddress }) => {
   ///: END:ONLY_INCLUDE_IN
   const balanceIsCached = useSelector(isBalanceCached);
   const showFiat = useSelector(getShouldShowFiat);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
+  const chainId = useSelector(getCurrentChainId);
+  const { ticker, type } = useSelector(getProviderConfig);
+  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
+    chainId,
+    ticker,
+    type,
+  );
+
   const balance = useSelector(getSelectedAccountCachedBalance);
   const isSwapsChain = useSelector(getIsSwapsChain);
-  const chainId = useSelector(getCurrentChainId);
 
   ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
@@ -158,7 +170,14 @@ const EthOverview = ({ className, showAddress }) => {
                   })}
                   data-testid="eth-overview__primary-currency"
                   value={balance}
-                  type={PRIMARY}
+                  type={
+                    showPrimaryCurrency(
+                      isOriginalNativeSymbol,
+                      useNativeCurrencyAsPrimaryCurrency,
+                    )
+                      ? PRIMARY
+                      : SECONDARY
+                  }
                   ethNumberOfDecimals={4}
                   hideTitle
                 />
@@ -172,7 +191,7 @@ const EthOverview = ({ className, showAddress }) => {
                 <span className="eth-overview__cached-star">*</span>
               ) : null}
             </div>
-            {showFiat && balance && (
+            {showFiat && isOriginalNativeSymbol && balance && (
               <UserPreferencedCurrencyDisplay
                 className={classnames({
                   'eth-overview__cached-secondary-balance': balanceIsCached,

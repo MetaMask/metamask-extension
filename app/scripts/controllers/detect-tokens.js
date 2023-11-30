@@ -99,6 +99,10 @@ export default class DetectTokensController extends PollingControllerOnly {
       }
     });
 
+    messenger.subscribe('TokenListController:stateChange', () => {
+      this.restartTokenDetection();
+    });
+
     this.#registerKeyringHandlers();
   }
 
