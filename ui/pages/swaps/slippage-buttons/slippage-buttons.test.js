@@ -29,7 +29,7 @@ describe('SlippageButtons', () => {
     expect(
       document.querySelector('.slippage-buttons__button-group'),
     ).toMatchSnapshot();
-    expect(queryByText('Smart swap')).not.toBeInTheDocument();
+    expect(queryByText('Smart Swaps')).not.toBeInTheDocument();
     expect(getByTestId('button-group__button1')).toHaveAttribute(
       'aria-checked',
       'true',
@@ -56,7 +56,7 @@ describe('SlippageButtons', () => {
     expect(
       document.querySelector('.slippage-buttons__button-group'),
     ).toMatchSnapshot();
-    expect(getByText('Smart swap')).toBeInTheDocument();
+    expect(getByText('Smart Swaps')).toBeInTheDocument();
     expect(document.querySelector('.toggle-button--off')).toBeInTheDocument();
     fireEvent.click(document.querySelector('.toggle-button'));
     expect(setSmartTransactionsOptInStatus).toHaveBeenCalledWith(true, false);
