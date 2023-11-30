@@ -146,7 +146,7 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
  * @see {@link https://wobbly-nutmeg-8a5.notion.site/MM-E2E-Testing-1e51b617f79240a49cd3271565c6e12d}
  */
 describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
-  it('should not show security alerts for benign requests', async function () {
+  it('should not show security alerts for benign requests', async function (done) {
     await withFixtures(
       {
         dapp: true,
@@ -179,7 +179,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
               params,
             });
             await driver.executeScript(
-              `window.transactionHash = window.ethereum.request(${request})`,
+              `return window.ethereum.request(${request})`,
             );
             await driver.delay(2000);
           }
