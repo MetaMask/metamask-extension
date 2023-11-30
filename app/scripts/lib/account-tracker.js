@@ -83,6 +83,7 @@ export default class AccountTracker {
     this.getNetworkIdentifier = opts.getNetworkIdentifier;
     this.preferencesController = opts.preferencesController;
     this.onboardingController = opts.onboardingController;
+    this.controllerMessenger = opts.controllerMessenger;
 
     // subscribe to account removal
     opts.onAccountRemoved((address) => this.removeAccount([address]));
@@ -97,20 +98,24 @@ export default class AccountTracker {
       }, this.onboardingController.store.getState()),
     );
 
-    this.preferencesController.store.subscribe(
-      previousValueComparator(async (prevState, currState) => {
-        const { selectedAddress: prevSelectedAddress } = prevState;
-        const {
-          selectedAddress: currSelectedAddress,
-          useMultiAccountBalanceChecker,
-        } = currState;
+    this.selectedAccount = this.controllerMessenger.call(
+      'AccountsController:getSelectedAccount',
+    );
+
+    this.controllerMessenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (newAccount) => {
+        const { useMultiAccountBalanceChecker } =
+          this.preferencesController.store.getState();
+
         if (
-          prevSelectedAddress !== currSelectedAddress &&
+          this.selectedAccount.id !== newAccount.id &&
           !useMultiAccountBalanceChecker
         ) {
+          this.selectedAccount = newAccount;
           this._updateAccounts();
         }
-      }, this.onboardingController.store.getState()),
+      },
     );
     this.ethersProvider = new Web3Provider(this._provider);
   }
@@ -251,7 +256,9 @@ export default class AccountTracker {
 
       addresses = Object.keys(accounts);
     } else {
-      const selectedAddress = this.preferencesController.getSelectedAddress();
+      const selectedAddress = this.controllerMessenger.call(
+        'AccountsController:getSelectedAccount',
+      ).address;
 
       addresses = [selectedAddress];
     }
