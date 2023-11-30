@@ -1,10 +1,10 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import {
   TransactionGroupCategory,
   TransactionGroupStatus,
-  TransactionStatus,
 } from '../../../../shared/constants/transaction';
 import { captureSingleException } from '../../../store/actions';
 import { AvatarIcon, AvatarIconSize, IconName } from '../../component-library';

@@ -5,6 +5,7 @@ const {
   convertToHexValue,
   withFixtures,
   createDownloadFolder,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -69,9 +70,7 @@ describe('Backup and Restore', function () {
       },
       async ({ driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Download user settings
         await driver.clickElement(
@@ -80,7 +79,7 @@ describe('Backup and Restore', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Advanced', tag: 'div' });
         await driver.clickElement({
-          text: 'Backup',
+          text: 'Back up',
           tag: 'button',
         });
 
@@ -112,9 +111,7 @@ describe('Backup and Restore', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Restore
         await driver.clickElement(

@@ -658,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Le réseau avec l’ID de chaîne $1 peut utiliser un symbole de devise différent ($2) de celui que vous avez saisi. Veuillez vérifier avant de continuer.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Choisissez votre réseau"
@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Effectuez un dépôt"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "En savoir plus"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "En raison des changements apportés au protocole d’Ethereum, les réseaux testnet Rinkeby, Ropsten et Kovan peuvent ne pas fonctionner d’une manière aussi fiable qu’auparavant et deviendront bientôt obsolètes."
-  },
   "description": {
     "message": "Description"
   },
@@ -1398,12 +1392,6 @@
   "enableFromSettings": {
     "message": " Activez-la depuis les Paramètres."
   },
-  "enableOpenSeaAPI": {
-    "message": "Activer l’API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Utilisez l’API OpenSea pour récupérer les données de NFT. La détection automatique de NFT repose sur l’API OpenSea et ne sera pas disponible si elle est désactivée."
-  },
   "enableSnap": {
     "message": "Activer"
   },
@@ -1433,12 +1421,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Caractère invalide pour l’ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nom ENS non trouvé sur le réseau actuel. Essayez de passer au réseau Ethereum principal."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Le réseau ne prend pas en charge l’ENS"
   },
   "ensRegistrationError": {
     "message": "Erreur dans l’enregistrement du nom ENS"
@@ -2112,25 +2094,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Activez les « données de contrat intelligent » ou la « signature aveugle » sur votre dispositif Ledger."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Activez l’option « Utiliser Ledger Live » sous Paramètres > Avancé."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Assurez-vous que votre dispositif Ledger est branché et sélectionnez l'application Ethereum."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ouvrez et déverrouillez l’application Ledger Live."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Personnalisez la façon dont vous souhaitez connecter votre Ledger à MetaMask. $1 est recommandé, mais d’autres options sont disponibles. En savoir plus ici : $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Le dispositif Ledger n’a pas pu s’ouvrir. Il est peut-être connecté à d’autres logiciels. Veuillez fermer Ledger Live ou toute autre application déjà connectée à celui-ci, puis essayez de vous reconnecter."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Appli Ledger Live"
@@ -2140,9 +2108,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live met trop de temps à répondre ou la connexion est interrompue. Assurez-vous que l’application Ledger Live est bien ouverte et que votre appareil est déverrouillé."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Si l’application Ledger Live est ouverte, désactivez toute connexion en cours à celle-ci et fermez-la."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Le dispositif Ledger n’est pas connecté. Si vous souhaitez le connecter, veuillez cliquer à nouveau sur « Continuer » et approuver la connexion au HID",
@@ -3896,10 +3861,6 @@
   "snapUpdateErrorTitle": {
     "message": "La mise à jour a échoué",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1 veut mettre à jour $2 vers $3, ce qui lui donne les autorisations suivantes. Ne continuez que si vous faites confiance à $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Mise à jour terminée"

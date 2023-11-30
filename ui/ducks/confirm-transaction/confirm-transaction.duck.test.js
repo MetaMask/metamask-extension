@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 import sinon from 'sinon';
 import { NetworkStatus } from '@metamask/network-controller';
 import { NetworkType } from '@metamask/controller-utils';
-import { TransactionStatus } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '@metamask/transaction-controller';
 
 import ConfirmTransactionReducer, * as actions from './confirm-transaction.duck';
 
@@ -290,8 +290,12 @@ describe('Confirm Transaction Duck', () => {
       };
       const mockState = {
         metamask: {
-          conversionRate: 468.58,
           currentCurrency: 'usd',
+          currencyRates: {
+            ETH: {
+              conversionRate: 468.58,
+            },
+          },
           providerConfig: {
             ticker: 'ETH',
           },
@@ -343,8 +347,12 @@ describe('Confirm Transaction Duck', () => {
     it('updates confirmTransaction transaction', () => {
       const mockState = {
         metamask: {
-          conversionRate: 468.58,
           currentCurrency: 'usd',
+          currencyRates: {
+            ETH: {
+              conversionRate: 468.58,
+            },
+          },
           selectedNetworkClientId: NetworkType.goerli,
           networksMetadata: {
             [NetworkType.goerli]: {
@@ -354,6 +362,7 @@ describe('Confirm Transaction Duck', () => {
           },
           providerConfig: {
             chainId: '0x5',
+            ticker: 'ETH',
           },
           transactions: [
             {

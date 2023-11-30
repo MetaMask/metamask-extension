@@ -658,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "链 ID为$1的网络使用的货币代码（$2）可能与您输入的不同。请在继续之前进行验证。",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "选择您的网络"
@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "保证金"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "了解详情"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "由于以太坊的协议有变化：Rinkeby、Ropsten 和 Kovan 测试网络可能无法可靠地工作，很快就会被弃用。"
-  },
   "description": {
     "message": "描述"
   },
@@ -1398,12 +1392,6 @@
   "enableFromSettings": {
     "message": " 从设置中启用它。"
   },
-  "enableOpenSeaAPI": {
-    "message": "启用 OpenSea API"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "使用 OpenSea 的 API 获取 NFT 数据。NFT 自动检测依赖于 OpenSea 的 API，在后者关闭时自动检测将不可用。"
-  },
   "enableSnap": {
     "message": "启用"
   },
@@ -1433,12 +1421,6 @@
   },
   "ensIllegalCharacter": {
     "message": "ENS 的非法字符。"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "未在当前网络找到 ENS 名称。请尝试切换至以太坊主网。"
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "网络不支持 ENS"
   },
   "ensRegistrationError": {
     "message": "ENS 名称注册错误"
@@ -2112,25 +2094,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "在您的 Ledger 设备上启用“智能合约数据”或“盲签”。"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "在“设置 > 高级”下启用使用 Ledger Live"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "请确保您的 Ledger 设备已插入并选择以太坊应用程序。"
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "打开并解锁 Ledger Live 应用程序。"
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "自定义连接您的 Ledger 到 MetaMask 的方式。建议使用 $1，但也可使用其他选项。请在这里阅读更多信息：$2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledger 设备打开失败。您的 Ledger 可能已连接到其他软件。请关闭 Ledger Live 或其他连接到您的 Ledger 设备的应用程序，并尝试再次连接。"
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live 应用程序"
@@ -2140,9 +2108,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live 响应时间过长或连接超时。请确保 Ledger Live 应用程序已打开且您的设备已解锁。"
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "如果您的 Ledger Live 应用程序已打开，请断开任何打开的 Ledger Live 的连接并关闭 Ledger Live 应用程序。"
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger 设备未连接。如果您想要连接您的 Ledger，请再次点击“继续”并批准 HID 连接",
@@ -3896,10 +3861,6 @@
   "snapUpdateErrorTitle": {
     "message": "更新失败",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1希望将$2更新为$3，更新后将获得下列权限。只有在您信任$2的情况下才可继续。",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "更新完成"

@@ -153,6 +153,9 @@ function defaultFixture() {
           ///: END:ONLY_INCLUDE_IN
         },
       },
+      NetworkOrderController: {
+        orderedNetworkList: [],
+      },
       AppStateController: {
         browserEnvironment: {},
         nftsDropdownState: {},
@@ -183,11 +186,14 @@ function defaultFixture() {
         },
       },
       CurrencyController: {
-        conversionDate: 1665507600.0,
-        conversionRate: 1300.0,
         currentCurrency: 'usd',
-        nativeCurrency: 'ETH',
-        usdConversionRate: 1300.0,
+        currencyRates: {
+          ETH: {
+            conversionDate: 1665507600.0,
+            conversionRate: 1300.0,
+            usdConversionRate: 1300.0,
+          },
+        },
       },
       GasFeeController: {
         estimatedGasFeeTimeBounds: {},
@@ -445,6 +451,11 @@ class FixtureBuilder {
 
   withAnnouncementController(data) {
     merge(this.fixture.data.AnnouncementController, data);
+    return this;
+  }
+
+  withNetworkOrderController(data) {
+    merge(this.fixture.data.NetworkOrderController, data);
     return this;
   }
 
