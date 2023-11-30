@@ -17,18 +17,16 @@ import {
 import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
-import { TransactionStatus } from '../../shared/constants/transaction';
-import createTxMeta from '../../test/lib/createTxMeta';
+import { TransactionController } from '@metamask/transaction-controller';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
 import { deferredPromise } from './lib/util';
-import TransactionController from './controllers/transactions';
 import MetaMaskController from './metamask-controller';
 
-const Ganache = require('../../test/e2e/ganache');
+const { Ganache } = require('../../test/e2e/ganache');
 
 const ganacheServer = new Ganache();
 
@@ -105,7 +103,6 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
   },
 }));
 
-const currentChainId = '0x5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -945,42 +942,24 @@ describe('MetaMaskController', () => {
     });
 
     describe('#resetAccount', () => {
-      it('wipes transactions from only the correct chain id and with the selected address', async function () {
+      it('wipes transactions from only the correct network id and with the selected address', async () => {
+        const selectedAddressMock =
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
         jest
           .spyOn(metamaskController.preferencesController, 'getSelectedAddress')
-          .mockReturnValue('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
+          .mockReturnValue(selectedAddressMock);
 
-        metamaskController.txController.txStateManager._addTransactionsToState([
-          createTxMeta({
-            id: 1,
-            status: TransactionStatus.unapproved,
-            chainId: currentChainId,
-            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
-          }),
-          createTxMeta({
-            id: 1,
-            status: TransactionStatus.unapproved,
-            chainId: currentChainId,
-            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
-          }),
-          createTxMeta({
-            id: 2,
-            status: TransactionStatus.rejected,
-            chainId: '0x32',
-          }),
-          createTxMeta({
-            id: 3,
-            status: TransactionStatus.submitted,
-            chainId: currentChainId,
-            txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
-          }),
-        ]);
+        jest.spyOn(metamaskController.txController, 'wipeTransactions');
 
         await metamaskController.resetAccount();
 
         expect(
-          metamaskController.txController.txStateManager.getTransaction(1),
-        ).toBeUndefined();
+          metamaskController.txController.wipeTransactions,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          metamaskController.txController.wipeTransactions,
+        ).toHaveBeenCalledWith(true, selectedAddressMock);
       });
     });
 
@@ -1630,6 +1609,89 @@ describe('MetaMaskController', () => {
             id: NETWORK_CONFIGURATION_ID_2,
           });
         });
+      });
+    });
+
+    describe('getTokenSymbol', () => {
+      it('should gets token symbol for given address', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        const tokenData = {
+          standard: 'ERC20',
+          decimals: 18,
+          symbol: 'DAI',
+          balance: '333',
+        };
+
+        metamaskController.tokenListController.update(() => {
+          return {
+            tokenList: {
+              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            },
+          };
+        });
+
+        metamaskController.provider = provider;
+
+        jest
+          .spyOn(
+            metamaskController.assetsContractController,
+            'getTokenStandardAndDetails',
+          )
+          .mockReturnValue(tokenData);
+
+        const tokenSymbol = await metamaskController.getTokenSymbol(
+          '0xNotInTokenList',
+        );
+
+        expect(tokenSymbol).toStrictEqual(tokenData.symbol);
+      });
+
+      it('should return null for given token address', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        metamaskController.tokenListController.update(() => {
+          return {
+            tokenList: {
+              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            },
+          };
+        });
+
+        metamaskController.provider = provider;
+
+        jest
+          .spyOn(
+            metamaskController.assetsContractController,
+            'getTokenStandardAndDetails',
+          )
+          .mockImplementation(() => {
+            throw new Error('error');
+          });
+
+        const tokenSymbol = await metamaskController.getTokenSymbol(
+          '0xNotInTokenList',
+        );
+
+        expect(tokenSymbol).toStrictEqual(null);
       });
     });
 

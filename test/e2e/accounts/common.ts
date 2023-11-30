@@ -62,8 +62,6 @@ export async function installSnapSimpleKeyring(
   driver: Driver,
   isAsyncFlow: boolean,
 ) {
-  await driver.navigate();
-
   await unlockWallet(driver);
 
   // navigate to test Snaps page and connect

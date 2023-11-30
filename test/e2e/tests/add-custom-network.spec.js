@@ -89,7 +89,6 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -168,7 +167,6 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -276,7 +274,6 @@ describe('Custom network', function () {
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -330,7 +327,6 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await openDapp(driver);
@@ -391,7 +387,6 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           // Avoid a stale element error
@@ -478,7 +473,6 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           // Avoid a stale element error
@@ -508,7 +502,7 @@ describe('Custom network', function () {
 
           const arbitrumNetwork = await driver.findElements({
             text: 'Arbitrum One',
-            tag: 'button',
+            tag: 'p',
           });
           assert.ok(arbitrumNetwork.length, 1);
         },
@@ -535,7 +529,6 @@ describe('Custom network', function () {
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
-          await driver.navigate();
           await unlockWallet(driver);
 
           await driver.clickElement(
@@ -587,8 +580,6 @@ describe('Custom network', function () {
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
-          await driver.navigate();
-
           await unlockWallet(driver);
 
           await checkThatSafeChainsListValidationToggleIsOn(driver);
@@ -629,8 +620,6 @@ describe('Custom network', function () {
           testSpecificMock: mockRPCURLAndChainId,
         },
         async ({ driver }) => {
-          await driver.navigate();
-
           await unlockWallet(driver);
 
           await toggleOffSafeChainsListValidation(driver);
@@ -697,14 +686,14 @@ async function failCandidateNetworkValidation(driver) {
     networkNameInputEl,
     newRPCURLInputEl,
     chainIDInputEl,
-    currencySymbolInputEl,
+    ,
     blockExplorerURLInputEl,
   ] = await driver.findElements('input');
 
   await networkNameInputEl.fill('cheapETH');
   await newRPCURLInputEl.fill('https://unresponsive-rpc.url');
   await chainIDInputEl.fill(toHex(777));
-  await currencySymbolInputEl.fill('cTH');
+  await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');
 
   const chainIdValidationMessageRawLocator = {
@@ -712,12 +701,7 @@ async function failCandidateNetworkValidation(driver) {
     tag: 'h6',
   };
   await driver.waitForSelector(chainIdValidationMessageRawLocator);
-
-  const tickerSymbolValidationMessageRawLocator = {
-    text: 'Ticker symbol verification data is currently unavailable, make sure that the symbol you have entered is correct. It will impact the conversion rates that you see for this network',
-    tag: 'h6',
-  };
-  await driver.waitForSelector(tickerSymbolValidationMessageRawLocator);
+  await driver.waitForSelector('[data-testid="network-form-ticker-warning"]');
 
   const saveButtonRawLocator = {
     text: 'Save',
@@ -804,14 +788,14 @@ async function candidateNetworkIsNotValidated(driver) {
     networkNameInputEl,
     newRPCURLInputEl,
     chainIDInputEl,
-    currencySymbolInputEl,
+    ,
     blockExplorerURLInputEl,
   ] = await driver.findElements('input');
 
   await networkNameInputEl.fill('cheapETH');
   await newRPCURLInputEl.fill('https://responsive-rpc.url/');
   await chainIDInputEl.fill(TEST_CHAIN_ID);
-  await currencySymbolInputEl.fill('cTH');
+  await driver.fill('[data-testid="network-form-ticker-input"]', 'cTH');
   await blockExplorerURLInputEl.fill('https://block-explorer.url');
 
   const saveButtonRawLocator = {

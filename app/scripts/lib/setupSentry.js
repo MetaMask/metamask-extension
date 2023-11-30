@@ -43,6 +43,9 @@ export const SENTRY_BACKGROUND_STATE = {
   AnnouncementController: {
     announcements: false,
   },
+  NetworkOrderController: {
+    orderedNetworkList: [],
+  },
   AppMetadataController: {
     currentAppVersion: true,
     currentMigrationVersion: true,
@@ -85,13 +88,8 @@ export const SENTRY_BACKGROUND_STATE = {
     jobs: false,
   },
   CurrencyController: {
-    conversionDate: true,
-    conversionRate: true,
     currentCurrency: true,
-    nativeCurrency: true,
-    pendingCurrentCurrency: true,
-    pendingNativeCurrency: true,
-    usdConversionRate: true,
+    currencyRates: true,
   },
   DecryptMessageController: {
     unapprovedDecryptMsgs: false,
@@ -108,6 +106,7 @@ export const SENTRY_BACKGROUND_STATE = {
     estimatedGasFeeTimeBounds: true,
     gasEstimateType: true,
     gasFeeEstimates: true,
+    gasFeeEstimatesByChainId: true,
   },
   KeyringController: {
     isUnlocked: true,
@@ -294,6 +293,7 @@ export const SENTRY_BACKGROUND_STATE = {
   TransactionController: {
     transactions: false,
     lastFetchedBlockNumbers: false,
+    methodData: false,
   },
   TxController: {
     transactions: false,

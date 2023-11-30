@@ -1,30 +1,30 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  IconName,
-  TextFieldSearch,
   Box,
-  Modal,
-  ModalContent,
-  ModalOverlay,
-  ModalHeader,
-  Text,
-  ButtonVariant,
   ButtonLink,
   ButtonSecondary,
   ButtonSecondarySize,
+  ButtonVariant,
+  IconName,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+  TextFieldSearch,
 } from '../../component-library';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
+  AlignItems,
   BlockSize,
-  Size,
-  TextColor,
   Display,
   FlexDirection,
-  AlignItems,
+  Size,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';

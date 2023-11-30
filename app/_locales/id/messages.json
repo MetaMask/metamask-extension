@@ -658,7 +658,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Jaringan dengan ID chain $1 dapat menggunakan simbol mata uang yang berbeda ($2) dari yang Anda masukkan. Harap verifikasikan sebelum melanjutkan.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Pilih jaringan Anda"
@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Deposit"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Pelajari selengkapnya"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Sehubungan dengan perubahan protokol Ethereum: jaringan uji Rinkeby, Ropsten, dan Kovan mungkin tidak dapat beroperasi dengan baik dan akan segera dihentikan."
-  },
   "description": {
     "message": "Deskripsi"
   },
@@ -1398,12 +1392,6 @@
   "enableFromSettings": {
     "message": " Aktifkan dari Pengaturan."
   },
-  "enableOpenSeaAPI": {
-    "message": "Aktifkan API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Gunakan API OpenSea untuk mengambil data NFT. Deteksi otomatis NFT bergantung pada API OpenSea, dan tidak akan tersedia saat API ditutup."
-  },
   "enableSnap": {
     "message": "Aktifkan"
   },
@@ -1433,12 +1421,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Karakter tidak sah untuk ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nama ENS tidak ditemukan pada jaringan saat ini. Coba untuk beralih ke Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Jaringan tidak mendukung ENS"
   },
   "ensRegistrationError": {
     "message": "Terjadi kesalahan pada pendaftaran nama ENS"
@@ -2112,25 +2094,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Aktifkan \"data kontrak cerdas\" atau \"penandatanganan buta\" pada perangkat Ledger Anda."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Aktifkan Gunakan Ledger Live di bawah Pengaturan > Lanjutan."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Pastikan Ledger terhubung dan untuk memilih aplikasi Ethereum."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Akses dan buka Aplikasi Ledger Live."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Sesuaikan cara Anda menghubungkan Ledger ke MetaMask. Kami merekomendasikan $1, tetapi opsi lain tersedia. Baca selengkapnya di sini: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Perangkat Ledger gagal dibuka. Ledger Anda mungkin terhubung ke perangkat lunak lain. Tutup Ledger Live atau aplikasi lain yang terhubung ke perangkat Ledger Anda, dan coba hubungkan kembali."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Aplikasi Ledger Live"
@@ -2140,9 +2108,6 @@
   },
   "ledgerTimeout": {
     "message": "Respons Ledger Live terlalu lama atau waktu koneksi habis. Pastikan aplikasi Ledger Live terbuka dan perangkat Anda tidak terkunci."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Jika aplikasi Ledger Live Anda terbuka, putuskan koneksi Ledger Live yang terbuka dan tutup aplikasi Ledger Live."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Perangkat ledger tidak terhubung. Jika ingin menghubungkan Ledger Anda, klik 'Lanjutkan' lagi dan setujui koneksi HID",
@@ -3896,10 +3861,6 @@
   "snapUpdateErrorTitle": {
     "message": "Pembaruan gagal",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1 ingin memperbarui $2 menjadi $3 yang memberinya izin berikut. Lanjutkan hanya jika Anda memercayai $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Pembaruan selesai"

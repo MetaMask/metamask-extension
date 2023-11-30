@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -15,10 +19,6 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import {
-  TransactionType,
-  TransactionStatus,
-} from '../../../shared/constants/transaction';
 import { getMethodName } from '../../helpers/utils/metrics';
 import {
   getTransactionTypeTitle,
@@ -151,6 +151,7 @@ export default class ConfirmTransactionBase extends Component {
     isMainBetaFlask: PropTypes.bool,
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
+    updateTransaction: PropTypes.func,
   };
 
   state = {
@@ -702,9 +703,10 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-  handleMMISubmit() {
+  async handleMMISubmit() {
     const {
       sendTransaction,
+      updateTransaction,
       txData,
       history,
       mostRecentOverviewPage,
@@ -744,6 +746,8 @@ export default class ConfirmTransactionBase extends Component {
       txData.metadata.custodianPublishesTransaction =
         custodianPublishesTransaction;
       txData.metadata.rpcUrl = rpcUrl;
+
+      await updateTransaction(txData);
     }
 
     updateTxData({

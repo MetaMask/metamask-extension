@@ -2,13 +2,13 @@ import { MethodRegistry } from 'eth-method-registry';
 import log from 'loglevel';
 import { ERC1155, ERC721 } from '@metamask/controller-utils';
 
-import { addHexPrefix } from '../../../app/scripts/lib/util';
 import {
-  TransactionType,
-  TransactionGroupStatus,
-  TransactionStatus,
   TransactionEnvelopeType,
-} from '../../../shared/constants/transaction';
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { addHexPrefix } from '../../../app/scripts/lib/util';
+import { TransactionGroupStatus } from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
