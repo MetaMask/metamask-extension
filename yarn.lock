@@ -5121,9 +5121,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^18.2.0":
-  version: 18.2.0
-  resolution: "@metamask/transaction-controller@npm:18.2.0"
+"@metamask/transaction-controller@npm:^18.3.0":
+  version: 18.3.0
+  resolution: "@metamask/transaction-controller@npm:18.3.0"
   dependencies:
     "@ethereumjs/common": "npm:^3.2.0"
     "@ethereumjs/tx": "npm:^4.2.0"
@@ -5149,7 +5149,7 @@ __metadata:
     "@metamask/gas-fee-controller": ^11.0.0
     "@metamask/network-controller": ^17.0.0
     babel-runtime: ^6.26.0
-  checksum: 66e758eddd48c1d560818d4d8b54f207223203990e6dbe7788c638e7fff4a7f0c230aabe81d3c6c7ebd2ee88291fa0403d8ffb9abd63e074e2402256f0f5719f
+  checksum: 6133afa797a014b0ef5162045585e011cfd204424060c8027de96ecacf47c18c4a0244aa35f4cb3e5a7898de73f3bf77e3e4ae4c1eb4e6b67023c86f8c052da3
   languageName: node
   linkType: hard
 
@@ -24322,7 +24322,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:^1.2.0"
     "@metamask/snaps-utils": "npm:^5.0.0"
     "@metamask/test-dapp": "npm:^7.2.0"
-    "@metamask/transaction-controller": "npm:^18.2.0"
+    "@metamask/transaction-controller": "npm:^18.3.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.6"
     "@playwright/test": "npm:^1.39.0"
