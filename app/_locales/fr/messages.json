@@ -3757,9 +3757,6 @@
   "smartContracts": {
     "message": "Contrats intelligents"
   },
-  "smartSwap": {
-    "message": "Contrat de swap intelligent"
-  },
   "smartSwapsAreHere": {
     "message": "Les contrats de swap intelligents sont enfin arrivés !"
   },
