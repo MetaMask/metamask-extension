@@ -3757,9 +3757,6 @@
   "smartContracts": {
     "message": "智能合约"
   },
-  "smartSwap": {
-    "message": "智能兑换"
-  },
   "smartSwapsAreHere": {
     "message": "智能兑换已推出！"
   },

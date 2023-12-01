@@ -192,7 +192,7 @@ export default function TransactionSettings({
                       variant={TypographyVariant.H6}
                       boxProps={{ paddingRight: 2 }}
                     >
-                      {t('smartSwap')}
+                      {t('smartSwaps')}
                     </Typography>
                     {currentSmartTransactionsError ? (
                       <InfoTooltip

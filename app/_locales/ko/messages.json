@@ -3757,9 +3757,6 @@
   "smartContracts": {
     "message": "스마트 계약"
   },
-  "smartSwap": {
-    "message": "스마트 스왑"
-  },
   "smartSwapsAreHere": {
     "message": "스마트 스왑이 시작되었습니다!"
   },
