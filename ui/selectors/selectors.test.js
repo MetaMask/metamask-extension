@@ -7,6 +7,7 @@ import {
   NETWORK_TYPES,
   OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
+import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import * as selectors from './selectors';
 
 jest.mock('../../shared/modules/network.utils', () => {
@@ -812,7 +813,8 @@ describe('Selectors', () => {
     });
 
     it('shows the survey link when not yet seen and within time bounds', () => {
-      Date.now = () => new Date('December 20 2023 12:25:00 GMT-0600').getTime();
+      Date.now = () =>
+        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
       const result = selectors.getShowSurveyToast({
         metamask: {
           surveyLinkLastClickedOrClosed: null,
@@ -822,7 +824,8 @@ describe('Selectors', () => {
     });
 
     it('does not show the survey link when seen and within time bounds', () => {
-      Date.now = () => new Date('December 20 2023 12:25:00 GMT-0600').getTime();
+      Date.now = () =>
+        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
       const result = selectors.getShowSurveyToast({
         metamask: {
           surveyLinkLastClickedOrClosed: 123456789,
@@ -832,7 +835,8 @@ describe('Selectors', () => {
     });
 
     it('does not show the survey link before time bounds', () => {
-      Date.now = () => new Date('December 20 2023 11:25:00 GMT-0600').getTime();
+      Date.now = () =>
+        new Date(`${SURVEY_DATE} 11:25:00 ${SURVEY_GMT}`).getTime();
       const result = selectors.getShowSurveyToast({
         metamask: {
           surveyLinkLastClickedOrClosed: null,
@@ -842,7 +846,8 @@ describe('Selectors', () => {
     });
 
     it('does not show the survey link after time bounds', () => {
-      Date.now = () => new Date('December 20 2023 14:25:00 GMT-0600').getTime();
+      Date.now = () =>
+        new Date(`${SURVEY_DATE} 14:25:00 ${SURVEY_GMT}`).getTime();
       const result = selectors.getShowSurveyToast({
         metamask: {
           surveyLinkLastClickedOrClosed: null,

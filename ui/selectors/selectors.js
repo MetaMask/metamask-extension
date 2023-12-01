@@ -93,6 +93,11 @@ import {
   NOTIFICATION_U2F_LEDGER_LIVE,
 } from '../../shared/notifications';
 import {
+  SURVEY_DATE,
+  SURVEY_END_TIME,
+  SURVEY_START_TIME,
+} from '../helpers/constants/survey';
+import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
@@ -1232,8 +1237,8 @@ export function getShowTermsOfUse(state) {
 
 export function getShowSurveyToast(state) {
   const { surveyLinkLastClickedOrClosed } = state.metamask;
-  const startTime = new Date('December 20 2023 12:00:00 GMT-0600').getTime();
-  const endTime = new Date('December 20 2023 13:00:00 GMT-0600').getTime();
+  const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
+  const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
   const now = Date.now();
   return now > startTime && now < endTime && !surveyLinkLastClickedOrClosed;
 }
