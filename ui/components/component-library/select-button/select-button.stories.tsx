@@ -50,19 +50,19 @@ export const Size: StoryFn<typeof SelectButton> = (args) => {
       <SelectButton
         {...args}
         size={SelectButtonSize.Sm}
-        title={SelectButtonSize.Sm}
+        label={SelectButtonSize.Sm}
         startAccessory={<AvatarBase size={AvatarBaseSize.Xs} />}
         endAccessory={<AvatarBase size={AvatarBaseSize.Xs} />}
       />
       <SelectButton
         {...args}
         size={SelectButtonSize.Md}
-        title={SelectButtonSize.Md}
+        label={SelectButtonSize.Md}
       />
       <SelectButton
         {...args}
         size={SelectButtonSize.Lg}
-        title={SelectButtonSize.Lg}
+        label={SelectButtonSize.Lg}
       />
     </Box>
   );
@@ -81,6 +81,12 @@ IsDanger.args = {
 };
 IsDanger.storyName = 'isDanger';
 
+export const IsDisabled = Template.bind({});
+IsDisabled.args = {
+  isDisabled: true,
+};
+IsDisabled.storyName = 'isDisabled';
+
 export const Label = Template.bind({});
 Label.args = {
   label: 'This is the label',
@@ -90,7 +96,6 @@ Label.args = {
 
 export const Description = Template.bind({});
 Description.args = {
-  label: 'This is a label',
   description: 'This is a demo of description',
   endAccessory: '',
 };
@@ -130,21 +135,13 @@ Children.args = {
 };
 
 export const Placeholder: StoryFn<typeof SelectButton> = (args) => {
+  console.log('Args:', args);
   return (
     <Box display={Display.Flex} gap={3}>
       <SelectButton {...args} />
       <SelectButton
         {...args}
-        onClick={() => console.log('clicked')}
-        onBlur={() => console.log('blurred')}
-        onFocus={() => console.log('focused')}
         placeholder={{
-          startAccessory: (
-            <AvatarAccount
-              address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
-              size={AvatarAccountSize.Sm}
-            />
-          ),
           label: 'Placeholder label',
           description: 'Placeholder example using prop shape recommendation',
         }}

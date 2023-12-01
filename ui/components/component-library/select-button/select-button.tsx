@@ -42,6 +42,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
       isBlock,
       isDanger: isDangerProp,
       isDisabled: isDisabledProp,
+      disabled, // to allow our components to maintain intuitive building and support native HTML attribute
       startAccessory,
       endAccessory,
       label,
@@ -74,9 +75,9 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
     const contentToRender =
       valueProp ||
       uncontrolledValueProp ||
-      defaultValueProp ||
       value ||
       uncontrolledValue ||
+      defaultValueProp ||
       defaultValue ||
       placeholderProp ||
       placeholder ||
@@ -135,7 +136,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
           className,
         )}
         ref={ref}
-        disabled={isDisabled || isDisabledProp}
+        disabled={isDisabled || isDisabledProp || disabled}
         as="button"
         onClick={isWithinSelectWrapper ? toggleUncontrolledOpen : undefined}
         borderColor={BorderColor.borderDefault}
