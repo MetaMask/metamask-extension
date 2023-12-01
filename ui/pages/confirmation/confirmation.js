@@ -99,12 +99,19 @@ const alertStateReducer = produce((state, action) => {
  * @param {object} state - The state object consist of required info to determine alerts.
  * @param state.unapprovedTxsCount
  * @param state.useSafeChainsListValidation
+ * @param state.matchedChain
+ * @param state.providerError
  * @returns {[alertState: object, dismissAlert: Function]} A tuple with
  * the current alert state and function to dismiss an alert by id
  */
 function useAlertState(
   pendingConfirmation,
-  { unapprovedTxsCount, useSafeChainsListValidation } = {},
+  {
+    unapprovedTxsCount,
+    useSafeChainsListValidation,
+    matchedChain,
+    providerError,
+  } = {},
 ) {
   const [alertState, dispatch] = useReducer(alertStateReducer, {});
 
@@ -122,6 +129,8 @@ function useAlertState(
       getTemplateAlerts(pendingConfirmation, {
         unapprovedTxsCount,
         useSafeChainsListValidation,
+        matchedChain,
+        providerError,
       }).then((alerts) => {
         if (isMounted && alerts.length > 0) {
           dispatch({
@@ -135,7 +144,13 @@ function useAlertState(
     return () => {
       isMounted = false;
     };
-  }, [pendingConfirmation, unapprovedTxsCount]);
+  }, [
+    pendingConfirmation,
+    unapprovedTxsCount,
+    useSafeChainsListValidation,
+    matchedChain,
+    providerError,
+  ]);
 
   const dismissAlert = useCallback(
     (alertId) => {
@@ -193,9 +208,14 @@ export default function ConfirmationPage({
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
+  const [matchedChain, setMatchedChain] = useState({});
+  const [currencySymbolWarning, setCurrencySymbolWarning] = useState(null);
+  const [providerError, setProviderError] = useState(null);
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation, {
     unapprovedTxsCount,
     useSafeChainsListValidation,
+    matchedChain,
+    providerError,
   });
   const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);
@@ -208,8 +228,6 @@ export default function ConfirmationPage({
   const [loadingText, setLoadingText] = useState();
 
   const [submitAlerts, setSubmitAlerts] = useState([]);
-  const [matchedChain, setMatchedChain] = useState({});
-  const [currencySymbolWarning, setCurrencySymbolWarning] = useState(null);
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, pendingConfirmation?.origin),
@@ -324,9 +342,10 @@ export default function ConfirmationPage({
               parseInt(pendingConfirmation.requestData.chainId, 16),
           );
           setMatchedChain(_matchedChain);
+          setProviderError(null);
           if (
-            _matchedChain?.nativeCurrency?.symbol ===
-            pendingConfirmation.requestData.ticker
+            _matchedChain?.nativeCurrency?.symbol?.toLowerCase() ===
+            pendingConfirmation.requestData.ticker?.toLowerCase()
           ) {
             setCurrencySymbolWarning(null);
           } else {
@@ -339,6 +358,7 @@ export default function ConfirmationPage({
         }
       } catch (error) {
         log.warn('Failed to fetch the chainList from chainid.network', error);
+        setProviderError(error);
         setMatchedChain(null);
         setCurrencySymbolWarning(null);
         // Swallow the error here to not block the user from adding a custom network
