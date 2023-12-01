@@ -1482,6 +1482,8 @@ export default class MetamaskController extends EventEmitter {
           ),
         getCurrentAccountEIP1559Compatibility:
           this.getCurrentAccountEIP1559Compatibility.bind(this),
+        getExternalPendingTransactions:
+          this.getExternalPendingTransactions.bind(this),
         getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
           this.gasFeeController,
         ),
