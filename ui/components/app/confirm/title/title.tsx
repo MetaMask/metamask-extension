@@ -1,16 +1,33 @@
 import React, { memo } from 'react';
+import { useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 import { Text } from '../../../component-library';
 import {
   TextVariant,
   TextAlign,
   TextColor,
 } from '../../../../helpers/constants/design-system';
-import useTitle from './useTitle';
-import useDescription from './useDescription';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { currentConfirmationSelector } from '../../../../selectors';
+
+const typeToTitleTKey: Partial<Record<TransactionType, string>> = {
+  [TransactionType.personalSign]: 'confirmTitleSignature',
+};
+
+const typeToDescTKey: Partial<Record<TransactionType, string>> = {
+  [TransactionType.personalSign]: 'confirmTitleDescSignature',
+};
 
 export const ConfirmTitle: React.FC = memo(() => {
-  const title = useTitle();
-  const description = useDescription();
+  const t = useI18nContext();
+  const currentConfirmation = useSelector(currentConfirmationSelector);
+
+  if (!currentConfirmation) {
+    return null;
+  }
+
+  const title = t(typeToTitleTKey[currentConfirmation.type]);
+  const description = t(typeToDescTKey[currentConfirmation.type]);
 
   return (
     <>
