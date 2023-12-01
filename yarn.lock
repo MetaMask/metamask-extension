@@ -8345,17 +8345,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:*":
-  version: 8.4.6
-  resolution: "@types/eslint@npm:8.4.6"
-  dependencies:
-    "@types/estree": "npm:*"
-    "@types/json-schema": "npm:*"
-  checksum: 4e1fb3b9b1c77c4c8dccedd2094ff9d88b70e3619e12640187153a218f6c311cbb61abae9d924a14bb52f6140326d46097767723ce0c2494ad87ea18d0baab18
-  languageName: node
-  linkType: hard
-
-"@types/eslint@npm:^8.44.7":
+"@types/eslint@npm:*, @types/eslint@npm:^8.44.7":
   version: 8.44.8
   resolution: "@types/eslint@npm:8.44.8"
   dependencies:
