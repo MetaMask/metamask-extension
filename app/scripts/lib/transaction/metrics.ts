@@ -991,7 +991,6 @@ async function buildEventFragmentProperties({
   } as Record<string, any>;
 
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
-    transactionMetricsRequest.getSelectedAddress,
     transactionMetricsRequest.getAccountType,
     transactionMetricsRequest.getDeviceModel,
     transactionMetricsRequest.snapAndHardwareMessenger,

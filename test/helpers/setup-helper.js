@@ -8,7 +8,18 @@ process.env.IN_TEST = true;
 process.env.METAMASK_BUILD_TYPE = 'main';
 
 global.chrome = {
-  runtime: { id: 'testid', getManifest: () => ({ manifest_version: 2 }) },
+  runtime: {
+    id: 'testid',
+    getManifest: () => ({ manifest_version: 2 }),
+    sendMessage: () => {
+      // no-op
+    },
+    onMessage: {
+      addListener: () => {
+        // no-op
+      },
+    },
+  },
 };
 
 nock.disableNetConnect();

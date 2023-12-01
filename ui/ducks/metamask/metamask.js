@@ -36,6 +36,7 @@ const initialState = {
   welcomeScreenSeen: false,
   currentLocale: '',
   currentBlockGasLimit: '',
+  currentBlockGasLimitByChainId: {},
   preferences: {
     autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
     showFiatInTestnets: false,

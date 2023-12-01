@@ -17,12 +17,12 @@ const support = 'https://mmi-support.zendesk.com/hc/en-us';
 const supportContactUs =
   'https://mmi-support.zendesk.com/hc/en-us/requests/new';
 const mmiHomePage = 'https://metamask.io/institutions/';
-const privacyAndPolicy = 'https://consensys.net/privacy-policy/';
+const privacyAndPolicy = 'https://consensys.io/privacy-policy';
 const hwWalletPrivacyAndSecurity =
   'https://support.metamask.io/hc/en-us/articles/4408552261275';
 const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';
 const metamaskAttributions = 'https://metamask.io/attributions/';
-const termsOfUse = 'https://consensys.net/terms-of-use/';
+const termsOfUse = 'https://consensys.io/terms-of-use';
 
 test.describe('MMI Navigation', () => {
   test('MMI full navigation links', async ({ context }) => {
