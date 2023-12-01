@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { AvatarAccount, AvatarAccountSize } from '..';
+import { AvatarAccount, AvatarAccountSize, SelectWrapper } from '..';
 import { SelectButton, SelectButtonSize } from '.';
 
 describe('SelectButton', () => {
@@ -180,6 +180,35 @@ describe('SelectButton', () => {
           ),
         }}
       />,
+    );
+    expect(getByText('Label here')).toBeInTheDocument();
+    expect(getByText('Description here')).toBeInTheDocument();
+    expect(getByTestId('start-accessory')).toBeInTheDocument();
+    expect(getByTestId('end-accessory')).toBeInTheDocument();
+  });
+  it('renders wrapped by SelectWrapper with a placeholder set at the SelectWrapper using prop recommendation object', () => {
+    const { getByText, getByTestId } = render(
+      <SelectWrapper
+        placeholder={{
+          startAccessory: (
+            <AvatarAccount
+              address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+              size={AvatarAccountSize.Sm}
+              data-testid="start-accessory"
+            />
+          ),
+          label: 'Label here',
+          description: 'Description here',
+          endAccessory: (
+            <AvatarAccount
+              address="0x5CfE73b6021E818B776b421B1c4Db2474086a7e1"
+              size={AvatarAccountSize.Sm}
+              data-testid="end-accessory"
+            />
+          ),
+        }}
+        triggerComponent={<SelectButton />}
+      ></SelectWrapper>,
     );
     expect(getByText('Label here')).toBeInTheDocument();
     expect(getByText('Description here')).toBeInTheDocument();
