@@ -36,7 +36,9 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AccountTracker: {
     accounts: false,
+    accountsByChainId: false,
     currentBlockGasLimit: true,
+    currentBlockGasLimitByChainId: true,
   },
   AddressBookController: {
     addressBook: false,

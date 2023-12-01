@@ -1,5 +1,8 @@
 {
-  "AccountTracker": { "accounts": "object" },
+  "AccountTracker": {
+    "accounts": "object",
+    "accountsByChainId": "object"
+  },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },

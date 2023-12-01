@@ -163,6 +163,7 @@
     "lastUpdated": "object",
     "notifications": "object",
     "accounts": "object",
+    "accountsByChainId": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
