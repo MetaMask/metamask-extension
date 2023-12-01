@@ -117,7 +117,6 @@ export default class TokenInput extends PureComponent {
     const tokenExchangeRate =
       tokenExchangeRatesForCurrentChain?.[existingToken?.address] ?? 0;
     let currency, numberOfDecimals;
-
     if (hideConversion) {
       return (
         <div className="currency-input__conversion-component">

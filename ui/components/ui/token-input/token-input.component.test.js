@@ -74,6 +74,13 @@ describe('TokenInput Component', () => {
             ...mockState.metamask.preferences,
             showFiatInTestnets: true,
           },
+          contractExchangeRatesByChainId: {
+            [CHAIN_IDS.POLYGON]: {
+              [CURRENCY_SYMBOLS.MATIC]: {
+                '0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d': 0.0001,
+              },
+            },
+          },
           providerConfig: {
             chainId: CHAIN_IDS.POLYGON,
             type: NETWORK_TYPES.MAINNET,
