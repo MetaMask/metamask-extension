@@ -86,8 +86,8 @@ describe('build/transforms/remove-fenced-code', () => {
           expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
           expect(lintTransformedFileMock).toHaveBeenCalledWith(
             {}, // mock eslint instance
-            filePrefix,
             mockJsFileName,
+            filePrefix,
           );
           resolve();
         });
@@ -125,8 +125,8 @@ describe('build/transforms/remove-fenced-code', () => {
           expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
           expect(lintTransformedFileMock).toHaveBeenCalledWith(
             {}, // mock eslint instance
-            filePrefix,
             mockJsFileName,
+            filePrefix,
           );
           resolve();
         });
@@ -233,8 +233,8 @@ describe('build/transforms/remove-fenced-code', () => {
           expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
           expect(lintTransformedFileMock).toHaveBeenCalledWith(
             {}, // mock eslint instance
-            filePrefix,
             mockJsFileName,
+            filePrefix,
           );
           resolve();
         });
