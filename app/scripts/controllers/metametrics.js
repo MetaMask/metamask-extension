@@ -154,7 +154,7 @@ export default class MetaMetricsController {
     const segmentApiCalls = initState?.segmentApiCalls || {};
 
     this.store = new ObservableStore({
-      metaMetricsParticipation: MetaMetricsParticipation.NotChosen,
+      metaMetricsParticipationMode: MetaMetricsParticipation.NotChosen,
       metaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},

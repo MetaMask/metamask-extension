@@ -6,6 +6,7 @@ const { merge } = require('lodash');
 const { toHex } = require('@metamask/controller-utils');
 const { NetworkStatus } = require('@metamask/network-controller');
 const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
+import { MetaMetricsParticipation } from '../../shared/constants/metametrics';
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
 
@@ -236,7 +237,7 @@ function defaultFixture() {
         eventsBeforeMetricsOptIn: [],
         fragments: {},
         metaMetricsId: null,
-        participateInMetaMetrics: false,
+        metaMetricsParticipationMode: MetaMetricsParticipation.DoNotParticipate,
         traits: {},
       },
       NetworkController: {
