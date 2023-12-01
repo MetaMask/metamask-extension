@@ -178,7 +178,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
               method,
               params,
             });
-            await driver.executeScript(
+            await driver.executeAsyncScript(
               `return window.ethereum.request(${request})`,
             );
             await driver.delay(2000);
