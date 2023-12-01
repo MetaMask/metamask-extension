@@ -10,12 +10,12 @@ import {
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
@@ -196,7 +196,7 @@ export default function createRPCMethodTrackingMiddleware({
         }
         const paramsExamplePassword = req?.params?.[2];
 
-        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
         if (req.securityAlertResponse?.providerRequestsCount) {
           Object.keys(req.securityAlertResponse.providerRequestsCount).forEach(
             (key) => {
@@ -212,7 +212,7 @@ export default function createRPCMethodTrackingMiddleware({
           BlockaidResultType.NotApplicable;
         eventProperties.security_alert_reason =
           req.securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
           getAccountType,
