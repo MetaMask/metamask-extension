@@ -34,7 +34,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
@@ -125,6 +124,12 @@ describe('ERC721 NFTs testdapp interaction', function () {
           windowHandles,
         );
 
+        // avoid race condition
+        await driver.waitForSelector({
+          css: '.confirm-add-suggested-nft__nft-tokenId',
+          text: '#6',
+        });
+
         // confirm watchNFT
         await driver.waitForSelector({
           css: '.mm-text--heading-lg',
@@ -156,7 +161,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
@@ -252,7 +256,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
@@ -303,7 +306,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
@@ -374,7 +376,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
@@ -444,7 +445,6 @@ describe('ERC721 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract

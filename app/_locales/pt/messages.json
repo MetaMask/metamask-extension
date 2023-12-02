@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Depositar"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Saiba mais"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Devido às mudanças de protocolo do Ethereum, as redes de teste Rinkeby, Ropsten e Kovan podem não funcionar com a mesma confiança e serão descontinuadas em breve."
-  },
   "description": {
     "message": "Descrição"
   },
@@ -1427,12 +1421,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Caractere inválido para ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nome ENS não encontrado na rede atual. Tente alternar para a Mainnet da Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "A rede não suporta ENS"
   },
   "ensRegistrationError": {
     "message": "Erro no registro do nome ENS"
@@ -3767,9 +3755,6 @@
   "smartContracts": {
     "message": "Contratos inteligentes"
   },
-  "smartSwap": {
-    "message": "Troca inteligente"
-  },
   "smartSwapsAreHere": {
     "message": "As trocas inteligentes chegaram!"
   },
@@ -3877,10 +3862,6 @@
   "snapUpdateErrorTitle": {
     "message": "Falha na atualização",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1 deseja atualizar $2 para $3, o que concede as permissões a seguir. Continue apenas se você confia em $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Atualização concluída"

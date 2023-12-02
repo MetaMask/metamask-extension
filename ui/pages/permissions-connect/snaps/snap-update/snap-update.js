@@ -28,7 +28,6 @@ import {
   ValidTag,
   Text,
 } from '../../../../components/component-library';
-import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 
@@ -42,7 +41,6 @@ export default function SnapUpdate({
   const t = useI18nContext();
 
   const [isShowingWarning, setIsShowingWarning] = useState(false);
-  const originMetadata = useOriginMetadata(request.metadata?.dappOrigin) || {};
 
   const { isScrollable, isScrolledToBottom, scrollToBottom, ref, onScroll } =
     useScrollRequired([requestState]);
@@ -148,14 +146,6 @@ export default function SnapUpdate({
               textAlign={TEXT_ALIGN.CENTER}
             >
               {t('snapUpdateRequest', [
-                <Text
-                  as={ValidTag.Span}
-                  key="1"
-                  variant={TextVariant.bodyMd}
-                  fontWeight={FontWeight.Medium}
-                >
-                  {originMetadata?.hostname}
-                </Text>,
                 <Text
                   as={ValidTag.Span}
                   key="2"

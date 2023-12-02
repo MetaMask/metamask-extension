@@ -4,6 +4,7 @@ const {
   convertToHexValue,
   withFixtures,
   createDownloadFolder,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -45,9 +46,7 @@ describe('State logs', function () {
       },
       async ({ driver }) => {
         await createDownloadFolder(downloadsFolder);
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Download state logs
         await driver.clickElement(
@@ -71,6 +70,12 @@ describe('State logs', function () {
         assert.equal(
           info?.metamask?.identities[
             '0x5cfe73b6021e818b776b421b1c4db2474086a7e1'
+          ].address,
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+        );
+        assert.equal(
+          info?.metamask?.internalAccounts.accounts[
+            info?.metamask?.internalAccounts.selectedAccount
           ].address,
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         );

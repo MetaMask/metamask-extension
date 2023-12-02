@@ -68,7 +68,6 @@ describe('Gas API fallback', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
-        await driver.navigate();
         await logInWithBalanceValidation(driver, ganacheServer);
 
         await openActionMenuAndStartSendFlow(driver);

@@ -33,7 +33,6 @@ describe('Import ERC1155 NFT', function () {
       async ({ driver, _, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // After login, go to NFTs tab, open the import NFT/ERC1155 form
@@ -82,7 +81,6 @@ describe('Import ERC1155 NFT', function () {
       async ({ driver, _, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // After login, go to NFTs tab, open the import NFT form

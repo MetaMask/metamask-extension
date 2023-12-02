@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "入金"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "詳細"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "イーサリアムのプロトコル変更のため: Rinkeby、Ropsten、Kovanテストネットワークは動作が安定しない可能性があり、近いうちに非推奨になります。"
-  },
   "description": {
     "message": "説明"
   },
@@ -1427,12 +1421,6 @@
   },
   "ensIllegalCharacter": {
     "message": "ENSにサポートされていない文字が使用されています。"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS名が現在のネットワーク上に見つかりませんでした。イーサリアムメインネットへの切り替えを試みてください。"
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "ネットワークがENSをサポートしていません"
   },
   "ensRegistrationError": {
     "message": "ENS名の登録エラー"
@@ -3763,9 +3751,6 @@
   "smartContracts": {
     "message": "スマートコントラクト"
   },
-  "smartSwap": {
-    "message": "スマートスワップ"
-  },
   "smartSwapsAreHere": {
     "message": "スマートスワップの登場です！"
   },
@@ -3873,10 +3858,6 @@
   "snapUpdateErrorTitle": {
     "message": "更新失敗",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1が$2の$3への更新を要求しています。これにより、次のアクセス許可が付与されます。$2を信頼できる場合にのみ続行してください。",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "更新完了"

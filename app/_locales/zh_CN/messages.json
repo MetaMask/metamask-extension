@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "保证金"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "了解详情"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "由于以太坊的协议有变化：Rinkeby、Ropsten 和 Kovan 测试网络可能无法可靠地工作，很快就会被弃用。"
-  },
   "description": {
     "message": "描述"
   },
@@ -1427,12 +1421,6 @@
   },
   "ensIllegalCharacter": {
     "message": "ENS 的非法字符。"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "未在当前网络找到 ENS 名称。请尝试切换至以太坊主网。"
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "网络不支持 ENS"
   },
   "ensRegistrationError": {
     "message": "ENS 名称注册错误"
@@ -3763,9 +3751,6 @@
   "smartContracts": {
     "message": "智能合约"
   },
-  "smartSwap": {
-    "message": "智能兑换"
-  },
   "smartSwapsAreHere": {
     "message": "智能兑换已推出！"
   },
@@ -3873,10 +3858,6 @@
   "snapUpdateErrorTitle": {
     "message": "更新失败",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1希望将$2更新为$3，更新后将获得下列权限。只有在您信任$2的情况下才可继续。",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "更新完成"

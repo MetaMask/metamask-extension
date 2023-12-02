@@ -84,6 +84,7 @@ module.exports = {
         'shared/**/*.js',
         'shared/**/*.ts',
         'ui/**/*.js',
+        'offscreen/**/*.ts',
         '**/*.test.js',
         'test/lib/**/*.js',
         'test/mocks/**/*.js',

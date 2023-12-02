@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Deposit"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Pelajari selengkapnya"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Sehubungan dengan perubahan protokol Ethereum: jaringan uji Rinkeby, Ropsten, dan Kovan mungkin tidak dapat beroperasi dengan baik dan akan segera dihentikan."
-  },
   "description": {
     "message": "Deskripsi"
   },
@@ -1427,12 +1421,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Karakter tidak sah untuk ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nama ENS tidak ditemukan pada jaringan saat ini. Coba untuk beralih ke Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Jaringan tidak mendukung ENS"
   },
   "ensRegistrationError": {
     "message": "Terjadi kesalahan pada pendaftaran nama ENS"
@@ -3763,9 +3751,6 @@
   "smartContracts": {
     "message": "Kontrak cerdas"
   },
-  "smartSwap": {
-    "message": "Pertukaran cerdas"
-  },
   "smartSwapsAreHere": {
     "message": "Smart Swap telah hadir!"
   },
@@ -3873,10 +3858,6 @@
   "snapUpdateErrorTitle": {
     "message": "Pembaruan gagal",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1 ingin memperbarui $2 menjadi $3 yang memberinya izin berikut. Lanjutkan hanya jika Anda memercayai $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Pembaruan selesai"

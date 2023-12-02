@@ -301,6 +301,13 @@ function createScriptTasks({
    */
   function createTasksForScriptBundles({ buildTarget, taskPrefix }) {
     const standardEntryPoints = ['background', 'ui', 'content-script'];
+
+    // In MV3 we will need to build our offscreen entry point bundle and any
+    // entry points for iframes that we want to lockdown with LavaMoat.
+    if (process.env.ENABLE_MV3 === 'true') {
+      standardEntryPoints.push('offscreen');
+    }
+
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
@@ -309,10 +316,14 @@ function createScriptTasks({
         buildTarget,
         buildType,
         entryFiles: standardEntryPoints.map((label) => {
-          if (label === 'content-script') {
-            return './app/vendor/trezor/content-script.js';
+          switch (label) {
+            case 'content-script':
+              return './app/vendor/trezor/content-script.js';
+            case 'offscreen':
+              return './offscreen/scripts/offscreen.ts';
+            default:
+              return `./app/scripts/${label}.js`;
           }
-          return `./app/scripts/${label}.js`;
         }),
         ignoredFiles,
         policyOnly,
@@ -784,6 +795,16 @@ function createFactoredBuild({
             });
             break;
           }
+          case 'offscreen': {
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              applyLavaMoat,
+              destinationFileName: 'load-offscreen.js',
+            });
+            break;
+          }
           default: {
             throw new Error(
               `build/scripts - unknown groupLabel "${groupLabel}"`,
@@ -1175,6 +1196,7 @@ async function setEnvironmentVariables({
   const testing = isTestBuild(buildTarget);
 
   variables.set({
+    DEBUG: devMode || testing ? variables.getMaybe('DEBUG') : undefined,
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,

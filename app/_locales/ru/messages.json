@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Депозит"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Подробнее"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Из-за изменений протокола Ethereum: тестовые сети Rinkeby, Ropsten, Kovan могут работать не очень надежно и скоро будут признаны устаревшими."
-  },
   "description": {
     "message": "Описание"
   },
@@ -1427,12 +1421,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Недопустимый символ для ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Имя ENS не найдено в текущей сети. Попробуйте переключиться на Мейн-нет Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Сеть не поддерживает ENS"
   },
   "ensRegistrationError": {
     "message": "Ошибка при регистрации имени ENS"
@@ -3763,9 +3751,6 @@
   "smartContracts": {
     "message": "Смарт-контракты"
   },
-  "smartSwap": {
-    "message": "Смарт-своп"
-  },
   "smartSwapsAreHere": {
     "message": "Появились смарт-свопы!"
   },
@@ -3873,10 +3858,6 @@
   "snapUpdateErrorTitle": {
     "message": "Ошибка обновления",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1 хочет обновить $2 до $3, что дает ему следующие разрешения. Продолжайте, только если доверяете $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Обновление завершено"
