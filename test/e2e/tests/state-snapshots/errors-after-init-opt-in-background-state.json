@@ -1,5 +1,8 @@
 {
-  "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
+  "AccountTracker": {
+    "accounts": "object",
+    "accountsByChainId": "object"
+  },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
@@ -47,14 +50,14 @@
   "CachedBalancesController": { "cachedBalances": "object" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
+    "currentCurrency": "usd",
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
       }
-    },
-    "currentCurrency": "usd"
+    }
   },
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
@@ -66,8 +69,8 @@
   },
   "EnsController": { "ensResolutionsByAddress": "object" },
   "GasFeeController": {
-    "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},
+    "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none"
   },
@@ -83,7 +86,8 @@
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object"
+    "segmentApiCalls": "object",
+    "previousUserTraits": "object"
   },
   "NetworkController": {
     "selectedNetworkClientId": "string",
@@ -139,12 +143,12 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
+    "useRequestQueue": false,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
-    "useRequestQueue": false,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
@@ -173,7 +177,9 @@
     "selectedAddress": "string"
   },
   "SelectedNetworkController": {
-    "domains": { "metamask": "networkConfigurationId" },
+    "domains": {
+      "metamask": "networkConfigurationId"
+    },
     "perDomainNetwork": "boolean"
   },
   "SignatureController": {
@@ -241,8 +247,8 @@
     "allDetectedTokens": {}
   },
   "TxController": {
+    "lastFetchedBlockNumbers": "object",
     "methodData": "object",
-    "transactions": "object",
-    "lastFetchedBlockNumbers": "object"
+    "transactions": "object"
   }
 }
