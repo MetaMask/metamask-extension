@@ -1,26 +1,34 @@
 import { NameController, NameType } from '@metamask/name-controller';
 import { cloneDeep } from 'lodash';
-import { CHAIN_IDS } from 'shared/constants/network';
+import log from 'loglevel';
 
 type IdentityEntry = {
   address: string;
   name: string;
 };
 
-type PertinentState = {
+export type PertinentState = {
   identities: { [address: string]: IdentityEntry };
 };
 
-type PertinentPreferencesController = {
+export type PertinentPreferencesController = {
   store: {
     getState: () => PertinentState;
     subscribe: (callback: (state: PertinentState) => void) => void;
   };
 };
 
-const ACCOUNT_LABEL_NAME_TYPE = NameType.ETHEREUM_ADDRESS;
-const ACCOUNT_LABEL_CHAIN_ID = CHAIN_IDS.MAINNET;
+const MAINNET_CHAIN_ID = '0x1';
+export const ACCOUNT_LABEL_NAME_TYPE = NameType.ETHEREUM_ADDRESS;
+export const ACCOUNT_LABEL_VARIATION = MAINNET_CHAIN_ID;
 
+/**
+ * Groups the entries in the old and new entries arrays into added, updated and
+ * deleted entries, like a patch.
+ *
+ * @param oldEntries - The last seen IdentityEntries in the preferences controller.
+ * @param newEntries - The new IdentityEntries.
+ */
 function groupEntries(
   oldEntries: IdentityEntry[],
   newEntries: IdentityEntry[],
@@ -50,6 +58,13 @@ function groupEntries(
   return { added, updated, deleted };
 }
 
+/**
+ * Sets up a bridge between the account labels in the preferences controller and
+ * the petnames in the name controller.
+ *
+ * @param preferencesController - The preferences controller to listen to.
+ * @param nameController - The name controller to update.
+ */
 export default function setupAccountLabelsPetnamesBridge(
   preferencesController: PertinentPreferencesController,
   nameController: NameController,
@@ -66,23 +81,23 @@ export default function setupAccountLabelsPetnamesBridge(
     for (const entry of [...added, ...updated]) {
       nameController.setName({
         type: ACCOUNT_LABEL_NAME_TYPE,
-        variation: ACCOUNT_LABEL_CHAIN_ID,
+        variation: ACCOUNT_LABEL_VARIATION,
         value: entry.address,
         name: entry.name,
       });
 
-      console.log('Updated petname following account label update', entry);
+      log.debug('Updated petname following account label update', entry);
     }
 
     for (const entry of deleted) {
       nameController.setName({
         type: ACCOUNT_LABEL_NAME_TYPE,
-        variation: ACCOUNT_LABEL_CHAIN_ID,
+        variation: ACCOUNT_LABEL_VARIATION,
         value: entry.address,
-        name: entry.name,
+        name: null,
       });
 
-      console.log('Removed petname following account label removal', entry);
+      log.debug('Removed petname following account label removal', entry);
     }
 
     oldEntries = cloneDeep(newEntries);
