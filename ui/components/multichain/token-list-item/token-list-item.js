@@ -191,6 +191,7 @@ export const TokenListItem = ({
             }
           />
         </BadgeWrapper>
+        {/* TODO:// chaos story alignment */}
         <Box
           className="multichain-token-list-item__container-cell--text-container"
           display={Display.Flex}
@@ -201,6 +202,7 @@ export const TokenListItem = ({
           <Box
             display={Display.Flex}
             justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
             gap={1}
           >
             <Box
@@ -271,12 +273,51 @@ export const TokenListItem = ({
               </Text>
             )}
           </Box>
-          <Text
-            color={TextColor.textAlternative}
-            data-testid="multichain-token-list-item-value"
+          <Box
+            display={Display.Flex}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            gap={1}
           >
-            {primary} {tokenSymbol}{' '}
-          </Text>
+            {title?.length > 12 ? (
+              <Tooltip
+                position="bottom"
+                interactive
+                html={title}
+                tooltipInnerClassName="multichain-token-list-item__tooltip"
+              >
+                <Text
+                  fontWeight={FontWeight.Medium}
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                  // data-testid="multichain-token-list-item-token-name"
+                  ellipsis
+                >
+                  {tokenTitle}
+                </Text>
+              </Tooltip>
+            ) : (
+              <Text
+                fontWeight={FontWeight.Medium}
+                variant={TextVariant.bodyMd}
+                color={TextColor.textAlternative}
+                // data-testid="multichain-token-list-item-token-name"
+                ellipsis
+              >
+                {tokenTitle}
+              </Text>
+            )}
+            <Text
+              fontWeight={FontWeight.Medium}
+              variant={TextVariant.bodyMd}
+              width={BlockSize.TwoThirds}
+              textAlign={TextAlign.End}
+              color={TextColor.textAlternative}
+              data-testid="multichain-token-list-item-value"
+            >
+              {primary} {tokenSymbol}{' '}
+            </Text>
+          </Box>
         </Box>
       </Box>
       {showScamWarningModal ? (
