@@ -25,10 +25,10 @@ import {
   Text,
   TextField,
   TextFieldSize,
-  TextFieldSearch,
   ButtonIconSize,
   Box,
 } from '..';
+import { TextFieldSearch } from '../text-field-search/deprecated';
 import { Icon } from './icon';
 import { IconName, IconSize } from './icon.types';
 

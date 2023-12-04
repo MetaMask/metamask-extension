@@ -14,10 +14,9 @@ import {
   Button,
   ButtonLink,
   ButtonLinkSize,
-  TextFieldSearch,
   IconName,
 } from '..';
-
+import { TextFieldSearch } from '../text-field-search/deprecated';
 import { Modal } from './modal';
 
 import README from './README.mdx';

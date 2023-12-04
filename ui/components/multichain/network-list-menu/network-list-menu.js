@@ -43,12 +43,12 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  TextFieldSearch,
   BannerBase,
   Icon,
   IconName,
   IconSize,
 } from '../../component-library';
+import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import { ADD_POPULAR_CUSTOM_NETWORK } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
