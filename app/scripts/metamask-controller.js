@@ -5446,7 +5446,10 @@ export default class MetamaskController extends EventEmitter {
       this.nftController.checkAndUpdateSingleNftOwnershipStatus(
         knownNft,
         false,
-        { userAddress, chainId },
+        // TODO add networkClientId once it is available in the transactionMeta
+        // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
+        // because the check would use the provider for the globally selected network, not the chainId passed here.
+        { userAddress },
       );
     }
   }
