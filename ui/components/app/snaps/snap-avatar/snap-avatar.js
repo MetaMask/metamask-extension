@@ -9,6 +9,7 @@ import {
   Display,
   JustifyContent,
   BackgroundColor,
+  BorderColor,
 } from '../../../../helpers/constants/design-system';
 import { getSnapName } from '../../../../helpers/utils/util';
 import {
@@ -58,7 +59,12 @@ const SnapAvatar = ({
       position={BadgeWrapperPosition.bottomRight}
     >
       {iconUrl ? (
-        <AvatarFavicon size={avatarSize} src={iconUrl} name={friendlyName} />
+        <AvatarFavicon
+          backgroundColor={BorderColor.borderMuted}
+          size={avatarSize}
+          src={iconUrl}
+          name={friendlyName}
+        />
       ) : (
         <AvatarBase
           size={avatarSize}
@@ -67,6 +73,7 @@ const SnapAvatar = ({
           justifyContent={JustifyContent.center}
           color={TextColor.textAlternative}
           style={{ borderWidth: '0px' }}
+          backgroundColor={BorderColor.borderMuted}
         >
           {fallbackIcon}
         </AvatarBase>
