@@ -40,9 +40,9 @@ const WEBSITE_ALLOWED_METHODS: string[] = [
  */
 const ALLOWED_PROTOCOLS: string[] = [
   'https:',
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   'http:',
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 ];
 
 /**

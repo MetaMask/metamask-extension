@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { Tabs, Tab } from '../../../ui/tabs';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   BannerAlert,
 } from '../../../component-library';
 import { PageContainerFooter } from '../../../ui/page-container';
@@ -19,9 +19,9 @@ import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
 export default class ConfirmPageContainerContent extends Component {
   static contextTypes = {
     t: PropTypes.func.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     trackEvent: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   static propTypes = {
@@ -55,12 +55,12 @@ export default class ConfirmPageContainerContent extends Component {
     toAddress: PropTypes.string,
     transactionType: PropTypes.string,
     isBuyableChain: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     openBuyCryptoInPdapp: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     noteComponent: PropTypes.node,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   renderContent() {
@@ -70,13 +70,13 @@ export default class ConfirmPageContainerContent extends Component {
       return this.renderTabs();
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const { noteComponent } = this.props;
 
     if (noteComponent) {
       return this.renderTabs();
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     if (detailsComponent && dataHexComponent) {
       return this.renderTabs();
@@ -90,12 +90,12 @@ export default class ConfirmPageContainerContent extends Component {
     const {
       detailsComponent,
       dataHexComponent,
-      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+      ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       insightComponent,
-      ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       noteComponent,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
     return (
@@ -108,7 +108,7 @@ export default class ConfirmPageContainerContent extends Component {
           {detailsComponent}
         </Tab>
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           noteComponent && (
             <Tab
               data-testid="note-tab"
@@ -125,7 +125,7 @@ export default class ConfirmPageContainerContent extends Component {
               {noteComponent}
             </Tab>
           )
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         {dataHexComponent && (
           <Tab
@@ -138,9 +138,9 @@ export default class ConfirmPageContainerContent extends Component {
         )}
 
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           insightComponent
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
       </Tabs>
     );
@@ -175,9 +175,9 @@ export default class ConfirmPageContainerContent extends Component {
       toAddress,
       transactionType,
       isBuyableChain,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       openBuyCryptoInPdapp,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
     const { t } = this.context;
@@ -232,7 +232,7 @@ export default class ConfirmPageContainerContent extends Component {
                 ? t('insufficientCurrencyBuyOrDeposit', [
                     nativeCurrency,
                     networkName,
-                    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
                     <Button
                       variant={BUTTON_VARIANT.LINK}
                       size={BUTTON_SIZES.INHERIT}
@@ -241,7 +241,7 @@ export default class ConfirmPageContainerContent extends Component {
                     >
                       {t('buyAsset', [nativeCurrency])}
                     </Button>,
-                    ///: END:ONLY_INCLUDE_IN
+                    ///: END:ONLY_INCLUDE_IF
                   ])
                 : t('insufficientCurrencyDeposit', [
                     nativeCurrency,
