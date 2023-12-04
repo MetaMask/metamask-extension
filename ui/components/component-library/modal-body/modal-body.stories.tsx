@@ -1,5 +1,4 @@
 import React from 'react';
-
 import type { Meta, StoryObj } from '@storybook/react';
 import {
   BackgroundColor,
@@ -41,7 +40,6 @@ DefaultStory.storyName = 'Default';
 
 export const Children: Story = {
   args: {
-    className: '',
     children:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae elit libero, a pharetra augue. Nullam id dolor id nibh ultricies vehicula ut id elit. Cras mattis consectetur purus sit amet fermentum. Donec ullamcorper nulla non metus auctor fringilla.',
   },
