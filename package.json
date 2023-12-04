@@ -396,6 +396,7 @@
     "@lavamoat/allow-scripts": "^2.3.1",
     "@lavamoat/lavapack": "^5.2.4",
     "@metamask/auto-changelog": "^2.1.0",
+    "@metamask/build-utils": "^1.0.0",
     "@metamask/eslint-config": "^9.0.0",
     "@metamask/eslint-config-jest": "^9.0.0",
     "@metamask/eslint-config-mocha": "^9.0.0",
