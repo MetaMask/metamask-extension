@@ -8,6 +8,9 @@ const { isObject } = require('@metamask/utils');
 const { SENTRY_UI_STATE } = require('../../../app/scripts/lib/setupSentry');
 const FixtureBuilder = require('../fixture-builder');
 const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  MetaMetricsParticipation,
+} = require('../../../shared/constants/metametrics');
 
 /**
  * Derive a UI state field from a background state field.
@@ -375,7 +378,7 @@ describe('Sentry errors', function () {
 
     // todo: reenable this test https://github.com/MetaMask/metamask-extension/issues/21807
     // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('should capture migration log breadcrumbs when there is an invariant state error in a migration', async function () {
+    it('should capture migration log breadcrumbs when there is an invariant state error in a migration', async function () {
       await withFixtures(
         {
           fixtures: {
@@ -501,6 +504,7 @@ describe('Sentry errors', function () {
           const mockTextBody = mockedRequest.body.text.split('\n');
           const mockJsonBody = JSON.parse(mockTextBody[2]);
           const appState = mockJsonBody?.extra?.appState;
+
           assert.deepStrictEqual(Object.keys(appState), [
             'browser',
             'version',

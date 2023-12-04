@@ -4,6 +4,7 @@ import { Dedupe, ExtraErrorData } from '@sentry/integrations';
 import { AllProperties } from '../../../shared/modules/object.utils';
 import { FilterEvents } from './sentry-filter-events';
 import extractEthjsErrorMessage from './extractEthjsErrorMessage';
+import { MetaMetricsParticipation } from '../../../shared/constants/metametrics';
 
 /* eslint-disable prefer-destructuring */
 // Destructuring breaks the inlining of the environment variables
@@ -127,7 +128,7 @@ export const SENTRY_BACKGROUND_STATE = {
     eventsBeforeMetricsOptIn: false,
     fragments: false,
     metaMetricsId: true,
-    metaMetricsParticipationMode: true,
+    metaMetricsParticipationMode: MetaMetricsParticipation.Participate,
     previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,

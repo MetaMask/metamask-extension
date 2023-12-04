@@ -237,7 +237,7 @@ function defaultFixture() {
         eventsBeforeMetricsOptIn: [],
         fragments: {},
         metaMetricsId: null,
-        metaMetricsParticipationMode: MetaMetricsParticipation.DoNotParticipate,
+        participateInMetaMetrics: false,
         traits: {},
       },
       NetworkController: {
