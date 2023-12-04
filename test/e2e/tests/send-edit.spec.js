@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
@@ -19,14 +19,14 @@ describe('Editing Confirm Transaction', function () {
           .withTransactionControllerTypeOneTransaction()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
+        await unlockWallet(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );
@@ -99,15 +99,14 @@ describe('Editing Confirm Transaction', function () {
           .withTransactionControllerTypeTwoTransaction()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
+        await unlockWallet(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );

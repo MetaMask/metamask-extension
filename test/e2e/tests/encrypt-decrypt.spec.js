@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 async function validateEncryptionKey(driver, encryptionKey) {
@@ -81,12 +86,10 @@ describe('Encrypt Decrypt', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await openDapp(driver);
 
         // ------ Get Encryption key ------
@@ -122,12 +125,10 @@ describe('Encrypt Decrypt', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await openDapp(driver);
 
         // ------ Get Encryption key ------
@@ -179,12 +180,10 @@ describe('Encrypt Decrypt', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await openDapp(driver);
 
         // ------ Get Encryption key and display ETH ------
@@ -221,12 +220,10 @@ describe('Encrypt Decrypt', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
 

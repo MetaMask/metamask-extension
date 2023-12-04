@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
@@ -20,13 +20,10 @@ describe('Editing Confirm Transaction', function () {
           .withTransactionControllerApprovedTransaction()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="home__activity-tab"]');
         await driver.wait(async () => {

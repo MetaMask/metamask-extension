@@ -9,6 +9,7 @@ import {
 } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import EthOverview from './eth-overview';
 
 // Mock BUYABLE_CHAINS_MAP
@@ -27,15 +28,25 @@ jest.mock('../../../../shared/constants/network', () => ({
     },
   },
 }));
+
+jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+  return {
+    useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
+
 let openTabSpy;
 
 describe('EthOverview', () => {
+  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+
   const mockStore = {
     metamask: {
       providerConfig: {
         chainId: CHAIN_IDS.MAINNET,
         nickname: MAINNET_DISPLAY_NAME,
         type: NETWORK_TYPES.MAINNET,
+        ticker: 'ETH',
       },
       cachedBalances: {
         '0x1': {
@@ -46,7 +57,12 @@ describe('EthOverview', () => {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       useCurrencyRateCheck: true,
-      conversionRate: 2,
+      currentCurrency: 'usd',
+      currencyRates: {
+        ETH: {
+          conversionRate: 2,
+        },
+      },
       identities: {
         '0x1': {
           address: '0x1',

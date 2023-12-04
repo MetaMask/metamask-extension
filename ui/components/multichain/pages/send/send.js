@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   ButtonIcon,
@@ -10,22 +10,35 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
   IconName,
-  Label,
 } from '../../../component-library';
 import { Content, Footer, Header, Page } from '../page';
-import DomainInput from '../../../../pages/send/send-content/add-recipient/domain-input.component';
 import {
+  SEND_STAGES,
   getDraftTransactionExists,
+  getDraftTransactionID,
+  getSendErrors,
+  getSendStage,
+  isSendFormInvalid,
   resetSendState,
+  signTransaction,
   startNewDraftTransaction,
 } from '../../../../ducks/send';
 import { AssetType } from '../../../../../shared/constants/transaction';
-import { showQrScanner } from '../../../../store/actions';
+import { MetaMetricsContext } from '../../../../contexts/metametrics';
+import { INSUFFICIENT_FUNDS_ERROR } from '../../../../pages/send/send.constants';
+import { cancelTx, showQrScanner } from '../../../../store/actions';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../helpers/constants/routes';
+import { MetaMetricsEventCategory } from '../../../../../shared/constants/metametrics';
+import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import {
   SendPageAccountPicker,
-  SendPageRow,
-  SendPageYourAccount,
+  SendPageContent,
   SendPageNetworkPicker,
+  SendPageRecipient,
+  SendPageRecipientInput,
 } from './components';
 
 export const SendPage = () => {
@@ -34,7 +47,13 @@ export const SendPage = () => {
 
   const startedNewDraftTransaction = useRef(false);
   const draftTransactionExists = useSelector(getDraftTransactionExists);
+  const draftTransactionID = useSelector(getDraftTransactionID);
+  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const sendStage = useSelector(getSendStage);
+
+  const history = useHistory();
   const location = useLocation();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const cleanup = useCallback(() => {
     dispatch(resetSendState());
@@ -79,6 +98,39 @@ export const SendPage = () => {
     };
   }, [dispatch, cleanup]);
 
+  const onCancel = () => {
+    if (draftTransactionID) {
+      dispatch(cancelTx({ id: draftTransactionID }));
+    }
+    dispatch(resetSendState());
+
+    const nextRoute =
+      sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
+    history.push(nextRoute);
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+
+    await dispatch(signTransaction());
+
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
+      event: 'Complete',
+      properties: {
+        action: 'Edit Screen',
+        legacy_event: true,
+      },
+    });
+    history.push(CONFIRM_TRANSACTION_ROUTE);
+  };
+
+  // Submit button
+  const sendErrors = useSelector(getSendErrors);
+  const isInvalidSendForm = useSelector(isSendFormInvalid);
+  const submitDisabled =
+    isInvalidSendForm && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR;
+
   return (
     <Page className="multichain-send-page">
       <Header
@@ -87,6 +139,7 @@ export const SendPage = () => {
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
+            onClick={onCancel}
           />
         }
       >
@@ -95,25 +148,25 @@ export const SendPage = () => {
       <Content>
         <SendPageNetworkPicker />
         <SendPageAccountPicker />
-        <SendPageRow>
-          <Label paddingBottom={2}>{t('to')}</Label>
-          <DomainInput
-            userInput=""
-            onChange={() => undefined}
-            onReset={() => undefined}
-            lookupEnsName={() => undefined}
-            initializeDomainSlice={() => undefined}
-            resetDomainResolution={() => undefined}
-          />
-        </SendPageRow>
-        <SendPageYourAccount />
+        <SendPageRecipientInput />
+        {draftTransactionExists &&
+        [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage) ? (
+          <SendPageContent />
+        ) : (
+          <SendPageRecipient />
+        )}
       </Content>
       <Footer>
-        <ButtonSecondary size={ButtonSecondarySize.Lg} block>
-          {t('cancel')}
+        <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>
+          {sendStage === SEND_STAGES.EDIT ? t('reject') : t('cancel')}
         </ButtonSecondary>
-        <ButtonPrimary size={ButtonPrimarySize.Lg} block disabled>
-          {t('confirm')}
+        <ButtonPrimary
+          onClick={onSubmit}
+          size={ButtonPrimarySize.Lg}
+          disabled={submitDisabled}
+          block
+        >
+          {t('continue')}
         </ButtonPrimary>
       </Footer>
     </Page>

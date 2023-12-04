@@ -174,7 +174,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
           .build(),
         defaultGanacheOptions,
         testSpecificMock: mockInfura,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
@@ -182,7 +182,6 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
         const expectedDescription =
           'If you approve this request, a third party known for scams will take all your assets.';
 
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 

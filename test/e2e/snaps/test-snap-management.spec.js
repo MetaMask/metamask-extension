@@ -1,5 +1,4 @@
-const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -19,14 +18,10 @@ describe('Test Snap Management', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
@@ -126,10 +121,10 @@ describe('Test Snap Management', function () {
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
-        const notificationResult = await driver.findElement(
-          '[data-testid="global-menu-notification-count"]',
-        );
-        assert.equal(await notificationResult.getText(), '1');
+        await driver.findElement({
+          css: '[data-testid="global-menu-notification-count"]',
+          text: '1',
+        });
         await driver.clickElement('.menu__background');
 
         // try to remove snap
@@ -144,14 +139,11 @@ describe('Test Snap Management', function () {
         await driver.delay(1000);
 
         // check the results of the removal
-        await driver.delay(2000);
-        const removeResult = await driver.findElement(
-          '.snaps__content__list__container--no-snaps_inner',
-        );
-        assert.equal(
-          await removeResult.getText(),
-          "You don't have any snaps installed.",
-        );
+        await driver.findElement({
+          css: '.mm-box',
+          text: "You don't have any snaps installed.",
+          tag: 'p',
+        });
       },
     );
   });

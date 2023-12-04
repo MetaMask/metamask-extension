@@ -9,12 +9,10 @@ import React, {
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
+import { TransactionType } from '@metamask/transaction-controller';
 import { EditGasModes } from '../../../../shared/constants/gas';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
-import {
-  TokenStandard,
-  TransactionType,
-} from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import { NETWORK_TO_NAME_MAP } from '../../../../shared/constants/network';
 
 import { PageContainerFooter } from '../../ui/page-container';
@@ -42,6 +40,9 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 import useTransactionInsights from '../../../hooks/useTransactionInsights';
 ///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+import TxInsightWarnings from '../snaps/tx-insight-warnings/tx-insight-warnings';
+///: END:ONLY_INCLUDE_IN
 import {
   getAccountName,
   getAddressBookEntry,
@@ -59,6 +60,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IN
+
 import {
   ConfirmPageContainerHeader,
   ConfirmPageContainerContent,
@@ -84,7 +86,6 @@ const ConfirmPageContainer = (props) => {
     titleComponent,
     subtitleComponent,
     detailsComponent,
-    dataComponent,
     dataHexComponent,
     onCancelAll,
     onCancel,
@@ -118,7 +119,10 @@ const ConfirmPageContainer = (props) => {
   const trackEvent = useContext(MetaMetricsContext);
   ///: END:ONLY_INCLUDE_IN
   const [collectionBalance, setCollectionBalance] = useState('0');
-
+  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  const [isShowingTxInsightWarnings, setIsShowingTxInsightWarnings] =
+    useState(false);
+  ///: END:ONLY_INCLUDE_IN
   const isBuyableChain = useSelector(getIsBuyableChain);
   const contact = useSelector((state) => getAddressBookEntry(state, toAddress));
   const networkIdentifier = useSelector(getNetworkIdentifier);
@@ -159,10 +163,26 @@ const ConfirmPageContainer = (props) => {
   ///: BEGIN:ONLY_INCLUDE_IN(snaps)
   // As confirm-transction-base is converted to functional component
   // this code can bemoved to it.
-  const insightComponent = useTransactionInsights({
-    txData,
-  });
+  const insightObject = useTransactionInsights({ txData });
+  const insightComponent = insightObject?.insightComponent;
   ///: END:ONLY_INCLUDE_IN
+
+  const handleSubmit = () => {
+    if (isSetApproveForAll && isApprovalOrRejection) {
+      return onSetApprovalForAll();
+    }
+    return onSubmit();
+  };
+
+  // TODO: Better name
+  const topLevelHandleSubmit = () => {
+    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    if (insightObject?.warnings?.length > 0) {
+      return setIsShowingTxInsightWarnings(true);
+    }
+    ///: END:ONLY_INCLUDE_IN
+    return handleSubmit();
+  };
 
   useEffect(() => {
     if (isSetApproveForAll && assetStandard === TokenStandard.ERC721) {
@@ -218,7 +238,6 @@ const ConfirmPageContainer = (props) => {
             titleComponent={titleComponent}
             subtitleComponent={subtitleComponent}
             detailsComponent={detailsComponent}
-            dataComponent={dataComponent}
             dataHexComponent={dataHexComponent}
             ///: BEGIN:ONLY_INCLUDE_IN(snaps)
             insightComponent={insightComponent}
@@ -231,7 +250,7 @@ const ConfirmPageContainer = (props) => {
             onCancelAll={onCancelAll}
             onCancel={onCancel}
             cancelText={t('reject')}
-            onSubmit={onSubmit}
+            onSubmit={topLevelHandleSubmit}
             submitText={t('confirm')}
             disabled={disabled}
             unapprovedTxCount={unapprovedTxCount}
@@ -326,11 +345,7 @@ const ConfirmPageContainer = (props) => {
           <PageContainerFooter
             onCancel={onCancel}
             cancelText={t('reject')}
-            onSubmit={
-              isSetApproveForAll && isApprovalOrRejection
-                ? onSetApprovalForAll
-                : onSubmit
-            }
+            onSubmit={topLevelHandleSubmit}
             submitText={t('confirm')}
             submitButtonType={
               isSetApproveForAll && isApprovalOrRejection
@@ -359,6 +374,23 @@ const ConfirmPageContainer = (props) => {
             <AdvancedGasFeePopover />
           </>
         )}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+        }
+        {isShowingTxInsightWarnings && (
+          <TxInsightWarnings
+            warnings={insightObject.warnings}
+            origin={origin}
+            onCancel={() => setIsShowingTxInsightWarnings(false)}
+            onSubmit={() => {
+              handleSubmit();
+              setIsShowingTxInsightWarnings(false);
+            }}
+          />
+        )}
+        {
+          ///: END:ONLY_INCLUDE_IN
+        }
       </div>
     </GasFeeContextProvider>
   );
@@ -386,7 +418,6 @@ ConfirmPageContainer.propTypes = {
   contentComponent: PropTypes.node,
   errorKey: PropTypes.string,
   errorMessage: PropTypes.string,
-  dataComponent: PropTypes.node,
   dataHexComponent: PropTypes.node,
   detailsComponent: PropTypes.node,
   txData: PropTypes.object,

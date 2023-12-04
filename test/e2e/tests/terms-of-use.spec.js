@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Terms of use', function () {
@@ -22,12 +22,10 @@ describe('Terms of use', function () {
           })
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // accept updated terms of use
         const acceptTerms = '[data-testid="terms-of-use-accept-button"]';

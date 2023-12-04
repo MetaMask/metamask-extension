@@ -4,6 +4,7 @@ const {
   getWindowHandles,
   withFixtures,
   openDapp,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -25,13 +26,10 @@ describe('Editing Confirm Transaction', function () {
           .withTransactionControllerTypeTwoTransaction()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
@@ -111,13 +109,10 @@ describe('Editing Confirm Transaction', function () {
           .withTransactionControllerTypeTwoTransaction()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
@@ -196,15 +191,12 @@ describe('Editing Confirm Transaction', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         dapp: true,
       },
       async ({ driver }) => {
-        await driver.navigate();
-
         // login to extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // open dapp and connect
         await openDapp(driver);

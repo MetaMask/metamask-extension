@@ -135,27 +135,32 @@ exports[`snap-account-redirect confirmation should match snapshot 1`] = `
                 Follow the instructions from Test Snap Account Name
               </p>
               <div
-                class="mm-box snap-delineator__wrapper mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-style-solid mm-box--border-color-border-default box--border-width-1"
+                class="mm-box snap-delineator__wrapper mm-box--display-flex mm-box--flex-direction-column mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-style-solid mm-box--border-color-border-default box--border-width-1"
               >
                 <div
-                  class="mm-box snap-delineator__header mm-box--padding-1 mm-box--display-flex mm-box--align-items-center"
+                  class="mm-box snap-delineator__header mm-box--padding-1 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
+                  style="border-bottom-width: 1px;"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-icon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-background-default mm-box--border-width-2 box--border-style-solid"
+                    class="mm-box mm-box--display-flex mm-box--align-items-center"
                   >
-                    <span
-                      class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-info-inverse"
-                      style="mask-image: url('./images/icons/snaps.svg');"
-                    />
+                    <div
+                      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-icon mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-info-default mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+                    >
+                      <span
+                        class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-info-inverse"
+                        style="mask-image: url('./images/icons/snaps.svg');"
+                      />
+                    </div>
+                    <p
+                      class="mm-box mm-text snap-delineator__header__text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-bottom-0 mm-box--margin-left-1 mm-box--color-text-alternative"
+                    >
+                      Content from Test Snap Account Name
+                    </p>
                   </div>
-                  <p
-                    class="mm-box mm-text snap-delineator__header__text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-bottom-0 mm-box--margin-left-1 mm-box--color-text-alternative"
-                  >
-                    Content from Test Snap Account Name
-                  </p>
                 </div>
                 <div
-                  class="mm-box snap-delineator__content mm-box--padding-4"
+                  class="mm-box snap-delineator__content mm-box--padding-4 mm-box--display-flex mm-box--flex-direction-column"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md mm-box--color-text-default"

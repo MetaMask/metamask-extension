@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  unlockWallet,
+} = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -24,15 +29,13 @@ describe('Failing contract interaction ', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();
@@ -67,15 +70,11 @@ describe('Failing contract interaction ', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement({ text: 'Activity', tag: 'button' });
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-        );
 
-        // display the transaction status
-        const transactionStatus = await driver.findElement(
-          '.activity-list-item:nth-of-type(1) .transaction-status-label',
-        );
-        assert.equal(await transactionStatus.getText(), 'Failed');
+        await driver.findElement({
+          css: '.activity-list-item .transaction-status-label',
+          text: 'Failed',
+        });
       },
     );
   });
@@ -102,15 +101,13 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
           .build(),
         ganacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();
@@ -154,11 +151,10 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
 
-        // display the transaction status
-        const transactionStatus = await driver.findElement(
-          '.activity-list-item:nth-of-type(1) .transaction-status-label',
-        );
-        assert.equal(await transactionStatus.getText(), 'Failed');
+        await driver.findElement({
+          css: '.activity-list-item .transaction-status-label',
+          text: 'Failed',
+        });
       },
     );
   });

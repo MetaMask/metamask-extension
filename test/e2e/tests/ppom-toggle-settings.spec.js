@@ -18,10 +18,9 @@ describe('PPOM Settings @no-mmi', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await openDapp(driver);
@@ -46,7 +45,7 @@ describe('PPOM Settings @no-mmi', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await driver.navigate();

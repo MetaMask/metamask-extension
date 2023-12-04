@@ -5,14 +5,16 @@ const enLocaleMessages = require('../../app/_locales/en/messages.json');
 const createStaticServer = require('../../development/create-static-server');
 const {
   TEST_SEED_PHRASE_TWO,
+  WALLET_PASSWORD,
   tinyDelayMs,
   regularDelayMs,
   largeDelayMs,
   veryLargeDelayMs,
   openDapp,
+  openActionMenuAndStartSendFlow,
 } = require('./helpers');
 const { buildWebDriver } = require('./webdriver');
-const Ganache = require('./ganache');
+const { Ganache } = require('./ganache');
 
 const ganacheServer = new Ganache();
 const dappPort = 8080;
@@ -85,9 +87,11 @@ describe('MetaMask @no-mmi', function () {
     });
 
     it('accepts a secure password', async function () {
-      const password = 'correct horse battery staple';
-      await driver.fill('[data-testid="create-password-new"]', password);
-      await driver.fill('[data-testid="create-password-confirm"]', password);
+      await driver.fill('[data-testid="create-password-new"]', WALLET_PASSWORD);
+      await driver.fill(
+        '[data-testid="create-password-confirm"]',
+        WALLET_PASSWORD,
+      );
       await driver.clickElement('[data-testid="create-password-terms"]');
       await driver.clickElement('[data-testid="create-password-wallet"]');
     });
@@ -152,8 +156,8 @@ describe('MetaMask @no-mmi', function () {
         TEST_SEED_PHRASE_TWO,
       );
 
-      await driver.fill('#password', 'correct horse battery staple');
-      await driver.fill('#confirm-password', 'correct horse battery staple');
+      await driver.fill('#password', WALLET_PASSWORD);
+      await driver.fill('#confirm-password', WALLET_PASSWORD);
       await driver.clickElement({
         text: enLocaleMessages.restore.message,
         tag: 'button',
@@ -162,9 +166,12 @@ describe('MetaMask @no-mmi', function () {
     });
 
     it('balance renders', async function () {
+      const balanceSelector = process.env.MULTICHAIN
+        ? '[data-testid="token-balance-overview-currency-display"]'
+        : '[data-testid="eth-overview__primary-currency"]';
       await driver.waitForSelector({
-        css: '[data-testid="eth-overview__primary-currency"] .currency-display-component__text',
-        text: '1000',
+        css: `${balanceSelector} .currency-display-component__text`,
+        text: process.env.MULTICHAIN ? '0' : '1000',
       });
       await driver.delay(regularDelayMs);
     });
@@ -282,8 +289,14 @@ describe('MetaMask @no-mmi', function () {
   });
 
   describe('Send token from inside MetaMask', function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     it('starts to send a transaction', async function () {
-      await driver.clickElement('[data-testid="eth-overview-send"]');
+      await openActionMenuAndStartSendFlow(driver);
+      if (process.env.MULTICHAIN) {
+        return;
+      }
       await driver.delay(regularDelayMs);
 
       await driver.fill(
@@ -433,6 +446,9 @@ describe('MetaMask @no-mmi', function () {
     });
 
     it('checks balance', async function () {
+      if (process.env.MULTICHAIN) {
+        return;
+      }
       await driver.clickElement({
         text: 'Tokens',
         tag: 'button',

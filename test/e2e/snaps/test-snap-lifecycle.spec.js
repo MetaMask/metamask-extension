@@ -1,5 +1,4 @@
-const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -19,14 +18,10 @@ describe('Test Snap Lifecycle Hooks', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
@@ -86,11 +81,10 @@ describe('Test Snap Lifecycle Hooks', function () {
         // check dialog contents
         const result = await driver.findElement('.snap-ui-renderer__panel');
         await driver.scrollToElement(result);
-        await driver.delay(500);
-        assert.equal(
-          await result.getText(),
-          'Installation successful\nThe snap was installed successfully, and the "onInstall" handler was called.',
-        );
+        await driver.waitForSelector({
+          css: '.snap-ui-renderer__panel',
+          text: 'The snap was installed successfully, and the "onInstall" handler was called.',
+        });
       },
     );
   });

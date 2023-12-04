@@ -722,12 +722,6 @@
   "enableFromSettings": {
     "message": " Ative nas Configurações."
   },
-  "enableOpenSeaAPI": {
-    "message": "Ativar a API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
-  },
   "enableToken": {
     "message": "ativar $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -745,12 +739,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Caractere inválido para ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nome ENS não encontrado na rede atual. Procure trocar para a mainnet do Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "A rede não suporta ENS"
   },
   "ensRegistrationError": {
     "message": "Erro no registro do nome ENS"
@@ -1176,25 +1164,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Ative \"dados de contrato inteligente\" ou \"assinatura cega\" no seu dispositivo Ledger"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Ative Utilizar Ledger Live em Configurações > Avançado"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Conecte o seu dispositivo Ledger e selecione o app Ethereum"
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Abra e desbloqueie o app Ledger Live"
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Personalize como conectar sua Ledger à MetaMask. Recomenda-se utilizar $1, mas há outras opções. Leia mais aqui: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Não foi possível abrir o dispositivo Ledger. Seu Ledger pode não estar conectado a outros softwares. Feche o Ledger Live ou outros aplicativos conectados ao seu dispositivo Ledger e tente reconectar."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Aplicativo Ledger Live"
@@ -1204,9 +1178,6 @@
   },
   "ledgerTimeout": {
     "message": "O Ledger Live está demorando muito para responder ou a conexão expirou. Certifique-se de que o aplicativo do Ledger Live esteja aberto e que seu dispositivo esteja desbloqueado."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Se o seu aplicativo do Ledger Live estiver aberto, desconecte qualquer conexão aberta com o Ledger Live e feche o aplicativo do Ledger Live."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "O dispositivo ledger não foi conectado. Se deseja conectar seu Ledger, clique em \"Continuar\" novamente e aprove a conexão HID",
@@ -2328,9 +2299,6 @@
   "swapSource": {
     "message": "Fonte de liquidez"
   },
-  "swapSourceInfo": {
-    "message": "Pesquisamos várias fontes de liquidez (exchanges, agregadores e formadores de mercado profissionais) para descobrir as melhores tarifas e as taxas de rede mais baixas."
-  },
   "swapSuggested": {
     "message": "Troca sugerida"
   },
@@ -2500,18 +2468,6 @@
   "transactionCreated": {
     "message": "Transação criada com valor de $1 às $2."
   },
-  "transactionData": {
-    "message": "Dados da transação"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Decodificado por Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Contrato verificado em $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "A decodificação da transação não está disponível para o chainId $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site sugerido"
   },
@@ -2608,9 +2564,6 @@
   },
   "twelveHrTitle": {
     "message": "12 h:"
-  },
-  "txInsightsNotSupported": {
-    "message": "As informações sobre transações não são suportadas para esse contrato, por ora."
   },
   "u2f": {
     "message": "U2F",

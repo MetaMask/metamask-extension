@@ -1,4 +1,4 @@
-const { withFixtures } = require('../helpers');
+const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -18,14 +18,10 @@ describe('Test Snap networkAccess', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate to test snaps page and connect to dialog snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);

@@ -20,16 +20,6 @@ const render = (overrideMetaMaskState, props = {}) => {
 };
 
 describe('ExperimentalTab', () => {
-  beforeEach(() => {
-    process.env = Object.assign(process.env, {
-      KEYRING_SNAPS_AVAILABILITY_DATE: '02 Nov 2023 15:00:00 GMT',
-    });
-  });
-
-  afterEach(() => {
-    delete process.env.KEYRING_SNAPS_AVAILABILITY_DATE;
-  });
-
   it('renders ExperimentalTab component without error', () => {
     expect(() => {
       render();
@@ -38,7 +28,6 @@ describe('ExperimentalTab', () => {
 
   describe('with desktop enabled', () => {
     it('renders ExperimentalTab component without error', () => {
-      jest.useFakeTimers().setSystemTime(new Date(Date.UTC(2023, 10, 3, 5)));
       const { container } = render({ desktopEnabled: true });
       expect(container).toMatchSnapshot();
     });
@@ -48,7 +37,7 @@ describe('ExperimentalTab', () => {
     const { getAllByRole } = render({ desktopEnabled: true });
     const toggle = getAllByRole('checkbox');
 
-    expect(toggle).toHaveLength(3);
+    expect(toggle).toHaveLength(4);
   });
 
   it('should disable opensea when blockaid is enabled', () => {
@@ -67,6 +56,24 @@ describe('ExperimentalTab', () => {
     fireEvent.click(toggle[0]);
     expect(setSecurityAlertsEnabled).toHaveBeenCalledWith(true);
     expect(setTransactionSecurityCheckEnabled).toHaveBeenCalledWith(false);
+  });
+
+  it('should show terms of use links', () => {
+    const setSecurityAlertsEnabled = jest.fn();
+    const setTransactionSecurityCheckEnabled = jest.fn();
+    const { getAllByRole } = render(
+      { desktopEnabled: true },
+      {
+        securityAlertsEnabled: false,
+        transactionSecurityCheckEnabled: true,
+        setSecurityAlertsEnabled,
+        setTransactionSecurityCheckEnabled,
+      },
+    );
+    expect(getAllByRole('link', { name: 'Terms of use' })[0]).toHaveAttribute(
+      'href',
+      'https://opensea.io/securityproviderterms',
+    );
   });
 
   it('should disable blockaid when opensea is enabled', () => {

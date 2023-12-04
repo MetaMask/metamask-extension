@@ -1,4 +1,8 @@
-const { withFixtures } = require('../helpers');
+const {
+  withFixtures,
+  switchToNotificationWindow,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -18,14 +22,10 @@ describe('Test Snap RPC', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate to test snaps page
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
@@ -39,15 +39,7 @@ describe('Test Snap RPC', function () {
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
-          2,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver, 2);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -55,7 +47,7 @@ describe('Test Snap RPC', function () {
 
         await driver.waitForSelector({ text: 'Install' });
 
-        await driver.clickElement('[data-testid="snap-install-scroll"]');
+        await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
 
         await driver.clickElement({
           text: 'Install',
@@ -64,11 +56,7 @@ describe('Test Snap RPC', function () {
 
         // wait for permissions popover, click checkboxes and confirm
         await driver.delay(500);
-        await driver.clickElement('#key-access-bip32-m-44h-0h-secp256k1-0');
-        await driver.clickElement('#key-access-bip32-m-44h-0h-ed25519-1');
-        await driver.clickElement(
-          '#public-key-access-bip32-m-44h-0h-secp256k1-0',
-        );
+        await driver.clickElement('.mm-checkbox__input');
         await driver.clickElement({
           text: 'Confirm',
           tag: 'button',
@@ -82,7 +70,7 @@ describe('Test Snap RPC', function () {
         });
 
         // switch back to test-snaps window
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle('Test Snaps');
 
         const snapButton2 = await driver.findElement('#connectjson-rpc');
         await driver.scrollToElement(snapButton2);
@@ -90,11 +78,7 @@ describe('Test Snap RPC', function () {
         await driver.clickElement('#connectjson-rpc');
         await driver.delay(1000);
 
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver, 2);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -114,7 +98,7 @@ describe('Test Snap RPC', function () {
           tag: 'button',
         });
 
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle('Test Snaps');
 
         // wait for npm installation success
         await driver.waitForSelector({

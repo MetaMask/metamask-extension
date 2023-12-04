@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   DAPP_URL,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -33,12 +34,10 @@ describe('Sign in with ethereum', function () {
         ganacheOptions: {
           ...ganacheOptions,
         },
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // Create a signin with ethereum request in test dapp
         await openDapp(driver);
