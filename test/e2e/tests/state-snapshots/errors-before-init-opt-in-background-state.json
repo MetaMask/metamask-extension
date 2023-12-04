@@ -101,13 +101,13 @@
       "selectedAddress": "string",
       "theme": "light",
       "useBlockie": false,
+      "useRequestQueue": false,
       "useNftDetection": false,
       "useNonceField": false,
       "usePhishDetect": true,
       "useTokenDetection": false,
       "useCurrencyRateCheck": true,
-      "useMultiAccountBalanceChecker": true,
-      "useRequestQueue": false
+      "useMultiAccountBalanceChecker": true
     },
     "SmartTransactionsController": {
       "smartTransactionsState": {
@@ -125,7 +125,9 @@
       "ignoredTokens": "object",
       "tokens": "object"
     },
-    "TransactionController": { "transactions": "object" },
+    "TransactionController": {
+      "transactions": "object"
+    },
     "config": "object",
     "firstTimeInfo": "object"
   }
