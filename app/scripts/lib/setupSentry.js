@@ -28,9 +28,17 @@ export const ERROR_URL_ALLOWLIST = {
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
 export const SENTRY_BACKGROUND_STATE = {
+  AccountsController: {
+    internalAccounts: {
+      accounts: false,
+      selectedAccount: false,
+    },
+  },
   AccountTracker: {
     accounts: false,
+    accountsByChainId: false,
     currentBlockGasLimit: true,
+    currentBlockGasLimitByChainId: true,
   },
   AddressBookController: {
     addressBook: false,
@@ -42,6 +50,9 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AnnouncementController: {
     announcements: false,
+  },
+  NetworkOrderController: {
+    orderedNetworkList: [],
   },
   AppMetadataController: {
     currentAppVersion: true,
@@ -103,6 +114,7 @@ export const SENTRY_BACKGROUND_STATE = {
     estimatedGasFeeTimeBounds: true,
     gasEstimateType: true,
     gasFeeEstimates: true,
+    gasFeeEstimatesByChainId: true,
   },
   KeyringController: {
     isUnlocked: true,

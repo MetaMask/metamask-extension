@@ -3580,6 +3580,19 @@ export function removePermissionsFor(
   };
 }
 
+/**
+ * Updates the order of networks after drag and drop
+ *
+ * @param orderedNetworkList
+ */
+export function updateNetworksList(
+  orderedNetworkList: [],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateNetworksList', [orderedNetworkList]);
+  };
+}
+
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
 /**
  * Updates the caveat value for the specified origin, permission and caveat type.

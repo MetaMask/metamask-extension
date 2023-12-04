@@ -57,6 +57,14 @@ HEADLESS=true
 ```
 By doing this, all tests will run in headless mode. This allows you to continue with other tasks while the tests are running, optimizing your workflow.
 
+#### Lavamoat
+
+Due to the constraints imposed by Lavamoat, certain visual details that could be beneficial during a debugging session are not displayed in the Playwright logs. To overcome this, you can create a local, Lavamoat-free build that allows Playwright to access and display all available browser information. To create this specialized build, execute the following command:
+```
+yarn build:mmi:debug
+```
+After the build is complete, you can proceed to run the tests as usual.
+
 ## Visual Tests
 
 For more information on visual tests, refer to the [Playwright documentation](https://playwright.dev/docs/test-snapshots).
