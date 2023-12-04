@@ -203,7 +203,7 @@ import {
   afterTransactionSign as afterTransactionSignMMI,
   beforeCheckPendingTransaction as beforeCheckPendingTransactionMMI,
   beforeTransactionPublish as beforeTransactionPublishMMI,
-  beforeTransactionApproveOnInit as beforeTransactionApproveOnInitMMI,
+  beforeTransactionApproveOnInit as beforeApproveOnInitMMI,
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
 } from './lib/transaction/mmi-hooks';
 ///: END:ONLY_INCLUDE_IN
@@ -1395,8 +1395,7 @@ export default class MetamaskController extends EventEmitter {
             ),
           beforeCheckPendingTransaction:
             beforeCheckPendingTransactionMMI.bind(this),
-          beforeTransactionApproveOnInit:
-            beforeTransactionApproveOnInitMMI.bind(this),
+          beforeApproveOnInit: beforeApproveOnInitMMI.bind(this),
           beforePublish: beforeTransactionPublishMMI.bind(this),
           getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
           ///: END:ONLY_INCLUDE_IN

@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.7.0]
+## [11.6.3]
+### Fixed
+- Fixed a problem related with passing the wrong method name to TransactionController ([#22102](https://github.com/MetaMask/metamask-extension/pull/22102))
+
+## [11.6.2]
+### Fixed
+- Fixed a problem with including links in Snaps custom UI ([#22086](https://github.com/MetaMask/metamask-extension/pull/22086))
+
+## [11.6.1]
+### Fixed
+- Updates MMI extension package to the latest version since it includes a fix for the Tx status from custodian transactions. ([#22065](https://github.com/MetaMask/metamask-extension/pull/22065))
 
 ## [11.6.0]
 ### Added
@@ -4209,6 +4220,10 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.7.0...HEAD
 [11.7.0]: https://github.com/MetaMask/metamask-extension/compare/v11.6.0...v11.7.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.6.3...HEAD
+[11.6.3]: https://github.com/MetaMask/metamask-extension/compare/v11.6.2...v11.6.3
+[11.6.2]: https://github.com/MetaMask/metamask-extension/compare/v11.6.1...v11.6.2
+[11.6.1]: https://github.com/MetaMask/metamask-extension/compare/v11.6.0...v11.6.1
 [11.6.0]: https://github.com/MetaMask/metamask-extension/compare/v11.5.2...v11.6.0
 [11.5.2]: https://github.com/MetaMask/metamask-extension/compare/v11.5.1...v11.5.2
 [11.5.1]: https://github.com/MetaMask/metamask-extension/compare/v11.5.0...v11.5.1
