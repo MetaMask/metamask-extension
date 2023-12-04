@@ -6,7 +6,7 @@ exports[`FormTextField should render correctly 1`] = `
     class="box mm-form-text-field box--display-flex box--flex-direction-column"
   >
     <div
-      class="box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+      class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
     >
       <input
         autocomplete="off"

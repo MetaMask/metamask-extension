@@ -502,7 +502,7 @@ describe('Custom network', function () {
 
           const arbitrumNetwork = await driver.findElements({
             text: 'Arbitrum One',
-            tag: 'button',
+            tag: 'p',
           });
           assert.ok(arbitrumNetwork.length, 1);
         },
@@ -645,6 +645,7 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
     text: 'Security & privacy',
     tag: 'div',
   };
+  await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
   const useSafeChainsListValidationToggleSelector =
@@ -725,6 +726,8 @@ async function toggleOffSafeChainsListValidation(driver) {
     text: 'Security & privacy',
     tag: 'div',
   };
+
+  await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
   const useSafeChainsListValidationLabelSelector =
