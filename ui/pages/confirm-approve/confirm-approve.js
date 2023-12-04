@@ -179,9 +179,9 @@ export default function ConfirmApprove({
 
   let tokenAllowanceImprovements = true;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   tokenAllowanceImprovements = false;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   if (tokenAllowanceImprovements && assetStandard === TokenStandard.ERC20) {
     return (

@@ -3,9 +3,9 @@ import { Switch, Route, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Unlock from '../unlock-page';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   ONBOARDING_EXPERIMENTAL_AREA,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_CREATE_PASSWORD_ROUTE,
   ONBOARDING_REVIEW_SRP_ROUTE,
   ONBOARDING_CONFIRM_SRP_ROUTE,
@@ -15,9 +15,9 @@ import {
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
   ONBOARDING_PRIVACY_SETTINGS_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI_ONBOARDING_COMPLETION_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   ONBOARDING_IMPORT_WITH_SRP_ROUTE,
   ONBOARDING_PIN_EXTENSION_ROUTE,
   ONBOARDING_METAMETRICS,
@@ -37,12 +37,12 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import ExperimentalArea from '../../components/app/flask/experimental-area';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import OnboardingSuccessful from '../institutional/onboarding-successful/onboarding-successful';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import OnboardingFlowSwitch from './onboarding-flow-switch/onboarding-flow-switch';
 import CreatePassword from './create-password/create-password';
 import ReviewRecoveryPhrase from './recovery-phrase/review-recovery-phrase';
@@ -164,14 +164,14 @@ export default function OnboardingFlow() {
             component={CreationSuccessful}
           />
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           }
           <Route
             path={MMI_ONBOARDING_COMPLETION_ROUTE}
             component={OnboardingSuccessful}
           />
           {
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
           <Route
             path={ONBOARDING_WELCOME_ROUTE}
@@ -186,7 +186,7 @@ export default function OnboardingFlow() {
             component={MetaMetricsComponent}
           />
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           }
           <Route
             path={ONBOARDING_EXPERIMENTAL_AREA}
@@ -198,7 +198,7 @@ export default function OnboardingFlow() {
             )}
           />
           {
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
           <Route exact path="*" component={OnboardingFlowSwitch} />
         </Switch>

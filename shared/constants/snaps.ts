@@ -1,4 +1,4 @@
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import type { SupportedCurve } from '@metamask/key-tree';
 
 type SnapsMetadata = {
@@ -186,4 +186,4 @@ export const SNAPS_DERIVATION_PATHS: SnapsDerivationPath[] = [
     name: 'Vega',
   },
 ];
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
