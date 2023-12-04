@@ -1,30 +1,30 @@
 import deepFreeze from 'deep-freeze-strict';
 import React from 'react';
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { getRpcCaveatOrigins } from '@metamask/snaps-controllers';
 import { SnapCaveatType } from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import classnames from 'classnames';
 import {
   RestrictedMethods,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   EndowmentPermissions,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/permissions';
 import Tooltip from '../../components/ui/tooltip';
 import {
   AvatarIcon,
   AvatarIconSize,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   Icon,
   Text,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   IconName,
   IconSize,
 } from '../../components/component-library';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   FontWeight,
   IconColor,
@@ -36,15 +36,15 @@ import {
   getSnapDerivationPathName,
   getSnapName,
 } from './util';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 const RIGHT_INFO_ICON = (
   <Icon name={IconName.Info} size={IconSize.Sm} color={IconColor.iconMuted} />
 );
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 function getLeftIcon(iconName) {
   return (
@@ -77,7 +77,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
     weight: 3,
   }),
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   [RestrictedMethods.snap_dialog]: ({ t, targetSubjectMetadata }) => ({
     label: t('permission_dialog'),
     description: t('permission_dialogDescription', [
@@ -514,8 +514,8 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: IconName.Home,
     weight: 4,
   }),
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   [RestrictedMethods.snap_manageAccounts]: ({ t, targetSubjectMetadata }) => ({
     label: t('permission_manageAccounts'),
     description: t('permission_manageAccountsDescription', [
@@ -537,15 +537,15 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     rightIcon: null,
     weight: 3,
   }),
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   [EndowmentPermissions['endowment:name-lookup']]: ({ t }) => ({
     label: t('permission_nameLookup'),
     description: t('permission_nameLookupDescription'),
     leftIcon: getLeftIcon(IconName.Search),
     weight: 4,
   }),
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
     leftIcon: getLeftIcon(IconName.Question),
