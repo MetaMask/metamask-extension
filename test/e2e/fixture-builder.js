@@ -230,7 +230,7 @@ function defaultFixture() {
       },
       KeyringController: {
         vault:
-          '{"data":"WHaP1FrrtV4zUonudIppDifsLHF39g6oPkVksAIdWAHBRzax1uy1asfAJprR7u72t4/HuYz5yPIFQrnNnv+hwQu9GRuty88VKMnvMy+sq8MNtoXI+C54bZpWa8r4iUQfa0Mj/cfJbpFpzOdF1ZYXahTfTcU5WsrHwvJew842CiJR4B2jmCHHXfm/DxLK3WazsVQwXJGx/U71UelGoOOrT8NI28EKrAwgPn+7Xmv0j92gmhau30N7Bo2fr6Zv","iv":"LfD8/tY1EjXzxuemSmDVdA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"nk4xdpmMR+1s5BYe4Vnk++XAQwrISI2bCtbMg7V1wUA="}',
+          '{"data":"hAH8ZyXUVrdIhN0XXMZLl2iRxKmBv28IoUzLCe8yJY9CCyLH7WMffXqeD0xISBfnuF2zMAC49V9lMVKdYRGGDjhEGToQN+4K7afqPmAO979d5U3gk5V8AmuTXWTV6WTt1uXSDedhb6veyaGLnzpqHRDK/GAor/0HApVuHXdmVLCNZWnQ/CZn+5JljdhhsTci2V/aD5FPnhO3Fa1smg7A68UDkRaHvE8F1YoNyHAZiEVKU/Q13ve2ESixMhaM","iv":"RWPQGzonYM9A10MKwbDIiw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":300000}},"salt":"f5xnUInjRbAhpLvLQOi/8Xy6kTxb4IltOWQRemUDQoI="}',
       },
       MetaMetricsController: {
         eventsBeforeMetricsOptIn: [],
@@ -515,14 +515,14 @@ class FixtureBuilder {
   withKeyringControllerAdditionalAccountVault() {
     return this.withKeyringController({
       vault:
-        '{"data":"XBb1KJiGsxNOhcTC/xtzaNmpDqnMibJ/HCIjMGUHF/jPIghM63+xkoGcko9T2NKjeMyt2QLbl7K9tr0/qQgbAJP/LUn6gfovkajBdeBQ5N/qztdw7uGJsnrKnzo1krmb2wWeFstwoolcZ9GYwhYVSmCO/tYba50eanY2XvmFheT1ghowtiFmTIGRWV2X1HacnpI4n0rW88ZyBaVuOJOIJGEBiiTD+b0V5l9Tv4sFEms4jvatJwhjDQnx1HmyQE3K64+W5yJe764B0ZdcQ6j2dyIaGgutcz8PoQLBJR1uo78fufZeFzk1gk/BreXn2+4vQnPxQ3prhnXHO4S+7Kj1h2ticxYb3XWnprFLWyksu9ChMyqDXwgM6edLBRDH2jz/IMuC5g9JhABl7PsSH+001z/uBx3GvRTFviFF9dztf195/EPy8YbuYUVbYtJy1aPSju84efWYvb7GrzrmgFnbeh2BpjyWqHoCTdw8fhdm7HQO8GFF7JdGtoIpjkhwPrudIQeIYhGCezd+n5GFp3mdmFNrLbOVFgxufTdY6hlYkg6c5XuHC2VnWCSPwWKIn6t9VuvuyIxXBnol/bgYC8R/d99ctkPDHykigQcgr6cCnhPOwUFOLwrmXqm9HQeWiKb8WxwdGeRnblS+fhFhB+lSy7RvyTUb7HFogDPnDLP/LlUFxdSNNBgqNJU1Dc07Np65PZrpsPvSCfkFttzTytHswhtTEMOg/faaH2D6AwIGbh5Z9cubiNcMrdD75aT1WGuecJ8P7uOMYJq9C7e5l/35","iv":"U81Cv/oryQ1DI9lRezx1iw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"ejIn0xx5qZMA0m2ekjvXJF2pJa8ocL11wEdNIFJsKZQ="}',
+        '{"data":"n/kaXPjZKrgeviA82yyrwvFdakCTaL0FuaFcsb71YEVB2f1eA+4ORt/+OZ+zYL9tjq6Drji0Y2ILtQNBJfHlgcm6DtqFQzhAAQNBRQyig8W/L/j7DkhwrUF+0iAJNTU4S3vRmeXQ6l1XW7BPZ7DouiFbLSwlgpGqMw63ZhSi4VlWIArTrnb8lvnSyZZ7DSW2n/z7s/XgR+izZJf04BKZCrk1mwpLXEXv5aG2TYPrI0SaLXP831jyhyTolMR6Ulspl2MbRB5zYxhwc6/HVdIYXE7HfRfpehM0+zntvGt28Ns/KtMKq/lfu2meTnMfJQzixp9Fh7gPt23EBf15yF/A/3zJMkHC7QcPHekDajxY+8Ry1yuCfs4sjjLc6J5+W3jsu8I9ErsjZYGx0izF1xDOwocioObEKBdbcVyGIfJRGcSFsF+x5tkiR4IjXx8GYfvYMqORBce/HdYseOfRDv5p7OWM2GQ9YTA8Q9CbogPWNtHItuT+zDWwT8lUMrQXFAQDXwgkh3OSsjaSra2aytm18J/6YXqHFrnqMwRjIhWZhsjvukLwpRuCNvG2OQuH7aP2PFLaFvdbZ8ZFFR845PUX9QeEFPJgt1mEpunvTBCaiENG0jGugjDWWaKc0O86JPObDJsPcE78Q427ireAKbs0GqLzqFQYIq4cv0KYjFY4bw73u8JK1vEaQVHSec1/puBPekn9d3ML/9WSLC7XSzXVsY/qdqasRdKSumlhVS+b+A2+YmDlhu7xcgsoidCG72SDVUfN2+sTOP+FjyEhExyg","iv":"1p35qFjkBCjTWBPj+DDWhQ==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":300000}},"salt":"/LHb1KeBDr3HNtlkKzXQanFOPwmkZyBv8wdf7rLAofs="}',
     });
   }
 
   withKeyringControllerImportedAccountVault() {
     return this.withKeyringController({
       vault:
-        '{"data":"NlxYVSDJJV4B1DWM+fZ0KX1K2lIU9ozK3WMbbL23WEY036umZ9//qB+bN9R1jKMm6xqHGSGgq9EteFMy2Ix5Bx1/c4hV2QquFRTEzPB4TkQ6+P5eJUvgvZ7vqvVU+2W8719T1oz/O7DH7HbO05JPLD1RBY+XOyHzUzAgwmXq0mwxNpqji3ejHyrjZ/1l06igircW/qysLcjZFZ52Vv4a/q1zCL37/4heHDRVmfEob//ulUbJ/5M=","iv":"b9n77dsUqvww9nGcWfPuIA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"XrmM930Jqnb7C9Ow5NErAMkSGR3vuMLsqUrkGjzpwaY="}',
+        '{"data":"wT3gNVWU8ZGS1/vnjFFd20GSNII7FEXiXzzOwq/1ue8yVVCrcjss8nDKLKOK0F/RKIQu+WRaGZTH+QaaCpu5rS5uvAEW4VK9V1DTSOeIc4A96LTrFcpc1kbW8OQKVj9LW5M0l2N2PNE24++ktt3LeeRHsSJ/a3y+OEHtJ67+zIVuxqqpqN6WbxiHwACLT4y+4YxHhtl5I45rksC8eTrf+VnVHVo9mstN/CO1rRp5ekHn2WkABl4=","iv":"TTp6ydRiykagyvkgPjJxqQ==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":300000}},"salt":"89uq238NXFPgKzLKRZJNOKLjWwBeMIWG8craKs8GKpE="}',
     });
   }
 
