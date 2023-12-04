@@ -5124,10 +5124,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "@metamask/test-dapp@npm:7.2.0"
-  checksum: 415ea793d2d75f51679d2944bd14412fa98cdb11022b127eb2bbb09b9f39204ad7ee61c7c63a29a8e6ce5605ead7471432c114c73bb1aaabe962f55a18cd9678
+"@metamask/test-dapp@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "@metamask/test-dapp@npm:8.1.0"
+  checksum: 65c2dc2de222f6fd2df1a57167cb05706003716127390313e0bd3a4b506ef3bd6903ca4f72efae2480a059055394a43f431b67c04cb4ed829250464cc33a91d3
   languageName: node
   linkType: hard
 
@@ -24332,7 +24332,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^4.0.1"
     "@metamask/snaps-sdk": "npm:^1.2.0"
     "@metamask/snaps-utils": "npm:^5.0.0"
-    "@metamask/test-dapp": "npm:^7.2.0"
+    "@metamask/test-dapp": "npm:^8.1.0"
     "@metamask/transaction-controller": "npm:^18.3.0"
     "@metamask/utils": "npm:^8.2.1"
     "@ngraveio/bc-ur": "npm:^1.1.6"
