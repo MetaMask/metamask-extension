@@ -69,6 +69,7 @@ describe('MMIController', function () {
         trackTransactionEvents: jest.fn(),
         setTxStatusSigned: jest.fn(),
         setTxStatusSubmitted: jest.fn(),
+        setTxStatusConfirmed: jest.fn(),
         setTxStatusFailed: jest.fn(),
         updateTransaction: jest.fn(),
     });

@@ -45,6 +45,7 @@ export default class MMIController extends EventEmitter {
       getTransactions: opts.getTransactions,
       setTxStatusSigned: opts.setTxStatusSigned,
       setTxStatusSubmitted: opts.setTxStatusSubmitted,
+      setTxStatusConfirmed: opts.setTxStatusConfirmed,
       setTxStatusFailed: opts.setTxStatusFailed,
       updateTransaction: opts.updateTransaction,
     };

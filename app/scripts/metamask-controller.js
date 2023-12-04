@@ -1667,6 +1667,10 @@ export default class MetamaskController extends EventEmitter {
         this.txController.updateCustodialTransaction(id, {
           status: TransactionStatus.submitted,
         }),
+      setTxStatusConfirmed: (id) =>
+        this.txController.updateCustodialTransaction(id, {
+          status: TransactionStatus.confirmed,
+        }),
       setTxStatusFailed: (id, reason) =>
         this.txController.updateCustodialTransaction(id, {
           status: TransactionStatus.failed,
