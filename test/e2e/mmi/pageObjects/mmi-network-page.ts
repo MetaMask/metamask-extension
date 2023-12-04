@@ -32,6 +32,6 @@ export class MMINetworkPage {
   }
 
   async selectNetwork(network: string) {
-    await this.page.getByRole('button', { name: network }).first().click();
+    await this.page.getByText(network).first().click();
   }
 }

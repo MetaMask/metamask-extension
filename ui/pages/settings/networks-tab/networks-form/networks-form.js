@@ -448,7 +448,10 @@ const NetworksForm = ({
           warningMessage = t('failedToFetchTickerSymbolData');
         } else {
           const returnedTickerSymbol = matchedChain.nativeCurrency?.symbol;
-          if (returnedTickerSymbol !== formTickerSymbol) {
+          if (
+            returnedTickerSymbol.toLowerCase() !==
+            formTickerSymbol.toLowerCase()
+          ) {
             warningKey = 'chainListReturnedDifferentTickerSymbol';
             warningMessage = t('chainListReturnedDifferentTickerSymbol', [
               returnedTickerSymbol,

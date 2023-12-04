@@ -717,8 +717,8 @@ export default class MetaMetricsController {
       mmiProps.extensionId = this.extension.runtime.id;
     }
 
-    if (this.selectedAddres) {
-      mmiProps.accountAddress = this.selectedAddres;
+    if (this.selectedAddress) {
+      mmiProps.accountAddress = this.selectedAddress;
     }
     ///: END:ONLY_INCLUDE_IN
 
