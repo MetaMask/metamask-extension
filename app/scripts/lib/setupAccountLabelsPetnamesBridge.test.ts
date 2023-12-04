@@ -3,7 +3,7 @@ import setupAccountLabelsPetnamesBridge, {
   PertinentPreferencesController,
   PertinentState,
   ACCOUNT_LABEL_NAME_TYPE,
-  ACCOUNT_LABEL_VARIATION,
+  ACCOUNT_LABEL_CHAIN_ID,
 } from './setupAccountLabelsPetnamesBridge';
 
 const ADDRESS_MOCK = '0xabc';
@@ -69,7 +69,7 @@ describe('setupAccountLabelsPetnamesBridge', () => {
     expect(nameControllerDefault.setName).toHaveBeenCalledWith({
       value: ADDRESS_MOCK,
       type: ACCOUNT_LABEL_NAME_TYPE,
-      variation: ACCOUNT_LABEL_VARIATION,
+      variation: ACCOUNT_LABEL_CHAIN_ID,
       name: NAME_MOCK,
     });
   });
@@ -77,7 +77,7 @@ describe('setupAccountLabelsPetnamesBridge', () => {
   it('updates entry when account id is updated', () => {
     nameControllerDefault = createNameControllerMock({
       [ADDRESS_MOCK]: {
-        [ACCOUNT_LABEL_VARIATION]: {
+        [ACCOUNT_LABEL_CHAIN_ID]: {
           name: NAME_MOCK,
           proposedNames: {},
         },
@@ -111,14 +111,14 @@ describe('setupAccountLabelsPetnamesBridge', () => {
       type: ACCOUNT_LABEL_NAME_TYPE,
       name: NAME_2_MOCK,
       sourceId: undefined,
-      variation: ACCOUNT_LABEL_VARIATION,
+      variation: ACCOUNT_LABEL_CHAIN_ID,
     });
   });
 
   it('deletes entry when address book entry is deleted', () => {
     nameControllerDefault = createNameControllerMock({
       [ADDRESS_MOCK]: {
-        [ACCOUNT_LABEL_VARIATION]: {
+        [ACCOUNT_LABEL_CHAIN_ID]: {
           name: NAME_MOCK,
           proposedNames: {},
         } as any,
@@ -147,7 +147,7 @@ describe('setupAccountLabelsPetnamesBridge', () => {
       type: ACCOUNT_LABEL_NAME_TYPE,
       name: null,
       sourceId: undefined,
-      variation: ACCOUNT_LABEL_VARIATION,
+      variation: ACCOUNT_LABEL_CHAIN_ID,
     });
   });
 });

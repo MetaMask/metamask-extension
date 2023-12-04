@@ -2,7 +2,7 @@ import { NameController, NameType } from '@metamask/name-controller';
 import { cloneDeep } from 'lodash';
 import log from 'loglevel';
 
-type IdentityEntry = {
+export type IdentityEntry = {
   address: string;
   name: string;
 };
@@ -20,7 +20,7 @@ export type PertinentPreferencesController = {
 
 const MAINNET_CHAIN_ID = '0x1';
 export const ACCOUNT_LABEL_NAME_TYPE = NameType.ETHEREUM_ADDRESS;
-export const ACCOUNT_LABEL_VARIATION = MAINNET_CHAIN_ID;
+export const ACCOUNT_LABEL_CHAIN_ID = MAINNET_CHAIN_ID;
 
 /**
  * Groups the entries in the old and new entries arrays into added, updated and
@@ -81,7 +81,7 @@ export default function setupAccountLabelsPetnamesBridge(
     for (const entry of [...added, ...updated]) {
       nameController.setName({
         type: ACCOUNT_LABEL_NAME_TYPE,
-        variation: ACCOUNT_LABEL_VARIATION,
+        variation: ACCOUNT_LABEL_CHAIN_ID,
         value: entry.address,
         name: entry.name,
       });
@@ -92,7 +92,7 @@ export default function setupAccountLabelsPetnamesBridge(
     for (const entry of deleted) {
       nameController.setName({
         type: ACCOUNT_LABEL_NAME_TYPE,
-        variation: ACCOUNT_LABEL_VARIATION,
+        variation: ACCOUNT_LABEL_CHAIN_ID,
         value: entry.address,
         name: null,
       });
