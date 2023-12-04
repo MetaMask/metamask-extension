@@ -4219,8 +4219,7 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 - Added the ability to restore accounts from seed words.
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.7.0...HEAD
-[11.7.0]: https://github.com/MetaMask/metamask-extension/compare/v11.6.0...v11.7.0
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.6.3...HEAD
+[11.7.0]: https://github.com/MetaMask/metamask-extension/compare/v11.6.3...v11.7.0
 [11.6.3]: https://github.com/MetaMask/metamask-extension/compare/v11.6.2...v11.6.3
 [11.6.2]: https://github.com/MetaMask/metamask-extension/compare/v11.6.1...v11.6.2
 [11.6.1]: https://github.com/MetaMask/metamask-extension/compare/v11.6.0...v11.6.1
