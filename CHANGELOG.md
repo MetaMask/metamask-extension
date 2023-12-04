@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.6.3]
+### Fixed
+- Fixed a problem related with passing the wrong method name to TransactionController ([#22102](https://github.com/MetaMask/metamask-extension/pull/22102))
+
 ## [11.6.2]
 ### Fixed
 - Fixed a problem with including links in Snaps custom UI ([#22086](https://github.com/MetaMask/metamask-extension/pull/22086))
@@ -4213,7 +4217,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.6.2...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.6.3...HEAD
+[11.6.3]: https://github.com/MetaMask/metamask-extension/compare/v11.6.2...v11.6.3
 [11.6.2]: https://github.com/MetaMask/metamask-extension/compare/v11.6.1...v11.6.2
 [11.6.1]: https://github.com/MetaMask/metamask-extension/compare/v11.6.0...v11.6.1
 [11.6.0]: https://github.com/MetaMask/metamask-extension/compare/v11.5.2...v11.6.0
