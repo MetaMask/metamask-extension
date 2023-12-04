@@ -863,6 +863,9 @@ export default class MetamaskController extends EventEmitter {
               });
             },
           ),
+        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+          this.networkController,
+        ),
       },
       {},
       initState.TokenRatesController,
