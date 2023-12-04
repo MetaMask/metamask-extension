@@ -53,7 +53,7 @@
       "eventsBeforeMetricsOptIn": "object",
       "fragments": "object",
       "metaMetricsId": "fake-metrics-id",
-      "participateInMetaMetrics": true,
+      "participateInMetaMetrics": "boolean",
       "traits": "object"
     },
     "NetworkController": {

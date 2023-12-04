@@ -128,7 +128,7 @@ export const SENTRY_BACKGROUND_STATE = {
     eventsBeforeMetricsOptIn: false,
     fragments: false,
     metaMetricsId: true,
-    metaMetricsParticipationMode: MetaMetricsParticipation.Participate,
+    metaMetricsParticipationMode: true,
     previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,
