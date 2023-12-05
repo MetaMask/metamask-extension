@@ -169,7 +169,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
           <SnapExternalPill value={packageName} url={url} />
         </ConfirmInfoRow>
         <ConfirmInfoRow label={t('version')}>
-          {`v${subjectMetadata?.version}`}
+          {subjectMetadata?.version}
         </ConfirmInfoRow>
         <SnapDelineator
           type={DelineatorType.Description}
