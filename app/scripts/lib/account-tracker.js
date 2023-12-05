@@ -124,6 +124,10 @@ export default class AccountTracker {
    * Starts polling with global selected network
    */
   start() {
+    this._blockTracker.once('latest', (blockNumber) => {
+      this._currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
+    });
+
     // remove first to avoid double add
     this.#blockTracker.removeListener('latest', this.#updateForBlock);
     // add listener
