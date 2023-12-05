@@ -85,6 +85,7 @@ const SnapAuthorshipHeader = ({
       </Box>
       <Box marginLeft="auto">
         <AvatarIcon
+          className="snaps-authorship-header__button"
           iconName={IconName.Info}
           onClick={openModal}
           color={IconColor.iconMuted}

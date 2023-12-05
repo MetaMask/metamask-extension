@@ -1,0 +1,8 @@
+.snaps-authorship-header {
+  &__button {
+    cursor: pointer;
+    &:hover {
+      color: var(--color-icon-alternative);
+    }
+  }
+}
