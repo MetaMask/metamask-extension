@@ -72,12 +72,12 @@ async function mockInfura(mockServer) {
       method: 'debug_traceCall',
       params: [{ accessList: [], data: '0x00000000' }],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       return {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result: {
             error: 'execution reverted',
             from: '0x0000000000000000000000000000000000000000',
@@ -103,12 +103,12 @@ async function mockInfura(mockServer) {
         },
       ],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       return {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result:
             '0x0000000000000000000000000000000000000000000000000000000000000000',
         },
@@ -126,12 +126,12 @@ async function mockInfura(mockServer) {
         },
       ],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       return {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result:
             '0x0000000000000000000000000000000000000000000000000000000000000001',
         },
@@ -150,12 +150,12 @@ async function mockInfura(mockServer) {
         },
       ],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       return {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result:
             '0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b6a704f0f7fd6ad',
         },
@@ -168,12 +168,12 @@ async function mockInfura(mockServer) {
       method: 'debug_traceCall',
       params: [{ accessList: [], data: '0x00000000' }],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       return {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result: {
             from: '0x0000000000000000000000000000000000000000',
             gas: '0x1dcd6500',
@@ -193,12 +193,12 @@ async function mockInfura(mockServer) {
       method: 'eth_call',
       params: [{ data: '0x06fdde03', to: CONTRACT_ADDRESS.BAYC }],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       return {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result:
             '0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000011426f7265644170655961636874436c7562000000000000000000000000000000',
         },
@@ -215,12 +215,12 @@ async function mockInfura(mockServer) {
         },
       ],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       return {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result: {
             from: selectedAddress,
             gas: '0x19ce5cb',
