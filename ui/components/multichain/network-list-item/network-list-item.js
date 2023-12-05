@@ -17,12 +17,14 @@ import {
   AvatarNetwork,
   Box,
   ButtonIcon,
+  Icon,
   IconName,
   Text,
 } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
+import { AURORA_ETH_DISPLAY_NAME } from '../../../../shared/constants/network';
 
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 
@@ -33,6 +35,7 @@ export const NetworkListItem = ({
   focus = true,
   onClick,
   onDeleteClick,
+  isDeprecatedNetwork,
 }) => {
   const t = useI18nContext();
   const networkRef = useRef();
@@ -43,9 +46,15 @@ export const NetworkListItem = ({
     }
   }, [networkRef, focus]);
 
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.stopPropagation(); // Prevent the event from reaching the parent container
+      onClick();
+    }
+  };
+
   return (
     <Box
-      onClick={onClick}
       padding={4}
       gap={2}
       backgroundColor={selected ? Color.primaryMuted : Color.transparent}
@@ -56,6 +65,7 @@ export const NetworkListItem = ({
       alignItems={AlignItems.center}
       justifyContent={JustifyContent.spaceBetween}
       width={BlockSize.Full}
+      onClick={onClick}
     >
       {selected && (
         <Box
@@ -69,17 +79,18 @@ export const NetworkListItem = ({
         name={name}
         src={iconSrc}
       />
-      <Box className="multichain-network-list-item__network-name">
+      <Box
+        className="multichain-network-list-item__network-name"
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+      >
         <Text
           ref={networkRef}
-          as="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onClick();
-          }}
           color={TextColor.textDefault}
           backgroundColor={BackgroundColor.transparent}
           ellipsis
+          onKeyDown={handleKeyPress}
+          tabIndex="0" // Enable keyboard focus
         >
           {name.length > MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP ? (
             <Tooltip
@@ -93,6 +104,14 @@ export const NetworkListItem = ({
             name
           )}
         </Text>
+        {isDeprecatedNetwork ? (
+          <Tooltip
+            title={t('auroraDeprecationWarning', [AURORA_ETH_DISPLAY_NAME])}
+            position="top"
+          >
+            <Icon name={IconName.Danger} color={IconColor.warningDefault} />
+          </Tooltip>
+        ) : null}
       </Box>
       {onDeleteClick ? (
         <ButtonIcon
@@ -136,4 +155,8 @@ NetworkListItem.propTypes = {
    * Represents if the network item should be keyboard selected
    */
   focus: PropTypes.bool,
+  /**
+   * Boolean to know if the network is deprecated
+   */
+  isDeprecatedNetwork: PropTypes.bool,
 };

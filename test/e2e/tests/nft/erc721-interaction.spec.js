@@ -124,6 +124,12 @@ describe('ERC721 NFTs testdapp interaction', function () {
           windowHandles,
         );
 
+        // avoid race condition
+        await driver.waitForSelector({
+          css: '.confirm-add-suggested-nft__nft-tokenId',
+          text: '#6',
+        });
+
         // confirm watchNFT
         await driver.waitForSelector({
           css: '.mm-text--heading-lg',

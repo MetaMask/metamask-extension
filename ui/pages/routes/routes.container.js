@@ -12,9 +12,9 @@ import {
   getCurrentChainId,
   getShouldShowSeedPhraseReminder,
   isCurrentProviderCustom,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getUnapprovedConfirmations,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import {
   lockMetamask,
@@ -25,9 +25,9 @@ import {
   toggleAccountMenu,
   toggleNetworkMenu,
   hideImportTokensModal,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   hideKeyringRemovalResultModal,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../store/actions';
 import { hideSelectActionModal } from '../../components/multichain/app-footer/app-footer-actions';
 import { pageChanged } from '../../ducks/history/history';
@@ -78,11 +78,11 @@ function mapStateToProps(state) {
     isImportNftsModalOpen: state.appState.importNftsModal.open,
     isIpfsModalOpen: state.appState.showIpfsModalOpen,
     isSelectActionModalOpen: state.appState.showSelectActionModal,
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,
     pendingConfirmations: getUnapprovedConfirmations(state),
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 }
 
@@ -99,10 +99,10 @@ function mapDispatchToProps(dispatch) {
     hideIpfsModal: () => dispatch(hideIpfsModal()),
     hideImportTokensModal: () => dispatch(hideImportTokensModal()),
     hideSelectActionModal: () => dispatch(hideSelectActionModal()),
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     hideShowKeyringSnapRemovalResultModal: () =>
       dispatch(hideKeyringRemovalResultModal()),
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 }
 

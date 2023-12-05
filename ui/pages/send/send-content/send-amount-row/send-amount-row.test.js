@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { AssetType } from '../../../../../shared/constants/transaction';
+import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import SendAmountRow from '.';
 
 const mockUpdateSendAmount = jest.fn();
@@ -14,7 +15,14 @@ jest.mock('../../../../ducks/send', () => ({
   updateSendAmount: () => mockUpdateSendAmount,
 }));
 
+jest.mock('../../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+  return {
+    useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
+
 describe('SendAmountRow Component', () => {
+  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
   describe('render', () => {
     describe('Native Asset Type', () => {
       const mockStore = configureMockStore([thunk])(mockSendState);

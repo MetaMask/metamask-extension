@@ -31,10 +31,10 @@ import {
   Text,
 } from '../../component-library';
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { IconColor } from '../../../helpers/constants/design-system';
 import { Icon, IconName, IconSize } from '../../component-library';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -154,9 +154,9 @@ function TransactionListItemInner({
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
   const isSwap = category === TransactionGroupCategory.swap;
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const isCustodian = Boolean(transactionGroup.primaryTransaction.custodyId);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const className = classnames('transaction-list-item', {
     'transaction-list-item--unconfirmed':
@@ -187,7 +187,7 @@ function TransactionListItemInner({
     });
   }, [isUnapproved, history, id, trackEvent, category]);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const debugTransactionMeta = {
     'data-hash': transactionGroup.primaryTransaction.hash,
     ...(isCustodian
@@ -197,14 +197,14 @@ function TransactionListItemInner({
         }
       : {}),
   };
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const speedUpButton = useMemo(() => {
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     if (isCustodian) {
       return null;
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     if (!shouldShowSpeedUp || !isPending || isUnapproved) {
       return null;
@@ -227,14 +227,14 @@ function TransactionListItemInner({
     hasCancelled,
     retryTransaction,
     cancelTransaction,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     isCustodian,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   ]);
   const currentChain = useSelector(getCurrentNetwork);
   let showCancelButton = !hasCancelled && isPending && !isUnapproved;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   showCancelButton = showCancelButton && !isCustodian;
   const PENDING_COLOR = IconColor.iconAlternative;
   const OK_COLOR = IconColor.primaryDefault;
@@ -251,7 +251,7 @@ function TransactionListItemInner({
         return OK_COLOR;
     }
   };
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
@@ -261,7 +261,7 @@ function TransactionListItemInner({
         className={className}
         title={title}
         icon={
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           isCustodian ? (
             <Box style={{ position: 'relative' }} data-testid="custody-icon">
               <TransactionIcon
@@ -277,7 +277,7 @@ function TransactionListItemInner({
               />
             </Box>
           ) : (
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
             <BadgeWrapper
               anchorElementShape={BadgeWrapperAnchorElementShape.circular}
               positionObj={{ top: -4, right: -4 }}
@@ -300,9 +300,9 @@ function TransactionListItemInner({
                 status={displayedStatusKey}
               />
             </BadgeWrapper>
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           )
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         subtitle={
           <TransactionStatusLabel
@@ -312,12 +312,12 @@ function TransactionListItemInner({
             error={error}
             date={date}
             status={displayedStatusKey}
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
             custodyStatusDisplayText={
               transactionGroup.primaryTransaction.custodyStatusDisplayText
             }
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           />
         }
         rightContent={
@@ -359,9 +359,9 @@ function TransactionListItemInner({
           {speedUpButton}
         </Box>
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           <a {...debugTransactionMeta} className="test-transaction-meta" />
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
       </ActivityListItem>
       {showDetails && (
@@ -374,24 +374,24 @@ function TransactionListItemInner({
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
           showRetry={
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             !isCustodian &&
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
             status === TransactionStatus.failed &&
             !isSwap
           }
           showSpeedUp={
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             !isCustodian &&
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
             shouldShowSpeedUp
           }
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           showCancel={
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             !isCustodian &&
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
             isPending &&
             !hasCancelled
           }
@@ -403,12 +403,12 @@ function TransactionListItemInner({
               date={date}
               status={displayedStatusKey}
               statusOnly
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
               custodyStatus={transactionGroup.primaryTransaction.custodyStatus}
               custodyStatusDisplayText={
                 transactionGroup.primaryTransaction.custodyStatusDisplayText
               }
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
             />
           )}
         />

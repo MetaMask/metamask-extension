@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Einzahlung"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Mehr erfahren"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Aufgrund der Protokolländerungen von Ethereum: Die Testnetzwerke Rinkeby, Ropsten und Kovan funktionieren möglicherweise nicht mehr so zuverlässig und werden bald veraltet sein."
-  },
   "description": {
     "message": "Beschreibung"
   },
@@ -3756,9 +3750,6 @@
   },
   "smartContracts": {
     "message": "Smart Contracts"
-  },
-  "smartSwap": {
-    "message": "Smart Swap"
   },
   "smartSwapsAreHere": {
     "message": "Die Smart Swaps sind da!"
