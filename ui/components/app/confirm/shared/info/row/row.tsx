@@ -48,6 +48,12 @@ const TOOLTIP_ICONS = {
   [ConfirmInfoRowVariant.Warning]: IconName.Warning,
 };
 
+const TOOLTIP_ICON_COLORS = {
+  [ConfirmInfoRowVariant.Default]: Color.iconMuted,
+  [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+};
+
 export const ConfirmInfoRowContext = createContext({
   variant: ConfirmInfoRowVariant.Default,
 });
@@ -92,7 +98,7 @@ export const ConfirmInfoRow = ({
             <Icon
               name={TOOLTIP_ICONS[variant]}
               marginLeft={1}
-              color={TEXT_COLORS[variant] as unknown as IconColor}
+              color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
             />
           </Tooltip>
         )}
