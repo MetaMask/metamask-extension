@@ -22,7 +22,12 @@ import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 
 const SnapExternalPill = ({ value, url }) => {
   return (
-    <ButtonLink href={url} target="_blank" className="snap-external-pill">
+    <ButtonLink
+      href={url}
+      target="_blank"
+      className="snap-external-pill"
+      ellipsis
+    >
       <Box
         className="snap-external-pill__wrapper"
         display={Display.Flex}
@@ -36,7 +41,11 @@ const SnapExternalPill = ({ value, url }) => {
         paddingRight={2}
       >
         {value ? (
-          <Text color={Color.textAlternative} variant={TextVariant.bodyMd}>
+          <Text
+            color={Color.textAlternative}
+            variant={TextVariant.bodyMd}
+            ellipsis
+          >
             {value}
           </Text>
         ) : (

@@ -23,7 +23,6 @@ import {
   FontWeight,
   OverflowWrap,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import SnapAvatar from '../snap-avatar';
