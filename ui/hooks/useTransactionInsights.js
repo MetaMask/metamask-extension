@@ -41,16 +41,16 @@ const useTransactionInsights = ({ txData }) => {
     chainId: caip2ChainId,
     origin,
     insightSnaps: insightSnapIds,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
     insightSnapId: selectedInsightSnapId,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   const { data, loading } = useTransactionInsightSnaps({
     ...insightHookParams,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
     eagerFetching: false,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   });
 
   useEffect(() => {
@@ -79,13 +79,13 @@ const useTransactionInsights = ({ txData }) => {
       >
         <SnapInsight
           snapId={selectedInsightSnapId}
-          ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           data={data?.[0]}
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
           loading={loading}
-          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
           insightHookParams={insightHookParams}
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         />
       </Tab>
     );
@@ -98,11 +98,11 @@ const useTransactionInsights = ({ txData }) => {
       };
     });
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     const selectedSnapData = data?.find(
       (promise) => promise?.snapId === selectedInsightSnapId,
     );
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     insightComponent = (
       <DropdownTab
@@ -114,12 +114,12 @@ const useTransactionInsights = ({ txData }) => {
         <SnapInsight
           snapId={selectedInsightSnapId}
           loading={loading}
-          ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
           data={selectedSnapData}
-          ///: END:ONLY_INCLUDE_IN
-          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+          ///: END:ONLY_INCLUDE_IF
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
           insightHookParams={insightHookParams}
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         />
       </DropdownTab>
     );

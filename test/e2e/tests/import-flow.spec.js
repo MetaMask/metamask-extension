@@ -90,6 +90,13 @@ describe('Import flow @no-mmi', function () {
           waitLoginSuccess: false,
         });
 
+        // Create a new account
+        // switches to localhost
+        await driver.delay(largeDelayMs);
+        await driver.clickElement('[data-testid="network-display"]');
+        await driver.clickElement('.toggle-button');
+        await driver.clickElement({ text: 'Localhost', tag: 'p' });
+
         // choose Create account from the account menu
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
@@ -198,6 +205,7 @@ describe('Import flow @no-mmi', function () {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
+          .withAccountsControllerImportedAccount()
           .build(),
         ganacheOptions,
         title: this.test.fullTitle(),
@@ -283,6 +291,7 @@ describe('Import flow @no-mmi', function () {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
+          .withAccountsControllerImportedAccount()
           .build(),
         ganacheOptions,
         title: this.test.fullTitle(),
@@ -347,6 +356,7 @@ describe('Import flow @no-mmi', function () {
         fixtures: new FixtureBuilder()
           .withKeyringControllerImportedAccountVault()
           .withPreferencesControllerImportedAccountIdentities()
+          .withAccountsControllerImportedAccount()
           .build(),
         ganacheOptions,
         title: this.test.fullTitle(),

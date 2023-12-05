@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "예치"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "자세히 알아보기"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "이더리움 프로토콜 변경으로 인해 Rinkeby, Ropsten 및 Kovan 테스트 네트워크가 안정적으로 작동하지 않을 수 있습니다. 해당 네트워크는 곧 사용이 중단될 예정입니다."
-  },
   "description": {
     "message": "설명"
   },
@@ -3756,9 +3750,6 @@
   },
   "smartContracts": {
     "message": "스마트 계약"
-  },
-  "smartSwap": {
-    "message": "스마트 스왑"
   },
   "smartSwapsAreHere": {
     "message": "스마트 스왑이 시작되었습니다!"
