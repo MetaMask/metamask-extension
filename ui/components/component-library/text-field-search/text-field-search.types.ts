@@ -12,8 +12,8 @@ export enum TextFieldSearchSize {
 
 // Define the type for the clearButtonOnClick function
 type ClearButtonOnClick = (
-  props: TextFieldSearchStyleUtilityProps,
-  propName: keyof TextFieldSearchStyleUtilityProps,
+  props: ButtonIconProps<'span'>,
+  propName: keyof ButtonIconProps<'span'>,
   componentName: string,
 ) => Error | null;
 
