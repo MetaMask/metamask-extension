@@ -3872,7 +3872,7 @@ __metadata:
 
 "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A19.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-19.0.0-38db9af3ac.patch":
   version: 19.0.0
-  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A19.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-19.0.0-38db9af3ac.patch::version=19.0.0&hash=aa4c94"
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A19.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-19.0.0-38db9af3ac.patch::version=19.0.0&hash=654bb2"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -3901,7 +3901,7 @@ __metadata:
     "@metamask/approval-controller": ^4.1.0
     "@metamask/network-controller": ^16.0.0
     "@metamask/preferences-controller": ^4.4.3
-  checksum: 9c09cf84c27a2a606884bfdf9d2e8b0e8c0e2b13902b9ba9c4c20f468781f679e12b0332eac817a33b5dd20efc7166e9c51dbf18c469d85cdb14c8c4003174a3
+  checksum: 668299c34e3caa25841b0670a99da667c9fa8f06b1dee15fe0d3484726482027577b508aee6f94b23bfdc8d61103dc1c5bed433caa04cba74949195c5179bf07
   languageName: node
   linkType: hard
 
