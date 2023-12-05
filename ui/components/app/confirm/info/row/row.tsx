@@ -67,7 +67,6 @@ export const ConfirmInfoRow = ({
 }: ConfirmInfoRowProps) => (
   <ConfirmInfoRowContext.Provider value={{ variant }}>
     <Box
-      className="confirm-info-row"
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
