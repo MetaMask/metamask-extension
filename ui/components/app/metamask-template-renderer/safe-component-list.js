@@ -21,7 +21,7 @@ import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
 import { SnapUIMarkdown } from '../snaps/snap-ui-markdown';
 import { SnapUIImage } from '../snaps/snap-ui-image';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
 import { RemoveSnapAccount } from '../../../pages/remove-snap-account';
