@@ -1,22 +1,22 @@
 import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getHardwareWalletType,
   getAccountTypeForKeyring,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMaskAccountsOrdered,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { MenuItem } from '../../ui/menu';
 import {
@@ -59,12 +59,12 @@ export const AccountListItemMenu = ({
   );
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
   const accounts = useSelector(getMetaMaskAccountsOrdered);
 
   const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   // Handle Tab key press for accessibility inside the popover and will close the popover on the last MenuItem
   const lastItemRef = useRef(null);
@@ -176,7 +176,7 @@ export const AccountListItemMenu = ({
             </MenuItem>
           ) : null}
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             isCustodial ? (
               <MenuItem
                 ref={removeJWTItemRef}
@@ -210,7 +210,7 @@ export const AccountListItemMenu = ({
                 <Text variant={TextVariant.bodySm}>{t('removeJWT')}</Text>
               </MenuItem>
             ) : null
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
         </div>
       </ModalFocus>

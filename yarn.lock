@@ -3841,7 +3841,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^19.0.0":
+"@metamask/assets-controllers@npm:19.0.0":
   version: 19.0.0
   resolution: "@metamask/assets-controllers@npm:19.0.0"
   dependencies:
@@ -3873,6 +3873,41 @@ __metadata:
     "@metamask/network-controller": ^16.0.0
     "@metamask/preferences-controller": ^4.4.3
   checksum: 5598d3f553c84340e6c1e4e5458ced0a7248c2f6c07662f8a5c717b6b6314fc78c219b69135b9fc34884b808fb2b5b5dc6a926718d076f891f5edb176f60627b
+  languageName: node
+  linkType: hard
+
+"@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A19.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-19.0.0-38db9af3ac.patch":
+  version: 19.0.0
+  resolution: "@metamask/assets-controllers@patch:@metamask/assets-controllers@npm%3A19.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-19.0.0-38db9af3ac.patch::version=19.0.0&hash=aa4c94"
+  dependencies:
+    "@ethersproject/address": "npm:^5.7.0"
+    "@ethersproject/bignumber": "npm:^5.7.0"
+    "@ethersproject/contracts": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    "@metamask/abi-utils": "npm:^2.0.2"
+    "@metamask/approval-controller": "npm:^4.1.0"
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/contract-metadata": "npm:^2.4.0"
+    "@metamask/controller-utils": "npm:^5.0.2"
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/metamask-eth-abis": "npm:3.0.0"
+    "@metamask/network-controller": "npm:^16.0.0"
+    "@metamask/polling-controller": "npm:^1.0.2"
+    "@metamask/preferences-controller": "npm:^4.4.3"
+    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/utils": "npm:^8.2.0"
+    "@types/uuid": "npm:^8.3.0"
+    async-mutex: "npm:^0.2.6"
+    ethereumjs-util: "npm:^7.0.10"
+    immer: "npm:^9.0.6"
+    multiformats: "npm:^9.5.2"
+    single-call-balance-checker-abi: "npm:^1.0.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/approval-controller": ^4.1.0
+    "@metamask/network-controller": ^16.0.0
+    "@metamask/preferences-controller": ^4.4.3
+  checksum: 9c09cf84c27a2a606884bfdf9d2e8b0e8c0e2b13902b9ba9c4c20f468781f679e12b0332eac817a33b5dd20efc7166e9c51dbf18c469d85cdb14c8c4003174a3
   languageName: node
   linkType: hard
 
@@ -3914,6 +3949,16 @@ __metadata:
   version: 4.1.0
   resolution: "@metamask/browser-passworder@npm:4.1.0"
   checksum: c09db69dd80ed020e017e70bc0589348343e659c8f402810a5c950ca42a16340a43998a0651ec0747cf4b2e2c0ce16dadd8511d2760ecb958e0a0a09fa95016e
+  languageName: node
+  linkType: hard
+
+"@metamask/build-utils@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/build-utils@npm:1.0.0"
+  dependencies:
+    "@metamask/utils": "npm:^8.2.0"
+    "@types/eslint": "npm:^8.44.7"
+  checksum: 7401cb697888dfe4989619b9a0b5d67c2e20cbd4ed69e3f299e067e8ab99a5cc4ae626864b8192dff673abe42a71751f89b286395f698dc72ee61a08664aa9d4
   languageName: node
   linkType: hard
 
@@ -8335,13 +8380,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:*":
-  version: 8.4.6
-  resolution: "@types/eslint@npm:8.4.6"
+"@types/eslint@npm:*, @types/eslint@npm:^8.44.7":
+  version: 8.44.8
+  resolution: "@types/eslint@npm:8.44.8"
   dependencies:
     "@types/estree": "npm:*"
     "@types/json-schema": "npm:*"
-  checksum: 4e1fb3b9b1c77c4c8dccedd2094ff9d88b70e3619e12640187153a218f6c311cbb61abae9d924a14bb52f6140326d46097767723ce0c2494ad87ea18d0baab18
+  checksum: d6e0788eb7bff90e5f5435b0babe057e76a7d3eed1e36080bacd7b749098eddae499ddb3c0ce6438addce98cc6020d9653b5012dec54e47ca96faa7b8e25d068
   languageName: node
   linkType: hard
 
@@ -24266,10 +24311,11 @@ __metadata:
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^4.0.0"
     "@metamask/approval-controller": "npm:^3.4.0"
-    "@metamask/assets-controllers": "npm:^19.0.0"
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A19.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-19.0.0-38db9af3ac.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^3.2.0"
     "@metamask/browser-passworder": "npm:^4.1.0"
+    "@metamask/build-utils": "npm:^1.0.0"
     "@metamask/contract-metadata": "npm:^2.3.1"
     "@metamask/controller-utils": "npm:^5.0.0"
     "@metamask/design-tokens": "npm:^1.12.0"
