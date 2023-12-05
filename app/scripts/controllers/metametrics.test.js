@@ -1085,14 +1085,14 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
         [MetaMetricsUserTrait.DesktopEnabled]: false,
         [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
         [MetaMetricsUserTrait.MmiAccountAddress]: null,
         [MetaMetricsUserTrait.MmiIsCustodian]: false,
-        ///: END:ONLY_INCLUDE_IN
-        ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+        ///: END:ONLY_INCLUDE_IF
+        ///: BEGIN:ONLY_INCLUDE_IF(petnames)
         [MetaMetricsUserTrait.PetnameAddressCount]: 3,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       });
     });
 

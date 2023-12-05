@@ -73,9 +73,9 @@ export default class DomainInput extends Component {
     }
 
     let isFlask = false;
-    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     isFlask = true;
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     if ((isFlask && !isHexString(input)) || isValidDomainName(input)) {
       lookupDomainName(input);
