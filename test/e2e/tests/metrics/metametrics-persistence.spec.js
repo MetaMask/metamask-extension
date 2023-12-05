@@ -6,6 +6,7 @@ const {
   DEFAULT_GANACHE_OPTIONS,
   unlockWallet,
   genRandInitBal,
+  getCleanAppState,
 } = require('../../helpers');
 
 describe('MetaMetrics ID persistence', function () {
@@ -35,11 +36,7 @@ describe('MetaMetrics ID persistence', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        let uiState = await driver.executeScript(
-          () =>
-            window.stateHooks?.getCleanAppState &&
-            window.stateHooks.getCleanAppState(),
-        );
+        let uiState = await getCleanAppState(driver);
 
         assert.equal(uiState.metamask.metaMetricsId, initialMetaMetricsId);
 
@@ -58,11 +55,7 @@ describe('MetaMetrics ID persistence', function () {
         // wait for state to update
         await driver.delay(500);
 
-        uiState = await driver.executeScript(
-          () =>
-            window.stateHooks?.getCleanAppState &&
-            window.stateHooks.getCleanAppState(),
-        );
+        uiState = await getCleanAppState(driver);
 
         assert.equal(
           uiState.metamask.metaMetricsId,
@@ -78,11 +71,7 @@ describe('MetaMetrics ID persistence', function () {
         // wait for state to update
         await driver.delay(500);
 
-        uiState = await driver.executeScript(
-          () =>
-            window.stateHooks?.getCleanAppState &&
-            window.stateHooks.getCleanAppState(),
-        );
+        uiState = await getCleanAppState(driver);
 
         assert.equal(
           uiState.metamask.metaMetricsId,
