@@ -35,8 +35,9 @@ const render = (props = {}) => {
 describe('SendPage', () => {
   describe('render', () => {
     it('renders correctly', () => {
-      const { container } = render();
+      const { container, getByTestId } = render();
       expect(container).toMatchSnapshot();
+      expect(getByTestId('send-page-network-picker')).toBeInTheDocument();
     });
   });
 });

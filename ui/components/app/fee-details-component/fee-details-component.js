@@ -82,7 +82,7 @@ export default function FeeDetailsComponent({
     [txData, useNativeCurrencyAsPrimaryCurrency],
   );
 
-  const renderTotalDetailTotal = useCallback(
+  const renderTotalDetailValue = useCallback(
     (value) => {
       return (
         <div className="confirm-page-container-content__total-value">
@@ -140,7 +140,7 @@ export default function FeeDetailsComponent({
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           <TransactionDetailItem
             detailTitle={t('metamaskFees')}
-            detailTotal={renderTotalDetailTotal('0x0')}
+            detailTotal={renderTotalDetailValue('0x0')}
             boldHeadings={false}
           />
           {isMultiLayerFeeNetwork && (
@@ -150,7 +150,7 @@ export default function FeeDetailsComponent({
                 useCurrencyRateCheck &&
                 renderTotalDetailText(hexMinimumTransactionFee)
               }
-              detailTotal={renderTotalDetailTotal(hexMinimumTransactionFee)}
+              detailTotal={renderTotalDetailValue(hexMinimumTransactionFee)}
               boldHeadings={false}
             />
           )}
@@ -160,7 +160,7 @@ export default function FeeDetailsComponent({
               detailText={
                 useCurrencyRateCheck && renderTotalDetailText(estimatedL1Fees)
               }
-              detailTotal={renderTotalDetailTotal(estimatedL1Fees)}
+              detailTotal={renderTotalDetailValue(estimatedL1Fees)}
               boldHeadings={false}
             />
           )}
@@ -170,7 +170,7 @@ export default function FeeDetailsComponent({
               useCurrencyRateCheck &&
               renderTotalDetailText(getTransactionFeeTotal)
             }
-            detailTotal={renderTotalDetailTotal(getTransactionFeeTotal)}
+            detailTotal={renderTotalDetailValue(getTransactionFeeTotal)}
           />
         </Box>
       )}
