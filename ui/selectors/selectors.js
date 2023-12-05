@@ -1773,19 +1773,23 @@ export function getCustomTokenAmount(state) {
 
 export function getUpdatedAndSortedAccounts(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
-  const pinnedAccounts = getPinnedAccountsList(state);
+  const pinnedAddresses = getPinnedAccountsList(state);
+
   accounts.forEach((account) => {
-    account.pinned = Boolean(pinnedAccounts?.includes(account.address));
+    account.pinned = Boolean(pinnedAddresses?.includes(account.address));
   });
 
-  const sortedSearchResults = accounts.slice().sort((a, b) => {
-    if (a.pinned && !b.pinned) {
-      return -1; // a comes first
-    } else if (!a.pinned && b.pinned) {
-      return 1; // b comes first
-    }
-    return 0; // keep the order unchanged
-  });
+  const notPinnedAccounts = accounts.filter(
+    (account) => !pinnedAddresses.includes(account.address),
+  );
+
+  const sortedPinnedAccounts = pinnedAddresses
+    .map((address) => accounts.find((account) => account.address === address))
+    .filter((account) =>
+      Boolean(account && pinnedAddresses.includes(account.address)),
+    );
+
+  const sortedSearchResults = [...sortedPinnedAccounts, ...notPinnedAccounts];
 
   return sortedSearchResults;
 }
