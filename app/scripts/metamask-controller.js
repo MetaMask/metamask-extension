@@ -1958,6 +1958,7 @@ export default class MetamaskController extends EventEmitter {
     }
     if (this.preferencesController.store.getState().useTokenDetection) {
       this.tokenListController.stop();
+      this.tokenRatesController.stop();
     }
   }
 
