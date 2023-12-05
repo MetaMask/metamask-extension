@@ -29,6 +29,14 @@ const mockApproval = {
 const mockBaseStore = {
   metamask: {
     ...mockState.metamask,
+    snaps: {
+      [mockSnapOrigin]: {
+        id: mockSnapOrigin,
+        manifest: {
+          description: 'Test Snap',
+        },
+      },
+    },
     pendingApprovals: {
       [mockApprovalId]: mockApproval,
     },
@@ -43,14 +51,6 @@ describe('remove-snap-account confirmation', () => {
     const testStore = {
       metamask: {
         ...mockBaseStore.metamask,
-        snaps: {
-          [mockSnapOrigin]: {
-            id: mockSnapOrigin,
-            manifest: {
-              description: 'Test Snap',
-            },
-          },
-        },
         pendingApprovals: {
           [mockApprovalId]: {
             ...mockApproval,
