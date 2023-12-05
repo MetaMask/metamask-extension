@@ -36,7 +36,9 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AccountTracker: {
     accounts: false,
+    accountsByChainId: false,
     currentBlockGasLimit: true,
+    currentBlockGasLimitByChainId: true,
   },
   AddressBookController: {
     addressBook: false,
@@ -333,10 +335,10 @@ export const SENTRY_UI_STATE = {
     pendingTokens: false,
     welcomeScreenSeen: true,
     useSafeChainsListValidation: true,
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   },
   unconnectedAccount: true,
 };
