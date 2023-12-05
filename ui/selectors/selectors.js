@@ -328,6 +328,11 @@ export function getSelectedIdentity(state) {
   return identities[selectedAddress];
 }
 
+export function getSelectedInternalAccount(state) {
+  const accountId = state.metamask.internalAccounts.selectedAccount;
+  return state.metamask.internalAccounts.accounts[accountId];
+}
+
 export function getNumberOfTokens(state) {
   const { tokens } = state.metamask;
   return tokens ? tokens.length : 0;

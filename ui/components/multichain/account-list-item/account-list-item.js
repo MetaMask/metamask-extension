@@ -33,6 +33,7 @@ import {
   JustifyContent,
   Size,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
@@ -49,7 +50,11 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getNativeCurrencyImage, getUseBlockie } from '../../../selectors';
+import {
+  getNativeCurrencyImage,
+  getSelectedInternalAccount,
+  getUseBlockie,
+} from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -114,7 +119,10 @@ export const AccountListItem = ({
   const keyring = useSelector((state) =>
     findKeyringForAddress(state, identity.address),
   );
-  const label = getLabel(t, keyring);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const label = selectedAccount.metadata?.snap?.name
+    ? `${selectedAccount.metadata?.snap?.name} (${t('beta')})`
+    : getLabel(t, keyring);
 
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
@@ -214,6 +222,24 @@ export const AccountListItem = ({
               />
             </Text>
           </Box>
+          {/* {label ? (*/}
+          {/*  <Tag*/}
+          {/*    display={Display.Flex}*/}
+          {/*    gap={1}*/}
+          {/*    style={{*/}
+          {/*      paddingTop: '2px',*/}
+          {/*      paddingRight: '8px',*/}
+          {/*      paddingBottom: '2px',*/}
+          {/*      paddingLeft: '4px',*/}
+          {/*    }}*/}
+          {/*    label={label}*/}
+          {/*    labelProps={{*/}
+          {/*      variant: TextVariant.bodyXs,*/}
+          {/*      color: TextColor.textAlternative,*/}
+          {/*    }}*/}
+          {/*    iconName={IconName.Snaps}*/}
+          {/*  />*/}
+          {/* ) : null}*/}
         </Box>
         <Box
           display={Display.Flex}
