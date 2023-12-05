@@ -457,9 +457,7 @@ const TransactionListItem = (props) => {
         <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
         {supportsEIP1559 && (
           <>
-            {
-              !isCustodian && <CancelSpeedupPopover />
-            }
+            {!isCustodian && <CancelSpeedupPopover />}
             <EditGasFeePopover />
             <AdvancedGasFeePopover />
           </>
