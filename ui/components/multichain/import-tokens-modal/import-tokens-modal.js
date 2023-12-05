@@ -24,9 +24,11 @@ import {
   getSelectedNetworkClientId,
   getTokenDetectionSupportNetworkByChainId,
   getTokenList,
+  getTokens,
 } from '../../../selectors';
 import {
   addImportedTokens,
+  addTemporaryTokens,
   clearPendingTokens,
   getTokenStandardAndDetails,
   setPendingTokens,
@@ -76,6 +78,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
+import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 export const ImportTokensModal = ({ onClose }) => {
@@ -116,6 +119,10 @@ export const ImportTokensModal = ({ onClose }) => {
   const isMainnet = useSelector(getIsMainnet);
   const identities = useSelector(getMetaMaskIdentities);
   const tokens = useSelector((state) => state.metamask.tokens);
+  const temporaryTokens = useSelector(
+    (state) => state.metamask.temporaryTokens,
+  );
+
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
   const [customAddress, setCustomAddress] = useState('');
@@ -289,7 +296,7 @@ export const ImportTokensModal = ({ onClose }) => {
     return customAddress || Object.keys(selectedTokens).length > 0;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (hasError()) {
       return;
     }
@@ -312,6 +319,30 @@ export const ImportTokensModal = ({ onClose }) => {
     dispatch(
       setPendingTokens({ customToken, selectedTokens, tokenAddressList }),
     );
+    const tempTokens = {
+      ...selectedTokens,
+      ...(customToken?.address && {
+        [customToken.address]: {
+          ...customToken,
+        },
+      }),
+    };
+
+    // We want to add only tokens that are not already part of the state temporaryTokens
+    // Filter out any existing tokens
+    const tmpTokens = Object.values(tempTokens);
+    const nonExistingTokens = tmpTokens.filter(
+      (tmpObj) =>
+        !temporaryTokens.some((obj) =>
+          isEqualCaseInsensitive(obj.address, tmpObj.address),
+        ),
+    );
+    if (nonExistingTokens.length !== 0) {
+      await dispatch(
+        addTemporaryTokens(Object.values(tempTokens), networkClientId),
+      );
+    }
+
     setMode('confirm');
   };
 

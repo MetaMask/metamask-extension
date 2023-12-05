@@ -1869,6 +1869,24 @@ export function addImportedTokens(
   };
 }
 
+export function addTemporaryTokens(
+  tokensToImport: Token[],
+  networkClientId?: NetworkClientId,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('addTemporaryTokens', [
+        tokensToImport,
+        networkClientId,
+      ]);
+    } catch (error) {
+      logErrorWithMessage(error);
+    } finally {
+      await forceUpdateMetamaskState(dispatch);
+    }
+  };
+}
+
 /**
  * To add ignored token addresses to state
  *

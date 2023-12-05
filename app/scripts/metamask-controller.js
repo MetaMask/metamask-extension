@@ -3312,6 +3312,8 @@ export default class MetamaskController extends EventEmitter {
       addDetectedTokens:
         tokensController.addDetectedTokens.bind(tokensController),
       addImportedTokens: tokensController.addTokens.bind(tokensController),
+      addTemporaryTokens:
+        tokensController.addTemporaryTokens.bind(tokensController),
       ignoreTokens: tokensController.ignoreTokens.bind(tokensController),
       getBalancesInSingleCall:
         assetsContractController.getBalancesInSingleCall.bind(

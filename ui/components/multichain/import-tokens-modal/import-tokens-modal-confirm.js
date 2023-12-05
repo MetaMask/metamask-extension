@@ -23,7 +23,6 @@ import { getPendingTokens } from '../../../ducks/metamask/metamask';
 export const ImportTokensModalConfirm = ({ onBackClick, onImportClick }) => {
   const t = useI18nContext();
   const pendingTokens = useSelector(getPendingTokens);
-
   return (
     <Box paddingTop={4} paddingBottom={4}>
       <Text textAlign={TextAlign.Center}>{t('likeToImportTokens')}</Text>
@@ -47,7 +46,7 @@ export const ImportTokensModalConfirm = ({ onBackClick, onImportClick }) => {
           className="import-tokens-modal__confirm-token-list"
         >
           {Object.entries(pendingTokens).map(([address, token]) => {
-            const { name, symbol } = token;
+            const { name } = token;
             return (
               <Box
                 key={address}
@@ -70,7 +69,7 @@ export const ImportTokensModalConfirm = ({ onBackClick, onImportClick }) => {
                       variant={TextVariant.bodySm}
                       color={TextColor.textAlternative}
                     >
-                      {symbol}
+                      <TokenBalance token={token} />
                     </Text>
                   </Box>
                 </Box>
@@ -78,7 +77,7 @@ export const ImportTokensModalConfirm = ({ onBackClick, onImportClick }) => {
                   className="import-tokens-modal__token-balance"
                   alignItems={AlignItems.flexStart}
                 >
-                  <TokenBalance token={token} />
+                  <TokenBalance token={token} showFiat />
                 </Box>
               </Box>
             );
