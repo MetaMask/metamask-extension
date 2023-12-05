@@ -11,7 +11,7 @@ import {
   getHardwareWalletType,
   getAccountTypeForKeyring,
   getPinnedAccountsList,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMaskAccountsOrdered,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
@@ -63,7 +63,7 @@ export const AccountListItemMenu = ({
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
   const accounts = useSelector(getMetaMaskAccountsOrdered);
 

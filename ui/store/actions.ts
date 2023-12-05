@@ -3593,7 +3593,6 @@ export function updateNetworksList(
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * Updates the pinned accounts list
  *
@@ -3607,7 +3606,7 @@ export function updateAccountsList(
   };
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * Updates the caveat value for the specified origin, permission and caveat type.
  *

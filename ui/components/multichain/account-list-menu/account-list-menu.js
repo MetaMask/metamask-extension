@@ -34,7 +34,7 @@ import {
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
   getUpdatedAndSortedAccounts,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
