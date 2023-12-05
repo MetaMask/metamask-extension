@@ -44,9 +44,9 @@ import {
   getTestNetworkBackgroundColor,
   getUnapprovedTransactions,
   getSelectedAddress,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getTheme,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { AccountPicker, GlobalMenu, ProductTour } from '..';
 
@@ -81,9 +81,9 @@ export const AppHeader = ({ location }) => {
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const theme = useSelector((state) => getTheme(state));
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   // Used for account picker
   const identity = useSelector(getSelectedIdentity);
@@ -179,9 +179,9 @@ export const AppHeader = ({ location }) => {
           <MetafoxLogo
             unsetIconHeight
             onClick={async () => history.push(DEFAULT_ROUTE)}
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             theme={theme}
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           />
         </Box>
       ) : null}

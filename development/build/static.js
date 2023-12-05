@@ -204,6 +204,11 @@ function getCopyTargets(
       dest: `runtime-lavamoat.js`,
       pattern: '',
     },
+    {
+      src: `./offscreen/`,
+      pattern: `*.html`,
+      dest: '',
+    },
   ];
 
   if (activeFeatures.includes('blockaid')) {

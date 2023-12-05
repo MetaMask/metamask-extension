@@ -39,7 +39,6 @@ export { TagUrl } from './tag-url';
 export { Text, ValidTag, TextDirection, InvisibleCharacter } from './text';
 export { Input, InputType } from './input';
 export { TextField, TextFieldType, TextFieldSize } from './text-field';
-export { TEXT_FIELD_SIZES, TEXT_FIELD_TYPES } from './text-field/deprecated';
 export { TextFieldSearch } from './text-field-search';
 export { ModalContent, ModalContentSize } from './modal-content';
 export { ModalOverlay } from './modal-overlay';

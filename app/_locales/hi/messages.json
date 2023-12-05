@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "डिपॉज़िट करें"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "अधिक जानें"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Ethereum प्रोटोकॉल परिवर्तनों के कारण: हो सकता है कि Rinkeby, Ropsten, और Kovan टेस्ट नेटवर्क मज़बूती से काम न करें और जल्द ही हटा दिए जाएंगे।"
-  },
   "description": {
     "message": "जानकारी"
   },
@@ -3756,9 +3750,6 @@
   },
   "smartContracts": {
     "message": "स्मार्ट कॉन्ट्रैक्ट्स"
-  },
-  "smartSwap": {
-    "message": "स्मार्ट स्वैप"
   },
   "smartSwapsAreHere": {
     "message": "स्मार्ट स्वैप यहां हैं!"

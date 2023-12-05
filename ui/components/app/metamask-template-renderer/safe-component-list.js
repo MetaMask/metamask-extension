@@ -14,7 +14,7 @@ import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { AvatarIcon } from '../../component-library';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { Copyable } from '../snaps/copyable';
 import Spinner from '../../ui/spinner';
@@ -24,13 +24,13 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
 } from '../confirm/shared/info/row';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { CreateSnapAccount } from '../../../pages/create-snap-account';
 import { RemoveSnapAccount } from '../../../pages/remove-snap-account';
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 export const safeComponentList = {
   a: 'a',
@@ -55,7 +55,7 @@ export const safeComponentList = {
   TruncatedDefinitionList,
   Typography,
   UrlIcon,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   Copyable,
   SnapDelineator,
   SnapUIMarkdown,
@@ -63,11 +63,11 @@ export const safeComponentList = {
   Spinner,
   ConfirmInfoRow,
   ConfirmInfoRowAddress,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   CreateSnapAccount,
   RemoveSnapAccount,
   SnapAuthorshipHeader,
   SnapAccountRedirect,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 };
