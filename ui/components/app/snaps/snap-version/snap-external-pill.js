@@ -5,13 +5,14 @@ import {
   BackgroundColor,
   BorderRadius,
   Color,
-  FLEX_DIRECTION,
+  Display,
+  FlexDirection,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import Box from '../../../ui/box';
+
 import {
-  BUTTON_VARIANT,
-  Button,
+  Box,
+  ButtonLink,
   Icon,
   IconName,
   IconSize,
@@ -19,17 +20,13 @@ import {
 } from '../../../component-library';
 import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 
-const SnapVersion = ({ version, url }) => {
+const SnapExternalPill = ({ value, url }) => {
   return (
-    <Button
-      variant={BUTTON_VARIANT.LINK}
-      href={url}
-      target="_blank"
-      className="snap-version"
-    >
+    <ButtonLink href={url} target="_blank" className="snap-external-pill">
       <Box
-        className="snap-version__wrapper"
-        flexDirection={FLEX_DIRECTION.ROW}
+        className="snap-external-pill__wrapper"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
         backgroundColor={BackgroundColor.backgroundAlternative}
         borderRadius={BorderRadius.pill}
@@ -38,9 +35,9 @@ const SnapVersion = ({ version, url }) => {
         paddingLeft={2}
         paddingRight={2}
       >
-        {version ? (
+        {value ? (
           <Text color={Color.textAlternative} variant={TextVariant.bodyMd}>
-            {version}
+            {value}
           </Text>
         ) : (
           <Preloader size={18} />
@@ -52,19 +49,19 @@ const SnapVersion = ({ version, url }) => {
           marginLeft={1}
         />
       </Box>
-    </Button>
+    </ButtonLink>
   );
 };
 
-SnapVersion.propTypes = {
+SnapExternalPill.propTypes = {
   /**
-   * The version of the snap
+   * The value to display
    */
-  version: PropTypes.string,
+  value: PropTypes.string,
   /**
    * The url to the snap package
    */
   url: PropTypes.string,
 };
 
-export default SnapVersion;
+export default SnapExternalPill;

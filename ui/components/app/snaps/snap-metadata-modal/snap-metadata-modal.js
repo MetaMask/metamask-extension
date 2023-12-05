@@ -20,8 +20,7 @@ import {
   AlignItems,
   Display,
   FlexDirection,
-  FlexWrap,
-  JustifyContent,
+  FontWeight,
   OverflowWrap,
   TextAlign,
   TextColor,
@@ -36,11 +35,11 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getPhishingResult } from '../../../../store/actions';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
-import SnapVersion from '../snap-version';
 import { SnapDelineator } from '../snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { ShowMore } from '../show-more';
-import InfoTooltip from '../../../ui/info-tooltip';
+import { ConfirmInfoRow } from '../../confirm/shared/info/row';
+import SnapExternalPill from '../snap-version/snap-external-pill';
 
 export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
   const t = useI18nContext();
@@ -81,7 +80,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
       const phishingResult = await getPhishingResult(website);
 
       if (!phishingResult.result) {
-        setSafeWebsite(website);
+        setSafeWebsite(new URL(website));
       }
     };
     if (website) {
@@ -90,13 +89,12 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
   }, [website]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose} className="snap-metadata-modal">
       <ModalOverlay />
       <ModalContent
         modalDialogProps={{
           display: Display.Flex,
           flexDirection: FlexDirection.Column,
-          gap: 4,
         }}
       >
         <ModalHeader
@@ -106,6 +104,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
             flexDirection: FlexDirection.Column,
             alignItems: AlignItems.center,
             gap: 2,
+            marginBottom: 4,
           }}
         >
           <Box>
@@ -115,95 +114,69 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
             {snapName}
           </Text>
         </ModalHeader>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-        >
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            flexWrap={FlexWrap.NoWrap}
-            marginRight={5}
-          >
-            <Text
-              marginRight={1}
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyMdMedium}
-            >
-              {t('source')}
-            </Text>
-            <InfoTooltip contentText="TBD" />
-          </Box>
-          <Text
-            textAlign={TextAlign.End}
-            color={TextColor.textAlternative}
-            overflowWrap={OverflowWrap.Anywhere}
-            variant={TextVariant.bodyMd}
-          >
-            {packageName}
-          </Text>
-        </Box>
         {safeWebsite && (
-          <Box
-            color={TextColor.textAlternative}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <Text marginRight={5} variant={TextVariant.bodyMdMedium}>
-              {t('snapDetailWebsite')}
-            </Text>
+          <ConfirmInfoRow label={t('snapDetailWebsite')}>
             <ButtonLink
               overflowWrap={OverflowWrap.Anywhere}
-              href={safeWebsite}
+              href={safeWebsite.toString()}
               target="_blank"
               externalLink
               textAlign={TextAlign.End}
             >
-              {safeWebsite}
+              {safeWebsite.host}
             </ButtonLink>
-          </Box>
+          </ConfirmInfoRow>
         )}
         {installOrigin && (
-          <Box
-            color={TextColor.textAlternative}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <Text marginRight={5} variant={TextVariant.bodyMdMedium}>
-              {t('installOrigin')}
-            </Text>
-            <Box
-              display={Display.Flex}
-              flexDirection={FlexDirection.Column}
-              alignItems={AlignItems.flexEnd}
-            >
-              <Text textAlign={TextAlign.End}>{installOrigin.host}</Text>
-              {installInfo && (
-                <Text color={TextColor.textMuted} textAlign={TextAlign.End}>
+          <ConfirmInfoRow
+            label={t('installOrigin')}
+            style={{ alignItems: AlignItems.flexStart }}
+            tooltip={
+              installInfo && (
+                <Text>
                   {t('installedOn', [
                     formatDate(installInfo.date, 'dd MMM yyyy'),
                   ])}
                 </Text>
-              )}
-            </Box>
-          </Box>
+              )
+            }
+          >
+            {installOrigin.host}
+          </ConfirmInfoRow>
         )}
-        <Box
-          color={TextColor.textAlternative}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.Center}
+        <ConfirmInfoRow
+          label={t('source')}
+          tooltip={
+            <Text>
+              {t('metadataModalSourceTooltip', [
+                <Text
+                  key="snap-name"
+                  fontWeight={FontWeight.Medium}
+                  variant={TextVariant.inherit}
+                >
+                  {snapName}
+                </Text>,
+                <Text
+                  key="snap-id"
+                  fontWeight={FontWeight.Medium}
+                  variant={TextVariant.inherit}
+                >
+                  {packageName}
+                </Text>,
+              ])}
+            </Text>
+          }
         >
-          <Text marginRight={5} variant={TextVariant.bodyMdMedium}>
-            {t('version')}
-          </Text>
-          <SnapVersion version={subjectMetadata?.version} url={url} />
-        </Box>
-        <SnapDelineator type={DelineatorType.Description} snapName={snapName}>
+          <SnapExternalPill value={packageName} url={url} />
+        </ConfirmInfoRow>
+        <ConfirmInfoRow label={t('version')}>
+          {`v${subjectMetadata?.version}`}
+        </ConfirmInfoRow>
+        <SnapDelineator
+          type={DelineatorType.Description}
+          snapName={snapName}
+          boxProps={{ marginTop: 2 }}
+        >
           <ShowMore>
             <Text>{snap?.manifest.description}</Text>
           </ShowMore>

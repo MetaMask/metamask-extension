@@ -35,7 +35,7 @@ import { Box, ButtonLink, Text } from '../../../component-library';
 import ToggleButton from '../../../ui/toggle-button';
 import Tooltip from '../../../ui/tooltip/tooltip';
 import SnapAvatar from '../snap-avatar';
-import SnapVersion from '../snap-version/snap-version';
+import SnapExternalPill from '../snap-version/snap-external-pill';
 
 const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
   const t = useI18nContext();
@@ -217,7 +217,7 @@ const SnapAuthorshipExpanded = ({ snapId, className, snap }) => {
           <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
             {t('version')}
           </Text>
-          <SnapVersion version={snap?.version} url={url} />
+          <SnapExternalPill value={snap?.version} url={url} />
         </Box>
       </Box>
     </Box>

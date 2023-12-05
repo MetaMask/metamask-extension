@@ -1,25 +1,27 @@
 import * as React from 'react';
 import { renderWithLocalization } from '../../../../../test/lib/render-helpers';
-import SnapVersion from './snap-version';
+import SnapExternalPill from './snap-external-pill';
 
 describe('SnapVersion', () => {
   const args = {
-    version: '1.4.2',
+    value: '1.4.2',
     url: 'https://www.npmjs.com/package/@metamask/test-snap-error',
   };
 
-  it('should render the SnapVersion without crashing and display a version', () => {
+  it('should render the content without crashing and display it', () => {
     const { getByText, container } = renderWithLocalization(
-      <SnapVersion {...args} />,
+      <SnapExternalPill {...args} />,
     );
     expect(getByText(args.version)).toBeDefined();
     expect(container.firstChild).toHaveAttribute('href', args.url);
   });
 
-  it('should have a loading state if no version is passed', () => {
+  it('should have a loading state if no value is passed', () => {
     args.version = undefined;
 
-    const { container } = renderWithLocalization(<SnapVersion {...args} />);
+    const { container } = renderWithLocalization(
+      <SnapExternalPill {...args} />,
+    );
 
     expect(container.getElementsByClassName('preloader__icon')).toHaveLength(1);
     expect(container.firstChild).toHaveAttribute('href', args.url);
