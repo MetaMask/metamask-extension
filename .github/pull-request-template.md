@@ -8,7 +8,7 @@ Write a short description of the changes included in this pull request, also inc
 
 ## **Related issues**
 
-Fixes: #
+Fixes:
 
 ## **Manual testing steps**
 

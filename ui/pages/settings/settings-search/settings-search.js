@@ -34,9 +34,7 @@ export default function SettingsSearch({
   });
 
   const handleSearch = (_searchQuery) => {
-    const sanitizedSearchQuery = _searchQuery
-      .replace(/[^A-Za-z0-9\s&_]/gu, '')
-      .trimStart();
+    const sanitizedSearchQuery = _searchQuery.trimStart();
     setSearchQuery(sanitizedSearchQuery);
     if (sanitizedSearchQuery === '') {
       setSearchIconColor('var(--color-icon-muted)');

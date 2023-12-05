@@ -10,13 +10,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
+import log from 'loglevel';
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IN
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 import { NETWORK_TYPES } from '../../../shared/constants/network';
 import { getNetworkLabelKey } from '../../helpers/utils/i18n-helper';
+///: END:ONLY_INCLUDE_IF
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
@@ -28,9 +31,9 @@ import {
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getTargetSubjectMetadata,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
@@ -46,13 +49,14 @@ import {
   PickerNetwork,
 } from '../../components/component-library';
 import Loading from '../../components/ui/loading-screen';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { getSnapName } from '../../helpers/utils/util';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../shared/constants/app';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
+import { DAY } from '../../../shared/constants/time';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
   getTemplateValues,
@@ -108,12 +112,19 @@ const alertStateReducer = produce((state, action) => {
  * @param {object} state - The state object consist of required info to determine alerts.
  * @param state.unapprovedTxsCount
  * @param state.useSafeChainsListValidation
+ * @param state.matchedChain
+ * @param state.providerError
  * @returns {[alertState: object, dismissAlert: Function]} A tuple with
  * the current alert state and function to dismiss an alert by id
  */
 function useAlertState(
   pendingConfirmation,
-  { unapprovedTxsCount, useSafeChainsListValidation } = {},
+  {
+    unapprovedTxsCount,
+    useSafeChainsListValidation,
+    matchedChain,
+    providerError,
+  } = {},
 ) {
   const [alertState, dispatch] = useReducer(alertStateReducer, {});
 
@@ -131,6 +142,8 @@ function useAlertState(
       getTemplateAlerts(pendingConfirmation, {
         unapprovedTxsCount,
         useSafeChainsListValidation,
+        matchedChain,
+        providerError,
       }).then((alerts) => {
         if (isMounted && alerts.length > 0) {
           dispatch({
@@ -144,7 +157,13 @@ function useAlertState(
     return () => {
       isMounted = false;
     };
-  }, [pendingConfirmation, unapprovedTxsCount]);
+  }, [
+    pendingConfirmation,
+    unapprovedTxsCount,
+    useSafeChainsListValidation,
+    matchedChain,
+    providerError,
+  ]);
 
   const dismissAlert = useCallback(
     (alertId) => {
@@ -205,9 +224,14 @@ export default function ConfirmationPage({
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
+  const [matchedChain, setMatchedChain] = useState({});
+  const [currencySymbolWarning, setCurrencySymbolWarning] = useState(null);
+  const [providerError, setProviderError] = useState(null);
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation, {
     unapprovedTxsCount,
     useSafeChainsListValidation,
+    matchedChain,
+    providerError,
   });
   const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);
@@ -221,7 +245,7 @@ export default function ConfirmationPage({
 
   const [submitAlerts, setSubmitAlerts] = useState([]);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, pendingConfirmation?.origin),
   );
@@ -231,15 +255,15 @@ export default function ConfirmationPage({
     ApprovalType.SnapDialogConfirmation,
     ApprovalType.SnapDialogPrompt,
   ];
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_DIALOG_TYPE.push(
     ...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES),
   );
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
 
   // When pendingConfirmation is undefined, this will also be undefined
@@ -247,12 +271,12 @@ export default function ConfirmationPage({
     isSnapDialog &&
     targetSubjectMetadata &&
     getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const INPUT_STATE_CONFIRMATIONS = [
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     ApprovalType.SnapDialogPrompt,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   ];
 
   // Generating templatedValues is potentially expensive, and if done on every render
@@ -262,15 +286,16 @@ export default function ConfirmationPage({
     return pendingConfirmation
       ? getTemplateValues(
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             snapName: isSnapDialog && snapName,
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
             ...pendingConfirmation,
           },
           t,
           dispatch,
           history,
           setInputState,
+          { matchedChain, currencySymbolWarning },
         )
       : {};
   }, [
@@ -278,10 +303,12 @@ export default function ConfirmationPage({
     t,
     dispatch,
     history,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
+    matchedChain,
+    currencySymbolWarning,
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
     isSnapDialog,
     snapName,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   ]);
 
   useEffect(() => {
@@ -315,6 +342,49 @@ export default function ConfirmationPage({
 
     setApprovalFlowLoadingText(childFlow?.loadingText ?? null);
   }, [approvalFlows]);
+
+  useEffect(() => {
+    async function fetchSafeChainsList() {
+      try {
+        if (useSafeChainsListValidation) {
+          const response = await fetchWithCache({
+            url: 'https://chainid.network/chains.json',
+            cacheOptions: { cacheRefreshTime: DAY },
+            functionName: 'getSafeChainsList',
+          });
+          const safeChainsList = response;
+          const _matchedChain = safeChainsList.find(
+            (chain) =>
+              chain.chainId ===
+              parseInt(pendingConfirmation.requestData.chainId, 16),
+          );
+          setMatchedChain(_matchedChain);
+          setProviderError(null);
+          if (
+            _matchedChain?.nativeCurrency?.symbol?.toLowerCase() ===
+            pendingConfirmation.requestData.ticker?.toLowerCase()
+          ) {
+            setCurrencySymbolWarning(null);
+          } else {
+            setCurrencySymbolWarning(
+              t('chainListReturnedDifferentTickerSymbol', [
+                _matchedChain?.nativeCurrency?.symbol,
+              ]),
+            );
+          }
+        }
+      } catch (error) {
+        log.warn('Failed to fetch the chainList from chainid.network', error);
+        setProviderError(error);
+        setMatchedChain(null);
+        setCurrencySymbolWarning(null);
+        // Swallow the error here to not block the user from adding a custom network
+      }
+    }
+    if (pendingConfirmation?.type === ApprovalType.AddEthereumChain) {
+      fetchSafeChainsList();
+    }
+  }, [pendingConfirmation, t, useSafeChainsListValidation]);
 
   if (!pendingConfirmation) {
     if (approvalFlows.length > 0) {
@@ -409,11 +479,11 @@ export default function ConfirmationPage({
           </Box>
         ) : null}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           isSnapDialog && (
             <SnapAuthorshipHeader snapId={pendingConfirmation?.origin} />
           )
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         <MetaMaskTemplateRenderer sections={templatedValues.content} />
         {showWarningModal && (
@@ -445,7 +515,7 @@ export default function ConfirmationPage({
               </Callout>
             ))
         }
-        ///: BEGIN:ONLY_INCLUDE_IN(snaps,keyring-snaps)
+        ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
         style={
           isSnapDialog
             ? {
@@ -460,7 +530,7 @@ export default function ConfirmationPage({
               }
             : {}
         }
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
         onSubmit={handleSubmit}
         onCancel={templatedValues.onCancel}
         submitText={templatedValues.submitText}
