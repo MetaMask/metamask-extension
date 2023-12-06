@@ -1,22 +1,10 @@
 import { NameController, NameType } from '@metamask/name-controller';
 import { cloneDeep } from 'lodash';
 import log from 'loglevel';
-
-export type IdentityEntry = {
-  address: string;
-  name: string;
-};
-
-export type PertinentState = {
-  identities: { [address: string]: IdentityEntry };
-};
-
-export type PertinentPreferencesController = {
-  store: {
-    getState: () => PertinentState;
-    subscribe: (callback: (state: PertinentState) => void) => void;
-  };
-};
+import {
+  PreferencesController,
+  AccountIdentityEntry,
+} from '../controllers/preferences';
 
 const MAINNET_CHAIN_ID = '0x1';
 export const ACCOUNT_LABEL_NAME_TYPE = NameType.ETHEREUM_ADDRESS;
@@ -30,12 +18,12 @@ export const ACCOUNT_LABEL_CHAIN_ID = MAINNET_CHAIN_ID;
  * @param newEntries - The new IdentityEntries.
  */
 function groupEntries(
-  oldEntries: IdentityEntry[],
-  newEntries: IdentityEntry[],
+  oldEntries: AccountIdentityEntry[],
+  newEntries: AccountIdentityEntry[],
 ): {
-  added: IdentityEntry[];
-  updated: IdentityEntry[];
-  deleted: IdentityEntry[];
+  added: AccountIdentityEntry[];
+  updated: AccountIdentityEntry[];
+  deleted: AccountIdentityEntry[];
 } {
   const added = newEntries.filter(
     (newEntry) =>
@@ -66,7 +54,7 @@ function groupEntries(
  * @param nameController - The name controller to update.
  */
 export default function setupAccountLabelsPetnamesBridge(
-  preferencesController: PertinentPreferencesController,
+  preferencesController: PreferencesController,
   nameController: NameController,
 ) {
   const { identities } = preferencesController.store.getState();

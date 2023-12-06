@@ -1,7 +1,7 @@
 import { cloneDeep, isEmpty } from 'lodash';
 import {
   ACCOUNT_LABEL_CHAIN_ID,
-  PertinentState,
+  PreferencesControllerState,
 } from '../lib/setupAccountLabelsPetnamesBridge';
 
 type VersionedData = {
@@ -30,7 +30,7 @@ export async function migrate(
 }
 
 function transformState(state: Record<string, any>) {
-  const identities: PertinentState['identities'] =
+  const identities: PreferencesControllerState['identities'] =
     state?.PreferencesController?.identities ?? {};
   const names = state?.NameController?.names?.ethereumAddress ?? {};
 

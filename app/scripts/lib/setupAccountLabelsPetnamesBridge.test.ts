@@ -1,7 +1,9 @@
 import { NameController } from '@metamask/name-controller';
+import {
+  PreferencesController,
+  PreferencesControllerState,
+} from '../controllers/preferences';
 import setupAccountLabelsPetnamesBridge, {
-  PertinentPreferencesController,
-  PertinentState,
   ACCOUNT_LABEL_NAME_TYPE,
   ACCOUNT_LABEL_CHAIN_ID,
 } from './setupAccountLabelsPetnamesBridge';
@@ -10,13 +12,12 @@ const ADDRESS_MOCK = '0xabc';
 const NAME_MOCK = 'testName';
 const NAME_2_MOCK = 'testName2';
 
-interface MockPreferencesController
-  extends jest.Mocked<PertinentPreferencesController> {
-  store: jest.Mocked<PertinentPreferencesController['store']>;
+interface MockPreferencesController extends jest.Mocked<PreferencesController> {
+  store: jest.Mocked<PreferencesController['store']>;
 }
 
 function createPreferencesControllerMock(
-  identities: PertinentState['identities'] = {},
+  identities: PreferencesControllerState['identities'] = {},
 ): MockPreferencesController {
   return {
     store: {
