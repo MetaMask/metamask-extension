@@ -38,7 +38,7 @@ export const AccountDetailsDisplay = ({
   onExportClick,
 }) => {
   const dispatch = useDispatch();
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
 
   const keyrings = useSelector(getMetaMaskKeyrings);

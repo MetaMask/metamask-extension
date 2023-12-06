@@ -24,7 +24,7 @@ function mapStateToProps(state) {
 }
 
 function QrCodeView({ Qr, warning }) {
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const { message, data } = Qr;
   const address = `${
     isHexPrefixed(data) ? 'ethereum:' : ''

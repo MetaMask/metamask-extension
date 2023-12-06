@@ -29,7 +29,7 @@ export default function NativeAsset({ nativeCurrency }) {
   const address = useSelector(getSelectedAddress);
   const history = useHistory();
   const accountLink = getAccountLink(address, chainId, rpcPrefs);
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const isCustomNetwork = useSelector(getIsCustomNetwork);
 
   return (

@@ -66,7 +66,7 @@ export default function OnboardingFlow() {
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
   const isFromReminder = new URLSearchParams(search).get('isFromReminder');
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   useEffect(() => {
     if (completedOnboarding && !isFromReminder) {

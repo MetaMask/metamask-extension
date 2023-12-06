@@ -41,7 +41,7 @@ const CustodyConfirmLink = ({ hideModal }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const mmiActions = mmiActionsFactory();
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const mmiAccounts = useSelector(getMetaMaskIdentities);
   const address = useSelector(getMMIAddressFromModalOrAddress);
   const custodyAccountDetails = useSelector(getCustodyAccountDetails);

@@ -125,7 +125,7 @@ export default function ViewQuote() {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false);
   const [submitClicked, setSubmitClicked] = useState(false);

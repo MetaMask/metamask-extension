@@ -62,7 +62,7 @@ const AssetList = ({ onClickAsset }) => {
     ticker,
     type,
   );
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
   const selectedAddress = useSelector(getSelectedAddress);

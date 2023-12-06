@@ -150,7 +150,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const [submitClicked, setSubmitClicked] = useState(false);
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false);

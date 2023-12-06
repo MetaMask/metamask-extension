@@ -28,7 +28,7 @@ import PrivateKeyImportView from './private-key';
 export const ImportAccount = ({ onActionComplete }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const menuItems = [t('privateKey'), t('jsonFile')];
 

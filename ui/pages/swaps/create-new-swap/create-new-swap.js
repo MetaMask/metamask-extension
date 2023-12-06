@@ -17,7 +17,7 @@ import { getSwapsDefaultToken } from '../../../selectors';
 
 export default function CreateNewSwap({ sensitiveTrackingProperties }) {
   const t = useContext(I18nContext);
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const history = useHistory();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);

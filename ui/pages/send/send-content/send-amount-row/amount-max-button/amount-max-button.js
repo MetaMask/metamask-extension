@@ -14,7 +14,7 @@ export default function AmountMaxButton() {
   const isDraftTransactionInvalid = useSelector(isSendFormInvalid);
   const maxModeOn = useSelector(getSendMaxModeState);
   const dispatch = useDispatch();
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
 
   const onMaxClick = () => {

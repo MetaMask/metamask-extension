@@ -70,7 +70,7 @@ export default function SignatureRequestSIWE({ txData }) {
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)

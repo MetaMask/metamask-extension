@@ -22,7 +22,7 @@ export const DetectedTokensBanner = ({
   ...props
 }) => {
   const t = useI18nContext();
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const detectedTokensDetails = detectedTokens.map(

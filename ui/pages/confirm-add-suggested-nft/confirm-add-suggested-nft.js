@@ -72,7 +72,7 @@ const ConfirmAddSuggestedNFT = () => {
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
   const chainId = useSelector(getCurrentChainId);
   const ipfsGateway = useSelector(getIpfsGateway);
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const networkIdentifier = useSelector(getNetworkIdentifier);
   const selectedAddress = useSelector(getSelectedAddress);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);

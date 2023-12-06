@@ -30,7 +30,7 @@ export default function LoadingSwapsQuotes({
   onDone,
 }) {
   const t = useContext(I18nContext);
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const history = useHistory();
   const animationEventEmitter = useRef(new EventEmitter());

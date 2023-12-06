@@ -43,7 +43,7 @@ export default function Name({
   internal,
 }: NameProps) {
   const [modalOpen, setModalOpen] = useState(false);
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const { name } = useName(value, type);
 

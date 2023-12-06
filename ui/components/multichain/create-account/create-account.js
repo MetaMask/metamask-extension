@@ -29,7 +29,7 @@ export const CreateAccount = ({ onActionComplete }) => {
   const dispatch = useDispatch();
 
   const history = useHistory();
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const identities = useSelector(getMetaMaskIdentities);

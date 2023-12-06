@@ -103,7 +103,7 @@ import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
 const SignatureRequest = ({ txData }) => {
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const t = useI18nContext();
 

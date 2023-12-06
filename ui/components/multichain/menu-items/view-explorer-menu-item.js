@@ -30,7 +30,7 @@ export const ViewExplorerMenuItem = ({
   address,
 }) => {
   const t = useI18nContext();
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
 
   const chainId = useSelector(getCurrentChainId);

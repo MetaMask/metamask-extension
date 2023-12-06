@@ -40,7 +40,7 @@ export default function OnboardingMetametrics() {
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const onConfirm = async () => {
     const [, metaMetricsId] = await dispatch(setParticipateInMetaMetrics(true));

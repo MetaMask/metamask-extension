@@ -73,7 +73,7 @@ export const NetworkListMenu = ({ onClose }) => {
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const currentNetwork = useSelector(getCurrentNetwork);
   const currentlyOnTestNetwork = TEST_CHAINS.includes(currentChainId);

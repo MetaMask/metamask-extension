@@ -63,7 +63,7 @@ export default function OnboardingWelcome() {
       }
     }
   }, [currentKeyring, history, firstTimeFlowType]);
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
 
   const onCreateClick = async () => {
     dispatch(setFirstTimeFlowType('create'));

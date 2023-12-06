@@ -73,7 +73,7 @@ const METRICS_LOCATION = 'Global Menu';
 export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const history = useHistory();
   const address = useSelector(getSelectedAddress);
   const unapprovedTransactons = useSelector(getUnapprovedTransactions);

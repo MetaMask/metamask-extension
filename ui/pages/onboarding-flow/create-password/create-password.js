@@ -65,7 +65,7 @@ export default function CreatePassword({
   const [showPassword, setShowPassword] = useState(false);
   const history = useHistory();
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
 
   const participateInMetaMetrics = useSelector((state) =>

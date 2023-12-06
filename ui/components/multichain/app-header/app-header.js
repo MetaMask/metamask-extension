@@ -70,7 +70,7 @@ import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
 
 export const AppHeader = ({ location }) => {
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
   const [multichainProductTourStep, setMultichainProductTourStep] = useState(1);
   const menuRef = useRef(false);

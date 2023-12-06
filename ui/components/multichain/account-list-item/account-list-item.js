@@ -116,7 +116,7 @@ export const AccountListItem = ({
   );
   const label = getLabel(t, keyring);
 
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
 

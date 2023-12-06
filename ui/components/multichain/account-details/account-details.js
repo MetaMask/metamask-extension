@@ -40,7 +40,7 @@ import { AccountDetailsKey } from './account-details-key';
 export const AccountDetails = ({ address }) => {
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const trackEvent = useContext(MetaMetricsContext);
   const useBlockie = useSelector(getUseBlockie);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const { name } = accounts.find((account) => account.address === address);
