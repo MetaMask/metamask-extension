@@ -17,6 +17,7 @@
     "networkConfigurations": "object",
     "addressBook": "object",
     "contractExchangeRates": "object",
+    "contractExchangeRatesByChainId": "object",
     "pendingTokens": "object",
     "customNonceValue": "",
     "useBlockie": false,
