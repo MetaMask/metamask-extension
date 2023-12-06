@@ -11,7 +11,12 @@ import type {
  * Not to say there won't be more in the future, but to prevent redundant code there is only one for now
  */
 export enum ModalContentSize {
+  // 360px
   Sm = 'sm',
+  // 480px
+  Md = 'md',
+  // 720px
+  Lg = 'lg',
 }
 
 export interface ModalContentStyleUtilityProps extends StyleUtilityProps {
