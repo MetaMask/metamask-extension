@@ -1,6 +1,7 @@
 /**
  * @jest-environment node
  */
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import Backup from './backup';
 
 function getMockPreferencesController() {
@@ -67,6 +68,25 @@ function getMockNetworkController() {
   };
 
   return { state, loadBackup };
+}
+
+function getMockAccountsController() {
+  const state = {
+    internalAccounts: {
+      accounts: {},
+      selectedAccount: '',
+    },
+  };
+
+  const loadBackup = (internalAccounts) => {
+    Object.assign(state, { internalAccounts });
+  };
+
+  return {
+    state,
+    loadBackup,
+    getSelectedAccount: () => 'mock-id',
+  };
 }
 
 const jsonData = JSON.stringify({
@@ -149,6 +169,25 @@ const jsonData = JSON.stringify({
     textDirection: 'auto',
     useRequestQueue: false,
   },
+  internalAccounts: {
+    accounts: {
+      'fcbcdca4-cc47-4bc8-b455-b14421e9277e': {
+        address: '0x129af01f4b770b30615f049790e1e206ebaa7b10',
+        id: 'fcbcdca4-cc47-4bc8-b455-b14421e9277e',
+        metadata: {
+          name: 'Account 1',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+          lastSelected: 1693289751176,
+        },
+        options: {},
+        methods: [...Object.values(EthMethod)],
+        type: EthAccountType.Eoa,
+      },
+    },
+    selectedAccount: 'fcbcdca4-cc47-4bc8-b455-b14421e9277e',
+  },
 });
 
 describe('Backup', function () {
@@ -157,6 +196,7 @@ describe('Backup', function () {
       preferencesController: getMockPreferencesController(),
       addressBookController: getMockAddressBookController(),
       networkController: getMockNetworkController(),
+      accountsController: getMockAccountsController(),
       trackMetaMetricsEvent: jest.fn(),
     });
   };
@@ -239,6 +279,36 @@ describe('Backup', function () {
           '0x42EB768f2244C8811C63729A21A3569731535f06'
         ].isEns,
       ).toBeFalsy();
+
+      // make sure the internal accounts are restored
+      expect(
+        backup.accountsController.state.internalAccounts.accounts[
+          'fcbcdca4-cc47-4bc8-b455-b14421e9277e'
+        ],
+      ).toStrictEqual({
+        address: '0x129af01f4b770b30615f049790e1e206ebaa7b10',
+        id: 'fcbcdca4-cc47-4bc8-b455-b14421e9277e',
+        metadata: {
+          keyring: { type: 'HD Key Tree' },
+          lastSelected: 1693289751176,
+          name: 'Account 1',
+        },
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        options: {},
+        type: 'eip155:eoa',
+      });
+
+      // make sure selected account is restored
+      expect(
+        backup.accountsController.state.internalAccounts.selectedAccount,
+      ).toBe('fcbcdca4-cc47-4bc8-b455-b14421e9277e');
     });
   });
 });

@@ -92,7 +92,7 @@ export const NetworkListMenu = ({ onClose }) => {
   const orderedNetworksList = useSelector(getOrderedNetworksList);
 
   const newOrderNetworks = () => {
-    if (orderedNetworksList.length === 0) {
+    if (!orderedNetworksList || orderedNetworksList.length === 0) {
       return nonTestNetworks;
     }
 

@@ -98,12 +98,12 @@ function getActionFunctionById(id, history) {
     22: () => {
       updateViewedNotifications({ 22: true });
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     23: () => {
       updateViewedNotifications({ 23: true });
       history.push(`${EXPERIMENTAL_ROUTE}#security-alerts`);
     },
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     24: () => {
       updateViewedNotifications({ 24: true });
     },
@@ -343,9 +343,9 @@ export default function WhatsNewPopup({ onClose }) {
     19: renderFirstNotification,
     21: renderFirstNotification,
     22: renderFirstNotification,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     23: renderFirstNotification,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     24: renderFirstNotification,
     // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
