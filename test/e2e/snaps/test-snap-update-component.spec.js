@@ -132,10 +132,12 @@ describe('Test Snap update via snaps component', function () {
           text: 'OK',
           tag: 'button',
         });
-        await driver.delay(1000);
 
         // try to find update link again, succeed if not there
         // click on the global action menu
+        await driver.waitForSelector(
+          '[data-testid="account-options-menu-button"]',
+        );
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',
         );
