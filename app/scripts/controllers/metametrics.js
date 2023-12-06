@@ -456,7 +456,6 @@ export default class MetaMetricsController {
     } else if (participateInMetaMetrics === false) {
       // We also need to stop sentry automatic session tracking at this point
       await globalThis.sentry?.endSession();
-      metaMetricsId = null;
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
     if (participateInMetaMetrics) {
