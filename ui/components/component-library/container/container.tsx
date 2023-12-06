@@ -7,16 +7,20 @@ import { ContainerProps, ContainerComponent } from './container.types';
 
 export const Container: ContainerComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(
-    { className = '', ...props }: ContainerProps<C>,
+    { children, className = '', maxWidth, ...props }: ContainerProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
     return (
       <Box
-        className={classnames('mm-container', className)}
+        className={classnames(
+          'mm-container',
+          `mm-container--max-width-${maxWidth}`,
+          className,
+        )}
         ref={ref}
         {...(props as BoxProps<C>)}
       >
-        Container
+        {children}
       </Box>
     );
   },

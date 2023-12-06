@@ -13,14 +13,46 @@ Containers are used to constrain a content's width to the current breakpoint, wh
 
 <Controls of={ContainerStories.DefaultStory} />
 
-### Demo
+### MaxWidth
 
-Use the `Container` when starting a new DS component from scratch
+Using the `maxWidth` prop with `ContainerMaxWidth` enum values, you can set the maximum width of the container.
 
-<Canvas of={ContainerStories.Demo} />
+Possible values are:
+
+- `ContainerMaxWidth.Sm`
+- `ContainerMaxWidth.Md`
+- `ContainerMaxWidth.Lg`
+
+<Canvas of={ContainerStories.MaxWidth} />
 
 ```jsx
-import { Container } from '../../component-library';
+import { Container, ContainerMaxWidth } from '../../component-library';
 
-<Container />;
+<Container maxWidth={ContainerMaxWidth.Sm}>
+Small breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing
+elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam
+nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget
+aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget
+nunc.
+</Container>
+<Container maxWidth={ContainerMaxWidth.Md}>
+Medium breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing
+elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam
+nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget
+aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget
+nunc.
+</Container>
+<Container maxWidth={ContainerMaxWidth.Lg}>
+Large breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing
+elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam
+nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget
+aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget
+nunc.
+</Container>
+<Container>
+No breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam nunc,
+vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget aliquam
+ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget nunc.
+</Container>
 ```
