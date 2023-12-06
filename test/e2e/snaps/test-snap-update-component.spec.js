@@ -98,14 +98,21 @@ describe('Test Snap update via snaps component', function () {
           text: 'Snaps',
           tag: 'div',
         });
-        await driver.delay(1000);
+        await driver.waitForSelector({
+          text: 'BIP-32 Example Snap',
+          tag: 'p',
+        });
 
         // click into snap view and attempt to update the snap
         await driver.clickElement({
           text: 'BIP-32 Example Snap',
           tag: 'p',
         });
-        await driver.delay(1000);
+        await driver.waitForSelector({
+          css: '.mm-button-link',
+          text: 'Update',
+          tag: 'button',
+        });
         await driver.clickElement({
           css: '.mm-button-link',
           text: 'Update',
