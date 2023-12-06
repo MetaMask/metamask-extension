@@ -98,7 +98,7 @@ export function MetaMetricsProvider({ children }) {
   // Used to prevent double tracking page calls
   const previousMatch = useRef();
 
-  const trackPage = useCallback((chainIds) => {
+  const trackPage = useCallback(({chainIds} = {}) => {
     const environmentType = getEnvironmentType();
     const match = matchPath(location.pathname, {
       path: PATHS_TO_CHECK,

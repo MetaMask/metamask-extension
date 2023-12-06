@@ -14,7 +14,11 @@ export default function DesktopError({ forceDisableDesktop }) {
   const t = useI18nContext();
   const { errorType } = useParams();
   const history = useHistory();
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const {trackEvent, trackPage} = useContext(MetaMetricsContext);
+
+  useEffect(() => {
+    trackPage() // does this need chainId?
+  }, [])
 
   return renderDesktopError({
     type: errorType,

@@ -141,7 +141,7 @@ export default function SmartTransactionStatusPage() {
         latestSmartTransaction?.destinationTokenDecimals,
     ).toPrecision(8);
   }
-  const {trackEvent} = useContext(MetaMetricsContext);
+  const {trackEvent, trackPage} = useContext(MetaMetricsContext);
 
   const isSmartTransactionPending =
     smartTransactionStatus === SmartTransactionStatus.pending;
@@ -149,6 +149,10 @@ export default function SmartTransactionStatusPage() {
     isSmartTransactionPending ||
     smartTransactionStatus === SmartTransactionStatus.success;
   const txHash = latestSmartTransaction?.statusMetadata?.minedHash;
+
+  useEffect(() => {
+    trackPage({chainIds: [chainId]})
+  }, [chainId])
 
   useEffect(() => {
     trackEvent({
