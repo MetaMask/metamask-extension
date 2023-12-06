@@ -2169,12 +2169,13 @@ export default class MetamaskController extends EventEmitter {
    *
    * @param {string} snapId - The ID of the snap the handler is being triggered on.
    * @param {string} handler - The handler to trigger on the snap for the request.
+   * @param {boolean} success - Whether the invocation was successful or not.
    */
   _trackSnapExportUsage = wrap(
     memoize(
       () =>
         throttle(
-          (snapId, handler) =>
+          (snapId, handler, success) =>
             this.metaMetricsController.trackEvent({
               event: MetaMetricsEventName.SnapExportUsed,
               category: MetaMetricsEventCategory.Snaps,
@@ -2182,6 +2183,7 @@ export default class MetamaskController extends EventEmitter {
                 snap_id: snapId,
                 export: handler,
                 snap_category: this._getSnapMetadata(snapId)?.category,
+                success,
               },
             }),
           SECOND * 60,
@@ -2201,10 +2203,18 @@ export default class MetamaskController extends EventEmitter {
    * @param {object} args.request - The JSON-RPC request object.
    * @returns The result of the JSON-RPC request.
    */
-  handleSnapRequest(args) {
-    this._trackSnapExportUsage(args.snapId, args.handler);
-
-    return this.controllerMessenger.call('SnapController:handleRequest', args);
+  async handleSnapRequest(args) {
+    try {
+      const response = await this.controllerMessenger.call(
+        'SnapController:handleRequest',
+        args,
+      );
+      this._trackSnapExportUsage(args.snapId, args.handler, true);
+      return response;
+    } catch (error) {
+      this._trackSnapExportUsage(args.snapId, args.handler, false);
+      throw error;
+    }
   }
 
   /**
