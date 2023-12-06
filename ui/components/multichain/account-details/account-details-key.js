@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import {
   BannerAlert,
@@ -20,6 +20,19 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+
+function Secret({ privateKey }) {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const shadowRoot = containerRef.current.attachShadow({ mode: 'closed' });
+    const span = document.createElement('span');
+    span.textContent = privateKey;
+    shadowRoot.appendChild(span);
+  }, []);
+
+  return <div ref={containerRef}></div>;
+}
 
 export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
   const t = useI18nContext();
@@ -50,7 +63,7 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
           variant={TextVariant.bodySm}
           style={{ wordBreak: 'break-word' }}
         >
-          {privateKey}
+          <Secret privateKey={privateKey} />
         </Text>
         <ButtonIcon
           onClick={() => handlePrivateKeyCopy(privateKey)}
