@@ -2486,7 +2486,6 @@
         "__SENTRY_DEBUG__": true,
         "__SENTRY_RELEASE__": true,
         "indexedDB.open": true,
-        "performance.timeOrigin": true,
         "setTimeout": true
       },
       "packages": {
@@ -2504,9 +2503,7 @@
         "__SENTRY_DEBUG__": true,
         "addEventListener": true,
         "performance.getEntriesByType": true,
-        "performance.timeOrigin": true,
-        "removeEventListener": true,
-        "setTimeout": true
+        "removeEventListener": true
       },
       "packages": {
         "@sentry/browser>@sentry/core": true,
@@ -2533,47 +2530,47 @@
         "CSSConditionRule": true,
         "CSSGroupingRule": true,
         "CSSMediaRule": true,
-        "CSSRule": true,
         "CSSSupportsRule": true,
         "DragEvent": true,
         "Element": true,
         "FormData": true,
-        "HTMLElement": true,
+        "HTMLCanvasElement": true,
+        "HTMLElement.prototype": true,
         "HTMLFormElement": true,
+        "HTMLImageElement": true,
+        "HTMLInputElement.prototype": true,
+        "HTMLOptionElement.prototype": true,
+        "HTMLSelectElement.prototype": true,
+        "HTMLTextAreaElement.prototype": true,
         "Headers": true,
+        "ImageData": true,
         "MouseEvent": true,
         "MutationObserver": true,
-        "Node.DOCUMENT_FRAGMENT_NODE": true,
         "Node.prototype.contains": true,
-        "PointerEvent": true,
+        "PerformanceObserver": true,
         "TextEncoder": true,
         "URL": true,
         "URLSearchParams": true,
         "Worker": true,
         "Zone": true,
-        "__RRWEB_EXCLUDE_IFRAME__": true,
-        "__RRWEB_EXCLUDE_SHADOW_DOM__": true,
         "__SENTRY_DEBUG__": true,
-        "__SENTRY_EXCLUDE_REPLAY_WORKER__": true,
         "__rrMutationObserver": true,
-        "addEventListener": true,
         "clearTimeout": true,
         "console.error": true,
         "console.warn": true,
-        "customElements.get": true,
         "document": true,
         "innerHeight": true,
         "innerWidth": true,
         "location.href": true,
-        "location.origin": true,
-        "parent": true,
+        "pageXOffset": true,
+        "pageYOffset": true,
         "requestAnimationFrame": true,
         "setTimeout": true
       },
       "packages": {
-        "@sentry/browser>@sentry-internal/tracing": true,
         "@sentry/browser>@sentry/core": true,
-        "@sentry/utils": true
+        "@sentry/utils": true,
+        "browserify>process": true
       }
     },
     "@sentry/integrations": {
@@ -2583,35 +2580,8 @@
         "console.log": true
       },
       "packages": {
-        "@sentry/integrations>@sentry/utils": true,
+        "@sentry/utils": true,
         "localforage": true
-      }
-    },
-    "@sentry/integrations>@sentry/utils": {
-      "globals": {
-        "CustomEvent": true,
-        "DOMError": true,
-        "DOMException": true,
-        "Element": true,
-        "ErrorEvent": true,
-        "Event": true,
-        "Headers": true,
-        "Request": true,
-        "Response": true,
-        "TextEncoder": true,
-        "URL": true,
-        "XMLHttpRequest.prototype": true,
-        "__SENTRY_BROWSER_BUNDLE__": true,
-        "__SENTRY_DEBUG__": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "document": true,
-        "new": true,
-        "setTimeout": true,
-        "target": true
-      },
-      "packages": {
-        "browserify>process": true
       }
     },
     "@sentry/utils": {
@@ -2619,7 +2589,6 @@
         "CustomEvent": true,
         "DOMError": true,
         "DOMException": true,
-        "EdgeRuntime": true,
         "Element": true,
         "ErrorEvent": true,
         "Event": true,
@@ -2635,7 +2604,6 @@
         "console.error": true,
         "document": true,
         "new": true,
-        "setInterval": true,
         "setTimeout": true,
         "target": true
       },
