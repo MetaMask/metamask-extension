@@ -32,7 +32,7 @@ const mockApproval = {
 const providerConfig = {
   type: 'test',
   chainId: '0x5',
-}
+};
 const mockBaseStore = {
   metamask: {
     pendingApprovals: {
