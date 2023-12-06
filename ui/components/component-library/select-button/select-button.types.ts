@@ -68,7 +68,7 @@ export interface SelectButtonStyleUtilityProps extends StyleUtilityProps {
    */
   isDisabled?: boolean;
   /*
-   * Please use the `isDisabled` prop instead, this prop is added only for backwards compatibility and intutitve HTML support
+   * Please use the `isDisabled` prop instead, this prop is added only for backwards compatibility and intuitive HTML support
    */
   disabled?: boolean;
   /*
