@@ -59,9 +59,7 @@ import { formatDateWithYearContext } from '../../../helpers/utils/util';
 import Button from '../../ui/button';
 import AdvancedGasFeePopover from '../advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
-///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import CancelSpeedupPopover from '../cancel-speedup-popover';
-///: END:ONLY_INCLUDE_IF
 import EditGasFeePopover from '../edit-gas-fee-popover';
 import EditGasPopover from '../edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -353,6 +351,7 @@ function TransactionListItemInner({
         <Box paddingTop={4} className="transaction-list-item__pending-actions">
           {showCancelButton && (
             <CancelButton
+              data-testid="cancel-button"
               transaction={transactionGroup.primaryTransaction}
               cancelTransaction={cancelTransaction}
             />
@@ -447,6 +446,8 @@ const TransactionListItem = (props) => {
     useSelector(checkNetworkAndAccountSupports1559) &&
     !isLegacyTransaction(transaction?.txParams);
 
+  const isCustodian = Boolean(transactionGroup.primaryTransaction.custodyId);
+
   return (
     <GasFeeContextProvider
       transaction={transactionGroup.primaryTransaction}
@@ -456,11 +457,7 @@ const TransactionListItem = (props) => {
         <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
         {supportsEIP1559 && (
           <>
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-              <CancelSpeedupPopover />
-              ///: END:ONLY_INCLUDE_IF
-            }
+            {!isCustodian && <CancelSpeedupPopover />}
             <EditGasFeePopover />
             <AdvancedGasFeePopover />
           </>
