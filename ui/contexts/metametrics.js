@@ -9,6 +9,7 @@ import React, {
   useEffect,
   useRef,
   useCallback,
+  useMemo
 } from 'react';
 import PropTypes from 'prop-types';
 import { matchPath, useLocation } from 'react-router-dom';
@@ -97,13 +98,7 @@ export function MetaMetricsProvider({ children }) {
   // Used to prevent double tracking page calls
   const previousMatch = useRef();
 
-  /**
-   * Anytime the location changes, track a page change with segment.
-   * Previously we would manually track changes to history and keep a
-   * reference to the previous url, but with page tracking we can see
-   * which page the user is on and their navigation path.
-   */
-  useEffect(() => {
+  const trackPage = useCallback((chainIds) => {
     const environmentType = getEnvironmentType();
     const match = matchPath(location.pathname, {
       path: PATHS_TO_CHECK,
@@ -143,6 +138,7 @@ export function MetaMetricsProvider({ children }) {
           environmentType,
           page: context.page,
           referrer: context.referrer,
+          chainIds
         },
         {
           isOptInPath: location.pathname.startsWith('/initialize'),
@@ -150,10 +146,15 @@ export function MetaMetricsProvider({ children }) {
       );
     }
     previousMatch.current = match?.path;
-  }, [location, context]);
+  }, [location, context])
+
+  const contextValue = useMemo(() => ({
+    trackEvent,
+    trackPage
+  }), [trackEvent, trackPage]);
 
   return (
-    <MetaMetricsContext.Provider value={trackEvent}>
+    <MetaMetricsContext.Provider value={contextValue}>
       {children}
     </MetaMetricsContext.Provider>
   );
