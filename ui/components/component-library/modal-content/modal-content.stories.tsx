@@ -27,10 +27,17 @@ export default {
     },
   },
   argTypes: {
+    children: { control: 'text' },
     size: {
-      control: 'select',
-      options: Object.values(ModalContentSize),
+      control: {
+        type: 'select',
+        options: ['sm', 'md', 'lg'],
+      },
+      defaultValue: 'sm',
+      description:
+        'The size of ModalContent. Currently only one size is supported ModalContentSize.Sm 360px. See docs for more info.',
     },
+    modalDialogProps: { control: 'object' },
   },
 } as Meta<typeof ModalContent>;
 
