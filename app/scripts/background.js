@@ -226,7 +226,8 @@ function saveTimestamp() {
  * @property {object} identities - An object matching lower-case hex addresses to Identity objects with "address" and "name" (nickname) keys.
  * @property {object} networkConfigurations - A list of network configurations, containing RPC provider details (eg chainId, rpcUrl, rpcPreferences).
  * @property {Array} addressBook - A list of previously sent to addresses.
- * @property {object} contractExchangeRates - Info about current token prices.
+ * @property {object} contractExchangeRatesByChainId - Info about current token prices keyed by chainId.
+ * @property {object} contractExchangeRates - Info about current token prices on current chain.
  * @property {Array} tokens - Tokens held by the current user, including their balances.
  * @property {object} send - TODO: Document
  * @property {boolean} useBlockie - Indicates preferred user identicon format. True for blockie, false for Jazzicon.
