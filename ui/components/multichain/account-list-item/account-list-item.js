@@ -30,6 +30,7 @@ import {
   Color,
   Display,
   FlexDirection,
+  IconColor,
   JustifyContent,
   Size,
   TextAlign,
@@ -285,6 +286,11 @@ export const AccountListItem = ({
             labelProps={{
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
+            }}
+            // TODO: Remove this once the tag component is updated to use the new icon system
+            iconName={IconName.Danger}
+            iconProps={{
+              color: IconColor.warningDefault,
             }}
           />
         ) : null}
