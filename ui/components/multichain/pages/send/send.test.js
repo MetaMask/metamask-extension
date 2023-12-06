@@ -36,6 +36,14 @@ describe('SendPage', () => {
   describe('render', () => {
     it('renders correctly', () => {
       const { container, getByTestId } = render();
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      const domainInput = container.querySelector('.ens-input__wrapper__input');
+      expect(domainInput.textContent).toStrictEqual(
+        'Enter public address (0x) or domain name',
+      );
+      domainInput.textContent = 'Enter public address (0x) or ENS name';
+      ///: END:ONLY_INCLUDE_IF
+
       expect(container).toMatchSnapshot();
 
       expect(getByTestId('send-page-network-picker')).toBeInTheDocument();

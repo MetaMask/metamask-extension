@@ -98,6 +98,10 @@ export default class DomainInput extends Component {
     const { className, selectedAddress, selectedName, userInput } = this.props;
 
     const hasSelectedAddress = Boolean(selectedAddress);
+    let isFlask = false;
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    isFlask = true;
+    ///: END:ONLY_INCLUDE_IF
 
     return (
       <div className={classnames('ens-input', className)}>
@@ -134,7 +138,11 @@ export default class DomainInput extends Component {
                 className="ens-input__wrapper__input"
                 type="text"
                 dir="auto"
-                placeholder={t('recipientAddressPlaceholder')}
+                placeholder={
+                  isFlask
+                    ? t('recipientAddressPlaceholderFlask')
+                    : t('recipientAddressPlaceholder')
+                }
                 onChange={this.onChange}
                 onPaste={this.onPaste}
                 spellCheck="false"
