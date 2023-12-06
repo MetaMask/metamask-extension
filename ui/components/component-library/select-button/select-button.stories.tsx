@@ -67,7 +67,6 @@ export const Size: StoryFn<typeof SelectButton> = (args) => {
     </Box>
   );
 };
-Size.args = {};
 
 export const IsBlock = Template.bind({});
 IsBlock.args = {
