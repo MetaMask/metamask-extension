@@ -33,7 +33,7 @@ export default function DesktopEnableButton() {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const history = useHistory();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   const showLoader = () => dispatch(showLoadingIndication());
   const hideLoader = () => dispatch(hideLoadingIndication());
   const desktopEnabled = useSelector(getIsDesktopEnabled);

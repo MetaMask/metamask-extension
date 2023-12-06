@@ -52,7 +52,7 @@ export default function GasDisplay({ gasError }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
   const { estimateUsed } = useGasFeeContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   const { openBuyCryptoInPdapp } = useRamps();
 

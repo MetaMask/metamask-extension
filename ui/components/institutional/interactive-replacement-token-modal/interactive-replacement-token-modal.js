@@ -33,7 +33,7 @@ import {
 
 const InteractiveReplacementTokenModal = () => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
 
   const { url } = useSelector(

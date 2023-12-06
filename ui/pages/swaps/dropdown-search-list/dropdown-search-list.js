@@ -75,7 +75,7 @@ export default function DropdownSearchList({
     getCurrentSmartTransactionsEnabled,
   );
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   const close = useCallback(() => {
     setIsOpen(false);

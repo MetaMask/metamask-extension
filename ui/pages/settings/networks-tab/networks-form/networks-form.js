@@ -119,7 +119,7 @@ const NetworksForm = ({
   const [isEditing, setIsEditing] = useState(Boolean(addNewNetwork));
   const [previousNetwork, setPreviousNetwork] = useState(selectedNetwork);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,

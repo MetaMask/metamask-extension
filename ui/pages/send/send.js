@@ -43,7 +43,7 @@ export default function SendTransactionScreen() {
   const userInput = useSelector(getRecipientUserInput);
   const draftTransactionExists = useSelector(getDraftTransactionExists);
   const location = useLocation();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   const dispatch = useDispatch();
 

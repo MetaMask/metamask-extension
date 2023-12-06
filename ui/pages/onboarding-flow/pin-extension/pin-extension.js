@@ -47,7 +47,7 @@ export default function OnboardingPinExtension() {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const [selectedIndex, setSelectedIndex] = useState(0);
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   ///: END:ONLY_INCLUDE_IF
 

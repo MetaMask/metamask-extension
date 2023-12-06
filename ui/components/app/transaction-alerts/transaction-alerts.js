@@ -69,7 +69,7 @@ const TransactionAlerts = ({
     (currentTokenAmount === '0x0' || currentTokenAmount === '0');
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)

@@ -81,7 +81,7 @@ export default function PrivacySettings() {
     useAddressBarEnsResolution,
   );
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   const currentNetwork = useSelector(getCurrentNetwork);
   const allNetworks = useSelector(getAllNetworks);
 

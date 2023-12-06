@@ -28,7 +28,7 @@ const DetectedTokenSelectionPopover = ({
   sortingBasedOnTokenSelection,
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   const chainId = useSelector(getCurrentChainId);
 

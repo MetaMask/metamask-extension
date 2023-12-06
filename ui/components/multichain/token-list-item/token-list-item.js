@@ -66,7 +66,7 @@ export const TokenListItem = ({
 }) => {
   const t = useI18nContext();
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
 
   // Scam warning

@@ -61,7 +61,7 @@ const GK8_DISPLAY_NAME = 'gk8';
 const CustodyPage = () => {
   const t = useI18nContext();
   const history = useHistory();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
 
   const mmiActions = mmiActionsFactory();

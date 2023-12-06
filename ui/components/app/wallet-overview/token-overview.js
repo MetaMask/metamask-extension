@@ -57,7 +57,7 @@ import WalletOverview from './wallet-overview';
 const TokenOverview = ({ className, token }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   const history = useHistory();
   const { tokensWithBalances } = useTokenTracker({ tokens: [token] });
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)

@@ -26,7 +26,7 @@ export const ImportTokenLink: React.FC<ImportTokenLinkProps> = ({
   className = '',
   ...props
 }): JSX.Element => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const dispatch = useDispatch();
 

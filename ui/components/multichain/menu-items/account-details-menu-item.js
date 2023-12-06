@@ -21,7 +21,7 @@ export const AccountDetailsMenuItem = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   const LABEL = t('accountDetails');
 

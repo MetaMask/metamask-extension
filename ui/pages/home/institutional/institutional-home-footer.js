@@ -13,7 +13,7 @@ import { Display, Size } from '../../../helpers/constants/design-system';
 
 const InstitutionalHomeFooter = ({ activitySupportDisplayStyle }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   return (
     <ButtonLink

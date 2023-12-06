@@ -34,7 +34,7 @@ export default function SkipSRPBackup({ handleClose }) {
   const t = useI18nContext();
   const history = useHistory();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   return (
     <Popover

@@ -53,7 +53,7 @@ export const SendPage = () => {
 
   const history = useHistory();
   const location = useLocation();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   const cleanup = useCallback(() => {
     dispatch(resetSendState());

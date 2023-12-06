@@ -33,7 +33,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
   const splitSecretRecoveryPhrase = secretRecoveryPhrase.split(' ');
   const indicesToCheck = [2, 3, 7];
   const [matching, setMatching] = useState(false);
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   // Removes seed phrase words from chips corresponding to the
   // indicesToCheck so that user has to complete the phrase and confirm

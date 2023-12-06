@@ -60,7 +60,7 @@ export default function FeeCard({
         throw new Error('This network is not supported for token swaps');
     }
   };
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   const tokenApprovalTextComponent = (
     <span key="fee-card-approve-symbol" className="fee-card__bold">

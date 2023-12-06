@@ -37,7 +37,7 @@ export default function TokenAsset({ token }) {
     selectedAddress,
     rpcPrefs,
   );
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   const isCustomNetwork = useSelector(getIsCustomNetwork);
 

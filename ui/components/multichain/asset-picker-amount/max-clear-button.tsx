@@ -12,7 +12,7 @@ export default function MaxClearButton() {
   const t = useI18nContext();
   const maxModeOn = useSelector(getSendMaxModeState);
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   const onClick = () => {
     trackEvent({

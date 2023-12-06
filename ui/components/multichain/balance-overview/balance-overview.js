@@ -40,7 +40,7 @@ import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-
 import { PRIMARY } from '../../../helpers/constants/common';
 
 export const BalanceOverview = ({ balance, loading }) => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   const t = useI18nContext();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const metaMetricsId = useSelector(getMetaMetricsId);

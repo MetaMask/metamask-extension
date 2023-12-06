@@ -61,7 +61,7 @@ import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 export const SelectActionModal = ({ onClose }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   const history = useHistory();
   const chainId = useSelector(getCurrentChainId);
   const isSwapsChain = useSelector(getIsSwapsChain);

@@ -116,7 +116,7 @@ const ConfirmPageContainer = (props) => {
 
   const t = useI18nContext();
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   ///: END:ONLY_INCLUDE_IF
   const [collectionBalance, setCollectionBalance] = useState('0');
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)

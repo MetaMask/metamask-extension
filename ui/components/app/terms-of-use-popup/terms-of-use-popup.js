@@ -27,7 +27,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 export default function TermsOfUsePopup({ onAccept }) {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   const [isTermsOfUseChecked, setIsTermsOfUseChecked] = useState(false);
   const [shouldShowScrollButton, setShouldShowScrollButton] = useState(true);
 

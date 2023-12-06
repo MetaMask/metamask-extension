@@ -27,7 +27,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 export default function CreationSuccessful() {
   const history = useHistory();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
 
   return (

@@ -280,7 +280,7 @@ export default function WhatsNewPopup({ onClose }) {
     [memoizedNotifications],
   );
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const {trackEvent} = useContext(MetaMetricsContext);
 
   const handleDebouncedScroll = debounce((target) => {
     setShouldShowScrollButton(
