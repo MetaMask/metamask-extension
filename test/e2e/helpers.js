@@ -891,6 +891,14 @@ function assertInAnyOrder(requests, assertions) {
   );
 }
 
+async function getCleanAppState(driver) {
+  return await driver.executeScript(
+    () =>
+      window.stateHooks?.getCleanAppState &&
+      window.stateHooks.getCleanAppState(),
+  );
+}
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
@@ -945,4 +953,5 @@ module.exports = {
   assertInAnyOrder,
   genRandInitBal,
   openActionMenuAndStartSendFlow,
+  getCleanAppState,
 };
