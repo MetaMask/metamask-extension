@@ -15,12 +15,19 @@ import log from 'loglevel';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { ApprovalType } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
+import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { NETWORK_TYPES } from '../../../shared/constants/network';
+import { getNetworkLabelKey } from '../../helpers/utils/i18n-helper';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import Box from '../../components/ui/box';
 import MetaMaskTemplateRenderer from '../../components/app/metamask-template-renderer';
 import ConfirmationWarningModal from '../../components/app/confirmation-warning-modal';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import { Size, TextColor } from '../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  BorderColor,
+  Display,
+} from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -31,10 +38,15 @@ import {
   getApprovalFlows,
   getTotalUnapprovedCount,
   useSafeChainsListValidationSelector,
+  getCurrentNetwork,
+  getTestNetworkBackgroundColor,
 } from '../../selectors';
-import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
-import { Icon, IconName } from '../../components/component-library';
+import {
+  Icon,
+  IconName,
+  PickerNetwork,
+} from '../../components/component-library';
 import Loading from '../../components/ui/loading-screen';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
@@ -204,6 +216,10 @@ export default function ConfirmationPage({
   const useSafeChainsListValidation = useSelector(
     useSafeChainsListValidationSelector,
   );
+  const networkProviderConfig = useSelector(getProviderConfig);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
+
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
   const [currentPendingConfirmation, setCurrentPendingConfirmation] =
     useState(0);
@@ -445,9 +461,20 @@ export default function ConfirmationPage({
       <div className="confirmation-page__content">
         {templatedValues.networkDisplay ? (
           <Box justifyContent="center" marginTop={2}>
-            <NetworkDisplay
-              indicatorSize={Size.XS}
-              labelProps={{ color: TextColor.textDefault }}
+            <PickerNetwork
+              as="div"
+              src={currentNetwork?.rpcPrefs?.imageUrl}
+              label={
+                networkProviderConfig?.type === NETWORK_TYPES.RPC
+                  ? networkProviderConfig?.nickname ?? t('privateNetwork')
+                  : t(getNetworkLabelKey(networkProviderConfig?.type))
+              }
+              backgroundColor={BackgroundColor.transparent}
+              borderColor={BorderColor.borderMuted}
+              iconProps={{ display: Display.None }}
+              avatarNetworkProps={{
+                backgroundColor: testNetworkBackgroundColor,
+              }}
             />
           </Box>
         ) : null}

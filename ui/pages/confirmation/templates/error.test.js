@@ -29,12 +29,16 @@ const mockApproval = {
     message: 'Error message',
   },
 };
-
+const providerConfig = {
+  type: 'test',
+  chainId: '0x5',
+}
 const mockBaseStore = {
   metamask: {
     pendingApprovals: {
       [mockApprovalId]: mockApproval,
     },
+    providerConfig,
     approvalFlows: [],
     subjectMetadata: {},
   },
