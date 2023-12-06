@@ -1725,6 +1725,9 @@
     "message": "I accept the risks",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
   },
+  "floatAmountToken": {
+    "message": "Token amount must be an integer"
+  },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
   },
@@ -2545,6 +2548,9 @@
   },
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
+  },
+  "negativeOrZeroAmountToken": {
+    "message": "Cannot send negative or zero amounts of Tokens"
   },
   "network": {
     "message": "Network:"
