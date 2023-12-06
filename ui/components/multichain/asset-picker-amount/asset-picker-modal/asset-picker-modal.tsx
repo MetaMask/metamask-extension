@@ -239,30 +239,11 @@ export function AssetPickerModal({
       data-testid="asset-picker-modal"
     >
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader onClose={onClose}>{t('selectAToken')}</ModalHeader>
-        <Box paddingBottom={2} paddingTop={6}>
-          <TextFieldSearch
-            placeholder={t('searchTokenOrNFT')}
-            value={searchQuery}
-            onChange={(e: any) => handleSearch(e.target.value)}
-            error={false}
-            autoFocus
-            autoComplete={false}
-            width={BlockSize.Full}
-            clearButtonOnClick={() => setSearchQuery('')}
-            clearButtonProps={{
-              size: Size.SM,
-            }}
-            showClearButton={true}
-            className="asset-picker-modal__search-list"
-            inputProps={{
-              'data-testid': 'asset-picker-modal-search-input',
-            }}
-            endAccessory={null}
-          />
-        </Box>
-        <Box style={{ flexGrow: '1' }} className="modal-tab__main-view">
+      <ModalContent modalDialogProps={{ padding: 0 }}>
+        <ModalHeader padding={4} onClose={onClose}>
+          {t('selectAToken')}
+        </ModalHeader>
+        <Box style={{ flexGrow: '1' }}>
           <Tabs defaultActiveTabKey="details" tabsClassName="modal-tab__tabs">
             {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -273,67 +254,90 @@ export function AssetPickerModal({
                 name={t('tokens')}
                 tabKey="tokens"
               >
-                {tokensData.map((token) => {
-                  return (
-                    <Box
-                      padding={0}
-                      gap={0}
-                      key={token.symbol}
-                      backgroundColor={
-                        token.isSelected
-                          ? BackgroundColor.primaryMuted
-                          : BackgroundColor.transparent
-                      }
-                      className={classnames(
-                        'multichain-asset-picker-list-item',
-                        {
-                          'multichain-asset-picker-list-item--selected':
-                            token.isSelected,
-                        },
-                      )}
-                      onClick={() => handleSelectToken(token)}
-                    >
-                      {token.isSelected ? (
-                        <Box
-                          className="multichain-asset-picker-list-item__selected-indicator"
-                          borderRadius={BorderRadius.pill}
-                          backgroundColor={BackgroundColor.primaryDefault}
-                        />
-                      ) : null}
+                <Box paddingBottom={4} paddingTop={4} padding={4}>
+                  <TextFieldSearch
+                    placeholder={t('searchTokenOrNFT')}
+                    value={searchQuery}
+                    onChange={(e: any) => handleSearch(e.target.value)}
+                    error={false}
+                    autoFocus
+                    autoComplete={false}
+                    width={BlockSize.Full}
+                    clearButtonOnClick={() => setSearchQuery('')}
+                    clearButtonProps={{
+                      size: Size.SM,
+                    }}
+                    showClearButton={true}
+                    className="asset-picker-modal__search-list"
+                    inputProps={{
+                      'data-testid': 'asset-picker-modal-search-input',
+                    }}
+                    endAccessory={null}
+                    size={Size.LG}
+                  />
+                </Box>
+                <Box className="tokens-main-view-modal">
+                  {tokensData.map((token) => {
+                    return (
                       <Box
-                        key={token.address}
                         padding={0}
-                        display={Display.Block}
-                        flexWrap={FlexWrap.NoWrap}
-                        alignItems={AlignItems.center}
-                        style={{ cursor: 'pointer' }}
+                        gap={0}
+                        margin={0}
+                        key={token.symbol}
+                        backgroundColor={
+                          token.isSelected
+                            ? BackgroundColor.primaryMuted
+                            : BackgroundColor.transparent
+                        }
+                        className={classnames(
+                          'multichain-asset-picker-list-item',
+                          {
+                            'multichain-asset-picker-list-item--selected':
+                              token.isSelected,
+                          },
+                        )}
+                        onClick={() => handleSelectToken(token)}
                       >
-                        <Box marginInlineStart={2}>
-                          {token.type === AssetType.native ? (
-                            <TokenListItem
-                              title={nativeCurrency}
-                              primary={
-                                primaryCurrencyProperties.value ??
-                                secondaryCurrencyProperties.value
-                              }
-                              tokenSymbol={primaryCurrencyProperties.suffix}
-                              secondary={secondaryCurrencyDisplay}
-                              tokenImage={token.image}
-                            />
-                          ) : (
-                            <Box>
+                        {token.isSelected ? (
+                          <Box
+                            className="multichain-asset-picker-list-item__selected-indicator"
+                            borderRadius={BorderRadius.pill}
+                            backgroundColor={BackgroundColor.primaryDefault}
+                          />
+                        ) : null}
+                        <Box
+                          key={token.address}
+                          padding={0}
+                          display={Display.Block}
+                          flexWrap={FlexWrap.NoWrap}
+                          alignItems={AlignItems.center}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          <Box marginInlineStart={2}>
+                            {token.type === AssetType.native ? (
+                              <TokenListItem
+                                title={nativeCurrency}
+                                primary={
+                                  primaryCurrencyProperties.value ??
+                                  secondaryCurrencyProperties.value
+                                }
+                                tokenSymbol={primaryCurrencyProperties.suffix}
+                                secondary={secondaryCurrencyDisplay}
+                                tokenImage={token.image}
+                              />
+                            ) : (
                               <TokenCell
                                 key={token.address}
                                 {...token}
                                 onClick={() => handleSelectToken(token)}
                               />
-                            </Box>
-                          )}
+                            )}
+                          </Box>
                         </Box>
                       </Box>
-                    </Box>
-                  );
-                })}
+                    );
+                  })}
+                </Box>
               </Tab>
             }
 
@@ -346,57 +350,77 @@ export function AssetPickerModal({
                 name={t('nfts')}
                 tabKey="nfts"
               >
-                <Box>
-                  {hasAnyNfts ? (
-                    <Box>
-                      <NftsItems
-                        collections={collectionDataFiltered}
-                        previouslyOwnedCollection={previouslyOwnedCollection}
-                        isModal={true}
-                        onCloseModal={() => onClose()}
-                        showTokenId={true}
-                        displayPreviouslyOwnedCollection={false}
-                      />
-                    </Box>
-                  ) : (
-                    <Box
-                      padding={12}
-                      display={Display.Flex}
-                      flexDirection={FlexDirection.Column}
-                      alignItems={AlignItems.center}
-                      justifyContent={JustifyContent.center}
-                    >
-                      <Box justifyContent={JustifyContent.center}>
-                        <img src="./images/no-nfts.svg" />
-                      </Box>
-                      <Box
-                        marginTop={4}
-                        marginBottom={12}
-                        display={Display.Flex}
-                        justifyContent={JustifyContent.center}
-                        alignItems={AlignItems.center}
-                        flexDirection={FlexDirection.Column}
-                        className="nfts-tab__link"
-                      >
-                        <Text
-                          color={TextColor.textMuted}
-                          variant={TextVariant.headingSm}
-                          textAlign={TextAlign.Center}
-                          as="h4"
-                        >
-                          {t('noNFTs')}
-                        </Text>
-                        <ButtonLink
-                          size={ButtonLinkSize.Sm}
-                          href={ZENDESK_URLS.NFT_TOKENS}
-                          externalLink
-                        >
-                          {t('learnMoreUpperCase')}
-                        </ButtonLink>
-                      </Box>
-                    </Box>
-                  )}
+                <Box paddingBottom={4} paddingTop={4} padding={4}>
+                  <TextFieldSearch
+                    placeholder={t('searchTokenOrNFT')}
+                    value={searchQuery}
+                    onChange={(e: any) => handleSearch(e.target.value)}
+                    error={false}
+                    autoFocus
+                    autoComplete={false}
+                    width={BlockSize.Full}
+                    clearButtonOnClick={() => setSearchQuery('')}
+                    clearButtonProps={{
+                      size: Size.SM,
+                    }}
+                    showClearButton={true}
+                    className="asset-picker-modal__search-list"
+                    inputProps={{
+                      'data-testid': 'asset-picker-modal-search-input',
+                    }}
+                    endAccessory={null}
+                    size={Size.LG}
+                  />
                 </Box>
+                {hasAnyNfts ? (
+                  <Box className="modal-tab__main-view">
+                    <NftsItems
+                      collections={collectionDataFiltered}
+                      previouslyOwnedCollection={previouslyOwnedCollection}
+                      isModal={true}
+                      onCloseModal={() => onClose()}
+                      showTokenId={true}
+                      displayPreviouslyOwnedCollection={false}
+                    />
+                  </Box>
+                ) : (
+                  <Box
+                    padding={12}
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Column}
+                    alignItems={AlignItems.center}
+                    justifyContent={JustifyContent.center}
+                  >
+                    <Box justifyContent={JustifyContent.center}>
+                      <img src="./images/no-nfts.svg" />
+                    </Box>
+                    <Box
+                      marginTop={4}
+                      marginBottom={12}
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.center}
+                      alignItems={AlignItems.center}
+                      flexDirection={FlexDirection.Column}
+                      className="nfts-tab__link"
+                    >
+                      <Text
+                        color={TextColor.textMuted}
+                        variant={TextVariant.headingSm}
+                        textAlign={TextAlign.Center}
+                        as="h4"
+                      >
+                        {t('noNFTs')}
+                      </Text>
+                      <ButtonLink
+                        size={ButtonLinkSize.Sm}
+                        href={ZENDESK_URLS.NFT_TOKENS}
+                        externalLink
+                      >
+                        {t('learnMoreUpperCase')}
+                      </ButtonLink>
+                    </Box>
+                  </Box>
+                )}
               </Tab>
             }
           </Tabs>

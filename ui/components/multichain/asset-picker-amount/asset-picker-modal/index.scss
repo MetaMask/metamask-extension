@@ -1,71 +1,83 @@
 .asset-picker-modal {
   $self: &;
 
-  position: absolute;
-  top: 5%;
-  left: 0%;
-  transform: translate(-50%, -50%);
-
   &__search-list {
     max-width: 100%;
     overflow: auto;
     max-height: 200px;
+
+    &:hover {
+      border-color: rgba(16, 152, 252, 1);
+    }
+
+    &:focus {
+      border-color: rgba(16, 152, 252, 1);
+    }
   }
 
   &__autodetect {
     vertical-align: unset;
   }
-}
 
-.multichain-asset-picker-list-item {
-  position: relative;
-  cursor: pointer;
+  .multichain-asset-picker-list-item {
+    position: relative;
+    cursor: pointer;
+    overflow-y: auto;
+    max-height: 564px;
 
-  &:not(.multichain-asset-picker-list-item--selected) {
-    &:hover,
-    &:focus-within {
-      background: var(--color-background-default-hover);
+    &:not(.multichain-asset-picker-list-item--selected) {
+      &:hover,
+      &:focus-within {
+        background: var(--color-background-default-hover);
+      }
+    }
+
+    &__selected-indicator {
+      width: 4px;
+      height: calc(100% - 8px);
+      position: absolute;
+      top: 4px;
+      left: 4px;
     }
   }
 
-  &__selected-indicator {
-    width: 4px;
-    height: calc(100% - 8px);
-    position: absolute;
-    top: 4px;
-    left: 4px;
-  }
-}
-
-.modal-tab {
-  &__container {
-    display: flex;
-    min-height: 100px;
-  }
-
-  &__main-view {
-    flex: 1 1 66.5%;
+  .tokens-main-view-modal {
     max-height: 564px;
-    background: var(--color-background-default);
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
     overflow: auto;
   }
 
-  &__main-view &__tab {
-    @include H6;
+  .modal-tab {
+    &__main-view {
+      flex: 1 1 66.5%;
+      max-height: 564px;
+      background: var(--color-background-default);
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: auto;
+    }
 
-    flex-grow: 1;
-    color: var(--color-icon-default);
-    font-weight: 500;
-  }
+    &__main-view &__tab {
+      @include H6;
 
-  &__main-view &__tab--active {
-    color: var(--color-primary-default);
-  }
+      flex-grow: 1;
+      color: var(--color-icon-default);
+      font-weight: 500;
+    }
 
-  &__main-view &__tab button {
-    padding: 8px;
+    &__main-view &__tab--active {
+      color: var(--color-primary-default);
+    }
+
+    &__main-view &__tab button {
+      padding: 8px;
+    }
+
+    &__tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-bottom: 0;
+      padding: 16px;
+    }
   }
 }
