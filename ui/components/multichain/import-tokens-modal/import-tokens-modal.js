@@ -24,7 +24,7 @@ import {
   getSelectedNetworkClientId,
   getTokenDetectionSupportNetworkByChainId,
   getTokenList,
-  getTokens,
+  getTokenExchangeRates,
 } from '../../../selectors';
 import {
   addImportedTokens,
@@ -59,7 +59,10 @@ import {
 
 import { ASSET_ROUTE, SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
+import {
+  isValidHexAddress,
+  toChecksumHexAddress,
+} from '../../../../shared/modules/hexstring-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 import {
@@ -78,7 +81,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
-import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 export const ImportTokensModal = ({ onClose }) => {
@@ -119,9 +121,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const isMainnet = useSelector(getIsMainnet);
   const identities = useSelector(getMetaMaskIdentities);
   const tokens = useSelector((state) => state.metamask.tokens);
-  const temporaryTokens = useSelector(
-    (state) => state.metamask.temporaryTokens,
-  );
+  const contractExchangeRates = useSelector(getTokenExchangeRates);
 
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
 
@@ -319,7 +319,7 @@ export const ImportTokensModal = ({ onClose }) => {
     dispatch(
       setPendingTokens({ customToken, selectedTokens, tokenAddressList }),
     );
-    const tempTokens = {
+    const tempTokensToAdd = {
       ...selectedTokens,
       ...(customToken?.address && {
         [customToken.address]: {
@@ -328,19 +328,15 @@ export const ImportTokensModal = ({ onClose }) => {
       }),
     };
 
-    // We want to add only tokens that are not already part of the state temporaryTokens
+    // We want to add only tokens that are not already part of the state exchangeRates
     // Filter out any existing tokens
-    const tmpTokens = Object.values(tempTokens);
-    const nonExistingTokens = tmpTokens.filter(
-      (tmpObj) =>
-        !temporaryTokens.some((obj) =>
-          isEqualCaseInsensitive(obj.address, tmpObj.address),
-        ),
+    const tmpTokens = Object.values(tempTokensToAdd);
+    const tmpTokensToDispatch = tmpTokens.filter(
+      (elm) =>
+        contractExchangeRates[toChecksumHexAddress(elm.address)] === undefined,
     );
-    if (nonExistingTokens.length !== 0) {
-      await dispatch(
-        addTemporaryTokens(Object.values(tempTokens), networkClientId),
-      );
+    if (tmpTokensToDispatch.length !== 0) {
+      await dispatch(addTemporaryTokens(tmpTokensToDispatch, networkClientId));
     }
 
     setMode('confirm');
