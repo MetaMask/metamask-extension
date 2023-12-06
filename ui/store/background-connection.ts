@@ -39,7 +39,7 @@ type CallbackMethod<R = unknown> = (error?: unknown, result?: R) => void;
  * @param [args] - arguments to that method, if any
  * @param callback - Node style (error, result) callback for finishing the operation
  */
-export const callBackgroundMethod = <R>(
+export const callBackgroundMethod = <R,>(
   method: string,
   args: any[],
   callback: CallbackMethod<R>,

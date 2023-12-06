@@ -50,7 +50,7 @@ const relativeTimeFormatLocaleData = new Set();
  * @param join - An optional callback to join the substituted parts using custom logic
  * @returns The localized message
  */
-export const getMessage = <T>(
+export const getMessage = <T,>(
   localeCode: string,
   localeMessages: I18NMessageDict,
   key: string,
