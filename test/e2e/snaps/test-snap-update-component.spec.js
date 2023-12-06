@@ -125,6 +125,31 @@ describe('Test Snap update via snaps component', function () {
           text: 'OK',
           tag: 'button',
         });
+        await driver.delay(1000);
+
+        // try to find update link again, succeed if not there
+        // click on the global action menu
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        // try to click on the snaps item
+        await driver.clickElement({
+          text: 'Snaps',
+          tag: 'div',
+        });
+        await driver.delay(1000);
+
+        // click into snap view and attempt to update the snap
+        await driver.clickElement({
+          text: 'BIP-32 Example Snap',
+          tag: 'p',
+        });
+        await driver.waitForElementNotPresent({
+          css: '.mm-button-link',
+          text: 'Update',
+          tag: 'button',
+        });
       },
     );
   });
