@@ -31,11 +31,8 @@ export default {
     size: {
       control: {
         type: 'select',
-        options: ['sm', 'md', 'lg'],
+        options: Object.values(ModalContentSize),
       },
-      defaultValue: 'sm',
-      description:
-        'The size of ModalContent. Currently only one size is supported ModalContentSize.Sm 360px. See docs for more info.',
     },
     modalDialogProps: { control: 'object' },
   },
