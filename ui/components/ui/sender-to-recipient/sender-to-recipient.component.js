@@ -2,12 +2,16 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import copyToClipboard from 'copy-to-clipboard';
+import { NameType } from '@metamask/name-controller';
 import Tooltip from '../tooltip';
 import Identicon from '../identicon';
 import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
+///: BEGIN:ONLY_INCLUDE_IF(petnames)
+import Name from '../../app/name/name';
+///: END:ONLY_INCLUDE_IF
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import NicknamePopovers from '../../app/modals/nickname-popovers';
 import { Icon, IconName } from '../../component-library';
@@ -98,6 +102,7 @@ SenderAddress.propTypes = {
 };
 
 export function RecipientWithAddress({
+  recipientAddress,
   checksummedRecipientAddress,
   onRecipientClick,
   addressOnly,
@@ -123,6 +128,32 @@ export function RecipientWithAddress({
       </p>
     );
   }
+
+  let displayName =
+    recipientName ||
+    recipientNickname ||
+    recipientMetadataName ||
+    recipientEns ||
+    shortenAddress(checksummedRecipientAddress);
+
+  if (addressOnly && !displayName) {
+    displayName = t('newContract');
+  }
+
+  let nicknamePopovers = (
+    <NicknamePopovers
+      onClose={() => setShowNicknamePopovers(false)}
+      address={checksummedRecipientAddress}
+    />
+  );
+
+  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
+  displayName = (
+    <Name value={recipientAddress} type={NameType.ETHEREUM_ADDRESS} />
+  );
+
+  nicknamePopovers = null;
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
@@ -155,32 +186,17 @@ export function RecipientWithAddress({
             className="sender-to-recipient__name"
             data-testid="sender-to-recipient__name"
           >
-            {addressOnly
-              ? recipientName ||
-                recipientNickname ||
-                recipientMetadataName ||
-                recipientEns ||
-                shortenAddress(checksummedRecipientAddress)
-              : recipientName ||
-                recipientNickname ||
-                recipientMetadataName ||
-                recipientEns ||
-                shortenAddress(checksummedRecipientAddress) ||
-                t('newContract')}
+            {displayName}
           </div>
         </Tooltip>
       </div>
-      {showNicknamePopovers ? (
-        <NicknamePopovers
-          onClose={() => setShowNicknamePopovers(false)}
-          address={checksummedRecipientAddress}
-        />
-      ) : null}
+      {showNicknamePopovers ? nicknamePopovers : null}
     </>
   );
 }
 
 RecipientWithAddress.propTypes = {
+  recipientAddress: PropTypes.string,
   checksummedRecipientAddress: PropTypes.string,
   recipientName: PropTypes.string,
   recipientMetadataName: PropTypes.string,
@@ -244,6 +260,7 @@ export default function SenderToRecipient({
       <Arrow variant={variant} />
       {recipientAddress ? (
         <RecipientWithAddress
+          recipientAddress={recipientAddress}
           checksummedRecipientAddress={checksummedRecipientAddress}
           onRecipientClick={onRecipientClick}
           addressOnly={addressOnly}
