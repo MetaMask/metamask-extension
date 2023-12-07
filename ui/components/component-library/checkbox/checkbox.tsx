@@ -32,6 +32,7 @@ export const Checkbox: CheckboxComponent = React.forwardRef(
       title,
       name,
       label,
+      as: _as, // ignore, `as` in props is not a valid property on `Box`
       ...props
     }: CheckboxProps<C>,
     ref?: PolymorphicRef<C>,
