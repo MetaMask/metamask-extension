@@ -199,7 +199,7 @@ function defaultFixture() {
       },
       KeyringController: {
         vault:
-          '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
+          '{"data":"WHaP1FrrtV4zUonudIppDifsLHF39g6oPkVksAIdWAHBRzax1uy1asfAJprR7u72t4/HuYz5yPIFQrnNnv+hwQu9GRuty88VKMnvMy+sq8MNtoXI+C54bZpWa8r4iUQfa0Mj/cfJbpFpzOdF1ZYXahTfTcU5WsrHwvJew842CiJR4B2jmCHHXfm/DxLK3WazsVQwXJGx/U71UelGoOOrT8NI28EKrAwgPn+7Xmv0j92gmhau30N7Bo2fr6Zv","iv":"LfD8/tY1EjXzxuemSmDVdA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"nk4xdpmMR+1s5BYe4Vnk++XAQwrISI2bCtbMg7V1wUA="}',
       },
       MetaMetricsController: {
         eventsBeforeMetricsOptIn: [],
@@ -479,14 +479,21 @@ class FixtureBuilder {
   withKeyringControllerAdditionalAccountVault() {
     return this.withKeyringController({
       vault:
-        '{"data":"n1LbLX7D4CdnFjYkyvn8Vfv0VQ0spMTdzCP+bsrZX2cQXiz+GXb9AKaIjbcR0EHuQ5/VulkrpbZFDSYJ5VlZ5VRVVUngckHCNgzw73Jo3D+fVrmwEn6HhBbA+STHRMdjf3eEL/eiS5HbkQ0zutoj8KU/nMPfTz6iuV+WGa0hcOKZa+mqYkSzeYuqVCnWYspjF9hKE5NKnl5Vrnvu3/eFi6PiDeaUbIfs0ccttopnTdQya5e3KB23tu0ORa48EJawK0JeKurLlFfNNNqq+tg3HRgxUyiVp6mCns8GBdsd9Wx3HP00qIJa4OAFV2TtDvSSuek1XAWlIqjKegZbnXosB0t3IABhqWnSozXRFvsHe8oHVZP++B/2pJPzz5kkAgK9Ya/quy/7ok/GN5qw0n9Q6cCexfm9hGC3MI53ClEg08yq2w/eVKMDeEdES6IqidpRxOanIAsrcDjPIw6yP7tXqzo7d4A/50GyBb5MJYeTD7r9bV5/5VWcHtILDyGt4CROgM9/U/wdKduNJy5Igfhh0nvA0399Ber9jvWmtmQxiWAxAgrcf9Xi0SZXWewH/ZEnAOkIOmTVX9hpAGkbDqIvK1Zt2bIK5X/At2KiZ5DqAFet9AiyLZTPR5YQ2KaB8AarEjUthTa7EcDSpAPsr9jLPZwlKuMZO2I29xZHx4ht4ozlcqU+zMF8JBojtP73cRQKc0Chqm8xY9I9K6jANdZn9lT+q20RDgwJAfkp+UUSTTqUgZ3ruej2FyY9F+GWuOZJY1zPN0KG7j7uPXaP5Gqq","iv":"XxlC9CCaul7U0F6JRNyH9A==","salt":"gQOYCUFPAPVJITl0gxIs8TdgNQNl2ltzu4OAHajj+tM="}',
+        '{"data":"XBb1KJiGsxNOhcTC/xtzaNmpDqnMibJ/HCIjMGUHF/jPIghM63+xkoGcko9T2NKjeMyt2QLbl7K9tr0/qQgbAJP/LUn6gfovkajBdeBQ5N/qztdw7uGJsnrKnzo1krmb2wWeFstwoolcZ9GYwhYVSmCO/tYba50eanY2XvmFheT1ghowtiFmTIGRWV2X1HacnpI4n0rW88ZyBaVuOJOIJGEBiiTD+b0V5l9Tv4sFEms4jvatJwhjDQnx1HmyQE3K64+W5yJe764B0ZdcQ6j2dyIaGgutcz8PoQLBJR1uo78fufZeFzk1gk/BreXn2+4vQnPxQ3prhnXHO4S+7Kj1h2ticxYb3XWnprFLWyksu9ChMyqDXwgM6edLBRDH2jz/IMuC5g9JhABl7PsSH+001z/uBx3GvRTFviFF9dztf195/EPy8YbuYUVbYtJy1aPSju84efWYvb7GrzrmgFnbeh2BpjyWqHoCTdw8fhdm7HQO8GFF7JdGtoIpjkhwPrudIQeIYhGCezd+n5GFp3mdmFNrLbOVFgxufTdY6hlYkg6c5XuHC2VnWCSPwWKIn6t9VuvuyIxXBnol/bgYC8R/d99ctkPDHykigQcgr6cCnhPOwUFOLwrmXqm9HQeWiKb8WxwdGeRnblS+fhFhB+lSy7RvyTUb7HFogDPnDLP/LlUFxdSNNBgqNJU1Dc07Np65PZrpsPvSCfkFttzTytHswhtTEMOg/faaH2D6AwIGbh5Z9cubiNcMrdD75aT1WGuecJ8P7uOMYJq9C7e5l/35","iv":"U81Cv/oryQ1DI9lRezx1iw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"ejIn0xx5qZMA0m2ekjvXJF2pJa8ocL11wEdNIFJsKZQ="}',
     });
   }
 
   withKeyringControllerImportedAccountVault() {
     return this.withKeyringController({
       vault:
-        '{"data":"Ot+BTtJPag0xubdiv1nO9bsSvTHivHCd6CD7Lxgb1McYw3VqMjgp5rPMZmblJ1lscuMxyiqp99G52uXO9S0em6F9htpa+t/wn6qubRKTTNG9fxNzQrKXRDNhdgfYckVk5VAZ4fgl2iMZcRDvS8H/+gucVKJ33Sl6mXyPofdexXhWDCU6uR2YecnfaIum9cL2u/GqOMPE3jxzy0Wip0x2Jyp3QOKhvu8A3GIjzagLOaQ7a1APdl8=","iv":"lbsyPeGYWU6U1+jvmW9UHg==","salt":"Zmbhpskwxe4rYfXtELBvlcvW4HISPBATRmMqzsnZPMg="}',
+        '{"data":"NlxYVSDJJV4B1DWM+fZ0KX1K2lIU9ozK3WMbbL23WEY036umZ9//qB+bN9R1jKMm6xqHGSGgq9EteFMy2Ix5Bx1/c4hV2QquFRTEzPB4TkQ6+P5eJUvgvZ7vqvVU+2W8719T1oz/O7DH7HbO05JPLD1RBY+XOyHzUzAgwmXq0mwxNpqji3ejHyrjZ/1l06igircW/qysLcjZFZ52Vv4a/q1zCL37/4heHDRVmfEob//ulUbJ/5M=","iv":"b9n77dsUqvww9nGcWfPuIA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"XrmM930Jqnb7C9Ow5NErAMkSGR3vuMLsqUrkGjzpwaY="}',
+    });
+  }
+
+  withKeyringControllerOldVault() {
+    return this.withKeyringController({
+      vault:
+        '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
     });
   }
 
