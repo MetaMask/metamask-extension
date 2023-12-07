@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
-import Tooltip from '../../../../../ui/tooltip/tooltip';
-import { Box, Icon, IconName, Text } from '../../../../../component-library';
+import Tooltip from '../../../../ui/tooltip/tooltip';
+import { Box, Icon, IconName, Text } from '../../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -14,7 +14,7 @@ import {
   OverflowWrap,
   TextColor,
   TextVariant,
-} from '../../../../../../helpers/constants/design-system';
+} from '../../../../../helpers/constants/design-system';
 
 export enum ConfirmInfoRowVariant {
   Default = 'default',
