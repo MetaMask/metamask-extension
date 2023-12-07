@@ -36,17 +36,19 @@ describe('SendPage', () => {
   describe('render', () => {
     it('renders correctly', () => {
       const { container, getByTestId } = render();
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      const expectedPlaceholder =
+        // disabled due to some non-determinism with the placeholder values
+        // eslint-disable-next-line jest/no-if
+        process.env.METAMASK_BUILD_TYPE === 'flask'
+          ? 'Enter public address (0x) or domain name'
+          : 'Enter public address (0x) or ENS name';
       const currentInput = container.querySelector(
         '.ens-input__wrapper__input',
       );
-      expect(currentInput.placeholder).toStrictEqual(
-        'Enter public address (0x) or domain name',
-      );
+      expect(currentInput.placeholder).toStrictEqual(expectedPlaceholder);
       const newInput = currentInput.cloneNode(true);
       newInput.placeholder = 'Enter public address (0x) or ENS name';
       currentInput.replaceWith(newInput);
-      ///: END:ONLY_INCLUDE_IF
       expect(container).toMatchSnapshot();
 
       expect(getByTestId('send-page-network-picker')).toBeInTheDocument();
