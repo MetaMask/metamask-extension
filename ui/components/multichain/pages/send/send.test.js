@@ -32,13 +32,26 @@ const render = (props = {}) => {
   return renderWithProvider(<SendPage {...props} />, store);
 };
 
+///: BEGIN:ONLY_INCLUDE_IF(desktop,build-mmi,build-beta,build-main)
 describe('SendPage', () => {
   describe('render', () => {
     it('renders correctly', () => {
       const { container, getByTestId } = render();
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      const currentInput = container.querySelector(
+        '.ens-input__wrapper__input',
+      );
+      expect(currentInput.textContent).toStrictEqual(
+        'Enter public address (0x) or domain name',
+      );
+      const newInput = currentInput;
+      newInput.placeholder = 'Enter public address (Ox) or ENS name';
+      container.replaceWith(currentInput, newInput);
+      ///: END:ONLY_INCLUDE_IF
       expect(container).toMatchSnapshot();
 
       expect(getByTestId('send-page-network-picker')).toBeInTheDocument();
     });
   });
 });
+///: END:ONLY_INCLUDE_IF
