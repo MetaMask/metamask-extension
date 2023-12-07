@@ -15,9 +15,13 @@ export default {
     label: {
       control: 'text',
     },
+    iconName: {
+      control: 'text',
+    },
   },
   args: {
     label: 'Imported',
+    iconName: 'snaps',
   },
 } as Meta<typeof Tag>;
 
@@ -29,4 +33,11 @@ export const Label: StoryFn<typeof Tag> = (args) => <Tag {...args} />;
 
 Label.args = {
   label: 'Label Story',
+};
+
+export const WithIcon: StoryFn<typeof Tag> = (args) => <Tag {...args} />; // New story to showcase the icon
+
+WithIcon.args = {
+  label: 'Snap Name',
+  iconName: 'snaps',
 };

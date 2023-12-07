@@ -13,4 +13,16 @@ describe('Tag', () => {
     expect(getByTestId('tag')).toHaveTextContent('Imported');
     expect(container).toMatchSnapshot();
   });
+
+  it('should render a tag with an icon and a label', () => {
+    const { getByTestId, container } = render(
+      <Tag data-testid="tag" label="Snap Name" iconName="snaps" />,
+    );
+    const tag = getByTestId('tag');
+    expect(tag).toBeDefined();
+    expect(tag).toHaveTextContent('Snap Name');
+    const icon = tag.querySelector('svg');
+    expect(icon).toBeDefined();
+    expect(container).toMatchSnapshot();
+  });
 });

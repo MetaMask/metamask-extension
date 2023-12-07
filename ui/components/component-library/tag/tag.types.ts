@@ -3,6 +3,7 @@ import type {
   StyleUtilityProps,
   PolymorphicComponentPropWithRef,
 } from '../box';
+import { IconProps } from '../icon';
 
 export interface TagStyleUtilityProps extends StyleUtilityProps {
   /**
@@ -17,6 +18,14 @@ export interface TagStyleUtilityProps extends StyleUtilityProps {
    * Additional classNames to be added to the Tag component
    */
   className?: string;
+  /**
+   * The name of the icon to be used in the Tag component
+   */
+  iconName?: string;
+  /**
+   * The icon props of the component. Most Icon component props can be used
+   */
+  iconProps?: IconProps<'span'>;
 }
 
 export type TagProps<C extends React.ElementType> =

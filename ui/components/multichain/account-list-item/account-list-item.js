@@ -288,9 +288,9 @@ export const AccountListItem = ({
               color: Color.textAlternative,
             }}
             // TODO: Remove this once the tag component is updated to use the new icon system
-            iconName={IconName.Danger}
+            iconName={IconName.Snaps}
             iconProps={{
-              color: IconColor.warningDefault,
+              color: IconColor.primaryDefault,
             }}
           />
         ) : null}
