@@ -5,9 +5,7 @@
   "javascript.preferences.importModuleSpecifier": "relative",
   "json.schemas": [
     {
-      "fileMatch": [
-        "app/manifest/*/*.json"
-      ],
+      "fileMatch": ["app/manifest/*/*.json"],
       "url": "https://json.schemastore.org/chrome-manifest"
     }
   ],
