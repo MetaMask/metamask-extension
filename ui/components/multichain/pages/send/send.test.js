@@ -36,7 +36,6 @@ describe('SendPage', () => {
   describe('render', () => {
     it('renders correctly', () => {
       const { container, getByTestId } = render();
-      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       const currentInput = container.querySelector(
         '.ens-input__wrapper__input',
       );
@@ -46,7 +45,6 @@ describe('SendPage', () => {
       const newInput = currentInput.cloneNode(true);
       newInput.placeholder = 'Enter public address (0x) or ENS name';
       currentInput.replaceWith(newInput);
-      ///: END:ONLY_INCLUDE_IF
       expect(container).toMatchSnapshot();
 
       expect(getByTestId('send-page-network-picker')).toBeInTheDocument();
