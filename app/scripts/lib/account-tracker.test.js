@@ -1,6 +1,5 @@
 import EventEmitter from 'events';
 import { ControllerMessenger } from '@metamask/base-controller';
-import { AccountsController } from '@metamask/accounts-controller';
 
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
 
@@ -51,8 +50,7 @@ describe('Account Tracker', () => {
     accountRemovedListener,
     getNetworkIdentifierStub,
     getNetworkClientByIdStub,
-    controllerMessenger,
-    accountsController;
+    controllerMessenger;
 
   beforeEach(() => {
     provider = createTestProviderTools({
@@ -71,19 +69,6 @@ describe('Account Tracker', () => {
 
     controllerMessenger = new ControllerMessenger();
 
-    const accountsControllerMessenger = controllerMessenger.getRestricted({
-      name: 'AccountsController',
-      allowedEvents: [
-        'SnapController:stateChange',
-        'KeyringController:accountRemoved',
-        'KeyringController:stateChange',
-      ],
-    });
-
-    accountsController = new AccountsController({
-      state: {},
-      messenger: accountsControllerMessenger,
-    });
     providerFromHook = createTestProviderTools({
       scaffold: {
         eth_getBalance: UPDATE_BALANCE_HOOK,
@@ -138,7 +123,6 @@ describe('Account Tracker', () => {
         },
       },
       controllerMessenger,
-      accountsController,
       onAccountRemoved: (callback) => {
         accountRemovedListener = callback;
       },
@@ -293,7 +277,6 @@ describe('Account Tracker', () => {
           },
         },
         controllerMessenger,
-        accountsController,
         onAccountRemoved: (callback) => {
           accountRemovedListener = callback;
         },
