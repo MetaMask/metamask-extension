@@ -40,7 +40,7 @@ export interface TextFieldSearchStyleUtilityProps
   /**
    * The props to pass to the clear button
    */
-  clearButtonProps?: ButtonIconProps<'span'>;
+  clearButtonProps?: ButtonIconProps<'button'>;
   /**
    * An additional className to apply to the TextFieldSearch
    */
