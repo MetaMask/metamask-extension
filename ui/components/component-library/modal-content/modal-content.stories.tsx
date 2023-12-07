@@ -29,10 +29,8 @@ export default {
   argTypes: {
     children: { control: 'text' },
     size: {
-      control: {
-        type: 'select',
-        options: Object.values(ModalContentSize),
-      },
+      control: 'select',
+      options: Object.values(ModalContentSize),
     },
     modalDialogProps: { control: 'object' },
   },
