@@ -315,6 +315,7 @@ const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
+  await driver.waitForElementNotPresent('.loading-overlay');
 };
 
 const completeImportSRPOnboardingFlow = async (
@@ -361,6 +362,9 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
+
+  // wait for loading to complete
+  await driver.waitForElementNotPresent('.loading-overlay');
 
   // complete
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
