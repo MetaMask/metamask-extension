@@ -43,7 +43,7 @@ describe('SendPage', () => {
       expect(currentInput.placeholder).toStrictEqual(
         'Enter public address (0x) or domain name',
       );
-      const newInput = currentInput;
+      const newInput = currentInput.cloneNode(true);
       newInput.placeholder = 'Enter public address (Ox) or ENS name';
       container.replaceWith(currentInput, newInput);
       ///: END:ONLY_INCLUDE_IF
