@@ -1,0 +1,47 @@
+diff --git a/src/kernelCoreTemplate.js b/src/kernelCoreTemplate.js
+index 8d3aaac3ce69412a703809b4a6bc41e03009816e..3a60fc3819384ffdb887e0b456495f7988a835fa 100644
+--- a/src/kernelCoreTemplate.js
++++ b/src/kernelCoreTemplate.js
+@@ -70,6 +70,8 @@
+     const { prepareCompartmentGlobalFromConfig } = templateRequire('makePrepareRealmGlobalFromConfig')({ createFunctionWrapper })
+     const { strictScopeTerminator } = templateRequire('strict-scope-terminator')
+
++    // cache regular expressions to work around https://github.com/MetaMask/metamask-extension/issues/21006
++    const regexCache = new Map()
+     const scuttleOpts = generateScuttleOpts(scuttleGlobalThis)
+     const moduleCache = new Map()
+     const packageCompartmentCache = new Map()
+@@ -126,10 +128,15 @@
+         if (!except.startsWith('/')) {
+           return except
+         }
++        if (regexCache.has(except)) {
++          return regexCache.get(except)
++        }
+         const parts = except.split('/')
+         const pattern = parts.slice(1, -1).join('/')
+         const flags = parts[parts.length - 1]
+-        return new RegExp(pattern, flags)
++        const re = new RegExp(pattern, flags)
++        regexCache.set(except, re)
++        return re
+       }
+     }
+
+diff --git a/src/sourceTransforms.js b/src/sourceTransforms.js
+index 9b1524810574c207631823869a781c343adb197f..5c9a494345a4fe36dbfbd8f34e27b0402b4d0935 100644
+--- a/src/sourceTransforms.js
++++ b/src/sourceTransforms.js
+@@ -12,9 +12,11 @@ function applySourceTransforms(source) {
+   ])
+ }
+
++// create the RegExp once to avoid creating it over and over again
++// helps work around https://github.com/MetaMask/metamask-extension/issues/21006
++const someDirectEvalPattern = new RegExp('\\beval(\\s*\\()', 'g')
+ function evadeDirectEvalExpressions(source) {
+   /* eslint-disable-next-line prefer-regex-literals */
+-  const someDirectEvalPattern = new RegExp('\\beval(\\s*\\()', 'g')
+
+   const replaceFn = (_, p1) => `(0,eval)${p1}`
+   return source.replace(someDirectEvalPattern, replaceFn)
