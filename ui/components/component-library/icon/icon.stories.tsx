@@ -24,8 +24,8 @@ import {
   Label,
   Text,
   TextField,
-  TextFieldSearch,
   TextFieldSize,
+  TextFieldSearch,
   ButtonIconSize,
   Box,
 } from '..';
