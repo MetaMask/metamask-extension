@@ -911,7 +911,7 @@ describe('Account Tracker', () => {
 
   describe('_updateAccountsViaBalanceChecker', () => {
     it('should update the passed address account balance, and set other balances to null, if useMultiAccountBalanceChecker is false', async () => {
-      useMultiAccountBalanceChecker = true;
+      useMultiAccountBalanceChecker = false;
       accountTracker.store.updateState({
         accounts: { ...mockAccounts },
       });
