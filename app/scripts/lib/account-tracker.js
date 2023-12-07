@@ -16,6 +16,7 @@ import pify from 'pify';
 import { Web3Provider } from '@ethersproject/providers';
 import { Contract } from '@ethersproject/contracts';
 import SINGLE_CALL_BALANCES_ABI from 'single-call-balance-checker-abi';
+import { cloneDeep } from 'lodash';
 import { LOCALHOST_RPC_URL } from '../../../shared/constants/network';
 
 import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
@@ -266,7 +267,7 @@ export default class AccountTracker {
   getAccountsForChainId(chainId) {
     const { accounts, accountsByChainId } = this.store.getState();
     if (accountsByChainId[chainId]) {
-      return accountsByChainId[chainId];
+      return cloneDeep(accountsByChainId[chainId]);
     }
 
     const newAccounts = {};
@@ -315,7 +316,10 @@ export default class AccountTracker {
    * @param {Array} addresses - An array of hex addresses of new accounts to track
    */
   addAccounts(addresses) {
-    const { accounts, accountsByChainId } = this.store.getState();
+    const { accounts: _accounts, accountsByChainId: _accountsByChainId } =
+      this.store.getState();
+    const accounts = cloneDeep(_accounts);
+    const accountsByChainId = cloneDeep(_accountsByChainId);
 
     // add initial state for addresses
     addresses.forEach((address) => {
@@ -347,7 +351,10 @@ export default class AccountTracker {
    * @param {Array} addresses - An array of hex addresses to stop tracking.
    */
   removeAccounts(addresses) {
-    const { accounts, accountsByChainId } = this.store.getState();
+    const { accounts: _accounts, accountsByChainId: _accountsByChainId } =
+      this.store.getState();
+    const accounts = cloneDeep(_accounts);
+    const accountsByChainId = cloneDeep(_accountsByChainId);
 
     // remove each state object
     addresses.forEach((address) => {
@@ -410,13 +417,15 @@ export default class AccountTracker {
     }
     const currentBlockGasLimit = currentBlock.gasLimit;
     const { currentBlockGasLimitByChainId } = this.store.getState();
-    currentBlockGasLimitByChainId[chainId] = currentBlockGasLimit;
-    this.store.updateState({ currentBlockGasLimitByChainId });
-    if (chainId === this.getCurrentChainId()) {
-      this.store.updateState({
+    this.store.updateState({
+      ...(chainId === this.getCurrentChainId() && {
         currentBlockGasLimit,
-      });
-    }
+      }),
+      currentBlockGasLimitByChainId: {
+        ...currentBlockGasLimitByChainId,
+        [chainId]: currentBlockGasLimit,
+      },
+    });
 
     try {
       await this.updateAccounts(networkClientId);
@@ -542,13 +551,15 @@ export default class AccountTracker {
     newAccounts[address] = result;
 
     const { accountsByChainId } = this.store.getState();
-    accountsByChainId[chainId] = newAccounts;
     this.store.updateState({
-      accountsByChainId,
+      ...(chainId === this.getCurrentChainId() && {
+        accounts: newAccounts,
+      }),
+      accountsByChainId: {
+        ...accountsByChainId,
+        [chainId]: newAccounts,
+      },
     });
-    if (chainId === this.getCurrentChainId()) {
-      this.store.updateState({ accounts: newAccounts });
-    }
   }
 
   /**
@@ -592,11 +603,15 @@ export default class AccountTracker {
       });
 
       const { accountsByChainId } = this.store.getState();
-      accountsByChainId[chainId] = newAccounts;
-      this.store.updateState({ accountsByChainId });
-      if (chainId === this.getCurrentChainId()) {
-        this.store.updateState({ accounts: newAccounts });
-      }
+      this.store.updateState({
+        ...(chainId === this.getCurrentChainId() && {
+          accounts: newAccounts,
+        }),
+        accountsByChainId: {
+          ...accountsByChainId,
+          [chainId]: newAccounts,
+        },
+      });
     } catch (error) {
       log.warn(
         `MetaMask - Account Tracker single call balance fetch failed`,
