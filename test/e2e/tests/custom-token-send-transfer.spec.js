@@ -34,6 +34,9 @@ describe('Transfer custom tokens @no-mmi', function () {
     ],
   };
   it('send custom tokens from extension customizing gas values', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         dapp: true,
@@ -49,9 +52,6 @@ describe('Transfer custom tokens @no-mmi', function () {
           smartContract,
         );
         await unlockWallet(driver);
-        if (process.env.MULTICHAIN) {
-          return;
-        }
 
         // on testdapp, add created tokens in wallet
         await openDapp(driver, contractAddress);
