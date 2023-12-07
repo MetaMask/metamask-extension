@@ -1,6 +1,11 @@
 const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
-const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  unlockWallet,
+  WINDOW_TITLES,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Hide token', function () {
@@ -166,7 +171,7 @@ describe('Add token using wallet_watchAsset', function () {
         const windowHandles = await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -217,7 +222,7 @@ describe('Add token using wallet_watchAsset', function () {
         const windowHandles = await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
