@@ -6,6 +6,7 @@ const {
   defaultGanacheOptions,
   unlockWallet,
   regularDelayMs,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -64,7 +65,7 @@ describe('Eth sign', function () {
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -126,7 +127,7 @@ describe('Eth sign', function () {
         await driver.clickElement('#ethSign');
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
