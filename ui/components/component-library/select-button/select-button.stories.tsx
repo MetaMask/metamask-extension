@@ -127,7 +127,7 @@ Children.args = {
   startAccessory: '',
   endAccessory: '',
   children: (
-    <Text variant={TextVariant.bodySm} color={TextColor.sepolia}>
+    <Text variant={TextVariant.bodySm} color={TextColor.warningDefault}>
       Children demo text
     </Text>
   ),
