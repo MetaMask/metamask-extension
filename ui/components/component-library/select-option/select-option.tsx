@@ -11,7 +11,14 @@ import {
 
 export const SelectOption: SelectOptionComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(
-    { className = '', value, children, ...props }: SelectOptionProps<C>,
+    {
+      className = '',
+      value,
+      isSelected,
+      isDisabled,
+      children,
+      ...props
+    }: SelectOptionProps<C>,
     ref?: PolymorphicRef<C>,
   ) => {
     const selectContext = useContext(SelectContext);
@@ -50,6 +57,7 @@ export const SelectOption: SelectOptionComponent = React.forwardRef(
         className={classnames('mm-select-option', className)}
         ref={ref}
         onClick={handleClick}
+        role="option"
         as="button"
         display={Display.Block}
         {...(props as BoxProps<C>)}
