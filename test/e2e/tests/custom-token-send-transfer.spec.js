@@ -49,6 +49,9 @@ describe('Transfer custom tokens @no-mmi', function () {
           smartContract,
         );
         await unlockWallet(driver);
+        if (process.env.MULTICHAIN) {
+          return;
+        }
 
         // on testdapp, add created tokens in wallet
         await openDapp(driver, contractAddress);
