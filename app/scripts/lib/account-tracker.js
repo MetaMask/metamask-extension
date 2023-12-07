@@ -578,14 +578,6 @@ export default class AccountTracker {
     provider,
     chainId,
   ) {
-    const accounts = this.getAccountsForChainId(chainId);
-
-    const newAccounts = {};
-    Object.keys(accounts).forEach((address) => {
-      if (!addresses.includes(address)) {
-        newAccounts[address] = { address, balance: null };
-      }
-    });
 
     const ethContract = await new Contract(
       deployedContractAddress,
@@ -597,10 +589,18 @@ export default class AccountTracker {
     try {
       const balances = await ethContract.balances(addresses, ethBalance);
 
+      const accounts = this.getAccountsForChainId(chainId);
+      const newAccounts = {};
+      Object.keys(accounts).forEach((address) => {
+        if (!addresses.includes(address)) {
+          newAccounts[address] = { address, balance: null };
+        }
+      });
       addresses.forEach((address, index) => {
         const balance = balances[index] ? balances[index].toHexString() : '0x0';
         newAccounts[address] = { address, balance };
       });
+
 
       const { accountsByChainId } = this.store.getState();
       this.store.updateState({
