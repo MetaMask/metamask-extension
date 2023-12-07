@@ -1,6 +1,7 @@
-import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { ArgsTable, Canvas, Story } from "@storybook/addon-docs";
 
-import { Tag } from './tag';
+import { Tag } from "./tag";
+import { Icon } from "../icon";
 
 # Tag
 
@@ -23,3 +24,28 @@ The text content of the `Tag` component
 <Canvas>
   <Story id="components-componentlibrary-tag--label" />
 </Canvas>
+
+## Icon in Tag Component
+
+The Tag component now supports the inclusion of icons.
+This feature allows for more expressive tags by including relevant icons alongside the text.
+
+<Canvas>
+  <Story id="components-componentlibrary-tag--with-icon" />
+</Canvas>
+
+### IconName
+
+Use the `iconName` prop and the `IconName` enum to change the icon.
+
+Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
+
+### IconProps
+
+Use the `iconProps` prop to pass props to the icon component used in the parent Tag component.
+
+<ArgsTable of={Icon} />
+
+### Compatibility
+Please note that the inclusion of an icon is optional.
+The Tag component will continue to work as before for existing implementations without an icon.
