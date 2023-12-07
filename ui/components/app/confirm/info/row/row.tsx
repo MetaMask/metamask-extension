@@ -26,7 +26,7 @@ export type ConfirmInfoRowProps = {
   label: string;
   children: React.ReactNode | string;
   tooltip?: string;
-  variant?: ConfirmInfoRowState;
+  state?: ConfirmInfoRowState;
   style?: React.CSSProperties;
 };
 
@@ -55,29 +55,29 @@ const TOOLTIP_ICON_COLORS = {
 };
 
 export const ConfirmInfoRowContext = createContext({
-  variant: ConfirmInfoRowState.Default,
+  state: ConfirmInfoRowState.Default,
 });
 
 export const ConfirmInfoRow = ({
   label,
   children,
-  variant = ConfirmInfoRowState.Default,
+  state = ConfirmInfoRowState.Default,
   tooltip,
   style,
 }: ConfirmInfoRowProps) => (
-  <ConfirmInfoRowContext.Provider value={{ variant }}>
+  <ConfirmInfoRowContext.Provider value={{ state }}>
     <Box
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       justifyContent={JustifyContent.spaceBetween}
       flexWrap={FlexWrap.Wrap}
-      backgroundColor={BACKGROUND_COLORS[variant]}
+      backgroundColor={BACKGROUND_COLORS[state]}
       borderRadius={BorderRadius.LG}
       marginTop={2}
       marginBottom={2}
       paddingLeft={2}
       paddingRight={2}
-      color={TEXT_COLORS[variant] as TextColor}
+      color={TEXT_COLORS[state] as TextColor}
       style={{
         overflowWrap: OverflowWrap.Anywhere,
         minHeight: '24px',
@@ -96,9 +96,9 @@ export const ConfirmInfoRow = ({
         {tooltip && tooltip.length > 0 && (
           <Tooltip title={tooltip} style={{ display: 'flex' }}>
             <Icon
-              name={TOOLTIP_ICONS[variant]}
+              name={TOOLTIP_ICONS[state]}
               marginLeft={1}
-              color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+              color={TOOLTIP_ICON_COLORS[state] as unknown as IconColor}
             />
           </Tooltip>
         )}

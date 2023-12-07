@@ -26,7 +26,7 @@ export const ConfirmInfoRowValueDouble = ({
   left,
   right,
 }: ConfirmInfoRowValueDoubleProps) => {
-  const { variant } = useRowContext();
+  const { state } = useRowContext();
   return (
     <Box
       display={Display.Flex}
@@ -38,7 +38,7 @@ export const ConfirmInfoRowValueDouble = ({
         columnGap: '8px',
       }}
     >
-      <Text color={LEFT_TEXT_COLORS[variant] as TextColor}>{left}</Text>
+      <Text color={LEFT_TEXT_COLORS[state] as TextColor}>{left}</Text>
       <Text color={TextColor.inherit}>{right}</Text>
     </Box>
   );

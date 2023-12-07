@@ -6,7 +6,7 @@ const ConfirmInfoRowStory = {
 
   component: ConfirmInfoRow,
   argTypes: {
-    variant: {
+    state: {
       control: 'select',
       options: Object.values(ConfirmInfoRowState),
     },

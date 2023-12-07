@@ -7,7 +7,7 @@ const ConfirmInfoRowAddressStory = {
 
   component: ConfirmInfoRowAddress,
   argTypes: {
-    variant: {
+    state: {
       control: 'select',
       options: Object.values(ConfirmInfoRowState),
     },
@@ -17,8 +17,8 @@ const ConfirmInfoRowAddressStory = {
   },
 };
 
-export const DefaultStory = ({ variant, address }) => (
-  <ConfirmInfoRow label="Account" variant={variant}>
+export const DefaultStory = ({ state, address }) => (
+  <ConfirmInfoRow label="Account" state={state}>
     <ConfirmInfoRowAddress address={address} />
   </ConfirmInfoRow>
 );

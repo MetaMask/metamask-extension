@@ -86,7 +86,7 @@ export const UI_MAPPING = {
     children: [mapToTemplate(props.value, elementKey)],
     props: {
       label: props.label,
-      variant: props.variant,
+      state: props.state,
       style: {
         // We do this to cause an overhang with certain confirmation row variants
         marginLeft: '-8px',

@@ -7,7 +7,7 @@ const ConfirmInfoRowValueDoubleStory = {
 
   component: ConfirmInfoRowValueDouble,
   argTypes: {
-    variant: {
+    state: {
       control: 'select',
       options: Object.values(ConfirmInfoRowState),
     },
@@ -20,8 +20,8 @@ const ConfirmInfoRowValueDoubleStory = {
   },
 };
 
-export const DefaultStory = ({ variant, left, right }) => (
-  <ConfirmInfoRow label="Account" variant={variant}>
+export const DefaultStory = ({ state, left, right }) => (
+  <ConfirmInfoRow label="Account" state={state}>
     <ConfirmInfoRowValueDouble left={left} right={right} />
   </ConfirmInfoRow>
 );
