@@ -14,26 +14,26 @@ import {
   AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   ONBOARDING_PIN_EXTENSION_ROUTE,
   MMI_ONBOARDING_COMPLETION_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
 import Box from '../../../components/ui/box';
 import CheckBox from '../../../components/ui/check-box';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
   ThreeStepProgressBar,
   threeStepStages,
   TwoStepProgressBar,
   twoStepStages,
 } from '../../../components/app/step-progress-bar';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import {
@@ -89,21 +89,21 @@ export default function CreatePassword({
   useEffect(() => {
     if (currentKeyring) {
       if (firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT) {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_COMPLETION_ROUTE);
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
 
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         history.replace(ONBOARDING_PIN_EXTENSION_ROUTE);
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       } else {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         history.replace(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
 
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         history.replace(MMI_ONBOARDING_COMPLETION_ROUTE);
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       }
     }
   }, [currentKeyring, history, firstTimeFlowType]);
@@ -204,26 +204,26 @@ export default function CreatePassword({
       firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT
     ) {
       await importWithRecoveryPhrase(password, secretRecoveryPhrase);
-      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       history.push(ONBOARDING_COMPLETION_ROUTE);
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
 
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     } else {
       // Otherwise we are in create new wallet flow
       try {
         if (createNewAccount) {
           await createNewAccount(password);
         }
-        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         history.push(ONBOARDING_SECURE_YOUR_WALLET_ROUTE);
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
 
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         history.push(ONBOARDING_PIN_EXTENSION_ROUTE);
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       } catch (error) {
         setPasswordError(error.message);
       }
@@ -247,7 +247,7 @@ export default function CreatePassword({
   return (
     <div className="create-password__wrapper" data-testid="create-password">
       {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         secretRecoveryPhrase &&
         firstTimeFlowType === FIRST_TIME_FLOW_TYPES.IMPORT ? (
           <TwoStepProgressBar
@@ -260,7 +260,7 @@ export default function CreatePassword({
             marginBottom={4}
           />
         )
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       }
 
       <Typography variant={TypographyVariant.H2} fontWeight={FONT_WEIGHT.BOLD}>
@@ -269,14 +269,14 @@ export default function CreatePassword({
 
       <Typography variant={TypographyVariant.H4} align={TEXT_ALIGN.CENTER}>
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           t('passwordSetupDetails')
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           t('mmiPasswordSetupDetails')
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
       </Typography>
       <Box justifyContent={JustifyContent.center} marginTop={3}>
@@ -339,20 +339,20 @@ export default function CreatePassword({
                 boxProps={{ marginLeft: 3 }}
               >
                 {
-                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
                   t('passwordTermsWarning', [createPasswordLink])
-                  ///: END:ONLY_INCLUDE_IN
+                  ///: END:ONLY_INCLUDE_IF
                 }
                 {
-                  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
                   t('passwordMmiTermsWarning', [createPasswordLink])
-                  ///: END:ONLY_INCLUDE_IN
+                  ///: END:ONLY_INCLUDE_IF
                 }
               </Typography>
             </label>
           </Box>
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             <Button
               type="primary"
               large
@@ -362,11 +362,11 @@ export default function CreatePassword({
             >
               {t('continue')}
             </Button>
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
 
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
             <Button
               data-testid={
                 secretRecoveryPhrase &&
@@ -385,7 +385,7 @@ export default function CreatePassword({
                 ? t('importMyWallet')
                 : t('createNewWallet')}
             </Button>
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
         </form>
       </Box>

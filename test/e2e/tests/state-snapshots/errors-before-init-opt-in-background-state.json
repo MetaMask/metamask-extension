@@ -1,11 +1,15 @@
 {
   "data": {
+    "AccountsController": {
+      "internalAccounts": { "selectedAccount": "string", "accounts": "object" }
+    },
     "AlertController": {
       "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
       "unconnectedAccountAlertShownOrigins": "object",
       "web3ShimUsageOrigins": "object"
     },
     "AnnouncementController": { "announcements": "object" },
+    "NetworkOrderController": { "orderedNetworkList": {} },
     "AppStateController": {
       "browserEnvironment": {},
       "nftsDropdownState": {},
@@ -120,7 +124,9 @@
       "ignoredTokens": "object",
       "tokens": "object"
     },
-    "TransactionController": { "transactions": "object" },
+    "TransactionController": {
+      "transactions": "object"
+    },
     "config": "object",
     "firstTimeInfo": "object"
   }

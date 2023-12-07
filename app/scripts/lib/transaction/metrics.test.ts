@@ -1,12 +1,14 @@
 import { Provider } from '@metamask/network-controller';
 import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   createTestProviderTools,
   getTestAccounts,
 } from '../../../../test/stub/provider';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
-  TransactionType,
-  TransactionStatus,
   AssetType,
   TokenStandard,
   TransactionMetaMetricsEvent,
@@ -16,12 +18,12 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { TRANSACTION_ENVELOPE_TYPE_NAMES } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IN(blockaid)
+///: END:ONLY_INCLUDE_IF(blockaid)
 import {
   handleTransactionAdded,
   handleTransactionApproved,
@@ -31,6 +33,7 @@ import {
   handleTransactionRejected,
   handleTransactionSubmitted,
   METRICS_STATUS_FAILED,
+  TransactionMetricsRequest,
 } from './metrics';
 
 const providerResultStub = {
@@ -66,7 +69,7 @@ const mockTransactionMetricsRequest = {
   provider: provider as Provider,
   snapAndHardwareMessenger: jest.fn() as any,
   trackEvent: jest.fn(),
-};
+} as TransactionMetricsRequest;
 
 describe('Transaction metrics', () => {
   let fromAccount,
@@ -80,7 +83,7 @@ describe('Transaction metrics', () => {
 
   beforeEach(() => {
     fromAccount = getTestAccounts()[0];
-    mockChainId = '5';
+    mockChainId = '0x5';
     mockNetworkId = '5';
     mockActionId = '2';
     mockTransactionMeta = {
@@ -97,7 +100,6 @@ describe('Transaction metrics', () => {
       origin: ORIGIN_METAMASK,
       chainId: mockChainId,
       time: 1624408066355,
-      metamaskNetworkId: mockNetworkId,
       defaultGasEstimates: {
         gas: '0x7b0d',
         gasPrice: '0x77359400',
