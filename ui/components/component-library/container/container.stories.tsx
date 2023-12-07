@@ -22,6 +22,7 @@ export default {
   args: {
     children:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget nunc.',
+    maxWidth: ContainerMaxWidth.Sm,
   },
 } as Meta<typeof Container>;
 
@@ -35,21 +36,21 @@ DefaultStory.storyName = 'Default';
 export const MaxWidth: StoryFn<typeof Container> = (args) => {
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={8}>
-      <Container maxWidth={ContainerMaxWidth.Sm} {...args}>
+      <Container {...args} maxWidth={ContainerMaxWidth.Sm}>
         Small breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing
         elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam
         nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget
         aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget
         nunc.
       </Container>
-      <Container maxWidth={ContainerMaxWidth.Md} {...args}>
+      <Container {...args} maxWidth={ContainerMaxWidth.Md}>
         Medium breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing
         elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam
         nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget
         aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget
         nunc.
       </Container>
-      <Container maxWidth={ContainerMaxWidth.Lg} {...args}>
+      <Container {...args} maxWidth={ContainerMaxWidth.Lg}>
         Large breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing
         elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam
         nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget
@@ -65,4 +66,6 @@ export const MaxWidth: StoryFn<typeof Container> = (args) => {
     </Box>
   );
 };
-MaxWidth.args = {};
+MaxWidth.args = {
+  maxWidth: undefined,
+};
