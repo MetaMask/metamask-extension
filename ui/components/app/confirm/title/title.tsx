@@ -1,10 +1,10 @@
 import React from 'react';
-import { Text } from '../../../../component-library';
+import { Text } from '../../../component-library';
 import {
   TextVariant,
   TextAlign,
   TextColor,
-} from '../../../../../helpers/constants/design-system';
+} from '../../../../helpers/constants/design-system';
 
 interface ConfirmTitleProps {
   title: string;

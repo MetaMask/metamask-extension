@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box } from '../../../../component-library';
+import { Box } from '../../../component-library';
 import {
   Display,
   FlexDirection,
-} from '../../../../../helpers/constants/design-system';
+} from '../../../../helpers/constants/design-system';
 
 interface ConfirmInfoSectionProps {
   children: React.ReactNode | React.ReactNode[];
