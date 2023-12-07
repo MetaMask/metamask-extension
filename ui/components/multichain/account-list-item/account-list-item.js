@@ -98,9 +98,7 @@ export const AccountListItem = ({
   const { totalWeiBalance, orderedTokenList } = useAccountTotalFiatBalance(
     identity.address,
   );
-  const balanceToTranslate = process.env.MULTICHAIN
-    ? totalWeiBalance
-    : identity.balance;
+  const balanceToTranslate = totalWeiBalance;
 
   // If this is the selected item in the Account menu,
   // scroll the item into view
