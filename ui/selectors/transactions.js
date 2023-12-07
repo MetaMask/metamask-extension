@@ -1,18 +1,18 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import {
-  TransactionStatus,
-  TransactionType,
-} from '@metamask/transaction-controller';
-import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions';
 import txHelper from '../helpers/utils/tx-helper';
-import { SmartTransactionStatus } from '../../shared/constants/transaction';
+import {
+  TransactionStatus,
+  TransactionType,
+  SmartTransactionStatus,
+} from '../../shared/constants/transaction';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
-import { getCurrentChainId, getSelectedAddress } from './selectors';
+import { getCurrentChainId, getSelectedInternalAccount } from './selectors';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 
@@ -33,9 +33,9 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
 
     const { chainId } = getProviderConfig(state);
 
-    return transactions
-      .filter((transaction) => transaction.chainId === chainId)
-      .sort((a, b) => a.time - b.time); // Ascending
+    return transactions.filter(
+      (transaction) => transaction.chainId === chainId,
+    );
   },
   (transactions) => transactions,
 );
@@ -64,7 +64,7 @@ export const incomingTxListSelector = createDeepEqualSelector(
     }
 
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);
-    const selectedAddress = getSelectedAddress(state);
+    const { address: selectedAddress } = getSelectedInternalAccount(state);
 
     return currentNetworkTransactions.filter(
       (tx) =>
@@ -98,13 +98,14 @@ export const smartTransactionsListSelector = (state) =>
     }));
 
 export const selectedAddressTxListSelector = createSelector(
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getCurrentNetworkTransactions,
   smartTransactionsListSelector,
-  (selectedAddress, transactions = [], smTransactions = []) => {
+  (selectedInternalAccount, transactions = [], smTransactions = []) => {
     return transactions
-      .filter(({ txParams }) => txParams.from === selectedAddress)
-      .filter(({ type }) => type !== TransactionType.incoming)
+      .filter(
+        ({ txParams }) => txParams.from === selectedInternalAccount.address,
+      )
       .concat(smTransactions);
   },
 );
@@ -290,9 +291,9 @@ export const nonceSortedTransactionsSelector = createSelector(
       let shouldNotBeGrouped =
         typeof nonce === 'undefined' || type === TransactionType.incoming;
 
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
       shouldNotBeGrouped = shouldNotBeGrouped || Boolean(transaction.custodyId);
-      ///: END:ONLY_INCLUDE_IF
+      ///: END:ONLY_INCLUDE_IN
 
       if (shouldNotBeGrouped) {
         const transactionGroup = {

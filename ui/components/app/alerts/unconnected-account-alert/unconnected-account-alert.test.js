@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
 import { tick } from '../../../../../test/lib/tick';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
@@ -17,6 +18,38 @@ import UnconnectedAccountAlert from '.';
 
 describe('Unconnected Account Alert', () => {
   const selectedAddress = '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b';
+
+  const internalAccounts = {
+    accounts: {
+      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+        address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          name: 'Account 1',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [...Object.values(EthMethod)],
+        type: EthAccountType.Eoa,
+      },
+      '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+        address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+        id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+        metadata: {
+          name: 'Account 2',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [...Object.values(EthMethod)],
+        type: EthAccountType.Eoa,
+      },
+    },
+    selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+  };
 
   const identities = {
     '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
@@ -61,6 +94,7 @@ describe('Unconnected Account Alert', () => {
     metamask: {
       selectedAddress,
       identities,
+      internalAccounts,
       accounts,
       cachedBalances,
       keyrings,

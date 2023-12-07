@@ -790,7 +790,7 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
         metamaskState.useNftDetection,
       [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
-        metamaskState.identities,
+        metamaskState.internalAccounts.accounts,
       ).length,
       [MetaMetricsUserTrait.NumberOfNftCollections]:
         this._getAllUniqueNFTAddressesLength(metamaskState.allNfts),

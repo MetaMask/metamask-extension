@@ -1,9 +1,10 @@
 import { head, last } from 'lodash';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import {
   TransactionStatus,
   TransactionType,
-} from '@metamask/transaction-controller';
-import { CHAIN_IDS } from '../../shared/constants/network';
+} from '../../shared/constants/transaction';
 import { nonceSortedTransactionsSelector } from './transactions';
 
 const RECIPIENTS = {
@@ -86,6 +87,24 @@ const getStateTree = ({
     },
     unapprovedMsgs,
     selectedAddress: SENDERS.ONE,
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: SENDERS.ONE,
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Test Account',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
     featureFlags: {},
     transactions: [...incomingTxList, ...txList],
     incomingTransactionsPreferences: {},
