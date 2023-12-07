@@ -3296,6 +3296,11 @@ export function setSwapsFeatureFlags(
   };
 }
 
+type Quotes = [
+  { destinationAmount: string; decimals: number; aggregator: string },
+  string,
+];
+
 export function fetchAndSetQuotes(
   fetchParams: {
     slippage: string;
@@ -3313,18 +3318,13 @@ export function fetchAndSetQuotes(
     chainId: string;
   },
 ): ThunkAction<
-  Promise<
-    [
-      { destinationAmount: string; decimals: number; aggregator: string },
-      string,
-    ]
-  >,
+  Promise<Quotes>,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    const [quotes, selectedAggId] = await submitRequestToBackground(
+    const [quotes, selectedAggId] = await submitRequestToBackground<Quotes>(
       'fetchAndSetQuotes',
       [fetchParams, fetchParamsMetaData],
     );
