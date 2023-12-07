@@ -1277,158 +1277,17 @@
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": {
       "globals": {
-        "AbortController": true,
-        "SharedWorker": true,
         "__TREZOR_CONNECT_SRC": true,
         "chrome": true,
-        "clearTimeout": true,
         "console.error": true,
         "console.log": true,
         "console.warn": true,
         "location": true,
-        "navigator": true,
-        "setTimeout": true
+        "navigator": true
       },
       "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/connect-common": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>bignumber.js": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>parse-uri": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>tslib": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "browserify>process": true,
-        "ethereumjs-util>ethereum-cryptography>blakejs": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check>bs58": true,
-        "mocha>serialize-javascript>randombytes": true,
-        "mockttp>cross-fetch": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link": {
-      "globals": {
-        "WebSocket": true,
-        "Worker": true,
-        "WorkerGlobalScope": true,
-        "clearTimeout": true,
-        "console": true,
-        "importScripts": true,
-        "onmessage": "write",
-        "postMessage": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>bignumber.js": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib": {
-      "globals": {
-        "TextEncoder": true,
-        "WebSocket": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.log": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>bignumber.js": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>jsonschema": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-address-codec": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-binary-codec": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-keypairs": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-lib-transactionparser": true,
-        "browserify>assert": true,
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify": true,
-        "browserify>https-browserify": true,
-        "browserify>url": true,
-        "browserify>util": true,
-        "lodash": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>jsonschema": {
-      "packages": {
-        "browserify>url": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-address-codec": {
-      "packages": {
-        "@ensdomains/content-hash>multihashes>multibase>base-x": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "ethereumjs-util>create-hash": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-binary-codec": {
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-address-codec": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-binary-codec>buffer": true,
-        "browserify>assert": true,
-        "ethereumjs-util>create-hash": true,
-        "jsdom>decimal.js": true,
-        "storybook>@storybook/cli>@storybook/core-server>@aw-web-design/x-default-browser>default-browser-id>bplist-parser>big-integer": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-binary-codec>buffer": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "base64-js": true,
-        "browserify>buffer>ieee754": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-keypairs": {
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-address-codec": true,
-        "@metamask/ppom-validator>elliptic": true,
-        "@metamask/ppom-validator>elliptic>brorand": true,
-        "bn.js": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>hash.js": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-lib-transactionparser": {
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-lib-transactionparser>bignumber.js": true,
-        "browserify>assert": true,
-        "lodash": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/blockchain-link>ripple-lib>ripple-lib-transactionparser>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/connect-common": {
-      "globals": {
-        "localStorage.getItem": true,
-        "localStorage.setItem": true,
-        "window": true
+        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>tslib": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": {
@@ -1498,122 +1357,6 @@
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs>@protobufjs/aspromise": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs>@protobufjs/inquire": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib": {
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bchaddrjs": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bip66": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bitcoin-ops": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bs58": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>int64-buffer": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>pushdata-bitcoin": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>typeforce": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>varuint-bitcoin": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>wif": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify>create-hmac": true,
-        "eth-lattice-keyring>gridplus-sdk>bech32": true,
-        "ethereumjs-util>create-hash": true,
-        "ethereumjs-util>ethereum-cryptography>blakejs": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bchaddrjs": {
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bchaddrjs>buffer": true,
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bchaddrjs>cashaddrjs": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bchaddrjs>buffer": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "base64-js": true,
-        "browserify>buffer>ieee754": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bchaddrjs>cashaddrjs": {
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bchaddrjs>cashaddrjs>big-integer": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bchaddrjs>cashaddrjs>big-integer": {
-      "globals": {
-        "define": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bip66": {
-      "packages": {
-        "koa>content-disposition>safe-buffer": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": {
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash>readable-stream": true,
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bs58": {
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bs58>base-x": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>int64-buffer": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>pushdata-bitcoin": {
-      "packages": {
-        "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bitcoin-ops": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": {
-      "packages": {
-        "@metamask/ppom-validator>elliptic": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "browserify>crypto-browserify>create-hmac": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>typeforce": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>varuint-bitcoin": {
-      "packages": {
-        "koa>content-disposition>safe-buffer": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>wif": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true
-      }
-    },
-    "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>tslib": {
@@ -3869,12 +3612,6 @@
         "mocha>serialize-javascript>randombytes": true
       }
     },
-    "ethereumjs-util>ethereum-cryptography>blakejs": {
-      "globals": {
-        "TextEncoder": true,
-        "console.log": true
-      }
-    },
     "ethereumjs-util>ethereum-cryptography>browserify-aes": {
       "packages": {
         "browserify>buffer": true,
@@ -4144,13 +3881,6 @@
         "string.prototype.matchall>has-symbols": true
       }
     },
-    "jsdom>decimal.js": {
-      "globals": {
-        "crypto": true,
-        "define": true,
-        "self": true
-      }
-    },
     "json-rpc-engine": {
       "packages": {
         "@metamask/safe-event-emitter": true,
@@ -4264,15 +3994,6 @@
       "packages": {
         "browserify>process": true,
         "koa>content-disposition>safe-buffer": true
-      }
-    },
-    "mockttp>cross-fetch": {
-      "globals": {
-        "Blob": true,
-        "FileReader": true,
-        "FormData": true,
-        "URLSearchParams.prototype.isPrototypeOf": true,
-        "XMLHttpRequest": true
       }
     },
     "mockttp>graphql-tag>tslib": {
@@ -4964,11 +4685,6 @@
     "sinon>nise>path-to-regexp": {
       "packages": {
         "sinon>nise>path-to-regexp>isarray": true
-      }
-    },
-    "storybook>@storybook/cli>@storybook/core-server>@aw-web-design/x-default-browser>default-browser-id>bplist-parser>big-integer": {
-      "globals": {
-        "define": true
       }
     },
     "stream-browserify": {
