@@ -2208,6 +2208,7 @@
     },
     "@metamask/snaps-controllers": {
       "globals": {
+        "DecompressionStream": true,
         "URL": true,
         "chrome.offscreen.createDocument": true,
         "chrome.offscreen.hasDocument": true,
@@ -2217,16 +2218,15 @@
         "setTimeout": true
       },
       "packages": {
-        "@metamask/base-controller": true,
+        "@metamask/permission-controller": true,
         "@metamask/post-message-stream": true,
         "@metamask/providers>@metamask/json-rpc-engine": true,
         "@metamask/providers>@metamask/object-multiplex": true,
         "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>@metamask/permission-controller": true,
+        "@metamask/snaps-controllers>@metamask/base-controller": true,
         "@metamask/snaps-controllers>@xstate/fsm": true,
         "@metamask/snaps-controllers>concat-stream": true,
         "@metamask/snaps-controllers>get-npm-tarball-url": true,
-        "@metamask/snaps-controllers>gunzip-maybe": true,
         "@metamask/snaps-controllers>nanoid": true,
         "@metamask/snaps-controllers>readable-stream": true,
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
@@ -2236,6 +2236,7 @@
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "@metamask/utils": true,
+        "browserify>browserify-zlib": true,
         "json-rpc-middleware-stream": true
       }
     },
@@ -2244,18 +2245,11 @@
         "crypto.getRandomValues": true
       }
     },
-    "@metamask/snaps-controllers>@metamask/permission-controller": {
+    "@metamask/snaps-controllers>@metamask/base-controller": {
       "globals": {
-        "console.error": true
+        "setTimeout": true
       },
       "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-controllers>nanoid": true,
-        "@metamask/utils": true,
-        "deep-freeze-strict": true,
         "immer": true
       }
     },
@@ -2266,84 +2260,6 @@
         "browserify>concat-stream>typedarray": true,
         "pumpify>inherits": true,
         "terser>source-map-support>buffer-from": true
-      }
-    },
-    "@metamask/snaps-controllers>gunzip-maybe": {
-      "packages": {
-        "@metamask/snaps-controllers>gunzip-maybe>browserify-zlib": true,
-        "@metamask/snaps-controllers>gunzip-maybe>is-deflate": true,
-        "@metamask/snaps-controllers>gunzip-maybe>is-gzip": true,
-        "@metamask/snaps-controllers>gunzip-maybe>peek-stream": true,
-        "@metamask/snaps-controllers>gunzip-maybe>pumpify": true,
-        "@metamask/snaps-controllers>gunzip-maybe>through2": true
-      }
-    },
-    "@metamask/snaps-controllers>gunzip-maybe>browserify-zlib": {
-      "packages": {
-        "@metamask/snaps-controllers>gunzip-maybe>browserify-zlib>pako": true,
-        "browserify>assert": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>util": true,
-        "readable-stream": true
-      }
-    },
-    "@metamask/snaps-controllers>gunzip-maybe>peek-stream": {
-      "packages": {
-        "@metamask/snaps-controllers>gunzip-maybe>peek-stream>duplexify": true,
-        "@metamask/snaps-controllers>gunzip-maybe>peek-stream>through2": true,
-        "browserify>buffer": true,
-        "terser>source-map-support>buffer-from": true
-      }
-    },
-    "@metamask/snaps-controllers>gunzip-maybe>peek-stream>duplexify": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "duplexify>stream-shift": true,
-        "end-of-stream": true,
-        "pumpify>inherits": true,
-        "readable-stream": true
-      }
-    },
-    "@metamask/snaps-controllers>gunzip-maybe>peek-stream>through2": {
-      "packages": {
-        "browserify>process": true,
-        "browserify>util": true,
-        "readable-stream": true,
-        "watchify>xtend": true
-      }
-    },
-    "@metamask/snaps-controllers>gunzip-maybe>pumpify": {
-      "packages": {
-        "@metamask/snaps-controllers>gunzip-maybe>pumpify>duplexify": true,
-        "@metamask/snaps-controllers>gunzip-maybe>pumpify>pump": true,
-        "pumpify>inherits": true
-      }
-    },
-    "@metamask/snaps-controllers>gunzip-maybe>pumpify>duplexify": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "duplexify>stream-shift": true,
-        "end-of-stream": true,
-        "pumpify>inherits": true,
-        "readable-stream": true
-      }
-    },
-    "@metamask/snaps-controllers>gunzip-maybe>pumpify>pump": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "end-of-stream": true,
-        "pump>once": true
-      }
-    },
-    "@metamask/snaps-controllers>gunzip-maybe>through2": {
-      "packages": {
-        "browserify>process": true,
-        "browserify>util": true,
-        "readable-stream": true,
-        "watchify>xtend": true
       }
     },
     "@metamask/snaps-controllers>nanoid": {
@@ -2407,8 +2323,8 @@
     "@metamask/snaps-rpc-methods": {
       "packages": {
         "@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-rpc-methods>@metamask/permission-controller": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -2416,27 +2332,10 @@
         "superstruct": true
       }
     },
-    "@metamask/snaps-rpc-methods>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": true,
-        "@metamask/utils": true,
-        "deep-freeze-strict": true,
-        "immer": true
-      }
-    },
-    "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@metamask/snaps-sdk": {
+      "globals": {
+        "fetch": true
+      },
       "packages": {
         "@metamask/snaps-sdk>is-svg": true,
         "@metamask/utils": true,
@@ -2459,6 +2358,8 @@
     },
     "@metamask/snaps-utils": {
       "globals": {
+        "File": true,
+        "FileReader": true,
         "TextDecoder": true,
         "URL": true,
         "console.error": true,
@@ -2466,14 +2367,15 @@
         "console.warn": true,
         "crypto": true,
         "document.body.appendChild": true,
-        "document.createElement": true
+        "document.createElement": true,
+        "fetch": true
       },
       "packages": {
         "@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>is-svg": true,
-        "@metamask/snaps-utils>@metamask/permission-controller": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>rfdc": true,
@@ -2481,32 +2383,13 @@
         "@metamask/utils": true,
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
+        "browserify": true,
         "browserify>buffer": true,
         "browserify>path-browserify": true,
         "browserify>process": true,
         "chalk": true,
         "semver": true,
         "superstruct": true
-      }
-    },
-    "@metamask/snaps-utils>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-utils>@metamask/permission-controller>nanoid": true,
-        "@metamask/utils": true,
-        "deep-freeze-strict": true,
-        "immer": true
-      }
-    },
-    "@metamask/snaps-utils>@metamask/permission-controller>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
       }
     },
     "@metamask/snaps-utils>@metamask/snaps-registry": {

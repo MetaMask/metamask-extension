@@ -2094,8 +2094,8 @@
     "@metamask/snaps-rpc-methods": {
       "packages": {
         "@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-rpc-methods>@metamask/permission-controller": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
@@ -2103,27 +2103,10 @@
         "superstruct": true
       }
     },
-    "@metamask/snaps-rpc-methods>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": true,
-        "@metamask/utils": true,
-        "deep-freeze-strict": true,
-        "immer": true
-      }
-    },
-    "@metamask/snaps-rpc-methods>@metamask/permission-controller>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
-      }
-    },
     "@metamask/snaps-sdk": {
+      "globals": {
+        "fetch": true
+      },
       "packages": {
         "@metamask/snaps-sdk>is-svg": true,
         "@metamask/utils": true,
@@ -2146,6 +2129,8 @@
     },
     "@metamask/snaps-utils": {
       "globals": {
+        "File": true,
+        "FileReader": true,
         "TextDecoder": true,
         "URL": true,
         "console.error": true,
@@ -2153,14 +2138,15 @@
         "console.warn": true,
         "crypto": true,
         "document.body.appendChild": true,
-        "document.createElement": true
+        "document.createElement": true,
+        "fetch": true
       },
       "packages": {
         "@metamask/key-tree": true,
+        "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-sdk>is-svg": true,
-        "@metamask/snaps-utils>@metamask/permission-controller": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>rfdc": true,
@@ -2168,32 +2154,13 @@
         "@metamask/utils": true,
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
+        "browserify": true,
         "browserify>buffer": true,
         "browserify>path-browserify": true,
         "browserify>process": true,
         "chalk": true,
         "semver": true,
         "superstruct": true
-      }
-    },
-    "@metamask/snaps-utils>@metamask/permission-controller": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/providers>@metamask/json-rpc-engine": true,
-        "@metamask/providers>@metamask/rpc-errors": true,
-        "@metamask/snaps-utils>@metamask/permission-controller>nanoid": true,
-        "@metamask/utils": true,
-        "deep-freeze-strict": true,
-        "immer": true
-      }
-    },
-    "@metamask/snaps-utils>@metamask/permission-controller>nanoid": {
-      "globals": {
-        "crypto.getRandomValues": true
       }
     },
     "@metamask/snaps-utils>cron-parser": {
