@@ -14,7 +14,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 /**
- * @deprecated This has been deprecated in favor of the TypeScription version `<TextFeildSearch />` component in ./ui/components/component-library/text-field-search/text-field-search.js
+ * @deprecated This has been deprecated in favor of the TypeScript version `<TextFeildSearch />` component in ./ui/components/component-library/text-field-search/text-field-search.tsx
  * See storybook documentation for TextFieldSearch here https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-textfieldsearch--docs
  */
 
