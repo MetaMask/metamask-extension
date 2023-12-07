@@ -1,4 +1,7 @@
 {
+  "DragAndDropBanner": {
+    "message": "You can drag networks to reorder them. "
+  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -489,6 +492,10 @@
   "attributions": {
     "message": "Attributions"
   },
+  "auroraDeprecationWarning": {
+    "message": "MetaMask will be deprecating support for $1 network",
+    "description": "$1 is name of deprecated network"
+  },
   "authorizedPermissions": {
     "message": "You have authorized the following permissions"
   },
@@ -716,7 +723,7 @@
     "message": "This Chain ID is currently used by the $1 network."
   },
   "chainListReturnedDifferentTickerSymbol": {
-    "message": "This network doesn’t match its associated chain ID or name. Many popular tokens use the name [$1], making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
+    "message": "This network doesn’t match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
     "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
@@ -1223,11 +1230,8 @@
   "deposit": {
     "message": "Deposit"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Learn more"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Due to the protocol changes of Ethereum: Rinkeby, Ropsten and Kovan test networks may not work as reliably and will be deprecated soon."
+  "deprecatedAuroraNetworkMsg": {
+    "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
   },
   "description": {
     "message": "Description"
@@ -1379,8 +1383,14 @@
   "displayNftMediaDescription": {
     "message": "Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off."
   },
+  "doNotShare": {
+    "message": "Do not share this with anyone"
+  },
   "domain": {
     "message": "Domain"
+  },
+  "domainNotSupportedOnNetwork": {
+    "message": "Network does not support domain lookup"
   },
   "done": {
     "message": "Done"
@@ -1504,6 +1514,9 @@
   "enableFromSettings": {
     "message": " Enable it from Settings."
   },
+  "enableSmartSwaps": {
+    "message": "Enable Smart Swaps"
+  },
   "enableSnap": {
     "message": "Enable"
   },
@@ -1545,12 +1558,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Illegal character for ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS name not found on the current network. Try switching to Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Network does not support ENS"
   },
   "ensRegistrationError": {
     "message": "Error in ENS name registration"
@@ -1902,6 +1909,10 @@
   "hideSeedPhrase": {
     "message": "Hide seed phrase"
   },
+  "hideSentitiveInfo": {
+    "message": "Hide sensitive information"
+  },
+
   "hideToken": {
     "message": "Hide token"
   },
@@ -2513,6 +2524,16 @@
   "nativeToken": {
     "message": "The native token on this network is $1. It is the token used for gas fees.",
     "description": "$1 represents the name of the native token on the current network"
+  },
+  "nativeTokenScamWarningConversion": {
+    "message": "Edit network details"
+  },
+  "nativeTokenScamWarningDescription": {
+    "message": "This network doesn't match its associated chain ID or name. Many popular tokens use the name $1, making it a target for scams. Scammers may trick you into sending them more valuable currency in return. Verify everything before you continue.",
+    "description": "$1 represents the currency name"
+  },
+  "nativeTokenScamWarningTitle": {
+    "message": "This is a potential scam"
   },
   "needHelp": {
     "message": "Need help? Contact $1",
@@ -3477,6 +3498,14 @@
     "message": "Allow $1 to store, update, and retrieve data securely with encryption. Other snaps cannot access this information.",
     "description": "An extended description for the `snap_manageState` permission. $1 is the snap name."
   },
+  "permission_nameLookup": {
+    "message": "Provide domain and address lookups.",
+    "description": "The description for the `endowment:name-lookup` permission."
+  },
+  "permission_nameLookupDescription": {
+    "message": "Allow the snap to fetch and display address and domain lookups in different parts of the MetaMask UI.",
+    "description": "An extended description for the `endowment:name-lookup` permission."
+  },
   "permission_notifications": {
     "message": "Show notifications.",
     "description": "The description for the `snap_notify` permission"
@@ -3861,6 +3890,9 @@
     "message": "MetaMask Support will never request this.",
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
+  "revealSensitiveContent": {
+    "message": "Reveal sensitive content"
+  },
   "revealTheSeedPhrase": {
     "message": "Reveal seed phrase"
   },
@@ -4206,8 +4238,8 @@
   "smartContracts": {
     "message": "Smart contracts"
   },
-  "smartSwap": {
-    "message": "Smart swap"
+  "smartSwaps": {
+    "message": "Smart Swaps"
   },
   "smartSwapsAreHere": {
     "message": "Smart Swaps are here!"
@@ -4380,6 +4412,10 @@
   "snapResultSuccessDescription": {
     "message": "$1 is ready to use"
   },
+  "snapUpdateAlertDescription": {
+    "message": "Get the latest version of $1",
+    "description": "Description used in Snap update alert banner when snap update is available. $1 is the Snap name."
+  },
   "snapUpdateAvailable": {
     "message": "Update available"
   },
@@ -4392,8 +4428,8 @@
     "description": "Error title used when snap update fails."
   },
   "snapUpdateRequest": {
-    "message": "$1 wants to update $2 to $3 which gives it the following permissions. Only continue if you trust $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
+    "message": "Updating $1 to $2 gives it the following permissions. Only continue if you trust $1.",
+    "description": "$1 is the snap name and $2 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Update complete"
@@ -4588,9 +4624,6 @@
   "stakeDescription": {
     "message": "Stake your crypto to earn rewards"
   },
-  "startSwapping": {
-    "message": "Start swapping"
-  },
   "stateLogError": {
     "message": "Error in retrieving state logs."
   },
@@ -4711,6 +4744,12 @@
   },
   "submitted": {
     "message": "Submitted"
+  },
+  "suggestedBy": {
+    "message": "Suggested by"
+  },
+  "suggestedTokenSymbol": {
+    "message": "Suggested ticker symbol:"
   },
   "support": {
     "message": "Support"
@@ -5434,12 +5473,6 @@
   },
   "transactionInsightWarningHeader": {
     "message": "This request may be risky"
-  },
-  "transactionInsightsDeprecationInfo": {
-    "message": "Explore more ways to get transaction insights with"
-  },
-  "transactionInsightsDeprecationTitle": {
-    "message": "This feature will be deprecated soon"
   },
   "transactionNote": {
     "message": "Transaction note"

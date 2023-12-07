@@ -1,12 +1,16 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
 import { CHAIN_ID_TO_RPC_URL_MAP } from '../../../shared/constants/network';
 
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck';
 
 import {
@@ -19,6 +23,7 @@ import {
   tryReverseResolveAddress,
   setDefaultHomeActiveTabName,
   addToAddressBook,
+  updateTransaction,
 } from '../../store/actions';
 import { isBalanceSufficient } from '../send/send.utils';
 import { shortenAddress, valuesFor } from '../../helpers/utils/util';
@@ -58,9 +63,9 @@ import {
 } from '../../ducks/metamask/metamask';
 import {
   addHexPrefix,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getEnvironmentType,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../app/scripts/lib/util';
 
 import {
@@ -76,7 +81,7 @@ import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getAccountType } from '../../selectors/selectors';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import {
@@ -84,11 +89,7 @@ import {
   getIsCustodianPublishesTransactionSupported,
 } from '../../selectors/institutional/selectors';
 import { showCustodyConfirmLink } from '../../store/institutional/institution-actions';
-///: END:ONLY_INCLUDE_IN
-import {
-  TransactionStatus,
-  TransactionType,
-} from '../../../shared/constants/transaction';
+///: END:ONLY_INCLUDE_IF
 import { getTokenAddressParam } from '../../helpers/utils/token-util';
 import { calcGasTotal } from '../../../shared/lib/transactions-controller-utils';
 import ConfirmTransactionBase from './confirm-transaction-base.component';
@@ -119,10 +120,10 @@ const mapStateToProps = (state, ownProps) => {
   const { id: paramsTransactionId } = params;
   const isMainnet = getIsMainnet(state);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const envType = getEnvironmentType();
   const isNotification = envType === ENVIRONMENT_TYPE_NOTIFICATION;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const isGasEstimatesLoading = getIsGasEstimatesLoading(state);
   const gasLoadingAnimationIsShowing = getGasLoadingAnimationIsShowing(state);
@@ -217,7 +218,7 @@ const mapStateToProps = (state, ownProps) => {
     txParamsAreDappSuggested(fullTxData);
   const fromAddressIsLedger = isAddressLedger(state, fromAddress);
   const nativeCurrency = getNativeCurrency(state);
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const accountType = getAccountType(state, fromAddress);
   const fromChecksumHexAddress = toChecksumHexAddress(fromAddress);
   const isNoteToTraderSupported = getIsNoteToTraderSupported(
@@ -231,7 +232,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const rpcUrl = customRpcUrl || builtinRpcUrl;
 
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const hardwareWalletRequiresConnection =
     doesAddressRequireLedgerHidConnection(state, fromAddress);
@@ -289,20 +290,20 @@ const mapStateToProps = (state, ownProps) => {
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
     keyringForAccount: keyring,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,
     isNotification,
     custodianPublishesTransaction,
     rpcUrl,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 
 export const mapDispatchToProps = (dispatch) => {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   return {
     tryReverseResolveAddress: (address) => {
       return dispatch(tryReverseResolveAddress(address));
@@ -337,6 +338,9 @@ export const mapDispatchToProps = (dispatch) => {
           loadingIndicatorMessage,
         ),
       ),
+    updateTransaction: (txMeta) => {
+      dispatch(updateTransaction(txMeta, true));
+    },
     getNextNonce: () => dispatch(getNextNonce()),
     setDefaultHomeActiveTabName: (tabName) =>
       dispatch(setDefaultHomeActiveTabName(tabName)),
@@ -349,7 +353,7 @@ export const mapDispatchToProps = (dispatch) => {
         dispatch(addToAddressBook(hexPrefixedAddress, nickname));
       }
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     getCustodianConfirmDeepLink: (id) =>
       dispatch(mmiActions.getCustodianConfirmDeepLink(id)),
     showTransactionsFailedModal: (errorMessage, closeNotification) =>
@@ -379,7 +383,7 @@ export const mapDispatchToProps = (dispatch) => {
       }),
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 
@@ -394,11 +398,11 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 
   let isMainBetaFlask = ownProps.isMainBetaFlask || false;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   if (ownProps.isMainBetaFlask === undefined) {
     isMainBetaFlask = true;
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   return {
     ...stateProps,

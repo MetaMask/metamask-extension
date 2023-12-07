@@ -2,6 +2,7 @@ import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../shared/constants/network';
 
 const state = {
@@ -29,6 +30,7 @@ const state = {
         },
       },
     },
+    orderedNetworkList: [],
     tokenList: {
       '0x514910771af9ca656af840dff83e8264ecf986ca': {
         address: '0x514910771af9ca656af840dff83e8264ecf986ca',
@@ -240,45 +242,40 @@ const state = {
         svgIcon: '<svg>...</svg>',
         version: '0.6.0',
       },
-      'Filecoin Snap': {
-        enabled: true,
-        id: 'npm:http://localhost:8080/',
+      'npm:@metamask/test-snap-bip44': {
+        id: 'npm:@metamask/test-snap-bip44',
+        origin: 'npm:@metamask/test-snap-bip44',
+        version: '5.1.2',
+        iconUrl: null,
         initialPermissions: {
-          snap_dialog: {},
-          eth_accounts: {},
-          snap_manageState: {},
+          'endowment:ethereum-provider': {},
         },
         manifest: {
-          description:
-            'This swap provides developers everywhere access to an entirely new data storage paradigm, even letting your programs store data autonomously. Learn more.',
-          initialPermissions: {
-            snap_dialog: {},
-            eth_accounts: {},
-            snap_manageState: {},
-          },
-          manifestVersion: '0.1',
-          proposedName: 'Filecoin Snap',
+          description: 'An example Snap that signs messages using BLS.',
+          proposedName: 'BIP-44 Test Snap',
           repository: {
             type: 'git',
-            url: 'https://github.com/MetaMask/snaps-skunkworks.git',
+            url: 'https://github.com/MetaMask/test-snaps.git',
           },
           source: {
             location: {
               npm: {
                 filePath: 'dist/bundle.js',
-                iconPath: 'images/icon.svg',
-                packageName: '@metamask/example-snap',
-                registry: 'https://registry.npmjs.org/',
+                packageName: '@metamask/test-snap-bip44',
+                registry: 'https://registry.npmjs.org',
               },
             },
-            shasum: '3lEt0yUu080DwV78neROaAAIQWXukSkMnP4OBhOhBnE=',
+            shasum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
           },
-          version: '0.6.0',
+          version: '5.1.2',
         },
-        sourceCode: '(...)',
-        status: 'stopped',
-        svgIcon: '<svg>...</svg>',
-        version: '0.6.0',
+        versionHistory: [
+          {
+            date: 1680686075921,
+            origin: 'https://metamask.github.io',
+            version: '5.1.2',
+          },
+        ],
       },
     },
     accountArray: [
@@ -300,6 +297,63 @@ const state = {
     isUnlocked: true,
     isAccountMenuOpen: false,
     rpcUrl: 'https://rawtestrpc.metamask.io/',
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'This is a Really Long Account Name',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+        '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+          address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+          id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+          metadata: {
+            name: 'Account 2',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+        '15e69915-2a1a-4019-93b3-916e11fd432f': {
+          address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
+          id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+          metadata: {
+            name: 'Account 3',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+        '784225f4-d30b-4e77-a900-c8bbce735b88': {
+          address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+          id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+          metadata: {
+            name: 'Account 4',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
     identities: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         name: 'This is a Really Long Account Name',
@@ -403,6 +457,57 @@ const state = {
     allDetectedTokens: {
       '0x5': {
         '0x9d0ba4ddac06032527b140912ec808ab9451b788': [
+          {
+            address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
+            decimals: 18,
+            symbol: 'LINK',
+            image:
+              'https://crypto.com/price/coin-data/icon/LINK/color_icon.png',
+            aggregators: [
+              'coinGecko',
+              'oneInch',
+              'paraswap',
+              'zapper',
+              'zerion',
+            ],
+          },
+          {
+            address: '0xc00e94Cb662C3520282E6f5717214004A7f26888',
+            decimals: 18,
+            symbol: 'COMP',
+            image:
+              'https://crypto.com/price/coin-data/icon/COMP/color_icon.png',
+            aggregators: [
+              'bancor',
+              'cmc',
+              'cryptocom',
+              'coinGecko',
+              'oneInch',
+              'paraswap',
+              'pmm',
+              'zapper',
+              'zerion',
+              'zeroEx',
+            ],
+          },
+          {
+            address: '0xfffffffFf15AbF397dA76f1dcc1A1604F45126DB',
+            decimals: 18,
+            symbol: 'FSW',
+            image:
+              'https://assets.coingecko.com/coins/images/12256/thumb/falconswap.png?1598534184',
+            aggregators: [
+              'aave',
+              'cmc',
+              'coinGecko',
+              'oneInch',
+              'paraswap',
+              'zapper',
+              'zerion',
+            ],
+          },
+        ],
+        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': [
           {
             address: '0x514910771AF9Ca656af840dff83E8264EcF986CA',
             decimals: 18,
@@ -571,7 +676,26 @@ const state = {
         balance: '0x15f6f0b9d4f8d000',
       },
     },
+    accountsByChainId: {
+      '0x5': {
+        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
+          address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+          balance: '0x176e5b6f173ebe66',
+        },
+        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
+          address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+          balance: '0x2d3142f5000',
+        },
+        '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
+          address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
+          balance: '0x15f6f0b9d4f8d000',
+        },
+      },
+    },
     currentBlockGasLimit: '0x793af4',
+    currentBlockGasLimitByChainId: {
+      '0x5': '0x793af4'
+    },
     transactions: [
       {
         chainId: '0x38',
@@ -623,7 +747,7 @@ const state = {
               path: '/txParams/nonce',
               timestamp: 1629582711220,
               value: '0x15b',
-            }
+            },
           ],
           [
             {
@@ -1347,6 +1471,71 @@ const state = {
       },
     },
     notifications: {},
+    database: {
+      verifiedSnaps: {
+        'local:http://localhost:8080/': {
+          id: 'local:http://localhost:8080/',
+          metadata: {
+            name: 'BIP-44',
+            author: {
+              name: 'Consensys',
+              website: 'https://consensys.io/',
+            },
+            website: 'https://snaps.consensys.io/',
+            summary: 'An example Snap that signs messages using BLS.',
+            description: 'An example Snap that signs messages using BLS.',
+            audits: [
+              {
+                auditor: 'Consensys Diligence',
+                report: 'https://consensys.io/diligence/audits/',
+              },
+            ],
+            category: 'interoperability',
+            support: {
+              contact: 'https://github.com/MetaMask',
+            },
+            sourceCode: 'https://github.com/MetaMask/test-snaps',
+          },
+          versions: {
+            '0.1.2': {
+              checksum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+            },
+          },
+        },
+        'npm:@metamask/test-snap-bip44': {
+          id: 'npm:@metamask/test-snap-bip44',
+          metadata: {
+            name: 'BIP-44',
+            author: {
+              name: 'Consensys',
+              website: 'https://consensys.io/',
+            },
+            website: 'https://snaps.consensys.io/',
+            summary: 'An example Snap that signs messages using BLS.',
+            description: 'An example Snap that signs messages using BLS.',
+            audits: [
+              {
+                auditor: 'Consensys Diligence',
+                report: 'https://consensys.io/diligence/audits/',
+              },
+            ],
+            category: 'interoperability',
+            support: {
+              contact: 'https://github.com/MetaMask',
+            },
+            sourceCode: 'https://github.com/MetaMask/test-snaps',
+          },
+          versions: {
+            '5.1.2': {
+              checksum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+            },
+            '5.1.3': {
+              checksum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+            },
+          },
+        },
+      },
+    },
   },
   appState: {
     shouldClose: false,

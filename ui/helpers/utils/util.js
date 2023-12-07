@@ -7,12 +7,12 @@ import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import slip44 from '@metamask/slip44';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { getSnapPrefix } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 // eslint-disable-next-line import/no-duplicates
 import { isObject } from '@metamask/utils';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 // eslint-disable-next-line import/no-duplicates
 import { isStrictHexString } from '@metamask/utils';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
@@ -28,12 +28,12 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   SNAPS_DERIVATION_PATHS,
   SNAPS_METADATA,
 } from '../../../shared/constants/snaps';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
@@ -120,6 +120,7 @@ export function isValidDomainName(address) {
     .match(
       /^(?:[a-z0-9](?:[-a-z0-9]*[a-z0-9])?\.)+[a-z0-9][-a-z0-9]*[a-z0-9]$/u,
     );
+
   return match !== null;
 }
 
@@ -578,7 +579,7 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * @param {string[]} path
  * @param {string} curve
@@ -644,7 +645,7 @@ export const getDedupedSnaps = (request, permissions) => {
   return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
 };
 
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 /**
  * The method escape RTL character in string

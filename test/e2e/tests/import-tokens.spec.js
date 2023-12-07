@@ -26,12 +26,11 @@ describe('Import flow', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Token list is only on mainnet
         await driver.clickElement('[data-testid="network-display"]');
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'button' });
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
 
         // Wait for network to change and token list to load from state
         await driver.delay(regularDelayMs);

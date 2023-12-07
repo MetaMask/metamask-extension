@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Para Yatır"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Daha fazla bilgi edinin"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Ethereum'da yaşanan protokol değişikliklerinden dolayı: Rinkeby, Ropsten, Kovan test ağları güvenilir bir şekilde çalışmayabilir ve yakında kullanım dışı olacak."
-  },
   "description": {
     "message": "Açıklama"
   },
@@ -1427,12 +1421,6 @@
   },
   "ensIllegalCharacter": {
     "message": "ENS için uygun olmayan karakter."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS adı geçerli ağda bulunamadı. Ethereum Ana Ağına geçmeyi deneyin."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Ağ ENS desteklemiyor"
   },
   "ensRegistrationError": {
     "message": "ENS adı kaydında hata"
@@ -3763,9 +3751,6 @@
   "smartContracts": {
     "message": "Akıllı sözleşmeler"
   },
-  "smartSwap": {
-    "message": "Akıllı swap"
-  },
   "smartSwapsAreHere": {
     "message": "Akıllı Swap'lar burada!"
   },
@@ -3873,10 +3858,6 @@
   "snapUpdateErrorTitle": {
     "message": "Güncelleme başarısız oldu",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1, $2 için aşağıdaki izinleri verecek şekilde $3 güncellemesi yapmak istiyor. Sadece $2 sürümüne güveniyorsanız devam edin.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Güncelleme tamamlandı"

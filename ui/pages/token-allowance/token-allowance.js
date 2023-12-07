@@ -61,15 +61,9 @@ import {
   NUM_W_OPT_DECIMAL_COMMA_OR_DOT_REGEX,
 } from '../../../shared/constants/tokens';
 import { isSuspiciousResponse } from '../../../shared/modules/security-provider.utils';
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-import { getBlockaidMetricsParams } from '../../helpers/utils/metrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../contexts/metametrics';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { ConfirmPageContainerNavigation } from '../../components/app/confirm-page-container';
 import { useSimulationFailureWarning } from '../../hooks/useSimulationFailureWarning';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
@@ -142,29 +136,6 @@ export default function TokenAllowance({
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
   const nextNonce = useSelector(getNextSuggestedNonce);
   const customNonceValue = useSelector(getCustomNonceValue);
-
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  const trackEvent = useContext(MetaMetricsContext);
-  ///: END:ONLY_INCLUDE_IN
-
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  useEffect(() => {
-    if (txData.securityAlertResponse) {
-      const blockaidMetricsParams = getBlockaidMetricsParams(
-        txData.securityAlertResponse,
-      );
-
-      trackEvent({
-        category: MetaMetricsEventCategory.Transactions,
-        event: MetaMetricsEventName.SignatureRequested,
-        properties: {
-          action: 'Sign Request',
-          ...blockaidMetricsParams,
-        },
-      });
-    }
-  }, [txData?.securityAlertResponse]);
-  ///: END:ONLY_INCLUDE_IN
 
   /**
    * We set the customSpendingCap to the dappProposedTokenAmount, if provided, rather than setting customTokenAmount
@@ -404,12 +375,12 @@ export default function TokenAllowance({
         chainId={fullTxData.chainId}
       />
       {
-        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
         <BlockaidBannerAlert
           securityAlertResponse={txData?.securityAlertResponse}
           margin={4}
         />
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       }
       {isSuspiciousResponse(txData?.securityProviderResponse) && (
         <SecurityProviderBannerMessage

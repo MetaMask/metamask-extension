@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Κατάθεση"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Μάθετε περισσότερα"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Λόγω των αλλαγών στο πρωτόκολλο του Ethereum: τα δοκιμαστικά δίκτυα Rinkeby, Ropsten και Kovan μπορεί να μη λειτουργούν τόσο αξιόπιστα και θα καταργηθούν σύντομα."
-  },
   "description": {
     "message": "Περιγραφή"
   },
@@ -1427,12 +1421,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Μη έγκυρος χαρακτήρας για το ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Το όνομα ENS δεν βρέθηκε στο τρέχον δίκτυο. Δοκιμάστε να μεταβείτε στο Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Το δίκτυο δεν υποστηρίζει ENS"
   },
   "ensRegistrationError": {
     "message": "Σφάλμα στην καταχώριση ονόματος ENS"
@@ -3763,9 +3751,6 @@
   "smartContracts": {
     "message": "Έξυπνα συμβόλαια"
   },
-  "smartSwap": {
-    "message": "Έξυπνες ανταλλαγές"
-  },
   "smartSwapsAreHere": {
     "message": "Οι Έξυπνες Ανταλλαγές είναι εδώ!"
   },
@@ -3873,10 +3858,6 @@
   "snapUpdateErrorTitle": {
     "message": "Η ενημέρωση απέτυχε",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "Το $1 θέλει να ενημερώσει το $2 στο $3, το οποίο του δίνει τις ακόλουθες άδειες. Συνεχίστε μόνο αν εμπιστεύεστε το $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Η ενημέρωση ολοκληρώθηκε"

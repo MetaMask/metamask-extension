@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Deposito"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Matuto pa"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Dahil sa mga pagbabago ng protokol ng Ethereum: ang mga test network na Rinkeby, Ropsten at Kovan ay maaaring hindi gumana tulad ng maaasahan at malapit nang itigil ang paggamit."
-  },
   "description": {
     "message": "Deskripsyon"
   },
@@ -1427,12 +1421,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Mga ilegal na character para sa ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Hindi nahanap ang pangalan ng ENS sa kasalukuyang network. Subukang lumipat sa Mainnet ng Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Hindi sinusuportahan ng network ang ENS"
   },
   "ensRegistrationError": {
     "message": "Nagka-error sa pag-register ng ENS name"
@@ -3763,9 +3751,6 @@
   "smartContracts": {
     "message": "Mga smart na kontrata"
   },
-  "smartSwap": {
-    "message": "Smart swap"
-  },
   "smartSwapsAreHere": {
     "message": "Nandito na ang mga Smart Swap!"
   },
@@ -3873,10 +3858,6 @@
   "snapUpdateErrorTitle": {
     "message": "Nabigo ang pag-update",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "Gustong i-update ng $1 ang $2 sa $3 na nagbibigay dito ng mga sumusunod na pahintulot. Magpatuloy lang kung pinagkakatiwalaan mo ang $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Tapos na ang pag-update"

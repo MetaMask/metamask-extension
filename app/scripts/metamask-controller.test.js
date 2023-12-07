@@ -14,18 +14,18 @@ import {
   METAMASK_STALELIST_FILE,
   METAMASK_HOTLIST_DIFF_FILE,
 } from '@metamask/phishing-controller';
+import { EthMethod, EthAccountType } from '@metamask/keyring-api';
 import { NetworkType } from '@metamask/controller-utils';
 import { ControllerMessenger } from '@metamask/base-controller';
 import { LoggingController, LogType } from '@metamask/logging-controller';
-import { TransactionStatus } from '../../shared/constants/transaction';
-import createTxMeta from '../../test/lib/createTxMeta';
+import { TransactionController } from '@metamask/transaction-controller';
 import { NETWORK_TYPES } from '../../shared/constants/network';
 import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
+import mockEncryptor from '../../test/lib/mock-encryptor';
 import { deferredPromise } from './lib/util';
-import TransactionController from './controllers/transactions';
 import MetaMaskController from './metamask-controller';
 
 const { Ganache } = require('../../test/e2e/ganache');
@@ -105,7 +105,6 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
   },
 }));
 
-const currentChainId = '0x5';
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
@@ -115,6 +114,20 @@ const TEST_ADDRESS_3 = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
 const TEST_SEED_ALT =
   'setup olympic issue mobile velvet surge alcohol burger horse view reopen gentle';
 const TEST_ADDRESS_ALT = '0xc42edfcc21ed14dda456aa0756c153f7985d8813';
+const TEST_INTERNAL_ACCOUNT = {
+  id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
+  address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+  metadata: {
+    name: 'Account 1',
+    keyring: {
+      type: 'HD Key Tree',
+    },
+    lastSelected: 0,
+  },
+  options: {},
+  methods: [...Object.values(EthMethod)],
+  type: EthAccountType.Eoa,
+};
 
 const NOTIFICATION_ID = 'NHL8f2eSSTn9TKBamRLiU';
 
@@ -134,6 +147,12 @@ const MAINNET_CHAIN_ID = '0x1';
 
 const firstTimeState = {
   config: {},
+  AccountsController: {
+    internalAccounts: {
+      accounts: {},
+      selectedAccount: '',
+    },
+  },
   NetworkController: {
     providerConfig: {
       type: NETWORK_TYPES.RPC,
@@ -299,15 +318,7 @@ describe('MetaMaskController', () => {
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {
@@ -435,6 +446,10 @@ describe('MetaMaskController', () => {
 
     describe('submitPassword', () => {
       it('removes any identities that do not correspond to known accounts.', async () => {
+        const accountsControllerSpy = jest.spyOn(
+          metamaskController.accountsController,
+          'updateAccounts',
+        );
         const password = 'password';
         await metamaskController.createNewVaultAndKeychain(password);
 
@@ -455,6 +470,21 @@ describe('MetaMaskController', () => {
         addresses.forEach((address) => {
           expect(identities).toContain(address);
         });
+
+        const internalAccounts =
+          metamaskController.accountsController.listAccounts();
+
+        internalAccounts.forEach((account) => {
+          expect(addresses).toContain(account.address);
+        });
+
+        addresses.forEach((address) => {
+          expect(
+            internalAccounts.find((account) => account.address === address),
+          ).toBeDefined();
+        });
+
+        expect(accountsControllerSpy).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -475,7 +505,7 @@ describe('MetaMaskController', () => {
 
     describe('#createNewVaultAndKeychain', () => {
       it('can only create new vault on keyringController once', async () => {
-        jest.spyOn(metamaskController, 'selectFirstIdentity').mockReturnValue();
+        jest.spyOn(metamaskController, 'selectFirstAccount').mockReturnValue();
         const password = 'a-fake-password';
 
         const vault1 = await metamaskController.createNewVaultAndKeychain(
@@ -637,38 +667,44 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#selectFirstIdentity', () => {
-      let identities, address;
+    describe('#selectFirstAccount', () => {
+      let identities;
 
-      beforeEach(() => {
-        address = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+      beforeEach(async () => {
+        await metamaskController.keyringController.createNewVaultAndRestore(
+          'password',
+          TEST_SEED,
+        );
+        await metamaskController.addNewAccount(1);
+        await metamaskController.addNewAccount(2);
+
         identities = {
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address,
+            TEST_ADDRESS,
             name: 'Account 1',
           },
           '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
-            address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            TEST_ADDRESS_2,
             name: 'Account 2',
           },
         };
         metamaskController.preferencesController.store.updateState({
           identities,
         });
-        metamaskController.selectFirstIdentity();
+        metamaskController.selectFirstAccount();
       });
 
       it('changes preferences controller select address', () => {
         const preferenceControllerState =
           metamaskController.preferencesController.store.getState();
         expect(preferenceControllerState.selectedAddress).toStrictEqual(
-          address,
+          TEST_ADDRESS,
         );
       });
 
       it('changes metamask controller selected address', () => {
         const metamaskState = metamaskController.getState();
-        expect(metamaskState.selectedAddress).toStrictEqual(address);
+        expect(metamaskState.selectedAddress).toStrictEqual(TEST_ADDRESS);
       });
     });
 
@@ -779,15 +815,7 @@ describe('MetaMaskController', () => {
 
         const localMetaMaskController = new MetaMaskController({
           showUserConfirmation: noop,
-          encryptor: {
-            encrypt(_, object) {
-              this.object = object;
-              return Promise.resolve('mock-encrypted');
-            },
-            decrypt() {
-              return Promise.resolve(this.object);
-            },
-          },
+          encryptor: mockEncryptor,
           initState: {
             ...cloneDeep(firstTimeState),
             KeyringController: {
@@ -945,42 +973,24 @@ describe('MetaMaskController', () => {
     });
 
     describe('#resetAccount', () => {
-      it('wipes transactions from only the correct chain id and with the selected address', async function () {
-        jest
-          .spyOn(metamaskController.preferencesController, 'getSelectedAddress')
-          .mockReturnValue('0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc');
+      it('wipes transactions from only the correct network id and with the selected address', async () => {
+        const selectedAddressMock =
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 
-        metamaskController.txController.txStateManager._addTransactionsToState([
-          createTxMeta({
-            id: 1,
-            status: TransactionStatus.unapproved,
-            chainId: currentChainId,
-            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
-          }),
-          createTxMeta({
-            id: 1,
-            status: TransactionStatus.unapproved,
-            chainId: currentChainId,
-            txParams: { from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' },
-          }),
-          createTxMeta({
-            id: 2,
-            status: TransactionStatus.rejected,
-            chainId: '0x32',
-          }),
-          createTxMeta({
-            id: 3,
-            status: TransactionStatus.submitted,
-            chainId: currentChainId,
-            txParams: { from: '0xB09d8505E1F4EF1CeA089D47094f5DD3464083d4' },
-          }),
-        ]);
+        jest
+          .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+          .mockReturnValue({ address: selectedAddressMock });
+
+        jest.spyOn(metamaskController.txController, 'wipeTransactions');
 
         await metamaskController.resetAccount();
 
         expect(
-          metamaskController.txController.txStateManager.getTransaction(1),
-        ).toBeUndefined();
+          metamaskController.txController.wipeTransactions,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          metamaskController.txController.wipeTransactions,
+        ).toHaveBeenCalledWith(true, selectedAddressMock);
       });
     });
 
@@ -1633,6 +1643,89 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('getTokenSymbol', () => {
+      it('should gets token symbol for given address', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        const tokenData = {
+          standard: 'ERC20',
+          decimals: 18,
+          symbol: 'DAI',
+          balance: '333',
+        };
+
+        metamaskController.tokenListController.update(() => {
+          return {
+            tokenList: {
+              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            },
+          };
+        });
+
+        metamaskController.provider = provider;
+
+        jest
+          .spyOn(
+            metamaskController.assetsContractController,
+            'getTokenStandardAndDetails',
+          )
+          .mockReturnValue(tokenData);
+
+        const tokenSymbol = await metamaskController.getTokenSymbol(
+          '0xNotInTokenList',
+        );
+
+        expect(tokenSymbol).toStrictEqual(tokenData.symbol);
+      });
+
+      it('should return null for given token address', async () => {
+        const providerResultStub = {
+          eth_getCode: '0x123',
+          eth_call:
+            '0x00000000000000000000000000000000000000000000000029a2241af62c0000',
+        };
+        const { provider } = createTestProviderTools({
+          scaffold: providerResultStub,
+          networkId: '5',
+          chainId: '5',
+        });
+
+        metamaskController.tokenListController.update(() => {
+          return {
+            tokenList: {
+              '0x6b175474e89094c44da98b954eedeac495271d0f': {},
+            },
+          };
+        });
+
+        metamaskController.provider = provider;
+
+        jest
+          .spyOn(
+            metamaskController.assetsContractController,
+            'getTokenStandardAndDetails',
+          )
+          .mockImplementation(() => {
+            throw new Error('error');
+          });
+
+        const tokenSymbol = await metamaskController.getTokenSymbol(
+          '0xNotInTokenList',
+        );
+
+        expect(tokenSymbol).toStrictEqual(null);
+      });
+    });
+
     describe('incoming transactions', () => {
       it('starts incoming transaction polling if incomingTransactionsPreferences is enabled for that chainId', async () => {
         expect(
@@ -1675,10 +1768,9 @@ describe('MetaMaskController', () => {
           TransactionController.prototype.updateIncomingTransactions,
         ).not.toHaveBeenCalled();
 
-        await metamaskController.preferencesController.store.subscribe.mock.lastCall[0](
-          {
-            selectedAddress: 'foo',
-          },
+        metamaskController.controllerMessenger.publish(
+          'AccountsController:selectedAccountChange',
+          TEST_INTERNAL_ACCOUNT,
         );
 
         expect(
@@ -1717,15 +1809,7 @@ describe('MetaMaskController', () => {
 
       const metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {
@@ -1749,15 +1833,7 @@ describe('MetaMaskController', () => {
 
       const metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {

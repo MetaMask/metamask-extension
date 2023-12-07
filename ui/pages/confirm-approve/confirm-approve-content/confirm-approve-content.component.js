@@ -21,14 +21,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 
 import { TokenStandard } from '../../../../shared/constants/transaction';
@@ -51,9 +46,9 @@ import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
     t: PropTypes.func,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     trackEvent: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   static propTypes = {
@@ -102,26 +97,6 @@ export default class ConfirmApproveContent extends Component {
     copied: false,
     setShowContractDetails: false,
   };
-
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  componentDidMount() {
-    const { txData } = this.props;
-    if (txData.securityAlertResponse) {
-      const blockaidMetricsParams = getBlockaidMetricsParams(
-        txData.securityAlertResponse,
-      );
-
-      this.context.trackEvent({
-        category: MetaMetricsEventCategory.Transactions,
-        event: MetaMetricsEventName.SignatureRequested,
-        properties: {
-          action: 'Sign Request',
-          ...blockaidMetricsParams,
-        },
-      });
-    }
-  }
-  ///: END:ONLY_INCLUDE_IN
 
   renderApproveContentCard({
     showHeader = true,
@@ -324,9 +299,9 @@ export default class ConfirmApproveContent extends Component {
     const { t } = this.context;
     const { data, isSetApproveForAll, isApprovalOrRejection } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const { tokenAddress } = this.props;
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     return (
       <Box className="flex-column">
@@ -341,14 +316,14 @@ export default class ConfirmApproveContent extends Component {
               {`${t('parameters')}: ${isApprovalOrRejection}`}
             </Text>
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
               <Text
                 variant={TextVariant.bodySm}
                 color={TextColor.textAlternative}
               >
                 {`${t('tokenContractAddress')}: ${tokenAddress}`}
               </Text>
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
             }
           </>
         ) : null}
@@ -591,12 +566,12 @@ export default class ConfirmApproveContent extends Component {
         })}
       >
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
           <BlockaidBannerAlert
             securityAlertResponse={txData?.securityAlertResponse}
             margin={4}
           />
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage

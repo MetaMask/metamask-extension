@@ -57,7 +57,6 @@ describe('Show account details', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -80,7 +79,6 @@ describe('Show account details', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         const key = await revealPrivateKey(driver);
@@ -100,7 +98,6 @@ describe('Show account details', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Create and focus on different account
@@ -113,6 +110,10 @@ describe('Show account details', function () {
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: tEn('create'), tag: 'button' });
+        await driver.waitForElementNotPresent({
+          text: tEn('create'),
+          tag: 'button',
+        });
 
         const key = await revealPrivateKey(driver);
         assert.equal(
@@ -131,7 +132,6 @@ describe('Show account details', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         const key = await revealPrivateKey(driver, false);
@@ -151,7 +151,6 @@ describe('Show account details', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Create and focus on different account
@@ -164,6 +163,10 @@ describe('Show account details', function () {
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: tEn('create'), tag: 'button' });
+        await driver.waitForElementNotPresent({
+          text: tEn('create'),
+          tag: 'button',
+        });
 
         const key = await revealPrivateKey(driver, false);
         assert.equal(
@@ -182,7 +185,6 @@ describe('Show account details', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Attempt to reveal private key from account menu
