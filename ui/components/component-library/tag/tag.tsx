@@ -28,7 +28,7 @@ export const Tag: TagComponent = React.forwardRef(
     ref: PolymorphicRef<C>,
   ) => {
     /**
-     * This checks if the icon comes from the meta mask icon set
+     * Guard that checks if the icon comes from the meta mask icon set
      *
      * @param name - The name of the icon
      */
@@ -44,10 +44,11 @@ export const Tag: TagComponent = React.forwardRef(
         borderColor={BorderColor.borderDefault}
         borderWidth={1}
         alignItems={AlignItems.center}
-        style={{
-          padding: '2px 8px 2px 4px',
-          gap: '4px',
-        }}
+        paddingTop={2}
+        paddingBottom={2}
+        paddingLeft={4}
+        paddingRight={4}
+        gap={2}
         borderRadius={BorderRadius.pill}
         display={Display.Flex}
         {...(props as BoxProps<C>)}
@@ -62,9 +63,9 @@ export const Tag: TagComponent = React.forwardRef(
             {...iconProps}
           />
         ) : null}
-        {iconName && !isMetaMaskIcon(iconName) ? (
-          // TODO: Render a custom icon from the snap metadata
-        ) : null}
+        {/* {iconName && !isMetaMaskIcon(iconName) ? (*/}
+        {/*  <SnapAvatar snapId={snapId} />*/}
+        {/* ) : null}*/}
         <Text variant={TextVariant.bodySm} {...labelProps}>
           {label}
         </Text>

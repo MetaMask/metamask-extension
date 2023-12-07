@@ -21,7 +21,6 @@ export default {
   },
   args: {
     label: 'Imported',
-    iconName: 'snaps',
   },
 } as Meta<typeof Tag>;
 
