@@ -32,7 +32,6 @@ const render = (props = {}) => {
   return renderWithProvider(<SendPage {...props} />, store);
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(desktop,build-mmi,build-beta,build-main)
 describe('SendPage', () => {
   describe('render', () => {
     it('renders correctly', () => {
@@ -54,4 +53,3 @@ describe('SendPage', () => {
     });
   });
 });
-///: END:ONLY_INCLUDE_IF
