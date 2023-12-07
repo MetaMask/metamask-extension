@@ -17,6 +17,8 @@ class ChromeDriver {
     const args = [
       `load-extension=${process.cwd()}/dist/chrome`,
       `--proxy-server=${HTTPS_PROXY_HOST}`, // Set proxy in the way that doesn't interfere with Selenium Manager
+      `--disable-gpu`,
+      `--disable-dev-shm-usage`,
     ];
     if (openDevToolsForTabs) {
       args.push('--auto-open-devtools-for-tabs');
