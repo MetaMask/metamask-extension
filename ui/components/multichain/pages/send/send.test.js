@@ -44,7 +44,7 @@ describe('SendPage', () => {
         'Enter public address (0x) or domain name',
       );
       const newInput = currentInput.cloneNode(true);
-      newInput.placeholder = 'Enter public address (Ox) or ENS name';
+      newInput.placeholder = 'Enter public address (0x) or ENS name';
       currentInput.replaceWith(newInput);
       ///: END:ONLY_INCLUDE_IF
       expect(container).toMatchSnapshot();
