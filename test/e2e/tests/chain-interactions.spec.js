@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Chain Interactions', function () {
@@ -24,9 +29,7 @@ describe('Chain Interactions', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // trigger add chain confirmation
         await openDapp(driver);
@@ -63,7 +66,7 @@ describe('Chain Interactions', function () {
         await driver.clickElement('[data-testid="network-display"]');
         const ganacheChain = await driver.findElements({
           text: `Localhost ${port}`,
-          tag: 'button',
+          tag: 'p',
         });
         assert.ok(ganacheChain.length, 1);
       },
@@ -79,9 +82,7 @@ describe('Chain Interactions', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // trigger add chain confirmation
         await openDapp(driver);

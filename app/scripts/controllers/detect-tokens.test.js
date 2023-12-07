@@ -26,6 +26,7 @@ const flushPromises = () => {
 
 describe('DetectTokensController', function () {
   let sandbox,
+    interval,
     assetsContractController,
     network,
     preferences,
@@ -34,6 +35,8 @@ describe('DetectTokensController', function () {
     tokenListController,
     accountsController,
     preferencesControllerMessenger,
+    getCurrentSelectedAccount,
+    getNetworkClientById,
     messenger;
 
   const noop = () => undefined;
@@ -47,6 +50,7 @@ describe('DetectTokensController', function () {
         'KeyringController:lock',
         'KeyringController:unlock',
         'AccountsController:selectedAccountChange',
+        'TokenListController:stateChange',
       ],
     });
   };
@@ -214,6 +218,8 @@ describe('DetectTokensController', function () {
       .reply(200, { error: 'ChainId 3 is not supported' })
       .persist();
 
+    jest.spyOn(ControllerMessenger.prototype, 'subscribe');
+
     messenger = new ControllerMessenger();
     messenger.registerActionHandler('KeyringController:getState', () => ({
       isUnlocked: true,
@@ -338,6 +344,12 @@ describe('DetectTokensController', function () {
         'NetworkController:stateChange',
       ),
     });
+
+    getCurrentSelectedAccount = jest.fn().mockReturnValue({
+      address: '0xbc86727e770de68b1060c91f6bb6945c73e10388',
+    });
+
+    getNetworkClientById = jest.fn();
   });
 
   afterEach(function () {
@@ -706,5 +718,88 @@ describe('DetectTokensController', function () {
 
     detectNewTokensSpy.mockRestore();
     jest.useRealTimers();
+  });
+
+  it('should restart token detection on selected account change', async () => {
+    const controller = new DetectTokensController({
+      messenger,
+      interval,
+      preferences,
+      network,
+      tokensController,
+      assetsContractController,
+      getCurrentSelectedAccount,
+      getNetworkClientById,
+    });
+
+    jest.spyOn(controller, 'restartTokenDetection');
+
+    await ControllerMessenger.prototype.subscribe.mock.calls
+      .filter((args) => args[0] === 'AccountsController:selectedAccountChange')
+      .slice(-1)[0][1]({
+        address: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+      });
+
+    expect(controller.selectedAddress).toBe(
+      '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+    );
+    expect(controller.restartTokenDetection).toHaveBeenCalledWith({
+      selectedAddress: '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045',
+    });
+  });
+
+  it('should restart token detection on useTokenDetection change', async () => {
+    const controller = new DetectTokensController({
+      messenger,
+      interval,
+      preferences,
+      network,
+      tokensController,
+      assetsContractController,
+      getCurrentSelectedAccount,
+      getNetworkClientById,
+    });
+
+    jest.spyOn(controller, 'restartTokenDetection');
+
+    preferences.setUseTokenDetection(false);
+
+    expect(controller.useTokenDetection).toBe(false);
+    expect(controller.restartTokenDetection).toHaveBeenCalledWith({
+      selectedAddress: '0xbc86727e770de68b1060c91f6bb6945c73e10388',
+    });
+  });
+
+  it('should restart token detection on network state change', async () => {
+    const controller = new DetectTokensController({
+      messenger,
+      interval,
+      preferences,
+      network,
+      tokensController,
+      assetsContractController,
+      getCurrentSelectedAccount,
+      getNetworkClientById,
+    });
+
+    jest.spyOn(controller, 'restartTokenDetection');
+
+    await ControllerMessenger.prototype.subscribe.mock.calls
+      .filter((args) => args[0] === 'NetworkController:stateChange')
+      .slice(-1)[0][1]();
+
+    expect(controller.chainId).toBe(controller.getChainIdFromNetworkStore());
+    expect(controller.restartTokenDetection).toHaveBeenCalledTimes(0);
+
+    controller.chainId = '0xaa36a7';
+
+    await ControllerMessenger.prototype.subscribe.mock.calls
+      .filter((args) => args[0] === 'NetworkController:stateChange')
+      .slice(-1)[0][1]();
+
+    expect(controller.chainId).toBe(controller.getChainIdFromNetworkStore());
+    expect(controller.restartTokenDetection).toHaveBeenCalledWith({
+      chainId: '0x1',
+    });
   });
 });

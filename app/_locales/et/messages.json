@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Muuda kontakti"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-i nime ei leitud praegusest võrgust. Proovige lülituda peamisele Ethereumi võrgule."
-  },
   "ensRegistrationError": {
     "message": "Tõrge ENS-i nime registreerimisel"
   },

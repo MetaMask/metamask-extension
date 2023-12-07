@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Kapcsolatok szerkesztése"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS név nem található a jelenlegi hálózaton. Próbálj váltani Ethereum főhálózatra."
-  },
   "ensRegistrationError": {
     "message": "Hiba történt az ENS név regisztrációjakor"
   },

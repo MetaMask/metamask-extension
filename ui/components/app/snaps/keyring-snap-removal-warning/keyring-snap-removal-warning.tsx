@@ -156,7 +156,6 @@ export default function KeyringRemovalSnapWarning({
                   inputProps={{
                     'data-testid': 'remove-snap-confirmation-input',
                   }}
-                  type="text"
                 />
               </Box>
             </>

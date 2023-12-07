@@ -92,6 +92,15 @@ export default class DetectTokensController extends PollingControllerOnly {
       },
     );
 
+    preferences?.store.subscribe(({ useTokenDetection }) => {
+      if (this.useTokenDetection !== useTokenDetection) {
+        this.useTokenDetection = useTokenDetection;
+        this.restartTokenDetection({
+          selectedAddress: this.selectedAddress,
+        });
+      }
+    });
+
     tokensController?.subscribe(
       ({ tokens = [], ignoredTokens = [], detectedTokens = [] }) => {
         this.tokenAddresses = tokens.map((token) => {
@@ -107,6 +116,10 @@ export default class DetectTokensController extends PollingControllerOnly {
         this.chainId = chainId;
         this.restartTokenDetection({ chainId: this.chainId });
       }
+    });
+
+    messenger.subscribe('TokenListController:stateChange', () => {
+      this.restartTokenDetection();
     });
 
     this.#registerKeyringHandlers();

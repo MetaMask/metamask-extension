@@ -1,5 +1,8 @@
 {
-  "AccountTracker": { "accounts": "object" },
+  "AccountTracker": {
+    "accounts": "object",
+    "accountsByChainId": "object"
+  },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
@@ -46,13 +49,14 @@
   "CachedBalancesController": { "cachedBalances": "object" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
-    "conversionDate": "number",
-    "conversionRate": 1700,
-    "nativeCurrency": "ETH",
     "currentCurrency": "usd",
-    "pendingCurrentCurrency": null,
-    "pendingNativeCurrency": null,
-    "usdConversionRate": 1700
+    "currencyRates": {
+      "ETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      }
+    }
   },
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
@@ -65,6 +69,7 @@
   "EnsController": { "ensResolutionsByAddress": "object" },
   "GasFeeController": {
     "gasFeeEstimates": {},
+    "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none"
   },
@@ -101,6 +106,9 @@
       }
     },
     "networkConfigurations": "object"
+  },
+  "NetworkOrderController": {
+    "orderedNetworkList": { "0": "string", "1": "string", "2": "string" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -188,7 +196,11 @@
       "smartTransactions": "object"
     }
   },
-  "SnapController": { "snaps": "object", "snapStates": "object" },
+  "SnapController": {
+    "snaps": "object",
+    "snapStates": "object",
+    "unencryptedSnapStates": "object"
+  },
   "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SwapsController": {
@@ -224,7 +236,10 @@
     "tokensChainsCache": {},
     "preventPollingOnNetworkRestart": true
   },
-  "TokenRatesController": { "contractExchangeRates": "object" },
+  "TokenRatesController": {
+    "contractExchangeRates": "object",
+    "contractExchangeRatesByChainId": "object"
+  },
   "TokensController": {
     "tokens": "object",
     "ignoredTokens": "object",
@@ -233,5 +248,9 @@
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
   },
-  "TxController": { "transactions": "object" }
+  "TxController": {
+    "lastFetchedBlockNumbers": "object",
+    "methodData": "object",
+    "transactions": "object"
+  }
 }

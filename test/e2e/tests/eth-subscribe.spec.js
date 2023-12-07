@@ -3,6 +3,7 @@ const {
   withFixtures,
   openDapp,
   DAPP_ONE_URL,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -29,9 +30,7 @@ describe('eth_subscribe', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
 

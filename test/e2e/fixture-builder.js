@@ -172,14 +172,17 @@ function defaultFixture() {
             id: 22,
             isShown: true,
           },
-          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
           23: {
             date: null,
             id: 23,
             isShown: false,
           },
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         },
+      },
+      NetworkOrderController: {
+        orderedNetworkList: [],
       },
       AppStateController: {
         browserEnvironment: {},
@@ -211,11 +214,14 @@ function defaultFixture() {
         },
       },
       CurrencyController: {
-        conversionDate: 1665507600.0,
-        conversionRate: 1300.0,
         currentCurrency: 'usd',
-        nativeCurrency: 'ETH',
-        usdConversionRate: 1300.0,
+        currencyRates: {
+          ETH: {
+            conversionDate: 1665507600.0,
+            conversionRate: 1300.0,
+            usdConversionRate: 1300.0,
+          },
+        },
       },
       GasFeeController: {
         estimatedGasFeeTimeBounds: {},
@@ -473,6 +479,11 @@ class FixtureBuilder {
 
   withAnnouncementController(data) {
     merge(this.fixture.data.AnnouncementController, data);
+    return this;
+  }
+
+  withNetworkOrderController(data) {
+    merge(this.fixture.data.NetworkOrderController, data);
     return this;
   }
 
