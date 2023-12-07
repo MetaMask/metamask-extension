@@ -123,7 +123,7 @@ const AssetList = ({ onClickAsset }) => {
             margin={4}
           />
         )}
-      {process.env.MULTICHAIN && (shouldShowBuy || shouldShowReceive) ? (
+      {shouldShowBuy || shouldShowReceive ? (
         <Box
           paddingInlineStart={4}
           paddingInlineEnd={4}
