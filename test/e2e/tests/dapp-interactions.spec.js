@@ -73,8 +73,8 @@ describe('Dapp interactions', function () {
 
         await unlockWallet(driver, {
           navigate: false,
-          waitLoginSuccess: false,
         });
+
         await driver.clickElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -89,7 +89,6 @@ describe('Dapp interactions', function () {
         );
         await unlockWallet(driver, {
           navigate: false,
-          waitLoginSuccess: false,
         });
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
