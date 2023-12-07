@@ -9,7 +9,7 @@ import {
   Color,
 } from '../../../../../helpers/constants/design-system';
 import { useRowContext } from './hook';
-import { ConfirmInfoRowVariant } from './row';
+import { ConfirmInfoRowState } from './row';
 
 export type ConfirmInfoRowValueDoubleProps = {
   left: string;
@@ -17,9 +17,9 @@ export type ConfirmInfoRowValueDoubleProps = {
 };
 
 const LEFT_TEXT_COLORS = {
-  [ConfirmInfoRowVariant.Default]: TextColor.textMuted,
-  [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowState.Default]: TextColor.textMuted,
+  [ConfirmInfoRowState.Critical]: Color.errorAlternative,
+  [ConfirmInfoRowState.Warning]: Color.warningAlternative,
 };
 
 export const ConfirmInfoRowValueDouble = ({

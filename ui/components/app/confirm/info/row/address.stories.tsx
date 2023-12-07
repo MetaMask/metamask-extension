@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConfirmInfoRow, ConfirmInfoRowVariant } from './row';
+import { ConfirmInfoRow, ConfirmInfoRowState } from './row';
 import { ConfirmInfoRowAddress } from './address';
 
 const ConfirmInfoRowAddressStory = {
@@ -9,7 +9,7 @@ const ConfirmInfoRowAddressStory = {
   argTypes: {
     variant: {
       control: 'select',
-      options: Object.values(ConfirmInfoRowVariant),
+      options: Object.values(ConfirmInfoRowState),
     },
     label: {
       control: 'text',

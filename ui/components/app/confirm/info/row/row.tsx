@@ -16,7 +16,7 @@ import {
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 
-export enum ConfirmInfoRowVariant {
+export enum ConfirmInfoRowState {
   Default = 'default',
   Critical = 'critical',
   Warning = 'warning',
@@ -26,42 +26,42 @@ export type ConfirmInfoRowProps = {
   label: string;
   children: React.ReactNode | string;
   tooltip?: string;
-  variant?: ConfirmInfoRowVariant;
+  variant?: ConfirmInfoRowState;
   style?: React.CSSProperties;
 };
 
 const BACKGROUND_COLORS = {
-  [ConfirmInfoRowVariant.Default]: undefined,
-  [ConfirmInfoRowVariant.Critical]: BackgroundColor.errorMuted,
-  [ConfirmInfoRowVariant.Warning]: BackgroundColor.warningMuted,
+  [ConfirmInfoRowState.Default]: undefined,
+  [ConfirmInfoRowState.Critical]: BackgroundColor.errorMuted,
+  [ConfirmInfoRowState.Warning]: BackgroundColor.warningMuted,
 };
 
 const TEXT_COLORS = {
-  [ConfirmInfoRowVariant.Default]: TextColor.textDefault,
-  [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowState.Default]: TextColor.textDefault,
+  [ConfirmInfoRowState.Critical]: Color.errorAlternative,
+  [ConfirmInfoRowState.Warning]: Color.warningAlternative,
 };
 
 const TOOLTIP_ICONS = {
-  [ConfirmInfoRowVariant.Default]: IconName.Question,
-  [ConfirmInfoRowVariant.Critical]: IconName.Warning,
-  [ConfirmInfoRowVariant.Warning]: IconName.Warning,
+  [ConfirmInfoRowState.Default]: IconName.Question,
+  [ConfirmInfoRowState.Critical]: IconName.Warning,
+  [ConfirmInfoRowState.Warning]: IconName.Warning,
 };
 
 const TOOLTIP_ICON_COLORS = {
-  [ConfirmInfoRowVariant.Default]: Color.iconMuted,
-  [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
-  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
+  [ConfirmInfoRowState.Default]: Color.iconMuted,
+  [ConfirmInfoRowState.Critical]: Color.errorAlternative,
+  [ConfirmInfoRowState.Warning]: Color.warningAlternative,
 };
 
 export const ConfirmInfoRowContext = createContext({
-  variant: ConfirmInfoRowVariant.Default,
+  variant: ConfirmInfoRowState.Default,
 });
 
 export const ConfirmInfoRow = ({
   label,
   children,
-  variant = ConfirmInfoRowVariant.Default,
+  variant = ConfirmInfoRowState.Default,
   tooltip,
   style,
 }: ConfirmInfoRowProps) => (
