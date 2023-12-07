@@ -40,7 +40,7 @@ describe('SendPage', () => {
       const currentInput = container.querySelector(
         '.ens-input__wrapper__input',
       );
-      expect(currentInput.textContent).toStrictEqual(
+      expect(currentInput.placeholder).toStrictEqual(
         'Enter public address (0x) or domain name',
       );
       const newInput = currentInput;
