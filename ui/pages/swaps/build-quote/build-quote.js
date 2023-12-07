@@ -97,7 +97,7 @@ import { countDecimals, fetchTokenPrice } from '../swaps.util';
 import SwapsFooter from '../swaps-footer';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { calcTokenAmount } from '../../../../shared/lib/transactions-controller-utils';
-import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
+import { fetchTokenBalance } from '../../../../shared/lib/token-util';
 import { shouldEnableDirectWrapping } from '../../../../shared/lib/swaps-utils';
 import {
   getValueFromWeiHex,

@@ -3,7 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 
 import { BigNumber } from '@ethersproject/bignumber';
-import * as TokenUtil from '../../../../shared/lib/token-util.ts';
+import * as TokenUtil from '../../../../shared/lib/token-util';
 import {
   TokenStandard,
   TransactionType,
@@ -176,8 +176,8 @@ jest.mock('../../../pages/swaps/swaps.util', () => {
   };
 });
 
-jest.mock('../../../../shared/lib/token-util.ts', () => {
-  const actual = jest.requireActual('../../../../shared/lib/token-util.ts');
+jest.mock('../../../../shared/lib/token-util', () => {
+  const actual = jest.requireActual('../../../../shared/lib/token-util');
   return {
     ...actual,
     fetchTokenBalance: jest.fn(() => Promise.resolve()),

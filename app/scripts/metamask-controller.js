@@ -159,7 +159,7 @@ import { LOG_EVENT } from '../../shared/constants/logs';
 import {
   getTokenIdParam,
   fetchTokenBalance,
-} from '../../shared/lib/token-util.ts';
+} from '../../shared/lib/token-util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';

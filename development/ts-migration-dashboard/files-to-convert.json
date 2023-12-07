@@ -1084,7 +1084,6 @@
   "ui/helpers/utils/settings-search.test.js",
   "ui/helpers/utils/storage-helpers.js",
   "ui/helpers/utils/switch-direction.js",
-  "ui/helpers/utils/token-util.js",
   "ui/helpers/utils/transactions.util.js",
   "ui/helpers/utils/transactions.util.test.js",
   "ui/helpers/utils/tx-helper.js",

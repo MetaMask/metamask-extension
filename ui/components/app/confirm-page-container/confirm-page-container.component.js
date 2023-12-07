@@ -36,7 +36,7 @@ import {
 } from '../../../helpers/constants/design-system';
 
 import NetworkAccountBalanceHeader from '../network-account-balance-header/network-account-balance-header';
-import { fetchTokenBalance } from '../../../../shared/lib/token-util.ts';
+import { fetchTokenBalance } from '../../../../shared/lib/token-util';
 import SetApproveForAllWarning from '../set-approval-for-all-warning';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 ///: BEGIN:ONLY_INCLUDE_IN(snaps)
