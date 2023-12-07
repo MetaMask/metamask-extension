@@ -10,12 +10,13 @@ export enum TextFieldSearchSize {
   Lg = 'lg',
 }
 
-// Define the type for the clearButtonOnClick function
-type ClearButtonOnClick = (
-  props: ButtonIconProps<'span'>,
-  propName: keyof ButtonIconProps<'span'>,
-  componentName: string,
-) => Error | null;
+/**
+ * Makes all props optional so that if a prop object is used not ALL required props need to be passed
+ * TODO: Move to appropriate place in app as this will be highly reusable
+ */
+type MakePropsOptional<T> = {
+  [K in keyof T]?: T[K];
+};
 
 export interface TextFieldSearchStyleUtilityProps
   extends Omit<TextFieldProps<'input'>, 'type'> {
@@ -36,11 +37,11 @@ export interface TextFieldSearchStyleUtilityProps
    * The onClick handler for the clear button
    * Required unless showClearButton is false
    */
-  clearButtonOnClick?: ClearButtonOnClick;
+  clearButtonOnClick?: () => void;
   /**
    * The props to pass to the clear button
    */
-  clearButtonProps?: ButtonIconProps<'button'>;
+  clearButtonProps?: MakePropsOptional<ButtonIconProps<'button'>>;
   /**
    * An additional className to apply to the TextFieldSearch
    */
