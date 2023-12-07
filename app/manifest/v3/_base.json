@@ -75,5 +75,11 @@
     "unlimitedStorage",
     "webRequest"
   ],
-  "short_name": "__MSG_appName__"
+  "short_name": "__MSG_appName__",
+  "web_accessible_resources": [
+    {
+      "resources": ["inpage.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
