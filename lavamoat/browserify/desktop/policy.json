@@ -2540,11 +2540,6 @@
         "@trezor/connect-web>@trezor/connect>tslib": true
       }
     },
-    "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>bip66": {
-      "packages": {
-        "koa>content-disposition>safe-buffer": true
-      }
-    },
     "@trezor/connect-web>@trezor/connect>tslib": {
       "globals": {
         "define": true
