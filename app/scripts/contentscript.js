@@ -9,16 +9,6 @@ import { checkForLastError } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 
-// These require calls need to use require to be statically recognized by browserify
-const fs = require('fs');
-const path = require('path');
-
-const inpageContent = fs.readFileSync(
-  path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'),
-  'utf8',
-);
-const inpageBundle = inpageContent;
-
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
 const INPAGE = 'metamask-inpage';
@@ -64,18 +54,23 @@ let extensionMux,
 /**
  * Injects a script tag into the current document
  *
- * @param {string} content - Code to be executed in the current document
+ * @param {string} src - Path to code to be executed in the current document.
+ * @example injectScript(chrome.extension.getURL('inpage.js'))
  */
-function injectScript(content) {
+function injectScript(src) {
   try {
-    const container = document.head || document.documentElement;
-    const scriptTag = document.createElement('script');
-    scriptTag.setAttribute('async', 'false');
-    scriptTag.textContent = content;
-    container.insertBefore(scriptTag, container.children[0]);
-    container.removeChild(scriptTag);
+    const script = document.createElement("script");
+    // A script that has been injected into the DOM is executed asynchronously
+    // by default, but we need inpage.js to block so `window.ethereum` is
+    // available before the page's own scripts load.
+    script.async = false
+    script.src = src;
+    document.documentElement.prepend(script);
+    // Immediately remove the script so we don't modify the DOM. Modifiying the
+    // DOM could break some websites that rely on specific DOM structures.
+    script.remove();
   } catch (error) {
-    console.error('MetaMask: Provider injection failed.', error);
+    console.error("MetaMask: Provider injection failed.", error);
   }
 }
 
@@ -546,7 +541,7 @@ const start = () => {
 
   if (shouldInjectProvider()) {
     if (!isManifestV3) {
-      injectScript(inpageBundle);
+      injectScript(chrome.extension.getURL('inpage.js'))
     }
     initStreams();
 
