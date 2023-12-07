@@ -8,7 +8,7 @@ const { difference } = require('lodash');
 const createStaticServer = require('../../development/create-static-server');
 const { tEn } = require('../lib/i18n-helpers');
 const { setupMocking } = require('./mock-e2e');
-const Ganache = require('./ganache');
+const { Ganache } = require('./ganache');
 const FixtureServer = require('./fixture-server');
 const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
@@ -149,7 +149,7 @@ async function withFixtures(options, testSuite) {
       });
     }
 
-    console.log(`\nExecuting test suite: ${title}\n`);
+    console.log(`\nExecuting testcase: ${title}\n`);
 
     await testSuite({
       driver: driverProxy ?? driver,
@@ -159,9 +159,9 @@ async function withFixtures(options, testSuite) {
       mockedEndpoint,
     });
 
-    // At this point the suite has executed successfully, so we can log out a
-    // success message.
-    console.log(`\nSuccess on test suite: '${title}'\n`);
+    // At this point the suite has executed successfully, so we can log out a success message
+    // (Note: a Chrome browser error will unfortunately pop up after this success message)
+    console.log(`\nSuccess on testcase: '${title}'\n`);
 
     // Evaluate whether any new hosts received network requests during E2E test
     // suite execution. If so, fail the test unless the
@@ -261,7 +261,7 @@ async function withFixtures(options, testSuite) {
 const WINDOW_TITLES = Object.freeze({
   ExtensionInFullScreenView: 'MetaMask',
   InstalledExtensions: 'Extensions',
-  Notification: 'MetaMask',
+  Notification: 'MetaMask Notification',
   Phishing: 'MetaMask Phishing Detection',
   ServiceWorkerSettings: 'Inspect with Chrome Developer Tools',
   SnapSimpleKeyringDapp: 'SSK - Simple Snap Keyring',
@@ -315,6 +315,7 @@ const importSRPOnboardingFlow = async (driver, seedPhrase, password) => {
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
+  await driver.waitForElementNotPresent('.loading-overlay');
 };
 
 const completeImportSRPOnboardingFlow = async (
@@ -361,6 +362,9 @@ const completeImportSRPOnboardingFlowWordByWord = async (
   await driver.fill('[data-testid="create-password-confirm"]', password);
   await driver.clickElement('[data-testid="create-password-terms"]');
   await driver.clickElement('[data-testid="create-password-import"]');
+
+  // wait for loading to complete
+  await driver.waitForElementNotPresent('.loading-overlay');
 
   // complete
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
@@ -516,7 +520,6 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
 };
 
 const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
-  await driver.navigate();
   await unlockWallet(driver);
 
   // navigate settings to reveal SRP
@@ -589,6 +592,25 @@ const switchToOrOpenDapp = async (
   } catch {
     await openDapp(driver, contract, dappURL);
   }
+};
+
+const connectToDapp = async (driver) => {
+  await openDapp(driver);
+  // Connect to dapp
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
+  });
+
+  await switchToNotificationWindow(driver);
+  await driver.clickElement({
+    text: 'Next',
+    tag: 'button',
+  });
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
+  });
 };
 
 const PRIVATE_KEY =
@@ -710,9 +732,31 @@ async function waitForAccountRendered(driver) {
   );
 }
 
-async function unlockWallet(driver) {
+/**
+ * Unlock the wallet with the default password.
+ *
+ * @param {WebDriver} driver - The webdriver instance
+ * @param {object} options - Options for unlocking the wallet
+ * @param {boolean} options.navigate - Whether to navigate to the root page prior to unlocking. Defaults to true.
+ * @param {boolean} options.waitLoginSuccess - Whether to wait for the login to succeed. Defaults to true.
+ */
+async function unlockWallet(
+  driver,
+  options = {
+    navigate: true,
+    waitLoginSuccess: true,
+  },
+) {
+  if (options.navigate !== false) {
+    await driver.navigate();
+  }
+
   await driver.fill('#password', WALLET_PASSWORD);
   await driver.press('#password', driver.Key.ENTER);
+
+  if (options.waitLoginSuccess !== false) {
+    await driver.waitForElementNotPresent('[data-testid="unlock-page"]');
+  }
 }
 
 const logInWithBalanceValidation = async (driver, ganacheServer) => {
@@ -870,6 +914,14 @@ function assertInAnyOrder(requests, assertions) {
   );
 }
 
+async function getCleanAppState(driver) {
+  return await driver.executeScript(
+    () =>
+      window.stateHooks?.getCleanAppState &&
+      window.stateHooks.getCleanAppState(),
+  );
+}
+
 module.exports = {
   DAPP_URL,
   DAPP_ONE_URL,
@@ -897,6 +949,7 @@ module.exports = {
   testSRPDropdownIterations,
   openDapp,
   switchToOrOpenDapp,
+  connectToDapp,
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
@@ -924,4 +977,5 @@ module.exports = {
   assertInAnyOrder,
   genRandInitBal,
   openActionMenuAndStartSendFlow,
+  getCleanAppState,
 };

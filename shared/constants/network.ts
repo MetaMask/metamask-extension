@@ -170,6 +170,9 @@ export const PALM_DISPLAY_NAME = 'Palm';
 export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
+export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
+export const BASE_DISPLAY_NAME = 'Base Mainnet';
+export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -239,6 +242,8 @@ export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
 export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
+export const ZK_SYNC_ERA_TOKEN_IMAGE_URL = './images/zk-sync.svg';
+export const BASE_TOKEN_IMAGE_URL = './images/base.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -253,6 +258,11 @@ export const TEST_CHAINS = [
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.LINEA_GOERLI,
   CHAIN_IDS.LOCALHOST,
+];
+
+export const MAINNET_CHAINS = [
+  { chainId: CHAIN_IDS.MAINNET },
+  { chainId: CHAIN_IDS.LINEA_MAINNET },
 ];
 
 const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>
@@ -601,16 +611,6 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.AURORA,
-    nickname: AURORA_DISPLAY_NAME,
-    rpcUrl: `https://aurora-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.AURORA_ETH,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://aurorascan.dev/',
-      imageUrl: AURORA_TOKEN_IMAGE_URL,
-    },
-  },
-  {
     chainId: CHAIN_IDS.AVALANCHE,
     nickname: AVALANCHE_DISPLAY_NAME,
     rpcUrl: `https://avalanche-mainnet.infura.io/v3/${infuraProjectId}`,
@@ -631,26 +631,6 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     },
   },
   {
-    chainId: CHAIN_IDS.FANTOM,
-    nickname: FANTOM_DISPLAY_NAME,
-    rpcUrl: 'https://rpc.ftm.tools/',
-    ticker: CURRENCY_SYMBOLS.FANTOM,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://ftmscan.com/',
-      imageUrl: FTM_TOKEN_IMAGE_URL,
-    },
-  },
-  {
-    chainId: CHAIN_IDS.HARMONY,
-    nickname: HARMONY_DISPLAY_NAME,
-    rpcUrl: 'https://api.harmony.one/',
-    ticker: CURRENCY_SYMBOLS.HARMONY,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://explorer.harmony.one/',
-      imageUrl: HARMONY_ONE_TOKEN_IMAGE_URL,
-    },
-  },
-  {
     chainId: CHAIN_IDS.OPTIMISM,
     nickname: OPTIMISM_DISPLAY_NAME,
     rpcUrl: `https://optimism-mainnet.infura.io/v3/${infuraProjectId}`,
@@ -658,16 +638,6 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://optimistic.etherscan.io/',
       imageUrl: OPTIMISM_TOKEN_IMAGE_URL,
-    },
-  },
-  {
-    chainId: CHAIN_IDS.PALM,
-    nickname: PALM_DISPLAY_NAME,
-    rpcUrl: `https://palm-mainnet.infura.io/v3/${infuraProjectId}`,
-    ticker: CURRENCY_SYMBOLS.PALM,
-    rpcPrefs: {
-      blockExplorerUrl: 'https://explorer.palm.io/',
-      imageUrl: PALM_TOKEN_IMAGE_URL,
     },
   },
   {
@@ -698,6 +668,26 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://gnosisscan.io',
       imageUrl: GNOSIS_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.ZKSYNC_ERA,
+    nickname: ZK_SYNC_ERA_DISPLAY_NAME,
+    rpcUrl: `https://mainnet.era.zksync.io`,
+    ticker: CURRENCY_SYMBOLS.ETH,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://explorer.zksync.io/',
+      imageUrl: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.BASE,
+    nickname: BASE_DISPLAY_NAME,
+    rpcUrl: `https://mainnet.base.org`,
+    ticker: CURRENCY_SYMBOLS.ETH,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://basescan.org',
+      imageUrl: BASE_TOKEN_IMAGE_URL,
     },
   },
 ];

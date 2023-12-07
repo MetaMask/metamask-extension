@@ -7,9 +7,9 @@ import {
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 const mainNetworks = {
   [CHAIN_IDS.MAINNET]: true,
@@ -62,13 +62,14 @@ export default class PreferencesController {
       useNftDetection: false,
       use4ByteResolution: true,
       useCurrencyRateCheck: true,
+      useRequestQueue: false,
       openSeaEnabled: false,
-      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       securityAlertsEnabled: false,
-      ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       addSnapAccountEnabled: false,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       advancedGasFee: {},
 
       // WARNING: Do not use feature flags for security-sensitive things.
@@ -102,13 +103,13 @@ export default class PreferencesController {
       snapRegistryList: {},
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       snapsAddSnapAccountModalDismissed: false,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       isLineaMainnetReleased: false,
-      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       useExternalNameSources: true,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       ...opts.initState,
     };
 
@@ -117,9 +118,6 @@ export default class PreferencesController {
     this.store = new ObservableStore(initState);
     this.store.setMaxListeners(13);
     this.tokenListController = opts.tokenListController;
-
-    // subscribe to account removal
-    opts.onAccountRemoved((address) => this.removeAddress(address));
 
     global.setPreference = (key, value) => {
       return this.setFeatureFlag(key, value);
@@ -227,6 +225,15 @@ export default class PreferencesController {
   }
 
   /**
+   * Setter for the `useRequestQueue` property
+   *
+   * @param {boolean} val - Whether or not the user wants to have requests queued if network change is required.
+   */
+  setUseRequestQueue(val) {
+    this.store.updateState({ useRequestQueue: val });
+  }
+
+  /**
    * Setter for the `openSeaEnabled` property
    *
    * @param {boolean} openSeaEnabled - Whether or not the user prefers to use the OpenSea API for NFTs data.
@@ -237,7 +244,7 @@ export default class PreferencesController {
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   /**
    * Setter for the `securityAlertsEnabled` property
    *
@@ -248,9 +255,9 @@ export default class PreferencesController {
       securityAlertsEnabled,
     });
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**
    * Setter for the `addSnapAccountEnabled` property.
    *
@@ -262,9 +269,9 @@ export default class PreferencesController {
       addSnapAccountEnabled,
     });
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   /**
    * Setter for the `useExternalNameSources` property
    *
@@ -275,7 +282,7 @@ export default class PreferencesController {
       useExternalNameSources,
     });
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `advancedGasFee` property
@@ -477,6 +484,15 @@ export default class PreferencesController {
   }
 
   /**
+   * Getter for the `useRequestQueue` property
+   *
+   * @returns {boolean} whether this option is on or off.
+   */
+  getUseRequestQueue() {
+    return this.store.getState().useRequestQueue;
+  }
+
+  /**
    * Sets a custom label for an account
    *
    * @param {string} account - the account to set a label for
@@ -639,7 +655,7 @@ export default class PreferencesController {
     return this.store.getState().disabledRpcMethodPreferences;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setSnapsAddSnapAccountModalDismissed(value) {
     this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
   }
@@ -656,7 +672,7 @@ export default class PreferencesController {
     this.store.updateState({ snapRegistryList: snapRegistry });
   }
 
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * A method to check is the linea mainnet network should be displayed

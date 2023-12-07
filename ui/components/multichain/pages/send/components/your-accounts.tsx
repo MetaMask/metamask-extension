@@ -1,9 +1,7 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Label } from '../../../../component-library';
 import { getMetaMaskAccountsOrdered } from '../../../../../selectors';
 import { AccountListItem } from '../../..';
-import { I18nContext } from '../../../../../contexts/i18n';
 import {
   addHistoryEntry,
   updateRecipient,
@@ -12,7 +10,6 @@ import {
 import { SendPageRow } from '.';
 
 export const SendPageYourAccount = () => {
-  const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
   // Your Accounts
@@ -20,7 +17,6 @@ export const SendPageYourAccount = () => {
 
   return (
     <SendPageRow>
-      <Label paddingBottom={2}>{t('yourAccounts')}</Label>
       {accounts.map((account: any) => (
         <AccountListItem
           identity={account}

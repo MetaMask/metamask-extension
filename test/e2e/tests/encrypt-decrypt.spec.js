@@ -1,12 +1,17 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 async function validateEncryptionKey(driver, encryptionKey) {
   await driver.clickElement('#getEncryptionKeyButton');
   await driver.waitUntilXWindowHandles(3);
   let windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('MetaMask', windowHandles);
+  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
   await driver.waitForSelector({
     css: '.request-encryption-public-key__header__text',
     text: 'Request encryption public key',
@@ -34,7 +39,7 @@ async function decryptMessage(driver) {
   await driver.clickElement('#decryptButton');
   await driver.waitUntilXWindowHandles(3);
   const windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('MetaMask', windowHandles);
+  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
   await driver.waitForSelector({
     css: '.request-decrypt-message__header__text',
     text: 'Decrypt request',
@@ -84,9 +89,7 @@ describe('Encrypt Decrypt', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await openDapp(driver);
 
         // ------ Get Encryption key ------
@@ -103,7 +106,7 @@ describe('Encrypt Decrypt', function () {
           '.request-decrypt-message__balance-value',
         );
         assert.equal(await decryptAccountBalanceLabel.getText(), '25 ETH');
-        // Verify message in MetaMask
+        // Verify message in MetaMask Notification
         await verifyDecryptedMessageMM(driver, message);
 
         // Verify message in Test Dapp
@@ -125,9 +128,7 @@ describe('Encrypt Decrypt', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await openDapp(driver);
 
         // ------ Get Encryption key ------
@@ -149,7 +150,7 @@ describe('Encrypt Decrypt', function () {
         // ------ Decrypt Message 2 ------
         await decryptMessage(driver);
 
-        // Verify message 1 in MetaMask
+        // Verify message 1 in MetaMask Notification
         await verifyDecryptedMessageMM(driver, message);
 
         // Verify message 1 in Test Dapp
@@ -158,11 +159,11 @@ describe('Encrypt Decrypt', function () {
         // ------ Switch to Dapp ------
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
 
-        // Verify message 2 in MetaMask
+        // Verify message 2 in MetaMask Notification
         await verifyDecryptedMessageMM(driver, message2);
 
         // Verify message 2 in Test Dapp
@@ -182,9 +183,7 @@ describe('Encrypt Decrypt', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await openDapp(driver);
 
         // ------ Get Encryption key and display ETH ------
@@ -192,7 +191,7 @@ describe('Encrypt Decrypt', function () {
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
         await driver.waitForSelector({
@@ -224,9 +223,7 @@ describe('Encrypt Decrypt', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
 
@@ -235,7 +232,7 @@ describe('Encrypt Decrypt', function () {
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
         await driver.waitForSelector({

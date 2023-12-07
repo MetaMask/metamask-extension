@@ -5,8 +5,8 @@ to a 'failed' stated
 
 */
 
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
-import { TransactionStatus } from '../../../shared/constants/transaction';
 
 const version = 15;
 

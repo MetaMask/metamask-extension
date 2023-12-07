@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Edytuj kontakt"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nazwa ENS nie została znaleziona w bieżącej sieci. Spróbuj przełączyć się na Główną sieć Ethereum."
-  },
   "ensRegistrationError": {
     "message": "Błąd w rejestracji nazwy ENS"
   },

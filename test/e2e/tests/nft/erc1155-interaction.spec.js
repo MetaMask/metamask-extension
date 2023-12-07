@@ -35,7 +35,6 @@ describe('ERC1155 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Open Dapp and wait for deployed contract
@@ -52,7 +51,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const [extension] = windowHandles;
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
 
@@ -92,7 +91,6 @@ describe('ERC1155 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         await openDapp(driver, contract);
@@ -105,7 +103,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const [extension] = windowHandles;
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
 
@@ -132,10 +130,11 @@ describe('ERC1155 NFTs testdapp interaction', function () {
   });
 
   it('should enable approval for a third party address to manage all ERC1155 token', async function () {
+    // ERC1155 is the name of the test-dapp ERC1155 contract
     const expectedMessageTitle =
-      'Allow access to and transfer all of your NFTs from this collection?';
+      'Allow access to and transfer all of your NFTs from ERC1155?';
     const expectedDescription =
-      'This allows a third party to access and transfer all of your NFTs from this collection without further notice until you revoke its access.';
+      'This allows a third party to access and transfer all of your NFTs from ERC1155 without further notice until you revoke its access.';
     const expectedWarningMessage = 'Your NFT may be at risk';
     await withFixtures(
       {
@@ -149,7 +148,6 @@ describe('ERC1155 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Create a set approval for all erc1155 token request in test dapp
@@ -160,7 +158,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
         const displayedMessageTitle = await driver.findElement(
@@ -221,10 +219,11 @@ describe('ERC1155 NFTs testdapp interaction', function () {
   });
 
   it('should revoke approval for a third party address to manage all ERC1155 token', async function () {
+    // ERC1155 is the name of the test-dapp ERC1155 contract
     const expectedMessageTitle =
-      'Revoke permission to access and transfer all of your NFTs from this collection?';
+      'Revoke permission to access and transfer all of your NFTs from ERC1155?';
     const expectedDescription =
-      'This revokes the permission for a third party to access and transfer all of your NFTs from this collection without further notice.';
+      'This revokes the permission for a third party to access and transfer all of your NFTs from ERC1155 without further notice.';
     await withFixtures(
       {
         dapp: true,
@@ -237,7 +236,6 @@ describe('ERC1155 NFTs testdapp interaction', function () {
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // Create a revoke approval for all erc1155 token request in test dapp
@@ -248,7 +246,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.waitUntilXWindowHandles(3);
         let windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
 

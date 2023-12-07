@@ -1,4 +1,4 @@
-import { TransactionMeta } from '../../controllers/transactions/tx-state-manager';
+import { TransactionMeta } from '@metamask/transaction-controller';
 
 /**
  * Whether or not to skip publishing the transaction.
@@ -56,6 +56,7 @@ export function getAdditionalSignArguments(
  *
  * @param txMeta - The transaction meta.
  */
+
 export function beforeTransactionApproveOnInit(
   txMeta: TransactionMeta,
 ): boolean {

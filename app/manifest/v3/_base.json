@@ -73,7 +73,8 @@
     "scripting",
     "storage",
     "unlimitedStorage",
-    "webRequest"
+    "webRequest",
+    "offscreen"
   ],
   "short_name": "__MSG_appName__"
 }

@@ -335,11 +335,14 @@ describe('MetaMetricsController', function () {
       await metaMetricsController.setParticipateInMetaMetrics(true);
       assert.equal(typeof metaMetricsController.state.metaMetricsId, 'string');
     });
-    it('should nullify the metaMetricsId when set to false', async function () {
+    it('should not nullify the metaMetricsId when set to false', async function () {
       const metaMetricsController = getMetaMetricsController();
       await metaMetricsController.setParticipateInMetaMetrics(false);
       assert.ok(globalThis.sentry.endSession.calledOnce);
-      assert.equal(metaMetricsController.state.metaMetricsId, null);
+      assert.equal(
+        metaMetricsController.state.metaMetricsId,
+        TEST_META_METRICS_ID,
+      );
     });
   });
 
@@ -1085,14 +1088,14 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
         [MetaMetricsUserTrait.DesktopEnabled]: false,
         [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         [MetaMetricsUserTrait.MmiExtensionId]: 'testid',
         [MetaMetricsUserTrait.MmiAccountAddress]: null,
         [MetaMetricsUserTrait.MmiIsCustodian]: false,
-        ///: END:ONLY_INCLUDE_IN
-        ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+        ///: END:ONLY_INCLUDE_IF
+        ///: BEGIN:ONLY_INCLUDE_IF(petnames)
         [MetaMetricsUserTrait.PetnameAddressCount]: 3,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       });
     });
 

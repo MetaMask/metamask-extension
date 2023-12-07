@@ -4,9 +4,9 @@ import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 import configureStore from '../../../store/store';
 import {
-  setPendingTokens,
   clearPendingTokens,
   getTokenStandardAndDetails,
+  setPendingTokens,
 } from '../../../store/actions';
 import mockState from '../../../../test/data/mock-state.json';
 import { TokenStandard } from '../../../../shared/constants/transaction';

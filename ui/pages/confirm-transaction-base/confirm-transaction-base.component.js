@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import ConfirmPageContainer from '../../components/app/confirm-page-container';
 import { isBalanceSufficient } from '../send/send.utils';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -15,19 +19,15 @@ import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
 import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
-import {
-  TransactionType,
-  TransactionStatus,
-} from '../../../shared/constants/transaction';
 import { getMethodName } from '../../helpers/utils/metrics';
 import {
   getTransactionTypeTitle,
   isLegacyTransaction,
 } from '../../helpers/utils/transactions.util';
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import NoteToTrader from '../../components/institutional/note-to-trader';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
@@ -50,14 +50,13 @@ import {
 } from '../../../shared/modules/conversion.utils';
 import TransactionAlerts from '../../components/app/transaction-alerts';
 import { ConfirmHexData } from '../../components/app/confirm-hexdata';
-import { ConfirmData } from '../../components/app/confirm-data';
 import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 import updateTxData from '../../../shared/modules/updateTxData';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringType } from '../../../shared/constants/keyring';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { isHardwareKeyring } from '../../helpers/utils/hardware';
 
 export default class ConfirmTransactionBase extends Component {
@@ -104,7 +103,6 @@ export default class ConfirmTransactionBase extends Component {
     // Component props
     actionKey: PropTypes.string,
     contentComponent: PropTypes.node,
-    dataComponent: PropTypes.node,
     dataHexComponent: PropTypes.node,
     tokenAddress: PropTypes.string,
     customTokenAmount: PropTypes.string,
@@ -148,9 +146,12 @@ export default class ConfirmTransactionBase extends Component {
     showTransactionsFailedModal: PropTypes.func,
     showCustodianDeepLink: PropTypes.func,
     isNoteToTraderSupported: PropTypes.bool,
+    custodianPublishesTransaction: PropTypes.bool,
+    rpcUrl: PropTypes.string,
     isMainBetaFlask: PropTypes.bool,
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
+    updateTransaction: PropTypes.func,
   };
 
   state = {
@@ -161,9 +162,9 @@ export default class ConfirmTransactionBase extends Component {
     editingGas: false,
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     noteText: '',
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   componentDidUpdate(prevProps) {
@@ -517,23 +518,12 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-  renderData() {
-    const { txData, dataComponent } = this.props;
+  renderDataHex() {
+    const { txData, dataHexComponent } = this.props;
     const {
       txParams: { data },
     } = txData;
     if (!data) {
-      return null;
-    }
-    return <ConfirmData txData={txData} dataComponent={dataComponent} />;
-  }
-
-  renderDataHex() {
-    const { txData, dataHexComponent } = this.props;
-    const {
-      txParams: { data, to },
-    } = txData;
-    if (!data || !to) {
       return null;
     }
     return (
@@ -641,11 +631,11 @@ export default class ConfirmTransactionBase extends Component {
     let loadingIndicatorMessage;
 
     switch (keyringForAccount?.type) {
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       case KeyringType.snap:
         loadingIndicatorMessage = this.context.t('loadingScreenSnapMessage');
         break;
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       default:
         if (isHardwareKeyring(keyringForAccount?.type)) {
           loadingIndicatorMessage = this.context.t(
@@ -713,9 +703,10 @@ export default class ConfirmTransactionBase extends Component {
     );
   }
 
-  handleMMISubmit() {
+  async handleMMISubmit() {
     const {
       sendTransaction,
+      updateTransaction,
       txData,
       history,
       mostRecentOverviewPage,
@@ -727,6 +718,8 @@ export default class ConfirmTransactionBase extends Component {
       showTransactionsFailedModal,
       fromAddress,
       isNoteToTraderSupported,
+      custodianPublishesTransaction,
+      rpcUrl,
       methodData,
       maxFeePerGas,
       customTokenAmount,
@@ -744,12 +737,17 @@ export default class ConfirmTransactionBase extends Component {
 
     if (accountType === 'custody') {
       txData.custodyStatus = 'created';
+      txData.metadata = txData.metadata || {};
 
       if (isNoteToTraderSupported) {
-        txData.metadata = {
-          note: noteText,
-        };
+        txData.metadata.note = noteText;
       }
+
+      txData.metadata.custodianPublishesTransaction =
+        custodianPublishesTransaction;
+      txData.metadata.rpcUrl = rpcUrl;
+
+      await updateTransaction(txData);
     }
 
     updateTxData({
@@ -958,9 +956,9 @@ export default class ConfirmTransactionBase extends Component {
       assetStandard,
       displayAccountBalanceHeader,
       title,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       isNoteToTraderSupported,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
     const {
       submitting,
@@ -1024,10 +1022,9 @@ export default class ConfirmTransactionBase extends Component {
           titleComponent={this.renderTitleComponent()}
           subtitleComponent={this.renderSubtitleComponent()}
           detailsComponent={this.renderDetails()}
-          dataComponent={this.renderData(functionType)}
           dataHexComponent={this.renderDataHex(functionType)}
           contentComponent={contentComponent}
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           noteComponent={
             isNoteToTraderSupported && (
               <NoteToTrader
@@ -1039,7 +1036,7 @@ export default class ConfirmTransactionBase extends Component {
               />
             )
           }
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
           nonce={customNonceValue || nonce}
           unapprovedTxCount={unapprovedTxCount}
           tokenAddress={tokenAddress}

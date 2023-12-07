@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 const OPENSEA_URL =
@@ -90,9 +95,7 @@ describe('Transaction security provider', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
@@ -101,7 +104,7 @@ describe('Transaction security provider', function () {
 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
         const warningHeader = await driver.isElementPresent({
@@ -130,9 +133,7 @@ describe('Transaction security provider', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
@@ -141,7 +142,7 @@ describe('Transaction security provider', function () {
 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
         const warningHeader = await driver.isElementPresent({
@@ -170,9 +171,7 @@ describe('Transaction security provider', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
@@ -181,7 +180,7 @@ describe('Transaction security provider', function () {
 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
         const warningHeader = await driver.isElementPresent({
@@ -210,9 +209,7 @@ describe('Transaction security provider', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         windowHandles = await driver.getAllWindowHandles();
@@ -221,7 +218,7 @@ describe('Transaction security provider', function () {
 
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
         const warningHeader = await driver.isElementPresent({

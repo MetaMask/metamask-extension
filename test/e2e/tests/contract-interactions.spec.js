@@ -36,7 +36,6 @@ describe('Deploy contract and call contract methods', function () {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
         await unlockWallet(driver);
 
         // deploy contract

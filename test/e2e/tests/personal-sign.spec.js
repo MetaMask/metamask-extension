@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   regularDelayMs,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -30,9 +31,7 @@ describe('Personal sign', function () {
       async ({ driver, ganacheServer }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses[0];
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         await driver.clickElement('#personalSign');
@@ -40,7 +39,7 @@ describe('Personal sign', function () {
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
 
@@ -78,9 +77,7 @@ describe('Personal sign', function () {
       async ({ driver, ganacheServer }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses[0];
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         // Create personal sign
@@ -96,7 +93,7 @@ describe('Personal sign', function () {
         await driver.clickElement('#personalSign');
 
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
 

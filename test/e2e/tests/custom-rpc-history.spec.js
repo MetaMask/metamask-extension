@@ -3,6 +3,7 @@ const {
   convertToHexValue,
   withFixtures,
   regularDelayMs,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -27,9 +28,7 @@ describe('Stores custom RPC history', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Ganache Testnet';
@@ -83,9 +82,7 @@ describe('Stores custom RPC history', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // duplicate network
         const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
@@ -126,9 +123,7 @@ describe('Stores custom RPC history', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // duplicate network
         const newRpcUrl = 'http://localhost:8544';
@@ -160,7 +155,15 @@ describe('Stores custom RPC history', function () {
         });
 
         await rpcUrlInput.clear();
-        await rpcUrlInput.sendKeys(newRpcUrl);
+
+        // We cannot use sendKeys() here, because a network request will be fired after each
+        // keypress, and the privacy snapshot will show:
+        // `New hosts found: l,lo,loc,loca,local,localh,localho,localhos`
+        // In the longer term, we may want to debounce this
+        await driver.pasteIntoField(
+          '.form-field:nth-of-type(2) input[type="text"]',
+          newRpcUrl,
+        );
 
         await driver.findElement({
           text: 'Could not fetch chain ID. Is your RPC URL correct?',
@@ -178,14 +181,12 @@ describe('Stores custom RPC history', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'button' });
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
       },
     );
   });
@@ -219,9 +220,7 @@ describe('Stores custom RPC history', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
@@ -237,7 +236,7 @@ describe('Stores custom RPC history', function () {
         });
 
         // click Mainnet to dismiss network dropdown
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'button' });
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
 
         assert.equal(customRpcs.length, 2);
       },
@@ -272,9 +271,7 @@ describe('Stores custom RPC history', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');

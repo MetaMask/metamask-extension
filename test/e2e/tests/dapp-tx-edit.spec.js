@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  unlockWallet,
+} = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -29,9 +34,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // deploy contract
         await openDapp(driver, contractAddress);
@@ -42,7 +45,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         const windowHandles = await driver.getAllWindowHandles();
 
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
         await driver.waitForSelector({
@@ -73,9 +76,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         await driver.clickElement('#sendButton');
@@ -83,7 +84,7 @@ describe('Editing confirmations of dapp initiated contract interactions', functi
         const windowHandles = await driver.getAllWindowHandles();
 
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
         await driver.waitForSelector({

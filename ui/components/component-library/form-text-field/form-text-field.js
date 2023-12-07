@@ -147,7 +147,7 @@ FormTextField.propTypes = {
   /**
    * The content of the HelpText component
    */
-  helpText: PropTypes.string,
+  helpText: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
   /**
    * Props that are applied to the HelpText component
    */

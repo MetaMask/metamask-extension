@@ -37,8 +37,9 @@ describe('AccountPicker', () => {
 
   it('displays a blockie per the setting', () => {
     const { container } = render({}, { useBlockie: true });
-    expect(container.querySelector('canvas')).toBeDefined();
-    expect(container.querySelector('img')).toBeDefined();
+    const img = container.querySelector('img');
+    expect(img).toBeDefined();
+    expect(img.src.startsWith('data:image/svg+xml')).toBe(true);
   });
 
   it('displays a jazzicon per the setting', () => {

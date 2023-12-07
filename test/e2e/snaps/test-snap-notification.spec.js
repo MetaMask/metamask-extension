@@ -21,7 +21,6 @@ describe('Test Snap Notification', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // navigate to test snaps page
@@ -43,7 +42,7 @@ describe('Test Snap Notification', function () {
         );
         const extensionPage = windowHandles[0];
         await driver.switchToWindowWithTitle(
-          'MetaMask',
+          'MetaMask Notification',
           windowHandles,
         );
         await driver.clickElement({
