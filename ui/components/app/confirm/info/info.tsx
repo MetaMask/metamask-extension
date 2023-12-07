@@ -63,7 +63,7 @@ export const ConfirmInfo: React.FC<ConfirmInfoProps> = ({
 
           return (
             <React.Fragment key={dividerKey}>
-              <ConfirmInfoRowDivider />;
+              <ConfirmInfoRowDivider />
             </React.Fragment>
           );
         }
