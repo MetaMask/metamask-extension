@@ -142,7 +142,8 @@ const baseStore = {
   },
 };
 
-const placeholderText = process.env.METAMASK_BUILD_TYPE === 'flask'
+const placeholderText =
+  process.env.METAMASK_BUILD_TYPE === 'flask'
     ? 'Enter public address (0x) or domain name'
     : 'Enter public address (0x) or ENS name';
 
