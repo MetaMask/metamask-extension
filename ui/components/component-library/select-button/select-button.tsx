@@ -139,7 +139,9 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         disabled={isDisabled || isDisabledProp || disabled}
         as="button"
         onClick={isWithinSelectWrapper ? toggleUncontrolledOpen : undefined}
-        borderColor={BorderColor.borderDefault}
+        borderColor={
+          isDanger ? BorderColor.errorDefault : BorderColor.borderDefault
+        }
         borderRadius={BorderRadius.MD}
         backgroundColor={BackgroundColor.backgroundDefault}
         paddingTop={getPaddingBySize()}
@@ -148,6 +150,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         paddingRight={4}
         display={Display.Flex}
         height={BlockSize.Full}
+        width={isBlock && BlockSize.Full}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.spaceBetween}
         gap={2}

@@ -21,21 +21,16 @@
     --size: 48px;
   }
 
-
-  &--block {
-    width: 100%;
-  }
-
-  &:hover {
+  &:hover:not(&--disabled) {
     background-color: var(--color-background-hover);
   }
 
-  &:active {
+  &:active:not(&--disabled) {
     background-color: var(--color-background-pressed);
   }
 
-  &:active,
-  &:focus {
+  &:active:not(&--disabled),
+  &:focus:not(&--disabled) {
     border-color: var(--color-primary-default);
     box-shadow: inset 0 0 0 1px var(--color-primary-default);
   }
