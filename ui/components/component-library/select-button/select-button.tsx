@@ -23,10 +23,10 @@ import {
 } from './select-button.types';
 
 // Utility function to check for plain objects
-const isPlainObject = (obj: any) => {
+const isPlainObject = (obj: unknown) => {
   return (
-    Boolean(obj) &&
     typeof obj === 'object' &&
+    obj !== null &&
     obj.constructor === Object &&
     !React.isValidElement(obj)
   );
@@ -139,9 +139,7 @@ export const SelectButton: SelectButtonComponent = React.forwardRef(
         disabled={isDisabled || isDisabledProp || disabled}
         as="button"
         onClick={isWithinSelectWrapper ? toggleUncontrolledOpen : undefined}
-        borderColor={
-          isDanger ? BorderColor.errorDefault : BorderColor.borderDefault
-        }
+        borderColor={BorderColor.borderDefault}
         borderRadius={BorderRadius.MD}
         backgroundColor={BackgroundColor.backgroundDefault}
         paddingTop={getPaddingBySize()}

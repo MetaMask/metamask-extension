@@ -134,7 +134,6 @@ Children.args = {
 };
 
 export const Placeholder: StoryFn<typeof SelectButton> = (args) => {
-  console.log('Args:', args);
   return (
     <Box display={Display.Flex} gap={3}>
       <SelectButton {...args} />
