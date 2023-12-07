@@ -8,7 +8,7 @@ import {
   ConfirmInfoRowValueDouble,
   /** todo: rename ConfirmInfoRowVariant to ConfirmInfoRowState */
   ConfirmInfoRowVariant as ConfirmInfoRowState,
-} from '../shared/info/row';
+} from './row';
 import { ConfirmInfoContainer } from './container';
 
 /**

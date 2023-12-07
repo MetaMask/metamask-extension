@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConfirmInfoRow } from '../shared/info/row';
+import { ConfirmInfoRow } from './row';
 import { ConfirmInfo, ConfirmInfoRowConfig, ConfirmInfoRowType } from './info';
 
 const mockRowConfigs: ConfirmInfoRowConfig[] = [
@@ -39,7 +39,12 @@ const ConfirmInfoStory = {
   },
 };
 
-export const DefaultStory = (args) => <ConfirmInfo {...args} />;
+export const DefaultStory = (args) => (
+  <Box
+    background>
+    <ConfirmInfo {...args} />
+  </Box>
+);
 
 DefaultStory.storyName = 'Default';
 
