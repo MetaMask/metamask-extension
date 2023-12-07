@@ -10,5 +10,6 @@
       ],
       "url": "https://json.schemastore.org/chrome-manifest"
     }
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
