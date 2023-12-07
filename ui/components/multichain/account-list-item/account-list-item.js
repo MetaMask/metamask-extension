@@ -123,6 +123,7 @@ export const AccountListItem = ({
   const label = selectedAccount.metadata?.snap?.name
     ? `${selectedAccount.metadata?.snap?.name} (${t('beta')})`
     : getLabel(t, keyring);
+  console.log('snap', selectedAccount.metadata?.snap);
 
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
