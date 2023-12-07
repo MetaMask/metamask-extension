@@ -1,22 +1,17 @@
 .mm-container {
-  // Define the default size variable
   --size: 100%;
 
-  // Modifier for small size
   &--max-width-sm {
     --size: 320px;
   }
 
-  // Modifier for medium size
   &--max-width-md {
     --size: 480px;
   }
 
-  // Modifier for large size
   &--max-width-lg {
     --size: 720px;
   }
 
-  // Apply the size variable
   max-width: var(--size);
 }
