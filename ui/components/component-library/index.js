@@ -53,7 +53,7 @@ export { BannerTip, BannerTipLogoType } from './banner-tip';
 export { PopoverHeader } from './popover-header';
 export { Popover, PopoverPosition, PopoverRole } from './popover';
 export { ModalHeader } from './modal-header';
-export { SelectButton } from './select-button';
+export { SelectButton, SelectButtonSize } from './select-button';
 export { SelectOption } from './select-option';
 export {
   SelectWrapper,
