@@ -151,7 +151,14 @@ export const getBaseApi = function (type, chainId) {
   if (!baseUrl) {
     throw new Error(`Swaps API calls are disabled for chainId: ${_chainId}`);
   }
+
+  // For quote only in local dev
+  const chainIdDecimal = chainId && parseInt(chainId, 16);
+  const localUrl = `http://localhost:4000/v2/networks/${chainIdDecimal}`;
+
   switch (type) {
+    case 'quote':
+      return `${localUrl}/quotes?`;
     case 'trade':
       return `${baseUrl}/trades?`;
     case 'tokens':
@@ -279,6 +286,85 @@ export async function fetchTradesInfo(
     fetchOptions: { method: 'GET', headers: clientIdHeader },
     cacheOptions: { cacheRefreshTime: 0, timeout: SECOND * 15 },
     functionName: 'fetchTradesInfo',
+  });
+  const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
+    if (
+      quote.trade &&
+      !quote.error &&
+      validateData(QUOTE_VALIDATORS, quote, tradeURL)
+    ) {
+      const constructedTrade = constructTxParams({
+        to: quote.trade.to,
+        from: quote.trade.from,
+        data: quote.trade.data,
+        amount: decimalToHex(quote.trade.value),
+        gas: decimalToHex(quote.maxGas),
+      });
+
+      let { approvalNeeded } = quote;
+
+      if (approvalNeeded) {
+        approvalNeeded = constructTxParams({
+          ...approvalNeeded,
+        });
+      }
+
+      return {
+        ...aggIdTradeMap,
+        [quote.aggregator]: {
+          ...quote,
+          slippage,
+          trade: constructedTrade,
+          approvalNeeded,
+        },
+      };
+    }
+    return aggIdTradeMap;
+  }, {});
+
+  return newQuotes;
+}
+
+export async function fetchQuotesInfoV2(
+  {
+    slippage,
+    sourceToken,
+    sourceDecimals,
+    destinationToken,
+    value,
+    fromAddress,
+    toAddress,
+    exchangeList,
+  },
+  { chainId },
+) {
+  const urlParams = {
+    destinationToken,
+    sourceToken,
+    sourceAmount: calcTokenValue(value, sourceDecimals).toString(10),
+    slippage,
+    // timeout: SECOND * 10, // v2 api doesn't like this
+    sender: fromAddress,
+    recipient: toAddress,
+  };
+
+  if (exchangeList) {
+    urlParams.exchangeList = exchangeList;
+  }
+  if (shouldEnableDirectWrapping(chainId, sourceToken, destinationToken)) {
+    urlParams.enableDirectWrapping = true;
+  }
+
+  const queryString = new URLSearchParams(urlParams).toString();
+  const tradeURL = `${getBaseApi('quote', chainId)}${queryString}`;
+
+  console.log('tradeURL', tradeURL);
+
+  const tradesResponse = await fetchWithCache({
+    url: tradeURL,
+    fetchOptions: { method: 'GET', headers: clientIdHeader },
+    cacheOptions: { cacheRefreshTime: 0, timeout: SECOND * 15 },
+    functionName: 'fetchQuotesInfoV2',
   });
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
     if (

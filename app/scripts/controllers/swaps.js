@@ -34,6 +34,7 @@ import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils'
 
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
+  fetchQuotesInfoV2,
   getBaseApi,
 } from '../../../shared/lib/swaps-utils';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
@@ -140,6 +141,7 @@ export default class SwapsController {
     };
 
     this._fetchTradesInfo = fetchTradesInfo;
+    this._fetchQuotesInfoV2 = fetchQuotesInfoV2;
     this._getCurrentChainId = getCurrentChainId;
     this._getEIP1559GasFeeEstimates = getEIP1559GasFeeEstimates;
 
@@ -237,6 +239,28 @@ export default class SwapsController {
     this.pollingTimeout = setTimeout(() => {
       const { swapsState } = this.store.getState();
       this.fetchAndSetQuotes(
+        swapsState.fetchParams,
+        swapsState.fetchParams?.metaData,
+        true,
+      );
+    }, quotesRefreshRateInMs);
+  }
+
+  pollForNewQuotesV2() {
+    const {
+      swapsState: {
+        swapsQuoteRefreshTime,
+        swapsQuotePrefetchingRefreshTime,
+        quotesPollingLimitEnabled,
+      },
+    } = this.store.getState();
+    // swapsQuoteRefreshTime is used on the View Quote page, swapsQuotePrefetchingRefreshTime is used on the Build Quote page.
+    const quotesRefreshRateInMs = quotesPollingLimitEnabled
+      ? swapsQuoteRefreshTime
+      : swapsQuotePrefetchingRefreshTime;
+    this.pollingTimeout = setTimeout(() => {
+      const { swapsState } = this.store.getState();
+      this.fetchAndSetQuotesV2(
         swapsState.fetchParams,
         swapsState.fetchParams?.metaData,
         true,
@@ -424,6 +448,189 @@ export default class SwapsController {
 
     if (!quotesPollingLimitEnabled || this.pollCount < POLL_COUNT_LIMIT + 1) {
       this.pollForNewQuotes();
+    } else {
+      this.resetPostFetchState();
+      this.setSwapsErrorKey(QUOTES_EXPIRED_ERROR);
+      return null;
+    }
+
+    return [newQuotes, topAggId];
+  }
+
+  async fetchAndSetQuotesV2(
+    fetchParams,
+    fetchParamsMetaData = {},
+    isPolledRequest,
+  ) {
+    const { chainId } = fetchParamsMetaData;
+
+    if (chainId !== this._ethersProviderChainId) {
+      this.ethersProvider = new Web3Provider(this.provider);
+      this._ethersProviderChainId = chainId;
+    }
+
+    const {
+      swapsState: { quotesPollingLimitEnabled, saveFetchedQuotes },
+    } = this.store.getState();
+
+    if (!fetchParams) {
+      return null;
+    }
+    // Every time we get a new request that is not from the polling, we reset the poll count so we can poll for up to three more sets of quotes with these new params.
+    if (!isPolledRequest) {
+      this.pollCount = 0;
+    }
+
+    // If there are any pending poll requests, clear them so that they don't get call while this new fetch is in process
+    clearTimeout(this.pollingTimeout);
+
+    if (!isPolledRequest) {
+      this.setSwapsErrorKey('');
+    }
+
+    const indexOfCurrentCall = this.indexOfNewestCallInFlight + 1;
+    this.indexOfNewestCallInFlight = indexOfCurrentCall;
+
+    if (!saveFetchedQuotes) {
+      this.setSaveFetchedQuotes(true);
+    }
+
+    let [newQuotes] = await Promise.all([
+      this._fetchQuotesInfoV2(fetchParams, {
+        ...fetchParamsMetaData,
+      }),
+      this._setSwapsNetworkConfig(),
+    ]);
+
+    const {
+      swapsState: { saveFetchedQuotes: saveFetchedQuotesAfterResponse },
+    } = this.store.getState();
+
+    // If saveFetchedQuotesAfterResponse is false, it means a user left Swaps (we cleaned the state)
+    // and we don't want to set any API response with quotes into state.
+    if (!saveFetchedQuotesAfterResponse) {
+      return [
+        {}, // quotes
+        null, // selectedAggId
+      ];
+    }
+
+    newQuotes = mapValues(newQuotes, (quote) => ({
+      ...quote,
+      sourceTokenInfo: fetchParamsMetaData.sourceTokenInfo,
+      destinationTokenInfo: fetchParamsMetaData.destinationTokenInfo,
+    }));
+
+    if (chainId === CHAIN_IDS.OPTIMISM && Object.values(newQuotes).length > 0) {
+      await Promise.all(
+        Object.values(newQuotes).map(async (quote) => {
+          if (quote.trade) {
+            const multiLayerL1TradeFeeTotal = await fetchEstimatedL1Fee(
+              chainId,
+              {
+                txParams: quote.trade,
+                chainId,
+              },
+              this.ethersProvider,
+            );
+            quote.multiLayerL1TradeFeeTotal = multiLayerL1TradeFeeTotal;
+          }
+          return quote;
+        }),
+      );
+    }
+
+    const quotesLastFetched = Date.now();
+
+    let approvalRequired = false;
+    if (
+      !isSwapsDefaultTokenAddress(fetchParams.sourceToken, chainId) &&
+      Object.values(newQuotes).length
+    ) {
+      const allowance = await this._getERC20Allowance(
+        fetchParams.sourceToken,
+        fetchParams.fromAddress,
+        chainId,
+      );
+      const [firstQuote] = Object.values(newQuotes);
+
+      // For a user to be able to swap a token, they need to have approved the MetaSwap contract to withdraw that token.
+      // _getERC20Allowance() returns the amount of the token they have approved for withdrawal. If that amount is greater
+      // than 0, it means that approval has already occurred and is not needed. Otherwise, for tokens to be swapped, a new
+      // call of the ERC-20 approve method is required.
+      approvalRequired =
+        firstQuote.approvalNeeded &&
+        allowance.eq(0) &&
+        firstQuote.aggregator !== 'wrappedNative';
+      if (!approvalRequired) {
+        newQuotes = mapValues(newQuotes, (quote) => ({
+          ...quote,
+          approvalNeeded: null,
+        }));
+      } else if (!isPolledRequest) {
+        const { gasLimit: approvalGas } = await this.timedoutGasReturn(
+          firstQuote.approvalNeeded,
+          firstQuote.aggregator,
+        );
+
+        newQuotes = mapValues(newQuotes, (quote) => ({
+          ...quote,
+          approvalNeeded: {
+            ...quote.approvalNeeded,
+            gas: approvalGas || DEFAULT_ERC20_APPROVE_GAS,
+          },
+        }));
+      }
+    }
+
+    let topAggId = null;
+
+    // We can reduce time on the loading screen by only doing this after the
+    // loading screen and best quote have rendered.
+    if (!approvalRequired && !fetchParams?.balanceError) {
+      newQuotes = await this.getAllQuotesWithGasEstimates(newQuotes);
+    }
+
+    if (Object.values(newQuotes).length === 0) {
+      this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR);
+    } else {
+      const [_topAggId, quotesWithSavingsAndFeeData] =
+        await this._findTopQuoteAndCalculateSavings(newQuotes);
+      topAggId = _topAggId;
+      newQuotes = quotesWithSavingsAndFeeData;
+    }
+
+    // If a newer call has been made, don't update state with old information
+    // Prevents timing conflicts between fetches
+    if (this.indexOfNewestCallInFlight !== indexOfCurrentCall) {
+      throw new Error(SWAPS_FETCH_ORDER_CONFLICT);
+    }
+
+    const { swapsState } = this.store.getState();
+    let { selectedAggId } = swapsState;
+    if (!newQuotes[selectedAggId]) {
+      selectedAggId = null;
+    }
+
+    this.store.updateState({
+      swapsState: {
+        ...swapsState,
+        quotes: newQuotes,
+        fetchParams: { ...fetchParams, metaData: fetchParamsMetaData },
+        quotesLastFetched,
+        selectedAggId,
+        topAggId,
+      },
+    });
+
+    if (quotesPollingLimitEnabled) {
+      // We only want to do up to a maximum of three requests from polling if polling limit is enabled.
+      // Otherwise we won't increase pollCount, so polling will run without a limit.
+      this.pollCount += 1;
+    }
+
+    if (!quotesPollingLimitEnabled || this.pollCount < POLL_COUNT_LIMIT + 1) {
+      this.pollForNewQuotesV2();
     } else {
       this.resetPostFetchState();
       this.setSwapsErrorKey(QUOTES_EXPIRED_ERROR);
