@@ -18,7 +18,6 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
-  AURORA_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -1549,15 +1548,13 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return LINEA_GOERLI_DISPLAY_NAME;
     case CHAIN_IDS.LINEA_MAINNET:
       return LINEA_MAINNET_DISPLAY_NAME;
-    case CHAIN_IDS.AURORA:
-      return AURORA_DISPLAY_NAME;
     default:
       return '';
   }
 };
 /**
  * To check if the chainId supports token detection,
- * currently it returns true for Ethereum Mainnet, BSC, Polygon, Avalanche, Linea and Aurora
+ * currently it returns true for Ethereum Mainnet, BSC, Polygon, Avalanche, and Linea
  *
  * @param {*} state
  * @returns Boolean
@@ -1571,7 +1568,6 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.AVALANCHE,
     CHAIN_IDS.LINEA_GOERLI,
     CHAIN_IDS.LINEA_MAINNET,
-    CHAIN_IDS.AURORA,
   ].includes(chainId);
 }
 
@@ -1614,7 +1610,7 @@ export function getIsTokenDetectionInactiveOnMainnet(state) {
 
 /**
  * To check for the chainId that supports token detection ,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC, and Avalanche
  *
  * @param {*} state
  * @returns Boolean
