@@ -526,6 +526,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
+    | typeof CHAIN_IDS.AURORA
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
