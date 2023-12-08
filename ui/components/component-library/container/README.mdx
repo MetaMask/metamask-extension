@@ -26,33 +26,34 @@ Possible values are:
 <Canvas of={ContainerStories.MaxWidth} />
 
 ```jsx
+import { BackgroundColor } from '../../../helpers/constants/design-system';
 import { Container, ContainerMaxWidth } from '../../component-library';
 
-<Container maxWidth={ContainerMaxWidth.Sm}>
-Small breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing
-elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam
-nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget
-aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget
-nunc.
+<Container
+  maxWidth={ContainerMaxWidth.Sm}
+  backgroundColor={BackgroundColor.primaryMuted}
+  padding={4}
+>
+  Size "sm" container
 </Container>
-<Container maxWidth={ContainerMaxWidth.Md}>
-Medium breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing
-elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam
-nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget
-aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget
-nunc.
+<Container
+  maxWidth={ContainerMaxWidth.Md}
+  backgroundColor={BackgroundColor.successMuted}
+  padding={4}
+>
+  Size "md" container
 </Container>
-<Container maxWidth={ContainerMaxWidth.Lg}>
-Large breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing
-elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam
-nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget
-aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget
-nunc.
+<Container
+  maxWidth={ContainerMaxWidth.Lg}
+  backgroundColor={BackgroundColor.warningMuted}
+  padding={4}
+>
+  Size "lg" container
 </Container>
-<Container>
-No breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam nunc,
-vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget aliquam
-ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget nunc.
+<Container
+  backgroundColor={BackgroundColor.errorMuted}
+  padding={4}
+>
+  no max-width container
 </Container>
 ```
