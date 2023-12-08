@@ -446,9 +446,6 @@ describe('MetaMask @no-mmi', function () {
     });
 
     it('checks balance', async function () {
-      if (process.env.MULTICHAIN) {
-        return;
-      }
       await driver.clickElement({
         text: 'Tokens',
         tag: 'button',

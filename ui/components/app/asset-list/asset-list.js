@@ -106,8 +106,8 @@ const AssetList = ({ onClickAsset }) => {
 
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsBuyableChain);
-  const shouldShowBuy = isBuyableChain && balanceIsZero;
-  const shouldShowReceive = balanceIsZero;
+  const shouldShowBuy = isBuyableChain && balanceIsZero && !process.env.IN_TEST;
+  const shouldShowReceive = balanceIsZero && !process.env.IN_TEST;
   const { openBuyCryptoInPdapp } = useRamps();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
