@@ -34,10 +34,10 @@ import { previousValueComparator } from './util';
  * @property {object} store.accountsByChainId The accounts currently stored in this AccountTracker keyed by chain id
  * @property {string} store.currentBlockGasLimit A hex string indicating the gas limit of the current block
  * @property {string} store.currentBlockGasLimitByChainId A hex string indicating the gas limit of the current block keyed by chain id
- * @property {object} _provider A provider needed to create the EthQuery instance used within this AccountTracker.
- * @property {BlockTracker} _blockTracker A BlockTracker instance. Needed to ensure that accounts and their info updates
+ * @property {object} #provider A provider needed to create the EthQuery instance used within this AccountTracker.
+ * @property {BlockTracker} #blockTracker A BlockTracker instance. Needed to ensure that accounts and their info updates
  * when a new block is created.
- * @property {object} _currentBlockNumberByChainId Reference to a property on the _blockTracker: the number (i.e. an id) of the the current block keyed by chain id
+ * @property {object} _currentBlockNumberByChainId Reference to a property on the #blockTracker: the number (i.e. an id) of the the current block keyed by chain id
  */
 export default class AccountTracker {
   /**
@@ -53,6 +53,9 @@ export default class AccountTracker {
 
   #listeners = {};
 
+  #provider = null;
+  #blockTracker = null;
+
   constructor(opts = {}) {
     const initState = {
       accounts: {},
@@ -66,11 +69,9 @@ export default class AccountTracker {
       this.store.updateState(initState);
     };
 
-    this._provider = opts.provider;
-    this._blockTracker = opts.blockTracker;
+    this.#provider = opts.provider;
+    this.#blockTracker = opts.blockTracker;
 
-    // bind function for easier listener syntax
-    this._updateForBlock = this._updateForBlock.bind(this);
     this.getCurrentChainId = opts.getCurrentChainId;
     this.getNetworkClientById = opts.getNetworkClientById;
     this.getNetworkIdentifier = opts.getNetworkIdentifier;
@@ -80,9 +81,9 @@ export default class AccountTracker {
 
     // blockTracker.currentBlock may be null
     this._currentBlockNumberByChainId = {
-      [this.getCurrentChainId()]: this._blockTracker.getCurrentBlock(),
+      [this.getCurrentChainId()]: this.#blockTracker.getCurrentBlock(),
     };
-    this._blockTracker.once('latest', (blockNumber) => {
+    this.#blockTracker.once('latest', (blockNumber) => {
       this._currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
     });
 
@@ -125,9 +126,9 @@ export default class AccountTracker {
    */
   start() {
     // remove first to avoid double add
-    this._blockTracker.removeListener('latest', this._updateForBlock);
+    this.#blockTracker.removeListener('latest', this.#updateForBlock);
     // add listener
-    this._blockTracker.addListener('latest', this._updateForBlock);
+    this.#blockTracker.addListener('latest', this.#updateForBlock);
     // fetch account balances
     this.updateAccounts();
   }
@@ -137,7 +138,7 @@ export default class AccountTracker {
    */
   stop() {
     // remove listener
-    this._blockTracker.removeListener('latest', this._updateForBlock);
+    this.#blockTracker.removeListener('latest', this.#updateForBlock);
   }
 
   /**
@@ -160,8 +161,8 @@ export default class AccountTracker {
     }
     return {
       chainId: this.getCurrentChainId(),
-      provider: this._provider,
-      blockTracker: this._blockTracker,
+      provider: this.#provider,
+      blockTracker: this.#blockTracker,
       identifier: this.getNetworkIdentifier(),
     };
   }
@@ -182,7 +183,7 @@ export default class AccountTracker {
       const set = new Set();
       set.add(pollToken);
       this.#pollingTokenSets.set(networkClientId, set);
-      this.subscribeWithNetworkClientId(networkClientId);
+      this.#subscribeWithNetworkClientId(networkClientId);
     }
     return pollToken;
   }
@@ -215,7 +216,7 @@ export default class AccountTracker {
         tokenSet.delete(pollingToken);
         if (tokenSet.size === 0) {
           this.#pollingTokenSets.delete(key);
-          this.unsubscribeWithNetworkClientId(key);
+          this.#unsubscribeWithNetworkClientId(key);
         }
       }
     });
@@ -229,15 +230,15 @@ export default class AccountTracker {
    *
    * @param {string} networkClientId - network client ID to fetch a block tracker with
    */
-  subscribeWithNetworkClientId(networkClientId) {
+  #subscribeWithNetworkClientId(networkClientId) {
     if (this.#listeners[networkClientId]) {
       return;
     }
     const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
-    const _updateForBlock = this._updateForBlock.bind(networkClientId);
-    blockTracker.addListener('latest', _updateForBlock);
+    const updateForBlock = this.#updateForBlockByNetworkClientId.bind(this, networkClientId);
+    blockTracker.addListener('latest', updateForBlock);
 
-    this.#listeners[networkClientId] = _updateForBlock;
+    this.#listeners[networkClientId] = updateForBlock;
 
     this.updateAccounts(networkClientId);
   }
@@ -247,7 +248,7 @@ export default class AccountTracker {
    *
    * @param {string} networkClientId - The network client ID to fetch a block tracker with
    */
-  unsubscribeWithNetworkClientId(networkClientId) {
+  #unsubscribeWithNetworkClientId(networkClientId) {
     if (!this.#listeners[networkClientId]) {
       return;
     }
@@ -264,7 +265,7 @@ export default class AccountTracker {
    * @private
    * @param {string} chainId - The chain ID
    */
-  getAccountsForChainId(chainId) {
+  #getAccountsForChainId(chainId) {
     const { accounts, accountsByChainId } = this.store.getState();
     if (accountsByChainId[chainId]) {
       return cloneDeep(accountsByChainId[chainId]);
@@ -389,8 +390,8 @@ export default class AccountTracker {
    * @param {number} blockNumber - the block number to update to.
    * @fires 'block' The updated state, if all account updates are successful
    */
-  async _updateForBlock(blockNumber) {
-    await this._updateForBlockByNetworkClientId(null, blockNumber);
+  #updateForBlock = async (blockNumber) => {
+    await this.#updateForBlockByNetworkClientId(null, blockNumber);
   }
 
   /**
@@ -402,7 +403,7 @@ export default class AccountTracker {
    * @param {number} blockNumber - the block number to update to.
    * @fires 'block' The updated state, if all account updates are successful
    */
-  async _updateForBlockByNetworkClientId(networkClientId, blockNumber) {
+  async #updateForBlockByNetworkClientId(networkClientId, blockNumber) {
     const { chainId, provider } =
       this.#getCorrectNetworkClient(networkClientId);
     this._currentBlockNumberByChainId[chainId] = blockNumber;
@@ -451,7 +452,7 @@ export default class AccountTracker {
 
   /**
    * balanceChecker is deployed on main eth (test)nets and requires a single call
-   * for all other networks, calls this._updateAccount for each account in this.store
+   * for all other networks, calls this.#updateAccount for each account in this.store
    *
    * @param {string} networkClientId - optional network client ID to use instead of the globally selected network.
    * @returns {Promise} after all account balances updated
@@ -489,11 +490,11 @@ export default class AccountTracker {
     ) {
       await Promise.all(
         addresses.map((address) =>
-          this._updateAccount(address, provider, chainId),
+          this.#updateAccount(address, provider, chainId),
         ),
       );
     } else {
-      await this._updateAccountsViaBalanceChecker(
+      await this.#updateAccountsViaBalanceChecker(
         addresses,
         singleCallBalancesAddress,
         provider,
@@ -512,7 +513,7 @@ export default class AccountTracker {
    * @returns {Promise} after the account balance is updated
    */
 
-  async _updateAccount(address, provider, chainId) {
+  async #updateAccount(address, provider, chainId) {
     const { useMultiAccountBalanceChecker } =
       this.preferencesController.store.getState();
 
@@ -529,7 +530,7 @@ export default class AccountTracker {
 
     const result = { address, balance };
     // update accounts state
-    const accounts = this.getAccountsForChainId(chainId);
+    const accounts = this.#getAccountsForChainId(chainId);
     // only populate if the entry is still present
     if (!accounts[address]) {
       return;
@@ -572,7 +573,7 @@ export default class AccountTracker {
    * @param {string} chainId - The chain ID to update in state
    * @returns {Promise} after the account balance is updated
    */
-  async _updateAccountsViaBalanceChecker(
+  async #updateAccountsViaBalanceChecker(
     addresses,
     deployedContractAddress,
     provider,
@@ -588,7 +589,7 @@ export default class AccountTracker {
     try {
       const balances = await ethContract.balances(addresses, ethBalance);
 
-      const accounts = this.getAccountsForChainId(chainId);
+      const accounts = this.#getAccountsForChainId(chainId);
       const newAccounts = {};
       Object.keys(accounts).forEach((address) => {
         if (!addresses.includes(address)) {
@@ -612,14 +613,13 @@ export default class AccountTracker {
         },
       });
     } catch (error) {
-      console.log("error case")
       log.warn(
         `MetaMask - Account Tracker single call balance fetch failed`,
         error,
       );
       Promise.all(
         addresses.map((address) =>
-          this._updateAccount(address, provider, chainId),
+          this.#updateAccount(address, provider, chainId),
         ),
       );
     }
