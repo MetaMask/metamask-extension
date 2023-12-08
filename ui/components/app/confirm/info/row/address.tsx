@@ -4,16 +4,16 @@ import {
   Box,
   Text,
   AvatarAccountSize,
-} from '../../../../../component-library';
+} from '../../../../component-library';
 import {
   AlignItems,
   BorderColor,
   Display,
   FlexDirection,
   TextColor,
-} from '../../../../../../helpers/constants/design-system';
-import { shortenAddress } from '../../../../../../helpers/utils/util';
-import Tooltip from '../../../../../ui/tooltip/tooltip';
+} from '../../../../../helpers/constants/design-system';
+import { shortenAddress } from '../../../../../helpers/utils/util';
+import Tooltip from '../../../../ui/tooltip/tooltip';
 
 export type ConfirmInfoRowAddressProps = {
   address: string;
