@@ -578,7 +578,6 @@ export default class AccountTracker {
     provider,
     chainId,
   ) {
-
     const ethContract = await new Contract(
       deployedContractAddress,
       SINGLE_CALL_BALANCES_ABI,
@@ -613,6 +612,7 @@ export default class AccountTracker {
         },
       });
     } catch (error) {
+      console.log("error case")
       log.warn(
         `MetaMask - Account Tracker single call balance fetch failed`,
         error,

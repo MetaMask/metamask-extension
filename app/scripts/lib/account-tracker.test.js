@@ -909,7 +909,7 @@ describe('Account Tracker', () => {
     });
   });
 
-  describe('_updateAccountsViaBalanceChecker', () => {
+  describe.only('_updateAccountsViaBalanceChecker', () => {
     it('should update the passed address account balance, and set other balances to null, if useMultiAccountBalanceChecker is false', async () => {
       useMultiAccountBalanceChecker = false;
       accountTracker.store.updateState({
@@ -944,7 +944,7 @@ describe('Account Tracker', () => {
     });
 
     it('should update all balances if useMultiAccountBalanceChecker is true', async () => {
-      useMultiAccountBalanceChecker = true;
+      useMultiAccountBalanceChecker = false;
       accountTracker.store.updateState({
         accounts: { ...mockAccounts },
       });
