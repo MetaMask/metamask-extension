@@ -2188,7 +2188,7 @@ export default class MetamaskController extends EventEmitter {
             }),
           SECOND * 60,
         ),
-      (snapId, handler) => `${snapId}${handler}`,
+      (snapId, handler, _, origin) => `${snapId}${handler}${origin}`,
     ),
     (getFunc, ...args) => getFunc(...args)(...args),
   );
