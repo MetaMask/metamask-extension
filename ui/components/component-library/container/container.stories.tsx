@@ -4,6 +4,7 @@ import { Box } from '../box';
 import {
   Display,
   FlexDirection,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import README from './README.mdx';
 
