@@ -35,32 +35,36 @@ DefaultStory.storyName = 'Default';
 export const MaxWidth: StoryFn<typeof Container> = (args) => {
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={8}>
-      <Container {...args} maxWidth={ContainerMaxWidth.Sm}>
-        Small breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing
-        elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam
-        nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget
-        aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget
-        nunc.
+      <Container
+        {...args}
+        maxWidth={ContainerMaxWidth.Sm}
+        backgroundColor={BackgroundColor.primaryMuted}
+        padding={4}
+      >
+        Size "sm" container
       </Container>
-      <Container {...args} maxWidth={ContainerMaxWidth.Md}>
-        Medium breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing
-        elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam
-        nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget
-        aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget
-        nunc.
+      <Container
+        {...args}
+        maxWidth={ContainerMaxWidth.Md}
+        backgroundColor={BackgroundColor.successMuted}
+        padding={4}
+      >
+        Size "md" container
       </Container>
-      <Container {...args} maxWidth={ContainerMaxWidth.Lg}>
-        Large breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing
-        elit. Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam
-        nunc, vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget
-        aliquam ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget
-        nunc.
+      <Container
+        {...args}
+        maxWidth={ContainerMaxWidth.Lg}
+        backgroundColor={BackgroundColor.warningMuted}
+        padding={4}
+      >
+        Size "lg" container
       </Container>
-      <Container {...args}>
-        No breakpoint: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Nullam aliquam, nisl eget aliquam ultrices, nunc nunc aliquam nunc,
-        vitae aliquam nunc nunc eget nunc. Nullam aliquam, nisl eget aliquam
-        ultrices, nunc nunc aliquam nunc, vitae aliquam nunc nunc eget nunc.
+      <Container
+        {...args}
+        backgroundColor={BackgroundColor.errorMuted}
+        padding={4}
+      >
+        no max-width container
       </Container>
     </Box>
   );
