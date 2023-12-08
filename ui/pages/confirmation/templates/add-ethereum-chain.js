@@ -1,6 +1,5 @@
 import { ethErrors } from 'eth-rpc-errors';
 import React from 'react';
-import log from 'loglevel';
 import { infuraProjectId } from '../../../../shared/constants/network';
 import {
   Severity,
@@ -14,7 +13,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
 
 const UNRECOGNIZED_CHAIN = {
@@ -146,53 +144,38 @@ const ERROR_CONNECTING_TO_RPC = {
   },
 };
 
-async function getAlerts(pendingApproval, state) {
+async function getAlerts(pendingApproval, data) {
   const alerts = [];
-  let safeChainsList = [];
-  let providerError;
-  if (state.useSafeChainsListValidation) {
-    try {
-      safeChainsList = await fetchWithCache({
-        url: 'https://chainid.network/chains.json',
-        functionName: 'getSafeChainsList',
-      });
-    } catch (error) {
-      providerError = error;
-      // Swallow the error here to not block the user from adding a custom network
-      log.warn('Failed to fetch the chainList from chainid.network', error);
-    }
-  }
-  const matchedChain = safeChainsList.find(
-    (chain) =>
-      chain.chainId === parseInt(pendingApproval.requestData.chainId, 16),
-  );
 
   const originIsMetaMask = pendingApproval.origin === 'metamask';
-  if (originIsMetaMask && Boolean(matchedChain)) {
+  if (originIsMetaMask && Boolean(data.matchedChain)) {
     return [];
   }
 
-  if (matchedChain) {
+  if (data.matchedChain) {
     if (
-      matchedChain.name.toLowerCase() !==
+      data.matchedChain.name?.toLowerCase() !==
       pendingApproval.requestData.chainName.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_NAME);
     }
     if (
-      matchedChain.nativeCurrency?.symbol !== pendingApproval.requestData.ticker
+      data.matchedChain.nativeCurrency?.symbol?.toLowerCase() !==
+      pendingApproval.requestData.ticker?.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_SYMBOL);
     }
 
     const { origin } = new URL(pendingApproval.requestData.rpcUrl);
-    if (!matchedChain.rpc.map((rpc) => new URL(rpc).origin).includes(origin)) {
+    if (
+      !data.matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin)
+    ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
     }
   }
 
-  if (!matchedChain && state.useSafeChainsListValidation) {
-    if (providerError) {
+  if (!data.matchedChain && data.useSafeChainsListValidation) {
+    if (data.providerError) {
       alerts.push(SAFE_CHAIN_LIST_PROVIDER_ERROR);
     } else {
       alerts.push(UNRECOGNIZED_CHAIN);
@@ -213,7 +196,7 @@ function getState(pendingApproval) {
   return {};
 }
 
-function getValues(pendingApproval, t, actions, history) {
+function getValues(pendingApproval, t, actions, history, _, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
   return {
@@ -366,6 +349,9 @@ function getValues(pendingApproval, t, actions, history) {
             [t('chainId')]: t('chainIdDefinition'),
             [t('currencySymbol')]: t('currencySymbolDefinition'),
             [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
+          },
+          warnings: {
+            [t('currencySymbol')]: data.currencySymbolWarning,
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,

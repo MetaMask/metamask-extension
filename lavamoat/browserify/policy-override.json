@@ -39,7 +39,7 @@
         "removeEventListener": true
       }
     },
-    "ethers>@ethersproject/random": {
+    "@ethersproject/providers>@ethersproject/random": {
       "globals": {
         "crypto.getRandomValues": true
       }
