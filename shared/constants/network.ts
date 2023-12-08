@@ -144,6 +144,8 @@ export const CHAIN_IDS = {
   CRONOS: '0x19',
   GNOSIS: '0x64',
   ZKSYNC_ERA: '0x144',
+  ETC: '0x3d',
+  MORDOR: '0x3f',
 } as const;
 
 /**
@@ -173,6 +175,8 @@ export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
 export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
+export const ETC_DISPLAY_NAME = 'Ethereum Classic';
+export const ETC_MORDOR_DISPLAY_NAME = 'Mordor';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -225,6 +229,8 @@ export const CURRENCY_SYMBOLS = {
   GLIMMER: 'GLMR',
   MOONRIVER: 'MOVR',
   ONE: 'ONE',
+  ETC: 'ETC',
+  MORDOR: 'METC',
 } as const;
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
@@ -244,6 +250,8 @@ export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
 export const ZK_SYNC_ERA_TOKEN_IMAGE_URL = './images/zk-sync.svg';
 export const BASE_TOKEN_IMAGE_URL = './images/base.png';
+export const ETC_TOKEN_IMAGE_URL = './images/etc_logo.png';
+export const ETC_MORDOR_TOKEN_IMAGE_URL = './images/etc_logo.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -399,6 +407,8 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.AURORA_ETH]: ETH_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.ETC]: ETC_TOKEN_IMAGE_URL,
+  [CURRENCY_SYMBOLS.MORDOR]: ETC_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -531,6 +541,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
+    | typeof CHAIN_IDS.MORDOR
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -596,6 +607,10 @@ export const BUYABLE_CHAINS_MAP: {
   [CHAIN_IDS.ZKSYNC_ERA]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'zksync',
+  },
+  [CHAIN_IDS.ETC]: {
+    nativeCurrency: CURRENCY_SYMBOLS.ETC,
+    network: 'classic',
   },
 };
 
@@ -688,6 +703,16 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://basescan.org',
       imageUrl: BASE_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.ETC,
+    nickname: ETC_DISPLAY_NAME,
+    rpcUrl: `https://etc.rivet.link`,
+    ticker: CURRENCY_SYMBOLS.ETC,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://etc.blockscout.com',
+      imageUrl: ETC_TOKEN_IMAGE_URL,
     },
   },
 ];
