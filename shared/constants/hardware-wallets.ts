@@ -37,7 +37,7 @@ export enum HardwareAffiliateLinks {
   airgap = 'https://airgap.it/',
   coolwallet = 'https://www.coolwallet.io/',
   dcent = 'https://dcentwallet.com/',
-  imtoken = 'https://token.im',
+  imtoken = 'https://token.im/',
 }
 
 export enum HardwareAffiliateTutorialLinks {
