@@ -93,8 +93,8 @@ export const ConfirmInfoRow = ({
         <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
           {label}
         </Text>
-        {tooltip && (
-          <Tooltip position="bottom" html={tooltip} style={{ display: 'flex' }}>
+        {tooltip && tooltip.length > 0 && (
+          <Tooltip title={tooltip} style={{ display: 'flex' }}>
             <Icon
               name={TOOLTIP_ICONS[variant]}
               marginLeft={1}
