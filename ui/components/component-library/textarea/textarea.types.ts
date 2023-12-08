@@ -29,6 +29,10 @@ export interface TextareaStyleUtilityProps extends StyleUtilityProps {
   /**
    * If `true`, the textarea will be disabled.
    */
+  isDisabled?: boolean;
+  /*
+   * Please use the `isDisabled` prop instead, this prop is added only for backwards compatibility and intuitive HTML support
+   */
   disabled?: boolean;
   /**
    * If `true`, the textarea will indicate an error

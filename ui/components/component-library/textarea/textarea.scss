@@ -1,8 +1,10 @@
 .mm-textarea {
   $resize: none, both, horizontal, vertical, initial, inherit;
 
-  &--disabled {
-    opacity: 0.5;
+  &--is-disabled,
+  &:disabled {
+    opacity: var(--opacity-disabled);
+    cursor: not-allowed;
   }
 
   @each $size in $resize {

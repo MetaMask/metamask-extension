@@ -82,22 +82,35 @@ describe('Textarea', () => {
     const textarea = getByRole('textbox') as HTMLTextAreaElement;
     expect(textarea.value).toBe('default value');
   });
-  it('should render in disabled state and not focus or be clickable', async () => {
+  it('should render in disabled state using isDisabled prop and not focus or be clickable', async () => {
     const mockOnClick = jest.fn();
     const mockOnFocus = jest.fn();
     const { getByRole, getByTestId, user } = renderWithUserEvent(
-      <Textarea
-        disabled
-        onFocus={mockOnFocus}
-        onClick={mockOnClick}
-        data-testid="textarea"
-      />,
+      <>
+        <Textarea isDisabled onFocus={mockOnFocus} onClick={mockOnClick} />
+      </>,
     );
 
-    const textarea = getByTestId('textarea');
+    const textarea = getByRole('textarea');
 
     await user.click(textarea);
-    expect(getByRole('textbox')).toBeDisabled();
+    expect(getByTestId('textbox')).toBeDisabled();
+    expect(mockOnClick).toHaveBeenCalledTimes(0);
+    expect(mockOnFocus).toHaveBeenCalledTimes(0);
+  });
+  it('should render in disabled state using disabled prop and not focus or be clickable', async () => {
+    const mockOnClick = jest.fn();
+    const mockOnFocus = jest.fn();
+    const { getByRole, getByTestId, user } = renderWithUserEvent(
+      <>
+        <Textarea disabled onFocus={mockOnFocus} onClick={mockOnClick} />
+      </>,
+    );
+
+    const textarea = getByRole('textarea');
+
+    await user.click(textarea);
+    expect(getByTestId('textbox')).toBeDisabled();
     expect(mockOnClick).toHaveBeenCalledTimes(0);
     expect(mockOnFocus).toHaveBeenCalledTimes(0);
   });

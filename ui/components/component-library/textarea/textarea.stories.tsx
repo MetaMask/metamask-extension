@@ -33,7 +33,7 @@ export default {
     defaultValue: {
       control: 'text',
     },
-    disabled: {
+    isDisabled: {
       control: 'boolean',
     },
     error: {
@@ -104,8 +104,8 @@ ColsRows.args = { cols: 50, rows: 4, placeholder: 'cols: 50, rows: 4' };
 export const DefaultValue = Template.bind({});
 DefaultValue.args = { defaultValue: 'Default value' };
 
-export const Disabled = Template.bind({});
-Disabled.args = { disabled: true, placeholder: 'Disabled' };
+export const IsDisabled = Template.bind({});
+IsDisabled.args = { disabled: true, placeholder: 'Disabled' };
 
 export const ErrorStory = Template.bind({});
 ErrorStory.args = { error: true, placeholder: 'Error' };

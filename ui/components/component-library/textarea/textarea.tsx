@@ -23,7 +23,8 @@ export const Textarea: TextareaComponent = React.forwardRef(
       autoFocus,
       className = '',
       defaultValue,
-      disabled,
+      isDisabled,
+      disabled, // to allow our components to maintain intuitive building and support native HTML attribute
       error,
       id,
       resize = TextareaResize.Vertical,
@@ -44,7 +45,7 @@ export const Textarea: TextareaComponent = React.forwardRef(
     ref?: PolymorphicRef<C>,
   ) => {
     const handleClick = (event: React.MouseEvent<HTMLTextAreaElement>) => {
-      if (onClick && !disabled) {
+      if (onClick && (!isDisabled || !disabled)) {
         onClick?.(event);
       }
     };
@@ -63,7 +64,7 @@ export const Textarea: TextareaComponent = React.forwardRef(
           'mm-textarea',
           `mm-textarea--resize-${resize}`,
           {
-            'mm-textarea--disabled': Boolean(disabled),
+            'mm-textarea--disabled': Boolean(isDisabled || disabled),
           },
           className,
         )}
@@ -74,7 +75,7 @@ export const Textarea: TextareaComponent = React.forwardRef(
         required={required}
         autoFocus={autoFocus}
         defaultValue={defaultValue}
-        disabled={disabled}
+        disabled={isDisabled || disabled}
         {...(error && { 'aria-invalid': error })}
         id={id}
         maxLength={maxLength}
