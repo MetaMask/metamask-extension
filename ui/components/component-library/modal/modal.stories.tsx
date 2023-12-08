@@ -217,7 +217,7 @@ export const InitialFocusRef: StoryFn<typeof Modal> = (args) => {
             inputProps={{ ref: inputRef }}
             width={BlockSize.Full}
           />
-          {args.children}
+          <ModalBody>{args.children}</ModalBody>
         </ModalContent>
       </Modal>
     </>
@@ -263,7 +263,9 @@ export const FinalFocusRef: StoryFn<typeof Modal> = (args) => {
           >
             Modal Header
           </ModalHeader>
-          <Text>{args.children}</Text>
+          <ModalBody>
+            <Text>{args.children}</Text>
+          </ModalBody>
         </ModalContent>
       </Modal>
     </>
