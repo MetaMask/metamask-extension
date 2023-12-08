@@ -6,6 +6,7 @@ const {
   DAPP_URL,
   convertToHexValue,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -87,7 +88,7 @@ describe('Sign Typed Data Signature Request', function () {
           await driver.waitUntilXWindowHandles(3);
           let windowHandles = await driver.getAllWindowHandles();
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 
@@ -151,7 +152,7 @@ describe('Sign Typed Data Signature Request', function () {
           await driver.clickElement(data.buttonId);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 
