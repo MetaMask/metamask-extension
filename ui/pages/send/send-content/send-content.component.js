@@ -11,6 +11,7 @@ import {
 import { AssetType } from '../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../helpers/constants/common';
 import GasDisplay from '../gas-display';
+import SendAndSwap from '../../swaps/prepare-send-and-swap-page/send-and-swap';
 import SendAmountRow from './send-amount-row';
 import SendHexDataRow from './send-hex-data-row';
 import SendAssetRow from './send-asset-row';
@@ -83,6 +84,8 @@ export default class SendContent extends Component {
           {networkOrAccountNotSupports1559 ? <SendGasRow /> : null}
           {showHexData ? <SendHexDataRow /> : null}
           {!isMultiLayerFeeNetwork && <GasDisplay gasError={gasError} />}
+
+          <SendAndSwap recipient={recipient} />
         </div>
       </PageContainerContent>
     );

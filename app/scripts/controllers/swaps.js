@@ -595,7 +595,7 @@ export default class SwapsController {
       this.setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR);
     } else {
       const [_topAggId, quotesWithSavingsAndFeeData] =
-        await this._findTopQuoteAndCalculateSavings(newQuotes);
+        await this._findTopQuoteAndCalculateSavingsV2(newQuotes);
       topAggId = _topAggId;
       newQuotes = quotesWithSavingsAndFeeData;
     }
@@ -1051,6 +1051,239 @@ export default class SwapsController {
 
       const conversionRateForCalculations = isSwapsDefaultTokenAddress(
         destinationToken,
+        chainId,
+      )
+        ? 1
+        : tokenConversionRate;
+
+      const overallValueOfQuoteForSorting =
+        conversionRateForCalculations === undefined
+          ? ethValueOfTokens
+          : ethValueOfTokens.minus(ethFee, 10);
+
+      quote.ethFee = ethFee.toString(10);
+
+      if (conversionRateForCalculations !== undefined) {
+        quote.ethValueOfTokens = ethValueOfTokens.toString(10);
+        quote.overallValueOfQuote = overallValueOfQuoteForSorting.toString(10);
+        quote.metaMaskFeeInEth = metaMaskFeeInTokens
+          .times(conversionRateForCalculations.toString(10))
+          .toString(10);
+      }
+
+      if (
+        overallValueOfBestQuoteForSorting === null ||
+        overallValueOfQuoteForSorting.gt(overallValueOfBestQuoteForSorting)
+      ) {
+        topAggId = aggregator;
+        overallValueOfBestQuoteForSorting = overallValueOfQuoteForSorting;
+      }
+    });
+
+    const isBest =
+      isSwapsDefaultTokenAddress(
+        newQuotes[topAggId].destinationToken,
+        chainId,
+      ) ||
+      Boolean(
+        tokenConversionRates[
+          Object.keys(tokenConversionRates).find((tokenAddress) =>
+            isEqualCaseInsensitive(
+              tokenAddress,
+              newQuotes[topAggId]?.destinationToken,
+            ),
+          )
+        ],
+      );
+
+    let savings = null;
+
+    if (isBest) {
+      const bestQuote = newQuotes[topAggId];
+
+      savings = {};
+
+      const {
+        ethFee: medianEthFee,
+        metaMaskFeeInEth: medianMetaMaskFee,
+        ethValueOfTokens: medianEthValueOfTokens,
+      } = getMedianEthValueQuote(Object.values(newQuotes));
+
+      // Performance savings are calculated as:
+      //   (ethValueOfTokens for the best trade) - (ethValueOfTokens for the media trade)
+      savings.performance = new BigNumber(bestQuote.ethValueOfTokens, 10).minus(
+        medianEthValueOfTokens,
+        10,
+      );
+
+      // Fee savings are calculated as:
+      //   (fee for the median trade) - (fee for the best trade)
+      savings.fee = new BigNumber(medianEthFee).minus(bestQuote.ethFee, 10);
+
+      savings.metaMaskFee = bestQuote.metaMaskFeeInEth;
+
+      // Total savings are calculated as:
+      //   performance savings + fee savings - metamask fee
+      savings.total = savings.performance
+        .plus(savings.fee)
+        .minus(savings.metaMaskFee)
+        .toString(10);
+      savings.performance = savings.performance.toString(10);
+      savings.fee = savings.fee.toString(10);
+      savings.medianMetaMaskFee = medianMetaMaskFee;
+
+      newQuotes[topAggId].isBestQuote = true;
+      newQuotes[topAggId].savings = savings;
+    }
+
+    return [topAggId, newQuotes];
+  }
+
+  async _findTopQuoteAndCalculateSavingsV2(quotes = {}) {
+    const { contractExchangeRates: tokenConversionRates } =
+      this.getTokenRatesState();
+    const {
+      swapsState: { customGasPrice, customMaxPriorityFeePerGas },
+    } = this.store.getState();
+    const chainId = this._getCurrentChainId();
+
+    const numQuotes = Object.keys(quotes).length;
+    if (!numQuotes) {
+      return {};
+    }
+
+    const newQuotes = cloneDeep(quotes);
+
+    const { gasFeeEstimates, gasEstimateType } =
+      await this._getEIP1559GasFeeEstimates();
+
+    let usedGasPrice = '0x0';
+
+    if (gasEstimateType === GasEstimateTypes.feeMarket) {
+      const {
+        high: { suggestedMaxPriorityFeePerGas },
+        estimatedBaseFee,
+      } = gasFeeEstimates;
+
+      const suggestedMaxPriorityFeePerGasInHexWEI = decGWEIToHexWEI(
+        suggestedMaxPriorityFeePerGas,
+      );
+      const estimatedBaseFeeNumeric = new Numeric(
+        estimatedBaseFee,
+        10,
+        EtherDenomination.GWEI,
+      ).toDenomination(EtherDenomination.WEI);
+
+      usedGasPrice = new Numeric(
+        customMaxPriorityFeePerGas || suggestedMaxPriorityFeePerGasInHexWEI,
+        16,
+      )
+        .add(estimatedBaseFeeNumeric)
+        .round(6)
+        .toString();
+    } else if (gasEstimateType === GasEstimateTypes.legacy) {
+      usedGasPrice = customGasPrice || decGWEIToHexWEI(gasFeeEstimates.high);
+    } else if (gasEstimateType === GasEstimateTypes.ethGasPrice) {
+      usedGasPrice =
+        customGasPrice || decGWEIToHexWEI(gasFeeEstimates.gasPrice);
+    }
+
+    let topAggId = null;
+    let overallValueOfBestQuoteForSorting = null;
+
+    Object.values(newQuotes).forEach((quote) => {
+      console.log('quote', quote);
+      const {
+        aggregator,
+        approvalNeeded,
+        gas, // TODO api will probably call this gasParams
+        destinationAmount = 0,
+        buyToken,
+        destinationTokenInfo,
+        gasEstimateWithRefund,
+        sourceAmount,
+        sellToken,
+        trade,
+        // fee: metaMaskFee, // TODO api hasn't implemented this yet
+        multiLayerL1TradeFeeTotal, // TODO also this prob
+      } = quote;
+
+      const metaMaskFee = 0.743; // TODO remove once fee is implemented
+      const { averageGas } = gas; // TODO update to gasParams when API updates
+
+      const tradeGasLimitForCalculation = gasEstimateWithRefund
+        ? new BigNumber(gasEstimateWithRefund, 16)
+        : new BigNumber(averageGas || MAX_GAS_LIMIT, 10);
+
+      const totalGasLimitForCalculation = tradeGasLimitForCalculation
+        .plus(approvalNeeded?.gas || '0x0', 16)
+        .toString(16);
+
+      let gasTotalInWeiHex = calcGasTotal(
+        totalGasLimitForCalculation,
+        usedGasPrice,
+      );
+      if (multiLayerL1TradeFeeTotal !== null) {
+        gasTotalInWeiHex = sumHexes(
+          gasTotalInWeiHex || '0x0',
+          multiLayerL1TradeFeeTotal || '0x0',
+        );
+      }
+
+      // trade.value is a sum of different values depending on the transaction.
+      // It always includes any external fees charged by the quote source. In
+      // addition, if the source asset is the selected chain's default token, trade.value
+      // includes the amount of that token.
+      const totalWeiCost = new Numeric(
+        gasTotalInWeiHex,
+        16,
+        EtherDenomination.WEI,
+      ).add(new Numeric(trade.value, 16, EtherDenomination.WEI));
+
+      const totalEthCost = totalWeiCost
+        .toDenomination(EtherDenomination.ETH)
+        .round(6).value;
+
+      // The total fee is aggregator/exchange fees plus gas fees.
+      // If the swap is from the selected chain's default token, subtract
+      // the sourceAmount from the total cost. Otherwise, the total fee
+      // is simply trade.value plus gas fees.
+      const ethFee = isSwapsDefaultTokenAddress(sellToken, chainId)
+        ? totalWeiCost
+            .minus(new Numeric(sourceAmount, 10))
+            .toDenomination(EtherDenomination.ETH)
+            .round(6).value
+        : totalEthCost;
+
+      const decimalAdjustedDestinationAmount = calcTokenAmount(
+        destinationAmount,
+        destinationTokenInfo.decimals,
+      );
+
+      const tokenPercentageOfPreFeeDestAmount = new BigNumber(100, 10)
+        .minus(metaMaskFee, 10)
+        .div(100);
+      const destinationAmountBeforeMetaMaskFee =
+        decimalAdjustedDestinationAmount.div(tokenPercentageOfPreFeeDestAmount);
+      const metaMaskFeeInTokens = destinationAmountBeforeMetaMaskFee.minus(
+        decimalAdjustedDestinationAmount,
+      );
+
+      const tokenConversionRate =
+        tokenConversionRates[
+          Object.keys(tokenConversionRates).find((tokenAddress) =>
+            isEqualCaseInsensitive(tokenAddress, buyToken),
+          )
+        ];
+      const conversionRateForSorting = tokenConversionRate || 1;
+
+      const ethValueOfTokens = decimalAdjustedDestinationAmount.times(
+        conversionRateForSorting.toString(10),
+        10,
+      );
+
+      const conversionRateForCalculations = isSwapsDefaultTokenAddress(
+        buyToken,
         chainId,
       )
         ? 1

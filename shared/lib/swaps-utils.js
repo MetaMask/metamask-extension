@@ -369,8 +369,9 @@ export async function fetchQuotesInfoV2(
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
     if (
       quote.trade &&
-      !quote.error &&
-      validateData(QUOTE_VALIDATORS, quote, tradeURL)
+      !quote.error
+      // TODO v2 url doesn't provide the approvalNeeded object
+      // validateData(QUOTE_VALIDATORS, quote, tradeURL)
     ) {
       const constructedTrade = constructTxParams({
         to: quote.trade.to,
