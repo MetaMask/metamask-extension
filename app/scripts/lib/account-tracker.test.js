@@ -1,12 +1,8 @@
 import EventEmitter from 'events';
 import { ControllerMessenger } from '@metamask/base-controller';
 
-import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
-
 import { createTestProviderTools } from '../../../test/stub/provider';
 import AccountTracker from './account-tracker';
-import { resolve } from 'path';
-import { deferredPromise } from './util';
 
 const noop = () => true;
 const currentNetworkId = '5';
@@ -41,7 +37,7 @@ const mockAccounts = {
   },
 };
 
-function flushPromises()  {
+function flushPromises() {
   return new Promise(jest.requireActual('timers').setImmediate);
 }
 
@@ -461,12 +457,12 @@ describe('Account Tracker', () => {
     it('updates currentBlockGasLimit, currentBlockGasLimitByChainId, and accounts when no networkClientId is passed', async () => {
       const updateAccountsSpy = jest
         .spyOn(accountTracker, 'updateAccounts')
-        .mockResolvedValue()
+        .mockResolvedValue();
 
-      accountTracker.start()
-      blockTrackerStub.emit('latest', 'blockNumber')
+      accountTracker.start();
+      blockTrackerStub.emit('latest', 'blockNumber');
 
-      await flushPromises()
+      await flushPromises();
 
       expect(updateAccountsSpy).toHaveBeenCalledWith(null);
 
@@ -481,7 +477,7 @@ describe('Account Tracker', () => {
         },
       });
 
-      accountTracker.stop()
+      accountTracker.stop();
     });
 
     it('updates only the currentBlockGasLimitByChainId and accounts when a networkClientId is passed', async () => {
@@ -489,11 +485,11 @@ describe('Account Tracker', () => {
         .spyOn(accountTracker, 'updateAccounts')
         .mockResolvedValue();
 
-      accountTracker.startPollingByNetworkClientId('mainnet')
+      accountTracker.startPollingByNetworkClientId('mainnet');
 
-      blockTrackerFromHookStub.emit('latest', 'blockNumber')
+      blockTrackerFromHookStub.emit('latest', 'blockNumber');
 
-      await flushPromises()
+      await flushPromises();
 
       expect(updateAccountsSpy).toHaveBeenCalledWith('mainnet');
 
@@ -508,7 +504,7 @@ describe('Account Tracker', () => {
         },
       });
 
-      accountTracker.stopAllPolling()
+      accountTracker.stopAllPolling();
     });
   });
 
@@ -543,13 +539,13 @@ describe('Account Tracker', () => {
 
       await accountTracker.updateAccounts();
 
-      const state = accountTracker.store.getState()
+      const state = accountTracker.store.getState();
       expect(state).toStrictEqual({
         accounts: {},
         currentBlockGasLimit: '',
         accountsByChainId: {},
         currentBlockGasLimitByChainId: {},
-      })
+      });
     });
 
     describe('chain does not have single call balance address', () => {
@@ -582,18 +578,18 @@ describe('Account Tracker', () => {
           getCurrentChainId: () => '0x999', // chain without single call balance address
         });
 
-        const mockAccountsWithSelectedAddress =  {
-            ...mockAccounts,
-            [SELECTED_ADDRESS]: {
-              address: SELECTED_ADDRESS,
-              balance: '0x0',
-            }
-          }
+        const mockAccountsWithSelectedAddress = {
+          ...mockAccounts,
+          [SELECTED_ADDRESS]: {
+            address: SELECTED_ADDRESS,
+            balance: '0x0',
+          },
+        };
 
         accountTracker.store.updateState({
           accounts: mockAccountsWithSelectedAddress,
           accountsByChainId: {
-            '0x999': mockAccountsWithSelectedAddress
+            '0x999': mockAccountsWithSelectedAddress,
           },
         });
       });
@@ -605,12 +601,18 @@ describe('Account Tracker', () => {
           await accountTracker.updateAccounts();
 
           const accounts = {
-            [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: UPDATE_BALANCE },
+            [VALID_ADDRESS]: {
+              address: VALID_ADDRESS,
+              balance: UPDATE_BALANCE,
+            },
             [VALID_ADDRESS_TWO]: {
               address: VALID_ADDRESS_TWO,
               balance: UPDATE_BALANCE,
             },
-            [SELECTED_ADDRESS]: {address: SELECTED_ADDRESS, balance: UPDATE_BALANCE }
+            [SELECTED_ADDRESS]: {
+              address: SELECTED_ADDRESS,
+              balance: UPDATE_BALANCE,
+            },
           };
 
           const newState = accountTracker.store.getState();
@@ -634,7 +636,10 @@ describe('Account Tracker', () => {
           const accounts = {
             [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: null },
             [VALID_ADDRESS_TWO]: { address: VALID_ADDRESS_TWO, balance: null },
-            [SELECTED_ADDRESS]: {address: SELECTED_ADDRESS, balance: UPDATE_BALANCE }
+            [SELECTED_ADDRESS]: {
+              address: SELECTED_ADDRESS,
+              balance: UPDATE_BALANCE,
+            },
           };
 
           const newState = accountTracker.store.getState();
@@ -666,38 +671,38 @@ describe('Account Tracker', () => {
         );
 
         accountTracker = new AccountTracker({
-            provider,
-            blockTracker: blockTrackerStub,
-            getNetworkClientById: getNetworkClientByIdStub,
-            getNetworkIdentifier: getNetworkIdentifierStub,
-            preferencesController: {
-              store: {
-                getState: () => ({
-                  useMultiAccountBalanceChecker,
-                }),
-                subscribe: noop,
-              },
+          provider,
+          blockTracker: blockTrackerStub,
+          getNetworkClientById: getNetworkClientByIdStub,
+          getNetworkIdentifier: getNetworkIdentifierStub,
+          preferencesController: {
+            store: {
+              getState: () => ({
+                useMultiAccountBalanceChecker,
+              }),
+              subscribe: noop,
             },
-            onboardingController: {
-              store: {
-                subscribe: noop,
-                getState: () => ({
-                  completedOnboarding,
-                }),
-              },
+          },
+          onboardingController: {
+            store: {
+              subscribe: noop,
+              getState: () => ({
+                completedOnboarding,
+              }),
             },
-            controllerMessenger,
-            onAccountRemoved: (callback) => {
-              accountRemovedListener = callback;
-            },
-            getCurrentChainId: () => '0x1', // chain with single call balance address
-          });
+          },
+          controllerMessenger,
+          onAccountRemoved: (callback) => {
+            accountRemovedListener = callback;
+          },
+          getCurrentChainId: () => '0x1', // chain with single call balance address
+        });
 
         accountTracker.store.updateState({
           accounts: { ...mockAccounts },
           accountsByChainId: {
             '0x1': { ...mockAccounts },
-          }
+          },
         });
       });
 
@@ -712,7 +717,10 @@ describe('Account Tracker', () => {
               address: VALID_ADDRESS,
               balance: EXPECTED_CONTRACT_BALANCE_1,
             },
-            [VALID_ADDRESS_TWO]: { address: VALID_ADDRESS_TWO, balance: EXPECTED_CONTRACT_BALANCE_2 },
+            [VALID_ADDRESS_TWO]: {
+              address: VALID_ADDRESS_TWO,
+              balance: EXPECTED_CONTRACT_BALANCE_2,
+            },
           };
 
           const newState = accountTracker.store.getState();

@@ -54,6 +54,7 @@ export default class AccountTracker {
   #listeners = {};
 
   #provider = null;
+
   #blockTracker = null;
 
   constructor(opts = {}) {
@@ -235,7 +236,10 @@ export default class AccountTracker {
       return;
     }
     const { blockTracker } = this.#getCorrectNetworkClient(networkClientId);
-    const updateForBlock = this.#updateForBlockByNetworkClientId.bind(this, networkClientId);
+    const updateForBlock = this.#updateForBlockByNetworkClientId.bind(
+      this,
+      networkClientId,
+    );
     blockTracker.addListener('latest', updateForBlock);
 
     this.#listeners[networkClientId] = updateForBlock;
@@ -392,7 +396,7 @@ export default class AccountTracker {
    */
   #updateForBlock = async (blockNumber) => {
     await this.#updateForBlockByNetworkClientId(null, blockNumber);
-  }
+  };
 
   /**
    * Given a block, updates this AccountTracker's currentBlockGasLimitByChainId, and then updates each local account's balance
@@ -600,7 +604,6 @@ export default class AccountTracker {
         const balance = balances[index] ? balances[index].toHexString() : '0x0';
         newAccounts[address] = { address, balance };
       });
-
 
       const { accountsByChainId } = this.store.getState();
       this.store.updateState({
