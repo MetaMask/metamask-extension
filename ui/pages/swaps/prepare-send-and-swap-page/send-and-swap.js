@@ -3,7 +3,7 @@ import { shallowEqual, useSelector } from 'react-redux';
 import { isEqual, shuffle } from 'lodash';
 import PropTypes from 'prop-types';
 import { getSelectedAccount, getTokenList } from '../../../selectors';
-import useSwapsData from '../../send/send-content/send-asset-row/useSwapsData';
+import useSwapsData from './useSwapsData';
 import PrepareSendAndSwapPage from './prepare-send-and-swap-page';
 
 const SendAndSwap = ({ recipient }) => {

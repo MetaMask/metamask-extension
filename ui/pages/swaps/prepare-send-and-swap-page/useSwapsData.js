@@ -4,17 +4,17 @@ import {
   fetchAggregatorMetadata,
   fetchTokens,
   fetchTopAssets,
-} from '../../../swaps/swaps.util';
+} from '../swaps.util';
 import {
   fetchSwapsLivenessAndFeatureFlags,
   // fetchAndSetSwapsGasPriceInfo,
   prepareToLeaveSwaps,
   setAggregatorMetadata,
   setTopAssets,
-} from '../../../../ducks/swaps/swaps';
-import { setSwapsTokens } from '../../../../store/actions';
-import { getCurrentChainId } from '../../../../selectors';
-import { useGasFeeEstimates } from '../../../../hooks/useGasFeeEstimates';
+} from '../../../ducks/swaps/swaps';
+import { setSwapsTokens } from '../../../store/actions';
+import { getCurrentChainId } from '../../../selectors';
+import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 
 export default function useSwapsData() {
   const chainId = useSelector(getCurrentChainId);
