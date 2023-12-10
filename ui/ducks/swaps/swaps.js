@@ -91,6 +91,7 @@ import {
 } from '../../../shared/lib/transactions-controller-utils';
 import { EtherDenomination } from '../../../shared/constants/common';
 import { Numeric } from '../../../shared/modules/Numeric';
+import { getRecipient } from '../send';
 
 export const GAS_PRICES_LOADING_STATES = {
   INITIAL: 'INITIAL',
@@ -922,6 +923,7 @@ export const fetchQuotesAndSetQuoteStateV2 = (
       return;
     }
 
+    const recipient = getRecipient(state);
     const fetchParams = getFetchParams(state);
     const selectedAccount = getSelectedAccount(state);
     const networkClientId = getSelectedNetworkClientId(state);
@@ -1056,7 +1058,7 @@ export const fetchQuotesAndSetQuoteStateV2 = (
             destinationToken: toTokenAddress,
             value: inputValue,
             fromAddress: selectedAccount.address,
-            toAddress: '0x676759c59b412e93e741c84db81c8d7c18ce4845', // TODO
+            toAddress: recipient.address,
             balanceError,
             sourceDecimals: fromTokenDecimals,
           },

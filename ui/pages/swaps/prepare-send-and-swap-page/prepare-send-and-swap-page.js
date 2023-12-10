@@ -144,7 +144,6 @@ export default function PrepareSendAndSwapPage({
   ethBalance,
   selectedAccountAddress,
   shuffledTokensList,
-  recipient,
 }) {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -1129,5 +1128,4 @@ PrepareSendAndSwapPage.propTypes = {
   ethBalance: PropTypes.string,
   selectedAccountAddress: PropTypes.string,
   shuffledTokensList: PropTypes.array,
-  recipient: PropTypes.object,
 };

@@ -85,7 +85,7 @@ export default class SendContent extends Component {
           {showHexData ? <SendHexDataRow /> : null}
           {!isMultiLayerFeeNetwork && <GasDisplay gasError={gasError} />}
 
-          <SendAndSwap recipient={recipient} />
+          <SendAndSwap />
         </div>
       </PageContainerContent>
     );
