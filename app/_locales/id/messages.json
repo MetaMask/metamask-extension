@@ -3664,7 +3664,7 @@
   },
   "setApprovalForAllTitle": {
     "message": "Setujui $1 tanpa batas penggunaan",
-    "description": "The token symbol that is being approved"
+    "description": "Simbol token yang disetujui"
   },
   "settingAddSnapAccount": {
     "message": "Tambahkan akun snap"
@@ -3695,7 +3695,7 @@
   },
   "showIncomingTransactionsDescription": {
     "message": "Pilih ini untuk menggunakan Etherscan untuk menampilkan transaksi yang masuk di daftar transaksi",
-    "description": "$1 is the link to etherscan url and $2 is the link to the privacy policy of consensys APIs"
+    "description": "$1 adalah tautan ke url etherscan dan $2 adalah tautan ke kebijakan privasi API consensys"
   },
   "showMore": {
     "message": "Tampilkan selengkapnya"
