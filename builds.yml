@@ -48,7 +48,7 @@ buildTypes:
     isPrerelease: true
     # Folder which contains overrides to browser manifests
     manifestOverrides: ./app/build-types/beta/manifest/
-    buildNameOverride: false
+    buildNameOverride: MetaMask Beta
 
   flask:
     # Code surrounded using code fences for that feature
@@ -73,7 +73,7 @@ buildTypes:
       - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/dev/registry.json
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
-    buildNameOverride: false
+    buildNameOverride: MetaMask Flask
 
   desktop:
     features:
