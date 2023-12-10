@@ -6,6 +6,11 @@
   overflow: auto;
   overscroll-behavior-y: none;
 
+  // Maximize dialog visibility on small screen heights
+  @media (max-height: 475px) {
+    padding: 8px;
+  }
+
   // Scroll bar styles
   // Firefox
   scrollbar-width: thin;
@@ -27,7 +32,6 @@
 
     max-height: 100%;
     box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
-    overflow-y: auto;  // TODO: Remove this once all Modals are using ModalBody correctly ideally this scroll bar should not be needed
 
     &--size-sm {
       --size: 360px;
