@@ -113,6 +113,10 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
               `mm-modal-content__dialog--size-${size}`,
               modalDialogProps?.className,
             )}
+            style={{
+              ...props?.style,
+              maxHeight: 'none',
+            }}
           >
             {children}
           </Box>

@@ -9,13 +9,13 @@ import {
   Box,
   Text,
   Modal,
-  ModalOverlay,
   ModalContent,
   ModalHeader,
+  ModalBody,
+  ModalOverlay,
   Button,
   BUTTON_VARIANT,
   BUTTON_SIZES,
-  ModalBody,
 } from '../../component-library';
 import {
   BorderRadius,
