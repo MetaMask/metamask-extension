@@ -93,7 +93,6 @@ const ConfirmRemoveJWT = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={hideModal}>{t('removeJWT')}</ModalHeader>
-
         <Box
           display={Display.Flex}
           padding={2}
@@ -126,7 +125,6 @@ const ConfirmRemoveJWT = ({
         <Box className="confirm-action-jwt__accounts-list">
           <CustodyAccountList accounts={tokenAccounts} rawList />
         </Box>
-
         <Box display={Display.Flex}>
           <Button
             block
