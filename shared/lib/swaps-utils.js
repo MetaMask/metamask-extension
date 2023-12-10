@@ -153,6 +153,7 @@ export const getBaseApi = function (type, chainId) {
   }
 
   // For quote only in local dev
+  // TODO remove this once we have a production api
   const chainIdDecimal = chainId && parseInt(chainId, 16);
   const localUrl = `http://localhost:4000/v2/networks/${chainIdDecimal}`;
 
