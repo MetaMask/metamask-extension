@@ -3834,7 +3834,7 @@
   },
   "snapInstallationErrorTitle": {
     "message": "Instalasi gagal",
-    "description": "Error title used when snap installation fails."
+    "description": "Judul kesalahan digunakan ketika instalasi snap gagal."
   },
   "snapIsAudited": {
     "message": "Diaudit"
@@ -3853,11 +3853,11 @@
   },
   "snapUpdateErrorDescription": {
     "message": "$1 tidak dapat diperbarui.",
-    "description": "Error description used when snap update fails. $1 is the snap name."
+    "description": "Deskripsi kesalahan digunakan ketika pembaruan snap gagal. $1 adalah nama snapnya."
   },
   "snapUpdateErrorTitle": {
     "message": "Pembaruan gagal",
-    "description": "Error title used when snap update fails."
+    "description": "Judul kesalahan digunakan ketika pembaruan snap gagal."
   },
   "snapUpdateSuccess": {
     "message": "Pembaruan selesai"
@@ -3873,7 +3873,7 @@
   },
   "snapsPrivacyWarningSecondMessage": {
     "message": "Setiap informasi yang Anda bagikan kepada Layanan Pihak Ketiga akan dikumpulkan langsung oleh Layanan Pihak Ketiga tersebut sesuai dengan kebijakan privasinya. Baca kebijakan privasinya untuk informasi lebih lanjut.",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
+    "description": "Bagian kedua dari pesan dalam modal popup ditampilkan saat memasang snap untuk pertama kalinya."
   },
   "snapsTermsOfUse": {
     "message": "Ketentuan Penggunaan"
@@ -3883,7 +3883,7 @@
   },
   "snapsUIError": {
     "message": "Hubungi pembuat $1 untuk dukungan lebih lanjut.",
-    "description": "This is shown when the insight snap throws an error. $1 is the snap name"
+    "description": "Ini ditampilkan ketika wawasan snap menimbulkan kesalahan. $1 adalah nama snapnya"
   },
   "someNetworksMayPoseSecurity": {
     "message": "Beberapa jaringan dapat menimbulkan risiko keamanan dan/atau privasi. Pahami risikonya sebelum menambahkan dan menggunakan jaringan."
