@@ -3923,7 +3923,7 @@
   },
   "spendLimitRequestedBy": {
     "message": "Batas penggunaan diminta oleh $1",
-    "description": "Origin of the site requesting the spend limit"
+    "description": "Asal situs yang meminta batas penggunaan"
   },
   "spendLimitTooLarge": {
     "message": "Batas penggunaan terlalu besar"
