@@ -25,7 +25,9 @@
   &__dialog {
     --modal-content-size: var(--size, 360px);
 
+    max-height: 100%;
     box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
+    overflow-y: auto;  // TODO: Remove this once all Modals are using ModalBody correctly ideally this scroll bar should not be needed
 
     &--size-sm {
       --size: 360px;

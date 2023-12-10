@@ -2,4 +2,5 @@
   max-height: 100%;
   overflow-y: auto;
   position: relative; // Allows for absolute positioning of scroll button
+  min-height: 100px; // prevents ModalBody from collapsing completely with viewport height is very small
 }
