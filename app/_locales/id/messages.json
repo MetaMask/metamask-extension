@@ -55,7 +55,7 @@
   },
   "SIWEDomainWarningBody": {
     "message": "Situs web ($1) meminta Anda untuk masuk ke domain yang salah. Kemungkinan ini merupakan serangan pengelabuan.",
-    "description": "$1 represents the website domain"
+    "description": "$1 mewakili domain situs web"
   },
   "SIWEDomainWarningLabel": {
     "message": "Tidak aman"
