@@ -3936,7 +3936,7 @@
   },
   "spendingCapErrorDescription": {
     "message": "Masukkan angka yang menurut Anda dapat diakses $1 sekarang atau di masa mendatang. Anda selalu dapat meningkatkan batas token nanti.",
-    "description": "$1 is origin of the site requesting the token limit"
+    "description": "$1 adalah asal situs yang meminta batas token"
   },
   "spendingCapRequest": {
     "message": "Permintaan batas penggunaan untuk $1 Anda"
