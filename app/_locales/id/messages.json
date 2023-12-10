@@ -200,7 +200,7 @@
   },
   "addEthereumChainConfirmationRisksLearnMore": {
     "message": "Pelajari tentang $1.",
-    "description": "$1 is a link with text that is provided by the 'addEthereumChainConfirmationRisksLearnMoreLink' key"
+    "description": "$1 adalah tautan dengan teks yang disediakan oleh kunci 'addEthereumChainConfirmationRisksLearnMoreLink'"
   },
   "addEthereumChainConfirmationRisksLearnMoreLink": {
     "message": "penipuan dan risiko keamanan jaringan",
