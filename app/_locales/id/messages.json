@@ -1843,7 +1843,7 @@
     "message": "Terjadi kesalahan saat mengimpor akun."
   },
   "importAccountErrorIsSRP": {
-    "message": "Anda telah memasukkan Frasa Pemulihan Rahasia (atau mnemonik). Untuk mengimpor akun di sini, Anda harus memasukkan kunci pribadi, yang merupakan string heksadesimal dengan panjang 64 karakter."
+    "message": "Anda telah memasukkan Frasa Pemulihan Rahasia (atau mnemonic). Untuk mengimpor akun di sini, Anda harus memasukkan kunci pribadi, yang merupakan string heksadesimal dengan panjang 64 karakter."
   },
   "importAccountErrorNotAValidPrivateKey": {
     "message": "Ini bukan kunci pribadi yang valid. Anda telah memasukkan string heksadesimal, tetapi panjangnya harus 64 karakter."
@@ -3197,8 +3197,8 @@
     "message": "Kebijakan privasi"
   },
   "privateKey": {
-    "message": "Kebijakan Pribadi",
-    "description": "select this type of file to use to import an account"
+    "message": "Kunci Pribadi",
+    "description": "pilih jenis file ini yang akan digunakan untuk mengimpor akun"
   },
   "privateKeyCopyWarning": {
     "message": "Kunci pribadi untuk $1",
@@ -3647,7 +3647,7 @@
   },
   "sendingNativeAsset": {
     "message": "Mengirim $1",
-    "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
+    "description": "$1 mewakili simbol mata uang asli untuk jaringan saat ini (e.g. ETH or BNB)"
   },
   "sendingToTokenContractWarning": {
     "message": "Peringatan: Anda akan mengirim kontrak token yang berpotensi mengakibatkan hilangnya dana. $1",
