@@ -1,50 +1,13 @@
 import { NameController, NameType } from '@metamask/name-controller';
-import { cloneDeep } from 'lodash';
-import log from 'loglevel';
 import {
   PreferencesController,
   AccountIdentityEntry,
+  PreferencesControllerState,
 } from '../controllers/preferences';
+import { NameEntry, OneWayNameBridge } from './NameBridge';
 
-const MAINNET_CHAIN_ID = '0x1';
 export const ACCOUNT_LABEL_NAME_TYPE = NameType.ETHEREUM_ADDRESS;
-export const ACCOUNT_LABEL_CHAIN_ID = MAINNET_CHAIN_ID;
-
-/**
- * Groups the entries in the old and new entries arrays into added, updated and
- * deleted entries, like a patch.
- *
- * @param oldEntries - The last seen IdentityEntries in the preferences controller.
- * @param newEntries - The new IdentityEntries.
- */
-function groupEntries(
-  oldEntries: AccountIdentityEntry[],
-  newEntries: AccountIdentityEntry[],
-): {
-  added: AccountIdentityEntry[];
-  updated: AccountIdentityEntry[];
-  deleted: AccountIdentityEntry[];
-} {
-  const added = newEntries.filter(
-    (newEntry) =>
-      !oldEntries.some((oldEntry) => oldEntry.address === newEntry.address),
-  );
-
-  const updated = newEntries.filter((newEntry) =>
-    oldEntries.some(
-      (oldEntry) =>
-        oldEntry.address === newEntry.address &&
-        oldEntry.name !== newEntry.name,
-    ),
-  );
-
-  const deleted = oldEntries.filter(
-    (oldEntry) =>
-      !newEntries.some((newEntry) => newEntry.address === oldEntry.address),
-  );
-
-  return { added, updated, deleted };
-}
+export const ACCOUNT_LABEL_VARIATION = '*';
 
 /**
  * Sets up a bridge between the account labels in the preferences controller and
@@ -57,37 +20,27 @@ export default function setupAccountLabelsPetnamesBridge(
   preferencesController: PreferencesController,
   nameController: NameController,
 ) {
-  const { identities } = preferencesController.store.getState();
+  const bridge = new OneWayNameBridge(nameController, () =>
+    selectAccountLabelEntries(preferencesController.store.getState()),
+  );
+  preferencesController.store.subscribe(bridge.synchronize);
+}
 
-  let oldEntries = Object.values(identities);
-
-  preferencesController.store.subscribe(async (state) => {
-    const newEntries = Object.values(state.identities);
-
-    const { added, updated, deleted } = groupEntries(oldEntries, newEntries);
-
-    for (const entry of [...added, ...updated]) {
-      nameController.setName({
-        type: ACCOUNT_LABEL_NAME_TYPE,
-        variation: ACCOUNT_LABEL_CHAIN_ID,
-        value: entry.address,
-        name: entry.name,
-      });
-
-      log.debug('Updated petname following account label update', entry);
-    }
-
-    for (const entry of deleted) {
-      nameController.setName({
-        type: ACCOUNT_LABEL_NAME_TYPE,
-        variation: ACCOUNT_LABEL_CHAIN_ID,
-        value: entry.address,
-        name: null,
-      });
-
-      log.debug('Removed petname following account label removal', entry);
-    }
-
-    oldEntries = cloneDeep(newEntries);
-  });
+/**
+ * Selects the account label entries from the preferences controller state.
+ *
+ * @param state - The preferences controller state.
+ * @returns The account label entries.
+ */
+function selectAccountLabelEntries(
+  state: PreferencesControllerState,
+): NameEntry[] {
+  const { identities } = state;
+  return Object.values(identities).map((identity: AccountIdentityEntry) => ({
+    value: identity.address,
+    type: ACCOUNT_LABEL_NAME_TYPE,
+    name: identity.name,
+    sourceId: null,
+    variation: ACCOUNT_LABEL_VARIATION,
+  }));
 }

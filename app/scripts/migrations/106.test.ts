@@ -1,6 +1,6 @@
 import {
   ACCOUNT_LABEL_NAME_TYPE,
-  ACCOUNT_LABEL_CHAIN_ID,
+  ACCOUNT_LABEL_VARIATION,
 } from '../lib/setupAccountLabelsPetnamesBridge';
 import { migrate, version } from './106';
 
@@ -86,21 +86,21 @@ describe('migration #106', () => {
         names: {
           [ACCOUNT_LABEL_NAME_TYPE]: {
             [ADDRESS_1.toLowerCase()]: {
-              [ACCOUNT_LABEL_CHAIN_ID]: {
+              [ACCOUNT_LABEL_VARIATION]: {
                 name: NAME_1,
                 sourceId: null,
                 proposedNames: {},
               },
             },
             [ADDRESS_2.toLowerCase()]: {
-              [ACCOUNT_LABEL_CHAIN_ID]: {
+              [ACCOUNT_LABEL_VARIATION]: {
                 name: NAME_2,
                 sourceId: null,
                 proposedNames: {},
               },
             },
             [ADDRESS_3.toLowerCase()]: {
-              [ACCOUNT_LABEL_CHAIN_ID]: {
+              [ACCOUNT_LABEL_VARIATION]: {
                 name: NAME_3,
                 sourceId: null,
                 proposedNames: {},
@@ -127,7 +127,7 @@ describe('migration #106', () => {
         names: {
           [ACCOUNT_LABEL_NAME_TYPE]: {
             [ADDRESS_2.toLowerCase()]: {
-              [ACCOUNT_LABEL_CHAIN_ID]: {
+              [ACCOUNT_LABEL_VARIATION]: {
                 name: NAME_2,
                 sourceId: 'ens',
                 proposedNames: {},
@@ -149,14 +149,14 @@ describe('migration #106', () => {
         names: {
           [ACCOUNT_LABEL_NAME_TYPE]: {
             [ADDRESS_1.toLowerCase()]: {
-              [ACCOUNT_LABEL_CHAIN_ID]: {
+              [ACCOUNT_LABEL_VARIATION]: {
                 name: NAME_1,
                 sourceId: null,
                 proposedNames: {},
               },
             },
             [ADDRESS_2.toLowerCase()]: {
-              [ACCOUNT_LABEL_CHAIN_ID]: {
+              [ACCOUNT_LABEL_VARIATION]: {
                 name: NAME_2,
                 sourceId: 'ens',
                 proposedNames: {},
@@ -183,7 +183,7 @@ describe('migration #106', () => {
         names: {
           [ACCOUNT_LABEL_NAME_TYPE]: {
             [ADDRESS_1.toLowerCase()]: {
-              [ACCOUNT_LABEL_CHAIN_ID]: {
+              [ACCOUNT_LABEL_VARIATION]: {
                 name: NAME_2,
                 sourceId: 'ens',
                 proposedNames: {},
@@ -205,7 +205,7 @@ describe('migration #106', () => {
         names: {
           [ACCOUNT_LABEL_NAME_TYPE]: {
             [ADDRESS_1.toLowerCase()]: {
-              [ACCOUNT_LABEL_CHAIN_ID]: {
+              [ACCOUNT_LABEL_VARIATION]: {
                 name: NAME_2,
                 sourceId: 'ens',
                 proposedNames: {},
