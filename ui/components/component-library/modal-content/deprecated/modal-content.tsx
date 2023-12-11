@@ -113,6 +113,10 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
               `mm-modal-content__dialog--size-${size}`,
               modalDialogProps?.className,
             )}
+            style={{
+              ...props?.style,
+              overflowY: 'auto', // fallback for any content that extends beyond the modal dialog
+            }}
           >
             {children}
           </Box>
