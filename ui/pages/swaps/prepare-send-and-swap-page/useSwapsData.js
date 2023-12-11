@@ -6,6 +6,7 @@ import {
   fetchTopAssets,
 } from '../swaps.util';
 import {
+  fetchAndSetSwapsGasPriceInfo,
   fetchSwapsLivenessAndFeatureFlags,
   // fetchAndSetSwapsGasPriceInfo,
   prepareToLeaveSwaps,
@@ -13,20 +14,28 @@ import {
   setTopAssets,
 } from '../../../ducks/swaps/swaps';
 import { setSwapsTokens } from '../../../store/actions';
-import { getCurrentChainId } from '../../../selectors';
+import {
+  checkNetworkAndAccountSupports1559,
+  getCurrentChainId,
+  getIsSwapsChain,
+} from '../../../selectors';
 import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
 
 export default function useSwapsData() {
-  const chainId = useSelector(getCurrentChainId);
   const dispatch = useDispatch();
+  const chainId = useSelector(getCurrentChainId);
+  const isSwapsChain = useSelector(getIsSwapsChain);
+  const networkAndAccountSupports1559 = useSelector(
+    checkNetworkAndAccountSupports1559,
+  );
 
   // This will pre-load gas fees before going to the View Quote page.
   useGasFeeEstimates();
 
   useEffect(() => {
-    // if (!isSwapsChain) {
-    //   return undefined;
-    // }
+    if (!isSwapsChain) {
+      return undefined;
+    }
     fetchTokens(chainId)
       .then((tokens) => {
         dispatch(setSwapsTokens(tokens));
@@ -38,14 +47,13 @@ export default function useSwapsData() {
     fetchAggregatorMetadata(chainId).then((newAggregatorMetadata) => {
       dispatch(setAggregatorMetadata(newAggregatorMetadata));
     });
-    // if (!networkAndAccountSupports1559) {
-    //   dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
-    // }
+    if (!networkAndAccountSupports1559) {
+      dispatch(fetchAndSetSwapsGasPriceInfo(chainId));
+    }
     return () => {
       dispatch(prepareToLeaveSwaps());
     };
-    // }, [dispatch, chainId, networkAndAccountSupports1559, isSwapsChain]);
-  }, [dispatch, chainId]);
+  }, [dispatch, chainId, networkAndAccountSupports1559, isSwapsChain]);
 
   useEffect(() => {
     const fetchSwapsLivenessAndFeatureFlagsWrapper = async () => {
