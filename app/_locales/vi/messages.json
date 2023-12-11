@@ -1655,33 +1655,13 @@
     "message": "$1 giờ",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 phút",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 phút",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Có thể sau $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Có khả năng sau < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 giây",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 giây",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Nhiều khả năng sau < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gas đã dùng"
@@ -4781,9 +4761,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Phí gas ước tính"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "ước tính"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Tìm hiểu thêm về phí gas"

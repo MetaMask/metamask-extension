@@ -58,6 +58,7 @@ import updateTxData from '../../../shared/modules/updateTxData';
 import { KeyringType } from '../../../shared/constants/keyring';
 ///: END:ONLY_INCLUDE_IF
 import { isHardwareKeyring } from '../../helpers/utils/hardware';
+import FeeDetailsComponent from '../../components/app/fee-details-component/fee-details-component';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -78,7 +79,7 @@ export default class ConfirmTransactionBase extends Component {
     fromName: PropTypes.string,
     hexTransactionAmount: PropTypes.string,
     hexMaximumTransactionFee: PropTypes.string,
-    hexTransactionTotal: PropTypes.string,
+    hexMinimumTransactionFee: PropTypes.string,
     methodData: PropTypes.object,
     nonce: PropTypes.string,
     useNonceField: PropTypes.bool,
@@ -135,7 +136,6 @@ export default class ConfirmTransactionBase extends Component {
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
-    isMultiLayerFeeNetwork: PropTypes.bool,
     isBuyableChain: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
     assetStandard: PropTypes.string,
@@ -317,7 +317,7 @@ export default class ConfirmTransactionBase extends Component {
       primaryTotalTextOverride,
       secondaryTotalTextOverride,
       hexMaximumTransactionFee,
-      hexTransactionTotal,
+      hexMinimumTransactionFee,
       useNonceField,
       customNonceValue,
       updateCustomNonce,
@@ -327,7 +327,6 @@ export default class ConfirmTransactionBase extends Component {
       useNativeCurrencyAsPrimaryCurrency,
       primaryTotalTextOverrideMaxAmount,
       showLedgerSteps,
-      isMultiLayerFeeNetwork,
       nativeCurrency,
       isBuyableChain,
       useCurrencyRateCheck,
@@ -348,7 +347,14 @@ export default class ConfirmTransactionBase extends Component {
       hasSimulationError && !userAcknowledgedGasMissing;
     const networkName = NETWORK_TO_NAME_MAP[txData.chainId];
 
-    const renderTotalMaxAmount = () => {
+    const getTotalAmount = (useMaxFee) => {
+      return addHexes(
+        txData.txParams.value,
+        useMaxFee ? hexMaximumTransactionFee : hexMinimumTransactionFee,
+      );
+    };
+
+    const renderTotalMaxAmount = (useMaxFee) => {
       if (
         primaryTotalTextOverrideMaxAmount === undefined &&
         secondaryTotalTextOverride === undefined
@@ -358,7 +364,7 @@ export default class ConfirmTransactionBase extends Component {
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
             key="total-max-amount"
-            value={addHexes(txData.txParams.value, hexMaximumTransactionFee)}
+            value={getTotalAmount(useMaxFee)}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
         );
@@ -370,32 +376,11 @@ export default class ConfirmTransactionBase extends Component {
         : secondaryTotalTextOverride;
     };
 
-    const renderTotalDetailTotal = () => {
+    const renderTotalDetailText = (value) => {
       if (
-        primaryTotalTextOverride === undefined &&
-        secondaryTotalTextOverride === undefined
-      ) {
-        return (
-          <div className="confirm-page-container-content__total-value">
-            <LoadingHeartBeat estimateUsed={this.props.txData?.userFeeLevel} />
-            <UserPreferencedCurrencyDisplay
-              type={PRIMARY}
-              key="total-detail-value"
-              value={hexTransactionTotal}
-              hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-            />
-          </div>
-        );
-      }
-      return useNativeCurrencyAsPrimaryCurrency
-        ? primaryTotalTextOverride
-        : secondaryTotalTextOverride;
-    };
-
-    const renderTotalDetailText = () => {
-      if (
-        primaryTotalTextOverride === undefined &&
-        secondaryTotalTextOverride === undefined
+        (primaryTotalTextOverride === undefined &&
+          secondaryTotalTextOverride === undefined) ||
+        value === '0x0'
       ) {
         return (
           <div className="confirm-page-container-content__total-value">
@@ -403,7 +388,7 @@ export default class ConfirmTransactionBase extends Component {
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
               key="total-detail-text"
-              value={hexTransactionTotal}
+              value={value}
               hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
             />
           </div>
@@ -473,6 +458,7 @@ export default class ConfirmTransactionBase extends Component {
           tokenSymbol={tokenSymbol}
         />
         <TransactionDetail
+          disableEditGasFeeButton
           disabled={isDisabled()}
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           onEdit={
@@ -481,17 +467,33 @@ export default class ConfirmTransactionBase extends Component {
           rows={[
             renderSimulationFailureWarning && simulationFailureWarning(),
             !renderSimulationFailureWarning && (
-              <ConfirmGasDisplay
-                key="confirm-transaction-base_confirm-gas-display"
-                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-              />
+              <div key="confirm-transaction-base_confirm-gas-display">
+                <ConfirmGasDisplay
+                  userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                />
+                <FeeDetailsComponent
+                  supportsEIP1559={this.supportsEIP1559}
+                  useCurrencyRateCheck={useCurrencyRateCheck}
+                  txData={txData}
+                />
+              </div>
             ),
-            !isMultiLayerFeeNetwork && (
+          ]}
+        />
+        <TransactionDetail
+          disableEditGasFeeButton
+          disabled={isDisabled()}
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+          rows={[
+            !renderSimulationFailureWarning && (
               <TransactionDetailItem
                 key="confirm-transaction-base-total-item"
                 detailTitle={t('total')}
-                detailText={useCurrencyRateCheck && renderTotalDetailText()}
-                detailTotal={renderTotalDetailTotal()}
+                detailText={
+                  useCurrencyRateCheck &&
+                  renderTotalDetailText(getTotalAmount())
+                }
+                detailTotal={renderTotalMaxAmount(true)}
                 subTitle={t('transactionDetailGasTotalSubtitle')}
                 subText={
                   <div className="confirm-page-container-content__total-amount">
@@ -501,7 +503,7 @@ export default class ConfirmTransactionBase extends Component {
                     <strong key="editGasSubTextAmountLabel">
                       {t('editGasSubTextAmountLabel')}
                     </strong>{' '}
-                    {renderTotalMaxAmount()}
+                    {renderTotalMaxAmount(true)}
                   </div>
                 }
               />
@@ -915,6 +917,7 @@ export default class ConfirmTransactionBase extends Component {
         removePollingTokenFromAppState(this.state.pollingToken);
       }
     });
+
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
   }
 
