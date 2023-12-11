@@ -20,8 +20,8 @@ export const Tag: TagComponent = React.forwardRef(
       label,
       className = '',
       labelProps,
-      iconName,
-      iconProps,
+      startIconName,
+      startIconProps,
       ...props
     }: TagProps<C>,
     ref: PolymorphicRef<C>,
@@ -41,8 +41,8 @@ export const Tag: TagComponent = React.forwardRef(
         display={Display.Flex}
         {...(props as BoxProps<C>)}
       >
-        {iconName ? (
-          <Icon name={iconName} size={IconSize.Xs} {...iconProps} />
+        {startIconName ? (
+          <Icon name={startIconName} size={IconSize.Xs} {...startIconProps} />
         ) : null}
         <Text variant={TextVariant.bodySm} {...labelProps}>
           {label}

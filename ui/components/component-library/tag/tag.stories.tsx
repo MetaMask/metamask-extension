@@ -17,7 +17,7 @@ export default {
     label: {
       control: 'text',
     },
-    iconName: {
+    startIconName: {
       control: 'text',
     },
   },
@@ -36,23 +36,27 @@ Label.args = {
   label: 'Label Story',
 };
 
-export const IconNameStory: StoryFn<typeof Tag> = (args) => <Tag {...args} />;
+export const StartIconNameStory: StoryFn<typeof Tag> = (args) => (
+  <Tag {...args} />
+);
 
-IconNameStory.args = {
+StartIconNameStory.args = {
   label: 'Snap Name',
-  iconName: IconName.Snaps,
+  startIconName: IconName.Snaps,
 };
 
-IconNameStory.storyName = 'IconName';
+StartIconNameStory.storyName = 'StartIconName';
 
-export const IconPropsStory: StoryFn<typeof Tag> = (args) => <Tag {...args} />;
+export const StartIconPropsStory: StoryFn<typeof Tag> = (args) => (
+  <Tag {...args} />
+);
 
-IconPropsStory.args = {
+StartIconPropsStory.args = {
   label: 'Snap Name',
-  iconName: IconName.Snaps,
-  iconProps: {
+  startIconName: IconName.Snaps,
+  startIconProps: {
     color: IconColor.primaryDefault,
   },
 };
 
-IconPropsStory.storyName = 'IconProps';
+StartIconPropsStory.storyName = 'StartIconProps';

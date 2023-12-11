@@ -18,7 +18,11 @@ describe('Tag', () => {
 
   it('should render a tag with an icon and a label', () => {
     const { getByTestId, container } = render(
-      <Tag data-testid="tag" label="Snap Name" iconName={IconName.Snaps} />,
+      <Tag
+        data-testid="tag"
+        label="Snap Name"
+        startIconName={IconName.Snaps}
+      />,
     );
     const tag = getByTestId('tag');
     expect(tag).toBeDefined();
@@ -33,8 +37,8 @@ describe('Tag', () => {
       <Tag
         data-testid="tag"
         label="Snap Name"
-        iconName={IconName.Snaps}
-        iconProps={{
+        startIconName={IconName.Snaps}
+        startIconProps={{
           color: IconColor.primaryDefault,
         }}
       />,
