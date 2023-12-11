@@ -46,9 +46,6 @@ export const Tag: TagComponent = React.forwardRef(
           <Icon
             name={iconName}
             size={IconSize.Xs}
-            display={Display.Flex}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
             {...iconProps}
           />
         ) : null}
