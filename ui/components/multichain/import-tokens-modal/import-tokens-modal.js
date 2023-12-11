@@ -427,7 +427,7 @@ export const ImportTokensModal = ({ onClose }) => {
         >
           {t('importTokensCamelCase')}
         </ModalHeader>
-        <ModalBody>
+        <ModalBody paddingTop={0}>
           {isConfirming ? (
             <ImportTokensModalConfirm
               onBackClick={() => {
