@@ -20,6 +20,11 @@ import {
   ModalContentComponent,
 } from '../modal-content.types';
 
+/**
+ * @deprecated This version of `ModalContent` is deprecated. Please use the version from the component-library in ui/components/component-library/modal-content/modal-content.tsx
+ * See PR https://github.com/MetaMask/metamask-extension/pull/22207 for details.
+ */
+
 export const ModalContent: ModalContentComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(
     {

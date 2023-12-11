@@ -8,6 +8,10 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ModalHeaderProps } from '.';
 
+/**
+ * @deprecated This version of `ModalHeader` is deprecated. Please use the version from the component-library in ui/components/component-library/modal-header/modal-header.tsx
+ * See PR https://github.com/MetaMask/metamask-extension/pull/22207 for details.
+ */
 export const ModalHeader: React.FC<ModalHeaderProps> = ({
   children,
   className = '',
