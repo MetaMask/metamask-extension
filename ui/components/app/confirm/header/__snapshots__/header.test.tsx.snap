@@ -3,7 +3,7 @@
 exports[`Header should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box confirm_header-wrapper mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-inline-1 mm-box--display-flex mm-box--align-items-center"
+    class="mm-box confirm_header-wrapper mm-box--padding-4 mm-box--display-flex mm-box--align-items-center"
   >
     <div
       class="mm-box mm-box--display-flex"
