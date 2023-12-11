@@ -149,6 +149,7 @@ describe('CurrencyInput Component', () => {
       const props = {
         onChange: jest.fn(),
         onPreferenceToggle: jest.fn(),
+        hexValue: 'f602f2234d0ea',
         featureSecondary: true,
       };
 

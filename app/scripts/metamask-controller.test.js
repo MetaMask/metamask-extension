@@ -24,6 +24,7 @@ import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
+import mockEncryptor from '../../test/lib/mock-encryptor';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -317,15 +318,7 @@ describe('MetaMaskController', () => {
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {
@@ -836,15 +829,7 @@ describe('MetaMaskController', () => {
 
         const localMetaMaskController = new MetaMaskController({
           showUserConfirmation: noop,
-          encryptor: {
-            encrypt(_, object) {
-              this.object = object;
-              return Promise.resolve('mock-encrypted');
-            },
-            decrypt() {
-              return Promise.resolve(this.object);
-            },
-          },
+          encryptor: mockEncryptor,
           initState: {
             ...cloneDeep(firstTimeState),
             KeyringController: {
@@ -1838,15 +1823,7 @@ describe('MetaMaskController', () => {
 
       const metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {
@@ -1870,15 +1847,7 @@ describe('MetaMaskController', () => {
 
       const metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {
