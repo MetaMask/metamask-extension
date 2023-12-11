@@ -11,6 +11,15 @@ import { ModalHeaderProps } from '.';
 /**
  * @deprecated This version of `ModalHeader` is deprecated. Please use the version from the component-library in ui/components/component-library/modal-header/modal-header.tsx
  * See PR https://github.com/MetaMask/metamask-extension/pull/22207 for details.
+ * @param options0
+ * @param options0.children
+ * @param options0.className
+ * @param options0.startAccessory
+ * @param options0.endAccessory
+ * @param options0.onClose
+ * @param options0.closeButtonProps
+ * @param options0.onBack
+ * @param options0.backButtonProps
  */
 export const ModalHeader: React.FC<ModalHeaderProps> = ({
   children,
