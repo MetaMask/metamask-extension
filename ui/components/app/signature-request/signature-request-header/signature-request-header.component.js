@@ -17,9 +17,9 @@ export default class SignatureRequestHeader extends PureComponent {
           {fromAccount ? (
             <AccountListItem
               account={fromAccount}
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
               hideDefaultMismatchWarning
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
             />
           ) : null}
         </div>

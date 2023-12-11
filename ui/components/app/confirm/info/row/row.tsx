@@ -1,6 +1,6 @@
 import React, { createContext } from 'react';
-import Tooltip from '../../../../../ui/tooltip/tooltip';
-import { Box, Icon, IconName, Text } from '../../../../../component-library';
+import Tooltip from '../../../../ui/tooltip/tooltip';
+import { Box, Icon, IconName, Text } from '../../../../component-library';
 import {
   AlignItems,
   BackgroundColor,
@@ -14,7 +14,7 @@ import {
   OverflowWrap,
   TextColor,
   TextVariant,
-} from '../../../../../../helpers/constants/design-system';
+} from '../../../../../helpers/constants/design-system';
 
 export enum ConfirmInfoRowVariant {
   Default = 'default',
@@ -46,6 +46,12 @@ const TOOLTIP_ICONS = {
   [ConfirmInfoRowVariant.Default]: IconName.Question,
   [ConfirmInfoRowVariant.Critical]: IconName.Warning,
   [ConfirmInfoRowVariant.Warning]: IconName.Warning,
+};
+
+const TOOLTIP_ICON_COLORS = {
+  [ConfirmInfoRowVariant.Default]: Color.iconMuted,
+  [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
+  [ConfirmInfoRowVariant.Warning]: Color.warningAlternative,
 };
 
 export const ConfirmInfoRowContext = createContext({
@@ -92,7 +98,7 @@ export const ConfirmInfoRow = ({
             <Icon
               name={TOOLTIP_ICONS[variant]}
               marginLeft={1}
-              color={TEXT_COLORS[variant] as unknown as IconColor}
+              color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
             />
           </Tooltip>
         )}

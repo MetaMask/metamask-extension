@@ -19,6 +19,7 @@
   "fonts.gstatic.com",
   "gas-api.metaswap.codefi.network",
   "github.com",
+  "localhost:8000",
   "localhost:8545",
   "mainnet.infura.io",
   "metamask.github.io",
