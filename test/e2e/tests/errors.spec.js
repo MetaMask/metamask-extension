@@ -32,6 +32,7 @@ const maskedBackgroundFields = [
   'AppStateController.browserEnvironment.browser',
   'AppStateController.browserEnvironment.os',
   'AppStateController.outdatedBrowserWarningLastShown',
+  'AppStateController.surveyLinkLastClickedOrClosed',
   'AppStateController.recoveryPhraseReminderLastShown',
   'AppStateController.termsOfUseLastAgreed',
 ];
