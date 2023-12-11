@@ -125,11 +125,15 @@ export const AccountListItemMenu = ({
     };
   }, [handleClickOutside]);
 
-  const handlePinningToggle = (address, pin) => {
-    const updatedPinnedAccountList = pin
-      ? pinnedAccountList.filter((item) => item !== address)
-      : [...pinnedAccountList, address];
+  const handlePinning = (address) => {
+    const updatedPinnedAccountList = [...pinnedAccountList, address];
+    dispatch(updateAccountsList(updatedPinnedAccountList));
+  };
 
+  const handleUnpinning = (address) => {
+    const updatedPinnedAccountList = pinnedAccountList.filter(
+      (item) => item !== address,
+    );
     dispatch(updateAccountsList(updatedPinnedAccountList));
   };
 
@@ -163,7 +167,9 @@ export const AccountListItemMenu = ({
             <MenuItem
               data-testid="account-list-menu-pin"
               onClick={() => {
-                handlePinningToggle(identity.address, isPinned);
+                isPinned
+                  ? handleUnpinning(identity.address)
+                  : handlePinning(identity.address);
                 onClose();
               }}
               iconName={isPinned ? IconName.Unpin : IconName.Pin}
