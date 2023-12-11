@@ -9,7 +9,6 @@ import {
   BorderColor,
   BorderRadius,
   Display,
-  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
@@ -43,11 +42,7 @@ export const Tag: TagComponent = React.forwardRef(
         {...(props as BoxProps<C>)}
       >
         {iconName ? (
-          <Icon
-            name={iconName}
-            size={IconSize.Xs}
-            {...iconProps}
-          />
+          <Icon name={iconName} size={IconSize.Xs} {...iconProps} />
         ) : null}
         <Text variant={TextVariant.bodySm} {...labelProps}>
           {label}
