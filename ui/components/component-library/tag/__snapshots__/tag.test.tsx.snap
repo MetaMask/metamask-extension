@@ -7,7 +7,7 @@ exports[`Tag should render a tag with an icon and a label 1`] = `
     data-testid="tag"
   >
     <span
-      class="mm-box mm-icon mm-icon--size-xs mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-inherit"
+      class="mm-box mm-icon mm-icon--size-xs mm-box--display-inline-block mm-box--color-inherit"
       style="mask-image: url('./images/icons/snaps.svg');"
     />
     <p
