@@ -10,12 +10,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
-import {
-  Text,
-  Box,
-  Tag,
-  ButtonLink,
-} from '../../../components/component-library';
+import { Text, Box, Tag } from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
@@ -218,24 +213,18 @@ export default class ExperimentalTab extends PureComponent {
                   </Text>
                   <Tag marginLeft={2} label="Beta" />
                 </Box>
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  color={TextColor.textAlternative}
-                  marginTop={0}
-                  marginRight={1}
-                >
+                <div className="settings-page__content-description">
                   {t('openSeaMessage', [
-                    <ButtonLink
-                      variant="bodyMd"
-                      href={OPENSEA_TERMS_OF_USE}
-                      externalLink
+                    <a
                       key="opensea-terms-of-use"
+                      href={OPENSEA_TERMS_OF_USE}
+                      rel="noreferrer"
+                      target="_blank"
                     >
                       {t('terms')}
-                    </ButtonLink>,
+                    </a>,
                   ])}
-                </Text>
+                </div>
               </div>
               <ToggleButton
                 value={transactionSecurityCheckEnabled}
