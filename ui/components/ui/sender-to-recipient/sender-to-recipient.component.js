@@ -9,12 +9,11 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import AccountMismatchWarning from '../account-mismatch-warning/account-mismatch-warning.component';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
 import Name from '../../app/name/name';
-///: END:ONLY_INCLUDE_IF
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import NicknamePopovers from '../../app/modals/nickname-popovers';
 import { Icon, IconName } from '../../component-library';
+import { usePetnamesEnabled } from '../../../hooks/usePetnamesEnabled';
 import {
   DEFAULT_VARIANT,
   CARDS_VARIANT,
@@ -115,6 +114,7 @@ export function RecipientWithAddress({
   const t = useI18nContext();
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
   const [addressCopied, setAddressCopied] = useState(false);
+  const petnamesEnabled = usePetnamesEnabled();
 
   let tooltipHtml = <p>{t('copiedExclamation')}</p>;
   if (!addressCopied) {
@@ -129,31 +129,30 @@ export function RecipientWithAddress({
     );
   }
 
-  let displayName =
-    recipientName ||
-    recipientNickname ||
-    recipientMetadataName ||
-    recipientEns ||
-    shortenAddress(checksummedRecipientAddress);
+  let displayName;
+  if (petnamesEnabled) {
+    displayName = (
+      <Name value={recipientAddress} type={NameType.ETHEREUM_ADDRESS} />
+    );
+  } else {
+    displayName =
+      recipientName ||
+      recipientNickname ||
+      recipientMetadataName ||
+      recipientEns ||
+      shortenAddress(checksummedRecipientAddress);
 
-  if (addressOnly && !displayName) {
-    displayName = t('newContract');
+    if (addressOnly && !displayName) {
+      displayName = t('newContract');
+    }
   }
 
-  let nicknamePopovers = (
+  const nicknamePopovers = petnamesEnabled ? null : (
     <NicknamePopovers
       onClose={() => setShowNicknamePopovers(false)}
       address={checksummedRecipientAddress}
     />
   );
-
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
-  displayName = (
-    <Name value={recipientAddress} type={NameType.ETHEREUM_ADDRESS} />
-  );
-
-  nicknamePopovers = null;
-  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
