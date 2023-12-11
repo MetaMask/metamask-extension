@@ -36,7 +36,7 @@ export const Tag: TagComponent = React.forwardRef(
         alignItems={AlignItems.center}
         paddingLeft={1}
         paddingRight={1}
-        gap={2}
+        gap={1}
         borderRadius={BorderRadius.pill}
         display={Display.Flex}
         {...(props as BoxProps<C>)}
