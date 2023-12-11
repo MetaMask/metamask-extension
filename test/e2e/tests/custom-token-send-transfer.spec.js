@@ -32,7 +32,7 @@ describe('Transfer custom tokens @no-mmi', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
-        defaultGanacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -115,7 +115,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withTokensControllerERC20()
           .build(),
-        defaultGanacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -175,7 +175,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withTokensControllerERC20()
           .build(),
-        defaultGanacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
