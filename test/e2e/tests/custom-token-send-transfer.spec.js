@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
   withFixtures,
+  defaultGanacheOptions,
   switchToNotificationWindow,
   openDapp,
   unlockWallet,
@@ -24,15 +24,6 @@ const editGasfeeCustomToken = async (driver) => {
 
 describe('Transfer custom tokens @no-mmi', function () {
   const smartContract = SMART_CONTRACTS.HST;
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   it('send custom tokens from extension customizing gas values', async function () {
     if (process.env.MULTICHAIN) {
       return;
@@ -41,7 +32,7 @@ describe('Transfer custom tokens @no-mmi', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
-        ganacheOptions,
+        defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -124,7 +115,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions,
+        defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -184,7 +175,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withTokensControllerERC20()
           .build(),
-        ganacheOptions,
+        defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
