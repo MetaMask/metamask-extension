@@ -70,6 +70,9 @@ async function runGitCommands() {
       }
     }
 
+    await exec('git restore --source origin/develop .');
+    console.log('Executed: it restore --source origin/develop .');
+
     await exec('git checkout origin/develop -- .');
     console.log('Executed: git checkout origin/develop -- .');
 
