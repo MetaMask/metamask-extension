@@ -33,7 +33,7 @@ When the modal opens:
 
 ```jsx
 import React, { useState, useRef } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, Text, Button } from '../../component-library';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, Text, Button } from '../../component-library';
 
 const [open, setOpen] = useState(false);
 
@@ -55,7 +55,9 @@ const handleOnClose = () => {
     <ModalHeader onClose={handleOnClose} onBack={handleOnClose}>
       Modal Header
     </ModalHeader>
-    <Text>Children</Text>
+    <ModalBody>
+      <Text>ModalBody children</Text>
+    </ModalBody>
   </ModalContent>
 </Modal>
 ```
@@ -102,7 +104,7 @@ Use the `initialFocusRef` to set the `ref` of the element to receive focus initi
 
 ```jsx
 import React, { useState, useRef } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, TextFieldSearch, Button } from '../../component-library';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, TextFieldSearch, Button } from '../../component-library';
 
 // Ref to set initial focus
 const inputRef = React.useRef<HTMLDivElement>(null);
@@ -137,6 +139,9 @@ const handleOnClose = () => {
       inputProps={{ ref: inputRef }}
       width={BLOCK_SIZES.FULL}
     />
+    <ModalBody>
+      <Text>ModalBody children</Text>
+    </ModalBody>
   </ModalContent>
 </Modal>
 ```
@@ -184,7 +189,9 @@ const handleOnClose = () => {
     >
       Modal Header
     </ModalHeader>
-    <Text>{args.children}</Text>
+    <ModalBody>
+      <Text>ModalBody children</Text>
+    </ModalBody>
   </ModalContent>
 </Modal>
 ```
