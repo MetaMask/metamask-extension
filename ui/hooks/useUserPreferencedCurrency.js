@@ -45,26 +45,30 @@ export function useUserPreferencedCurrency(type, opts = {}) {
     getPreferences,
     shallowEqual,
   );
-  const showFiat = useSelector(getShouldShowFiat) || opts.showFiatOverride;
+  const showFiat = useSelector(getShouldShowFiat);
   const currentCurrency = useSelector(getCurrentCurrency);
 
-  let currency, numberOfDecimals;
-  if (
-    !showFiat ||
-    (type === PRIMARY && useNativeCurrencyAsPrimaryCurrency) ||
-    (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency)
-  ) {
-    // Display ETH
-    currency = nativeCurrency || EtherDenomination.ETH;
-    numberOfDecimals = opts.numberOfDecimals || opts.ethNumberOfDecimals || 8;
+  const fiatReturn = {
+    currency: currentCurrency,
+    numberOfDecimals: opts.numberOfDecimals || opts.fiatNumberOfDecimals || 2,
+  };
+
+  const nativeReturn = {
+    currency: nativeCurrency || EtherDenomination.ETH,
+    numberOfDecimals: opts.numberOfDecimals || opts.ethNumberOfDecimals || 8,
+  };
+
+  if (opts.showNativeOverride) {
+    return nativeReturn;
+  } else if (opts.showFiatOverride || showFiat) {
+    return fiatReturn;
   } else if (
     (type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||
     (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency)
   ) {
     // Display Fiat
-    currency = currentCurrency;
-    numberOfDecimals = opts.numberOfDecimals || opts.fiatNumberOfDecimals || 2;
+    return fiatReturn;
   }
-
-  return { currency, numberOfDecimals };
+  // Display Native
+  return nativeReturn;
 }
