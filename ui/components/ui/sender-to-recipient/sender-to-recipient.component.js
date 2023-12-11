@@ -147,13 +147,6 @@ export function RecipientWithAddress({
     }
   }
 
-  const nicknamePopovers = petnamesEnabled ? null : (
-    <NicknamePopovers
-      onClose={() => setShowNicknamePopovers(false)}
-      address={checksummedRecipientAddress}
-    />
-  );
-
   return (
     <>
       <div
@@ -189,7 +182,12 @@ export function RecipientWithAddress({
           </div>
         </Tooltip>
       </div>
-      {showNicknamePopovers ? nicknamePopovers : null}
+      {showNicknamePopovers && !petnamesEnabled ? (
+        <NicknamePopovers
+          onClose={() => setShowNicknamePopovers(false)}
+          address={checksummedRecipientAddress}
+        />
+      ) : null}
     </>
   );
 }
