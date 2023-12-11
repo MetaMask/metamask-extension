@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
@@ -47,7 +48,7 @@ describe('Failing contract interaction ', function () {
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -124,7 +125,7 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 

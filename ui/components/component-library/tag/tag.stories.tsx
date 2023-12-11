@@ -1,5 +1,6 @@
 import React from 'react';
-import { StoryFn, Meta } from '@storybook/react';
+import { Meta, StoryFn } from '@storybook/react';
+import { IconName } from '../icon';
 import { Tag } from './tag';
 import README from './README.mdx';
 
@@ -13,6 +14,9 @@ export default {
   },
   argTypes: {
     label: {
+      control: 'text',
+    },
+    iconName: {
       control: 'text',
     },
   },
@@ -29,4 +33,11 @@ export const Label: StoryFn<typeof Tag> = (args) => <Tag {...args} />;
 
 Label.args = {
   label: 'Label Story',
+};
+
+export const WithIcon: StoryFn<typeof Tag> = (args) => <Tag {...args} />; // New story to showcase the icon
+
+WithIcon.args = {
+  label: 'Snap Name',
+  iconName: IconName.Snaps,
 };

@@ -59,6 +59,9 @@ describe('Snap Account Transfers', function (this: Suite) {
     }
 
     if (isAsyncFlow) {
+      await driver.waitForElementNotPresent({
+        text: 'Please complete the transaction on the Snap.',
+      });
       await driver.switchToWindowWithTitle(
         WINDOW_TITLES.ExtensionInFullScreenView,
       );

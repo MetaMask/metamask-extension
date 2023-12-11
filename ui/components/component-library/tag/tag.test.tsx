@@ -2,6 +2,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
+import { IconName } from '../icon';
 import { Tag } from './tag';
 
 describe('Tag', () => {
@@ -11,6 +12,18 @@ describe('Tag', () => {
     );
     expect(getByTestId('tag')).toBeDefined();
     expect(getByTestId('tag')).toHaveTextContent('Imported');
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should render a tag with an icon and a label', () => {
+    const { getByTestId, container } = render(
+      <Tag data-testid="tag" label="Snap Name" iconName={IconName.Snaps} />,
+    );
+    const tag = getByTestId('tag');
+    expect(tag).toBeDefined();
+    expect(tag).toHaveTextContent('Snap Name');
+    const icon = tag.querySelector('svg');
+    expect(icon).toBeDefined();
     expect(container).toMatchSnapshot();
   });
 });
