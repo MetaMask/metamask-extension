@@ -67,6 +67,8 @@ describe('Account Tracker', () => {
     blockTrackerStub.getCurrentBlock = noop;
     blockTrackerStub.getLatestBlock = noop;
 
+    controllerMessenger = new ControllerMessenger();
+
     providerFromHook = createTestProviderTools({
       scaffold: {
         eth_getBalance: UPDATE_BALANCE_HOOK,
@@ -91,7 +93,6 @@ describe('Account Tracker', () => {
 
     getNetworkIdentifierStub = jest.fn();
 
-    controllerMessenger = new ControllerMessenger();
     controllerMessenger.registerActionHandler(
       'AccountsController:getSelectedAccount',
       () => ({

@@ -6,9 +6,6 @@ import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils
 import { getSelectedInternalAccount } from '../../../selectors';
 import { AddressCopyButton } from '../../multichain';
 import Box from '../../ui/box/box';
-import { Tag } from '../../component-library';
-import { Color, TextVariant } from '../../../helpers/constants/design-system';
-import { t } from '../../../../app/scripts/translate';
 
 const WalletOverview = ({
   balance,
@@ -17,10 +14,7 @@ const WalletOverview = ({
   showAddress = false,
 }) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const checksummedAddress = toChecksumHexAddress(selectedAccount?.address);
-  const label = selectedAccount.metadata?.snap?.name
-    ? `${selectedAccount.metadata?.snap?.name} (${t('beta')})`
-    : null;
+  const checksummedAddress = toChecksumHexAddress(selectedAccount.address);
   return (
     <div className={classnames('wallet-overview', className)}>
       <div className="wallet-overview__balance">
@@ -30,15 +24,6 @@ const WalletOverview = ({
           </Box>
         ) : null}
         {balance}
-        {label ? (
-          <Tag
-            label={label}
-            labelProps={{
-              variant: TextVariant.bodyXs,
-              color: Color.textAlternative,
-            }}
-          />
-        ) : null}
       </div>
       <div className="wallet-overview__buttons">{buttons}</div>
     </div>
