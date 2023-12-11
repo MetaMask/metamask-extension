@@ -3864,6 +3864,12 @@ export function setTermsOfUseLastAgreed(lastAgreed: number) {
   };
 }
 
+export function setSurveyLinkLastClickedOrClosed(time: number) {
+  return async () => {
+    await submitRequestToBackground('setSurveyLinkLastClickedOrClosed', [time]);
+  };
+}
+
 export function setOutdatedBrowserWarningLastShown(lastShown: number) {
   return async () => {
     await submitRequestToBackground('setOutdatedBrowserWarningLastShown', [
