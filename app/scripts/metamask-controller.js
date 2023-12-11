@@ -1657,6 +1657,7 @@ export default class MetamaskController extends EventEmitter {
       networkController: this.networkController,
       permissionController: this.permissionController,
       signatureController: this.signatureController,
+      accountsController: this.accountsController,
       platform: this.platform,
       extension: this.extension,
       getTransactions: this.txController.getTransactions.bind(
