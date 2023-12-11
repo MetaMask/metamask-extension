@@ -3271,8 +3271,7 @@
     "message": "OpenSea + Blockaid"
   },
   "openSeaMessage": {
-    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. $1",
-    "description": "$1 is the link to OpenSea's terms of use"
+    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. $1"
   },
   "openSeaNew": {
     "message": "OpenSea"
@@ -5298,7 +5297,7 @@
     "message": "ON (Not recommended)"
   },
   "toggleRequestQueueDescription": {
-    "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which my break your user experience on certain sites."
+    "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which may break your user experience on certain sites."
   },
   "toggleRequestQueueField": {
     "message": "Select networks for each site"
