@@ -33,7 +33,6 @@ import {
   JustifyContent,
   Size,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
@@ -119,11 +118,13 @@ export const AccountListItem = ({
   const keyring = useSelector((state) =>
     findKeyringForAddress(state, identity.address),
   );
+
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const label = selectedAccount.metadata?.snap?.name
     ? `${selectedAccount.metadata?.snap?.name} (${t('beta')})`
     : getLabel(t, keyring);
   console.log('snap', selectedAccount.metadata?.snap);
+  console.log('identity', identity);
 
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
