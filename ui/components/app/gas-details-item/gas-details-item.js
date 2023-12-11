@@ -1,37 +1,61 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
 
+import { useSelector } from 'react-redux';
+import { Text } from '../../component-library';
 import { TextColor } from '../../../helpers/constants/design-system';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
+import { PriorityLevels } from '../../../../shared/constants/gas';
 import {
+  getIsMultiLayerFeeNetwork,
   getPreferences,
+  getTxData,
   getUseCurrencyRateCheck,
   transactionFeeSelector,
 } from '../../../selectors';
 import { getCurrentDraftTransaction } from '../../../ducks/send';
+import {
+  hexWEIToDecGWEI,
+  sumHexes,
+} from '../../../../shared/modules/conversion.utils';
+import { useDraftTransactionWithTxParams } from '../../../hooks/useDraftTransactionWithTxParams';
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 import Box from '../../ui/box';
 import LoadingHeartBeat from '../../ui/loading-heartbeat';
+import EditGasFeeIcon from '../edit-gas-fee-icon/edit-gas-fee-icon';
 import GasTiming from '../gas-timing/gas-timing.component';
+import fetchEstimatedL1Fee from '../../../helpers/utils/optimism/fetchEstimatedL1Fee';
 import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
-import { hexWEIToDecGWEI } from '../../../../shared/modules/conversion.utils';
-import { useDraftTransactionWithTxParams } from '../../../hooks/useDraftTransactionWithTxParams';
-import { PriorityLevels } from '../../../../shared/constants/gas';
-import GasDetailsItemTitle from './gas-details-item-title';
 
 const GasDetailsItem = ({
   'data-testid': dataTestId,
   userAcknowledgedGasMissing = false,
 }) => {
   const t = useI18nContext();
+
+  const isMultiLayerFeeNetwork = useSelector(getIsMultiLayerFeeNetwork);
+  const txData = useSelector(getTxData);
+
+  const [estimatedL1Fees, setEstimatedL1Fees] = useState(null);
+
+  useEffect(() => {
+    if (isMultiLayerFeeNetwork) {
+      fetchEstimatedL1Fee(txData?.chainId, txData)
+        .then((result) => {
+          setEstimatedL1Fees(result);
+        })
+        .catch((_err) => {
+          setEstimatedL1Fees(null);
+        });
+    }
+  }, [isMultiLayerFeeNetwork, txData]);
+
   const draftTransaction = useSelector(getCurrentDraftTransaction);
   const transactionData = useDraftTransactionWithTxParams();
-
   const {
     hexMinimumTransactionFee: draftHexMinimumTransactionFee,
     hexMaximumTransactionFee: draftHexMaximumTransactionFee,
@@ -41,7 +65,6 @@ const GasDetailsItem = ({
     estimateUsed,
     hasSimulationError,
     maximumCostInHexWei: hexMaximumTransactionFee,
-    minimumCostInHexWei: hexMinimumTransactionFee,
     maxPriorityFeePerGas,
     maxFeePerGas,
   } = useGasFeeContext();
@@ -49,6 +72,14 @@ const GasDetailsItem = ({
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
+
+  const getTransactionFeeTotal = useMemo(() => {
+    if (isMultiLayerFeeNetwork) {
+      return sumHexes(hexMaximumTransactionFee, estimatedL1Fees || 0);
+    }
+
+    return hexMaximumTransactionFee;
+  }, [isMultiLayerFeeNetwork, hexMaximumTransactionFee, estimatedL1Fees]);
 
   if (hasSimulationError && !userAcknowledgedGasMissing) {
     return null;
@@ -68,16 +99,19 @@ const GasDetailsItem = ({
     <TransactionDetailItem
       key="gas-details-item"
       data-testid={dataTestId}
-      detailTitle={<GasDetailsItemTitle />}
+      detailTitle={<Text>{t('estimatedFee')}</Text>}
       detailTitleColor={TextColor.textDefault}
       detailText={
         useCurrencyRateCheck &&
         Object.keys(draftTransaction).length === 0 && (
           <div className="gas-details-item__currency-container">
             <LoadingHeartBeat estimateUsed={estimateUsed} />
+            <EditGasFeeIcon
+              userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+            />
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
-              value={hexMinimumTransactionFee}
+              value={getTransactionFeeTotal}
               hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
             />
           </div>
@@ -88,7 +122,7 @@ const GasDetailsItem = ({
           <LoadingHeartBeat estimateUsed={estimateUsed} />
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
-            value={hexMinimumTransactionFee || draftHexMinimumTransactionFee}
+            value={getTransactionFeeTotal || draftHexMinimumTransactionFee}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
         </div>
@@ -121,9 +155,7 @@ const GasDetailsItem = ({
               <UserPreferencedCurrencyDisplay
                 key="editGasSubTextFeeAmount"
                 type={PRIMARY}
-                value={
-                  hexMaximumTransactionFee || draftHexMaximumTransactionFee
-                }
+                value={getTransactionFeeTotal || draftHexMaximumTransactionFee}
                 hideLabel={!useNativeCurrencyAsPrimaryCurrency}
               />
             </div>
