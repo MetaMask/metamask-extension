@@ -477,7 +477,7 @@ describe('Account Tracker', () => {
       accountTracker.stop();
     });
 
-    it('updates only the currentBlockGasLimitByChainId and accounts when a networkClientId is passed', async () => {
+    it('updates only the currentBlockGasLimitByChainId and accounts when polling is initiated via `startPollingByNetworkClientId`', async () => {
       const updateAccountsSpy = jest
         .spyOn(accountTracker, 'updateAccounts')
         .mockResolvedValue();
