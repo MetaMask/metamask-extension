@@ -436,8 +436,8 @@ export const ImportTokensModal = ({ onClose }) => {
 
       default:
         if (!addressIsEmpty) {
-          setShowSymbolAndDecimals(true);
           attemptToAutoFillTokenParams(address);
+          setShowSymbolAndDecimals(true);
           if (standard) {
             setTokenStandard(standard);
           }

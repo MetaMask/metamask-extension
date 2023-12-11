@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 import configureStore from '../../../store/store';
@@ -79,17 +79,28 @@ describe('ImportTokensModal', () => {
       ).toStrictEqual(tokenAddress);
     });
 
-    it('edits token symbol', () => {
+    it('edits token symbol', async () => {
       const { getByText, getByTestId } = render();
       const customTokenButton = getByText('Custom token');
       fireEvent.click(customTokenButton);
 
       // Enter token address first
-      const tokenAddress = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
+      const tokenAddress = '0xB7b78f0Caa05C4743b231ACa619f60124FEA4261';
       const eventTokenAddress = { target: { value: tokenAddress } };
       fireEvent.change(
         getByTestId('import-tokens-modal-custom-address'),
         eventTokenAddress,
+      );
+
+      expect(
+        getByTestId('import-tokens-modal-custom-address').value,
+      ).toStrictEqual(tokenAddress);
+
+      // wait for the symbol input to be in the document
+      await waitFor(() =>
+        expect(
+          getByTestId('import-tokens-modal-custom-symbol'),
+        ).toBeInTheDocument(),
       );
 
       const tokenSymbol = 'META';
@@ -101,17 +112,24 @@ describe('ImportTokensModal', () => {
       ).toStrictEqual(tokenSymbol);
     });
 
-    it('edits token decimal precision', () => {
+    it('edits token decimal precision', async () => {
       const { getByText, getByTestId } = render();
       const customTokenButton = getByText('Custom token');
       fireEvent.click(customTokenButton);
 
       // Enter token address first
-      const tokenAddress = '0x617b3f8050a0BD94b6b1da02B4384eE5B4DF13F4';
+      const tokenAddress = '0xB7b78f0Caa05C4743b231ACa619f60124FEA4261';
       const eventTokenAddress = { target: { value: tokenAddress } };
       fireEvent.change(
         getByTestId('import-tokens-modal-custom-address'),
         eventTokenAddress,
+      );
+
+      // wait for the decimals input to be in the document
+      await waitFor(() =>
+        expect(
+          getByTestId('import-tokens-modal-custom-decimals'),
+        ).toBeInTheDocument(),
       );
 
       const tokenPrecision = '2';
