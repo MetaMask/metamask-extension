@@ -36,7 +36,7 @@ export default class MMIController extends EventEmitter {
     this.networkController = opts.networkController;
     this.permissionController = opts.permissionController;
     this.signatureController = opts.signatureController;
-    this.controllerController = opts.controllerController;
+    this.accountsController = opts.accountsController;
     this.platform = opts.platform;
     this.extension = opts.extension;
 
@@ -322,9 +322,8 @@ export default class MMIController extends EventEmitter {
         if (label) {
           // Set the label for the address
           this.preferencesController.setAccountLabel(address, label);
-          const account =
-            this.controllerController.getAccountByAddress(address);
-          this.controllerController.setAccountName(account.id, label);
+          const account = this.accountsController.getAccountByAddress(address);
+          this.accountsController.setAccountName(account.id, label);
         }
       }
     });
