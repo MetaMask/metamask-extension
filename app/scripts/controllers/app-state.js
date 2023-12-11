@@ -62,6 +62,7 @@ export default class AppStateController extends EventEmitter {
         '0x5': true,
         '0x539': true,
       },
+      surveyLinkLastClickedOrClosed: null,
     });
     this.timer = null;
 
@@ -167,6 +168,12 @@ export default class AppStateController extends EventEmitter {
   setRecoveryPhraseReminderHasBeenShown() {
     this.store.updateState({
       recoveryPhraseReminderHasBeenShown: true,
+    });
+  }
+
+  setSurveyLinkLastClickedOrClosed(time) {
+    this.store.updateState({
+      surveyLinkLastClickedOrClosed: time,
     });
   }
 
