@@ -40,33 +40,15 @@ describe('Transfer custom tokens @no-mmi', function () {
     await withFixtures(
       {
         dapp: true,
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
+        fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
         ganacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
-      async ({ driver, contractRegistry }) => {
-        const contractAddress = await contractRegistry.getContractAddress(
-          smartContract,
-        );
+      async ({ driver }) => {
         await unlockWallet(driver);
 
-        // on testdapp, add created tokens in wallet
-        await openDapp(driver, contractAddress);
-        await driver.findClickableElement('#deployButton');
-        await driver.clickElement({
-          text: 'Add Token(s) to Wallet',
-          tag: 'button',
-        });
-        await switchToNotificationWindow(driver);
-        await driver.clickElement({ text: 'Add token', tag: 'button' });
-
         // go to custom tokens view on extension, perform send tokens
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.ExtensionInFullScreenView,
-        );
         await driver.clickElement({
           css: '[data-testid="multichain-token-list-item-value"]',
           text: '10 TST',
@@ -77,6 +59,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           recipientAddress,
         );
         await driver.fill('.unit-input__input', '1');
+        await driver.waitForSelector('.transaction-detail-item');
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
         // check transaction details
@@ -139,6 +122,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withTokensControllerERC20()
           .build(),
         ganacheOptions,
         smartContract,
@@ -150,18 +134,8 @@ describe('Transfer custom tokens @no-mmi', function () {
         );
         await unlockWallet(driver);
 
-        // on testdapp, add created tokens in wallet
-        await openDapp(driver, contractAddress);
-        await driver.findClickableElement('#deployButton');
-        await driver.clickElement({
-          text: 'Add Token(s) to Wallet',
-          tag: 'button',
-        });
-        await switchToNotificationWindow(driver);
-        await driver.clickElement({ text: 'Add token', tag: 'button' });
-
         // transfer token from dapp
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await openDapp(driver, contractAddress);
         await driver.clickElement({ text: 'Transfer Tokens', tag: 'button' });
         await switchToNotificationWindow(driver);
         await driver.waitForSelector({ text: '1.5 TST', tag: 'h1' });
@@ -175,7 +149,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         await editGasfeeCustomToken(driver);
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        // check that transaction has completed correctly and is displayed in the activity list
+        // in extension, check that transaction has completed correctly and is displayed in the activity list
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -208,6 +182,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withTokensControllerERC20()
           .build(),
         ganacheOptions,
         smartContract,
@@ -219,18 +194,8 @@ describe('Transfer custom tokens @no-mmi', function () {
         );
         await unlockWallet(driver);
 
-        // on testdapp, add created tokens in wallet
-        await openDapp(driver, contractAddress);
-        await driver.findClickableElement('#deployButton');
-        await driver.clickElement({
-          text: 'Add Token(s) to Wallet',
-          tag: 'button',
-        });
-        await switchToNotificationWindow(driver);
-        await driver.clickElement({ text: 'Add token', tag: 'button' });
-
         // transfer token from dapp
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await openDapp(driver, contractAddress);
         await driver.clickElement({
           text: 'Transfer Tokens Without Gas',
           tag: 'button',
