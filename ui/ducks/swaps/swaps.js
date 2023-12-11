@@ -356,6 +356,14 @@ export const getSwapRedesignEnabled = (state) => {
   return swapRedesign.extensionActive;
 };
 
+export const getSendAndSwapEnabled = (state) => {
+  const sendAndSwap = state.metamask.swapsState?.swapsFeatureFlags?.sendAndSwap; // TODO make sure this is the right field name, dummy for now
+  if (sendAndSwap === undefined) {
+    return false; // By default hide the send and swap if we don't have feature flags returned yet.
+  }
+  return sendAndSwap.extensionActive;
+};
+
 export const getSwapsQuoteRefreshTime = (state) =>
   state.metamask.swapsState.swapsQuoteRefreshTime;
 
