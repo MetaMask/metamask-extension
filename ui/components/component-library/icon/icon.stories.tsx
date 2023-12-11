@@ -123,7 +123,7 @@ export const DefaultStory: StoryFn<typeof Icon> = (args) => {
                   readOnly
                   size={TextFieldSize.Sm}
                   inputProps={{
-                    variant: TextVariant.bodyXs,
+                    textVariant: TextVariant.bodyXs,
                     textAlign: TextAlign.Center,
                   }}
                   backgroundColor={BackgroundColor.backgroundAlternative}

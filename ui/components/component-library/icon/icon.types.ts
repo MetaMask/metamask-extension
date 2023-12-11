@@ -140,6 +140,7 @@ export enum IconName {
   SnapsMobile = 'snaps-mobile',
   SnapsPlus = 'snaps-plus',
   Snaps = 'snaps',
+  Sparkle = 'sparkle',
   Speedometer = 'speedometer',
   Star = 'star',
   Stake = 'stake',
