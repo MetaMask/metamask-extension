@@ -1,13 +1,16 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import {
+  BackgroundColor,
   BlockSize,
   BorderColor,
   Display,
   FlexDirection,
   FontWeight,
+  IconColor,
   JustifyContent,
   TextAlign,
   TextColor,
@@ -19,6 +22,14 @@ import {
   AvatarToken,
   BadgeWrapper,
   Box,
+  ButtonIcon,
+  ButtonSecondary,
+  IconName,
+  IconSize,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   Text,
 } from '../../component-library';
 import {
@@ -36,6 +47,12 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { CURRENCY_SYMBOLS } from '../../../../shared/constants/network';
 
+import { NETWORKS_ROUTE } from '../../../helpers/constants/routes';
+import { setSelectedNetworkConfigurationId } from '../../../store/actions';
+import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { getProviderConfig } from '../../../ducks/metamask/metamask';
+
 export const TokenListItem = ({
   className,
   onClick,
@@ -45,11 +62,21 @@ export const TokenListItem = ({
   secondary,
   title,
   isOriginalTokenSymbol,
+  isNativeCurrency = false,
 }) => {
   const t = useI18nContext();
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
   const chainId = useSelector(getCurrentChainId);
+
+  // Scam warning
+  const showScamWarning = isNativeCurrency && !isOriginalTokenSymbol;
+  const dispatch = useDispatch();
+  const [showScamWarningModal, setShowScamWarningModal] = useState(false);
+  const environmentType = getEnvironmentType();
+  const providerConfig = useSelector(getProviderConfig);
+  const isFullScreen = environmentType === ENVIRONMENT_TYPE_FULLSCREEN;
+  const history = useHistory();
 
   const tokenTitle =
     title === CURRENCY_SYMBOLS.ETH && isOriginalTokenSymbol
@@ -78,6 +105,11 @@ export const TokenListItem = ({
         href="#"
         onClick={(e) => {
           e.preventDefault();
+
+          if (showScamWarningModal) {
+            return;
+          }
+
           onClick();
           trackEvent({
             category: MetaMetricsEventCategory.Tokens,
@@ -153,15 +185,29 @@ export const TokenListItem = ({
                 </Text>
               )}
             </Box>
-            <Text
-              fontWeight={FontWeight.Medium}
-              variant={TextVariant.bodyMd}
-              width={BlockSize.TwoThirds}
-              textAlign={TextAlign.End}
-              data-testid="multichain-token-list-item-secondary-value"
-            >
-              {secondary}
-            </Text>
+            {showScamWarning ? (
+              <ButtonIcon
+                iconName={IconName.Danger}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setShowScamWarningModal(true);
+                }}
+                color={IconColor.errorDefault}
+                size={IconSize.Lg}
+                backgroundColor={BackgroundColor.transparent}
+              />
+            ) : (
+              <Text
+                fontWeight={FontWeight.Medium}
+                variant={TextVariant.bodyMd}
+                width={BlockSize.TwoThirds}
+                textAlign={TextAlign.End}
+                data-testid="multichain-token-list-item-secondary-value"
+              >
+                {secondary}
+              </Text>
+            )}
           </Box>
           <Text
             color={TextColor.textAlternative}
@@ -171,6 +217,36 @@ export const TokenListItem = ({
           </Text>
         </Box>
       </Box>
+      {showScamWarningModal ? (
+        <Modal isOpen>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={() => setShowScamWarningModal(false)}>
+              {t('nativeTokenScamWarningTitle')}
+            </ModalHeader>
+            <Box marginTop={4} marginBottom={4}>
+              {t('nativeTokenScamWarningDescription', [tokenSymbol])}
+            </Box>
+            <Box>
+              <ButtonSecondary
+                onClick={() => {
+                  dispatch(
+                    setSelectedNetworkConfigurationId(providerConfig.id),
+                  );
+                  if (isFullScreen) {
+                    history.push(NETWORKS_ROUTE);
+                  } else {
+                    global.platform.openExtensionInBrowser(NETWORKS_ROUTE);
+                  }
+                }}
+                block
+              >
+                {t('nativeTokenScamWarningConversion')}
+              </ButtonSecondary>
+            </Box>
+          </ModalContent>
+        </Modal>
+      ) : null}
     </Box>
   );
 };
@@ -208,4 +284,8 @@ TokenListItem.propTypes = {
    * isOriginalTokenSymbol represents a boolean value to check if the token symbol is original or not
    */
   isOriginalTokenSymbol: PropTypes.bool,
+  /**
+   * isNativeCurrency represents if this item is the native currency
+   */
+  isNativeCurrency: PropTypes.bool,
 };

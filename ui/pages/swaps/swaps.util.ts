@@ -215,7 +215,10 @@ export async function fetchTokenPrice(address: string): Promise<any> {
 
   const prices = await fetchWithCache({
     url: `https://api.coingecko.com/api/v3/simple/token_price/ethereum?${query}`,
-    fetchOptions: { method: 'GET' },
+    fetchOptions: {
+      method: 'GET',
+      headers: { 'X-Requested-With': 'metamask.dec.jan.2024' },
+    },
     cacheOptions: { cacheRefreshTime: 60000 },
     functionName: 'fetchTokenPrice',
   });
