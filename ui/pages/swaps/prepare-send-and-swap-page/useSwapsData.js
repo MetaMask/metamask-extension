@@ -8,7 +8,6 @@ import {
 import {
   fetchAndSetSwapsGasPriceInfo,
   fetchSwapsLivenessAndFeatureFlags,
-  // fetchAndSetSwapsGasPriceInfo,
   prepareToLeaveSwaps,
   setAggregatorMetadata,
   setTopAssets,
