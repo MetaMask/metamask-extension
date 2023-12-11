@@ -36,9 +36,23 @@ Label.args = {
   label: 'Label Story',
 };
 
-export const WithIcon: StoryFn<typeof Tag> = (args) => <Tag {...args} />; // New story to showcase the icon
+export const IconNameStory: StoryFn<typeof Tag> = (args) => <Tag {...args} />;
 
-WithIcon.args = {
+IconNameStory.args = {
   label: 'Snap Name',
   iconName: IconName.Snaps,
 };
+
+IconNameStory.storyName = 'IconName';
+
+export const IconPropsStory: StoryFn<typeof Tag> = (args) => <Tag {...args} />;
+
+IconPropsStory.args = {
+  label: 'Snap Name',
+  iconName: IconName.Snaps,
+  iconProps: {
+    color: IconColor.primaryDefault,
+  },
+};
+
+IconPropsStory.storyName = 'IconProps';
