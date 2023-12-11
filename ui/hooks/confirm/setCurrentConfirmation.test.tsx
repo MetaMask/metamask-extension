@@ -12,10 +12,15 @@ const mockState = {
     },
   },
 };
+
 const mockCurrentConfirmation = { id: '1' };
+
 jest.mock('./useCurrentConfirmation', () => () => ({
   currentConfirmation: mockCurrentConfirmation,
 }));
+
+const ReduxProvider = Provider as any;
+
 describe('setCurrentConfirmation', () => {
   it('should dispatch updateCurrentConfirmation', () => {
     const updateCurrentConfirmationSpy = jest.spyOn(
@@ -23,7 +28,9 @@ describe('setCurrentConfirmation', () => {
       'updateCurrentConfirmation',
     );
     const wrapper = ({ children }) => (
-      <Provider store={configureStore(mockState)}>{children}</Provider>
+      <ReduxProvider store={configureStore(mockState)}>
+        {children}
+      </ReduxProvider>
     );
     renderHook(() => setCurrentConfirmation(), { wrapper });
     expect(updateCurrentConfirmationSpy).toHaveBeenCalledWith(

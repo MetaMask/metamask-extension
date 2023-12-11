@@ -12,9 +12,9 @@ import ConfirmTransactionSwitch from '../confirm-transaction-switch';
 
 import { ORIGIN_METAMASK } from '../../../shared/constants/app';
 
-///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
+///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
 import useCurrentConfirmation from '../../hooks/confirm/useCurrentConfirmation';
-///: END:ONLY_INCLUDE_IN(conf-redesign)
+///: END:ONLY_INCLUDE_IF
 import {
   clearConfirmTransaction,
   setTransactionToConfirm,
@@ -47,9 +47,9 @@ import {
   setDefaultHomeActiveTabName,
 } from '../../store/actions';
 import ConfirmSignatureRequest from '../confirm-signature-request';
-///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
+///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
 import Confirm from '../confirm/confirm';
-///: END:ONLY_INCLUDE_IN(conf-redesign)
+///: END:ONLY_INCLUDE_IF
 import ConfirmTokenTransactionSwitch from './confirm-token-transaction-switch';
 
 const ConfirmTransaction = () => {
@@ -80,9 +80,9 @@ const ConfirmTransaction = () => {
   const [transaction, setTransaction] = useState(getTransaction);
   const use4ByteResolution = useSelector(use4ByteResolutionSelector);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
+  ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
   const { currentConfirmation } = useCurrentConfirmation();
-  ///: END:ONLY_INCLUDE_IN(conf-redesign)
+  ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
     const tx = getTransaction();
@@ -193,7 +193,7 @@ const ConfirmTransaction = () => {
     use4ByteResolution,
   ]);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(conf-redesign)
+  ///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
   // Code below is required as we need to support both new and old confirmation pages,
   // It takes care to render <Confirm /> component for confirmations of type Personal Sign.
   // Once we migrate all confirmations to new designs we can get rid of this code
@@ -201,7 +201,7 @@ const ConfirmTransaction = () => {
   if (currentConfirmation) {
     return <Confirm />;
   }
-  ///: END:ONLY_INCLUDE_IN(conf-redesign)
+  ///: END:ONLY_INCLUDE_IF
 
   if (isValidTokenMethod && isValidTransactionId) {
     return <ConfirmTokenTransactionSwitch transaction={transaction} />;
