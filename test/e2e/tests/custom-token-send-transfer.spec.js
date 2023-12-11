@@ -49,8 +49,12 @@ describe('Transfer custom tokens @no-mmi', function () {
           'input[placeholder="Enter public address (0x) or ENS name"]',
           recipientAddress,
         );
+        await driver.waitForSelector({
+          css: '.ens-input__selected-input__title',
+          text: recipientAddress,
+        });
         await driver.fill('.unit-input__input', '1');
-        await driver.waitForSelector('.transaction-detail-item');
+        await driver.waitForSelector('.transaction-detail-item__detail-values');
         await driver.clickElement('[data-testid="page-container-footer-next"]');
 
         // check transaction details
