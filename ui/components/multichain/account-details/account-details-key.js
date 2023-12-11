@@ -31,7 +31,7 @@ function Secret({ privateKey }) {
     shadowRoot.appendChild(span);
   }, []);
 
-  return <div ref={containerRef}></div>;
+  return <span ref={containerRef}></span>;
 }
 
 export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
