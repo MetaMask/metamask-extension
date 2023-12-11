@@ -7,6 +7,7 @@ const {
   openDapp,
   regularDelayMs,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 
 const TEST_CHAIN_ID = toHex(100);
@@ -113,7 +114,7 @@ describe('Custom network', function () {
           const windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 
@@ -190,7 +191,7 @@ describe('Custom network', function () {
           const windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 
@@ -297,7 +298,7 @@ describe('Custom network', function () {
           const windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 
@@ -350,7 +351,7 @@ describe('Custom network', function () {
           const windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
           await driver.clickElement({
@@ -502,7 +503,7 @@ describe('Custom network', function () {
 
           const arbitrumNetwork = await driver.findElements({
             text: 'Arbitrum One',
-            tag: 'button',
+            tag: 'p',
           });
           assert.ok(arbitrumNetwork.length, 1);
         },
@@ -645,6 +646,7 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
     text: 'Security & privacy',
     tag: 'div',
   };
+  await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
   const useSafeChainsListValidationToggleSelector =
@@ -725,6 +727,8 @@ async function toggleOffSafeChainsListValidation(driver) {
     text: 'Security & privacy',
     tag: 'div',
   };
+
+  await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
   const useSafeChainsListValidationLabelSelector =
