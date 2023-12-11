@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { ControllerMessenger } from '@metamask/base-controller';
 
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import AccountTracker from './account-tracker';
 
@@ -36,10 +37,6 @@ const mockAccounts = {
     balance: INITIAL_BALANCE_2,
   },
 };
-
-function flushPromises() {
-  return new Promise(jest.requireActual('timers').setImmediate);
-}
 
 describe('Account Tracker', () => {
   let provider,
