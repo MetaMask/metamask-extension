@@ -15,8 +15,8 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  TextFieldSearch,
 } from '../../component-library';
+import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
   AlignItems,

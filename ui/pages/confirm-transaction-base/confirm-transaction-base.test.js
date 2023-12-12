@@ -409,6 +409,7 @@ describe('Confirm Transaction Base', () => {
         gasFeeIsCustom: true,
       },
     };
+
     const store = configureMockStore(middleware)(newMockedStore);
     const sendTransaction = jest.fn().mockResolvedValue();
 
@@ -484,6 +485,7 @@ describe('Confirm Transaction Base', () => {
         gasFeeIsCustom: true,
       },
     };
+
     const store = configureMockStore(middleware)(newMockedStore);
     const sendTransaction = jest
       .fn()

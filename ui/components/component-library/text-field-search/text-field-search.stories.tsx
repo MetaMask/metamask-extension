@@ -1,5 +1,6 @@
 import React from 'react';
 import { useArgs } from '@storybook/client-api';
+import type { Meta } from '@storybook/react';
 
 import {
   Size,
@@ -12,27 +13,8 @@ import { TextFieldSize, TextFieldType } from '../text-field';
 import { TextFieldSearch } from './text-field-search';
 import README from './README.mdx';
 
-const marginSizeControlOptions = [
-  undefined,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-];
-
-export default {
+const meta: Meta<typeof TextFieldSearch> = {
   title: 'Components/ComponentLibrary/TextFieldSearch',
-
   component: TextFieldSearch,
   parameters: {
     docs: {
@@ -142,32 +124,14 @@ export default {
       control: 'boolean',
       table: { category: 'text field base props' },
     },
-    marginTop: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
   },
   args: {
     placeholder: 'Search',
     value: '',
   },
 };
+
+export default meta;
 
 const Template = (args) => {
   const [{ value }, updateArgs] = useArgs();
