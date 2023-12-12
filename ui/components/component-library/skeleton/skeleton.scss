@@ -1,0 +1,32 @@
+.mm-skeleton {
+  height: 48px;
+  width: 100%;
+  background-color: #eee;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 0% 0;
+  }
+
+  50% {
+    background-position: 100% 0;
+  }
+}
+
+.mm-skeleton {
+  background-image:
+    linear-gradient(
+      to right,
+      var(--color-background-alternative-hover) 0%,
+      var(--color-background-alternative-pressed) 50%,
+      var(--color-background-alternative-hover) 100%
+    );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite linear;
+}
