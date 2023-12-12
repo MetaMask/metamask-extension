@@ -29,6 +29,22 @@ const modifyStateWithHWKeyring = (keyring) => {
   return modifiedState;
 };
 
+const modifyStateWithAccountSnap = (snap) => {
+  const modifiedState = deepClone(mockState);
+  modifiedState.metamask.internalAccounts.accounts[
+    modifiedState.metamask.internalAccounts.selectedAccount
+  ].metadata = {
+    ...modifiedState.metamask.internalAccounts.accounts[
+      modifiedState.metamask.internalAccounts.selectedAccount
+    ].metadata,
+    keyring: {
+      type: KeyringType.snap,
+    },
+    snap,
+  };
+  return modifiedState;
+};
+
 describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
     it('returns undefined if selectedAddress is undefined', () => {
@@ -943,6 +959,17 @@ describe('Selectors', () => {
         },
       });
       expect(result).toStrictEqual(false);
+    });
+  });
+
+  it('#getAccountLabel', () => {
+    const modifiedState = modifyStateWithAccountSnap({
+      name: 'Test Snap Name',
+    });
+    const accountLabelData = selectors.getAccountLabel(modifiedState);
+    expect(accountLabelData).toStrictEqual({
+      label: 'Test Snap Name (Beta)',
+      accountType: 'Snap Keyring',
     });
   });
 });
