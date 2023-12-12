@@ -1,8 +1,6 @@
 .mm-skeleton {
-  height: 48px;
   width: 100%;
   background-color: #eee;
-  border-radius: 8px;
   overflow: hidden;
   position: relative;
 }
@@ -22,11 +20,11 @@
 .mm-skeleton {
   background-image:
     linear-gradient(
-      to right,
-      var(--color-background-alternative-hover) 0%,
-      var(--color-background-alternative-pressed) 50%,
-      var(--color-background-alternative-hover) 100%
+      80deg,
+      var(--color-background-alternative-pressed) 0%,
+      var(--color-background-alternative-hover) 50%,
+      var(--color-background-alternative-pressed) 100%
     );
   background-size: 200% 100%;
-  animation: shimmer 2s infinite linear;
+  animation: shimmer 2.5s infinite ease-in-out;
 }

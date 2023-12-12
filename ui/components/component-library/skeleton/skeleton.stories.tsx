@@ -1,6 +1,11 @@
 import React from 'react';
 import type { Meta } from '@storybook/react';
-import { BorderRadius } from '../../../helpers/constants/design-system';
+import {
+  BlockSize,
+  BorderRadius,
+  Display,
+} from '../../../helpers/constants/design-system';
+import { Box } from '../box';
 import README from './README.mdx';
 import { Skeleton } from '.';
 
@@ -19,14 +24,21 @@ export default meta;
 
 const Template = (args) => {
   return (
-    <>
+    <Box display={Display.Flex} gap={2}>
       <Skeleton
         {...args}
         borderRadius={BorderRadius.full}
-        style={{ width: 48, height: 48, borderRadius: 999 }}
+        style={{ maxWidth: 48, height: 48 }}
       />
-      <Skeleton {...args} />
-    </>
+      <Box width={BlockSize.Full}>
+        <Skeleton
+          marginBottom={2}
+          style={{ height: 32, width: '30%' }}
+          {...args}
+        />
+        <Skeleton style={{ height: 48, width: '70%' }} {...args} />
+      </Box>
+    </Box>
   );
 };
 
