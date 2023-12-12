@@ -13,14 +13,12 @@ const mockRowConfigs: ConfirmInfoRowConfig[] = [
   {
     variant: ConfirmInfoRowType.Divider,
   },
-  // todo: replace row variant for Message. Possible value or value-expandable. neither have been created yet
   {
-    label: 'Message',
+    label: 'Account',
     variant: ConfirmInfoRowType.ValueDouble,
     rowProps: {
-      left: '',
-      right:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel suscipit tortor. Curabitur vulputate felis nibh, vel pellentesque erat fermentum eget. Duis id turpis cursus, blandit magna sit amet, tempor sem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Maecenas ex nulla, suscipit id eros in, elementum lacinia leo. Etiam dignissim neque vitae nibh pretium, sed egestas est mollis. Nam venenatis tellus sed tempor bibendum.',
+      left: '$834.32',
+      right: '0.05 ETH',
     },
   },
 ];
@@ -39,12 +37,7 @@ const ConfirmInfoStory = {
   },
 };
 
-export const DefaultStory = (args) => (
-  <Box
-    background>
-    <ConfirmInfo {...args} />
-  </Box>
-);
+export const DefaultStory = (args) => <ConfirmInfo {...args} />;
 
 DefaultStory.storyName = 'Default';
 
