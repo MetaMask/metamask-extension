@@ -35,7 +35,8 @@ export const QUOTE_VALIDATORS_V2 = [
       (approvalTx &&
         validHex(approvalTx.data) &&
         isValidHexAddress(approvalTx.to, { allowNonPrefixed: false }) &&
-        isValidHexAddress(approvalTx.from, { allowNonPrefixed: false })),
+        isValidHexAddress(approvalTx.from, { allowNonPrefixed: false }) &&
+        truthyDigitString(approvalTx.value)),
   },
   {
     property: 'sourceAmount',
@@ -48,12 +49,12 @@ export const QUOTE_VALIDATORS_V2 = [
     validator: truthyDigitString,
   },
   {
-    property: 'sourceToken',
+    property: 'buyToken',
     type: 'string',
     validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
   },
   {
-    property: 'destinationToken',
+    property: 'sellToken',
     type: 'string',
     validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
   },
@@ -63,7 +64,7 @@ export const QUOTE_VALIDATORS_V2 = [
     validator: truthyString,
   },
   {
-    property: 'aggType',
+    property: 'aggregatorType',
     type: 'string',
     validator: truthyString,
   },
@@ -73,21 +74,42 @@ export const QUOTE_VALIDATORS_V2 = [
     validator: (error) => error === null || typeof error === 'object',
   },
   {
-    property: 'averageGas',
-    type: 'number',
-  },
-  {
-    property: 'maxGas',
-    type: 'number',
-  },
-  {
-    property: 'gasEstimate',
-    type: 'number|undefined',
-    validator: (gasEstimate) => gasEstimate === undefined || gasEstimate > 0,
+    property: 'gasParams',
+    type: 'object',
+    validator: (gasParams) =>
+      gasParams &&
+      typeof gasParams.averageGas === 'number' &&
+      typeof gasParams.estimatedRefund === 'number' &&
+      typeof gasParams.maxGas === 'number' &&
+      typeof gasParams.gasMultiplier === 'number',
   },
   {
     property: 'fee',
     type: 'number',
+  },
+  {
+    property: 'priceSlippage',
+    type: 'object',
+    validator: (priceSlippage) =>
+      priceSlippage &&
+      (priceSlippage.ratio === null ||
+        typeof priceSlippage.ratio === 'number') &&
+      (priceSlippage.calculationError === null ||
+        typeof priceSlippage.calculationError === 'string') &&
+      (priceSlippage.bucket === null ||
+        typeof priceSlippage.bucket === 'string') &&
+      (priceSlippage.sourceAmountInUSD === null ||
+        typeof priceSlippage.sourceAmountInUSD === 'number') &&
+      (priceSlippage.destinationAmountInUSD === null ||
+        typeof priceSlippage.destinationAmountInUSD === 'number') &&
+      (priceSlippage.sourceAmountInNativeCurrency === null ||
+        typeof priceSlippage.sourceAmountInNativeCurrency === 'number') &&
+      (priceSlippage.destinationAmountInNativeCurrency === null ||
+        typeof priceSlippage.destinationAmountInNativeCurrency === 'number') &&
+      (priceSlippage.sourceAmountInETH === null ||
+        typeof priceSlippage.sourceAmountInETH === 'number') &&
+      (priceSlippage.destinationAmountInETH === null ||
+        typeof priceSlippage.destinationAmountInETH === 'number'),
   },
 ];
 
