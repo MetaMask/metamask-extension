@@ -34,7 +34,6 @@ import { previousValueComparator } from './util';
  * @property {object} store.accountsByChainId The accounts currently stored in this AccountTracker keyed by chain id
  * @property {string} store.currentBlockGasLimit A hex string indicating the gas limit of the current block
  * @property {string} store.currentBlockGasLimitByChainId A hex string indicating the gas limit of the current block keyed by chain id
- * @property {object} _currentBlockNumberByChainId Reference to a property on the #blockTracker: the number (i.e. an id) of the the current block keyed by chain id
  */
 export default class AccountTracker {
   /**
@@ -53,6 +52,8 @@ export default class AccountTracker {
   #provider = null;
 
   #blockTracker = null;
+
+  #currentBlockNumberByChainId = {};
 
   constructor(opts = {}) {
     const initState = {
@@ -78,11 +79,11 @@ export default class AccountTracker {
     this.controllerMessenger = opts.controllerMessenger;
 
     // blockTracker.currentBlock may be null
-    this._currentBlockNumberByChainId = {
+    this.#currentBlockNumberByChainId = {
       [this.getCurrentChainId()]: this.#blockTracker.getCurrentBlock(),
     };
     this.#blockTracker.once('latest', (blockNumber) => {
-      this._currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
+      this.#currentBlockNumberByChainId[this.getCurrentChainId()] = blockNumber;
     });
 
     // subscribe to account removal
@@ -313,7 +314,7 @@ export default class AccountTracker {
 
   /**
    * Adds new addresses to track the balances of
-   * given a balance as long this._currentBlockNumberByChainId is defined for the chainId.
+   * given a balance as long this.#currentBlockNumberByChainId is defined for the chainId.
    *
    * @param {Array} addresses - An array of hex addresses of new accounts to track
    */
@@ -336,12 +337,12 @@ export default class AccountTracker {
     this.store.updateState({ accounts, accountsByChainId });
 
     // fetch balances for the accounts if there is block number ready
-    if (this._currentBlockNumberByChainId[this.getCurrentChainId()]) {
+    if (this.#currentBlockNumberByChainId[this.getCurrentChainId()]) {
       this.updateAccounts();
     }
     this.#pollingTokenSets.forEach((_tokenSet, networkClientId) => {
       const { chainId } = this.#getCorrectNetworkClient(networkClientId);
-      if (this._currentBlockNumberByChainId[chainId]) {
+      if (this.#currentBlockNumberByChainId[chainId]) {
         this.updateAccounts(networkClientId);
       }
     });
@@ -407,7 +408,7 @@ export default class AccountTracker {
   async #updateForBlockByNetworkClientId(networkClientId, blockNumber) {
     const { chainId, provider } =
       this.#getCorrectNetworkClient(networkClientId);
-    this._currentBlockNumberByChainId[chainId] = blockNumber;
+    this.#currentBlockNumberByChainId[chainId] = blockNumber;
 
     // block gasLimit polling shouldn't be in account-tracker shouldn't be here...
     const currentBlock = await pify(new EthQuery(provider)).getBlockByNumber(
