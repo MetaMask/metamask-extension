@@ -532,6 +532,11 @@ export default function PrepareSendAndSwapPage({
     if (!fromToken?.symbol && !fetchParamsFromToken?.symbol) {
       dispatch(setSwapsFromToken(defaultSwapsToken));
     }
+
+    // Default To Token should be same as From Token
+    if (!toToken?.symbol && !destinationTokenInfo?.symbol) {
+      dispatch(setSwapToToken(defaultSwapsToken));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
