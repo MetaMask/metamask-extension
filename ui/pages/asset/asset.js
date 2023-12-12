@@ -12,6 +12,7 @@ import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
+import TokenAssetV2 from './components/token-asset-v2';
 
 const Asset = () => {
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -37,7 +38,8 @@ const Asset = () => {
   if (nft) {
     content = <NftDetails nft={nft} />;
   } else if (token) {
-    content = <TokenAsset token={token} />;
+    // content = <TokenAsset token={token} />;
+    content = <TokenAssetV2 token={token} />;
   } else if (asset === nativeCurrency) {
     content = <NativeAsset nativeCurrency={nativeCurrency} />;
   } else {

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import TransactionList from '../../../components/app/transaction-list';
-import { TokenOverview } from '../../../components/app/wallet-overview';
+import { TokenOverviewV2 } from '../../../components/app/wallet-overview';
 import {
   getCurrentChainId,
   getSelectedIdentity,
@@ -74,7 +74,8 @@ export default function TokenAsset({ token }) {
           />
         }
       />
-      <TokenOverview className="asset__overview" token={token} />
+      {/* <TokenOverview className="asset__overview" token={token} /> */}
+      <TokenOverviewV2 token={token} />
       <TransactionList tokenAddress={token.address} />
     </>
   );
