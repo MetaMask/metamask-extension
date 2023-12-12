@@ -37,7 +37,7 @@ export default {
   },
 } as Meta<typeof SelectButton>;
 
-const Template: StoryFn<typeof SelectWrapper> = (args) => {
+const Template: StoryFn<typeof SelectButton> = (args) => {
   return <SelectButton {...args} />;
 };
 
