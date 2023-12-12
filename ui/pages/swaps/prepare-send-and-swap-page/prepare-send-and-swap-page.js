@@ -1130,17 +1130,17 @@ export default function PrepareSendAndSwapPage({
               }}
             />
           )}
-        {showQuotesLoadingAnimation && (
+        {showQuotesLoadingAnimation && !isSendFlow && (
           <QuotesLoadingAnimation
             quoteCount={quoteCount}
             numberOfAggregators={numberOfAggregators}
           />
         )}
-        {showReviewQuote && (
+        {showReviewQuote && !isSendFlow && (
           <ReviewQuote setReceiveToAmount={setReceiveToAmount} />
         )}
       </div>
-      {!areQuotesPresent && (
+      {!areQuotesPresent && !isSendFlow && (
         <SwapsFooter
           submitText={mainButtonText}
           disabled
