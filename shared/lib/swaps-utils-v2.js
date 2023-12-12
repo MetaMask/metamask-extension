@@ -182,8 +182,6 @@ export async function fetchQuotesInfoV2(
   const queryString = new URLSearchParams(urlParams).toString();
   const tradeURL = `${getBaseApi('quote', chainId)}${queryString}`;
 
-  console.log('tradeURL', tradeURL);
-
   const tradesResponse = await fetchWithCache({
     url: tradeURL,
     fetchOptions: { method: 'GET', headers: clientIdHeader },
