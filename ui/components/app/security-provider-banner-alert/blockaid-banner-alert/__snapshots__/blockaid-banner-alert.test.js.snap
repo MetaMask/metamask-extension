@@ -22,6 +22,50 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
     >
       If you approve this request, a third party known for scams might take all your assets.
     </p>
+    <div
+      class="disclosure"
+    >
+      <details>
+        <summary
+          class="disclosure__summary is-arrow"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+          >
+            See details
+          </p>
+          <span
+            class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-start-2 mm-box--display-inline-block mm-box--color-primary-default"
+            style="mask-image: url('./images/icons/arrow-up.svg');"
+          />
+        </summary>
+        <div
+          class="disclosure__content normal"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
+          >
+            <span>
+               
+              Something doesn't look right? 
+              <a
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                href="https://report.blockaid.io/tx?data=H4sIAAAAAAAAE6tWSs5JLC7OTMtMTizJzM9TslIqTi2JTywoKMovS8yJT8svik%2FMyVGqBQAw%2B1Z1KQAAAA%3D%3D&utm_source=metamask-ppom"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Report a problem
+              </a>
+              
+               
+            </span>
+          </p>
+        </div>
+        <div
+          class="disclosure__footer"
+        />
+      </details>
+    </div>
     <p
       class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
     >
@@ -70,6 +114,50 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
     >
       If you approve this request, a third party known for scams might take all your assets.
     </p>
+    <div
+      class="disclosure"
+    >
+      <details>
+        <summary
+          class="disclosure__summary is-arrow"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+          >
+            See details
+          </p>
+          <span
+            class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-start-2 mm-box--display-inline-block mm-box--color-primary-default"
+            style="mask-image: url('./images/icons/arrow-up.svg');"
+          />
+        </summary>
+        <div
+          class="disclosure__content normal"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
+          >
+            <span>
+               
+              Something doesn't look right? 
+              <a
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                href="https://report.blockaid.io/tx?data=H4sIAAAAAAAAE6tWSs5JLC7OTMtMTizJzM9TslIqTi2JTywoKMovS8yJT8svik%2FMyVGqBQAw%2B1Z1KQAAAA%3D%3D&utm_source=metamask-ppom"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Report a problem
+              </a>
+              
+               
+            </span>
+          </p>
+        </div>
+        <div
+          class="disclosure__footer"
+        />
+      </details>
+    </div>
   </div>
 </div>
 `;
@@ -96,6 +184,50 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
     >
       If you approve this request, a third party known for scams might take all your assets.
     </p>
+    <div
+      class="disclosure"
+    >
+      <details>
+        <summary
+          class="disclosure__summary is-arrow"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--color-primary-default"
+          >
+            See details
+          </p>
+          <span
+            class="mm-box disclosure__summary--icon mm-icon mm-icon--size-sm mm-box--margin-inline-start-2 mm-box--display-inline-block mm-box--color-primary-default"
+            style="mask-image: url('./images/icons/arrow-up.svg');"
+          />
+        </summary>
+        <div
+          class="disclosure__content normal"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md mm-box--margin-top-3 mm-box--display-flex mm-box--color-text-default"
+          >
+            <span>
+               
+              Something doesn't look right? 
+              <a
+                class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+                href="https://report.blockaid.io/tx?data=H4sIAAAAAAAAE6tWSs5JLC7OTMtMTizJzM9TslIqTi2JTywoKMovS8yJT8svik%2FMyVGqBQAw%2B1Z1KQAAAA%3D%3D&utm_source=metamask-ppom"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Report a problem
+              </a>
+              
+               
+            </span>
+          </p>
+        </div>
+        <div
+          class="disclosure__footer"
+        />
+      </details>
+    </div>
     <p
       class="mm-box mm-text mm-text--body-sm mm-box--margin-top-3 mm-box--display-flex mm-box--align-items-center mm-box--color-text-alternative"
     >
@@ -185,11 +317,11 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
                 Something doesn't look right? 
                 <a
                   class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                  href="https://support.metamask.io/hc/en-us"
+                  href="https://report.blockaid.io/tx?data=H4sIAAAAAAAAE6tWSs5JLC7OTMtMTizJzM9TslIqTi2JTywoKMovS8yJT8svik%2FMyVGqBQAw%2B1Z1KQAAAA%3D%3D&utm_source=metamask-ppom"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  Contact us
+                  Report a problem
                 </a>
                 
                  

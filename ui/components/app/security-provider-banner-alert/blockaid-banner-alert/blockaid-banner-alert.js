@@ -12,9 +12,13 @@ import { I18nContext } from '../../../../contexts/i18n';
 import {
   BlockaidReason,
   BlockaidResultType,
+  FALSE_POSITIVE_REPORT_BASE_URL,
   SecurityProvider,
+  UTM_SOURCE,
 } from '../../../../../shared/constants/security-provider';
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
+
+const zlib = require('zlib');
 
 /** Reason to description translation key mapping. Grouped by translations. */
 const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
@@ -46,7 +50,9 @@ const REASON_TO_TITLE_TKEY = Object.freeze({
   [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
 });
 
-function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
+function BlockaidBannerAlert({ txData, ...props }) {
+  const { securityAlertResponse, origin, msgParams, type, txParams } = txData;
+
   const t = useContext(I18nContext);
 
   if (!securityAlertResponse) {
@@ -82,6 +88,20 @@ function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
 
   const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
 
+  const reportData = {
+    domain: origin ?? msgParams?.origin,
+    jsonRpcMethod: type,
+    jsonRpcParams: JSON.stringify(txParams ?? msgParams),
+    classification: reason,
+  };
+  const jsonData = JSON.stringify(reportData);
+
+  const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
+
+  const reportUrl = `${FALSE_POSITIVE_REPORT_BASE_URL}?data=${encodeURIComponent(
+    encodedData.toString('base64'),
+  )}&utm_source=${UTM_SOURCE}`;
+
   return (
     <SecurityProviderBannerAlert
       description={description}
@@ -89,13 +109,14 @@ function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
       provider={isFailedResultType ? null : SecurityProvider.Blockaid}
       severity={severity}
       title={title}
+      reportUrl={reportUrl}
       {...props}
     />
   );
 }
 
 BlockaidBannerAlert.propTypes = {
-  securityAlertResponse: PropTypes.object,
+  txData: PropTypes.object,
 };
 
 export default BlockaidBannerAlert;

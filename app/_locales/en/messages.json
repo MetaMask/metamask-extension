@@ -1901,6 +1901,7 @@
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
+
   "hideToken": {
     "message": "Hide token"
   },
@@ -3782,6 +3783,9 @@
   },
   "replace": {
     "message": "replace"
+  },
+  "reportProblem": {
+    "message": "Report a problem"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
