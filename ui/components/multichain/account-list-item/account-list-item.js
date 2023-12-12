@@ -97,9 +97,7 @@ export const AccountListItem = ({
     findKeyringForAddress(state, identity.address),
   );
 
-  const { label, accountType } = useSelector((state) =>
-    getAccountLabel(state, selected),
-  );
+  const { label, accountType } = useSelector(getAccountLabel);
 
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
