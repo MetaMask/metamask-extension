@@ -2,13 +2,12 @@ const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const { mockServerJsonRpc } = require('../mock-server-json-rpc');
 const {
+  WINDOW_TITLES,
   defaultGanacheOptions,
-  getEventPayloads,
   openDapp,
-  switchToNotificationWindow,
   unlockWallet,
   withFixtures,
-  WINDOW_TITLES,
+  getEventPayloads,
 } = require('../helpers');
 
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
@@ -283,21 +282,35 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
         await driver.clickElement('#maliciousApprovalButton');
 
         // Wait for confirmation pop-up
-        await switchToNotificationWindow(driver, 3);
+        let windowHandles = await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.Notification,
+          windowHandles,
+        );
 
         // Wait for confirmation pop-up to close
         await driver.clickElement({ text: 'Reject', tag: 'button' });
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.TestDApp,
+          windowHandles,
+        );
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousPermit');
 
         // Wait for confirmation pop-up
-        await switchToNotificationWindow(driver, 3);
+        windowHandles = await driver.waitUntilXWindowHandles(3);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.Notification,
+          windowHandles,
+        );
 
         // Wait for confirmation pop-up to close
         await driver.clickElement({ text: 'Reject', tag: 'button' });
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.TestDApp,
+          windowHandles,
+        );
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 
