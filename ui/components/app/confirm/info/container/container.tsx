@@ -19,7 +19,6 @@ export const ConfirmInfoContainer: React.FC<ConfirmInfoProps> = ({
 }) => {
   return (
     <Box
-      className="confirm-info-container"
       borderRadius={BorderRadius.LG}
       backgroundColor={BackgroundColor.backgroundDefault}
       display={Display.Flex}
