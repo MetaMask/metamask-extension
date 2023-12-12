@@ -34,9 +34,9 @@ import { isSwapsDefaultTokenAddress } from '../../../shared/modules/swaps.utils'
 
 import {
   fetchTradesInfo as defaultFetchTradesInfo,
-  fetchQuotesInfoV2,
   getBaseApi,
 } from '../../../shared/lib/swaps-utils';
+import { fetchQuotesInfoV2 } from '../../../shared/lib/swaps-utils-v2';
 import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
