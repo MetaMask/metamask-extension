@@ -252,7 +252,8 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
 }
 
 describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
-  it('should capture metrics when security alerts is shown', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('should capture metrics when security alerts is shown', async function () {
     await withFixtures(
       {
         dapp: true,

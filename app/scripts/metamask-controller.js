@@ -2168,12 +2168,13 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} snapId - The ID of the snap the handler is being triggered on.
    * @param {string} handler - The handler to trigger on the snap for the request.
    * @param {boolean} success - Whether the invocation was successful or not.
+   * @param {string} origin - The origin of the request.
    */
   _trackSnapExportUsage = wrap(
     memoize(
       () =>
         throttle(
-          (snapId, handler, success) =>
+          (snapId, handler, success, origin) =>
             this.metaMetricsController.trackEvent({
               event: MetaMetricsEventName.SnapExportUsed,
               category: MetaMetricsEventCategory.Snaps,
@@ -2182,11 +2183,12 @@ export default class MetamaskController extends EventEmitter {
                 export: handler,
                 snap_category: this._getSnapMetadata(snapId)?.category,
                 success,
+                origin,
               },
             }),
           SECOND * 60,
         ),
-      (snapId, handler) => `${snapId}${handler}`,
+      (snapId, handler, _, origin) => `${snapId}${handler}${origin}`,
     ),
     (getFunc, ...args) => getFunc(...args)(...args),
   );
@@ -2207,10 +2209,10 @@ export default class MetamaskController extends EventEmitter {
         'SnapController:handleRequest',
         args,
       );
-      this._trackSnapExportUsage(args.snapId, args.handler, true);
+      this._trackSnapExportUsage(args.snapId, args.handler, true, args.origin);
       return response;
     } catch (error) {
-      this._trackSnapExportUsage(args.snapId, args.handler, false);
+      this._trackSnapExportUsage(args.snapId, args.handler, false, args.origin);
       throw error;
     }
   }
