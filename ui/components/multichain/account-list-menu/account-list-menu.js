@@ -87,7 +87,7 @@ export const AccountListMenu = ({
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
   let searchKeys = ['name', 'address'];
-console.log(accounts)
+  console.log(accounts);
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   searchKeys = ['name', 'address', 'vault'];
   ///: END:ONLY_INCLUDE_IF
@@ -326,44 +326,44 @@ console.log(accounts)
                 </Text>
               ) : null}
               {searchResults
-              .sort((a, b) => {
-                if (a.lastSelected && b.lastSelected) {
+                .sort((a, b) => {
+                  if (a.lastSelected && b.lastSelected) {
                     return b.lastSelected - a.lastSelected;
-                } else if (a.lastSelected) {
+                  }
+                  if (a.lastSelected) {
                     return -1;
-                } else {
-                    return 1;
-                }
-              })
-              .map((account) => {
-                const connectedSite = connectedSites[account.address]?.find(
-                  ({ origin }) => origin === currentTabOrigin,
-                );
+                  }
+                  return 1;
+                })
+                .map((account) => {
+                  const connectedSite = connectedSites[account.address]?.find(
+                    ({ origin }) => origin === currentTabOrigin,
+                  );
 
-                return (
-                  <AccountListItem
-                    onClick={() => {
-                      onClose();
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.NavAccountSwitched,
-                        properties: {
-                          location: 'Main Menu',
-                        },
-                      });
-                      dispatch(setSelectedAccount(account.address));
-                    }}
-                    identity={account}
-                    key={account.address}
-                    selected={selectedAccount.address === account.address}
-                    closeMenu={onClose}
-                    connectedAvatar={connectedSite?.iconUrl}
-                    connectedAvatarName={connectedSite?.name}
-                    showOptions
-                    {...accountListItemProps}
-                  />
-                );
-              })}
+                  return (
+                    <AccountListItem
+                      onClick={() => {
+                        onClose();
+                        trackEvent({
+                          category: MetaMetricsEventCategory.Navigation,
+                          event: MetaMetricsEventName.NavAccountSwitched,
+                          properties: {
+                            location: 'Main Menu',
+                          },
+                        });
+                        dispatch(setSelectedAccount(account.address));
+                      }}
+                      identity={account}
+                      key={account.address}
+                      selected={selectedAccount.address === account.address}
+                      closeMenu={onClose}
+                      connectedAvatar={connectedSite?.iconUrl}
+                      connectedAvatarName={connectedSite?.name}
+                      showOptions
+                      {...accountListItemProps}
+                    />
+                  );
+                })}
             </Box>
             {/* Add / Import / Hardware button */}
             {showAccountCreation ? (

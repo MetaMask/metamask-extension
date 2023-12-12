@@ -94,7 +94,7 @@ export default function CustodyAccountList({
           />
         </Box>
 
-        {searchResults.length !== 0 ? children : null}
+        {searchResults.length ? children : null}
 
         <Box
           display={Display.Flex}
@@ -104,11 +104,7 @@ export default function CustodyAccountList({
           data-testid="custody-account-list"
         >
           {searchResults.length === 0 && searchQuery !== '' ? (
-            <Text
-              paddingLeft={4}
-              paddingRight={4}
-              color={TextColor.textMuted}
-            >
+            <Text paddingLeft={4} paddingRight={4} color={TextColor.textMuted}>
               {t('noAccountsFound')}
             </Text>
           ) : null}
