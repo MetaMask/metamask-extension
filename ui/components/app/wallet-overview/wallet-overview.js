@@ -3,9 +3,15 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { getSelectedInternalAccount } from '../../../selectors';
+import {
+  getAccountLabel,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import { AddressCopyButton } from '../../multichain';
 import Box from '../../ui/box/box';
+import { IconName, Tag } from '../../component-library';
+import { Color, TextVariant } from '../../../helpers/constants/design-system';
+import { KeyringType } from '../../../../shared/constants/keyring';
 
 const WalletOverview = ({
   balance,
@@ -15,6 +21,7 @@ const WalletOverview = ({
 }) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const checksummedAddress = toChecksumHexAddress(selectedAccount.address);
+  const { label, accountType } = useSelector(getAccountLabel);
   return (
     <div className={classnames('wallet-overview', className)}>
       <div className="wallet-overview__balance">
@@ -24,6 +31,18 @@ const WalletOverview = ({
           </Box>
         ) : null}
         {balance}
+        {label ? (
+          <Tag
+            label={label}
+            labelProps={{
+              variant: TextVariant.bodyXs,
+              color: Color.textAlternative,
+            }}
+            startIconName={
+              accountType === KeyringType.snap ? IconName.Snaps : null
+            }
+          />
+        ) : null}
       </div>
       <div className="wallet-overview__buttons">{buttons}</div>
     </div>

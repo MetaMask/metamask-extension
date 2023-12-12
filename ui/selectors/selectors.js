@@ -34,6 +34,7 @@ import {
   TEST_NETWORK_TICKER_MAP,
 } from '../../shared/constants/network';
 import {
+  HardwareKeyringNames,
   HardwareTransportStates,
   LedgerTransportTypes,
   WebHIDConnectedStatuses,
@@ -94,6 +95,7 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
+import { t } from '../../app/scripts/translate';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -372,6 +374,55 @@ export function getInternalAccountsSortedByKeyring(state) {
     }
     return 0;
   });
+}
+
+/**
+ * Gets the label and account type of the currently selected account.
+ *
+ * @param state - Redux state object.
+ * @returns {object} An object containing the label and type of the currently selected account.
+ */
+export function getAccountLabel(state) {
+  const selectedAccount = getSelectedInternalAccount(state);
+  if (selectedAccount.metadata?.snap?.name) {
+    return {
+      label: `${selectedAccount.metadata?.snap?.name} (${t('beta')})`,
+      accountType: KeyringType.snap,
+    };
+  }
+  const { type } = findKeyringForAddress(state, selectedAccount.address);
+  let label;
+  switch (type) {
+    case KeyringType.qr:
+      label = HardwareKeyringNames.qr;
+      break;
+    case KeyringType.imported:
+      label = t('imported');
+      break;
+    case KeyringType.trezor:
+      label = HardwareKeyringNames.trezor;
+      break;
+    case KeyringType.ledger:
+      label = HardwareKeyringNames.ledger;
+      break;
+    case KeyringType.lattice:
+      label = HardwareKeyringNames.lattice;
+      break;
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    case KeyringType.snap:
+      label = `${t('snaps')} (${t('beta')})`;
+      break;
+    ///: END:ONLY_INCLUDE_IF
+    default:
+      return {
+        label: null,
+        accountType: null,
+      };
+  }
+  return {
+    label,
+    accountType: type,
+  };
 }
 
 export function getNumberOfTokens(state) {

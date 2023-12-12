@@ -35,7 +35,6 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
@@ -50,35 +49,14 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
+  getAccountLabel,
   getNativeCurrencyImage,
-  getSelectedInternalAccount,
   getUseBlockie,
 } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
-
-function getLabel(t, { type }) {
-  switch (type) {
-    case KeyringType.qr:
-      return HardwareKeyringNames.qr;
-    case KeyringType.imported:
-      return t('imported');
-    case KeyringType.trezor:
-      return HardwareKeyringNames.trezor;
-    case KeyringType.ledger:
-      return HardwareKeyringNames.ledger;
-    case KeyringType.lattice:
-      return HardwareKeyringNames.lattice;
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    case KeyringType.snap:
-      return `${t('snaps')} (${t('beta')})`;
-    ///: END:ONLY_INCLUDE_IF
-    default:
-      return null;
-  }
-}
 
 export const AccountListItem = ({
   identity,
@@ -119,12 +97,9 @@ export const AccountListItem = ({
     findKeyringForAddress(state, identity.address),
   );
 
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const label = selectedAccount.metadata?.snap?.name
-    ? `${selectedAccount.metadata?.snap?.name} (${t('beta')})`
-    : getLabel(t, keyring);
-  console.log('snap', selectedAccount.metadata?.snap);
-  console.log('identity', identity);
+  const { label, accountType } = useSelector((state) =>
+    getAccountLabel(state, selected),
+  );
 
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
@@ -224,24 +199,6 @@ export const AccountListItem = ({
               />
             </Text>
           </Box>
-          {/* {label ? (*/}
-          {/*  <Tag*/}
-          {/*    display={Display.Flex}*/}
-          {/*    gap={1}*/}
-          {/*    style={{*/}
-          {/*      paddingTop: '2px',*/}
-          {/*      paddingRight: '8px',*/}
-          {/*      paddingBottom: '2px',*/}
-          {/*      paddingLeft: '4px',*/}
-          {/*    }}*/}
-          {/*    label={label}*/}
-          {/*    labelProps={{*/}
-          {/*      variant: TextVariant.bodyXs,*/}
-          {/*      color: TextColor.textAlternative,*/}
-          {/*    }}*/}
-          {/*    iconName={IconName.Snaps}*/}
-          {/*  />*/}
-          {/* ) : null}*/}
         </Box>
         <Box
           display={Display.Flex}
@@ -314,6 +271,9 @@ export const AccountListItem = ({
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
             }}
+            startIconName={
+              accountType === KeyringType.snap ? IconName.Snaps : null
+            }
           />
         ) : null}
       </Box>
