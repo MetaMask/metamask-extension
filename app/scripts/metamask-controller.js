@@ -72,7 +72,6 @@ import {
 import { LoggingController, LogType } from '@metamask/logging-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
 import {
@@ -289,6 +288,7 @@ import { updateCurrentLocale } from './translate';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
+import { encryptorFactory } from './lib/encryptor-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1004,9 +1004,10 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.keyringController = new KeyringController({
+      cacheEncryptionKey: true,
       keyringBuilders: additionalKeyrings,
       state: initState.KeyringController,
-      encryptor: opts.encryptor || undefined,
+      encryptor: opts.encryptor || encryptorFactory(600_000),
       messenger: keyringControllerMessenger,
       removeIdentity: this.preferencesController.removeAddress.bind(
         this.preferencesController,
@@ -2167,12 +2168,13 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} snapId - The ID of the snap the handler is being triggered on.
    * @param {string} handler - The handler to trigger on the snap for the request.
    * @param {boolean} success - Whether the invocation was successful or not.
+   * @param {string} origin - The origin of the request.
    */
   _trackSnapExportUsage = wrap(
     memoize(
       () =>
         throttle(
-          (snapId, handler, success) =>
+          (snapId, handler, success, origin) =>
             this.metaMetricsController.trackEvent({
               event: MetaMetricsEventName.SnapExportUsed,
               category: MetaMetricsEventCategory.Snaps,
@@ -2181,11 +2183,12 @@ export default class MetamaskController extends EventEmitter {
                 export: handler,
                 snap_category: this._getSnapMetadata(snapId)?.category,
                 success,
+                origin,
               },
             }),
           SECOND * 60,
         ),
-      (snapId, handler) => `${snapId}${handler}`,
+      (snapId, handler, _, origin) => `${snapId}${handler}${origin}`,
     ),
     (getFunc, ...args) => getFunc(...args)(...args),
   );
@@ -2206,10 +2209,10 @@ export default class MetamaskController extends EventEmitter {
         'SnapController:handleRequest',
         args,
       );
-      this._trackSnapExportUsage(args.snapId, args.handler, true);
+      this._trackSnapExportUsage(args.snapId, args.handler, true, args.origin);
       return response;
     } catch (error) {
-      this._trackSnapExportUsage(args.snapId, args.handler, false);
+      this._trackSnapExportUsage(args.snapId, args.handler, false, args.origin);
       throw error;
     }
   }
@@ -2229,11 +2232,13 @@ export default class MetamaskController extends EventEmitter {
    * Constructor helper for getting Snap permission specifications.
    */
   getSnapPermissionSpecifications() {
+    const snapEncryptor = encryptorFactory(10_000);
+
     return {
       ...buildSnapEndowmentSpecifications(),
       ...buildSnapRestrictedMethodSpecifications({
-        encrypt,
-        decrypt,
+        encrypt: snapEncryptor.encrypt,
+        decrypt: snapEncryptor.decrypt,
         getLocale: this.getLocale.bind(this),
         clearSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
@@ -2961,6 +2966,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       setTermsOfUseLastAgreed:
         appStateController.setTermsOfUseLastAgreed.bind(appStateController),
+      setSurveyLinkLastClickedOrClosed:
+        appStateController.setSurveyLinkLastClickedOrClosed.bind(
+          appStateController,
+        ),
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       setSnapsInstallPrivacyWarningShownStatus:
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
