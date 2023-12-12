@@ -108,6 +108,8 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             width={BlockSize.Full}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
+            paddingTop={4}
+            paddingBottom={4}
             ref={modalDialogRef}
             {...modalDialogProps}
             className={classnames(

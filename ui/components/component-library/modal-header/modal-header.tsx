@@ -24,7 +24,9 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   return (
     <HeaderBase
       className={classnames('mm-modal-header', className)}
-      padding={4}
+      paddingLeft={4}
+      paddingRight={4}
+      paddingBottom={4}
       childrenWrapperProps={{
         width: BlockSize.Full,
       }}
