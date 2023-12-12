@@ -23,7 +23,7 @@ describe('syncConfirmPath', () => {
     expect(result).toBeDefined();
   });
 
-  it('should replace history route', async () => {
+  it('should replace history route', () => {
     mockHistoryReplace.mockClear();
     renderHookWithProvider(() => syncConfirmPath(), mockState);
     expect(mockHistoryReplace).toHaveBeenCalled();

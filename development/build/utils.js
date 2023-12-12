@@ -247,7 +247,14 @@ function getBuildName({
   shouldIncludeMV3,
 }) {
   if (environment === ENVIRONMENT.PRODUCTION) {
-    return 'MetaMask';
+    switch (buildType) {
+      case 'main':
+        return `MetaMask`;
+      case 'mmi':
+        return `MetaMask Institutional`;
+      default:
+        return `MetaMask ${capitalize(buildType)}`;
+    }
   }
 
   const mv3Str = shouldIncludeMV3 ? ' MV3' : '';

@@ -8,6 +8,7 @@ const {
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -249,7 +250,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
@@ -324,7 +325,7 @@ describe('Send ETH from dapp using advanced gas controls', function () {
 
         const extension = windowHandles[0];
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
