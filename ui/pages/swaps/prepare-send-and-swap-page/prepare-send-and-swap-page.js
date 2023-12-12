@@ -651,39 +651,41 @@ export default function PrepareSendAndSwapPage({
 
   // It's triggered every time there is a change in form values (token from, token to, amount and slippage).
   useEffect(() => {
-    dispatch(clearSwapsQuotes());
-    dispatch(stopPollingForQuotes());
-    const prefetchQuotesWithoutRedirecting = async () => {
-      setPrefetchingQuotes(true);
-      const pageRedirectionDisabled = true;
+    if (!isSendFlow) {
+      dispatch(clearSwapsQuotes());
+      dispatch(stopPollingForQuotes());
+      const prefetchQuotesWithoutRedirecting = async () => {
+        setPrefetchingQuotes(true);
+        const pageRedirectionDisabled = true;
 
-      await dispatch(
-        fetchQuotesAndSetQuoteStateV2(
-          history,
-          fromTokenInputValue,
-          maxSlippage,
-          trackEvent,
-          pageRedirectionDisabled,
-        ),
-      );
-    };
-    // Delay fetching quotes until a user is done typing an input value. If they type a new char in less than a second,
-    // we will cancel previous setTimeout call and start running a new one.
-    timeoutIdForQuotesPrefetching = setTimeout(() => {
-      timeoutIdForQuotesPrefetching = null;
-      if (!isReviewSwapButtonDisabled) {
-        if (isSmartTransaction) {
-          clearSmartTransactionFees(); // Clean up STX fees eery time there is a form change.
-          dispatch({
-            type: SET_SMART_TRANSACTIONS_ERROR,
-            payload: null,
-          });
+        await dispatch(
+          fetchQuotesAndSetQuoteStateV2(
+            history,
+            fromTokenInputValue,
+            maxSlippage,
+            trackEvent,
+            pageRedirectionDisabled,
+          ),
+        );
+      };
+      // Delay fetching quotes until a user is done typing an input value. If they type a new char in less than a second,
+      // we will cancel previous setTimeout call and start running a new one.
+      timeoutIdForQuotesPrefetching = setTimeout(() => {
+        timeoutIdForQuotesPrefetching = null;
+        if (!isReviewSwapButtonDisabled) {
+          if (isSmartTransaction) {
+            clearSmartTransactionFees(); // Clean up STX fees eery time there is a form change.
+            dispatch({
+              type: SET_SMART_TRANSACTIONS_ERROR,
+              payload: null,
+            });
+          }
+          // Only do quotes prefetching if the Review swap button is enabled.
+          prefetchQuotesWithoutRedirecting();
         }
-        // Only do quotes prefetching if the Review swap button is enabled.
-        prefetchQuotesWithoutRedirecting();
-      }
-    }, 1000);
-    return () => clearTimeout(timeoutIdForQuotesPrefetching);
+      }, 1000);
+      return () => clearTimeout(timeoutIdForQuotesPrefetching);
+    }
   }, [
     dispatch,
     history,
@@ -695,6 +697,7 @@ export default function PrepareSendAndSwapPage({
     toTokenAddress,
     smartTransactionsOptInStatus,
     isSmartTransaction,
+    isSendFlow,
   ]);
 
   // Set text for the main button based on different conditions.
