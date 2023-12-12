@@ -62,6 +62,7 @@ export default class AppStateController extends EventEmitter {
         '0x5': true,
         '0x539': true,
       },
+      surveyLinkLastClickedOrClosed: null,
     });
     this.timer = null;
 
@@ -167,6 +168,12 @@ export default class AppStateController extends EventEmitter {
   setRecoveryPhraseReminderHasBeenShown() {
     this.store.updateState({
       recoveryPhraseReminderHasBeenShown: true,
+    });
+  }
+
+  setSurveyLinkLastClickedOrClosed(time) {
+    this.store.updateState({
+      surveyLinkLastClickedOrClosed: time,
     });
   }
 
@@ -435,6 +442,10 @@ export default class AppStateController extends EventEmitter {
   }
 
   _requestApproval() {
+    // If we already have a pending request this is a no-op
+    if (this._approvalRequestId) {
+      return;
+    }
     this._approvalRequestId = uuid();
 
     this.messagingSystem
@@ -448,7 +459,8 @@ export default class AppStateController extends EventEmitter {
         true,
       )
       .catch(() => {
-        // Intentionally ignored as promise not currently used
+        // If the promise fails, we allow a new popup to be triggered
+        this._approvalRequestId = null;
       });
   }
 

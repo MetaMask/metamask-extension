@@ -1628,6 +1628,9 @@
     "message": "Error with $1",
     "description": "$1 represents the name of the snap"
   },
+  "estimatedFee": {
+    "message": "Estimated fee"
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -1692,6 +1695,9 @@
   },
   "feeAssociatedRequest": {
     "message": "A fee is associated with this request."
+  },
+  "feeDetails": {
+    "message": "Fee details"
   },
   "fiat": {
     "message": "Fiat",
@@ -1810,33 +1816,16 @@
     "message": "$1 hrs",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 minutes",
-    "description": "$1 represents a number of minutes"
+  "gasTimingLow": {
+    "message": "Slow"
   },
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Maybe in $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Likely in < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 seconds",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 sec",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Very likely in < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gas used"
@@ -1986,7 +1975,7 @@
     "message": "hold to reveal circle unlocked"
   },
   "id": {
-    "message": "Id"
+    "message": "ID"
   },
   "ignoreAll": {
     "message": "Ignore all"
@@ -2425,6 +2414,9 @@
   },
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
+  },
+  "metamaskFees": {
+    "message": "MetaMask fees"
   },
   "metamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Version"
@@ -3279,14 +3271,16 @@
     "message": "OpenSea + Blockaid"
   },
   "openSeaMessage": {
-    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. $1",
-    "description": "$1 is the link to OpenSea's terms of use"
+    "message": "Data is shared with third parties. Security providers will receive your unsigned transactions and signature requests. $1"
   },
   "openSeaNew": {
     "message": "OpenSea"
   },
   "operationFailed": {
     "message": "Operation Failed"
+  },
+  "optimismFees": {
+    "message": "Optimism fees"
   },
   "optional": {
     "message": "Optional"
@@ -3949,6 +3943,9 @@
   "searchResults": {
     "message": "Search results"
   },
+  "searchTokenOrNFT": {
+    "message": "Search token or NFT"
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -4033,6 +4030,9 @@
   },
   "select": {
     "message": "Select"
+  },
+  "selectAToken": {
+    "message": "Select a token"
   },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
@@ -4757,6 +4757,12 @@
   "supportCenter": {
     "message": "Visit our support center"
   },
+  "surveyConversion": {
+    "message": "Take our survey"
+  },
+  "surveyTitle": {
+    "message": "Shape the future of MetaMask"
+  },
   "swap": {
     "message": "Swap"
   },
@@ -5303,7 +5309,7 @@
     "message": "ON (Not recommended)"
   },
   "toggleRequestQueueDescription": {
-    "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which my break your user experience on certain sites."
+    "message": "This allows you to select a network for each site instead of a single selected network for all sites. This feature will prevent you from switching networks manually, which may break your user experience on certain sites."
   },
   "toggleRequestQueueField": {
     "message": "Select networks for each site"
@@ -5398,9 +5404,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Estimated gas fee"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "estimated"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Learn more about gas fees"
