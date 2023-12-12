@@ -20,7 +20,6 @@ import {
 } from '../../../component-library';
 import {
   BlockSize,
-  Size,
   BorderRadius,
   BackgroundColor,
   TextColor,
