@@ -83,6 +83,7 @@ export const SENTRY_BACKGROUND_STATE = {
     showBetaHeader: true,
     showProductTour: true,
     showTestnetMessageInDropdown: true,
+    surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,
@@ -283,6 +284,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   TokenRatesController: {
     contractExchangeRates: false,
+    contractExchangeRatesByChainId: false,
   },
   TokensController: {
     allDetectedTokens: {
@@ -335,10 +337,10 @@ export const SENTRY_UI_STATE = {
     pendingTokens: false,
     welcomeScreenSeen: true,
     useSafeChainsListValidation: true,
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   },
   unconnectedAccount: true,
 };

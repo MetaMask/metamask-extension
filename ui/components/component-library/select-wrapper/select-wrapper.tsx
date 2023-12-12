@@ -92,6 +92,7 @@ export const SelectWrapper: SelectWrapperComponent = React.forwardRef(
             onClickOutside={handleClickOutside}
             matchWidth
             referenceElement={referenceElement}
+            referenceHidden={false}
             padding={0}
             ref={popoverRef}
             {...popoverProps}

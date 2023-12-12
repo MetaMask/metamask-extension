@@ -39,7 +39,8 @@
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
-    "snapsInstallPrivacyWarningShown": true
+    "snapsInstallPrivacyWarningShown": true,
+    "surveyLinkLastClickedOrClosed": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
@@ -236,7 +237,10 @@
     "tokensChainsCache": {},
     "preventPollingOnNetworkRestart": true
   },
-  "TokenRatesController": { "contractExchangeRates": "object" },
+  "TokenRatesController": {
+    "contractExchangeRates": "object",
+    "contractExchangeRatesByChainId": "object"
+  },
   "TokensController": {
     "tokens": "object",
     "ignoredTokens": "object",
