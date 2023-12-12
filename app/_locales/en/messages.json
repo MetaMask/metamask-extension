@@ -1975,7 +1975,7 @@
     "message": "hold to reveal circle unlocked"
   },
   "id": {
-    "message": "Id"
+    "message": "ID"
   },
   "ignoreAll": {
     "message": "Ignore all"
@@ -3946,6 +3946,9 @@
   "searchResults": {
     "message": "Search results"
   },
+  "searchTokenOrNFT": {
+    "message": "Search token or NFT"
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -4030,6 +4033,9 @@
   },
   "select": {
     "message": "Select"
+  },
+  "selectAToken": {
+    "message": "Select a token"
   },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"

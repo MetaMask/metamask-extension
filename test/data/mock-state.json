@@ -234,7 +234,11 @@
         "message": "Hello, http://localhost:8086!"
       }
     },
-    "cachedBalances": {},
+    "cachedBalances": {
+      "0x5": {
+        "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": "0x15f6f0b9d4f8d000"
+      }
+    },
     "incomingTransactionsPreferences": {
       "0x1": true,
       "0xe708": false,
