@@ -620,7 +620,7 @@ export default class AccountTracker {
         `MetaMask - Account Tracker single call balance fetch failed`,
         error,
       );
-      Promise.all(
+      Promise.allSettled(
         addresses.map((address) =>
           this.#updateAccount(address, provider, chainId),
         ),
