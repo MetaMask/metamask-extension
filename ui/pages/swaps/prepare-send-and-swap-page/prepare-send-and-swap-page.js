@@ -137,8 +137,19 @@ import ListWithSearch from '../list-with-search/list-with-search';
 import SmartTransactionsPopover from '../prepare-swap-page/smart-transactions-popover';
 import QuotesLoadingAnimation from '../prepare-swap-page/quotes-loading-animation';
 import ReviewQuote from '../prepare-swap-page/review-quote';
+import { updateSendAmount } from '../../../ducks/send';
+import { Numeric } from '../../../../shared/modules/Numeric';
 
 let timeoutIdForQuotesPrefetching;
+
+// TODO add tests for this
+const getHexValue = (decimalValue, decimals) => {
+  const hexValue = new Numeric(decimalValue || 0, 10)
+    .times(Math.pow(10, Number(decimals || 0)), 10)
+    .toBase(16)
+    .toString();
+  return hexValue;
+};
 
 export default function PrepareSendAndSwapPage({
   ethBalance,
@@ -175,9 +186,11 @@ export default function PrepareSendAndSwapPage({
     fetchParams?.metaData || {};
   const tokens = useSelector(getTokens, isEqual);
   const topAssets = useSelector(getTopAssets, isEqual);
+
   const fromToken = useSelector(getFromToken, isEqual);
   const fromTokenInputValue = useSelector(getFromTokenInputValue);
   const fromTokenError = useSelector(getFromTokenError);
+
   const maxSlippage = useSelector(getMaxSlippage);
   const toToken = useSelector(getToToken, isEqual) || destinationTokenInfo;
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
@@ -319,8 +332,18 @@ export default function PrepareSendAndSwapPage({
     ? swapFromEthFiatValue
     : swapFromTokenFiatValue;
 
+  const isSendFlow = isEqualCaseInsensitive(fromTokenAddress, toTokenAddress);
+
   const onInputChange = useCallback(
     (newInputValue, balance) => {
+      if (isSendFlow) {
+        // If From and To tokens are the same, update Send amount
+        dispatch(
+          updateSendAmount(getHexValue(newInputValue, fromTokenDecimals)),
+        );
+      }
+
+      // Always update Swap From amount as that's the amount for display as well (denominated in decimals)
       dispatch(setFromTokenInputValue(newInputValue));
       const newBalanceError = new BigNumber(newInputValue || 0).gt(
         balance || 0,
@@ -337,7 +360,7 @@ export default function PrepareSendAndSwapPage({
         ),
       );
     },
-    [dispatch, fromToken, balanceError],
+    [dispatch, fromToken, balanceError, isSendFlow, fromTokenDecimals],
   );
 
   useEffect(() => {
