@@ -10,6 +10,9 @@ import {
   constructTxParams,
   getBaseUrlForNewSwapsApi,
   shouldEnableDirectWrapping,
+  truthyDigitString,
+  truthyString,
+  validHex,
   validateData,
 } from './swaps-utils';
 
