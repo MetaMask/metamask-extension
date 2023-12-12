@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   AvatarTokenSize,
@@ -20,12 +20,14 @@ import {
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
+import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
 
 // A component that lets the user pick from a list of assets.
 export default function AssetPicker({ asset }: { asset: Asset }) {
   const nativeCurrency = useSelector(getNativeCurrency);
   const nativeCurrencyImage = useSelector(getNativeCurrencyImage);
   const tokenList = useSelector(getTokenList);
+  const [showAssetPickerModal, setShowAssetPickerModal] = useState(false);
 
   const image =
     asset.type === AssetType.native
@@ -39,19 +41,29 @@ export default function AssetPicker({ asset }: { asset: Asset }) {
     asset.type === AssetType.native ? nativeCurrency : asset.details?.symbol;
 
   return (
-    <Box
-      className="asset-picker"
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      padding={2}
-      backgroundColor={BackgroundColor.backgroundAlternative}
-      borderRadius={BorderRadius.pill}
-    >
-      <AvatarToken src={image} size={AvatarTokenSize.Xs} />
-      <Text variant={TextVariant.bodyXs} marginLeft="auto" marginRight="auto">
-        {symbol}
-      </Text>
-      <Icon name={IconName.ArrowDown} size={IconSize.Xs} />
-    </Box>
+    <>
+      {/* This is the Modal that ask to choose token to send */}
+      <AssetPickerModal
+        isOpen={showAssetPickerModal}
+        onClose={() => setShowAssetPickerModal(false)}
+        asset={asset}
+      />
+
+      <Box
+        className="asset-picker"
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        padding={2}
+        backgroundColor={BackgroundColor.backgroundAlternative}
+        borderRadius={BorderRadius.pill}
+        onClick={() => setShowAssetPickerModal(true)}
+      >
+        <AvatarToken src={image} size={AvatarTokenSize.Xs} />
+        <Text variant={TextVariant.bodyXs} marginLeft="auto" marginRight="auto">
+          {symbol}
+        </Text>
+        <Icon name={IconName.ArrowDown} size={IconSize.Xs} />
+      </Box>
+    </>
   );
 }

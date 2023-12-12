@@ -363,7 +363,6 @@ export function getMetaMaskAccountBalances(state) {
 
 export function getMetaMaskCachedBalances(state) {
   const chainId = getCurrentChainId(state);
-
   return state.metamask.cachedBalances[chainId];
 }
 
