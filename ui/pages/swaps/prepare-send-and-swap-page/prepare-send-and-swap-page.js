@@ -142,7 +142,7 @@ import { Numeric } from '../../../../shared/modules/Numeric';
 
 let timeoutIdForQuotesPrefetching;
 
-// TODO add tests for this
+// TODO add tests for this, move to conversion.utils.js
 const getHexValue = (decimalValue, decimals) => {
   const hexValue = new Numeric(decimalValue || 0, 10)
     .times(Math.pow(10, Number(decimals || 0)), 10)
@@ -650,6 +650,7 @@ export default function PrepareSendAndSwapPage({
     (toTokenIsNotDefault && occurrences < 2 && !verificationClicked);
 
   // It's triggered every time there is a change in form values (token from, token to, amount and slippage).
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (!isSendFlow) {
       dispatch(clearSwapsQuotes());
