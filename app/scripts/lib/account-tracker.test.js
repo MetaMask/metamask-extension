@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { ControllerMessenger } from '@metamask/base-controller';
 
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import AccountTracker from './account-tracker';
 
@@ -36,10 +37,6 @@ const mockAccounts = {
     balance: INITIAL_BALANCE_2,
   },
 };
-
-function flushPromises() {
-  return new Promise(jest.requireActual('timers').setImmediate);
-}
 
 function buildAccountTracker({
   completedOnboarding = false,
@@ -451,7 +448,7 @@ describe('Account Tracker', () => {
   });
 
   describe('blockTracker "latest" events', () => {
-    it('updates currentBlockGasLimit, currentBlockGasLimitByChainId, and accounts when no networkClientId is passed', async () => {
+    it('updates currentBlockGasLimit, currentBlockGasLimitByChainId, and accounts when polling is initiated via `start`', async () => {
       const blockTrackerStub = new EventEmitter();
       blockTrackerStub.getCurrentBlock = noop;
       blockTrackerStub.getLatestBlock = noop;
@@ -484,7 +481,7 @@ describe('Account Tracker', () => {
       accountTracker.stop();
     });
 
-    it('updates only the currentBlockGasLimitByChainId and accounts when a networkClientId is passed', async () => {
+    it('updates only the currentBlockGasLimitByChainId and accounts when polling is initiated via `startPollingByNetworkClientId`', async () => {
       const blockTrackerFromHookStub = new EventEmitter();
       blockTrackerFromHookStub.getCurrentBlock = noop;
       blockTrackerFromHookStub.getLatestBlock = noop;
