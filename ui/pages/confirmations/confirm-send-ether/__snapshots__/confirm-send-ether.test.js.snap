@@ -398,12 +398,12 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                         </button>
                         <div
                           class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                          title="0.00021"
+                          title="$0.12"
                         >
                           <span
                             class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                           >
-                            0.00021
+                            $0.12
                           </span>
                         </div>
                       </div>
@@ -551,12 +551,12 @@ exports[`ConfirmSendEther should render correct information for for confirm send
                     >
                       <div
                         class="mm-box currency-display-component mm-box--display-flex mm-box--flex-wrap-wrap mm-box--align-items-center"
-                        title="0.00021"
+                        title="$0.12"
                       >
                         <span
                           class="mm-box mm-text currency-display-component__text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
                         >
-                          0.00021
+                          $0.12
                         </span>
                       </div>
                     </div>
