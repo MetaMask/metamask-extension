@@ -21,11 +21,11 @@ export interface TagStyleUtilityProps extends StyleUtilityProps {
   /**
    * The name of the icon to be used in the Tag component
    */
-  iconName?: IconName;
+  startIconName?: IconName;
   /**
    * The icon props of the component. Most Icon component props can be used
    */
-  iconProps?: IconProps<'span'>;
+  startIconProps?: Omit<IconProps<'span'>, 'name'>;
 }
 
 export type TagProps<C extends React.ElementType> =

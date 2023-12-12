@@ -186,47 +186,11 @@ exports[`SendContent Component render should match snapshot 1`] = `
                 <h6
                   class="mm-box mm-text mm-text--body-md mm-text--font-weight-bold mm-box--display-flex mm-box--flex-wrap-nowrap mm-box--align-items-center mm-box--color-text-default"
                 >
-                  <div
-                    class="box box--display-flex box--flex-direction-row"
+                  <p
+                    class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
                   >
-                    <div
-                      class="box box--margin-right-1 box--flex-direction-row"
-                    >
-                      Gas
-                    </div>
-                    <span
-                      class="gas-details-item-title__estimate"
-                    >
-                      (
-                      estimated
-                      )
-                    </span>
-                    <div
-                      class="info-tooltip"
-                      data-testid="info-tooltip"
-                    >
-                      <div>
-                        <div
-                          aria-describedby="tippy-tooltip-1"
-                          class="info-tooltip__tooltip-container"
-                          data-original-title="null"
-                          data-tooltipped=""
-                          style="display: inline;"
-                          tabindex="0"
-                        >
-                          <svg
-                            viewBox="0 0 10 10"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M5 0C2.2 0 0 2.2 0 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5zm0 2c.4 0 .7.3.7.7s-.3.7-.7.7-.7-.2-.7-.6.3-.8.7-.8zm.7 6H4.3V4.3h1.5V8z"
-                              fill="var(--color-icon-alternative)"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                    Estimated fee
+                  </p>
                 </h6>
                 <div
                   class="transaction-detail-item__detail-values"
@@ -260,11 +224,25 @@ exports[`SendContent Component render should match snapshot 1`] = `
                 class="transaction-detail-item__row"
               >
                 <div>
-                  <h6
-                    class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography gas-timing gas-timing--negative typography--h7 typography--weight-normal typography--style-normal typography--color-text-default"
+                  <div
+                    class="mm-box mm-box--display-flex"
                   >
-                    Unknown processing time
-                  </h6>
+                    <p
+                      class="mm-box mm-text mm-text--body-xs mm-box--color-text-muted"
+                    >
+                      Unknown processing time
+                    </p>
+                    <p
+                      class="mm-box mm-text mm-text--body-xs mm-box--margin-left-1 mm-box--color-error-default"
+                    >
+                      <span
+                        data-testid="gas-timing-time"
+                      >
+                        ~
+                        
+                      </span>
+                    </p>
+                  </div>
                 </div>
                 <h6
                   class="mm-box mm-text transaction-detail-item__row-subText mm-text--body-sm mm-text--text-align-end mm-box--color-text-alternative"

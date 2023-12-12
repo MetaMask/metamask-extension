@@ -1,7 +1,6 @@
 import { ArgsTable, Canvas, Story } from "@storybook/addon-docs";
 
 import { Tag } from "./tag";
-import { Icon } from "../icon";
 
 # Tag
 
@@ -25,27 +24,37 @@ The text content of the `Tag` component
   <Story id="components-componentlibrary-tag--label" />
 </Canvas>
 
-## Icon in Tag Component
+### StartIconName
 
-The Tag component now supports the inclusion of icons.
-This feature allows for more expressive tags by including relevant icons alongside the text.
+Use the `startIconName` prop and the `IconName` enum to change the icon
+
+Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use
 
 <Canvas>
-  <Story id="components-componentlibrary-tag--with-icon" />
+  <Story id="components-componentlibrary-tag--start-icon-name-story" />
 </Canvas>
 
-### IconName
+```jsx
+import { Tag, IconName } from '../../component-library';
 
-Use the `iconName` prop and the `IconName` enum to change the icon.
+<Tag startIconName={IconName.Snaps} label="Snap Name" />;
+```
 
-Use the [IconSearch](/story/components-componentlibrary-icon--default-story) story to find the icon you want to use.
+### StartIconProps
 
-### IconProps
+Use the `startIconProps` prop to pass props to the icon component used in the parent Tag component
 
-Use the `iconProps` prop to pass props to the icon component used in the parent Tag component.
+<Canvas>
+  <Story id="components-componentlibrary-tag--start-icon-props-story" />
+</Canvas>
 
-<ArgsTable of={Icon} />
+```jsx
+import { Tag, IconName } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
 
-### Compatibility
-Please note that the inclusion of an icon is optional.
-The Tag component will continue to work as before for existing implementations without an icon.
+<Tag
+  startIconName={IconName.Snaps}
+  label="Snap Name"
+  startIconProps={{ color: IconColor.primaryDefault }}
+/>;
+```

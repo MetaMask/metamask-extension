@@ -1,6 +1,7 @@
 import React from 'react';
 import { Meta, StoryFn } from '@storybook/react';
 import { IconName } from '../icon';
+import { IconColor } from '../../../helpers/constants/design-system';
 import { Tag } from './tag';
 import README from './README.mdx';
 
@@ -16,7 +17,7 @@ export default {
     label: {
       control: 'text',
     },
-    iconName: {
+    startIconName: {
       control: 'text',
     },
   },
@@ -35,9 +36,27 @@ Label.args = {
   label: 'Label Story',
 };
 
-export const WithIcon: StoryFn<typeof Tag> = (args) => <Tag {...args} />; // New story to showcase the icon
+export const StartIconNameStory: StoryFn<typeof Tag> = (args) => (
+  <Tag {...args} />
+);
 
-WithIcon.args = {
+StartIconNameStory.args = {
   label: 'Snap Name',
-  iconName: IconName.Snaps,
+  startIconName: IconName.Snaps,
 };
+
+StartIconNameStory.storyName = 'StartIconName';
+
+export const StartIconPropsStory: StoryFn<typeof Tag> = (args) => (
+  <Tag {...args} />
+);
+
+StartIconPropsStory.args = {
+  label: 'Snap Name',
+  startIconName: IconName.Snaps,
+  startIconProps: {
+    color: IconColor.primaryDefault,
+  },
+};
+
+StartIconPropsStory.storyName = 'StartIconProps';

@@ -9,7 +9,6 @@ import {
   BorderColor,
   BorderRadius,
   Display,
-  JustifyContent,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
@@ -21,8 +20,8 @@ export const Tag: TagComponent = React.forwardRef(
       label,
       className = '',
       labelProps,
-      iconName,
-      iconProps,
+      startIconName,
+      startIconProps,
       ...props
     }: TagProps<C>,
     ref: PolymorphicRef<C>,
@@ -35,24 +34,15 @@ export const Tag: TagComponent = React.forwardRef(
         borderColor={BorderColor.borderDefault}
         borderWidth={1}
         alignItems={AlignItems.center}
-        paddingTop={2}
-        paddingBottom={2}
-        paddingLeft={4}
-        paddingRight={4}
-        gap={2}
+        paddingLeft={1}
+        paddingRight={1}
+        gap={1}
         borderRadius={BorderRadius.pill}
         display={Display.Flex}
         {...(props as BoxProps<C>)}
       >
-        {iconName ? (
-          <Icon
-            name={iconName}
-            size={IconSize.Xs}
-            display={Display.Flex}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-            {...iconProps}
-          />
+        {startIconName ? (
+          <Icon name={startIconName} size={IconSize.Xs} {...startIconProps} />
         ) : null}
         <Text variant={TextVariant.bodySm} {...labelProps}>
           {label}

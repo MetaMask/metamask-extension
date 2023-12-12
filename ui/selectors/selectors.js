@@ -90,6 +90,11 @@ import {
   NOTIFICATION_U2F_LEDGER_LIVE,
 } from '../../shared/notifications';
 import {
+  SURVEY_DATE,
+  SURVEY_END_TIME,
+  SURVEY_START_TIME,
+} from '../helpers/constants/survey';
+import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
@@ -1287,6 +1292,14 @@ export function getShowTermsOfUse(state) {
     new Date(termsOfUseLastAgreed).getTime() <
     new Date(TERMS_OF_USE_LAST_UPDATED).getTime()
   );
+}
+
+export function getShowSurveyToast(state) {
+  const { surveyLinkLastClickedOrClosed } = state.metamask;
+  const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
+  const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
+  const now = Date.now();
+  return now > startTime && now < endTime && !surveyLinkLastClickedOrClosed;
 }
 
 export function getShowOutdatedBrowserWarning(state) {

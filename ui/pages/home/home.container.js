@@ -37,6 +37,7 @@ import {
   getSuggestedTokens,
   getSuggestedNfts,
   getApprovalFlows,
+  getShowSurveyToast,
 } from '../../selectors';
 
 import {
@@ -54,6 +55,7 @@ import {
   setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
+  setSurveyLinkLastClickedOrClosed,
 } from '../../store/actions';
 import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -162,6 +164,7 @@ const mapStateToProps = (state) => {
     newTokensImported: getNewTokensImported(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
+    showSurveyToast: getShowSurveyToast(state),
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
     institutionalConnectRequests,
@@ -219,6 +222,8 @@ const mapDispatchToProps = (dispatch) => {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     ///: END:ONLY_INCLUDE_IF
+    setSurveyLinkLastClickedOrClosed: (time) =>
+      dispatch(setSurveyLinkLastClickedOrClosed(time)),
   };
 };
 
