@@ -28,3 +28,17 @@
   background-size: 200% 100%;
   animation: shimmer 2.5s infinite ease-in-out;
 }
+
+
+.mm-skeleton--container {
+  background-color: var(--color-background-default-hover);
+  // background-image:
+  //   linear-gradient(
+  //     80deg,
+  //     var(--color-background-default-pressed) 0%,
+  //     var(--color-background-default-hover) 50%,
+  //     var(--color-background-default-pressed) 100%
+  //   );
+  // background-size: 200% 100%;
+  animation: shimmer 2.5s infinite ease-in-out;
+}
