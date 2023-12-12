@@ -1196,7 +1196,7 @@ export default class SwapsController {
       const {
         aggregator,
         approvalNeeded,
-        gas, // TODO api will probably call this gasParams
+        gasParams,
         destinationAmount = 0,
         buyToken,
         destinationTokenInfo,
@@ -1209,7 +1209,7 @@ export default class SwapsController {
       } = quote;
 
       const metaMaskFee = 0.743; // TODO remove once fee is implemented
-      const { averageGas } = gas; // TODO update to gasParams when API updates
+      const { averageGas } = gasParams;
 
       const tradeGasLimitForCalculation = gasEstimateWithRefund
         ? new BigNumber(gasEstimateWithRefund, 16)
