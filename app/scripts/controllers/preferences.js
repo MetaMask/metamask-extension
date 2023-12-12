@@ -65,7 +65,7 @@ export default class PreferencesController {
       useRequestQueue: false,
       openSeaEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-      securityAlertsEnabled: false,
+      securityAlertsEnabled: true,
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
       addSnapAccountEnabled: false,
