@@ -6,15 +6,10 @@ import {
   ConfirmInfoRowAddress,
   ConfirmInfoRowDivider,
   ConfirmInfoRowValueDouble,
-  /** todo: rename ConfirmInfoRowVariant to ConfirmInfoRowState */
-  ConfirmInfoRowVariant as ConfirmInfoRowState,
+  ConfirmInfoRowVariant,
 } from './row';
 import { ConfirmInfoContainer } from './container';
 
-/**
- * todo: rename ConfirmInfoRowVariant to ConfirmInfoRowState
- * and rename ConfirmInfoRowType to ConfirmInfoRowVariant
- */
 export enum ConfirmInfoRowType {
   Address = 'address',
   Divider = 'divider',
@@ -22,17 +17,17 @@ export enum ConfirmInfoRowType {
 }
 
 export type ConfirmInfoRowConfig = {
-  /** The variant of the row e.g. address, divider, value-double */
-  variant: ConfirmInfoRowType;
-
   /** The display label text. This should be required unless it is a 'divider' variant */
   label?: ConfirmInfoRowProps['label'];
 
   /** Optional, and likely needed, props passed to the row */
   rowProps?: Record<string, any>;
 
-  /** Optional row state */
-  state?: ConfirmInfoRowState;
+  /** The type of the row e.g. address, divider, value-double */
+  type: ConfirmInfoRowType;
+
+  /** Optional row variant  */
+  variant?: ConfirmInfoRowVariant;
 };
 
 interface ConfirmInfoProps {
@@ -44,14 +39,14 @@ export const ConfirmInfo: React.FC<ConfirmInfoProps> = ({
 }) => (
   <ConfirmInfoContainer>
     {rowConfigs.map((rowConfig: ConfirmInfoRowConfig, index) => {
-      const { label, rowProps, state, variant } = rowConfig;
+      const { label, rowProps, type, variant } = rowConfig;
       const key = `confirm-info-row-${label}-${index}`;
 
-      switch (variant) {
+      switch (type) {
         case ConfirmInfoRowType.Address:
           return (
             <React.Fragment key={key}>
-              <ConfirmInfoRow label={label || ''} variant={state}>
+              <ConfirmInfoRow label={label || ''} variant={variant}>
                 <ConfirmInfoRowAddress address={rowProps?.address} />
               </ConfirmInfoRow>
             </React.Fragment>
@@ -70,7 +65,7 @@ export const ConfirmInfo: React.FC<ConfirmInfoProps> = ({
         case ConfirmInfoRowType.ValueDouble:
           return (
             <React.Fragment key={key}>
-              <ConfirmInfoRow label={label || ''} variant={state}>
+              <ConfirmInfoRow label={label || ''} variant={variant}>
                 <ConfirmInfoRowValueDouble
                   left={rowProps?.left}
                   right={rowProps?.right}

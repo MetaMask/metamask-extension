@@ -5,17 +5,17 @@ import { ConfirmInfo, ConfirmInfoRowConfig, ConfirmInfoRowType } from './info';
 const mockRowConfigs: ConfirmInfoRowConfig[] = [
   {
     label: 'Address',
-    variant: ConfirmInfoRowType.Address,
+    type: ConfirmInfoRowType.Address,
     rowProps: {
       address: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
     },
   },
   {
-    variant: ConfirmInfoRowType.Divider,
+    type: ConfirmInfoRowType.Divider,
   },
   {
     label: 'Account',
-    variant: ConfirmInfoRowType.ValueDouble,
+    type: ConfirmInfoRowType.ValueDouble,
     rowProps: {
       left: '$834.32',
       right: '0.05 ETH',
