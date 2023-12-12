@@ -86,6 +86,12 @@ export const AccountListMenu = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
+  let searchKeys = ['name', 'address'];
+console.log(accounts)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  searchKeys = ['name', 'address', 'vault'];
+  ///: END:ONLY_INCLUDE_IF
+
   let searchResults = accounts;
   if (searchQuery) {
     const fuse = new Fuse(accounts, {
@@ -94,7 +100,7 @@ export const AccountListMenu = ({
       distance: 100,
       maxPatternLength: 32,
       minMatchCharLength: 1,
-      keys: ['name', 'address'],
+      keys: searchKeys,
     });
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
@@ -319,7 +325,17 @@ export const AccountListMenu = ({
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              {searchResults.map((account) => {
+              {searchResults
+              .sort((a, b) => {
+                if (a.lastSelected && b.lastSelected) {
+                    return b.lastSelected - a.lastSelected;
+                } else if (a.lastSelected) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+              })
+              .map((account) => {
                 const connectedSite = connectedSites[account.address]?.find(
                   ({ origin }) => origin === currentTabOrigin,
                 );

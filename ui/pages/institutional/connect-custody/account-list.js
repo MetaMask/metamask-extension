@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import Fuse from 'fuse.js';
 import CustodyLabels from '../../../components/institutional/custody-labels';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -9,6 +10,8 @@ import {
   TextVariant,
   JustifyContent,
   BlockSize,
+  Size,
+  TextColor,
   Display,
   IconColor,
   FlexDirection,
@@ -27,6 +30,7 @@ import {
   ButtonVariant,
   Text,
 } from '../../../components/component-library';
+import { TextFieldSearch } from '../../../components/component-library/text-field-search';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
 const getButtonLinkHref = (account) => {
@@ -50,10 +54,48 @@ export default function CustodyAccountList({
   const disabled =
     !selectedAccounts || Object.keys(selectedAccounts).length === 0;
 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  let searchResults = accounts;
+  if (searchQuery) {
+    const fuse = new Fuse(accounts, {
+      threshold: 0.2,
+      location: 0,
+      distance: 100,
+      minMatchCharLength: 1,
+      keys: ['name', 'labels', 'address'],
+    });
+    fuse.setCollection(accounts);
+    searchResults = fuse.search(searchQuery);
+  }
+
   return (
     <Box className="page-container">
       <Box padding={4} className="page-container__content">
-        {children}
+        <Box paddingTop={4} paddingBottom={4} width={BlockSize.Full}>
+          <Text as="h4">{t('selectAnAccount')}</Text>
+          <Text marginTop={2} marginBottom={2}>
+            {t('selectAnAccountHelp')}
+          </Text>
+        </Box>
+
+        <Box paddingBottom={6} paddingTop={0}>
+          <TextFieldSearch
+            size={Size.SM}
+            width={BlockSize.Full}
+            placeholder={t('searchAccounts')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            clearButtonOnClick={() => setSearchQuery('')}
+            clearButtonProps={{
+              size: Size.SM,
+            }}
+            inputProps={{ autoFocus: true }}
+          />
+        </Box>
+
+        {searchResults.length !== 0 ? children : null}
+
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -61,7 +103,17 @@ export default function CustodyAccountList({
           className="custody-account-list"
           data-testid="custody-account-list"
         >
-          {accounts
+          {searchResults.length === 0 && searchQuery !== '' ? (
+            <Text
+              paddingLeft={4}
+              paddingRight={4}
+              color={TextColor.textMuted}
+            >
+              {t('noAccountsFound')}
+            </Text>
+          ) : null}
+
+          {searchResults
             .sort((a, b) =>
               a.name
                 .toLocaleLowerCase()

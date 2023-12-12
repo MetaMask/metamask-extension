@@ -1,15 +1,22 @@
-import React, { memo, useLayoutEffect, useRef } from 'react';
+import React, { memo, useLayoutEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
+import Fuse from 'fuse.js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import CheckBox, { CHECKED, INDETERMINATE, UNCHECKED } from '../check-box';
 import Identicon from '../identicon';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
 import Tooltip from '../tooltip';
-import { Icon, IconName } from '../../component-library';
-import { IconColor } from '../../../helpers/constants/design-system';
+import { Box, Text, Icon, IconName } from '../../component-library';
+import { TextFieldSearch } from '../../component-library/text-field-search';
+import {
+  IconColor,
+  Size,
+  TextColor,
+  BlockSize,
+} from '../../../helpers/constants/design-system';
 
 const AccountList = ({
   selectNewAccountViaModal,
@@ -27,6 +34,21 @@ const AccountList = ({
   useLayoutEffect(() => {
     selectedAccountScrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [selectedAccounts]);
+
+  const [searchQuery, setSearchQuery] = useState('');
+
+  let searchResults = accounts;
+  if (searchQuery) {
+    const fuse = new Fuse(accounts, {
+      threshold: 0.2,
+      location: 0,
+      distance: 100,
+      minMatchCharLength: 1,
+      keys: ['label', 'balance', 'addressLabel', 'address'],
+    });
+    fuse.setCollection(accounts);
+    searchResults = fuse.search(searchQuery);
+  }
 
   const Header = () => {
     let checked;
@@ -86,7 +108,19 @@ const AccountList = ({
     return (
       <div className="choose-account-list__wrapper">
         <div className="choose-account-list__list">
-          {accounts.map((account, index) => {
+          {searchResults.length === 0 && searchQuery !== '' ? (
+            <Text
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={4}
+              paddingBottom={4}
+              color={TextColor.textMuted}
+            >
+              {t('noAccountsFound')}
+            </Text>
+          ) : null}
+
+          {searchResults.map((account, index) => {
             const { address, addressLabel, balance } = account;
             const isSelectedAccount = selectedAccounts.has(address);
             return (
@@ -139,6 +173,20 @@ const AccountList = ({
 
   return (
     <div className="choose-account-list">
+      <Box paddingTop={6} width={BlockSize.Full}>
+        <TextFieldSearch
+          size={Size.SM}
+          width={BlockSize.Full}
+          placeholder={t('searchAccounts')}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          clearButtonOnClick={() => setSearchQuery('')}
+          clearButtonProps={{
+            size: Size.SM,
+          }}
+          inputProps={{ autoFocus: true }}
+        />
+      </Box>
       <Header />
       <List />
     </div>

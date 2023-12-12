@@ -650,12 +650,6 @@ const CustodyPage = () => {
             });
           }}
         >
-          <Box paddingTop={4} paddingBottom={4} width={BlockSize.Full}>
-            <Text as="h4">{t('selectAnAccount')}</Text>
-            <Text marginTop={2} marginBottom={2}>
-              {t('selectAnAccountHelp')}
-            </Text>
-          </Box>
           <Box
             paddingBottom={4}
             display={Display.Flex}
