@@ -549,7 +549,7 @@ export default function PrepareSendAndSwapPage({
       dispatch(setSwapsFromToken(defaultSwapsToken));
     }
 
-    // Default To Token should be same as From Token
+    // Default To Token should be same as From Token as we default to the Send flow
     if (!toToken?.symbol && !destinationTokenInfo?.symbol) {
       dispatch(setSwapToToken(defaultSwapsToken));
     }
