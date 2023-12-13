@@ -138,7 +138,8 @@ import ListWithSearch from '../list-with-search/list-with-search';
 import SmartTransactionsPopover from '../prepare-swap-page/smart-transactions-popover';
 import QuotesLoadingAnimation from '../prepare-swap-page/quotes-loading-animation';
 import ReviewQuote from '../prepare-swap-page/review-quote';
-import { updateSendAmount } from '../../../ducks/send';
+import { updateSendAmount, updateSendAsset } from '../../../ducks/send';
+import { AssetType } from '../../../../shared/constants/transaction';
 
 let timeoutIdForQuotesPrefetching;
 
@@ -454,6 +455,22 @@ export default function PrepareSendAndSwapPage({
     }
     dispatch(setSwapsFromToken(token));
     onInputChange(fromTokenInputValue, token.string, token.decimals);
+
+    // If new Swap From is same as Swap To, we are going into the Send flow, update Send token to match the new Swap From
+    if (token.address === toTokenAddress) {
+      dispatch(
+        updateSendAsset({
+          type: token.type === 'erc20' ? AssetType.token : AssetType.native,
+          details: {
+            address: token.address,
+            symbol: token.symbol,
+            decimals: token.decimals,
+            standard: token.type,
+            isERC721: token.isERC721,
+          },
+        }),
+      );
+    }
   };
 
   const blockExplorerTokenLink = getTokenTrackerLink(
@@ -484,8 +501,24 @@ export default function PrepareSendAndSwapPage({
       }
       dispatch(setSwapToToken(token));
       setVerificationClicked(false);
+
+      // If new Swap To is same as Swap From, we are going into the Send flow, update Send token to match the new Swap To
+      if (token.address === fromTokenAddress) {
+        dispatch(
+          updateSendAsset({
+            type: token.type === 'erc20' ? AssetType.token : AssetType.native,
+            details: {
+              address: token.address,
+              symbol: token.symbol,
+              decimals: token.decimals,
+              standard: token.type,
+              isERC721: token.isERC721,
+            },
+          }),
+        );
+      }
     },
-    [dispatch, latestAddedTokenTo, toAddress],
+    [dispatch, latestAddedTokenTo, toAddress, fromTokenAddress],
   );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
