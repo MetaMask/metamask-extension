@@ -320,6 +320,7 @@
     "useNftDetection": true,
     "openSeaEnabled": true,
     "orderedNetworkList": [],
+    "pinnedAccountList": [],
     "advancedGasFee": {
       "0x5": {
         "maxBaseFee": "75",
