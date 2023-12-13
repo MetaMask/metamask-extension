@@ -723,15 +723,16 @@ export default function PrepareSendAndSwapPage({
     }
   };
 
-  const hideSwapToTokenIf = useCallback(
-    (item) => isEqualCaseInsensitive(item.address, fromTokenAddress),
-    [fromTokenAddress],
-  );
+  // Allow selecting the same From and To so that we can go back to the Send flow from the Swap flow
+  // const hideSwapToTokenIf = useCallback(
+  //   (item) => isEqualCaseInsensitive(item.address, fromTokenAddress),
+  //   [fromTokenAddress],
+  // );
 
-  const hideSwapFromTokenIf = useCallback(
-    (item) => isEqualCaseInsensitive(item.address, selectedToToken?.address),
-    [selectedToToken?.address],
-  );
+  // const hideSwapFromTokenIf = useCallback(
+  //   (item) => isEqualCaseInsensitive(item.address, selectedToToken?.address),
+  //   [selectedToToken?.address],
+  // );
 
   const showReviewQuote =
     !swapsErrorKey && !isReviewSwapButtonDisabled && areQuotesPresent;
@@ -850,7 +851,7 @@ export default function PrepareSendAndSwapPage({
                 maxListItems={30}
                 searchQuery={swapToSearchQuery}
                 setSearchQuery={setSwapToSearchQuery}
-                hideItemIf={hideSwapToTokenIf}
+                // hideItemIf={hideSwapToTokenIf}
                 shouldSearchForImports
                 onOpenImportTokenModalClick={onOpenImportTokenModalClick}
               />
@@ -886,7 +887,7 @@ export default function PrepareSendAndSwapPage({
                 maxListItems={30}
                 searchQuery={swapFromSearchQuery}
                 setSearchQuery={setSwapFromSearchQuery}
-                hideItemIf={hideSwapFromTokenIf}
+                // hideItemIf={hideSwapFromTokenIf}
               />
             </Box>
           </ModalContent>
