@@ -246,24 +246,19 @@ function getBuildName({
   shouldIncludeSnow,
   shouldIncludeMV3,
 }) {
-  if (environment === ENVIRONMENT.PRODUCTION) {
-    switch (buildType) {
-      case 'main':
-        return `MetaMask`;
-      case 'mmi':
-        return `MetaMask Institutional`;
-      default:
-        return `MetaMask ${capitalize(buildType)}`;
-    }
+  const config = loadBuildTypesConfig();
+
+  let name =
+    config.buildTypes[buildType].buildNameOverride ||
+    `MetaMask ${capitalize(buildType)}`;
+
+  if (environment !== ENVIRONMENT.PRODUCTION) {
+    const mv3Str = shouldIncludeMV3 ? ' MV3' : '';
+    const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
+    const snowStr = shouldIncludeSnow ? ' snow' : '';
+    name += `${mv3Str}${lavamoatStr}${snowStr}`;
   }
-
-  const mv3Str = shouldIncludeMV3 ? ' MV3' : '';
-  const lavamoatStr = applyLavaMoat ? ' lavamoat' : '';
-  const snowStr = shouldIncludeSnow ? ' snow' : '';
-
-  return buildType === 'mmi'
-    ? `MetaMask Institutional${mv3Str}`
-    : `MetaMask ${capitalize(buildType)}${mv3Str}${lavamoatStr}${snowStr}`;
+  return name;
 }
 
 /**

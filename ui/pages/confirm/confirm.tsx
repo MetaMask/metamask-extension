@@ -6,6 +6,7 @@ import { Box } from '../../components/component-library';
 import { Header } from '../../components/app/confirm/header';
 import { BlockSize } from '../../helpers/constants/design-system';
 
+
 const Confirm = () => {
   setCurrentConfirmation();
   syncConfirmPath();
