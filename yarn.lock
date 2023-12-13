@@ -24309,7 +24309,6 @@ __metadata:
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^10.0.1"
     "@metamask/jazzicon": "npm:^2.0.0"
-    "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/keyring-api": "npm:^1.0.0"
     "@metamask/keyring-controller": "npm:^9.0.0"
     "@metamask/logging-controller": "npm:^1.0.1"
