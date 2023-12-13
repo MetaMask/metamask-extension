@@ -36,11 +36,7 @@ import {
 ///: END:ONLY_INCLUDE_IF
 import { PASSWORD_MIN_LENGTH } from '../../../helpers/constants/common';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import {
-  getFirstTimeFlowType,
-  getCurrentKeyring,
-  getMetaMetricsId,
-} from '../../../selectors';
+import { getFirstTimeFlowType, getCurrentKeyring } from '../../../selectors';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -67,24 +63,6 @@ export default function CreatePassword({
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const trackEvent = useContext(MetaMetricsContext);
   const currentKeyring = useSelector(getCurrentKeyring);
-
-  const participateInMetaMetrics = useSelector((state) =>
-    Boolean(state.metamask.participateInMetaMetrics),
-  );
-  const metametricsId = useSelector(getMetaMetricsId);
-  const base64MetametricsId = Buffer.from(metametricsId ?? '').toString(
-    'base64',
-  );
-  const shouldInjectMetametricsIframe = Boolean(
-    participateInMetaMetrics && base64MetametricsId,
-  );
-  const analyticsIframeQuery = {
-    mmi: base64MetametricsId,
-    env: 'production',
-  };
-  const analyticsIframeUrl = `https://start.metamask.io/?${new URLSearchParams(
-    analyticsIframeQuery,
-  )}`;
 
   useEffect(() => {
     if (currentKeyring) {
@@ -389,13 +367,6 @@ export default function CreatePassword({
           }
         </form>
       </Box>
-      {shouldInjectMetametricsIframe ? (
-        <iframe
-          src={analyticsIframeUrl}
-          className="create-password__analytics-iframe"
-          data-testid="create-password-iframe"
-        />
-      ) : null}
     </div>
   );
 }
