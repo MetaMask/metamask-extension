@@ -1,0 +1,9 @@
+.mm-list-item {
+  &--disabled {
+    opacity: var(--opacity-disabled);
+  }
+
+  &:hover:not(&--disabled) {
+    background-color: var(--color-background-hover);
+  }
+}
