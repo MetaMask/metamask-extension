@@ -17,7 +17,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   FontWeight,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(desktop)
@@ -43,7 +43,7 @@ export default class ExperimentalTab extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: PropTypes.bool,
     setAddSnapAccountEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
@@ -271,7 +271,7 @@ export default class ExperimentalTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   renderKeyringSnapsToggle() {
     const { t, trackEvent } = this.context;
     const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
@@ -342,8 +342,8 @@ export default class ExperimentalTab extends PureComponent {
       </>
     );
   }
-
   ///: END:ONLY_INCLUDE_IF
+
   renderToggleRequestQueue() {
     const { t } = this.context;
     const { useRequestQueue, setUseRequestQueue } = this.props;
@@ -378,7 +378,7 @@ export default class ExperimentalTab extends PureComponent {
       <div className="settings-page__body">
         {this.renderSecurityAlertsToggle()}
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           this.renderKeyringSnapsToggle()
           ///: END:ONLY_INCLUDE_IF
         }
