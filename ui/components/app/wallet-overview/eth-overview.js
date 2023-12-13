@@ -31,14 +31,14 @@ import {
   getSelectedAccountCachedBalance,
   getCurrentChainId,
   getPreferences,
+  getSelectedAddress,
+  getShouldHideZeroBalanceTokens,
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
   getCurrentKeyring,
   getIsBridgeChain,
   getIsBuyableChain,
   getMetaMetricsId,
-  getSelectedAddress,
-  getShouldHideZeroBalanceTokens,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
@@ -107,9 +107,7 @@ const EthOverview = ({ className, showAddress }) => {
   const isSwapsChain = useSelector(getIsSwapsChain);
 
   let balanceToUse = totalWeiBalance;
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   balanceToUse = balance;
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
