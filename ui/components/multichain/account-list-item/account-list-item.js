@@ -34,6 +34,7 @@ import {
   JustifyContent,
   Size,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
@@ -257,7 +258,7 @@ export const AccountListItem = ({
               />
               <Text
                 variant={TextVariant.bodySm}
-                color={Color.textAlternative}
+                color={TextColor.textAlternative}
                 textAlign={TextAlign.End}
                 as="div"
               >
