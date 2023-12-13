@@ -69,7 +69,11 @@ const ChooseAccount = ({
         <PermissionsConnectHeader
           iconUrl={targetSubjectMetadata?.iconUrl}
           iconName={targetSubjectMetadata?.name}
-          headerTitle={t('connectWithMetaMask')}
+          headerTitle={t('connectWithMetaMask', [
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+            'Institutional',
+            ///: END:ONLY_INCLUDE_IF
+          ])}
           headerText={headerText}
           siteOrigin={targetSubjectMetadata?.origin}
           subjectType={targetSubjectMetadata?.subjectType}

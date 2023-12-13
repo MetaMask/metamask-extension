@@ -2837,6 +2837,10 @@ export function setAutoLockTimeLimit(value: boolean) {
   return setPreference('autoLockTimeLimit', value);
 }
 
+export function setShowMostRecentAccountFirst(value: boolean) {
+  return setPreference('showMostRecentAccountFirst', value);
+}
+
 export function setIncomingTransactionsPreferences(
   chainId: string,
   value: boolean,

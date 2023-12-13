@@ -79,20 +79,22 @@ export default function CustodyAccountList({
           </Text>
         </Box>
 
-        <Box paddingBottom={6} paddingTop={0}>
-          <TextFieldSearch
-            size={Size.SM}
-            width={BlockSize.Full}
-            placeholder={t('searchAccounts')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            clearButtonOnClick={() => setSearchQuery('')}
-            clearButtonProps={{
-              size: Size.SM,
-            }}
-            inputProps={{ autoFocus: true }}
-          />
-        </Box>
+        {accounts.length > 1 && (
+          <Box paddingBottom={6} paddingTop={0}>
+            <TextFieldSearch
+              size={Size.SM}
+              width={BlockSize.Full}
+              placeholder={t('searchAccounts')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              clearButtonOnClick={() => setSearchQuery('')}
+              clearButtonProps={{
+                size: Size.SM,
+              }}
+              inputProps={{ autoFocus: true }}
+            />
+          </Box>
+        )}
 
         {searchResults.length ? children : null}
 

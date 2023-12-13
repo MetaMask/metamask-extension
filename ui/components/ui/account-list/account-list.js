@@ -174,18 +174,20 @@ const AccountList = ({
   return (
     <div className="choose-account-list">
       <Box paddingTop={6} width={BlockSize.Full}>
-        <TextFieldSearch
-          size={Size.SM}
-          width={BlockSize.Full}
-          placeholder={t('searchAccounts')}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          clearButtonOnClick={() => setSearchQuery('')}
-          clearButtonProps={{
-            size: Size.SM,
-          }}
-          inputProps={{ autoFocus: true }}
-        />
+        {accounts.length > 1 && (
+          <TextFieldSearch
+            size={Size.SM}
+            width={BlockSize.Full}
+            placeholder={t('searchAccounts')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            clearButtonOnClick={() => setSearchQuery('')}
+            clearButtonProps={{
+              size: Size.SM,
+            }}
+            inputProps={{ autoFocus: true }}
+          />
+        )}
       </Box>
       <Header />
       <List />

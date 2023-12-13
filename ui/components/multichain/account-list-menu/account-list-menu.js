@@ -16,6 +16,7 @@ import {
   ModalOverlay,
   Text,
 } from '../../component-library';
+import ToggleButton from '../../ui/toggle-button';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
@@ -25,6 +26,7 @@ import {
   FlexDirection,
   Size,
   TextColor,
+  JustifyContent,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -36,8 +38,13 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
+  getShowMostRecentAccountFirst,
 } from '../../../selectors';
-import { setSelectedAccount } from '../../../store/actions';
+import {
+  setSelectedAccount,
+  setShowMostRecentAccountFirst,
+} from '../../../store/actions';
+
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -86,8 +93,9 @@ export const AccountListMenu = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
+  const showMostRecentAccountFirst = useSelector(getShowMostRecentAccountFirst);
+
   let searchKeys = ['name', 'address'];
-  console.log(accounts);
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   searchKeys = ['name', 'address', 'vault'];
   ///: END:ONLY_INCLUDE_IF
@@ -120,6 +128,24 @@ export const AccountListMenu = ({
     } else {
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
+  }
+
+  const handleToggle = (value) => {
+    const shouldShowMostRecentFAccountirst = !value;
+    dispatch(setShowMostRecentAccountFirst(shouldShowMostRecentFAccountirst));
+  };
+
+  const sortedSearchResults = searchResults;
+  if (showMostRecentAccountFirst) {
+    sortedSearchResults.sort((a, b) => {
+      if (a.lastSelected && b.lastSelected) {
+        return b.lastSelected - a.lastSelected;
+      }
+      if (a.lastSelected) {
+        return -1;
+      }
+      return 1;
+    });
   }
 
   return (
@@ -313,9 +339,24 @@ export const AccountListMenu = ({
                 />
               </Box>
             ) : null}
+
+            {/* Show most recently used account first - toggle */}
+            <Box
+              padding={4}
+              paddingTop={0}
+              display={Display.Flex}
+              justifyContent={JustifyContent.spaceBetween}
+            >
+              <Text>{t('showRecentlyUsedFirst')}</Text>
+              <ToggleButton
+                value={showMostRecentAccountFirst}
+                onToggle={handleToggle}
+              />
+            </Box>
+
             {/* Account list block */}
             <Box className="multichain-account-menu-popover__list">
-              {searchResults.length === 0 && searchQuery !== '' ? (
+              {sortedSearchResults.length === 0 && searchQuery !== '' ? (
                 <Text
                   paddingLeft={4}
                   paddingRight={4}
@@ -325,45 +366,35 @@ export const AccountListMenu = ({
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              {searchResults
-                .sort((a, b) => {
-                  if (a.lastSelected && b.lastSelected) {
-                    return b.lastSelected - a.lastSelected;
-                  }
-                  if (a.lastSelected) {
-                    return -1;
-                  }
-                  return 1;
-                })
-                .map((account) => {
-                  const connectedSite = connectedSites[account.address]?.find(
-                    ({ origin }) => origin === currentTabOrigin,
-                  );
+              {sortedSearchResults.map((account) => {
+                const connectedSite = connectedSites[account.address]?.find(
+                  ({ origin }) => origin === currentTabOrigin,
+                );
 
-                  return (
-                    <AccountListItem
-                      onClick={() => {
-                        onClose();
-                        trackEvent({
-                          category: MetaMetricsEventCategory.Navigation,
-                          event: MetaMetricsEventName.NavAccountSwitched,
-                          properties: {
-                            location: 'Main Menu',
-                          },
-                        });
-                        dispatch(setSelectedAccount(account.address));
-                      }}
-                      identity={account}
-                      key={account.address}
-                      selected={selectedAccount.address === account.address}
-                      closeMenu={onClose}
-                      connectedAvatar={connectedSite?.iconUrl}
-                      connectedAvatarName={connectedSite?.name}
-                      showOptions
-                      {...accountListItemProps}
-                    />
-                  );
-                })}
+                return (
+                  <AccountListItem
+                    onClick={() => {
+                      onClose();
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event: MetaMetricsEventName.NavAccountSwitched,
+                        properties: {
+                          location: 'Main Menu',
+                        },
+                      });
+                      dispatch(setSelectedAccount(account.address));
+                    }}
+                    identity={account}
+                    key={account.address}
+                    selected={selectedAccount.address === account.address}
+                    closeMenu={onClose}
+                    connectedAvatar={connectedSite?.iconUrl}
+                    connectedAvatarName={connectedSite?.name}
+                    showOptions
+                    {...accountListItemProps}
+                  />
+                );
+              })}
             </Box>
             {/* Add / Import / Hardware button */}
             {showAccountCreation ? (

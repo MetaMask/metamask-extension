@@ -628,6 +628,11 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
+export function getShowMostRecentAccountFirst(state) {
+  const { showMostRecentAccountFirst } = getPreferences(state);
+  return Boolean(showMostRecentAccountFirst);
+}
+
 export function getTestNetworkBackgroundColor(state) {
   const currentNetwork = state.metamask.providerConfig.ticker;
   switch (true) {
