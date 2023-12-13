@@ -380,17 +380,11 @@ export function getInternalAccountsSortedByKeyring(state) {
  * Gets the label and account type of the currently selected account.
  *
  * @param state - Redux state object.
- * @param address
+ * @param address - Address of the currently selected account.
  * @returns {object} An object containing the label and type of the currently selected account.
  */
 export function getAccountLabel(state, address) {
   const selectedAccount = getSelectedInternalAccount(state);
-  if (selectedAccount.metadata?.snap?.name) {
-    return {
-      label: `${selectedAccount.metadata?.snap?.name} (${t('beta')})`,
-      accountType: KeyringType.snap,
-    };
-  }
   const { type } = findKeyringForAddress(state, address);
   let label;
   switch (type) {
@@ -412,6 +406,9 @@ export function getAccountLabel(state, address) {
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case KeyringType.snap:
       label = `${t('snaps')} (${t('beta')})`;
+      if (selectedAccount.metadata?.snap?.name) {
+        label = `${selectedAccount.metadata?.snap?.name} (${t('beta')})`;
+      }
       break;
     ///: END:ONLY_INCLUDE_IF
     default:

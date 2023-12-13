@@ -100,6 +100,8 @@ export const AccountListMenu = ({
     searchResults = fuse.search(searchQuery);
   }
 
+  console.log('searchResults', searchResults);
+
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
     title = t('addAccount');
