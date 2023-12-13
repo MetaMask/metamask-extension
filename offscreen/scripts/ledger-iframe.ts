@@ -53,7 +53,6 @@ chrome.runtime.onMessage.addListener(
     _sender,
     sendResponse,
   ) => {
-    console.log(msg);
     if (msg.target !== OffscreenCommunicationTarget.ledgerOffscreen) {
       return;
     }
