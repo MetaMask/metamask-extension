@@ -21,7 +21,9 @@ const WalletOverview = ({
 }) => {
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const checksummedAddress = toChecksumHexAddress(selectedAccount.address);
-  const { label, accountType } = useSelector(getAccountLabel);
+  const { label, accountType } = useSelector((state) =>
+    getAccountLabel(state, selectedAccount.address),
+  );
   return (
     <div className={classnames('wallet-overview', className)}>
       <div className="wallet-overview__balance">

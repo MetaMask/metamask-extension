@@ -106,11 +106,12 @@ describe('AccountListItem', () => {
   });
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  it('renders the snap label for snap accounts', () => {
+  it('renders the snap label for unnamed snap accounts', () => {
     const { getByText } = render({
       identity: {
         address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
         name: 'Snap Account',
+        balance: '0x0',
       },
     });
 
