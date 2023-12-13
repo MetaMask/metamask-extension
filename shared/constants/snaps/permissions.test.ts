@@ -2,12 +2,12 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-controllers';
+import { RestrictedMethods } from '../permissions';
 import {
   EndowmentPermissions,
   ExcludedSnapEndowments,
   ExcludedSnapPermissions,
 } from './permissions';
-import { RestrictedMethods } from '../permissions';
 
 describe('buildSnapRestrictedMethodSpecifications', () => {
   it('creates valid permission specification objects', () => {
