@@ -1901,7 +1901,6 @@
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
-
   "hideToken": {
     "message": "Hide token"
   },
@@ -3593,10 +3592,6 @@
   },
   "portfolioDashboard": {
     "message": "Portfolio Dashboard"
-  },
-  "preferredLedgerConnectionType": {
-    "message": "Preferred Ledger connection type",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preferredProvider": {
     "message": "Select your preferred provider"
