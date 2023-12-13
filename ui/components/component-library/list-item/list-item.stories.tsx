@@ -2,32 +2,32 @@ import { StoryFn, Meta } from '@storybook/react';
 import React from 'react';
 import README from './README.mdx';
 
-import { ListItem as ListItemComponent } from '.';
+import { ListItem } from './list-item';
 
 export default {
   title: 'Components/ComponentLibrary/ListItem',
-  component: ListItemComponent,
+  component: ListItem,
   parameters: {
     docs: {
       page: README,
     },
   },
   args: { children: 'List item' },
-} as Meta<typeof ListItemComponent>;
+} as Meta<typeof ListItem>;
 
-const ListItem: StoryFn<typeof ListItemComponent> = (args) => {
-  return <ListItemComponent {...args} />;
+const ListItemStory: StoryFn<typeof ListItem> = (args) => {
+  return <ListItem {...args} />;
 };
 
-export const DefaultStory = ListItem.bind({});
+export const DefaultStory = ListItemStory.bind({});
 DefaultStory.storyName = 'Default';
 
-export const Children = ListItem.bind({});
+export const Children = ListItemStory.bind({});
 Children.args = {
   children: 'ListItem children',
 };
 
-export const IsDisabled = ListItem.bind({});
+export const IsDisabled = ListItemStory.bind({});
 IsDisabled.args = {
   isDisabled: true,
 };
