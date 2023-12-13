@@ -6,7 +6,7 @@ import {
 } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
 ///: END:ONLY_INCLUDE_IF
 
@@ -104,8 +104,8 @@ export default class PreferencesController {
       theme: ThemeType.os,
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       snapsAddSnapAccountModalDismissed: false,
-      ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       useExternalNameSources: true,
       ///: END:ONLY_INCLUDE_IF
       ...opts.initState,
@@ -668,5 +668,5 @@ export default class PreferencesController {
     this.store.updateState({ snapRegistryList: snapRegistry });
   }
 
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 }
