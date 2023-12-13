@@ -3578,6 +3578,9 @@
   "pinExtensionTitle": {
     "message": "Pin extension"
   },
+  "pinToTop": {
+    "message": "Pin to top"
+  },
   "pleaseConfirm": {
     "message": "Please confirm"
   },
@@ -5582,6 +5585,9 @@
   },
   "unlockMessage": {
     "message": "The decentralized web awaits"
+  },
+  "unpin": {
+    "message": "Unpin"
   },
   "unrecognizedChain": {
     "message": "This custom network is not recognized",
