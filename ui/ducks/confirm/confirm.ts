@@ -1,15 +1,17 @@
 type ActionType = {
   type: string;
-  dummyValue?: string;
+  currentConfirmation?: Record<string, unknown> | undefined;
 };
 
 const createActionType = (action: string): string =>
   `metamask/confirm/${action}`;
 
-const UPDATE_DUMMY = createActionType('UPDATE_DUMMY');
+export const UPDATE_CURRENT_CONFIRMATION = createActionType(
+  'UPDATE_CURRENT_CONFIRMATION',
+);
 
 const initState = {
-  dummy: undefined,
+  currentConfirmation: undefined,
 };
 
 export default function confirmReducer(
@@ -17,18 +19,20 @@ export default function confirmReducer(
   action: ActionType = { type: '' },
 ) {
   switch (action.type) {
-    case UPDATE_DUMMY:
+    case UPDATE_CURRENT_CONFIRMATION:
       return {
-        dummy: action.dummyValue,
+        currentConfirmation: action.currentConfirmation,
       };
     default:
       return state;
   }
 }
 
-export function updateDummy(dummy: string) {
+export function updateCurrentConfirmation(
+  currentConfirmation: Record<string, unknown> | undefined,
+) {
   return {
-    type: UPDATE_DUMMY,
-    dummy,
+    type: UPDATE_CURRENT_CONFIRMATION,
+    currentConfirmation,
   };
 }

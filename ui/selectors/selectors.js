@@ -92,6 +92,11 @@ import {
   NOTIFICATION_U2F_LEDGER_LIVE,
 } from '../../shared/notifications';
 import {
+  SURVEY_DATE,
+  SURVEY_END_TIME,
+  SURVEY_START_TIME,
+} from '../helpers/constants/survey';
+import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
@@ -358,7 +363,6 @@ export function getMetaMaskAccountBalances(state) {
 
 export function getMetaMaskCachedBalances(state) {
   const chainId = getCurrentChainId(state);
-
   return state.metamask.cachedBalances[chainId];
 }
 
@@ -1205,6 +1209,11 @@ export function getSortedAnnouncementsToShow(state) {
 export function getOrderedNetworksList(state) {
   return state.metamask.orderedNetworkList;
 }
+
+export function getPinnedAccountsList(state) {
+  return state.metamask.pinnedAccountList;
+}
+
 export function getShowRecoveryPhraseReminder(state) {
   const {
     recoveryPhraseReminderLastShown,
@@ -1227,6 +1236,14 @@ export function getShowTermsOfUse(state) {
     new Date(termsOfUseLastAgreed).getTime() <
     new Date(TERMS_OF_USE_LAST_UPDATED).getTime()
   );
+}
+
+export function getShowSurveyToast(state) {
+  const { surveyLinkLastClickedOrClosed } = state.metamask;
+  const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
+  const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
+  const now = Date.now();
+  return now > startTime && now < endTime && !surveyLinkLastClickedOrClosed;
 }
 
 export function getShowOutdatedBrowserWarning(state) {
@@ -1751,6 +1768,29 @@ export function getShouldShowSeedPhraseReminder(state) {
 
 export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
+}
+
+export function getUpdatedAndSortedAccounts(state) {
+  const accounts = getMetaMaskAccountsOrdered(state);
+  const pinnedAddresses = getPinnedAccountsList(state);
+
+  accounts.forEach((account) => {
+    account.pinned = Boolean(pinnedAddresses?.includes(account.address));
+  });
+
+  const notPinnedAccounts = accounts.filter(
+    (account) => !pinnedAddresses.includes(account.address),
+  );
+
+  const sortedPinnedAccounts = pinnedAddresses
+    .map((address) => accounts.find((account) => account.address === address))
+    .filter((account) =>
+      Boolean(account && pinnedAddresses.includes(account.address)),
+    );
+
+  const sortedSearchResults = [...sortedPinnedAccounts, ...notPinnedAccounts];
+
+  return sortedSearchResults;
 }
 
 export function getOnboardedInThisUISession(state) {

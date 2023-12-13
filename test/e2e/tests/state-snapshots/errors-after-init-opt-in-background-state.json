@@ -1,4 +1,5 @@
 {
+  "AccountOrderController": { "pinnedAccountList": {} },
   "AccountTracker": {
     "accounts": "object",
     "accountsByChainId": "object"
@@ -39,7 +40,8 @@
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
-    "snapsInstallPrivacyWarningShown": true
+    "snapsInstallPrivacyWarningShown": true,
+    "surveyLinkLastClickedOrClosed": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",

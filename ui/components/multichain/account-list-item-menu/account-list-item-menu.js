@@ -10,6 +10,7 @@ import {
   getCurrentChainId,
   getHardwareWalletType,
   getAccountTypeForKeyring,
+  getPinnedAccountsList,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMaskAccountsOrdered,
   ///: END:ONLY_INCLUDE_IF
@@ -31,7 +32,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { showModal } from '../../../store/actions';
+import { showModal, updateAccountsList } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
@@ -45,6 +46,7 @@ export const AccountListItemMenu = ({
   isRemovable,
   identity,
   isOpen,
+  isPinned,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -58,6 +60,8 @@ export const AccountListItemMenu = ({
     findKeyringForAddress(state, identity.address),
   );
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
+
+  const pinnedAccountList = useSelector(getPinnedAccountsList);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
@@ -121,6 +125,18 @@ export const AccountListItemMenu = ({
     };
   }, [handleClickOutside]);
 
+  const handlePinning = (address) => {
+    const updatedPinnedAccountList = [...pinnedAccountList, address];
+    dispatch(updateAccountsList(updatedPinnedAccountList));
+  };
+
+  const handleUnpinning = (address) => {
+    const updatedPinnedAccountList = pinnedAccountList.filter(
+      (item) => item !== address,
+    );
+    dispatch(updateAccountsList(updatedPinnedAccountList));
+  };
+
   return (
     <Popover
       className="multichain-account-list-item-menu__popover"
@@ -147,6 +163,22 @@ export const AccountListItemMenu = ({
             textProps={{ variant: TextVariant.bodySm }}
             address={identity.address}
           />
+          {process.env.NETWORK_ACCOUNT_DND ? (
+            <MenuItem
+              data-testid="account-list-menu-pin"
+              onClick={() => {
+                isPinned
+                  ? handleUnpinning(identity.address)
+                  : handlePinning(identity.address);
+                onClose();
+              }}
+              iconName={isPinned ? IconName.Unpin : IconName.Pin}
+            >
+              <Text variant={TextVariant.bodySm}>
+                {isPinned ? t('unpin') : t('pinToTop')}
+              </Text>
+            </MenuItem>
+          ) : null}
           {isRemovable ? (
             <MenuItem
               ref={removeAccountItemRef}
@@ -241,6 +273,10 @@ AccountListItemMenu.propTypes = {
    * Represents if the account should be removable
    */
   isRemovable: PropTypes.bool.isRequired,
+  /**
+   * Represents pinned accounts
+   */
+  isPinned: PropTypes.bool,
   /**
    * Identity of the account
    */
