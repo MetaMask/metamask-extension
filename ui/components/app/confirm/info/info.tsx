@@ -1,4 +1,5 @@
 import React from 'react';
+import { captureException } from '@sentry/browser';
 
 import {
   ConfirmInfoRow,
@@ -73,8 +74,12 @@ export const ConfirmInfo: React.FC<ConfirmInfoProps> = ({
               </ConfirmInfoRow>
             </React.Fragment>
           );
-        default:
+        default: {
+          const error = new Error(`ConfirmInfo: Unknown row type: ${type}`);
+          console.error(error);
+          captureException(error);
           return null;
+        }
       }
     })}
   </ConfirmInfoContainer>
