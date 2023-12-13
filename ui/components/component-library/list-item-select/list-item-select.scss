@@ -1,0 +1,20 @@
+.mm-list-item-select {
+  position: relative;
+
+  &--selected:not(&--disabled),
+  &--selected:hover:not(&--disabled) {
+    background-color: var(--color-primary-muted);
+  }
+
+  &--selected:not(&--disabled)::before {
+    content: '';
+    position: absolute;
+    width: 4px;
+    margin: 4px;
+    top: 0;
+    left: 0;
+    height: calc(100% - 8px);
+    border-radius: 8px; // equivalent to BorderRadius.lg
+    background-color: var(--color-primary-default);
+  }
+}

@@ -52,6 +52,7 @@ export { BannerBase } from './banner-base';
 export { BannerAlert, BannerAlertSeverity } from './banner-alert';
 export { BannerTip, BannerTipLogoType } from './banner-tip';
 export { ListItem } from './list-item';
+export { ListItemSelect } from './list-item-select';
 export { PopoverHeader } from './popover-header';
 export { Popover, PopoverPosition, PopoverRole } from './popover';
 export { ModalHeader } from './modal-header';

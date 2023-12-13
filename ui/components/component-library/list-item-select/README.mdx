@@ -1,0 +1,50 @@
+import { Canvas, Controls } from '@storybook/addon-docs';
+import * as ListItemSelectStories from './list-item-select.stories';
+
+# ListItemSelect
+
+List Item represents an item in a list where items are either read-only or clickable but not selectable
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas of={ListItemSelectStories.DefaultStory} />
+
+## Props
+
+<Controls of={ListItemSelectStories.DefaultStory} />
+
+### Children
+
+The `children` of the `ListItemSelect` can be text or a react node
+
+<Canvas of={ListItemSelectStories.Children} />
+
+```jsx
+import { ListItemSelect } from '../../component-library';
+
+<ListItemSelect>ListItemSelect children</ListItemSelect>;
+```
+
+### isDisabled
+
+The `isDisabled` boolean prop of the `ListItemSelect` determines whether the item is disabled or not
+
+<Canvas of={ListItemSelectStories.IsDisabled} />
+
+```jsx
+import { ListItemSelect } from '../../component-library';
+
+<ListItemSelect>List item</ListItemSelect>;
+```
+
+### isSelected
+
+The `isSelected` boolean prop of the `ListItemSelect` determines whether the item is selected
+
+<Canvas of={ListItemSelectStories.IsSelected} />
+
+```jsx
+import { ListItemSelect } from '../../component-library';
+
+<ListItemSelect isSelected>List item</ListItemSelect>;
+```
