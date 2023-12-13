@@ -35,6 +35,12 @@ interface ConfirmInfoProps {
   rowConfigs: ConfirmInfoRowConfig[];
 }
 
+/**
+ * ConfirmInfo receives a custom config object and displays a list of ConfirmInfoRow components
+ *
+ * @param options
+ * @param options.rowConfigs
+ */
 export const ConfirmInfo: React.FC<ConfirmInfoProps> = ({
   rowConfigs = [],
 }) => (
