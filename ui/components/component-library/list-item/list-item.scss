@@ -4,6 +4,6 @@
   }
 
   &:hover:not(&--disabled) {
-    background-color: var(--color-background-hover);
+    background-color: var(--color-background-default-hover);
   }
 }
