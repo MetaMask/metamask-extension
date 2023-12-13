@@ -19,7 +19,7 @@ type MakePropsOptional<T> = {
 };
 
 export interface TextFieldSearchStyleUtilityProps
-  extends Omit<TextFieldProps<'input'>, 'type'> {
+  extends Omit<TextFieldProps<'input'>, 'type' | 'size'> {
   /**
    * The value of the TextFieldSearch
    */
@@ -54,6 +54,10 @@ export interface TextFieldSearchStyleUtilityProps
    * Attributes applied to the `input` element.
    */
   inputProps?: InputProps<'input'>;
+  /**
+   * The size of the TextFieldSearch
+   */
+  size?: TextFieldSearchSize;
 }
 
 export type TextFieldSearchProps<C extends React.ElementType> =

@@ -15,10 +15,11 @@ import {
   Text,
   ButtonLink,
   ButtonLinkSize,
+  ButtonIconSize,
+  TextFieldSearchSize,
 } from '../../../component-library';
 import {
   BlockSize,
-  Size,
   BorderRadius,
   BackgroundColor,
   TextColor,
@@ -265,7 +266,7 @@ export function AssetPickerModal({
                     width={BlockSize.Full}
                     clearButtonOnClick={() => setSearchQuery('')}
                     clearButtonProps={{
-                      size: Size.SM,
+                      size: ButtonIconSize.Sm,
                     }}
                     showClearButton={true}
                     className="asset-picker-modal__search-list"
@@ -273,7 +274,7 @@ export function AssetPickerModal({
                       'data-testid': 'asset-picker-modal-search-input',
                     }}
                     endAccessory={null}
-                    size={Size.LG}
+                    size={TextFieldSearchSize.Lg}
                   />
                 </Box>
                 <Box className="tokens-main-view-modal">
@@ -361,7 +362,7 @@ export function AssetPickerModal({
                     width={BlockSize.Full}
                     clearButtonOnClick={() => setSearchQuery('')}
                     clearButtonProps={{
-                      size: Size.SM,
+                      size: ButtonIconSize.Sm,
                     }}
                     showClearButton={true}
                     className="asset-picker-modal__search-list"
@@ -369,7 +370,7 @@ export function AssetPickerModal({
                       'data-testid': 'asset-picker-modal-search-input',
                     }}
                     endAccessory={null}
-                    size={Size.LG}
+                    size={TextFieldSearchSize.Lg}
                   />
                 </Box>
                 {hasAnyNfts ? (

@@ -184,6 +184,9 @@ function defaultFixture() {
       NetworkOrderController: {
         orderedNetworkList: [],
       },
+      AccountOrderController: {
+        pinnedAccountList: [],
+      },
       AppStateController: {
         browserEnvironment: {},
         nftsDropdownState: {},
@@ -484,6 +487,11 @@ class FixtureBuilder {
 
   withNetworkOrderController(data) {
     merge(this.fixture.data.NetworkOrderController, data);
+    return this;
+  }
+
+  withAccountOrderController(data) {
+    merge(this.fixture.data.AccountOrderController, data);
     return this;
   }
 
