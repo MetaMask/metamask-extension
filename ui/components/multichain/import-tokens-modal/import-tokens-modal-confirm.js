@@ -94,6 +94,7 @@ export const ImportTokensModalConfirm = () => {
                       variant: TextVariant.bodyLgMedium,
                     }}
                     token={token}
+                    showFiat
                   />
                 </Box>
               </Box>

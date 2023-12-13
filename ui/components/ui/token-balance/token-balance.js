@@ -5,6 +5,10 @@ import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
 import { Text } from '../../component-library';
+import {
+  FontWeight,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 
 export default function TokenBalance({
   className,
@@ -18,7 +22,11 @@ export default function TokenBalance({
   const isOriginalTokenSymbol = useIsOriginalTokenSymbol(address, symbol);
   const fiatValue = isOriginalTokenSymbol ? formattedFiat : null;
   if (showFiat) {
-    return <Text>{fiatValue}</Text>;
+    return (
+      <Text fontWeight={FontWeight.Medium} variant={TextVariant.bodyMd}>
+        {fiatValue}
+      </Text>
+    );
   }
   return (
     <CurrencyDisplay
