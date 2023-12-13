@@ -79,7 +79,7 @@ export const ImportTokensModalConfirm = () => {
                       variant={TextVariant.bodySm}
                       color={TextColor.textAlternative}
                     >
-                      {symbol}
+                      <TokenBalance token={token} />
                     </Text>
                   </Box>
                 </Box>

@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link/dist/token-tracker-link';
+import { fetchAndMapExchangeRates } from '@metamask/assets-controllers';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -26,6 +27,7 @@ import {
   getTokenList,
   getCurrentNetwork,
   getTestNetworkBackgroundColor,
+  contractExchangeRateSelector,
 } from '../../../selectors';
 import {
   addImportedTokens,
@@ -36,6 +38,7 @@ import {
   setNewTokensImported,
   setNewTokensImportedError,
   hideImportTokensModal,
+  setConfirmationExchangeRates,
 } from '../../../store/actions';
 import {
   BannerAlert,
@@ -67,7 +70,10 @@ import {
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
+import {
+  isValidHexAddress,
+  toChecksumHexAddress,
+} from '../../../../shared/modules/hexstring-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 import {
@@ -80,7 +86,10 @@ import {
 } from '../../../helpers/utils/util';
 import { tokenInfoGetter } from '../../../helpers/utils/token-util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getPendingTokens } from '../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getPendingTokens,
+} from '../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -116,6 +125,7 @@ export const ImportTokensModal = ({ onClose }) => {
   );
   const networkName = useSelector(getTokenDetectionSupportNetworkByChainId);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const nativeCurrency = useSelector(getNativeCurrency);
 
   // Custom token stuff
   const tokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
@@ -129,6 +139,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const identities = useSelector(getMetaMaskIdentities);
   const tokens = useSelector((state) => state.metamask.tokens);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const contractExchangeRates = useSelector(contractExchangeRateSelector);
 
   const [customAddress, setCustomAddress] = useState('');
   const [customAddressError, setCustomAddressError] = useState(null);
@@ -324,7 +335,7 @@ export const ImportTokensModal = ({ onClose }) => {
     return customAddress || Object.keys(selectedTokens).length > 0;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (hasError()) {
       return;
     }
@@ -348,6 +359,37 @@ export const ImportTokensModal = ({ onClose }) => {
     dispatch(
       setPendingTokens({ customToken, selectedTokens, tokenAddressList }),
     );
+
+    const tempTokensToAdd = {
+      ...selectedTokens,
+      ...(customToken?.address && {
+        [customToken.address]: {
+          ...customToken,
+        },
+      }),
+    };
+
+    const tmpTokens = Object.values(tempTokensToAdd);
+    const tmpTokensToDispatch = tmpTokens.filter(
+      (elm) =>
+        contractExchangeRates?.[toChecksumHexAddress(elm.address)] ===
+        undefined,
+    );
+
+    const finalArr = tmpTokensToDispatch.map((obj) => obj.address);
+    if (tmpTokensToDispatch.length !== 0) {
+      try {
+        const result = await fetchAndMapExchangeRates(
+          nativeCurrency,
+          finalArr,
+          chainId,
+        );
+        // dispatch action
+        dispatch(setConfirmationExchangeRates(result));
+      } catch (err) {
+        // ignore
+      }
+    }
     setMode('confirm');
   };
 
