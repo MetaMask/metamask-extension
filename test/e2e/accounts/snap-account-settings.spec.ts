@@ -1,8 +1,9 @@
+import { Suite } from 'mocha';
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
 import { Driver } from '../webdriver/driver';
 
-describe('Add snap account experimental settings', function () {
+describe('Add snap account experimental settings', function (this: Suite) {
   it('switch "Enable Add account snap" to on', async function () {
     await withFixtures(
       {
