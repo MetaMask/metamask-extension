@@ -101,8 +101,8 @@ export function addressSummary(
   }
   return checked
     ? `${checked.slice(0, firstSegLength)}...${checked.slice(
-        checked.length - lastSegLength,
-      )}`
+      checked.length - lastSegLength,
+    )}`
     : '...';
 }
 
@@ -566,7 +566,16 @@ export const getSnapName = (snapId, subjectMetadata) => {
     return SNAPS_METADATA[snapId].name;
   }
 
-  return subjectMetadata?.name ?? stripSnapPrefix(snapId);
+  if (subjectMetadata) {
+    return subjectMetadata.name;
+  }
+
+  // Mirrors a legacy behaviour of stripSnapPrefix
+  if (!snapId) {
+    return null;
+  }
+
+  return stripSnapPrefix(snapId);
 };
 
 export const getSnapRoute = (snapId) => {
