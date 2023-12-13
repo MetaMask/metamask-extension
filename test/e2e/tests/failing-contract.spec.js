@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
@@ -47,7 +48,7 @@ describe('Failing contract interaction ', function () {
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -70,15 +71,11 @@ describe('Failing contract interaction ', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement({ text: 'Activity', tag: 'button' });
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-        );
 
-        // display the transaction status
-        const transactionStatus = await driver.findElement(
-          '.activity-list-item:nth-of-type(1) .transaction-status-label',
-        );
-        assert.equal(await transactionStatus.getText(), 'Failed');
+        await driver.findElement({
+          css: '.activity-list-item .transaction-status-label',
+          text: 'Failed',
+        });
       },
     );
   });
@@ -128,7 +125,7 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -155,11 +152,10 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
 
-        // display the transaction status
-        const transactionStatus = await driver.findElement(
-          '.activity-list-item:nth-of-type(1) .transaction-status-label',
-        );
-        assert.equal(await transactionStatus.getText(), 'Failed');
+        await driver.findElement({
+          css: '.activity-list-item .transaction-status-label',
+          text: 'Failed',
+        });
       },
     );
   });

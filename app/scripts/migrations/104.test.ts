@@ -14,39 +14,139 @@ describe('migration #104', () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('should do nothing if isLineaMainnetReleased state does not exist', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        PreferencesController: {
-          bar: 'baz',
-        },
-        foo: 'bar',
-      },
+  it('does nothing if no TransactionController state', async () => {
+    const oldState = {
+      OtherController: {},
     };
 
-    const newStorage = await migrate(oldStorage);
-    expect(oldStorage.data).toStrictEqual(newStorage.data);
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual(oldState);
   });
 
-  it('should delete isLineaMainnetReleased state', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        PreferencesController: {
-          isLineaMainnetReleased: true,
-          bar: 'baz',
-        },
-        foo: 'bar',
+  it('sets empty array if no transactions', async () => {
+    const oldState = {
+      TransactionController: {
+        transactions: {},
       },
     };
 
-    const newStorage = await migrate(oldStorage);
-    expect(newStorage.data).toStrictEqual({
-      PreferencesController: {
-        bar: 'baz',
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual({
+      TransactionController: {
+        transactions: [],
       },
-      foo: 'bar',
+    });
+  });
+
+  it('sets array if existing transactions', async () => {
+    const oldState = {
+      TransactionController: {
+        transactions: {
+          testId1: {
+            id: 'testId1',
+            status: 'submitted',
+          },
+          testId2: {
+            id: 'testId2',
+            status: 'unapproved',
+          },
+          testId3: {
+            id: 'testId3',
+            status: 'confirmed',
+          },
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual({
+      TransactionController: {
+        transactions: [
+          {
+            id: 'testId1',
+            status: 'submitted',
+          },
+          {
+            id: 'testId2',
+            status: 'unapproved',
+          },
+          {
+            id: 'testId3',
+            status: 'confirmed',
+          },
+        ],
+      },
+    });
+  });
+
+  it('sorts array by descending time', async () => {
+    const oldState = {
+      TransactionController: {
+        transactions: {
+          testId1: {
+            id: 'testId1',
+            status: 'submitted',
+            time: 1,
+          },
+          testId2: {
+            id: 'testId2',
+            status: 'unapproved',
+            time: 3,
+          },
+          testId3: {
+            id: 'testId3',
+            status: 'failed',
+          },
+          testId4: {
+            id: 'testId4',
+            status: 'confirmed',
+            time: 2,
+          },
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual({
+      TransactionController: {
+        transactions: [
+          {
+            id: 'testId2',
+            status: 'unapproved',
+            time: 3,
+          },
+          {
+            id: 'testId4',
+            status: 'confirmed',
+            time: 2,
+          },
+          {
+            id: 'testId1',
+            status: 'submitted',
+            time: 1,
+          },
+          {
+            id: 'testId3',
+            status: 'failed',
+          },
+        ],
+      },
     });
   });
 });

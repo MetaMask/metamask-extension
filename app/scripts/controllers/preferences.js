@@ -8,7 +8,7 @@ import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets
 import { ThemeType } from '../../../shared/constants/preferences';
 ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
 import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 const mainNetworks = {
   [CHAIN_IDS.MAINNET]: true,
@@ -63,12 +63,12 @@ export default class PreferencesController {
       useCurrencyRateCheck: true,
       useRequestQueue: false,
       openSeaEnabled: false,
-      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       securityAlertsEnabled: false,
-      ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       addSnapAccountEnabled: false,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       advancedGasFee: {},
 
       // WARNING: Do not use feature flags for security-sensitive things.
@@ -102,12 +102,12 @@ export default class PreferencesController {
       snapRegistryList: {},
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IN
       ///: BEGIN:ONLY_INCLUDE_IN(petnames)
       useExternalNameSources: true,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       ...opts.initState,
     };
 
@@ -240,7 +240,7 @@ export default class PreferencesController {
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   /**
    * Setter for the `securityAlertsEnabled` property
    *
@@ -251,9 +251,9 @@ export default class PreferencesController {
       securityAlertsEnabled,
     });
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   /**
    * Setter for the `addSnapAccountEnabled` property.
    *
@@ -265,9 +265,9 @@ export default class PreferencesController {
       addSnapAccountEnabled,
     });
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   /**
    * Setter for the `useExternalNameSources` property
    *
@@ -278,7 +278,7 @@ export default class PreferencesController {
       useExternalNameSources,
     });
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `advancedGasFee` property
@@ -651,7 +651,7 @@ export default class PreferencesController {
     return this.store.getState().disabledRpcMethodPreferences;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   setSnapsAddSnapAccountModalDismissed(value) {
     this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
   }

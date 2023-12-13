@@ -1,5 +1,3 @@
-import { hasProperty, isObject } from '@metamask/utils';
-import { captureException } from '@sentry/browser';
 import { cloneDeep } from 'lodash';
 
 type VersionedData = {
@@ -10,13 +8,10 @@ type VersionedData = {
 export const version = 104;
 
 /**
- * Remove network controller `networkId` state.
+ * This migration converts the transactions object used by the extension transaction controller
+ * to an array of transactions used by the core transaction controller.
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
- * @param originalVersionedData.meta - State metadata.
- * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
- * @returns Updated versioned MetaMask extension state.
+ * @param originalVersionedData
  */
 export async function migrate(
   originalVersionedData: VersionedData,
@@ -27,22 +22,21 @@ export async function migrate(
   return versionedData;
 }
 
-function transformState(
-  state: Record<string, unknown>,
-): Record<string, unknown> {
-  if (
-    !hasProperty(state, 'PreferencesController') ||
-    !isObject(state.PreferencesController)
-  ) {
-    captureException(
-      `Migration ${version}: Invalid PreferencesController state: ${typeof state.PreferencesController}`,
-    );
+function transformState(state: Record<string, any>) {
+  const transactionControllerState = state?.TransactionController;
 
-    return state;
+  if (!transactionControllerState) {
+    return;
   }
 
-  if (hasProperty(state.PreferencesController, 'isLineaMainnetReleased')) {
-    delete state.PreferencesController.isLineaMainnetReleased;
-  }
-  return state;
+  const transactionsObject = transactionControllerState?.transactions || {};
+
+  const transactionsArray = Object.values(transactionsObject).sort(
+    (a: any, b: any) => (a.time > b.time ? -1 : 1), // Descending
+  );
+
+  state.TransactionController = {
+    ...transactionControllerState,
+    transactions: transactionsArray,
+  };
 }
