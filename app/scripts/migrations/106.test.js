@@ -43,7 +43,7 @@ describe('migration #106', () => {
   it('should preserve other PreferencesController state', async () => {
     const oldStorage = {
       meta: {
-        version: 72,
+        version: 105,
       },
       data: {
         PreferencesController: {
@@ -68,7 +68,6 @@ describe('migration #106', () => {
           dismissSeedBackUpReminder: false,
           ipfsGateway: 'dweb.link',
           securityAlertsEnabled: true,
-          knownMethodData: {},
           openSeaEnabled: false,
           useTokenDetection: false,
         },
@@ -94,7 +93,7 @@ describe('migration #106', () => {
     const newStorage = await migration106.migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
-        version: 73,
+        version: 106,
       },
       data: {
         PreferencesController: {
