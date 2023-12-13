@@ -7,7 +7,7 @@ import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { getSnapPrefix } from '@metamask/snaps-utils';
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 // eslint-disable-next-line import/no-duplicates
 import { isObject } from '@metamask/utils';
@@ -561,15 +561,12 @@ export function isNullish(value) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-export const removeSnapIdPrefix = (snapId) =>
-  snapId?.replace(getSnapPrefix(snapId), '');
-
 export const getSnapName = (snapId, subjectMetadata) => {
   if (SNAPS_METADATA[snapId]?.name) {
     return SNAPS_METADATA[snapId].name;
   }
 
-  return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
+  return subjectMetadata?.name ?? stripSnapPrefix(snapId);
 };
 
 export const getSnapRoute = (snapId) => {

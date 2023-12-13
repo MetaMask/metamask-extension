@@ -3,6 +3,7 @@ import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import semver from 'semver';
 ///: END:ONLY_INCLUDE_IF
@@ -56,7 +57,6 @@ import {
   getAccountByAddress,
   getURLHostName,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  removeSnapIdPrefix,
   getSnapName,
   ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
@@ -1851,7 +1851,7 @@ export function getSnapsList(state) {
       id: snap.id,
       iconUrl: targetSubjectMetadata?.iconUrl,
       subjectType: targetSubjectMetadata?.subjectType,
-      packageName: removeSnapIdPrefix(snap.id),
+      packageName: stripSnapPrefix(snap.id),
       name: getSnapName(snap.id, targetSubjectMetadata),
     };
   });
