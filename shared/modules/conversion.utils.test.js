@@ -109,9 +109,7 @@ describe('conversion utils', () => {
       expect(getAtomicHexFromDecimalValue(1.2345, 6)).toStrictEqual('12d644');
     });
     it('should correctly convert 1.2345 for a token with 2 decimals', () => {
-      expect(getAtomicHexFromDecimalValue(1.2345, 2)).toStrictEqual(
-        '7b.733333333333333333333333333333333333',
-      );
+      expect(getAtomicHexFromDecimalValue(1.2345, 2)).toStrictEqual('7b'); // 1.23
     });
   });
 });

@@ -54,10 +54,14 @@ export function decEthToConvertedCurrency(
 
 export const getAtomicHexFromDecimalValue = (
   decimalValue: NumericValue,
-  decimals: number,
+  tokenDecimals: number,
 ) => {
-  const hexValue = new Numeric(decimalValue || 0, 10)
-    .times(Math.pow(10, Number(decimals || 0)), 10)
+  const factor = Math.pow(10, tokenDecimals);
+  const truncatedDecimalValue =
+    Math.floor(Number(decimalValue) * factor) / factor;
+
+  const hexValue = new Numeric(truncatedDecimalValue || 0, 10)
+    .times(Math.pow(10, Number(tokenDecimals || 0)), 10)
     .toBase(16)
     .toString();
   return hexValue;
