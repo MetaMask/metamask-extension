@@ -1,4 +1,4 @@
-import migration106 from './106';
+import { migrate } from './106';
 
 describe('migration #106', () => {
   it('should update the version metadata', async () => {
@@ -9,7 +9,7 @@ describe('migration #106', () => {
       data: {},
     };
 
-    const newStorage = await migration106.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(newStorage.meta).toStrictEqual({
       version: 106,
     });
@@ -27,7 +27,7 @@ describe('migration #106', () => {
       },
     };
 
-    const newStorage = await migration106.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
         version: 106,
@@ -57,7 +57,7 @@ describe('migration #106', () => {
       },
     };
 
-    const newStorage = await migration106.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
         version: 106,
@@ -90,7 +90,7 @@ describe('migration #106', () => {
       },
     };
 
-    const newStorage = await migration106.migrate(oldStorage);
+    const newStorage = await migrate(oldStorage);
     expect(newStorage).toStrictEqual({
       meta: {
         version: 106,
