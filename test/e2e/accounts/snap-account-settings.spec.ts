@@ -1,5 +1,6 @@
 import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixture-builder';
+import { Driver } from '../webdriver/driver';
 
 describe('Add snap account experimental settings', function () {
   it('switch "Enable Add account snap" to on', async function () {
@@ -9,7 +10,7 @@ describe('Add snap account experimental settings', function () {
         title: this.test?.fullTitle(),
         failOnConsoleError: false,
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         await driver.fill('#password', 'correct horse battery staple');
         await driver.press('#password', driver.Key.ENTER);
