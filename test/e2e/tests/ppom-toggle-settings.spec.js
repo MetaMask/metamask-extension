@@ -23,6 +23,14 @@ describe('PPOM Settings @no-mmi', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
+
+        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await driver.clickElement({ text: 'Experimental', tag: 'div' });
+        await driver.clickElement('label.toggle-button');
+
         await openDapp(driver);
         await driver.clickElement('#maliciousPermit');
         const windowHandles = await getWindowHandles(driver, 3);
@@ -50,13 +58,6 @@ describe('PPOM Settings @no-mmi', function () {
       async ({ driver }) => {
         await driver.navigate();
         await unlockWallet(driver);
-
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({ text: 'Experimental', tag: 'div' });
 
         await driver.clickElement(
           '[data-testid="settings-toggle-security-alert-blockaid"] .toggle-button > div',
