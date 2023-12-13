@@ -98,7 +98,10 @@ export default class PreferencesController {
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       useAddressBarEnsResolution: true,
       // Ledger transport type is deprecated. We currently only support webhid
-      ledgerTransportType: LedgerTransportTypes.webhid,
+      // on chrome, and u2f on firefox.
+      ledgerTransportType: window.navigator.hid
+        ? LedgerTransportTypes.webhid
+        : LedgerTransportTypes.u2f,
       snapRegistryList: {},
       transactionSecurityCheckEnabled: false,
       theme: ThemeType.os,

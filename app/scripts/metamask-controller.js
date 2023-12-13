@@ -3556,7 +3556,7 @@ export default class MetamaskController extends EventEmitter {
       // keyring's iframe and have the setting initialized properly
       // Optimistically called to not block MetaMask login due to
       // Ledger Keyring GitHub downtime
-      this.setLedgerTransportPreference(LedgerTransportTypes.webhid);
+      this.setLedgerTransportPreference();
 
       this.selectFirstAccount();
 
@@ -3645,7 +3645,7 @@ export default class MetamaskController extends EventEmitter {
     // keyring's iframe and have the setting initialized properly
     // Optimistically called to not block MetaMask login due to
     // Ledger Keyring GitHub downtime
-    this.setLedgerTransportPreference(LedgerTransportTypes.webhid);
+    this.setLedgerTransportPreference();
   }
 
   async _loginUser(password) {
@@ -5352,10 +5352,12 @@ export default class MetamaskController extends EventEmitter {
    * Sets the Ledger Live preference to use for Ledger hardware wallet support
    *
    * @deprecated This method is deprecated and will be removed in the future.
-   * Only webhid connections are supported.
-   * @param {LedgerTransportTypes.webhid} transportType - only supports webhid
+   * Only webhid connections are supported in chrome and u2f in firefox.
    */
-  async setLedgerTransportPreference(transportType) {
+  async setLedgerTransportPreference() {
+    const transportType = window.navigator.hid
+      ? LedgerTransportTypes.webhid
+      : LedgerTransportTypes.u2f;
     const keyring = await this.getKeyringForDevice(HardwareDeviceNames.ledger);
     if (keyring?.updateTransportMethod) {
       return keyring.updateTransportMethod(transportType).catch((e) => {
