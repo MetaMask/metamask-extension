@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.8.0]
+
 ## [11.7.0]
 ### Added
 - Added auto-suggestion for ticker symbols in the network form ([#21843](https://github.com/MetaMask/metamask-extension/pull/21843))
@@ -4246,7 +4248,8 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.7.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.8.0...HEAD
+[11.8.0]: https://github.com/MetaMask/metamask-extension/compare/v11.7.0...v11.8.0
 [11.7.0]: https://github.com/MetaMask/metamask-extension/compare/v11.6.3...v11.7.0
 [11.6.3]: https://github.com/MetaMask/metamask-extension/compare/v11.6.2...v11.6.3
 [11.6.2]: https://github.com/MetaMask/metamask-extension/compare/v11.6.1...v11.6.2
