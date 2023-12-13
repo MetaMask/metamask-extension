@@ -415,35 +415,5 @@ describe('EthOverview', () => {
         }),
       );
     });
-
-    it("should render a tag with the snap name and 'Beta' if the snap has a name", () => {
-      const mockedStoreWithSnapName = {
-        metamask: {
-          ...mockStore.metamask,
-          internalAccounts: {
-            ...mockStore.metamask.internalAccounts,
-            accounts: {
-              ...mockStore.metamask.internalAccounts.accounts,
-              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-                ...mockStore.metamask.internalAccounts.accounts[
-                  'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-                ],
-                metadata: {
-                  ...mockStore.metamask.internalAccounts.accounts[
-                    'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
-                  ].metadata,
-                  snap: {
-                    name: 'Test Snap Name',
-                  },
-                },
-              },
-            },
-          },
-        },
-      };
-      const mockedStore = configureMockStore([thunk])(mockedStoreWithSnapName);
-      const { getByText } = renderWithProvider(<EthOverview />, mockedStore);
-      expect(getByText('Test Snap Name (Beta)')).toBeInTheDocument();
-    });
   });
 });

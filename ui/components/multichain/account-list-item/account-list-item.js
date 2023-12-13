@@ -38,21 +38,14 @@ import {
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import {
-  findKeyringForAddress,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import {
-  getAccountLabel,
-  getNativeCurrencyImage,
-  getUseBlockie,
-} from '../../../selectors';
+import { getNativeCurrencyImage, getUseBlockie } from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBalance';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
@@ -92,14 +85,6 @@ export const AccountListItem = ({
       itemRef.current?.scrollIntoView?.();
     }
   }, [itemRef, selected]);
-
-  const keyring = useSelector((state) =>
-    findKeyringForAddress(state, identity.address),
-  );
-
-  const { label, accountType } = useSelector((state) =>
-    getAccountLabel(state, identity.address),
-  );
 
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
@@ -264,15 +249,15 @@ export const AccountListItem = ({
             </Text>
           )}
         </Box>
-        {label ? (
+        {identity.label ? (
           <Tag
-            label={label}
+            label={identity.label}
             labelProps={{
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
             }}
             startIconName={
-              accountType === KeyringType.snap ? IconName.Snaps : null
+              identity.keyring === KeyringType.snap ? IconName.Snaps : null
             }
           />
         ) : null}
@@ -305,7 +290,7 @@ export const AccountListItem = ({
           identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={keyring?.type !== KeyringType.hdKeyTree}
+          isRemovable={identity.keyring?.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
         />
       ) : null}
@@ -317,10 +302,13 @@ AccountListItem.propTypes = {
   /**
    * Identity of the account
    */
+  // TODO: determine best way to type this
   identity: PropTypes.shape({
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
+    keyring: PropTypes.string.isRequired,
+    label: PropTypes.string,
   }).isRequired,
   /**
    * Represents if this account is currently selected

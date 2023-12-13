@@ -376,53 +376,6 @@ export function getInternalAccountsSortedByKeyring(state) {
   });
 }
 
-/**
- * Gets the label and account type of the currently selected account.
- *
- * @param state - Redux state object.
- * @param address - Address of the currently selected account.
- * @returns {object} An object containing the label and type of the currently selected account.
- */
-export function getAccountLabel(state, address) {
-  const selectedAccount = getSelectedInternalAccount(state);
-  const { type } = findKeyringForAddress(state, address);
-  let label;
-  switch (type) {
-    case KeyringType.qr:
-      label = HardwareKeyringNames.qr;
-      break;
-    case KeyringType.imported:
-      label = t('imported');
-      break;
-    case KeyringType.trezor:
-      label = HardwareKeyringNames.trezor;
-      break;
-    case KeyringType.ledger:
-      label = HardwareKeyringNames.ledger;
-      break;
-    case KeyringType.lattice:
-      label = HardwareKeyringNames.lattice;
-      break;
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    case KeyringType.snap:
-      label = `${t('snaps')} (${t('beta')})`;
-      if (selectedAccount.metadata?.snap?.name) {
-        label = `${selectedAccount.metadata?.snap?.name} (${t('beta')})`;
-      }
-      break;
-    ///: END:ONLY_INCLUDE_IF
-    default:
-      return {
-        label: null,
-        accountType: null,
-      };
-  }
-  return {
-    label,
-    accountType: type,
-  };
-}
-
 export function getNumberOfTokens(state) {
   const { tokens } = state.metamask;
   return tokens ? tokens.length : 0;

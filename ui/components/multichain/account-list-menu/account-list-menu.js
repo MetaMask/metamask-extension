@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
+import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   Box,
   ButtonLink,
@@ -26,16 +27,13 @@ import {
   Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getSelectedAccount,
-  getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
-  getOriginOfCurrentTab,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  getInternalAccounts,
   getIsAddSnapAccountEnabled,
-  ///: END:ONLY_INCLUDE_IF
+  getOriginOfCurrentTab,
+  getSelectedAccount,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -44,16 +42,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   ADD_SNAP_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  CONNECT_HARDWARE_ROUTE,
   CUSTODY_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
+import { t } from '../../../../app/scripts/translate';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -66,14 +62,37 @@ const ACTION_MODES = {
   IMPORT: 'import',
 };
 
+function getLabel(type, account) {
+  switch (type) {
+    case KeyringType.qr:
+      return HardwareKeyringNames.qr;
+    case KeyringType.imported:
+      return t('imported');
+    case KeyringType.trezor:
+      return HardwareKeyringNames.trezor;
+    case KeyringType.ledger:
+      return HardwareKeyringNames.ledger;
+    case KeyringType.lattice:
+      return HardwareKeyringNames.lattice;
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    case KeyringType.snap:
+      if (account.metadata?.snap?.name) {
+        return `${account.metadata?.snap?.name} (${t('beta')})`;
+      }
+      return `${t('snaps')} (${t('beta')})`;
+    ///: END:ONLY_INCLUDE_IF
+    default:
+      return null;
+  }
+}
+
 export const AccountListMenu = ({
   onClose,
   showAccountCreation = true,
   accountListItemProps = {},
 }) => {
-  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const accounts = useSelector(getInternalAccounts);
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -99,8 +118,16 @@ export const AccountListMenu = ({
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
-
-  console.log('searchResults', searchResults);
+  searchResults = searchResults.map((account) => {
+    const type = account.metadata?.keyring?.type || null;
+    const label = getLabel(type, account);
+    return {
+      ...account,
+      name: account.metadata?.name || account.name,
+      keyring: type,
+      label,
+    };
+  });
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
@@ -325,7 +352,6 @@ export const AccountListMenu = ({
                 const connectedSite = connectedSites[account.address]?.find(
                   ({ origin }) => origin === currentTabOrigin,
                 );
-
                 return (
                   <AccountListItem
                     onClick={() => {
@@ -339,6 +365,7 @@ export const AccountListMenu = ({
                       });
                       dispatch(setSelectedAccount(account.address));
                     }}
+                    // TODO: figure out better typing for identity
                     identity={account}
                     key={account.address}
                     selected={selectedAccount.address === account.address}
