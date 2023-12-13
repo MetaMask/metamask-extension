@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ListItem should render the ListItem without crashing 1`] = `
+<div>
+  <div
+    class="mm-box mm-list-item mm-box--padding-4 mm-box--display-block"
+  >
+    Test item
+  </div>
+</div>
+`;
