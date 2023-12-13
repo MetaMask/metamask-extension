@@ -902,6 +902,13 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.preferencesController, 'setAccountLabel')
           .mockReturnValue();
 
+        jest
+          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
+          .mockReturnValue();
+        jest
+          .spyOn(metamaskController.accountsController, 'setAccountName')
+          .mockReturnValue();
+
         await metamaskController.unlockHardwareWalletAccount(
           accountToUnlock,
           HardwareDeviceNames.trezor,
@@ -944,6 +951,18 @@ describe('MetaMaskController', () => {
       it('should call preferencesController.setAccountLabel', async () => {
         expect(
           metamaskController.preferencesController.setAccountLabel,
+        ).toHaveBeenCalledTimes(1);
+      });
+
+      it('should call accountsController.getAccountByAddress', async () => {
+        expect(
+          metamaskController.accountsController.getAccountByAddress,
+        ).toHaveBeenCalledTimes(1);
+      });
+
+      it('should call accountsController.setAccountName', async () => {
+        expect(
+          metamaskController.accountsController.setAccountName,
         ).toHaveBeenCalledTimes(1);
       });
     });
