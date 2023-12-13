@@ -72,7 +72,6 @@ import {
 import { LoggingController, LogType } from '@metamask/logging-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import { encrypt, decrypt } from '@metamask/browser-passworder';
 import { RateLimitController } from '@metamask/rate-limit-controller';
 import { NotificationController } from '@metamask/notification-controller';
 import {
@@ -244,6 +243,7 @@ import {
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import { NetworkOrderController } from './controllers/network-order';
+import { AccountOrderController } from './controllers/account-order';
 import createOnboardingMiddleware from './lib/createOnboardingMiddleware';
 import { setupMultiplex } from './lib/stream-utils';
 import EnsController from './controllers/ens';
@@ -286,9 +286,11 @@ import { securityProviderCheck } from './lib/security-provider-helpers';
 import { IndexedDBPPOMStorage } from './lib/ppom/indexed-db-backend';
 ///: END:ONLY_INCLUDE_IF
 import { updateCurrentLocale } from './translate';
+import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-bridge';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
+import { encryptorFactory } from './lib/encryptor-factory';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -841,6 +843,15 @@ export default class MetamaskController extends EventEmitter {
       messenger: networkOrderMessenger,
       state: initState.NetworkOrderController,
     });
+
+    const accountOrderMessenger = this.controllerMessenger.getRestricted({
+      name: 'AccountOrderController',
+    });
+    this.accountOrderController = new AccountOrderController({
+      messenger: accountOrderMessenger,
+      state: initState.AccountOrderController,
+    });
+
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController(
       {
@@ -864,6 +875,9 @@ export default class MetamaskController extends EventEmitter {
               });
             },
           ),
+        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+          this.networkController,
+        ),
       },
       {},
       initState.TokenRatesController,
@@ -946,6 +960,10 @@ export default class MetamaskController extends EventEmitter {
         );
       }
       ///: END:ONLY_INCLUDE_IF
+    } else if (isManifestV3) {
+      additionalKeyrings.push(
+        hardwareKeyringBuilderFactory(TrezorKeyring, TrezorOffscreenBridge),
+      );
     }
 
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -1002,9 +1020,10 @@ export default class MetamaskController extends EventEmitter {
     });
 
     this.keyringController = new KeyringController({
+      cacheEncryptionKey: true,
       keyringBuilders: additionalKeyrings,
       state: initState.KeyringController,
-      encryptor: opts.encryptor || undefined,
+      encryptor: opts.encryptor || encryptorFactory(600_000),
       messenger: keyringControllerMessenger,
       removeIdentity: this.preferencesController.removeAddress.bind(
         this.preferencesController,
@@ -1928,6 +1947,7 @@ export default class MetamaskController extends EventEmitter {
       SubjectMetadataController: this.subjectMetadataController,
       AnnouncementController: this.announcementController,
       NetworkOrderController: this.networkOrderController,
+      AccountOrderController: this.accountOrderController,
       GasFeeController: this.gasFeeController,
       TokenListController: this.tokenListController,
       TokensController: this.tokensController,
@@ -1980,6 +2000,7 @@ export default class MetamaskController extends EventEmitter {
         SubjectMetadataController: this.subjectMetadataController,
         AnnouncementController: this.announcementController,
         NetworkOrderController: this.networkOrderController,
+        AccountOrderController: this.accountOrderController,
         GasFeeController: this.gasFeeController,
         TokenListController: this.tokenListController,
         TokensController: this.tokensController,
@@ -2165,12 +2186,13 @@ export default class MetamaskController extends EventEmitter {
    * @param {string} snapId - The ID of the snap the handler is being triggered on.
    * @param {string} handler - The handler to trigger on the snap for the request.
    * @param {boolean} success - Whether the invocation was successful or not.
+   * @param {string} origin - The origin of the request.
    */
   _trackSnapExportUsage = wrap(
     memoize(
       () =>
         throttle(
-          (snapId, handler, success) =>
+          (snapId, handler, success, origin) =>
             this.metaMetricsController.trackEvent({
               event: MetaMetricsEventName.SnapExportUsed,
               category: MetaMetricsEventCategory.Snaps,
@@ -2179,11 +2201,12 @@ export default class MetamaskController extends EventEmitter {
                 export: handler,
                 snap_category: this._getSnapMetadata(snapId)?.category,
                 success,
+                origin,
               },
             }),
           SECOND * 60,
         ),
-      (snapId, handler) => `${snapId}${handler}`,
+      (snapId, handler, _, origin) => `${snapId}${handler}${origin}`,
     ),
     (getFunc, ...args) => getFunc(...args)(...args),
   );
@@ -2204,10 +2227,10 @@ export default class MetamaskController extends EventEmitter {
         'SnapController:handleRequest',
         args,
       );
-      this._trackSnapExportUsage(args.snapId, args.handler, true);
+      this._trackSnapExportUsage(args.snapId, args.handler, true, args.origin);
       return response;
     } catch (error) {
-      this._trackSnapExportUsage(args.snapId, args.handler, false);
+      this._trackSnapExportUsage(args.snapId, args.handler, false, args.origin);
       throw error;
     }
   }
@@ -2227,11 +2250,13 @@ export default class MetamaskController extends EventEmitter {
    * Constructor helper for getting Snap permission specifications.
    */
   getSnapPermissionSpecifications() {
+    const snapEncryptor = encryptorFactory(10_000);
+
     return {
       ...buildSnapEndowmentSpecifications(),
       ...buildSnapRestrictedMethodSpecifications({
-        encrypt,
-        decrypt,
+        encrypt: snapEncryptor.encrypt,
+        decrypt: snapEncryptor.decrypt,
         getLocale: this.getLocale.bind(this),
         clearSnapState: this.controllerMessenger.call.bind(
           this.controllerMessenger,
@@ -2959,6 +2984,10 @@ export default class MetamaskController extends EventEmitter {
         ),
       setTermsOfUseLastAgreed:
         appStateController.setTermsOfUseLastAgreed.bind(appStateController),
+      setSurveyLinkLastClickedOrClosed:
+        appStateController.setSurveyLinkLastClickedOrClosed.bind(
+          appStateController,
+        ),
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       setSnapsInstallPrivacyWarningShownStatus:
         appStateController.setSnapsInstallPrivacyWarningShownStatus.bind(
@@ -3158,6 +3187,7 @@ export default class MetamaskController extends EventEmitter {
       markNotificationsAsRead: this.markNotificationsAsRead.bind(this),
       updateCaveat: this.updateCaveat.bind(this),
       updateNetworksList: this.updateNetworksList.bind(this),
+      updateAccountsList: this.updateAccountsList.bind(this),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
 
@@ -3474,8 +3504,6 @@ export default class MetamaskController extends EventEmitter {
   async createNewVaultAndRestore(password, encodedSeedPhrase) {
     const releaseLock = await this.createVaultMutex.acquire();
     try {
-      let accounts, lastBalance;
-
       const seedPhraseAsBuffer = Buffer.from(encodedSeedPhrase);
 
       // clear known identities
@@ -3505,34 +3533,41 @@ export default class MetamaskController extends EventEmitter {
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
 
+      // Scan accounts until we find an empty one
+      const { chainId } = this.networkController.state.providerConfig;
       const ethQuery = new EthQuery(this.provider);
-      accounts = await this.keyringController.getAccounts();
-      lastBalance = await this.getBalance(
-        accounts[accounts.length - 1],
-        ethQuery,
-      );
+      const accounts = await this.keyringController.getAccounts();
+      let address = accounts[accounts.length - 1];
 
-      // seek out the first zero balance
-      while (lastBalance !== '0x0') {
-        const { addedAccountAddress } =
-          await this.keyringController.addNewAccount(accounts.length);
-        accounts = await this.keyringController.getAccounts();
-        lastBalance = await this.getBalance(addedAccountAddress, ethQuery);
-      }
+      for (let count = accounts.length; ; count++) {
+        const balance = await this.getBalance(address, ethQuery);
 
-      const internalAccounts = this.accountsController.listAccounts();
+        if (balance === '0x0') {
+          // This account has no balance, so check for tokens
+          await this.detectTokensController.detectNewTokens({
+            selectedAddress: address,
+          });
 
-      // remove extra zero balance account potentially created from seeking ahead
-      if (accounts.length > 1 && lastBalance === '0x0') {
-        const internalAccount = internalAccounts.find(
-          (account) =>
-            account.address.toLowerCase() ===
-            accounts[accounts.length - 1].toLowerCase(),
-        );
-        if (internalAccount) {
-          await this.removeAccount(internalAccount.address);
+          const tokens =
+            this.tokensController.state.allTokens?.[chainId]?.[address];
+          const detectedTokens =
+            this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
+
+          if (
+            (tokens?.length ?? 0) === 0 &&
+            (detectedTokens?.length ?? 0) === 0
+          ) {
+            // This account has no balance or tokens
+            if (count !== 1) {
+              await this.removeAccount(address);
+            }
+            break;
+          }
         }
-        accounts = await this.keyringController.getAccounts();
+
+        // This account has assets, so check the next one
+        ({ addedAccountAddress: address } =
+          await this.keyringController.addNewAccount(count));
       }
 
       // This must be set as soon as possible to communicate to the
@@ -3752,6 +3787,7 @@ export default class MetamaskController extends EventEmitter {
     const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringName = null;
     if (
+      deviceName !== HardwareDeviceNames.trezor &&
       deviceName !== HardwareDeviceNames.QR &&
       !this.canUseHardwareWallets()
     ) {
@@ -4704,6 +4740,7 @@ export default class MetamaskController extends EventEmitter {
           this.subjectMetadataController.addSubjectMetadata.bind(
             this.subjectMetadataController,
           ),
+        metamaskState: this.getState(),
         getProviderState: this.getProviderState.bind(this),
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
@@ -5480,6 +5517,15 @@ export default class MetamaskController extends EventEmitter {
   updateNetworksList = (sortedNetworkList) => {
     try {
       this.networkOrderController.updateNetworksList(sortedNetworkList);
+    } catch (err) {
+      log.error(err.message);
+      throw err;
+    }
+  };
+
+  updateAccountsList = (pinnedAccountList) => {
+    try {
+      this.accountOrderController.updateAccountsList(pinnedAccountList);
     } catch (err) {
       log.error(err.message);
       throw err;

@@ -54,6 +54,9 @@ export const SENTRY_BACKGROUND_STATE = {
   NetworkOrderController: {
     orderedNetworkList: [],
   },
+  AccountOrderController: {
+    pinnedAccountList: [],
+  },
   AppMetadataController: {
     currentAppVersion: true,
     currentMigrationVersion: true,
@@ -83,6 +86,7 @@ export const SENTRY_BACKGROUND_STATE = {
     showBetaHeader: true,
     showProductTour: true,
     showTestnetMessageInDropdown: true,
+    surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,
@@ -283,6 +287,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   TokenRatesController: {
     contractExchangeRates: false,
+    contractExchangeRatesByChainId: false,
   },
   TokensController: {
     allDetectedTokens: {

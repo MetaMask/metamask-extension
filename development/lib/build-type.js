@@ -67,6 +67,7 @@ const BuildTypeStruct = object({
   env: optional(EnvArrayStruct),
   isPrerelease: optional(boolean()),
   manifestOverrides: union([string(), literal(false)]),
+  buildNameOverride: union([string(), literal(false)]),
 });
 
 const CopyAssetStruct = object({ src: string(), dest: string() });

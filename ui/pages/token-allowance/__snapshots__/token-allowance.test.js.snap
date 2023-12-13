@@ -430,6 +430,13 @@ exports[`TokenAllowancePage when mounted should match snapshot 1`] = `
       </div>
     </div>
     <div
+      class="box box--margin-right-4 box--margin-left-4 box--flex-direction-row"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center"
+      />
+    </div>
+    <div
       class="box box--display-flex box--flex-direction-row box--justify-content-center"
     >
       <a

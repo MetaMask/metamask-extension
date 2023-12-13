@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -40,7 +41,7 @@ describe('Permissions', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.clickElement({

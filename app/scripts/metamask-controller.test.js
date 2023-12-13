@@ -24,6 +24,7 @@ import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
+import mockEncryptor from '../../test/lib/mock-encryptor';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -317,15 +318,7 @@ describe('MetaMaskController', () => {
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {
@@ -600,14 +593,15 @@ describe('MetaMaskController', () => {
       });
 
       it('should restore any consecutive accounts with balances without extra zero balance accounts', async () => {
+        // Give account 1 a balance
         jest
           .spyOn(metamaskController, 'getBalance')
           .mockImplementation((address) => {
             switch (address) {
               case TEST_ADDRESS:
-              case TEST_ADDRESS_3:
                 return Promise.resolve('0x14ced5122ce0a000');
               case TEST_ADDRESS_2:
+              case TEST_ADDRESS_3:
                 return Promise.resolve('0x0');
               default:
                 return Promise.reject(
@@ -616,20 +610,33 @@ describe('MetaMaskController', () => {
             }
           });
 
+        // Give account 2 a token
+        jest
+          .spyOn(metamaskController.tokensController, 'state', 'get')
+          .mockReturnValue({
+            allTokens: {},
+            allIgnoredTokens: {},
+            allDetectedTokens: { '0x1': { [TEST_ADDRESS_2]: [{}] } },
+          });
+
         const startTime = Date.now();
         await metamaskController.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED,
         );
 
+        // Expect first account to be selected
         const identities = cloneDeep(metamaskController.getState().identities);
         expect(
           identities[TEST_ADDRESS].lastSelected >= startTime &&
             identities[TEST_ADDRESS].lastSelected <= Date.now(),
         ).toStrictEqual(true);
+
+        // Expect first 2 accounts to be restored
         delete identities[TEST_ADDRESS].lastSelected;
         expect(identities).toStrictEqual({
           [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
+          [TEST_ADDRESS_2]: { address: TEST_ADDRESS_2, name: 'Account 2' },
         });
       });
     });
@@ -822,15 +829,7 @@ describe('MetaMaskController', () => {
 
         const localMetaMaskController = new MetaMaskController({
           showUserConfirmation: noop,
-          encryptor: {
-            encrypt(_, object) {
-              this.object = object;
-              return Promise.resolve('mock-encrypted');
-            },
-            decrypt() {
-              return Promise.resolve(this.object);
-            },
-          },
+          encryptor: mockEncryptor,
           initState: {
             ...cloneDeep(firstTimeState),
             KeyringController: {
@@ -1824,15 +1823,7 @@ describe('MetaMaskController', () => {
 
       const metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {
@@ -1856,15 +1847,7 @@ describe('MetaMaskController', () => {
 
       const metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {
