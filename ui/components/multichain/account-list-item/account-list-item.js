@@ -289,7 +289,7 @@ export const AccountListItem = ({
           isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
           isPinned={process.env.NETWORK_ACCOUNT_DND ? isPinned : null}
-          ishidden={process.env.NETWORK_ACCOUNT_DND ? isHidden : null}
+          isHidden={process.env.NETWORK_ACCOUNT_DND ? isHidden : null}
         />
       ) : null}
     </Box>

@@ -356,37 +356,46 @@ export const AccountListMenu = ({
                 );
 
                 return (
-                  <AccountListItem
-                    onClick={() => {
-                      onClose();
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.NavAccountSwitched,
-                        properties: {
-                          location: 'Main Menu',
-                        },
-                      });
-                      dispatch(setSelectedAccount(account.address));
-                    }}
-                    identity={account}
+                  <Box
+                    className={
+                      account.hidden
+                        ? 'multichain-account-menu-popover__list--menu-item-hidden'
+                        : 'multichain-account-menu-popover__list--menu-item'
+                    }
                     key={account.address}
-                    selected={selectedAccount.address === account.address}
-                    closeMenu={onClose}
-                    connectedAvatar={connectedSite?.iconUrl}
-                    connectedAvatarName={connectedSite?.name}
-                    showOptions
-                    isPinned={
-                      process.env.NETWORK_ACCOUNT_DND
-                        ? Boolean(account.pinned)
-                        : null
-                    }
-                    isHidden={
-                      process.env.NETWORK_ACCOUNT_DND
-                        ? Boolean(account.hidden)
-                        : null
-                    }
-                    {...accountListItemProps}
-                  />
+                  >
+                    <AccountListItem
+                      onClick={() => {
+                        onClose();
+                        trackEvent({
+                          category: MetaMetricsEventCategory.Navigation,
+                          event: MetaMetricsEventName.NavAccountSwitched,
+                          properties: {
+                            location: 'Main Menu',
+                          },
+                        });
+                        dispatch(setSelectedAccount(account.address));
+                      }}
+                      identity={account}
+                      key={account.address}
+                      selected={selectedAccount.address === account.address}
+                      closeMenu={onClose}
+                      connectedAvatar={connectedSite?.iconUrl}
+                      connectedAvatarName={connectedSite?.name}
+                      showOptions
+                      isPinned={
+                        process.env.NETWORK_ACCOUNT_DND
+                          ? Boolean(account.pinned)
+                          : null
+                      }
+                      isHidden={
+                        process.env.NETWORK_ACCOUNT_DND
+                          ? Boolean(account.hidden)
+                          : null
+                      }
+                      {...accountListItemProps}
+                    />
+                  </Box>
                 );
               })}
             </Box>

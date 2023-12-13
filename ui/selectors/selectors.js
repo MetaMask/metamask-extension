@@ -1856,17 +1856,31 @@ export function getUpdatedAndSortedAccounts(state) {
 
   console.log(accounts);
 
-  const notPinnedAccounts = accounts.filter(
-    (account) => !pinnedAddresses.includes(account.address),
-  );
-
   const sortedPinnedAccounts = pinnedAddresses
     .map((address) => accounts.find((account) => account.address === address))
     .filter((account) =>
-      Boolean(account && pinnedAddresses.includes(account.address)),
+      Boolean(
+        account &&
+          pinnedAddresses.includes(account.address) &&
+          !hiddenAddresses.includes(account.address),
+      ),
     );
 
-  const sortedSearchResults = [...sortedPinnedAccounts, ...notPinnedAccounts];
+  const notPinnedAccounts = accounts.filter(
+    (account) =>
+      !pinnedAddresses.includes(account.address) &&
+      !hiddenAddresses.includes(account.address),
+  );
+
+  const filteredHiddenAccounts = accounts.filter((account) =>
+    hiddenAddresses.includes(account.address),
+  );
+
+  const sortedSearchResults = [
+    ...sortedPinnedAccounts,
+    ...notPinnedAccounts,
+    ...filteredHiddenAccounts,
+  ];
 
   return sortedSearchResults;
 }
