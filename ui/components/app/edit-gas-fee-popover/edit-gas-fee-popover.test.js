@@ -66,7 +66,11 @@ const render = ({ txProps, contextProps } = {}) => {
         nickname: GOERLI_DISPLAY_NAME,
         type: NETWORK_TYPES.GOERLI,
       },
-      cachedBalances: {},
+      accountsByChainId: {
+        [CHAIN_IDS.GOERLI]: {
+          '0xAddress': { address: '0xAddress', balance: '0x1F4' },
+        },
+      },
       accounts: {
         '0xAddress': {
           address: '0xAddress',

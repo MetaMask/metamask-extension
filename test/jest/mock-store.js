@@ -147,9 +147,6 @@ export const createSwapsMockStore = () => {
         chainId: CHAIN_IDS.MAINNET,
         ticker: 'ETH',
       },
-      cachedBalances: {
-        [CHAIN_IDS.MAINNET]: 5,
-      },
       preferences: {
         showFiatInTestnets: true,
       },
@@ -259,6 +256,18 @@ export const createSwapsMockStore = () => {
         '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
           address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
           balance: '0x0',
+        },
+      },
+      accountsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            balance: '0x0',
+          },
+          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+            address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            balance: '0x0',
+          },
         },
       },
       selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',

@@ -52,10 +52,14 @@ const renderUseAccountTotalFiatBalance = (address) => {
         '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': 0.0006189,
         '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': 3.304588,
       },
-      cachedBalances: {
+      accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
-          '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da': '0x041173b2c0e57d',
-          '0xd8ad671f1fcc94bcf0ebc6ec4790da35e8d5e1e1': '0x048010d1739513',
+          '0x0836f5ed6b62baf60706fe3adc0ff0fd1df833da': {
+            balance: '0x041173b2c0e57d',
+          },
+          '0xd8ad671f1fcc94bcf0ebc6ec4790da35e8d5e1e1': {
+            balance: '0x048010d1739513',
+          },
         },
       },
       providerConfig: {
