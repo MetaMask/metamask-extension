@@ -23,7 +23,8 @@ function transformState(state) {
     ...state,
     PreferencesController: {
       ...PreferencesController,
-      securityAlertsEnabled: true,
+      securityAlertsEnabled:
+        PreferencesController.transactionSecurityCheckEnabled !== true,
     },
   };
 }

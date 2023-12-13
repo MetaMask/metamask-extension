@@ -40,6 +40,33 @@ describe('migration #106', () => {
     });
   });
 
+  it('should not set securityAlertsEnabled to true in PreferencesController if transactionSecurityCheckEnabled is set to true', async () => {
+    const oldStorage = {
+      meta: {
+        version: 105,
+      },
+      data: {
+        PreferencesController: {
+          securityAlertsEnabled: false,
+          transactionSecurityCheckEnabled: true,
+        },
+      },
+    };
+
+    const newStorage = await migrate(oldStorage);
+    expect(newStorage).toStrictEqual({
+      meta: {
+        version: 106,
+      },
+      data: {
+        PreferencesController: {
+          securityAlertsEnabled: false,
+          transactionSecurityCheckEnabled: true,
+        },
+      },
+    });
+  });
+
   it('should preserve other PreferencesController state', async () => {
     const oldStorage = {
       meta: {
