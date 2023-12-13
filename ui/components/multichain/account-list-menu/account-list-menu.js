@@ -380,6 +380,11 @@ export const AccountListMenu = ({
                         ? Boolean(account.pinned)
                         : null
                     }
+                    isHidden={
+                      process.env.NETWORK_ACCOUNT_DND
+                        ? Boolean(account.hidden)
+                        : null
+                    }
                     {...accountListItemProps}
                   />
                 );

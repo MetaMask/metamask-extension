@@ -1277,6 +1277,10 @@ export function getPinnedAccountsList(state) {
   return state.metamask.pinnedAccountList;
 }
 
+export function getHiddenAccountsList(state) {
+  return state.metamask.hiddenAccountList;
+}
+
 export function getShowRecoveryPhraseReminder(state) {
   const {
     recoveryPhraseReminderLastShown,
@@ -1840,10 +1844,17 @@ export function getCustomTokenAmount(state) {
 export function getUpdatedAndSortedAccounts(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const pinnedAddresses = getPinnedAccountsList(state);
+  const hiddenAddresses = getHiddenAccountsList(state);
 
   accounts.forEach((account) => {
     account.pinned = Boolean(pinnedAddresses?.includes(account.address));
   });
+
+  accounts.forEach((account) => {
+    account.hidden = Boolean(hiddenAddresses?.includes(account.address));
+  });
+
+  console.log(accounts);
 
   const notPinnedAccounts = accounts.filter(
     (account) => !pinnedAddresses.includes(account.address),
