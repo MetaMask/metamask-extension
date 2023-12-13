@@ -28,9 +28,7 @@ import {
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-import {
-  SNAPS_METADATA,
-} from '../../../shared/constants/snaps';
+import { SNAPS_METADATA } from '../../../shared/constants/snaps';
 ///: END:ONLY_INCLUDE_IF
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -103,8 +101,8 @@ export function addressSummary(
   }
   return checked
     ? `${checked.slice(0, firstSegLength)}...${checked.slice(
-      checked.length - lastSegLength,
-    )}`
+        checked.length - lastSegLength,
+      )}`
     : '...';
 }
 

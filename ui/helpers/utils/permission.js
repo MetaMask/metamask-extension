@@ -3,7 +3,11 @@ import React from 'react';
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { getRpcCaveatOrigins } from '@metamask/snaps-controllers';
-import { SnapCaveatType, getSlip44ProtocolName, getSnapDerivationPathName } from '@metamask/snaps-utils';
+import {
+  SnapCaveatType,
+  getSlip44ProtocolName,
+  getSnapDerivationPathName,
+} from '@metamask/snaps-utils';
 import { isNonEmptyArray } from '@metamask/controller-utils';
 ///: END:ONLY_INCLUDE_IF
 import classnames from 'classnames';
@@ -31,9 +35,7 @@ import {
   TextColor,
   TextVariant,
 } from '../constants/design-system';
-import {
-  getSnapName,
-} from './util';
+import { getSnapName } from './util';
 ///: END:ONLY_INCLUDE_IF
 
 const UNKNOWN_PERMISSION = Symbol('unknown');
