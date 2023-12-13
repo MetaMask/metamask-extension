@@ -1,13 +1,12 @@
-const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+import { withFixtures } from '../helpers';
+import FixtureBuilder from '../fixture-builder';
 
 describe('Add snap account experimental settings', function () {
   it('switch "Enable Add account snap" to on', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.title,
+        title: this.test?.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -42,13 +41,10 @@ describe('Add snap account experimental settings', function () {
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-action-button"]',
         );
-        assert.equal(
-          await driver.isElementPresentAndVisible({
-            text: 'Add account Snap',
-            tag: 'button',
-          }),
-          true,
-        );
+        await driver.findElement({
+          text: 'Add account Snap',
+          tag: 'button',
+        });
       },
     );
   });
