@@ -856,4 +856,79 @@ describe('Selectors', () => {
       expect(result).toStrictEqual(false);
     });
   });
+
+  it('#getUpdatedAndSortedAccounts', () => {
+    const pinnedAccountState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pinnedAccountList: [
+          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+          '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+        ],
+        accounts: {
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            name: 'Test Account',
+            balance: '0x0',
+          },
+          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+            address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            name: 'Test Account 2',
+            balance: '0x0',
+          },
+          '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+            address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            name: 'Test Ledger 1',
+            balance: '0x0',
+          },
+          '0xeb9e64b93097bc15f01f13eae97015c57ab64823': {
+            name: 'Test Account 3',
+            address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+            balance: '0x0',
+          },
+          '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+            name: 'Custody test',
+            address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+            balance: '0x0',
+          },
+        },
+      },
+    };
+    const expectedResult = [
+      {
+        address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+        balance: '0x0',
+        name: 'Test Account 2',
+        pinned: true,
+      },
+      {
+        address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+        balance: '0x0',
+        name: 'Test Account 3',
+        pinned: true,
+      },
+      {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        name: 'Test Account',
+        balance: '0x0',
+        pinned: false,
+      },
+      {
+        address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        name: 'Test Ledger 1',
+        balance: '0x0',
+        pinned: false,
+      },
+      {
+        name: 'Custody test',
+        address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+        balance: '0x0',
+        pinned: false,
+      },
+    ];
+    expect(
+      selectors.getUpdatedAndSortedAccounts(pinnedAccountState),
+    ).toStrictEqual(expectedResult);
+  });
 });

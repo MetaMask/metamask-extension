@@ -1975,7 +1975,7 @@
     "message": "hold to reveal circle unlocked"
   },
   "id": {
-    "message": "Id"
+    "message": "ID"
   },
   "ignoreAll": {
     "message": "Ignore all"
@@ -3578,6 +3578,9 @@
   "pinExtensionTitle": {
     "message": "Pin extension"
   },
+  "pinToTop": {
+    "message": "Pin to top"
+  },
   "pleaseConfirm": {
     "message": "Please confirm"
   },
@@ -3943,6 +3946,9 @@
   "searchResults": {
     "message": "Search results"
   },
+  "searchTokenOrNFT": {
+    "message": "Search token or NFT"
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -4027,6 +4033,9 @@
   },
   "select": {
     "message": "Select"
+  },
+  "selectAToken": {
+    "message": "Select a token"
   },
   "selectAccounts": {
     "message": "Select the account(s) to use on this site"
@@ -5576,6 +5585,9 @@
   },
   "unlockMessage": {
     "message": "The decentralized web awaits"
+  },
+  "unpin": {
+    "message": "Unpin"
   },
   "unrecognizedChain": {
     "message": "This custom network is not recognized",

@@ -262,7 +262,6 @@ env:
   # Determines if feature flagged Multichain UI should be used
   - MULTICHAIN: ''
   - NETWORK_ACCOUNT_DND: ''
-
   ###
   # Meta variables
   ###
