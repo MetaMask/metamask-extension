@@ -66,6 +66,7 @@ import {
   getHardwareWalletType,
 } from '../../../selectors';
 import {
+  getAtomicHexFromDecimalValue,
   getValueFromWeiHex,
   hexToDecimal,
 } from '../../../../shared/modules/conversion.utils';
@@ -138,18 +139,8 @@ import SmartTransactionsPopover from '../prepare-swap-page/smart-transactions-po
 import QuotesLoadingAnimation from '../prepare-swap-page/quotes-loading-animation';
 import ReviewQuote from '../prepare-swap-page/review-quote';
 import { updateSendAmount } from '../../../ducks/send';
-import { Numeric } from '../../../../shared/modules/Numeric';
 
 let timeoutIdForQuotesPrefetching;
-
-// TODO add tests for this, move to conversion.utils.js
-const getHexValue = (decimalValue, decimals) => {
-  const hexValue = new Numeric(decimalValue || 0, 10)
-    .times(Math.pow(10, Number(decimals || 0)), 10)
-    .toBase(16)
-    .toString();
-  return hexValue;
-};
 
 export default function PrepareSendAndSwapPage({
   ethBalance,
@@ -339,7 +330,9 @@ export default function PrepareSendAndSwapPage({
       if (isSendFlow) {
         // If From and To tokens are the same, update Send amount
         dispatch(
-          updateSendAmount(getHexValue(newInputValue, fromTokenDecimals)),
+          updateSendAmount(
+            getAtomicHexFromDecimalValue(newInputValue, fromTokenDecimals),
+          ),
         );
       }
 

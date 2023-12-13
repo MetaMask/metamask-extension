@@ -52,6 +52,17 @@ export function decEthToConvertedCurrency(
   return numeric.round(2);
 }
 
+export const getAtomicHexFromDecimalValue = (
+  decimalValue: NumericValue,
+  decimals: number,
+) => {
+  const hexValue = new Numeric(decimalValue || 0, 10)
+    .times(Math.pow(10, Number(decimals || 0)), 10)
+    .toBase(16)
+    .toString();
+  return hexValue;
+};
+
 export function getWeiHexFromDecimalValue({
   value,
   conversionRate = 1,

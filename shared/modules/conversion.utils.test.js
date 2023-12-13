@@ -1,6 +1,7 @@
 import { EtherDenomination } from '../constants/common';
 import {
   decWEIToDecETH,
+  getAtomicHexFromDecimalValue,
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
   sumDecimals,
@@ -74,6 +75,43 @@ describe('conversion utils', () => {
       });
 
       expect(fiatTransactionAmount).toStrictEqual('468.58');
+    });
+  });
+
+  describe('getAtomicHexFromDecimalValue', () => {
+    it('should correctly convert 0 for a token with 18 decimals', () => {
+      expect(getAtomicHexFromDecimalValue(0, 18)).toStrictEqual('0');
+    });
+    it('should correctly convert 1 for a token with 18 decimals', () => {
+      expect(getAtomicHexFromDecimalValue(1, 18)).toStrictEqual(
+        'de0b6b3a7640000',
+      );
+    });
+
+    it('should correctly convert 1.23 for a token with 18 decimals', () => {
+      expect(getAtomicHexFromDecimalValue(1.23, 18)).toStrictEqual(
+        '1111d67bb1bb0000',
+      );
+    });
+    it('should correctly convert 1.23 for a token with 6 decimals', () => {
+      expect(getAtomicHexFromDecimalValue(1.23, 6)).toStrictEqual('12c4b0');
+    });
+    it('should correctly convert 1.23 for a token with 2 decimals', () => {
+      expect(getAtomicHexFromDecimalValue(1.23, 2)).toStrictEqual('7b');
+    });
+
+    it('should correctly convert 1.2345 for a token with 18 decimals', () => {
+      expect(getAtomicHexFromDecimalValue(1.2345, 18)).toStrictEqual(
+        '1121d33597384000',
+      );
+    });
+    it('should correctly convert 1.2345 for a token with 6 decimals', () => {
+      expect(getAtomicHexFromDecimalValue(1.2345, 6)).toStrictEqual('12d644');
+    });
+    it('should correctly convert 1.2345 for a token with 2 decimals', () => {
+      expect(getAtomicHexFromDecimalValue(1.2345, 2)).toStrictEqual(
+        '7b.733333333333333333333333333333333333',
+      );
     });
   });
 });
