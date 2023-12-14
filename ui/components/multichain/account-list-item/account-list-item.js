@@ -290,7 +290,7 @@ export const AccountListItem = ({
           identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={identity.keyring?.type !== KeyringType.hdKeyTree}
+          isRemovable={identity.keyring !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
         />
       ) : null}
