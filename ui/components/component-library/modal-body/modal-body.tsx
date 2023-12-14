@@ -14,6 +14,8 @@ export const ModalBody: ModalBodyComponent = React.forwardRef(
     <Box
       className={classnames('mm-modal-body', className)}
       ref={ref}
+      paddingLeft={4}
+      paddingRight={4}
       {...(props as BoxProps<C>)}
     >
       {children}

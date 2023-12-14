@@ -8,18 +8,22 @@ import {
   Display,
   JustifyContent,
   AlignItems,
-  FlexDirection,
-} from '../../../helpers/constants/design-system';
+} from '../../../../helpers/constants/design-system';
 
-import { Box, ModalFocus, useModalContext } from '..';
+import { Box, ModalFocus, useModalContext } from '../..';
 
-import { BoxProps } from '../box';
-import type { PolymorphicRef } from '../box';
+import { BoxProps } from '../../box';
+import type { PolymorphicRef } from '../../box';
 import {
   ModalContentProps,
   ModalContentSize,
   ModalContentComponent,
-} from './modal-content.types';
+} from '../modal-content.types';
+
+/**
+ * @deprecated This version of `ModalContent` is deprecated. Please use the version from the component-library in ui/components/component-library/modal-content/modal-content.tsx
+ * See PR https://github.com/MetaMask/metamask-extension/pull/22207 for details.
+ */
 
 export const ModalContent: ModalContentComponent = React.forwardRef(
   <C extends React.ElementType = 'div'>(
@@ -106,10 +110,7 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             backgroundColor={BackgroundColor.backgroundDefault}
             borderRadius={BorderRadius.LG}
             width={BlockSize.Full}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            paddingTop={4}
-            paddingBottom={4}
+            padding={4}
             ref={modalDialogRef}
             {...modalDialogProps}
             className={classnames(
@@ -117,6 +118,10 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
               `mm-modal-content__dialog--size-${size}`,
               modalDialogProps?.className,
             )}
+            style={{
+              ...props?.style,
+              overflowY: 'auto', // fallback for any content that extends beyond the modal dialog
+            }}
           >
             {children}
           </Box>
