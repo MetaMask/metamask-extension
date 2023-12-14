@@ -27,6 +27,14 @@ const CHAOS_IDENTITY = {
   balance: '0x152387ad22c3f0',
 };
 
+const SNAP_IDENTITY = {
+  ...testData.metamask.identities[simpleAddress],
+  name: 'Snap Account',
+  balance: '0x152387ad22c3f0',
+  keyring: 'Snap Keyring',
+  label: 'Test Snap Name',
+};
+
 const CONTAINER_STYLES = {
   style: {
     width: '328px',
@@ -125,5 +133,13 @@ ConnectedSiteChaosItem.args = {
   connectedAvatar: 'https://uniswap.org/favicon.ico',
   connectedAvatarName: 'Uniswap',
 };
+
+export const SnapItem = (args) => (
+  <div {...CONTAINER_STYLES}>
+    <AccountListItem {...args} />
+  </div>
+);
+SnapItem.args = { identity: SNAP_IDENTITY };
+SnapItem.decorators = [(story) => <Provider store={store}>{story()}</Provider>];
 
 DefaultStory.storyName = 'Default';
