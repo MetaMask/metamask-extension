@@ -20,7 +20,9 @@ const WalletOverview = ({
   const t = useI18nContext();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const checksummedAddress = toChecksumHexAddress(selectedAccount.address);
-  const label = `${selectedAccount.metadata?.snap?.name} (${t('beta')})`;
+  const label = selectedAccount.metadata?.snap?.name
+    ? `${selectedAccount.metadata.snap.name} (${t('beta')})`
+    : null;
   const keyring = selectedAccount.metadata?.keyring?.type;
   return (
     <div className={classnames('wallet-overview', className)}>
