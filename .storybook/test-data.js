@@ -678,6 +678,13 @@ const state = {
       },
     },
     accountsByChainId: {
+      '0x1': {
+        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': { balance: '0x0' },
+        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
+          balance: '0xcaf5317161f400',
+        },
+        '0x9d0ba4ddac06032527b140912ec808ab9451b788': { balance: '0x0' },
+      },
       '0x5': {
         '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
           address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
@@ -1147,37 +1154,6 @@ const state = {
         v: '0x93',
       },
     ],
-    accountsByChainId: {
-      1: {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': { balance: '0x0' },
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-          balance: '0xcaf5317161f400',
-        },
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': { balance: '0x0' },
-      },
-      3: {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-          balance: '0x18d289d450bace66',
-        },
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-          balance: '0x2d3142f5000',
-        },
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
-          balance: '0x15f6f0b9d4f8d000',
-        },
-      },
-      5: {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-          balance: '0x176e5b6f173ebe66',
-        },
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-          balance: '0x2d3142f5000',
-        },
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
-          balance: '0x15f6f0b9d4f8d000',
-        },
-      },
-    },
     unapprovedMsgs: {},
     unapprovedMsgCount: 0,
     unapprovedPersonalMsgs: {},
