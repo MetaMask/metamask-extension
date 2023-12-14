@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Skeleton should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box mm-skeleton mm-box--padding-4 mm-box--background-color-icon-muted mm-box--rounded-sm"
+  />
+</div>
+`;
