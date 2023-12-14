@@ -107,7 +107,7 @@ export abstract class AbstractPetnamesBridge {
   #synchronize(direction: SyncDirection): void {
     if (this.#synchronizingDirection === direction) {
       throw new Error(
-        `synchronize(${direction.toUpperCase()}) called recursively in same direction`,
+        `synchronize(${direction}) called recursively in same direction`,
       );
     }
     if (this.#synchronizingDirection !== 'NONE') {
@@ -116,14 +116,10 @@ export abstract class AbstractPetnamesBridge {
 
     this.#synchronizingDirection = direction;
 
-    const prevEntries =
+    const [newEntries, prevEntries] =
       direction === 'Source->Petnames'
-        ? this.getSourceEntries()
-        : this.#getPetnameEntries();
-    const newEntries =
-      direction === 'Source->Petnames'
-        ? this.#getPetnameEntries()
-        : this.getSourceEntries();
+        ? [this.getSourceEntries(), this.#getPetnameEntries()]
+        : [this.#getPetnameEntries(), this.getSourceEntries()];
 
     const changeList = this.#computeChangeList(prevEntries, newEntries);
     this.#applyChangeList(changeList);
