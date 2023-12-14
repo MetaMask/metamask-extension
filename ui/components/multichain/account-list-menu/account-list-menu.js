@@ -77,8 +77,8 @@ function getLabel(type, account) {
       return HardwareKeyringNames.lattice;
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case KeyringType.snap:
-      if (account.metadata?.snap?.name) {
-        return `${account.metadata?.snap?.name} (${t('beta')})`;
+      if (account.metadata.snap?.name) {
+        return `${account.metadata.snap?.name} (${t('beta')})`;
       }
       return `${t('snaps')} (${t('beta')})`;
     ///: END:ONLY_INCLUDE_IF
