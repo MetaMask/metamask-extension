@@ -75,7 +75,6 @@ export const AccountListMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  console.log(accounts);
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
