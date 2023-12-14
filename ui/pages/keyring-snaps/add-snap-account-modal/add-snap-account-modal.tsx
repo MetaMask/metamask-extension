@@ -4,11 +4,11 @@ import {
   Box,
   Button,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
 } from '../../../components/component-library';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import {
   AlignItems,
   Display,
