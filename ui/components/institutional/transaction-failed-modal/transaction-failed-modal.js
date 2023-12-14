@@ -17,13 +17,13 @@ import {
   Text,
   Box,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Button,
   BUTTON_VARIANT,
   BUTTON_SIZES,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
 const TransactionFailedModal = ({
   hideModal,

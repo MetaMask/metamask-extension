@@ -8,6 +8,7 @@ const {
   unlockWallet,
   withFixtures,
   getEventPayloads,
+  switchToNotificationWindow,
 } = require('../helpers');
 
 const selectedAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
@@ -282,14 +283,12 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
         await driver.clickElement('#maliciousApprovalButton');
 
         // Wait for confirmation pop-up
-        let windowHandles = await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Notification,
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver, 3);
 
         // Wait for confirmation pop-up to close
         await driver.clickElement({ text: 'Reject', tag: 'button' });
+
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.TestDApp,
           windowHandles,
@@ -299,11 +298,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
         await driver.clickElement('#maliciousPermit');
 
         // Wait for confirmation pop-up
-        windowHandles = await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(
-          WINDOW_TITLES.Notification,
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver, 3);
 
         // Wait for confirmation pop-up to close
         await driver.clickElement({ text: 'Reject', tag: 'button' });
@@ -324,7 +319,6 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
             ppom_eth_chainId_count: 1,
             ppom_eth_getBlockByNumber_count: 1,
             ppom_debug_traceCall_count: 3,
-            ppom_eth_getBalance_count: 2,
             ppom_eth_call_count: 1,
           },
           userId: 'fake-metrics-id',
@@ -344,8 +338,6 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
               events[0].properties.ppom_eth_getBlockByNumber_count,
             ppom_debug_traceCall_count:
               events[0].properties.ppom_debug_traceCall_count,
-            ppom_eth_getBalance_count:
-              events[0].properties.ppom_eth_getBalance_count,
             ppom_eth_call_count: events[0].properties.ppom_eth_call_count,
           },
           userId: events[0].userId,
@@ -361,7 +353,6 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
             ppom_eth_chainId_count: 1,
             ppom_eth_getBlockByNumber_count: 1,
             ppom_eth_call_count: 1,
-            ppom_eth_getBalance_count: 1,
             ppom_debug_traceCall_count: 1,
           },
           userId: 'fake-metrics-id',
@@ -379,8 +370,6 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
             ppom_eth_getBlockByNumber_count:
               events[1].properties.ppom_eth_getBlockByNumber_count,
             ppom_eth_call_count: events[1].properties.ppom_eth_call_count,
-            ppom_eth_getBalance_count:
-              events[1].properties.ppom_eth_getBalance_count,
             ppom_debug_traceCall_count:
               events[1].properties.ppom_debug_traceCall_count,
           },

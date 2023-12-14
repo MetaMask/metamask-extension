@@ -368,7 +368,10 @@ describe('Send ETH from inside MetaMask to a Multisig Address', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: defaultGanacheOptions,
+        ganacheOptions: {
+          ...defaultGanacheOptions,
+          hardfork: 'london',
+        },
         smartContract,
         title: this.test.fullTitle(),
       },

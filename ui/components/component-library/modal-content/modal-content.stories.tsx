@@ -61,13 +61,19 @@ export const DefaultStory: StoryFn<typeof ModalContent> = (args) => {
       </Button>
       <Modal isOpen={show} onClose={handleOnClick}>
         <ModalContent {...args}>
-          <ModalHeader marginBottom={4}>Modal Header</ModalHeader>
-          <ModalBody padding={0}>
-            <Text marginBottom={4}>Modal Content</Text>
+          <ModalHeader>Modal Header</ModalHeader>
+          <ModalBody>
+            <Text>Modal Content</Text>
           </ModalBody>
-          <Button variant={ButtonVariant.Primary} onClick={handleOnClick}>
-            Close
-          </Button>
+          <Box padding={4}>
+            <Button
+              variant={ButtonVariant.Primary}
+              onClick={handleOnClick}
+              block
+            >
+              Close
+            </Button>
+          </Box>
         </ModalContent>
       </Modal>
     </>
@@ -179,9 +185,11 @@ export const Size: StoryFn<typeof ModalContent> = (args) => {
                 )}
               </Text>
             </ModalBody>
-            <Button onClick={() => setCurrentSize(null)} block>
-              Close
-            </Button>
+            <Box padding={4}>
+              <Button onClick={() => setCurrentSize(null)} block>
+                Close
+              </Button>
+            </Box>
           </ModalContent>
         </Modal>
       )}
