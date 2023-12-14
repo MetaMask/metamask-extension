@@ -33,6 +33,16 @@ const render = (props = { onClose: () => jest.fn() }) => {
       protocol: 'https:',
       url: 'https://metamask.github.io/test-dapp/',
     },
+    metamask: {
+      ...mockState.metamask,
+      accounts: {
+        ...mockState.metamask.accounts,
+        '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+          balance: '0x0',
+          address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+        },
+      },
+    },
   });
   return renderWithProvider(<AccountListMenu {...props} />, store);
 };
@@ -74,7 +84,7 @@ describe('AccountListMenu', () => {
     expect(filteredListItems).toHaveLength(1);
   });
 
-  it('displays the correct label for snap accounts', () => {
+  it('displays the correct label for unnamed snap accounts', () => {
     const mockStore = configureStore({
       activeTab: {
         title: 'Eth Sign Tests',
@@ -97,6 +107,50 @@ describe('AccountListMenu', () => {
             address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             metadata: {
               name: 'Snap Account',
+              keyring: {
+                type: 'Snap Keyring',
+              },
+            },
+          },
+        },
+      },
+    });
+    const { container } = renderWithProvider(
+      <AccountListMenu onClose={jest.fn()} />,
+      mockStore,
+    );
+    // TODO - complete this test to check for "Snaps (Beta)" label in tag for unnamed snap accounts
+    const listItems = container.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+  });
+
+  it('displays the correct label for named snap accounts', () => {
+    const mockStore = configureStore({
+      activeTab: {
+        title: 'Eth Sign Tests',
+        origin: 'https://remix.ethereum.org',
+        protocol: 'https:',
+        url: 'https://remix.ethereum.org/',
+      },
+      metamask: {
+        ...mockState.metamask,
+        accounts: {
+          ...mockState.metamask.accounts,
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            balance: '0x346ba7725f412cbfdb',
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          },
+        },
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            metadata: {
+              name: 'Snap Account',
+              keyring: {
+                type: 'Snap Keyring',
+              },
               snap: {
                 name: 'Test Snap Name',
               },
@@ -109,7 +163,8 @@ describe('AccountListMenu', () => {
       <AccountListMenu onClose={jest.fn()} />,
       mockStore,
     );
-    // TODO - complete this test to check correct label in tag for snap accounts
+    // TODO - complete this test to check for "Test Snap Name (Beta)" label in tag for named snap
+    // accounts
     const listItems = container.querySelectorAll(
       '.multichain-account-list-item',
     );

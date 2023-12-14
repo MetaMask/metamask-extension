@@ -142,6 +142,7 @@ export const AccountListMenu = ({
     searchResults = fuse.search(searchQuery);
   }
   searchResults = mergeAccounts(searchResults, internalAccounts);
+  console.log('searchResults', searchResults);
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
