@@ -38,7 +38,10 @@ import {
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
+import {
+  findKeyringForAddress,
+  getNativeCurrency,
+} from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -85,6 +88,11 @@ export const AccountListItem = ({
       itemRef.current?.scrollIntoView?.();
     }
   }, [itemRef, selected]);
+
+  const selectedKeyring = useSelector((state) =>
+    findKeyringForAddress(state, identity.address),
+  );
+  const keyring = identity.keyring || selectedKeyring;
 
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
@@ -256,9 +264,7 @@ export const AccountListItem = ({
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
             }}
-            startIconName={
-              identity.keyring === KeyringType.snap ? IconName.Snaps : null
-            }
+            startIconName={keyring === KeyringType.snap ? IconName.Snaps : null}
           />
         ) : null}
       </Box>
@@ -290,7 +296,7 @@ export const AccountListItem = ({
           identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={identity.keyring?.type !== KeyringType.hdKeyTree}
+          isRemovable={keyring?.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
         />
       ) : null}
@@ -307,7 +313,7 @@ AccountListItem.propTypes = {
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
-    keyring: PropTypes.string.isRequired,
+    keyring: PropTypes.string,
     label: PropTypes.string,
   }).isRequired,
   /**

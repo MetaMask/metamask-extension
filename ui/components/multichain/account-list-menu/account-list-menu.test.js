@@ -23,6 +23,15 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 }));
 ///: END:ONLY_INCLUDE_IF
 
+// TODO: Remove this once we have a better way to mock the store with balance for this account
+mockState.metamask.accounts = {
+  ...mockState.metamask.accounts,
+  '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+    balance: '0x0',
+    address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+  },
+};
+
 const render = (props = { onClose: () => jest.fn() }) => {
   const store = configureStore({
     ...mockState,
@@ -32,16 +41,6 @@ const render = (props = { onClose: () => jest.fn() }) => {
       origin: 'https://metamask.github.io',
       protocol: 'https:',
       url: 'https://metamask.github.io/test-dapp/',
-    },
-    metamask: {
-      ...mockState.metamask,
-      accounts: {
-        ...mockState.metamask.accounts,
-        '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
-          balance: '0x0',
-          address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
-        },
-      },
     },
   });
   return renderWithProvider(<AccountListMenu {...props} />, store);
@@ -94,13 +93,6 @@ describe('AccountListMenu', () => {
       },
       metamask: {
         ...mockState.metamask,
-        accounts: {
-          ...mockState.metamask.accounts,
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            balance: '0x346ba7725f412cbfdb',
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          },
-        },
         internalAccounts: {
           ...mockState.metamask.internalAccounts,
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
@@ -135,13 +127,6 @@ describe('AccountListMenu', () => {
       },
       metamask: {
         ...mockState.metamask,
-        accounts: {
-          ...mockState.metamask.accounts,
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            balance: '0x346ba7725f412cbfdb',
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-          },
-        },
         internalAccounts: {
           ...mockState.metamask.internalAccounts,
           '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
