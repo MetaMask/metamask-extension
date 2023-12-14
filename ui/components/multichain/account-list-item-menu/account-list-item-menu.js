@@ -213,7 +213,7 @@ export const AccountListItemMenu = ({
               iconName={isHidden ? IconName.Eye : IconName.EyeSlash}
             >
               <Text variant={TextVariant.bodySm}>
-                {isHidden ? t('showAccount') : t('showAccount')}
+                {isHidden ? t('showAccount') : t('hideAccount')}
               </Text>
             </MenuItem>
           ) : null}
