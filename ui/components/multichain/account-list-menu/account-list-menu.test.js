@@ -264,5 +264,82 @@ describe('AccountListMenu', () => {
       expect(global.platform.openTab).toHaveBeenCalledTimes(1);
     });
   });
+
+  it('displays the correct label for unnamed snap accounts', () => {
+    const mockStore = configureStore({
+      activeTab: {
+        title: 'Eth Sign Tests',
+        origin: 'https://remix.ethereum.org',
+        protocol: 'https:',
+        url: 'https://remix.ethereum.org/',
+      },
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              ...mockState.metamask.internalAccounts.accounts[
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+              ],
+              metadata: {
+                name: 'Snap Account',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    renderWithProvider(<AccountListMenu onClose={jest.fn()} />, mockStore);
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    const tag = listItems[0].querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Snaps (Beta)');
+  });
+
+  it('displays the correct label for named snap accounts', () => {
+    const mockStore = configureStore({
+      activeTab: {
+        title: 'Eth Sign Tests',
+        origin: 'https://remix.ethereum.org',
+        protocol: 'https:',
+        url: 'https://remix.ethereum.org/',
+      },
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              ...mockState.metamask.internalAccounts.accounts[
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+              ],
+              metadata: {
+                name: 'Snap Account',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+                snap: {
+                  name: 'Test Snap Name',
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    renderWithProvider(<AccountListMenu onClose={jest.fn()} />, mockStore);
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    const tag = listItems[0].querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Test Snap Name (Beta)');
+  });
   ///: END:ONLY_INCLUDE_IF
 });

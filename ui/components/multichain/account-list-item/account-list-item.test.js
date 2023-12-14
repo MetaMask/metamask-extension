@@ -105,6 +105,16 @@ describe('AccountListItem', () => {
     expect(getByAltText(`${connectedAvatarName} logo`)).toBeInTheDocument();
   });
 
+  it('does not render a tag for a null label', () => {
+    const { container } = render({
+      identity: {
+        ...identity,
+        label: null,
+      },
+    });
+    expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
+  });
+
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   it('renders the snap label for snap accounts', () => {
     const { getByText } = render({
@@ -113,7 +123,6 @@ describe('AccountListItem', () => {
         name: 'Snap Account',
       },
     });
-
     expect(getByText('Snaps (Beta)')).toBeInTheDocument();
   });
 
