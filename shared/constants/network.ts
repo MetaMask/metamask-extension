@@ -145,7 +145,6 @@ export const CHAIN_IDS = {
   GNOSIS: '0x64',
   ZKSYNC_ERA: '0x144',
   ETC: '0x3d',
-  MORDOR: '0x3f',
 } as const;
 
 /**
@@ -176,7 +175,6 @@ export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
 export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
 export const ETC_DISPLAY_NAME = 'Ethereum Classic';
-export const ETC_MORDOR_DISPLAY_NAME = 'Mordor';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -230,7 +228,6 @@ export const CURRENCY_SYMBOLS = {
   MOONRIVER: 'MOVR',
   ONE: 'ONE',
   ETC: 'ETC',
-  MORDOR: 'METC',
 } as const;
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
@@ -251,7 +248,6 @@ export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
 export const ZK_SYNC_ERA_TOKEN_IMAGE_URL = './images/zk-sync.svg';
 export const BASE_TOKEN_IMAGE_URL = './images/base.png';
 export const ETC_TOKEN_IMAGE_URL = './images/etc_logo.png';
-export const ETC_MORDOR_TOKEN_IMAGE_URL = './images/etc_logo.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -408,7 +404,6 @@ export const NATIVE_CURRENCY_TOKEN_IMAGE_MAP = {
   [CURRENCY_SYMBOLS.AURORA_ETH]: ETH_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CURRENCY_SYMBOLS.ETC]: ETC_TOKEN_IMAGE_URL,
-  [CURRENCY_SYMBOLS.MORDOR]: ETC_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -541,7 +536,6 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
-    | typeof CHAIN_IDS.MORDOR
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
