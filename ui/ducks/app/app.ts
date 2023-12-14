@@ -76,6 +76,7 @@ interface AppState {
   selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
   newTokensImported: string;
+  newTokensImportedError: string;
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: string | null;
@@ -151,6 +152,7 @@ const initialState: AppState = {
   selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
   newTokensImported: '',
+  newTokensImportedError: '',
   onboardedInThisUISession: false,
   customTokenAmount: '',
   scrollToBottom: true,
@@ -434,6 +436,12 @@ export default function reduceApp(
       return {
         ...appState,
         newTokensImported: action.payload,
+      };
+
+    case actionConstants.SET_NEW_TOKENS_IMPORTED_ERROR:
+      return {
+        ...appState,
+        newTokensImportedError: action.payload,
       };
 
     case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:

@@ -3473,9 +3473,6 @@
   "searchAccounts": {
     "message": "Maghanap ng mga account"
   },
-  "searchResults": {
-    "message": "Mga resulta ng paghahanap"
-  },
   "secretRecoveryPhrase": {
     "message": "Lihim na Parirala sa Pagbawi"
   },
@@ -4982,10 +4979,6 @@
   },
   "verifyContractDetails": {
     "message": "I-verify ang mga detalye ng third-party"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Ang token decimal ay maaaring matagpuan sa $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "I-verify ang token na ito sa $1",
