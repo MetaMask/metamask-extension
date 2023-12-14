@@ -36,7 +36,7 @@ const mockState = {
     keyrings: [],
     networkConfigurations: {},
     subjectMetadata: {},
-    cachedBalances: {
+    accountsByChainId: {
       '0x5': {},
     },
     accounts: {

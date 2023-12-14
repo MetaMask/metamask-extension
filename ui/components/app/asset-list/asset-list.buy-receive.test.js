@@ -25,9 +25,9 @@ const render = (
     metamask: {
       ...mockState.metamask,
       providerConfig: { chainId, ticker: 'ETH' },
-      cachedBalances: {
+      accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
-          [selectedAddress]: balance,
+          [selectedAddress]: { balance },
         },
       },
       selectedAddress,
