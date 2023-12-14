@@ -1,14 +1,15 @@
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { SubjectType } from '@metamask/permission-controller';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  memoize,
-  ///: END:ONLY_INCLUDE_IN
-} from 'lodash';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { stripSnapPrefix } from '@metamask/snaps-utils';
+import { memoize } from 'lodash';
+import semver from 'semver';
+///: END:ONLY_INCLUDE_IF
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -18,7 +19,6 @@ import {
   BSC_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
   AVALANCHE_DISPLAY_NAME,
-  AURORA_DISPLAY_NAME,
   CHAIN_ID_TO_RPC_URL_MAP,
   CHAIN_IDS,
   NETWORK_TYPES,
@@ -50,19 +50,15 @@ import {
   ALLOWED_DEV_SWAPS_CHAIN_IDS,
 } from '../../shared/constants/swaps';
 
-import {
-  ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_TOKEN_ADDRESSES,
-} from '../../shared/constants/bridge';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../shared/constants/bridge';
 
 import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  removeSnapIdPrefix,
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getSnapName,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
@@ -84,7 +80,6 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
-import { TransactionStatus } from '../../shared/constants/transaction';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -94,16 +89,24 @@ import {
   NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
+  NOTIFICATION_U2F_LEDGER_LIVE,
 } from '../../shared/notifications';
+import {
+  SURVEY_DATE,
+  SURVEY_END_TIME,
+  SURVEY_START_TIME,
+} from '../helpers/constants/survey';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
 } from './transactions';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 // eslint-disable-next-line import/order
-import { SNAPS_VIEW_ROUTE } from '../helpers/constants/routes';
-import { getPermissionSubjects } from './permissions';
-///: END:ONLY_INCLUDE_IN
+import {
+  getPermissionSubjects,
+  getConnectedSubjectsForAllAddresses,
+} from './permissions';
+///: END:ONLY_INCLUDE_IF
 import { createDeepEqualSelector } from './util';
 
 /**
@@ -265,11 +268,11 @@ export function getAccountTypeForKeyring(keyring) {
 
   const { type } = keyring;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   if (type.startsWith('Custody')) {
     return 'custody';
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   switch (type) {
     case KeyringType.trezor:
@@ -282,20 +285,6 @@ export function getAccountTypeForKeyring(keyring) {
     default:
       return 'default';
   }
-}
-
-/**
- * get the currently selected networkId which will be 'loading' when the
- * network changes. The network id should not be used in most cases,
- * instead use chainId in most situations. There are a limited number of
- * use cases to use this method still, such as when comparing transaction
- * metadata that predates the switch to using chainId.
- *
- * @deprecated - use getCurrentChainId instead
- * @param {object} state - redux state object
- */
-export function deprecatedGetCurrentNetworkId(state) {
-  return state.metamask.networkId ?? 'loading';
 }
 
 /**
@@ -375,14 +364,16 @@ export function getMetaMaskAccountBalances(state) {
 export function getMetaMaskCachedBalances(state) {
   const chainId = getCurrentChainId(state);
 
-  // Fallback to fetching cached balances from network id
-  // this can eventually be removed
-  const network = deprecatedGetCurrentNetworkId(state);
-
-  return (
-    state.metamask.cachedBalances[chainId] ??
-    state.metamask.cachedBalances[network]
-  );
+  if (state.metamask.accountsByChainId?.[chainId]) {
+    return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
+      (accumulator, [key, value]) => {
+        accumulator[key] = value.balance;
+        return accumulator;
+      },
+      {},
+    );
+  }
+  return {};
 }
 
 /**
@@ -417,6 +408,10 @@ export function getSelectedAccountCachedBalance(state) {
   const cachedBalances = getMetaMaskCachedBalances(state);
   const selectedAddress = getSelectedAddress(state);
   return cachedBalances?.[selectedAddress];
+}
+
+export function getAllTokens(state) {
+  return state.metamask.allTokens;
 }
 
 export function getSelectedAccount(state) {
@@ -698,7 +693,7 @@ export function getSubjectMetadata(state) {
   return state.metamask.subjectMetadata;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * @param {string} svgString - The raw SVG string to make embeddable.
  * @returns {string} The embeddable SVG string.
@@ -706,12 +701,12 @@ export function getSubjectMetadata(state) {
 const getEmbeddableSvg = memoize(
   (svgString) => `data:image/svg+xml;utf8,${encodeURIComponent(svgString)}`,
 );
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 export function getTargetSubjectMetadata(state, origin) {
   const metadata = getSubjectMetadata(state)[origin];
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   if (metadata?.subjectType === SubjectType.Snap) {
     const { svgIcon, ...remainingMetadata } = metadata;
     return {
@@ -719,9 +714,47 @@ export function getTargetSubjectMetadata(state, origin) {
       iconUrl: svgIcon ? getEmbeddableSvg(svgIcon) : null,
     };
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   return metadata;
 }
+
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
+/**
+ * Input selector for reusing the same state object.
+ * Used in memoized selectors created with createSelector
+ * when raw state is needed to be passed to other selectors
+ * used to achieve re-usability.
+ *
+ * @param state - Redux state object.
+ * @returns Object - Redux state object.
+ */
+export const rawStateSelector = (state) => state;
+
+/**
+ * Input selector used to retrieve Snaps that are added to Snaps Directory.
+ *
+ * @param state - Redux state object.
+ * @returns Object - Containing verified Snaps from the Directory.
+ */
+const selectVerifiedSnapsRegistry = (state) =>
+  state.metamask.database?.verifiedSnaps;
+
+/**
+ * Input selector providing a way to pass a snapId as an argument.
+ *
+ * @param _state - Redux state object.
+ * @param snapId - ID of a Snap.
+ * @returns string - ID of a Snap that can be used as input selector.
+ */
+const selectSnapId = (_state, snapId) => snapId;
+
+/**
+ * Input selector for retrieving all installed Snaps.
+ *
+ * @param state - Redux state object.
+ * @returns Object - Installed Snaps.
+ */
+export const selectInstalledSnaps = (state) => state.metamask.snaps;
 
 /**
  * Retrieve registry data for requested Snap.
@@ -730,10 +763,72 @@ export function getTargetSubjectMetadata(state, origin) {
  * @param snapId - ID of a Snap.
  * @returns Object containing metadata stored in Snaps registry for requested Snap.
  */
-export function getSnapRegistryData(state, snapId) {
-  const snapsRegistryData = state.metamask.database.verifiedSnaps;
-  return snapsRegistryData ? snapsRegistryData[snapId] : null;
-}
+export const getSnapRegistryData = createSelector(
+  [selectVerifiedSnapsRegistry, selectSnapId],
+  (snapsRegistryData, snapId) => {
+    return snapsRegistryData ? snapsRegistryData[snapId] : null;
+  },
+);
+
+/**
+ * Find and return Snap's latest version available in registry.
+ *
+ * @param state - Redux state object.
+ * @param snapId - ID of a Snap.
+ * @returns String SemVer version.
+ */
+export const getSnapLatestVersion = createSelector(
+  [getSnapRegistryData],
+  (snapRegistryData) => {
+    if (!snapRegistryData) {
+      return null;
+    }
+
+    return Object.keys(snapRegistryData.versions).reduce((latest, version) => {
+      return semver.gt(version, latest) ? version : latest;
+    }, '0.0.0');
+  },
+);
+
+/**
+ * Return a Map of all installed Snaps with available update status.
+ *
+ * @param state - Redux state object.
+ * @returns Map Snap IDs mapped to a boolean value (true if update is available, false otherwise).
+ */
+export const getAllSnapAvailableUpdates = createSelector(
+  [selectInstalledSnaps, rawStateSelector],
+  (installedSnaps, state) => {
+    const snapMap = new Map();
+
+    Object.keys(installedSnaps).forEach((snapId) => {
+      const latestVersion = getSnapLatestVersion(state, snapId);
+
+      snapMap.set(
+        snapId,
+        latestVersion
+          ? semver.gt(latestVersion, installedSnaps[snapId].version)
+          : false,
+      );
+    });
+
+    return snapMap;
+  },
+);
+
+/**
+ * Return status of Snaps update availability for any installed Snap.
+ *
+ * @param state - Redux state object.
+ * @returns boolean true if update is available, false otherwise.
+ */
+export const getAnySnapUpdateAvailable = createSelector(
+  [getAllSnapAvailableUpdates],
+  (snapMap) => {
+    return [...snapMap.values()].some((value) => value === true);
+  },
+);
+///: END:ONLY_INCLUDE_IF
 
 export function getRpcPrefsForCurrentProvider(state) {
   const { rpcPrefs } = getProviderConfig(state);
@@ -771,7 +866,8 @@ export function getInfuraBlocked(state) {
 }
 
 export function getUSDConversionRate(state) {
-  return state.metamask.usdConversionRate;
+  return state.metamask.currencyRates[getProviderConfig(state).ticker]
+    ?.usdConversionRate;
 }
 
 export function getWeb3ShimUsageStateForOrigin(state, origin) {
@@ -843,15 +939,6 @@ export function getIsBridgeChain(state) {
   const chainId = getCurrentChainId(state);
   return ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId);
 }
-
-export const getIsBridgeToken = (tokenAddress) => (state) => {
-  const chainId = getCurrentChainId(state);
-  const isBridgeChain = getIsBridgeChain(state);
-  return (
-    isBridgeChain &&
-    ALLOWED_BRIDGE_TOKEN_ADDRESSES[chainId].includes(tokenAddress.toLowerCase())
-  );
-};
 
 export function getIsBuyableChain(state) {
   const chainId = getCurrentChainId(state);
@@ -940,7 +1027,14 @@ export const getFullTxData = createDeepEqualSelector(
   },
 );
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+export const getAllConnectedAccounts = createDeepEqualSelector(
+  getConnectedSubjectsForAllAddresses,
+  (connectedSubjects) => {
+    return Object.keys(connectedSubjects);
+  },
+);
+
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export function getSnaps(state) {
   return state.metamask.snaps;
 }
@@ -972,6 +1066,21 @@ export const getInsightSnaps = createDeepEqualSelector(
   },
 );
 
+export const getInsightSnapIds = createDeepEqualSelector(
+  getInsightSnaps,
+  (snaps) => snaps.map((snap) => snap.id),
+);
+
+export const getNameLookupSnapsIds = createDeepEqualSelector(
+  getEnabledSnaps,
+  getPermissionSubjects,
+  (snaps, subjects) => {
+    return Object.values(snaps)
+      .filter(({ id }) => subjects[id]?.permissions['endowment:name-lookup'])
+      .map((snap) => snap.id);
+  },
+);
+
 export const getNotifySnaps = createDeepEqualSelector(
   getEnabledSnaps,
   getPermissionSubjects,
@@ -981,19 +1090,6 @@ export const getNotifySnaps = createDeepEqualSelector(
     );
   },
 );
-
-export const getSnapsRouteObjects = createSelector(getSnaps, (snaps) => {
-  return Object.values(snaps).map((snap) => {
-    return {
-      id: snap.id,
-      tabMessage: () => snap.manifest.proposedName,
-      descriptionMessage: () => snap.manifest.description,
-      sectionMessage: () => snap.manifest.description,
-      route: `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snap.id)}`,
-      icon: 'fa fa-flask',
-    };
-  });
-});
 
 /**
  * @typedef {object} Notification
@@ -1038,7 +1134,7 @@ export const getUnreadNotificationsCount = createSelector(
   getUnreadNotifications,
   (notifications) => notifications.length,
 );
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Get an object of announcement IDs and if they are allowed or not.
@@ -1077,14 +1173,15 @@ function getAllowedAnnouncementIds(state) {
     20: currentKeyringIsLedger && isFirefox,
     21: false,
     22: false,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     23: true,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: currentKeyringIsLedger && isFirefox,
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
+    [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
   };
 }
 
@@ -1119,6 +1216,14 @@ export function getSortedAnnouncementsToShow(state) {
   return announcementsSortedByDate;
 }
 
+export function getOrderedNetworksList(state) {
+  return state.metamask.orderedNetworkList;
+}
+
+export function getPinnedAccountsList(state) {
+  return state.metamask.pinnedAccountList;
+}
+
 export function getShowRecoveryPhraseReminder(state) {
   const {
     recoveryPhraseReminderLastShown,
@@ -1141,6 +1246,14 @@ export function getShowTermsOfUse(state) {
     new Date(termsOfUseLastAgreed).getTime() <
     new Date(TERMS_OF_USE_LAST_UPDATED).getTime()
   );
+}
+
+export function getShowSurveyToast(state) {
+  const { surveyLinkLastClickedOrClosed } = state.metamask;
+  const startTime = new Date(`${SURVEY_DATE} ${SURVEY_START_TIME}`).getTime();
+  const endTime = new Date(`${SURVEY_DATE} ${SURVEY_END_TIME}`).getTime();
+  const now = Date.now();
+  return now > startTime && now < endTime && !surveyLinkLastClickedOrClosed;
 }
 
 export function getShowOutdatedBrowserWarning(state) {
@@ -1467,15 +1580,17 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return POLYGON_DISPLAY_NAME;
     case CHAIN_IDS.AVALANCHE:
       return AVALANCHE_DISPLAY_NAME;
-    case CHAIN_IDS.AURORA:
-      return AURORA_DISPLAY_NAME;
+    case CHAIN_IDS.LINEA_GOERLI:
+      return LINEA_GOERLI_DISPLAY_NAME;
+    case CHAIN_IDS.LINEA_MAINNET:
+      return LINEA_MAINNET_DISPLAY_NAME;
     default:
       return '';
   }
 };
 /**
  * To check if the chainId supports token detection,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
+ * currently it returns true for Ethereum Mainnet, BSC, Polygon, Avalanche, and Linea
  *
  * @param {*} state
  * @returns Boolean
@@ -1487,7 +1602,8 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.BSC,
     CHAIN_IDS.POLYGON,
     CHAIN_IDS.AVALANCHE,
-    CHAIN_IDS.AURORA,
+    CHAIN_IDS.LINEA_GOERLI,
+    CHAIN_IDS.LINEA_MAINNET,
   ].includes(chainId);
 }
 
@@ -1513,6 +1629,10 @@ export function getNewTokensImported(state) {
   return state.appState.newTokensImported;
 }
 
+export function getNewTokensImportedError(state) {
+  return state.appState.newTokensImportedError;
+}
+
 /**
  * To check if the token detection is OFF and the network is Mainnet
  * so that the user can skip third party token api fetch
@@ -1530,7 +1650,7 @@ export function getIsTokenDetectionInactiveOnMainnet(state) {
 
 /**
  * To check for the chainId that supports token detection ,
- * currently it returns true for Ethereum Mainnet, Polygon, BSC, Avalanche and Aurora
+ * currently it returns true for Ethereum Mainnet, Polygon, BSC, and Avalanche
  *
  * @param {*} state
  * @returns Boolean
@@ -1567,7 +1687,17 @@ export function getIsTransactionSecurityCheckEnabled(state) {
   return state.metamask.transactionSecurityCheckEnabled;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+/**
+ * To get the `useRequestQueue` value which determines whether we use a request queue infront of provider api calls. This will have the effect of implementing per-dapp network switching.
+ *
+ * @param {*} state
+ * @returns Boolean
+ */
+export function getUseRequestQueue(state) {
+  return state.metamask.useRequestQueue;
+}
+
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 /**
  * To get the `getIsSecurityAlertsEnabled` value which determines whether security check is enabled
  *
@@ -1577,9 +1707,9 @@ export function getIsTransactionSecurityCheckEnabled(state) {
 export function getIsSecurityAlertsEnabled(state) {
   return state.metamask.securityAlertsEnabled;
 }
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 /**
  * Get the state of the `addSnapAccountEnabled` flag.
  *
@@ -1589,7 +1719,7 @@ export function getIsSecurityAlertsEnabled(state) {
 export function getIsAddSnapAccountEnabled(state) {
   return state.metamask.addSnapAccountEnabled;
 }
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 export function getIsCustomNetwork(state) {
   const chainId = getCurrentChainId(state);
@@ -1663,6 +1793,29 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
+export function getUpdatedAndSortedAccounts(state) {
+  const accounts = getMetaMaskAccountsOrdered(state);
+  const pinnedAddresses = getPinnedAccountsList(state);
+
+  accounts.forEach((account) => {
+    account.pinned = Boolean(pinnedAddresses?.includes(account.address));
+  });
+
+  const notPinnedAccounts = accounts.filter(
+    (account) => !pinnedAddresses.includes(account.address),
+  );
+
+  const sortedPinnedAccounts = pinnedAddresses
+    .map((address) => accounts.find((account) => account.address === address))
+    .filter((account) =>
+      Boolean(account && pinnedAddresses.includes(account.address)),
+    );
+
+  const sortedSearchResults = [...sortedPinnedAccounts, ...notPinnedAccounts];
+
+  return sortedSearchResults;
+}
+
 export function getOnboardedInThisUISession(state) {
   return state.appState.onboardedInThisUISession;
 }
@@ -1693,7 +1846,7 @@ export function getNameSources(state) {
   return state.metamask.nameSources || {};
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IF(desktop)
 /**
  * To get the `desktopEnabled` value which determines whether we use the desktop app
  *
@@ -1703,9 +1856,9 @@ export function getNameSources(state) {
 export function getIsDesktopEnabled(state) {
   return state.metamask.desktopEnabled;
 }
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * To get all installed snaps with proper metadata
  *
@@ -1716,11 +1869,12 @@ export function getSnapsList(state) {
   const snaps = getSnaps(state);
   return Object.entries(snaps).map(([key, snap]) => {
     const targetSubjectMetadata = getTargetSubjectMetadata(state, snap?.id);
-
     return {
       key,
       id: snap.id,
-      packageName: removeSnapIdPrefix(snap.id),
+      iconUrl: targetSubjectMetadata?.iconUrl,
+      subjectType: targetSubjectMetadata?.subjectType,
+      packageName: stripSnapPrefix(snap.id),
       name: getSnapName(snap.id, targetSubjectMetadata),
     };
   });
@@ -1744,8 +1898,8 @@ export function getSnapsInstallPrivacyWarningShown(state) {
 
   return snapsInstallPrivacyWarningShown;
 }
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export function getsnapsAddSnapAccountModalDismissed(state) {
   const { snapsAddSnapAccountModalDismissed } = state.metamask;
 
@@ -1772,4 +1926,4 @@ export function getKeyringSnapRemovalResult(state) {
   return state.appState.keyringRemovalSnapModal;
 }
 
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF

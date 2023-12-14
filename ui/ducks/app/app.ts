@@ -50,7 +50,6 @@ interface AppState {
   scrollToBottom: boolean;
   warning: string | null | undefined;
   buyView: Record<string, any>;
-  isMouseUser: boolean;
   defaultHdPaths: {
     trezor: string;
     ledger: string;
@@ -77,13 +76,14 @@ interface AppState {
   selectedNetworkConfigurationId: string;
   sendInputCurrencySwitched: boolean;
   newTokensImported: string;
+  newTokensImportedError: string;
   onboardedInThisUISession: boolean;
   customTokenAmount: string;
   txId: string | null;
   accountDetailsAddress: string;
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: boolean;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 }
 
 interface AppSliceState {
@@ -126,7 +126,6 @@ const initialState: AppState = {
   // Used to display error text
   warning: null,
   buyView: {},
-  isMouseUser: false,
   defaultHdPaths: {
     trezor: `m/44'/60'/0'/0`,
     ledger: `m/44'/60'/0'/0/0`,
@@ -153,14 +152,15 @@ const initialState: AppState = {
   selectedNetworkConfigurationId: '',
   sendInputCurrencySwitched: false,
   newTokensImported: '',
+  newTokensImportedError: '',
   onboardedInThisUISession: false,
   customTokenAmount: '',
   scrollToBottom: true,
   txId: null,
   accountDetailsAddress: '',
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   snapsInstallPrivacyWarningShown: false,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export default function reduceApp(
@@ -418,12 +418,6 @@ export default function reduceApp(
         },
       };
 
-    case actionConstants.SET_MOUSE_USER_STATE:
-      return {
-        ...appState,
-        isMouseUser: action.payload,
-      };
-
     case actionConstants.SET_SELECTED_NETWORK_CONFIGURATION_ID:
       return {
         ...appState,
@@ -442,6 +436,12 @@ export default function reduceApp(
       return {
         ...appState,
         newTokensImported: action.payload,
+      };
+
+    case actionConstants.SET_NEW_TOKENS_IMPORTED_ERROR:
+      return {
+        ...appState,
+        newTokensImportedError: action.payload,
       };
 
     case actionConstants.SET_NEW_NFT_ADDED_MESSAGE:
@@ -515,7 +515,7 @@ export default function reduceApp(
         ...appState,
         customTokenAmount: action.payload,
       };
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case actionConstants.SHOW_KEYRING_SNAP_REMOVAL_RESULT:
       return {
         ...appState,
@@ -533,7 +533,7 @@ export default function reduceApp(
           result: 'none',
         },
       };
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     default:
       return appState;

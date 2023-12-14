@@ -2,9 +2,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
+  Box,
   ButtonPrimary,
   ButtonSecondary,
-  Box,
   ButtonSecondarySize,
 } from '../../component-library';
 import { Display } from '../../../helpers/constants/design-system';

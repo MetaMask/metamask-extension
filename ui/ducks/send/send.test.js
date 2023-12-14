@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
@@ -19,10 +20,9 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import {
   AssetType,
   TokenStandard,
-  TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import * as Actions from '../../store/actions';
-import { setBackgroundConnection } from '../../../test/jest';
+import { setBackgroundConnection } from '../../store/background-connection';
 import {
   generateERC20TransferData,
   generateERC721TransferData,
@@ -479,6 +479,33 @@ describe('Send Slice', () => {
         expect(draftTransaction.asset.balance).toStrictEqual(
           action.payload.asset.balance,
         );
+      });
+
+      it('should update hex data if its not the initial asset set', () => {
+        const updateAssetState = getInitialSendStateWithExistingTxState({
+          asset: {
+            type: 'old type',
+            balance: 'old balance',
+          },
+          userInputHexData: '0xTestHexData',
+        });
+
+        const action = {
+          type: 'send/updateAsset',
+          payload: {
+            asset: {
+              type: 'new type',
+              balance: 'new balance',
+            },
+            initialAssetSet: false,
+          },
+        };
+
+        const result = sendReducer(updateAssetState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.userInputHexData).toStrictEqual('');
       });
 
       it('should nullify old contract address error when asset types is not TOKEN', () => {
@@ -1143,6 +1170,53 @@ describe('Send Slice', () => {
           action.payload.account.address,
         );
       });
+      it('should reset to native asset on selectedAccount changed', () => {
+        const olderState = {
+          ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
+          selectedAccount: {
+            balance: '0x3',
+            address: mockAddress1,
+          },
+          draftTransactions: {
+            'test-uuid': {
+              ...draftTransactionInitialState,
+              asset: {
+                type: AssetType.token,
+                error: null,
+                details: {
+                  address: 'tokenAddress',
+                  symbol: 'tokenSymbol',
+                  decimals: 'tokenDecimals',
+                },
+                balance: '0x2',
+              },
+            },
+          },
+        };
+
+        const action = {
+          type: 'SELECTED_ACCOUNT_CHANGED',
+          payload: {
+            account: {
+              address: '0xDifferentAddress',
+              balance: '0x1',
+            },
+          },
+        };
+
+        const result = sendReducer(olderState, action);
+        expect(result.selectedAccount.balance).toStrictEqual(
+          action.payload.account.balance,
+        );
+        expect(result.selectedAccount.address).toStrictEqual(
+          action.payload.account.address,
+        );
+
+        expect(result.draftTransactions['test-uuid'].asset).toStrictEqual({
+          ...draftTransactionInitialState.asset,
+          balance: action.payload.account.balance,
+        });
+      });
 
       it('should gracefully handle missing account in payload', () => {
         const olderState = {
@@ -1297,9 +1371,9 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               0x5: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             providerConfig: {
@@ -1597,14 +1671,14 @@ describe('Send Slice', () => {
           providerConfig: {
             chainId: CHAIN_IDS.GOERLI,
           },
-          cachedBalances: {
+          accountsByChainId: {
             [CHAIN_IDS.GOERLI]: {
-              [mockAddress1]: '0x0',
+              [mockAddress1]: { balance: '0x0' },
             },
           },
           accounts: {
             [mockAddress1]: {
-              address: mockAddress1,
+              address: '0x0',
             },
           },
           identities: {
@@ -2432,9 +2506,9 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               [CHAIN_IDS.GOERLI]: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             tokenList: {},
@@ -2571,9 +2645,9 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               [CHAIN_IDS.GOERLI]: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             tokenList: {},
@@ -2758,9 +2832,9 @@ describe('Send Slice', () => {
               balance: '0x0',
             },
           },
-          cachedBalances: {
+          accountsByChainId: {
             [CHAIN_IDS.GOERLI]: {
-              [mockAddress1]: '0x0',
+              [mockAddress1]: { balance: '0x0' },
             },
           },
           transactions: [

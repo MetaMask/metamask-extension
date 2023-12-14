@@ -1,6 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
@@ -62,8 +62,8 @@ describe('AccountListItem', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the tree-dot menu to lauch the details menu', () => {
-    render();
+  it('renders the three-dot menu to lauch the details menu', () => {
+    render({ showOptions: true });
     const optionsButton = document.querySelector(
       '[aria-label="Test Account Options"]',
     );
@@ -84,7 +84,7 @@ describe('AccountListItem', () => {
 
   it('clicking the three-dot menu opens up options', () => {
     const onClick = jest.fn();
-    render({ onClick });
+    render({ onClick, showOptions: true });
     const item = document.querySelector(
       '[data-testid="account-list-item-menu-button"]',
     );
@@ -104,7 +104,7 @@ describe('AccountListItem', () => {
     expect(getByAltText(`${connectedAvatarName} logo`)).toBeInTheDocument();
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   it('renders the snap label for snap accounts', () => {
     const { getByText } = render({
       identity: {
@@ -115,5 +115,5 @@ describe('AccountListItem', () => {
 
     expect(getByText('Snaps (Beta)')).toBeInTheDocument();
   });
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 });

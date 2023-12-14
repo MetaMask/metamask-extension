@@ -1,5 +1,4 @@
-const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -19,14 +18,10 @@ describe('Test Snap Cronjob', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
@@ -44,7 +39,7 @@ describe('Test Snap Cronjob', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.clickElement({
@@ -78,18 +73,16 @@ describe('Test Snap Cronjob', function () {
         // switch to dialog popup, wait for a maximum of 65 seconds
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 65000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.delay(1000);
 
         // look for the dialog popup to verify cronjob fired
-        const error = await driver.findElement('.snap-delineator__content');
-        const text = await error.getText();
-        assert.equal(
-          text.includes(`Cronjob\nThis dialog was triggered by a cronjob.`),
-          true,
-        );
+        await driver.findElement({
+          css: '.snap-delineator__content',
+          text: 'This dialog was triggered by a cronjob',
+        });
 
         // try to click on the Ok button and pass test if it works
         await driver.clickElement({

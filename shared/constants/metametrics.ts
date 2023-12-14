@@ -150,6 +150,10 @@ export type MetaMetricsEventOptions = {
 
 export type MetaMetricsEventFragment = {
   /**
+   * The action ID of transaction metadata object.
+   */
+  actionId?: string;
+  /**
    * The event name to fire when the fragment is closed in an affirmative action.
    */
   successEvent: string;
@@ -358,7 +362,7 @@ export type MetaMetricsUserTraits = {
    * Whether the security provider feature has been enabled.
    */
   security_providers?: string[];
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   /**
    * The address of the MMI account in question
    */
@@ -371,7 +375,7 @@ export type MetaMetricsUserTraits = {
    * Is the user using a custodian account
    */
   mmi_is_custodian?: boolean;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export enum MetaMetricsUserTrait {
@@ -441,7 +445,7 @@ export enum MetaMetricsUserTrait {
    * Identified when the security provider feature is enabled.
    */
   SecurityProviders = 'security_providers',
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   /**
    * Identified when we get the current account in question
    */
@@ -454,10 +458,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user connects a custodian
    */
   MmiIsCustodian = 'mmi_is_custodian',
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   PetnameAddressCount = 'petname_addresses_count',
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 }
 
 /**
@@ -495,6 +499,7 @@ export enum MetaMetricsEventName {
   AppLocked = 'App Locked',
   AppWindowExpanded = 'App Window Expanded',
   BridgeLinkClicked = 'Bridge Link Clicked',
+  DappViewed = 'Dapp Viewed',
   DecryptionApproved = 'Decryption Approved',
   DecryptionRejected = 'Decryption Rejected',
   DecryptionRequested = 'Decryption Requested',
@@ -558,11 +563,12 @@ export enum MetaMetricsEventName {
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
-  ServiceWorkerRestarted = 'Service Worker Restarted',
+  SettingsUpdated = 'Settings Updated',
   SignatureApproved = 'Signature Approved',
   SignatureFailed = 'Signature Failed',
   SignatureRejected = 'Signature Rejected',
   SignatureRequested = 'Signature Requested',
+  SimulationFails = 'Simulation Fails',
   SrpRevealStarted = 'Reveal SRP Initiated',
   SrpRevealClicked = 'Clicked Reveal Secret Recovery',
   SrpRevealViewed = 'Views Reveal Secret Recovery',
@@ -592,7 +598,7 @@ export enum MetaMetricsEventName {
   WalletSetupCanceled = 'Wallet Setup Canceled',
   WalletSetupFailed = 'Wallet Setup Failed',
   WalletCreated = 'Wallet Created',
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   DeeplinkClicked = 'Deeplink Clicked',
   ConnectCustodialAccountClicked = 'Connect Custodial Account Clicked',
   MMIPortfolioButtonClicked = 'MMI Portfolio Button Clicked',
@@ -608,7 +614,7 @@ export enum MetaMetricsEventName {
   CustodianConnectionCanceled = 'Custodian Connection Canceled',
   CustodianConnectionFailed = 'Custodian Connection Failed',
   CustodialAccountsConnected = 'Custodial Accounts Connected',
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   AccountDetailMenuOpened = 'Account Details Menu Opened',
   BlockExplorerLinkClicked = 'Block Explorer Clicked',
   AccountRemoved = 'Account Removed',
@@ -633,15 +639,18 @@ export enum MetaMetricsEventName {
   TransactionFinalized = 'Transaction Finalized',
   ExitedSwaps = 'Exited Swaps',
   SwapError = 'Swap Error',
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   SnapInstalled = 'Snap Installed',
   SnapUninstalled = 'Snap Uninstalled',
   SnapUpdated = 'Snap Updated',
   SnapExportUsed = 'Snap Export Used',
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  InsightSnapViewed = 'Insight Snap Viewed',
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   AddSnapAccountEnabled = 'Add Snap Account Enabled',
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 }
 
 export enum MetaMetricsEventAccountType {
@@ -676,16 +685,15 @@ export enum MetaMetricsEventCategory {
   Petnames = 'Petnames',
   Phishing = 'Phishing',
   Retention = 'Retention',
-  ServiceWorkers = 'service_workers',
   Settings = 'Settings',
   Snaps = 'Snaps',
   Swaps = 'Swaps',
   Tokens = 'Tokens',
   Transactions = 'Transactions',
   Wallet = 'Wallet',
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI = 'Institutional',
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 }
 
 export enum MetaMetricsEventLinkType {
@@ -737,6 +745,7 @@ export enum MetaMetricsEventLocation {
 export enum MetaMetricsEventUiCustomization {
   FlaggedAsMalicious = 'flagged_as_malicious',
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
+  GasEstimationFailed = 'gas_estimation_failed',
   Siwe = 'sign_in_with_ethereum',
 }
 

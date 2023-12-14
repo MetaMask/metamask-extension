@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
@@ -14,10 +15,7 @@ import {
   BorderColor,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
-import {
-  getSnapName,
-  removeSnapIdPrefix,
-} from '../../../../helpers/utils/util';
+import { getSnapName } from '../../../../helpers/utils/util';
 
 import { Box, Text } from '../../../component-library';
 import { getTargetSubjectMetadata } from '../../../../selectors';
@@ -29,7 +27,7 @@ const SnapLegacyAuthorshipHeader = ({
   marginLeft,
   marginRight,
 }) => {
-  const packageName = snapId && removeSnapIdPrefix(snapId);
+  const packageName = snapId && stripSnapPrefix(snapId);
 
   const subjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),

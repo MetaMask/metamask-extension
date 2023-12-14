@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Taisyti kontaktą"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS pavadinimas dabartiniame tinkle nerastas. Mėginkite perjungti į pagrindinį „Ethereum“ tinklą."
-  },
   "ensRegistrationError": {
     "message": "ENS pavadinimo registracijos klaida"
   },
@@ -611,9 +608,6 @@
   },
   "search": {
     "message": "Ieškoti"
-  },
-  "searchResults": {
-    "message": "Paieškos rezultatai"
   },
   "securityAndPrivacy": {
     "message": "Sauga ir privatumas"

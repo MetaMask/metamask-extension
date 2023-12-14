@@ -1,5 +1,9 @@
-const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const {
+  withFixtures,
+  unlockWallet,
+  convertToHexValue,
+  WINDOW_TITLES,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -10,6 +14,7 @@ describe('Test Snap TxInsights', function () {
         {
           secretKey:
             '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+          balance: convertToHexValue(25000000000000000000),
         },
       ],
     };
@@ -18,14 +23,10 @@ describe('Test Snap TxInsights', function () {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate to test snaps page and connect
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
@@ -47,7 +48,7 @@ describe('Test Snap TxInsights', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.clickElement({
@@ -77,7 +78,7 @@ describe('Test Snap TxInsights', function () {
         // switch back to MetaMask window and deal with dialogs
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.clickElement({
@@ -99,7 +100,7 @@ describe('Test Snap TxInsights', function () {
         // switch back to MetaMask window and switch to tx insights pane
         windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.delay(1000);
@@ -109,14 +110,10 @@ describe('Test Snap TxInsights', function () {
         });
 
         // check that txinsightstest tab contains the right info
-        await driver.delay(1000);
-        const txInsightsResult = await driver.findElement(
-          '.snap-ui-renderer__content',
-        );
-        assert.equal(
-          await txInsightsResult.getText(),
-          'Transaction type:\nERC-20',
-        );
+        await driver.waitForSelector({
+          css: '.snap-ui-renderer__content',
+          text: 'ERC-20',
+        });
       },
     );
   });

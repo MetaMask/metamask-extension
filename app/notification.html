@@ -1,12 +1,17 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8">
-    <title>MetaMask Notification</title>
-    {{@if(it.isMMI)}}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+
+    {{ @if (it.isTest) }}
+    <title>MetaMask Dialog</title>
+    {{ #elif (it.isMMI) }}
     <title>MetaMask Institutional</title>
+    {{ #else }}
+    <title>MetaMask</title>
     {{/if}}
+
     <style>
       #app-content {
         display: flex;
@@ -27,15 +32,36 @@
         margin-top: 1rem;
       }
     </style>
-    <link rel="stylesheet" type="text/css" href="./index.css" title="ltr">
-    <link rel="stylesheet" type="text/css" href="./index-rtl.css" title="rtl" disabled>
+    <link rel="stylesheet" type="text/css" href="./index.css" title="ltr" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="./index-rtl.css"
+      title="rtl"
+      disabled
+    />
   </head>
   <body class="notification">
     <div id="app-content">
-      <img id="loading__logo" src="./images/logo/metamask-fox.svg" alt="" />
-      <img id="loading__spinner" src="./images/spinner.gif" alt="" />
+      <img
+        id="loading__logo"
+        src="./images/logo/metamask-fox.svg"
+        alt=""
+        loading="lazy"
+      />
+      <img
+        id="loading__spinner"
+        src="./images/spinner.gif"
+        alt=""
+        loading="lazy"
+      />
     </div>
     <div id="popover-content"></div>
-    <script src="./load-app.js" type="text/javascript" charset="utf-8"></script>
+    <script
+      src="./load-app.js"
+      type="text/javascript"
+      charset="utf-8"
+      async
+    ></script>
   </body>
 </html>

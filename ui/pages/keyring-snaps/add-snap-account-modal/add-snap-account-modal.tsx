@@ -4,11 +4,11 @@ import {
   Box,
   Button,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
 } from '../../../components/component-library';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import {
   AlignItems,
   Display,
@@ -33,7 +33,7 @@ export default function AddSnapAccountModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose} margin={[4, 4, 4, 4]}>
-          {t('settingAddSnapAccount')}
+          {t('addAccountSnapModalHeader')}
         </ModalHeader>
         <Box
           display={Display.Flex}

@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Uredi stik"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Imena ENS v trenutnem omrežju ni mogoče najti. Poskusite preklopiti na glavno omrežje Ethereum."
-  },
   "ensRegistrationError": {
     "message": "Napaka pri registraciji imena ENS"
   },
@@ -599,9 +596,6 @@
   },
   "search": {
     "message": "Iskanje"
-  },
-  "searchResults": {
-    "message": "Rezultati iskanja"
   },
   "securityAndPrivacy": {
     "message": "Varnost in zasebnost"

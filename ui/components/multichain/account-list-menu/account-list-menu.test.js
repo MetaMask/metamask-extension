@@ -4,29 +4,24 @@ import reactRouterDom from 'react-router-dom';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import messages from '../../../../app/_locales/en/messages.json';
 import {
-  CONNECT_HARDWARE_ROUTE,
   ADD_SNAP_ACCOUNT_ROUTE,
+  CONNECT_HARDWARE_ROUTE,
 } from '../../../helpers/constants/routes';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { AccountListMenu } from '.';
 
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-const mockToggleAccountMenu = jest.fn();
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+const mockOnClose = jest.fn();
 const mockGetEnvironmentType = jest.fn();
-
-jest.mock('../../../store/actions.ts', () => ({
-  ...jest.requireActual('../../../store/actions.ts'),
-  toggleAccountMenu: () => mockToggleAccountMenu,
-}));
 
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => mockGetEnvironmentType,
 }));
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 const render = (props = { onClose: () => jest.fn() }) => {
   const store = configureStore({
@@ -114,9 +109,8 @@ describe('AccountListMenu', () => {
         },
       },
     });
-    const props = { onClose: () => jest.fn() };
     const { container } = renderWithProvider(
-      <AccountListMenu {...props} />,
+      <AccountListMenu onClose={jest.fn()} />,
       mockStore,
     );
     const searchBox = container.querySelector('input[type=search]');
@@ -200,9 +194,9 @@ describe('AccountListMenu', () => {
     expect(historyPushMock).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   describe('addSnapAccountButton', () => {
-    const renderWithState = (state, props = { onClose: () => jest.fn() }) => {
+    const renderWithState = (state, props = { onClose: mockOnClose }) => {
       const store = configureStore({
         ...mockState,
         ...{
@@ -246,7 +240,7 @@ describe('AccountListMenu', () => {
 
       fireEvent.click(addSnapAccountButton);
       await waitFor(() => {
-        expect(mockToggleAccountMenu).toHaveBeenCalled();
+        expect(mockOnClose).toHaveBeenCalled();
       });
     });
 
@@ -269,5 +263,5 @@ describe('AccountListMenu', () => {
       });
     });
   });
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 });

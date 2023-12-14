@@ -4,6 +4,7 @@ const {
   withFixtures,
   openDapp,
   locateAccountBalanceDOM,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -25,12 +26,10 @@ describe('Navigate transactions', function () {
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate transactions
         await driver.clickElement('[data-testid="next-page"]');
@@ -116,12 +115,10 @@ describe('Navigate transactions', function () {
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="next-page"]');
         let navigationElement = await driver.findElement(
@@ -162,12 +159,10 @@ describe('Navigate transactions', function () {
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // reject transaction
         await driver.clickElement({ text: 'Reject', tag: 'button' });
@@ -192,12 +187,10 @@ describe('Navigate transactions', function () {
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -222,12 +215,10 @@ describe('Navigate transactions', function () {
           .withTransactionControllerMultipleTransactions()
           .build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });

@@ -5,6 +5,8 @@ const {
   openDapp,
   DAPP_URL,
   convertToHexValue,
+  unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -71,14 +73,12 @@ describe('Sign Typed Data Signature Request', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver, ganacheServer }) => {
           const addresses = await ganacheServer.getAccounts();
           const publicAddress = addresses[0];
-          await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+          await unlockWallet(driver);
 
           await openDapp(driver);
 
@@ -88,7 +88,7 @@ describe('Sign Typed Data Signature Request', function () {
           await driver.waitUntilXWindowHandles(3);
           let windowHandles = await driver.getAllWindowHandles();
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 
@@ -124,7 +124,7 @@ describe('Sign Typed Data Signature Request', function () {
   });
 
   testData.forEach((data) => {
-    it(`can queue multiple Signature Requests of ${data.type} and confirm @no-mmi`, async function () {
+    it(`can queue multiple Signature Requests of ${data.type} and confirm`, async function () {
       await withFixtures(
         {
           dapp: true,
@@ -132,14 +132,12 @@ describe('Sign Typed Data Signature Request', function () {
             .withPermissionControllerConnectedToTestDapp()
             .build(),
           ganacheOptions,
-          title: this.test.title,
+          title: this.test.fullTitle(),
         },
         async ({ driver, ganacheServer }) => {
           const addresses = await ganacheServer.getAccounts();
           const publicAddress = addresses[0];
-          await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+          await unlockWallet(driver);
 
           await openDapp(driver);
 
@@ -154,7 +152,7 @@ describe('Sign Typed Data Signature Request', function () {
           await driver.clickElement(data.buttonId);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 
@@ -231,6 +229,7 @@ async function verifyAndAssertSignTypedData(
 
 async function approveSignatureRequest(driver, type, buttonElementId) {
   if (type !== signatureRequestType.signTypedData) {
+    await driver.delay(regularDelayMs);
     await driver.clickElement(buttonElementId);
   }
   await driver.delay(regularDelayMs);

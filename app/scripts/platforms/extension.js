@@ -2,9 +2,9 @@ import browser from 'webextension-polyfill';
 
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { startCase, toLower } from 'lodash';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { getEnvironmentType } from '../lib/util';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
-import { TransactionStatus } from '../../../shared/constants/transaction';
 import { getURLHostName } from '../../../ui/helpers/utils/util';
 import { t } from '../translate';
 
@@ -198,16 +198,16 @@ export default class ExtensionPlatform {
     let message = t(
       'notificationTransactionFailedMessage',
       nonce,
-      errorMessage || txMeta.err.message,
+      errorMessage || txMeta.error.message,
     );
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     if (isNaN(nonce)) {
       message = t(
         'notificationTransactionFailedMessageMMI',
-        errorMessage || txMeta.err.message,
+        errorMessage || txMeta.error.message,
       );
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     await this._showNotification(title, message);
   }
 

@@ -4,6 +4,10 @@ import { addHexPrefix } from 'ethereumjs-util';
 import { cloneDeep, debounce } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  TransactionEnvelopeType,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   decimalToHex,
   getValueFromWeiHex,
 } from '../../../shared/modules/conversion.utils';
@@ -95,8 +99,6 @@ import fetchEstimatedL1Fee from '../../helpers/utils/optimism/fetchEstimatedL1Fe
 import {
   AssetType,
   TokenStandard,
-  TransactionEnvelopeType,
-  TransactionType,
 } from '../../../shared/constants/transaction';
 import { INVALID_ASSET_TYPE } from '../../helpers/constants/error-keys';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
@@ -964,6 +966,7 @@ const slice = createSlice({
         slice.caseReducers.updateAmountToMax(state);
       } else if (initialAssetSet === false) {
         slice.caseReducers.updateSendAmount(state, { payload: '0x0' });
+        slice.caseReducers.updateUserInputHexData(state, { payload: '' });
       }
       // validate send state
       slice.caseReducers.validateSendState(state);
@@ -1636,6 +1639,19 @@ const slice = createSlice({
             if (draftTransaction?.asset.type === AssetType.native) {
               draftTransaction.asset.balance = action.payload.account.balance;
             }
+
+            // If selected account was changed and selected asset is a token then
+            // reset asset to native asset
+            if (draftTransaction?.asset.type === AssetType.token) {
+              draftTransaction.asset.type =
+                draftTransactionInitialState.asset.type;
+              draftTransaction.asset.error =
+                draftTransactionInitialState.asset.error;
+              draftTransaction.asset.details =
+                draftTransactionInitialState.asset.details;
+              draftTransaction.asset.balance = action.payload.account.balance;
+            }
+
             slice.caseReducers.validateAmountField(state);
             slice.caseReducers.validateGasField(state);
             slice.caseReducers.validateSendState(state);
