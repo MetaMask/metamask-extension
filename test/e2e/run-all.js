@@ -152,7 +152,6 @@ async function main() {
     const testDir = path.join(__dirname, 'tests');
     testPaths = [
       ...(await getTestPathsForTestDir(testDir)),
-      path.join(__dirname, 'metamask-ui.spec.js'),
     ];
   } else {
     const testDir = path.join(__dirname, 'tests');
@@ -162,7 +161,6 @@ async function main() {
     testPaths = [
       ...(await getTestPathsForTestDir(testDir)),
       ...filteredFlaskAndMainTests,
-      path.join(__dirname, 'metamask-ui.spec.js'),
     ];
   }
 
