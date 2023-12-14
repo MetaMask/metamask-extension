@@ -50,8 +50,8 @@ type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
   'SnapKeyringBuilder',
   SnapKeyringBuilderAllowActions,
   never,
-  string,
-  string
+  SnapKeyringBuilderAllowActions['type'],
+  never
 >;
 
 /**
