@@ -62,6 +62,10 @@ const ChooseAccount = ({
   };
 
   const headerText = getHeaderText();
+  let headerTitle = t('connectWithMetaMask');
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  headerTitle = t('connectWithMetaMaskInstitutional');
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
@@ -69,11 +73,7 @@ const ChooseAccount = ({
         <PermissionsConnectHeader
           iconUrl={targetSubjectMetadata?.iconUrl}
           iconName={targetSubjectMetadata?.name}
-          headerTitle={t('connectWithMetaMask', [
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            'Institutional',
-            ///: END:ONLY_INCLUDE_IF
-          ])}
+          headerTitle={headerTitle}
           headerText={headerText}
           siteOrigin={targetSubjectMetadata?.origin}
           subjectType={targetSubjectMetadata?.subjectType}

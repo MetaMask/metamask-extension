@@ -859,8 +859,10 @@
     "description": "$1 is the number of accounts to which the web3 site/application is asking to connect; this will substitute $1 in connectToMultiple"
   },
   "connectWithMetaMask": {
-    "message": "Connect with MetaMask $1",
-    "description": "$1 is the Institutional string when the build is MMI"
+    "message": "Connect with MetaMask"
+  },
+  "connectWithMetaMaskInstitutional": {
+    "message": "Connect with MetaMask Institutional"
   },
   "connectedAccountsDescriptionPlural": {
     "message": "You have $1 accounts connected to this site.",
