@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -34,6 +34,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
 import TokenBalance from '../../ui/token-balance';
+import { getSelectedIdentity } from '../../../selectors';
 import MaxClearButton from './max-clear-button';
 import AssetPicker from './asset-picker/asset-picker';
 
@@ -84,14 +85,12 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
   }
 
   return (
-    <>
-      <UserPreferencedTokenInput
-        onChange={(newAmount: string) => dispatch(updateSendAmount(newAmount))}
-        token={asset.details}
-        value={amount.value}
-        className="asset-picker-amount__input"
-      />
-    </>
+    <UserPreferencedTokenInput
+      onChange={(newAmount: string) => dispatch(updateSendAmount(newAmount))}
+      token={asset.details}
+      value={amount.value}
+      className="asset-picker-amount__input"
+    />
   );
 };
 
@@ -99,11 +98,15 @@ const renderCurrencyInput = (asset: Asset, amount: Amount) => {
 export const AssetPickerAmount = () => {
   const t = useI18nContext();
   const { asset, amount } = useSelector(getCurrentDraftTransaction);
+  const selectedAccount = useSelector(getSelectedIdentity);
+
   const { error } = amount;
 
-  if (!asset) {
-    throw new Error('No asset is drafted for sending');
-  }
+  useEffect(() => {
+    if (!asset) {
+      throw new Error('No asset is drafted for sending');
+    }
+  }, [selectedAccount]);
 
   const balanceColor = error
     ? TextColor.errorDefault
@@ -112,8 +115,10 @@ export const AssetPickerAmount = () => {
   return (
     <Box className="asset-picker-amount">
       <Box display={Display.Flex}>
-        <Label>{t('amount')}</Label>
-        <MaxClearButton />
+        <Label>
+          {asset.type === AssetType.NFT ? t('asset') : t('amount')}:
+        </Label>
+        <MaxClearButton asset={asset} />
       </Box>
       <Box
         display={Display.Flex}
