@@ -1,14 +1,26 @@
 import React from 'react';
 import classnames from 'classnames';
-import { HeaderBase, Text, ButtonIcon, ButtonIconSize, IconName } from '..';
+import { HeaderBase, Text, ButtonIcon, ButtonIconSize, IconName } from '../..';
 import {
   TextVariant,
   TextAlign,
-  BlockSize,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { ModalHeaderProps } from '.';
 
+/**
+ * @deprecated This version of `ModalHeader` is deprecated. Please use the version from the component-library in ui/components/component-library/modal-header/modal-header.tsx
+ * See PR https://github.com/MetaMask/metamask-extension/pull/22207 for details.
+ * @param options0
+ * @param options0.children
+ * @param options0.className
+ * @param options0.startAccessory
+ * @param options0.endAccessory
+ * @param options0.onClose
+ * @param options0.closeButtonProps
+ * @param options0.onBack
+ * @param options0.backButtonProps
+ */
 export const ModalHeader: React.FC<ModalHeaderProps> = ({
   children,
   className = '',
@@ -24,12 +36,6 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   return (
     <HeaderBase
       className={classnames('mm-modal-header', className)}
-      paddingLeft={4}
-      paddingRight={4}
-      paddingBottom={4}
-      childrenWrapperProps={{
-        width: BlockSize.Full,
-      }}
       startAccessory={
         startAccessory ||
         (onBack && (
