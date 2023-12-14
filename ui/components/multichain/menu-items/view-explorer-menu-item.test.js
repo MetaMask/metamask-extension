@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithProvider, fireEvent } from '../../../../test/jest';
+import { fireEvent, renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { ViewExplorerMenuItem } from '.';

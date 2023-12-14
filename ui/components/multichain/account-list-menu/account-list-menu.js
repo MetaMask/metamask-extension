@@ -1,30 +1,30 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  IconName,
-  TextFieldSearch,
   Box,
-  Modal,
-  ModalContent,
-  ModalOverlay,
-  ModalHeader,
-  Text,
-  ButtonVariant,
   ButtonLink,
   ButtonSecondary,
   ButtonSecondarySize,
+  ButtonVariant,
+  IconName,
+  Modal,
+  ModalOverlay,
+  Text,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
+import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
+  AlignItems,
   BlockSize,
-  Size,
-  TextColor,
   Display,
   FlexDirection,
-  AlignItems,
+  Size,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -33,9 +33,10 @@ import {
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  getUpdatedAndSortedAccounts,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -45,12 +46,12 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   ADD_SNAP_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
@@ -79,9 +80,9 @@ export const AccountListMenu = ({
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
@@ -115,6 +116,11 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
+
+  const sortedSearchResults = process.env.NETWORK_ACCOUNT_DND
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useSelector(getUpdatedAndSortedAccounts)
+    : searchResults;
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -231,7 +237,7 @@ export const AccountListMenu = ({
               </ButtonLink>
             </Box>
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+              ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
               addSnapAccountEnabled ? (
                 <Box marginTop={4}>
                   <ButtonLink
@@ -252,10 +258,10 @@ export const AccountListMenu = ({
                   </ButtonLink>
                 </Box>
               ) : null
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
             }
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
               <Box marginTop={4}>
                 <ButtonLink
                   size={Size.SM}
@@ -279,7 +285,7 @@ export const AccountListMenu = ({
                   {t('connectCustodialAccountMenu')}
                 </ButtonLink>
               </Box>
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
             }
           </Box>
         ) : null}
@@ -309,7 +315,7 @@ export const AccountListMenu = ({
             ) : null}
             {/* Account list block */}
             <Box className="multichain-account-menu-popover__list">
-              {searchResults.length === 0 && searchQuery !== '' ? (
+              {sortedSearchResults.length === 0 && searchQuery !== '' ? (
                 <Text
                   paddingLeft={4}
                   paddingRight={4}
@@ -319,7 +325,7 @@ export const AccountListMenu = ({
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              {searchResults.map((account) => {
+              {sortedSearchResults.map((account) => {
                 const connectedSite = connectedSites[account.address]?.find(
                   ({ origin }) => origin === currentTabOrigin,
                 );
@@ -344,6 +350,11 @@ export const AccountListMenu = ({
                     connectedAvatar={connectedSite?.iconUrl}
                     connectedAvatarName={connectedSite?.name}
                     showOptions
+                    isPinned={
+                      process.env.NETWORK_ACCOUNT_DND
+                        ? Boolean(account.pinned)
+                        : null
+                    }
                     {...accountListItemProps}
                   />
                 );

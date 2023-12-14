@@ -27,11 +27,11 @@ import {
   AvatarAccountVariant,
   Box,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { AddressCopyButton } from '../address-copy-button';
 import { AccountDetailsAuthenticate } from './account-details-authenticate';
 import { AccountDetailsDisplay } from './account-details-display';

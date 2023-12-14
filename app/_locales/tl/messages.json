@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Deposito"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Matuto pa"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Dahil sa mga pagbabago ng protokol ng Ethereum: ang mga test network na Rinkeby, Ropsten at Kovan ay maaaring hindi gumana tulad ng maaasahan at malapit nang itigil ang paggamit."
-  },
   "description": {
     "message": "Deskripsyon"
   },
@@ -1428,12 +1422,6 @@
   "ensIllegalCharacter": {
     "message": "Mga ilegal na character para sa ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Hindi nahanap ang pangalan ng ENS sa kasalukuyang network. Subukang lumipat sa Mainnet ng Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Hindi sinusuportahan ng network ang ENS"
-  },
   "ensRegistrationError": {
     "message": "Nagka-error sa pag-register ng ENS name"
   },
@@ -1667,33 +1655,13 @@
     "message": "$1 oras",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 minuto",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Baka sa $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Posible sa < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 na segundo",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 seg",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Napakaposible sa < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Nagamit na Gas"
@@ -3505,9 +3473,6 @@
   "searchAccounts": {
     "message": "Maghanap ng mga account"
   },
-  "searchResults": {
-    "message": "Mga resulta ng paghahanap"
-  },
   "secretRecoveryPhrase": {
     "message": "Lihim na Parirala sa Pagbawi"
   },
@@ -3763,9 +3728,6 @@
   "smartContracts": {
     "message": "Mga smart na kontrata"
   },
-  "smartSwap": {
-    "message": "Smart swap"
-  },
   "smartSwapsAreHere": {
     "message": "Nandito na ang mga Smart Swap!"
   },
@@ -3873,10 +3835,6 @@
   "snapUpdateErrorTitle": {
     "message": "Nabigo ang pag-update",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "Gustong i-update ng $1 ang $2 sa $3 na nagbibigay dito ng mga sumusunod na pahintulot. Magpatuloy lang kung pinagkakatiwalaan mo ang $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Tapos na ang pag-update"
@@ -4801,9 +4759,6 @@
   "transactionDetailGasHeading": {
     "message": "Tinantyang bayad sa gas"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "tinantya"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Alamin pa ang tungkol sa mga bayad sa gas"
   },
@@ -5024,10 +4979,6 @@
   },
   "verifyContractDetails": {
     "message": "I-verify ang mga detalye ng third-party"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Ang token decimal ay maaaring matagpuan sa $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "I-verify ang token na ito sa $1",

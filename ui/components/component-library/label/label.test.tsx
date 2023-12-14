@@ -1,8 +1,7 @@
 /* eslint-disable jest/require-top-level-describe */
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import { Icon, IconName } from '..';
-import { TextField } from '../text-field/deprecated';
+import { Icon, IconName, TextField } from '..';
 
 import { Label } from './label';
 

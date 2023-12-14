@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Muokkaa yhteystietoa"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-nimeä ei löytynyt nykyisestä verkosta. Koeta vaihtaa Ethereumin pääverkkoon."
-  },
   "ensRegistrationError": {
     "message": "Virhe ENS-nimen rekisteröinnissä"
   },
@@ -608,9 +605,6 @@
   },
   "search": {
     "message": "Haku"
-  },
-  "searchResults": {
-    "message": "Hakutulokset"
   },
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"

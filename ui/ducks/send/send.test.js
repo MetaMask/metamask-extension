@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import {
   CONTRACT_ADDRESS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
@@ -19,7 +20,6 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import {
   AssetType,
   TokenStandard,
-  TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import * as Actions from '../../store/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
@@ -1371,9 +1371,9 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               0x5: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             providerConfig: {
@@ -1671,14 +1671,14 @@ describe('Send Slice', () => {
           providerConfig: {
             chainId: CHAIN_IDS.GOERLI,
           },
-          cachedBalances: {
+          accountsByChainId: {
             [CHAIN_IDS.GOERLI]: {
-              [mockAddress1]: '0x0',
+              [mockAddress1]: { balance: '0x0' },
             },
           },
           accounts: {
             [mockAddress1]: {
-              address: mockAddress1,
+              address: '0x0',
             },
           },
           identities: {
@@ -2506,9 +2506,9 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               [CHAIN_IDS.GOERLI]: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             tokenList: {},
@@ -2645,9 +2645,9 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               [CHAIN_IDS.GOERLI]: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             tokenList: {},
@@ -2832,9 +2832,9 @@ describe('Send Slice', () => {
               balance: '0x0',
             },
           },
-          cachedBalances: {
+          accountsByChainId: {
             [CHAIN_IDS.GOERLI]: {
-              [mockAddress1]: '0x0',
+              [mockAddress1]: { balance: '0x0' },
             },
           },
           transactions: [

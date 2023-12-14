@@ -43,7 +43,7 @@ const PermissionCell = ({
   let iconColor = IconColor.primaryDefault;
   let iconBackgroundColor = Color.primaryMuted;
 
-  if (!revoked && weight === 1) {
+  if (!revoked && weight <= 2) {
     iconColor = IconColor.warningDefault;
     iconBackgroundColor = Color.warningMuted;
     infoIconColor = IconColor.warningDefault;

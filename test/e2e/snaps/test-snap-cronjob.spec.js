@@ -1,4 +1,4 @@
-const { withFixtures, unlockWallet } = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -21,8 +21,6 @@ describe('Test Snap Cronjob', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect
@@ -41,7 +39,7 @@ describe('Test Snap Cronjob', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.clickElement({
@@ -75,7 +73,7 @@ describe('Test Snap Cronjob', function () {
         // switch to dialog popup, wait for a maximum of 65 seconds
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 65000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.delay(1000);

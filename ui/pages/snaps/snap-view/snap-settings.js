@@ -1,15 +1,21 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  useEffect,
+  ///: END:ONLY_INCLUDE_IF
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   SnapCaveatType,
   WALLET_SNAP_PERMISSION_KEY,
 } from '@metamask/snaps-rpc-methods';
-import classnames from 'classnames';
+import { useHistory } from 'react-router-dom';
+import semver from 'semver';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
+  BackgroundColor,
   BlockSize,
-  Color,
   Display,
   FlexWrap,
   JustifyContent,
@@ -19,17 +25,18 @@ import {
 import SnapAuthorshipExpanded from '../../../components/app/snaps/snap-authorship-expanded';
 import SnapRemoveWarning from '../../../components/app/snaps/snap-remove-warning';
 import ConnectedSitesList from '../../../components/app/connected-sites-list';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import KeyringSnapRemovalWarning from '../../../components/app/snaps/keyring-snap-removal-warning';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import {
   removeSnap,
   removePermissionsFor,
   updateCaveat,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  updateSnap,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   showKeyringSnapRemovalModal,
   getSnapAccountsById,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 import {
   getSnaps,
@@ -37,9 +44,10 @@ import {
   getPermissions,
   getPermissionSubjects,
   getTargetSubjectMetadata,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  getSnapLatestVersion,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getMemoizedMetaMaskIdentities,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { getSnapName } from '../../../helpers/utils/util';
 import {
@@ -52,37 +60,32 @@ import {
 import SnapPermissionsList from '../../../components/app/snaps/snap-permissions-list';
 import { SnapDelineator } from '../../../components/app/snaps/snap-delineator';
 import { DelineatorType } from '../../../helpers/constants/snaps';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+import SnapUpdateAlert from '../../../components/app/snaps/snap-update-alert';
+import { CONNECT_ROUTE } from '../../../helpers/constants/routes';
+import { ShowMore } from '../../../components/app/snaps/show-more';
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringSnapRemovalResultStatus } from './constants';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 function SnapSettings({ snapId }) {
+  const history = useHistory();
   const t = useI18nContext();
-  const descriptionRef = useRef(null);
   const snaps = useSelector(getSnaps);
+  const dispatch = useDispatch();
+
   const snap = Object.entries(snaps)
     .map(([_, snapState]) => snapState)
     .find((snapState) => snapState.id === snapId);
 
   const [isShowingRemoveWarning, setIsShowingRemoveWarning] = useState(false);
-  const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
-  const [isOverflowing, setIsOverflowing] = useState(false);
   // eslint-disable-next-line no-unused-vars -- Main build does not use setIsRemovingKeyringSnap
   const [isRemovingKeyringSnap, setIsRemovingKeyringSnap] = useState(false);
 
   // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
   const [keyringAccounts, setKeyringAccounts] = useState([]);
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const identities = useSelector(getMemoizedMetaMaskIdentities);
-  ///: END:ONLY_INCLUDE_IN
-
-  useEffect(() => {
-    setIsOverflowing(
-      descriptionRef.current &&
-        descriptionRef.current.offsetHeight <
-          descriptionRef.current.scrollHeight,
-    );
-  }, [descriptionRef]);
+  ///: END:ONLY_INCLUDE_IF
 
   const connectedSubjects = useSelector((state) =>
     getSubjectsWithSnapPermission(state, snap?.id),
@@ -96,7 +99,7 @@ function SnapSettings({ snapId }) {
   );
 
   let isKeyringSnap = false;
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   isKeyringSnap = Boolean(subjects[snap?.id]?.permissions?.snap_manageAccounts);
 
   useEffect(() => {
@@ -110,10 +113,7 @@ function SnapSettings({ snapId }) {
       })();
     }
   }, [snap?.id, identities, isKeyringSnap]);
-
-  ///: END:ONLY_INCLUDE_IN
-
-  const dispatch = useDispatch();
+  ///: END:ONLY_INCLUDE_IF
 
   const onDisconnect = (connectedOrigin) => {
     const caveatValue =
@@ -141,33 +141,42 @@ function SnapSettings({ snapId }) {
 
   const snapName = getSnapName(snap.id, targetSubjectMetadata);
 
-  const shouldDisplayMoreButton = isOverflowing && !isDescriptionOpen;
-  const handleMoreClick = () => {
-    setIsDescriptionOpen(true);
+  const latestRegistryVersion = useSelector((state) =>
+    snap ? getSnapLatestVersion(state, snap?.id) : null,
+  );
+
+  const isUpdateAvailable = latestRegistryVersion
+    ? semver.gt(latestRegistryVersion, snap.version)
+    : false;
+
+  const handleUpdate = async () => {
+    const snapToInstall = {
+      [snap.id]: {
+        version: latestRegistryVersion,
+      },
+    };
+    const approvalId = await dispatch(updateSnap('MetaMask', snapToInstall));
+
+    if (approvalId) {
+      history.push(`${CONNECT_ROUTE}/${approvalId}`);
+    }
   };
 
   return (
     <Box>
+      {isUpdateAvailable && (
+        <SnapUpdateAlert
+          snapName={snapName}
+          onUpdateClick={handleUpdate}
+          bannerAlertProps={{ marginBottom: 4 }}
+        />
+      )}
       <SnapAuthorshipExpanded snapId={snap.id} snap={snap} />
       <Box className="snap-view__content__description" marginTop={[4, 7]}>
         <SnapDelineator type={DelineatorType.Description} snapName={snapName}>
-          <Box
-            className={classnames('snap-view__content__description__wrapper', {
-              open: isDescriptionOpen,
-            })}
-            ref={descriptionRef}
-          >
+          <ShowMore buttonBackground={BackgroundColor.backgroundDefault}>
             <Text>{snap?.manifest.description}</Text>
-            {shouldDisplayMoreButton && (
-              <Button
-                className="snap-view__content__description__more-button"
-                type="link"
-                onClick={handleMoreClick}
-              >
-                <Text color={Color.infoDefault}>{t('more')}</Text>
-              </Button>
-            )}
-          </Box>
+          </ShowMore>
         </SnapDelineator>
       </Box>
       <Box className="snap-view__content__permissions" marginTop={12}>
@@ -236,7 +245,7 @@ function SnapSettings({ snapId }) {
             snapName={snapName}
           />
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+            ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
             <>
               <KeyringSnapRemovalWarning
                 snap={snap}
@@ -275,7 +284,7 @@ function SnapSettings({ snapId }) {
                 }
               />
             </>
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
         </Box>
       </Box>

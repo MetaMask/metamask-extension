@@ -62,8 +62,6 @@ export async function installSnapSimpleKeyring(
   driver: Driver,
   isAsyncFlow: boolean,
 ) {
-  await driver.navigate();
-
   await unlockWallet(driver);
 
   // navigate to test Snaps page and connect
@@ -72,7 +70,7 @@ export async function installSnapSimpleKeyring(
 
   await driver.delay(500);
 
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   await driver.delay(500);
 
@@ -132,7 +130,7 @@ export async function importKeyAndSwitch(driver: Driver) {
   });
 
   // Click "Create" on the Snap's confirmation popup
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
@@ -158,7 +156,7 @@ export async function makeNewAccountAndSwitch(driver: Driver) {
   });
 
   // Click "Create" on the Snap's confirmation popup
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     css: '[data-testid="confirmation-submit-button"]',
     text: 'Create',
@@ -202,7 +200,7 @@ export async function connectAccountToTestDapp(driver: Driver) {
   await switchToOrOpenDapp(driver);
   await driver.clickElement('#connectButton');
 
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({
     text: 'Next',
     tag: 'button',
@@ -293,7 +291,7 @@ export async function signData(
     await driver.delay(500);
   }
 
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   // these three don't have a contract details page
   if (!['#ethSign', '#personalSign', '#signTypedData'].includes(locatorID)) {
@@ -306,7 +304,7 @@ export async function signData(
     await driver.delay(1000);
 
     // // Navigate to the Notification window and click 'Go to site' button
-    await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+    await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await driver.clickElement({
       text: 'Go to site',
       tag: 'button',

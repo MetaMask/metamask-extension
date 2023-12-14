@@ -226,9 +226,6 @@
   "editContact": {
     "message": "Hariri Mawasiliano"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Jina la ENS halipatikani kwenye mtandao wa sasa. Jaribu kuhamia kwenye Mtandao Mkuu wa Ethereum."
-  },
   "ensRegistrationError": {
     "message": "Hitilafu imetokea kwenye usajili wa jina la ENS"
   },
@@ -589,9 +586,6 @@
   },
   "search": {
     "message": "Tafuta"
-  },
-  "searchResults": {
-    "message": "Matokeo ya Utafutaji"
   },
   "securityAndPrivacy": {
     "message": "Ulinzi na Faragha"

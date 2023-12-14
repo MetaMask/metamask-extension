@@ -1,4 +1,4 @@
-const { withFixtures, unlockWallet } = require('../helpers');
+const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
@@ -21,7 +21,6 @@ describe('Test Snap Get File', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect to dialog snap
@@ -40,7 +39,7 @@ describe('Test Snap Get File', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.clickElement({

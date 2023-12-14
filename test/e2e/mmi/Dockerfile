@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/playwright:v1.39.0-focal AS build
+FROM mcr.microsoft.com/playwright:v1.40.0-focal AS build
 
 WORKDIR '/usr/src/app'
 
@@ -10,5 +10,6 @@ COPY ./dist/chrome ./dist/chrome
 
 # Install testing dependencies
 RUN yarn add dotenv@^16.0.1 @playwright/test@^1.39.0 axios@^1.1.3
+ENV HEADLESS=false
 
-ENTRYPOINT ["npx", "xvfb-run", "playwright", "test", "test/e2e/mmi/specs/.*visual.spec"]
+ENTRYPOINT ["npx", "xvfb-run", "playwright", "test", "--workers=1", "--project=mmi.visual"]

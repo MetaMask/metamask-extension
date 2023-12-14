@@ -1,9 +1,9 @@
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
-import { TransactionStatus } from '../../shared/constants/transaction';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
@@ -24,11 +24,6 @@ const defaultState = {
     },
     identities: {
       '0xFirstAddress': {},
-    },
-    cachedBalances: {
-      '0x1': {
-        '0xFirstAddress': '0x0',
-      },
     },
   },
 };
@@ -237,11 +232,6 @@ describe('Actions', () => {
           accounts: {
             '0xAnotherAddress': {
               balance: '0x0',
-            },
-          },
-          cachedBalances: {
-            '0x1': {
-              '0xAnotherAddress': '0x0',
             },
           },
           identities: {
@@ -1989,11 +1979,6 @@ describe('Actions', () => {
             },
             identities: {
               '0xFirstAddress': {},
-            },
-            cachedBalances: {
-              '0x1': {
-                '0xFirstAddress': '0x0',
-              },
             },
           }),
         ),

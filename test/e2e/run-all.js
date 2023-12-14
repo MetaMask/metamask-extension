@@ -8,7 +8,10 @@ const { exitWithError } = require('../../development/lib/exit-with-error');
 const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 
 // These tests should only be run on Flask for now.
-const FLASK_ONLY_TESTS = ['petnames.spec.js'];
+const FLASK_ONLY_TESTS = [
+  'petnames.spec.js',
+  'test-snap-txinsights-v2.spec.js',
+];
 
 const getTestPathsForTestDir = async (testDir) => {
   const testFilenames = await fs.promises.readdir(testDir, {
@@ -147,10 +150,7 @@ async function main() {
     testPaths = await getTestPathsForTestDir(testDir);
   } else if (buildType === 'mmi') {
     const testDir = path.join(__dirname, 'tests');
-    testPaths = [
-      ...(await getTestPathsForTestDir(testDir)),
-      path.join(__dirname, 'metamask-ui.spec.js'),
-    ];
+    testPaths = [...(await getTestPathsForTestDir(testDir))];
   } else {
     const testDir = path.join(__dirname, 'tests');
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
@@ -159,7 +159,6 @@ async function main() {
     testPaths = [
       ...(await getTestPathsForTestDir(testDir)),
       ...filteredFlaskAndMainTests,
-      path.join(__dirname, 'metamask-ui.spec.js'),
     ];
   }
 

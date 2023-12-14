@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "入金"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "詳細"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "イーサリアムのプロトコル変更のため: Rinkeby、Ropsten、Kovanテストネットワークは動作が安定しない可能性があり、近いうちに非推奨になります。"
-  },
   "description": {
     "message": "説明"
   },
@@ -1428,12 +1422,6 @@
   "ensIllegalCharacter": {
     "message": "ENSにサポートされていない文字が使用されています。"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS名が現在のネットワーク上に見つかりませんでした。イーサリアムメインネットへの切り替えを試みてください。"
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "ネットワークがENSをサポートしていません"
-  },
   "ensRegistrationError": {
     "message": "ENS名の登録エラー"
   },
@@ -1667,33 +1655,13 @@
     "message": "$1時間",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1分",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1分",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "おそらく$1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "$1未満の可能性が高い",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1秒",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1秒",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "$1未満の可能性が非常に高い",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "ガス使用量"
@@ -3505,9 +3473,6 @@
   "searchAccounts": {
     "message": "アカウントを検索"
   },
-  "searchResults": {
-    "message": "検索結果"
-  },
   "secretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズ"
   },
@@ -3763,9 +3728,6 @@
   "smartContracts": {
     "message": "スマートコントラクト"
   },
-  "smartSwap": {
-    "message": "スマートスワップ"
-  },
   "smartSwapsAreHere": {
     "message": "スマートスワップの登場です！"
   },
@@ -3873,10 +3835,6 @@
   "snapUpdateErrorTitle": {
     "message": "更新失敗",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1が$2の$3への更新を要求しています。これにより、次のアクセス許可が付与されます。$2を信頼できる場合にのみ続行してください。",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "更新完了"
@@ -4801,9 +4759,6 @@
   "transactionDetailGasHeading": {
     "message": "ガス代見積もり"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "見積もり"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "ガス代に関する詳細"
   },
@@ -5024,10 +4979,6 @@
   },
   "verifyContractDetails": {
     "message": "サードパーティの詳細を確認"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "トークンの10進数は$1にあります",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "このトークンを$1で検証",

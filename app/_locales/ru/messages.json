@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Депозит"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Подробнее"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Из-за изменений протокола Ethereum: тестовые сети Rinkeby, Ropsten, Kovan могут работать не очень надежно и скоро будут признаны устаревшими."
-  },
   "description": {
     "message": "Описание"
   },
@@ -1428,12 +1422,6 @@
   "ensIllegalCharacter": {
     "message": "Недопустимый символ для ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Имя ENS не найдено в текущей сети. Попробуйте переключиться на Мейн-нет Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Сеть не поддерживает ENS"
-  },
   "ensRegistrationError": {
     "message": "Ошибка при регистрации имени ENS"
   },
@@ -1667,33 +1655,13 @@
     "message": "$1 ч",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 минут(-ы)",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 мин.",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Может быть, через $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Вероятно, через < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 секунд(-ы)",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 сек.",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Весьма вероятно, через < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Использовано газа"
@@ -3505,9 +3473,6 @@
   "searchAccounts": {
     "message": "Поиск счетов"
   },
-  "searchResults": {
-    "message": "Результаты поиска"
-  },
   "secretRecoveryPhrase": {
     "message": "Секретная фраза для восстановления"
   },
@@ -3763,9 +3728,6 @@
   "smartContracts": {
     "message": "Смарт-контракты"
   },
-  "smartSwap": {
-    "message": "Смарт-своп"
-  },
   "smartSwapsAreHere": {
     "message": "Появились смарт-свопы!"
   },
@@ -3873,10 +3835,6 @@
   "snapUpdateErrorTitle": {
     "message": "Ошибка обновления",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1 хочет обновить $2 до $3, что дает ему следующие разрешения. Продолжайте, только если доверяете $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Обновление завершено"
@@ -4801,9 +4759,6 @@
   "transactionDetailGasHeading": {
     "message": "Примерная плата за газ"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "примерная"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Подробнее о плате за газ"
   },
@@ -5024,10 +4979,6 @@
   },
   "verifyContractDetails": {
     "message": "Проверьте информацию о третьей стороне"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Число десятичных знаков токена можно найти на $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Проверить этот токен на $1",

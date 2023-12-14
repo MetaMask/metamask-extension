@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Rediģēt līgumu"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Šajā tīklā ENS nosaukums nav atrasts. Pamēģiniet pārslēgties uz galveno Ethereum tīklu."
-  },
   "ensRegistrationError": {
     "message": "Kļūda ENS vārda reģistrācijā"
   },
@@ -607,9 +604,6 @@
   },
   "search": {
     "message": "Meklēt"
-  },
-  "searchResults": {
-    "message": "Meklēšanas rezultāti"
   },
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"

@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Para Yatır"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Daha fazla bilgi edinin"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Ethereum'da yaşanan protokol değişikliklerinden dolayı: Rinkeby, Ropsten, Kovan test ağları güvenilir bir şekilde çalışmayabilir ve yakında kullanım dışı olacak."
-  },
   "description": {
     "message": "Açıklama"
   },
@@ -1428,12 +1422,6 @@
   "ensIllegalCharacter": {
     "message": "ENS için uygun olmayan karakter."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS adı geçerli ağda bulunamadı. Ethereum Ana Ağına geçmeyi deneyin."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Ağ ENS desteklemiyor"
-  },
   "ensRegistrationError": {
     "message": "ENS adı kaydında hata"
   },
@@ -1667,33 +1655,13 @@
     "message": "$1 sa.",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 dakika",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 dk",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Belki $1 içinde",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Muhtemelen < $1 içinde",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 saniye",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 sn",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Büyük olasılıkla > $1 içinde",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Kullanılan gaz"
@@ -3505,9 +3473,6 @@
   "searchAccounts": {
     "message": "Hesapları ara"
   },
-  "searchResults": {
-    "message": "Arama sonuçları"
-  },
   "secretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesi"
   },
@@ -3763,9 +3728,6 @@
   "smartContracts": {
     "message": "Akıllı sözleşmeler"
   },
-  "smartSwap": {
-    "message": "Akıllı swap"
-  },
   "smartSwapsAreHere": {
     "message": "Akıllı Swap'lar burada!"
   },
@@ -3873,10 +3835,6 @@
   "snapUpdateErrorTitle": {
     "message": "Güncelleme başarısız oldu",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1, $2 için aşağıdaki izinleri verecek şekilde $3 güncellemesi yapmak istiyor. Sadece $2 sürümüne güveniyorsanız devam edin.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Güncelleme tamamlandı"
@@ -4801,9 +4759,6 @@
   "transactionDetailGasHeading": {
     "message": "Tahmini gaz ücreti"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "tahmini"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Gaz ücretleri hakkında daha fazla bilgi edinin"
   },
@@ -5024,10 +4979,6 @@
   },
   "verifyContractDetails": {
     "message": "Üçüncü taraf bilgilerini doğrula"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Token ondalık değeri şurada bulunabilir: $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Şurada bu tokeni doğrula: $1",

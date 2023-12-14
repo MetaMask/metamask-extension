@@ -1127,12 +1127,6 @@
   "deposit": {
     "message": "Effectuez un dépôt"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "En savoir plus"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "En raison des changements apportés au protocole d’Ethereum, les réseaux testnet Rinkeby, Ropsten et Kovan peuvent ne pas fonctionner d’une manière aussi fiable qu’auparavant et deviendront bientôt obsolètes."
-  },
   "description": {
     "message": "Description"
   },
@@ -1428,12 +1422,6 @@
   "ensIllegalCharacter": {
     "message": "Caractère invalide pour l’ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nom ENS non trouvé sur le réseau actuel. Essayez de passer au réseau Ethereum principal."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Le réseau ne prend pas en charge l’ENS"
-  },
   "ensRegistrationError": {
     "message": "Erreur dans l’enregistrement du nom ENS"
   },
@@ -1667,33 +1655,13 @@
     "message": "$1 h",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 minutes",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Peut-être dans $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Probablement dans < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 secondes",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Très probablement dans < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gaz utilisé"
@@ -3505,9 +3473,6 @@
   "searchAccounts": {
     "message": "Rechercher des comptes"
   },
-  "searchResults": {
-    "message": "Résultats de la recherche"
-  },
   "secretRecoveryPhrase": {
     "message": "Phrase secrète de récupération"
   },
@@ -3763,9 +3728,6 @@
   "smartContracts": {
     "message": "Contrats intelligents"
   },
-  "smartSwap": {
-    "message": "Contrat de swap intelligent"
-  },
   "smartSwapsAreHere": {
     "message": "Les contrats de swap intelligents sont enfin arrivés !"
   },
@@ -3873,10 +3835,6 @@
   "snapUpdateErrorTitle": {
     "message": "La mise à jour a échoué",
     "description": "Error title used when snap update fails."
-  },
-  "snapUpdateRequest": {
-    "message": "$1 veut mettre à jour $2 vers $3, ce qui lui donne les autorisations suivantes. Ne continuez que si vous faites confiance à $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
   },
   "snapUpdateSuccess": {
     "message": "Mise à jour terminée"
@@ -4801,9 +4759,6 @@
   "transactionDetailGasHeading": {
     "message": "Frais de carburant estimés"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "estimé"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "En savoir plus sur les frais de carburant"
   },
@@ -5024,10 +4979,6 @@
   },
   "verifyContractDetails": {
     "message": "Vérifier les informations relatives aux tiers"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Décimale de jeton disponible sur $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Vérifier ce jeton sur $1",

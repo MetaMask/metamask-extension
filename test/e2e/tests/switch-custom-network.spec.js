@@ -1,6 +1,12 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  openDapp,
+  unlockWallet,
+  WINDOW_TITLES,
+} = require('../helpers');
 
 describe('Switch ethereum chain', function () {
   const ganacheOptions = {
@@ -26,9 +32,7 @@ describe('Switch ethereum chain', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         const windowHandles = await driver.getAllWindowHandles();
         const extension = windowHandles[0];
@@ -43,7 +47,7 @@ describe('Switch ethereum chain', function () {
         await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -74,7 +78,7 @@ describe('Switch ethereum chain', function () {
         await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 

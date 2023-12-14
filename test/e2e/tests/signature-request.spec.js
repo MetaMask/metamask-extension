@@ -5,6 +5,8 @@ const {
   openDapp,
   DAPP_URL,
   convertToHexValue,
+  unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -76,9 +78,7 @@ describe('Sign Typed Data Signature Request', function () {
         async ({ driver, ganacheServer }) => {
           const addresses = await ganacheServer.getAccounts();
           const publicAddress = addresses[0];
-          await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+          await unlockWallet(driver);
 
           await openDapp(driver);
 
@@ -88,7 +88,7 @@ describe('Sign Typed Data Signature Request', function () {
           await driver.waitUntilXWindowHandles(3);
           let windowHandles = await driver.getAllWindowHandles();
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 
@@ -137,9 +137,7 @@ describe('Sign Typed Data Signature Request', function () {
         async ({ driver, ganacheServer }) => {
           const addresses = await ganacheServer.getAccounts();
           const publicAddress = addresses[0];
-          await driver.navigate();
-          await driver.fill('#password', 'correct horse battery staple');
-          await driver.press('#password', driver.Key.ENTER);
+          await unlockWallet(driver);
 
           await openDapp(driver);
 
@@ -154,7 +152,7 @@ describe('Sign Typed Data Signature Request', function () {
           await driver.clickElement(data.buttonId);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 

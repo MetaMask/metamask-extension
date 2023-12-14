@@ -115,7 +115,8 @@
     "network": "5",
     "providerConfig": {
       "type": "rpc",
-      "chainId": "0x5"
+      "chainId": "0x5",
+      "ticker": "ETH"
     },
     "keyrings": [
       {
@@ -179,7 +180,6 @@
         "message": "Hello, http://localhost:8086!"
       }
     },
-    "cachedBalances": {},
     "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
     "accounts": {
       "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {

@@ -1,5 +1,5 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Token Details', function () {
@@ -20,9 +20,7 @@ describe('Token Details', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.clickElement({ text: 'Import tokens', tag: 'button' });
         await driver.clickElement({ text: 'Custom token', tag: 'button' });
@@ -43,7 +41,15 @@ describe('Token Details', function () {
         await driver.clickElement(
           '[data-testid="import-tokens-modal-import-button"]',
         );
-        await driver.clickElement('[aria-label="Asset options"]');
+
+        // Go to details page
+        await driver.clickElement('[data-testid="home__asset-tab"]');
+        const [, tkn] = await driver.findElements(
+          '[data-testid="multichain-token-list-button"]',
+        );
+        await tkn.click();
+        await driver.clickElement('[data-testid="asset-options__button"]');
+
         await driver.clickElement({ text: 'Token details', tag: 'div' });
 
         const tokenAddressFound = {

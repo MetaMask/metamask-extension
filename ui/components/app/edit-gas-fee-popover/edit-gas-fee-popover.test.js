@@ -1,15 +1,15 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { EditGasModes } from '../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 
-import {
-  TransactionStatus,
-  TransactionType,
-} from '../../../../shared/constants/transaction';
 import {
   NETWORK_TYPES,
   CHAIN_IDS,
@@ -66,7 +66,11 @@ const render = ({ txProps, contextProps } = {}) => {
         nickname: GOERLI_DISPLAY_NAME,
         type: NETWORK_TYPES.GOERLI,
       },
-      cachedBalances: {},
+      accountsByChainId: {
+        [CHAIN_IDS.GOERLI]: {
+          '0xAddress': { address: '0xAddress', balance: '0x1F4' },
+        },
+      },
       accounts: {
         '0xAddress': {
           address: '0xAddress',

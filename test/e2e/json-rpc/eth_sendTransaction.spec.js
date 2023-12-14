@@ -1,5 +1,10 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  unlockWallet,
+  WINDOW_TITLES,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_sendTransaction', function () {
@@ -26,9 +31,7 @@ describe('eth_sendTransaction', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // eth_sendTransaction
         await driver.openNewPage(`http://127.0.0.1:8080`);
@@ -52,7 +55,7 @@ describe('eth_sendTransaction', function () {
 
         // confirm transaction in mm popup
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.switchToWindowWithTitle('E2E Test Dapp');
         const actualHash = await driver.executeScript(
@@ -73,9 +76,7 @@ describe('eth_sendTransaction', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // eth_sendTransaction
         await driver.openNewPage(`http://127.0.0.1:8080`);
@@ -99,7 +100,7 @@ describe('eth_sendTransaction', function () {
 
         // reject transaction in mm popup
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({ text: 'Reject', tag: 'button' });
         await driver.switchToWindowWithTitle('E2E Test Dapp');
         const result = await driver

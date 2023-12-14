@@ -1,6 +1,11 @@
 const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  convertToHexValue,
+  withFixtures,
+  unlockWallet,
+  WINDOW_TITLES,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Hide token', function () {
@@ -46,9 +51,7 @@ describe('Hide token', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.waitForSelector({
           css: '[data-testid="multichain-token-list-item-value"]',
@@ -103,20 +106,24 @@ describe('Add existing token using search', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.clickElement({ text: 'Import tokens', tag: 'button' });
-        await driver.fill('input[placeholder="Search"]', 'BAT');
+        await driver.fill('input[placeholder="Search tokens"]', 'BAT');
         await driver.clickElement({
           text: 'BAT',
-          tag: 'span',
+          tag: 'p',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
         await driver.clickElement(
           '[data-testid="import-tokens-modal-import-button"]',
         );
+
+        await driver.clickElement('[data-testid="home__asset-tab"]');
+        const [, tkn] = await driver.findElements(
+          '[data-testid="multichain-token-list-button"]',
+        );
+        await tkn.click();
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',
@@ -149,9 +156,7 @@ describe('Add token using wallet_watchAsset', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
 
@@ -172,7 +177,7 @@ describe('Add token using wallet_watchAsset', function () {
         const windowHandles = await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -202,9 +207,7 @@ describe('Add token using wallet_watchAsset', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.openNewPage('http://127.0.0.1:8080/');
 
@@ -225,7 +228,7 @@ describe('Add token using wallet_watchAsset', function () {
         const windowHandles = await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 

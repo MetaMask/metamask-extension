@@ -38,7 +38,7 @@ describe('Dapp interactions', function () {
         // Trigger Notification
         await driver.clickElement('#addEthereumChain');
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await unlockWallet(driver);
         const notification = await driver.isElementPresent({
           text: 'Allow this site to add a network?',
@@ -69,9 +69,12 @@ describe('Dapp interactions', function () {
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.waitUntilXWindowHandles(3);
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await unlockWallet(driver);
+        await unlockWallet(driver, {
+          navigate: false,
+        });
+
         await driver.clickElement({ text: 'Next', tag: 'button' });
         await driver.clickElement({ text: 'Connect', tag: 'button' });
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -84,7 +87,9 @@ describe('Dapp interactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await unlockWallet(driver);
+        await unlockWallet(driver, {
+          navigate: false,
+        });
         await driver.clickElement(
           '[data-testid ="account-options-menu-button"]',
         );

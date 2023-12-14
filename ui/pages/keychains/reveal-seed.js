@@ -17,12 +17,10 @@ import {
   HelpTextSeverity,
   Label,
   Text,
-} from '../../components/component-library';
-import {
   TextField,
-  TEXT_FIELD_SIZES,
-  TEXT_FIELD_TYPES,
-} from '../../components/component-library/text-field/deprecated';
+  TextFieldSize,
+  TextFieldType,
+} from '../../components/component-library';
 import Box from '../../components/ui/box';
 import ExportTextContainer from '../../components/ui/export-text-container';
 import { Tab, Tabs } from '../../components/ui/tabs';
@@ -129,10 +127,10 @@ export default function RevealSeedPage() {
           inputProps={{
             'data-testid': 'input-password',
           }}
-          type={TEXT_FIELD_TYPES.PASSWORD}
+          type={TextFieldType.Password}
           placeholder={t('makeSureNoOneWatching')}
           id="password-box"
-          size={TEXT_FIELD_SIZES.LG}
+          size={TextFieldSize.Large}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           error={Boolean(error)}
