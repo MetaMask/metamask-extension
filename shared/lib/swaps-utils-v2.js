@@ -77,11 +77,12 @@ export const QUOTE_VALIDATORS_V2 = [
     property: 'gasParams',
     type: 'object',
     validator: (gasParams) =>
-      gasParams &&
-      typeof gasParams.averageGas === 'number' &&
-      typeof gasParams.estimatedRefund === 'number' &&
-      typeof gasParams.maxGas === 'number' &&
-      typeof gasParams.gasMultiplier === 'number',
+      gasParams === null ||
+      (gasParams &&
+        typeof gasParams.averageGas === 'number' &&
+        typeof gasParams.estimatedRefund === 'number' &&
+        typeof gasParams.maxGas === 'number' &&
+        typeof gasParams.gasMultiplier === 'number'),
   },
   {
     property: 'fee',
@@ -188,6 +189,9 @@ export async function fetchQuotesInfoV2(
     cacheOptions: { cacheRefreshTime: 0, timeout: SECOND * 15 },
     functionName: 'fetchQuotesInfoV2',
   });
+
+  console.log('hello tradesResponse', tradesResponse);
+
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
     if (
       quote.trade &&
