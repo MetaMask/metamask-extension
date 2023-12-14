@@ -3473,9 +3473,6 @@
   "searchAccounts": {
     "message": "अकाउंट्स खोजें"
   },
-  "searchResults": {
-    "message": "खोज परिणाम"
-  },
   "secretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज"
   },
@@ -4982,10 +4979,6 @@
   },
   "verifyContractDetails": {
     "message": "थर्ड-पार्टी विवरण वेरीफ़ाई करें"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "टोकन डेसीमल $1 पर पाया जा सकता है",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "इस टोकन को $1 पर वेरीफ़ाई करें",

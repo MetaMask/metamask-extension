@@ -1,12 +1,13 @@
 import {
-  EndowmentPermissions,
-  RestrictedMethods,
-  ExcludedSnapEndowments,
-} from '../../../../../shared/constants/permissions';
-import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
-} from './snap-permissions';
+} from '@metamask/snaps-controllers';
+import { RestrictedMethods } from '../permissions';
+import {
+  EndowmentPermissions,
+  ExcludedSnapEndowments,
+  ExcludedSnapPermissions,
+} from './permissions';
 
 describe('buildSnapRestrictedMethodSpecifications', () => {
   it('creates valid permission specification objects', () => {
@@ -20,7 +21,10 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
       updateSnapState: () => undefined,
     };
 
-    const specifications = buildSnapRestrictedMethodSpecifications(hooks);
+    const specifications = buildSnapRestrictedMethodSpecifications(
+      Object.keys(ExcludedSnapPermissions),
+      hooks,
+    );
 
     const allRestrictedMethods = Object.keys(RestrictedMethods);
     Object.keys(specifications).forEach((permissionKey) =>
@@ -39,7 +43,9 @@ describe('buildSnapRestrictedMethodSpecifications', () => {
 describe('buildSnapEndowmentSpecifications', () => {
   it('creates valid permission specification objects', () => {
     expect(
-      Object.keys(buildSnapEndowmentSpecifications()).sort(),
+      Object.keys(
+        buildSnapEndowmentSpecifications(Object.keys(ExcludedSnapEndowments)),
+      ).sort(),
     ).toStrictEqual(
       Object.keys(EndowmentPermissions)
         .filter(
