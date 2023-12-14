@@ -12,9 +12,12 @@ class WebcamUtils {
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
     const isFirefoxOrBrave =
       getPlatform() === (PLATFORM_FIREFOX || PLATFORM_BRAVE);
-
-    const devices = await window.navigator.mediaDevices.enumerateDevices();
-    const webcams = devices.filter((device) => device.kind === 'videoinput');
+    let webcams;
+    await window.navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        webcams = stream.getVideoTracks();
+      });
     const hasWebcam = webcams.length > 0;
     // A non-empty-string label implies that the webcam has been granted permission, as
     // otherwise the label is kept blank to prevent fingerprinting

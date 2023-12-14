@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import log from 'loglevel';
-import { BrowserQRCodeReader } from '@zxing/library';
+import { BrowserQRCodeReader, BrowserCodeReader } from '@zxing/browser';
 import { getEnvironmentType } from '../../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../../shared/constants/app';
 import { SECOND } from '../../../../../shared/constants/time';
@@ -36,6 +36,7 @@ export default class QrScanner extends Component {
 
     // Clear pre-existing qr code data before scanning
     this.props.qrCodeDetected(null);
+    this.videoRef = React.createRef();
   }
 
   componentDidMount() {
@@ -53,6 +54,13 @@ export default class QrScanner extends Component {
         this.checkPermissions();
       }
     }
+  }
+
+
+  componentWillUnmount() {
+    this.mounted = false;
+    clearTimeout(this.permissionChecker);
+    this.teardownCodeReader();
   }
 
   getInitialState() {
@@ -104,16 +112,10 @@ export default class QrScanner extends Component {
     }
   };
 
-  componentWillUnmount() {
-    this.mounted = false;
-    clearTimeout(this.permissionChecker);
-    this.teardownCodeReader();
-  }
-
   teardownCodeReader() {
     if (this.codeReader) {
       this.codeReader.reset();
-      this.codeReader.stop();
+      this.codeReader.stopStreams();
       this.codeReader = null;
     }
   }
@@ -128,21 +130,26 @@ export default class QrScanner extends Component {
       this.codeReader = new BrowserQRCodeReader();
     }
     try {
-      await this.codeReader.getVideoInputDevices();
-      this.checkPermissions();
-      const content = await this.codeReader.decodeFromInputVideoDevice(
-        undefined,
-        'video',
-      );
-      const result = this.parseContent(content.text);
-      if (!this.mounted) {
-        return;
-      } else if (result.type === 'unknown') {
-        this.setState({ error: new Error(this.context.t('unknownQrCode')) });
-      } else {
-        this.props.qrCodeDetected(result);
-        this.stopAndClose();
-      }
+      const videoInputDevices = await BrowserCodeReader.listVideoInputDevices();
+      await this.checkPermissions();
+      console.log({ videoInputDevices });
+      // const newReader = new BrowserQRCodeReader();
+      // const content = await newReader.decodeFromVideoDevice(
+      //   videoInputDevices[0].deviceId,
+      //   this.videoRef,
+      //   (result, error) => {
+      //     console.log({ result, error });
+      //   },
+      // );
+      // const result = this.parseContent(content.text);
+      // if (!this.mounted) {
+      //   return;
+      // } else if (result.type === 'unknown') {
+      //   this.setState({ error: new Error(this.context.t('unknownQrCode')) });
+      // } else {
+      //   this.props.qrCodeDetected(result);
+      //   this.stopAndClose();
+      // }
     } catch (error) {
       if (!this.mounted) {
         return;
@@ -198,6 +205,7 @@ export default class QrScanner extends Component {
     const { t } = this.context;
     const { error } = this.state;
 
+    console.log({ error })
     let title, msg;
     if (error.type === 'NO_WEBCAM_FOUND') {
       title = t('noWebcamFoundTitle');
@@ -245,6 +253,7 @@ export default class QrScanner extends Component {
         <div className="qr-scanner__content">
           <div className="qr-scanner__content__video-wrapper">
             <video
+              ref={this.videoRef}
               id="video"
               style={{
                 display: ready === READY_STATE.READY ? 'block' : 'none',
@@ -264,7 +273,7 @@ export default class QrScanner extends Component {
     const { error } = this.state;
     return (
       <div className="qr-scanner">
-        <div className="qr-scanner__close" onClick={this.stopAndClose}></div>
+        <div className="qr-scanner__close" onClick={this.stopAndClose} />
         {error ? this.renderError() : this.renderVideo()}
       </div>
     );
