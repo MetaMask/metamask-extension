@@ -56,6 +56,8 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
+import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal'
+
 const ACTION_MODES = {
   // Displays the search box and account list
   LIST: '',
@@ -75,7 +77,6 @@ export const AccountListMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  console.log(accounts);
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -87,6 +88,8 @@ export const AccountListMenu = ({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
+
+  const [showQRCodeModal, setShowQRCodeModal] = useState(false);
 
   let searchResults = accounts;
   if (searchQuery) {
@@ -124,7 +127,10 @@ export const AccountListMenu = ({
     : searchResults;
 
   return (
-    <Modal isOpen onClose={onClose}>
+    <>
+      {showQRCodeModal && <QRCodeModal onClose={() => setShowQRCodeModal(false)}/>}
+
+        <Modal isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent
         className="multichain-account-menu-popover"
@@ -268,19 +274,7 @@ export const AccountListMenu = ({
                   size={Size.SM}
                   startIconName={IconName.Custody}
                   onClick={() => {
-                    onClose();
-                    trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event:
-                        MetaMetricsEventName.ConnectCustodialAccountClicked,
-                    });
-                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                      global.platform.openExtensionInBrowser(
-                        CUSTODY_ACCOUNT_ROUTE,
-                      );
-                    } else {
-                      history.push(CUSTODY_ACCOUNT_ROUTE);
-                    }
+                    setShowQRCodeModal(true);
                   }}
                 >
                   {t('connectCustodialAccountMenu')}
@@ -387,6 +381,8 @@ export const AccountListMenu = ({
         ) : null}
       </ModalContent>
     </Modal>
+    </>
+
   );
 };
 
