@@ -87,33 +87,45 @@ describe('Textarea', () => {
     const mockOnFocus = jest.fn();
     const { getByRole, getByTestId, user } = renderWithUserEvent(
       <>
-        <Textarea isDisabled onFocus={mockOnFocus} onClick={mockOnClick} />
+        <Textarea
+          isDisabled
+          onFocus={mockOnFocus}
+          onClick={mockOnClick}
+          data-testid="textarea"
+        />
       </>,
     );
 
-    const textarea = getByRole('textarea');
+    const textarea = getByRole('textbox');
 
     await user.click(textarea);
-    expect(getByTestId('textbox')).toBeDisabled();
+    expect(getByTestId('textarea')).toBeDisabled();
     expect(mockOnClick).toHaveBeenCalledTimes(0);
     expect(mockOnFocus).toHaveBeenCalledTimes(0);
   });
+
   it('should render in disabled state using disabled prop and not focus or be clickable', async () => {
     const mockOnClick = jest.fn();
     const mockOnFocus = jest.fn();
     const { getByRole, getByTestId, user } = renderWithUserEvent(
       <>
-        <Textarea disabled onFocus={mockOnFocus} onClick={mockOnClick} />
+        <Textarea
+          disabled
+          onFocus={mockOnFocus}
+          onClick={mockOnClick}
+          data-testid="textarea"
+        />
       </>,
     );
 
-    const textarea = getByRole('textarea');
+    const textarea = getByRole('textbox');
 
     await user.click(textarea);
-    expect(getByTestId('textbox')).toBeDisabled();
+    expect(getByTestId('textarea')).toBeDisabled();
     expect(mockOnClick).toHaveBeenCalledTimes(0);
     expect(mockOnFocus).toHaveBeenCalledTimes(0);
   });
+
   it('should render with error state when error is true', () => {
     const { getByTestId } = render(
       <Textarea error data-testid="textarea-error" />,
