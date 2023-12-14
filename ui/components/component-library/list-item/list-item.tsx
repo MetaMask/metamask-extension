@@ -1,7 +1,8 @@
 import React from 'react';
 import classnames from 'classnames';
-import type { PolymorphicRef, BoxProps } from '../box';
-import { Box } from '..';
+import type { PolymorphicRef } from '../box';
+import { Text } from '..';
+import type { TextProps } from '../text';
 
 import { Display } from '../../../helpers/constants/design-system';
 import { ListItemProps, ListItemComponent } from './list-item.types';
@@ -18,7 +19,7 @@ export const ListItem: ListItemComponent = React.forwardRef(
     ref?: PolymorphicRef<C>,
   ) => {
     return (
-      <Box
+      <Text
         className={classnames(
           'mm-list-item',
           {
@@ -26,14 +27,15 @@ export const ListItem: ListItemComponent = React.forwardRef(
           },
           className,
         )}
+        as="div"
         disabled={isDisabled || disabled}
         display={Display.Block}
         padding={4}
         ref={ref}
-        {...(props as BoxProps<C>)}
+        {...(props as TextProps<C>)}
       >
         {children}
-      </Box>
+      </Text>
     );
   },
 );

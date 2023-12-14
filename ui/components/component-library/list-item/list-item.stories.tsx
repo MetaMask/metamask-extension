@@ -32,3 +32,17 @@ IsDisabled.args = {
   isDisabled: true,
 };
 IsDisabled.storyName = 'isDisabled';
+
+export const As: StoryFn<typeof ListItem> = (args) => {
+  return (
+    <>
+      <ListItem {...args}>As: div</ListItem>
+      <ListItem as="button" {...args}>
+        As: button
+      </ListItem>
+      <ListItem as="a" {...args}>
+        As: anchor
+      </ListItem>
+    </>
+  );
+};

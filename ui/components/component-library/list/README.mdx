@@ -1,0 +1,47 @@
+import { Canvas, Controls } from '@storybook/addon-docs';
+import * as ListStories from './list.stories';
+
+# List
+
+List is an unstyled wrapping component for list items
+
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
+<Canvas of={ListStories.DefaultStory} />
+
+## Props
+
+<Controls of={ListStories.DefaultStory} />
+
+### As
+
+Using the box prop `as` on `List` will typically be set to `ul` or `ol`
+
+Defaults to `ul`
+
+<Canvas of={ListStories.As} />
+
+```jsx
+import { List } from '../../component-library';
+
+<List>
+  <li>ul item 1</li>
+  <li>ul item 2</li>
+</List>
+<List as="ol">
+  <li>ol item 1</li>
+  <li>ol item 2</li>
+</List>
+```
+
+### Children
+
+The `children` of the `List` can be text or a react node
+
+<Canvas of={ListStories.Children} />
+
+```jsx
+import { List } from '../../component-library';
+
+<List>List children</List>;
+```

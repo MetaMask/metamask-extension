@@ -1,9 +1,7 @@
-import type {
-  StyleUtilityProps,
-  PolymorphicComponentPropWithRef,
-} from '../box';
+import type { PolymorphicComponentPropWithRef } from '../box';
+import type { TextStyleUtilityProps } from '../text';
 
-export interface ListItemStyleUtilityProps extends StyleUtilityProps {
+export interface ListItemStyleUtilityProps extends TextStyleUtilityProps {
   /*
    * Additional classNames to be added to the ListItem component
    */
