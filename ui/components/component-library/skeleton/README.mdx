@@ -1,0 +1,94 @@
+import { Controls, Canvas } from '@storybook/blocks';
+
+import * as SkeletonStories from './skeleton.stories';
+
+# Skeleton
+
+`Skeleton` is a placeholder component that is used while the content is loading.
+
+<Canvas of={SkeletonStories.DefaultStory} />
+
+## Props
+
+<Controls of={SkeletonStories.DefaultStory} />
+
+### Width Height
+
+Use the `width` and `height` props to specify the width and height of the `Skeleton` component. It accepts both numbers and strings.
+
+<Canvas of={SkeletonStories.WidthHeight} />
+
+```jsx
+import { Skeleton } from '../../component-library';
+
+<Skeleton height={32} width={300} />
+<Skeleton height={16} width={250} />
+<Skeleton height={16} width={250} />
+```
+
+### Children
+
+Use the `children` prop to pass the `Skeleton` children.
+
+This is useful to create a `Skeleton` component that has a similar layout to the content that will be loaded.
+
+<Canvas of={SkeletonStories.Children} />
+
+```jsx
+import {
+  Display,
+  FlexDirection,
+  BackgroundColor,
+  BorderRadius,
+} from '../../../helpers/constants/design-system';
+import { Skeleton } from '../../component-library';
+
+<Skeleton
+  display={Display.Flex}
+  flexDirection={FlexDirection.Column}
+  gap={4}
+  backgroundColor={BackgroundColor.backgroundAlternative}
+  borderRadius={BorderRadius.LG}
+  padding={4}
+>
+  <Skeleton height={32} width="100%" />
+  <Skeleton height={16} width="95%" />
+  <Skeleton height={16} width="95%" />
+</Skeleton>;
+```
+
+### Hide Children
+
+Use the `hideChildren` prop to hide the `children` of the `Skeleton` component. This is useful to make sure the `Skeleton` component is the same size as the content that will be loaded.
+
+<Canvas of={SkeletonStories.HideChildren} />
+
+```jsx
+import { Skeleton, Text, TextVariant } from '../../component-library';
+
+isLoaded ? (
+  <Text variant={TextVariant.headingMd}>Content to load</Text>
+) : (
+  <Skeleton width="max-content" hideChildren={true}>
+    <Text variant={TextVariant.headingMd}>Hidden placeholder text</Text>
+  </Skeleton>
+);
+```
+
+### Border Radius
+
+Use the `borderRadius` prop and `BorderRadius` enum to specify the border radius of the `Skeleton` component.
+
+<Canvas of={SkeletonStories.BorderRadiusStory} />
+
+```jsx
+import { BorderRadius } from '../../../helpers/constants/design-system'
+import { Skeleton } from '../../component-library';
+
+<Skeleton borderRadius={BorderRadius.full} height={32} width={32} />
+<Skeleton borderRadius={BorderRadius.pill} height={32} width="100%" />
+<Skeleton borderRadius={BorderRadius.LG} height={32} width="100%" />
+<Skeleton borderRadius={BorderRadius.MD} height={32} width="100%" />
+<Skeleton borderRadius={BorderRadius.SM} height={32} width="100%" />
+<Skeleton borderRadius={BorderRadius.XS} height={32} width="100%" />
+```
