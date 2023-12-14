@@ -41,7 +41,15 @@ describe('Token Details', function () {
         await driver.clickElement(
           '[data-testid="import-tokens-modal-import-button"]',
         );
-        await driver.clickElement('[aria-label="Asset options"]');
+
+        // Go to details page
+        await driver.clickElement('[data-testid="home__asset-tab"]');
+        const [, tkn] = await driver.findElements(
+          '[data-testid="multichain-token-list-button"]',
+        );
+        await tkn.click();
+        await driver.clickElement('[data-testid="asset-options__button"]');
+
         await driver.clickElement({ text: 'Token details', tag: 'div' });
 
         const tokenAddressFound = {

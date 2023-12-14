@@ -53,9 +53,10 @@ export const TextFieldSearch = ({
           endAccessory
         )
       }
-      startAccessory={<Icon name={IconName.Search} size={IconSize.Sm} />}
+      startAccessory={
+        <Icon padding={1} name={IconName.Search} size={IconSize.Sm} />
+      }
       inputProps={{
-        marginRight: showClearButton ? 6 : 0,
         ...inputProps,
       }}
       {...props}

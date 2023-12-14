@@ -3473,9 +3473,6 @@
   "searchAccounts": {
     "message": "Αναζήτηση λογαριασμών"
   },
-  "searchResults": {
-    "message": "Αποτελέσματα αναζήτησης"
-  },
   "secretRecoveryPhrase": {
     "message": "Μυστική Φράση Ανάκτησης"
   },
@@ -4982,10 +4979,6 @@
   },
   "verifyContractDetails": {
     "message": "Επαλήθευση στοιχείων τρίτων"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Το token με δεκαδικά ψηφία μπορεί να βρεθεί στο $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Επαλήθευση αυτού του token στο $1",

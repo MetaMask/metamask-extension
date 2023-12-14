@@ -1610,6 +1610,10 @@ export function getNewTokensImported(state) {
   return state.appState.newTokensImported;
 }
 
+export function getNewTokensImportedError(state) {
+  return state.appState.newTokensImportedError;
+}
+
 /**
  * To check if the token detection is OFF and the network is Mainnet
  * so that the user can skip third party token api fetch

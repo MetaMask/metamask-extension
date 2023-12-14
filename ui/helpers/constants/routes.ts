@@ -21,6 +21,7 @@ const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
 const REVEAL_SEED_ROUTE = '/seed';
 const RESTORE_VAULT_ROUTE = '/restore-vault';
 const IMPORT_TOKEN_ROUTE = '/import-token';
+const IMPORT_TOKENS_ROUTE = '/import-tokens';
 const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
@@ -133,6 +134,7 @@ const PATH_NAME_MAP = {
   [IMPORT_TOKEN_ROUTE]: 'Import Token Page',
   [CONFIRM_IMPORT_TOKEN_ROUTE]: 'Confirm Import Token Page',
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
+  [IMPORT_TOKENS_ROUTE]: 'Import Tokens Page',
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   [ADD_SNAP_ACCOUNT_ROUTE]: 'Add Snap Account List Page',
@@ -213,6 +215,7 @@ export {
   IMPORT_TOKEN_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  IMPORT_TOKENS_ROUTE,
   NEW_ACCOUNT_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
