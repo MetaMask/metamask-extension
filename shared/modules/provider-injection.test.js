@@ -47,10 +47,17 @@ describe('test provider injection check', () => {
     expect(shouldInject).toBeFalsy();
   });
 
-  it('should allow file://C:/file.html', () => {
-    mockUrl('file://C:/file.html');
+  it('should allow file:///C:/file.html', () => {
+    mockUrl('file:///C:/file.html');
 
     const shouldInject = shouldInjectProvider();
     expect(shouldInject).toBeTruthy();
+  });
+
+  it('should block file://C:/file.html', () => {
+    mockUrl('file://C:/file.html');
+
+    const shouldInject = shouldInjectProvider();
+    expect(shouldInject).toBeFalsy();
   });
 });
