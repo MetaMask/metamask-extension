@@ -30,7 +30,7 @@ describe('ConfirmInfo', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should render the correct number of rows provided', () => {
+  it('renders the correct number of rows provided', () => {
     const { container } = render(<ConfirmInfo rowConfigs={mockRowConfigs} />);
     const numOfDividers = mockRowConfigs.filter(
       (rowConfig) => rowConfig.type === ConfirmInfoRowType.Divider,
