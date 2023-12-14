@@ -65,6 +65,10 @@ export class MMISignUpPage {
     await this.importWalletBtn.click();
   }
 
+  async agreeDataUsage() {
+    await this.agreeBtn.click();
+  }
+
   async authentication() {
     const seeds = process.env.MMI_E2E_SEED_PHRASE?.trim().split(/\s+/u);
     for (const [index, element] of (seeds as string[]).entries()) {
