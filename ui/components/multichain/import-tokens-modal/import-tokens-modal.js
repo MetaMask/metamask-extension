@@ -41,6 +41,7 @@ import {
   Modal,
   ModalContent,
   ModalHeader,
+  ModalBody,
   ModalOverlay,
   Text,
 } from '../../component-library';
@@ -426,7 +427,7 @@ export const ImportTokensModal = ({ onClose }) => {
         >
           {t('importTokensCamelCase')}
         </ModalHeader>
-        <Box marginTop={6}>
+        <ModalBody paddingTop={0}>
           {isConfirming ? (
             <ImportTokensModalConfirm
               onBackClick={() => {
@@ -642,7 +643,7 @@ export const ImportTokensModal = ({ onClose }) => {
               </Box>
             </>
           )}
-        </Box>
+        </ModalBody>
       </ModalContent>
     </Modal>
   );
