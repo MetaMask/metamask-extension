@@ -1263,45 +1263,6 @@
         "jest-canvas-mock>moo-color>color-name": true
       }
     },
-    "@metamask/key-tree": {
-      "packages": {
-        "@metamask/key-tree>@metamask/utils": true,
-        "@metamask/key-tree>@noble/ed25519": true,
-        "@metamask/key-tree>@noble/secp256k1": true,
-        "@metamask/scure-bip39": true,
-        "@metamask/utils>@noble/hashes": true,
-        "@metamask/utils>@scure/base": true
-      }
-    },
-    "@metamask/key-tree>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/key-tree>@noble/ed25519": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/key-tree>@noble/secp256k1": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
-      }
-    },
     "@metamask/keyring-api": {
       "packages": {
         "@metamask/keyring-api>uuid": true,
@@ -1796,10 +1757,10 @@
     },
     "@metamask/snaps-rpc-methods": {
       "packages": {
-        "@metamask/key-tree": true,
         "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
         "@metamask/utils>@noble/hashes": true,
@@ -1814,6 +1775,37 @@
         "@metamask/snaps-sdk>is-svg": true,
         "@metamask/utils": true,
         "superstruct": true
+      }
+    },
+    "@metamask/snaps-sdk>@metamask/key-tree": {
+      "packages": {
+        "@metamask/scure-bip39": true,
+        "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": true,
+        "@metamask/snaps-sdk>@metamask/key-tree>@noble/ed25519": true,
+        "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "eth-lattice-keyring>@noble/secp256k1": true
+      }
+    },
+    "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/utils>@noble/hashes": true,
+        "browserify>buffer": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/snaps-sdk>@metamask/key-tree>@noble/ed25519": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "@metamask/snaps-sdk>is-svg": {
@@ -1845,11 +1837,12 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/key-tree": true,
         "@metamask/permission-controller": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-sdk": true,
+        "@metamask/snaps-sdk>@metamask/key-tree": true,
         "@metamask/snaps-sdk>is-svg": true,
+        "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/snaps-utils>cron-parser": true,
         "@metamask/snaps-utils>fast-json-stable-stringify": true,
         "@metamask/snaps-utils>rfdc": true,
@@ -2961,6 +2954,14 @@
       "globals": {
         "TextEncoder": true,
         "crypto": true
+      }
+    },
+    "eth-lattice-keyring>@noble/secp256k1": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk": {

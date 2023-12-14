@@ -8,6 +8,7 @@ import {
   Display,
   JustifyContent,
   AlignItems,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 
 import { Box, ModalFocus, useModalContext } from '..';
@@ -105,7 +106,10 @@ export const ModalContent: ModalContentComponent = React.forwardRef(
             backgroundColor={BackgroundColor.backgroundDefault}
             borderRadius={BorderRadius.LG}
             width={BlockSize.Full}
-            padding={4}
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            paddingTop={4}
+            paddingBottom={4}
             ref={modalDialogRef}
             {...modalDialogProps}
             className={classnames(

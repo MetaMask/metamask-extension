@@ -3473,9 +3473,6 @@
   "searchAccounts": {
     "message": "Hesapları ara"
   },
-  "searchResults": {
-    "message": "Arama sonuçları"
-  },
   "secretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesi"
   },
@@ -4982,10 +4979,6 @@
   },
   "verifyContractDetails": {
     "message": "Üçüncü taraf bilgilerini doğrula"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Token ondalık değeri şurada bulunabilir: $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Şurada bu tokeni doğrula: $1",

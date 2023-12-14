@@ -109,15 +109,21 @@ describe('Add existing token using search', function () {
         await unlockWallet(driver);
 
         await driver.clickElement({ text: 'Import tokens', tag: 'button' });
-        await driver.fill('input[placeholder="Search"]', 'BAT');
+        await driver.fill('input[placeholder="Search tokens"]', 'BAT');
         await driver.clickElement({
           text: 'BAT',
-          tag: 'span',
+          tag: 'p',
         });
         await driver.clickElement({ text: 'Next', tag: 'button' });
         await driver.clickElement(
           '[data-testid="import-tokens-modal-import-button"]',
         );
+
+        await driver.clickElement('[data-testid="home__asset-tab"]');
+        const [, tkn] = await driver.findElements(
+          '[data-testid="multichain-token-list-button"]',
+        );
+        await tkn.click();
 
         await driver.waitForSelector({
           css: '.token-overview__primary-balance',
