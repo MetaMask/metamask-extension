@@ -135,6 +135,9 @@ workflows:
       - prep-build-test-mmi-playwright:
           requires:
             - prep-deps
+      - prep-build-test-swap-playwright:
+          requires:
+            - prep-deps
       - prep-build-storybook:
           requires:
             - prep-deps
@@ -178,6 +181,9 @@ workflows:
       - test-e2e-mmi-playwright - OPTIONAL:
           requires:
             - prep-build-test-mmi-playwright
+      - test-e2e-swap-playwright:
+          requires:
+            - prep-build-test-swap-playwright
       - test-e2e-chrome-rpc-mmi:
           requires:
             - prep-build-test-mmi
@@ -662,6 +668,30 @@ jobs:
       - store_artifacts:
           path: builds-test-mmi-playwright
           destination: builds-test-mmi-playwright
+
+  prep-build-test-swap-playwright:
+    executor: node-browsers-medium-plus
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build extension for Playwright e2e
+          command: yarn dist
+      - run:
+          name: Move test build to 'dist-test' to avoid conflict with production build
+          command: mv ./dist ./dist-test-swap-playwright
+      - run:
+          name: Move test zips to 'builds-test' to avoid conflict with production build
+          command: mv ./builds ./builds-test-swap-playwright
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist-test-swap-playwright
+            - builds-test-swap-playwright
+      - store_artifacts:
+          path: builds-test-swap-playwright
+          destination: builds-test-swap-playwright
 
   prep-build-test-mv3:
     executor: node-browsers-medium-plus
@@ -1150,6 +1180,34 @@ jobs:
           mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
           channel: C05QXJA7NP8
+      - store_artifacts:
+          name: html-report and artifacts
+          path: public/playwright/playwright-reports
+      - store_test_results:
+          name: report for pipeline integration
+          path: public/playwright/playwright-reports/junit/test-results.xml
+
+  test-e2e-swap-playwright:
+    executor: playwright
+    parallelism: 1
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test-swap-playwright ./dist
+      - run:
+          name: Install chromium
+          command: |
+            yarn playwright install chromium
+      - run:
+          name: test:e2e:chrome:swap
+          command: |
+            TESTFILES=$(circleci tests glob "test/e2e/mmi/**/*.spec.ts")
+            echo "$TESTFILES"
+            echo "$TESTFILES" | circleci tests run --command="xvfb-run xargs yarn playwright test" verbose --split-by=timings
+          no_output_timeout: 10m
       - store_artifacts:
           name: html-report and artifacts
           path: public/playwright/playwright-reports
