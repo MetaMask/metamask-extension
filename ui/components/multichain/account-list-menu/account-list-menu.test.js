@@ -23,15 +23,6 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
 }));
 ///: END:ONLY_INCLUDE_IF
 
-// TODO: Remove this once we have a better way to mock the store with balance for this account
-mockState.metamask.accounts = {
-  ...mockState.metamask.accounts,
-  '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
-    balance: '0x0',
-    address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
-  },
-};
-
 const render = (props = { onClose: () => jest.fn() }) => {
   const store = configureStore({
     ...mockState,
@@ -81,78 +72,6 @@ describe('AccountListMenu', () => {
       '.multichain-account-list-item',
     );
     expect(filteredListItems).toHaveLength(1);
-  });
-
-  it('displays the correct label for unnamed snap accounts', () => {
-    const mockStore = configureStore({
-      activeTab: {
-        title: 'Eth Sign Tests',
-        origin: 'https://remix.ethereum.org',
-        protocol: 'https:',
-        url: 'https://remix.ethereum.org/',
-      },
-      metamask: {
-        ...mockState.metamask,
-        internalAccounts: {
-          ...mockState.metamask.internalAccounts,
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            metadata: {
-              name: 'Snap Account',
-              keyring: {
-                type: 'Snap Keyring',
-              },
-            },
-          },
-        },
-      },
-    });
-    const { container } = renderWithProvider(
-      <AccountListMenu onClose={jest.fn()} />,
-      mockStore,
-    );
-    // TODO - complete this test to check for "Snaps (Beta)" label in tag for unnamed snap accounts
-    const listItems = container.querySelectorAll(
-      '.multichain-account-list-item',
-    );
-  });
-
-  it('displays the correct label for named snap accounts', () => {
-    const mockStore = configureStore({
-      activeTab: {
-        title: 'Eth Sign Tests',
-        origin: 'https://remix.ethereum.org',
-        protocol: 'https:',
-        url: 'https://remix.ethereum.org/',
-      },
-      metamask: {
-        ...mockState.metamask,
-        internalAccounts: {
-          ...mockState.metamask.internalAccounts,
-          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-            metadata: {
-              name: 'Snap Account',
-              keyring: {
-                type: 'Snap Keyring',
-              },
-              snap: {
-                name: 'Test Snap Name',
-              },
-            },
-          },
-        },
-      },
-    });
-    const { container } = renderWithProvider(
-      <AccountListMenu onClose={jest.fn()} />,
-      mockStore,
-    );
-    // TODO - complete this test to check for "Test Snap Name (Beta)" label in tag for named snap
-    // accounts
-    const listItems = container.querySelectorAll(
-      '.multichain-account-list-item',
-    );
   });
 
   it('displays the "no accounts" message when search finds nothing', () => {
@@ -343,6 +262,83 @@ describe('AccountListMenu', () => {
         expect(historyPushMock).toHaveBeenCalledWith(ADD_SNAP_ACCOUNT_ROUTE);
       });
     });
+  });
+
+  it('displays the correct label for unnamed snap accounts', () => {
+    const mockStore = configureStore({
+      activeTab: {
+        title: 'Eth Sign Tests',
+        origin: 'https://remix.ethereum.org',
+        protocol: 'https:',
+        url: 'https://remix.ethereum.org/',
+      },
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              ...mockState.metamask.internalAccounts.accounts[
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+              ],
+              metadata: {
+                name: 'Snap Account',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    renderWithProvider(<AccountListMenu onClose={jest.fn()} />, mockStore);
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    const tag = listItems[0].querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Snaps (Beta)');
+  });
+
+  it('displays the correct label for named snap accounts', () => {
+    const mockStore = configureStore({
+      activeTab: {
+        title: 'Eth Sign Tests',
+        origin: 'https://remix.ethereum.org',
+        protocol: 'https:',
+        url: 'https://remix.ethereum.org/',
+      },
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              ...mockState.metamask.internalAccounts.accounts[
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+              ],
+              metadata: {
+                name: 'Snap Account',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+                snap: {
+                  name: 'Test Snap Name',
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    renderWithProvider(<AccountListMenu onClose={jest.fn()} />, mockStore);
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    const tag = listItems[0].querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Test Snap Name (Beta)');
   });
   ///: END:ONLY_INCLUDE_IF
 });
