@@ -1,7 +1,7 @@
 import {
-  ACCOUNT_LABEL_NAME_TYPE,
-  ACCOUNT_LABEL_VARIATION,
-} from '../lib/setupAccountLabelsPetnamesBridge';
+  ACCOUNT_IDENTITY_NAME_TYPE,
+  ACCOUNT_IDENTITY_VARIATION,
+} from '../lib/AccountIdentitiesPetnamesBridge';
 import { migrate, version } from './106';
 
 const oldVersion = 105;
@@ -84,23 +84,23 @@ describe('migration #106', () => {
       ...oldState,
       NameController: {
         names: {
-          [ACCOUNT_LABEL_NAME_TYPE]: {
+          [ACCOUNT_IDENTITY_NAME_TYPE]: {
             [ADDRESS_1.toLowerCase()]: {
-              [ACCOUNT_LABEL_VARIATION]: {
+              [ACCOUNT_IDENTITY_VARIATION]: {
                 name: NAME_1,
                 sourceId: null,
                 proposedNames: {},
               },
             },
             [ADDRESS_2.toLowerCase()]: {
-              [ACCOUNT_LABEL_VARIATION]: {
+              [ACCOUNT_IDENTITY_VARIATION]: {
                 name: NAME_2,
                 sourceId: null,
                 proposedNames: {},
               },
             },
             [ADDRESS_3.toLowerCase()]: {
-              [ACCOUNT_LABEL_VARIATION]: {
+              [ACCOUNT_IDENTITY_VARIATION]: {
                 name: NAME_3,
                 sourceId: null,
                 proposedNames: {},
@@ -125,9 +125,9 @@ describe('migration #106', () => {
       },
       NameController: {
         names: {
-          [ACCOUNT_LABEL_NAME_TYPE]: {
+          [ACCOUNT_IDENTITY_NAME_TYPE]: {
             [ADDRESS_2.toLowerCase()]: {
-              [ACCOUNT_LABEL_VARIATION]: {
+              [ACCOUNT_IDENTITY_VARIATION]: {
                 name: NAME_2,
                 sourceId: 'ens',
                 proposedNames: {},
@@ -147,16 +147,16 @@ describe('migration #106', () => {
       ...oldState,
       NameController: {
         names: {
-          [ACCOUNT_LABEL_NAME_TYPE]: {
+          [ACCOUNT_IDENTITY_NAME_TYPE]: {
             [ADDRESS_1.toLowerCase()]: {
-              [ACCOUNT_LABEL_VARIATION]: {
+              [ACCOUNT_IDENTITY_VARIATION]: {
                 name: NAME_1,
                 sourceId: null,
                 proposedNames: {},
               },
             },
             [ADDRESS_2.toLowerCase()]: {
-              [ACCOUNT_LABEL_VARIATION]: {
+              [ACCOUNT_IDENTITY_VARIATION]: {
                 name: NAME_2,
                 sourceId: 'ens',
                 proposedNames: {},
@@ -181,9 +181,9 @@ describe('migration #106', () => {
       },
       NameController: {
         names: {
-          [ACCOUNT_LABEL_NAME_TYPE]: {
+          [ACCOUNT_IDENTITY_NAME_TYPE]: {
             [ADDRESS_1.toLowerCase()]: {
-              [ACCOUNT_LABEL_VARIATION]: {
+              [ACCOUNT_IDENTITY_VARIATION]: {
                 name: NAME_2,
                 sourceId: 'ens',
                 proposedNames: {},
@@ -203,9 +203,9 @@ describe('migration #106', () => {
       ...oldState,
       NameController: {
         names: {
-          [ACCOUNT_LABEL_NAME_TYPE]: {
+          [ACCOUNT_IDENTITY_NAME_TYPE]: {
             [ADDRESS_1.toLowerCase()]: {
-              [ACCOUNT_LABEL_VARIATION]: {
+              [ACCOUNT_IDENTITY_VARIATION]: {
                 name: NAME_2,
                 sourceId: 'ens',
                 proposedNames: {},
@@ -243,7 +243,7 @@ describe('migration #106', () => {
       ...oldState,
       NameController: {
         names: {
-          [ACCOUNT_LABEL_NAME_TYPE]: {},
+          [ACCOUNT_IDENTITY_NAME_TYPE]: {},
         },
       },
     });

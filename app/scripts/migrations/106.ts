@@ -1,8 +1,8 @@
 import { cloneDeep, isEmpty } from 'lodash';
 import {
-  ACCOUNT_LABEL_VARIATION,
+  ACCOUNT_IDENTITY_VARIATION,
   PreferencesControllerState,
-} from '../lib/setupAccountLabelsPetnamesBridge';
+} from '../lib/AccountIdentitiesPetnamesBridge';
 
 type VersionedData = {
   meta: { version: number };
@@ -43,7 +43,7 @@ function transformState(state: Record<string, any>) {
 
     const normalizedAddress = address.toLowerCase();
     const nameEntry = names[normalizedAddress] ?? {};
-    const petnameExists = Boolean(nameEntry[ACCOUNT_LABEL_VARIATION]?.name);
+    const petnameExists = Boolean(nameEntry[ACCOUNT_IDENTITY_VARIATION]?.name);
 
     // Ignore if petname already set, or if account entry is missing name or address.
     if (
@@ -57,7 +57,7 @@ function transformState(state: Record<string, any>) {
 
     names[normalizedAddress] = nameEntry;
 
-    nameEntry[ACCOUNT_LABEL_VARIATION] = {
+    nameEntry[ACCOUNT_IDENTITY_VARIATION] = {
       name: accountEntry.name,
       sourceId: null,
       proposedNames: {},

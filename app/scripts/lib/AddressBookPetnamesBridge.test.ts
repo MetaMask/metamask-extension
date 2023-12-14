@@ -1,9 +1,7 @@
 import { NameController, NameType } from '@metamask/name-controller';
 import { AddressBookController } from '@metamask/address-book-controller';
-import {
-  AddressBookPetnamesBridge,
-  AddressBookPetnamesBridgeMessenger,
-} from './AddressBookPetnamesBridge';
+import { AddressBookPetnamesBridge } from './AddressBookPetnamesBridge';
+import { PetnamesBridgeMessenger } from './AbstractPetnamesBridge';
 
 const ADDRESS_MOCK = '0xabc';
 const NAME_MOCK = 'testName';
@@ -36,7 +34,7 @@ function createNameControllerMock(
   } as any;
 }
 
-function createMessengerMock(): jest.Mocked<AddressBookPetnamesBridgeMessenger> {
+function createMessengerMock(): jest.Mocked<PetnamesBridgeMessenger> {
   return {
     subscribe: jest.fn(),
   } as any;

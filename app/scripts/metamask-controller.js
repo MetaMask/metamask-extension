@@ -216,7 +216,7 @@ import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: BEGIN:ONLY_INCLUDE_IF(petnames)
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
-import setupAccountLabelsPetnamesBridge from './lib/setupAccountLabelsPetnamesBridge';
+import setupAccountLabelsPetnamesBridge from './lib/AccountIdentitiesPetnamesBridge';
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)

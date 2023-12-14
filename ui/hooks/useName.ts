@@ -23,6 +23,8 @@ function getVariationKey(type: string, chainId: string): string {
   }
 }
 
+export const FALLBACK_VARIATION = '*';
+
 export function useName(
   value: string,
   type: NameType,
@@ -33,7 +35,10 @@ export function useName(
   const normalizedValue = normalizeValue(value, type);
   const typeVariationKey = getVariationKey(type, chainId);
   const variationKey = variation ?? typeVariationKey;
-  const nameEntry = names[type]?.[normalizedValue]?.[variationKey];
+  const variationsToNameEntries = names[type]?.[normalizedValue] || {};
+  const nameEntry =
+    variationsToNameEntries[variationKey] ??
+    variationsToNameEntries[FALLBACK_VARIATION];
 
   return {
     name: nameEntry?.name ?? null,

@@ -1,78 +1,79 @@
-import {
-  AddressBookController,
-  AddressBookState,
-} from '@metamask/address-book-controller';
+import { AddressBookController } from '@metamask/address-book-controller';
 import { NameController, NameType } from '@metamask/name-controller';
-import { NameEntry, TwoWayNameBridge, BridgeMessenger } from './NameBridge';
+import {
+  AbstractPetnamesBridge,
+  PetnamesBridgeMessenger,
+  ChangeType,
+  PetnameEntry,
+} from './AbstractPetnamesBridge';
 
-type AddressBookPetnamesBridgeMessager =
-  BridgeMessenger<'AddressBookPetnamesBridge'>;
+export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
+  #addressBookController: AddressBookController;
 
-/**
- * Selects the name entries from the address book state.
- *
- * @param state
- */
-function selectNameBridgeEntriesFromAddressBook(
-  state: AddressBookState,
-): NameEntry[] {
-  const entries: NameEntry[] = [];
+  constructor({
+    addressBookController,
+    nameController,
+    messenger,
+  }: {
+    addressBookController: AddressBookController;
+    nameController: NameController;
+    messenger: PetnamesBridgeMessenger;
+  }) {
+    super({ isTwoWay: true, nameController, messenger });
 
-  for (const chainId of Object.keys(state.addressBook)) {
-    const chainEntries = state.addressBook[chainId as any];
+    this.#addressBookController = addressBookController;
+  }
 
-    for (const address of Object.keys(chainEntries)) {
-      const entry = state.addressBook[chainId as any][address];
-      const normalizedAddress = address.toLowerCase();
-      const normalizedChainId = chainId.toLowerCase();
-      const { name, isEns } = entry;
+  /**
+   * @override
+   */
+  protected getSourceEntries(): PetnameEntry[] {
+    const entries: PetnameEntry[] = [];
+    const { state } = this.#addressBookController;
+    for (const chainId of Object.keys(state.addressBook)) {
+      const chainEntries = state.addressBook[chainId as any];
 
-      if (!name?.length || !normalizedAddress?.length) {
-        continue;
+      for (const address of Object.keys(chainEntries)) {
+        const entry = state.addressBook[chainId as any][address];
+        const normalizedAddress = address.toLowerCase();
+        const normalizedChainId = chainId.toLowerCase();
+        const { name, isEns } = entry;
+
+        if (!name?.length || !normalizedAddress?.length) {
+          continue;
+        }
+
+        entries.push({
+          value: normalizedAddress,
+          name,
+          variation: normalizedChainId,
+          type: NameType.ETHEREUM_ADDRESS,
+          sourceId: isEns ? 'ens' : undefined,
+        });
       }
+    }
+    return entries;
+  }
 
-      entries.push({
-        value: normalizedAddress,
-        name,
-        variation: normalizedChainId,
-        type: NameType.ETHEREUM_ADDRESS,
-        sourceId: isEns ? 'ens' : undefined,
-      });
+  /**
+   * @override
+   */
+  protected updateSourceEntry(type: ChangeType, entry: PetnameEntry): void {
+    if (type === ChangeType.DELETED) {
+      this.#addressBookController.delete(entry.variation as any, entry.value);
+    } else {
+      this.#addressBookController.set(
+        entry.value,
+        entry.name as any,
+        entry.variation as any,
+      );
     }
   }
 
-  return entries;
-}
-
-/**
- * Sets up a bridge between the address book entries and the petnames in the name controller.
- *
- * @param addressBookController
- * @param nameController
- * @param messenger
- */
-export function setupAddressBookPetnamesBridge(
-  addressBookController: AddressBookController,
-  nameController: NameController,
-  messenger: AddressBookPetnamesBridgeMessager,
-) {
-  const bridge = new TwoWayNameBridge({
-    nameController,
-    getSourceEntries: () =>
-      selectNameBridgeEntriesFromAddressBook(addressBookController.state),
-    applyChangeToSource: (type, entry) => {
-      if (type === 'deleted') {
-        addressBookController.delete(entry.variation as any, entry.value);
-      } else {
-        addressBookController.set(
-          entry.value,
-          entry.name as any,
-          entry.variation as any,
-        );
-      }
-    },
-    messenger,
-  });
-
-  addressBookController.subscribe(() => bridge.onSourceChange());
+  /**
+   * @override
+   */
+  onSourceChange(listener: () => void): void {
+    this.#addressBookController.subscribe(listener);
+  }
 }
