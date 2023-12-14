@@ -46,7 +46,6 @@ import {
   Modal,
   ModalContent,
   ModalHeader,
-  ModalBody,
   ModalOverlay,
   Text,
   ButtonSecondary,
