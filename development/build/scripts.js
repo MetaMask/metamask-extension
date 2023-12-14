@@ -737,6 +737,9 @@ function createFactoredBuild({
               browserPlatforms,
               applyLavaMoat,
               isMMI: buildType === 'mmi',
+              isTest:
+                buildTarget === BUILD_TARGETS.TEST ||
+                buildTarget === BUILD_TARGETS.TEST_DEV,
             });
             renderHtmlFile({
               htmlName: 'home',
@@ -1294,7 +1297,13 @@ function renderJavaScriptLoader({
   });
 }
 
-function renderHtmlFile({ htmlName, browserPlatforms, applyLavaMoat, isMMI }) {
+function renderHtmlFile({
+  htmlName,
+  browserPlatforms,
+  applyLavaMoat,
+  isMMI,
+  isTest,
+}) {
   if (applyLavaMoat === undefined) {
     throw new Error(
       'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
@@ -1303,7 +1312,7 @@ function renderHtmlFile({ htmlName, browserPlatforms, applyLavaMoat, isMMI }) {
   const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
-  const htmlOutput = Sqrl.render(htmlTemplate, { isMMI });
+  const htmlOutput = Sqrl.render(htmlTemplate, { isMMI, isTest });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm
