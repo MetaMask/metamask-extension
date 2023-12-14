@@ -2938,12 +2938,6 @@ export function setParticipateInMetaMetrics(
             reject(err);
             return;
           }
-          /**
-           * We need to inform sentry that the user's optin preference may have
-           * changed. The logic to determine which way to toggle is in the
-           * toggleSession handler in setupSentry.js.
-           */
-          window.sentry?.toggleSession();
 
           dispatch({
             type: actionConstants.SET_PARTICIPATE_IN_METAMETRICS,
