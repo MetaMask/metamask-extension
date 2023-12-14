@@ -146,6 +146,9 @@ export const AccountListItemMenu = ({
 
   const handleHidding = (address) => {
     const updatedHiddenAccountList = [...hiddenAccountList, address];
+    if (pinnedAccountList.includes(address)) {
+      handleUnpinning(address);
+    }
     dispatch(hideAccountsList(updatedHiddenAccountList));
   };
 
@@ -153,7 +156,7 @@ export const AccountListItemMenu = ({
     const updatedHiddenAccountList = hiddenAccountList.filter(
       (item) => item !== address,
     );
-    dispatch(updateAccountsList(updatedHiddenAccountList));
+    dispatch(hideAccountsList(updatedHiddenAccountList));
   };
 
   return (
@@ -182,7 +185,7 @@ export const AccountListItemMenu = ({
             textProps={{ variant: TextVariant.bodySm }}
             address={identity.address}
           />
-          {process.env.NETWORK_ACCOUNT_DND ? (
+          {process.env.NETWORK_ACCOUNT_DND && !isHidden ? (
             <MenuItem
               data-testid="account-list-menu-pin"
               onClick={() => {
@@ -210,7 +213,7 @@ export const AccountListItemMenu = ({
               iconName={isHidden ? IconName.Eye : IconName.EyeSlash}
             >
               <Text variant={TextVariant.bodySm}>
-                {isHidden ? t('unpin') : t('pinToTop')}
+                {isHidden ? t('showAccount') : t('showAccount')}
               </Text>
             </MenuItem>
           ) : null}

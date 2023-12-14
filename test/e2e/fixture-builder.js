@@ -186,6 +186,7 @@ function defaultFixture() {
       },
       AccountOrderController: {
         pinnedAccountList: [],
+        hiddenAccountList: [],
       },
       AppStateController: {
         browserEnvironment: {},

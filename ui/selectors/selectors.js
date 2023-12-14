@@ -1847,22 +1847,17 @@ export function getUpdatedAndSortedAccounts(state) {
   const hiddenAddresses = getHiddenAccountsList(state);
 
   accounts.forEach((account) => {
-    account.pinned = Boolean(pinnedAddresses?.includes(account.address));
+    account.pinned = Boolean(pinnedAddresses.includes(account.address));
+    account.hidden = Boolean(hiddenAddresses.includes(account.address));
   });
-
-  accounts.forEach((account) => {
-    account.hidden = Boolean(hiddenAddresses?.includes(account.address));
-  });
-
-  console.log(accounts);
 
   const sortedPinnedAccounts = pinnedAddresses
-    .map((address) => accounts.find((account) => account.address === address))
+    ?.map((address) => accounts.find((account) => account.address === address))
     .filter((account) =>
       Boolean(
         account &&
           pinnedAddresses.includes(account.address) &&
-          !hiddenAddresses.includes(account.address),
+          !hiddenAddresses?.includes(account.address),
       ),
     );
 
