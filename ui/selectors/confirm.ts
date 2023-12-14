@@ -1,11 +1,17 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { ApprovalControllerState } from '@metamask/approval-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 
 import { getPendingApprovals } from './approvals';
 
+type Confirmation = {
+  id: string;
+  type: TransactionType;
+};
+
 type ConfirmMetamaskState = {
   confirm: {
-    currentConfirmation?: Record<string, unknown>;
+    currentConfirmation?: Confirmation;
   };
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
