@@ -96,12 +96,9 @@ const mergeAccounts = (accounts, internalAccounts) => {
       return {
         ...account,
         ...internalAccount,
-        name: internalAccount.metadata?.name || account.name,
-        keyring: internalAccount.metadata?.keyring?.type || null,
-        label: getLabel(
-          internalAccount.metadata?.keyring?.type,
-          internalAccount,
-        ),
+        name: internalAccount.metadata.name || account.name,
+        keyring: internalAccount.metadata.keyring.type,
+        label: getLabel(internalAccount.metadata.keyring.type, internalAccount),
       };
     }
     return account;

@@ -9,6 +9,7 @@ import Box from '../../ui/box/box';
 import { IconName, Tag } from '../../component-library';
 import { Color, TextVariant } from '../../../helpers/constants/design-system';
 import { KeyringType } from '../../../../shared/constants/keyring';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const WalletOverview = ({
   balance,
@@ -16,9 +17,10 @@ const WalletOverview = ({
   className,
   showAddress = false,
 }) => {
+  const t = useI18nContext();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const checksummedAddress = toChecksumHexAddress(selectedAccount.address);
-  const label = selectedAccount.metadata?.snap?.name;
+  const label = `${selectedAccount.metadata?.snap?.name} (${t('beta')})`;
   const keyring = selectedAccount.metadata?.keyring?.type;
   return (
     <div className={classnames('wallet-overview', className)}>
