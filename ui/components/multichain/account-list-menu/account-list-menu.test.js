@@ -74,6 +74,47 @@ describe('AccountListMenu', () => {
     expect(filteredListItems).toHaveLength(1);
   });
 
+  it('displays the correct label for snap accounts', () => {
+    const mockStore = configureStore({
+      activeTab: {
+        title: 'Eth Sign Tests',
+        origin: 'https://remix.ethereum.org',
+        protocol: 'https:',
+        url: 'https://remix.ethereum.org/',
+      },
+      metamask: {
+        ...mockState.metamask,
+        accounts: {
+          ...mockState.metamask.accounts,
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            balance: '0x346ba7725f412cbfdb',
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          },
+        },
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            metadata: {
+              name: 'Snap Account',
+              snap: {
+                name: 'Test Snap Name',
+              },
+            },
+          },
+        },
+      },
+    });
+    const { container } = renderWithProvider(
+      <AccountListMenu onClose={jest.fn()} />,
+      mockStore,
+    );
+    // TODO - complete this test to check correct label in tag for snap accounts
+    const listItems = container.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+  });
+
   it('displays the "no accounts" message when search finds nothing', () => {
     const { getByTestId } = render();
 

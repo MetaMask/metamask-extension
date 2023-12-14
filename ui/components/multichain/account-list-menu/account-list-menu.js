@@ -32,6 +32,7 @@ import {
   getConnectedSubjectsForAllAddresses,
   getInternalAccounts,
   getIsAddSnapAccountEnabled,
+  getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedAccount,
 } from '../../../selectors';
@@ -86,13 +87,35 @@ function getLabel(type, account) {
   }
 }
 
+const mergeAccounts = (accounts, internalAccounts) => {
+  return accounts.map((account) => {
+    const internalAccount = internalAccounts.find(
+      (intAccount) => intAccount.address === account.address,
+    );
+    if (internalAccount) {
+      return {
+        ...account,
+        ...internalAccount,
+        name: internalAccount.metadata?.name || account.name,
+        keyring: internalAccount.metadata?.keyring?.type || null,
+        label: getLabel(
+          internalAccount.metadata?.keyring?.type,
+          internalAccount,
+        ),
+      };
+    }
+    return account;
+  });
+};
+
 export const AccountListMenu = ({
   onClose,
   showAccountCreation = true,
   accountListItemProps = {},
 }) => {
   const trackEvent = useContext(MetaMetricsContext);
-  const accounts = useSelector(getInternalAccounts);
+  const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const internalAccounts = useSelector(getInternalAccounts);
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -118,16 +141,7 @@ export const AccountListMenu = ({
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
-  searchResults = searchResults.map((account) => {
-    const type = account.metadata?.keyring?.type || null;
-    const label = getLabel(type, account);
-    return {
-      ...account,
-      name: account.metadata?.name || account.name,
-      keyring: type,
-      label,
-    };
-  });
+  searchResults = mergeAccounts(searchResults, internalAccounts);
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {

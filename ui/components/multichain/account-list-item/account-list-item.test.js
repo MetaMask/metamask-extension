@@ -6,7 +6,6 @@ import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { KeyringType } from '../../../../shared/constants/keyring';
 import { AccountListItem } from '.';
 
 const identity = {
@@ -112,6 +111,8 @@ describe('AccountListItem', () => {
         address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
         name: 'Snap Account',
         balance: '0x0',
+        keyring: 'Snap keyring',
+        label: 'Snaps (Beta)',
       },
     });
 
@@ -119,24 +120,13 @@ describe('AccountListItem', () => {
   });
 
   it('renders the snap name for named snap accounts', () => {
-    mockState.metamask.internalAccounts.accounts[
-      mockState.metamask.internalAccounts.selectedAccount
-    ].metadata = {
-      ...mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts.selectedAccount
-      ].metadata,
-      keyring: {
-        type: KeyringType.snap,
-      },
-      snap: {
-        name: 'Test Snap Name',
-      },
-    };
     const { getByText } = render({
       identity: {
         address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
         name: 'Snap Account',
         balance: '0x0',
+        keyring: 'Snap keyring',
+        label: 'Test Snap Name (Beta)',
       },
     });
     expect(getByText('Test Snap Name (Beta)')).toBeInTheDocument();
