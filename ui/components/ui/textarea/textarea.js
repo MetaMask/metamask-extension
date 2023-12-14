@@ -19,8 +19,7 @@ import { RESIZE } from './textarea.constants';
  * See storybook documentation for BannerAlert here:
  * {@see {@link https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-textarea--default-story#textarea}}
  *
- * Help to replace `<TextArea />` with `Textarea` by submitting a PR against
-
+ * Help to replace `<TextArea />` with `<Textarea />` by submitting a PR
  */
 
 const TextArea = ({
