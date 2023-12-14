@@ -13,6 +13,7 @@ import {
   Button,
   ButtonLink,
   ButtonLinkSize,
+  ButtonVariant,
   IconName,
   Box,
 } from '..';
@@ -142,6 +143,10 @@ const Template: StoryFn<typeof Modal> = (args) => {
               </>
             )}
           </ModalBody>
+          <Box padding={4} display={Display.Flex} gap={4}>
+            <Button variant={ButtonVariant.Secondary}>Cancel</Button>
+            <Button>Confirm</Button>
+          </Box>
         </ModalContent>
       </Modal>
       {showLoremIpsum && (

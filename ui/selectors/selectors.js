@@ -3,6 +3,7 @@ import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import semver from 'semver';
 ///: END:ONLY_INCLUDE_IF
@@ -56,7 +57,6 @@ import {
   getAccountByAddress,
   getURLHostName,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  removeSnapIdPrefix,
   getSnapName,
   ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
@@ -1209,6 +1209,11 @@ export function getSortedAnnouncementsToShow(state) {
 export function getOrderedNetworksList(state) {
   return state.metamask.orderedNetworkList;
 }
+
+export function getPinnedAccountsList(state) {
+  return state.metamask.pinnedAccountList;
+}
+
 export function getShowRecoveryPhraseReminder(state) {
   const {
     recoveryPhraseReminderLastShown,
@@ -1605,6 +1610,10 @@ export function getNewTokensImported(state) {
   return state.appState.newTokensImported;
 }
 
+export function getNewTokensImportedError(state) {
+  return state.appState.newTokensImportedError;
+}
+
 /**
  * To check if the token detection is OFF and the network is Mainnet
  * so that the user can skip third party token api fetch
@@ -1765,6 +1774,29 @@ export function getCustomTokenAmount(state) {
   return state.appState.customTokenAmount;
 }
 
+export function getUpdatedAndSortedAccounts(state) {
+  const accounts = getMetaMaskAccountsOrdered(state);
+  const pinnedAddresses = getPinnedAccountsList(state);
+
+  accounts.forEach((account) => {
+    account.pinned = Boolean(pinnedAddresses?.includes(account.address));
+  });
+
+  const notPinnedAccounts = accounts.filter(
+    (account) => !pinnedAddresses.includes(account.address),
+  );
+
+  const sortedPinnedAccounts = pinnedAddresses
+    .map((address) => accounts.find((account) => account.address === address))
+    .filter((account) =>
+      Boolean(account && pinnedAddresses.includes(account.address)),
+    );
+
+  const sortedSearchResults = [...sortedPinnedAccounts, ...notPinnedAccounts];
+
+  return sortedSearchResults;
+}
+
 export function getOnboardedInThisUISession(state) {
   return state.appState.onboardedInThisUISession;
 }
@@ -1823,7 +1855,7 @@ export function getSnapsList(state) {
       id: snap.id,
       iconUrl: targetSubjectMetadata?.iconUrl,
       subjectType: targetSubjectMetadata?.subjectType,
-      packageName: removeSnapIdPrefix(snap.id),
+      packageName: stripSnapPrefix(snap.id),
       name: getSnapName(snap.id, targetSubjectMetadata),
     };
   });
