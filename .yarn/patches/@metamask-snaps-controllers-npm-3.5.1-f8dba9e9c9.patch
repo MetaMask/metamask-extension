@@ -1,0 +1,144 @@
+diff --git a/dist/cjs/snaps/location/npm.js b/dist/cjs/snaps/location/npm.js
+index b17c709433573b61b1770f73ff6f060680f6d584..a1922411b9a19770b1f967f7b51557f5a525d75f 100644
+--- a/dist/cjs/snaps/location/npm.js
++++ b/dist/cjs/snaps/location/npm.js
+@@ -25,7 +25,6 @@ const _browserifyzlib = require("browserify-zlib");
+ const _concatstream = /*#__PURE__*/ _interop_require_default(require("concat-stream"));
+ const _getnpmtarballurl = /*#__PURE__*/ _interop_require_default(require("get-npm-tarball-url"));
+ const _readablestream = require("readable-stream");
+-const _readablewebtonodestream = require("readable-web-to-node-stream");
+ const _tarstream = require("tar-stream");
+ function _check_private_redeclaration(obj, privateCollection) {
+     if (privateCollection.has(obj)) {
+@@ -279,17 +278,53 @@ async function fetchNpmMetadata(packageName, registryUrl, fetchFunction) {
+  */ const NPM_TARBALL_PATH_PREFIX = /^package\//u;
+ /**
+  * Converts a {@link ReadableStream} to a Node.js {@link Readable}
+- * stream. Returns the stream directly if it is already a Node.js stream.
++ * stream.
+  * We can't use the native Web {@link ReadableStream} directly because the
+  * other stream libraries we use expect Node.js streams.
+  *
+  * @param stream - The stream to convert.
+  * @returns The given stream as a Node.js Readable stream.
+  */ function getNodeStream(stream) {
+-    if (typeof stream.getReader !== 'function') {
+-        return stream;
+-    }
+-    return new _readablewebtonodestream.ReadableWebToNodeStream(stream);
++    // This section is greatly inspired by https://github.com/nodejs/node/blob/99f6084ef04dd868c7b894ca0fdbb5088773ca6c/lib/internal/webstreams/adapters.js#L512
++    const reader = stream.getReader();
++    let closed = false;
++    const readable = new _readablestream.Readable({
++        read () {
++            reader.read().then((chunk)=>{
++                if (chunk.done) {
++                    // EOF
++                    readable.push(null);
++                } else {
++                    readable.push(chunk.value);
++                }
++            }).catch((error)=>readable.destroy(error));
++        },
++        destroy (error, callback) {
++            /**
++       * Utility function for calling the callback once the reader has been closed.
++       */ function done() {
++                try {
++                    callback(error);
++                } catch (innerError) {
++                    process.nextTick(()=>{
++                        throw innerError;
++                    });
++                }
++            }
++            if (!closed) {
++                reader.cancel(error).then(done).catch(done);
++                return;
++            }
++            done();
++        }
++    });
++    reader.closed.then(()=>{
++        closed = true;
++    }).catch((error)=>{
++        closed = true;
++        readable.destroy(error);
++    });
++    return readable;
+ }
+ /**
+  * Creates a `tar-stream` that will get the necessary files from an npm Snap
+diff --git a/dist/esm/snaps/location/npm.js b/dist/esm/snaps/location/npm.js
+index 8a204036e6e9ed23fa2f8d63697ed48e19935f81..88bec8f37578723ed54b2472b9f37f71b11f0448 100644
+--- a/dist/esm/snaps/location/npm.js
++++ b/dist/esm/snaps/location/npm.js
+@@ -31,8 +31,7 @@ import { assert, assertIsSemVerVersion, assertStruct, isObject, isValidSemVerVer
+ import { createGunzip } from 'browserify-zlib';
+ import concat from 'concat-stream';
+ import getNpmTarballUrl from 'get-npm-tarball-url';
+-import { pipeline } from 'readable-stream';
+-import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
++import { pipeline, Readable } from 'readable-stream';
+ import { extract as tarExtract } from 'tar-stream';
+ export const DEFAULT_NPM_REGISTRY = new URL('https://registry.npmjs.org');
+ var _lazyInit = /*#__PURE__*/ new WeakSet();
+@@ -263,17 +262,53 @@ const TARBALL_SIZE_SAFETY_LIMIT = 262144000;
+  */ const NPM_TARBALL_PATH_PREFIX = /^package\//u;
+ /**
+  * Converts a {@link ReadableStream} to a Node.js {@link Readable}
+- * stream. Returns the stream directly if it is already a Node.js stream.
++ * stream.
+  * We can't use the native Web {@link ReadableStream} directly because the
+  * other stream libraries we use expect Node.js streams.
+  *
+  * @param stream - The stream to convert.
+  * @returns The given stream as a Node.js Readable stream.
+  */ function getNodeStream(stream) {
+-    if (typeof stream.getReader !== 'function') {
+-        return stream;
+-    }
+-    return new ReadableWebToNodeStream(stream);
++    // This section is greatly inspired by https://github.com/nodejs/node/blob/99f6084ef04dd868c7b894ca0fdbb5088773ca6c/lib/internal/webstreams/adapters.js#L512
++    const reader = stream.getReader();
++    let closed = false;
++    const readable = new Readable({
++        read () {
++            reader.read().then((chunk)=>{
++                if (chunk.done) {
++                    // EOF
++                    readable.push(null);
++                } else {
++                    readable.push(chunk.value);
++                }
++            }).catch((error)=>readable.destroy(error));
++        },
++        destroy (error, callback) {
++            /**
++       * Utility function for calling the callback once the reader has been closed.
++       */ function done() {
++                try {
++                    callback(error);
++                } catch (innerError) {
++                    process.nextTick(()=>{
++                        throw innerError;
++                    });
++                }
++            }
++            if (!closed) {
++                reader.cancel(error).then(done).catch(done);
++                return;
++            }
++            done();
++        }
++    });
++    reader.closed.then(()=>{
++        closed = true;
++    }).catch((error)=>{
++        closed = true;
++        readable.destroy(error);
++    });
++    return readable;
+ }
+ /**
+  * Creates a `tar-stream` that will get the necessary files from an npm Snap

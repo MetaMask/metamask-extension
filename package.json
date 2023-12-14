@@ -219,7 +219,8 @@
     "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch",
     "nonce-tracker@npm:^3.0.0": "patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch",
     "@metamask/accounts-controller@npm:^4.0.0": "patch:@metamask/accounts-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-4.0.0-3127b56d14.patch",
-    "@trezor/connect-web": "9.0.11"
+    "@trezor/connect-web": "9.0.11",
+    "@metamask/snaps-controllers@npm": "patch:@metamask/snaps-controllers@npm%3A3.5.1#~/.yarn/patches/@metamask-snaps-controllers-npm-3.5.1-f8dba9e9c9.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
@@ -290,7 +291,7 @@
     "@metamask/selected-network-controller": "^3.1.0",
     "@metamask/signature-controller": "^6.1.2",
     "@metamask/smart-transactions-controller": "^6.2.2",
-    "@metamask/snaps-controllers": "^3.5.1",
+    "@metamask/snaps-controllers": "patch:@metamask/snaps-controllers@npm%3A3.5.1#~/.yarn/patches/@metamask-snaps-controllers-npm-3.5.1-f8dba9e9c9.patch",
     "@metamask/snaps-rpc-methods": "^4.0.3",
     "@metamask/snaps-sdk": "^1.2.0",
     "@metamask/snaps-utils": "^5.1.0",
