@@ -1,5 +1,5 @@
 import {
-  BaseControllerV2,
+  BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 
@@ -53,7 +53,7 @@ const metadata = {
  * This controller subscribes to account state changes and ensures
  * that the account list is updated based on the latest account configurations.
  */
-export class AccountOrderController extends BaseControllerV2<
+export class AccountOrderController extends BaseController<
   typeof controllerName,
   AccountOrderControllerState,
   AccountOrderControllerMessenger

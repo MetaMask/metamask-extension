@@ -3473,9 +3473,6 @@
   "searchAccounts": {
     "message": "アカウントを検索"
   },
-  "searchResults": {
-    "message": "検索結果"
-  },
   "secretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズ"
   },
@@ -4982,10 +4979,6 @@
   },
   "verifyContractDetails": {
     "message": "サードパーティの詳細を確認"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "トークンの10進数は$1にあります",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "このトークンを$1で検証",

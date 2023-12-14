@@ -79,7 +79,10 @@ import {
   JsonSnapsRegistry,
   SnapController,
   IframeExecutionService,
+  buildSnapEndowmentSpecifications,
+  buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-controllers';
+import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
 
 import { AccountsController } from '@metamask/accounts-controller';
@@ -123,7 +126,6 @@ import {
 import {
   QueuedRequestController,
   createQueuedRequestMiddleware,
-  QueuedRequestControllerEventTypes,
 } from '@metamask/queued-request-controller';
 
 import {
@@ -234,12 +236,7 @@ import ComposableObservableStore from './lib/ComposableObservableStore';
 import AccountTracker from './lib/account-tracker';
 import createDupeReqFilterMiddleware from './lib/createDupeReqFilterMiddleware';
 import createLoggerMiddleware from './lib/createLoggerMiddleware';
-import {
-  createMethodMiddleware,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  createSnapMethodMiddleware,
-  ///: END:ONLY_INCLUDE_IF
-} from './lib/rpc-method-middleware';
+import { createMethodMiddleware } from './lib/rpc-method-middleware';
 import createOriginMiddleware from './lib/createOriginMiddleware';
 import createTabIdMiddleware from './lib/createTabIdMiddleware';
 import { NetworkOrderController } from './controllers/network-order';
@@ -275,10 +272,6 @@ import {
   NOTIFICATION_NAMES,
   PermissionLogController,
   unrestrictedMethods,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  buildSnapEndowmentSpecifications,
-  buildSnapRestrictedMethodSpecifications,
-  ///: END:ONLY_INCLUDE_IF
 } from './controllers/permissions';
 import createRPCMethodTrackingMiddleware from './lib/createRPCMethodTrackingMiddleware';
 import { securityProviderCheck } from './lib/security-provider-helpers';
@@ -390,8 +383,6 @@ export default class MetamaskController extends EventEmitter {
     this.queuedRequestController = new QueuedRequestController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'QueuedRequestController',
-        allowedActions: [],
-        allowedEvents: [QueuedRequestControllerEventTypes.countChanged],
       }),
     });
 
@@ -420,22 +411,6 @@ export default class MetamaskController extends EventEmitter {
 
     const networkControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'NetworkController',
-      allowedEvents: [
-        'NetworkController:stateChange',
-        'NetworkController:networkWillChange',
-        'NetworkController:networkDidChange',
-        'NetworkController:infuraIsBlocked',
-        'NetworkController:infuraIsUnblocked',
-      ],
-      allowedActions: [
-        'NetworkController:getNetworkClientById',
-        `NetworkController:getEthQuery`,
-        `NetworkController:getProviderConfig`,
-        `NetworkController:getEIP1559Compatibility`,
-        `NetworkController:findNetworkClientIdByChainId`,
-        `NetworkController:setProviderType`,
-        `NetworkController:setActiveNetwork`,
-      ],
     });
 
     let initialNetworkControllerState = {};
@@ -496,25 +471,14 @@ export default class MetamaskController extends EventEmitter {
 
     const tokenListMessenger = this.controllerMessenger.getRestricted({
       name: 'TokenListController',
-      allowedEvents: [
-        'TokenListController:stateChange',
-        'NetworkController:stateChange',
-      ],
+      allowedEvents: ['NetworkController:stateChange'],
     });
 
     this.selectedNetworkController = new SelectedNetworkController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'SelectedNetworkController',
-        allowedActions: [
-          'SelectedNetworkController:getState',
-          'SelectedNetworkController:getNetworkClientIdForDomain',
-          'SelectedNetworkController:setNetworkClientIdForDomain',
-          'NetworkController:getNetworkClientById',
-        ],
-        allowedEvents: [
-          'SelectedNetworkController:stateChange',
-          'NetworkController:stateChange',
-        ],
+        allowedActions: ['NetworkController:getNetworkClientById'],
+        allowedEvents: ['NetworkController:stateChange'],
       }),
     });
 
@@ -998,24 +962,6 @@ export default class MetamaskController extends EventEmitter {
 
     const keyringControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'KeyringController',
-      allowedActions: [
-        'KeyringController:getState',
-        'KeyringController:signMessage',
-        'KeyringController:signPersonalMessage',
-        'KeyringController:signTypedMessage',
-        'KeyringController:decryptMessage',
-        'KeyringController:getEncryptionPublicKey',
-        'KeyringController:getKeyringsByType',
-        'KeyringController:getKeyringForAccount',
-        'KeyringController:getAccounts',
-      ],
-      allowedEvents: [
-        'KeyringController:stateChange',
-        'KeyringController:lock',
-        'KeyringController:unlock',
-        'KeyringController:accountRemoved',
-        'KeyringController:qrKeyringStateChange',
-      ],
     });
 
     this.keyringController = new KeyringController({
@@ -1204,8 +1150,6 @@ export default class MetamaskController extends EventEmitter {
         'ExecutionService:unhandledError',
         'ExecutionService:outboundRequest',
         'ExecutionService:outboundResponse',
-        'SnapController:snapInstalled',
-        'SnapController:snapUpdated',
       ],
       allowedActions: [
         `${this.permissionController.name}:getEndowments`,
@@ -2252,83 +2196,88 @@ export default class MetamaskController extends EventEmitter {
     const snapEncryptor = encryptorFactory(10_000);
 
     return {
-      ...buildSnapEndowmentSpecifications(),
-      ...buildSnapRestrictedMethodSpecifications({
-        encrypt: snapEncryptor.encrypt,
-        decrypt: snapEncryptor.decrypt,
-        getLocale: this.getLocale.bind(this),
-        clearSnapState: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:clearSnapState',
-        ),
-        getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
-        getUnlockPromise: this.appStateController.getUnlockPromise.bind(
-          this.appStateController,
-        ),
-        getSnap: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:get',
-        ),
-        handleSnapRpcRequest: this.handleSnapRequest.bind(this),
-        getSnapState: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:getSnapState',
-        ),
-        showDialog: (origin, type, content, placeholder) =>
-          this.approvalController.addAndShowApprovalRequest({
-            origin,
-            type: SNAP_DIALOG_TYPES[type],
-            requestData: { content, placeholder },
-          }),
-        showNativeNotification: (origin, args) =>
-          this.controllerMessenger.call(
-            'RateLimitController:call',
-            origin,
-            'showNativeNotification',
-            origin,
-            args.message,
+      ...buildSnapEndowmentSpecifications(Object.keys(ExcludedSnapEndowments)),
+      ...buildSnapRestrictedMethodSpecifications(
+        Object.keys(ExcludedSnapPermissions),
+        {
+          encrypt: snapEncryptor.encrypt,
+          decrypt: snapEncryptor.decrypt,
+          getLocale: this.getLocale.bind(this),
+          clearSnapState: this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'SnapController:clearSnapState',
           ),
-        showInAppNotification: (origin, args) =>
-          this.controllerMessenger.call(
-            'RateLimitController:call',
-            origin,
-            'showInAppNotification',
-            origin,
-            args.message,
+          getMnemonic: this.getPrimaryKeyringMnemonic.bind(this),
+          getUnlockPromise: this.appStateController.getUnlockPromise.bind(
+            this.appStateController,
           ),
-        updateSnapState: this.controllerMessenger.call.bind(
-          this.controllerMessenger,
-          'SnapController:updateSnapState',
-        ),
-        maybeUpdatePhishingList: () => {
-          const { usePhishDetect } =
-            this.preferencesController.store.getState();
+          getSnap: this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'SnapController:get',
+          ),
+          handleSnapRpcRequest: this.handleSnapRequest.bind(this),
+          getSnapState: this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'SnapController:getSnapState',
+          ),
+          showDialog: (origin, type, content, placeholder) =>
+            this.approvalController.addAndShowApprovalRequest({
+              origin,
+              type: SNAP_DIALOG_TYPES[type],
+              requestData: { content, placeholder },
+            }),
+          showNativeNotification: (origin, args) =>
+            this.controllerMessenger.call(
+              'RateLimitController:call',
+              origin,
+              'showNativeNotification',
+              origin,
+              args.message,
+            ),
+          showInAppNotification: (origin, args) =>
+            this.controllerMessenger.call(
+              'RateLimitController:call',
+              origin,
+              'showInAppNotification',
+              origin,
+              args.message,
+            ),
+          updateSnapState: this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'SnapController:updateSnapState',
+          ),
+          maybeUpdatePhishingList: () => {
+            const { usePhishDetect } =
+              this.preferencesController.store.getState();
 
-          if (!usePhishDetect) {
-            return;
-          }
+            if (!usePhishDetect) {
+              return;
+            }
 
-          this.controllerMessenger.call('PhishingController:maybeUpdateState');
+            this.controllerMessenger.call(
+              'PhishingController:maybeUpdateState',
+            );
+          },
+          isOnPhishingList: (origin) => {
+            const { usePhishDetect } =
+              this.preferencesController.store.getState();
+
+            if (!usePhishDetect) {
+              return false;
+            }
+
+            return this.controllerMessenger.call(
+              'PhishingController:testOrigin',
+              origin,
+            ).result;
+          },
+          ///: END:ONLY_INCLUDE_IF
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+          getSnapKeyring: this.getSnapKeyring.bind(this),
+          ///: END:ONLY_INCLUDE_IF
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         },
-        isOnPhishingList: (origin) => {
-          const { usePhishDetect } =
-            this.preferencesController.store.getState();
-
-          if (!usePhishDetect) {
-            return false;
-          }
-
-          return this.controllerMessenger.call(
-            'PhishingController:testOrigin',
-            origin,
-          ).result;
-        },
-        ///: END:ONLY_INCLUDE_IF
-        ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-        getSnapKeyring: this.getSnapKeyring.bind(this),
-        ///: END:ONLY_INCLUDE_IF
-        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-      }),
+      ),
     };
   }
 
@@ -4878,7 +4827,7 @@ export default class MetamaskController extends EventEmitter {
 
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     engine.push(
-      createSnapMethodMiddleware(subjectType === SubjectType.Snap, {
+      createSnapsMethodMiddleware(subjectType === SubjectType.Snap, {
         getUnlockPromise: this.appStateController.getUnlockPromise.bind(
           this.appStateController,
         ),

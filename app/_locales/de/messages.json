@@ -3473,9 +3473,6 @@
   "searchAccounts": {
     "message": "Konten durchsuchen"
   },
-  "searchResults": {
-    "message": "Suchergebnisse"
-  },
   "secretRecoveryPhrase": {
     "message": "Geheime Wiederherstellungsphrase"
   },
@@ -4982,10 +4979,6 @@
   },
   "verifyContractDetails": {
     "message": "Drittanbieter-Details überprüfen"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Token-Dezimalzahlen finden Sie auf $1.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Diesen Token auf $1 verifizieren",
