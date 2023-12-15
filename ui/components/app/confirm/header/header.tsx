@@ -5,6 +5,7 @@ import useConfirmationRecipientInfo from '../../../../hooks/confirm/useConfirmat
 import {
   AlignItems,
   Display,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 
 import Identicon from '../../../ui/identicon';
