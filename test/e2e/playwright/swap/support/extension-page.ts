@@ -1,10 +1,8 @@
+import path from 'path';
 import { type Locator, type Page, chromium } from '@playwright/test';
 import { wait } from '../helpers/utils';
 
-const MM_EXTENSION_FOLDER = require('path').join(
-  __dirname,
-  '../../../../../dist/chrome',
-);
+const extensionPath = path.join(__dirname, '../../../../../dist/chrome');
 
 export class ChromeExtensionPage {
   private page: Page;
@@ -40,8 +38,8 @@ export class ChromeExtensionPage {
     const launchOptions = {
       headless: false,
       args: [
-        `--disable-extensions-except=${MM_EXTENSION_FOLDER}`,
-        `--load-extension=${MM_EXTENSION_FOLDER}`,
+        `--disable-extensions-except=${extensionPath}`,
+        `--load-extension=${extensionPath}`,
       ],
     };
     if (process.env.HEADLESS === 'true') {
