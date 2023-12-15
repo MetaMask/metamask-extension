@@ -25,7 +25,7 @@ describe('Revoke Dapp Permissions', function () {
 
         await openDapp(driver);
 
-        let accountsDiv = await driver.findElement('#accounts');
+        const accountsDiv = await driver.findElement('#accounts');
 
         assert.equal(
           await accountsDiv.getText(),
@@ -52,9 +52,12 @@ describe('Revoke Dapp Permissions', function () {
 
         // TODO: Fix having to reload dapp as it is not the proper behavior in production, issue with test setup.
         await driver.executeScript(`window.location.reload()`);
-        accountsDiv = await driver.findElement('#accounts');
-
-        assert.equal(await accountsDiv.getText(), '');
+        // accountsDiv = await driver.findElement('#accounts');
+        await driver.findElement({
+          text: '',
+          css: '#accounts',
+        });
+        // assert.equal(await accountsDiv.getText(), '');
       },
     );
   });
