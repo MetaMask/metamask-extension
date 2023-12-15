@@ -117,7 +117,7 @@ describe('AccountListItem', () => {
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   it('renders the snap label for unnamed snap accounts', () => {
-    const { getByText } = render({
+    const { container } = render({
       identity: {
         address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
         name: 'Snap Account',
@@ -126,11 +126,12 @@ describe('AccountListItem', () => {
         label: 'Snaps (Beta)',
       },
     });
-    expect(getByText('Snaps (Beta)')).toBeInTheDocument();
+    const tag = container.querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Snaps (Beta)');
   });
 
   it('renders the snap name for named snap accounts', () => {
-    const { getByText } = render({
+    const { container } = render({
       identity: {
         address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
         name: 'Snap Account',
@@ -139,7 +140,8 @@ describe('AccountListItem', () => {
         label: 'Test Snap Name (Beta)',
       },
     });
-    expect(getByText('Test Snap Name (Beta)')).toBeInTheDocument();
+    const tag = container.querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Test Snap Name (Beta)');
   });
   ///: END:ONLY_INCLUDE_IF
 });
