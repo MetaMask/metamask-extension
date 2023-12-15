@@ -9796,34 +9796,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@zxing/browser@npm:^0.1.3":
-  version: 0.1.4
-  resolution: "@zxing/browser@npm:0.1.4"
+"@zxing/browser@npm:^0.0.10":
+  version: 0.0.10
+  resolution: "@zxing/browser@npm:0.0.10"
   dependencies:
     "@zxing/text-encoding": "npm:^0.9.0"
   peerDependencies:
-    "@zxing/library": ^0.20.0
+    "@zxing/library": ^0.18.5
   dependenciesMeta:
     "@zxing/text-encoding":
       optional: true
-  checksum: fc85267eeb9b2cfdbad6eb6be4b477fabe7262d5174f9ecf35632f058fdaac1cb250a30eabc37e2c624803ef16f73aa69816af0e9ebbe14977098363fd7a0a10
+  checksum: bf68ca2d3c0904d5d5812bdc2eadb281b9cd529560027d29f64cfcf833d25271077944ea78c95d4d0ccca6c43879cddbb8c08354367b5d42960a97d96aa599e1
   languageName: node
   linkType: hard
 
-"@zxing/library@npm:0.20.0":
-  version: 0.20.0
-  resolution: "@zxing/library@npm:0.20.0"
+"@zxing/library@npm:0.8.0":
+  version: 0.8.0
+  resolution: "@zxing/library@npm:0.8.0"
   dependencies:
-    "@zxing/text-encoding": "npm:~0.9.0"
-    ts-custom-error: "npm:^3.2.1"
+    text-encoding: "npm:^0.6.4"
+    ts-custom-error: "npm:^2.2.1"
   dependenciesMeta:
-    "@zxing/text-encoding":
+    text-encoding:
       optional: true
-  checksum: 866ec2adc9f59b5176046a6219951122bd075eac846aa739285b9b20372635c29ad13bc49a4a721e91d13b0d078c5f50fe81087a510920b0ea202dda41b0a5a4
+  checksum: 7952628b878ef6ec9f6447636a89d49081b1919012f1c1499707147364ac3f76401d6169015ebbac38595d8a8d9a7ee44abaea898191fab7219ddd3d257db7e3
   languageName: node
   linkType: hard
 
-"@zxing/text-encoding@npm:0.9.0, @zxing/text-encoding@npm:^0.9.0, @zxing/text-encoding@npm:~0.9.0":
+"@zxing/text-encoding@npm:0.9.0, @zxing/text-encoding@npm:^0.9.0":
   version: 0.9.0
   resolution: "@zxing/text-encoding@npm:0.9.0"
   checksum: 268e4ef64b8eaa32b990240bdfd1f7b3e2b501a6ed866a565f7c9747f04ac884fbe0537fe12bb05d9241b98fb111270c0fd0023ef0a02d23a6619b4589e98f6b
@@ -24392,8 +24392,8 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^5.30.7"
     "@typescript-eslint/parser": "npm:^5.30.7"
     "@whitespace/storybook-addon-html": "npm:^5.1.6"
-    "@zxing/browser": "npm:^0.1.3"
-    "@zxing/library": "npm:0.20.0"
+    "@zxing/browser": "npm:^0.0.10"
+    "@zxing/library": "npm:0.8.0"
     addons-linter: "npm:^5.2.0"
     await-semaphore: "npm:^0.1.1"
     axios: "npm:^1.1.3"
@@ -32565,6 +32565,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"text-encoding@npm:^0.6.4":
+  version: 0.6.4
+  resolution: "text-encoding@npm:0.6.4"
+  checksum: 213fc854ab5f711ccf92f4974a06b17f9749b6326e8544d05386f878a014bce6d53fbe1450a1c878d81caa71a11dfccb2b4ebdee9c242eb08baca05bbc5eff3f
+  languageName: node
+  linkType: hard
+
 "text-table@npm:^0.2.0":
   version: 0.2.0
   resolution: "text-table@npm:0.2.0"
@@ -32915,10 +32922,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-custom-error@npm:^3.2.1":
-  version: 3.3.1
-  resolution: "ts-custom-error@npm:3.3.1"
-  checksum: 92e3a2c426bf6049579aeb889b6f9787e0cfb6bb715a1457e2571708be7fe739662ca9eb2a8c61b72a2d32189645f4fbcf1a370087e030d922e9e2a7b7c1c994
+"ts-custom-error@npm:^2.2.1":
+  version: 2.2.2
+  resolution: "ts-custom-error@npm:2.2.2"
+  checksum: df72e423bcd4ec8b6dd52d37a6680acba662bed109c1fb85866706fc1ec321d36b335bde6e7af5b38710d842db858a256291b1825c964bc9fe440a1f266c06b5
   languageName: node
   linkType: hard
 

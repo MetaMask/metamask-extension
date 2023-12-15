@@ -765,12 +765,6 @@
   "unknown": {
     "message": "Neznano"
   },
-  "unknownCameraError": {
-    "message": "Pri dostopanju do vaše kamere je prišlo do napake. Poskusite znova kasneje ..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Nekaj je šlo narobe ...."
-  },
   "unknownNetwork": {
     "message": "Neznano zasebno omrežje"
   },
