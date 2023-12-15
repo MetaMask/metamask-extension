@@ -1,5 +1,5 @@
 function getValues(pendingApproval, t, actions, _history) {
-  const { snapName } = pendingApproval;
+  const { origin: snapId, snapName } = pendingApproval;
   const { url, message, isBlockedUrl } = pendingApproval.requestData;
 
   const getConditionalProps = () => {
@@ -26,6 +26,7 @@ function getValues(pendingApproval, t, actions, _history) {
         props: {
           url,
           message,
+          snapId,
           snapName,
           isBlockedUrl,
         },
