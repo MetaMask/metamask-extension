@@ -528,7 +528,12 @@ export default function setupSentry({ release, getState }) {
     const options = hub.getClient?.().getOptions?.() ?? {};
     if (hub) {
       options.autoSessionTracking = true;
-      hub.startSession();
+
+      try {
+        Sentry.getCurrentHub().startSession();
+      } finally {
+        Sentry.getCurrentHub().captureSession();
+      }
     }
   };
 
@@ -542,7 +547,14 @@ export default function setupSentry({ release, getState }) {
     const options = hub.getClient?.().getOptions?.() ?? {};
     if (hub) {
       options.autoSessionTracking = false;
-      hub.endSession();
+
+      try {
+        // https://getsentry.github.io/sentry-javascript/classes/_sentry_browser.Hub.html#captureSession
+        const isEndingSession = true;
+        Sentry.getCurrentHub().captureSession(isEndingSession);
+      } finally {
+        Sentry.getCurrentHub().endSession();
+      }
     }
   };
 

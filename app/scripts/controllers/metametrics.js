@@ -449,11 +449,16 @@ export default class MetaMetricsController {
    */
   async setParticipateInMetaMetrics(participateInMetaMetrics) {
     let { metaMetricsId } = this.state;
-    if (participateInMetaMetrics && !metaMetricsId) {
+    if (participateInMetaMetrics) {
       // We also need to start sentry automatic session tracking at this point
       await globalThis.sentry?.startSession();
       metaMetricsId = this.generateMetaMetricsId();
-    } else if (participateInMetaMetrics === false) {
+    } else if (
+      participateInMetaMetrics === false &&
+      // We don't need to end the sentry session if the user is onboarding (and
+      // `metaMetricsId` is falsy)
+      metaMetricsId
+    ) {
       // We also need to stop sentry automatic session tracking at this point
       await globalThis.sentry?.endSession();
     }
