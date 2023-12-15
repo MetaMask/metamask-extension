@@ -60,15 +60,14 @@ export function useUserPreferencedCurrency(type, opts = {}) {
 
   if (opts.showNativeOverride) {
     return nativeReturn;
-  } else if (opts.showFiatOverride || showFiat) {
+  } else if (opts.showFiatOverride) {
     return fiatReturn;
   } else if (
-    (type === SECONDARY && useNativeCurrencyAsPrimaryCurrency) ||
-    (type === PRIMARY && !useNativeCurrencyAsPrimaryCurrency)
+    !showFiat ||
+    (type === PRIMARY && useNativeCurrencyAsPrimaryCurrency) ||
+    (type === SECONDARY && !useNativeCurrencyAsPrimaryCurrency)
   ) {
-    // Display Fiat
-    return fiatReturn;
+    return nativeReturn;
   }
-  // Display Native
-  return nativeReturn;
+  return fiatReturn;
 }
