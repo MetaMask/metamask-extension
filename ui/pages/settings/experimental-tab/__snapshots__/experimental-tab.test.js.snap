@@ -217,7 +217,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
               Enable "Add account Snap (Beta)"
             </h5>
             <div
-              data-testid="add-snap-account-toggle"
+              data-testid="add-account-snap-toggle-div"
             >
               <label
                 class="toggle-button toggle-button--off"
@@ -244,6 +244,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
                     />
                   </div>
                   <input
+                    data-testid="add-account-snap-toggle-button"
                     style="border: 0px; height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px;"
                     type="checkbox"
                     value="false"

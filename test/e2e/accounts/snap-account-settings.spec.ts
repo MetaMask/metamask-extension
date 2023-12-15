@@ -35,7 +35,9 @@ describe('Add snap account experimental settings', function (this: Suite) {
         await driver.clickElement({ text: 'Experimental', tag: 'div' });
 
         // Switch "Enable Add account Snap" to on.
-        await driver.clickElement('[data-testid="add-snap-account-toggle"]');
+        await driver.clickElement(
+          '[data-testid="add-account-snap-toggle-div"]',
+        );
 
         // Make sure the "Add account Snap" button is visible.
         await driver.clickElement('[data-testid="account-menu-icon"]');
