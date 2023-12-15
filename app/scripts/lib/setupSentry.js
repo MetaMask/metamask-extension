@@ -526,7 +526,7 @@ export default function setupSentry({ release, getState }) {
   const startSession = async () => {
     const hub = Sentry.getCurrentHub?.();
     const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getMetaMetricsEnabled()) === true) {
+    if (hub) {
       options.autoSessionTracking = true;
       hub.startSession();
     }
@@ -540,7 +540,7 @@ export default function setupSentry({ release, getState }) {
   const endSession = async () => {
     const hub = Sentry.getCurrentHub?.();
     const options = hub.getClient?.().getOptions?.() ?? {};
-    if (hub && (await getMetaMetricsEnabled()) === false) {
+    if (hub) {
       options.autoSessionTracking = false;
       hub.endSession();
     }
