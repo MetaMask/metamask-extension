@@ -1,7 +1,4 @@
-import {
-  type Locator,
-  type Page,
-} from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
 
 export class SwapPage {
   static extensionId: string | undefined;
