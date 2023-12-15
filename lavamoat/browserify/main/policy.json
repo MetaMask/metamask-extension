@@ -2653,6 +2653,7 @@
         "HTMLElement": true,
         "HTMLImageElement": true,
         "HTMLVideoElement": true,
+        "URL.createObjectURL": true,
         "clearTimeout": true,
         "console.error": true,
         "console.warn": true,
@@ -2666,20 +2667,17 @@
     },
     "@zxing/library": {
       "globals": {
-        "HTMLImageElement": true,
-        "HTMLVideoElement": true,
         "TextDecoder": true,
         "TextEncoder": true,
-        "URL.createObjectURL": true,
         "btoa": true,
-        "console.log": true,
-        "console.warn": true,
-        "document": true,
-        "navigator": true,
+        "clearTimeout": true,
+        "define": true,
+        "document.createElement": true,
+        "document.createElementNS": true,
+        "document.getElementById": true,
+        "navigator.mediaDevices.enumerateDevices": true,
+        "navigator.mediaDevices.getUserMedia": true,
         "setTimeout": true
-      },
-      "packages": {
-        "@zxing/library>ts-custom-error": true
       }
     },
     "addons-linter>sha.js": {

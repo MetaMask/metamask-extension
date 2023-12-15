@@ -2552,12 +2552,6 @@
   "unknown": {
     "message": "Desconhecido"
   },
-  "unknownCameraError": {
-    "message": "Houve um erro ao tentar acessar sua câmera. Tente novamente..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Opa! Ocorreu algum erro..."
-  },
   "unknownNetwork": {
     "message": "Rede privada desconhecida"
   },

@@ -777,12 +777,6 @@
   "unknown": {
     "message": "невідомо"
   },
-  "unknownCameraError": {
-    "message": "Виникла помилка при спробі отримати доступ до вашої камери. Будь ласка, спробуйте знову..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Отакої! Щось пішло не так..."
-  },
   "unknownNetwork": {
     "message": "Незнайома приватна мережа"
   },
