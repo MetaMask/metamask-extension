@@ -774,12 +774,6 @@
   "unknown": {
     "message": "Tuntematon"
   },
-  "unknownCameraError": {
-    "message": "Tapahtui virhe yritettäessä käyttää kameraasi. Ole hyvä ja yritä uudestaan..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Oho! Jokin meni vikaan..."
-  },
   "unknownNetwork": {
     "message": "Tuntematon yksityinen verkko"
   },

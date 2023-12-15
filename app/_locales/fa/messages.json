@@ -777,12 +777,6 @@
   "unknown": {
     "message": "ناشناس"
   },
-  "unknownCameraError": {
-    "message": "هنگام تلاش برای دسترسی به کمره شما خطایی به وجود آمد. لطفًا دوباره تلاش کنید..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "اوه! مشکلی ایجاد شد"
-  },
   "unknownNetwork": {
     "message": "شبکه خصوصی ناشناخته"
   },
