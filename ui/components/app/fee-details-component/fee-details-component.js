@@ -138,11 +138,6 @@ export default function FeeDetailsComponent({
 
       {supportsEIP1559 && shouldShow && expandFeeDetails && (
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-          <TransactionDetailItem
-            detailTitle={t('metamaskFees')}
-            detailTotal={renderTotalDetailValue('0x0')}
-            boldHeadings={false}
-          />
           {isMultiLayerFeeNetwork && (
             <TransactionDetailItem
               detailTitle={t('optimismFees')}
