@@ -17,7 +17,7 @@ describe('useConfirmationNetworkInfo', () => {
     expect(result.current.networkDisplayName).toBe('Ethereum Mainnet');
   });
 
-  it('should use current network if chainId is not predent in confirmation', () => {
+  it('returns network display name of provider chainId when confirmation chainId is not present', () => {
     const { result } = renderHookWithProvider(
       () => useConfirmationNetworkInfo(),
       {
