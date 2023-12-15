@@ -1,31 +1,21 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
   getWindowHandles,
   withFixtures,
   openDapp,
   unlockWallet,
+  generateGanacheOptions,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Editing Confirm Transaction', function () {
   it('allows selecting high, medium, low gas estimates on edit gas fee popover @no-mmi', async function () {
-    const ganacheOptions = {
-      hardfork: 'london',
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: convertToHexValue(25000000000000000000),
-        },
-      ],
-    };
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withTransactionControllerTypeTwoTransaction()
           .build(),
-        ganacheOptions,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -93,22 +83,12 @@ describe('Editing Confirm Transaction', function () {
   });
 
   it('allows accessing advance gas fee popover from edit gas fee popover', async function () {
-    const ganacheOptions = {
-      hardfork: 'london',
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: convertToHexValue(25000000000000000000),
-        },
-      ],
-    };
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withTransactionControllerTypeTwoTransaction()
           .build(),
-        ganacheOptions,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -175,22 +155,12 @@ describe('Editing Confirm Transaction', function () {
   });
 
   it('should use dapp suggested estimates for transaction coming from dapp @no-mmi', async function () {
-    const ganacheOptions = {
-      hardfork: 'london',
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: convertToHexValue(25000000000000000000),
-        },
-      ],
-    };
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
         dapp: true,
       },
