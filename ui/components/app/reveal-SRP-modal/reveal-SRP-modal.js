@@ -40,7 +40,7 @@ export default function RevealSRPModal({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>{t('revealSeedWords')}</ModalHeader>
-        <>
+        <Box paddingLeft={4} paddingRight={4}>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -72,7 +72,7 @@ export default function RevealSRPModal({
               {t('confirm')}
             </ButtonPrimary>
           </Box>
-        </>
+        </Box>
       </ModalContent>
     </Modal>
   );
