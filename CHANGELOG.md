@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.7.1]
+### Added
+
+### Changed
+
+### Fixed
+
 ## [11.7.0]
 ### Added
 - Added auto-suggestion for ticker symbols in the network form ([#21843](https://github.com/MetaMask/metamask-extension/pull/21843))
