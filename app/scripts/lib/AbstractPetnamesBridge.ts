@@ -16,7 +16,10 @@ export enum ChangeType {
   DELETED = 'DELETED',
 }
 
-type SyncDirection = 'Source->Petnames' | 'Petnames->Source';
+enum SyncDirection {
+  SOURCE_TO_PETNAMES = 'Source->Petnames',
+  PETNAMES_TO_SOURCE = 'Petnames->Source',
+}
 
 // A list of changes, grouped by type.
 type ChangeList = Record<ChangeType, PetnameEntry[]>;
@@ -32,6 +35,16 @@ export type PetnamesBridgeMessenger = RestrictedControllerMessenger<
 >;
 
 /**
+ * Get a string key for the given entry.
+ *
+ * @param entry
+ */
+function getKey(entry: PetnameEntry): string {
+  return `${entry.type}/${entry.variation}/${entry.value}`;
+}
+
+
+/**
  * Abstract class representing a bridge between petnames and a data source.
  * Provides methods for synchronizing petnames with the data source and handling changes.
  */
@@ -40,7 +53,7 @@ export abstract class AbstractPetnamesBridge {
 
   #nameController: NameController;
 
-  #synchronizingDirection: SyncDirection | 'NONE' = 'NONE';
+  #synchronizingDirection: SyncDirection | null = null;
 
   #messenger: PetnamesBridgeMessenger;
 
@@ -68,10 +81,12 @@ export abstract class AbstractPetnamesBridge {
   init(): void {
     if (this.#isTwoWay) {
       this.#messenger.subscribe('NameController:stateChange', () =>
-        this.#synchronize('Petnames->Source'),
+        this.#synchronize(SyncDirection.PETNAMES_TO_SOURCE),
       );
     }
-    this.onSourceChange(() => this.#synchronize('Source->Petnames'));
+    this.onSourceChange(() =>
+      this.#synchronize(SyncDirection.SOURCE_TO_PETNAMES),
+    );
   }
 
   /**
@@ -89,14 +104,14 @@ export abstract class AbstractPetnamesBridge {
   protected abstract getSourceEntries(): PetnameEntry[];
 
   /**
-   * Update the Source with the given entry. To be overridden by subclasses.
+   * Update the Source with the given entry. To be overridden by two-way subclasses.
    *
    * @param type
    * @param entry
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected updateSourceEntry(type: ChangeType, entry: PetnameEntry): void {
-    throw new Error('updateSourceEntry must be overriden for two-way bridges');
+    throw new Error('updateSourceEntry must be overridden for two-way bridges');
   }
 
   /**
@@ -107,10 +122,10 @@ export abstract class AbstractPetnamesBridge {
   #synchronize(direction: SyncDirection): void {
     if (this.#synchronizingDirection === direction) {
       throw new Error(
-        `synchronize(${direction}) called recursively in same direction`,
+        `Attempted to synchronize recursively in same direction: ${direction}`,
       );
     }
-    if (this.#synchronizingDirection !== 'NONE') {
+    if (this.#synchronizingDirection !== null) {
       return; // Ignore calls while updating in the opposite direction
     }
 
@@ -124,7 +139,7 @@ export abstract class AbstractPetnamesBridge {
     const changeList = this.#computeChangeList(prevEntries, newEntries);
     this.#applyChangeList(changeList);
 
-    this.#synchronizingDirection = 'NONE';
+    this.#synchronizingDirection = null;
   }
 
   /**
@@ -134,9 +149,9 @@ export abstract class AbstractPetnamesBridge {
     const { names } = this.#nameController.state;
     const entries: PetnameEntry[] = [];
     for (const type of Object.values(NameType)) {
-      for (const variation of Object.keys(names[type])) {
-        for (const value of Object.keys(names[type][variation])) {
-          const entry = names[type][variation][value];
+      for (const value of Object.keys(names[type])) {
+        for (const variation of Object.keys(names[type][value])) {
+          const entry = names[type][value][variation];
           entries.push({
             value,
             type,
@@ -166,15 +181,6 @@ export abstract class AbstractPetnamesBridge {
   }
 
   /**
-   * Get a string key for the given entry.
-   *
-   * @param entry
-   */
-  #getKey(entry: PetnameEntry): string {
-    return `${entry.type}/${entry.variation}/${entry.value}`;
-  }
-
-  /**
    * Computes the list of changes between the previous and new entries.
    *
    * @param prevEntries - The previous entries.
@@ -189,10 +195,8 @@ export abstract class AbstractPetnamesBridge {
     const updated: PetnameEntry[] = [];
     const deleted: PetnameEntry[] = [];
 
-    const prevEntriesMap = new Map(
-      prevEntries.map((e) => [this.#getKey(e), e]),
-    );
-    const newEntriesMap = new Map(newEntries.map((e) => [this.#getKey(e), e]));
+    const prevEntriesMap = new Map(prevEntries.map((e) => [getKey(e), e]));
+    const newEntriesMap = new Map(newEntries.map((e) => [getKey(e), e]));
 
     newEntriesMap.forEach((newEntry, newKey) => {
       const oldEntry = prevEntriesMap.get(newKey);
@@ -205,7 +209,7 @@ export abstract class AbstractPetnamesBridge {
       }
     });
 
-    if (!this.#isTwoWay) {
+    if (this.#isTwoWay) {
       prevEntriesMap.forEach((oldEntry, oldKey) => {
         if (!newEntriesMap.has(oldKey)) {
           deleted.push(oldEntry);
@@ -227,9 +231,9 @@ export abstract class AbstractPetnamesBridge {
    */
   #applyChangeList(changeList: ChangeList): void {
     const applyChange =
-      this.#synchronizingDirection === 'Source->Petnames'
-        ? this.updateSourceEntry.bind(this)
-        : this.#updatePetnameEntry.bind(this);
+      this.#synchronizingDirection === SyncDirection.SOURCE_TO_PETNAMES
+        ? this.#updatePetnameEntry.bind(this)
+        : this.updateSourceEntry.bind(this);
 
     for (const type of Object.values(ChangeType)) {
       for (const entry of changeList[type]) {
