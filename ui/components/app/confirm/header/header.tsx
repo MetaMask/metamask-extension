@@ -36,7 +36,7 @@ const Header = () => {
           className="confirm_header-avatar_network"
         />
       </Box>
-      <Box marginLeft={4}>
+      <Box marginInlineStart={4}>
         <Text>{recipientName}</Text>
         <Text variant={TextVariant.bodyMd}>{networkDisplayName}</Text>
       </Box>
