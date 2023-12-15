@@ -39,36 +39,33 @@ export default function RevealSRPModal({
     [setSecretRecoveryPhrase],
   );
 
-  const handleKeyPress = useCallback(
-    (e) => {
-      if (e.key === 'Enter') {
-        onSubmit();
-      }
-    },
-    [onSubmit],
-  );
-
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>{t('revealSeedWords')}</ModalHeader>
         <>
-          <FormTextField
-            marginTop={6}
-            id="account-details-authenticate"
-            label={t('enterYourPassword')}
-            placeholder={t('password')}
-            error={Boolean(warning)}
-            helpText={warning}
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-            variant={TextVariant.bodySm}
-            type="password"
-            inputProps={{ onKeyPress: handleKeyPress }}
-            labelProps={{ fontWeight: FontWeight.Medium }}
-            autoFocus
-          />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSubmit(password);
+            }}
+          >
+            <FormTextField
+              marginTop={6}
+              id="account-details-authenticate"
+              label={t('enterYourPassword')}
+              placeholder={t('password')}
+              error={Boolean(warning)}
+              helpText={warning}
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              variant={TextVariant.bodySm}
+              type="password"
+              labelProps={{ fontWeight: FontWeight.Medium }}
+              autoFocus
+            />
+          </form>
           <Box display={Display.Flex} marginTop={6} gap={2}>
             <ButtonSecondary onClick={onClose} block>
               {t('cancel')}
