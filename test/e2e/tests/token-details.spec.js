@@ -1,22 +1,17 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Token Details', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   it('should show token details for an imported token', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -41,7 +36,15 @@ describe('Token Details', function () {
         await driver.clickElement(
           '[data-testid="import-tokens-modal-import-button"]',
         );
-        await driver.clickElement('[aria-label="Asset options"]');
+
+        // Go to details page
+        await driver.clickElement('[data-testid="home__asset-tab"]');
+        const [, tkn] = await driver.findElements(
+          '[data-testid="multichain-token-list-button"]',
+        );
+        await tkn.click();
+        await driver.clickElement('[data-testid="asset-options__button"]');
+
         await driver.clickElement({ text: 'Token details', tag: 'div' });
 
         const tokenAddressFound = {

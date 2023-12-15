@@ -363,7 +363,17 @@ export function getMetaMaskAccountBalances(state) {
 
 export function getMetaMaskCachedBalances(state) {
   const chainId = getCurrentChainId(state);
-  return state.metamask.cachedBalances[chainId];
+
+  if (state.metamask.accountsByChainId?.[chainId]) {
+    return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
+      (accumulator, [key, value]) => {
+        accumulator[key] = value.balance;
+        return accumulator;
+      },
+      {},
+    );
+  }
+  return {};
 }
 
 /**
@@ -1608,6 +1618,10 @@ export function getDetectedTokensInCurrentNetwork(state) {
  */
 export function getNewTokensImported(state) {
   return state.appState.newTokensImported;
+}
+
+export function getNewTokensImportedError(state) {
+  return state.appState.newTokensImportedError;
 }
 
 /**

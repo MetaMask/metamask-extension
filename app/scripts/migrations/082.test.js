@@ -20,7 +20,6 @@ describe('migration #82', () => {
   beforeEach(() => {
     v4.mockImplementationOnce(() => 'network-configuration-id-1')
       .mockImplementationOnce(() => 'network-configuration-id-2')
-      .mockImplementationOnce(() => 'network-configuration-id-3')
       .mockImplementationOnce(() => 'network-configuration-id-4');
   });
 
@@ -67,16 +66,6 @@ describe('migration #82', () => {
               ticker: 'ETH',
             },
             {
-              chainId: '0x4e454152',
-              nickname: 'Aurora Mainnet',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://aurorascan.dev/',
-              },
-              rpcUrl:
-                'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
-              ticker: 'Aurora ETH',
-            },
-            {
               chainId: '0x38',
               nickname:
                 'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
@@ -116,16 +105,6 @@ describe('migration #82', () => {
               rpcUrl:
                 'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
               ticker: 'ETH',
-            },
-            'network-configuration-id-3': {
-              chainId: '0x4e454152',
-              nickname: 'Aurora Mainnet',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://aurorascan.dev/',
-              },
-              rpcUrl:
-                'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
-              ticker: 'Aurora ETH',
             },
             'network-configuration-id-4': {
               chainId: '0x38',
@@ -175,16 +154,6 @@ describe('migration #82', () => {
               ticker: 'ETH',
             },
             {
-              chainId: '0x4e454152',
-              nickname: 'Aurora Mainnet',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://aurorascan.dev/',
-              },
-              rpcUrl:
-                'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
-              ticker: 'Aurora ETH',
-            },
-            {
               chainId: '0x38',
               nickname:
                 'BNB Smart Chain (previously Binance Smart Chain Mainnet)',
@@ -278,16 +247,6 @@ describe('migration #82', () => {
               rpcUrl:
                 'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
               ticker: 'ETH',
-            },
-            'network-configuration-id-3': {
-              chainId: '0x4e454152',
-              nickname: 'Aurora Mainnet',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://aurorascan.dev/',
-              },
-              rpcUrl:
-                'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
-              ticker: 'Aurora ETH',
             },
             'network-configuration-id-4': {
               chainId: '0x38',
@@ -598,16 +557,6 @@ describe('migration #82', () => {
               rpcUrl:
                 'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
               ticker: 'ETH',
-            },
-            'network-configuration-id-3': {
-              chainId: '0x4e454152',
-              nickname: 'Aurora Mainnet',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://aurorascan.dev/',
-              },
-              rpcUrl:
-                'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
-              ticker: 'Aurora ETH',
             },
             'network-configuration-id-4': {
               chainId: '0x38',
