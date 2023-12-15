@@ -21,6 +21,8 @@
   }
 
   &__content {
+    display: flex;
+    flex-direction: column;
     grid-area: content;
     min-width: 0;
 

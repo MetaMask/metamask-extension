@@ -42,40 +42,42 @@ const MetaMaskTemplateRenderer = ({ sections }) => {
   // The last case is dealing with an array of objects
   return (
     <>
-      {sections.reduce((allChildren, child) => {
-        if (child?.hide === true) {
-          return allChildren;
-        }
-        if (typeof child === 'string') {
-          // React can render strings directly, so push them into the accumulator
-          allChildren.push(child);
-        } else {
-          // If the entry in array is not a string, then it must be a Section.
-          // Sections are handled by the main function, but must
-          // be provided a key when a part of an array.
-          if (!child.key) {
-            throw new Error(
-              'When using array syntax in MetaMask Template Language, you must specify a key for each child of the array',
-            );
+      {sections
+        .filter((section) => Boolean(section))
+        .reduce((allChildren, child) => {
+          if (child?.hide === true) {
+            return allChildren;
           }
-          if (typeof child?.children === 'object') {
-            // If this child has its own children, check if children is an
-            // object, and in that case use recursion to render.
-            allChildren.push(
-              <MetaMaskTemplateRenderer sections={child} key={child.key} />,
-            );
+          if (typeof child === 'string') {
+            // React can render strings directly, so push them into the accumulator
+            allChildren.push(child);
           } else {
-            // Otherwise render the element.
-            const Element = getElement(child);
-            allChildren.push(
-              <Element key={child.key} {...child.props}>
-                {child?.children}
-              </Element>,
-            );
+            // If the entry in array is not a string, then it must be a Section.
+            // Sections are handled by the main function, but must
+            // be provided a key when a part of an array.
+            if (!child.key) {
+              throw new Error(
+                'When using array syntax in MetaMask Template Language, you must specify a key for each child of the array',
+              );
+            }
+            if (typeof child?.children === 'object') {
+              // If this child has its own children, check if children is an
+              // object, and in that case use recursion to render.
+              allChildren.push(
+                <MetaMaskTemplateRenderer sections={child} key={child.key} />,
+              );
+            } else {
+              // Otherwise render the element.
+              const Element = getElement(child);
+              allChildren.push(
+                <Element key={child.key} {...child.props}>
+                  {child?.children}
+                </Element>,
+              );
+            }
           }
-        }
-        return allChildren;
-      }, [])}
+          return allChildren;
+        }, [])}
     </>
   );
 };
