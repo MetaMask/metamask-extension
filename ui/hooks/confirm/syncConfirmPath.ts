@@ -20,8 +20,8 @@ const syncConfirmPath = () => {
       return;
     }
     if (paramsTransactionId !== currentConfirmation.id) {
-      if (currentConfirmation.msgParams) {
-        // url for all signature requests
+      const isSignature = Boolean(currentConfirmation.msgParams);
+      if (isSignature) {
         history.replace(
           `${CONFIRM_TRANSACTION_ROUTE}/${currentConfirmation.id}/${SIGNATURE_REQUEST_PATH}`,
         );
