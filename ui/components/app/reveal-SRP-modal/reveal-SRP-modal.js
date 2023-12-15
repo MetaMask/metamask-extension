@@ -88,7 +88,7 @@ RevealSRPModal.propTypes = {
   /**
    * A function to set a secret receovery phrase in the context that is rendering the RevealSRPModal
    */
-  setSecretRecoveryPhrase: PropTypes.function,
-  onClose: PropTypes.function,
-  isOpen: PropTypes.bool,
+  setSecretRecoveryPhrase: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+  isOpen: PropTypes.bool.isRequired,
 };
