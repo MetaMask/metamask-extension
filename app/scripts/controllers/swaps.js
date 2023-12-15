@@ -1209,7 +1209,10 @@ export default class SwapsController {
       } = quote;
 
       const metaMaskFee = 0.743; // TODO remove once fee is implemented
-      const { averageGas } = gasParams;
+
+      // If the From token balance is not enough, the quote.gasParams === null
+      // Just ignore the gas part of the top quote determination in this case
+      const averageGas = gasParams ? gasParams.averageGas : 0;
 
       const tradeGasLimitForCalculation = gasEstimateWithRefund
         ? new BigNumber(gasEstimateWithRefund, 16)
@@ -1314,20 +1317,18 @@ export default class SwapsController {
     });
 
     const isBest =
-      isSwapsDefaultTokenAddress(
-        newQuotes[topAggId].destinationToken,
-        chainId,
-      ) ||
-      Boolean(
-        tokenConversionRates[
-          Object.keys(tokenConversionRates).find((tokenAddress) =>
-            isEqualCaseInsensitive(
-              tokenAddress,
-              newQuotes[topAggId]?.destinationToken,
-            ),
-          )
-        ],
-      );
+      topAggId &&
+      (isSwapsDefaultTokenAddress(newQuotes[topAggId].buyToken, chainId) ||
+        Boolean(
+          tokenConversionRates[
+            Object.keys(tokenConversionRates).find((tokenAddress) =>
+              isEqualCaseInsensitive(
+                tokenAddress,
+                newQuotes[topAggId]?.buyToken,
+              ),
+            )
+          ],
+        ));
 
     let savings = null;
 
