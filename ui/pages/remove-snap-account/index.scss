@@ -15,4 +15,17 @@
   @include screen-lg-min {
     width: $width-screen-lg-min;
   }
+
+  .multichain-account-list-item {
+    cursor: default;
+    background-color: var(--color-error-muted);
+
+    &:hover{
+      background-color: var(--color-error-muted);
+    }
+
+    &__selected-indicator {
+      background-color: var(--color-error-default);
+    }
+  }
 }
