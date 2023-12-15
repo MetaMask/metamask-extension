@@ -1,27 +1,39 @@
-const path = require('path');
-const { PassThrough, Transform } = require('stream');
-const { lintTransformedFile } = require('./utils');
+import path from 'node:path';
+import { PassThrough, Transform } from 'stream';
+import { lintTransformedFile } from './utils';
 
-const hasKey = (obj, key) => Reflect.hasOwnProperty.call(obj, key);
+const hasKey = (obj: object, key: string) => Reflect.hasOwnProperty.call(obj, key);
 
-module.exports = {
-  createRemoveFencedCodeTransform,
-  removeFencedCode,
+export type Features = {
+  /**
+   * Features that should be included in the output.
+   */
+  active: ReadonlySet<string>;
+
+  /**
+   * All features that can be toggled.
+   */
+  all: ReadonlySet<string>;
 };
 
+
 class RemoveFencedCodeTransform extends Transform {
+  filePath: string;
+  features: Features;
+  shouldLintTransformedFiles: boolean;
+  private _fileBuffers: Buffer[];
   /**
    * A transform stream that calls {@link removeFencedCode} on the complete
    * string contents of the file read by Browserify.
    *
    * Optionally lints the file if it was modified.
    *
-   * @param {string} filePath - The path to the file being transformed.
-   * @param {import('./remove-fenced-code').Features} features - Features that are currently enabled.
-   * @param {boolean} shouldLintTransformedFiles - Whether the file should be
+   * @param filePath - The path to the file being transformed.
+   * @param features - Features that are currently enabled.
+   * @param shouldLintTransformedFiles - Whether the file should be
    * linted if modified by the transform.
    */
-  constructor(filePath, features, shouldLintTransformedFiles) {
+  constructor(filePath: string, features: Features, shouldLintTransformedFiles: boolean) {
     super();
     this.filePath = filePath;
     this.features = features;
@@ -31,7 +43,7 @@ class RemoveFencedCodeTransform extends Transform {
 
   // This function is called whenever data is written to the stream.
   // It concatenates all buffers for the current file into a single buffer.
-  _transform(buffer, _encoding, next) {
+  _transform(buffer: Buffer, _encoding: string, next: () => void) {
     this._fileBuffers.push(buffer);
     next();
   }
@@ -39,15 +51,15 @@ class RemoveFencedCodeTransform extends Transform {
   // "flush" is called when all data has been written to the
   // stream, immediately before the "end" event is emitted.
   // It applies the transform to the concatenated file contents.
-  _flush(end) {
-    let fileContent, didModify;
+  _flush(end: (error?: Error) => void) {
+    let fileContent: string, didModify;
     try {
       [fileContent, didModify] = removeFencedCode(
         this.filePath,
         this.features,
         Buffer.concat(this._fileBuffers).toString('utf8'),
       );
-    } catch (error) {
+    } catch (error: any) {
       return end(error);
     }
 
@@ -59,7 +71,7 @@ class RemoveFencedCodeTransform extends Transform {
     if (this.shouldLintTransformedFiles && didModify) {
       return lintTransformedFile(fileContent, this.filePath)
         .then(pushAndEnd)
-        .catch((error) => end(error));
+        .catch((error: Error) => end(error));
     }
     return pushAndEnd();
   }
@@ -81,14 +93,14 @@ class RemoveFencedCodeTransform extends Transform {
  * file is ignored by ESLint, since linting is our first line of defense against
  * making un-syntactic modifications to files using code fences.
  *
- * @param {import('./remove-fenced-code').Features} features - Features that are currently enabled.
- * @param {boolean} shouldLintTransformedFiles - Whether to lint transformed files.
- * @returns {(filePath: string) => Transform} The transform function.
+ * @param features - Features that are currently enabled.
+ * @param shouldLintTransformedFiles - Whether to lint transformed files.
+ * @returns The transform function.
  */
-function createRemoveFencedCodeTransform(
-  features,
-  shouldLintTransformedFiles = true,
-) {
+export function createRemoveFencedCodeTransform(
+  features: Features,
+  shouldLintTransformedFiles: boolean = true,
+): (filePath: string) => Transform {
   // Browserify transforms are functions that receive a file name and return a
   // duplex stream. The stream receives the file contents piecemeal in the form
   // of Buffers.
@@ -131,9 +143,9 @@ const DirectiveCommands = {
  * @param {{ features: import('./remove-fenced-code').Features }} config - Configuration required for validation.
  * @returns A mapping of command -> validator function.
  */
-function CommandValidators({ features }) {
+function CommandValidators({ features }: {features: Features}) {
   return {
-    [DirectiveCommands.ONLY_INCLUDE_IN]: (params, filePath) => {
+    [DirectiveCommands.ONLY_INCLUDE_IN]: (params: string[] | undefined, filePath: string) => {
       if (!params || params.length === 0) {
         throw new Error(
           getInvalidParamsMessage(
@@ -195,13 +207,13 @@ const directiveParsingRegex =
  *
  * For details, please see the documentation.
  *
- * @param {string} filePath - The path to the file being transformed.
- * @param {import('./remove-fenced-code').Features} features - Features that are currently active.
- * @param {string} fileContent - The contents of the file being transformed.
- * @returns {[string, modified]} A tuple of the post-transform file contents and
+ * @param filePath - The path to the file being transformed.
+ * @param features - Features that are currently active.
+ * @param fileContent - The contents of the file being transformed.
+ * @returns A tuple of the post-transform file contents and
  * a boolean indicating whether they were modified.
  */
-function removeFencedCode(filePath, features, fileContent) {
+export function removeFencedCode(filePath: string, features: import('./remove-fenced-code').Features, fileContent: string): [string, boolean] {
   // Do not modify the file if we detect an inline sourcemap. For reasons
   // yet to be determined, the transform receives every file twice while in
   // watch mode, the second after Babel has transpiled the file. Babel adds
@@ -237,7 +249,7 @@ function removeFencedCode(filePath, features, fileContent) {
     // Store the start and end indices of each line
     // Increment the end index by 1 to including the trailing newline when
     // performing string operations.
-    const indices = [matchArray.index, matchArray.index + line.length + 1];
+    const indices = [matchArray.index!, matchArray.index! + line.length + 1];
 
     const lineWithoutSentinel = line.replace(fenceSentinelRegex, '');
     if (!/^ \w\w+/u.test(lineWithoutSentinel)) {
@@ -292,6 +304,7 @@ function removeFencedCode(filePath, features, fileContent) {
       indices,
       terminus,
       command,
+      parameters: undefined as string[] | undefined
     };
 
     if (parameters !== undefined) {
@@ -340,7 +353,7 @@ function removeFencedCode(filePath, features, fileContent) {
       // Throws an error if the command parameters are invalid
       commandValidators[command](parameters, filePath);
 
-      const blockIsActive = parameters.some((param) =>
+      const blockIsActive = parameters!.some((param) =>
         features.active.has(param),
       );
 
@@ -416,11 +429,11 @@ function removeFencedCode(filePath, features, fileContent) {
  *
  * `[ start, end, start, end, start, end, ... ]`
  *
- * @param {string} toSplice - The string to splice.
- * @param {number[]} splicingIndices - Indices to splice at.
- * @returns {string} The spliced string.
+ * @param toSplice - The string to splice.
+ * @param splicingIndices - Indices to splice at.
+ * @returns The spliced string.
  */
-function multiSplice(toSplice, splicingIndices) {
+function multiSplice(toSplice: string, splicingIndices: number[]): string {
   const retainedSubstrings = [];
 
   // Get the first part to be included
@@ -451,41 +464,41 @@ function multiSplice(toSplice, splicingIndices) {
 }
 
 /**
- * @param {string} filePath - The path to the file that caused the error.
- * @param {string} line - The contents of the line with the error.
- * @param {string} details - An explanation of the error.
+ * @param filePath - The path to the file that caused the error.
+ * @param line - The contents of the line with the error.
+ * @param details - An explanation of the error.
  * @returns The error message.
  */
-function getInvalidFenceLineMessage(filePath, line, details) {
+function getInvalidFenceLineMessage(filePath: string, line: string, details: string) {
   return `Invalid fence line in file "${filePath}": "${line}":\n${details}`;
 }
 
 /**
- * @param {string} filePath - The path to the file that caused the error.
- * @param {string} details - An explanation of the error.
+ * @param filePath - The path to the file that caused the error.
+ * @param  details - An explanation of the error.
  * @returns The error message.
  */
-function getInvalidFenceStructureMessage(filePath, details) {
+function getInvalidFenceStructureMessage(filePath: string, details: string) {
   return `Invalid fence structure in file "${filePath}":\n${details}`;
 }
 
 /**
- * @param {string} filePath - The path to the file that caused the error.
- * @param {string} line - The contents of the line with the error.
- * @param {string} details - An explanation of the error.
+ * @param filePath - The path to the file that caused the error.
+ * @param line - The contents of the line with the error.
+ * @param details - An explanation of the error.
  * @returns The error message.
  */
-function getInvalidFencePairMessage(filePath, line, details) {
+function getInvalidFencePairMessage(filePath: string, line: string, details: string) {
   return `Invalid fence pair in file "${filePath}" due to line "${line}":\n${details}`;
 }
 
 /**
- * @param {string} filePath - The path to the file that caused the error.
- * @param {string} command - The command of the directive with the invalid
+ * @param filePath - The path to the file that caused the error.
+ * @param command - The command of the directive with the invalid
  * parameters.
- * @param {string} details - An explanation of the error.
+ * @param details - An explanation of the error.
  * @returns The error message.
  */
-function getInvalidParamsMessage(filePath, command, details) {
+function getInvalidParamsMessage(filePath: string, command: string, details: string) {
   return `Invalid code fence parameters in file "${filePath}" for command "${command}":\n${details}`;
 }

@@ -264,7 +264,6 @@
   "development/build/static.js",
   "development/build/styles.js",
   "development/build/task.js",
-  "development/build/transforms/remove-fenced-code.js",
   "development/build/transforms/remove-fenced-code.test.js",
   "development/build/transforms/utils.js",
   "development/build/transforms/utils.test.js",
