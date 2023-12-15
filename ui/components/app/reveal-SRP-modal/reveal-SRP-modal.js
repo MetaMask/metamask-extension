@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
-import { useSelector } from 'react-redux';
 import {
   Display,
   TextVariant,
@@ -28,9 +27,6 @@ export default function RevealSRPModal({
 
   const [password, setPassword] = useState('');
 
-  // Password error would result from appState
-  const warning = useSelector((state) => state.appState.warning);
-
   const onSubmit = useCallback(
     async (_password) => {
       const seedPhrase = await getSeedPhrase(_password);
@@ -56,8 +52,6 @@ export default function RevealSRPModal({
               id="account-details-authenticate"
               label={t('enterYourPassword')}
               placeholder={t('password')}
-              error={Boolean(warning)}
-              helpText={warning}
               onChange={(e) => setPassword(e.target.value)}
               value={password}
               variant={TextVariant.bodySm}
