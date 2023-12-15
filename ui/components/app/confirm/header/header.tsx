@@ -25,7 +25,7 @@ const Header = () => {
       alignItems={AlignItems.center}
       display={Display.Flex}
       padding={4}
-      className="confirm_header-wrapper"
+      className="confirm_header__wrapper"
     >
       <Box display={Display.Flex}>
         <Identicon address={recipientAddress} diameter={32} />
@@ -33,7 +33,7 @@ const Header = () => {
           src={networkImageUrl}
           name={networkDisplayName}
           size={AvatarNetworkSize.Xs}
-          className="confirm_header-avatar_network"
+          className="confirm_header__avatar-network"
         />
       </Box>
       <Box marginLeft={4}>

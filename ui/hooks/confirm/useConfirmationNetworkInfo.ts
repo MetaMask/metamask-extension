@@ -30,8 +30,8 @@ function useConfirmationNetworkInfo() {
       ({ chainId }) => chainId === currentChainId,
     );
     if (confirmationNetwork) {
-      const { nickname, providerType } = confirmationNetwork;
-      if (providerType === NETWORK_TYPES.RPC) {
+      const { nickname, providerType, type } = confirmationNetwork;
+      if (providerType === NETWORK_TYPES.RPC || type === NETWORK_TYPES.RPC) {
         networkDisplayName = nickname ?? t('privateNetwork');
       } else {
         networkDisplayName =
@@ -41,7 +41,7 @@ function useConfirmationNetworkInfo() {
   }
 
   return {
-    networkImageUrl: confirmationNetwork?.rpcPrefs?.imageUrl,
+    networkImageUrl: confirmationNetwork?.rpcPrefs?.imageUrl ?? '',
     networkDisplayName,
   };
 }
