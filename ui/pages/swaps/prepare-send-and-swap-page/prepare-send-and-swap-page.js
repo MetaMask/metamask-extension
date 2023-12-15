@@ -854,6 +854,10 @@ export default function PrepareSendAndSwapPage({
   return (
     <div className="prepare-swap-page">
       <div className="prepare-swap-page__content">
+        {/* TODO remove this and put in a real one */}
+        <button onClick={() => dispatch(setTransactionSettingsOpened(true))}>
+          Settings
+        </button>
         {tokenForImport && isImportTokenModalOpen && (
           <ImportToken isOpen {...importTokenProps} />
         )}
