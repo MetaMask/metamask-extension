@@ -50,9 +50,6 @@ const NOTIFICATIONS_ROUTE = '/notifications';
 const SNAPS_ROUTE = '/snaps';
 const SNAPS_VIEW_ROUTE = '/snaps/view';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-const ADD_SNAP_ACCOUNT_ROUTE = '/add-snap-account';
-///: END:ONLY_INCLUDE_IF
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 const SWAPS_ROUTE = '/swaps';
@@ -136,10 +133,6 @@ const PATH_NAME_MAP = {
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
   [IMPORT_TOKENS_ROUTE]: 'Import Tokens Page',
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  [ADD_SNAP_ACCOUNT_ROUTE]: 'Add Snap Account List Page',
-  [`${ADD_SNAP_ACCOUNT_ROUTE}/:snapId`]: `Add Snap Account Page`,
-  ///: END:ONLY_INCLUDE_IF
   [CONFIRM_ADD_SUGGESTED_NFT_ROUTE]: 'Confirm Add Suggested NFT Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -266,9 +259,6 @@ export {
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,

@@ -1371,9 +1371,9 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               0x5: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             providerConfig: {
@@ -1671,14 +1671,14 @@ describe('Send Slice', () => {
           providerConfig: {
             chainId: CHAIN_IDS.GOERLI,
           },
-          cachedBalances: {
+          accountsByChainId: {
             [CHAIN_IDS.GOERLI]: {
-              [mockAddress1]: '0x0',
+              [mockAddress1]: { balance: '0x0' },
             },
           },
           accounts: {
             [mockAddress1]: {
-              address: mockAddress1,
+              address: '0x0',
             },
           },
           identities: {
@@ -2506,9 +2506,9 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               [CHAIN_IDS.GOERLI]: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             tokenList: {},
@@ -2645,9 +2645,9 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               [CHAIN_IDS.GOERLI]: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             tokenList: {},
@@ -2832,9 +2832,9 @@ describe('Send Slice', () => {
               balance: '0x0',
             },
           },
-          cachedBalances: {
+          accountsByChainId: {
             [CHAIN_IDS.GOERLI]: {
-              [mockAddress1]: '0x0',
+              [mockAddress1]: { balance: '0x0' },
             },
           },
           transactions: [
