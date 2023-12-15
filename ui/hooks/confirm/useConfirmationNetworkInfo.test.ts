@@ -3,7 +3,7 @@ import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import useConfirmationNetworkInfo from './useConfirmationNetworkInfo';
 
 describe('useConfirmationNetworkInfo', () => {
-  it('should use chainId from confirmation if present', () => {
+  it('returns network display name when confirmation chainId is present', () => {
     const { result } = renderHookWithProvider(
       () => useConfirmationNetworkInfo(),
       {
@@ -18,7 +18,7 @@ describe('useConfirmationNetworkInfo', () => {
     expect(result.current.networkImageUrl).toBe('./images/eth_logo.png');
   });
 
-  it('should use current network if chainId is not predent in confirmation', () => {
+  it('returns network display name of provider chainId when confirmation chainId is not present', () => {
     const { result } = renderHookWithProvider(
       () => useConfirmationNetworkInfo(),
       {

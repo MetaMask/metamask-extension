@@ -5,28 +5,15 @@ import {
   PRIVATE_KEY_TWO,
   WINDOW_TITLES,
   clickSignOnSignatureConfirmation,
-  convertETHToHexGwei,
   switchToOrOpenDapp,
   unlockWallet,
   validateContractDetails,
+  multipleGanacheOptions,
 } from '../helpers';
 import { Driver } from '../webdriver/driver';
 
 export const TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL =
   'https://metamask.github.io/snap-simple-keyring/1.0.1/';
-
-export const ganacheOptions = {
-  accounts: [
-    {
-      secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(25),
-    },
-    {
-      secretKey: PRIVATE_KEY_TWO,
-      balance: convertETHToHexGwei(25),
-    },
-  ],
-};
 
 /**
  * These are fixtures specific to Account Snap E2E tests:
@@ -47,7 +34,7 @@ export const accountSnapFixtures = (title: string | undefined) => {
         },
       })
       .build(),
-    ganacheOptions,
+    ganacheOptions: multipleGanacheOptions,
     failOnConsoleError: false,
     title,
   };

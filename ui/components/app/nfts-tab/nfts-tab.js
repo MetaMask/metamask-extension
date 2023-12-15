@@ -49,7 +49,7 @@ export default function NftsTab() {
   };
 
   const hasAnyNfts = Object.keys(collections).length > 0;
-  const showNftBanner = process.env.MULTICHAIN && hasAnyNfts === false;
+  const showNftBanner = hasAnyNfts === false;
 
   if (nftsLoading) {
     return <div className="nfts-tab__loading">{t('loadingNFTs')}</div>;

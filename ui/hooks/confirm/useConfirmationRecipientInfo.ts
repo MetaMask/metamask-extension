@@ -14,9 +14,9 @@ function useConfirmationRecipientInfo() {
   let recipientName = '';
 
   if (currentConfirmation) {
-    // Code below takes care to fix recipient name to be displayed for signature requests
     const { msgParams } = currentConfirmation;
-    if (msgParams) {
+    const isSignature = Boolean(msgParams);
+    if (isSignature) {
       recipientAddress = msgParams.from;
       const fromAccount = getAccountByAddress(allAccounts, recipientAddress);
       recipientName = fromAccount?.name;

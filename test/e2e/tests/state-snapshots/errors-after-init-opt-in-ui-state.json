@@ -80,7 +80,6 @@
         "status": "available"
       }
     },
-    "cachedBalances": "object",
     "keyrings": "object",
     "useNonceField": false,
     "usePhishDetect": true,
@@ -132,6 +131,7 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "string", "1": "string", "2": "string" },
+    "pinnedAccountList": {},
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},

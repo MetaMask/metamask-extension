@@ -28,7 +28,7 @@ describe('Header', () => {
     const { container } = render();
     expect(container).toMatchSnapshot();
   });
-  it('should contain network name and account name', () => {
+  it('contains network name and account name', () => {
     const { getByText } = render();
     expect(getByText('Test Account')).toBeInTheDocument();
     expect(getByText('Goerli')).toBeInTheDocument();

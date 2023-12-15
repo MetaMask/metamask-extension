@@ -6,6 +6,11 @@
   overflow: auto;
   overscroll-behavior-y: none;
 
+  // Maximize dialog visibility on small screen heights
+  @media (max-height: 475px) {
+    padding: 8px;
+  }
+
   // Scroll bar styles
   // Firefox
   scrollbar-width: thin;
@@ -25,6 +30,7 @@
   &__dialog {
     --modal-content-size: var(--size, 360px);
 
+    max-height: 100%;
     box-shadow: var(--shadow-size-lg) var(--color-shadow-default);
 
     &--size-sm {
