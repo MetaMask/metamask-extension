@@ -2411,9 +2411,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
-  "metamaskFees": {
-    "message": "MetaMask fees"
-  },
   "metamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Version"
   },
