@@ -3,7 +3,7 @@ import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import useConfirmationRecipientInfo from './useConfirmationRecipientInfo';
 
 describe('useConfirmationRecipientInfo', () => {
-  it('should use chainId from confirmation if present', () => {
+  it('returns recipientName as the account name of the from address', () => {
     const { result } = renderHookWithProvider(
       () => useConfirmationRecipientInfo(),
       {
