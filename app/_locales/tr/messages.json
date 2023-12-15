@@ -4926,12 +4926,6 @@
   "unknown": {
     "message": "Bilinmeyen"
   },
-  "unknownCameraError": {
-    "message": "Kameranıza erişim sağlamaya çalışırken bir hata oluştu. Lütfen tekrar deneyin..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Eyvah! Bir şeyler ters gitti...."
-  },
   "unknownCollection": {
     "message": "İsimsiz koleksiyon"
   },

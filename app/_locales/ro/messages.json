@@ -761,12 +761,6 @@
   "unknown": {
     "message": "Necunoscută"
   },
-  "unknownCameraError": {
-    "message": "A survenit o eroare la accesarea camerei. Încercați din nou..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Hopa! A apărut o eroare..."
-  },
   "unknownNetwork": {
     "message": "Rețea privată necunoscută"
   },
