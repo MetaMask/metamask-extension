@@ -49,7 +49,14 @@ const ConfirmAddCustodianToken = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [connectError, setConnectError] = useState('');
 
-  const connectRequest = connectRequests ? connectRequests[0] : undefined;
+  // eslint-disable-next-line no-undef
+  const storageItem = localStorage.getItem('tempConnectRequest');
+
+  const tempConnectRequest = JSON.parse(storageItem);
+
+  const connectRequest = connectRequests[0]
+    ? connectRequests[0]
+    : tempConnectRequest;
 
   useEffect(() => {
     if (!connectRequest) {
@@ -145,15 +152,17 @@ const ConfirmAddCustodianToken = () => {
   return (
     <Box className="page-container">
       <Box paddingTop={6} paddingLeft={4} paddingRight={4}>
-        <Chip
-          borderColor={BorderColor.borderMuted}
-          label={connectRequest.origin}
-          maxContent={false}
-          leftIconUrl={custodian?.iconUrl}
-          labelProps={{
-            textAlign: TextAlign.Center,
-          }}
-        />
+        {custodian && (
+          <Chip
+            borderColor={BorderColor.borderMuted}
+            label={connectRequest.origin}
+            maxContent={false}
+            leftIconUrl={custodian?.iconUrl}
+            labelProps={{
+              textAlign: TextAlign.Center,
+            }}
+          />
+        )}
       </Box>
       <Box padding={4} className="page-container__content">
         <Text

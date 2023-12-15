@@ -90,7 +90,15 @@ const CustodyPage = () => {
   const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const [accounts, setAccounts] = useState();
   const address = useSelector(getSelectedAddress);
-  const connectRequest = connectRequests ? connectRequests[0] : undefined;
+
+  // eslint-disable-next-line no-undef
+  const storageItem = localStorage.getItem('tempConnectRequest');
+
+  const tempConnectRequest = JSON.parse(storageItem);
+
+  const connectRequest = connectRequests[0]
+    ? connectRequests[0]
+    : tempConnectRequest;
   const isCheckBoxSelected =
     accounts && Object.keys(selectedAccounts).length === accounts.length;
 

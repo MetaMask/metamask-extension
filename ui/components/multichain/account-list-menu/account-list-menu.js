@@ -50,13 +50,13 @@ import {
   ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  CUSTODY_ACCOUNT_ROUTE,
+  // CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
-import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal'
+import QRCodeModal from '../../institutional/qr-code-modal/qr-code-modal';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -128,261 +128,267 @@ export const AccountListMenu = ({
 
   return (
     <>
-      {showQRCodeModal && <QRCodeModal onClose={() => setShowQRCodeModal(false)}/>}
+      {showQRCodeModal && (
+        <QRCodeModal
+          onClose={() => {
+            setShowQRCodeModal(false);
+            onClose();
+          }}
+        />
+      )}
 
-        <Modal isOpen onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent
-        className="multichain-account-menu-popover"
-        modalDialogProps={{
-          className: 'multichain-account-menu-popover__dialog',
-          padding: 0,
-          display: Display.Flex,
-          flexDirection: FlexDirection.Column,
-        }}
-      >
-        <ModalHeader padding={4} onClose={onClose} onBack={onBack}>
-          {title}
-        </ModalHeader>
-        {actionMode === ACTION_MODES.ADD ? (
-          <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-            <CreateAccount
-              onActionComplete={(confirmed) => {
-                if (confirmed) {
-                  onClose();
-                } else {
-                  setActionMode(ACTION_MODES.LIST);
-                }
-              }}
-            />
-          </Box>
-        ) : null}
-        {actionMode === ACTION_MODES.IMPORT ? (
-          <Box
-            paddingLeft={4}
-            paddingRight={4}
-            paddingBottom={4}
-            paddingTop={0}
-          >
-            <ImportAccount
-              onActionComplete={(confirmed) => {
-                if (confirmed) {
-                  onClose();
-                } else {
-                  setActionMode(ACTION_MODES.LIST);
-                }
-              }}
-            />
-          </Box>
-        ) : null}
-        {/* Add / Import / Hardware Menu */}
-        {actionMode === ACTION_MODES.MENU ? (
-          <Box padding={4}>
-            <Box>
-              <ButtonLink
-                size={Size.SM}
-                startIconName={IconName.Add}
-                onClick={() => {
-                  trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: MetaMetricsEventName.AccountAddSelected,
-                    properties: {
-                      account_type: MetaMetricsEventAccountType.Default,
-                      location: 'Main Menu',
-                    },
-                  });
-                  setActionMode(ACTION_MODES.ADD);
-                }}
-                data-testid="multichain-account-menu-popover-add-account"
-              >
-                {t('addNewAccount')}
-              </ButtonLink>
-            </Box>
-            <Box marginTop={4}>
-              <ButtonLink
-                size={Size.SM}
-                startIconName={IconName.Import}
-                onClick={() => {
-                  trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: MetaMetricsEventName.AccountAddSelected,
-                    properties: {
-                      account_type: MetaMetricsEventAccountType.Imported,
-                      location: 'Main Menu',
-                    },
-                  });
-                  setActionMode(ACTION_MODES.IMPORT);
-                }}
-              >
-                {t('importAccount')}
-              </ButtonLink>
-            </Box>
-            <Box marginTop={4}>
-              <ButtonLink
-                size={Size.SM}
-                startIconName={IconName.Hardware}
-                onClick={() => {
-                  onClose();
-                  trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: MetaMetricsEventName.AccountAddSelected,
-                    properties: {
-                      account_type: MetaMetricsEventAccountType.Hardware,
-                      location: 'Main Menu',
-                    },
-                  });
-                  if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
-                    global.platform.openExtensionInBrowser(
-                      CONNECT_HARDWARE_ROUTE,
-                    );
+      <Modal isOpen onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent
+          className="multichain-account-menu-popover"
+          modalDialogProps={{
+            className: 'multichain-account-menu-popover__dialog',
+            padding: 0,
+            display: Display.Flex,
+            flexDirection: FlexDirection.Column,
+          }}
+        >
+          <ModalHeader padding={4} onClose={onClose} onBack={onBack}>
+            {title}
+          </ModalHeader>
+          {actionMode === ACTION_MODES.ADD ? (
+            <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+              <CreateAccount
+                onActionComplete={(confirmed) => {
+                  if (confirmed) {
+                    onClose();
                   } else {
-                    history.push(CONNECT_HARDWARE_ROUTE);
+                    setActionMode(ACTION_MODES.LIST);
                   }
                 }}
-              >
-                {t('addHardwareWallet')}
-              </ButtonLink>
+              />
             </Box>
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-              addSnapAccountEnabled ? (
-                <Box marginTop={4}>
-                  <ButtonLink
-                    size={Size.SM}
-                    startIconName={IconName.Snaps}
-                    onClick={() => {
-                      onClose();
-                      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                        ? global.platform.openExtensionInBrowser(
-                            ADD_SNAP_ACCOUNT_ROUTE,
-                            null,
-                            true,
-                          )
-                        : history.push(ADD_SNAP_ACCOUNT_ROUTE);
-                    }}
-                  >
-                    {t('settingAddSnapAccount')}
-                  </ButtonLink>
-                </Box>
-              ) : null
-              ///: END:ONLY_INCLUDE_IF
-            }
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+          ) : null}
+          {actionMode === ACTION_MODES.IMPORT ? (
+            <Box
+              paddingLeft={4}
+              paddingRight={4}
+              paddingBottom={4}
+              paddingTop={0}
+            >
+              <ImportAccount
+                onActionComplete={(confirmed) => {
+                  if (confirmed) {
+                    onClose();
+                  } else {
+                    setActionMode(ACTION_MODES.LIST);
+                  }
+                }}
+              />
+            </Box>
+          ) : null}
+          {/* Add / Import / Hardware Menu */}
+          {actionMode === ACTION_MODES.MENU ? (
+            <Box padding={4}>
+              <Box>
+                <ButtonLink
+                  size={Size.SM}
+                  startIconName={IconName.Add}
+                  onClick={() => {
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event: MetaMetricsEventName.AccountAddSelected,
+                      properties: {
+                        account_type: MetaMetricsEventAccountType.Default,
+                        location: 'Main Menu',
+                      },
+                    });
+                    setActionMode(ACTION_MODES.ADD);
+                  }}
+                  data-testid="multichain-account-menu-popover-add-account"
+                >
+                  {t('addNewAccount')}
+                </ButtonLink>
+              </Box>
               <Box marginTop={4}>
                 <ButtonLink
                   size={Size.SM}
-                  startIconName={IconName.Custody}
+                  startIconName={IconName.Import}
                   onClick={() => {
-                    setShowQRCodeModal(true);
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event: MetaMetricsEventName.AccountAddSelected,
+                      properties: {
+                        account_type: MetaMetricsEventAccountType.Imported,
+                        location: 'Main Menu',
+                      },
+                    });
+                    setActionMode(ACTION_MODES.IMPORT);
                   }}
                 >
-                  {t('connectCustodialAccountMenu')}
+                  {t('importAccount')}
                 </ButtonLink>
               </Box>
-              ///: END:ONLY_INCLUDE_IF
-            }
-          </Box>
-        ) : null}
-        {actionMode === ACTION_MODES.LIST ? (
-          <>
-            {/* Search box */}
-            {accounts.length > 1 ? (
-              <Box
-                paddingLeft={4}
-                paddingRight={4}
-                paddingBottom={4}
-                paddingTop={0}
-              >
-                <TextFieldSearch
+              <Box marginTop={4}>
+                <ButtonLink
                   size={Size.SM}
-                  width={BlockSize.Full}
-                  placeholder={t('searchAccounts')}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  clearButtonOnClick={() => setSearchQuery('')}
-                  clearButtonProps={{
-                    size: Size.SM,
+                  startIconName={IconName.Hardware}
+                  onClick={() => {
+                    onClose();
+                    trackEvent({
+                      category: MetaMetricsEventCategory.Navigation,
+                      event: MetaMetricsEventName.AccountAddSelected,
+                      properties: {
+                        account_type: MetaMetricsEventAccountType.Hardware,
+                        location: 'Main Menu',
+                      },
+                    });
+                    if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                      global.platform.openExtensionInBrowser(
+                        CONNECT_HARDWARE_ROUTE,
+                      );
+                    } else {
+                      history.push(CONNECT_HARDWARE_ROUTE);
+                    }
                   }}
-                  inputProps={{ autoFocus: true }}
-                />
+                >
+                  {t('addHardwareWallet')}
+                </ButtonLink>
               </Box>
-            ) : null}
-            {/* Account list block */}
-            <Box className="multichain-account-menu-popover__list">
-              {sortedSearchResults.length === 0 && searchQuery !== '' ? (
-                <Text
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+                addSnapAccountEnabled ? (
+                  <Box marginTop={4}>
+                    <ButtonLink
+                      size={Size.SM}
+                      startIconName={IconName.Snaps}
+                      onClick={() => {
+                        onClose();
+                        getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
+                          ? global.platform.openExtensionInBrowser(
+                              ADD_SNAP_ACCOUNT_ROUTE,
+                              null,
+                              true,
+                            )
+                          : history.push(ADD_SNAP_ACCOUNT_ROUTE);
+                      }}
+                    >
+                      {t('settingAddSnapAccount')}
+                    </ButtonLink>
+                  </Box>
+                ) : null
+                ///: END:ONLY_INCLUDE_IF
+              }
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                <Box marginTop={4}>
+                  <ButtonLink
+                    size={Size.SM}
+                    startIconName={IconName.Custody}
+                    onClick={() => {
+                      setShowQRCodeModal(true);
+                    }}
+                  >
+                    {t('connectCustodialAccountMenu')}
+                  </ButtonLink>
+                </Box>
+                ///: END:ONLY_INCLUDE_IF
+              }
+            </Box>
+          ) : null}
+          {actionMode === ACTION_MODES.LIST ? (
+            <>
+              {/* Search box */}
+              {accounts.length > 1 ? (
+                <Box
                   paddingLeft={4}
                   paddingRight={4}
-                  color={TextColor.textMuted}
-                  data-testid="multichain-account-menu-popover-no-results"
+                  paddingBottom={4}
+                  paddingTop={0}
                 >
-                  {t('noAccountsFound')}
-                </Text>
-              ) : null}
-              {sortedSearchResults.map((account) => {
-                const connectedSite = connectedSites[account.address]?.find(
-                  ({ origin }) => origin === currentTabOrigin,
-                );
-
-                return (
-                  <AccountListItem
-                    onClick={() => {
-                      onClose();
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.NavAccountSwitched,
-                        properties: {
-                          location: 'Main Menu',
-                        },
-                      });
-                      dispatch(setSelectedAccount(account.address));
+                  <TextFieldSearch
+                    size={Size.SM}
+                    width={BlockSize.Full}
+                    placeholder={t('searchAccounts')}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    clearButtonOnClick={() => setSearchQuery('')}
+                    clearButtonProps={{
+                      size: Size.SM,
                     }}
-                    identity={account}
-                    key={account.address}
-                    selected={selectedAccount.address === account.address}
-                    closeMenu={onClose}
-                    connectedAvatar={connectedSite?.iconUrl}
-                    connectedAvatarName={connectedSite?.name}
-                    showOptions
-                    isPinned={
-                      process.env.NETWORK_ACCOUNT_DND
-                        ? Boolean(account.pinned)
-                        : null
-                    }
-                    {...accountListItemProps}
+                    inputProps={{ autoFocus: true }}
                   />
-                );
-              })}
-            </Box>
-            {/* Add / Import / Hardware button */}
-            {showAccountCreation ? (
-              <Box
-                paddingTop={2}
-                paddingBottom={4}
-                paddingLeft={4}
-                paddingRight={4}
-                alignItems={AlignItems.center}
-                display={Display.Flex}
-              >
-                <ButtonSecondary
-                  startIconName={IconName.Add}
-                  variant={ButtonVariant.Secondary}
-                  size={ButtonSecondarySize.Lg}
-                  block
-                  onClick={() => setActionMode(ACTION_MODES.MENU)}
-                  data-testid="multichain-account-menu-popover-action-button"
-                >
-                  {t('addImportAccount')}
-                </ButtonSecondary>
-              </Box>
-            ) : null}
-          </>
-        ) : null}
-      </ModalContent>
-    </Modal>
-    </>
+                </Box>
+              ) : null}
+              {/* Account list block */}
+              <Box className="multichain-account-menu-popover__list">
+                {sortedSearchResults.length === 0 && searchQuery !== '' ? (
+                  <Text
+                    paddingLeft={4}
+                    paddingRight={4}
+                    color={TextColor.textMuted}
+                    data-testid="multichain-account-menu-popover-no-results"
+                  >
+                    {t('noAccountsFound')}
+                  </Text>
+                ) : null}
+                {sortedSearchResults.map((account) => {
+                  const connectedSite = connectedSites[account.address]?.find(
+                    ({ origin }) => origin === currentTabOrigin,
+                  );
 
+                  return (
+                    <AccountListItem
+                      onClick={() => {
+                        onClose();
+                        trackEvent({
+                          category: MetaMetricsEventCategory.Navigation,
+                          event: MetaMetricsEventName.NavAccountSwitched,
+                          properties: {
+                            location: 'Main Menu',
+                          },
+                        });
+                        dispatch(setSelectedAccount(account.address));
+                      }}
+                      identity={account}
+                      key={account.address}
+                      selected={selectedAccount.address === account.address}
+                      closeMenu={onClose}
+                      connectedAvatar={connectedSite?.iconUrl}
+                      connectedAvatarName={connectedSite?.name}
+                      showOptions
+                      isPinned={
+                        process.env.NETWORK_ACCOUNT_DND
+                          ? Boolean(account.pinned)
+                          : null
+                      }
+                      {...accountListItemProps}
+                    />
+                  );
+                })}
+              </Box>
+              {/* Add / Import / Hardware button */}
+              {showAccountCreation ? (
+                <Box
+                  paddingTop={2}
+                  paddingBottom={4}
+                  paddingLeft={4}
+                  paddingRight={4}
+                  alignItems={AlignItems.center}
+                  display={Display.Flex}
+                >
+                  <ButtonSecondary
+                    startIconName={IconName.Add}
+                    variant={ButtonVariant.Secondary}
+                    size={ButtonSecondarySize.Lg}
+                    block
+                    onClick={() => setActionMode(ACTION_MODES.MENU)}
+                    data-testid="multichain-account-menu-popover-action-button"
+                  >
+                    {t('addImportAccount')}
+                  </ButtonSecondary>
+                </Box>
+              ) : null}
+            </>
+          ) : null}
+        </ModalContent>
+      </Modal>
+    </>
   );
 };
 
