@@ -300,7 +300,8 @@ export function verifyPassword(password: string): Promise<boolean> {
 
 export async function getSeedPhrase(password) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
-    'getSeedPhrase', [password]
+    'getSeedPhrase',
+    [password],
   );
   return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
