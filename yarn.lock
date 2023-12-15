@@ -5865,13 +5865,13 @@ __metadata:
   linkType: hard
 
 "@playwright/test@npm:^1.39.0":
-  version: 1.39.0
-  resolution: "@playwright/test@npm:1.39.0"
+  version: 1.40.1
+  resolution: "@playwright/test@npm:1.40.1"
   dependencies:
-    playwright: "npm:1.39.0"
+    playwright: "npm:1.40.1"
   bin:
     playwright: cli.js
-  checksum: 5d039234609395f3eab46b5954b259bdd80dacf79efe531369c1633647dcafce25a78d497e61e671d661274bf66076426a1bd46be585c44addf23bb5bfaa15a2
+  checksum: 77bfc3d4a101fd996309de3a67256117f671952764404727e520a4d512ba2e528d8f9e0b28ef9b2851664a651a5d002a0b05993e313077a2fa640bb430f38b25
   languageName: node
   linkType: hard
 
@@ -25036,6 +25036,7 @@ __metadata:
     nyc: "npm:^15.0.0"
     obj-multiplex: "npm:^1.0.0"
     pify: "npm:^5.0.0"
+    playwright: "npm:^1.39.0"
     polyfill-crypto.getrandomvalues: "npm:^1.0.0"
     postcss: "npm:^8.4.32"
     postcss-rtlcss: "npm:^4.0.9"
@@ -27967,7 +27968,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"playwright@npm:1.39.0, playwright@npm:^1.14.0":
+"playwright-core@npm:1.40.1":
+  version: 1.40.1
+  resolution: "playwright-core@npm:1.40.1"
+  bin:
+    playwright-core: cli.js
+  checksum: b8945a5eec68a2772be537219c81f74b8fbd1545650c908c41fdcb2b9eb40f488968d1fb59c61ca58afb923af1e390dd621bba3099521fcd3d9a63ef3645a203
+  languageName: node
+  linkType: hard
+
+"playwright@npm:1.40.1, playwright@npm:^1.39.0":
+  version: 1.40.1
+  resolution: "playwright@npm:1.40.1"
+  dependencies:
+    fsevents: "npm:2.3.2"
+    playwright-core: "npm:1.40.1"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    playwright: cli.js
+  checksum: 95cf79f1574accbff18fac4b876aa3811640314ee74cf4cd1c249398cd49824e55dc664039342a18d2d2fa4f5ad460ce91a97cb15942ab5d71c8ab04f442dc32
+  languageName: node
+  linkType: hard
+
+"playwright@npm:^1.14.0":
   version: 1.39.0
   resolution: "playwright@npm:1.39.0"
   dependencies:
