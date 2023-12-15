@@ -970,9 +970,9 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#verifyseedPhrase', () => {
+    describe('#getSeedPhrase', () => {
       it('errors when no keying is provided', async () => {
-        await expect(metamaskController.verifySeedPhrase()).rejects.toThrow(
+        await expect(metamaskController.getSeedPhrase()).rejects.toThrow(
           'No HD keyring found',
         );
       });
