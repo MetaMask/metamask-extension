@@ -22,8 +22,7 @@ function useConfirmationNetworkInfo() {
   let confirmationNetwork;
 
   if (currentConfirmation) {
-    // here chainId of confirmation is used
-    // if confirmation does not have a chainId then current network is displayed
+    // use the current confirmation chainId, else use the current network chainId
     const currentChainId =
       currentConfirmation?.chainId ?? providerConfig.chainId;
     confirmationNetwork = allNetworks.find(
