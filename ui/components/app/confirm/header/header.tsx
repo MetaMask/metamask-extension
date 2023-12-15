@@ -38,7 +38,7 @@ const Header = () => {
       </Box>
       <Box marginInlineStart={4}>
         <Text>{recipientName}</Text>
-        <Text variant={TextVariant.bodyMd}>{networkDisplayName}</Text>
+        <Text color={TextColor.textAlternative}>{networkDisplayName}</Text>
       </Box>
     </Box>
   );
