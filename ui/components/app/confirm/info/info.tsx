@@ -1,6 +1,13 @@
 import React from 'react';
 import { captureException } from '@sentry/browser';
 
+import { Box } from '../../../component-library';
+import {
+  BackgroundColor,
+  BorderRadius,
+  Display,
+  FlexDirection,
+} from '../../../../helpers/constants/design-system';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowProps,
@@ -11,7 +18,6 @@ import {
   ConfirmInfoRowValueDoubleProps,
   ConfirmInfoRowVariant,
 } from './row';
-import { ConfirmInfoContainer } from './container';
 
 export enum ConfirmInfoRowType {
   Address = 'address',
@@ -65,7 +71,12 @@ interface ConfirmInfoProps {
 export const ConfirmInfo: React.FC<ConfirmInfoProps> = ({
   rowConfigs = [],
 }) => (
-  <ConfirmInfoContainer>
+  <Box
+    borderRadius={BorderRadius.LG}
+    backgroundColor={BackgroundColor.backgroundDefault}
+    display={Display.Flex}
+    flexDirection={FlexDirection.Column}
+  >
     {rowConfigs.map((rowConfig: ConfirmInfoRowConfig, index) => {
       const { label, rowProps, type, variant } = rowConfig;
       const component = TYPE_TO_COMPONENT[type];
@@ -99,5 +110,5 @@ export const ConfirmInfo: React.FC<ConfirmInfoProps> = ({
         </React.Fragment>
       );
     })}
-  </ConfirmInfoContainer>
+  </Box>
 );

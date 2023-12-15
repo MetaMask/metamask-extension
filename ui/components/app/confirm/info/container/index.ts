@@ -1,1 +1,0 @@
-export { ConfirmInfoContainer } from './container';
