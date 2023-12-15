@@ -5,8 +5,10 @@ import {
   ConfirmInfoRow,
   ConfirmInfoRowProps,
   ConfirmInfoRowAddress,
+  ConfirmInfoRowAddressProps,
   ConfirmInfoRowDivider,
   ConfirmInfoRowValueDouble,
+  ConfirmInfoRowValueDoubleProps,
   ConfirmInfoRowVariant,
 } from './row';
 import { ConfirmInfoContainer } from './container';
@@ -17,12 +19,31 @@ export enum ConfirmInfoRowType {
   ValueDouble = 'value-double',
 }
 
+type ConfirmInfoTypeProps =
+  | ConfirmInfoRowAddressProps
+  | ConfirmInfoRowValueDoubleProps;
+
+const TYPE_TO_COMPONENT: Record<ConfirmInfoRowType, any> = {
+  [ConfirmInfoRowType.Address]: ({ address }: ConfirmInfoRowAddressProps) => {
+    return <ConfirmInfoRowAddress address={address} />;
+  },
+  [ConfirmInfoRowType.Divider]: () => {
+    return <ConfirmInfoRowDivider />;
+  },
+  [ConfirmInfoRowType.ValueDouble]: ({
+    left,
+    right,
+  }: ConfirmInfoRowValueDoubleProps) => {
+    return <ConfirmInfoRowValueDouble left={left} right={right} />;
+  },
+};
+
 export type ConfirmInfoRowConfig = {
   /** The display label text. This should be required unless it is a 'divider' variant */
   label?: ConfirmInfoRowProps['label'];
 
   /** Optional, and likely needed, props passed to the row */
-  rowProps?: Record<string, any>;
+  rowProps?: ConfirmInfoTypeProps;
 
   /** The type of the row e.g. address, divider, value-double */
   type: ConfirmInfoRowType;
@@ -47,46 +68,36 @@ export const ConfirmInfo: React.FC<ConfirmInfoProps> = ({
   <ConfirmInfoContainer>
     {rowConfigs.map((rowConfig: ConfirmInfoRowConfig, index) => {
       const { label, rowProps, type, variant } = rowConfig;
+      const component = TYPE_TO_COMPONENT[type];
+
+      if (!component) {
+        const error = new Error(`ConfirmInfo: Unknown row type: ${type}`);
+        console.error(error);
+        captureException(error);
+        return null;
+      }
+
+      if (type === ConfirmInfoRowType.Divider) {
+        const key = `confirm-info-divider-${rowConfigs
+          .map(({ label: _label }) => _label)
+          .concat('-')}-${index}`;
+
+        return (
+          <React.Fragment key={key}>
+            <ConfirmInfoRowDivider />
+          </React.Fragment>
+        );
+      }
+
       const key = `confirm-info-row-${label}-${index}`;
 
-      switch (type) {
-        case ConfirmInfoRowType.Address:
-          return (
-            <React.Fragment key={key}>
-              <ConfirmInfoRow label={label || ''} variant={variant}>
-                <ConfirmInfoRowAddress address={rowProps?.address} />
-              </ConfirmInfoRow>
-            </React.Fragment>
-          );
-        case ConfirmInfoRowType.Divider: {
-          const dividerKey = `confirm-info-divider-${rowConfigs
-            .map(({ label: _label }) => _label)
-            .concat('-')}-${index}`;
-
-          return (
-            <React.Fragment key={dividerKey}>
-              <ConfirmInfoRowDivider />
-            </React.Fragment>
-          );
-        }
-        case ConfirmInfoRowType.ValueDouble:
-          return (
-            <React.Fragment key={key}>
-              <ConfirmInfoRow label={label || ''} variant={variant}>
-                <ConfirmInfoRowValueDouble
-                  left={rowProps?.left}
-                  right={rowProps?.right}
-                />
-              </ConfirmInfoRow>
-            </React.Fragment>
-          );
-        default: {
-          const error = new Error(`ConfirmInfo: Unknown row type: ${type}`);
-          console.error(error);
-          captureException(error);
-          return null;
-        }
-      }
+      return (
+        <React.Fragment key={key}>
+          <ConfirmInfoRow label={label || ''} variant={variant}>
+            {component(rowProps)}
+          </ConfirmInfoRow>
+        </React.Fragment>
+      );
     })}
   </ConfirmInfoContainer>
 );
