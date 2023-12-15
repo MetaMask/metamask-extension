@@ -37,7 +37,7 @@ const Header = () => {
         />
       </Box>
       <Box marginLeft={4}>
-        <Text variant={TextVariant.headingSm}>{recipientName}</Text>
+        <Text>{recipientName}</Text>
         <Text variant={TextVariant.bodyMd}>{networkDisplayName}</Text>
       </Box>
     </Box>
