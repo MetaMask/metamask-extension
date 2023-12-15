@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -19,13 +19,26 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { setCompletedOnboarding } from '../../../store/actions';
 import { getMMIConfiguration } from '../../../selectors/institutional/selectors';
 
+import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal';
+
 export default function OnboardingSuccessful() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const { portfolio } = useSelector(getMMIConfiguration);
+  console.log(portfolio);
+  const [showQRCodeModal, setShowQRCodeModal] = useState(false);
 
   return (
     <div className="onboarding-successful" data-testid="onboarding-successful">
+      {showQRCodeModal && (
+        <QRCodeModal
+          fromOnboarding="true"
+          onClose={() => {
+            setShowQRCodeModal(false);
+          }}
+        />
+      )}
+
       <Box textAlign={TextAlign.Center}>
         <Text
           variant={TextVariant.headingLg}
@@ -48,11 +61,14 @@ export default function OnboardingSuccessful() {
           data-testid="onboarding-continue-button"
           size={ButtonSize.Lg}
           onClick={async () => {
-            await dispatch(setCompletedOnboarding());
-            window.open(portfolio.url);
+            // await dispatch(setCompletedOnboarding());
+            // window.open(portfolio.url);
+
+            setShowQRCodeModal(true);
           }}
         >
-          {t('continueMmiOnboarding')}
+          Connect custodian through QR code
+          {/* {t('continueMmiOnboarding')} */}
         </Button>
         <Button
           marginTop={4}
