@@ -21,23 +21,16 @@ export type ConfirmInfoRowUrlProps = {
   url: string;
 };
 
-export const ConfirmInfoRowUrl = ({
-  url: urlString,
-}: ConfirmInfoRowUrlProps) => {
-  let url;
+export const ConfirmInfoRowUrl = ({ url }: ConfirmInfoRowUrlProps) => {
+  let urlObject;
 
   try {
-    url = new URL(urlString);
+    urlObject = new URL(url);
   } catch (e) {
-    console.log(`ConfirmInfoRowUrl: Error parsing url: ${urlString}`);
+    console.log(`ConfirmInfoRowUrl: new URL(url) cannot parse ${url}`);
   }
 
-  const isHTTP = url?.protocol === 'http:';
-  const isValidUrl = Boolean(url);
-
-  const displayUrl = isValidUrl
-    ? `${url?.host}${url?.pathname === '/' ? '' : url?.pathname}`
-    : urlString;
+  const isHTTP = urlObject?.protocol === 'http:';
 
   return (
     <Box
@@ -69,7 +62,7 @@ export const ConfirmInfoRowUrl = ({
           HTTP
         </Text>
       )}
-      <Text color={TextColor.inherit}>{displayUrl}</Text>
+      <Text color={TextColor.inherit}>{url}</Text>
     </Box>
   );
 };
