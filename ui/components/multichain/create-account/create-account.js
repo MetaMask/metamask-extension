@@ -2,12 +2,8 @@ import React, { useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import {
-  Box,
-  ButtonPrimary,
-  ButtonSecondary,
-  FormTextField,
-} from '../../component-library';
+import { Box, ButtonPrimary, ButtonSecondary } from '../../component-library';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAccountNameErrorMessage } from '../../../helpers/utils/accounts';
 import {
