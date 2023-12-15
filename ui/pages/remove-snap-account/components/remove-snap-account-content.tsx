@@ -1,26 +1,27 @@
 import React from 'react';
 import {
-  BannerAlert,
-  BannerAlertSeverity,
+  AvatarIcon,
+  AvatarIconSize,
   Box,
-  IconSize,
+  IconName,
   Text,
 } from '../../../components/component-library';
 import {
   AlignItems,
   Display,
   FlexDirection,
+  FontWeight,
   JustifyContent,
   OverflowWrap,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import SnapAvatar from '../../../components/app/snaps/snap-avatar';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import Card from '../../../components/ui/card';
 import { RemoveSnapAccountProps } from '../remove-snap-account';
-import ViewAccountOnBlockExplorer from './view-account-on-block-explorer';
+import { getMetaMaskAccountsOrdered } from '../../../selectors';
+import { useSelector } from 'react-redux';
+import { AccountListItem } from '../../../components/multichain';
 
 const CreateSnapAccountContent = ({
   snapName,
@@ -28,6 +29,9 @@ const CreateSnapAccountContent = ({
   publicAddress,
 }: RemoveSnapAccountProps) => {
   const t = useI18nContext();
+  const lowerCaseAddress = publicAddress.toLowerCase();
+  const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const account = accounts.find(account => account.address === lowerCaseAddress);
   return (
     <Box
       display={Display.Flex}
@@ -42,48 +46,22 @@ const CreateSnapAccountContent = ({
         alignItems={AlignItems.center}
       >
         <Box paddingBottom={2}>
-          <SnapAvatar
-            snapId={snapId}
-            badgeSize={IconSize.Md}
-            avatarSize={IconSize.Xl}
-            borderWidth={3}
+          <AvatarIcon
+            iconName={IconName.UserCircleRemove}
+            size={AvatarIconSize.Xl}
           />
         </Box>
         <Text textAlign={TextAlign.Center} variant={TextVariant.headingLg}>
           {t('removeSnapAccountTitle')}
         </Text>
+        <AccountListItem identity={account} />
         <Text
           variant={TextVariant.bodyMd}
           textAlign={TextAlign.Center}
           overflowWrap={OverflowWrap.Anywhere}
         >
-          {t('removeSnapAccountDescription', [snapName])}
+          {t('removeSnapAccountDescription')}
         </Text>
-        <Box paddingTop={4} paddingBottom={4}>
-          <BannerAlert
-            severity={BannerAlertSeverity.Warning}
-            description={t('removeSnapAccountBannerDescription')}
-          />
-        </Box>
-        <Card display={Display.Flex} gap={4}>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            justifyContent={JustifyContent.spaceBetween}
-          >
-            <Text color={TextColor.textMuted} variant={TextVariant.bodySm}>
-              {t('publicAddress')}
-            </Text>
-            <Text variant={TextVariant.bodyXs}>{publicAddress}</Text>
-          </Box>
-          <Box
-            display={Display.Flex}
-            marginLeft={'auto'}
-            alignItems={AlignItems.center}
-          >
-            <ViewAccountOnBlockExplorer publicAddress={publicAddress} />
-          </Box>
-        </Card>
       </Box>
     </Box>
   );

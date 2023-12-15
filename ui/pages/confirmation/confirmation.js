@@ -257,6 +257,7 @@ export default function ConfirmationPage({
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
+  let useSnapHeader = isSnapDialog;
 
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName =
@@ -271,24 +272,30 @@ export default function ConfirmationPage({
     ///: END:ONLY_INCLUDE_IF
   ];
 
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  if ([...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES)].includes(pendingConfirmation?.type)) {
+    useSnapHeader = false;
+  }
+  ///: END:ONLY_INCLUDE_IF
+
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
   // improve performance and prevent unnecessary draws.
   const templatedValues = useMemo(() => {
     return pendingConfirmation
       ? getTemplateValues(
-          {
-            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-            snapName: isSnapDialog && snapName,
-            ///: END:ONLY_INCLUDE_IF
-            ...pendingConfirmation,
-          },
-          t,
-          dispatch,
-          history,
-          setInputState,
-          { matchedChain, currencySymbolWarning },
-        )
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          snapName: isSnapDialog && snapName,
+          ///: END:ONLY_INCLUDE_IF
+          ...pendingConfirmation,
+        },
+        t,
+        dispatch,
+        history,
+        setInputState,
+        { matchedChain, currencySymbolWarning },
+      )
       : {};
   }, [
     pendingConfirmation,
@@ -468,7 +475,7 @@ export default function ConfirmationPage({
         ) : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          isSnapDialog && (
+          useSnapHeader && (
             <SnapAuthorshipHeader snapId={pendingConfirmation?.origin} />
           )
           ///: END:ONLY_INCLUDE_IF
@@ -507,15 +514,15 @@ export default function ConfirmationPage({
         style={
           isSnapDialog
             ? {
-                boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-              }
+              boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+            }
             : {}
         }
         actionsStyle={
           isSnapDialog
             ? {
-                borderTop: 0,
-              }
+              borderTop: 0,
+            }
             : {}
         }
         ///: END:ONLY_INCLUDE_IF

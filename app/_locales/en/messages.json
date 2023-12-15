@@ -1008,10 +1008,10 @@
     "message": "Create password"
   },
   "createSnapAccountDescription": {
-    "message": "$1 wants to add a new Snap account to your wallet"
+    "message": "$1 wants to add a new account to MetaMask."
   },
   "createSnapAccountTitle": {
-    "message": "Create Snap account"
+    "message": "Create account"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -3768,7 +3768,7 @@
     "message": "Be sure you can access this account on your own before removing it"
   },
   "removeSnapAccountDescription": {
-    "message": "$1 wants to remove this account from MetaMask:"
+    "message": "If you proceed, this account will no longer be available in MetaMask."
   },
   "removeSnapAccountTitle": {
     "message": "Remove account"
@@ -4273,7 +4273,7 @@
     "description": "$1 is an external link to FAQ and Risk Disclosures"
   },
   "snapAccountCreated": {
-    "message": "Your account is ready!"
+    "message": "Your account is ready to use!"
   },
   "snapAccountRedirectFinishSigningTitle": {
     "message": "Finish signing"

@@ -27,7 +27,6 @@ const RemoveSnapAccount = ({
       className="remove-snap-account-page"
       height={BlockSize.Full}
       width={BlockSize.Full}
-      backgroundColor={BackgroundColor.backgroundDefault}
       borderStyle={BorderStyle.none}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
