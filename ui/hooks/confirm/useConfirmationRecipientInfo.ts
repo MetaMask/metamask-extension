@@ -15,8 +15,8 @@ function useConfirmationRecipientInfo() {
 
   if (currentConfirmation) {
     const { msgParams } = currentConfirmation;
-    const isSignature = Boolean(msgParams);
-    if (isSignature) {
+    // url for all signature requests
+    if (msgParams) {
       recipientAddress = msgParams.from;
       const fromAccount = getAccountByAddress(allAccounts, recipientAddress);
       recipientName = fromAccount?.name;
