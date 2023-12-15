@@ -139,7 +139,9 @@ describe('DetectTokensController', function () {
       })
       .persist();
     nock('https://token-api.metaswap.codefi.network')
-      .get(`/tokens/1`)
+      .get(
+        `/tokens/1?occurrenceFloor=3&includeNativeAssets=false&includeDuplicateSymbolAssets=false&includeTokenFees=false&includeAssetType=false`,
+      )
       .reply(200, [
         {
           address: '0xc011a73ee8576fb46f5e1c5751ca3b9fe0af2a6f',
@@ -253,7 +255,7 @@ describe('DetectTokensController', function () {
       onPreferencesStateChange: preferences.store.subscribe.bind(
         preferences.store,
       ),
-      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
+      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
@@ -268,7 +270,7 @@ describe('DetectTokensController', function () {
       onPreferencesStateChange: preferences.store.subscribe.bind(
         preferences.store,
       ),
-      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
+      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
         networkControllerMessenger,
         'NetworkController:stateChange',
       ),
@@ -364,7 +366,6 @@ describe('DetectTokensController', function () {
     });
     controller.isOpen = true;
     controller.isUnlocked = true;
-
     const { tokenList } = tokenListController.state;
     const tokenValues = Object.values(tokenList);
 
