@@ -16,6 +16,7 @@ import {
   IconColor,
   BackgroundColor,
 } from '../../helpers/constants/design-system';
+import { resolvePendingApproval } from '../../store/actions';
 import {
   processError,
   processHeader,
@@ -23,7 +24,11 @@ import {
   TemplateRendererComponent,
 } from './util';
 
-type ResultType = ApprovalType.ResultSuccess | ApprovalType.ResultError;
+export type ResultTemplateActions = {
+  resolvePendingApproval: typeof resolvePendingApproval;
+};
+
+export type ResultType = ApprovalType.ResultSuccess | ApprovalType.ResultError;
 
 export class ResultTemplate {
   #type: ResultType;
