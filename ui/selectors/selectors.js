@@ -9,7 +9,7 @@ import semver from 'semver';
 ///: END:ONLY_INCLUDE_IF
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
-import { TransactionStatus } from '@metamask/transaction-controller';
+import { TransactionStatus, TransactionType } from '@metamask/transaction-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -1835,6 +1835,18 @@ export function getEthereumAddressNames(state) {
 
 export function getNameSources(state) {
   return state.metamask.nameSources || {};
+}
+
+export function getIsUsingPaymaster(state) {
+  const { confirmTransaction } = state;
+  const { txData } = confirmTransaction;
+  const { txParams, type } = txData;
+
+  return (
+    type === TransactionType.userOperation &&
+    txParams?.maxFeePerGas === '0x0' &&
+    txParams?.maxPriorityFeePerGas === '0x0'
+  );
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(desktop)

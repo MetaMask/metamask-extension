@@ -87,6 +87,8 @@ import {
 import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
 
+import SimpleSmartAccount from 'simple-smart-account';
+
 import { AccountsController } from '@metamask/accounts-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -129,6 +131,12 @@ import {
   QueuedRequestController,
   createQueuedRequestMiddleware,
 } from '@metamask/queued-request-controller';
+
+import { UserOperationController } from '@metamask/user-operation-controller';
+
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
+///: END:ONLY_INCLUDE_IF
 
 import {
   TransactionController,
@@ -1729,6 +1737,44 @@ export default class MetamaskController extends EventEmitter {
     }).init();
     ///: END:ONLY_INCLUDE_IF
 
+    this.userOperationController = new UserOperationController({
+      blockTracker: this.blockTracker,
+      getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
+        this.gasFeeController,
+      ),
+      getTransactions: () => this.txController.getTransactions(),
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'UserOperationController',
+        allowedActions: [
+          'ApprovalController:addRequest',
+          'NetworkController:getNetworkClientById',
+        ],
+      }),
+      provider: this.provider,
+      state: initState.UserOperationController,
+    });
+
+    this.userOperationController.hub.on('transaction-updated', (txMeta) => {
+      txMeta.txParams.from = this.preferencesController.getSelectedAddress();
+
+      const transactionExists = this.txController.state.transactions.some(
+        (tx) => tx.id === txMeta.id,
+      );
+
+      if (!transactionExists) {
+        this.txController.state.transactions.push(txMeta);
+      }
+
+      this.txController.updateTransaction(
+        txMeta,
+        'Generated from user operation',
+      );
+
+      this.txController.hub.emit('transaction-status-update', {
+        transactionMeta: txMeta,
+      });
+    });
+
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
@@ -1909,6 +1955,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       NameController: this.nameController,
       ///: END:ONLY_INCLUDE_IF
+      UserOperationController: this.userOperationController,
       ...resetOnRestartStore,
     });
 
@@ -1957,6 +2004,7 @@ export default class MetamaskController extends EventEmitter {
         ///: BEGIN:ONLY_INCLUDE_IF(petnames)
         NameController: this.nameController,
         ///: END:ONLY_INCLUDE_IF
+        UserOperationController: this.userOperationController,
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
@@ -4101,42 +4149,106 @@ export default class MetamaskController extends EventEmitter {
   async newUnapprovedTransaction(txParams, req) {
     // Options are passed explicitly as an additional security measure
     // to ensure approval is not disabled
-    const { result } = await this.txController.addTransaction(txParams, {
-      actionId: req.id,
-      method: req.method,
-      origin: req.origin,
-      // This is the default behaviour but specified here for clarity
-      requireApproval: true,
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-      securityAlertResponse: req.securityAlertResponse,
-      ///: END:ONLY_INCLUDE_IF
-    });
-
-    return await result;
-  }
-
-  async addTransactionAndWaitForPublish(txParams, options) {
-    const { transactionMeta, result } = await this.txController.addTransaction(
+    const { waitForHash } = await this._addTransactionOrUserOperation(
       txParams,
-      options,
+      {
+        actionId: req.id,
+        method: req.method,
+        origin: req.origin,
+        // This is the default behaviour but specified here for clarity
+        requireApproval: true,
+        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+        securityAlertResponse: req.securityAlertResponse,
+        ///: END:ONLY_INCLUDE_IF
+      },
     );
 
-    await result;
+    return await waitForHash();
+  }
+
+  // Used by swaps.
+  async addTransactionAndWaitForPublish(txParams, options) {
+    const { transactionMeta, waitForSubmit } =
+      await this._addTransactionOrUserOperation(txParams, options);
+
+    await waitForSubmit();
 
     return transactionMeta;
   }
 
+  // Used by send.
   async addTransaction(txParams, options) {
-    const { transactionMeta, result } = await this.txController.addTransaction(
-      txParams,
-      options,
-    );
+    const { transactionMeta, waitForSubmit } =
+      await this._addTransactionOrUserOperation(txParams, options);
 
-    result.catch(() => {
+    waitForSubmit().catch(() => {
       // Not concerned with result
     });
 
     return transactionMeta;
+  }
+
+  async _addTransactionOrUserOperation(txParams, options) {
+    const simpleAccountOwner = process.env.SIMPLE_ACCOUNT_OWNER;
+    const currentAccount = this.preferencesController.getSelectedAddress();
+
+    const isSCA =
+      simpleAccountOwner &&
+      currentAccount.toLowerCase() === simpleAccountOwner.toLowerCase();
+
+    if (isSCA) {
+      const privateKey = await this.keyringController.exportAccount(
+        process.env.PASSWORD,
+        currentAccount,
+      );
+
+      const smartContractAccount = new SimpleSmartAccount(
+        simpleAccountOwner,
+        process.env.SIMPLE_ACCOUNT_SALT,
+        undefined,
+        privateKey,
+        this.provider,
+      );
+
+      const result =
+        await this.userOperationController.addUserOperationFromTransaction(
+          txParams,
+          {
+            networkClientId:
+              this.networkController.state.selectedNetworkClientId,
+            origin: options.origin,
+            requireApproval: options.requireApproval,
+            smartContractAccount,
+          },
+        );
+
+      this.userOperationController.startPollingByNetworkClientId(
+        this.networkController.state.selectedNetworkClientId,
+      );
+
+      const transactionMeta = this.txController.state.transactions.find(
+        (tx) => tx.id === result.id,
+      );
+
+      return {
+        waitForSubmit: result.hash,
+        waitForHash: result.transactionHash,
+        transactionMeta,
+      };
+    }
+
+    // Options are passed explicitly as an additional security measure
+    // to ensure approval is not disabled
+    const { transactionMeta, result } = await this.txController.addTransaction(
+      txParams,
+      options,
+    );
+
+    return {
+      transactionMeta,
+      waitForSubmit: () => result,
+      waitForHash: () => result,
+    };
   }
 
   /**

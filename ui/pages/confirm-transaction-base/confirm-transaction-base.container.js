@@ -80,9 +80,9 @@ import {
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
+import { getAccountType, getIsUsingPaymaster } from '../../selectors/selectors';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { getAccountType } from '../../selectors/selectors';
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';
 import {
   getIsNoteToTraderSupported,
@@ -239,6 +239,8 @@ const mapStateToProps = (state, ownProps) => {
 
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
 
+  const isUsingPaymaster = getIsUsingPaymaster(state);
+
   return {
     balance,
     fromAddress,
@@ -290,6 +292,7 @@ const mapStateToProps = (state, ownProps) => {
     isBuyableChain,
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
     keyringForAccount: keyring,
+    isUsingPaymaster,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,

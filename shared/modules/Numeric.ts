@@ -92,6 +92,7 @@ function stringToBigNumber(value: string, numericBase: NumericBase) {
       `Value of type ${typeof value} passed to stringToBigNumber`,
     );
   }
+
   if (
     numericBase === 16 &&
     (isHexStringOrNegatedHexString(value) || isDecimalHex(value))

@@ -1,0 +1,17 @@
+{
+  "version": "v1",
+  "packages": {
+    "@metamask/user-operation-controller": {
+      "signature": "d84232f34a6ac90b76e92c2d882877b7",
+      "file": true
+    },
+    "simple-smart-account": {
+      "signature": "dc1c650294cc7fc327da43cae44310c8",
+      "file": true
+    },
+    "@metamask/transaction-controller": {
+      "signature": "d4d692944a04b604dbfdbefe60061479",
+      "file": true
+    }
+  }
+}

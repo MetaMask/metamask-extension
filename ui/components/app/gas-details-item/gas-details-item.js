@@ -9,6 +9,7 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { PriorityLevels } from '../../../../shared/constants/gas';
 import {
   getIsMultiLayerFeeNetwork,
+  getIsUsingPaymaster,
   getPreferences,
   getTxData,
   getUseCurrencyRateCheck,
@@ -80,6 +81,8 @@ const GasDetailsItem = ({
 
     return hexMaximumTransactionFee;
   }, [isMultiLayerFeeNetwork, hexMaximumTransactionFee, estimatedL1Fees]);
+
+  const isUsingPaymaster = useSelector(getIsUsingPaymaster);
 
   if (hasSimulationError && !userAcknowledgedGasMissing) {
     return null;
@@ -163,10 +166,12 @@ const GasDetailsItem = ({
         </>
       }
       subTitle={
-        <GasTiming
-          maxPriorityFeePerGas={maxPriorityFeePerGasToRender}
-          maxFeePerGas={maxFeePerGasToRender}
-        />
+        !isUsingPaymaster && (
+          <GasTiming
+            maxPriorityFeePerGas={maxPriorityFeePerGasToRender}
+            maxFeePerGas={maxFeePerGasToRender}
+          />
+        )
       }
     />
   );

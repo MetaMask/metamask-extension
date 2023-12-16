@@ -216,6 +216,9 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
     case TransactionType.swapApproval: {
       return t('swapApproval');
     }
+    case TransactionType.userOperation: {
+      return 'User operation';
+    }
     default: {
       throw new Error(`Unrecognized transaction type: ${type}`);
     }

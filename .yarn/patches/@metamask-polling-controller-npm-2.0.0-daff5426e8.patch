@@ -1,0 +1,884 @@
+diff --git a/dist/AbstractPollingController.d.ts b/dist/AbstractPollingController.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..c947ebbe754cc90984817c955e75b11c07766212
+--- /dev/null
++++ b/dist/AbstractPollingController.d.ts
+@@ -0,0 +1,33 @@
++import type { NetworkClientId } from '@metamask/network-controller';
++import type { Json } from '@metamask/utils';
++export declare type IPollingController = {
++    startPollingByNetworkClientId(networkClientId: NetworkClientId, options: Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingCompleteByNetworkClientId(networkClientId: NetworkClientId, callback: (networkClientId: NetworkClientId) => void, options: Json): void;
++    _executePoll(networkClientId: NetworkClientId, options: Json): Promise<void>;
++    _startPollingByNetworkClientId(networkClientId: NetworkClientId, options: Json): void;
++    _stopPollingByPollingTokenSetId(key: PollingTokenSetId): void;
++};
++export declare const getKey: (networkClientId: NetworkClientId, options: Json) => PollingTokenSetId;
++export declare type PollingTokenSetId = `${NetworkClientId}:${string}`;
++declare type Constructor = new (...args: any[]) => object;
++/**
++ * AbstractPollingControllerBaseMixin
++ *
++ * @param Base - The base class to mix onto.
++ * @returns The composed class.
++ */
++export declare function AbstractPollingControllerBaseMixin<TBase extends Constructor>(Base: TBase): (abstract new (...args: any[]) => {
++    readonly "__#93090@#pollingTokenSets": Map<PollingTokenSetId, Set<string>>;
++    "__#93090@#callbacks": Map<`${string}:${string}`, Set<(PollingTokenSetId: `${string}:${string}`) => void>>;
++    _executePoll(networkClientId: NetworkClientId, options: Json): Promise<void>;
++    _startPollingByNetworkClientId(networkClientId: NetworkClientId, options: Json): void;
++    _stopPollingByPollingTokenSetId(key: PollingTokenSetId): void;
++    startPollingByNetworkClientId(networkClientId: NetworkClientId, options?: Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingCompleteByNetworkClientId(networkClientId: NetworkClientId, callback: (networkClientId: NetworkClientId) => void, options?: Json): void;
++}) & TBase;
++export {};
++//# sourceMappingURL=AbstractPollingController.d.ts.map
+\ No newline at end of file
+diff --git a/dist/AbstractPollingController.js b/dist/AbstractPollingController.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..5a24af152f01290fc8c5dc699071e85f85a51f1f
+--- /dev/null
++++ b/dist/AbstractPollingController.js
+@@ -0,0 +1,87 @@
++"use strict";
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++var __importDefault = (this && this.__importDefault) || function (mod) {
++    return (mod && mod.__esModule) ? mod : { "default": mod };
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.AbstractPollingControllerBaseMixin = exports.getKey = void 0;
++const fast_json_stable_stringify_1 = __importDefault(require("fast-json-stable-stringify"));
++const uuid_1 = require("uuid");
++const getKey = (networkClientId, options) => `${networkClientId}:${(0, fast_json_stable_stringify_1.default)(options)}`;
++exports.getKey = getKey;
++/**
++ * AbstractPollingControllerBaseMixin
++ *
++ * @param Base - The base class to mix onto.
++ * @returns The composed class.
++ */
++function AbstractPollingControllerBaseMixin(Base) {
++    var _AbstractPollingControllerBase_pollingTokenSets, _AbstractPollingControllerBase_callbacks;
++    class AbstractPollingControllerBase extends Base {
++        constructor() {
++            super(...arguments);
++            _AbstractPollingControllerBase_pollingTokenSets.set(this, new Map());
++            _AbstractPollingControllerBase_callbacks.set(this, new Map());
++        }
++        startPollingByNetworkClientId(networkClientId, options = {}) {
++            var _a;
++            const pollToken = (0, uuid_1.v4)();
++            const key = (0, exports.getKey)(networkClientId, options);
++            const pollingTokenSet = (_a = __classPrivateFieldGet(this, _AbstractPollingControllerBase_pollingTokenSets, "f").get(key)) !== null && _a !== void 0 ? _a : new Set();
++            pollingTokenSet.add(pollToken);
++            __classPrivateFieldGet(this, _AbstractPollingControllerBase_pollingTokenSets, "f").set(key, pollingTokenSet);
++            if (pollingTokenSet.size === 1) {
++                this._startPollingByNetworkClientId(networkClientId, options);
++            }
++            return pollToken;
++        }
++        stopAllPolling() {
++            __classPrivateFieldGet(this, _AbstractPollingControllerBase_pollingTokenSets, "f").forEach((tokenSet, _key) => {
++                tokenSet.forEach((token) => {
++                    this.stopPollingByPollingToken(token);
++                });
++            });
++        }
++        stopPollingByPollingToken(pollingToken) {
++            if (!pollingToken) {
++                throw new Error('pollingToken required');
++            }
++            let keyToDelete = null;
++            for (const [key, tokenSet] of __classPrivateFieldGet(this, _AbstractPollingControllerBase_pollingTokenSets, "f")) {
++                if (tokenSet.delete(pollingToken)) {
++                    if (tokenSet.size === 0) {
++                        keyToDelete = key;
++                    }
++                    break;
++                }
++            }
++            if (keyToDelete) {
++                this._stopPollingByPollingTokenSetId(keyToDelete);
++                __classPrivateFieldGet(this, _AbstractPollingControllerBase_pollingTokenSets, "f").delete(keyToDelete);
++                const callbacks = __classPrivateFieldGet(this, _AbstractPollingControllerBase_callbacks, "f").get(keyToDelete);
++                if (callbacks) {
++                    for (const callback of callbacks) {
++                        // eslint-disable-next-line n/callback-return
++                        callback(keyToDelete);
++                    }
++                    callbacks.clear();
++                }
++            }
++        }
++        onPollingCompleteByNetworkClientId(networkClientId, callback, options = {}) {
++            var _a;
++            const key = (0, exports.getKey)(networkClientId, options);
++            const callbacks = (_a = __classPrivateFieldGet(this, _AbstractPollingControllerBase_callbacks, "f").get(key)) !== null && _a !== void 0 ? _a : new Set();
++            callbacks.add(callback);
++            __classPrivateFieldGet(this, _AbstractPollingControllerBase_callbacks, "f").set(key, callbacks);
++        }
++    }
++    _AbstractPollingControllerBase_pollingTokenSets = new WeakMap(), _AbstractPollingControllerBase_callbacks = new WeakMap();
++    return AbstractPollingControllerBase;
++}
++exports.AbstractPollingControllerBaseMixin = AbstractPollingControllerBaseMixin;
++//# sourceMappingURL=AbstractPollingController.js.map
+\ No newline at end of file
+diff --git a/dist/BlockTrackerPollingController.d.ts b/dist/BlockTrackerPollingController.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..4f3a8cc17a6806320e140ed79983a9ebd03dfc90
+--- /dev/null
++++ b/dist/BlockTrackerPollingController.d.ts
+@@ -0,0 +1,47 @@
++import { BaseController, BaseControllerV1 } from '@metamask/base-controller';
++import type { NetworkClientId, NetworkClient } from '@metamask/network-controller';
++import type { Json } from '@metamask/utils';
++import type { PollingTokenSetId } from './AbstractPollingController';
++declare class Empty {
++}
++export declare const BlockTrackerPollingControllerOnly: (abstract new (...args: any[]) => {
++    "__#93091@#activeListeners": Record<string, (options: Json) => Promise<void>>;
++    _getNetworkClientById(networkClientId: NetworkClientId): NetworkClient | undefined;
++    _startPollingByNetworkClientId(networkClientId: NetworkClientId, options: Json): void;
++    _stopPollingByPollingTokenSetId(key: PollingTokenSetId): void;
++    readonly "__#93090@#pollingTokenSets": Map<`${string}:${string}`, Set<string>>;
++    "__#93090@#callbacks": Map<`${string}:${string}`, Set<(PollingTokenSetId: `${string}:${string}`) => void>>;
++    _executePoll(networkClientId: string, options: Json): Promise<void>;
++    startPollingByNetworkClientId(networkClientId: string, options?: Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingCompleteByNetworkClientId(networkClientId: string, callback: (networkClientId: string) => void, options?: Json): void;
++}) & typeof Empty;
++export declare const BlockTrackerPollingController: (abstract new (...args: any[]) => {
++    "__#93091@#activeListeners": Record<string, (options: Json) => Promise<void>>;
++    _getNetworkClientById(networkClientId: NetworkClientId): NetworkClient | undefined;
++    _startPollingByNetworkClientId(networkClientId: NetworkClientId, options: Json): void;
++    _stopPollingByPollingTokenSetId(key: PollingTokenSetId): void;
++    readonly "__#93090@#pollingTokenSets": Map<`${string}:${string}`, Set<string>>;
++    "__#93090@#callbacks": Map<`${string}:${string}`, Set<(PollingTokenSetId: `${string}:${string}`) => void>>;
++    _executePoll(networkClientId: string, options: Json): Promise<void>;
++    startPollingByNetworkClientId(networkClientId: string, options?: Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingCompleteByNetworkClientId(networkClientId: string, callback: (networkClientId: string) => void, options?: Json): void;
++}) & typeof BaseController;
++export declare const BlockTrackerPollingControllerV1: (abstract new (...args: any[]) => {
++    "__#93091@#activeListeners": Record<string, (options: Json) => Promise<void>>;
++    _getNetworkClientById(networkClientId: NetworkClientId): NetworkClient | undefined;
++    _startPollingByNetworkClientId(networkClientId: NetworkClientId, options: Json): void;
++    _stopPollingByPollingTokenSetId(key: PollingTokenSetId): void;
++    readonly "__#93090@#pollingTokenSets": Map<`${string}:${string}`, Set<string>>;
++    "__#93090@#callbacks": Map<`${string}:${string}`, Set<(PollingTokenSetId: `${string}:${string}`) => void>>;
++    _executePoll(networkClientId: string, options: Json): Promise<void>;
++    startPollingByNetworkClientId(networkClientId: string, options?: Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingCompleteByNetworkClientId(networkClientId: string, callback: (networkClientId: string) => void, options?: Json): void;
++}) & typeof BaseControllerV1;
++export {};
++//# sourceMappingURL=BlockTrackerPollingController.d.ts.map
+\ No newline at end of file
+diff --git a/dist/BlockTrackerPollingController.js b/dist/BlockTrackerPollingController.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..d5a530c389488347f97efc1a793043271604246e
+--- /dev/null
++++ b/dist/BlockTrackerPollingController.js
+@@ -0,0 +1,60 @@
++"use strict";
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.BlockTrackerPollingControllerV1 = exports.BlockTrackerPollingController = exports.BlockTrackerPollingControllerOnly = void 0;
++const base_controller_1 = require("@metamask/base-controller");
++const AbstractPollingController_1 = require("./AbstractPollingController");
++/**
++ * BlockTrackerPollingControllerMixin
++ * A polling controller that polls using a block tracker.
++ *
++ * @param Base - The base class to mix onto.
++ * @returns The composed class.
++ */
++function BlockTrackerPollingControllerMixin(Base) {
++    var _BlockTrackerPollingController_activeListeners;
++    class BlockTrackerPollingController extends (0, AbstractPollingController_1.AbstractPollingControllerBaseMixin)(Base) {
++        constructor() {
++            super(...arguments);
++            _BlockTrackerPollingController_activeListeners.set(this, {});
++        }
++        _startPollingByNetworkClientId(networkClientId, options) {
++            const key = (0, AbstractPollingController_1.getKey)(networkClientId, options);
++            if (__classPrivateFieldGet(this, _BlockTrackerPollingController_activeListeners, "f")[key]) {
++                return;
++            }
++            const networkClient = this._getNetworkClientById(networkClientId);
++            if (networkClient) {
++                const updateOnNewBlock = this._executePoll.bind(this, networkClientId, options);
++                networkClient.blockTracker.addListener('latest', updateOnNewBlock);
++                __classPrivateFieldGet(this, _BlockTrackerPollingController_activeListeners, "f")[key] = updateOnNewBlock;
++            }
++            else {
++                throw new Error(`Unable to retrieve blockTracker for networkClientId ${networkClientId}`);
++            }
++        }
++        _stopPollingByPollingTokenSetId(key) {
++            const [networkClientId] = key.split(':');
++            const networkClient = this._getNetworkClientById(networkClientId);
++            if (networkClient && __classPrivateFieldGet(this, _BlockTrackerPollingController_activeListeners, "f")[key]) {
++                const listener = __classPrivateFieldGet(this, _BlockTrackerPollingController_activeListeners, "f")[key];
++                if (listener) {
++                    networkClient.blockTracker.removeListener('latest', listener);
++                    delete __classPrivateFieldGet(this, _BlockTrackerPollingController_activeListeners, "f")[key];
++                }
++            }
++        }
++    }
++    _BlockTrackerPollingController_activeListeners = new WeakMap();
++    return BlockTrackerPollingController;
++}
++class Empty {
++}
++exports.BlockTrackerPollingControllerOnly = BlockTrackerPollingControllerMixin(Empty);
++exports.BlockTrackerPollingController = BlockTrackerPollingControllerMixin(base_controller_1.BaseController);
++exports.BlockTrackerPollingControllerV1 = BlockTrackerPollingControllerMixin(base_controller_1.BaseControllerV1);
++//# sourceMappingURL=BlockTrackerPollingController.js.map
+\ No newline at end of file
+diff --git a/dist/PollingController.d.ts b/dist/PollingController.d.ts
+deleted file mode 100644
+index 5b722a90b51e84b694cd6c20f118d1d8b5be66d3..0000000000000000000000000000000000000000
+--- a/dist/PollingController.d.ts
++++ /dev/null
+@@ -1,161 +0,0 @@
+-/// <reference types="node" />
+-/// <reference types="node" />
+-/// <reference types="node" />
+-/// <reference types="node" />
+-/// <reference types="node" />
+-import { BaseController, BaseControllerV1 } from '@metamask/base-controller';
+-import type { NetworkClientId } from '@metamask/network-controller';
+-import type { Json } from '@metamask/utils';
+-/**
+- * Returns a unique key for a networkClientId and options. This is used to group networkClientId polls with the same options
+- * @param networkClientId - The networkClientId to get a key for
+- * @param options - The options used to group the polling events
+- * @returns The unique key
+- */
+-export declare const getKey: (networkClientId: NetworkClientId, options: Json) => PollingTokenSetId;
+-declare type PollingTokenSetId = `${NetworkClientId}:${string}`;
+-declare class Empty {
+-}
+-export declare const PollingControllerOnly: (abstract new (...args: any[]) => {
+-    readonly "__#91333@#pollingTokenSets": Map<PollingTokenSetId, Set<string>>;
+-    readonly "__#91333@#intervalIds": Record<PollingTokenSetId, NodeJS.Timeout>;
+-    "__#91333@#callbacks": Map<string, Set<(networkClientId: NetworkClientId) => void>>;
+-    "__#91333@#intervalLength": number;
+-    getIntervalLength(): number;
+-    /**
+-     * Sets the length of the polling interval
+-     *
+-     * @param length - The length of the polling interval in milliseconds
+-     */
+-    setIntervalLength(length: number): void;
+-    /**
+-     * Starts polling for a networkClientId
+-     *
+-     * @param networkClientId - The networkClientId to start polling for
+-     * @param options - The options used to group the polling events
+-     * @returns void
+-     */
+-    startPollingByNetworkClientId(networkClientId: NetworkClientId, options?: Json): string;
+-    /**
+-     * Stops polling for all networkClientIds
+-     */
+-    stopAllPolling(): void;
+-    /**
+-     * Stops polling for a networkClientId
+-     *
+-     * @param pollingToken - The polling token to stop polling for
+-     */
+-    stopPollingByPollingToken(pollingToken: string): void;
+-    /**
+-     * Executes the poll for a networkClientId
+-     *
+-     * @param networkClientId - The networkClientId to execute the poll for
+-     * @param options - The options passed to startPollingByNetworkClientId
+-     */
+-    _executePoll(networkClientId: NetworkClientId, options: Json): Promise<void>;
+-    "__#91333@#poll"(networkClientId: NetworkClientId, options: Json): void;
+-    /**
+-     * Adds a callback to execute when polling is complete
+-     *
+-     * @param networkClientId - The networkClientId to listen for polling complete events
+-     * @param callback - The callback to execute when polling is complete
+-     * @param options - The options used to group the polling events
+-     */
+-    onPollingCompleteByNetworkClientId(networkClientId: NetworkClientId, callback: (networkClientId: NetworkClientId) => void, options?: Json): void;
+-}) & typeof Empty;
+-export declare const PollingController: (abstract new (...args: any[]) => {
+-    readonly "__#91333@#pollingTokenSets": Map<PollingTokenSetId, Set<string>>;
+-    readonly "__#91333@#intervalIds": Record<PollingTokenSetId, NodeJS.Timeout>;
+-    "__#91333@#callbacks": Map<string, Set<(networkClientId: NetworkClientId) => void>>;
+-    "__#91333@#intervalLength": number;
+-    getIntervalLength(): number;
+-    /**
+-     * Sets the length of the polling interval
+-     *
+-     * @param length - The length of the polling interval in milliseconds
+-     */
+-    setIntervalLength(length: number): void;
+-    /**
+-     * Starts polling for a networkClientId
+-     *
+-     * @param networkClientId - The networkClientId to start polling for
+-     * @param options - The options used to group the polling events
+-     * @returns void
+-     */
+-    startPollingByNetworkClientId(networkClientId: NetworkClientId, options?: Json): string;
+-    /**
+-     * Stops polling for all networkClientIds
+-     */
+-    stopAllPolling(): void;
+-    /**
+-     * Stops polling for a networkClientId
+-     *
+-     * @param pollingToken - The polling token to stop polling for
+-     */
+-    stopPollingByPollingToken(pollingToken: string): void;
+-    /**
+-     * Executes the poll for a networkClientId
+-     *
+-     * @param networkClientId - The networkClientId to execute the poll for
+-     * @param options - The options passed to startPollingByNetworkClientId
+-     */
+-    _executePoll(networkClientId: NetworkClientId, options: Json): Promise<void>;
+-    "__#91333@#poll"(networkClientId: NetworkClientId, options: Json): void;
+-    /**
+-     * Adds a callback to execute when polling is complete
+-     *
+-     * @param networkClientId - The networkClientId to listen for polling complete events
+-     * @param callback - The callback to execute when polling is complete
+-     * @param options - The options used to group the polling events
+-     */
+-    onPollingCompleteByNetworkClientId(networkClientId: NetworkClientId, callback: (networkClientId: NetworkClientId) => void, options?: Json): void;
+-}) & typeof BaseController;
+-export declare const PollingControllerV1: (abstract new (...args: any[]) => {
+-    readonly "__#91333@#pollingTokenSets": Map<PollingTokenSetId, Set<string>>;
+-    readonly "__#91333@#intervalIds": Record<PollingTokenSetId, NodeJS.Timeout>;
+-    "__#91333@#callbacks": Map<string, Set<(networkClientId: NetworkClientId) => void>>;
+-    "__#91333@#intervalLength": number;
+-    getIntervalLength(): number;
+-    /**
+-     * Sets the length of the polling interval
+-     *
+-     * @param length - The length of the polling interval in milliseconds
+-     */
+-    setIntervalLength(length: number): void;
+-    /**
+-     * Starts polling for a networkClientId
+-     *
+-     * @param networkClientId - The networkClientId to start polling for
+-     * @param options - The options used to group the polling events
+-     * @returns void
+-     */
+-    startPollingByNetworkClientId(networkClientId: NetworkClientId, options?: Json): string;
+-    /**
+-     * Stops polling for all networkClientIds
+-     */
+-    stopAllPolling(): void;
+-    /**
+-     * Stops polling for a networkClientId
+-     *
+-     * @param pollingToken - The polling token to stop polling for
+-     */
+-    stopPollingByPollingToken(pollingToken: string): void;
+-    /**
+-     * Executes the poll for a networkClientId
+-     *
+-     * @param networkClientId - The networkClientId to execute the poll for
+-     * @param options - The options passed to startPollingByNetworkClientId
+-     */
+-    _executePoll(networkClientId: NetworkClientId, options: Json): Promise<void>;
+-    "__#91333@#poll"(networkClientId: NetworkClientId, options: Json): void;
+-    /**
+-     * Adds a callback to execute when polling is complete
+-     *
+-     * @param networkClientId - The networkClientId to listen for polling complete events
+-     * @param callback - The callback to execute when polling is complete
+-     * @param options - The options used to group the polling events
+-     */
+-    onPollingCompleteByNetworkClientId(networkClientId: NetworkClientId, callback: (networkClientId: NetworkClientId) => void, options?: Json): void;
+-}) & typeof BaseControllerV1;
+-export {};
+-//# sourceMappingURL=PollingController.d.ts.map
+\ No newline at end of file
+diff --git a/dist/PollingController.d.ts.map b/dist/PollingController.d.ts.map
+deleted file mode 100644
+index 0948ae5b55470edc898d61b28a2ed3585ff89615..0000000000000000000000000000000000000000
+--- a/dist/PollingController.d.ts.map
++++ /dev/null
+@@ -1 +0,0 @@
+-{"version":3,"file":"PollingController.d.ts","sourceRoot":"","sources":["../src/PollingController.ts"],"names":[],"mappings":";;;;;AAAA,OAAO,EAAE,cAAc,EAAE,gBAAgB,EAAE,MAAM,2BAA2B,CAAC;AAC7E,OAAO,KAAK,EAAE,eAAe,EAAE,MAAM,8BAA8B,CAAC;AACpE,OAAO,KAAK,EAAE,IAAI,EAAE,MAAM,iBAAiB,CAAC;AAQ5C;;;;;GAKG;AACH,eAAO,MAAM,MAAM,oBACA,eAAe,WACvB,IAAI,KACZ,iBAA+D,CAAC;AAEnE,aAAK,iBAAiB,GAAG,GAAG,eAAe,IAAI,MAAM,EAAE,CAAC;AAwKxD,cAAM,KAAK;CAAG;AAEd,eAAO,MAAM,qBAAqB,0BAvLD,GAAG,EAAE;2CA4BN,IAAI,iBAAiB,EAAE,IAAI,MAAM,CAAC,CAAC;sCAExC,OAAO,iBAAiB,EAAE,OAAO,OAAO,CAAC;6DAIxC,eAAe,KAAK,IAAI;;;IAShD;;;;OAIG;8BACuB,MAAM;IAIhC;;;;;;OAMG;mDAEgB,eAAe,YACvB,IAAI;IAkBf;;OAEG;;IASH;;;;OAIG;4CACqC,MAAM;IAyB9C;;;;;OAKG;kCAEgB,eAAe,WACvB,IAAI,GACZ,QAAQ,IAAI,CAAC;sCAEO,eAAe,WAAW,IAAI;IAuBrD;;;;;;OAMG;wDAEgB,eAAe,8BACJ,eAAe,KAAK,IAAI,YAC3C,IAAI;iBAmB+C,CAAC;AACnE,eAAO,MAAM,iBAAiB,0BAxLG,GAAG,EAAE;2CA4BN,IAAI,iBAAiB,EAAE,IAAI,MAAM,CAAC,CAAC;sCAExC,OAAO,iBAAiB,EAAE,OAAO,OAAO,CAAC;6DAIxC,eAAe,KAAK,IAAI;;;IAShD;;;;OAIG;8BACuB,MAAM;IAIhC;;;;;;OAMG;mDAEgB,eAAe,YACvB,IAAI;IAkBf;;OAEG;;IASH;;;;OAIG;4CACqC,MAAM;IAyB9C;;;;;OAKG;kCAEgB,eAAe,WACvB,IAAI,GACZ,QAAQ,IAAI,CAAC;sCAEO,eAAe,WAAW,IAAI;IAuBrD;;;;;;OAMG;wDAEgB,eAAe,8BACJ,eAAe,KAAK,IAAI,YAC3C,IAAI;0BAoBoD,CAAC;AACxE,eAAO,MAAM,mBAAmB,0BAzLC,GAAG,EAAE;2CA4BN,IAAI,iBAAiB,EAAE,IAAI,MAAM,CAAC,CAAC;sCAExC,OAAO,iBAAiB,EAAE,OAAO,OAAO,CAAC;6DAIxC,eAAe,KAAK,IAAI;;;IAShD;;;;OAIG;8BACuB,MAAM;IAIhC;;;;;;OAMG;mDAEgB,eAAe,YACvB,IAAI;IAkBf;;OAEG;;IASH;;;;OAIG;4CACqC,MAAM;IAyB9C;;;;;OAKG;kCAEgB,eAAe,WACvB,IAAI,GACZ,QAAQ,IAAI,CAAC;sCAEO,eAAe,WAAW,IAAI;IAuBrD;;;;;;OAMG;wDAEgB,eAAe,8BACJ,eAAe,KAAK,IAAI,YAC3C,IAAI;4BAqBwD,CAAC"}
+\ No newline at end of file
+diff --git a/dist/PollingController.js b/dist/PollingController.js
+deleted file mode 100644
+index 9046f79f34df485749a7c1025c8d73666a12460e..0000000000000000000000000000000000000000
+--- a/dist/PollingController.js
++++ /dev/null
+@@ -1,181 +0,0 @@
+-"use strict";
+-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+-    return new (P || (P = Promise))(function (resolve, reject) {
+-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+-        step((generator = generator.apply(thisArg, _arguments || [])).next());
+-    });
+-};
+-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+-};
+-var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+-    if (kind === "m") throw new TypeError("Private method is not writable");
+-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+-    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+-};
+-var __importDefault = (this && this.__importDefault) || function (mod) {
+-    return (mod && mod.__esModule) ? mod : { "default": mod };
+-};
+-Object.defineProperty(exports, "__esModule", { value: true });
+-exports.PollingControllerV1 = exports.PollingController = exports.PollingControllerOnly = exports.getKey = void 0;
+-const base_controller_1 = require("@metamask/base-controller");
+-const fast_json_stable_stringify_1 = __importDefault(require("fast-json-stable-stringify"));
+-const uuid_1 = require("uuid");
+-/**
+- * Returns a unique key for a networkClientId and options. This is used to group networkClientId polls with the same options
+- * @param networkClientId - The networkClientId to get a key for
+- * @param options - The options used to group the polling events
+- * @returns The unique key
+- */
+-const getKey = (networkClientId, options) => `${networkClientId}:${(0, fast_json_stable_stringify_1.default)(options)}`;
+-exports.getKey = getKey;
+-/**
+- * PollingControllerMixin
+- *
+- * @param Base - The base class to mix onto.
+- * @returns The composed class.
+- */
+-function PollingControllerMixin(Base) {
+-    var _PollingControllerBase_instances, _PollingControllerBase_pollingTokenSets, _PollingControllerBase_intervalIds, _PollingControllerBase_callbacks, _PollingControllerBase_intervalLength, _PollingControllerBase_poll;
+-    /**
+-     * PollingController is an abstract class that implements the polling
+-     * functionality for a controller. It is meant to be extended by a controller
+-     * that needs to poll for data by networkClientId.
+-     *
+-     */
+-    class PollingControllerBase extends Base {
+-        constructor() {
+-            super(...arguments);
+-            _PollingControllerBase_instances.add(this);
+-            _PollingControllerBase_pollingTokenSets.set(this, new Map());
+-            _PollingControllerBase_intervalIds.set(this, {});
+-            _PollingControllerBase_callbacks.set(this, new Map());
+-            _PollingControllerBase_intervalLength.set(this, 1000);
+-        }
+-        getIntervalLength() {
+-            return __classPrivateFieldGet(this, _PollingControllerBase_intervalLength, "f");
+-        }
+-        /**
+-         * Sets the length of the polling interval
+-         *
+-         * @param length - The length of the polling interval in milliseconds
+-         */
+-        setIntervalLength(length) {
+-            __classPrivateFieldSet(this, _PollingControllerBase_intervalLength, length, "f");
+-        }
+-        /**
+-         * Starts polling for a networkClientId
+-         *
+-         * @param networkClientId - The networkClientId to start polling for
+-         * @param options - The options used to group the polling events
+-         * @returns void
+-         */
+-        startPollingByNetworkClientId(networkClientId, options = {}) {
+-            const pollToken = (0, uuid_1.v4)();
+-            const key = (0, exports.getKey)(networkClientId, options);
+-            const pollingTokenSet = __classPrivateFieldGet(this, _PollingControllerBase_pollingTokenSets, "f").get(key);
+-            if (pollingTokenSet) {
+-                pollingTokenSet.add(pollToken);
+-            }
+-            else {
+-                const set = new Set();
+-                set.add(pollToken);
+-                __classPrivateFieldGet(this, _PollingControllerBase_pollingTokenSets, "f").set(key, set);
+-            }
+-            __classPrivateFieldGet(this, _PollingControllerBase_instances, "m", _PollingControllerBase_poll).call(this, networkClientId, options);
+-            return pollToken;
+-        }
+-        /**
+-         * Stops polling for all networkClientIds
+-         */
+-        stopAllPolling() {
+-            __classPrivateFieldGet(this, _PollingControllerBase_pollingTokenSets, "f").forEach((tokenSet, _networkClientId) => {
+-                tokenSet.forEach((token) => {
+-                    this.stopPollingByPollingToken(token);
+-                });
+-            });
+-        }
+-        /**
+-         * Stops polling for a networkClientId
+-         *
+-         * @param pollingToken - The polling token to stop polling for
+-         */
+-        stopPollingByPollingToken(pollingToken) {
+-            if (!pollingToken) {
+-                throw new Error('pollingToken required');
+-            }
+-            let found = false;
+-            __classPrivateFieldGet(this, _PollingControllerBase_pollingTokenSets, "f").forEach((tokenSet, key) => {
+-                var _a, _b;
+-                if (tokenSet.has(pollingToken)) {
+-                    found = true;
+-                    tokenSet.delete(pollingToken);
+-                    if (tokenSet.size === 0) {
+-                        clearTimeout(__classPrivateFieldGet(this, _PollingControllerBase_intervalIds, "f")[key]);
+-                        delete __classPrivateFieldGet(this, _PollingControllerBase_intervalIds, "f")[key];
+-                        __classPrivateFieldGet(this, _PollingControllerBase_pollingTokenSets, "f").delete(key);
+-                        (_a = __classPrivateFieldGet(this, _PollingControllerBase_callbacks, "f").get(key)) === null || _a === void 0 ? void 0 : _a.forEach((callback) => {
+-                            callback(key);
+-                        });
+-                        (_b = __classPrivateFieldGet(this, _PollingControllerBase_callbacks, "f").get(key)) === null || _b === void 0 ? void 0 : _b.clear();
+-                    }
+-                }
+-            });
+-            if (!found) {
+-                throw new Error('pollingToken not found');
+-            }
+-        }
+-        /**
+-         * Adds a callback to execute when polling is complete
+-         *
+-         * @param networkClientId - The networkClientId to listen for polling complete events
+-         * @param callback - The callback to execute when polling is complete
+-         * @param options - The options used to group the polling events
+-         */
+-        onPollingCompleteByNetworkClientId(networkClientId, callback, options = {}) {
+-            const key = (0, exports.getKey)(networkClientId, options);
+-            const callbacks = __classPrivateFieldGet(this, _PollingControllerBase_callbacks, "f").get(key);
+-            if (callbacks === undefined) {
+-                const set = new Set();
+-                set.add(callback);
+-                __classPrivateFieldGet(this, _PollingControllerBase_callbacks, "f").set(key, set);
+-            }
+-            else {
+-                callbacks.add(callback);
+-            }
+-        }
+-    }
+-    _PollingControllerBase_pollingTokenSets = new WeakMap(), _PollingControllerBase_intervalIds = new WeakMap(), _PollingControllerBase_callbacks = new WeakMap(), _PollingControllerBase_intervalLength = new WeakMap(), _PollingControllerBase_instances = new WeakSet(), _PollingControllerBase_poll = function _PollingControllerBase_poll(networkClientId, options) {
+-        const key = (0, exports.getKey)(networkClientId, options);
+-        const interval = __classPrivateFieldGet(this, _PollingControllerBase_intervalIds, "f")[key];
+-        if (interval) {
+-            clearTimeout(interval);
+-            delete __classPrivateFieldGet(this, _PollingControllerBase_intervalIds, "f")[key];
+-        }
+-        // setTimeout is not `await`ing this async function, which is expected
+-        // We're just using async here for improved stack traces
+-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+-        __classPrivateFieldGet(this, _PollingControllerBase_intervalIds, "f")[key] = setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+-            try {
+-                yield this._executePoll(networkClientId, options);
+-            }
+-            catch (error) {
+-                console.error(error);
+-            }
+-            __classPrivateFieldGet(this, _PollingControllerBase_instances, "m", _PollingControllerBase_poll).call(this, networkClientId, options);
+-        }), interval ? __classPrivateFieldGet(this, _PollingControllerBase_intervalLength, "f") : 0);
+-    };
+-    return PollingControllerBase;
+-}
+-class Empty {
+-}
+-exports.PollingControllerOnly = PollingControllerMixin(Empty);
+-exports.PollingController = PollingControllerMixin(base_controller_1.BaseController);
+-exports.PollingControllerV1 = PollingControllerMixin(base_controller_1.BaseControllerV1);
+-//# sourceMappingURL=PollingController.js.map
+\ No newline at end of file
+diff --git a/dist/PollingController.js.map b/dist/PollingController.js.map
+deleted file mode 100644
+index 1cd2301273e528aac5301a7d4c12e979518ee5d2..0000000000000000000000000000000000000000
+--- a/dist/PollingController.js.map
++++ /dev/null
+@@ -1 +0,0 @@
+-{"version":3,"file":"PollingController.js","sourceRoot":"","sources":["../src/PollingController.ts"],"names":[],"mappings":"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","sourcesContent":["import { BaseController, BaseControllerV1 } from '@metamask/base-controller';\nimport type { NetworkClientId } from '@metamask/network-controller';\nimport type { Json } from '@metamask/utils';\nimport stringify from 'fast-json-stable-stringify';\nimport { v4 as random } from 'uuid';\n\n// Mixin classes require a constructor with an `...any[]` parameter\n// See TS2545\ntype Constructor = new (...args: any[]) => object;\n\n/**\n * Returns a unique key for a networkClientId and options. This is used to group networkClientId polls with the same options\n * @param networkClientId - The networkClientId to get a key for\n * @param options - The options used to group the polling events\n * @returns The unique key\n */\nexport const getKey = (\n  networkClientId: NetworkClientId,\n  options: Json,\n): PollingTokenSetId => `${networkClientId}:${stringify(options)}`;\n\ntype PollingTokenSetId = `${NetworkClientId}:${string}`;\n/**\n * PollingControllerMixin\n *\n * @param Base - The base class to mix onto.\n * @returns The composed class.\n */\nfunction PollingControllerMixin<TBase extends Constructor>(Base: TBase) {\n  /**\n   * PollingController is an abstract class that implements the polling\n   * functionality for a controller. It is meant to be extended by a controller\n   * that needs to poll for data by networkClientId.\n   *\n   */\n  abstract class PollingControllerBase extends Base {\n    readonly #pollingTokenSets: Map<PollingTokenSetId, Set<string>> = new Map();\n\n    readonly #intervalIds: Record<PollingTokenSetId, NodeJS.Timeout> = {};\n\n    #callbacks: Map<\n      NetworkClientId,\n      Set<(networkClientId: NetworkClientId) => void>\n    > = new Map();\n\n    #intervalLength = 1000;\n\n    getIntervalLength() {\n      return this.#intervalLength;\n    }\n\n    /**\n     * Sets the length of the polling interval\n     *\n     * @param length - The length of the polling interval in milliseconds\n     */\n    setIntervalLength(length: number) {\n      this.#intervalLength = length;\n    }\n\n    /**\n     * Starts polling for a networkClientId\n     *\n     * @param networkClientId - The networkClientId to start polling for\n     * @param options - The options used to group the polling events\n     * @returns void\n     */\n    startPollingByNetworkClientId(\n      networkClientId: NetworkClientId,\n      options: Json = {},\n    ) {\n      const pollToken = random();\n\n      const key = getKey(networkClientId, options);\n\n      const pollingTokenSet = this.#pollingTokenSets.get(key);\n      if (pollingTokenSet) {\n        pollingTokenSet.add(pollToken);\n      } else {\n        const set = new Set<string>();\n        set.add(pollToken);\n        this.#pollingTokenSets.set(key, set);\n      }\n      this.#poll(networkClientId, options);\n      return pollToken;\n    }\n\n    /**\n     * Stops polling for all networkClientIds\n     */\n    stopAllPolling() {\n      this.#pollingTokenSets.forEach((tokenSet, _networkClientId) => {\n        tokenSet.forEach((token) => {\n          this.stopPollingByPollingToken(token);\n        });\n      });\n    }\n\n    /**\n     * Stops polling for a networkClientId\n     *\n     * @param pollingToken - The polling token to stop polling for\n     */\n    stopPollingByPollingToken(pollingToken: string) {\n      if (!pollingToken) {\n        throw new Error('pollingToken required');\n      }\n      let found = false;\n      this.#pollingTokenSets.forEach((tokenSet, key) => {\n        if (tokenSet.has(pollingToken)) {\n          found = true;\n          tokenSet.delete(pollingToken);\n          if (tokenSet.size === 0) {\n            clearTimeout(this.#intervalIds[key]);\n            delete this.#intervalIds[key];\n            this.#pollingTokenSets.delete(key);\n            this.#callbacks.get(key)?.forEach((callback) => {\n              callback(key);\n            });\n            this.#callbacks.get(key)?.clear();\n          }\n        }\n      });\n      if (!found) {\n        throw new Error('pollingToken not found');\n      }\n    }\n\n    /**\n     * Executes the poll for a networkClientId\n     *\n     * @param networkClientId - The networkClientId to execute the poll for\n     * @param options - The options passed to startPollingByNetworkClientId\n     */\n    abstract _executePoll(\n      networkClientId: NetworkClientId,\n      options: Json,\n    ): Promise<void>;\n\n    #poll(networkClientId: NetworkClientId, options: Json) {\n      const key = getKey(networkClientId, options);\n      const interval = this.#intervalIds[key];\n      if (interval) {\n        clearTimeout(interval);\n        delete this.#intervalIds[key];\n      }\n      // setTimeout is not `await`ing this async function, which is expected\n      // We're just using async here for improved stack traces\n      // eslint-disable-next-line @typescript-eslint/no-misused-promises\n      this.#intervalIds[key] = setTimeout(\n        async () => {\n          try {\n            await this._executePoll(networkClientId, options);\n          } catch (error) {\n            console.error(error);\n          }\n          this.#poll(networkClientId, options);\n        },\n        interval ? this.#intervalLength : 0,\n      );\n    }\n\n    /**\n     * Adds a callback to execute when polling is complete\n     *\n     * @param networkClientId - The networkClientId to listen for polling complete events\n     * @param callback - The callback to execute when polling is complete\n     * @param options - The options used to group the polling events\n     */\n    onPollingCompleteByNetworkClientId(\n      networkClientId: NetworkClientId,\n      callback: (networkClientId: NetworkClientId) => void,\n      options: Json = {},\n    ) {\n      const key = getKey(networkClientId, options);\n      const callbacks = this.#callbacks.get(key);\n\n      if (callbacks === undefined) {\n        const set = new Set<typeof callback>();\n        set.add(callback);\n        this.#callbacks.set(key, set);\n      } else {\n        callbacks.add(callback);\n      }\n    }\n  }\n  return PollingControllerBase;\n}\n\nclass Empty {}\n\nexport const PollingControllerOnly = PollingControllerMixin(Empty);\nexport const PollingController = PollingControllerMixin(BaseController);\nexport const PollingControllerV1 = PollingControllerMixin(BaseControllerV1);\n"]}
+\ No newline at end of file
+diff --git a/dist/StaticIntervalPollingController.d.ts b/dist/StaticIntervalPollingController.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..1bfdd1cce771da4ac37a99a4340bce182f540326
+--- /dev/null
++++ b/dist/StaticIntervalPollingController.d.ts
+@@ -0,0 +1,58 @@
++/// <reference types="node" />
++/// <reference types="node" />
++/// <reference types="node" />
++/// <reference types="node" />
++/// <reference types="node" />
++import { BaseController, BaseControllerV1 } from '@metamask/base-controller';
++import type { NetworkClientId } from '@metamask/network-controller';
++import type { Json } from '@metamask/utils';
++import type { PollingTokenSetId } from './AbstractPollingController';
++declare class Empty {
++}
++export declare const StaticIntervalPollingControllerOnly: (abstract new (...args: any[]) => {
++    readonly "__#93092@#intervalIds": Record<PollingTokenSetId, NodeJS.Timeout>;
++    "__#93092@#intervalLength": number | undefined;
++    setIntervalLength(intervalLength: number): void;
++    getIntervalLength(): number | undefined;
++    _startPollingByNetworkClientId(networkClientId: NetworkClientId, options: Json): void;
++    _stopPollingByPollingTokenSetId(key: PollingTokenSetId): void;
++    readonly "__#93090@#pollingTokenSets": Map<`${string}:${string}`, Set<string>>;
++    "__#93090@#callbacks": Map<`${string}:${string}`, Set<(PollingTokenSetId: `${string}:${string}`) => void>>;
++    _executePoll(networkClientId: string, options: Json): Promise<void>;
++    startPollingByNetworkClientId(networkClientId: string, options?: Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingCompleteByNetworkClientId(networkClientId: string, callback: (networkClientId: string) => void, options?: Json): void;
++}) & typeof Empty;
++export declare const StaticIntervalPollingController: (abstract new (...args: any[]) => {
++    readonly "__#93092@#intervalIds": Record<PollingTokenSetId, NodeJS.Timeout>;
++    "__#93092@#intervalLength": number | undefined;
++    setIntervalLength(intervalLength: number): void;
++    getIntervalLength(): number | undefined;
++    _startPollingByNetworkClientId(networkClientId: NetworkClientId, options: Json): void;
++    _stopPollingByPollingTokenSetId(key: PollingTokenSetId): void;
++    readonly "__#93090@#pollingTokenSets": Map<`${string}:${string}`, Set<string>>;
++    "__#93090@#callbacks": Map<`${string}:${string}`, Set<(PollingTokenSetId: `${string}:${string}`) => void>>;
++    _executePoll(networkClientId: string, options: Json): Promise<void>;
++    startPollingByNetworkClientId(networkClientId: string, options?: Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingCompleteByNetworkClientId(networkClientId: string, callback: (networkClientId: string) => void, options?: Json): void;
++}) & typeof BaseController;
++export declare const StaticIntervalPollingControllerV1: (abstract new (...args: any[]) => {
++    readonly "__#93092@#intervalIds": Record<PollingTokenSetId, NodeJS.Timeout>;
++    "__#93092@#intervalLength": number | undefined;
++    setIntervalLength(intervalLength: number): void;
++    getIntervalLength(): number | undefined;
++    _startPollingByNetworkClientId(networkClientId: NetworkClientId, options: Json): void;
++    _stopPollingByPollingTokenSetId(key: PollingTokenSetId): void;
++    readonly "__#93090@#pollingTokenSets": Map<`${string}:${string}`, Set<string>>;
++    "__#93090@#callbacks": Map<`${string}:${string}`, Set<(PollingTokenSetId: `${string}:${string}`) => void>>;
++    _executePoll(networkClientId: string, options: Json): Promise<void>;
++    startPollingByNetworkClientId(networkClientId: string, options?: Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingCompleteByNetworkClientId(networkClientId: string, callback: (networkClientId: string) => void, options?: Json): void;
++}) & typeof BaseControllerV1;
++export {};
++//# sourceMappingURL=StaticIntervalPollingController.d.ts.map
+\ No newline at end of file
+diff --git a/dist/StaticIntervalPollingController.js b/dist/StaticIntervalPollingController.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..c69b6909fa41efb3f8fdb2d6efc5df52c32c5ed0
+--- /dev/null
++++ b/dist/StaticIntervalPollingController.js
+@@ -0,0 +1,80 @@
++"use strict";
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
++var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
++    if (kind === "m") throw new TypeError("Private method is not writable");
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
++    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
++};
++var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
++    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
++    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
++    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++exports.StaticIntervalPollingControllerV1 = exports.StaticIntervalPollingController = exports.StaticIntervalPollingControllerOnly = void 0;
++const base_controller_1 = require("@metamask/base-controller");
++const AbstractPollingController_1 = require("./AbstractPollingController");
++/**
++ * StaticIntervalPollingControllerMixin
++ * A polling controller that polls on a static interval.
++ *
++ * @param Base - The base class to mix onto.
++ * @returns The composed class.
++ */
++function StaticIntervalPollingControllerMixin(Base) {
++    var _StaticIntervalPollingController_intervalIds, _StaticIntervalPollingController_intervalLength;
++    class StaticIntervalPollingController extends (0, AbstractPollingController_1.AbstractPollingControllerBaseMixin)(Base) {
++        constructor() {
++            super(...arguments);
++            _StaticIntervalPollingController_intervalIds.set(this, {});
++            _StaticIntervalPollingController_intervalLength.set(this, 1000);
++        }
++        setIntervalLength(intervalLength) {
++            __classPrivateFieldSet(this, _StaticIntervalPollingController_intervalLength, intervalLength, "f");
++        }
++        getIntervalLength() {
++            return __classPrivateFieldGet(this, _StaticIntervalPollingController_intervalLength, "f");
++        }
++        _startPollingByNetworkClientId(networkClientId, options) {
++            if (!__classPrivateFieldGet(this, _StaticIntervalPollingController_intervalLength, "f")) {
++                throw new Error('intervalLength must be defined and greater than 0');
++            }
++            const key = (0, AbstractPollingController_1.getKey)(networkClientId, options);
++            const existingInterval = __classPrivateFieldGet(this, _StaticIntervalPollingController_intervalIds, "f")[key];
++            this._stopPollingByPollingTokenSetId(key);
++            __classPrivateFieldGet(this, _StaticIntervalPollingController_intervalIds, "f")[key] = setTimeout(() => __awaiter(this, void 0, void 0, function* () {
++                try {
++                    yield this._executePoll(networkClientId, options);
++                }
++                catch (error) {
++                    console.error(error);
++                }
++                this._startPollingByNetworkClientId(networkClientId, options);
++            }), existingInterval ? __classPrivateFieldGet(this, _StaticIntervalPollingController_intervalLength, "f") : 0);
++        }
++        _stopPollingByPollingTokenSetId(key) {
++            const intervalId = __classPrivateFieldGet(this, _StaticIntervalPollingController_intervalIds, "f")[key];
++            if (intervalId) {
++                clearTimeout(intervalId);
++                delete __classPrivateFieldGet(this, _StaticIntervalPollingController_intervalIds, "f")[key];
++            }
++        }
++    }
++    _StaticIntervalPollingController_intervalIds = new WeakMap(), _StaticIntervalPollingController_intervalLength = new WeakMap();
++    return StaticIntervalPollingController;
++}
++class Empty {
++}
++exports.StaticIntervalPollingControllerOnly = StaticIntervalPollingControllerMixin(Empty);
++exports.StaticIntervalPollingController = StaticIntervalPollingControllerMixin(base_controller_1.BaseController);
++exports.StaticIntervalPollingControllerV1 = StaticIntervalPollingControllerMixin(base_controller_1.BaseControllerV1);
++//# sourceMappingURL=StaticIntervalPollingController.js.map
+\ No newline at end of file
+diff --git a/dist/index.d.ts b/dist/index.d.ts
+index a533971bb058f0a9f49aac832df1c56f2c96f290..180b25e8ff6056b16a10a2ba7a2bec1516c8182a 100644
+--- a/dist/index.d.ts
++++ b/dist/index.d.ts
+@@ -1,2 +1,53 @@
+-export { PollingController, PollingControllerV1, PollingControllerOnly, } from './PollingController';
++/// <reference types="node" />
++import { StaticIntervalPollingControllerOnly, StaticIntervalPollingController, StaticIntervalPollingControllerV1 } from './StaticIntervalPollingController';
++export { BlockTrackerPollingControllerOnly, BlockTrackerPollingController, BlockTrackerPollingControllerV1, } from './BlockTrackerPollingController';
++declare const PollingControllerOnly: (abstract new (...args: any[]) => {
++    readonly "__#93092@#intervalIds": Record<`${string}:${string}`, NodeJS.Timeout>;
++    "__#93092@#intervalLength": number | undefined;
++    setIntervalLength(intervalLength: number): void;
++    getIntervalLength(): number | undefined;
++    _startPollingByNetworkClientId(networkClientId: string, options: import("@metamask/utils").Json): void;
++    _stopPollingByPollingTokenSetId(key: `${string}:${string}`): void;
++    readonly "__#93090@#pollingTokenSets": Map<`${string}:${string}`, Set<string>>;
++    "__#93090@#callbacks": Map<`${string}:${string}`, Set<(PollingTokenSetId: `${string}:${string}`) => void>>;
++    _executePoll(networkClientId: string, options: import("@metamask/utils").Json): Promise<void>;
++    startPollingByNetworkClientId(networkClientId: string, options?: import("@metamask/utils").Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingCompleteByNetworkClientId(networkClientId: string, callback: (networkClientId: string) => void, options?: import("@metamask/utils").Json): void;
++}) & {
++    new (): {};
++};
++declare const PollingController: (abstract new (...args: any[]) => {
++    readonly "__#93092@#intervalIds": Record<`${string}:${string}`, NodeJS.Timeout>;
++    "__#93092@#intervalLength": number | undefined;
++    setIntervalLength(intervalLength: number): void;
++    getIntervalLength(): number | undefined;
++    _startPollingByNetworkClientId(networkClientId: string, options: import("@metamask/utils").Json): void;
++    _stopPollingByPollingTokenSetId(key: `${string}:${string}`): void;
++    readonly "__#93090@#pollingTokenSets": Map<`${string}:${string}`, Set<string>>;
++    "__#93090@#callbacks": Map<`${string}:${string}`, Set<(PollingTokenSetId: `${string}:${string}`) => void>>;
++    _executePoll(networkClientId: string, options: import("@metamask/utils").Json): Promise<void>;
++    startPollingByNetworkClientId(networkClientId: string, options?: import("@metamask/utils").Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingCompleteByNetworkClientId(networkClientId: string, callback: (networkClientId: string) => void, options?: import("@metamask/utils").Json): void;
++}) & typeof import("@metamask/base-controller").BaseController;
++declare const PollingControllerV1: (abstract new (...args: any[]) => {
++    readonly "__#93092@#intervalIds": Record<`${string}:${string}`, NodeJS.Timeout>;
++    "__#93092@#intervalLength": number | undefined;
++    setIntervalLength(intervalLength: number): void;
++    getIntervalLength(): number | undefined;
++    _startPollingByNetworkClientId(networkClientId: string, options: import("@metamask/utils").Json): void;
++    _stopPollingByPollingTokenSetId(key: `${string}:${string}`): void;
++    readonly "__#93090@#pollingTokenSets": Map<`${string}:${string}`, Set<string>>;
++    "__#93090@#callbacks": Map<`${string}:${string}`, Set<(PollingTokenSetId: `${string}:${string}`) => void>>;
++    _executePoll(networkClientId: string, options: import("@metamask/utils").Json): Promise<void>;
++    startPollingByNetworkClientId(networkClientId: string, options?: import("@metamask/utils").Json): string;
++    stopAllPolling(): void;
++    stopPollingByPollingToken(pollingToken: string): void;
++    onPollingCompleteByNetworkClientId(networkClientId: string, callback: (networkClientId: string) => void, options?: import("@metamask/utils").Json): void;
++}) & typeof import("@metamask/base-controller").BaseControllerV1;
++export { StaticIntervalPollingControllerOnly, StaticIntervalPollingController, StaticIntervalPollingControllerV1, PollingControllerOnly, PollingController, PollingControllerV1, };
++export type { IPollingController } from './AbstractPollingController';
+ //# sourceMappingURL=index.d.ts.map
+\ No newline at end of file
+diff --git a/dist/index.d.ts.map b/dist/index.d.ts.map
+deleted file mode 100644
+index a76a05c9d5c517710bc6c0589d42422334f57b89..0000000000000000000000000000000000000000
+--- a/dist/index.d.ts.map
++++ /dev/null
+@@ -1 +0,0 @@
+-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":"AAAA,OAAO,EACL,iBAAiB,EACjB,mBAAmB,EACnB,qBAAqB,GACtB,MAAM,qBAAqB,CAAC"}
+\ No newline at end of file
+diff --git a/dist/index.js b/dist/index.js
+index a1aadf2d362f6d9c72239f2a3bdb3b9041b37582..f15e352cb169ef8310e372c175b30b4301a746c7 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -1,8 +1,18 @@
+ "use strict";
+ Object.defineProperty(exports, "__esModule", { value: true });
+-exports.PollingControllerOnly = exports.PollingControllerV1 = exports.PollingController = void 0;
+-var PollingController_1 = require("./PollingController");
+-Object.defineProperty(exports, "PollingController", { enumerable: true, get: function () { return PollingController_1.PollingController; } });
+-Object.defineProperty(exports, "PollingControllerV1", { enumerable: true, get: function () { return PollingController_1.PollingControllerV1; } });
+-Object.defineProperty(exports, "PollingControllerOnly", { enumerable: true, get: function () { return PollingController_1.PollingControllerOnly; } });
++exports.PollingControllerV1 = exports.PollingController = exports.PollingControllerOnly = exports.StaticIntervalPollingControllerV1 = exports.StaticIntervalPollingController = exports.StaticIntervalPollingControllerOnly = exports.BlockTrackerPollingControllerV1 = exports.BlockTrackerPollingController = exports.BlockTrackerPollingControllerOnly = void 0;
++const StaticIntervalPollingController_1 = require("./StaticIntervalPollingController");
++Object.defineProperty(exports, "StaticIntervalPollingControllerOnly", { enumerable: true, get: function () { return StaticIntervalPollingController_1.StaticIntervalPollingControllerOnly; } });
++Object.defineProperty(exports, "StaticIntervalPollingController", { enumerable: true, get: function () { return StaticIntervalPollingController_1.StaticIntervalPollingController; } });
++Object.defineProperty(exports, "StaticIntervalPollingControllerV1", { enumerable: true, get: function () { return StaticIntervalPollingController_1.StaticIntervalPollingControllerV1; } });
++var BlockTrackerPollingController_1 = require("./BlockTrackerPollingController");
++Object.defineProperty(exports, "BlockTrackerPollingControllerOnly", { enumerable: true, get: function () { return BlockTrackerPollingController_1.BlockTrackerPollingControllerOnly; } });
++Object.defineProperty(exports, "BlockTrackerPollingController", { enumerable: true, get: function () { return BlockTrackerPollingController_1.BlockTrackerPollingController; } });
++Object.defineProperty(exports, "BlockTrackerPollingControllerV1", { enumerable: true, get: function () { return BlockTrackerPollingController_1.BlockTrackerPollingControllerV1; } });
++const PollingControllerOnly = StaticIntervalPollingController_1.StaticIntervalPollingControllerOnly;
++exports.PollingControllerOnly = PollingControllerOnly;
++const PollingController = StaticIntervalPollingController_1.StaticIntervalPollingController;
++exports.PollingController = PollingController;
++const PollingControllerV1 = StaticIntervalPollingController_1.StaticIntervalPollingControllerV1;
++exports.PollingControllerV1 = PollingControllerV1;
+ //# sourceMappingURL=index.js.map
+\ No newline at end of file
+diff --git a/dist/index.js.map b/dist/index.js.map
+deleted file mode 100644
+index 27a5beb1eb304c1c86ea990082a3e46d98f6ac36..0000000000000000000000000000000000000000
+--- a/dist/index.js.map
++++ /dev/null
+@@ -1 +0,0 @@
+-{"version":3,"file":"index.js","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":";;;AAAA,yDAI6B;AAH3B,sHAAA,iBAAiB,OAAA;AACjB,wHAAA,mBAAmB,OAAA;AACnB,0HAAA,qBAAqB,OAAA","sourcesContent":["export {\n  PollingController,\n  PollingControllerV1,\n  PollingControllerOnly,\n} from './PollingController';\n"]}
+\ No newline at end of file

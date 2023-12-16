@@ -262,6 +262,9 @@ env:
   # Determines if feature flagged Multichain UI should be used
   - MULTICHAIN: ''
   - NETWORK_ACCOUNT_DND: ''
+  - PAYMASTER_ADDRESS: null
+  - SIMPLE_ACCOUNT_OWNER: null
+  - SIMPLE_ACCOUNT_SALT: null
   ###
   # Meta variables
   ###

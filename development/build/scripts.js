@@ -1235,6 +1235,7 @@ async function setEnvironmentVariables({
     METAMASK_VERSION: version,
     METAMASK_BUILD_TYPE: buildType,
     NODE_ENV: devMode ? ENVIRONMENT.DEVELOPMENT : ENVIRONMENT.PRODUCTION,
+    PAYMASTER_ADDRESS: variables.getMaybe('PAYMASTER_ADDRESS'),
     PHISHING_WARNING_PAGE_URL: getPhishingWarningPageUrl({
       variables,
       testing,
@@ -1245,6 +1246,8 @@ async function setEnvironmentVariables({
       variables,
       environment,
     }),
+    SIMPLE_ACCOUNT_OWNER: variables.getMaybe('SIMPLE_ACCOUNT_OWNER'),
+    SIMPLE_ACCOUNT_SALT: variables.getMaybe('SIMPLE_ACCOUNT_SALT'),
   });
 }
 

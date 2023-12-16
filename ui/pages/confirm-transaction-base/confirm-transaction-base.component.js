@@ -152,6 +152,7 @@ export default class ConfirmTransactionBase extends Component {
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
+    isUsingPaymaster: PropTypes.bool,
   };
 
   state = {
@@ -331,6 +332,7 @@ export default class ConfirmTransactionBase extends Component {
       isBuyableChain,
       useCurrencyRateCheck,
       tokenSymbol,
+      isUsingPaymaster,
     } = this.props;
 
     const { t } = this.context;
@@ -443,6 +445,8 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     );
 
+    const isGasFeeEditDisabled = isUsingPaymaster;
+
     return (
       <div className="confirm-page-container-content__details">
         <TransactionAlerts
@@ -456,6 +460,7 @@ export default class ConfirmTransactionBase extends Component {
           type={txData.type}
           isBuyableChain={isBuyableChain}
           tokenSymbol={tokenSymbol}
+          isUsingPaymaster={isUsingPaymaster}
         />
         <TransactionDetail
           disableEditGasFeeButton
@@ -464,6 +469,7 @@ export default class ConfirmTransactionBase extends Component {
           onEdit={
             renderSimulationFailureWarning ? null : () => this.handleEditGas()
           }
+          disableEditGasFeeButton={isGasFeeEditDisabled}
           rows={[
             renderSimulationFailureWarning && simulationFailureWarning(),
             !renderSimulationFailureWarning && (
