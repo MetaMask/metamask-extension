@@ -39,5 +39,6 @@
   "token-api.metaswap.codefi.network",
   "tx-insights.metaswap.codefi.network",
   "unresponsive-rpc.url",
-  "www.4byte.directory"
+  "www.4byte.directory",
+  "price-api.metafi.codefi.network"
 ]
