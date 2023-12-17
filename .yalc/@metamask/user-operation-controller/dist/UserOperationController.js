@@ -42,7 +42,6 @@ const gas_1 = require("./utils/gas");
 const gas_fees_1 = require("./utils/gas-fees");
 const transaction_1 = require("./utils/transaction");
 const validation_1 = require("./utils/validation");
-const DEFAULT_INTERVAL = 10 * 1000; // 10 Seconds
 const controllerName = 'UserOperationController';
 const stateMetadata = {
     userOperations: { persist: true, anonymous: false },
@@ -59,11 +58,10 @@ class UserOperationController extends base_controller_1.BaseController {
      *
      * @param options - Controller options.
      * @param options.getGasFeeEstimates - Callback to get gas fee estimates.
-     * @param options.interval - Polling interval used to check the status of pending user operations.
      * @param options.messenger - Restricted controller messenger for the user operation controller.
      * @param options.state - Initial state to set on the controller.
      */
-    constructor({ getGasFeeEstimates, interval, messenger, state, }) {
+    constructor({ getGasFeeEstimates, messenger, state, }) {
         super({
             name: controllerName,
             metadata: stateMetadata,
@@ -79,7 +77,6 @@ class UserOperationController extends base_controller_1.BaseController {
             getUserOperations: () => (0, lodash_1.cloneDeep)(Object.values(this.state.userOperations)),
             messenger,
         }), "f");
-        __classPrivateFieldGet(this, _UserOperationController_pendingUserOperationTracker, "f").setIntervalLength(interval !== null && interval !== void 0 ? interval : DEFAULT_INTERVAL);
         __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_addPendingUserOperationTrackerListeners).call(this);
     }
     /**
@@ -228,6 +225,7 @@ _UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationContr
             transactionHash: null,
             transactionParams: (_a = transaction) !== null && _a !== void 0 ? _a : null,
             transactionType: null,
+            userFeeLevel: null,
             userOperation: __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_createEmptyUserOperation).call(this, transaction),
         };
         __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_updateMetadata).call(this, metadata);

@@ -1,5 +1,6 @@
 /// <reference types="node" />
-import { StaticIntervalPollingControllerOnly } from '@metamask/polling-controller';
+import type { NetworkClient } from '@metamask/network-controller';
+import { BlockTrackerPollingControllerOnly } from '@metamask/polling-controller';
 import type { Json } from '@metamask/utils';
 import EventEmitter from 'events';
 import type { UserOperationMetadata } from '../types';
@@ -18,7 +19,7 @@ export declare type PendingUserOperationTrackerEventEmitter = EventEmitter & {
  * A helper class to periodically query the bundlers
  * and update the status of any submitted user operations.
  */
-export declare class PendingUserOperationTracker extends StaticIntervalPollingControllerOnly {
+export declare class PendingUserOperationTracker extends BlockTrackerPollingControllerOnly {
     #private;
     hub: PendingUserOperationTrackerEventEmitter;
     constructor({ getUserOperations, messenger, }: {
@@ -26,6 +27,7 @@ export declare class PendingUserOperationTracker extends StaticIntervalPollingCo
         messenger: UserOperationControllerMessenger;
     });
     _executePoll(networkClientId: string, _options: Json): Promise<void>;
+    _getNetworkClientById(networkClientId: string): NetworkClient | undefined;
 }
 export {};
 //# sourceMappingURL=PendingUserOperationTracker.d.ts.map

@@ -12,7 +12,7 @@ const types_1 = require("../types");
  */
 function getTransactionMetadata(metadata) {
     var _a;
-    const { actualGasCost, actualGasUsed, baseFeePerGas, chainId, error: rawError, origin, transactionHash, id, time, transactionParams, transactionType, userOperation, } = metadata;
+    const { actualGasCost, actualGasUsed, baseFeePerGas, chainId, error: rawError, origin, transactionHash, id, time, transactionParams, transactionType, userFeeLevel, userOperation, } = metadata;
     if (!transactionParams) {
         return undefined;
     }
@@ -45,7 +45,6 @@ function getTransactionMetadata(metadata) {
         ? '0x0'
         : userOperation.maxPriorityFeePerGas;
     const nonce = userOperation.nonce === constants_1.EMPTY_BYTES ? undefined : userOperation.nonce;
-    const userFeeLevel = transaction_controller_1.UserFeeLevel.CUSTOM;
     const txParams = Object.assign(Object.assign({}, transactionParams), { from: userOperation.sender, gas,
         nonce,
         maxFeePerGas,
@@ -68,7 +67,7 @@ function getTransactionMetadata(metadata) {
             gasUsed: actualGasUsed !== null && actualGasUsed !== void 0 ? actualGasUsed : undefined,
         },
         type: transactionType !== null && transactionType !== void 0 ? transactionType : undefined,
-        userFeeLevel,
+        userFeeLevel: userFeeLevel,
     };
 }
 exports.getTransactionMetadata = getTransactionMetadata;

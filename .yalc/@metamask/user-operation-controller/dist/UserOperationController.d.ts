@@ -70,11 +70,10 @@ export declare class UserOperationController extends BaseController<typeof contr
      *
      * @param options - Controller options.
      * @param options.getGasFeeEstimates - Callback to get gas fee estimates.
-     * @param options.interval - Polling interval used to check the status of pending user operations.
      * @param options.messenger - Restricted controller messenger for the user operation controller.
      * @param options.state - Initial state to set on the controller.
      */
-    constructor({ getGasFeeEstimates, interval, messenger, state, }: UserOperationControllerOptions);
+    constructor({ getGasFeeEstimates, messenger, state, }: UserOperationControllerOptions);
     /**
      * Create and submit a user operation.
      *

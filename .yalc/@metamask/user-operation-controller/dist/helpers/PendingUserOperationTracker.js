@@ -38,7 +38,7 @@ const log = (0, utils_1.createModuleLogger)(logger_1.projectLogger, 'pending-use
  * A helper class to periodically query the bundlers
  * and update the status of any submitted user operations.
  */
-class PendingUserOperationTracker extends polling_controller_1.StaticIntervalPollingControllerOnly {
+class PendingUserOperationTracker extends polling_controller_1.BlockTrackerPollingControllerOnly {
     constructor({ getUserOperations, messenger, }) {
         super();
         _PendingUserOperationTracker_instances.add(this);
@@ -51,11 +51,10 @@ class PendingUserOperationTracker extends polling_controller_1.StaticIntervalPol
     _executePoll(networkClientId, _options) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { blockTracker, configuration, provider } = __classPrivateFieldGet(this, _PendingUserOperationTracker_messenger, "f").call('NetworkController:getNetworkClientById', networkClientId);
+                const { blockTracker, configuration, provider } = this._getNetworkClientById(networkClientId);
                 log('Polling', {
                     blockNumber: blockTracker.getCurrentBlock(),
                     chainId: configuration.chainId,
-                    rpcUrl: configuration.rpcUrl,
                 });
                 yield __classPrivateFieldGet(this, _PendingUserOperationTracker_instances, "m", _PendingUserOperationTracker_checkUserOperations).call(this, configuration.chainId, provider);
             }
@@ -64,6 +63,9 @@ class PendingUserOperationTracker extends polling_controller_1.StaticIntervalPol
                 log('Failed to check user operations', error);
             }
         });
+    }
+    _getNetworkClientById(networkClientId) {
+        return __classPrivateFieldGet(this, _PendingUserOperationTracker_messenger, "f").call('NetworkController:getNetworkClientById', networkClientId);
     }
 }
 exports.PendingUserOperationTracker = PendingUserOperationTracker;

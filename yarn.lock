@@ -5254,7 +5254,7 @@ __metadata:
 
 "@metamask/user-operation-controller@file:.yalc/@metamask/user-operation-controller::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/user-operation-controller@file:.yalc/@metamask/user-operation-controller#.yalc/@metamask/user-operation-controller::hash=47cb62&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/user-operation-controller@file:.yalc/@metamask/user-operation-controller#.yalc/@metamask/user-operation-controller::hash=6c7f0a&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/approval-controller": "npm:^5.0.0"
     "@metamask/base-controller": "npm:^4.0.0"
@@ -5276,7 +5276,7 @@ __metadata:
     "@metamask/network-controller": ^17.0.0
     "@metamask/polling-controller": ^2.0.0
     "@metamask/transaction-controller": ^18.3.0
-  checksum: a609172d4cb5d277df75e480a56e72c7283a1c35b7aaa6b929906d314989e724a3977260422ec00aeaf5c2674fb788149a7a3390f8be74453b0d621109702ede
+  checksum: fb78f09d7c0ff4194d22a47f0cd73b15040057cb5ce812a2267542e4c1da8d21f8981d1ecc760a6e2e150091f5b307fefc43d58f5e08fa8e031e9d154891f250
   languageName: node
   linkType: hard
 

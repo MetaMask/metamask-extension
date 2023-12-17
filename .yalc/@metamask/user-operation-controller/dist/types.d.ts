@@ -1,4 +1,4 @@
-import type { TransactionParams, TransactionType } from '@metamask/transaction-controller';
+import type { TransactionParams, TransactionType, UserFeeLevel } from '@metamask/transaction-controller';
 /**
  * A complete user operation to be submitted to a bundler.
  * Defined in EIP-4337.
@@ -105,6 +105,8 @@ export declare type UserOperationMetadata = {
     transactionParams: Required<TransactionParams> | null;
     /** The type of transaction that the user operation will create. */
     transactionType: TransactionType | null;
+    /** The origin of the gas fee values. */
+    userFeeLevel: UserFeeLevel | null;
     /** Resulting user operation object to be submitted to the bundler. */
     userOperation: UserOperation;
 };
