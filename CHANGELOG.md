@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed QR scan functionality when sending a transaction to another contact [#22297](https://github.com/MetaMask/metamask-extension/pull/22297)
+- Fixed incorrect warnings when adding a chain from a dapp [#22309](https://github.com/MetaMask/metamask-extension/pull/22309)
+
 ## [11.7.0]
 ### Added
 - Added auto-suggestion for ticker symbols in the network form ([#21843](https://github.com/MetaMask/metamask-extension/pull/21843))
