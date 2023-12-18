@@ -268,7 +268,7 @@
     "@metamask/gas-fee-controller": "^10.0.1",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/keyring-api": "^1.0.0",
-    "@metamask/keyring-controller": "^9.0.0",
+    "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A9.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-9.0.0-f57ed3ebea.patch",
     "@metamask/logging-controller": "^1.0.1",
     "@metamask/logo": "^3.1.2",
     "@metamask/message-manager": "^7.3.0",
