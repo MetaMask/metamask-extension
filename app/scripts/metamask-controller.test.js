@@ -918,7 +918,11 @@ describe('MetaMaskController', () => {
 
         jest
           .spyOn(metamaskController.accountsController, 'getAccountByAddress')
-          .mockReturnValue();
+          .mockReturnValue({
+            account: {
+              id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
+            },
+          });
         jest
           .spyOn(metamaskController.accountsController, 'setAccountName')
           .mockReturnValue();
