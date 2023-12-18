@@ -49,7 +49,7 @@ async function clickOnLogo(driver) {
   await driver.clickElement(selectors.appHeaderLogo);
 }
 
-//Function to send a transaction and verify hex data
+//Function to send a transaction and verify hex data text area appears.
 async function sendTransactionAndVerifyHexData(driver) {
   await driver.clickElement(selectors.ethOverviewSend);
   await driver.fill(selectors.ensInput, inputData.recipientAddress);
