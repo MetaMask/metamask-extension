@@ -18,7 +18,7 @@ describe('useConfirmationNetworkInfo', () => {
     expect(result.current.networkImageUrl).toBe('./images/eth_logo.png');
   });
 
-  it('returns network display name of provider chainId when confirmation chainId is not present', () => {
+  it('returns display name and image of provider chainId when confirmation chainId is not present', () => {
     const { result } = renderHookWithProvider(
       () => useConfirmationNetworkInfo(),
       {
