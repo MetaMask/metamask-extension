@@ -6,10 +6,10 @@ const {
   sendTransaction,
   findAnotherAccountFromAccountList,
   waitForAccountRendered,
-  convertToHexValue,
   regularDelayMs,
   unlockWallet,
   WALLET_PASSWORD,
+  generateGanacheOptions,
 } = require('../helpers');
 
 const FixtureBuilder = require('../fixture-builder');
@@ -19,15 +19,10 @@ describe('Add account', function () {
   const firstAccount = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
   const secondAccount = '0x3ED0eE22E0685Ebbf07b2360A8331693c413CC59';
 
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
+  const ganacheOptions = generateGanacheOptions({
+    secretKey:
+      '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
+  });
 
   it('should display correct new account name after create', async function () {
     await withFixtures(
