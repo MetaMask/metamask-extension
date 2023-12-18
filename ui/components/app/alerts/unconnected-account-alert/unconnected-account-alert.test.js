@@ -6,7 +6,7 @@ import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 
-import { tick } from '../../../../../test/lib/tick';
+import { tick } from '../../../../../test/lib/timer-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
 import * as actions from '../../../../store/actions';
