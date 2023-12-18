@@ -180,7 +180,7 @@ describe('Actions', () => {
       const verifyPassword = background.verifyPassword.callsFake((_, cb) =>
         cb(),
       );
-      const getSeedPhrase = background.getSeedPhrase.callsFake((cb) =>
+      const getSeedPhrase = background.getSeedPhrase.callsFake((_, cb) =>
         cb(null, Array.from(Buffer.from('test').values())),
       );
 
@@ -195,8 +195,8 @@ describe('Actions', () => {
       const store = mockStore();
 
       background.verifyPassword.callsFake((_, cb) => cb());
-      background.getSeedPhrase.callsFake((cb) => {
-        cb(new Error('error'));
+      background.getSeedPhrase.callsFake((_, cb) => {
+        return cb(new Error('error'));
       });
 
       setBackgroundConnection(background);
