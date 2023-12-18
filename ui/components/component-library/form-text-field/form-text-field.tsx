@@ -4,7 +4,14 @@ import {
   Display,
   FlexDirection,
 } from '../../../helpers/constants/design-system';
-import { Box, TextField, HelpText, HelpTextSeverity, Label } from '..';
+import {
+  Box,
+  TextField,
+  HelpText,
+  HelpTextSeverity,
+  Label,
+  TextFieldSize,
+} from '..';
 import { PolymorphicRef } from '../box';
 import type { BoxProps } from '../box';
 import type { TextFieldProps } from '../text-field/text-field.types';
@@ -14,14 +21,21 @@ import {
   FormTextFieldComponent,
 } from './form-text-field.types';
 
+const sizeMap: Record<FormTextFieldSize, TextFieldSize> = {
+  [FormTextFieldSize.Sm]: TextFieldSize.Sm,
+  [FormTextFieldSize.Md]: TextFieldSize.Md,
+  [FormTextFieldSize.Lg]: TextFieldSize.Lg,
+};
+
 export const FormTextField: FormTextFieldComponent = React.forwardRef(
   <C extends React.ElementType = 'input'>(
     {
       autoComplete,
       autoFocus,
-      className,
+      className = '',
       defaultValue,
       disabled,
+      isDisabled,
       error,
       helpText,
       helpTextProps,
@@ -52,7 +66,10 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
     <Box
       className={classnames(
         'mm-form-text-field',
-        { 'mm-form-text-field--disabled': disabled },
+        {
+          'mm-form-text-field--disabled':
+            Boolean(isDisabled) || Boolean(disabled),
+        },
         className,
       )}
       display={Display.Flex}
@@ -66,7 +83,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
           {...labelProps}
           className={classnames(
             'mm-form-text-field__label',
-            labelProps?.className,
+            labelProps?.className ?? '',
           )}
         >
           {label}
@@ -75,9 +92,9 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
       <TextField
         className={classnames(
           'mm-form-text-field__text-field',
-          textFieldProps?.className,
+          textFieldProps?.className ?? '',
         )}
-        id={id}
+        // id={id} Todo: confirm if this is needed
         {...{
           autoComplete,
           autoFocus,
@@ -97,21 +114,21 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
           readOnly,
           required,
           endAccessory,
-          size,
+          size: sizeMap[size],
           truncate,
           type,
           value,
-          ...textFieldProps,
+          ...(textFieldProps as TextFieldProps<'input'>),
         }}
       />
       {helpText && (
         <HelpText
-          severity={error && HelpTextSeverity.Danger}
+          severity={error ? HelpTextSeverity.Danger : undefined}
           marginTop={1}
           {...helpTextProps}
           className={classnames(
             'mm-form-text-field__help-text',
-            helpTextProps?.className,
+            helpTextProps?.className ?? '',
           )}
         >
           {helpText}
