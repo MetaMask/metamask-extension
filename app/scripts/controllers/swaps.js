@@ -588,7 +588,7 @@ export default class SwapsController {
     // We can reduce time on the loading screen by only doing this after the
     // loading screen and best quote have rendered.
     if (!approvalRequired && !fetchParams?.balanceError) {
-      newQuotes = await this.getAllQuotesWithGasEstimates(newQuotes);
+      newQuotes = await this.getAllQuotesWithGasEstimatesV2(newQuotes);
     }
 
     if (Object.values(newQuotes).length === 0) {
@@ -684,6 +684,41 @@ export default class SwapsController {
         const gasEstimateWithRefund = calculateGasEstimateWithRefund(
           quotes[aggId].maxGas,
           quotes[aggId].estimatedRefund,
+          gasLimit,
+        );
+
+        newQuotes[aggId] = {
+          ...quotes[aggId],
+          gasEstimate: gasLimit,
+          gasEstimateWithRefund,
+        };
+      } else if (quotes[aggId].approvalNeeded) {
+        // If gas estimation fails, but an ERC-20 approve is needed, then we do not add any estimate property to the quote object
+        // Such quotes will rely on the maxGas and averageGas properties from the api
+        newQuotes[aggId] = quotes[aggId];
+      }
+      // If gas estimation fails and no approval is needed, then we filter that quote out, so that it is not shown to the user
+    });
+    return newQuotes;
+  }
+
+  async getAllQuotesWithGasEstimatesV2(quotes) {
+    const quoteGasData = await Promise.all(
+      Object.values(quotes).map(async (quote) => {
+        const { gasLimit, simulationFails } = await this.timedoutGasReturn(
+          quote.trade,
+          quote.aggregator,
+        );
+        return [gasLimit, simulationFails, quote.aggregator];
+      }),
+    );
+
+    const newQuotes = {};
+    quoteGasData.forEach(([gasLimit, simulationFails, aggId]) => {
+      if (gasLimit && !simulationFails) {
+        const gasEstimateWithRefund = calculateGasEstimateWithRefund(
+          quotes[aggId].gasParams.maxGas,
+          quotes[aggId].gasParams.estimatedRefund,
           gasLimit,
         );
 
