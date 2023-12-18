@@ -384,13 +384,11 @@ export const AppHeader = ({ location }) => {
                     />
                   </Box>
                 </Box>
-                {accountOptionsMenuOpen ? (
-                  <GlobalMenu
-                    anchorElement={menuRef.current}
-                    isOpen={accountOptionsMenuOpen}
-                    closeMenu={() => setAccountOptionsMenuOpen(false)}
-                  />
-                ) : null}
+                <GlobalMenu
+                  anchorElement={menuRef.current}
+                  isOpen={accountOptionsMenuOpen}
+                  closeMenu={() => setAccountOptionsMenuOpen(false)}
+                />
                 {showProductTour &&
                 popupStatus &&
                 multichainProductTourStep === 3 ? (
