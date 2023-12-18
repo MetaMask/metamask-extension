@@ -49,12 +49,12 @@ export const QUOTE_VALIDATORS_V2 = [
     validator: truthyDigitString,
   },
   {
-    property: 'buyToken',
+    property: 'destinationToken',
     type: 'string',
     validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
   },
   {
-    property: 'sellToken',
+    property: 'sourceToken',
     type: 'string',
     validator: (input) => isValidHexAddress(input, { allowNonPrefixed: false }),
   },

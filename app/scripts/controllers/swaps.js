@@ -1233,11 +1233,11 @@ export default class SwapsController {
         approvalNeeded,
         gasParams,
         destinationAmount = 0,
-        buyToken,
+        destinationToken,
         destinationTokenInfo,
         gasEstimateWithRefund,
         sourceAmount,
-        sellToken,
+        sourceToken,
         trade,
         // fee: metaMaskFee, // TODO api hasn't implemented this yet
         multiLayerL1TradeFeeTotal, // TODO also this prob
@@ -1286,7 +1286,7 @@ export default class SwapsController {
       // If the swap is from the selected chain's default token, subtract
       // the sourceAmount from the total cost. Otherwise, the total fee
       // is simply trade.value plus gas fees.
-      const ethFee = isSwapsDefaultTokenAddress(sellToken, chainId)
+      const ethFee = isSwapsDefaultTokenAddress(sourceToken, chainId)
         ? totalWeiCost
             .minus(new Numeric(sourceAmount, 10))
             .toDenomination(EtherDenomination.ETH)
@@ -1310,7 +1310,7 @@ export default class SwapsController {
       const tokenConversionRate =
         tokenConversionRates[
           Object.keys(tokenConversionRates).find((tokenAddress) =>
-            isEqualCaseInsensitive(tokenAddress, buyToken),
+            isEqualCaseInsensitive(tokenAddress, destinationToken),
           )
         ];
       const conversionRateForSorting = tokenConversionRate || 1;
@@ -1321,7 +1321,7 @@ export default class SwapsController {
       );
 
       const conversionRateForCalculations = isSwapsDefaultTokenAddress(
-        buyToken,
+        destinationToken,
         chainId,
       )
         ? 1
@@ -1353,13 +1353,16 @@ export default class SwapsController {
 
     const isBest =
       topAggId &&
-      (isSwapsDefaultTokenAddress(newQuotes[topAggId].buyToken, chainId) ||
+      (isSwapsDefaultTokenAddress(
+        newQuotes[topAggId].destinationToken,
+        chainId,
+      ) ||
         Boolean(
           tokenConversionRates[
             Object.keys(tokenConversionRates).find((tokenAddress) =>
               isEqualCaseInsensitive(
                 tokenAddress,
-                newQuotes[topAggId]?.buyToken,
+                newQuotes[topAggId]?.destinationToken,
               ),
             )
           ],
