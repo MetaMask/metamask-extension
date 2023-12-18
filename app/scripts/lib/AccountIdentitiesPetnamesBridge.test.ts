@@ -3,14 +3,11 @@ import {
   PreferencesController,
   PreferencesControllerState,
 } from '../controllers/preferences';
-import setupAccountLabelsPetnamesBridge, {
-  ACCOUNT_LABEL_NAME_TYPE,
-  ACCOUNT_LABEL_CHAIN_ID,
-} from './setupAccountLabelsPetnamesBridge';
+import { AccountIdentitiesPetnamesBridge } from './AccountIdentitiesPetnamesBridge';
 
-const ADDRESS_MOCK = '0xabc';
-const NAME_MOCK = 'testName';
-const NAME_2_MOCK = 'testName2';
+const ADDRESS_A = '0xabc';
+const NAME_1 = 'name1';
+const NAME_2 = 'name2';
 
 interface MockPreferencesController extends jest.Mocked<PreferencesController> {
   store: jest.Mocked<PreferencesController['store']>;
@@ -40,111 +37,113 @@ function createNameControllerMock(
   } as any;
 }
 
-describe('setupAccountLabelsPetnamesBridge', () => {
-  let preferencesControllerDefault: MockPreferencesController;
-  let nameControllerDefault: NameController;
+describe('AccountIdentitiesPetnamesBridge', () => {
+  let preferencesController: MockPreferencesController;
+  let nameController: NameController;
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    preferencesControllerDefault = createPreferencesControllerMock();
-    nameControllerDefault = createNameControllerMock();
+    preferencesController = createPreferencesControllerMock();
+    nameController = createNameControllerMock();
   });
 
-  it('adds entry when account id entry added', () => {
-    setupAccountLabelsPetnamesBridge(
-      preferencesControllerDefault,
-      nameControllerDefault,
-    );
+  it('adds petnames entry when account id entry added', () => {
+    const bridge = new AccountIdentitiesPetnamesBridge({
+      preferencesController,
+      nameController,
+      messenger: {} as any,
+    });
+    bridge.init();
 
-    preferencesControllerDefault.store.subscribe.mock.calls[0][0]({
+    preferencesController.store.subscribe.mock.calls[0][0]({
       identities: {
-        [ADDRESS_MOCK]: {
-          address: ADDRESS_MOCK,
-          name: NAME_MOCK,
+        [ADDRESS_A]: {
+          address: ADDRESS_A,
+          name: NAME_1,
         },
       },
     });
 
-    expect(nameControllerDefault.setName).toHaveBeenCalledTimes(1);
-    expect(nameControllerDefault.setName).toHaveBeenCalledWith({
-      value: ADDRESS_MOCK,
+    expect(nameController.setName).toHaveBeenCalledTimes(1);
+    expect(nameController.setName).toHaveBeenCalledWith({
+      value: ADDRESS_A,
       type: ACCOUNT_LABEL_NAME_TYPE,
       variation: ACCOUNT_LABEL_CHAIN_ID,
-      name: NAME_MOCK,
+      name: NAME_1,
     });
   });
 
   it('updates entry when account id is updated', () => {
-    nameControllerDefault = createNameControllerMock({
-      [ADDRESS_MOCK]: {
+    nameController = createNameControllerMock({
+      [ADDRESS_A]: {
         [ACCOUNT_LABEL_CHAIN_ID]: {
-          name: NAME_MOCK,
+          name: NAME_1,
           proposedNames: {},
         },
       },
     });
 
-    preferencesControllerDefault = createPreferencesControllerMock({
-      [ADDRESS_MOCK]: {
-        address: ADDRESS_MOCK,
-        name: NAME_MOCK,
+    preferencesController = createPreferencesControllerMock({
+      [ADDRESS_A]: {
+        address: ADDRESS_A,
+        name: NAME_1,
       },
     });
 
     setupAccountLabelsPetnamesBridge(
-      preferencesControllerDefault,
-      nameControllerDefault,
+      preferencesController,
+      nameController,
     );
 
-    preferencesControllerDefault.store.subscribe.mock.calls[0][0]({
+    preferencesController.store.subscribe.mock.calls[0][0]({
       identities: {
-        [ADDRESS_MOCK]: {
-          address: ADDRESS_MOCK,
-          name: NAME_2_MOCK,
+        [ADDRESS_A]: {
+          address: ADDRESS_A,
+          name: NAME_2,
         },
       },
     });
 
-    expect(nameControllerDefault.setName).toHaveBeenCalledTimes(1);
-    expect(nameControllerDefault.setName).toHaveBeenCalledWith({
-      value: ADDRESS_MOCK,
+    expect(nameController.setName).toHaveBeenCalledTimes(1);
+    expect(nameController.setName).toHaveBeenCalledWith({
+      value: ADDRESS_A,
       type: ACCOUNT_LABEL_NAME_TYPE,
-      name: NAME_2_MOCK,
+      name: NAME_2,
       sourceId: undefined,
       variation: ACCOUNT_LABEL_CHAIN_ID,
     });
   });
 
   it('deletes entry when address book entry is deleted', () => {
-    nameControllerDefault = createNameControllerMock({
-      [ADDRESS_MOCK]: {
+    nameController = createNameControllerMock({
+      [ADDRESS_A]: {
         [ACCOUNT_LABEL_CHAIN_ID]: {
-          name: NAME_MOCK,
+          name: NAME_1,
           proposedNames: {},
         } as any,
       },
     });
 
-    preferencesControllerDefault = createPreferencesControllerMock({
-      [ADDRESS_MOCK]: {
-        address: ADDRESS_MOCK,
-        name: NAME_MOCK,
+    preferencesController = createPreferencesControllerMock({
+      [ADDRESS_A]: {
+        address: ADDRESS_A,
+        name: NAME_1,
       },
     });
 
     setupAccountLabelsPetnamesBridge(
-      preferencesControllerDefault,
-      nameControllerDefault,
+      preferencesController,
+      nameController,
     );
 
-    preferencesControllerDefault.store.subscribe.mock.calls[0][0]({
+    preferencesController.store.subscribe.mock.calls[0][0]({
       identities: {},
     });
 
-    expect(nameControllerDefault.setName).toHaveBeenCalledTimes(1);
-    expect(nameControllerDefault.setName).toHaveBeenCalledWith({
-      value: ADDRESS_MOCK,
+    expect(nameController.setName).toHaveBeenCalledTimes(1);
+    expect(nameController.setName).toHaveBeenCalledWith({
+      value: ADDRESS_A,
       type: ACCOUNT_LABEL_NAME_TYPE,
       name: null,
       sourceId: undefined,
