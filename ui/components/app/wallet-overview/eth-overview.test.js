@@ -54,6 +54,12 @@ describe('EthOverview', () => {
           '0x1': { address: '0x1', balance: '0x1F4' },
         },
       },
+      tokenList: [],
+      cachedBalances: {
+        '0x1': {
+          '0x1': '0x1F4',
+        },
+      },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
@@ -189,6 +195,7 @@ describe('EthOverview', () => {
       expect(primaryBalance).toHaveTextContent('$0.02USD');
       expect(queryByText('*')).toBeInTheDocument();
     });
+
 
     it('should have the Bridge button enabled if chain id is part of supported chains', () => {
       const mockedAvalancheStore = {

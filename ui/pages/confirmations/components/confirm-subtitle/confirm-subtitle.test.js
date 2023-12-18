@@ -62,7 +62,7 @@ describe('ConfirmSubTitle', () => {
       />,
       store,
     );
-    expect(await findByText('$0.01')).toBeInTheDocument();
+    expect(await findByText('0.00001')).toBeInTheDocument();
   });
 
   it('should not return null if assetStandard is ERC1155', async () => {
@@ -81,7 +81,7 @@ describe('ConfirmSubTitle', () => {
       />,
       store,
     );
-    expect(await findByText('$0.01')).toBeInTheDocument();
+    expect(await findByText('0.00001')).toBeInTheDocument();
   });
 
   it('should not return null if assetStandard is ERC712', async () => {
@@ -100,7 +100,7 @@ describe('ConfirmSubTitle', () => {
       />,
       store,
     );
-    expect(await findByText('$0.01')).toBeInTheDocument();
+    expect(await findByText('0.00001')).toBeInTheDocument();
   });
 
   it('should render subtitleComponent if passed', () => {

@@ -44,7 +44,6 @@ const tests = [
       useNativeCurrencyAsPrimaryCurrency: true,
       nativeCurrency: 'ETH',
       showFiat: true,
-      currentCurrency: 'usd',
     },
     params: {
       type: 'SECONDARY',
@@ -61,7 +60,6 @@ const tests = [
       useNativeCurrencyAsPrimaryCurrency: false,
       nativeCurrency: 'ETH',
       showFiat: true,
-      currentCurrency: 'usd',
     },
     params: {
       type: 'SECONDARY',
@@ -79,7 +77,6 @@ const tests = [
       useNativeCurrencyAsPrimaryCurrency: false,
       nativeCurrency: 'ETH',
       showFiat: false,
-      currentCurrency: 'usd',
     },
     params: {
       type: 'PRIMARY',
@@ -94,7 +91,6 @@ const tests = [
       useNativeCurrencyAsPrimaryCurrency: false,
       nativeCurrency: 'ETH',
       showFiat: true,
-      currentCurrency: 'usd',
     },
     params: {
       type: 'PRIMARY',
@@ -109,7 +105,6 @@ const tests = [
       useNativeCurrencyAsPrimaryCurrency: false,
       nativeCurrency: 'ETH',
       showFiat: true,
-      currentCurrency: 'usd',
     },
     params: {
       type: 'PRIMARY',
