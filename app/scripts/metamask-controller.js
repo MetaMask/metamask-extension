@@ -739,11 +739,6 @@ export default class MetamaskController extends EventEmitter {
       messenger: currencyRateMessenger,
       state: initState.CurrencyController,
     });
-    if (this.preferencesController.store.getState().useCurrencyRateCheck) {
-      this.currencyRateController.startPollingByNetworkClientId(
-        this.networkController.state.selectedNetworkClientId,
-      );
-    }
 
     const phishingControllerMessenger = this.controllerMessenger.getRestricted({
       name: 'PhishingController',
