@@ -3,7 +3,7 @@ import { renderHookWithProvider } from '../../../test/lib/render-helpers';
 import useConfirmationNetworkInfo from './useConfirmationNetworkInfo';
 
 describe('useConfirmationNetworkInfo', () => {
-  it('returns network display name when confirmation chainId is present', () => {
+  it('returns display name and image when confirmation chainId is present', () => {
     const { result } = renderHookWithProvider(
       () => useConfirmationNetworkInfo(),
       {
