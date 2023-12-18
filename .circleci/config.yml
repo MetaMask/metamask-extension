@@ -187,6 +187,9 @@ workflows:
       - test-e2e-chrome-mv3:
           requires:
             - prep-build-test-mv3
+      - test-e2e-chrome-vault-decryption:
+          requires:
+            - prep-build
       - test-unit-mocha:
           requires:
             - prep-deps
@@ -271,6 +274,7 @@ workflows:
             - test-e2e-firefox-flask
             - test-e2e-chrome-mmi
             - test-e2e-chrome-rpc-mmi
+            - test-e2e-chrome-vault-decryption
             - test-storybook
       - benchmark:
           requires:
@@ -980,6 +984,19 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
+
+  test-e2e-chrome-vault-decryption:
+    executor: node-browsers-large
+    parallelism: 24
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:e2e:chrome:vault
+          command: |
+            yarn test:e2e:single test/e2e/vault-decryption.spec.js --browser chrome --retries 2 --debug
+          no_output_timeout: 5m
 
   test-e2e-firefox-flask:
     executor: node-browsers-large
