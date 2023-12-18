@@ -756,17 +756,6 @@ export default function PrepareSendAndSwapPage({
     }
   };
 
-  // Allow selecting the same From and To so that we can go back to the Send flow from the Swap flow
-  // const hideSwapToTokenIf = useCallback(
-  //   (item) => isEqualCaseInsensitive(item.address, fromTokenAddress),
-  //   [fromTokenAddress],
-  // );
-
-  // const hideSwapFromTokenIf = useCallback(
-  //   (item) => isEqualCaseInsensitive(item.address, selectedToToken?.address),
-  //   [selectedToToken?.address],
-  // );
-
   const showReviewQuote =
     !swapsErrorKey && !isReviewSwapButtonDisabled && areQuotesPresent;
   const showQuotesLoadingAnimation =
