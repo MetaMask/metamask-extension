@@ -602,9 +602,6 @@
   "search": {
     "message": "Traži"
   },
-  "searchResults": {
-    "message": "Rezultati pretraživanja"
-  },
   "securityAndPrivacy": {
     "message": "Sigurnost i privatnost"
   },
@@ -769,12 +766,6 @@
   },
   "unknown": {
     "message": "Nepoznato"
-  },
-  "unknownCameraError": {
-    "message": "Došlo je do greške prilikom pokušaja pristupanja vašoj kameri. Pokušajte ponovno..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ups! Nešto je pošlo po zlu..."
   },
   "unknownNetwork": {
     "message": "Nepoznata privatna mreža"

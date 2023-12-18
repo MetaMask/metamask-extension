@@ -533,9 +533,6 @@
   "search": {
     "message": "Hanapin"
   },
-  "searchResults": {
-    "message": "Mga Resulta ng Paghahanap"
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -691,12 +688,6 @@
   },
   "unknown": {
     "message": "Hindi Alam"
-  },
-  "unknownCameraError": {
-    "message": "Nagkaroon ng error habang sinusubukang i-access ang iyong camera. Pakisubukang muli..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Nagkaroon ng problema...."
   },
   "unknownNetwork": {
     "message": "Hindi Kilalang Pribadong Network"

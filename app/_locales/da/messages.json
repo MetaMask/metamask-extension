@@ -590,9 +590,6 @@
   "search": {
     "message": "Søg"
   },
-  "searchResults": {
-    "message": "Søg Resultater"
-  },
   "securityAndPrivacy": {
     "message": "Sikkerhed & Privatliv"
   },
@@ -748,12 +745,6 @@
   },
   "unknown": {
     "message": "ukendt"
-  },
-  "unknownCameraError": {
-    "message": "Der opstod en fejl da vi prøvede at tilgå dit kamera. Prøv venligst igen..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Hovsa! Noget gik galt..."
   },
   "unknownNetwork": {
     "message": "Ukendt privat netværk"

@@ -6,7 +6,7 @@ exports[`ListWithSearch renders the component with initial props 1`] = `
   tabindex="0"
 >
   <span
-    class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+    class="mm-box mm-icon mm-icon--size-sm mm-box--padding-1 mm-box--display-inline-block mm-box--color-inherit"
     style="mask-image: url('./images/icons/search.svg');"
   />
   <input

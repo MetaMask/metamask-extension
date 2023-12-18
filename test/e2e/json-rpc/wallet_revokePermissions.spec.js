@@ -20,17 +20,14 @@ describe('Revoke Dapp Permissions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await openDapp(driver);
 
-        const accountsDiv = await driver.findElement('#accounts');
-
-        assert.equal(
-          await accountsDiv.getText(),
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
-        );
+        await driver.findElement({
+          text: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+          css: '#accounts',
+        });
 
         // wallet_revokePermissions request
         const revokePermissionsRequest = JSON.stringify({
@@ -52,12 +49,9 @@ describe('Revoke Dapp Permissions', function () {
 
         // TODO: Fix having to reload dapp as it is not the proper behavior in production, issue with test setup.
         await driver.executeScript(`window.location.reload()`);
-        // accountsDiv = await driver.findElement('#accounts');
-        await driver.findElement({
-          text: '',
-          css: '#accounts',
-        });
-        // assert.equal(await accountsDiv.getText(), '');
+
+        // You cannot use driver.findElement() with an empty string, so use xpath
+        await driver.findElement({ xpath: '//span[@id="accounts"][.=""]' });
       },
     );
   });
