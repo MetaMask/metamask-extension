@@ -34,6 +34,7 @@ import {
   JustifyContent,
   Size,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
@@ -240,51 +241,34 @@ export const AccountListItem = ({
               {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
           </Box>
-          {process.env.MULTICHAIN ? (
-            <>
-              {orderedTokenList.length > 1 ? (
-                <AvatarGroup members={orderedTokenList} limit={4} />
-              ) : (
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  justifyContent={JustifyContent.center}
-                  gap={1}
-                >
-                  <AvatarToken
-                    src={primaryTokenImage}
-                    name={nativeCurrency}
-                    size={AvatarTokenSize.Xs}
-                    borderColor={BorderColor.borderDefault}
-                  />
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={Color.textAlternative}
-                    textAlign={TextAlign.End}
-                    as="div"
-                  >
-                    <UserPreferencedCurrencyDisplay
-                      ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                      value={balanceToTranslate}
-                      type={SECONDARY}
-                    />
-                  </Text>
-                </Box>
-              )}
-            </>
+          {orderedTokenList.length > 1 ? (
+            <AvatarGroup members={orderedTokenList} limit={4} />
           ) : (
-            <Text
-              variant={TextVariant.bodySm}
-              color={Color.textAlternative}
-              textAlign={TextAlign.End}
-              as="div"
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              gap={1}
             >
-              <UserPreferencedCurrencyDisplay
-                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={balanceToTranslate}
-                type={SECONDARY}
+              <AvatarToken
+                src={primaryTokenImage}
+                name={nativeCurrency}
+                size={AvatarTokenSize.Xs}
+                borderColor={BorderColor.borderDefault}
               />
-            </Text>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                textAlign={TextAlign.End}
+                as="div"
+              >
+                <UserPreferencedCurrencyDisplay
+                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                  value={balanceToTranslate}
+                  type={SECONDARY}
+                />
+              </Text>
+            </Box>
           )}
         </Box>
         {label ? (
