@@ -20,6 +20,7 @@ import {
   IconSize,
   Tag,
   Text,
+  Icon,
 } from '../../component-library';
 import {
   AlignItems,
@@ -33,6 +34,7 @@ import {
   JustifyContent,
   Size,
   TextAlign,
+  TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
@@ -83,6 +85,7 @@ export const AccountListItem = ({
   closeMenu,
   connectedAvatar,
   connectedAvatarName,
+  isPinned = false,
   showOptions = false,
 }) => {
   const t = useI18nContext();
@@ -169,7 +172,13 @@ export const AccountListItem = ({
             <Box
               className="multichain-account-list-item__account-name"
               marginInlineEnd={2}
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              gap={2}
             >
+              {process.env.NETWORK_ACCOUNT_DND && isPinned ? (
+                <Icon name={IconName.Pin} size={IconSize.Xs} />
+              ) : null}
               <Text
                 as="button"
                 onClick={(e) => {
@@ -232,51 +241,34 @@ export const AccountListItem = ({
               {shortenAddress(toChecksumHexAddress(identity.address))}
             </Text>
           </Box>
-          {process.env.MULTICHAIN ? (
-            <>
-              {orderedTokenList.length > 1 ? (
-                <AvatarGroup members={orderedTokenList} limit={4} />
-              ) : (
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  justifyContent={JustifyContent.center}
-                  gap={1}
-                >
-                  <AvatarToken
-                    src={primaryTokenImage}
-                    name={nativeCurrency}
-                    size={AvatarTokenSize.Xs}
-                    borderColor={BorderColor.borderDefault}
-                  />
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={Color.textAlternative}
-                    textAlign={TextAlign.End}
-                    as="div"
-                  >
-                    <UserPreferencedCurrencyDisplay
-                      ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                      value={balanceToTranslate}
-                      type={SECONDARY}
-                    />
-                  </Text>
-                </Box>
-              )}
-            </>
+          {orderedTokenList.length > 1 ? (
+            <AvatarGroup members={orderedTokenList} limit={4} />
           ) : (
-            <Text
-              variant={TextVariant.bodySm}
-              color={Color.textAlternative}
-              textAlign={TextAlign.End}
-              as="div"
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              gap={1}
             >
-              <UserPreferencedCurrencyDisplay
-                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={balanceToTranslate}
-                type={SECONDARY}
+              <AvatarToken
+                src={primaryTokenImage}
+                name={nativeCurrency}
+                size={AvatarTokenSize.Xs}
+                borderColor={BorderColor.borderDefault}
               />
-            </Text>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                textAlign={TextAlign.End}
+                as="div"
+              >
+                <UserPreferencedCurrencyDisplay
+                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                  value={balanceToTranslate}
+                  type={SECONDARY}
+                />
+              </Text>
+            </Box>
           )}
         </Box>
         {label ? (
@@ -319,6 +311,7 @@ export const AccountListItem = ({
           isOpen={accountOptionsMenuOpen}
           isRemovable={keyring?.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
+          isPinned={process.env.NETWORK_ACCOUNT_DND ? isPinned : null}
         />
       ) : null}
     </Box>
@@ -358,6 +351,10 @@ AccountListItem.propTypes = {
    * Represents if the "Options" 3-dot menu should display
    */
   showOptions: PropTypes.bool,
+  /**
+   * Represents pinned accounts
+   */
+  isPinned: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

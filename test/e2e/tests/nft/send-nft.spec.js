@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   unlockWallet,
 } = require('../../helpers');
@@ -9,22 +9,13 @@ const FixtureBuilder = require('../../fixture-builder');
 
 describe('Send NFT', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   it('should be able to send ERC721 NFT', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },

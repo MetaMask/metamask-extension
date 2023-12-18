@@ -11,11 +11,11 @@ import {
   ButtonVariant,
   IconName,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
@@ -33,6 +33,7 @@ import {
   getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
+  getUpdatedAndSortedAccounts,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
@@ -45,9 +46,6 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  ADD_SNAP_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
@@ -115,6 +113,11 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
+
+  const sortedSearchResults = process.env.NETWORK_ACCOUNT_DND
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useSelector(getUpdatedAndSortedAccounts)
+    : searchResults;
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -239,13 +242,9 @@ export const AccountListMenu = ({
                     startIconName={IconName.Snaps}
                     onClick={() => {
                       onClose();
-                      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                        ? global.platform.openExtensionInBrowser(
-                            ADD_SNAP_ACCOUNT_ROUTE,
-                            null,
-                            true,
-                          )
-                        : history.push(ADD_SNAP_ACCOUNT_ROUTE);
+                      global.platform.openTab({
+                        url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL,
+                      });
                     }}
                   >
                     {t('settingAddSnapAccount')}
@@ -309,7 +308,7 @@ export const AccountListMenu = ({
             ) : null}
             {/* Account list block */}
             <Box className="multichain-account-menu-popover__list">
-              {searchResults.length === 0 && searchQuery !== '' ? (
+              {sortedSearchResults.length === 0 && searchQuery !== '' ? (
                 <Text
                   paddingLeft={4}
                   paddingRight={4}
@@ -319,7 +318,7 @@ export const AccountListMenu = ({
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              {searchResults.map((account) => {
+              {sortedSearchResults.map((account) => {
                 const connectedSite = connectedSites[account.address]?.find(
                   ({ origin }) => origin === currentTabOrigin,
                 );
@@ -344,6 +343,11 @@ export const AccountListMenu = ({
                     connectedAvatar={connectedSite?.iconUrl}
                     connectedAvatarName={connectedSite?.name}
                     showOptions
+                    isPinned={
+                      process.env.NETWORK_ACCOUNT_DND
+                        ? Boolean(account.pinned)
+                        : null
+                    }
                     {...accountListItemProps}
                   />
                 );

@@ -1,5 +1,5 @@
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   openActionMenuAndStartSendFlow,
   unlockWallet,
@@ -69,21 +69,12 @@ describe('ENS', function () {
         };
       });
   }
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   it('domain resolves to a correct address', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         testSpecificMock: mockInfura,
       },
