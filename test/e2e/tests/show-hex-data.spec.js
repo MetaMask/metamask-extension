@@ -1,6 +1,10 @@
-const { convertToHexValue, withFixtures, logInWithBalanceValidation } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
 const { strict: assert } = require('assert');
+const {
+  convertToHexValue,
+  withFixtures,
+  logInWithBalanceValidation,
+} = require('../helpers');
+const FixtureBuilder = require('../fixture-builder');
 
 const selectors = {
   accountOptionsMenu: '[data-testid="account-options-menu-button"]',
@@ -16,7 +20,11 @@ const selectors = {
   hexButton: { text: 'Hex', tag: 'button' },
   detailsTab: { text: 'Details', tag: 'button' },
   containerContent: '.confirm-page-container-content',
-  confirmButton: { text: 'Confirm', tag: 'button', css: '[data-testid="page-container-footer-next"]' },
+  confirmButton: {
+    text: 'Confirm',
+    tag: 'button',
+    css: '[data-testid="page-container-footer-next"]',
+  },
 };
 
 const inputData = {
@@ -24,15 +32,15 @@ const inputData = {
   hexDataText: '0xabc',
 };
 
-//Function to click elements in sequence
-async function clickElementsInSequence(driver, selectors) {
-  for (const selector of selectors) {
+// Function to click elements in sequence
+async function clickElementsInSequence(driver, clickSelectors) {
+  for (const selector of clickSelectors) {
     await driver.waitForSelector(selector);
     await driver.clickElement(selector);
   }
 }
 
-//Function to perform the hex data toggle
+// Function to perform the hex data toggle
 async function toggleHexData(driver) {
   const sequence = [
     selectors.accountOptionsMenu,
@@ -44,12 +52,12 @@ async function toggleHexData(driver) {
   await clickElementsInSequence(driver, sequence);
 }
 
-//Function to click on the app logo
+// Function to click on the app logo
 async function clickOnLogo(driver) {
   await driver.clickElement(selectors.appHeaderLogo);
 }
 
-//Function to send a transaction and verify hex data text area appears.
+// Function to send a transaction and verify hex data text area appears.
 async function sendTransactionAndVerifyHexData(driver) {
   await driver.clickElement(selectors.ethOverviewSend);
   await driver.fill(selectors.ensInput, inputData.recipientAddress);
@@ -63,18 +71,16 @@ async function sendTransactionAndVerifyHexData(driver) {
 describe('Check the toggle for hex data', function () {
   let ganacheOptions;
 
-  beforeEach(() => {
+  it('Setting the hex data toggle and verify that the textbox appears', async function () {
     ganacheOptions = {
       accounts: [
         {
-          secretKey: '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
+          secretKey:
+            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
           balance: convertToHexValue(25000000000000000000),
         },
       ],
     };
-  });
-
-  it('Setting the hex data toggle and verify that the textbox appears', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -88,9 +94,15 @@ describe('Check the toggle for hex data', function () {
         await sendTransactionAndVerifyHexData(driver);
 
         // Verify hex data in the container content
-        const pageContentContainer = await driver.findElement(selectors.containerContent);
+        const pageContentContainer = await driver.findElement(
+          selectors.containerContent,
+        );
         const pageContentContainerText = await pageContentContainer.getText();
-        assert.equal(pageContentContainerText.includes(inputData.hexDataText), true, 'Hex data is incorrect');
+        assert.equal(
+          pageContentContainerText.includes(inputData.hexDataText),
+          true,
+          'Hex data is incorrect',
+        );
 
         // Click on the 'Details' tab
         await driver.clickElement(selectors.detailsTab);
