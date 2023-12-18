@@ -4468,7 +4468,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/keyring-controller@npm:^8.0.3":
+"@metamask/keyring-controller@npm:8.0.3":
   version: 8.0.3
   resolution: "@metamask/keyring-controller@npm:8.0.3"
   dependencies:
@@ -4485,6 +4485,26 @@ __metadata:
   peerDependencies:
     "@metamask/preferences-controller": ^4.4.3
   checksum: 9739ff404f111d8b353a4fd7829f44f011effc436d773865038dcbb7c74b8e8818fcb567074cad897406bd799d1beb37ddd4f473d1c0164bc9937f9b2288861a
+  languageName: node
+  linkType: hard
+
+"@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A8.0.3#~/.yarn/patches/@metamask-keyring-controller-npm-8.0.3-63afac5958.patch":
+  version: 8.0.3
+  resolution: "@metamask/keyring-controller@patch:@metamask/keyring-controller@npm%3A8.0.3#~/.yarn/patches/@metamask-keyring-controller-npm-8.0.3-63afac5958.patch::version=8.0.3&hash=1ad908"
+  dependencies:
+    "@keystonehq/metamask-airgapped-keyring": "npm:^0.13.1"
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/eth-keyring-controller": "npm:^13.0.1"
+    "@metamask/message-manager": "npm:^7.3.5"
+    "@metamask/preferences-controller": "npm:^4.4.3"
+    "@metamask/utils": "npm:^8.1.0"
+    async-mutex: "npm:^0.2.6"
+    ethereumjs-util: "npm:^7.0.10"
+    ethereumjs-wallet: "npm:^1.0.1"
+    immer: "npm:^9.0.6"
+  peerDependencies:
+    "@metamask/preferences-controller": ^4.4.3
+  checksum: f608bdf408323f233b16fc42b2013ad5de6c8cc8b63173ae1823872821e5c1935822f12209a326856af2a440878948d5e245cdbd557defe9ec4f55428d74cc5c
   languageName: node
   linkType: hard
 
@@ -24330,7 +24350,7 @@ __metadata:
     "@metamask/jazzicon": "npm:^2.0.0"
     "@metamask/key-tree": "npm:^9.0.0"
     "@metamask/keyring-api": "npm:^1.0.0"
-    "@metamask/keyring-controller": "npm:^8.0.3"
+    "@metamask/keyring-controller": "patch:@metamask/keyring-controller@npm%3A8.0.3#~/.yarn/patches/@metamask-keyring-controller-npm-8.0.3-63afac5958.patch"
     "@metamask/logging-controller": "npm:^1.0.1"
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
