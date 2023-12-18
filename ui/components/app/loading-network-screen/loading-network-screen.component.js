@@ -57,7 +57,7 @@ export default class LoadingNetworkScreen extends PureComponent {
       return loadingMessage;
     }
     const { providerConfig, providerId } = this.props;
-    console.log({ providerConfig });
+
     const providerName = providerConfig.type;
     const { t } = this.context;
 
