@@ -31,6 +31,6 @@ describe('Header', () => {
   it('contains network name and account name', () => {
     const { getByText } = render();
     expect(getByText('Test Account')).toBeInTheDocument();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText('Chain 5')).toBeInTheDocument();
   });
 });
