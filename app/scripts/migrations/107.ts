@@ -3,13 +3,16 @@ import { hasProperty, isObject } from '@metamask/utils';
 
 export const version = 107;
 
-interface Account {
+interface AccountBalance {
   address: string;
   balance: string;
 }
 
 interface AccountTrackerControllerState {
-  accountsByChainId: Record<string, Record<string, Account>>;
+  accountsByChainId: Record<string, Record<string, AccountBalance>>;
+  accounts: Record<string, AccountBalance>;
+  currentBlockGasLimit: string;
+  currentBlockGasLimitByChainId: Record<string, string>;
 }
 
 /**
@@ -37,17 +40,18 @@ function transformState(state: Record<string, unknown>) {
     !isObject(state.CachedBalancesController) ||
     !hasProperty(state.CachedBalancesController, 'cachedBalances') ||
     !isObject(state.CachedBalancesController.cachedBalances) ||
-    !hasProperty(state, 'AccountTracker')
+    !hasProperty(state, 'AccountTracker') ||
+    !isObject(state.AccountTracker)
   ) {
     return state;
   }
 
-  const accountTrackerControllerState = (state.AccountTracker ||
-    {}) as AccountTrackerControllerState;
-
-  if (!accountTrackerControllerState.accountsByChainId) {
-    accountTrackerControllerState.accountsByChainId = {};
+  if (!state.AccountTracker.accountsByChainId) {
+    state.AccountTracker.accountsByChainId = {};
   }
+
+  const accountTrackerControllerState =
+    state.AccountTracker as unknown as AccountTrackerControllerState;
 
   const cachedBalances = state.CachedBalancesController
     .cachedBalances as Record<string, Record<string, string>>;
@@ -58,12 +62,13 @@ function transformState(state: Record<string, unknown>) {
     }
 
     Object.keys(cachedBalances[chainId]).forEach((accountAddress) => {
-      const balance = cachedBalances[chainId][accountAddress];
+      // if the account is already in the accountsByChainId state, don't overwrite it
       if (
         accountTrackerControllerState.accountsByChainId[chainId][
           accountAddress
         ] === undefined
       ) {
+        const balance = cachedBalances[chainId][accountAddress];
         accountTrackerControllerState.accountsByChainId[chainId][
           accountAddress
         ] = {
