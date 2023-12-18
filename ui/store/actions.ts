@@ -3354,13 +3354,6 @@ export function fetchAndSetQuotesV2(
   unknown,
   AnyAction
 > {
-  console.log(
-    'fetchParams',
-    fetchParams,
-    'fetchParamsMetaData',
-    fetchParamsMetaData,
-  );
-
   return async (dispatch: MetaMaskReduxDispatch) => {
     const [quotes, selectedAggId] = await submitRequestToBackground(
       'fetchAndSetQuotesV2',

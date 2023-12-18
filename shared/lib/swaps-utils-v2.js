@@ -190,8 +190,6 @@ export async function fetchQuotesInfoV2(
     functionName: 'fetchQuotesInfoV2',
   });
 
-  console.log('hello tradesResponse', tradesResponse);
-
   const newQuotes = tradesResponse.reduce((aggIdTradeMap, quote) => {
     if (
       quote.trade &&

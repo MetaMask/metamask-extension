@@ -1227,7 +1227,6 @@ export default class SwapsController {
     let overallValueOfBestQuoteForSorting = null;
 
     Object.values(newQuotes).forEach((quote) => {
-      console.log('quote', quote);
       const {
         aggregator,
         approvalNeeded,
