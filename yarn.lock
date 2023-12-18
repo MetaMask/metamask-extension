@@ -18839,7 +18839,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globalthis@npm:^1.0.3":
+"globalthis@npm:^1.0.1, globalthis@npm:^1.0.3":
   version: 1.0.3
   resolution: "globalthis@npm:1.0.3"
   dependencies:
@@ -24192,7 +24192,6 @@ __metadata:
     fuse.js: "npm:^3.2.0"
     ganache: "npm:^7.9.2"
     gh-pages: "npm:^5.0.0"
-    globalthis: "npm:^1.0.1"
     globby: "npm:^11.0.4"
     gulp: "npm:^4.0.2"
     gulp-autoprefixer: "npm:^8.0.0"
