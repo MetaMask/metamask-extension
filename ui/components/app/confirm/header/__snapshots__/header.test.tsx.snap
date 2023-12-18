@@ -3,7 +3,7 @@
 exports[`Header should match snapshot 1`] = `
 <div>
   <div
-    class="mm-box confirm_header-wrapper mm-box--padding-4 mm-box--display-flex mm-box--align-items-center"
+    class="mm-box confirm_header__wrapper mm-box--padding-4 mm-box--display-flex mm-box--align-items-center"
   >
     <div
       class="mm-box mm-box--display-flex"
@@ -53,23 +53,23 @@ exports[`Header should match snapshot 1`] = `
         </div>
       </div>
       <div
-        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header-avatar_network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
       >
-        G
+        C
       </div>
     </div>
     <div
-      class="mm-box mm-box--margin-left-4"
+      class="mm-box mm-box--margin-inline-start-4"
     >
-      <h4
-        class="mm-box mm-text mm-text--heading-sm mm-box--color-text-default"
-      >
-        Test Account
-      </h4>
       <p
         class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
       >
-        Goerli
+        Test Account
+      </p>
+      <p
+        class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+      >
+        Chain 5
       </p>
     </div>
   </div>
