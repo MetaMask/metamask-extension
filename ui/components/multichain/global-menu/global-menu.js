@@ -23,7 +23,7 @@ import {
   PopoverPosition,
 } from '../../component-library';
 
-import { Menu, MenuItem } from '../../ui/menu';
+import { MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
@@ -61,6 +61,7 @@ import {
   BackgroundColor,
   BlockSize,
   BorderColor,
+  BorderStyle,
   Display,
   JustifyContent,
   TextAlign,
@@ -115,7 +116,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         overflow: 'hidden',
         minWidth: 225,
       }}
-      borderColor={BorderColor.backgroundDefault}
+      borderStyle={BorderStyle.none}
       position={PopoverPosition.BottomEnd}
     >
       <AccountDetailsMenuItem
