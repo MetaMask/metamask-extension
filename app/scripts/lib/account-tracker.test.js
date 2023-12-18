@@ -696,7 +696,6 @@ describe('Account Tracker', () => {
 
           await accountTracker.updateAccounts('mainnet');
 
-
           const accounts = {
             [VALID_ADDRESS]: {
               address: VALID_ADDRESS,
