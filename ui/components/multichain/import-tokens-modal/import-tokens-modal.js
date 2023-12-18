@@ -9,7 +9,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link/dist/token-tracker-link';
-import { fetchAndMapExchangeRates } from '@metamask/assets-controllers';
+import {
+  fetchTokenContractExchangeRates,
+  CodefiTokenPricesServiceV2,
+} from '@metamask/assets-controllers';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -376,14 +379,15 @@ export const ImportTokensModal = ({ onClose }) => {
         undefined,
     );
 
-    const finalArr = tmpTokensToDispatch.map((obj) => obj.address);
+    const tokenAddresses = tmpTokensToDispatch.map((obj) => obj.address);
     if (tmpTokensToDispatch.length !== 0) {
       try {
-        const result = await fetchAndMapExchangeRates(
+        const result = await fetchTokenContractExchangeRates({
+          tokenPricesService: new CodefiTokenPricesServiceV2(),
           nativeCurrency,
-          finalArr,
+          tokenAddresses,
           chainId,
-        );
+        });
         // dispatch action
         dispatch(setConfirmationExchangeRates(result));
       } catch (err) {
@@ -517,7 +521,7 @@ export const ImportTokensModal = ({ onClose }) => {
         >
           {t('importTokensCamelCase')}
         </ModalHeader>
-        <Box>
+        <Box className="import-tokens-modal__body">
           <Tabs t={t} tabsClassName="import-tokens-modal__tabs">
             {showSearchTab ? (
               <Tab
