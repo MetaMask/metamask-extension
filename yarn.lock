@@ -3831,9 +3831,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^21.0.0":
-  version: 21.0.0
-  resolution: "@metamask/assets-controllers@npm:21.0.0"
+"@metamask/assets-controllers@npm:^22.0.0":
+  version: 22.0.0
+  resolution: "@metamask/assets-controllers@npm:22.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -3843,7 +3843,7 @@ __metadata:
     "@metamask/approval-controller": "npm:^5.0.0"
     "@metamask/base-controller": "npm:^4.0.0"
     "@metamask/contract-metadata": "npm:^2.4.0"
-    "@metamask/controller-utils": "npm:^7.0.0"
+    "@metamask/controller-utils": "npm:^8.0.0"
     "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/metamask-eth-abis": "npm:3.0.0"
     "@metamask/network-controller": "npm:^17.0.0"
@@ -3863,7 +3863,7 @@ __metadata:
     "@metamask/approval-controller": ^5.0.0
     "@metamask/network-controller": ^17.0.0
     "@metamask/preferences-controller": ^5.0.0
-  checksum: 6624b168465d6c4649577c005729a762a6e62524157b762c17426b84e4cc95bcaee05850c02bb2bb2afc930bd1976d5f106c46c6cbd08b40b35129092a084755
+  checksum: 78ee0bb01b0bfb9ca876ea868583b47217b51f08c7839ce45f13236c70e175edc2a1243a3c930c8c24574dd266c267fe46c85a42b377d83239084528d3361713
   languageName: node
   linkType: hard
 
@@ -3985,6 +3985,21 @@ __metadata:
     ethereumjs-util: "npm:^7.0.10"
     fast-deep-equal: "npm:^3.1.3"
   checksum: 405b23bf7066ce410f5e8a09bbf63056fa36ebfa7c8450ef83e76b5ce3eecd160d2d8ad2e4023d79bf611b1855f45f1eb834cb51028e7f87964cc3b322ae708d
+  languageName: node
+  linkType: hard
+
+"@metamask/controller-utils@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "@metamask/controller-utils@npm:8.0.0"
+  dependencies:
+    "@metamask/eth-query": "npm:^4.0.0"
+    "@metamask/ethjs-unit": "npm:^0.2.1"
+    "@metamask/utils": "npm:^8.2.0"
+    "@spruceid/siwe-parser": "npm:1.1.3"
+    eth-ens-namehash: "npm:^2.0.8"
+    ethereumjs-util: "npm:^7.0.10"
+    fast-deep-equal: "npm:^3.1.3"
+  checksum: df5216ebef5ff75526a74d4fb5d5b257ec06cafd1e3fb68ed4560f97138fd5346f4834933a0374e2e5c9dc0309a84de1fb981621496e9dec8157e63a041f4685
   languageName: node
   linkType: hard
 
@@ -24331,7 +24346,7 @@ __metadata:
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^4.0.0"
     "@metamask/approval-controller": "npm:^3.4.0"
-    "@metamask/assets-controllers": "npm:^21.0.0"
+    "@metamask/assets-controllers": "npm:^22.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^4.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
