@@ -888,6 +888,9 @@
   "connectingTo": {
     "message": "Connecting to $1"
   },
+  "connectingToDeprecatedNetwork": {
+    "message": "'$1' has been deprecated and may have stopped working. Select another network."
+  },
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
