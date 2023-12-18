@@ -21,11 +21,11 @@ import {
   FormTextFieldComponent,
 } from './form-text-field.types';
 
-const sizeMap: Record<FormTextFieldSize, TextFieldSize> = {
-  [FormTextFieldSize.Sm]: TextFieldSize.Sm,
-  [FormTextFieldSize.Md]: TextFieldSize.Md,
-  [FormTextFieldSize.Lg]: TextFieldSize.Lg,
-};
+// const sizeMap: Record<FormTextFieldSize, TextFieldSize> = {
+//   [FormTextFieldSize.Sm]: TextFieldSize.Sm,
+//   [FormTextFieldSize.Md]: TextFieldSize.Md,
+//   [FormTextFieldSize.Lg]: TextFieldSize.Lg,
+// };
 
 export const FormTextField: FormTextFieldComponent = React.forwardRef(
   <C extends React.ElementType = 'input'>(
@@ -95,6 +95,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
           textFieldProps?.className ?? '',
         )}
         // id={id} Todo: confirm if this is needed
+        size={size as unknown as TextFieldSize}
         {...{
           autoComplete,
           autoFocus,
@@ -114,7 +115,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef(
           readOnly,
           required,
           endAccessory,
-          size: sizeMap[size],
+          // size
           truncate,
           type,
           value,
