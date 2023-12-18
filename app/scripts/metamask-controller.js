@@ -2608,7 +2608,7 @@ export default class MetamaskController extends EventEmitter {
 
       // primary keyring management
       addNewAccount: this.addNewAccount.bind(this),
-      verifySeedPhrase: this.verifySeedPhrase.bind(this),
+      getSeedPhrase: this.getSeedPhrase.bind(this),
       resetAccount: this.resetAccount.bind(this),
       removeAccount: this.removeAccount.bind(this),
       importAccountWithStrategy: this.importAccountWithStrategy.bind(this),
@@ -3798,12 +3798,13 @@ export default class MetamaskController extends EventEmitter {
    *
    * Called when the first account is created and on unlocking the vault.
    *
+   * @param password
    * @returns {Promise<number[]>} The seed phrase to be confirmed by the user,
    * encoded as an array of UTF-8 bytes.
    */
-  async verifySeedPhrase() {
+  async getSeedPhrase(password) {
     return this._convertEnglishWordlistIndicesToCodepoints(
-      await this.keyringController.verifySeedPhrase(),
+      await this.keyringController.exportSeedPhrase(password),
     );
   }
 
