@@ -196,7 +196,7 @@ describe('Actions', () => {
 
       background.verifyPassword.callsFake((_, cb) => cb());
       background.getSeedPhrase.callsFake((_, cb) => {
-        return cb(new Error('error'));
+        cb(new Error('error'));
       });
 
       setBackgroundConnection(background);
