@@ -80,7 +80,6 @@
         "status": "available"
       }
     },
-    "cachedBalances": "object",
     "keyrings": "object",
     "useNonceField": false,
     "usePhishDetect": true,

@@ -1112,9 +1112,6 @@
   "searchAccounts": {
     "message": "搜尋帳戶"
   },
-  "searchResults": {
-    "message": "搜尋結果"
-  },
   "secureWallet": {
     "message": "Secure Wallet"
   },
@@ -1431,12 +1428,6 @@
   "unknown": {
     "message": "未知"
   },
-  "unknownCameraError": {
-    "message": "無法存取攝影鏡頭。請再試一次..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "糟糕！出了些問題...."
-  },
   "unknownNetwork": {
     "message": "未知私有網路"
   },
@@ -1476,10 +1467,6 @@
   },
   "userName": {
     "message": "使用者名稱"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "代幣的小數位數可以在 $1 找到",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "在 $1 驗證這個代幣的資訊",

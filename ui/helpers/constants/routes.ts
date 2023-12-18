@@ -21,6 +21,7 @@ const CONTACT_VIEW_ROUTE = '/settings/contact-list/view-contact';
 const REVEAL_SEED_ROUTE = '/seed';
 const RESTORE_VAULT_ROUTE = '/restore-vault';
 const IMPORT_TOKEN_ROUTE = '/import-token';
+const IMPORT_TOKENS_ROUTE = '/import-tokens';
 const CONFIRM_IMPORT_TOKEN_ROUTE = '/confirm-import-token';
 const CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE = '/confirm-add-suggested-token';
 const NEW_ACCOUNT_ROUTE = '/new-account';
@@ -48,9 +49,6 @@ const CONNECT_SNAP_RESULT_ROUTE = '/snap-install-result';
 const NOTIFICATIONS_ROUTE = '/notifications';
 const SNAPS_ROUTE = '/snaps';
 const SNAPS_VIEW_ROUTE = '/snaps/view';
-///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-const ADD_SNAP_ACCOUNT_ROUTE = '/add-snap-account';
 ///: END:ONLY_INCLUDE_IF
 const CONNECTED_ROUTE = '/connected';
 const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
@@ -133,11 +131,8 @@ const PATH_NAME_MAP = {
   [IMPORT_TOKEN_ROUTE]: 'Import Token Page',
   [CONFIRM_IMPORT_TOKEN_ROUTE]: 'Confirm Import Token Page',
   [CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE]: 'Confirm Add Suggested Token Page',
+  [IMPORT_TOKENS_ROUTE]: 'Import Tokens Page',
   [NEW_ACCOUNT_ROUTE]: 'New Account Page',
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  [ADD_SNAP_ACCOUNT_ROUTE]: 'Add Snap Account List Page',
-  [`${ADD_SNAP_ACCOUNT_ROUTE}/:snapId`]: `Add Snap Account Page`,
-  ///: END:ONLY_INCLUDE_IF
   [CONFIRM_ADD_SUGGESTED_NFT_ROUTE]: 'Confirm Add Suggested NFT Page',
   [CONNECT_HARDWARE_ROUTE]: 'Connect Hardware Wallet Page',
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -213,6 +208,7 @@ export {
   IMPORT_TOKEN_ROUTE,
   CONFIRM_IMPORT_TOKEN_ROUTE,
   CONFIRM_ADD_SUGGESTED_TOKEN_ROUTE,
+  IMPORT_TOKENS_ROUTE,
   NEW_ACCOUNT_ROUTE,
   CONFIRM_ADD_SUGGESTED_NFT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
@@ -263,9 +259,6 @@ export {
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   CONNECTED_ROUTE,
   CONNECTED_ACCOUNTS_ROUTE,

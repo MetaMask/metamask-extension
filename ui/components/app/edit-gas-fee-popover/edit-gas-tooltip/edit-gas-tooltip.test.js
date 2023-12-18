@@ -34,7 +34,13 @@ const renderComponent = (componentProps) => {
   const mockStore = {
     metamask: {
       providerConfig: {},
-      cachedBalances: {},
+      accountsByChainId: {
+        '0x1': {
+          '0xAddress': {
+            balance: '0x176e5b6f173ebe66',
+          },
+        },
+      },
       accounts: {
         '0xAddress': {
           address: '0xAddress',

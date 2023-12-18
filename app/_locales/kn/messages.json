@@ -609,9 +609,6 @@
   "search": {
     "message": "ಹುಡುಕಾಟ"
   },
-  "searchResults": {
-    "message": "ಹುಡುಕಾಟ ಫಲಿತಾಂಶಗಳು"
-  },
   "securityAndPrivacy": {
     "message": "ಭದ್ರತೆ ಮತ್ತು ಗೌಪ್ಯತೆ"
   },
@@ -779,12 +776,6 @@
   },
   "unknown": {
     "message": "ಅಪರಿಚಿತ"
-  },
-  "unknownCameraError": {
-    "message": "ನಿಮ್ಮ ಕ್ಯಾಮರಾವನ್ನು ಪ್ರವೇಶಿಸಲು ಪ್ರಯತ್ನಿಸುವಾಗ ದೋಷ ಸಂಭವಿಸಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "ಓಹ್! ಏನೋ ತಪ್ಪಾಗಿದೆ...."
   },
   "unknownNetwork": {
     "message": "ಅಪರಿಚಿತ ಖಾಸಗಿ ನೆಟ್‌ವರ್ಕ್"

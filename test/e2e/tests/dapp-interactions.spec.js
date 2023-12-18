@@ -1,34 +1,25 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   openDapp,
   DAPP_URL,
   DAPP_ONE_URL,
   unlockWallet,
   WINDOW_TITLES,
+  generateGanacheOptions,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Dapp interactions', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   it('should trigger the add chain confirmation despite MetaMask being locked', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: {
-          ...ganacheOptions,
+        ganacheOptions: generateGanacheOptions({
           concurrent: { port: 8546, chainId: 1338 },
-        },
+        }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -57,7 +48,7 @@ describe('Dapp interactions', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         dappOptions: { numberOfDapps: 2 },
         title: this.test.fullTitle(),
       },

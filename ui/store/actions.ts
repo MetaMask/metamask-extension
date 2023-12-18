@@ -3778,6 +3778,15 @@ export function setNewTokensImported(
   };
 }
 
+export function setNewTokensImportedError(
+  newTokensImportedError: string,
+): PayloadAction<string> {
+  return {
+    type: actionConstants.SET_NEW_TOKENS_IMPORTED_ERROR,
+    payload: newTokensImportedError,
+  };
+}
+
 export function setLastActiveTime(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -4709,9 +4718,5 @@ export async function setSnapsAddSnapAccountModalDismissed() {
   await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
     true,
   ]);
-}
-
-export async function updateSnapRegistry() {
-  await submitRequestToBackground('updateSnapRegistry', []);
 }
 ///: END:ONLY_INCLUDE_IF
