@@ -1,6 +1,6 @@
-/* eslint-disable import/no-anonymous-default-export */
 import React from 'react';
 import { ApprovalType } from '@metamask/controller-utils';
+import { isArray } from 'lodash';
 import {
   Display,
   FlexDirection,
@@ -9,35 +9,92 @@ import { IconName } from '../../../components/component-library';
 import ConfirmationPage from '../confirmation';
 import { PendingApproval } from './util';
 
+/**
+ * A standard error confirmation to be reused across confirmation flows with minimal code.<br/><br/>
+ * Automatically displayed via the `ConfirmationPage` component when using the `ApprovalController.error` method.<br/><br/>
+ * The below arguments are properties in the `ApprovalController.error` request.
+ */
 export default {
-  title: 'Pages/ConfirmationPage/result_error',
+  title: 'Pages/ConfirmationPage/ResultError',
   component: ConfirmationPage,
+  argTypes: {
+    redirectToHomeOnZeroConfirmations: {
+      table: {
+        disable: true,
+      },
+    },
+    error: {
+      control: 'text',
+      description:
+        'The error message text in the center of the page under the title.<br/><br/>Also supports result component configurations.<br/>See `header` argument for example.',
+      table: {
+        defaultValue: { summary: 'The operation failed.' },
+      },
+    },
+    title: {
+      control: 'text',
+      description:
+        'The title text in the center of the page.<br/>Can be hidden with `null`.',
+      table: {
+        defaultValue: { summary: 'Error' },
+      },
+    },
+    icon: {
+      control: 'text',
+      description: 'The name of the icon.<br/>Can be hidden with `null`.',
+      table: {
+        defaultValue: { summary: 'warning' },
+      },
+    },
+    header: {
+      control: 'array',
+      description:
+        'An array of result component configurations to be rendered at the top of the page. For example: ```[{"name": "SnapAuthorshipHeader", "key": "snapHeader", "properties": { "snapId": "npm:@test/test-snap" }}]```',
+      table: {
+        defaultValue: {
+          summary: '[]',
+        },
+      },
+    },
+    flowToEnd: {
+      control: 'text',
+      description:
+        'The ID of an approval flow to end once this success confirmation is confirmed.',
+    },
+  },
+  args: {},
 };
 
 export const DefaultStory = (args) => {
   return (
-    <PendingApproval type={ApprovalType.ResultError} requestData={{}}>
-      <ConfirmationPage {...args} />
+    <PendingApproval
+      type={ApprovalType.ResultError}
+      requestData={{
+        ...args,
+        header: isArray(args.header) ? args.header : undefined,
+      }}
+    >
+      <ConfirmationPage />
     </PendingApproval>
   );
 };
 
 DefaultStory.storyName = 'Default';
 
-export const CustomErrorStory = (args) => {
+export const CustomErrorStory = () => {
   return (
     <PendingApproval
       type={ApprovalType.ResultError}
       requestData={{ error: 'Custom Error' }}
     >
-      <ConfirmationPage {...args} />
+      <ConfirmationPage />
     </PendingApproval>
   );
 };
 
 CustomErrorStory.storyName = 'Custom Error';
 
-export const TemplateStory = (args) => {
+export const TemplateStory = () => {
   return (
     <PendingApproval
       type={ApprovalType.ResultError}
@@ -103,14 +160,14 @@ export const TemplateStory = (args) => {
         ],
       }}
     >
-      <ConfirmationPage {...args} />
+      <ConfirmationPage />
     </PendingApproval>
   );
 };
 
 TemplateStory.storyName = 'Templates + Custom Icon + Custom Title';
 
-export const TemplateOnlyStory = (args) => {
+export const TemplateOnlyStory = () => {
   return (
     <PendingApproval
       type={ApprovalType.ResultError}
@@ -130,7 +187,7 @@ export const TemplateOnlyStory = (args) => {
         title: null,
       }}
     >
-      <ConfirmationPage {...args} />
+      <ConfirmationPage />
     </PendingApproval>
   );
 };
