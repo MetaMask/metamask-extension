@@ -19,6 +19,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   Text,
   ///: END:ONLY_INCLUDE_IF(snaps)
+  Popover,
+  PopoverPosition,
 } from '../../component-library';
 
 import { Menu, MenuItem } from '../../ui/menu';
@@ -70,7 +72,7 @@ import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
 
 const METRICS_LOCATION = 'Global Menu';
 
-export const GlobalMenu = ({ closeMenu, anchorElement }) => {
+export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -104,7 +106,18 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   ///: END:ONLY_INCLUDE_IF
 
   return (
-    <Menu anchorElement={anchorElement} onHide={closeMenu}>
+    <Popover
+      referenceElement={anchorElement}
+      isOpen={isOpen}
+      padding={0}
+      onClickOutside={closeMenu}
+      style={{
+        overflow: 'hidden',
+        minWidth: 225,
+      }}
+      borderColor={BorderColor.backgroundDefault}
+      position={PopoverPosition.BottomEnd}
+    >
       <AccountDetailsMenuItem
         metricsLocation={METRICS_LOCATION}
         closeMenu={closeMenu}
@@ -296,7 +309,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       >
         {t('lockMetaMask')}
       </MenuItem>
-    </Menu>
+    </Popover>
   );
 };
 
@@ -309,4 +322,8 @@ GlobalMenu.propTypes = {
    * Function that closes this menu
    */
   closeMenu: PropTypes.func.isRequired,
+  /**
+   * Whether or not the menu is open
+   */
+  isOpen: PropTypes.bool.isRequired,
 };

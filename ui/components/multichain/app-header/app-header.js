@@ -387,6 +387,7 @@ export const AppHeader = ({ location }) => {
                 {accountOptionsMenuOpen ? (
                   <GlobalMenu
                     anchorElement={menuRef.current}
+                    isOpen={accountOptionsMenuOpen}
                     closeMenu={() => setAccountOptionsMenuOpen(false)}
                   />
                 ) : null}
