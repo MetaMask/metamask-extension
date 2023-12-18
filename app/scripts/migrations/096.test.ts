@@ -89,16 +89,6 @@ describe('migration #96', () => {
           'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
         ticker: 'ETH',
       },
-      'network-configuration-id-2': {
-        chainId: '0x4e454152',
-        nickname: 'Aurora Mainnet',
-        rpcPrefs: {
-          blockExplorerUrl: 'https://aurorascan.dev/',
-        },
-        rpcUrl:
-          'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
-        ticker: 'Aurora ETH',
-      },
     };
     const oldData = {
       PreferencesController: {
@@ -126,8 +116,6 @@ describe('migration #96', () => {
             [CHAIN_IDS.MAINNET]: showIncomingTransactionsValue,
             [CHAIN_IDS.LINEA_MAINNET]: showIncomingTransactionsValue,
             [networkConfigurations['network-configuration-id-1'].chainId]:
-              showIncomingTransactionsValue,
-            [networkConfigurations['network-configuration-id-2'].chainId]:
               showIncomingTransactionsValue,
             [CHAIN_IDS.GOERLI]: showIncomingTransactionsValue,
             [CHAIN_IDS.SEPOLIA]: showIncomingTransactionsValue,

@@ -25,11 +25,6 @@ const defaultState = {
     identities: {
       '0xFirstAddress': {},
     },
-    cachedBalances: {
-      '0x1': {
-        '0xFirstAddress': '0x0',
-      },
-    },
   },
 };
 const mockStore = (state = defaultState) => configureStore(middleware)(state);
@@ -185,7 +180,7 @@ describe('Actions', () => {
       const verifyPassword = background.verifyPassword.callsFake((_, cb) =>
         cb(),
       );
-      const verifySeedPhrase = background.verifySeedPhrase.callsFake((cb) =>
+      const getSeedPhrase = background.getSeedPhrase.callsFake((_, cb) =>
         cb(null, Array.from(Buffer.from('test').values())),
       );
 
@@ -193,14 +188,14 @@ describe('Actions', () => {
 
       await store.dispatch(actions.requestRevealSeedWords());
       expect(verifyPassword.callCount).toStrictEqual(1);
-      expect(verifySeedPhrase.callCount).toStrictEqual(1);
+      expect(getSeedPhrase.callCount).toStrictEqual(1);
     });
 
     it('displays warning error message then callback in background errors', async () => {
       const store = mockStore();
 
       background.verifyPassword.callsFake((_, cb) => cb());
-      background.verifySeedPhrase.callsFake((cb) => {
+      background.getSeedPhrase.callsFake((_, cb) => {
         cb(new Error('error'));
       });
 
@@ -237,11 +232,6 @@ describe('Actions', () => {
           accounts: {
             '0xAnotherAddress': {
               balance: '0x0',
-            },
-          },
-          cachedBalances: {
-            '0x1': {
-              '0xAnotherAddress': '0x0',
             },
           },
           identities: {
@@ -1989,11 +1979,6 @@ describe('Actions', () => {
             },
             identities: {
               '0xFirstAddress': {},
-            },
-            cachedBalances: {
-              '0x1': {
-                '0xFirstAddress': '0x0',
-              },
             },
           }),
         ),

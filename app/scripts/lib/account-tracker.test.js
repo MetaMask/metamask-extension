@@ -696,6 +696,7 @@ describe('Account Tracker', () => {
 
           await accountTracker.updateAccounts('mainnet');
 
+
           const accounts = {
             [VALID_ADDRESS]: {
               address: VALID_ADDRESS,
@@ -705,40 +706,6 @@ describe('Account Tracker', () => {
               address: VALID_ADDRESS_TWO,
               balance: EXPECTED_CONTRACT_BALANCE_2,
             },
-          };
-
-          const newState = accountTracker.store.getState();
-          expect(newState).toStrictEqual({
-            accounts,
-            accountsByChainId: {
-              '0x1': accounts,
-            },
-            currentBlockGasLimit: '',
-            currentBlockGasLimitByChainId: {},
-          });
-        });
-      });
-
-      describe('when useMultiAccountBalanceChecker is false', () => {
-        it('updates only the selectedAddress via balance checker, setting other balances to null', async () => {
-          const accountTracker = buildAccountTracker({
-            completedOnboarding: true,
-            useMultiAccountBalanceChecker: false,
-            controllerMessenger,
-            getNetworkIdentifier: getNetworkIdentifierStub,
-            getCurrentChainId: getCurrentChainIdStub,
-          });
-
-          accountTracker.store.updateState(mockInitialState);
-
-          await accountTracker.updateAccounts('mainnet');
-
-          const accounts = {
-            [VALID_ADDRESS]: {
-              address: VALID_ADDRESS,
-              balance: EXPECTED_CONTRACT_BALANCE_1,
-            },
-            [VALID_ADDRESS_TWO]: { address: VALID_ADDRESS_TWO, balance: null },
           };
 
           const newState = accountTracker.store.getState();

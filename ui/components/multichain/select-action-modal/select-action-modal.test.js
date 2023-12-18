@@ -62,9 +62,9 @@ describe('Select Action Modal', () => {
         chainId: CHAIN_IDS.MAINNET,
         ticker: 'ETH',
       },
-      cachedBalances: {
+      accountsByChainId: {
         '0x1': {
-          '0x1': '0x1F4',
+          '0x1': { balance: '0x1F4' },
         },
       },
       preferences: {

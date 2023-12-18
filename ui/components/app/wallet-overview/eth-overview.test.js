@@ -48,9 +48,9 @@ describe('EthOverview', () => {
         type: NETWORK_TYPES.MAINNET,
         ticker: 'ETH',
       },
-      cachedBalances: {
-        '0x1': {
-          '0x1': '0x1F4',
+      accountsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          '0x1': { address: '0x1', balance: '0x1F4' },
         },
       },
       preferences: {
@@ -137,9 +137,9 @@ describe('EthOverview', () => {
               address: '0x1',
             },
           },
-          cachedBalances: {
-            '0x1': {
-              '0x1': '0x24da51d247e8b8',
+          accountsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
             },
           },
         },

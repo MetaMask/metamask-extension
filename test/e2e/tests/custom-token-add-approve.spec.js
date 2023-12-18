@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   openDapp,
   unlockWallet,
@@ -12,15 +12,6 @@ const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 
 describe('Create token, approve token and approve token without gas', function () {
   const smartContract = SMART_CONTRACTS.HST;
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   it('imports and renders the balance for the new token', async function () {
     await withFixtures(
@@ -29,7 +20,7 @@ describe('Create token, approve token and approve token without gas', function (
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -92,7 +83,7 @@ describe('Create token, approve token and approve token without gas', function (
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -208,7 +199,7 @@ describe('Create token, approve token and approve token without gas', function (
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -348,7 +339,7 @@ describe('Create token, approve token and approve token without gas', function (
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -430,7 +421,7 @@ describe('Create token, approve token and approve token without gas', function (
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },

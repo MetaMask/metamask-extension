@@ -3,6 +3,7 @@ import { SubjectType } from '@metamask/permission-controller';
 ///: END:ONLY_INCLUDE_IF
 import { ApprovalType } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { memoize } from 'lodash';
 import semver from 'semver';
 ///: END:ONLY_INCLUDE_IF
@@ -12,7 +13,6 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
-  NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
   BUYABLE_CHAINS_MAP,
   MAINNET_DISPLAY_NAME,
   BSC_DISPLAY_NAME,
@@ -32,6 +32,7 @@ import {
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -56,7 +57,6 @@ import {
   getAccountByAddress,
   getURLHostName,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  removeSnapIdPrefix,
   getSnapName,
   ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
@@ -66,7 +66,6 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
-  getNativeCurrency,
   getProviderConfig,
   getConversionRate,
   isNotEIP1559Network,
@@ -363,7 +362,17 @@ export function getMetaMaskAccountBalances(state) {
 
 export function getMetaMaskCachedBalances(state) {
   const chainId = getCurrentChainId(state);
-  return state.metamask.cachedBalances[chainId];
+
+  if (state.metamask.accountsByChainId?.[chainId]) {
+    return Object.entries(state.metamask.accountsByChainId[chainId]).reduce(
+      (accumulator, [key, value]) => {
+        accumulator[key] = value.balance;
+        return accumulator;
+      },
+      {},
+    );
+  }
+  return {};
 }
 
 /**
@@ -935,8 +944,8 @@ export function getIsBuyableChain(state) {
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
 export function getNativeCurrencyImage(state) {
-  const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
-  return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
+  const chainId = getCurrentChainId(state);
+  return CHAIN_ID_TOKEN_IMAGE_MAP[chainId];
 }
 
 export function getNextSuggestedNonce(state) {
@@ -1610,6 +1619,10 @@ export function getNewTokensImported(state) {
   return state.appState.newTokensImported;
 }
 
+export function getNewTokensImportedError(state) {
+  return state.appState.newTokensImportedError;
+}
+
 /**
  * To check if the token detection is OFF and the network is Mainnet
  * so that the user can skip third party token api fetch
@@ -1851,7 +1864,7 @@ export function getSnapsList(state) {
       id: snap.id,
       iconUrl: targetSubjectMetadata?.iconUrl,
       subjectType: targetSubjectMetadata?.subjectType,
-      packageName: removeSnapIdPrefix(snap.id),
+      packageName: stripSnapPrefix(snap.id),
       name: getSnapName(snap.id, targetSubjectMetadata),
     };
   });
