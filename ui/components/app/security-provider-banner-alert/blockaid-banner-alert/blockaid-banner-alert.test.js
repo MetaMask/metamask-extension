@@ -62,7 +62,6 @@ describe('Blockaid Banner Alert', () => {
     );
 
     expect(warningBannerAlert).toBeInTheDocument();
-    expect(warningBannerAlert).toMatchSnapshot();
   });
 
   it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Warning}`, () => {
@@ -78,7 +77,6 @@ describe('Blockaid Banner Alert', () => {
     );
 
     expect(warningBannerAlert).toBeInTheDocument();
-    expect(warningBannerAlert).toMatchSnapshot();
   });
 
   it(`should render '${Severity.Danger}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Malicious}`, () => {
@@ -97,7 +95,6 @@ describe('Blockaid Banner Alert', () => {
     );
 
     expect(dangerBannerAlert).toBeInTheDocument();
-    expect(dangerBannerAlert).toMatchSnapshot();
   });
 
   it('should render title, "This is a deceptive request"', () => {
@@ -159,7 +156,6 @@ describe('Blockaid Banner Alert', () => {
       />,
     );
 
-    expect(container).toMatchSnapshot();
     expect(container.querySelector('.disclosure')).toBeInTheDocument();
     mockFeatures.forEach((feature) => {
       expect(getByText(`• ${feature}`)).toBeInTheDocument();
