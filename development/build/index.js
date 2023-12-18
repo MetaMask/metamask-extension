@@ -32,7 +32,6 @@ const { getConfig } = require('./config');
 // Packages required dynamically via browserify configuration in dependencies
 // Required for LavaMoat policy generation
 require('loose-envify');
-require('globalthis');
 require('@babel/preset-env');
 require('@babel/preset-react');
 require('@babel/preset-typescript');

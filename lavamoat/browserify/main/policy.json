@@ -1216,8 +1216,8 @@
         "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
         "@ngraveio/bc-ur>assert>object-is": true,
         "browserify>util>is-arguments": true,
-        "globalthis>define-properties>object-keys": true,
         "string.prototype.matchall>es-abstract>is-regex": true,
+        "string.prototype.matchall>es-abstract>object-keys": true,
         "string.prototype.matchall>regexp.prototype.flags": true
       }
     },
@@ -2671,8 +2671,8 @@
     },
     "@ngraveio/bc-ur>assert>object-is": {
       "packages": {
-        "globalthis>define-properties": true,
-        "string.prototype.matchall>call-bind": true
+        "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true
       }
     },
     "@ngraveio/bc-ur>bignumber.js": {
@@ -4536,17 +4536,6 @@
         "define": true
       }
     },
-    "globalthis>define-properties": {
-      "packages": {
-        "globalthis>define-properties>has-property-descriptors": true,
-        "globalthis>define-properties>object-keys": true
-      }
-    },
-    "globalthis>define-properties>has-property-descriptors": {
-      "packages": {
-        "string.prototype.matchall>get-intrinsic": true
-      }
-    },
     "json-rpc-engine": {
       "packages": {
         "@metamask/safe-event-emitter": true,
@@ -5314,7 +5303,18 @@
         "string.prototype.matchall>get-intrinsic": true
       }
     },
+    "string.prototype.matchall>define-properties": {
+      "packages": {
+        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
+        "string.prototype.matchall>es-abstract>object-keys": true
+      }
+    },
     "string.prototype.matchall>es-abstract>gopd": {
+      "packages": {
+        "string.prototype.matchall>get-intrinsic": true
+      }
+    },
+    "string.prototype.matchall>es-abstract>has-property-descriptors": {
       "packages": {
         "string.prototype.matchall>get-intrinsic": true
       }
@@ -5345,8 +5345,8 @@
     },
     "string.prototype.matchall>regexp.prototype.flags": {
       "packages": {
-        "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
       }
     },

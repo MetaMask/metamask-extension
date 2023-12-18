@@ -2572,8 +2572,8 @@
     "eslint-plugin-import>array.prototype.flat": {
       "packages": {
         "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": true,
-        "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true
       }
     },
@@ -2930,8 +2930,8 @@
     "eslint-plugin-react>array-includes": {
       "packages": {
         "eslint-plugin-react>array-includes>is-string": true,
-        "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true,
         "string.prototype.matchall>get-intrinsic": true
       }
@@ -2944,8 +2944,8 @@
     "eslint-plugin-react>array.prototype.flatmap": {
       "packages": {
         "eslint-plugin-react>array.prototype.flatmap>es-shim-unscopables": true,
-        "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true
       }
     },
@@ -2972,15 +2972,15 @@
     },
     "eslint-plugin-react>object.entries": {
       "packages": {
-        "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true
       }
     },
     "eslint-plugin-react>object.fromentries": {
       "packages": {
-        "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true
       }
     },
@@ -3405,22 +3405,6 @@
         "process": true,
         "setImmediate": true,
         "setTimeout": true
-      }
-    },
-    "globalthis": {
-      "packages": {
-        "globalthis>define-properties": true
-      }
-    },
-    "globalthis>define-properties": {
-      "packages": {
-        "globalthis>define-properties>has-property-descriptors": true,
-        "globalthis>define-properties>object-keys": true
-      }
-    },
-    "globalthis>define-properties>has-property-descriptors": {
-      "packages": {
-        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "globby": {
@@ -5866,9 +5850,9 @@
     },
     "gulp>vinyl-fs>object.assign": {
       "packages": {
-        "globalthis>define-properties": true,
-        "globalthis>define-properties>object-keys": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
+        "string.prototype.matchall>es-abstract>object-keys": true,
         "string.prototype.matchall>has-symbols": true
       }
     },
@@ -7559,8 +7543,8 @@
     },
     "string.prototype.matchall": {
       "packages": {
-        "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true,
         "string.prototype.matchall>has-symbols": true,
         "string.prototype.matchall>regexp.prototype.flags": true
@@ -7572,16 +7556,22 @@
         "string.prototype.matchall>get-intrinsic": true
       }
     },
+    "string.prototype.matchall>define-properties": {
+      "packages": {
+        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
+        "string.prototype.matchall>es-abstract>object-keys": true
+      }
+    },
     "string.prototype.matchall>es-abstract": {
       "packages": {
         "brfs>static-module>object-inspect": true,
         "browserify>has": true,
         "eslint-plugin-react>array-includes>is-string": true,
-        "globalthis>define-properties>has-property-descriptors": true,
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>es-abstract>es-set-tostringtag": true,
         "string.prototype.matchall>es-abstract>es-to-primitive": true,
         "string.prototype.matchall>es-abstract>gopd": true,
+        "string.prototype.matchall>es-abstract>has-property-descriptors": true,
         "string.prototype.matchall>es-abstract>has-proto": true,
         "string.prototype.matchall>es-abstract>is-callable": true,
         "string.prototype.matchall>es-abstract>is-regex": true,
@@ -7616,6 +7606,11 @@
         "string.prototype.matchall>get-intrinsic": true
       }
     },
+    "string.prototype.matchall>es-abstract>has-property-descriptors": {
+      "packages": {
+        "string.prototype.matchall>get-intrinsic": true
+      }
+    },
     "string.prototype.matchall>es-abstract>is-callable": {
       "globals": {
         "document": true
@@ -7636,8 +7631,8 @@
     },
     "string.prototype.matchall>es-abstract>string.prototype.trim": {
       "packages": {
-        "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-abstract": true
       }
     },
@@ -7663,8 +7658,8 @@
     },
     "string.prototype.matchall>regexp.prototype.flags": {
       "packages": {
-        "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
+        "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
       }
     },
