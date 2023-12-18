@@ -12,6 +12,7 @@ To learn how to develop MetaMask-compatible applications, visit our [Developer D
 
 To learn how to contribute to the MetaMask project itself, visit our [Internal Docs](https://github.com/MetaMask/metamask-extension/tree/develop/docs).
 
+
 ## Building locally
 
 - Install [Node.js](https://nodejs.org) version 18
