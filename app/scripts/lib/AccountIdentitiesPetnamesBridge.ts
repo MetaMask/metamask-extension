@@ -8,7 +8,7 @@ import {
   AbstractPetnamesBridge,
   PetnamesBridgeMessenger,
 } from './AbstractPetnamesBridge';
-import { FALLBACK_VARIATION } from 'ui/hooks/useName';
+const FALLBACK_VARIATION = 
 
 /**
  * A petnames bridge that uses the account identities from the preferences controller as the source.
