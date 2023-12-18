@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { getSnapPrefix } from '@metamask/snaps-utils';
+import { getSnapPrefix, stripSnapPrefix } from '@metamask/snaps-utils';
 import {
   getSnap,
   getSnapRegistryData,
@@ -28,11 +28,7 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import SnapAvatar from '../snap-avatar';
-import {
-  formatDate,
-  getSnapName,
-  removeSnapIdPrefix,
-} from '../../../../helpers/utils/util';
+import { formatDate, getSnapName } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getPhishingResult } from '../../../../store/actions';
 import { useOriginMetadata } from '../../../../hooks/useOriginMetadata';
@@ -60,7 +56,7 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
 
   const snapName = getSnapName(snapId, subjectMetadata);
   const snapPrefix = getSnapPrefix(snapId);
-  const packageName = removeSnapIdPrefix(snapId);
+  const packageName = stripSnapPrefix(snapId);
   const isNPM = snapPrefix === 'npm:';
   const versionPath = subjectMetadata?.version
     ? `/v/${subjectMetadata?.version}`
@@ -115,30 +111,59 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
             {snapName}
           </Text>
         </ModalHeader>
-        {safeWebsite && (
-          <Box
-            display={Display.Flex}
-            FlexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.spaceBetween}
-            flexWrap={FlexWrap.NoWrap}
-          >
-            <Text variant={TextVariant.bodyMdMedium} marginRight={4}>
-              {t('snapDetailWebsite')}
-            </Text>
-
-            <ButtonLink
-              overflowWrap={OverflowWrap.Anywhere}
-              href={safeWebsite.toString()}
-              target="_blank"
-              externalLink
-              textAlign={TextAlign.End}
-              ellipsis
+        <Box marginLeft={4} marginRight={4}>
+          {safeWebsite && (
+            <Box
+              display={Display.Flex}
+              FlexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.spaceBetween}
+              flexWrap={FlexWrap.NoWrap}
             >
-              {safeWebsite.host}
-            </ButtonLink>
-          </Box>
-        )}
-        {installOrigin && (
+              <Text variant={TextVariant.bodyMdMedium} marginRight={4}>
+                {t('snapDetailWebsite')}
+              </Text>
+
+              <ButtonLink
+                overflowWrap={OverflowWrap.Anywhere}
+                href={safeWebsite.toString()}
+                target="_blank"
+                externalLink
+                textAlign={TextAlign.End}
+                ellipsis
+              >
+                {safeWebsite.host}
+              </ButtonLink>
+            </Box>
+          )}
+          {installOrigin && (
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.spaceBetween}
+              flexWrap={FlexWrap.NoWrap}
+              marginTop={4}
+            >
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Row}
+                alignItems={AlignItems.center}
+                marginRight={4}
+              >
+                <Text variant={TextVariant.bodyMdMedium} marginRight={1}>
+                  {t('installOrigin')}
+                </Text>
+                {installInfo && (
+                  <InfoTooltip
+                    contentText={t('installedOn', [
+                      formatDate(installInfo.date, 'dd MMM yyyy'),
+                    ])}
+                    iconFillColor="var(--color-icon-muted)"
+                  />
+                )}
+              </Box>
+              <Text ellipsis>{installOrigin.host}</Text>
+            </Box>
+          )}
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
@@ -153,79 +178,52 @@ export const SnapMetadataModal = ({ snapId, isOpen, onClose }) => {
               marginRight={4}
             >
               <Text variant={TextVariant.bodyMdMedium} marginRight={1}>
-                {t('installOrigin')}
+                {t('source')}
               </Text>
-              {installInfo && (
-                <InfoTooltip
-                  contentText={t('installedOn', [
-                    formatDate(installInfo.date, 'dd MMM yyyy'),
-                  ])}
-                  iconFillColor="var(--color-icon-muted)"
-                />
-              )}
+              <InfoTooltip
+                contentText={t('metadataModalSourceTooltip', [
+                  <Text
+                    key="snap-name"
+                    fontWeight={FontWeight.Medium}
+                    variant={TextVariant.inherit}
+                  >
+                    {snapName}
+                  </Text>,
+                  <Text
+                    key="snap-id"
+                    fontWeight={FontWeight.Medium}
+                    variant={TextVariant.inherit}
+                  >
+                    {packageName}
+                  </Text>,
+                ])}
+                iconFillColor="var(--color-icon-muted)"
+              />
             </Box>
-            <Text ellipsis>{installOrigin.host}</Text>
+            <SnapExternalPill value={packageName} url={url} />
           </Box>
-        )}
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          flexWrap={FlexWrap.NoWrap}
-          marginTop={4}
-        >
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-            marginRight={4}
+            justifyContent={JustifyContent.spaceBetween}
+            flexWrap={FlexWrap.NoWrap}
+            marginTop={4}
           >
-            <Text variant={TextVariant.bodyMdMedium} marginRight={1}>
-              {t('source')}
+            <Text variant={TextVariant.bodyMdMedium} marginRight={4}>
+              {t('version')}
             </Text>
-            <InfoTooltip
-              contentText={t('metadataModalSourceTooltip', [
-                <Text
-                  key="snap-name"
-                  fontWeight={FontWeight.Medium}
-                  variant={TextVariant.inherit}
-                >
-                  {snapName}
-                </Text>,
-                <Text
-                  key="snap-id"
-                  fontWeight={FontWeight.Medium}
-                  variant={TextVariant.inherit}
-                >
-                  {packageName}
-                </Text>,
-              ])}
-              iconFillColor="var(--color-icon-muted)"
-            />
+            <Text ellipsis>{subjectMetadata?.version}</Text>
           </Box>
-          <SnapExternalPill value={packageName} url={url} />
+          <SnapDelineator
+            type={DelineatorType.Description}
+            snapName={snapName}
+            boxProps={{ marginTop: 4 }}
+          >
+            <ShowMore>
+              <Text>{snap?.manifest.description}</Text>
+            </ShowMore>
+          </SnapDelineator>
         </Box>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          flexWrap={FlexWrap.NoWrap}
-          marginTop={4}
-        >
-          <Text variant={TextVariant.bodyMdMedium} marginRight={4}>
-            {t('version')}
-          </Text>
-          <Text ellipsis>{subjectMetadata?.version}</Text>
-        </Box>
-        <SnapDelineator
-          type={DelineatorType.Description}
-          snapName={snapName}
-          boxProps={{ marginTop: 4 }}
-        >
-          <ShowMore>
-            <Text>{snap?.manifest.description}</Text>
-          </ShowMore>
-        </SnapDelineator>
       </ModalContent>
     </Modal>
   );
