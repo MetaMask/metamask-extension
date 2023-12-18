@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Updated onboarding flow to ensure user is prompted for password during reminder based backup [#22307](https://github.com/MetaMask/metamask-extension/pull/22297)
 
 ### Fixed
 - Fixed QR scan functionality when sending a transaction to another contact [#22297](https://github.com/MetaMask/metamask-extension/pull/22297)
