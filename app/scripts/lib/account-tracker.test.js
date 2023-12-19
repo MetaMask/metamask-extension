@@ -38,6 +38,17 @@ const mockAccounts = {
   },
 };
 
+function buildMockBlockTracker({ shouldStubListeners = true } = {}) {
+  const blockTrackerStub = new EventEmitter();
+  blockTrackerStub.getCurrentBlock = noop;
+  blockTrackerStub.getLatestBlock = noop;
+  if (shouldStubListeners) {
+    jest.spyOn(blockTrackerStub, 'addListener').mockImplementation();
+    jest.spyOn(blockTrackerStub, 'removeListener').mockImplementation();
+  }
+  return blockTrackerStub;
+}
+
 function buildAccountTracker({
   completedOnboarding = false,
   useMultiAccountBalanceChecker = false,
@@ -52,9 +63,7 @@ function buildAccountTracker({
     networkId: currentNetworkId,
     chainId: currentNetworkId,
   });
-  const blockTrackerStub = new EventEmitter();
-  blockTrackerStub.getCurrentBlock = noop;
-  blockTrackerStub.getLatestBlock = noop;
+  const blockTrackerStub = buildMockBlockTracker();
 
   const providerFromHook = createTestProviderTools({
     scaffold: {
@@ -66,9 +75,7 @@ function buildAccountTracker({
     chainId: '0x1',
   }).provider;
 
-  const blockTrackerFromHookStub = new EventEmitter();
-  blockTrackerFromHookStub.getCurrentBlock = noop;
-  blockTrackerFromHookStub.getLatestBlock = noop;
+  const blockTrackerFromHookStub = buildMockBlockTracker();
 
   const getNetworkClientByIdStub = jest.fn().mockReturnValue({
     configuration: {
@@ -87,7 +94,7 @@ function buildAccountTracker({
     }),
   );
 
-  return new AccountTracker({
+  const accountTracker = new AccountTracker({
     provider,
     blockTracker: blockTrackerStub,
     getNetworkClientById: getNetworkClientByIdStub,
@@ -113,6 +120,8 @@ function buildAccountTracker({
     getCurrentChainId: () => currentChainId,
     ...accountTrackerOptions,
   });
+
+  return { accountTracker, blockTrackerFromHookStub, blockTrackerStub };
 }
 
 describe('Account Tracker', () => {
@@ -122,14 +131,7 @@ describe('Account Tracker', () => {
 
   describe('start', () => {
     it('restarts the subscription to the block tracker and update accounts', async () => {
-      const blockTrackerStub = new EventEmitter();
-      blockTrackerStub.getCurrentBlock = noop;
-      blockTrackerStub.getLatestBlock = noop;
-      jest.spyOn(blockTrackerStub, 'addListener').mockImplementation();
-      jest.spyOn(blockTrackerStub, 'removeListener').mockImplementation();
-      const accountTracker = buildAccountTracker({
-        blockTracker: blockTrackerStub,
-      });
+      const { accountTracker, blockTrackerStub } = buildAccountTracker();
       const updateAccountsSpy = jest
         .spyOn(accountTracker, 'updateAccounts')
         .mockResolvedValue();
@@ -168,13 +170,7 @@ describe('Account Tracker', () => {
 
   describe('stop', () => {
     it('ends the subscription to the block tracker', async () => {
-      const blockTrackerStub = new EventEmitter();
-      blockTrackerStub.getCurrentBlock = noop;
-      blockTrackerStub.getLatestBlock = noop;
-      jest.spyOn(blockTrackerStub, 'removeListener').mockImplementation();
-      const accountTracker = buildAccountTracker({
-        blockTracker: blockTrackerStub,
-      });
+      const { accountTracker, blockTrackerStub } = buildAccountTracker();
 
       accountTracker.stop();
 
@@ -188,19 +184,8 @@ describe('Account Tracker', () => {
 
   describe('startPollingByNetworkClientId', () => {
     it('should subscribe to the block tracker and update accounts if not already using the networkClientId', async () => {
-      const blockTrackerFromHookStub = new EventEmitter();
-      blockTrackerFromHookStub.getCurrentBlock = noop;
-      blockTrackerFromHookStub.getLatestBlock = noop;
-      jest.spyOn(blockTrackerFromHookStub, 'addListener').mockImplementation();
-      const getNetworkClientByIdStub = jest.fn().mockReturnValue({
-        configuration: {
-          chainId: '0x1',
-        },
-        blockTracker: blockTrackerFromHookStub,
-      });
-      const accountTracker = buildAccountTracker({
-        getNetworkClientById: getNetworkClientByIdStub,
-      });
+      const { accountTracker, blockTrackerFromHookStub } =
+        buildAccountTracker();
 
       const updateAccountsSpy = jest
         .spyOn(accountTracker, 'updateAccounts')
@@ -223,18 +208,9 @@ describe('Account Tracker', () => {
     });
 
     it('should subscribe to the block tracker and update accounts for each networkClientId', async () => {
-      const blockTrackerFromHookStub1 = new EventEmitter();
-      blockTrackerFromHookStub1.getCurrentBlock = noop;
-      blockTrackerFromHookStub1.getLatestBlock = noop;
-      jest.spyOn(blockTrackerFromHookStub1, 'addListener').mockImplementation();
-      const blockTrackerFromHookStub2 = new EventEmitter();
-      blockTrackerFromHookStub2.getCurrentBlock = noop;
-      blockTrackerFromHookStub2.getLatestBlock = noop;
-      jest.spyOn(blockTrackerFromHookStub2, 'addListener').mockImplementation();
-      const blockTrackerFromHookStub3 = new EventEmitter();
-      blockTrackerFromHookStub3.getCurrentBlock = noop;
-      blockTrackerFromHookStub3.getLatestBlock = noop;
-      jest.spyOn(blockTrackerFromHookStub3, 'addListener').mockImplementation();
+      const blockTrackerFromHookStub1 = buildMockBlockTracker();
+      const blockTrackerFromHookStub2 = buildMockBlockTracker();
+      const blockTrackerFromHookStub3 = buildMockBlockTracker();
       const getNetworkClientByIdStub = jest
         .fn()
         .mockImplementation((networkClientId) => {
@@ -264,7 +240,7 @@ describe('Account Tracker', () => {
               throw new Error('unexpected networkClientId');
           }
         });
-      const accountTracker = buildAccountTracker({
+      const { accountTracker } = buildAccountTracker({
         getNetworkClientById: getNetworkClientByIdStub,
       });
 
@@ -302,21 +278,8 @@ describe('Account Tracker', () => {
 
   describe('stopPollingByPollingToken', () => {
     it('should unsubscribe from the block tracker when called with a valid polling that was the only active pollingToken for a given networkClient', async () => {
-      const blockTrackerFromHookStub = new EventEmitter();
-      blockTrackerFromHookStub.getCurrentBlock = noop;
-      blockTrackerFromHookStub.getLatestBlock = noop;
-      jest
-        .spyOn(blockTrackerFromHookStub, 'removeListener')
-        .mockImplementation();
-      const getNetworkClientByIdStub = jest.fn().mockReturnValue({
-        configuration: {
-          chainId: '0x1',
-        },
-        blockTracker: blockTrackerFromHookStub,
-      });
-      const accountTracker = buildAccountTracker({
-        getNetworkClientById: getNetworkClientByIdStub,
-      });
+      const { accountTracker, blockTrackerFromHookStub } =
+        buildAccountTracker();
 
       jest.spyOn(accountTracker, 'updateAccounts').mockResolvedValue();
 
@@ -332,21 +295,8 @@ describe('Account Tracker', () => {
     });
 
     it('should not unsubscribe from the block tracker if called with one of multiple active polling tokens for a given networkClient', async () => {
-      const blockTrackerFromHookStub = new EventEmitter();
-      blockTrackerFromHookStub.getCurrentBlock = noop;
-      blockTrackerFromHookStub.getLatestBlock = noop;
-      jest
-        .spyOn(blockTrackerFromHookStub, 'removeListener')
-        .mockImplementation();
-      const getNetworkClientByIdStub = jest.fn().mockReturnValue({
-        configuration: {
-          chainId: '0x1',
-        },
-        blockTracker: blockTrackerFromHookStub,
-      });
-      const accountTracker = buildAccountTracker({
-        getNetworkClientById: getNetworkClientByIdStub,
-      });
+      const { accountTracker, blockTrackerFromHookStub } =
+        buildAccountTracker();
 
       jest.spyOn(accountTracker, 'updateAccounts').mockResolvedValue();
 
@@ -362,7 +312,7 @@ describe('Account Tracker', () => {
     });
 
     it('should error if no pollingToken is passed', () => {
-      const accountTracker = buildAccountTracker();
+      const { accountTracker } = buildAccountTracker();
 
       expect(() => {
         accountTracker.stopPollingByPollingToken(undefined);
@@ -370,7 +320,7 @@ describe('Account Tracker', () => {
     });
 
     it('should error if no matching pollingToken is found', () => {
-      const accountTracker = buildAccountTracker();
+      const { accountTracker } = buildAccountTracker();
 
       expect(() => {
         accountTracker.stopPollingByPollingToken('potato');
@@ -380,23 +330,8 @@ describe('Account Tracker', () => {
 
   describe('stopAll', () => {
     it('should end all subscriptions', async () => {
-      const blockTrackerStub = new EventEmitter();
-      blockTrackerStub.getCurrentBlock = noop;
-      blockTrackerStub.getLatestBlock = noop;
-      jest.spyOn(blockTrackerStub, 'removeListener').mockImplementation();
-      const blockTrackerFromHookStub1 = new EventEmitter();
-      blockTrackerFromHookStub1.getCurrentBlock = noop;
-      blockTrackerFromHookStub1.getLatestBlock = noop;
-      jest
-        .spyOn(blockTrackerFromHookStub1, 'removeListener')
-        .mockImplementation();
-      const blockTrackerFromHookStub2 = new EventEmitter();
-      blockTrackerFromHookStub2.getCurrentBlock = noop;
-      blockTrackerFromHookStub2.getLatestBlock = noop;
-      jest
-        .spyOn(blockTrackerFromHookStub2, 'removeListener')
-        .mockImplementation();
-
+      const blockTrackerFromHookStub1 = buildMockBlockTracker();
+      const blockTrackerFromHookStub2 = buildMockBlockTracker();
       const getNetworkClientByIdStub = jest
         .fn()
         .mockImplementation((networkClientId) => {
@@ -419,8 +354,7 @@ describe('Account Tracker', () => {
               throw new Error('unexpected networkClientId');
           }
         });
-      const accountTracker = buildAccountTracker({
-        blockTracker: blockTrackerStub,
+      const { accountTracker, blockTrackerStub } = buildAccountTracker({
         getNetworkClientById: getNetworkClientByIdStub,
       });
 
@@ -449,10 +383,10 @@ describe('Account Tracker', () => {
 
   describe('blockTracker "latest" events', () => {
     it('updates currentBlockGasLimit, currentBlockGasLimitByChainId, and accounts when polling is initiated via `start`', async () => {
-      const blockTrackerStub = new EventEmitter();
-      blockTrackerStub.getCurrentBlock = noop;
-      blockTrackerStub.getLatestBlock = noop;
-      const accountTracker = buildAccountTracker({
+      const blockTrackerStub = buildMockBlockTracker({
+        shouldStubListeners: false,
+      });
+      const { accountTracker } = buildAccountTracker({
         blockTracker: blockTrackerStub,
       });
 
@@ -482,12 +416,9 @@ describe('Account Tracker', () => {
     });
 
     it('updates only the currentBlockGasLimitByChainId and accounts when polling is initiated via `startPollingByNetworkClientId`', async () => {
-      const blockTrackerFromHookStub = new EventEmitter();
-      blockTrackerFromHookStub.getCurrentBlock = noop;
-      blockTrackerFromHookStub.getLatestBlock = noop;
-      jest
-        .spyOn(blockTrackerFromHookStub, 'removeListener')
-        .mockImplementation();
+      const blockTrackerFromHookStub = buildMockBlockTracker({
+        shouldStubListeners: false,
+      });
       const providerFromHook = createTestProviderTools({
         scaffold: {
           eth_getBalance: UPDATE_BALANCE_HOOK,
@@ -504,7 +435,7 @@ describe('Account Tracker', () => {
         blockTracker: blockTrackerFromHookStub,
         provider: providerFromHook,
       });
-      const accountTracker = buildAccountTracker({
+      const { accountTracker } = buildAccountTracker({
         getNetworkClientById: getNetworkClientByIdStub,
       });
 
@@ -537,7 +468,7 @@ describe('Account Tracker', () => {
 
   describe('updateAccountsAllActiveNetworks', () => {
     it('updates accounts for the globally selected network and all currently polling networks', async () => {
-      const accountTracker = buildAccountTracker();
+      const { accountTracker } = buildAccountTracker();
 
       const updateAccountsSpy = jest
         .spyOn(accountTracker, 'updateAccounts')
@@ -560,7 +491,7 @@ describe('Account Tracker', () => {
 
   describe('updateAccounts', () => {
     it('does not update accounts if completedOnBoarding is false', async () => {
-      const accountTracker = buildAccountTracker({
+      const { accountTracker } = buildAccountTracker({
         completedOnboarding: false,
       });
 
@@ -593,7 +524,7 @@ describe('Account Tracker', () => {
 
       describe('when useMultiAccountBalanceChecker is true', () => {
         it('updates all accounts directly', async () => {
-          const accountTracker = buildAccountTracker({
+          const { accountTracker } = buildAccountTracker({
             completedOnboarding: true,
             useMultiAccountBalanceChecker: true,
             getCurrentChainId: getCurrentChainIdStub,
@@ -631,7 +562,7 @@ describe('Account Tracker', () => {
 
       describe('when useMultiAccountBalanceChecker is false', () => {
         it('updates only the selectedAddress directly, setting other balances to null', async () => {
-          const accountTracker = buildAccountTracker({
+          const { accountTracker } = buildAccountTracker({
             completedOnboarding: true,
             useMultiAccountBalanceChecker: false,
             getCurrentChainId: getCurrentChainIdStub,
@@ -684,7 +615,7 @@ describe('Account Tracker', () => {
 
       describe('when useMultiAccountBalanceChecker is true', () => {
         it('updates all accounts via balance checker', async () => {
-          const accountTracker = buildAccountTracker({
+          const { accountTracker } = buildAccountTracker({
             completedOnboarding: true,
             useMultiAccountBalanceChecker: true,
             controllerMessenger,
@@ -724,7 +655,7 @@ describe('Account Tracker', () => {
   describe('onAccountRemoved', () => {
     it('should remove an account from state', () => {
       let accountRemovedListener;
-      const accountTracker = buildAccountTracker({
+      const { accountTracker } = buildAccountTracker({
         onAccountRemoved: (callback) => {
           accountRemovedListener = callback;
         },
@@ -767,7 +698,7 @@ describe('Account Tracker', () => {
 
   describe('clearAccounts', () => {
     it('should reset state', () => {
-      const accountTracker = buildAccountTracker();
+      const { accountTracker } = buildAccountTracker();
 
       accountTracker.store.updateState({
         accounts: { ...mockAccounts },
