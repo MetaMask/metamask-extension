@@ -47,10 +47,10 @@ import {
   IconSize,
   Label,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';

@@ -12,8 +12,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
   Box,
@@ -22,6 +20,8 @@ import {
   ButtonLink,
   ButtonLinkSize,
 } from '../../../components/component-library';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL } from '../../../../shared/constants/swaps';
 
 interface Props {
@@ -71,10 +71,10 @@ export default function SmartTransactionsPopover({
             marginBottom={3}
             style={{ listStyle: 'inside' }}
           >
-            <li>{t('stxBenefit1')}</li>
-            <li>{t('stxBenefit2')}</li>
-            <li>{t('stxBenefit3')}</li>
-            <li>
+            <li key="stxBenefit1">{t('stxBenefit1')}</li>
+            <li key="stxBenefit2">{t('stxBenefit2')}</li>
+            <li key="stxBenefit3">{t('stxBenefit3')}</li>
+            <li key="stxBenefit4">
               {t('stxBenefit4')}
               <Text as="span" fontWeight={FontWeight.Normal}>
                 {' *'}
@@ -88,6 +88,7 @@ export default function SmartTransactionsPopover({
                 href={SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL}
                 externalLink
                 display={Display.Inline}
+                key="smartSwapsDescription2"
               >
                 {t('faqAndRiskDisclosures')}
               </ButtonLink>,
@@ -98,7 +99,7 @@ export default function SmartTransactionsPopover({
             onClick={onStartSwapping}
             width={BlockSize.Full}
           >
-            {t('startSwapping')}
+            {t('enableSmartSwaps')}
           </Button>
           <Button
             type="link"

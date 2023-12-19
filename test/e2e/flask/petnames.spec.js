@@ -1,8 +1,9 @@
 const {
-  convertToHexValue,
   openDapp,
   switchToNotificationWindow,
   withFixtures,
+  unlockWallet,
+  defaultGanacheOptions,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
@@ -11,22 +12,6 @@ const SIGNATURE_TYPE = {
   TYPED_V3: 'v3',
   TYPED_V4: 'v4',
 };
-
-const ganacheOptions = {
-  accounts: [
-    {
-      secretKey:
-        '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-      balance: convertToHexValue(25000000000000000000),
-    },
-  ],
-};
-
-async function login(driver) {
-  await driver.navigate();
-  await driver.fill('#password', 'correct horse battery staple');
-  await driver.press('#password', driver.Key.ENTER);
-}
 
 async function openTestSnaps(driver) {
   const handle = await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
@@ -156,11 +141,11 @@ describe('Petnames', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
         await switchToNotificationWindow(driver, 3);
@@ -192,11 +177,11 @@ describe('Petnames', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await switchToNotificationWindow(driver, 3);
@@ -231,11 +216,11 @@ describe('Petnames', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
         await openTestSnaps(driver);
         await installNameLookupSnap(driver);

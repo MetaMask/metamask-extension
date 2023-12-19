@@ -9,6 +9,8 @@
       "web3ShimUsageOrigins": "object"
     },
     "AnnouncementController": { "announcements": "object" },
+    "NetworkOrderController": { "orderedNetworkList": {} },
+    "AccountOrderController": { "pinnedAccountList": {} },
     "AppStateController": {
       "browserEnvironment": {},
       "nftsDropdownState": {},
@@ -31,13 +33,15 @@
       },
       "snapsInstallPrivacyWarningShown": true
     },
-    "CachedBalancesController": { "cachedBalances": "object" },
     "CurrencyController": {
-      "conversionDate": "number",
-      "conversionRate": 1300,
       "currentCurrency": "usd",
-      "nativeCurrency": "ETH",
-      "usdConversionRate": 1300
+      "currencyRates": {
+        "ETH": {
+          "conversionDate": "number",
+          "conversionRate": 1300,
+          "usdConversionRate": 1300
+        }
+      }
     },
     "GasFeeController": {
       "estimatedGasFeeTimeBounds": {},
@@ -120,7 +124,9 @@
       "ignoredTokens": "object",
       "tokens": "object"
     },
-    "TransactionController": { "transactions": "object" },
+    "TransactionController": {
+      "transactions": "object"
+    },
     "config": "object",
     "firstTimeInfo": "object"
   }

@@ -28,6 +28,7 @@ export { ButtonLink, ButtonLinkSize } from './button-link';
 export { ButtonPrimary, ButtonPrimarySize } from './button-primary';
 export { ButtonSecondary, ButtonSecondarySize } from './button-secondary';
 export { Checkbox } from './checkbox';
+export { Container } from './container';
 export { FormTextField } from './form-text-field';
 export { HeaderBase } from './header-base';
 export { HelpText, HelpTextSeverity } from './help-text';
@@ -38,12 +39,13 @@ export { Tag } from './tag';
 export { TagUrl } from './tag-url';
 export { Text, ValidTag, TextDirection, InvisibleCharacter } from './text';
 export { Input, InputType } from './input';
-export { TextField, TEXT_FIELD_TYPES, TEXT_FIELD_SIZES } from './text-field';
-export { TextFieldSearch } from './text-field-search';
+export { TextField, TextFieldType, TextFieldSize } from './text-field';
+export { TextFieldSearch, TextFieldSearchSize } from './text-field-search';
 export { ModalContent, ModalContentSize } from './modal-content';
 export { ModalOverlay } from './modal-overlay';
 export { ModalFocus } from './modal-focus';
 export { Modal, useModalContext } from './modal';
+export { ModalBody } from './modal-body';
 
 // Molecules
 export { BannerBase } from './banner-base';
@@ -52,3 +54,10 @@ export { BannerTip, BannerTipLogoType } from './banner-tip';
 export { PopoverHeader } from './popover-header';
 export { Popover, PopoverPosition, PopoverRole } from './popover';
 export { ModalHeader } from './modal-header';
+export { SelectButton, SelectButtonSize } from './select-button';
+export { SelectOption } from './select-option';
+export {
+  SelectWrapper,
+  SelectContext,
+  useSelectContext,
+} from './select-wrapper';

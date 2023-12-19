@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Редагувати контракт"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Ім'я ENS не знайдено у даній мережі. Спробуйте перейти у Ethereum Mainnet."
-  },
   "ensRegistrationError": {
     "message": "Помилка у реєстрації ENS ім'я"
   },
@@ -612,9 +609,6 @@
   "search": {
     "message": "Пошук"
   },
-  "searchResults": {
-    "message": "Результати пошуку"
-  },
   "securityAndPrivacy": {
     "message": "Безпека й конфіденційність"
   },
@@ -782,12 +776,6 @@
   },
   "unknown": {
     "message": "невідомо"
-  },
-  "unknownCameraError": {
-    "message": "Виникла помилка при спробі отримати доступ до вашої камери. Будь ласка, спробуйте знову..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Отакої! Щось пішло не так..."
   },
   "unknownNetwork": {
     "message": "Незнайома приватна мережа"

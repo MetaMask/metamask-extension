@@ -33,10 +33,11 @@ const mockState = {
     },
     unapprovedTypedMessagesCount: 1,
     providerConfig: { chainId: '0x5', type: 'goerli' },
+    currencyRates: {},
     keyrings: [],
     networkConfigurations: {},
     subjectMetadata: {},
-    cachedBalances: {
+    accountsByChainId: {
       '0x5': {},
     },
     internalAccounts: {

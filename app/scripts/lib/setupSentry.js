@@ -36,7 +36,9 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AccountTracker: {
     accounts: false,
+    accountsByChainId: false,
     currentBlockGasLimit: true,
+    currentBlockGasLimitByChainId: true,
   },
   AddressBookController: {
     addressBook: false,
@@ -48,6 +50,12 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AnnouncementController: {
     announcements: false,
+  },
+  NetworkOrderController: {
+    orderedNetworkList: [],
+  },
+  AccountOrderController: {
+    pinnedAccountList: [],
   },
   AppMetadataController: {
     currentAppVersion: true,
@@ -78,26 +86,19 @@ export const SENTRY_BACKGROUND_STATE = {
     showBetaHeader: true,
     showProductTour: true,
     showTestnetMessageInDropdown: true,
+    surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
   },
-  CachedBalancesController: {
-    cachedBalances: false,
-  },
   CronjobController: {
     jobs: false,
   },
   CurrencyController: {
-    conversionDate: true,
-    conversionRate: true,
     currentCurrency: true,
-    nativeCurrency: true,
-    pendingCurrentCurrency: true,
-    pendingNativeCurrency: true,
-    usdConversionRate: true,
+    currencyRates: true,
   },
   DecryptMessageController: {
     unapprovedDecryptMsgs: false,
@@ -114,6 +115,7 @@ export const SENTRY_BACKGROUND_STATE = {
     estimatedGasFeeTimeBounds: true,
     gasEstimateType: true,
     gasFeeEstimates: true,
+    gasFeeEstimatesByChainId: true,
   },
   KeyringController: {
     isUnlocked: true,
@@ -233,6 +235,7 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   SnapController: {
+    unencryptedSnapStates: false,
     snapStates: false,
     snaps: false,
   },
@@ -281,6 +284,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   TokenRatesController: {
     contractExchangeRates: false,
+    contractExchangeRatesByChainId: false,
   },
   TokensController: {
     allDetectedTokens: {
@@ -299,6 +303,7 @@ export const SENTRY_BACKGROUND_STATE = {
   TransactionController: {
     transactions: false,
     lastFetchedBlockNumbers: false,
+    methodData: false,
   },
   TxController: {
     transactions: false,
@@ -332,10 +337,10 @@ export const SENTRY_UI_STATE = {
     pendingTokens: false,
     welcomeScreenSeen: true,
     useSafeChainsListValidation: true,
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   },
   unconnectedAccount: true,
 };

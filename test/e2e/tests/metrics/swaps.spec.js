@@ -4,7 +4,6 @@ const FixtureBuilder = require('../../fixture-builder');
 const {
   withFixtures,
   generateGanacheOptions,
-  DEFAULT_GANACHE_OPTIONS,
   unlockWallet,
   getEventPayloads,
   assertInAnyOrder,
@@ -105,19 +104,12 @@ describe('Swap Eth for another Token @no-mmi', function () {
           })
           .build(),
         ganacheOptions: generateGanacheOptions({
-          accounts: [
-            {
-              secretKey: DEFAULT_GANACHE_OPTIONS.accounts[0].secretKey,
-              balance: initialBalanceInHex,
-            },
-          ],
+          balance: initialBalanceInHex,
         }),
         title: this.test.fullTitle(),
         testSpecificMock: mockSegmentAndMetaswapRequests,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await driver.navigate();
-
         await unlockWallet(driver);
 
         await getQuoteAndSwapTokens(driver);

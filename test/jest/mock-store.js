@@ -148,13 +148,9 @@ export const createSwapsMockStore = () => {
         chainId: CHAIN_IDS.MAINNET,
         ticker: 'ETH',
       },
-      cachedBalances: {
-        [CHAIN_IDS.MAINNET]: 5,
-      },
       preferences: {
         showFiatInTestnets: true,
       },
-      currentCurrency: 'ETH',
       transactions: [
         {
           id: 6571648590592143,
@@ -225,7 +221,12 @@ export const createSwapsMockStore = () => {
         },
       ],
       useCurrencyRateCheck: true,
-      conversionRate: 1,
+      currentCurrency: 'ETH',
+      currencyRates: {
+        ETH: {
+          conversionRate: 1,
+        },
+      },
       contractExchangeRates: {
         '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': 2,
         '0x1111111111111111111111111111111111111111': 0.1,
@@ -313,6 +314,18 @@ export const createSwapsMockStore = () => {
         '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
           address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
           balance: '0x0',
+        },
+      },
+      accountsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            balance: '0x0',
+          },
+          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+            address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            balance: '0x0',
+          },
         },
       },
       selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',

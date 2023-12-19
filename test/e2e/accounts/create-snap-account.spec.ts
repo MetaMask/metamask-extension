@@ -20,8 +20,6 @@ describe('Create Snap Account', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-
         await unlockWallet(driver);
 
         // navigate to test Snaps page and connect
@@ -106,8 +104,6 @@ describe('Create Snap Account', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-
         await unlockWallet(driver);
 
         // navigate to test Snaps page and connect
@@ -201,8 +197,6 @@ describe('Create Snap Account', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-
         await unlockWallet(driver);
         // navigate to test Snaps page and connect
         await driver.openNewPage(TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL);

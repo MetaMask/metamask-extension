@@ -10,6 +10,7 @@ import {
 } from '../../../../shared/constants/network';
 import { renderWithProvider } from '../../../../test/jest/rendering';
 import { KeyringType } from '../../../../shared/constants/keyring';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import EthOverview from './eth-overview';
 
 // Mock BUYABLE_CHAINS_MAP
@@ -28,26 +29,41 @@ jest.mock('../../../../shared/constants/network', () => ({
     },
   },
 }));
+
+jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+  return {
+    useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
+
 let openTabSpy;
 
 describe('EthOverview', () => {
+  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+
   const mockStore = {
     metamask: {
       providerConfig: {
         chainId: CHAIN_IDS.MAINNET,
         nickname: MAINNET_DISPLAY_NAME,
         type: NETWORK_TYPES.MAINNET,
+        ticker: 'ETH',
       },
-      cachedBalances: {
-        '0x1': {
-          '0x1': '0x1F4',
+      accountsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          '0x1': { address: '0x1', balance: '0x1F4' },
         },
       },
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },
       useCurrencyRateCheck: true,
-      conversionRate: 2,
+      currentCurrency: 'usd',
+      currencyRates: {
+        ETH: {
+          conversionRate: 2,
+        },
+      },
       identities: {
         '0x1': {
           address: '0x1',
@@ -140,7 +156,7 @@ describe('EthOverview', () => {
 
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
-      expect(primaryBalance).toHaveTextContent('0ETH');
+      expect(primaryBalance).toHaveTextContent('<0.000001ETH');
       expect(queryByText('*')).not.toBeInTheDocument();
     });
 
@@ -153,9 +169,9 @@ describe('EthOverview', () => {
               address: '0x1',
             },
           },
-          cachedBalances: {
-            '0x1': {
-              '0x1': '0x24da51d247e8b8',
+          accountsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
             },
           },
         },

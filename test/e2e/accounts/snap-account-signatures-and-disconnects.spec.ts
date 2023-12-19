@@ -1,13 +1,12 @@
 import { Suite } from 'mocha';
 import FixtureBuilder from '../fixture-builder';
-import { withFixtures } from '../helpers';
+import { withFixtures, multipleGanacheOptions } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import {
   installSnapSimpleKeyring,
   makeNewAccountAndSwitch,
   connectAccountToTestDapp,
   disconnectFromTestDapp,
-  ganacheOptions,
   signData,
 } from './common';
 
@@ -17,7 +16,7 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
       {
         dapp: true,
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: multipleGanacheOptions,
         failOnConsoleError: false,
         title: this.test?.fullTitle(),
       },

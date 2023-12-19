@@ -33,10 +33,10 @@ export async function getSnapAndHardwareInfoForMetrics(
   const { keyring } = account.metadata;
 
   let snap;
-  if (account.metadata?.snap?.id) {
+  if (account.metadata.snap?.id) {
     snap = messenger.call(
       'SnapController:get',
-      account.metadata?.snap?.id,
+      account.metadata.snap?.id,
     ) as Snap;
   }
 

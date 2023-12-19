@@ -319,7 +319,13 @@
         "message": "Hello, http://localhost:8086!"
       }
     },
-    "cachedBalances": {},
+    "accountsByChainId": {
+      "0x5": {
+        "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+          "balance": "0x15f6f0b9d4f8d000"
+        }
+      }
+    },
     "incomingTransactionsPreferences": {
       "0x1": true,
       "0xe708": false,
@@ -370,8 +376,11 @@
     },
     "ticker": "ETH",
     "currentCurrency": "usd",
-    "nativeCurrency": "ETH",
-    "conversionRate": 556.12,
+    "currencyRates": {
+      "ETH": {
+        "conversionRate": 556.12
+      }
+    },
     "addressBook": {
       "0x5": {
         "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
@@ -397,6 +406,8 @@
     "useCurrencyRateCheck": true,
     "useNftDetection": true,
     "openSeaEnabled": true,
+    "orderedNetworkList": [],
+    "pinnedAccountList": [],
     "advancedGasFee": {
       "0x5": {
         "maxBaseFee": "75",
@@ -1519,6 +1530,12 @@
           "versions": {
             "5.1.2": {
               "checksum": "L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+            },
+            "5.1.3": {
+              "checksum": "21k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
+            },
+            "6.0.0": {
+              "checksum": "31k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU="
             }
           }
         }
