@@ -40,6 +40,7 @@ import shouldInjectProvider from '../../shared/modules/provider-injection';
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';
 const INPAGE = 'metamask-inpage';
+const PROVIDER = 'metamask-provider';
 
 restoreContextAfterImports();
 
@@ -66,5 +67,45 @@ if (shouldInjectProvider()) {
       icon: process.env.METAMASK_BUILD_ICON,
       rdns: process.env.METAMASK_BUILD_APP_ID,
     },
+  });
+
+  setTimeout(() => {
+    console.log('posted fake CONNECTION_CLOSING from inpage')
+    window.postMessage(
+      {
+        target: CONTENT_SCRIPT, // the post-message-stream "target"
+        data: {
+          // this object gets passed to obj-multiplex
+          name: PROVIDER, // the obj-multiplex channel name
+          data: {
+            jsonrpc: '2.0',
+            method: 'CONNECTION_CLOSING',
+          },
+        },
+      },
+      window.location.origin,
+    );
+  }, 5000)
+
+  window.addEventListener('pagehide', (event) => {
+    if (event.persisted) {
+      console.log("Page being persisted")
+      return
+    }
+    console.log('Page has become hidden', event)
+    // window.postMessage(
+    //   {
+    //     target: CONTENT_SCRIPT, // the post-message-stream "target"
+    //     data: {
+    //       // this object gets passed to obj-multiplex
+    //       name: PROVIDER, // the obj-multiplex channel name
+    //       data: {
+    //         jsonrpc: '2.0',
+    //         method: 'CONNECTION_CLOSING',
+    //       },
+    //     },
+    //   },
+    //   window.location.origin,
+    // );
   });
 }

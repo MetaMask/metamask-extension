@@ -4325,9 +4325,23 @@ export default class MetamaskController extends EventEmitter {
     // setup multiplexing
     const mux = setupMultiplex(connectionStream);
 
+    const metamaskProviderStream = mux.createStream('metamask-provider')
+
+    metamaskProviderStream.on('data', (event) => {
+      if(event.method === 'CONNECTION_CLOSING') {
+        console.log('background should end connection')
+        // metamaskProviderStream.destroy()
+        connectionStream.destroy()
+        return
+      }
+      console.log("metamaskProviderStream", event)
+    })
+
+
+
     // messages between inpage and background
     this.setupProviderConnection(
-      mux.createStream('metamask-provider'),
+      metamaskProviderStream,
       sender,
       _subjectType,
     );

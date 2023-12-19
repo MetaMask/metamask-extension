@@ -225,6 +225,13 @@ const setupPageStreams = () => {
     name: CONTENT_SCRIPT,
     target: INPAGE,
   });
+  pageStream.on('data', (event) => {
+    if (event.data?.method === 'CONNECTION_CLOSING') {
+      console.log('contentscript should close connection')
+      // destroyExtensionStreams()
+    }
+    console.log("page stream data", event, event.data.method)
+  });
 
   // create and connect channel muxers
   // so we can handle the channels individually
