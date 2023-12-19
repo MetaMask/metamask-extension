@@ -68,6 +68,9 @@ export function getAvatarNetworkColor(name) {
 }
 
 export function getAccountLabel(type, account) {
+  if (!account) {
+    return null;
+  }
   switch (type) {
     case KeyringType.qr:
       return HardwareKeyringNames.qr;
