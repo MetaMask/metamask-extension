@@ -58,7 +58,7 @@ export default class TransactionListItemDetails extends PureComponent {
     blockExplorerLinkText: PropTypes.object,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     getCustodianTransactionDeepLink: PropTypes.func,
-    selectedIdentity: PropTypes.object,
+    selectedAccount: PropTypes.object,
     transactionNote: PropTypes.string,
     ///: END:ONLY_INCLUDE_IF
   };
@@ -140,14 +140,14 @@ export default class TransactionListItemDetails extends PureComponent {
       recipientAddress,
       tryReverseResolveAddress,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      selectedIdentity,
+      selectedAccount,
       transactionGroup,
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this._mounted = true;
-    const address = selectedIdentity?.address;
+    const address = selectedAccount?.address;
     const custodyId = transactionGroup?.primaryTransaction?.custodyId;
 
     if (this._mounted && address && custodyId) {
