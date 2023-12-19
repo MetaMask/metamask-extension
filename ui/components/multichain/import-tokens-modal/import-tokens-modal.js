@@ -9,10 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link/dist/token-tracker-link';
-import {
-  fetchTokenContractExchangeRates,
-  CodefiTokenPricesServiceV2,
-} from '@metamask/assets-controllers';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -86,6 +82,7 @@ import {
 import {
   checkExistingAddresses,
   getURLHostName,
+  fetchTokenExchangeRates,
 } from '../../../helpers/utils/util';
 import { tokenInfoGetter } from '../../../helpers/utils/token-util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -381,18 +378,13 @@ export const ImportTokensModal = ({ onClose }) => {
 
     const tokenAddresses = tmpTokensToDispatch.map((obj) => obj.address);
     if (tmpTokensToDispatch.length !== 0) {
-      try {
-        const result = await fetchTokenContractExchangeRates({
-          tokenPricesService: new CodefiTokenPricesServiceV2(),
-          nativeCurrency,
-          tokenAddresses,
-          chainId,
-        });
-        // dispatch action
-        dispatch(setConfirmationExchangeRates(result));
-      } catch (err) {
-        // ignore
-      }
+      const result = await fetchTokenExchangeRates(
+        nativeCurrency,
+        tokenAddresses,
+        chainId,
+      );
+      // dispatch action
+      dispatch(setConfirmationExchangeRates(result));
     }
     setMode('confirm');
   };
