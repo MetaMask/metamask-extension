@@ -12,6 +12,34 @@ const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
 function defaultFixture() {
   return {
     data: {
+      AccountsController: {
+        internalAccounts: {
+          selectedAccount: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+          accounts: {
+            'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4': {
+              id: 'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4',
+              address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+              metadata: {
+                name: 'Account 1',
+                lastSelected: 1665507600000,
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [
+                'personal_sign',
+                'eth_sign',
+                'eth_signTransaction',
+                'eth_signTypedData_v1',
+                'eth_signTypedData_v3',
+                'eth_signTypedData_v4',
+              ],
+              type: 'eip155:eoa',
+            },
+          },
+        },
+      },
       AlertController: {
         alertEnabledness: {
           unconnectedAccount: true,
@@ -144,14 +172,20 @@ function defaultFixture() {
             id: 22,
             isShown: true,
           },
-          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
           23: {
             date: null,
             id: 23,
             isShown: false,
           },
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         },
+      },
+      NetworkOrderController: {
+        orderedNetworkList: [],
+      },
+      AccountOrderController: {
+        pinnedAccountList: [],
       },
       AppStateController: {
         browserEnvironment: {},
@@ -177,11 +211,6 @@ function defaultFixture() {
         },
         snapsInstallPrivacyWarningShown: true,
       },
-      CachedBalancesController: {
-        cachedBalances: {
-          [CHAIN_IDS.LOCALHOST]: {},
-        },
-      },
       CurrencyController: {
         currentCurrency: 'usd',
         currencyRates: {
@@ -199,7 +228,7 @@ function defaultFixture() {
       },
       KeyringController: {
         vault:
-          '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
+          '{"data":"WHaP1FrrtV4zUonudIppDifsLHF39g6oPkVksAIdWAHBRzax1uy1asfAJprR7u72t4/HuYz5yPIFQrnNnv+hwQu9GRuty88VKMnvMy+sq8MNtoXI+C54bZpWa8r4iUQfa0Mj/cfJbpFpzOdF1ZYXahTfTcU5WsrHwvJew842CiJR4B2jmCHHXfm/DxLK3WazsVQwXJGx/U71UelGoOOrT8NI28EKrAwgPn+7Xmv0j92gmhau30N7Bo2fr6Zv","iv":"LfD8/tY1EjXzxuemSmDVdA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"nk4xdpmMR+1s5BYe4Vnk++XAQwrISI2bCtbMg7V1wUA="}',
       },
       MetaMetricsController: {
         eventsBeforeMetricsOptIn: [],
@@ -451,13 +480,18 @@ class FixtureBuilder {
     return this;
   }
 
-  withAppStateController(data) {
-    merge(this.fixture.data.AppStateController, data);
+  withNetworkOrderController(data) {
+    merge(this.fixture.data.NetworkOrderController, data);
     return this;
   }
 
-  withCachedBalancesController(data) {
-    merge(this.fixture.data.CachedBalancesController, data);
+  withAccountOrderController(data) {
+    merge(this.fixture.data.AccountOrderController, data);
+    return this;
+  }
+
+  withAppStateController(data) {
+    merge(this.fixture.data.AppStateController, data);
     return this;
   }
 
@@ -479,14 +513,21 @@ class FixtureBuilder {
   withKeyringControllerAdditionalAccountVault() {
     return this.withKeyringController({
       vault:
-        '{"data":"n1LbLX7D4CdnFjYkyvn8Vfv0VQ0spMTdzCP+bsrZX2cQXiz+GXb9AKaIjbcR0EHuQ5/VulkrpbZFDSYJ5VlZ5VRVVUngckHCNgzw73Jo3D+fVrmwEn6HhBbA+STHRMdjf3eEL/eiS5HbkQ0zutoj8KU/nMPfTz6iuV+WGa0hcOKZa+mqYkSzeYuqVCnWYspjF9hKE5NKnl5Vrnvu3/eFi6PiDeaUbIfs0ccttopnTdQya5e3KB23tu0ORa48EJawK0JeKurLlFfNNNqq+tg3HRgxUyiVp6mCns8GBdsd9Wx3HP00qIJa4OAFV2TtDvSSuek1XAWlIqjKegZbnXosB0t3IABhqWnSozXRFvsHe8oHVZP++B/2pJPzz5kkAgK9Ya/quy/7ok/GN5qw0n9Q6cCexfm9hGC3MI53ClEg08yq2w/eVKMDeEdES6IqidpRxOanIAsrcDjPIw6yP7tXqzo7d4A/50GyBb5MJYeTD7r9bV5/5VWcHtILDyGt4CROgM9/U/wdKduNJy5Igfhh0nvA0399Ber9jvWmtmQxiWAxAgrcf9Xi0SZXWewH/ZEnAOkIOmTVX9hpAGkbDqIvK1Zt2bIK5X/At2KiZ5DqAFet9AiyLZTPR5YQ2KaB8AarEjUthTa7EcDSpAPsr9jLPZwlKuMZO2I29xZHx4ht4ozlcqU+zMF8JBojtP73cRQKc0Chqm8xY9I9K6jANdZn9lT+q20RDgwJAfkp+UUSTTqUgZ3ruej2FyY9F+GWuOZJY1zPN0KG7j7uPXaP5Gqq","iv":"XxlC9CCaul7U0F6JRNyH9A==","salt":"gQOYCUFPAPVJITl0gxIs8TdgNQNl2ltzu4OAHajj+tM="}',
+        '{"data":"XBb1KJiGsxNOhcTC/xtzaNmpDqnMibJ/HCIjMGUHF/jPIghM63+xkoGcko9T2NKjeMyt2QLbl7K9tr0/qQgbAJP/LUn6gfovkajBdeBQ5N/qztdw7uGJsnrKnzo1krmb2wWeFstwoolcZ9GYwhYVSmCO/tYba50eanY2XvmFheT1ghowtiFmTIGRWV2X1HacnpI4n0rW88ZyBaVuOJOIJGEBiiTD+b0V5l9Tv4sFEms4jvatJwhjDQnx1HmyQE3K64+W5yJe764B0ZdcQ6j2dyIaGgutcz8PoQLBJR1uo78fufZeFzk1gk/BreXn2+4vQnPxQ3prhnXHO4S+7Kj1h2ticxYb3XWnprFLWyksu9ChMyqDXwgM6edLBRDH2jz/IMuC5g9JhABl7PsSH+001z/uBx3GvRTFviFF9dztf195/EPy8YbuYUVbYtJy1aPSju84efWYvb7GrzrmgFnbeh2BpjyWqHoCTdw8fhdm7HQO8GFF7JdGtoIpjkhwPrudIQeIYhGCezd+n5GFp3mdmFNrLbOVFgxufTdY6hlYkg6c5XuHC2VnWCSPwWKIn6t9VuvuyIxXBnol/bgYC8R/d99ctkPDHykigQcgr6cCnhPOwUFOLwrmXqm9HQeWiKb8WxwdGeRnblS+fhFhB+lSy7RvyTUb7HFogDPnDLP/LlUFxdSNNBgqNJU1Dc07Np65PZrpsPvSCfkFttzTytHswhtTEMOg/faaH2D6AwIGbh5Z9cubiNcMrdD75aT1WGuecJ8P7uOMYJq9C7e5l/35","iv":"U81Cv/oryQ1DI9lRezx1iw==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"ejIn0xx5qZMA0m2ekjvXJF2pJa8ocL11wEdNIFJsKZQ="}',
     });
   }
 
   withKeyringControllerImportedAccountVault() {
     return this.withKeyringController({
       vault:
-        '{"data":"Ot+BTtJPag0xubdiv1nO9bsSvTHivHCd6CD7Lxgb1McYw3VqMjgp5rPMZmblJ1lscuMxyiqp99G52uXO9S0em6F9htpa+t/wn6qubRKTTNG9fxNzQrKXRDNhdgfYckVk5VAZ4fgl2iMZcRDvS8H/+gucVKJ33Sl6mXyPofdexXhWDCU6uR2YecnfaIum9cL2u/GqOMPE3jxzy0Wip0x2Jyp3QOKhvu8A3GIjzagLOaQ7a1APdl8=","iv":"lbsyPeGYWU6U1+jvmW9UHg==","salt":"Zmbhpskwxe4rYfXtELBvlcvW4HISPBATRmMqzsnZPMg="}',
+        '{"data":"NlxYVSDJJV4B1DWM+fZ0KX1K2lIU9ozK3WMbbL23WEY036umZ9//qB+bN9R1jKMm6xqHGSGgq9EteFMy2Ix5Bx1/c4hV2QquFRTEzPB4TkQ6+P5eJUvgvZ7vqvVU+2W8719T1oz/O7DH7HbO05JPLD1RBY+XOyHzUzAgwmXq0mwxNpqji3ejHyrjZ/1l06igircW/qysLcjZFZ52Vv4a/q1zCL37/4heHDRVmfEob//ulUbJ/5M=","iv":"b9n77dsUqvww9nGcWfPuIA==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"XrmM930Jqnb7C9Ow5NErAMkSGR3vuMLsqUrkGjzpwaY="}',
+    });
+  }
+
+  withKeyringControllerOldVault() {
+    return this.withKeyringController({
+      vault:
+        '{"data":"s6TpYjlUNsn7ifhEFTkuDGBUM1GyOlPrim7JSjtfIxgTt8/6MiXgiR/CtFfR4dWW2xhq85/NGIBYEeWrZThGdKGarBzeIqBfLFhw9n509jprzJ0zc2Rf+9HVFGLw+xxC4xPxgCS0IIWeAJQ+XtGcHmn0UZXriXm8Ja4kdlow6SWinB7sr/WM3R0+frYs4WgllkwggDf2/Tv6VHygvLnhtzp6hIJFyTjh+l/KnyJTyZW1TkZhDaNDzX3SCOHT","iv":"FbeHDAW5afeWNORfNJBR0Q==","salt":"TxZ+WbCW6891C9LK/hbMAoUsSEW1E8pyGLVBU6x5KR8="}',
     });
   }
 
@@ -777,6 +818,134 @@ class FixtureBuilder {
         },
       },
       selectedAddress: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+    });
+  }
+
+  withAccountsController(data) {
+    merge(this.fixture.data.AccountsController, data);
+    return this;
+  }
+
+  withAccountsControllerImportedAccount() {
+    return this.withAccountsController({
+      internalAccounts: {
+        selectedAccount: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+        accounts: {
+          '2fdb2de6-80c7-4d2f-9f95-cb6895389843': {
+            id: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+            address: '0x0cc5261ab8ce458dc977078a3623e2badd27afd3',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 1',
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          '58093703-57e9-4ea9-8545-49e8a75cb084': {
+            id: '58093703-57e9-4ea9-8545-49e8a75cb084',
+            address: '0x3ed0ee22e0685ebbf07b2360a8331693c413cc59',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 2',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          'dd658aab-abf2-4f53-b735-c8a57151d447': {
+            id: 'dd658aab-abf2-4f53-b735-c8a57151d447',
+            address: '0xd38d853771fb546bd8b18b2f3638491bc0b0e906',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 3',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  withAccountsControllerAdditionalAccountIdentities() {
+    return this.withAccountsController({
+      internalAccounts: {
+        selectedAccount: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+        accounts: {
+          '2fdb2de6-80c7-4d2f-9f95-cb6895389843': {
+            id: '2fdb2de6-80c7-4d2f-9f95-cb6895389843',
+            address: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 1',
+              lastSelected: 1665507600000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+          'dd658aab-abf2-4f53-b735-c8a57151d447': {
+            id: 'dd658aab-abf2-4f53-b735-c8a57151d447',
+            address: '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+            options: {},
+            methods: [
+              'personal_sign',
+              'eth_sign',
+              'eth_signTransaction',
+              'eth_signTypedData_v1',
+              'eth_signTypedData_v3',
+              'eth_signTypedData_v4',
+            ],
+            type: 'eip155:eoa',
+            metadata: {
+              name: 'Account 2',
+              lastSelected: 1665507500000,
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+          },
+        },
+      },
     });
   }
 

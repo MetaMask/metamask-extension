@@ -1,4 +1,6 @@
+import { deepClone } from '@metamask/snaps-utils';
 import { ApprovalType, NetworkType } from '@metamask/controller-utils';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import mockState from '../../test/data/mock-state.json';
 import { KeyringType } from '../../shared/constants/keyring';
 import {
@@ -7,6 +9,7 @@ import {
   NETWORK_TYPES,
   OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
+import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import * as selectors from './selectors';
 
 jest.mock('../../shared/modules/network.utils', () => {
@@ -16,6 +19,15 @@ jest.mock('../../shared/modules/network.utils', () => {
     shouldShowLineaMainnet: jest.fn().mockResolvedValue(true),
   };
 });
+
+const modifyStateWithHWKeyring = (keyring) => {
+  const modifiedState = deepClone(mockState);
+  modifiedState.metamask.internalAccounts.accounts[
+    modifiedState.metamask.internalAccounts.selectedAccount
+  ].metadata.keyring.type = keyring;
+
+  return modifiedState;
+};
 
 describe('Selectors', () => {
   describe('#getSelectedAddress', () => {
@@ -28,6 +40,78 @@ describe('Selectors', () => {
       expect(
         selectors.getSelectedAddress({ metamask: { selectedAddress } }),
       ).toStrictEqual(selectedAddress);
+    });
+  });
+
+  describe('#getSelectedInternalAccount', () => {
+    it('returns undefined if selectedAccount is undefined', () => {
+      expect(
+        selectors.getSelectedInternalAccount({
+          metamask: {
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
+          },
+        }),
+      ).toBeUndefined();
+    });
+
+    it('returns selectedAccount', () => {
+      const mockInternalAccount = {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [...Object.values(EthMethod)],
+        type: EthAccountType.Eoa,
+      };
+      expect(
+        selectors.getSelectedInternalAccount({
+          metamask: {
+            internalAccounts: {
+              accounts: {
+                [mockInternalAccount.id]: mockInternalAccount,
+              },
+              selectedAccount: mockInternalAccount.id,
+            },
+          },
+        }),
+      ).toStrictEqual(mockInternalAccount);
+    });
+  });
+
+  describe('#getInternalAccounts', () => {
+    it('returns a list of internal accounts', () => {
+      expect(selectors.getInternalAccounts(mockState)).toStrictEqual(
+        Object.values(mockState.metamask.internalAccounts.accounts),
+      );
+    });
+  });
+
+  describe('#getInternalAccount', () => {
+    it("returns undefined if the account doesn't exist", () => {
+      expect(
+        selectors.getInternalAccount(mockState, 'unknown'),
+      ).toBeUndefined();
+    });
+
+    it('returns the account', () => {
+      expect(
+        selectors.getInternalAccount(
+          mockState,
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        ),
+      ).toStrictEqual(
+        mockState.metamask.internalAccounts.accounts[
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+        ],
+      );
     });
   });
 
@@ -433,37 +517,43 @@ describe('Selectors', () => {
 
   describe('#isHardwareWallet', () => {
     it('returns false if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.imported;
-      expect(selectors.isHardwareWallet(mockState)).toBe(false);
+      const mockStateWithImported = modifyStateWithHWKeyring(
+        KeyringType.imported,
+      );
+      expect(selectors.isHardwareWallet(mockStateWithImported)).toBe(false);
     });
 
     it('returns true if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.ledger;
-      expect(selectors.isHardwareWallet(mockState)).toBe(true);
+      const mockStateWithLedger = modifyStateWithHWKeyring(KeyringType.ledger);
+      expect(selectors.isHardwareWallet(mockStateWithLedger)).toBe(true);
     });
 
     it('returns true if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.trezor;
-      expect(selectors.isHardwareWallet(mockState)).toBe(true);
+      const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
+      expect(selectors.isHardwareWallet(mockStateWithTrezor)).toBe(true);
     });
   });
 
   describe('#getHardwareWalletType', () => {
     it('returns undefined if it is not a HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.imported;
-      expect(selectors.getHardwareWalletType(mockState)).toBeUndefined();
+      const mockStateWithImported = modifyStateWithHWKeyring(
+        KeyringType.imported,
+      );
+      expect(
+        selectors.getHardwareWalletType(mockStateWithImported),
+      ).toBeUndefined();
     });
 
     it('returns "Ledger Hardware" if it is a Ledger HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.ledger;
-      expect(selectors.getHardwareWalletType(mockState)).toBe(
+      const mockStateWithLedger = modifyStateWithHWKeyring(KeyringType.ledger);
+      expect(selectors.getHardwareWalletType(mockStateWithLedger)).toBe(
         KeyringType.ledger,
       );
     });
 
     it('returns "Trezor Hardware" if it is a Trezor HW wallet', () => {
-      mockState.metamask.keyrings[0].type = KeyringType.trezor;
-      expect(selectors.getHardwareWalletType(mockState)).toBe(
+      const mockStateWithTrezor = modifyStateWithHWKeyring(KeyringType.trezor);
+      expect(selectors.getHardwareWalletType(mockStateWithTrezor)).toBe(
         KeyringType.trezor,
       );
     });
@@ -802,5 +892,132 @@ describe('Selectors', () => {
 
   it('#getAnySnapUpdateAvailable', () => {
     expect(selectors.getAnySnapUpdateAvailable(mockState)).toStrictEqual(true);
+  });
+
+  describe('#getShowSurveyToast', () => {
+    const realDateNow = Date.now;
+
+    afterEach(() => {
+      Date.now = realDateNow;
+    });
+
+    it('shows the survey link when not yet seen and within time bounds', () => {
+      Date.now = () =>
+        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
+      const result = selectors.getShowSurveyToast({
+        metamask: {
+          surveyLinkLastClickedOrClosed: null,
+        },
+      });
+      expect(result).toStrictEqual(true);
+    });
+
+    it('does not show the survey link when seen and within time bounds', () => {
+      Date.now = () =>
+        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
+      const result = selectors.getShowSurveyToast({
+        metamask: {
+          surveyLinkLastClickedOrClosed: 123456789,
+        },
+      });
+      expect(result).toStrictEqual(false);
+    });
+
+    it('does not show the survey link before time bounds', () => {
+      Date.now = () =>
+        new Date(`${SURVEY_DATE} 11:25:00 ${SURVEY_GMT}`).getTime();
+      const result = selectors.getShowSurveyToast({
+        metamask: {
+          surveyLinkLastClickedOrClosed: null,
+        },
+      });
+      expect(result).toStrictEqual(false);
+    });
+
+    it('does not show the survey link after time bounds', () => {
+      Date.now = () =>
+        new Date(`${SURVEY_DATE} 14:25:00 ${SURVEY_GMT}`).getTime();
+      const result = selectors.getShowSurveyToast({
+        metamask: {
+          surveyLinkLastClickedOrClosed: null,
+        },
+      });
+      expect(result).toStrictEqual(false);
+    });
+  });
+
+  it('#getUpdatedAndSortedAccounts', () => {
+    const pinnedAccountState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pinnedAccountList: [
+          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+          '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+        ],
+        accounts: {
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            name: 'Test Account',
+            balance: '0x0',
+          },
+          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+            address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            name: 'Test Account 2',
+            balance: '0x0',
+          },
+          '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+            address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            name: 'Test Ledger 1',
+            balance: '0x0',
+          },
+          '0xeb9e64b93097bc15f01f13eae97015c57ab64823': {
+            name: 'Test Account 3',
+            address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+            balance: '0x0',
+          },
+          '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+            name: 'Custody test',
+            address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+            balance: '0x0',
+          },
+        },
+      },
+    };
+    const expectedResult = [
+      {
+        address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+        balance: '0x0',
+        name: 'Test Account 2',
+        pinned: true,
+      },
+      {
+        address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+        balance: '0x0',
+        name: 'Test Account 3',
+        pinned: true,
+      },
+      {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        name: 'Test Account',
+        balance: '0x0',
+        pinned: false,
+      },
+      {
+        address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        name: 'Test Ledger 1',
+        balance: '0x0',
+        pinned: false,
+      },
+      {
+        name: 'Custody test',
+        address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+        balance: '0x0',
+        pinned: false,
+      },
+    ];
+    expect(
+      selectors.getUpdatedAndSortedAccounts(pinnedAccountState),
+    ).toStrictEqual(expectedResult);
   });
 });

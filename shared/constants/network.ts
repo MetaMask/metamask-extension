@@ -222,11 +222,11 @@ export const OPTIMISM_DISPLAY_NAME = 'OP Mainnet';
 export const FANTOM_DISPLAY_NAME = 'Fantom Opera';
 export const HARMONY_DISPLAY_NAME = 'Harmony Mainnet Shard 0';
 export const PALM_DISPLAY_NAME = 'Palm';
-export const AURORA_DISPLAY_NAME = 'Aurora Mainnet';
 export const CELO_DISPLAY_NAME = 'Celo Mainnet';
 export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
+export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -258,7 +258,6 @@ export const LOCALHOST_RPC_URL = 'http://localhost:8545';
  */
 export const CURRENCY_SYMBOLS = {
   ARBITRUM: 'ETH',
-  AURORA_ETH: 'AURORA ETH',
   AVALANCHE: 'AVAX',
   BNB: 'BNB',
   BUSD: 'BUSD',
@@ -352,7 +351,6 @@ export const FTM_TOKEN_IMAGE_URL = './images/fantom-opera.svg';
 export const HARMONY_ONE_TOKEN_IMAGE_URL = './images/harmony-one.svg';
 export const OPTIMISM_TOKEN_IMAGE_URL = './images/optimism.svg';
 export const PALM_TOKEN_IMAGE_URL = './images/palm.svg';
-export const AURORA_TOKEN_IMAGE_URL = './images/aurora.png';
 export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
 export const ZK_SYNC_ERA_TOKEN_IMAGE_URL = './images/zk-sync.svg';
@@ -371,6 +369,11 @@ export const TEST_CHAINS = [
   CHAIN_IDS.SEPOLIA,
   CHAIN_IDS.LINEA_GOERLI,
   CHAIN_IDS.LOCALHOST,
+];
+
+export const MAINNET_CHAINS = [
+  { chainId: CHAIN_IDS.MAINNET },
+  { chainId: CHAIN_IDS.LINEA_MAINNET },
 ];
 
 const typedCapitalize = <K extends string>(k: K): Capitalize<K> =>
@@ -598,7 +601,6 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.HARMONY]: HARMONY_ONE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.OPTIMISM]: OPTIMISM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.AURORA]: AURORA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
 } as const;
@@ -752,6 +754,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.GOERLI
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
+    | typeof CHAIN_IDS.AURORA
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -797,10 +800,6 @@ export const BUYABLE_CHAINS_MAP: {
   [CHAIN_IDS.MOONRIVER]: {
     nativeCurrency: CURRENCY_SYMBOLS.MOONRIVER,
     network: 'moonriver',
-  },
-  [CHAIN_IDS.AURORA]: {
-    nativeCurrency: CURRENCY_SYMBOLS.AURORA_ETH,
-    network: 'aurora',
   },
   [CHAIN_IDS.HARMONY]: {
     nativeCurrency: CURRENCY_SYMBOLS.ONE,

@@ -1079,18 +1079,20 @@ jobs:
       - run:
           name: test:e2e:chrome:mmi
           command: |
-            SHARD="$((${CIRCLE_NODE_INDEX}+1))"; xvfb-run yarn playwright test --shard=${SHARD}/${CIRCLE_NODE_TOTAL}
-          no_output_timeout: 20m
+            TESTFILES=$(circleci tests glob "test/e2e/mmi/**/*.spec.ts")
+            echo "$TESTFILES"
+            echo "$TESTFILES" | circleci tests run --command="xvfb-run xargs yarn playwright test" verbose --split-by=timings
+          no_output_timeout: 10m
       - slack/notify:
           branch_pattern: Version-v*
           event: fail
-          mentions: <@antonio.regadas>, <@ramon.acitores134>
+          mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
           channel: C01LUJL3T98
       - slack/notify:
           branch_pattern: develop
           event: fail
-          mentions: <@antonio.regadas>, <@ramon.acitores134>
+          mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
           channel: C05QXJA7NP8
       - store_artifacts:

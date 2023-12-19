@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Modal,
-  ModalContent,
   ModalOverlay,
-  ModalHeader,
   IconName,
   AvatarIcon,
   AvatarIconSize,
@@ -16,6 +14,8 @@ import {
   ButtonPrimarySize,
   ButtonVariant,
 } from '../../../component-library';
+import { ModalContent } from '../../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import {
   AlignItems,
   BackgroundColor,

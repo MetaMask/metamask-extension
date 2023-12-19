@@ -32,7 +32,14 @@ const state = {
         name: 'Account 2',
       },
     },
-    cachedBalances: {},
+    accountsByChainId: {
+      '0x1': {
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+          balance: '0x0',
+        },
+      },
+    },
     addressBook: [
       {
         address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',

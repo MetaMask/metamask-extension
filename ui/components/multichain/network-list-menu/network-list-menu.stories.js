@@ -18,6 +18,7 @@ const customNetworkStore = configureStore({
     preferences: {
       showTestNetworks: true,
     },
+    orderedNetworkList: [],
     networkConfigurations: {
       ...testData.metamask.networkConfigurations,
       ...{

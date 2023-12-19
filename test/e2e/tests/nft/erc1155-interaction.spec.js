@@ -1,25 +1,17 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
   withFixtures,
   DAPP_URL,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
+  defaultGanacheOptions,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('ERC1155 NFTs testdapp interaction', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   it('should mint ERC1155 token', async function () {
     await withFixtures(
@@ -28,7 +20,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
@@ -47,11 +39,10 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.clickElement('#batchMintButton');
 
         // Notification
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
         const [extension] = windowHandles;
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -84,7 +75,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
@@ -99,11 +90,10 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.fill('#batchTransferTokenAmounts', '1, 1, 1000000000000');
         await driver.clickElement('#batchTransferFromButton');
 
-        await driver.waitUntilXWindowHandles(3);
-        const windowHandles = await driver.getAllWindowHandles();
+        const windowHandles = await driver.waitUntilXWindowHandles(3);
         const [extension] = windowHandles;
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -130,10 +120,11 @@ describe('ERC1155 NFTs testdapp interaction', function () {
   });
 
   it('should enable approval for a third party address to manage all ERC1155 token', async function () {
+    // ERC1155 is the name of the test-dapp ERC1155 contract
     const expectedMessageTitle =
-      'Allow access to and transfer all of your NFTs from this collection?';
+      'Allow access to and transfer all of your NFTs from ERC1155?';
     const expectedDescription =
-      'This allows a third party to access and transfer all of your NFTs from this collection without further notice until you revoke its access.';
+      'This allows a third party to access and transfer all of your NFTs from ERC1155 without further notice until you revoke its access.';
     const expectedWarningMessage = 'Your NFT may be at risk';
     await withFixtures(
       {
@@ -141,7 +132,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -154,10 +145,9 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.clickElement('#setApprovalForAllERC1155Button');
 
         // Wait for notification popup and check the displayed message
-        await driver.waitUntilXWindowHandles(3);
-        let windowHandles = await driver.getAllWindowHandles();
+        let windowHandles = await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         const displayedMessageTitle = await driver.findElement(
@@ -194,10 +184,9 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         );
         assert.equal(await displayedWarning.getText(), expectedWarningMessage);
         await driver.clickElement({ text: 'Approve', tag: 'button' });
-        await driver.waitUntilXWindowHandles(2);
+        windowHandles = await driver.waitUntilXWindowHandles(2);
 
         // Switch to extension and check set approval for all transaction is displayed in activity tab
-        windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const setApprovalItem = await driver.findElement({
@@ -218,17 +207,18 @@ describe('ERC1155 NFTs testdapp interaction', function () {
   });
 
   it('should revoke approval for a third party address to manage all ERC1155 token', async function () {
+    // ERC1155 is the name of the test-dapp ERC1155 contract
     const expectedMessageTitle =
-      'Revoke permission to access and transfer all of your NFTs from this collection?';
+      'Revoke permission to access and transfer all of your NFTs from ERC1155?';
     const expectedDescription =
-      'This revokes the permission for a third party to access and transfer all of your NFTs from this collection without further notice.';
+      'This revokes the permission for a third party to access and transfer all of your NFTs from ERC1155 without further notice.';
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -241,10 +231,9 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         await driver.clickElement('#revokeERC1155Button');
 
         // Wait for notification popup and check the displayed message
-        await driver.waitUntilXWindowHandles(3);
-        let windowHandles = await driver.getAllWindowHandles();
+        let windowHandles = await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -277,10 +266,9 @@ describe('ERC1155 NFTs testdapp interaction', function () {
 
         // Click on extension popup to confirm revoke approval for all
         await driver.clickElement('[data-testid="page-container-footer-next"]');
-        await driver.waitUntilXWindowHandles(2);
+        windowHandles = await driver.waitUntilXWindowHandles(2);
 
         // Switch to extension and check revoke approval transaction is displayed in activity tab
-        windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle('MetaMask', windowHandles);
         await driver.clickElement('[data-testid="home__activity-tab"]');
         const revokeApprovalItem = await driver.findElement({

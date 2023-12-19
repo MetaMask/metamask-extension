@@ -309,5 +309,28 @@ describe('TransactionListItem', () => {
       const sendTextExists = screen.queryAllByText('Send');
       expect(sendTextExists).toBeTruthy();
     });
+
+    it('should not show the cancel tx button when the tx is from a custodian', () => {
+      const store = mockStore(mockState);
+
+      useSelector.mockImplementation(
+        generateUseSelectorRouter({
+          balance: '2AA1EFB94E0000',
+        }),
+      );
+
+      const newTransactionGroup = {
+        ...transactionGroup,
+        ...(transactionGroup.primaryTransaction.custodyId = '1'),
+      };
+
+      const { queryByTestId } = renderWithProvider(
+        <TransactionListItem transactionGroup={newTransactionGroup} />,
+        store,
+      );
+
+      const cancelButton = queryByTestId('cancel-button');
+      expect(cancelButton).not.toBeInTheDocument();
+    });
   });
 });

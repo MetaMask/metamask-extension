@@ -75,11 +75,26 @@ export default function SnapInstallWarning({
       const secondWarningSubject = permissionWarnings[1].warningMessageSubject;
       return [
         <Text
-          fontWeight={FontWeight.Medium}
+          fontWeight={FontWeight.Normal}
           as="span"
           key="warningMessageSubject"
         >
-          {t('andForTwoItems', [firstWarningSubject, secondWarningSubject])}
+          {t('andForTwoItems', [
+            <Text
+              fontWeight={FontWeight.Medium}
+              variant={TextVariant.inherit}
+              key={`${firstWarningSubject}_and_first`}
+            >
+              {firstWarningSubject}
+            </Text>,
+            <Text
+              fontWeight={FontWeight.Medium}
+              variant={TextVariant.inherit}
+              key={`${secondWarningSubject}_and_second`}
+            >
+              {secondWarningSubject}
+            </Text>,
+          ])}
         </Text>,
       ];
     }
@@ -92,14 +107,28 @@ export default function SnapInstallWarning({
       if (permissionWarnings.length - 2 === index) {
         return [
           <Text
-            fontWeight={FontWeight.Medium}
+            fontWeight={FontWeight.Normal}
             as="span"
             key={`${warning.permissionName}_and_${index}`}
           >
             {t('andForListItems', [
-              warning.warningMessageSubject,
-              permissionWarnings[permissionWarnings.length - 1]
-                .warningMessageSubject,
+              <Text
+                fontWeight={FontWeight.Medium}
+                variant={TextVariant.inherit}
+                key={`${warning.permissionName}_and_first_${index}`}
+              >
+                {warning.warningMessageSubject}
+              </Text>,
+              <Text
+                fontWeight={FontWeight.Medium}
+                variant={TextVariant.inherit}
+                key={`${warning.permissionName}_and_second_first_${index}`}
+              >
+                {
+                  permissionWarnings[permissionWarnings.length - 1]
+                    .warningMessageSubject
+                }
+              </Text>,
             ])}
           </Text>,
         ];
@@ -115,6 +144,50 @@ export default function SnapInstallWarning({
       ];
     });
   }
+
+  function constructWarningPermissionCell(permissionWarnings, permission) {
+    const warningElementComponentArray =
+      constructWarningElementComponentArray(permissionWarnings);
+    return (
+      <Box as="span" marginBottom={4}>
+        <PermissionCell
+          permissionName={
+            <Text>{t(permission.name, [warningElementComponentArray])}</Text>
+          }
+          title={
+            <Text>{t(permission.title, [warningElementComponentArray])}</Text>
+          }
+          description={t(permission.description, [
+            <Text
+              color={TextColor.inherit}
+              variant={TextVariant.inherit}
+              fontWeight={FontWeight.Medium}
+              key="1"
+            >
+              {snapName}
+            </Text>,
+          ])}
+          weight={1}
+          avatarIcon={IconName.Key}
+          key={`snapInstallWarningPermissionCellKeyEntropy_${permission.permissionName}`}
+          hideStatus
+        />
+      </Box>
+    );
+  }
+
+  const criticalPermissions = {
+    publicKey: {
+      name: 'snapInstallWarningPermissionNameForViewPublicKey',
+      title: 'snapInstallWarningPermissionNameForViewPublicKey',
+      description: 'snapInstallWarningPermissionDescriptionForBip32View',
+    },
+    entropy: {
+      name: 'snapInstallWarningPermissionNameForEntropy',
+      title: 'snapInstallWarningPermissionNameForEntropy',
+      description: 'snapInstallWarningPermissionDescriptionForEntropy',
+    },
+  };
 
   // Filter and group warnings based on permission name
   const bip32PublicKeyPermissionWarnings = warnings.filter(
@@ -171,93 +244,20 @@ export default function SnapInstallWarning({
           </Text>,
         ])}
       </Text>
-      {bip32bip44EntropyPermissionWarnings.length > 0 && (
-        <Box as="span">
-          <PermissionCell
-            permissionName={
-              <Text>
-                {t('snapInstallWarningPermissionNameForEntropy', [
-                  constructWarningElementComponentArray(
-                    bip32bip44EntropyPermissionWarnings,
-                  ),
-                ])}
-              </Text>
-            }
-            title={
-              <Text>
-                {t('snapInstallWarningPermissionNameForEntropy', [
-                  constructWarningElementComponentArray(
-                    bip32bip44EntropyPermissionWarnings,
-                  ),
-                ])}
-              </Text>
-            }
-            description={t(
-              'snapInstallWarningPermissionDescriptionForEntropy',
-              [
-                <Text
-                  color={TextColor.inherit}
-                  variant={TextVariant.inherit}
-                  fontWeight={FontWeight.Medium}
-                  key="1"
-                >
-                  {snapName}
-                </Text>,
-              ],
-            )}
-            weight={1}
-            avatarIcon={IconName.Key}
-            key="snapInstallWarningPermissionCellKeyEntropy"
-            hideStatus
-          />
-        </Box>
-      )}
-      {bip32PublicKeyPermissionWarnings.length > 0 && (
-        <Box as="span" marginTop={4}>
-          <PermissionCell
-            permissionName={
-              <Text>
-                {t('snapInstallWarningPermissionNameForViewPublicKey', [
-                  constructWarningElementComponentArray(
-                    bip32PublicKeyPermissionWarnings,
-                  ),
-                ])}
-              </Text>
-            }
-            title={
-              <Text>
-                {t('snapInstallWarningPermissionNameForViewPublicKey', [
-                  constructWarningElementComponentArray(
-                    bip32PublicKeyPermissionWarnings,
-                  ),
-                ])}
-              </Text>
-            }
-            description={t(
-              'snapInstallWarningPermissionDescriptionForBip32View',
-              [
-                <Text
-                  color={TextColor.inherit}
-                  variant={TextVariant.inherit}
-                  fontWeight={FontWeight.Medium}
-                  key="1"
-                >
-                  {snapName}
-                </Text>,
-              ],
-            )}
-            weight={1}
-            avatarIcon={IconName.Key}
-            key="snapInstallWarningPermissionCellViewPublicKey"
-            hideStatus
-          />
-        </Box>
-      )}
+      {bip32bip44EntropyPermissionWarnings.length > 0 &&
+        constructWarningPermissionCell(
+          bip32bip44EntropyPermissionWarnings,
+          criticalPermissions.entropy,
+        )}
+      {bip32PublicKeyPermissionWarnings.length > 0 &&
+        constructWarningPermissionCell(
+          bip32PublicKeyPermissionWarnings,
+          criticalPermissions.publicKey,
+        )}
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.flexStart}
         alignItems={AlignItems.center}
-        marginTop={4}
         padding={4}
         borderRadius={BorderRadius.SM}
         backgroundColor={

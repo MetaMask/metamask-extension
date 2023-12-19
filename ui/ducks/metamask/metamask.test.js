@@ -37,8 +37,10 @@ describe('MetaMask Reducers', () => {
             name: 'Send Account 4',
           },
         },
-        cachedBalances: {},
         currentBlockGasLimit: '0x4c1878',
+        currentBlockGasLimitByChainId: {
+          '0x5': '0x4c1878',
+        },
         useCurrencyRateCheck: true,
         currencyRates: {
           TestETH: {
@@ -81,6 +83,34 @@ describe('MetaMask Reducers', () => {
             balance: '0x0',
             nonce: '0x0',
             address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+          },
+        },
+        accountsByChainId: {
+          '0x5': {
+            '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
+              code: '0x',
+              balance: '0x47c9d71831c76efe',
+              nonce: '0x1b',
+              address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+            },
+            '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
+              code: '0x',
+              balance: '0x37452b1315889f80',
+              nonce: '0xa',
+              address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+            },
+            '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
+              code: '0x',
+              balance: '0x30c9d71831c76efe',
+              nonce: '0x1c',
+              address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+            },
+            '0xd85a4b6a394794842887b8284293d69163007bbb': {
+              code: '0x',
+              balance: '0x0',
+              nonce: '0x0',
+              address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+            },
           },
         },
         addressBook: {
