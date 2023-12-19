@@ -12,11 +12,10 @@ import { I18nContext } from '../../../../contexts/i18n';
 import {
   BlockaidReason,
   BlockaidResultType,
-  FALSE_POSITIVE_REPORT_BASE_URL,
   SecurityProvider,
-  UTM_SOURCE,
 } from '../../../../../shared/constants/security-provider';
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
+import { getReportUrl } from './blockaid-banner-utils';
 
 const zlib = require('zlib');
 
@@ -98,9 +97,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
 
-  const reportUrl = `${FALSE_POSITIVE_REPORT_BASE_URL}?data=${encodeURIComponent(
-    encodedData.toString('base64'),
-  )}&utm_source=${UTM_SOURCE}`;
+  const reportUrl = getReportUrl(encodedData);
 
   return (
     <SecurityProviderBannerAlert

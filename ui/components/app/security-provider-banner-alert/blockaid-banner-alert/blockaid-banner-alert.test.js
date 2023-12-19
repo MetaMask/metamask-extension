@@ -7,6 +7,14 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
+jest.mock('./blockaid-banner-utils', () => ({
+  getReportUrl: jest
+    .fn()
+    .mockReturnValue(
+      'https://report.blockaid.io/tx?data=mockedEncodedData&utm_source=metamask-ppom',
+    ),
+}));
+
 const mockSecurityAlertResponse = {
   result_type: BlockaidResultType.Warning,
   reason: BlockaidReason.setApprovalForAll,
@@ -62,6 +70,7 @@ describe('Blockaid Banner Alert', () => {
     );
 
     expect(warningBannerAlert).toBeInTheDocument();
+    expect(warningBannerAlert).toMatchSnapshot();
   });
 
   it(`should render '${Severity.Warning}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Warning}`, () => {
@@ -77,6 +86,7 @@ describe('Blockaid Banner Alert', () => {
     );
 
     expect(warningBannerAlert).toBeInTheDocument();
+    expect(warningBannerAlert).toMatchSnapshot();
   });
 
   it(`should render '${Severity.Danger}' UI when securityAlertResponse.result_type is '${BlockaidResultType.Malicious}`, () => {
@@ -95,6 +105,7 @@ describe('Blockaid Banner Alert', () => {
     );
 
     expect(dangerBannerAlert).toBeInTheDocument();
+    expect(dangerBannerAlert).toMatchSnapshot();
   });
 
   it('should render title, "This is a deceptive request"', () => {
@@ -156,6 +167,7 @@ describe('Blockaid Banner Alert', () => {
       />,
     );
 
+    expect(container).toMatchSnapshot();
     expect(container.querySelector('.disclosure')).toBeInTheDocument();
     mockFeatures.forEach((feature) => {
       expect(getByText(`• ${feature}`)).toBeInTheDocument();
@@ -172,6 +184,7 @@ describe('Blockaid Banner Alert', () => {
       />,
     );
 
+    expect(container).toMatchSnapshot();
     expect(container.querySelector('.disclosure')).toBeInTheDocument();
   });
 
@@ -185,6 +198,7 @@ describe('Blockaid Banner Alert', () => {
       />,
     );
 
+    expect(container).toMatchSnapshot();
     expect(container.querySelector('.disclosure')).toBeInTheDocument();
     expect(getByText("Something doesn't look right?")).toBeInTheDocument();
     expect(getByText('Report a problem')).toBeInTheDocument();
