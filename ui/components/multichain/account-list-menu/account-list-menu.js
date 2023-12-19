@@ -123,7 +123,9 @@ export const AccountListMenu = ({
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   searchResults = mergeAccounts(searchResults, internalAccounts);
+  ///: END:ONLY_INCLUDE_IF
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
