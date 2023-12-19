@@ -20,12 +20,26 @@ export interface FormTextFieldStyleUtilityProps
    * The size of the FormTextField
    */
   size?: FormTextFieldSize;
+  /**
+   * Label for the FormTextField
+   */
   label?: string | React.ReactNode;
+  /**
+   * Props to be passed to the Label component
+   */
   labelProps?: LabelProps<'label'>;
+  /**
+   * Props for the TextField component within the FormTextField
+   */
   textFieldProps?: TextFieldProps<'input'>;
+  /**
+   * HelpText for the FormTextField
+   */
   helpText?: string | React.ReactNode;
+  /**
+   * Props to be passed to the HelpText component
+   */
   helpTextProps?: HelpTextProps<'div'>;
-  id?: string; // TO DO: Check this prop since looking at the JS version there is some logic to be included
 }
 
 export type FormTextFieldProps<C extends React.ElementType> =
