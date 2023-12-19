@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import classnames from 'classnames';
 import {
+  AlignItems,
   BackgroundColor,
   BlockSize,
   BorderColor,
@@ -24,6 +25,7 @@ import {
   Box,
   ButtonIcon,
   ButtonSecondary,
+  Icon,
   IconName,
   IconSize,
   Modal,
@@ -63,6 +65,7 @@ export const TokenListItem = ({
   title,
   isOriginalTokenSymbol,
   isNativeCurrency = false,
+  isStakeable = false,
 }) => {
   const t = useI18nContext();
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
@@ -82,7 +85,39 @@ export const TokenListItem = ({
     title === CURRENCY_SYMBOLS.ETH && isOriginalTokenSymbol
       ? t('networkNameEthereum')
       : title;
-
+  const stakeableTitle = (
+    <Box
+      data-testid={`staking-entrypoint-${chainId}`}
+      display={Display.InlineFlex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      gap={1}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        trackEvent({
+          event: MetaMetricsEventName.StakingEntryPointClicked,
+          category: MetaMetricsEventCategory.Tokens,
+          properties: {
+            location: 'Token List Item',
+            text: 'Stake',
+            chain_id: chainId,
+            token_symbol: tokenSymbol,
+          },
+        });
+      }}
+    >
+      <Text as="span">•</Text>
+      <Text as="span" color={TextColor.primaryDefault}>
+        {t('stake')}
+      </Text>
+      <Icon
+        name={IconName.Stake}
+        size={IconSize.Sm}
+        color={IconColor.primaryDefault}
+      />
+    </Box>
+  );
   // Used for badge icon
   const currentNetwork = useSelector(getCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
@@ -159,7 +194,10 @@ export const TokenListItem = ({
             justifyContent={JustifyContent.spaceBetween}
             gap={1}
           >
-            <Box width={BlockSize.OneThird}>
+            <Box
+              width={isStakeable ? BlockSize.Half : BlockSize.OneThird}
+              display={Display.InlineBlock}
+            >
               {title?.length > 12 ? (
                 <Tooltip
                   position="bottom"
@@ -168,20 +206,34 @@ export const TokenListItem = ({
                   tooltipInnerClassName="multichain-token-list-item__tooltip"
                 >
                   <Text
+                    as="div"
                     fontWeight={FontWeight.Medium}
                     variant={TextVariant.bodyMd}
                     ellipsis
                   >
-                    {tokenTitle}
+                    {isStakeable ? (
+                      <>
+                        {tokenTitle} {stakeableTitle}
+                      </>
+                    ) : (
+                      tokenTitle
+                    )}
                   </Text>
                 </Tooltip>
               ) : (
                 <Text
+                  as="div"
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   ellipsis
                 >
-                  {tokenTitle}
+                  {isStakeable ? (
+                    <Box display={Display.InlineBlock}>
+                      {tokenTitle} {stakeableTitle}
+                    </Box>
+                  ) : (
+                    tokenTitle
+                  )}
                 </Text>
               )}
             </Box>
@@ -201,9 +253,10 @@ export const TokenListItem = ({
               <Text
                 fontWeight={FontWeight.Medium}
                 variant={TextVariant.bodyMd}
-                width={BlockSize.TwoThirds}
+                width={isStakeable ? BlockSize.Half : BlockSize.TwoThirds}
                 textAlign={TextAlign.End}
                 data-testid="multichain-token-list-item-secondary-value"
+                ellipsis={isStakeable}
               >
                 {secondary}
               </Text>
@@ -288,4 +341,8 @@ TokenListItem.propTypes = {
    * isNativeCurrency represents if this item is the native currency
    */
   isNativeCurrency: PropTypes.bool,
+  /**
+   * isStakeable represents if this item is stakeable
+   */
+  isStakeable: PropTypes.bool,
 };
