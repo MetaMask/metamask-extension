@@ -33,7 +33,7 @@ import {
   getSuggestedNfts,
   getIpfsGateway,
   getNetworkIdentifier,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getSelectedAccountCachedBalance,
   getAddressBookEntryOrAccountName,
 } from '../../selectors';
@@ -74,7 +74,7 @@ const ConfirmAddSuggestedNFT = () => {
   const ipfsGateway = useSelector(getIpfsGateway);
   const trackEvent = useContext(MetaMetricsContext);
   const networkIdentifier = useSelector(getNetworkIdentifier);
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const selectedAccountBalance = useSelector(getSelectedAccountCachedBalance);
   const accountName = useSelector((state) =>
     getAddressBookEntryOrAccountName(state, selectedAddress),

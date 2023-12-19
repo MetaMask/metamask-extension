@@ -1,8 +1,7 @@
 import EventEmitter from 'events';
 import { ControllerMessenger } from '@metamask/base-controller';
 
-import { SINGLE_CALL_BALANCES_ADDRESSES } from '../constants/contracts';
-
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import AccountTracker from './account-tracker';
 
@@ -67,6 +66,8 @@ describe('Account Tracker', () => {
     blockTrackerStub.getCurrentBlock = noop;
     blockTrackerStub.getLatestBlock = noop;
 
+    controllerMessenger = new ControllerMessenger();
+
     providerFromHook = createTestProviderTools({
       scaffold: {
         eth_getBalance: UPDATE_BALANCE_HOOK,
@@ -91,7 +92,6 @@ describe('Account Tracker', () => {
 
     getNetworkIdentifierStub = jest.fn();
 
-    controllerMessenger = new ControllerMessenger();
     controllerMessenger.registerActionHandler(
       'AccountsController:getSelectedAccount',
       () => ({
@@ -146,12 +146,12 @@ describe('Account Tracker', () => {
       expect(blockTrackerStub.removeListener).toHaveBeenNthCalledWith(
         1,
         'latest',
-        accountTracker._updateForBlock,
+        expect.any(Function),
       );
       expect(blockTrackerStub.addListener).toHaveBeenNthCalledWith(
         1,
         'latest',
-        accountTracker._updateForBlock,
+        expect.any(Function),
       );
       expect(updateAccountsSpy).toHaveBeenNthCalledWith(1); // called first time with no args
 
@@ -160,12 +160,12 @@ describe('Account Tracker', () => {
       expect(blockTrackerStub.removeListener).toHaveBeenNthCalledWith(
         2,
         'latest',
-        accountTracker._updateForBlock,
+        expect.any(Function),
       );
       expect(blockTrackerStub.addListener).toHaveBeenNthCalledWith(
         2,
         'latest',
-        accountTracker._updateForBlock,
+        expect.any(Function),
       );
       expect(updateAccountsSpy).toHaveBeenNthCalledWith(2); // called second time with no args
 
@@ -182,7 +182,7 @@ describe('Account Tracker', () => {
       expect(blockTrackerStub.removeListener).toHaveBeenNthCalledWith(
         1,
         'latest',
-        accountTracker._updateForBlock,
+        expect.any(Function),
       );
     });
   });
@@ -438,7 +438,7 @@ describe('Account Tracker', () => {
 
       expect(blockTrackerStub.removeListener).toHaveBeenCalledWith(
         'latest',
-        accountTracker._updateForBlock,
+        expect.any(Function),
       );
       expect(blockTrackerFromHookStub1.removeListener).toHaveBeenCalledWith(
         'latest',
@@ -451,114 +451,16 @@ describe('Account Tracker', () => {
     });
   });
 
-  describe('_updateAccount', () => {
-    it('should update the passed address account balance, and leave other balances unchanged, if useMultiAccountBalanceChecker is true', async () => {
-      useMultiAccountBalanceChecker = true;
-      accountTracker.store.updateState({
-        accounts: { ...mockAccounts },
-        accountsByChainId: {
-          [currentChainId]: { ...mockAccounts },
-        },
-      });
-
-      await accountTracker._updateAccount(
-        VALID_ADDRESS,
-        provider,
-        currentChainId,
-      );
-
-      const newState = accountTracker.store.getState();
-
-      const accounts = {
-        [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: UPDATE_BALANCE },
-        [VALID_ADDRESS_TWO]: {
-          address: VALID_ADDRESS_TWO,
-          balance: INITIAL_BALANCE_2,
-        },
-      };
-
-      expect(newState).toStrictEqual({
-        accounts,
-        accountsByChainId: {
-          [currentChainId]: accounts,
-        },
-        currentBlockGasLimit: '',
-        currentBlockGasLimitByChainId: {},
-      });
-    });
-
-    it('should not change accounts if the passed address is not in accounts', async () => {
-      accountTracker.store.updateState({
-        accounts: { ...mockAccounts },
-      });
-
-      await accountTracker._updateAccount(
-        'fake address',
-        provider,
-        currentChainId,
-      );
-
-      const newState = accountTracker.store.getState();
-
-      const accounts = {
-        [VALID_ADDRESS]: {
-          address: VALID_ADDRESS,
-          balance: INITIAL_BALANCE_1,
-        },
-        [VALID_ADDRESS_TWO]: {
-          address: VALID_ADDRESS_TWO,
-          balance: INITIAL_BALANCE_2,
-        },
-      };
-
-      expect(newState).toStrictEqual({
-        accounts,
-        accountsByChainId: {},
-        currentBlockGasLimit: '',
-        currentBlockGasLimitByChainId: {},
-      });
-    });
-
-    it('should update the passed address account balance, and set other balances to null, if useMultiAccountBalanceChecker is false', async () => {
-      useMultiAccountBalanceChecker = false;
-      accountTracker.store.updateState({
-        accounts: { ...mockAccounts },
-      });
-
-      await accountTracker._updateAccount(
-        VALID_ADDRESS,
-        provider,
-        currentChainId,
-      );
-
-      const newState = accountTracker.store.getState();
-
-      const accounts = {
-        [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: UPDATE_BALANCE },
-        [VALID_ADDRESS_TWO]: { address: VALID_ADDRESS_TWO, balance: null },
-      };
-
-      expect(newState).toStrictEqual({
-        accounts,
-        accountsByChainId: {
-          [currentChainId]: accounts,
-        },
-        currentBlockGasLimit: '',
-        currentBlockGasLimitByChainId: {},
-      });
-    });
-  });
-
-  describe('_updateForBlockByNetworkClientId', () => {
-    it('updates currentBlockGasLimit, currentBlockGasLimitByChainId, and accounts when no networkClientId is passed', async () => {
+  describe('blockTracker "latest" events', () => {
+    it('updates currentBlockGasLimit, currentBlockGasLimitByChainId, and accounts when polling is initiated via `start`', async () => {
       const updateAccountsSpy = jest
         .spyOn(accountTracker, 'updateAccounts')
         .mockResolvedValue();
 
-      await accountTracker._updateForBlockByNetworkClientId(
-        null,
-        'blockNumber',
-      );
+      accountTracker.start();
+      blockTrackerStub.emit('latest', 'blockNumber');
+
+      await flushPromises();
 
       expect(updateAccountsSpy).toHaveBeenCalledWith(null);
 
@@ -572,17 +474,20 @@ describe('Account Tracker', () => {
           [currentChainId]: GAS_LIMIT,
         },
       });
+
+      accountTracker.stop();
     });
 
-    it('updates only the currentBlockGasLimitByChainId and accounts when a networkClientId is passed', async () => {
+    it('updates only the currentBlockGasLimitByChainId and accounts when polling is initiated via `startPollingByNetworkClientId`', async () => {
       const updateAccountsSpy = jest
         .spyOn(accountTracker, 'updateAccounts')
         .mockResolvedValue();
 
-      await accountTracker._updateForBlockByNetworkClientId(
-        'mainnet',
-        'blockNumber',
-      );
+      accountTracker.startPollingByNetworkClientId('mainnet');
+
+      blockTrackerFromHookStub.emit('latest', 'blockNumber');
+
+      await flushPromises();
 
       expect(updateAccountsSpy).toHaveBeenCalledWith('mainnet');
 
@@ -596,6 +501,8 @@ describe('Account Tracker', () => {
           '0x1': GAS_LIMIT_HOOK,
         },
       });
+
+      accountTracker.stopAllPolling();
     });
   });
 
@@ -621,25 +528,22 @@ describe('Account Tracker', () => {
   });
 
   describe('updateAccounts', () => {
-    let updateAccountSpy, updateAccountsViaBalanceCheckerSpy;
-
     beforeEach(() => {
       completedOnboarding = true;
-      updateAccountSpy = jest
-        .spyOn(accountTracker, '_updateAccount')
-        .mockResolvedValue();
-      updateAccountsViaBalanceCheckerSpy = jest
-        .spyOn(accountTracker, '_updateAccountsViaBalanceChecker')
-        .mockResolvedValue();
     });
 
     it('does not update accounts if completedOnBoarding is false', async () => {
       completedOnboarding = false;
 
-      await accountTracker._updateForBlockByNetworkClientId();
+      await accountTracker.updateAccounts();
 
-      expect(updateAccountSpy).not.toHaveBeenCalled();
-      expect(updateAccountsViaBalanceCheckerSpy).not.toHaveBeenCalled();
+      const state = accountTracker.store.getState();
+      expect(state).toStrictEqual({
+        accounts: {},
+        currentBlockGasLimit: '',
+        accountsByChainId: {},
+        currentBlockGasLimitByChainId: {},
+      });
     });
 
     describe('chain does not have single call balance address', () => {
@@ -669,17 +573,22 @@ describe('Account Tracker', () => {
           onAccountRemoved: (callback) => {
             accountRemovedListener = callback;
           },
-          getCurrentChainId: () => '0x123',
+          getCurrentChainId: () => '0x999', // chain without single call balance address
         });
-        updateAccountSpy = jest
-          .spyOn(accountTracker, '_updateAccount')
-          .mockResolvedValue();
-        updateAccountsViaBalanceCheckerSpy = jest
-          .spyOn(accountTracker, '_updateAccountsViaBalanceChecker')
-          .mockResolvedValue();
+
+        const mockAccountsWithSelectedAddress = {
+          ...mockAccounts,
+          [SELECTED_ADDRESS]: {
+            address: SELECTED_ADDRESS,
+            balance: '0x0',
+          },
+        };
 
         accountTracker.store.updateState({
-          accounts: { ...mockAccounts },
+          accounts: mockAccountsWithSelectedAddress,
+          accountsByChainId: {
+            '0x999': mockAccountsWithSelectedAddress,
+          },
         });
       });
 
@@ -687,42 +596,78 @@ describe('Account Tracker', () => {
         it('updates all accounts directly', async () => {
           useMultiAccountBalanceChecker = true;
 
-          await accountTracker._updateForBlockByNetworkClientId();
+          await accountTracker.updateAccounts();
 
-          expect(updateAccountsViaBalanceCheckerSpy).not.toHaveBeenCalled();
-          expect(updateAccountSpy).toHaveBeenCalledWith(
-            VALID_ADDRESS,
-            provider,
-            '0x123',
-          );
-          expect(updateAccountSpy).toHaveBeenCalledWith(
-            VALID_ADDRESS_TWO,
-            provider,
-            '0x123',
-          );
+          const accounts = {
+            [VALID_ADDRESS]: {
+              address: VALID_ADDRESS,
+              balance: UPDATE_BALANCE,
+            },
+            [VALID_ADDRESS_TWO]: {
+              address: VALID_ADDRESS_TWO,
+              balance: UPDATE_BALANCE,
+            },
+            [SELECTED_ADDRESS]: {
+              address: SELECTED_ADDRESS,
+              balance: UPDATE_BALANCE,
+            },
+          };
+
+          const newState = accountTracker.store.getState();
+          expect(newState).toStrictEqual({
+            accounts,
+            accountsByChainId: {
+              '0x999': accounts,
+            },
+            currentBlockGasLimit: '',
+            currentBlockGasLimitByChainId: {},
+          });
         });
       });
+
       describe('when useMultiAccountBalanceChecker is false', () => {
-        it('updates only the selectedAddress directly', async () => {
+        it('updates only the selectedAddress directly, setting other balances to null', async () => {
           useMultiAccountBalanceChecker = false;
 
-          await accountTracker._updateForBlockByNetworkClientId();
+          await accountTracker.updateAccounts();
 
-          expect(updateAccountsViaBalanceCheckerSpy).not.toHaveBeenCalled();
-          expect(updateAccountSpy).toHaveBeenCalledWith(
-            SELECTED_ADDRESS,
-            provider,
-            '0x123',
-          );
+          const accounts = {
+            [VALID_ADDRESS]: { address: VALID_ADDRESS, balance: null },
+            [VALID_ADDRESS_TWO]: { address: VALID_ADDRESS_TWO, balance: null },
+            [SELECTED_ADDRESS]: {
+              address: SELECTED_ADDRESS,
+              balance: UPDATE_BALANCE,
+            },
+          };
+
+          const newState = accountTracker.store.getState();
+          expect(newState).toStrictEqual({
+            accounts,
+            accountsByChainId: {
+              '0x999': accounts,
+            },
+            currentBlockGasLimit: '',
+            currentBlockGasLimitByChainId: {},
+          });
         });
       });
     });
 
-    describe('chain does have single call balance address but network is localhost', () => {
+    describe('chain does have single call balance address and network is not localhost', () => {
       beforeEach(() => {
         getNetworkIdentifierStub = jest
           .fn()
-          .mockReturnValue('http://127.0.0.1:8545');
+          .mockReturnValue('http://not-localhost:8545');
+
+        controllerMessenger = new ControllerMessenger();
+        controllerMessenger.registerActionHandler(
+          'AccountsController:getSelectedAccount',
+          () => ({
+            id: 'accountId',
+            address: VALID_ADDRESS,
+          }),
+        );
+
         accountTracker = new AccountTracker({
           provider,
           blockTracker: blockTrackerStub,
@@ -748,60 +693,14 @@ describe('Account Tracker', () => {
           onAccountRemoved: (callback) => {
             accountRemovedListener = callback;
           },
-          getCurrentChainId: () => currentChainId,
+          getCurrentChainId: () => '0x1', // chain with single call balance address
         });
-        updateAccountSpy = jest
-          .spyOn(accountTracker, '_updateAccount')
-          .mockResolvedValue();
-        updateAccountsViaBalanceCheckerSpy = jest
-          .spyOn(accountTracker, '_updateAccountsViaBalanceChecker')
-          .mockResolvedValue();
 
         accountTracker.store.updateState({
           accounts: { ...mockAccounts },
-        });
-      });
-
-      describe('when useMultiAccountBalanceChecker is true', () => {
-        it('updates all accounts directly', async () => {
-          useMultiAccountBalanceChecker = true;
-
-          await accountTracker._updateForBlockByNetworkClientId();
-
-          expect(updateAccountsViaBalanceCheckerSpy).not.toHaveBeenCalled();
-          expect(updateAccountSpy).toHaveBeenCalledWith(
-            VALID_ADDRESS,
-            provider,
-            '0x5',
-          );
-          expect(updateAccountSpy).toHaveBeenCalledWith(
-            VALID_ADDRESS_TWO,
-            provider,
-            '0x5',
-          );
-        });
-      });
-
-      describe('when useMultiAccountBalanceChecker is false', () => {
-        it('updates only the selectedAddress directly', async () => {
-          useMultiAccountBalanceChecker = false;
-
-          await accountTracker._updateForBlockByNetworkClientId('mainnet');
-
-          expect(updateAccountsViaBalanceCheckerSpy).not.toHaveBeenCalled();
-          expect(updateAccountSpy).toHaveBeenCalledWith(
-            SELECTED_ADDRESS,
-            providerFromHook,
-            '0x1',
-          );
-        });
-      });
-    });
-
-    describe('chain does have single call balance address and network is not localhost', () => {
-      beforeEach(() => {
-        accountTracker.store.updateState({
-          accounts: { ...mockAccounts },
+          accountsByChainId: {
+            '0x1': { ...mockAccounts },
+          },
         });
       });
 
@@ -809,31 +708,54 @@ describe('Account Tracker', () => {
         it('updates all accounts via balance checker', async () => {
           useMultiAccountBalanceChecker = true;
 
-          await accountTracker._updateForBlockByNetworkClientId('mainnet');
+          await accountTracker.updateAccounts('mainnet');
 
-          expect(updateAccountsViaBalanceCheckerSpy).toHaveBeenCalledWith(
-            [VALID_ADDRESS, VALID_ADDRESS_TWO],
-            SINGLE_CALL_BALANCES_ADDRESSES['0x1'],
-            providerFromHook,
-            '0x1',
-          );
-          expect(updateAccountSpy).not.toHaveBeenCalled();
+          const accounts = {
+            [VALID_ADDRESS]: {
+              address: VALID_ADDRESS,
+              balance: EXPECTED_CONTRACT_BALANCE_1,
+            },
+            [VALID_ADDRESS_TWO]: {
+              address: VALID_ADDRESS_TWO,
+              balance: EXPECTED_CONTRACT_BALANCE_2,
+            },
+          };
+
+          const newState = accountTracker.store.getState();
+          expect(newState).toStrictEqual({
+            accounts,
+            accountsByChainId: {
+              '0x1': accounts,
+            },
+            currentBlockGasLimit: '',
+            currentBlockGasLimitByChainId: {},
+          });
         });
       });
 
       describe('when useMultiAccountBalanceChecker is false', () => {
-        it('updates only the selectedAddress via balance checker', async () => {
+        it('updates only the selectedAddress via balance checker, setting other balances to null', async () => {
           useMultiAccountBalanceChecker = false;
 
-          await accountTracker._updateForBlockByNetworkClientId('mainnet');
+          await accountTracker.updateAccounts('mainnet');
 
-          expect(updateAccountsViaBalanceCheckerSpy).toHaveBeenCalledWith(
-            [SELECTED_ADDRESS],
-            SINGLE_CALL_BALANCES_ADDRESSES['0x1'],
-            providerFromHook,
-            '0x1',
-          );
-          expect(updateAccountSpy).not.toHaveBeenCalled();
+          const accounts = {
+            [VALID_ADDRESS]: {
+              address: VALID_ADDRESS,
+              balance: EXPECTED_CONTRACT_BALANCE_1,
+            },
+            [VALID_ADDRESS_TWO]: { address: VALID_ADDRESS_TWO, balance: null },
+          };
+
+          const newState = accountTracker.store.getState();
+          expect(newState).toStrictEqual({
+            accounts,
+            accountsByChainId: {
+              '0x1': accounts,
+            },
+            currentBlockGasLimit: '',
+            currentBlockGasLimitByChainId: {},
+          });
         });
       });
     });
@@ -902,77 +824,6 @@ describe('Account Tracker', () => {
         accounts: {},
         accountsByChainId: {
           [currentChainId]: {},
-        },
-        currentBlockGasLimit: '',
-        currentBlockGasLimitByChainId: {},
-      });
-    });
-  });
-
-  describe('_updateAccountsViaBalanceChecker', () => {
-    it('should update the passed address account balance, and set other balances to null, if useMultiAccountBalanceChecker is false', async () => {
-      useMultiAccountBalanceChecker = true;
-      accountTracker.store.updateState({
-        accounts: { ...mockAccounts },
-      });
-
-      await accountTracker._updateAccountsViaBalanceChecker(
-        [VALID_ADDRESS],
-        SINGLE_CALL_BALANCES_ADDRESSES[currentChainId],
-        provider,
-        currentChainId,
-      );
-
-      const newState = accountTracker.store.getState();
-
-      const accounts = {
-        [VALID_ADDRESS]: {
-          address: VALID_ADDRESS,
-          balance: EXPECTED_CONTRACT_BALANCE_1,
-        },
-        [VALID_ADDRESS_TWO]: { address: VALID_ADDRESS_TWO, balance: null },
-      };
-
-      expect(newState).toStrictEqual({
-        accounts,
-        accountsByChainId: {
-          [currentChainId]: accounts,
-        },
-        currentBlockGasLimit: '',
-        currentBlockGasLimitByChainId: {},
-      });
-    });
-
-    it('should update all balances if useMultiAccountBalanceChecker is true', async () => {
-      useMultiAccountBalanceChecker = true;
-      accountTracker.store.updateState({
-        accounts: { ...mockAccounts },
-      });
-
-      await accountTracker._updateAccountsViaBalanceChecker(
-        [VALID_ADDRESS, VALID_ADDRESS_TWO],
-        SINGLE_CALL_BALANCES_ADDRESSES[currentChainId],
-        provider,
-        currentChainId,
-      );
-
-      const newState = accountTracker.store.getState();
-
-      const accounts = {
-        [VALID_ADDRESS]: {
-          address: VALID_ADDRESS,
-          balance: EXPECTED_CONTRACT_BALANCE_1,
-        },
-        [VALID_ADDRESS_TWO]: {
-          address: VALID_ADDRESS_TWO,
-          balance: EXPECTED_CONTRACT_BALANCE_2,
-        },
-      };
-
-      expect(newState).toStrictEqual({
-        accounts,
-        accountsByChainId: {
-          [currentChainId]: accounts,
         },
         currentBlockGasLimit: '',
         currentBlockGasLimitByChainId: {},

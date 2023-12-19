@@ -28,7 +28,7 @@ import {
   getTotalUnapprovedMessagesCount,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountType,
-  getSelectedAccount,
+  getSelectedInternalAccount,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { getAccountByAddress, valuesFor } from '../../../helpers/utils/util';
@@ -66,7 +66,7 @@ function mapStateToProps(state, ownProps) {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType: getAccountType(state),
     isNotification: envType === ENVIRONMENT_TYPE_NOTIFICATION,
-    selectedAccount: getSelectedAccount(state),
+    selectedAccount: getSelectedInternalAccount(state),
     ///: END:ONLY_INCLUDE_IF
   };
 }
