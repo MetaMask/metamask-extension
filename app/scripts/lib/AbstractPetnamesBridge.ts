@@ -7,7 +7,10 @@ import {
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 
 // Use the same type for both the source entries and the argument to NameController::setName.
-export type PetnameEntry = SetNameRequest;
+export type PetnameEntry = SetNameRequest & {
+  // Name is required for PetnameEntry, as opposed to SetNameRequest, where a null name indicates deletion.
+  name: string;
+};
 
 // The type of change that occurred.
 export enum ChangeType {
@@ -42,7 +45,6 @@ export type PetnamesBridgeMessenger = RestrictedControllerMessenger<
 function getKey(entry: PetnameEntry): string {
   return `${entry.type}/${entry.variation}/${entry.value}`;
 }
-
 
 /**
  * Abstract class representing a bridge between petnames and a data source.
@@ -152,13 +154,16 @@ export abstract class AbstractPetnamesBridge {
       for (const value of Object.keys(names[type])) {
         for (const variation of Object.keys(names[type][value])) {
           const entry = names[type][value][variation];
+          if (!entry.name) {
+            continue;
+          }
           entries.push({
             value,
             type,
             name: entry.name,
             sourceId: entry.sourceId,
             variation,
-          } as SetNameRequest);
+          });
         }
       }
     }

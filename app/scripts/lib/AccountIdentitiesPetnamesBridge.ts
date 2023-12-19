@@ -9,7 +9,7 @@ import {
   PetnamesBridgeMessenger,
 } from './AbstractPetnamesBridge';
 
-const FALLBACK_VARIATION = '*';
+export const FALLBACK_VARIATION = '*';
 
 /**
  * A petnames bridge that uses the account identities from the preferences controller as the source.

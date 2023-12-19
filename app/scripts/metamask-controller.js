@@ -216,7 +216,7 @@ import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: BEGIN:ONLY_INCLUDE_IF(petnames)
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
-import setupAccountLabelsPetnamesBridge from './lib/AccountIdentitiesPetnamesBridge';
+import { AccountIdentitiesPetnamesBridge } from './lib/AccountIdentitiesPetnamesBridge';
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -1787,19 +1787,22 @@ export default class MetamaskController extends EventEmitter {
       state: initState.NameController,
     });
 
+    const petnamesBridgeMessenger = this.controllerMessenger.getRestricted({
+      name: 'PetnamesBridge',
+      allowedEvents: ['NameController:stateChange'],
+    });
+
     new AddressBookPetnamesBridge({
       addressBookController: this.addressBookController,
       nameController: this.nameController,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'AddressBookPetnamesBridge',
-        allowedEvents: ['NameController:stateChange'],
-      }),
+      messenger: petnamesBridgeMessenger,
     }).init();
 
-    setupAccountLabelsPetnamesBridge(
-      this.preferencesController,
-      this.nameController,
-    );
+    new AccountIdentitiesPetnamesBridge({
+      preferencesController: this.preferencesController,
+      nameController: this.nameController,
+      messenger: petnamesBridgeMessenger,
+    }).init();
     ///: END:ONLY_INCLUDE_IF
 
     // ensure accountTracker updates balances after network change

@@ -1,5 +1,12 @@
-import { NameController, NameType } from '@metamask/name-controller';
-import { AddressBookController } from '@metamask/address-book-controller';
+import {
+  NameController,
+  NameControllerState,
+  NameType,
+} from '@metamask/name-controller';
+import {
+  AddressBookController,
+  AddressBookState,
+} from '@metamask/address-book-controller';
 import { AddressBookPetnamesBridge } from './AddressBookPetnamesBridge';
 import { PetnamesBridgeMessenger } from './AbstractPetnamesBridge';
 
@@ -9,27 +16,24 @@ const NAME_2_MOCK = 'testName2';
 const CHAIN_ID_MOCK = '0x1';
 
 function createAddressBookControllerMock(
-  state: any = {},
-): jest.Mocked<AddressBookController> {
+  state: AddressBookState,
+): jest.Mocked<AddressBookController> & {
+  // Override the definition of state. Otherwise state is readonly.
+  state: AddressBookState;
+} {
   return {
-    state: {
-      addressBook: state,
-    },
+    state,
     set: jest.fn(),
     delete: jest.fn(),
     subscribe: jest.fn(),
-  } as any;
+  } as unknown as jest.Mocked<AddressBookController>;
 }
 
 function createNameControllerMock(
-  state: any = {},
+  state: NameControllerState,
 ): jest.Mocked<NameController> {
   return {
-    state: {
-      names: {
-        ethereumAddress: state,
-      },
-    },
+    state,
     setName: jest.fn(),
   } as any;
 }
@@ -40,45 +44,105 @@ function createMessengerMock(): jest.Mocked<PetnamesBridgeMessenger> {
   } as any;
 }
 
+const EMPTY_NAME_STATE: NameControllerState = {
+  names: {
+    [NameType.ETHEREUM_ADDRESS]: {},
+  },
+  nameSources: {},
+};
+
+/**
+ * Creates NameControllerState containing a single Petname with the given name and address.
+ *
+ * @param address
+ * @param name
+ * @param sourceId
+ */
+function createNameState(
+  address: string,
+  name: string,
+  sourceId: string | null,
+): NameControllerState {
+  return {
+    ...EMPTY_NAME_STATE,
+    names: {
+      [NameType.ETHEREUM_ADDRESS]: {
+        [address]: {
+          [CHAIN_ID_MOCK]: {
+            name,
+            sourceId,
+            proposedNames: {},
+          },
+        },
+      },
+    },
+  };
+}
+
+const EMPTY_ADDRESS_BOOK_STATE: AddressBookState = {
+  addressBook: {},
+};
+
+/**
+ * Creates AddressBookState containing a single entry with the given name, address and isEns value.
+ *
+ * @param address
+ * @param name
+ * @param isEns
+ */
+function createAddressBookState(
+  address: string,
+  name: string,
+  isEns: boolean,
+): AddressBookState {
+  return {
+    ...EMPTY_ADDRESS_BOOK_STATE,
+    addressBook: {
+      [CHAIN_ID_MOCK]: {
+        [address]: {
+          address,
+          name,
+          isEns,
+          chainId: CHAIN_ID_MOCK,
+          memo: '',
+        },
+      },
+    },
+  };
+}
+
 describe('AddressBookPetnamesBridge', () => {
-  let addressBookControllerDefault;
-  let nameControllerDefault;
-  let messengerDefault;
-  let options: any;
+  let messenger: jest.Mocked<PetnamesBridgeMessenger>;
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    addressBookControllerDefault = createAddressBookControllerMock();
-    nameControllerDefault = createNameControllerMock();
-    messengerDefault = createMessengerMock();
-
-    options = {
-      addressBookController: addressBookControllerDefault,
-      nameController: nameControllerDefault,
-      messenger: messengerDefault,
-    };
+    messenger = createMessengerMock();
   });
 
   describe('NameController', () => {
     it('adds entry when address book entry added', () => {
-      new AddressBookPetnamesBridge(options).init();
+      const addressBookController = createAddressBookControllerMock(
+        EMPTY_ADDRESS_BOOK_STATE,
+      );
+      const nameController = createNameControllerMock(EMPTY_NAME_STATE);
+      new AddressBookPetnamesBridge({
+        addressBookController,
+        nameController,
+        messenger,
+      }).init();
 
-      addressBookControllerDefault.subscribe.mock.calls[0][0]({
-        addressBook: {
-          [CHAIN_ID_MOCK]: {
-            [ADDRESS_MOCK]: {
-              address: ADDRESS_MOCK,
-              name: NAME_MOCK,
-              chainId: CHAIN_ID_MOCK,
-              isEns: true,
-            } as any,
-          },
-        },
-      });
+      addressBookController.state = createAddressBookState(
+        ADDRESS_MOCK,
+        NAME_MOCK,
+        true,
+      );
+      const listener = addressBookController.subscribe.mock
+        .calls[0][0] as () => void;
+      listener();
 
-      expect(nameControllerDefault.setName).toHaveBeenCalledTimes(1);
-      expect(nameControllerDefault.setName).toHaveBeenCalledWith({
+      expect(nameController.setName).toHaveBeenCalledTimes(1);
+      expect(nameController.setName).toHaveBeenCalledWith({
         value: ADDRESS_MOCK,
         type: NameType.ETHEREUM_ADDRESS,
         name: NAME_MOCK,
@@ -88,33 +152,27 @@ describe('AddressBookPetnamesBridge', () => {
     });
 
     it('updates entry when address book entry is updated', () => {
-      const nameController = createNameControllerMock({
-        [ADDRESS_MOCK]: {
-          [CHAIN_ID_MOCK]: {
-            name: NAME_MOCK,
-            sourceId: null,
-            proposedNames: {},
-          },
-        },
-      });
+      const addressBookController = createAddressBookControllerMock(
+        createAddressBookState(ADDRESS_MOCK, NAME_MOCK, true),
+      );
+      const nameController = createNameControllerMock(
+        createNameState(ADDRESS_MOCK, NAME_MOCK, null),
+      );
 
       new AddressBookPetnamesBridge({
-        ...options,
+        addressBookController,
         nameController,
+        messenger,
       }).init();
 
-      addressBookControllerDefault.subscribe.mock.calls[0][0]({
-        addressBook: {
-          [CHAIN_ID_MOCK]: {
-            [ADDRESS_MOCK]: {
-              address: ADDRESS_MOCK,
-              name: NAME_2_MOCK,
-              chainId: CHAIN_ID_MOCK,
-              isEns: false,
-            } as any,
-          },
-        },
-      });
+      addressBookController.state = createAddressBookState(
+        ADDRESS_MOCK,
+        NAME_2_MOCK,
+        false,
+      );
+      const listener = addressBookController.subscribe.mock
+        .calls[0][0] as () => void;
+      listener();
 
       expect(nameController.setName).toHaveBeenCalledTimes(1);
       expect(nameController.setName).toHaveBeenCalledWith({
@@ -127,31 +185,30 @@ describe('AddressBookPetnamesBridge', () => {
     });
 
     it('deletes entry when address book entry is deleted', () => {
-      const nameController = createNameControllerMock({
-        [ADDRESS_MOCK]: {
-          [CHAIN_ID_MOCK]: {
-            name: NAME_MOCK,
-            sourceId: null,
-            proposedNames: {},
-          } as any,
-        },
-      });
-
+      const addressBookController = createAddressBookControllerMock(
+        createAddressBookState(ADDRESS_MOCK, NAME_MOCK, true),
+      );
+      const nameController = createNameControllerMock(
+        createNameState(ADDRESS_MOCK, NAME_MOCK, null),
+      );
       new AddressBookPetnamesBridge({
-        ...options,
+        addressBookController,
         nameController,
+        messenger,
       }).init();
 
-      addressBookControllerDefault.subscribe.mock.calls[0][0]({
-        addressBook: {},
-      });
+      addressBookController.state = EMPTY_ADDRESS_BOOK_STATE;
+
+      const listener = addressBookController.subscribe.mock
+        .calls[0][0] as () => void;
+      listener();
 
       expect(nameController.setName).toHaveBeenCalledTimes(1);
       expect(nameController.setName).toHaveBeenCalledWith({
         value: ADDRESS_MOCK,
         type: NameType.ETHEREUM_ADDRESS,
         name: null,
-        sourceId: undefined,
+        sourceId: null,
         variation: CHAIN_ID_MOCK,
       });
     });
@@ -159,27 +216,23 @@ describe('AddressBookPetnamesBridge', () => {
 
   describe('AddressBookController', () => {
     it('adds entry when petname added', () => {
-      new AddressBookPetnamesBridge(options).init();
-
-      messengerDefault.subscribe.mock.calls[0][1](
-        {
-          names: {
-            [NameType.ETHEREUM_ADDRESS]: {
-              [ADDRESS_MOCK]: {
-                [CHAIN_ID_MOCK]: {
-                  name: NAME_MOCK,
-                  sourceId: null,
-                  proposedNames: {},
-                },
-              },
-            },
-          },
-        },
-        undefined,
+      const addressBookController = createAddressBookControllerMock(
+        EMPTY_ADDRESS_BOOK_STATE,
       );
+      const nameController = createNameControllerMock(EMPTY_NAME_STATE);
+      new AddressBookPetnamesBridge({
+        addressBookController,
+        nameController,
+        messenger,
+      }).init();
 
-      expect(addressBookControllerDefault.set).toHaveBeenCalledTimes(1);
-      expect(addressBookControllerDefault.set).toHaveBeenCalledWith(
+      nameController.state = createNameState(ADDRESS_MOCK, NAME_MOCK, null);
+
+      const listener = messenger.subscribe.mock.calls[0][1] as () => void;
+      listener();
+
+      expect(addressBookController.set).toHaveBeenCalledTimes(1);
+      expect(addressBookController.set).toHaveBeenCalledWith(
         ADDRESS_MOCK,
         NAME_MOCK,
         CHAIN_ID_MOCK,
@@ -187,38 +240,22 @@ describe('AddressBookPetnamesBridge', () => {
     });
 
     it('updates entry when petname updated', () => {
-      const addressBookController = createAddressBookControllerMock({
-        [CHAIN_ID_MOCK]: {
-          [ADDRESS_MOCK]: {
-            address: ADDRESS_MOCK,
-            name: NAME_MOCK,
-            chainId: CHAIN_ID_MOCK,
-            isEns: false,
-          } as any,
-        },
-      });
-
+      const addressBookController = createAddressBookControllerMock(
+        createAddressBookState(ADDRESS_MOCK, NAME_MOCK, false),
+      );
+      const nameController = createNameControllerMock(
+        createNameState(ADDRESS_MOCK, NAME_MOCK, null),
+      );
       new AddressBookPetnamesBridge({
-        ...options,
         addressBookController,
+        nameController,
+        messenger,
       }).init();
 
-      messengerDefault.subscribe.mock.calls[0][1](
-        {
-          names: {
-            [NameType.ETHEREUM_ADDRESS]: {
-              [ADDRESS_MOCK]: {
-                [CHAIN_ID_MOCK]: {
-                  name: NAME_2_MOCK,
-                  sourceId: null,
-                  proposedNames: {},
-                },
-              },
-            },
-          },
-        },
-        undefined,
-      );
+      nameController.state = createNameState(ADDRESS_MOCK, NAME_2_MOCK, null);
+
+      const listener = messenger.subscribe.mock.calls[0][1] as () => void;
+      listener();
 
       expect(addressBookController.set).toHaveBeenCalledTimes(1);
       expect(addressBookController.set).toHaveBeenCalledWith(
@@ -229,30 +266,22 @@ describe('AddressBookPetnamesBridge', () => {
     });
 
     it('deletes entry when petname deleted', () => {
-      const addressBookController = createAddressBookControllerMock({
-        [CHAIN_ID_MOCK]: {
-          [ADDRESS_MOCK]: {
-            address: ADDRESS_MOCK,
-            name: NAME_MOCK,
-            chainId: CHAIN_ID_MOCK,
-            isEns: false,
-          } as any,
-        },
-      });
-
+      const addressBookController = createAddressBookControllerMock(
+        createAddressBookState(ADDRESS_MOCK, NAME_MOCK, false),
+      );
+      const nameController = createNameControllerMock(
+        createNameState(ADDRESS_MOCK, NAME_MOCK, null),
+      );
       new AddressBookPetnamesBridge({
-        ...options,
         addressBookController,
+        nameController,
+        messenger,
       }).init();
 
-      messengerDefault.subscribe.mock.calls[0][1](
-        {
-          names: {
-            [NameType.ETHEREUM_ADDRESS]: {},
-          },
-        },
-        undefined,
-      );
+      nameController.state = EMPTY_NAME_STATE;
+
+      const listener = messenger.subscribe.mock.calls[0][1] as () => void;
+      listener();
 
       expect(addressBookController.delete).toHaveBeenCalledTimes(1);
       expect(addressBookController.delete).toHaveBeenCalledWith(

@@ -10,43 +10,59 @@ import {
   PetnamesBridgeMessenger,
 } from './AbstractPetnamesBridge';
 
-const ADDRESS_A = '0xabc';
-const NAME_1 = 'name1';
-const NAME_2 = 'name2';
+const ADDRESS_MOCK = '0xabc';
+const NAME_MOCK = 'name1';
 const CHAIN_ID_MOCK = '0x1';
 
 const NO_SOURCE_ENTRIES: PetnameEntry[] = [];
 
+/**
+ * Creates a PetnameEntry with the given name and address.
+ *
+ * @param address
+ * @param name
+ */
+function createPetnameEntry(address: string, name: string): PetnameEntry {
+  return {
+    value: address,
+    name,
+    type: NameType.ETHEREUM_ADDRESS,
+    sourceId: null,
+    variation: CHAIN_ID_MOCK,
+  };
+}
+
 const EMPTY_NAME_STATE: NameControllerState = {
   names: {
-    ethereumAddress: {},
+    [NameType.ETHEREUM_ADDRESS]: {},
   },
   nameSources: {},
 };
 
-const PETNAME_ENTRY_WITH_NAME_1: PetnameEntry = {
-  value: ADDRESS_A,
-  type: NameType.ETHEREUM_ADDRESS,
-  name: NAME_1,
-  sourceId: null,
-  variation: CHAIN_ID_MOCK,
-};
-
-// PETNAME_ENTRY_WITH_NAME_1 above is the only entry in this NameController state.
-const NAME_STATE_WITH_PETNAME_FOR_NAME_1: NameControllerState = {
-  ...EMPTY_NAME_STATE,
-  names: {
-    ethereumAddress: {
-      [ADDRESS_A]: {
-        [CHAIN_ID_MOCK]: {
-          name: NAME_1,
-          sourceId: null,
-          proposedNames: {},
+/**
+ * Creates NameControllerState containing a single Petname with the given name and address.
+ * This is used to simulate a NameController state where a Petname has been set
+ * with a call to NameController.setName(createPetnameEntry(name) as SetNameRequest).
+ *
+ * @param address
+ * @param name
+ */
+function createNameState(address: string, name: string): NameControllerState {
+  return {
+    ...EMPTY_NAME_STATE,
+    names: {
+      [NameType.ETHEREUM_ADDRESS]: {
+        [address]: {
+          [CHAIN_ID_MOCK]: {
+            name,
+            sourceId: null,
+            proposedNames: {},
+          },
         },
       },
     },
-  },
-};
+  };
+}
 
 class TestPetnamesBridge extends AbstractPetnamesBridge {
   getSourceEntries = jest.fn();
@@ -116,20 +132,19 @@ describe('AbstractPetnamesBridge', () => {
       });
       bridge.init();
 
-      bridge.getSourceEntries.mockReturnValue([PETNAME_ENTRY_WITH_NAME_1]);
+      const PETNAME_ENTRY = createPetnameEntry(ADDRESS_MOCK, NAME_MOCK);
+      bridge.getSourceEntries.mockReturnValue([PETNAME_ENTRY]);
 
       const sourceListener = bridge.onSourceChange.mock.calls[0][0];
       sourceListener();
 
       expect(nameController.setName).toHaveBeenCalledTimes(1);
-      expect(nameController.setName).toHaveBeenCalledWith(
-        PETNAME_ENTRY_WITH_NAME_1,
-      );
+      expect(nameController.setName).toHaveBeenCalledWith(PETNAME_ENTRY);
     });
 
     it('updates entry when Source entry is updated', () => {
       const nameController = createNameControllerMock(
-        NAME_STATE_WITH_PETNAME_FOR_NAME_1,
+        createNameState(ADDRESS_MOCK, NAME_MOCK),
       );
       const bridge = new TestPetnamesBridge({
         isTwoWay: true,
@@ -138,25 +153,24 @@ describe('AbstractPetnamesBridge', () => {
       });
       bridge.init();
 
-      const UPDATED_PETNAME_ENTRY_MOCK: PetnameEntry = {
-        ...PETNAME_ENTRY_WITH_NAME_1,
-        name: NAME_2,
-      };
-
-      bridge.getSourceEntries.mockReturnValue([UPDATED_PETNAME_ENTRY_MOCK]);
+      const UPDATED_PETNAME_ENTRY = createPetnameEntry(
+        ADDRESS_MOCK,
+        'updatedName',
+      );
+      bridge.getSourceEntries.mockReturnValue([UPDATED_PETNAME_ENTRY]);
 
       const sourceListener = bridge.onSourceChange.mock.calls[0][0];
       sourceListener();
 
       expect(nameController.setName).toHaveBeenCalledTimes(1);
       expect(nameController.setName).toHaveBeenCalledWith(
-        UPDATED_PETNAME_ENTRY_MOCK,
+        UPDATED_PETNAME_ENTRY,
       );
     });
 
     it('deletes entry when Source entry is deleted if two-way bridge', () => {
       const nameController = createNameControllerMock(
-        NAME_STATE_WITH_PETNAME_FOR_NAME_1,
+        createNameState(ADDRESS_MOCK, NAME_MOCK),
       );
       const bridge = new TestPetnamesBridge({
         isTwoWay: true,
@@ -172,14 +186,14 @@ describe('AbstractPetnamesBridge', () => {
 
       expect(nameController.setName).toHaveBeenCalledTimes(1);
       expect(nameController.setName).toHaveBeenCalledWith({
-        ...PETNAME_ENTRY_WITH_NAME_1,
+        ...createPetnameEntry(ADDRESS_MOCK, NAME_MOCK),
         name: null,
       });
     });
 
-    it('should not delete Petname entries when Source entry is deleted if not two-way bridge', () => {
+    it('should not delete Petname entry when Source entry is deleted if not two-way bridge', () => {
       const nameController = createNameControllerMock(
-        NAME_STATE_WITH_PETNAME_FOR_NAME_1,
+        createNameState(ADDRESS_MOCK, NAME_MOCK),
       );
       const bridge = new TestPetnamesBridge({
         isTwoWay: false,
@@ -200,7 +214,7 @@ describe('AbstractPetnamesBridge', () => {
   describe('synchronize Petnames->Source (two-way bridge only)', () => {
     it('should throw an error when updateSourceEntry is not overridden', () => {
       const nameController = createNameControllerMock(
-        NAME_STATE_WITH_PETNAME_FOR_NAME_1,
+        createNameState(ADDRESS_MOCK, NAME_MOCK),
       );
       const bridge = new (class extends AbstractPetnamesBridge {
         // NOTE: updateSourceEntry is not overridden for this test class.
@@ -217,8 +231,9 @@ describe('AbstractPetnamesBridge', () => {
       bridge.getSourceEntries.mockReturnValue(NO_SOURCE_ENTRIES);
 
       expect(() => {
-        const petnamesListener = messenger.subscribe.mock.calls[0][1];
-        petnamesListener(NAME_STATE_WITH_PETNAME_FOR_NAME_1, EMPTY_NAME_STATE);
+        const petnamesListener = messenger.subscribe.mock
+          .calls[0][1] as () => void;
+        petnamesListener();
       }).toThrowError(
         'updateSourceEntry must be overridden for two-way bridges',
       );
@@ -226,7 +241,7 @@ describe('AbstractPetnamesBridge', () => {
 
     it('calls updateSourceEntry with ADDED entry when Petnames entry is added', () => {
       const nameController = createNameControllerMock(
-        NAME_STATE_WITH_PETNAME_FOR_NAME_1,
+        createNameState(ADDRESS_MOCK, NAME_MOCK),
       );
       const bridge = new TestPetnamesBridge({
         isTwoWay: true,
@@ -237,19 +252,20 @@ describe('AbstractPetnamesBridge', () => {
 
       bridge.getSourceEntries.mockReturnValue(NO_SOURCE_ENTRIES);
 
-      const petnamesListener = messenger.subscribe.mock.calls[0][1];
-      petnamesListener(EMPTY_NAME_STATE, NAME_STATE_WITH_PETNAME_FOR_NAME_1);
+      const petnamesListener = messenger.subscribe.mock
+        .calls[0][1] as () => void;
+      petnamesListener();
 
       expect(bridge.updateSourceEntry).toHaveBeenCalledTimes(1);
       expect(bridge.updateSourceEntry).toHaveBeenCalledWith(
         ChangeType.ADDED,
-        PETNAME_ENTRY_WITH_NAME_1,
+        createPetnameEntry(NAME_MOCK),
       );
     });
 
     it('calls updateSourceEntry with UPDATED entry when Petnames entry is updated', () => {
       const nameController = createNameControllerMock(
-        NAME_STATE_WITH_PETNAME_FOR_NAME_1,
+        createNameState(ADDRESS_MOCK, NAME_MOCK),
       );
       const bridge = new TestPetnamesBridge({
         isTwoWay: true,
@@ -259,16 +275,20 @@ describe('AbstractPetnamesBridge', () => {
       bridge.init();
 
       bridge.getSourceEntries.mockReturnValue([
-        { ...PETNAME_ENTRY_WITH_NAME_1, name: NAME_2 },
+        createPetnameEntry(ADDRESS_MOCK, NAME_MOCK),
       ]);
 
-      const petnamesListener = messenger.subscribe.mock.calls[0][1];
-      petnamesListener(EMPTY_NAME_STATE, NAME_STATE_WITH_PETNAME_FOR_NAME_1);
+      const UPDATED_NAME = 'updatedName';
+      nameController.state = createNameState(ADDRESS_MOCK, UPDATED_NAME);
+
+      const petnamesListener = messenger.subscribe.mock
+        .calls[0][1] as () => void;
+      petnamesListener();
 
       expect(bridge.updateSourceEntry).toHaveBeenCalledTimes(1);
       expect(bridge.updateSourceEntry).toHaveBeenCalledWith(
         ChangeType.UPDATED,
-        PETNAME_ENTRY_WITH_NAME_1,
+        createPetnameEntry(ADDRESS_MOCK, UPDATED_NAME),
       );
     });
 
@@ -281,10 +301,15 @@ describe('AbstractPetnamesBridge', () => {
       });
       bridge.init();
 
+      const PETNAME_ENTRY_WITH_NAME_1 = createPetnameEntry(
+        ADDRESS_MOCK,
+        NAME_MOCK,
+      );
       bridge.getSourceEntries.mockReturnValue([PETNAME_ENTRY_WITH_NAME_1]);
 
-      const petnamesListener = messenger.subscribe.mock.calls[0][1];
-      petnamesListener(EMPTY_NAME_STATE, NAME_STATE_WITH_PETNAME_FOR_NAME_1);
+      const petnamesListener = messenger.subscribe.mock
+        .calls[0][1] as () => void;
+      petnamesListener();
 
       expect(bridge.updateSourceEntry).toHaveBeenCalledTimes(1);
       expect(bridge.updateSourceEntry).toHaveBeenCalledWith(
