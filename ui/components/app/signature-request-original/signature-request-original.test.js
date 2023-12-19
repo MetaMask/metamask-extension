@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 import mockState from '../../../../test/data/mock-state.json';
@@ -67,15 +68,37 @@ const props = {
     type: MESSAGE_TYPE.ETH_SIGN,
   },
   selectedAccount: {
-    address,
+    address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+    id: '7ae06c6d-114a-4319-bf75-9fa3efa2c8b9',
+    metadata: {
+      name: 'Account 1',
+      keyring: {
+        type: 'HD Key Tree',
+      },
+    },
+    options: {},
+    methods: [...Object.values(EthMethod)],
+    type: EthAccountType.Eoa,
   },
 };
 
-const render = ({ txData = props.txData, selectedAddress = address } = {}) => {
+const render = ({ txData = props.txData, selectedAccount } = {}) => {
+  const internalAccounts = {
+    accounts: {
+      ...mockState.metamask.internalAccounts.accounts,
+    },
+    selectedAccount: mockState.metamask.internalAccounts.selectedAccount,
+  };
+
+  if (selectedAccount) {
+    internalAccounts.accounts[selectedAccount.id] = selectedAccount;
+    internalAccounts.selectedAccount = selectedAccount.id;
+  }
+
   const store = configureStore({
     metamask: {
       ...mockState.metamask,
-      selectedAddress,
+      internalAccounts,
     },
   });
 
@@ -202,14 +225,26 @@ describe('SignatureRequestOriginal', () => {
   });
 
   it('should display mismatch info when selected account address and from account address are not the same', () => {
-    const selectedAddress = '0xeb9e64b93097bc15f01f13eae97015c57ab64823';
+    const selectedAccount = {
+      address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+      id: '7ae06c6d-114a-4319-bf75-9fa3efa2c8b9',
+      metadata: {
+        name: 'Account 1',
+        keyring: {
+          type: 'HD Key Tree',
+        },
+      },
+      options: {},
+      methods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
+    };
     const mismatchAccountText = `Your selected account (${shortenAddress(
-      selectedAddress,
+      selectedAccount.address,
     )}) is different than the account trying to sign (${shortenAddress(
       address,
     )})`;
 
-    render({ selectedAddress });
+    render({ selectedAccount });
 
     expect(screen.getByText(mismatchAccountText)).toBeInTheDocument();
   });
