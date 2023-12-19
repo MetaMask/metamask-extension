@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { KeyringType } from '../../../../shared/constants/keyring';
 import {
   Box,
   ButtonLink,
@@ -12,11 +11,11 @@ import {
   ButtonVariant,
   IconName,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
@@ -27,14 +26,17 @@ import {
   Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getConnectedSubjectsForAllAddresses,
-  getInternalAccounts,
-  getIsAddSnapAccountEnabled,
-  getMetaMaskAccountsOrdered,
-  getOriginOfCurrentTab,
   getSelectedAccount,
+  getMetaMaskAccountsOrdered,
+  getConnectedSubjectsForAllAddresses,
+  getOriginOfCurrentTab,
+  getUpdatedAndSortedAccounts,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  getIsAddSnapAccountEnabled,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -43,14 +45,13 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  ADD_SNAP_ACCOUNT_ROUTE,
   CONNECT_HARDWARE_ROUTE,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
-import { t } from '../../../../app/scripts/translate';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -63,56 +64,14 @@ const ACTION_MODES = {
   IMPORT: 'import',
 };
 
-function getLabel(type, account) {
-  switch (type) {
-    case KeyringType.qr:
-      return HardwareKeyringNames.qr;
-    case KeyringType.imported:
-      return t('imported');
-    case KeyringType.trezor:
-      return HardwareKeyringNames.trezor;
-    case KeyringType.ledger:
-      return HardwareKeyringNames.ledger;
-    case KeyringType.lattice:
-      return HardwareKeyringNames.lattice;
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    case KeyringType.snap:
-      if (account.metadata.snap?.name) {
-        return `${account.metadata.snap?.name} (${t('beta')})`;
-      }
-      return `${t('snaps')} (${t('beta')})`;
-    ///: END:ONLY_INCLUDE_IF
-    default:
-      return null;
-  }
-}
-
-const mergeAccounts = (accounts, internalAccounts) => {
-  return accounts.map((account) => {
-    const internalAccount = internalAccounts.find(
-      (intAccount) => intAccount.address === account.address,
-    );
-    if (internalAccount) {
-      return {
-        ...account,
-        ...internalAccount,
-        name: internalAccount.metadata.name || account.name,
-        keyring: internalAccount.metadata.keyring.type,
-        label: getLabel(internalAccount.metadata.keyring.type, internalAccount),
-      };
-    }
-    return account;
-  });
-};
-
 export const AccountListMenu = ({
   onClose,
   showAccountCreation = true,
   accountListItemProps = {},
 }) => {
+  const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const internalAccounts = useSelector(getInternalAccounts);
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -138,7 +97,6 @@ export const AccountListMenu = ({
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
-  searchResults = mergeAccounts(searchResults, internalAccounts);
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
@@ -155,6 +113,11 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
+
+  const sortedSearchResults = process.env.NETWORK_ACCOUNT_DND
+    ? // eslint-disable-next-line react-hooks/rules-of-hooks
+      useSelector(getUpdatedAndSortedAccounts)
+    : searchResults;
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -279,13 +242,9 @@ export const AccountListMenu = ({
                     startIconName={IconName.Snaps}
                     onClick={() => {
                       onClose();
-                      getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-                        ? global.platform.openExtensionInBrowser(
-                            ADD_SNAP_ACCOUNT_ROUTE,
-                            null,
-                            true,
-                          )
-                        : history.push(ADD_SNAP_ACCOUNT_ROUTE);
+                      global.platform.openTab({
+                        url: process.env.ACCOUNT_SNAPS_DIRECTORY_URL,
+                      });
                     }}
                   >
                     {t('settingAddSnapAccount')}
@@ -349,7 +308,7 @@ export const AccountListMenu = ({
             ) : null}
             {/* Account list block */}
             <Box className="multichain-account-menu-popover__list">
-              {searchResults.length === 0 && searchQuery !== '' ? (
+              {sortedSearchResults.length === 0 && searchQuery !== '' ? (
                 <Text
                   paddingLeft={4}
                   paddingRight={4}
@@ -359,10 +318,11 @@ export const AccountListMenu = ({
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              {searchResults.map((account) => {
+              {sortedSearchResults.map((account) => {
                 const connectedSite = connectedSites[account.address]?.find(
                   ({ origin }) => origin === currentTabOrigin,
                 );
+
                 return (
                   <AccountListItem
                     onClick={() => {
@@ -376,7 +336,6 @@ export const AccountListMenu = ({
                       });
                       dispatch(setSelectedAccount(account.address));
                     }}
-                    // TODO: figure out better typing for identity
                     identity={account}
                     key={account.address}
                     selected={selectedAccount.address === account.address}
@@ -384,6 +343,11 @@ export const AccountListMenu = ({
                     connectedAvatar={connectedSite?.iconUrl}
                     connectedAvatarName={connectedSite?.name}
                     showOptions
+                    isPinned={
+                      process.env.NETWORK_ACCOUNT_DND
+                        ? Boolean(account.pinned)
+                        : null
+                    }
                     {...accountListItemProps}
                   />
                 );

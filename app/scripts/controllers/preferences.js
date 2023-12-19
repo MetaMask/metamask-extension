@@ -7,9 +7,6 @@ import {
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
-///: END:ONLY_INCLUDE_IF
 
 const mainNetworks = {
   [CHAIN_IDS.MAINNET]: true,
@@ -65,7 +62,7 @@ export default class PreferencesController {
       useRequestQueue: false,
       openSeaEnabled: false,
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-      securityAlertsEnabled: false,
+      securityAlertsEnabled: true,
       ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       addSnapAccountEnabled: false,
@@ -659,19 +656,6 @@ export default class PreferencesController {
   setSnapsAddSnapAccountModalDismissed(value) {
     this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
   }
-
-  async updateSnapRegistry() {
-    let snapRegistry;
-    try {
-      const response = await fetch(KEYRING_SNAPS_REGISTRY_URL);
-      snapRegistry = await response.json();
-    } catch (error) {
-      console.error(`Failed to fetch registry: `, error);
-      snapRegistry = {};
-    }
-    this.store.updateState({ snapRegistryList: snapRegistry });
-  }
-
   ///: END:ONLY_INCLUDE_IF
 
   /**

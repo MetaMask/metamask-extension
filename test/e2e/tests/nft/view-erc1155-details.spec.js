@@ -1,5 +1,5 @@
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   unlockWallet,
 } = require('../../helpers');
@@ -18,22 +18,13 @@ async function mockIPFSRequest(mockServer) {
 
 describe('View ERC1155 NFT details', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   it('user should be able to view ERC1155 NFT details', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder().withNftControllerERC1155().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         testSpecificMock: mockIPFSRequest,

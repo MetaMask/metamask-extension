@@ -2,6 +2,7 @@
   "DNS": "object",
   "activeTab": "object",
   "appState": "object",
+  "confirm": "object",
   "confirmTransaction": "object",
   "gas": { "customData": { "price": null, "limit": null } },
   "history": { "mostRecentOverviewPage": "/" },
@@ -79,7 +80,6 @@
         "status": "available"
       }
     },
-    "cachedBalances": "object",
     "keyrings": "object",
     "useNonceField": false,
     "usePhishDetect": true,
@@ -131,6 +131,7 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "string", "1": "string", "2": "string" },
+    "pinnedAccountList": {},
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},

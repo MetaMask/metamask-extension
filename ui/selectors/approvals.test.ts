@@ -1,5 +1,9 @@
 import { ApprovalType } from '@metamask/controller-utils';
-import { getApprovalFlows, hasPendingApprovals } from './approvals';
+import {
+  getApprovalFlows,
+  getPendingApprovals,
+  hasPendingApprovals,
+} from './approvals';
 
 describe('approval selectors', () => {
   const mockedState = {
@@ -60,6 +64,16 @@ describe('approval selectors', () => {
       const result = getApprovalFlows(mockedState);
 
       expect(result).toStrictEqual(mockedState.metamask.approvalFlows);
+    });
+  });
+
+  describe('getPendingApprovals', () => {
+    it('should return all pending approvals', () => {
+      const result = getPendingApprovals(mockedState);
+
+      expect(result).toStrictEqual(
+        Object.values(mockedState.metamask.pendingApprovals),
+      );
     });
   });
 });

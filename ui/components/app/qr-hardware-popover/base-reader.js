@@ -155,8 +155,8 @@ const BaseReader = ({
     } else if (error.message === t('QRHardwareMismatchedSignId')) {
       msg = t('QRHardwareMismatchedSignId');
     } else {
-      title = t('unknownCameraErrorTitle');
-      msg = t('unknownCameraError');
+      title = t('generalCameraErrorTitle');
+      msg = t('generalCameraError');
     }
 
     return (
