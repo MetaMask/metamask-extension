@@ -67,8 +67,15 @@ const ACTION_MODES = {
 };
 
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-const mergeAccounts = (accounts, internalAccounts) => {
-  return accounts.map((account) => {
+/**
+ * Merges ordered accounts with balances with each corresponding account data from internal accounts
+ *
+ * @param accountsWithBalances - ordered accounts with balances
+ * @param internalAccounts - internal accounts
+ * @returns merged accounts list with balances and internal account data
+ */
+const mergeAccounts = (accountsWithBalances, internalAccounts) => {
+  return accountsWithBalances.map((account) => {
     const internalAccount = internalAccounts.find(
       (intAccount) => intAccount.address === account.address,
     );
