@@ -1,15 +1,13 @@
 import { cloneDeep, isEmpty } from 'lodash';
-import {
-  ACCOUNT_IDENTITY_VARIATION,
-  PreferencesControllerState,
-} from '../lib/AccountIdentitiesPetnamesBridge';
+import { FALLBACK_VARIATION } from '../lib/AccountIdentitiesPetnamesBridge';
+import { PreferencesControllerState } from '../controllers/preferences';
 
 type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
 
-export const version = 106;
+export const version = 107;
 
 /**
  * Copy all account identity entries from PreferencesController to NameController.
@@ -43,7 +41,7 @@ function transformState(state: Record<string, any>) {
 
     const normalizedAddress = address.toLowerCase();
     const nameEntry = names[normalizedAddress] ?? {};
-    const petnameExists = Boolean(nameEntry[ACCOUNT_IDENTITY_VARIATION]?.name);
+    const petnameExists = Boolean(nameEntry[FALLBACK_VARIATION]?.name);
 
     // Ignore if petname already set, or if account entry is missing name or address.
     if (
@@ -57,7 +55,7 @@ function transformState(state: Record<string, any>) {
 
     names[normalizedAddress] = nameEntry;
 
-    nameEntry[ACCOUNT_IDENTITY_VARIATION] = {
+    nameEntry[FALLBACK_VARIATION] = {
       name: accountEntry.name,
       sourceId: null,
       proposedNames: {},

@@ -1,12 +1,17 @@
-import {
-  ACCOUNT_IDENTITY_NAME_TYPE,
-  ACCOUNT_IDENTITY_VARIATION,
-} from '../lib/AccountIdentitiesPetnamesBridge';
-import { migrate, version } from './106';
+import { NameType } from '@metamask/name-controller';
+import { FALLBACK_VARIATION } from '../lib/AccountIdentitiesPetnamesBridge';
+import { migrate, version } from './107';
 
-const oldVersion = 105;
+const oldVersion = 106;
 
-describe('migration #106', () => {
+const ADDRESS_1 = '0xc0ffee254729296a45a3885639AC7E10F9d54979';
+const NAME_1 = 'TestName1';
+const ADDRESS_2 = '0xc0ffee254729296a45a3885639AC7E10F9d54978';
+const NAME_2 = 'TestName2';
+const ADDRESS_3 = '0xc0ffee254729296a45a3885639AC7E10F9d54977';
+const NAME_3 = 'TestName3';
+
+describe('migration #107', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
@@ -47,13 +52,6 @@ describe('migration #106', () => {
     expect(transformedState.data).toEqual(oldState);
   });
 
-  const ADDRESS_1 = '0xc0ffee254729296a45a3885639AC7E10F9d54979';
-  const NAME_1 = 'TestName1';
-  const ADDRESS_2 = '0xc0ffee254729296a45a3885639AC7E10F9d54978';
-  const NAME_2 = 'TestName2';
-  const ADDRESS_3 = '0xc0ffee254729296a45a3885639AC7E10F9d54977';
-  const NAME_3 = 'TestName3';
-
   it('adds name entries', async () => {
     const oldState = {
       OtherController: {},
@@ -84,23 +82,23 @@ describe('migration #106', () => {
       ...oldState,
       NameController: {
         names: {
-          [ACCOUNT_IDENTITY_NAME_TYPE]: {
+          [NameType.ETHEREUM_ADDRESS]: {
             [ADDRESS_1.toLowerCase()]: {
-              [ACCOUNT_IDENTITY_VARIATION]: {
+              [FALLBACK_VARIATION]: {
                 name: NAME_1,
                 sourceId: null,
                 proposedNames: {},
               },
             },
             [ADDRESS_2.toLowerCase()]: {
-              [ACCOUNT_IDENTITY_VARIATION]: {
+              [FALLBACK_VARIATION]: {
                 name: NAME_2,
                 sourceId: null,
                 proposedNames: {},
               },
             },
             [ADDRESS_3.toLowerCase()]: {
-              [ACCOUNT_IDENTITY_VARIATION]: {
+              [FALLBACK_VARIATION]: {
                 name: NAME_3,
                 sourceId: null,
                 proposedNames: {},
@@ -125,9 +123,9 @@ describe('migration #106', () => {
       },
       NameController: {
         names: {
-          [ACCOUNT_IDENTITY_NAME_TYPE]: {
+          [NameType.ETHEREUM_ADDRESS]: {
             [ADDRESS_2.toLowerCase()]: {
-              [ACCOUNT_IDENTITY_VARIATION]: {
+              [FALLBACK_VARIATION]: {
                 name: NAME_2,
                 sourceId: 'ens',
                 proposedNames: {},
@@ -147,16 +145,16 @@ describe('migration #106', () => {
       ...oldState,
       NameController: {
         names: {
-          [ACCOUNT_IDENTITY_NAME_TYPE]: {
+          [NameType.ETHEREUM_ADDRESS]: {
             [ADDRESS_1.toLowerCase()]: {
-              [ACCOUNT_IDENTITY_VARIATION]: {
+              [FALLBACK_VARIATION]: {
                 name: NAME_1,
                 sourceId: null,
                 proposedNames: {},
               },
             },
             [ADDRESS_2.toLowerCase()]: {
-              [ACCOUNT_IDENTITY_VARIATION]: {
+              [FALLBACK_VARIATION]: {
                 name: NAME_2,
                 sourceId: 'ens',
                 proposedNames: {},
@@ -181,9 +179,9 @@ describe('migration #106', () => {
       },
       NameController: {
         names: {
-          [ACCOUNT_IDENTITY_NAME_TYPE]: {
+          [NameType.ETHEREUM_ADDRESS]: {
             [ADDRESS_1.toLowerCase()]: {
-              [ACCOUNT_IDENTITY_VARIATION]: {
+              [FALLBACK_VARIATION]: {
                 name: NAME_2,
                 sourceId: 'ens',
                 proposedNames: {},
@@ -203,9 +201,9 @@ describe('migration #106', () => {
       ...oldState,
       NameController: {
         names: {
-          [ACCOUNT_IDENTITY_NAME_TYPE]: {
+          [NameType.ETHEREUM_ADDRESS]: {
             [ADDRESS_1.toLowerCase()]: {
-              [ACCOUNT_IDENTITY_VARIATION]: {
+              [FALLBACK_VARIATION]: {
                 name: NAME_2,
                 sourceId: 'ens',
                 proposedNames: {},
@@ -243,7 +241,7 @@ describe('migration #106', () => {
       ...oldState,
       NameController: {
         names: {
-          [ACCOUNT_IDENTITY_NAME_TYPE]: {},
+          [NameType.ETHEREUM_ADDRESS]: {},
         },
       },
     });
