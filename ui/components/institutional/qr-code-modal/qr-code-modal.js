@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import QRCode from 'qrcode.react';
 import { useHistory } from 'react-router-dom';
 
-import { Modal, ModalOverlay } from '../../component-library';
+import { Modal, ModalOverlay, Text, Box } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/modal-content';
 import { ModalHeader } from '../../component-library/modal-header/modal-header';
-import { Text, Box } from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
@@ -46,7 +45,9 @@ export default function QRCodeModal({ onClose, custodianName }) {
           history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
           onClose();
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log('No data from QR Code API at this time');
+      }
     }, 5000);
 
     return () => clearInterval(intervalId);
@@ -56,26 +57,26 @@ export default function QRCodeModal({ onClose, custodianName }) {
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader
-        onClose={onClose}>Connect {custodianName ? custodianName : 'custodian'}
+        <ModalHeader onClose={onClose}>
+          Connect {custodianName || 'custodian'}
         </ModalHeader>
         <Text
-            as="p"
-            paddingRight={10}
-            paddingLeft={10}
-            paddingBottom={4}
-            color={TextColor.textDefault}
-            variant={TextVariant.bodySm}
-          >
-            To connect your accounts scan the QR code bellow.
-          </Text>
+          as="p"
+          paddingRight={10}
+          paddingLeft={10}
+          paddingBottom={4}
+          color={TextColor.textDefault}
+          variant={TextVariant.bodySm}
+        >
+          To connect your accounts scan the QR code bellow.
+        </Text>
         <Box
           style={{
             padding: 20,
             backgroundColor: 'var(--qr-code-white-background)',
             display: 'flex',
             alignItems: 'center',
-            flexDirection: 'column'
+            flexDirection: 'column',
           }}
         >
           <QRCode value={currentQRCode.toUpperCase()} size={270} />
@@ -87,5 +88,5 @@ export default function QRCodeModal({ onClose, custodianName }) {
 
 QRCodeModal.propTypes = {
   onClose: PropTypes.func.isRequired,
-  custodianName: PropTypes.string
+  custodianName: PropTypes.string,
 };

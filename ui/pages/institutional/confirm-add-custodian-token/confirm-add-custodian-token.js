@@ -2,7 +2,10 @@ import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PulseLoader from '../../../components/ui/pulse-loader';
-import { CUSTODY_ACCOUNT_ROUTE, DEFAULT_ROUTE} from '../../../helpers/constants/routes';
+import {
+  CUSTODY_ACCOUNT_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../helpers/constants/routes';
 import {
   Display,
   TextColor,

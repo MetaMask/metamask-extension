@@ -70,6 +70,7 @@ export default function InstitutionalEntityDonePage(props) {
             data-testid="click-most-recent-overview-page"
             onClick={() => {
               history.push(mostRecentOverviewPage);
+              // eslint-disable-next-line no-undef
               localStorage.removeItem('tempConnectRequest');
             }}
           >

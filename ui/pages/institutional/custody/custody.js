@@ -163,7 +163,10 @@ const CustodyPage = () => {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);
-          custodianByDisplayName?.displayName?.toLocaleLowerCase() === SATURN_DISPLAY_NAME ? setShowQRCodeModal(true) : setIsConfirmConnectCustodianModalVisible(true);
+          custodianByDisplayName?.displayName?.toLocaleLowerCase() ===
+          SATURN_DISPLAY_NAME
+            ? setShowQRCodeModal(true)
+            : setIsConfirmConnectCustodianModalVisible(true);
         }
 
         trackEvent({
@@ -735,13 +738,13 @@ const CustodyPage = () => {
       )}
 
       {showQRCodeModal && (
-          <QRCodeModal
-            onClose={() => {
-              setShowQRCodeModal(false);
-            }}
-            custodianName={selectedCustodianDisplayName}
-          />)
-      }
+        <QRCodeModal
+          onClose={() => {
+            setShowQRCodeModal(false);
+          }}
+          custodianName={selectedCustodianDisplayName}
+        />
+      )}
     </Box>
   );
 };
