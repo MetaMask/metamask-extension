@@ -67,7 +67,6 @@ export function getAvatarNetworkColor(name) {
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export function getAccountLabel(type, account) {
   switch (type) {
     case KeyringType.qr:
@@ -91,4 +90,3 @@ export function getAccountLabel(type, account) {
       return null;
   }
 }
-///: END:ONLY_INCLUDE_IF

@@ -36,8 +36,8 @@ import {
   getUpdatedAndSortedAccounts,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
-  getInternalAccounts,
   ///: END:ONLY_INCLUDE_IF
+  getInternalAccounts,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -66,7 +66,6 @@ const ACTION_MODES = {
   IMPORT: 'import',
 };
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 /**
  * Merges ordered accounts with balances with each corresponding account data from internal accounts
  *
@@ -94,7 +93,6 @@ const mergeAccounts = (accountsWithBalances, internalAccounts) => {
     return account;
   });
 };
-///: END:ONLY_INCLUDE_IF
 
 export const AccountListMenu = ({
   onClose,
@@ -104,9 +102,7 @@ export const AccountListMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const internalAccounts = useSelector(getInternalAccounts);
-  ///: END:ONLY_INCLUDE_IF
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -132,9 +128,7 @@ export const AccountListMenu = ({
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   searchResults = mergeAccounts(searchResults, internalAccounts);
-  ///: END:ONLY_INCLUDE_IF
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
