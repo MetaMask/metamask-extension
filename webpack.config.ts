@@ -1,7 +1,6 @@
 import { join, resolve } from 'node:path';
 import webpack, {
   DefinePlugin,
-  ProgressPlugin,
   type Configuration,
 } from 'webpack';
 import sass from 'sass';
@@ -62,7 +61,7 @@ const args = yargs(argv)
     alias: "p",
     description: "Show progress",
     type: "boolean",
-    default: false,
+    default: true,
   }).option("zip", {
     alias: "z",
     description: "Zip",
@@ -77,9 +76,9 @@ const args = yargs(argv)
     alias: "t",
     description: "Target",
     type: "string",
-    default: "chrome" as const,
+    default: "Chrome" as const,
     array: true,
-    choices: ["chrome", "firefox"] as const,
+    choices: ["Chrome", "Firefox"] as const,
   }).option("manifest_version", {
     alias: "mv",
     description: "Manifest Version",
@@ -133,7 +132,19 @@ const args = yargs(argv)
   .parseSync();
 
 if (args.snow || args.lavamoat) {
-  throw new Error("not ready yet");
+  throw new Error("The webpack build doesn't support lavamoat or snow yet. So sorry.");
+}
+
+if (args.target.length > 1){
+  throw new Error("The webpack build doesn't support multiple targets yet. So sorry.");
+}
+
+if (args.manifest_version === 3) {
+  throw new Error("The webpack build doesn't support manifest version 3 yet. So sorry.");
+}
+
+if ((args.feature?.length || 0) > 0) {
+  throw new Error("The webpack build doesn't support ad hoc features yet. So sorry.");
 }
 
 const entry = getEntries(join(__dirname, 'app'));
@@ -171,11 +182,11 @@ const swcLoader = {
 
 // TODO: build once, then copy to each browser's folder then update the
 // manifests
-const BROWSER = Browser.Chrome;
+const BROWSER = Browser[args.target[0]];
 
 // TODO: make these dynamic. yargs, maybe?
 const NAME = 'MetaMask';
-const DESCRIPTION = 'MetaMask Chrome Extension';
+const DESCRIPTION = `MetaMask ${BROWSER} Extension`;
 const MANIFEST_VERSION: Manifest['manifest_version'] = 2;
 // TODO: figure out what build.yml's env vars are doing and them do the merge
 // stuff.
@@ -223,9 +234,13 @@ const plugins = [
       acc[`process.env.${key}`] = JSON.stringify(val);
       return acc;
     }, {}),
-  ),
-  new ProgressPlugin()
+  )
 ];
+
+if (args.progress) {
+  const { ProgressPlugin } = require('webpack');
+  plugins.push(new ProgressPlugin());
+}
 
 if (args.zip) {
   const { ZipPlugin } = require('./webpack/plugins/ZipPlugin');
@@ -505,12 +520,16 @@ const config: Configuration = {
   plugins
 };
 
-// webpack(config, (err, stats) => {
-//   if (err || stats!.hasErrors()) {
-//     console.log(err);
-//     console.log(stats);
-//   }
-//   console.log("done");
-// })
+webpack(config, (err, stats) => {
+  if (err) {
+    console.error(err);
+  }
+  if(stats?.hasErrors()){
+    stats.compilation.errors.forEach((error) => {
+      console.error(error.message || error);
+    });
+  }
+  console.log("done");
+});
 
-export default config;
+// export default config;

@@ -7,7 +7,7 @@
     "url": "https://github.com/MetaMask/metamask-extension.git"
   },
   "scripts": {
-    "webpack": "webpack",
+    "webpack": "npx -y tsx webpack.config.ts",
     "webpack:clearcache": "npx -y rimraf@5.0.5 node_modules/.cache/webpack",
     "postinstall": "yarn webpack:clearcache && yarn webpack",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",

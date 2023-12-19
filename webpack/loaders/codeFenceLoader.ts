@@ -7,7 +7,6 @@ const schema: JSONSchema7 = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   type: 'object',
   required: ["features"],
-  format: "json",
   properties: {
     features: {
       type: 'object',
