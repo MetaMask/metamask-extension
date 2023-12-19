@@ -40,7 +40,7 @@ const WalletOverview = ({
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
             }}
-            startIconName={keyring === KeyringType.snap ? IconName.Snaps : null}
+            startIconName={keyring.type === KeyringType.snap ? IconName.Snaps : null}
           />
         ) : null}
       </div>
