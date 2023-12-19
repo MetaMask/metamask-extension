@@ -14,7 +14,9 @@ export const SnapAccountCard = ({
   remove?: boolean;
 }) => {
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const identity = accounts.find((account) => account.address === address);
+  const identity = accounts.find(
+    (account: { address: string }) => account.address === address,
+  );
 
   return (
     <Box
