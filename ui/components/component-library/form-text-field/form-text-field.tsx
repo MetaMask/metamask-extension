@@ -115,7 +115,7 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef<
             truncate,
             type,
             value,
-            ...(textFieldProps as TextFieldProps<'input'>),
+            ...(textFieldProps as TextFieldProps<'div'>),
           }}
         />
         {helpText && (

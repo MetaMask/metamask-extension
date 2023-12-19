@@ -17,7 +17,7 @@ export interface BaseFormTextFieldStyleUtilityProps
   extends Omit<TextFieldStyleUtilityProps, 'size' | 'type'> {
   className?: string;
   size?: FormTextFieldSize;
-  textFieldProps?: TextFieldProps<'input'>;
+  textFieldProps?: TextFieldProps<'div'>;
   helpText?: string | React.ReactNode;
   helpTextProps?: HelpTextProps<'div'>;
 }
