@@ -46,8 +46,10 @@ export class LedgerOffscreenBridge implements LedgerBridge {
         (response) => {
           if (response.success) {
             resolve(true);
-          } else {
+          } else if (response.error) {
             reject(response.error);
+          } else {
+            reject(new Error('Unknown error occurred'));
           }
         },
       );
@@ -64,7 +66,6 @@ export class LedgerOffscreenBridge implements LedgerBridge {
         },
         (response) => {
           if (response.success) {
-            console.log('successfully set transport type');
             resolve(true);
           } else {
             reject(new Error('Ledger transport could not be updated'));
@@ -87,7 +88,6 @@ export class LedgerOffscreenBridge implements LedgerBridge {
           params,
         },
         (response) => {
-          console.log(response);
           if (response.success) {
             resolve(response.payload);
           } else {

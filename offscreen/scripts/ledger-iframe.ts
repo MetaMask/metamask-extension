@@ -16,10 +16,12 @@ const LEDGER_KEYRING_IFRAME_CONNECTED_EVENT = 'ledger-connection-event';
 
 const callbackProcessor = new CallbackProcessor();
 
+const iframe = document.querySelector('iframe');
+
 // This listener receives action responses from the live ledger iframe
 // Then forwards the response to the offscreen bridge
-window.addEventListener('message', ({ origin, data }) => {
-  if (origin !== LEDGER_FRAME_ORIGIN_URL) {
+window.addEventListener('message', ({ origin, data, source }) => {
+  if (origin !== LEDGER_FRAME_ORIGIN_URL || source !== iframe?.contentWindow) {
     return;
   }
 
@@ -57,8 +59,6 @@ chrome.runtime.onMessage.addListener(
       return;
     }
 
-    const iframe = document.querySelector('iframe');
-
     if (!iframe?.contentWindow) {
       const error = new Error('Ledger iframe not present');
       sendResponse({
@@ -67,6 +67,7 @@ chrome.runtime.onMessage.addListener(
           error,
         },
       });
+      return;
     }
 
     const messageId = callbackProcessor.registerCallback(sendResponse);
@@ -84,7 +85,7 @@ chrome.runtime.onMessage.addListener(
     // It has already been checked that they are not null above, so the
     // optional chaining here is for compiler typechecking only. This avoids
     // overriding our non-null assertion rule.
-    iframe?.contentWindow?.postMessage(iframeMsg, '*');
+    iframe?.contentWindow?.postMessage(iframeMsg, LEDGER_FRAME_ORIGIN_URL);
 
     // This keeps sendResponse function valid after return
     // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
