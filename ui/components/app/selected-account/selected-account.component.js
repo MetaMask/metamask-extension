@@ -25,7 +25,7 @@ class SelectedAccount extends Component {
   };
 
   static propTypes = {
-    selectedIdentity: PropTypes.object.isRequired,
+    selectedAccount: PropTypes.object.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType: PropTypes.string,
     accountDetails: PropTypes.object,
@@ -48,7 +48,7 @@ class SelectedAccount extends Component {
   render() {
     const { t } = this.context;
     const {
-      selectedIdentity,
+      selectedAccount,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       accountType,
       accountDetails,
@@ -57,7 +57,7 @@ class SelectedAccount extends Component {
       ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
-    const checksummedAddress = toChecksumHexAddress(selectedIdentity.address);
+    const checksummedAddress = toChecksumHexAddress(selectedAccount.address);
 
     let title = this.state.copied
       ? t('copiedExclamation')
@@ -109,7 +109,7 @@ class SelectedAccount extends Component {
             }}
           >
             <div className="selected-account__name">
-              {selectedIdentity.name}
+              {selectedAccount.metadata.name}
             </div>
             <div className="selected-account__address">
               {

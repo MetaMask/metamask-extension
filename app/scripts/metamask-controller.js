@@ -1602,6 +1602,7 @@ export default class MetamaskController extends EventEmitter {
       networkController: this.networkController,
       permissionController: this.permissionController,
       signatureController: this.signatureController,
+      accountsController: this.accountsController,
       platform: this.platform,
       extension: this.extension,
       getTransactions: this.txController.getTransactions.bind(
@@ -3930,6 +3931,11 @@ export default class MetamaskController extends EventEmitter {
         this.preferencesController.setAccountLabel(address, label);
         // Select the account
         this.preferencesController.setSelectedAddress(address);
+
+        // It is expected that the account also exist in the accounts-controller
+        // in other case, an error shall be thrown
+        const account = this.accountsController.getAccountByAddress(address);
+        this.accountsController.setAccountName(account.id, label);
       }
     });
 
