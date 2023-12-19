@@ -29,7 +29,7 @@ export class CustodianTestClient implements ICustodianTestClient {
         return `bearer ${response.data.access_token}`;
       })
       .catch(function (error) {
-        console.log(error.response.data);
+        console.log(error?.response?.data ?? error?.response ?? error);
         throw error;
       })) as string;
   }
@@ -48,7 +48,7 @@ export class CustodianTestClient implements ICustodianTestClient {
         return response.data.name;
       })
       .catch(function (error) {
-        console.log(error.response.data);
+        console.log(error?.response?.data ?? error?.response ?? error);
         throw error;
       });
   }
@@ -125,7 +125,7 @@ export class CustodianTestClient implements ICustodianTestClient {
         expect(response.status).toBe(200);
       })
       .catch(function (error) {
-        console.log(error.response.data);
+        console.log(error?.response?.data ?? error?.response ?? error);
         throw error;
       });
   }
@@ -178,7 +178,7 @@ export class CustodianTestClient implements ICustodianTestClient {
         expect(response.status).toBe(200);
       })
       .catch(function (error) {
-        console.log(error.response.data);
+        console.log(error?.response?.data ?? error?.response ?? error);
         throw error;
       });
   }
@@ -237,7 +237,7 @@ export class CustodianTestClient implements ICustodianTestClient {
         expect(response.status).toBe(200);
       })
       .catch(function (error) {
-        console.log(error.response.data);
+        console.log(error?.response?.data ?? error?.response ?? error);
         throw error;
       });
   }
@@ -312,7 +312,7 @@ export class CustodianTestClient implements ICustodianTestClient {
         return response.data;
       })
       .catch(function (error) {
-        console.log(error.response.data);
+        console.log(error?.response?.data ?? error?.response ?? error);
         throw error;
       });
   }
@@ -334,7 +334,7 @@ export class CustodianTestClient implements ICustodianTestClient {
         return response.data;
       })
       .catch(function (error) {
-        console.log(error.response.data);
+        console.log(error?.response?.data ?? error?.response ?? error);
         throw error;
       });
   }
