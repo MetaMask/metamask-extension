@@ -1,3 +1,5 @@
+@use "design-system";
+
 .hw-tutorial {
   overflow: visible;
   display: block;
@@ -12,7 +14,7 @@
   }
 
   &__QR-subtitle {
-    @include H5;
+    @include design-system.H5;
 
     margin-top: 10px;
     color: var(--color-text-default);
@@ -35,7 +37,7 @@
   }
 
   &__external-btn-first {
-    @include H7;
+    @include design-system.H7;
 
     padding: 5px 10px;
     width: auto;
@@ -45,7 +47,7 @@
   }
 
   &__external-btn {
-    @include H7;
+    @include design-system.H7;
 
     padding: 5px 10px;
     width: auto;
@@ -85,7 +87,7 @@
   }
 
   &__hdPath {
-    @include H6;
+    @include design-system.H6;
 
     display: flex;
     flex-direction: row;
@@ -105,7 +107,7 @@
   }
 
   &__unlock-title {
-    @include H3;
+    @include design-system.H3;
 
     padding-top: 10px;
     font-weight: 400;
@@ -114,7 +116,7 @@
 
   &__msg {
     &-link {
-      @include H6;
+      @include design-system.H6;
 
       text-align: center;
       color: var(--color-primary-default);
@@ -148,7 +150,7 @@
   }
 
   &__title {
-    @include H5;
+    @include design-system.H5;
 
     margin-bottom: 23px;
     align-self: flex-start;
@@ -159,7 +161,7 @@
   }
 
   &__device {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     margin-bottom: 23px;
     align-self: flex-end;
@@ -168,7 +170,7 @@
   }
 
   &__item {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     flex-direction: row;
     display: flex;
@@ -227,7 +229,7 @@
   margin-top: 10px;
 
   &__button {
-    @include H6;
+    @include design-system.H6;
 
     background: var(--color-background-default);
     height: 19px;
@@ -282,7 +284,7 @@
   padding: 22px;
 
   a {
-    @include H6;
+    @include design-system.H6;
 
     color: var(--color-primary-default);
     cursor: pointer;

@@ -1,3 +1,5 @@
+@use "design-system";
+
 .network-component--disabled {
   cursor: not-allowed;
 
@@ -60,15 +62,15 @@
     margin: 0 14px 0 4px;
   }
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     right: calc(((100% - 85vw) / 2) + 2px);
   }
 
-  @include screen-md-min {
+  @include design-system.screen-md-min {
     right: calc(((100% - 80vw) / 2) + 2px);
   }
 
-  @include screen-lg-min {
+  @include design-system.screen-lg-min {
     right: calc(((100% - 65vw) / 2) + 2px);
   }
 }
@@ -133,7 +135,7 @@
 }
 
 .network-dropdown-title {
-  @include H4;
+  @include design-system.H4;
 
   height: 25px;
   width: 120px;
@@ -142,7 +144,7 @@
 }
 
 .network-dropdown-content {
-  @include H6;
+  @include design-system.H6;
 
   min-height: 36px;
   width: 265px;

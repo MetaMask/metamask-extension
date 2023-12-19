@@ -1,3 +1,5 @@
+@use "design-system";
+
 .advanced-gas-fee-gas-limit {
   display: flex;
   align-items: center;
@@ -10,7 +12,7 @@
   }
 
   a.advanced-gas-fee-gas-limit__edit-link {
-    @include H7;
+    @include design-system.H7;
 
     padding: 0;
     width: auto;

@@ -1,3 +1,5 @@
+@use "design-system";
+
 .swaps-footer {
   width: 100%;
   z-index: 50;
@@ -12,7 +14,7 @@
     }
   }
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     &--border {
       .swaps-footer__custom-page-container-footer-class {
         border-top: 1px solid var(--color-border-muted);
@@ -23,7 +25,7 @@
   &__custom-page-container-footer-class {
     border-top: none;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       height: 96px;
     }
   }
@@ -39,7 +41,7 @@
   }
 
   &__bottom-text {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-primary-default);
     margin-bottom: 16px;
@@ -47,7 +49,7 @@
     display: flex;
     justify-content: center;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       margin-top: 0;
     }
   }

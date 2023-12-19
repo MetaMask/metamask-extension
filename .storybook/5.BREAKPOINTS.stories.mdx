@@ -35,24 +35,24 @@ $screen-lg-min /* 1280px */
 
 ```css
 /* Max screen size */
-@include screen-sm-max {
+@include design-system.screen-sm-max {
   /* equivalent css @media screen and (max-width: 575px) */
 }
-@include screen-md-max {
+@include design-system.screen-md-max {
   /* equivalent css @media screen and (max-width: 767px) */
 }
-@include screen-lg-max {
+@include design-system.screen-lg-max {
   /* equivalent css @media screen and (max-width: 1279px) */
 }
 
 /* Min screen size */
-@include screen-sm-min {
+@include design-system.screen-sm-min {
   /* equivalent css @media screen and (min-width: 576px) */
 }
-@include screen-md-min {
+@include design-system.screen-md-min {
   /* equivalent css @media screen and (min-width: 768px) */
 }
-@include screen-lg-min {
+@include design-system.screen-lg-min {
   /* equivalent css @media screen and (min-width: 1280px) */
 }
 ```
@@ -67,7 +67,7 @@ Migrating from the old sass variables to the new mixins looks like this
 }
 
 /* Use the sass mixin */
-@include screen-sm-max {
+@include design-system.screen-sm-max {
   right: 16px;
 }
 
@@ -78,7 +78,7 @@ Migrating from the old sass variables to the new mixins looks like this
 }
 
 /* Use the sass mixin */
-@include screen-sm-min {
+@include design-system.screen-sm-min {
   left: 16px;
 }
 ```
@@ -114,11 +114,11 @@ Do use the provided Sass mixins
 
 ```css
 .account-menu {
-  @include screen-md-min {
+  @include design-system.screen-md-min {
     right: calc((100vw - 80vw) / 2);
   }
 
-  @include screen-lg-min {
+  @include design-system.screen-lg-min {
     right: calc((100vw - 65vw) / 2);
   }
 }

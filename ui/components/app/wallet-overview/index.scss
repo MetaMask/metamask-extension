@@ -1,3 +1,5 @@
+@use "design-system";
+
 .wallet-overview {
   display: flex;
   justify-content: space-between;
@@ -57,7 +59,7 @@
   }
 
   &__primary-balance {
-    @include H2;
+    @include design-system.H2;
 
     color: var(--color-text-default);
   }
@@ -77,13 +79,13 @@
   }
 
   &__cached-secondary-balance {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     color: var(--color-warning-muted);
   }
 
   &__secondary-balance {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     color: var(--color-text-alternative);
   }
@@ -125,7 +127,7 @@
   }
 
   &__primary-balance {
-    @include H2;
+    @include design-system.H2;
 
     color: var(--color-text-default);
     width: 100%;
@@ -133,7 +135,7 @@
   }
 
   &__secondary-balance {
-    @include H5;
+    @include design-system.H5;
 
     color: var(--color-text-alternative);
   }

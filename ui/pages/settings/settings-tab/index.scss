@@ -1,3 +1,5 @@
+@use "design-system";
+
 .settings-tab {
   &__error {
     padding-bottom: 20px;
@@ -13,11 +15,11 @@
   }
 
   &__button--red {
-    border-color: lighten($monzo, 10%);
+    border-color: lighten(design-system.$monzo, 10%);
     color: var(--color-error-default);
 
     &:active {
-      background: lighten($monzo, 55%);
+      background: lighten(design-system.$monzo, 55%);
       border-color: var(--color-error-default);
     }
 

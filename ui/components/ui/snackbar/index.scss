@@ -1,5 +1,7 @@
+@use "design-system";
+
 .snackbar {
-  @include H7;
+  @include design-system.H7;
 
   padding: 0.75rem 1rem;
   color: var(--color-text-default);

@@ -1,3 +1,5 @@
+@use "design-system";
+
 .sender-to-recipient {
   width: 100%;
   display: flex;
@@ -73,7 +75,7 @@
       }
 
       &__name {
-        @include H7;
+        @include design-system.H7;
 
         padding-left: 14px;
         overflow: hidden;
@@ -123,7 +125,7 @@
       }
 
       &__name {
-        @include H9;
+        @include design-system.H9;
 
         overflow: hidden;
         text-overflow: ellipsis;
@@ -179,7 +181,7 @@
       }
 
       &__name {
-        @include H8;
+        @include design-system.H8;
 
         overflow: hidden;
         text-overflow: ellipsis;

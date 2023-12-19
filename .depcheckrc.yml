@@ -7,6 +7,8 @@ ignores:
   - '@lavamoat/snow'
   - '@lavamoat/allow-scripts'
   - '@babel/runtime'
+  - '@babel/plugin-transform-logical-assignment-operators'
+  - 'eslint-import-resolver-node' # TODO(WEBPACK): remove this when we fix eslint
   - '@fortawesome/fontawesome-free'
   - 'punycode'
 

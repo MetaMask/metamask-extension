@@ -1,3 +1,5 @@
+@use "design-system";
+
 .tippy-popper {
   .tippy-tooltip.tippy-tooltip--mm-custom-theme {
     background: var(--color-background-default);
@@ -7,7 +9,7 @@
     padding-bottom: 11px;
 
     .tippy-tooltip-content {
-      @include H7;
+      @include design-system.H7;
 
       text-align: left;
       color: var(--color-text-alternative);

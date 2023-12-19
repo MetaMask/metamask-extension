@@ -1,6 +1,8 @@
+@use "design-system";
+
 .advanced-gas-fee-popover {
   .form-field__heading-title > h6 {
-    font-size: $font-size-h7;
+    font-size: design-system.$font-size-h7;
   }
 
   .popover-header {

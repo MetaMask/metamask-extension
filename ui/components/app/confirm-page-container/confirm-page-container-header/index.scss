@@ -1,3 +1,5 @@
+@use "design-system";
+
 .confirm-page-container-header {
   display: flex;
   flex-direction: column;
@@ -29,7 +31,7 @@
   }
 
   &__back-button {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     color: var(--color-primary-default);
     cursor: pointer;
@@ -44,7 +46,7 @@
   }
 
   &__address {
-    @include H6;
+    @include design-system.H6;
 
     margin-left: 6px;
   }

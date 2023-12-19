@@ -1,6 +1,8 @@
+@use "design-system";
+
 .jwt-url-form {
   &__input {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     height: 54px;
     width: 100%;
@@ -11,7 +13,7 @@
   }
 
   &__input-jwt {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     height: 154px;
     width: 100%;

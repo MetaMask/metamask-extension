@@ -1,3 +1,5 @@
+@use "design-system";
+
 .list-with-search {
   .searchable-item-list {
     &__list-container {
@@ -5,7 +7,7 @@
       overflow-y: auto;
       padding-right: 8px;
 
-      @include screen-sm-min {
+      @include design-system.screen-sm-min {
         max-height: 600px;
       }
     }

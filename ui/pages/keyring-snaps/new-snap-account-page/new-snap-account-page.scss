@@ -1,34 +1,36 @@
+@use "design-system";
+
 .snap-account-page {
   $width-screen-sm-min: 85vw;
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     width: $width-screen-sm-min;
   }
 
-  @include screen-md-min {
+  @include design-system.screen-md-min {
     width: $width-screen-md-min;
   }
 
-  @include screen-lg-min {
+  @include design-system.screen-lg-min {
     width: $width-screen-lg-min;
   }
 
-  background-image: url('images/snap-account-page.svg');
+  background-image: url('../../../../app/images/snap-account-page.svg');
   background-size: 100% auto;
   background-repeat: no-repeat;
   background-position: bottom;
 }
 
 .snap-account-subtitle {
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     padding-left: 48px;
     padding-right: 48px;
   }
 
-  @include screen-md-min {
+  @include design-system.screen-md-min {
     padding-left: 48px;
     padding-right: 48px;
   }

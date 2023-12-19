@@ -1,3 +1,5 @@
+@use "design-system";
+
 .token-details {
   &__title {
     text-transform: capitalize;
@@ -28,7 +30,7 @@
     float: right;
     margin-inline-start: 62px;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       margin-inline-start: 112px;
     }
   }
@@ -38,7 +40,7 @@
     height: 39px;
     margin-top: 70px;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       margin-inline-start: 20px;
     }
   }

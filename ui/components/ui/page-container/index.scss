@@ -1,3 +1,5 @@
+@use "design-system";
+
 .page-container {
   width: 408px;
   background-color: var(--color-background-default);
@@ -75,7 +77,7 @@
 
       a,
       a:hover {
-        @include H7;
+        @include design-system.H7;
 
         text-decoration: none;
         cursor: pointer;
@@ -99,14 +101,14 @@
   }
 
   &__back-button {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     color: var(--color-primary-default);
     cursor: pointer;
   }
 
   &__title {
-    @include H2;
+    @include design-system.H2;
 
     color: var(--color-text-default);
     font-weight: 500;
@@ -118,7 +120,7 @@
   }
 
   &__subtitle {
-    @include H6;
+    @include design-system.H6;
 
     padding-top: 0.5rem;
     color: var(--color-text-alternative);
@@ -130,7 +132,7 @@
   }
 
   &__tab {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     min-width: 5rem;
     color: var(--color-text-alternative);
@@ -196,7 +198,7 @@
   }
 }
 
-@include screen-sm-max {
+@include design-system.screen-sm-max {
   .page-container {
     height: 100%;
     width: 100%;
@@ -207,7 +209,7 @@
   }
 }
 
-@include screen-sm-min {
+@include design-system.screen-sm-min {
   .page-container {
     max-height: 82vh;
     min-height: 570px;

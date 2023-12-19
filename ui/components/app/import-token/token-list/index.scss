@@ -1,6 +1,8 @@
+@use "design-system";
+
 .token-list {
   &__title {
-    @include H7;
+    @include design-system.H7;
   }
 
   &__tokens-container {

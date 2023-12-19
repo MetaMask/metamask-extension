@@ -1,3 +1,5 @@
+@use "design-system";
+
 .create-password {
   &__weak {
     color: var(--color-error-default);
@@ -23,7 +25,7 @@
   }
 
   &__form {
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       max-width: 320px;
     }
 

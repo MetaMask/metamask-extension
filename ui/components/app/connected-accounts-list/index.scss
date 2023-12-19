@@ -1,3 +1,5 @@
+@use "design-system";
+
 .connected-accounts-list {
   display: flex;
   flex-direction: column;
@@ -17,7 +19,7 @@
 
 .connected-accounts-options {
   &__button {
-    font-size: $font-size-h4;
+    font-size: design-system.$font-size-h4;
     background: inherit;
     color: var(--color-icon-default);
   }

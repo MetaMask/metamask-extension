@@ -1,3 +1,5 @@
+@use "design-system";
+
 .loading-span {
   display: flex;
   height: 250px;
@@ -23,7 +25,7 @@
   }
 
   &__symbol {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     line-height: 140%;
     margin-bottom: 2px;
@@ -33,7 +35,7 @@
   }
 
   &__balance {
-    @include H7;
+    @include design-system.H7;
 
     display: flex;
     flex-flow: row nowrap;

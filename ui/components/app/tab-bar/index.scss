@@ -1,10 +1,12 @@
+@use "design-system";
+
 .tab-bar {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 
   &__tab {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     color: var(--color-text-default);
     display: flex;
@@ -18,8 +20,8 @@
     text-align: start;
     position: relative;
 
-    @include screen-sm-max {
-      @include H4;
+    @include design-system.screen-sm-max {
+      @include design-system.H4;
 
       opacity: 1;
     }
@@ -39,18 +41,18 @@
       width: 100%;
 
       &__title {
-        @include H4;
+        @include design-system.H4;
 
-        @include screen-sm-min {
-          @include H6;
+        @include design-system.screen-sm-min {
+          @include design-system.H6;
         }
       }
 
       &__description {
         display: none;
 
-        @include screen-sm-max {
-          @include H6;
+        @include design-system.screen-sm-max {
+          @include design-system.H6;
 
           display: block;
           font-weight: 300;
@@ -70,7 +72,7 @@
     &__caret {
       display: none;
 
-      @include screen-sm-max {
+      @include design-system.screen-sm-max {
         display: block;
         margin-inline-start: auto;
         margin-inline-end: 8px;
@@ -84,7 +86,7 @@
     &--active {
       opacity: 1 !important;
 
-      @include screen-sm-min {
+      @include design-system.screen-sm-min {
         background-color: var(--color-primary-muted);
       }
     }

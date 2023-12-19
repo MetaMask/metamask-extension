@@ -1,3 +1,5 @@
+@use "design-system";
+
 .slippage-buttons {
   display: flex;
   flex-direction: column;
@@ -19,7 +21,7 @@
   }
 
   &__header-text {
-    @include H6;
+    @include design-system.H6;
 
     margin-right: 6px;
     color: var(--color-primary-default);
@@ -42,7 +44,7 @@
   }
 
   &__prefix-text {
-    @include H6;
+    @include design-system.H6;
 
     margin-right: 4px;
     color: var(--color-text-default);
@@ -50,7 +52,7 @@
   }
 
   &__error-text {
-    @include H7;
+    @include design-system.H7;
 
     color: var(--color-error-default);
     margin-top: 8px;

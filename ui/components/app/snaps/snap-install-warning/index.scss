@@ -1,10 +1,12 @@
+@use "design-system";
+
 .snap-install-warning {
   .popover-header {
     padding-bottom: 0;
   }
 
   .checkbox-label {
-    @include H7;
+    @include design-system.H7;
 
     display: flex;
     align-items: flex-start;

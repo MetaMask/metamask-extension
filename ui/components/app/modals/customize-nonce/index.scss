@@ -1,3 +1,5 @@
+@use "design-system";
+
 .customize-nonce-modal {
   padding-left: 24px;
   padding-right: 18px;
@@ -15,7 +17,7 @@
   }
 
   &__close {
-    @include H4;
+    @include design-system.H4;
 
     color: var(--color-icon-default);
     background: none;
@@ -24,19 +26,19 @@
   }
 
   & &__link {
-    @include H6;
+    @include design-system.H6;
 
     display: inline;
     padding-left: 5px;
   }
 
   & &__reset {
-    @include H6;
+    @include design-system.H6;
   }
 
   &__input {
     input {
-      @include Paragraph;
+      @include design-system.Paragraph;
 
       width: 100%;
     }

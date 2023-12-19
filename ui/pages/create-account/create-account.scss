@@ -1,7 +1,9 @@
+@use "design-system";
+
 .new-account-wrapper {
   background-color: var(--color-background-default);
 
-  @media screen and (min-width: $break-large) {
+  @media screen and (min-width: design-system.$break-large) {
     width: 85vw;
   }
 

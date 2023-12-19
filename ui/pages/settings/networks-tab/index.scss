@@ -14,7 +14,7 @@
       isolation: isolate;
     }
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       display: grid;
       grid-template-columns: 1fr 1fr;
     }
@@ -49,7 +49,7 @@
     display: flex;
     flex-direction: column;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       margin-inline-end: 16px;
       margin-bottom: 24px;
     }
@@ -58,8 +58,8 @@
   &__subheader {
     display: none;
 
-    @include screen-sm-min {
-      @include H4;
+    @include design-system.screen-sm-min {
+      @include design-system.H4;
 
       padding: 16px 4px;
       border-bottom: 1px solid var(--color-border-default);
@@ -72,7 +72,7 @@
   }
 
   &__sub-header-text {
-    @include H4;
+    @include design-system.H4;
 
     color: var(--color-text-muted);
   }
@@ -80,7 +80,7 @@
   &__network-form {
     padding: 16px 24px;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       padding: 16px;
     }
 
@@ -99,17 +99,17 @@
     gap: 16px;
     padding: 16px 24px;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       padding: 16px;
       min-width: 160px; // Allow network form to take priority in the grid on resize
       border-right: 1px solid var(--color-border-muted);
     }
 
     &__custom-search-network {
-      @include H6;
+      @include design-system.H6;
 
-      @include screen-sm-min {
-        @include Paragraph;
+      @include design-system.screen-sm-min {
+        @include design-system.Paragraph;
       }
     }
   }
@@ -125,7 +125,7 @@
     width: 100%;
     background: var(--color-background-default);
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       display: none;
     }
   }
@@ -138,13 +138,13 @@
       padding: 10px;
     }
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       display: none;
     }
   }
 
   &__networks-list--selection {
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       display: none;
     }
   }
@@ -157,7 +157,7 @@
   }
 
   &__networks-list-name {
-    @include Paragraph;
+    @include design-system.Paragraph;
 
     margin-left: 8px;
     color: var(--color-text-alternative);
@@ -175,7 +175,7 @@
       padding-top: 3px;
     }
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       color: var(--color-text-default);
     }
   }
@@ -184,7 +184,7 @@
     font-weight: bold;
     color: var(--color-text-default);
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       font-weight: normal;
       color: var(--color-text-default);
     }
@@ -193,7 +193,7 @@
   &__networks-list-name--disabled {
     color: var(--color-text-muted);
 
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       color: var(--color-text-default);
     }
   }
@@ -224,7 +224,7 @@
     padding: 16px 24px;
     grid-column: span 2; // spread both columns of grid layout
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       max-width: 400px; // but only expand to 400px
       padding: 16px;
     }

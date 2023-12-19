@@ -1,3 +1,6 @@
+@use "design-system";
+@use "itcss/settings/variables" as *;
+
 .new-account-modal {
   display: flex;
   flex-flow: column nowrap;
@@ -12,7 +15,7 @@
     border-bottom: 1px solid var(--color-border-muted);
 
     &__header {
-      @include H4;
+      @include design-system.H4;
 
       font-weight: bold;
       display: flex;
@@ -21,7 +24,7 @@
     }
 
     &__header-close {
-      @include H4;
+      @include design-system.H4;
 
       color: var(--color-icon-default);
       background: none;
@@ -34,7 +37,7 @@
   }
 
   &__input {
-    @include H4;
+    @include design-system.H4;
 
     background: var(--color-background-default);
     border: 1px solid var(--color-border-muted);

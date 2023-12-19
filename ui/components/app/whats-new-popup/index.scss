@@ -1,3 +1,5 @@
+@use "design-system";
+
 .whats-new-popup {
   &__notifications {
     display: flex;
@@ -54,7 +56,7 @@
   }
 
   &__link {
-    @include H6;
+    @include design-system.H6;
 
     color: var(--color-primary-default);
     cursor: pointer;
@@ -69,12 +71,12 @@
 }
 
 .popover-wrap.whats-new-popup__popover {
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     max-height: 750px;
     width: 500px;
   }
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     max-height: 568px;
   }
 }

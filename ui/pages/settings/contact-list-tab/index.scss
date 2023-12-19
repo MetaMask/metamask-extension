@@ -1,3 +1,5 @@
+@use "design-system";
+
 .address-book-wrapper {
   display: flex;
   flex-direction: column;
@@ -7,7 +9,7 @@
 .address-book {
   flex: 0.4 1 100%;
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     flex: 1;
     max-width: 100%;
 
@@ -26,7 +28,7 @@
     justify-content: space-between;
 
     .button {
-      @include H6;
+      @include design-system.H6;
 
       justify-content: flex-end;
       color: var(--color-error-default);
@@ -48,7 +50,7 @@
   }
 
   &__title {
-    @include H4;
+    @include design-system.H4;
 
     font-weight: 600;
     margin-bottom: 0.5em;
@@ -65,7 +67,7 @@
   }
 
   &__input {
-    @include H4;
+    @include design-system.H4;
 
     border: 1px solid var(--color-border-muted);
     border-radius: 6px;
@@ -79,7 +81,7 @@
     margin-top: 0.25rem;
 
     &--address {
-      @include H6;
+      @include design-system.H6;
     }
   }
 
@@ -107,7 +109,7 @@
 
       &__label,
       &__label--capitalized {
-        @include H7;
+        @include design-system.H7;
 
         color: var(--color-text-alternative);
         margin-top: 0.75rem;
@@ -119,7 +121,7 @@
 
       &__value,
       &__static-address {
-        @include H4;
+        @include design-system.H4;
 
         display: flex;
         flex-flow: row nowrap;
@@ -127,7 +129,7 @@
         word-break: break-word;
 
         &--address {
-          @include H6;
+          @include design-system.H6;
         }
 
         &--copy-icon {
@@ -142,7 +144,7 @@
       }
 
       &__static-address {
-        @include H6;
+        @include design-system.H6;
 
         &--copy-icon {
           cursor: pointer;
@@ -193,7 +195,7 @@
     }
 
     &__error {
-      @include H7;
+      @include design-system.H7;
 
       left: 8px;
       color: var(--color-error-default);
@@ -203,7 +205,7 @@
 
 .address-book-add-button {
   &__button {
-    @include screen-sm-max {
+    @include design-system.screen-sm-max {
       &--hidden {
         display: none;
       }
@@ -218,7 +220,7 @@
 .address-book-contact-content {
   flex: 0.4 1 100%;
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     flex: 1;
   }
 }

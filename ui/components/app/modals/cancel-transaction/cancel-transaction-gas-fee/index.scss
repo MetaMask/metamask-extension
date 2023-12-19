@@ -1,3 +1,5 @@
+@use "design-system";
+
 .cancel-transaction-gas-fee {
   background: var(--color-background-alternative);
   padding: 16px;
@@ -7,12 +9,12 @@
   padding: 12px;
 
   &__eth {
-    @include H3;
+    @include design-system.H3;
 
     font-weight: 500;
   }
 
   &__fiat {
-    @include H7;
+    @include design-system.H7;
   }
 }

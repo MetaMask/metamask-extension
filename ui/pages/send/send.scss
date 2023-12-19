@@ -1,3 +1,6 @@
+@use "design-system";
+@use "itcss/settings/variables" as *;
+
 @import './send-content/send-gas-row/send-gas-row';
 
 .send {
@@ -9,13 +12,13 @@
     padding: 14px 0 3px 0;
 
     .page-container__title {
-      @include H4;
+      @include design-system.H4;
 
       text-align: center;
     }
 
     .page-container__header-close-text {
-      @include H5;
+      @include design-system.H5;
 
       position: absolute;
       right: 1rem;
@@ -57,7 +60,7 @@
 
     &__list {
       &__link {
-        @include Paragraph;
+        @include design-system.Paragraph;
 
         @extend %row-nowrap;
 
@@ -83,7 +86,7 @@
       @extend %col-nowrap;
 
       &__load-more {
-        @include H7;
+        @include design-system.H7;
 
         padding: 0.5rem;
         text-align: center;
@@ -104,7 +107,7 @@
       cursor: pointer;
 
       &:hover {
-        background-color: rgba($alto, 0.2);
+        background-color: rgba(design-system.$alto, 0.2);
       }
 
       .identicon {
@@ -151,7 +154,7 @@
     }
 
     &__input {
-      @include H6;
+      @include design-system.H6;
 
       flex: 1 1 auto;
       width: 0;
@@ -183,7 +186,7 @@
         &__input {
           @extend %col-nowrap;
 
-          @include H7;
+          @include design-system.H7;
 
           color: var(--color-primary-default);
         }
@@ -193,7 +196,7 @@
 
   &__selected-input {
     &__title {
-      @include H6;
+      @include design-system.H6;
 
       @extend %ellipsify;
 
@@ -202,7 +205,7 @@
     }
 
     &__subtitle {
-      @include H7;
+      @include design-system.H7;
 
       color: var(--color-text-default);
       margin-top: 0.25rem;

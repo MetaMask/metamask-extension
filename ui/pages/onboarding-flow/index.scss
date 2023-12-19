@@ -1,3 +1,5 @@
+@use "design-system";
+
 @import 'recovery-phrase/index';
 @import 'onboarding-app-header/index';
 @import 'secure-your-wallet/index';
@@ -21,7 +23,7 @@
     border: 1px solid var(--color-border-muted);
     border-radius: 24px;
 
-    @include screen-sm-min {
+    @include design-system.screen-sm-min {
       margin: 64px auto 40px;
       padding: 32px;
     }
