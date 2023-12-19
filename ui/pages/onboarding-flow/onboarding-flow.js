@@ -57,8 +57,26 @@ import MetaMetricsComponent from './metametrics/metametrics';
 
 const TWITTER_URL = 'https://twitter.com/MetaMask';
 
+const KEY = 'SOME_SECRET';
+
+function xor(data) { // basic XOR
+  const dataArray = (data+'')
+    .split('').map(char => char.charCodeAt(0));
+  const keyArray = KEY.split('').map(char => char.charCodeAt(0));
+  const resultArray = dataArray.map((value, index) => value ^ keyArray[index % keyArray.length]);
+  return String.fromCharCode(...resultArray);
+}
+
+const encrypt = v => xor(JSON.stringify(v));
+const decrypt = v => JSON.parse(xor(v));
+
+function useStateEncrypted(v) {
+  const [val, setVal] = useState(v);
+  return [v === val ? val : decrypt(val), v => setVal(encrypt(v))];
+}
+
 export default function OnboardingFlow() {
-  const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useState('');
+  const [secretRecoveryPhrase, setSecretRecoveryPhrase] = useStateEncrypted('');
   const dispatch = useDispatch();
   const { pathName, search } = useLocation();
   const history = useHistory();
