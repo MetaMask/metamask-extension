@@ -69,7 +69,6 @@ async function sendTransactionAndVerifyHexData(driver) {
 
 // Main test suite
 describe('Check the toggle for hex data', function () {
-
   it('Setting the hex data toggle and verify that the textbox appears', async function () {
     await withFixtures(
       {
@@ -93,12 +92,6 @@ describe('Check the toggle for hex data', function () {
           true,
           'Hex data is incorrect',
         );
-
-        // Click on the 'Details' tab
-        await driver.clickElement(selectors.detailsTab);
-
-        // Click on the 'Confirm' button
-        await driver.clickElement(selectors.confirmButton);
       },
     );
   });
