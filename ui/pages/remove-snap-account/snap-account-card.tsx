@@ -27,7 +27,7 @@ export const SnapAccountCard = ({
         boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
       }}
     >
-      <AccountListItem identity={identity} selected={true} />
+      <AccountListItem identity={identity} selected={remove} />
     </Box>
   );
 };

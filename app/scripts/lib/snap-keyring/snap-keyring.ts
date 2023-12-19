@@ -172,14 +172,8 @@ export const snapKeyringBuilder = (
                     },
                   },
                   {
-                    name: 'Box',
+                    name: 'Text',
                     key: 'description',
-                    properties: {
-                      display: Display.Flex,
-                      style: {
-                        gap: '5px',
-                      },
-                    },
                     children: [t('snapAccountCreatedDescription') as string],
                   },
                 ],
