@@ -6,10 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.7.3]
+### Fixed
+- Ensure fiat token balances are displayed on the homescreen [#22295](https://github.com/MetaMask/metamask-extension/pull/22295)
+
 ## [11.7.2]
 ### Fixed
 - Fixed the activity list occasionally incorrectly showing transaction statuses as failed, pending or dropped [#22319](https://github.com/MetaMask/metamask-extension/pull/22319)
-## [11.7.3]
 
 ## [11.7.1]
 ### Added
@@ -4263,7 +4266,6 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.7.2...HEAD
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.7.3...HEAD
 [11.7.3]: https://github.com/MetaMask/metamask-extension/compare/v11.7.2...v11.7.3
 [11.7.2]: https://github.com/MetaMask/metamask-extension/compare/v11.7.1...v11.7.2
