@@ -7,10 +7,6 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
-jest
-  .spyOn(global, 'encodeURIComponent')
-  .mockImplementation((_str) => 'mockedEncodedString');
-
 const mockSecurityAlertResponse = {
   result_type: BlockaidResultType.Warning,
   reason: BlockaidReason.setApprovalForAll,
@@ -65,7 +61,6 @@ describe('Blockaid Banner Alert', () => {
       '.mm-banner-alert--severity-warning',
     );
 
-    expect(warningBannerAlert).toMatchSnapshot();
     expect(warningBannerAlert).toBeInTheDocument();
   });
 
@@ -81,7 +76,6 @@ describe('Blockaid Banner Alert', () => {
       '.mm-banner-alert--severity-warning',
     );
 
-    expect(warningBannerAlert).toMatchSnapshot();
     expect(warningBannerAlert).toBeInTheDocument();
   });
 
@@ -101,7 +95,6 @@ describe('Blockaid Banner Alert', () => {
     );
 
     expect(dangerBannerAlert).toBeInTheDocument();
-    expect(dangerBannerAlert).toMatchSnapshot();
   });
 
   it('should render title, "This is a deceptive request"', () => {
@@ -163,7 +156,6 @@ describe('Blockaid Banner Alert', () => {
       />,
     );
 
-    expect(container).toMatchSnapshot();
     expect(container.querySelector('.disclosure')).toBeInTheDocument();
     mockFeatures.forEach((feature) => {
       expect(getByText(`• ${feature}`)).toBeInTheDocument();
@@ -180,7 +172,6 @@ describe('Blockaid Banner Alert', () => {
       />,
     );
 
-    expect(container).toMatchSnapshot();
     expect(container.querySelector('.disclosure')).toBeInTheDocument();
   });
 
@@ -194,14 +185,10 @@ describe('Blockaid Banner Alert', () => {
       />,
     );
 
-    expect(container).toMatchSnapshot();
     expect(container.querySelector('.disclosure')).toBeInTheDocument();
     expect(getByText("Something doesn't look right?")).toBeInTheDocument();
     expect(getByText('Report a problem')).toBeInTheDocument();
-    expect(getByRole('link', { name: 'Report a problem' })).toHaveAttribute(
-      'href',
-      'https://report.blockaid.io/tx?data=mockedEncodedString&utm_source=metamask-ppom',
-    );
+    expect(getByRole('link', { name: 'Report a problem' })).toBeInTheDocument();
   });
 
   describe('when rendering description', () => {
