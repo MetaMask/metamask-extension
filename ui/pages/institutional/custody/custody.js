@@ -163,7 +163,6 @@ const CustodyPage = () => {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);
-          console.log(custodianByDisplayName)
           custodianByDisplayName?.displayName?.toLocaleLowerCase() === SATURN_DISPLAY_NAME ? setShowQRCodeModal(true) : setIsConfirmConnectCustodianModalVisible(true);
         }
 
@@ -740,6 +739,7 @@ const CustodyPage = () => {
             onClose={() => {
               setShowQRCodeModal(false);
             }}
+            custodianName={selectedCustodianDisplayName}
           />)
       }
     </Box>

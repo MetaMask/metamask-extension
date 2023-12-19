@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PulseLoader from '../../../components/ui/pulse-loader';
-import { CUSTODY_ACCOUNT_ROUTE } from '../../../helpers/constants/routes';
+import { CUSTODY_ACCOUNT_ROUTE, DEFAULT_ROUTE} from '../../../helpers/constants/routes';
 import {
   Display,
   TextColor,
@@ -67,6 +67,12 @@ const ConfirmAddCustodianToken = () => {
 
   const handleButtonClick = useCallback(
     async ({ isConfirm }) => {
+      if (!isConfirm) {
+        history.push(DEFAULT_ROUTE);
+        // eslint-disable-next-line no-undef
+        localStorage.removeItem('tempConnectRequest');
+      }
+
       try {
         if (isConfirm) {
           setConnectError('');

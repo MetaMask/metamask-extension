@@ -4,14 +4,19 @@ import QRCode from 'qrcode.react';
 import { useHistory } from 'react-router-dom';
 
 import { Modal, ModalOverlay } from '../../component-library';
-import { ModalContent } from '../../component-library/modal-content/deprecated';
-import { ModalHeader } from '../../component-library/modal-header/deprecated';
-
+import { ModalContent } from '../../component-library/modal-content/modal-content';
+import { ModalHeader } from '../../component-library/modal-header/modal-header';
+import { Text, Box } from '../../../components/component-library';
+import {
+  TextColor,
+  TextVariant,
+} from '../../../helpers/constants/design-system';
 import { CONFIRM_ADD_CUSTODIAN_TOKEN } from '../../../helpers/constants/routes';
 
-export default function QRCodeModal({ fromOnboarding, onClose }) {
-  const [responseData, setResponseData] = useState(null);
+export default function QRCodeModal({ onClose, custodianName }) {
   const history = useHistory();
+
+  // Hardcoded for Saturn for now
   const currentQRCode = 'some-token-will-do';
 
   useEffect(() => {
@@ -37,15 +42,11 @@ export default function QRCodeModal({ fromOnboarding, onClose }) {
           localStorage.setItem('tempConnectRequest', tempConnectRequest);
 
           clearInterval(intervalId);
-          setResponseData(data);
-          console.log(responseData);
 
           history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
           onClose();
         }
-      } catch (error) {
-        console.error('Failed to fetch connect request data:', error);
-      }
+      } catch (error) {}
     }, 5000);
 
     return () => clearInterval(intervalId);
@@ -55,16 +56,31 @@ export default function QRCodeModal({ fromOnboarding, onClose }) {
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader onClose={onClose}>Connect custodian</ModalHeader>
+        <ModalHeader
+        onClose={onClose}>Connect {custodianName ? custodianName : 'custodian'}
+        </ModalHeader>
 
-        <div
+        <Box
           style={{
             padding: 20,
             backgroundColor: 'var(--qr-code-white-background)',
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'column'
           }}
         >
-          <QRCode value={currentQRCode.toUpperCase()} size={250} />
-        </div>
+          <Text
+            as="p"
+            paddingRight={6}
+            paddingLeft={6}
+            paddingBottom={4}
+            color={TextColor.textDefault}
+            variant={TextVariant.bodySm}
+          >
+            To connect your accounts scan the QR code bellow.
+          </Text>
+          <QRCode value={currentQRCode.toUpperCase()} size={270} />
+        </Box>
       </ModalContent>
     </Modal>
   );
@@ -72,4 +88,5 @@ export default function QRCodeModal({ fromOnboarding, onClose }) {
 
 QRCodeModal.propTypes = {
   onClose: PropTypes.func.isRequired,
+  custodianName: PropTypes.string
 };
