@@ -14,6 +14,7 @@ import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { AvatarIcon } from '../../component-library';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
+import { AccountListItem } from '../../multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { ConfirmInfoRow, ConfirmInfoRowAddress } from '../confirm/info/row';
 import { SnapDelineator } from '../snaps/snap-delineator';
@@ -32,6 +33,7 @@ import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 export const safeComponentList = {
   a: 'a',
   ActionableMessage,
+  AccountListItem,
   AvatarIcon,
   b: 'b',
   Box,

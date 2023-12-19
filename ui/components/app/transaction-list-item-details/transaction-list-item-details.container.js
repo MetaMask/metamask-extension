@@ -13,10 +13,10 @@ import {
   getEnsResolutionByAddress,
   getAccountName,
   getMetadataContractName,
-  getMetaMaskIdentities,
+  getInternalAccounts,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  getSelectedIdentity,
   getKnownMethodData,
+  getSelectedInternalAccount,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
@@ -30,8 +30,8 @@ const mapStateToProps = (state, ownProps) => {
     recipientEns = getEnsResolutionByAddress(state, address);
   }
   const addressBook = getAddressBook(state);
-  const identities = getMetaMaskIdentities(state);
-  const recipientName = getAccountName(identities, recipientAddress);
+  const accounts = getInternalAccounts(state);
+  const recipientName = getAccountName(accounts, recipientAddress);
   const recipientMetadataName = getMetadataContractName(
     state,
     recipientAddress,
@@ -66,7 +66,7 @@ const mapStateToProps = (state, ownProps) => {
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     methodData,
     transactionNote,
-    selectedIdentity: getSelectedIdentity(state),
+    selectedAccount: getSelectedInternalAccount(state),
     ///: END:ONLY_INCLUDE_IF
   };
 };
