@@ -7,7 +7,9 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
-global.encodeURIComponent = jest.fn((str) => 'mockedEncodedString');
+jest
+  .spyOn(global, 'encodeURIComponent')
+  .mockImplementation((_str) => 'mockedEncodedString');
 
 const mockSecurityAlertResponse = {
   result_type: BlockaidResultType.Warning,
@@ -196,7 +198,10 @@ describe('Blockaid Banner Alert', () => {
     expect(container.querySelector('.disclosure')).toBeInTheDocument();
     expect(getByText("Something doesn't look right?")).toBeInTheDocument();
     expect(getByText('Report a problem')).toBeInTheDocument();
-    expect(getByRole('link', { name: 'Report a problem' })).toHaveAttribute('href', 'https://report.blockaid.io/tx?data=mockedEncodedString&utm_source=metamask-ppom');
+    expect(getByRole('link', { name: 'Report a problem' })).toHaveAttribute(
+      'href',
+      'https://report.blockaid.io/tx?data=mockedEncodedString&utm_source=metamask-ppom',
+    );
   });
 
   describe('when rendering description', () => {
