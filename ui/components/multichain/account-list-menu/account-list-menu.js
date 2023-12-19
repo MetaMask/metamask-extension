@@ -29,15 +29,13 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getSelectedAccount,
-  getMetaMaskAccountsOrdered,
   getConnectedSubjectsForAllAddresses,
-  getOriginOfCurrentTab,
-  getUpdatedAndSortedAccounts,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  getIsAddSnapAccountEnabled,
   getInternalAccounts,
-  ///: END:ONLY_INCLUDE_IF
+  getIsAddSnapAccountEnabled,
+  getMetaMaskAccountsOrdered,
+  getOriginOfCurrentTab,
+  getSelectedAccount,
+  getUpdatedAndSortedAccounts,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -47,15 +45,13 @@ import {
 } from '../../../../shared/constants/metametrics';
 import {
   CONNECT_HARDWARE_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   CUSTODY_ACCOUNT_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
-import { t } from '../../../../app/scripts/translate';
+import { t as translate } from '../../../../app/scripts/translate';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -73,7 +69,7 @@ function getLabel(type, account) {
     case KeyringType.qr:
       return HardwareKeyringNames.qr;
     case KeyringType.imported:
-      return t('imported');
+      return translate('imported');
     case KeyringType.trezor:
       return HardwareKeyringNames.trezor;
     case KeyringType.ledger:
@@ -83,9 +79,9 @@ function getLabel(type, account) {
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     case KeyringType.snap:
       if (account.metadata.snap?.name) {
-        return `${account.metadata.snap?.name} (${t('beta')})`;
+        return `${account.metadata.snap?.name} (${translate('beta')})`;
       }
-      return `${t('snaps')} (${t('beta')})`;
+      return `${translate('snaps')} (${translate('beta')})`;
     ///: END:ONLY_INCLUDE_IF
     default:
       return null;
