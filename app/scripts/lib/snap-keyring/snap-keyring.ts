@@ -18,8 +18,7 @@ import { SnapId } from '@metamask/snaps-sdk';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
-import { IconName } from '../../../../ui/components/component-library';
-import { Display } from '../../../../ui/helpers/constants/design-system';
+import { IconName } from '../../../../ui/components/component-library/icon';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 
 /**

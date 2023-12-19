@@ -12,7 +12,12 @@ import TextField from '../../ui/text-field';
 import ConfirmationNetworkSwitch from '../../../pages/confirmation/components/confirmation-network-switch';
 import UrlIcon from '../../ui/url-icon';
 import Tooltip from '../../ui/tooltip/tooltip';
-import { AvatarIcon, Text } from '../../component-library';
+import {
+  AvatarIcon,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  Text,
+  ///: END:ONLY_INCLUDE_IF
+} from '../../component-library';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import { AccountListItem } from '../../multichain';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
