@@ -5,7 +5,11 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { getPendingApprovals } from './approvals';
 
 type Confirmation = {
+  chainId?: string;
   id: string;
+  msgParams?: {
+    from: string;
+  };
   type: TransactionType;
 };
 

@@ -1767,12 +1767,6 @@
   "unknown": {
     "message": "Sconosciuto"
   },
-  "unknownCameraError": {
-    "message": "C'è stato un errore nel tentativo di accedere alla fotocamera. Per favore prova di nuovo..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Qualcosa è andato storto...."
-  },
   "unknownNetwork": {
     "message": "Rete Privata Sconosciuta"
   },

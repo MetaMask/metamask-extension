@@ -48,7 +48,6 @@
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
-  "CachedBalancesController": { "cachedBalances": "object" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",

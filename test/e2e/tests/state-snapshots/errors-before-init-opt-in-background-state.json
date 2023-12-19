@@ -33,7 +33,6 @@
       },
       "snapsInstallPrivacyWarningShown": true
     },
-    "CachedBalancesController": { "cachedBalances": "object" },
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {

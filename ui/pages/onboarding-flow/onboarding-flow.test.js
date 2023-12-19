@@ -30,13 +30,16 @@ jest.mock('../../store/actions', () => ({
   createNewVaultAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   unlockAndGetSeedPhrase: jest.fn().mockResolvedValue(null),
   createNewVaultAndRestore: jest.fn(),
-  verifySeedPhrase: jest.fn(),
 }));
 
 describe('Onboarding Flow', () => {
   const mockState = {
     metamask: {
       identities: {},
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
       providerConfig: {
         type: NETWORK_TYPES.GOERLI,
         chainId: '0x0',
