@@ -62,7 +62,7 @@ function getDeprecationWarningCopy(t, currentChainID) {
     bannerAlertDescription = t('deprecatedAuroraNetworkMsg');
     actionBtnLinkURL = 'https://mainnet.aurora.dev/';
   } else if (currentChainID === CHAIN_IDS.GOERLI) {
-    bannerAlertDescription = t('deprecatedGoerliNetworkMsg');
+    bannerAlertDescription = t('deprecatedGoerliNtwrkMsg');
     actionBtnLinkURL =
       'https://github.com/eth-clients/goerli#goerli-goerlitzer-testnet';
   }
