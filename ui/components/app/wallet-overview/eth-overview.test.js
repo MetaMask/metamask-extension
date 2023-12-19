@@ -196,7 +196,6 @@ describe('EthOverview', () => {
       expect(queryByText('*')).toBeInTheDocument();
     });
 
-
     it('should have the Bridge button enabled if chain id is part of supported chains', () => {
       const mockedAvalancheStore = {
         ...mockStore,
