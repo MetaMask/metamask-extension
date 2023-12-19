@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import QRCode from 'qrcode.react';
 import { useHistory } from 'react-router-dom';
@@ -10,10 +10,12 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { I18nContext } from '../../../contexts/i18n';
 import { CONFIRM_ADD_CUSTODIAN_TOKEN } from '../../../helpers/constants/routes';
 
 export default function QRCodeModal({ onClose, custodianName }) {
   const history = useHistory();
+  const t = useContext(I18nContext);
 
   // Hardcoded for Saturn for now
   const currentQRCode = 'some-token-will-do';
@@ -58,7 +60,7 @@ export default function QRCodeModal({ onClose, custodianName }) {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={onClose}>
-          Connect {custodianName || 'custodian'}
+          {t('connectCustodianAccounts', [custodianName || 'custodian'])}
         </ModalHeader>
         <Text
           as="p"
@@ -68,7 +70,7 @@ export default function QRCodeModal({ onClose, custodianName }) {
           color={TextColor.textDefault}
           variant={TextVariant.bodySm}
         >
-          To connect your accounts scan the QR code bellow.
+          {t('custodianQRCodeScan')}
         </Text>
         <Box
           style={{

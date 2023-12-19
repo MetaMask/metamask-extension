@@ -1074,6 +1074,9 @@
   "custodianAccountAddedTitle": {
     "message": "Selected $1 accounts have been added."
   },
+  "custodianQRCodeScan": {
+    "message": "To connect your accounts scan the QR code bellow."
+  },
   "custodianReplaceRefreshTokenChangedFailed": {
     "message": "Please go to $1 and click the 'Connect to MMI' button within their user interface to connect your accounts to MMI again."
   },
