@@ -6,10 +6,7 @@ import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import messages from '../../../../app/_locales/en/messages.json';
-import {
-  ADD_SNAP_ACCOUNT_ROUTE,
-  CONNECT_HARDWARE_ROUTE,
-} from '../../../helpers/constants/routes';
+import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
 ///: END:ONLY_INCLUDE_IF
 import { AccountListMenu } from '.';
 
@@ -227,7 +224,8 @@ describe('AccountListMenu', () => {
       );
     });
 
-    it("renders the add snap account button if it's enabled", async () => {
+    it('renders the "Add account Snap" button if it\'s enabled', async () => {
+      global.platform = { openTab: jest.fn() };
       const { getByText } = renderWithState({ addSnapAccountEnabled: true });
       const button = document.querySelector(
         '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -244,23 +242,26 @@ describe('AccountListMenu', () => {
       });
     });
 
-    it('pushes history when clicking add snap account from extended view', async () => {
+    it('opens the Snaps registry in a new tab', async () => {
+      // Set up mock state
+      global.platform = { openTab: jest.fn() };
       const { getByText } = renderWithState({ addSnapAccountEnabled: true });
       mockGetEnvironmentType.mockReturnValueOnce('fullscreen');
 
+      // Open account picker
       const button = document.querySelector(
         '[data-testid="multichain-account-menu-popover-action-button"]',
       );
       button.click();
 
-      const addSnapAccountButton = getByText(
+      // Click on "Add account Snap"
+      const addAccountSnapButton = getByText(
         messages.settingAddSnapAccount.message,
       );
+      fireEvent.click(addAccountSnapButton);
 
-      fireEvent.click(addSnapAccountButton);
-      await waitFor(() => {
-        expect(historyPushMock).toHaveBeenCalledWith(ADD_SNAP_ACCOUNT_ROUTE);
-      });
+      // Check if `openTab` was called
+      expect(global.platform.openTab).toHaveBeenCalledTimes(1);
     });
   });
   ///: END:ONLY_INCLUDE_IF

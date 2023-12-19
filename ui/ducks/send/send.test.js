@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import {
   CONTRACT_ADDRESS_ERROR,
@@ -1359,6 +1360,24 @@ describe('Send Slice', () => {
             },
             selectedAddress: mockAddress1,
             identities: { [mockAddress1]: { address: mockAddress1 } },
+            internalAccounts: {
+              accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: mockAddress1,
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    name: 'Test Account',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            },
             keyrings: [
               {
                 type: KeyringType.hdKeyTree,
@@ -1371,9 +1390,9 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               0x5: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             providerConfig: {
@@ -1509,6 +1528,25 @@ describe('Send Slice', () => {
           metamask: {
             blockGasLimit: '',
             selectedAddress: '',
+            internalAccounts: {
+              accounts: {
+                'mock-id': {
+                  address: '0x0',
+                  id: 'mock-id',
+                  metadata: {
+                    name: 'Test Account',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'mock-id',
+            },
+            accounts: {},
             providerConfig: {
               chainId: '0x1',
             },
@@ -1565,6 +1603,25 @@ describe('Send Slice', () => {
           metamask: {
             blockGasLimit: '',
             selectedAddress: '',
+            internalAccounts: {
+              accounts: {
+                'mock-id': {
+                  address: '0x0',
+                  id: 'mock-id',
+                  metadata: {
+                    name: 'Test Account',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'mock-id',
+            },
+            accounts: {},
             providerConfig: {
               chainId: '0x1',
             },
@@ -1620,6 +1677,25 @@ describe('Send Slice', () => {
           metamask: {
             blockGasLimit: '',
             selectedAddress: '',
+            internalAccounts: {
+              accounts: {
+                'mock-id': {
+                  address: '0x0',
+                  id: 'mock-id',
+                  metadata: {
+                    name: 'Test Account',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'mock-id',
+            },
+            accounts: {},
             providerConfig: {
               chainId: '0x1',
             },
@@ -1668,17 +1744,35 @@ describe('Send Slice', () => {
         metamask: {
           blockGasLimit: '',
           selectedAddress: '',
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: mockAddress1,
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           providerConfig: {
             chainId: CHAIN_IDS.GOERLI,
           },
-          cachedBalances: {
+          accountsByChainId: {
             [CHAIN_IDS.GOERLI]: {
-              [mockAddress1]: '0x0',
+              [mockAddress1]: { balance: '0x0' },
             },
           },
           accounts: {
             [mockAddress1]: {
-              address: mockAddress1,
+              address: '0x0',
             },
           },
           identities: {
@@ -1876,6 +1970,24 @@ describe('Send Slice', () => {
               occurrences: 12,
             },
           },
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
         },
         send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
       };
@@ -1984,6 +2096,10 @@ describe('Send Slice', () => {
           metamask: {
             addressBook: {},
             identities: {},
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
             providerConfig: {
               chainId: '0x1',
             },
@@ -2092,6 +2208,10 @@ describe('Send Slice', () => {
           metamask: {
             addressBook: {},
             identities: {},
+            internalAccounts: {
+              accounts: {},
+              selectedAccount: '',
+            },
             blockGasLimit: '',
             selectedAddress: '',
             providerConfig: {
@@ -2172,6 +2292,25 @@ describe('Send Slice', () => {
                 occurrences: 12,
               },
             },
+            internalAccounts: {
+              accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    name: 'Test Account',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            },
+            accounts: {},
           },
           send: INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
         };
@@ -2324,6 +2463,25 @@ describe('Send Slice', () => {
             providerConfig: {
               chainId: CHAIN_IDS.GOERLI,
             },
+            internalAccounts: {
+              accounts: {
+                'mock-id': {
+                  address: '0x0',
+                  id: 'mock-id',
+                  metadata: {
+                    name: 'Test Account',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'mock-id',
+            },
+            accounts: {},
           },
         };
         const store = mockStore(sendMaxModeState);
@@ -2500,15 +2658,33 @@ describe('Send Slice', () => {
             identities: {
               [mockAddress1]: {},
             },
+            internalAccounts: {
+              accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: mockAddress1,
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    name: 'Test Account',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            },
             accounts: {
               [mockAddress1]: {
                 address: mockAddress1,
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               [CHAIN_IDS.GOERLI]: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             tokenList: {},
@@ -2645,9 +2821,27 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            internalAccounts: {
+              accounts: {
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: mockAddress1,
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    name: 'Test Account',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            },
+            accountsByChainId: {
               [CHAIN_IDS.GOERLI]: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             tokenList: {},
@@ -2805,6 +2999,24 @@ describe('Send Slice', () => {
         metamask: {
           blockGasLimit: '0x3a98',
           selectedAddress: '',
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: mockAddress1,
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           providerConfig: {
             chainId: CHAIN_IDS.GOERLI,
           },
@@ -2832,9 +3044,9 @@ describe('Send Slice', () => {
               balance: '0x0',
             },
           },
-          cachedBalances: {
+          accountsByChainId: {
             [CHAIN_IDS.GOERLI]: {
-              [mockAddress1]: '0x0',
+              [mockAddress1]: { balance: '0x0' },
             },
           },
           transactions: [
@@ -3245,6 +3457,10 @@ describe('Send Slice', () => {
             metamask: {
               ensResolutionsByAddress: {},
               identities: {},
+              internalAccounts: {
+                accounts: {},
+                selectedAccount: '',
+              },
               addressBook: {},
               providerConfig: {
                 chainId: '0x5',
@@ -3261,6 +3477,10 @@ describe('Send Slice', () => {
               ensResolutionsByAddress: {},
               addressBook: {},
               identities: {},
+              internalAccounts: {
+                accounts: {},
+                selectedAccount: '',
+              },
               providerConfig: {
                 chainId: '0x5',
               },
@@ -3308,6 +3528,10 @@ describe('Send Slice', () => {
             metamask: {
               ensResolutionsByAddress: {},
               identities: {},
+              internalAccounts: {
+                accounts: {},
+                selectedAccount: '',
+              },
               addressBook: {},
               providerConfig: {
                 chainId: '0x5',

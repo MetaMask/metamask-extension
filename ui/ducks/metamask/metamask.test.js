@@ -37,7 +37,6 @@ describe('MetaMask Reducers', () => {
             name: 'Send Account 4',
           },
         },
-        cachedBalances: {},
         currentBlockGasLimit: '0x4c1878',
         currentBlockGasLimitByChainId: {
           '0x5': '0x4c1878',
