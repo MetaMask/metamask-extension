@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import {
   AvatarIcon,
   AvatarIconSize,
@@ -11,7 +10,6 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderRadius,
   BorderStyle,
   Display,
   FlexDirection,
@@ -22,9 +20,8 @@ import {
   TextVariant,
 } from '../../helpers/constants/design-system';
 import { useI18nContext } from '../../hooks/useI18nContext';
-import { getMetaMaskAccountsOrdered } from '../../selectors';
-import { AccountListItem } from '../../components/multichain/account-list-item/account-list-item';
 import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
+import { SnapAccountCard } from './snap-account-card';
 
 export interface RemoveSnapAccountProps {
   snapId: string;
@@ -34,12 +31,9 @@ export interface RemoveSnapAccountProps {
 
 const RemoveSnapAccount = ({
   snapId,
-  snapName,
   publicAddress,
 }: RemoveSnapAccountProps) => {
   const t = useI18nContext();
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const account = accounts.find((account) => account.address === publicAddress);
   return (
     <Box
       className="remove-snap-account-page"
@@ -82,17 +76,7 @@ const RemoveSnapAccount = ({
             <Text textAlign={TextAlign.Center} variant={TextVariant.headingLg}>
               {t('removeSnapAccountTitle')}
             </Text>
-            <Box
-              borderRadius={BorderRadius.LG}
-              marginTop={4}
-              marginBottom={4}
-              width={BlockSize.Full}
-              style={{
-                boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-              }}
-            >
-              <AccountListItem identity={account} selected={true} />
-            </Box>
+            <SnapAccountCard address={publicAddress} remove={true} />
             <Text
               variant={TextVariant.bodyMd}
               textAlign={TextAlign.Center}

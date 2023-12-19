@@ -4273,13 +4273,22 @@
     "description": "$1 is an external link to FAQ and Risk Disclosures"
   },
   "snapAccountCreated": {
+    "message": "Account created"
+  },
+  "snapAccountCreatedDescription": {
     "message": "Your account is ready to use!"
+  },
+  "snapAccountCreationFailed": {
+    "message": "Account creation failed"
   },
   "snapAccountRedirectFinishSigningTitle": {
     "message": "Finish signing"
   },
   "snapAccountRedirectSiteDescription": {
     "message": "Follow the instructions from $1"
+  },
+  "snapAccountRemovalFailed": {
+    "message": "Account removal failed"
   },
   "snapAccountRemoved": {
     "message": "Account removed"

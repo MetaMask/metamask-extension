@@ -15,12 +15,20 @@
   @include screen-lg-min {
     width: $width-screen-lg-min;
   }
+}
 
+.snap-account-card {
+  .multichain-account-list-item {
+    cursor: default;
+  }
+}
+
+.snap-account-card-remove {
   .multichain-account-list-item {
     cursor: default;
     background-color: var(--color-error-muted);
 
-    &:hover{
+    &:hover {
       background-color: var(--color-error-muted);
     }
 
@@ -29,3 +37,4 @@
     }
   }
 }
+

@@ -273,7 +273,11 @@ export default function ConfirmationPage({
   ];
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  if ([...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES)].includes(pendingConfirmation?.type)) {
+  if (
+    [...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES)].includes(
+      pendingConfirmation?.type,
+    )
+  ) {
     useSnapHeader = false;
   }
   ///: END:ONLY_INCLUDE_IF
@@ -284,18 +288,18 @@ export default function ConfirmationPage({
   const templatedValues = useMemo(() => {
     return pendingConfirmation
       ? getTemplateValues(
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          snapName: isSnapDialog && snapName,
-          ///: END:ONLY_INCLUDE_IF
-          ...pendingConfirmation,
-        },
-        t,
-        dispatch,
-        history,
-        setInputState,
-        { matchedChain, currencySymbolWarning },
-      )
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+            snapName: isSnapDialog && snapName,
+            ///: END:ONLY_INCLUDE_IF
+            ...pendingConfirmation,
+          },
+          t,
+          dispatch,
+          history,
+          setInputState,
+          { matchedChain, currencySymbolWarning },
+        )
       : {};
   }, [
     pendingConfirmation,
@@ -514,15 +518,15 @@ export default function ConfirmationPage({
         style={
           isSnapDialog
             ? {
-              boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
-            }
+                boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
+              }
             : {}
         }
         actionsStyle={
           isSnapDialog
             ? {
-              borderTop: 0,
-            }
+                borderTop: 0,
+              }
             : {}
         }
         ///: END:ONLY_INCLUDE_IF

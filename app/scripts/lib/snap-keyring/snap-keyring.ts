@@ -18,6 +18,8 @@ import { SnapId } from '@metamask/snaps-sdk';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
+import { IconName } from '../../../../ui/components/component-library';
+import { Display } from '../../../../ui/helpers/constants/design-system';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 
 /**
@@ -158,13 +160,36 @@ export const snapKeyringBuilder = (
               await persistKeyringHelper();
               setSelectedAccountHelper(address);
               await controllerMessenger.call('ApprovalController:showSuccess', {
-                message: t('snapAccountCreated') as string,
                 header: [snapAuthorshipHeader],
+                title: t('snapAccountCreated') as string,
+                icon: IconName.UserCircleAdd,
+                message: [
+                  {
+                    name: 'SnapAccountCard',
+                    key: 'snapAccountCard',
+                    properties: {
+                      address,
+                    },
+                  },
+                  {
+                    name: 'Box',
+                    key: 'description',
+                    properties: {
+                      display: Display.Flex,
+                      style: {
+                        gap: '5px',
+                      },
+                    },
+                    children: [t('snapAccountCreatedDescription') as string],
+                  },
+                ],
               });
             } catch (error) {
               await controllerMessenger.call('ApprovalController:showError', {
-                error: (error as Error).message,
                 header: [snapAuthorshipHeader],
+                title: t('snapAccountCreationFailed') as string,
+                icon: IconName.UserCircleAdd,
+                error: (error as Error).message,
               });
               throw new Error(
                 `Error occurred while creating snap account: ${
@@ -216,13 +241,17 @@ export const snapKeyringBuilder = (
               await handleUserInput(confirmationResult);
               await persistKeyringHelper();
               await controllerMessenger.call('ApprovalController:showSuccess', {
-                message: t('snapAccountRemoved') ?? 'Account removed',
                 header: [snapAuthorshipHeader],
+                icon: IconName.UserCircleRemove,
+                title: t('snapAccountRemoved') as string,
+                message: t('snapAccountRemoved') as string,
               });
             } catch (error) {
               await controllerMessenger.call('ApprovalController:showError', {
-                error: (error as Error).message,
                 header: [snapAuthorshipHeader],
+                icon: IconName.UserCircleRemove,
+                title: t('snapAccountRemovalFailed') as string,
+                error: (error as Error).message,
               });
               throw new Error(
                 `Error occurred while removing snap account: ${
