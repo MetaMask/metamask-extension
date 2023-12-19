@@ -13,7 +13,6 @@ import { TransactionStatus } from '@metamask/transaction-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
-  NATIVE_CURRENCY_TOKEN_IMAGE_MAP,
   BUYABLE_CHAINS_MAP,
   MAINNET_DISPLAY_NAME,
   BSC_DISPLAY_NAME,
@@ -33,6 +32,7 @@ import {
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../shared/constants/network';
 import {
   WebHIDConnectedStatuses,
@@ -66,14 +66,15 @@ import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
 import { DAY } from '../../shared/constants/time';
 import { TERMS_OF_USE_LAST_UPDATED } from '../../shared/constants/terms';
 import {
-  getNativeCurrency,
   getProviderConfig,
   getConversionRate,
   isNotEIP1559Network,
   isEIP1559Network,
   getLedgerTransportType,
   isAddressLedger,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   findKeyringForAddress,
+  ///: END:ONLY_INCLUDE_IF
 } from '../ducks/metamask/metamask';
 import {
   getLedgerWebHidConnectedStatus,
@@ -201,15 +202,13 @@ export function hasUnsignedQRHardwareMessage(state) {
 }
 
 export function getCurrentKeyring(state) {
-  const identity = getSelectedIdentity(state);
+  const internalAccount = getSelectedInternalAccount(state);
 
-  if (!identity) {
+  if (!internalAccount) {
     return null;
   }
 
-  const keyring = findKeyringForAddress(state, identity.address);
-
-  return keyring;
+  return internalAccount.metadata.keyring;
 }
 
 /**
@@ -282,6 +281,10 @@ export function getAccountTypeForKeyring(keyring) {
       return 'hardware';
     case KeyringType.imported:
       return 'imported';
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    case KeyringType.snap:
+      return 'snap';
+    ///: END:ONLY_INCLUDE_IF
     default:
       return 'default';
   }
@@ -330,6 +333,48 @@ export function getSelectedIdentity(state) {
   const { identities } = state.metamask;
 
   return identities[selectedAddress];
+}
+
+export function getSelectedInternalAccount(state) {
+  const accountId = state.metamask.internalAccounts.selectedAccount;
+  return state.metamask.internalAccounts.accounts[accountId];
+}
+
+export function getSelectedInternalAccountWithBalance(state) {
+  const selectedAccount = getSelectedInternalAccount(state);
+  const rawAccount = getMetaMaskAccountBalances(state)[selectedAccount.address];
+
+  const selectedAccountWithBalance = {
+    ...selectedAccount,
+    balance: rawAccount ? rawAccount.balance : 0,
+  };
+
+  return selectedAccountWithBalance;
+}
+
+export function getInternalAccounts(state) {
+  return Object.values(state.metamask.internalAccounts.accounts);
+}
+
+export function getInternalAccount(state, accountId) {
+  return state.metamask.internalAccounts.accounts[accountId];
+}
+
+export function getInternalAccountsSortedByKeyring(state) {
+  const accounts = getInternalAccounts(state);
+
+  return accounts.sort((previousAccount, currentAccount) => {
+    // sort accounts by keyring type in alphabetical order
+    const previousKeyringType = previousAccount.metadata.keyring.type;
+    const currentKeyringType = currentAccount.metadata.keyring.type;
+    if (previousKeyringType < currentKeyringType) {
+      return -1;
+    }
+    if (previousKeyringType > currentKeyringType) {
+      return 1;
+    }
+    return 0;
+  });
 }
 
 export function getNumberOfTokens(state) {
@@ -406,7 +451,8 @@ export function isBalanceCached(state) {
 
 export function getSelectedAccountCachedBalance(state) {
   const cachedBalances = getMetaMaskCachedBalances(state);
-  const selectedAddress = getSelectedAddress(state);
+  const { address: selectedAddress } = getSelectedInternalAccount(state);
+
   return cachedBalances?.[selectedAddress];
 }
 
@@ -416,9 +462,12 @@ export function getAllTokens(state) {
 
 export function getSelectedAccount(state) {
   const accounts = getMetaMaskAccounts(state);
-  const selectedAddress = getSelectedAddress(state);
+  const selectedAccount = getSelectedInternalAccount(state);
 
-  return accounts[selectedAddress];
+  return {
+    ...selectedAccount,
+    ...accounts[selectedAccount.address],
+  };
 }
 
 export function getTargetAccount(state, targetAddress) {
@@ -460,12 +509,16 @@ export function getAddressBookEntry(state, address) {
 }
 
 export function getAddressBookEntryOrAccountName(state, address) {
-  const entry =
-    getAddressBookEntry(state, address) ||
-    Object.values(state.metamask.identities).find((identity) =>
-      isEqualCaseInsensitive(identity.address, address),
-    );
-  return entry && entry.name !== '' ? entry.name : address;
+  const entry = getAddressBookEntry(state, address);
+  if (entry && entry.name !== '') {
+    return entry.name;
+  }
+
+  const internalAccount = Object.values(getInternalAccounts(state)).find(
+    (account) => isEqualCaseInsensitive(account.address, address),
+  );
+
+  return internalAccount?.metadata.name || address;
 }
 
 export function getAccountName(identities, address) {
@@ -945,8 +998,8 @@ export function getIsBuyableChain(state) {
   return Object.keys(BUYABLE_CHAINS_MAP).includes(chainId);
 }
 export function getNativeCurrencyImage(state) {
-  const nativeCurrency = getNativeCurrency(state)?.toUpperCase();
-  return NATIVE_CURRENCY_TOKEN_IMAGE_MAP[nativeCurrency];
+  const chainId = getCurrentChainId(state);
+  return CHAIN_ID_TOKEN_IMAGE_MAP[chainId];
 }
 
 export function getNextSuggestedNonce(state) {

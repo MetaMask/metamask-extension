@@ -916,6 +916,17 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.preferencesController, 'setAccountLabel')
           .mockReturnValue();
 
+        jest
+          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
+          .mockReturnValue({
+            account: {
+              id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
+            },
+          });
+        jest
+          .spyOn(metamaskController.accountsController, 'setAccountName')
+          .mockReturnValue();
+
         await metamaskController.unlockHardwareWalletAccount(
           accountToUnlock,
           HardwareDeviceNames.trezor,
@@ -960,6 +971,18 @@ describe('MetaMaskController', () => {
           metamaskController.preferencesController.setAccountLabel,
         ).toHaveBeenCalledTimes(1);
       });
+
+      it('should call accountsController.getAccountByAddress', async () => {
+        expect(
+          metamaskController.accountsController.getAccountByAddress,
+        ).toHaveBeenCalledTimes(1);
+      });
+
+      it('should call accountsController.setAccountName', async () => {
+        expect(
+          metamaskController.accountsController.setAccountName,
+        ).toHaveBeenCalledTimes(1);
+      });
     });
 
     describe('#addNewAccount', () => {
@@ -970,10 +993,10 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#verifyseedPhrase', () => {
-      it('errors when no keying is provided', async () => {
-        await expect(metamaskController.verifySeedPhrase()).rejects.toThrow(
-          'No HD keyring found',
+    describe('#getSeedPhrase', () => {
+      it('errors when no password is provided', async () => {
+        await expect(metamaskController.getSeedPhrase()).rejects.toThrow(
+          'KeyringController - Cannot unlock without a previous vault.',
         );
       });
 
