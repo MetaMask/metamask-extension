@@ -176,6 +176,11 @@ function defaultFixture() {
           23: {
             date: null,
             id: 23,
+            isShown: true,
+          },
+          29: {
+            date: null,
+            id: 29,
             isShown: false,
           },
           ///: END:ONLY_INCLUDE_IF

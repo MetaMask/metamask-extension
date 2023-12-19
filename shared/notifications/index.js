@@ -170,6 +170,16 @@ export const UI_NOTIFICATIONS = {
     id: Number(NOTIFICATION_U2F_LEDGER_LIVE),
     date: null,
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  29: {
+    id: 29,
+    date: null,
+    image: {
+      src: 'images/blockaid-security-provider.svg',
+      width: '100%',
+    },
+  },
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
@@ -454,5 +464,22 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    29: {
+      ...UI_NOTIFICATIONS[29],
+      title: t('notifications29Title'),
+      description: [
+        t('notifications29DescriptionOne'),
+        t('notifications29DescriptionTwo'),
+        t('notifications29DescriptionThree'),
+      ],
+      actionText: t('notifications29ActionText'),
+      date: UI_NOTIFICATIONS[29].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[29].date),
+          )
+        : '',
+    },
+    ///: END:ONLY_INCLUDE_IF
   };
 };

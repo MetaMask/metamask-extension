@@ -125,6 +125,11 @@ function getActionFunctionById(id, history) {
     [NOTIFICATION_U2F_LEDGER_LIVE]: () => {
       updateViewedNotifications({ [NOTIFICATION_U2F_LEDGER_LIVE]: true });
     },
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    29: () => {
+      updateViewedNotifications({ 29: true });
+    },
+    ///: END:ONLY_INCLUDE_IF
   };
 
   return actionFunctions[id];
@@ -352,6 +357,9 @@ export default function WhatsNewPopup({ onClose }) {
     [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
     [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
     [NOTIFICATION_U2F_LEDGER_LIVE]: renderFirstNotification,
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    29: renderFirstNotification,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   return (

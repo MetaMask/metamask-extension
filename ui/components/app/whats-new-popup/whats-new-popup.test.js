@@ -97,6 +97,11 @@ const render = () => {
           id: 23,
           isShown: false,
         },
+        29: {
+          date: '2022-07-24',
+          id: 29,
+          isShown: false,
+        },
       },
     },
   });

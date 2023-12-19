@@ -1227,7 +1227,7 @@ function getAllowedAnnouncementIds(state) {
     21: false,
     22: false,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    23: true,
+    23: false,
     ///: END:ONLY_INCLUDE_IF
     24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
@@ -1235,6 +1235,9 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    29: true,
+    ///: END:ONLY_INCLUDE_IF
   };
 }
 
