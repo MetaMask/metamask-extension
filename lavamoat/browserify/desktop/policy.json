@@ -1141,12 +1141,19 @@
       },
       "packages": {
         "@ethereumjs/tx": true,
+        "@metamask/eth-snap-keyring>@metamask/keyring-api": true,
         "@metamask/eth-snap-keyring>uuid": true,
-        "@metamask/keyring-api": true,
         "@metamask/message-manager>@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "superstruct": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/eth-snap-keyring>@metamask/keyring-api": {
+      "packages": {
+        "@metamask/eth-snap-keyring>uuid": true,
+        "@metamask/utils": true,
+        "superstruct": true
       }
     },
     "@metamask/eth-snap-keyring>uuid": {
