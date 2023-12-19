@@ -1,6 +1,5 @@
 {
   "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
-  "editor.formatOnSave": false,
   "editor.tabSize": 2,
   "files.trimTrailingWhitespace": true,
   "javascript.preferences.importModuleSpecifier": "relative",
