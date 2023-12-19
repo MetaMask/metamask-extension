@@ -60,20 +60,6 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef<
     },
     ref,
   ) => {
-    // Validation function for 'id' prop
-    const validateIdProp = () => {
-      if (label && !id) {
-        throw new Error(
-          `If a label prop exists, you must provide an 'id' prop for the label's htmlFor attribute for accessibility. Warning coming from FormTextField component.`,
-        );
-      }
-    };
-
-    // Invoke the validation function
-    React.useEffect(() => {
-      validateIdProp();
-    }, [label, id]);
-
     return (
       <Box
         className={classnames(

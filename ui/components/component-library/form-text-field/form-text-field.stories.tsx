@@ -46,7 +46,7 @@ export default {
 } as Meta<typeof FormTextField>;
 
 const Template: StoryFn<typeof FormTextField> = (args) => {
-  const [{ value }, updateArgs] = useArgs();
+  const [{ value = '' }, updateArgs] = useArgs();
   const handleOnChange = (e) => {
     updateArgs({ value: e.target.value });
   };
@@ -72,7 +72,7 @@ LabelStory.args = {
 };
 
 export const HelpTextStory: StoryFn<typeof FormTextField> = (args) => {
-  const [{ value }, updateArgs] = useArgs();
+  const [{ value = '' }, updateArgs] = useArgs();
   const handleOnChange = (e) => {
     updateArgs({ value: e.target.value });
   };

@@ -1,6 +1,9 @@
 import React from 'react';
 import type { PolymorphicComponentPropWithRef } from '../box';
-import { TextFieldProps } from '../text-field/text-field.types';
+import {
+  TextFieldStyleUtilityProps,
+  TextFieldProps,
+} from '../text-field/text-field.types';
 import type { LabelProps } from '../label/label.types';
 import type { HelpTextProps } from '../help-text/help-text.types';
 
@@ -10,40 +13,34 @@ export enum FormTextFieldSize {
   Lg = 'lg',
 }
 
-export interface FormTextFieldStyleUtilityProps
-  extends Omit<TextFieldProps<'input'>, 'size' | 'type'> {
-  /**
-   * An additional className to apply to the FormTextField
-   */
+export interface BaseFormTextFieldStyleUtilityProps
+  extends Omit<TextFieldStyleUtilityProps, 'size' | 'type'> {
   className?: string;
-  /**
-   * The size of the FormTextField
-   */
   size?: FormTextFieldSize;
-  /**
-   * Label for the FormTextField
-   */
-  label?: string | React.ReactNode;
-  /**
-   * Props to be passed to the Label component
-   */
-  labelProps?: LabelProps<'label'>;
-  /**
-   * Props for the TextField component within the FormTextField
-   */
   textFieldProps?: TextFieldProps<'input'>;
-  /**
-   * HelpText for the FormTextField
-   */
   helpText?: string | React.ReactNode;
-  /**
-   * Props to be passed to the HelpText component
-   */
   helpTextProps?: HelpTextProps<'div'>;
 }
 
+export interface FormTextFieldWithLabelProps
+  extends BaseFormTextFieldStyleUtilityProps {
+  label: string | React.ReactNode;
+  labelProps?: LabelProps<'label'>;
+  id: string; // id is required when label is provided
+}
+
+export interface FormTextFieldWithoutLabelProps
+  extends BaseFormTextFieldStyleUtilityProps {
+  label?: never;
+  labelProps?: never;
+  id?: string; // id is optional when label is not provided
+}
+
 export type FormTextFieldProps<C extends React.ElementType> =
-  PolymorphicComponentPropWithRef<C, FormTextFieldStyleUtilityProps>;
+  PolymorphicComponentPropWithRef<
+    C,
+    FormTextFieldWithLabelProps | FormTextFieldWithoutLabelProps
+  >;
 
 export type FormTextFieldComponent = <C extends React.ElementType = 'input'>(
   props: FormTextFieldProps<C>,
