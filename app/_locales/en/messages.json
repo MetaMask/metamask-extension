@@ -3764,9 +3764,6 @@
   "removeSnap": {
     "message": "Remove Snap"
   },
-  "removeSnapAccountBannerDescription": {
-    "message": "Be sure you can access this account on your own before removing it"
-  },
   "removeSnapAccountDescription": {
     "message": "If you proceed, this account will no longer be available in MetaMask."
   },
