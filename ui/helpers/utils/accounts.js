@@ -74,10 +74,10 @@ export function getAccountLabel(type, account) {
   switch (type) {
     case KeyringType.hdKeyTree:
       return null;
-    case KeyringType.qr:
-      return HardwareKeyringNames.qr;
     case KeyringType.imported:
       return t('imported');
+    case KeyringType.qr:
+      return HardwareKeyringNames.qr;
     case KeyringType.trezor:
       return HardwareKeyringNames.trezor;
     case KeyringType.ledger:
