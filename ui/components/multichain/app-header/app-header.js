@@ -39,11 +39,10 @@ import {
   getCurrentNetwork,
   getOnboardedInThisUISession,
   getOriginOfCurrentTab,
-  getSelectedIdentity,
   getShowProductTour,
   getTestNetworkBackgroundColor,
+  getSelectedInternalAccount,
   getUnapprovedTransactions,
-  getSelectedAddress,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getTheme,
   ///: END:ONLY_INCLUDE_IF
@@ -81,23 +80,23 @@ export const AppHeader = ({ location }) => {
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const theme = useSelector((state) => getTheme(state));
-  ///: END:ONLY_INCLUDE_IF
-
   // Used for account picker
-  const identity = useSelector(getSelectedIdentity);
+  const internalAccount = useSelector(getSelectedInternalAccount);
   const dispatch = useDispatch();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showProductTourPopup = useSelector(getShowProductTour);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const theme = useSelector((state) => getTheme(state));
+  ///: END:ONLY_INCLUDE_IF
 
   // Used for network icon / dropdown
   const currentNetwork = useSelector(getCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   // Used for copy button
-  const currentAddress = useSelector(getSelectedAddress);
+  const currentAddress = internalAccount?.address;
   const checksummedCurrentAddress = toChecksumHexAddress(currentAddress);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
 
@@ -279,10 +278,10 @@ export const AppHeader = ({ location }) => {
                 />
               ) : null}
 
-              {identity ? (
+              {internalAccount ? (
                 <AccountPicker
-                  address={identity.address}
-                  name={identity.name}
+                  address={internalAccount.address}
+                  name={internalAccount.metadata.name}
                   onClick={() => {
                     dispatch(toggleAccountMenu());
 

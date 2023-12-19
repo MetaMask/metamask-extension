@@ -36,6 +36,10 @@ describe('Onboarding Flow', () => {
   const mockState = {
     metamask: {
       identities: {},
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
       providerConfig: {
         type: NETWORK_TYPES.GOERLI,
         chainId: '0x0',
