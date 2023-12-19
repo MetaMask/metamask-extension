@@ -59,7 +59,16 @@ export default function QRCodeModal({ onClose, custodianName }) {
         <ModalHeader
         onClose={onClose}>Connect {custodianName ? custodianName : 'custodian'}
         </ModalHeader>
-
+        <Text
+            as="p"
+            paddingRight={10}
+            paddingLeft={10}
+            paddingBottom={4}
+            color={TextColor.textDefault}
+            variant={TextVariant.bodySm}
+          >
+            To connect your accounts scan the QR code bellow.
+          </Text>
         <Box
           style={{
             padding: 20,
@@ -69,16 +78,6 @@ export default function QRCodeModal({ onClose, custodianName }) {
             flexDirection: 'column'
           }}
         >
-          <Text
-            as="p"
-            paddingRight={6}
-            paddingLeft={6}
-            paddingBottom={4}
-            color={TextColor.textDefault}
-            variant={TextVariant.bodySm}
-          >
-            To connect your accounts scan the QR code bellow.
-          </Text>
           <QRCode value={currentQRCode.toUpperCase()} size={270} />
         </Box>
       </ModalContent>
