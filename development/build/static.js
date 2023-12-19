@@ -128,7 +128,7 @@ function getCopyTargets(
     },
     {
       src: `./app/fonts/`,
-      dest: `fonts`,
+      dest: `app/fonts`,
     },
     {
       src: `./app/vendor/`,
@@ -139,7 +139,7 @@ function getCopyTargets(
         '@fortawesome/fontawesome-free',
         'webfonts/',
       ),
-      dest: `fonts/fontawesome`,
+      dest: `fonts`,
     },
     {
       src: getPathInsideNodeModules('react-responsive-carousel', 'lib/styles/'),
