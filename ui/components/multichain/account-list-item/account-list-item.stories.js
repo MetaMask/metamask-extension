@@ -15,26 +15,34 @@ const [chaosAddress, simpleAddress, hardwareAddress] = Object.keys(
 const SIMPLE_IDENTITY = {
   ...testData.metamask.identities[simpleAddress],
   balance: '0x152387ad22c3f0',
-  keyring: 'HD Key Tree',
+  keyring: {
+    type: 'HD Key Tree',
+  },
 };
 
 const HARDWARE_IDENTITY = {
   ...testData.metamask.identities[hardwareAddress],
   balance: '0x152387ad22c3f0',
-  keyring: 'Ledger Hardware',
+  keyring: {
+    type: 'Ledger Hardware',
+  },
 };
 
 const CHAOS_IDENTITY = {
   ...testData.metamask.identities[chaosAddress],
   balance: '0x152387ad22c3f0',
-  keyring: 'HD Key Tree',
+  keyring: {
+    type: 'HD Key Tree',
+  },
 };
 
 const SNAP_IDENTITY = {
   ...testData.metamask.identities[simpleAddress],
   name: 'Snap Account',
   balance: '0x152387ad22c3f0',
-  keyring: 'Snap Keyring',
+  keyring: {
+    type: 'Snap Keyring',
+  },
   label: 'Test Snap Name',
 };
 

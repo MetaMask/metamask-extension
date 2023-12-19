@@ -16,11 +16,11 @@ import {
   AvatarTokenSize,
   Box,
   ButtonIcon,
+  Icon,
   IconName,
   IconSize,
   Tag,
   Text,
-  Icon,
 } from '../../component-library';
 import {
   AlignItems,
@@ -249,7 +249,7 @@ export const AccountListItem = ({
               color: Color.textAlternative,
             }}
             startIconName={
-              identity.keyring === KeyringType.snap ? IconName.Snaps : null
+              identity.keyring.type === KeyringType.snap ? IconName.Snaps : null
             }
           />
         ) : null}
@@ -282,7 +282,7 @@ export const AccountListItem = ({
           identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={identity.keyring !== KeyringType.hdKeyTree}
+          isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
           isPinned={process.env.NETWORK_ACCOUNT_DND ? isPinned : null}
         />
@@ -299,7 +299,9 @@ AccountListItem.propTypes = {
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
-    keyring: PropTypes.string.isRequired,
+    keyring: PropTypes.shape({
+      type: PropTypes.string.isRequired,
+    }).isRequired,
     label: PropTypes.string,
   }).isRequired,
   /**

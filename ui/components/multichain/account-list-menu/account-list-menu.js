@@ -83,7 +83,7 @@ const mergeAccounts = (accountsWithBalances, internalAccounts) => {
         ...account,
         ...internalAccount,
         name: internalAccount.metadata.name || account.name,
-        keyring: internalAccount.metadata.keyring.type,
+        keyring: internalAccount.metadata.keyring,
         label: getAccountLabel(
           internalAccount.metadata.keyring.type,
           internalAccount,

@@ -9,7 +9,7 @@ import Box from '../../ui/box/box';
 import { IconName, Tag } from '../../component-library';
 import { Color, TextVariant } from '../../../helpers/constants/design-system';
 import { KeyringType } from '../../../../shared/constants/keyring';
-import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getAccountLabel } from '../../../helpers/utils/accounts';
 
 const WalletOverview = ({
   balance,
@@ -17,13 +17,12 @@ const WalletOverview = ({
   className,
   showAddress = false,
 }) => {
-  const t = useI18nContext();
   const selectedAccount = useSelector(getSelectedInternalAccount);
   const checksummedAddress = toChecksumHexAddress(selectedAccount.address);
   const { keyring } = selectedAccount.metadata;
   const label = selectedAccount.metadata.snap?.name
-  ? getAccountLabel(keyring.type, account)
-  : null;
+    ? getAccountLabel(keyring.type, selectedAccount)
+    : null;
   return (
     <div className={classnames('wallet-overview', className)}>
       <div className="wallet-overview__balance">
@@ -40,7 +39,9 @@ const WalletOverview = ({
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
             }}
-            startIconName={keyring.type === KeyringType.snap ? IconName.Snaps : null}
+            startIconName={
+              keyring.type === KeyringType.snap ? IconName.Snaps : null
+            }
           />
         ) : null}
       </div>
