@@ -61,19 +61,20 @@ function runInChildProcess(
   }
 
   return instrumentForTaskStats(taskName, async () => {
+    const args = [
+      // Use the same build type for subprocesses, and only run them in
+      // LavaMoat if the parent process also ran in LavaMoat.
+      isLavaMoat ? 'build' : 'build:dev',
+      taskName,
+      `--apply-lavamoat=${applyLavaMoat ? 'true' : 'false'}`,
+      `--build-type=${buildType}`,
+      `--lint-fence-files=${shouldLintFenceFiles ? 'true' : 'false'}`,
+      `--policyOnly=${policyOnly ? 'true' : 'false'}`,
+      '--skip-stats=true',
+    ];
     const childProcess = spawn(
       'yarn',
-      [
-        // Use the same build type for subprocesses, and only run them in
-        // LavaMoat if the parent process also ran in LavaMoat.
-        isLavaMoat ? 'build' : 'build:dev',
-        taskName,
-        `--apply-lavamoat=${applyLavaMoat ? 'true' : 'false'}`,
-        `--build-type=${buildType}`,
-        `--lint-fence-files=${shouldLintFenceFiles ? 'true' : 'false'}`,
-        `--policyOnly=${policyOnly ? 'true' : 'false'}`,
-        '--skip-stats=true',
-      ],
+      args,
       {
         env: process.env,
       },
@@ -92,6 +93,10 @@ function runInChildProcess(
     await new Promise((resolve, reject) => {
       childProcess.once('exit', (errCode) => {
         if (errCode !== 0) {
+          console.log(`It failed. You can run the task manually via:
+
+yarn ${args.join(' ')}
+          `);
           reject(
             new Error(
               `MetaMask build: runInChildProcess for task "${taskName}" encountered an error "${errCode}".`,

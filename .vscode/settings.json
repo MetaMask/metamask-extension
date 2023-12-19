@@ -1,5 +1,6 @@
 {
   "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+  "editor.formatOnSave": false,
   "editor.tabSize": 2,
   "files.trimTrailingWhitespace": true,
   "javascript.preferences.importModuleSpecifier": "relative",
@@ -7,6 +8,11 @@
     {
       "fileMatch": ["app/manifest/*/*.json"],
       "url": "https://json.schemastore.org/chrome-manifest"
+    },
+    {
+      // apply the scheme to our package.json, but no others
+      "fileMatch": ["package.json", "!node_modules/**/package.json"],
+      "url": "./.vscode/package-schema.json"
     }
   ],
   "typescript.tsdk": "node_modules/typescript/lib"

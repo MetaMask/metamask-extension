@@ -120,7 +120,8 @@
         "path": true
       },
       "packages": {
-        "eslint>eslint-visitor-keys": true
+        "eslint>eslint-visitor-keys": true,
+        "eslint>@eslint-community/eslint-utils>eslint-visitor-keys": true
       }
     },
     "eslint-plugin-mocha>eslint-utils": {

@@ -1268,7 +1268,13 @@ function renderHtmlFile({ htmlName, browserPlatforms, applyLavaMoat, isMMI }) {
   const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
-  const htmlOutput = Sqrl.render(htmlTemplate, { isMMI });
+  const htmlOutput = Sqrl.render(htmlTemplate, { isMMI })
+    // these replacements are added to support the webpack build's automatic
+    // compilation of html files, which the gulp-based process doesn't support.
+    .replace("./scripts/load-background.ts", "./load-background.js")
+    .replace("<script src=\"./load-background.js\"></script>", "<script src=\"./load-background.js\"></script>\n    <script src=\"./chromereload.js\"></script>")
+    .replace("./scripts/load-ui.ts", "./load-app.js")
+    .replace("../ui/css/index.scss", "./index.css")
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

@@ -29,13 +29,7 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": [
-        "disable-console.js",
-        "lockdown-install.js",
-        "lockdown-run.js",
-        "lockdown-more.js",
-        "contentscript.js"
-      ],
+      "js": ["contentscript.js"],
       "run_at": "document_start",
       "all_frames": true
     },

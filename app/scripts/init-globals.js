@@ -16,3 +16,6 @@ keys.forEach((key) => {
 if (!Reflect.has(globalThis, 'window')) {
   globalThis.window = globalThis;
 }
+
+// make typescript treat this as a module so we can `import()` it
+export default globalThis;

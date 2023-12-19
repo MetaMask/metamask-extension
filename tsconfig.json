@@ -7,6 +7,8 @@
     "inlineSources": true,
     "isolatedModules": true,
     "jsx": "react",
+    // TODO: should we use es2022 (the latest target and lib versions) since we transpile down to what's
+    // supported by our .browserlistrc anyway?
     "lib": ["dom", "es2020"],
     "moduleResolution": "node",
     "noEmit": true,

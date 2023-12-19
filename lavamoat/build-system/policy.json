@@ -1228,6 +1228,11 @@
         "define": true
       }
     },
+    "@storybook/test-runner>jest-circus>p-limit": {
+      "packages": {
+        "@storybook/test-runner>jest-circus>p-limit>yocto-queue": true
+      }
+    },
     "@typescript-eslint/eslint-plugin": {
       "packages": {
         "@typescript-eslint/eslint-plugin>@typescript-eslint/type-utils": true,
@@ -1612,6 +1617,11 @@
         "watchify>xtend": true
       }
     },
+    "browserify-aes>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
     "browserify>JSONStream": {
       "globals": {
         "Buffer": true
@@ -1639,9 +1649,9 @@
       "packages": {
         "@lavamoat/lavapack>combine-source-map": true,
         "@lavamoat/lavapack>umd": true,
+        "browserify-aes>safe-buffer": true,
         "browserify>JSONStream": true,
         "browserify>browser-pack>through2": true,
-        "koa>content-disposition>safe-buffer": true,
         "watchify>defined": true
       }
     },
@@ -1855,7 +1865,7 @@
     },
     "browserify>string_decoder": {
       "packages": {
-        "koa>content-disposition>safe-buffer": true
+        "browserify-aes>safe-buffer": true
       }
     },
     "browserify>syntax-error": {
@@ -2020,11 +2030,6 @@
       },
       "packages": {
         "chokidar>anymatch>picomatch": true
-      }
-    },
-    "copy-webpack-plugin>p-limit": {
-      "packages": {
-        "copy-webpack-plugin>p-limit>yocto-queue": true
       }
     },
     "cross-spawn": {
@@ -2410,6 +2415,7 @@
         "path": true
       },
       "packages": {
+        "eslint>@eslint-community/eslint-utils>eslint-visitor-keys": true,
         "eslint>eslint-visitor-keys": true
       }
     },
@@ -2462,12 +2468,23 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
+        "eslint>@eslint/eslintrc>ajv": true,
         "eslint>@eslint/eslintrc>globals": true,
-        "eslint>ajv": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true,
         "nock>debug": true
+      }
+    },
+    "eslint>@eslint/eslintrc>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "eslint>@eslint/eslintrc>ajv>json-schema-traverse": true,
+        "eslint>ajv>uri-js": true,
+        "eslint>fast-deep-equal": true
       }
     },
     "eslint>@humanwhocodes/config-array": {
@@ -2626,6 +2643,7 @@
         "path.dirname": true
       },
       "globals": {
+        "__dirname": true,
         "__filename": true
       },
       "packages": {
@@ -2717,6 +2735,7 @@
         "fs.stat": true,
         "fs.statSync": true,
         "os.cpus": true,
+        "os.platform": true,
         "path.basename": true,
         "path.resolve": true,
         "stream.PassThrough": true,
@@ -5288,9 +5307,9 @@
     },
     "gulp>vinyl-fs>remove-bom-stream": {
       "packages": {
+        "browserify-aes>safe-buffer": true,
         "gulp>vinyl-fs>remove-bom-buffer": true,
-        "gulp>vinyl-fs>remove-bom-stream>through2": true,
-        "koa>content-disposition>safe-buffer": true
+        "gulp>vinyl-fs>remove-bom-stream>through2": true
       }
     },
     "gulp>vinyl-fs>remove-bom-stream>through2": {
@@ -5394,11 +5413,6 @@
       "globals": {
         "console": true,
         "define": true
-      }
-    },
-    "koa>content-disposition>safe-buffer": {
-      "builtin": {
-        "buffer": true
       }
     },
     "labeled-stream-splicer": {
@@ -5578,19 +5592,14 @@
       "packages": {
         "@babel/register>clone-deep>is-plain-object": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": true,
         "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": true,
-        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true
+        "lavamoat>lavamoat-core>merge-deep>clone-deep>shallow-clone": true,
+        "lavamoat>lavamoat-core>merge-deep>kind-of": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>for-own": {
       "packages": {
         "gulp>undertaker>object.reduce>for-own>for-in": true
-      }
-    },
-    "lavamoat>lavamoat-core>merge-deep>clone-deep>kind-of": {
-      "packages": {
-        "browserify>insert-module-globals>is-buffer": true
       }
     },
     "lavamoat>lavamoat-core>merge-deep>clone-deep>lazy-cache": {
@@ -5702,7 +5711,7 @@
     },
     "mocha>find-up>locate-path>p-locate": {
       "packages": {
-        "copy-webpack-plugin>p-limit": true
+        "@storybook/test-runner>jest-circus>p-limit": true
       }
     },
     "mocha>log-symbols": {
@@ -5722,6 +5731,13 @@
       },
       "packages": {
         "chalk>supports-color>has-flag": true
+      }
+    },
+    "mockttp>portfinder>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
       }
     },
     "nock>debug": {
@@ -6463,14 +6479,7 @@
         "path.dirname": true
       },
       "packages": {
-        "stylelint>file-entry-cache>flat-cache>write>mkdirp": true
-      }
-    },
-    "stylelint>file-entry-cache>flat-cache>write>mkdirp": {
-      "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
+        "mockttp>portfinder>mkdirp": true
       }
     },
     "stylelint>global-modules": {
@@ -6816,10 +6825,15 @@
         "process.stdout.write": true
       },
       "packages": {
-        "eslint>ajv": true,
         "lodash": true,
+        "stylelint>table>ajv": true,
         "stylelint>table>slice-ansi": true,
         "stylelint>table>string-width": true
+      }
+    },
+    "stylelint>table>ajv": {
+      "packages": {
+        "eslint>fast-deep-equal": true
       }
     },
     "stylelint>table>slice-ansi": {
@@ -7160,7 +7174,7 @@
         "util.inherits": true
       },
       "packages": {
-        "koa>content-disposition>safe-buffer": true,
+        "browserify-aes>safe-buffer": true,
         "readable-stream": true
       }
     },
