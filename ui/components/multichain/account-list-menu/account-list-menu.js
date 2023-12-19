@@ -66,6 +66,7 @@ const ACTION_MODES = {
   IMPORT: 'import',
 };
 
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mergeAccounts = (accounts, internalAccounts) => {
   return accounts.map((account) => {
     const internalAccount = internalAccounts.find(
@@ -86,6 +87,7 @@ const mergeAccounts = (accounts, internalAccounts) => {
     return account;
   });
 };
+///: END:ONLY_INCLUDE_IF
 
 export const AccountListMenu = ({
   onClose,
