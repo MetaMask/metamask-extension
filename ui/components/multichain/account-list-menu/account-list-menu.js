@@ -50,13 +50,11 @@ import {
   ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  // CUSTODY_ACCOUNT_ROUTE,
+  CUSTODY_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-
-import QRCodeModal from '../../institutional/qr-code-modal/qr-code-modal';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -88,8 +86,6 @@ export const AccountListMenu = ({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
-
-  const [showQRCodeModal, setShowQRCodeModal] = useState(false);
 
   let searchResults = accounts;
   if (searchQuery) {
@@ -127,16 +123,6 @@ export const AccountListMenu = ({
     : searchResults;
 
   return (
-    <>
-      {showQRCodeModal && (
-        <QRCodeModal
-          onClose={() => {
-            setShowQRCodeModal(false);
-            onClose();
-          }}
-        />
-      )}
-
       <Modal isOpen onClose={onClose}>
         <ModalOverlay />
         <ModalContent
@@ -281,7 +267,19 @@ export const AccountListMenu = ({
                     size={Size.SM}
                     startIconName={IconName.Custody}
                     onClick={() => {
-                      setShowQRCodeModal(true);
+                      onClose();
+                      trackEvent({
+                        category: MetaMetricsEventCategory.Navigation,
+                        event:
+                          MetaMetricsEventName.ConnectCustodialAccountClicked,
+                      });
+                      if (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP) {
+                        global.platform.openExtensionInBrowser(
+                          CUSTODY_ACCOUNT_ROUTE,
+                        );
+                      } else {
+                        history.push(CUSTODY_ACCOUNT_ROUTE);
+                      }
                     }}
                   >
                     {t('connectCustodialAccountMenu')}
@@ -388,7 +386,6 @@ export const AccountListMenu = ({
           ) : null}
         </ModalContent>
       </Modal>
-    </>
   );
 };
 

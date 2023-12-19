@@ -68,7 +68,10 @@ export default function InstitutionalEntityDonePage(props) {
             block
             variant={BUTTON_VARIANT.PRIMARY}
             data-testid="click-most-recent-overview-page"
-            onClick={() => history.push(mostRecentOverviewPage)}
+            onClick={() => {
+              history.push(mostRecentOverviewPage);
+              localStorage.removeItem('tempConnectRequest');
+            }}
           >
             {t('close')}
           </Button>

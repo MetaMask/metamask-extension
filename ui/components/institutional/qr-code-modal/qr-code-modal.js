@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import QRCode from 'qrcode.react';
 import { useHistory } from 'react-router-dom';
 
@@ -8,14 +7,11 @@ import { Modal, ModalOverlay } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
-import { setCompletedOnboarding } from '../../../store/actions';
-
 import { CONFIRM_ADD_CUSTODIAN_TOKEN } from '../../../helpers/constants/routes';
 
 export default function QRCodeModal({ fromOnboarding, onClose }) {
   const [responseData, setResponseData] = useState(null);
   const history = useHistory();
-  const dispatch = useDispatch();
   const currentQRCode = 'some-token-will-do';
 
   useEffect(() => {
@@ -43,10 +39,6 @@ export default function QRCodeModal({ fromOnboarding, onClose }) {
           clearInterval(intervalId);
           setResponseData(data);
           console.log(responseData);
-
-          if (fromOnboarding) {
-            await dispatch(setCompletedOnboarding());
-          }
 
           history.push(CONFIRM_ADD_CUSTODIAN_TOKEN);
           onClose();
@@ -80,5 +72,4 @@ export default function QRCodeModal({ fromOnboarding, onClose }) {
 
 QRCodeModal.propTypes = {
   onClose: PropTypes.func.isRequired,
-  fromOnboarding: PropTypes.bool,
 };

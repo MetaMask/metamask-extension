@@ -56,7 +56,10 @@ import ConfirmConnectCustodianModal from '../confirm-connect-custodian-modal';
 import { findCustodianByDisplayName } from '../../../helpers/utils/institutional/find-by-custodian-name';
 import { setSelectedAddress } from '../../../store/actions';
 
+import QRCodeModal from '../../../components/institutional/qr-code-modal/qr-code-modal';
+
 const GK8_DISPLAY_NAME = 'gk8';
+const SATURN_DISPLAY_NAME = 'saturn custody';
 
 const CustodyPage = () => {
   const t = useI18nContext();
@@ -90,6 +93,10 @@ const CustodyPage = () => {
   const connectRequests = useSelector(getInstitutionalConnectRequests, isEqual);
   const [accounts, setAccounts] = useState();
   const address = useSelector(getSelectedAddress);
+  const isCheckBoxSelected =
+    accounts && Object.keys(selectedAccounts).length === accounts.length;
+
+  const [showQRCodeModal, setShowQRCodeModal] = useState(false);
 
   // eslint-disable-next-line no-undef
   const storageItem = localStorage.getItem('tempConnectRequest');
@@ -99,8 +106,6 @@ const CustodyPage = () => {
   const connectRequest = connectRequests[0]
     ? connectRequests[0]
     : tempConnectRequest;
-  const isCheckBoxSelected =
-    accounts && Object.keys(selectedAccounts).length === accounts.length;
 
   const custodianButtons = useMemo(() => {
     const custodianItems = [];
@@ -158,7 +163,8 @@ const CustodyPage = () => {
           setSelectedCustodianType(custodian.type);
         } else {
           setMatchedCustodian(custodianByDisplayName);
-          setIsConfirmConnectCustodianModalVisible(true);
+          console.log(custodianByDisplayName)
+          custodianByDisplayName?.displayName?.toLocaleLowerCase() === SATURN_DISPLAY_NAME ? setShowQRCodeModal(true) : setIsConfirmConnectCustodianModalVisible(true);
         }
 
         trackEvent({
@@ -728,6 +734,14 @@ const CustodyPage = () => {
           }
         />
       )}
+
+      {showQRCodeModal && (
+          <QRCodeModal
+            onClose={() => {
+              setShowQRCodeModal(false);
+            }}
+          />)
+      }
     </Box>
   );
 };
