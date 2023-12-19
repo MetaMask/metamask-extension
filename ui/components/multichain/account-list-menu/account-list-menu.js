@@ -95,7 +95,9 @@ export const AccountListMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const internalAccounts = useSelector(getInternalAccounts);
+  ///: END:ONLY_INCLUDE_IF
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
