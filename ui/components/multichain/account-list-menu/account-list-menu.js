@@ -29,13 +29,15 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getConnectedSubjectsForAllAddresses,
-  getInternalAccounts,
-  getIsAddSnapAccountEnabled,
-  getMetaMaskAccountsOrdered,
-  getOriginOfCurrentTab,
   getSelectedAccount,
+  getMetaMaskAccountsOrdered,
+  getConnectedSubjectsForAllAddresses,
+  getOriginOfCurrentTab,
   getUpdatedAndSortedAccounts,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  getIsAddSnapAccountEnabled,
+  getInternalAccounts,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -51,9 +53,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { KeyringType } from '../../../../shared/constants/keyring';
-import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
-import { t as translate } from '../../../../app/scripts/translate';
+import { getAccountLabel } from '../../../helpers/utils/accounts';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -66,30 +66,6 @@ const ACTION_MODES = {
   IMPORT: 'import',
 };
 
-function getLabel(type, account) {
-  switch (type) {
-    case KeyringType.qr:
-      return HardwareKeyringNames.qr;
-    case KeyringType.imported:
-      return translate('imported');
-    case KeyringType.trezor:
-      return HardwareKeyringNames.trezor;
-    case KeyringType.ledger:
-      return HardwareKeyringNames.ledger;
-    case KeyringType.lattice:
-      return HardwareKeyringNames.lattice;
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    case KeyringType.snap:
-      if (account.metadata.snap?.name) {
-        return `${account.metadata.snap?.name} (${translate('beta')})`;
-      }
-      return `${translate('snaps')} (${translate('beta')})`;
-    ///: END:ONLY_INCLUDE_IF
-    default:
-      return null;
-  }
-}
-
 const mergeAccounts = (accounts, internalAccounts) => {
   return accounts.map((account) => {
     const internalAccount = internalAccounts.find(
@@ -101,7 +77,10 @@ const mergeAccounts = (accounts, internalAccounts) => {
         ...internalAccount,
         name: internalAccount.metadata.name || account.name,
         keyring: internalAccount.metadata.keyring.type,
-        label: getLabel(internalAccount.metadata.keyring.type, internalAccount),
+        label: getAccountLabel(
+          internalAccount.metadata.keyring.type,
+          internalAccount,
+        ),
       };
     }
     return account;
