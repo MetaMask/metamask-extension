@@ -4296,17 +4296,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-query@npm:^0.5.0, @metamask/ethjs-query@npm:^0.5.2":
-  version: 0.5.3
-  resolution: "@metamask/ethjs-query@npm:0.5.3"
-  dependencies:
-    "@metamask/ethjs-format": "npm:^0.2.9"
-    "@metamask/ethjs-rpc": "npm:0.3.0 || ^0.3.2"
-    babel-runtime: "npm:^6.26.0"
-    promise-to-callback: "npm:^1.0.0"
-  checksum: a82eb2503bee0e513ecc4cb07a89c921f23b922ce788f13ad6c9307b41a88fded76e5f7bdb8f42e6620300a4af6cf502a242e4a2d1c445f970946e581c285617
-  languageName: node
-  linkType: hard
 
 "@metamask/ethjs-rpc@npm:0.3.0 || ^0.3.2":
   version: 0.3.2
@@ -4337,23 +4326,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs@npm:^0.5.0":
-  version: 0.5.1
-  resolution: "@metamask/ethjs@npm:0.5.1"
-  dependencies:
-    "@metamask/ethjs-contract": "npm:^0.3.3"
-    "@metamask/ethjs-filter": "npm:^0.2.0"
-    "@metamask/ethjs-provider-http": "npm:^0.2.0"
-    "@metamask/ethjs-query": "npm:^0.5.2"
-    "@metamask/ethjs-unit": "npm:^0.2.1"
-    "@metamask/ethjs-util": "npm:^0.2.0"
-    bn.js: "npm:4.11.6"
-    ethjs-abi: "npm:0.2.1"
-    js-sha3: "npm:^0.9.2"
-    number-to-bn: "npm:1.7.0"
-  checksum: c1fa7be68623b937dc309465b8e8c89b1fed11c4d3a12a3984641e1a4e1dd26fdf3727f48e16a1adc4cdc3204ee04c6461107dca23875763a72e7d86f9fa6083
-  languageName: node
-  linkType: hard
 
 "@metamask/forwarder@npm:^1.1.0":
   version: 1.1.0
@@ -24757,7 +24729,8 @@ __metadata:
     "@metamask/eth-token-tracker": "npm:^4.0.0"
     "@metamask/eth-trezor-keyring": "npm:^3.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
-    "@metamask/ethjs-query": "npm:^0.5.0"
+    "@metamask/ethjs": "npm:^0.5.1"
+    "@metamask/ethjs-query": "npm:^0.5.3"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^12.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
@@ -24916,7 +24889,6 @@ __metadata:
     ethereum-ens-network-map: "npm:^1.0.2"
     ethereumjs-abi: "npm:^0.6.4"
     ethereumjs-util: "npm:^7.0.10"
-    ethjs: "npm:^0.4.0"
     ethjs-contract: "npm:^0.2.3"
     extension-port-stream: "npm:^3.0.0"
     fake-indexeddb: "npm:^4.0.1"
