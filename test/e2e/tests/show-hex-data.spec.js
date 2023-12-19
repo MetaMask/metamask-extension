@@ -1,6 +1,6 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   logInWithBalanceValidation,
 } = require('../helpers');
@@ -69,22 +69,12 @@ async function sendTransactionAndVerifyHexData(driver) {
 
 // Main test suite
 describe('Check the toggle for hex data', function () {
-  let ganacheOptions;
 
   it('Setting the hex data toggle and verify that the textbox appears', async function () {
-    ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: convertToHexValue(25000000000000000000),
-        },
-      ],
-    };
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
