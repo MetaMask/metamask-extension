@@ -135,7 +135,7 @@ SecurityProviderBannerAlert.propTypes = {
   /** Function to be called when the support link is clicked */
   onClickSupportLink: PropTypes.func,
 
-  /** URL to open when contact us is linked*/
+  /** URL to open when report a problem link is clicked */
   reportUrl: PropTypes.string,
 };
 
