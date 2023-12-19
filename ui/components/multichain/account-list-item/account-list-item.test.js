@@ -6,7 +6,6 @@ import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { shortenAddress } from '../../../helpers/utils/util';
-import { KeyringType } from '../../../../shared/constants/keyring';
 import { AccountListItem } from '.';
 
 const identity = {
@@ -14,6 +13,7 @@ const identity = {
     '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
   ],
   balance: '0x152387ad22c3f0',
+  keyring: 'HD Key Tree',
 };
 
 const DEFAULT_PROPS = {
@@ -116,38 +116,32 @@ describe('AccountListItem', () => {
   });
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  it('renders the snap label for snap accounts', () => {
-    const { getByText } = render({
-      identity: {
-        address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
-        name: 'Snap Account',
-      },
-    });
-    expect(getByText('Snaps (Beta)')).toBeInTheDocument();
-  });
-
-  it('renders the snap name for named snap accounts', () => {
-    mockState.metamask.internalAccounts.accounts[
-      mockState.metamask.internalAccounts.selectedAccount
-    ].metadata = {
-      ...mockState.metamask.internalAccounts.accounts[
-        mockState.metamask.internalAccounts.selectedAccount
-      ].metadata,
-      keyring: {
-        type: KeyringType.snap,
-      },
-      snap: {
-        name: 'Test Snap Name',
-      },
-    };
-    const { getByText } = render({
+  it('renders the snap label for unnamed snap accounts', () => {
+    const { container } = render({
       identity: {
         address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
         name: 'Snap Account',
         balance: '0x0',
+        keyring: 'Snap Keyring',
+        label: 'Snaps (Beta)',
       },
     });
-    expect(getByText('Test Snap Name (Beta)')).toBeInTheDocument();
+    const tag = container.querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Snaps (Beta)');
+  });
+
+  it('renders the snap name for named snap accounts', () => {
+    const { container } = render({
+      identity: {
+        address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
+        name: 'Snap Account',
+        balance: '0x0',
+        keyring: 'Snap Keyring',
+        label: 'Test Snap Name (Beta)',
+      },
+    });
+    const tag = container.querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Test Snap Name (Beta)');
   });
   ///: END:ONLY_INCLUDE_IF
 });
