@@ -8,7 +8,12 @@
         "ms-azuretools.vscode-docker",
         "rvest.vs-code-prettier-eslint"
       ],
-      "settings": { "editor.formatOnSave": true },
+      "settings": {
+        "editor.formatOnSave": true,
+        "git.autofetch": true,
+        "git.ignoreRebaseWarning": true,
+        "git.rebaseWhenSync": true
+      },
       "tasks": [
         {
           "label": "Open noVNC new tab",
