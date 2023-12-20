@@ -28,7 +28,9 @@ import {
   FlexDirection,
   Size,
   TextColor,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   JustifyContent,
+   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
