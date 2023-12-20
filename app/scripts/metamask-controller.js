@@ -1353,6 +1353,10 @@ export default class MetamaskController extends EventEmitter {
         ),
         getNetworkState: () => this.networkController.state,
         getPermittedAccounts: this.getPermittedAccounts.bind(this),
+        getSavedGasFees: () =>
+          this.preferencesController.store.getState().advancedGasFee[
+            this.networkController.state.providerConfig.chainId
+          ],
         getSelectedAddress: () =>
           this.preferencesController.store.getState().selectedAddress,
         incomingTransactions: {
@@ -1374,9 +1378,8 @@ export default class MetamaskController extends EventEmitter {
         }),
         onNetworkStateChange: (listener) => {
           networkControllerMessenger.subscribe(
-            'NetworkController:stateChange',
+            'NetworkController:networkDidChange',
             () => listener(),
-            ({ networkId }) => networkId,
           );
         },
         provider: this.provider,
