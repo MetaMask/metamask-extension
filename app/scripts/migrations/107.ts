@@ -30,11 +30,14 @@ export async function migrate(
 function transformState(state: Record<string, any>) {
   const identities: PreferencesControllerState['identities'] =
     state?.PreferencesController?.identities ?? {};
+
   const names = state?.NameController?.names?.ethereumAddress ?? {};
 
   if (isEmpty(Object.keys(identities))) {
     return;
   }
+
+  let hasChanges = false;
 
   for (const address of Object.keys(identities)) {
     const accountEntry = identities[address];
@@ -60,12 +63,16 @@ function transformState(state: Record<string, any>) {
       sourceId: null,
       proposedNames: {},
     };
+
+    hasChanges = true;
   }
 
-  state.NameController = {
-    ...state.NameController,
-    names: {
-      ethereumAddress: names,
-    },
-  };
+  if (hasChanges) {
+    state.NameController = {
+      ...state.NameController,
+      names: {
+        ethereumAddress: names,
+      },
+    };
+  }
 }

@@ -228,6 +228,10 @@ describe('migration #107', () => {
             name: '',
             address: ADDRESS_2,
           },
+          [ADDRESS_3]: {
+            name: NAME_3,
+            address: ADDRESS_3,
+          },
         },
       },
     };
@@ -241,9 +245,42 @@ describe('migration #107', () => {
       ...oldState,
       NameController: {
         names: {
-          [NameType.ETHEREUM_ADDRESS]: {},
+          [NameType.ETHEREUM_ADDRESS]: {
+            [ADDRESS_3.toLowerCase()]: {
+              [FALLBACK_VARIATION]: {
+                name: NAME_3,
+                sourceId: null,
+                proposedNames: {},
+              },
+            },
+          },
         },
       },
     });
+  });
+
+  it('does not modify state if there are no changes.', async () => {
+    const oldState = {
+      OtherController: {},
+      PreferencesController: {
+        identities: {
+          [ADDRESS_1]: {
+            name: NAME_1,
+            address: '',
+          },
+          [ADDRESS_2]: {
+            name: '',
+            address: ADDRESS_2,
+          },
+        },
+      },
+    };
+
+    const transformedState = await migrate({
+      meta: { version: oldVersion },
+      data: oldState,
+    });
+
+    expect(transformedState.data).toEqual(oldState);
   });
 });

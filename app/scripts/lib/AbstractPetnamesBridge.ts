@@ -8,7 +8,8 @@ import { RestrictedControllerMessenger } from '@metamask/base-controller';
 
 // Use the same type for both the source entries and the argument to NameController::setName.
 export type PetnameEntry = SetNameRequest & {
-  // Name is required for PetnameEntry, as opposed to SetNameRequest, where a null name indicates deletion.
+  // Name cannot be null in a PetnameEntry, as opposed to in a SetNameRequest,
+  // where a null name indicates deletion.
   name: string;
 };
 
