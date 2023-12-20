@@ -1327,13 +1327,6 @@ export default class MetamaskController extends EventEmitter {
       }, this.onboardingController.store.getState()),
     );
 
-    this.cachedBalancesController = new CachedBalancesController({
-      accountTracker: this.accountTracker,
-      getCurrentChainId: () =>
-        this.networkController.state.providerConfig.chainId,
-      initState: initState.CachedBalancesController,
-    });
-
     ///: BEGIN:ONLY_INCLUDE_IF(desktop)
     this.desktopController = new DesktopController({
       initState: initState.DesktopController,
@@ -1428,78 +1421,6 @@ export default class MetamaskController extends EventEmitter {
         ],
       }),
     };
-
-    this.txController = new TransactionController({
-      initState:
-        initState.TransactionController || initState.TransactionManager,
-      getPermittedAccounts: this.getPermittedAccounts.bind(this),
-      getProviderConfig: () => this.networkController.state.providerConfig,
-      getCurrentNetworkEIP1559Compatibility:
-        this.networkController.getEIP1559Compatibility.bind(
-          this.networkController,
-        ),
-      getCurrentAccountEIP1559Compatibility:
-        this.getCurrentAccountEIP1559Compatibility.bind(this),
-      getNetworkStatus: () =>
-        this.networkController.state.networksMetadata?.[
-          this.networkController.state.selectedNetworkClientId
-        ]?.status,
-      getNetworkState: () => this.networkController.state,
-      hasCompletedOnboarding: () =>
-        this.onboardingController.store.getState().completedOnboarding,
-      onNetworkStateChange: (listener) => {
-        networkControllerMessenger.subscribe(
-          'NetworkController:stateChange',
-          () => listener(),
-          (state) => state.providerConfig.chainId,
-        );
-      },
-      getCurrentChainId: () =>
-        this.networkController.state.providerConfig.chainId,
-      preferencesStore: this.preferencesController.store,
-      txHistoryLimit: 60,
-      signTransaction: this.keyringController.signTransaction.bind(
-        this.keyringController,
-      ),
-      provider: this.provider,
-      blockTracker: this.blockTracker,
-      getParticipateInMetrics: () =>
-        this.metaMetricsController.state.participateInMetaMetrics,
-      getEIP1559GasFeeEstimates:
-        this.gasFeeController.fetchGasFeeEstimates.bind(this.gasFeeController),
-      getExternalPendingTransactions:
-        this.getExternalPendingTransactions.bind(this),
-      securityProviderRequest: this.securityProviderRequest.bind(this),
-      hooks: {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-        afterSign: (txMeta, signedEthTx) =>
-          afterTransactionSignMMI(
-            txMeta,
-            signedEthTx,
-            this.transactionUpdateController.addTransactionToWatchList.bind(
-              this.transactionUpdateController,
-            ),
-          ),
-        beforeCheckPendingTransaction:
-          beforeCheckPendingTransactionMMI.bind(this),
-        beforeTransactionApproveOnInit:
-          beforeTransactionApproveOnInitMMI.bind(this),
-        beforePublish: beforeTransactionPublishMMI.bind(this),
-        getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
-        ///: END:ONLY_INCLUDE_IN
-      },
-      getSelectedAddress: () =>
-        this.accountsController.getSelectedAccount().address,
-      messenger: this.controllerMessenger.getRestricted({
-        name: 'TransactionController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:acceptRequest`,
-          `${this.approvalController.name}:rejectRequest`,
-          `${this.accountsController.name}:getSelectedAccount`,
-        ],
-      }),
-    });
 
     this.txController = new TransactionController(
       {
@@ -2933,22 +2854,6 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
-
-      // AccountsController
-      setSelectedInternalAccount:
-        accountsController.setSelectedAccount.bind(accountsController),
-
-      setAccountName:
-        accountsController.setAccountName.bind(accountsController),
-
-      setAccountLabel: (address, label) => {
-        this.preferencesController.setAccountLabel(address, label);
-        const account = this.accountsController.getAccountByAddress(address);
-        if (account === undefined) {
-          throw new Error(`No account found for address: ${address}`);
-        }
-        this.accountsController.setAccountName(account.id, label);
-      },
 
       // AccountsController
       setSelectedInternalAccount:
