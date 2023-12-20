@@ -16,7 +16,7 @@ import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { startNewDraftTransaction } from '../../../ducks/send';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { isHardwareKeyring } from '../../../helpers/utils/hardware';
-import { setSwapsFromToken } from '../../../ducks/swaps/swaps';
+import { setSwapToToken, setSwapsFromToken } from '../../../ducks/swaps/swaps';
 import useRamps from '../../../hooks/experiences/useRamps';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 ///: END:ONLY_INCLUDE_IF
@@ -233,6 +233,18 @@ const TokenOverview = ({ className, token }) => {
                     details: token,
                   }),
                 );
+
+                // Prepare Send and swap flow
+                const swapsToken = {
+                  ...token,
+                  address: token.address.toLowerCase(),
+                  iconUrl: token.image,
+                  balance,
+                  string: balanceToRender,
+                };
+                dispatch(setSwapsFromToken(swapsToken));
+                dispatch(setSwapToToken(swapsToken));
+
                 history.push(SEND_ROUTE);
               } catch (err) {
                 if (!err.message.includes(INVALID_ASSET_TYPE)) {
