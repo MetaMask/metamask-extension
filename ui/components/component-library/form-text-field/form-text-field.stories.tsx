@@ -281,6 +281,7 @@ export const CustomLabelOrHelpText: StoryFn<typeof FormTextField> = () => (
     />
     <FormTextField
       label="Swap from"
+      id="swap-from"
       placeholder="0"
       type={TextFieldType.Number}
     />

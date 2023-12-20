@@ -13,24 +13,49 @@ export enum FormTextFieldSize {
   Lg = 'lg',
 }
 
-export interface BaseFormTextFieldStyleUtilityProps
+export interface FormTextFieldStyleUtilityProps
   extends Omit<TextFieldStyleUtilityProps, 'size' | 'type'> {
+  /*
+   * Additional classNames to be added to the FormTextField component
+   */
   className?: string;
+  /*
+   * size of the FormTextField using `FormTextFieldSize` enum
+   */
   size?: FormTextFieldSize;
+  /*
+   * props to be passed to the TextField component
+   */
   textFieldProps?: TextFieldProps<'div'>;
+  /*
+   * helpText to be rendered below the FormTextField
+   */
   helpText?: string | React.ReactNode;
+  /*
+   * props to be passed to the HelpText component
+   */
   helpTextProps?: HelpTextProps<'div'>;
 }
 
 export interface FormTextFieldWithLabelProps
-  extends BaseFormTextFieldStyleUtilityProps {
+  extends FormTextFieldStyleUtilityProps {
+  /*
+   * label to be rendered above the FormTextField
+   * if label is provided, id is required
+   */
   label: string | React.ReactNode;
+  /*
+   * props to be passed to the Label component
+   */
   labelProps?: LabelProps<'label'>;
   id: string; // id is required when label is provided
 }
 
 export interface FormTextFieldWithoutLabelProps
-  extends BaseFormTextFieldStyleUtilityProps {
+  extends FormTextFieldStyleUtilityProps {
+  /*
+   * This is for when label is not provided, that way we can optionally still pass an id
+   */
   label?: never;
   labelProps?: never;
   id?: string; // id is optional when label is not provided
