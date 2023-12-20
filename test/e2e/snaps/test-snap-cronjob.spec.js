@@ -1,22 +1,18 @@
-const { withFixtures, unlockWallet } = require('../helpers');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  unlockWallet,
+  WINDOW_TITLES,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Cronjob', function () {
   it('can trigger a cronjob to open a dialog every minute', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
-        },
-      ],
-    };
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
@@ -39,7 +35,7 @@ describe('Test Snap Cronjob', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.clickElement({
@@ -73,7 +69,7 @@ describe('Test Snap Cronjob', function () {
         // switch to dialog popup, wait for a maximum of 65 seconds
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 65000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.delay(1000);

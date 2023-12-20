@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Añadir NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Descubra opciones para mantener su cuenta segura con MetaMask Snaps"
-  },
   "addSuggestedNFTs": {
     "message": "Añadir NFT sugeridos"
   },
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "Depositar"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Más información"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Debido a los cambios de protocolo de Ethereum: es posible que las redes de prueba de Rinkeby, Ropsten y Kovan no funcionen de manera tan confiable y queden obsoletas pronto."
-  },
   "description": {
     "message": "Descripción"
   },
@@ -1661,42 +1652,19 @@
     "message": "$1 horas",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 minutos",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Quizás en $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Probablemente en < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 segundos",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Muy probable en < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gas usado"
   },
   "general": {
     "message": "General"
-  },
-  "getStarted": {
-    "message": "Comenzar"
   },
   "globalTitle": {
     "message": "Menú global"
@@ -3499,9 +3467,6 @@
   "searchAccounts": {
     "message": "Buscar cuentas"
   },
-  "searchResults": {
-    "message": "Resultados de la búsqueda"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
   },
@@ -3757,9 +3722,6 @@
   "smartContracts": {
     "message": "Contratos inteligentes"
   },
-  "smartSwap": {
-    "message": "Intercambio inteligente"
-  },
   "smartSwapsAreHere": {
     "message": "¡Los intercambios inteligentes ya están aquí!"
   },
@@ -3772,9 +3734,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Los intercambios inteligentes no están disponibles temporalmente."
   },
-  "snapConfigure": {
-    "message": "Configurar"
-  },
   "snapConnectionWarning": {
     "message": "$1 quiere conectarse a $2. Continúe solo si confía en este sitio web.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3783,49 +3742,8 @@
     "message": "Este contenido proviene de $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Elija cómo proteger su nueva cuenta con MetaMask Snaps."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Cree una cuenta $1",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Por MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Auditar"
-  },
-  "snapDetailDeveloper": {
-    "message": "Desarrollador"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Actualizado"
-  },
-  "snapDetailManageSnap": {
-    "message": "Administrar snap"
-  },
-  "snapDetailTags": {
-    "message": "Etiquetas"
-  },
-  "snapDetailVersion": {
-    "message": "Versión"
-  },
   "snapDetailWebsite": {
     "message": "Sitio web"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Crear una cuenta Snap"
-  },
-  "snapDetailsInstalled": {
-    "message": "Instalado"
-  },
-  "snapInstall": {
-    "message": "Instalar snap"
   },
   "snapInstallRequest": {
     "message": "La instalación de $1 otorga los siguientes permisos. Solo continúe si confía en $1.",
@@ -3844,9 +3762,6 @@
   "snapInstallationErrorTitle": {
     "message": "Instalación fallida",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "Auditado"
   },
   "snapResultError": {
     "message": "Error"
@@ -4791,9 +4706,6 @@
   "transactionDetailGasHeading": {
     "message": "Tarifa estimada de gas"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "estimada"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Obtenga más información sobre las tarifas de gas"
   },
@@ -4929,12 +4841,6 @@
   "unknown": {
     "message": "Desconocido"
   },
-  "unknownCameraError": {
-    "message": "Error al intentar acceder a la cámara. Vuelva a intentarlo…"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Lo lamentamos, se produjo un error…"
-  },
   "unknownCollection": {
     "message": "Colección sin nombre"
   },
@@ -5014,10 +4920,6 @@
   },
   "verifyContractDetails": {
     "message": "Verificar detalles de terceros"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Los decimales del token se pueden encontrar en $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Comprobar este token en $1",

@@ -182,7 +182,7 @@ describe('Create Snap Account', function (this: Suite) {
 
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
-          text: 'Account 2',
+          text: 'Snap Account 1',
         });
       },
     );

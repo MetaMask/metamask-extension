@@ -1,11 +1,16 @@
 {
   "data": {
+    "AccountsController": {
+      "internalAccounts": { "selectedAccount": "string", "accounts": "object" }
+    },
     "AlertController": {
       "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
       "unconnectedAccountAlertShownOrigins": "object",
       "web3ShimUsageOrigins": "object"
     },
     "AnnouncementController": { "announcements": "object" },
+    "NetworkOrderController": { "orderedNetworkList": {} },
+    "AccountOrderController": { "pinnedAccountList": {} },
     "AppStateController": {
       "browserEnvironment": {},
       "nftsDropdownState": {},
@@ -28,7 +33,6 @@
       },
       "snapsInstallPrivacyWarningShown": true
     },
-    "CachedBalancesController": { "cachedBalances": "object" },
     "CurrencyController": {
       "currentCurrency": "usd",
       "currencyRates": {

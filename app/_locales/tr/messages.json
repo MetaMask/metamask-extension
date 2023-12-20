@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "NFT ekleyin"
   },
-  "addSnapAccountModalDescription": {
-    "message": "MetaMask Snaps ile hesabınızı güvende tutma seçeneklerini keşfedin"
-  },
   "addSuggestedNFTs": {
     "message": "Önerilen NFT'leri ekleyin"
   },
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "Para Yatır"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Daha fazla bilgi edinin"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Ethereum'da yaşanan protokol değişikliklerinden dolayı: Rinkeby, Ropsten, Kovan test ağları güvenilir bir şekilde çalışmayabilir ve yakında kullanım dışı olacak."
-  },
   "description": {
     "message": "Açıklama"
   },
@@ -1661,42 +1652,19 @@
     "message": "$1 sa.",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 dakika",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 dk",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Belki $1 içinde",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Muhtemelen < $1 içinde",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 saniye",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 sn",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Büyük olasılıkla > $1 içinde",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Kullanılan gaz"
   },
   "general": {
     "message": "Genel"
-  },
-  "getStarted": {
-    "message": "Başlarken"
   },
   "globalTitle": {
     "message": "Genel menü"
@@ -3499,9 +3467,6 @@
   "searchAccounts": {
     "message": "Hesapları ara"
   },
-  "searchResults": {
-    "message": "Arama sonuçları"
-  },
   "secretRecoveryPhrase": {
     "message": "Gizli Kurtarma İfadesi"
   },
@@ -3757,9 +3722,6 @@
   "smartContracts": {
     "message": "Akıllı sözleşmeler"
   },
-  "smartSwap": {
-    "message": "Akıllı swap"
-  },
   "smartSwapsAreHere": {
     "message": "Akıllı Swap'lar burada!"
   },
@@ -3772,9 +3734,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Akıllı Swap'lar geçici olarak kullanılamıyor."
   },
-  "snapConfigure": {
-    "message": "Yapılandır"
-  },
   "snapConnectionWarning": {
     "message": "$1, $2 adlı snape bağlanmak istiyor. Bu web sitesine güveniyorsanız ilerleyin.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3783,49 +3742,8 @@
     "message": "Bu içerik $1 kaynaklıdır",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "MetaMask Snaps'i kullanarak yeni hesabınızı nasıl güvende tutacağınızı seçin."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Bir $1 hesabı oluştur",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Oluşturan: MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Denetim"
-  },
-  "snapDetailDeveloper": {
-    "message": "Geliştirici"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Güncellendi"
-  },
-  "snapDetailManageSnap": {
-    "message": "Snapi yönet"
-  },
-  "snapDetailTags": {
-    "message": "Etiketler"
-  },
-  "snapDetailVersion": {
-    "message": "Sürüm"
-  },
   "snapDetailWebsite": {
     "message": "Web Sitesi"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Bir Snap Hesabı oluştur"
-  },
-  "snapDetailsInstalled": {
-    "message": "Yüklendi"
-  },
-  "snapInstall": {
-    "message": "Snap yükle"
   },
   "snapInstallRequest": {
     "message": "$1 yüklendiğinde aşağıdaki izinler verilir. Sadece $1 adlı snape güveniyorsanız devam edin.",
@@ -3844,9 +3762,6 @@
   "snapInstallationErrorTitle": {
     "message": "Yükleme başarısız oldu",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "Denetlendi"
   },
   "snapResultError": {
     "message": "Hata"
@@ -4791,9 +4706,6 @@
   "transactionDetailGasHeading": {
     "message": "Tahmini gaz ücreti"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "tahmini"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Gaz ücretleri hakkında daha fazla bilgi edinin"
   },
@@ -4929,12 +4841,6 @@
   "unknown": {
     "message": "Bilinmeyen"
   },
-  "unknownCameraError": {
-    "message": "Kameranıza erişim sağlamaya çalışırken bir hata oluştu. Lütfen tekrar deneyin..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Eyvah! Bir şeyler ters gitti...."
-  },
   "unknownCollection": {
     "message": "İsimsiz koleksiyon"
   },
@@ -5014,10 +4920,6 @@
   },
   "verifyContractDetails": {
     "message": "Üçüncü taraf bilgilerini doğrula"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Token ondalık değeri şurada bulunabilir: $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Şurada bu tokeni doğrula: $1",

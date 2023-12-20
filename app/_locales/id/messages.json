@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Tambahkan NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Temukan opsi untuk menjaga keamanan akun Anda dengan MetaMask Snap"
-  },
   "addSuggestedNFTs": {
     "message": "Tambahkan NFT yang disarankan"
   },
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "Deposit"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Pelajari selengkapnya"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Sehubungan dengan perubahan protokol Ethereum: jaringan uji Rinkeby, Ropsten, dan Kovan mungkin tidak dapat beroperasi dengan baik dan akan segera dihentikan."
-  },
   "description": {
     "message": "Deskripsi"
   },
@@ -1661,42 +1652,19 @@
     "message": "$1 jam",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 menit",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 mnt",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Mungkin dalam $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Kemungkinan dalam < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 detik",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 dtk",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Sangat mungkin dalam < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gas yang digunakan"
   },
   "general": {
     "message": "Umum"
-  },
-  "getStarted": {
-    "message": "Mulai"
   },
   "globalTitle": {
     "message": "Menu global"
@@ -3499,9 +3467,6 @@
   "searchAccounts": {
     "message": "Cari akun"
   },
-  "searchResults": {
-    "message": "Cari hasil"
-  },
   "secretRecoveryPhrase": {
     "message": "Frasa Pemulihan Rahasia"
   },
@@ -3757,9 +3722,6 @@
   "smartContracts": {
     "message": "Kontrak cerdas"
   },
-  "smartSwap": {
-    "message": "Pertukaran cerdas"
-  },
   "smartSwapsAreHere": {
     "message": "Smart Swap telah hadir!"
   },
@@ -3772,9 +3734,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Smart Swap tidak tersedia untuk sementara waktu."
   },
-  "snapConfigure": {
-    "message": "Konfigurasikan"
-  },
   "snapConnectionWarning": {
     "message": "$1 ingin terhubung ke $2. Lanjutkan hanya jika Anda memercayai situs web ini.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3783,49 +3742,8 @@
     "message": "Konten ini berasal dari $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Pilih cara mengamankan akun baru Anda menggunakan MetaMask Snap."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Buat akun $1",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Oleh MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Audit"
-  },
-  "snapDetailDeveloper": {
-    "message": "Pengembang"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Diperbarui"
-  },
-  "snapDetailManageSnap": {
-    "message": "Kelola snap"
-  },
-  "snapDetailTags": {
-    "message": "Tag"
-  },
-  "snapDetailVersion": {
-    "message": "Versi"
-  },
   "snapDetailWebsite": {
     "message": "Situs web"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Buat Akun Snap"
-  },
-  "snapDetailsInstalled": {
-    "message": "Terinstal"
-  },
-  "snapInstall": {
-    "message": "Instal Snap"
   },
   "snapInstallRequest": {
     "message": "Menginstal $1 memberinya izin berikut. Lanjutkan hanya jika Anda memercayai $1.",
@@ -3844,9 +3762,6 @@
   "snapInstallationErrorTitle": {
     "message": "Instalasi gagal",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "Diaudit"
   },
   "snapResultError": {
     "message": "Kesalahan"
@@ -4791,9 +4706,6 @@
   "transactionDetailGasHeading": {
     "message": "Estimasi biaya gas"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "estimasi"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Pelajari selengkapnya seputar biaya gas"
   },
@@ -4929,12 +4841,6 @@
   "unknown": {
     "message": "Tidak diketahui"
   },
-  "unknownCameraError": {
-    "message": "Terjadi kesalahan sewaktu mencoba mengakses kamera Anda. Harap coba lagi..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ups! Terjadi kesalahan...."
-  },
   "unknownCollection": {
     "message": "Koleksi tanpa nama"
   },
@@ -5014,10 +4920,6 @@
   },
   "verifyContractDetails": {
     "message": "Verifikasikan detail pihak ketiga"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Desimal token dapat ditemukan di $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Verifikasikan token ini di $1",

@@ -4,16 +4,13 @@ import reactRouterDom from 'react-router-dom';
 import { fireEvent, renderWithProvider, waitFor } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import messages from '../../../../app/_locales/en/messages.json';
-import {
-  ADD_SNAP_ACCOUNT_ROUTE,
-  CONNECT_HARDWARE_ROUTE,
-} from '../../../helpers/constants/routes';
-///: END:ONLY_INCLUDE_IN
+import { CONNECT_HARDWARE_ROUTE } from '../../../helpers/constants/routes';
+///: END:ONLY_INCLUDE_IF
 import { AccountListMenu } from '.';
 
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockOnClose = jest.fn();
 const mockGetEnvironmentType = jest.fn();
 
@@ -21,7 +18,7 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => mockGetEnvironmentType,
 }));
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 const render = (props = { onClose: () => jest.fn() }) => {
   const store = configureStore({
@@ -194,7 +191,7 @@ describe('AccountListMenu', () => {
     expect(historyPushMock).toHaveBeenCalledWith(CONNECT_HARDWARE_ROUTE);
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   describe('addSnapAccountButton', () => {
     const renderWithState = (state, props = { onClose: mockOnClose }) => {
       const store = configureStore({
@@ -227,7 +224,8 @@ describe('AccountListMenu', () => {
       );
     });
 
-    it("renders the add snap account button if it's enabled", async () => {
+    it('renders the "Add account Snap" button if it\'s enabled', async () => {
+      global.platform = { openTab: jest.fn() };
       const { getByText } = renderWithState({ addSnapAccountEnabled: true });
       const button = document.querySelector(
         '[data-testid="multichain-account-menu-popover-action-button"]',
@@ -244,24 +242,104 @@ describe('AccountListMenu', () => {
       });
     });
 
-    it('pushes history when clicking add snap account from extended view', async () => {
+    it('opens the Snaps registry in a new tab', async () => {
+      // Set up mock state
+      global.platform = { openTab: jest.fn() };
       const { getByText } = renderWithState({ addSnapAccountEnabled: true });
       mockGetEnvironmentType.mockReturnValueOnce('fullscreen');
 
+      // Open account picker
       const button = document.querySelector(
         '[data-testid="multichain-account-menu-popover-action-button"]',
       );
       button.click();
 
-      const addSnapAccountButton = getByText(
+      // Click on "Add account Snap"
+      const addAccountSnapButton = getByText(
         messages.settingAddSnapAccount.message,
       );
+      fireEvent.click(addAccountSnapButton);
 
-      fireEvent.click(addSnapAccountButton);
-      await waitFor(() => {
-        expect(historyPushMock).toHaveBeenCalledWith(ADD_SNAP_ACCOUNT_ROUTE);
-      });
+      // Check if `openTab` was called
+      expect(global.platform.openTab).toHaveBeenCalledTimes(1);
     });
   });
-  ///: END:ONLY_INCLUDE_IN
+
+  it('displays the correct label for unnamed snap accounts', () => {
+    const mockStore = configureStore({
+      activeTab: {
+        title: 'Eth Sign Tests',
+        origin: 'https://remix.ethereum.org',
+        protocol: 'https:',
+        url: 'https://remix.ethereum.org/',
+      },
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              ...mockState.metamask.internalAccounts.accounts[
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+              ],
+              metadata: {
+                name: 'Snap Account',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    renderWithProvider(<AccountListMenu onClose={jest.fn()} />, mockStore);
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    const tag = listItems[0].querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Snaps (Beta)');
+  });
+
+  it('displays the correct label for named snap accounts', () => {
+    const mockStore = configureStore({
+      activeTab: {
+        title: 'Eth Sign Tests',
+        origin: 'https://remix.ethereum.org',
+        protocol: 'https:',
+        url: 'https://remix.ethereum.org/',
+      },
+      metamask: {
+        ...mockState.metamask,
+        internalAccounts: {
+          ...mockState.metamask.internalAccounts,
+          accounts: {
+            ...mockState.metamask.internalAccounts.accounts,
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              ...mockState.metamask.internalAccounts.accounts[
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
+              ],
+              metadata: {
+                name: 'Snap Account',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+                snap: {
+                  name: 'Test Snap Name',
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    renderWithProvider(<AccountListMenu onClose={jest.fn()} />, mockStore);
+    const listItems = document.querySelectorAll(
+      '.multichain-account-list-item',
+    );
+    const tag = listItems[0].querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Test Snap Name (Beta)');
+  });
+  ///: END:ONLY_INCLUDE_IF
 });

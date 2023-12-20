@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Thêm NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Khám phá các tùy chọn để đảm bảo an toàn cho tài khoản của bạn với MetaMask Snap"
-  },
   "addSuggestedNFTs": {
     "message": "Thêm NFT được đề xuất"
   },
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "Nạp"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Tìm hiểu thêm"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Do những thay đổi trong giao thức của Ethereum: các mạng thử nghiệm Rinkeby, Ropsten và Kovan có thể không hoạt động đáng tin cậy và sẽ sớm bị ngừng sử dụng."
-  },
   "description": {
     "message": "Mô tả"
   },
@@ -1661,42 +1652,19 @@
     "message": "$1 giờ",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 phút",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 phút",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Có thể sau $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Có khả năng sau < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 giây",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 giây",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Nhiều khả năng sau < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gas đã dùng"
   },
   "general": {
     "message": "Chung"
-  },
-  "getStarted": {
-    "message": "Bắt đầu"
   },
   "globalTitle": {
     "message": "Trình đơn chung"
@@ -3499,9 +3467,6 @@
   "searchAccounts": {
     "message": "Tìm kiếm tài khoản"
   },
-  "searchResults": {
-    "message": "Kết quả tìm kiếm"
-  },
   "secretRecoveryPhrase": {
     "message": "Cụm từ khôi phục bí mật"
   },
@@ -3757,9 +3722,6 @@
   "smartContracts": {
     "message": "Hợp đồng thông minh"
   },
-  "smartSwap": {
-    "message": "Hoán đổi thông minh"
-  },
   "smartSwapsAreHere": {
     "message": "Hoán đổi thông minh đã ra mắt!"
   },
@@ -3772,9 +3734,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Hoán đổi thông minh tạm thời không khả dụng."
   },
-  "snapConfigure": {
-    "message": "Định cấu hình"
-  },
   "snapConnectionWarning": {
     "message": "$1 muốn kết nối với $2. Chỉ tiếp tục nếu bạn tin tưởng trang web này.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3783,49 +3742,8 @@
     "message": "Nội dung này đến từ $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Chọn cách bảo mật tài khoản mới của bạn bằng MetaMask Snap."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Tạo tài khoản $1",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "Snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Bởi MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Kiểm tra"
-  },
-  "snapDetailDeveloper": {
-    "message": "Nhà phát triển"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Đã cập nhật"
-  },
-  "snapDetailManageSnap": {
-    "message": "Quản lý Snap"
-  },
-  "snapDetailTags": {
-    "message": "Thẻ"
-  },
-  "snapDetailVersion": {
-    "message": "Phiên bản"
-  },
   "snapDetailWebsite": {
     "message": "Trang web"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Tạo tài khoản Snap"
-  },
-  "snapDetailsInstalled": {
-    "message": "Đã cài đặt"
-  },
-  "snapInstall": {
-    "message": "Cài đặt Snap"
   },
   "snapInstallRequest": {
     "message": "Cài đặt $1 để được cấp các quyền sau. Chỉ tiếp tục nếu bạn tin tưởng $1.",
@@ -3844,9 +3762,6 @@
   "snapInstallationErrorTitle": {
     "message": "Cài đặt thất bại",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "Đã kiểm tra"
   },
   "snapResultError": {
     "message": "Lỗi"
@@ -4791,9 +4706,6 @@
   "transactionDetailGasHeading": {
     "message": "Phí gas ước tính"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "ước tính"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Tìm hiểu thêm về phí gas"
   },
@@ -4929,12 +4841,6 @@
   "unknown": {
     "message": "Không xác định"
   },
-  "unknownCameraError": {
-    "message": "Đã xảy ra lỗi khi cố gắng truy cập máy ảnh của bạn. Vui lòng thử lại..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Rất tiếc! Đã xảy ra sự cố...."
-  },
   "unknownCollection": {
     "message": "Bộ sưu tập chưa có tên"
   },
@@ -5014,10 +4920,6 @@
   },
   "verifyContractDetails": {
     "message": "Xác minh thông tin bên thứ ba"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Không tìm thấy số thập phân của token trên $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Xác minh token này trên $1",

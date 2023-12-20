@@ -1,5 +1,6 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import { KeyringType } from '../../shared/constants/keyring';
 
@@ -147,9 +148,6 @@ export const createSwapsMockStore = () => {
         chainId: CHAIN_IDS.MAINNET,
         ticker: 'ETH',
       },
-      cachedBalances: {
-        [CHAIN_IDS.MAINNET]: 5,
-      },
       preferences: {
         showFiatInTestnets: true,
       },
@@ -251,6 +249,63 @@ export const createSwapsMockStore = () => {
           name: 'Send Account 4',
         },
       },
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+          '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
+            address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+            id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+            metadata: {
+              name: 'Test Account 2',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+          '15e69915-2a1a-4019-93b3-916e11fd432f': {
+            address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+            id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+            metadata: {
+              name: 'Ledger Hardware 2',
+              keyring: {
+                type: 'Ledger Hardware',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+          '784225f4-d30b-4e77-a900-c8bbce735b88': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+            metadata: {
+              name: 'Test Account 3',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
       accounts: {
         '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
           address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
@@ -259,6 +314,18 @@ export const createSwapsMockStore = () => {
         '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
           address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
           balance: '0x0',
+        },
+      },
+      accountsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            balance: '0x0',
+          },
+          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+            address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            balance: '0x0',
+          },
         },
       },
       selectedAddress: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',

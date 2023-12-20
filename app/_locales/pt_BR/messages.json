@@ -924,33 +924,13 @@
     "message": "$1 h",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 minutos",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Talvez em $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Provavelmente em < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 segundos",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Muito provavelmente em < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gás usado"
@@ -1825,9 +1805,6 @@
   "searchAccounts": {
     "message": "Buscar contas"
   },
-  "searchResults": {
-    "message": "Resultados da busca"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"
   },
@@ -2477,9 +2454,6 @@
   "transactionDetailGasHeading": {
     "message": "Taxa de gás estimada"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "estimada"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Saiba mais sobre taxas de gás"
   },
@@ -2578,12 +2552,6 @@
   "unknown": {
     "message": "Desconhecido"
   },
-  "unknownCameraError": {
-    "message": "Houve um erro ao tentar acessar sua câmera. Tente novamente..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Opa! Ocorreu algum erro..."
-  },
   "unknownNetwork": {
     "message": "Rede privada desconhecida"
   },
@@ -2630,10 +2598,6 @@
   },
   "userName": {
     "message": "Nome de usuário"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Os decimais do token podem ser encontrados no $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Verifique esse token no $1",

@@ -1,8 +1,9 @@
 import { TextProps, ValidTagType } from '../text/text.types';
 import type {
-  StyleUtilityProps,
   PolymorphicComponentPropWithRef,
+  StyleUtilityProps,
 } from '../box';
+import { IconName, IconProps } from '../icon';
 
 export interface TagStyleUtilityProps extends StyleUtilityProps {
   /**
@@ -17,6 +18,14 @@ export interface TagStyleUtilityProps extends StyleUtilityProps {
    * Additional classNames to be added to the Tag component
    */
   className?: string;
+  /**
+   * The name of the icon to be used in the Tag component
+   */
+  startIconName?: IconName;
+  /**
+   * The icon props of the component. Most Icon component props can be used
+   */
+  startIconProps?: Omit<IconProps<'span'>, 'name'>;
 }
 
 export type TagProps<C extends React.ElementType> =

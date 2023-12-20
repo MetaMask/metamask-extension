@@ -10,12 +10,12 @@ import {
 } from '../../../shared/constants/metametrics';
 import { SECOND } from '../../../shared/constants/time';
 
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 import { getSnapAndHardwareInfoForMetrics } from './snap-keyring/metrics';
 
@@ -118,7 +118,6 @@ const rateLimitTimeouts = {};
  * @param {number} [opts.rateLimitSeconds] - number of seconds to wait before
  *  allowing another set of events to be tracked.
  * @param opts.securityProviderRequest
- * @param {Function} opts.getSelectedAddress
  * @param {Function} opts.getAccountType
  * @param {Function} opts.getDeviceModel
  * @param {RestrictedControllerMessenger} opts.snapAndHardwareMessenger
@@ -129,7 +128,6 @@ export default function createRPCMethodTrackingMiddleware({
   getMetricsState,
   rateLimitSeconds = 60 * 5,
   securityProviderRequest,
-  getSelectedAddress,
   getAccountType,
   getDeviceModel,
   snapAndHardwareMessenger,
@@ -198,7 +196,7 @@ export default function createRPCMethodTrackingMiddleware({
         }
         const paramsExamplePassword = req?.params?.[2];
 
-        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
         if (req.securityAlertResponse?.providerRequestsCount) {
           Object.keys(req.securityAlertResponse.providerRequestsCount).forEach(
             (key) => {
@@ -214,10 +212,9 @@ export default function createRPCMethodTrackingMiddleware({
           BlockaidResultType.NotApplicable;
         eventProperties.security_alert_reason =
           req.securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
-          getSelectedAddress,
           getAccountType,
           getDeviceModel,
           snapAndHardwareMessenger,

@@ -301,6 +301,13 @@ function createScriptTasks({
    */
   function createTasksForScriptBundles({ buildTarget, taskPrefix }) {
     const standardEntryPoints = ['background', 'ui', 'content-script'];
+
+    // In MV3 we will need to build our offscreen entry point bundle and any
+    // entry points for iframes that we want to lockdown with LavaMoat.
+    if (process.env.ENABLE_MV3 === 'true') {
+      standardEntryPoints.push('offscreen', 'trezor-iframe');
+    }
+
     const standardSubtask = createTask(
       `${taskPrefix}:standardEntryPoints`,
       createFactoredBuild({
@@ -309,10 +316,16 @@ function createScriptTasks({
         buildTarget,
         buildType,
         entryFiles: standardEntryPoints.map((label) => {
-          if (label === 'content-script') {
-            return './app/vendor/trezor/content-script.js';
+          switch (label) {
+            case 'content-script':
+              return './app/vendor/trezor/content-script.js';
+            case 'offscreen':
+              return './offscreen/scripts/offscreen.ts';
+            case 'trezor-iframe':
+              return './offscreen/scripts/trezor-iframe.ts';
+            default:
+              return `./app/scripts/${label}.js`;
           }
-          return `./app/scripts/${label}.js`;
         }),
         ignoredFiles,
         policyOnly,
@@ -724,6 +737,9 @@ function createFactoredBuild({
               browserPlatforms,
               applyLavaMoat,
               isMMI: buildType === 'mmi',
+              isTest:
+                buildTarget === BUILD_TARGETS.TEST ||
+                buildTarget === BUILD_TARGETS.TEST_DEV,
             });
             renderHtmlFile({
               htmlName: 'home',
@@ -781,6 +797,26 @@ function createFactoredBuild({
               commonSet,
               browserPlatforms,
               applyLavaMoat: false,
+            });
+            break;
+          }
+          case 'offscreen': {
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              applyLavaMoat,
+              destinationFileName: 'load-offscreen.js',
+            });
+            break;
+          }
+          case 'trezor-iframe': {
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              applyLavaMoat,
+              destinationFileName: 'load-trezor-iframe.js',
             });
             break;
           }
@@ -1261,7 +1297,13 @@ function renderJavaScriptLoader({
   });
 }
 
-function renderHtmlFile({ htmlName, browserPlatforms, applyLavaMoat, isMMI }) {
+function renderHtmlFile({
+  htmlName,
+  browserPlatforms,
+  applyLavaMoat,
+  isMMI,
+  isTest,
+}) {
   if (applyLavaMoat === undefined) {
     throw new Error(
       'build/scripts/renderHtmlFile - must specify "applyLavaMoat" option',
@@ -1270,7 +1312,7 @@ function renderHtmlFile({ htmlName, browserPlatforms, applyLavaMoat, isMMI }) {
   const htmlFilePath = `./app/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
-  const htmlOutput = Sqrl.render(htmlTemplate, { isMMI });
+  const htmlOutput = Sqrl.render(htmlTemplate, { isMMI, isTest });
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

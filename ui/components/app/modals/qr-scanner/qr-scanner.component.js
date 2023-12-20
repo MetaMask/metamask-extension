@@ -205,8 +205,8 @@ export default class QrScanner extends Component {
     } else if (error.message === t('unknownQrCode')) {
       msg = t('unknownQrCode');
     } else {
-      title = t('unknownCameraErrorTitle');
-      msg = t('unknownCameraError');
+      title = t('generalCameraErrorTitle');
+      msg = t('generalCameraError');
     }
 
     return (

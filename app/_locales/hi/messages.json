@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "NFTs जोड़ें"
   },
-  "addSnapAccountModalDescription": {
-    "message": "MetaMask Snaps के साथ अपने अकाउंट को सुरक्षित रखने के विकल्प खोजें"
-  },
   "addSuggestedNFTs": {
     "message": "सुझाए गए NFTs जोड़ें"
   },
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "डिपॉज़िट करें"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "अधिक जानें"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Ethereum प्रोटोकॉल परिवर्तनों के कारण: हो सकता है कि Rinkeby, Ropsten, और Kovan टेस्ट नेटवर्क मज़बूती से काम न करें और जल्द ही हटा दिए जाएंगे।"
-  },
   "description": {
     "message": "जानकारी"
   },
@@ -1661,42 +1652,19 @@
     "message": "$1 घंटे",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 मिनट",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1मिनट",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "शायद $1 में",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "संभवत < $1 में",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 सेकंड",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 सेकंड",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "<$1 में बहुत संभावना है",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "इस्तेमाल की गई गैस"
   },
   "general": {
     "message": "सामान्य"
-  },
-  "getStarted": {
-    "message": "शुरू करें"
   },
   "globalTitle": {
     "message": "वैश्विक मेन्यू"
@@ -3499,9 +3467,6 @@
   "searchAccounts": {
     "message": "अकाउंट्स खोजें"
   },
-  "searchResults": {
-    "message": "खोज परिणाम"
-  },
   "secretRecoveryPhrase": {
     "message": "सीक्रेट रिकवरी फ्रेज"
   },
@@ -3757,9 +3722,6 @@
   "smartContracts": {
     "message": "स्मार्ट कॉन्ट्रैक्ट्स"
   },
-  "smartSwap": {
-    "message": "स्मार्ट स्वैप"
-  },
   "smartSwapsAreHere": {
     "message": "स्मार्ट स्वैप यहां हैं!"
   },
@@ -3772,9 +3734,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "स्मार्ट स्वैप अस्थायी रूप से अनुपलब्ध हैं।"
   },
-  "snapConfigure": {
-    "message": "कॉन्फिगर करें"
-  },
   "snapConnectionWarning": {
     "message": "$1 चाहता है कि $2 के साथ जुड़े. तभी आगे बढ़ें अगर आप इस वेबसाइट पर भरोसा करते हैं।",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3783,49 +3742,8 @@
     "message": "यह कंटेंट $1 से आ रही है",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "MetaMask Snaps का इस्तेमाल करके अपने नए अकाउंट को सुरक्षित करने का तरीका चुनें।"
-  },
-  "snapCreateAccountTitle": {
-    "message": "एक $1 वाला अकाउंट बनाएं",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "Snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "MetaMask द्वारा"
-  },
-  "snapDetailAudits": {
-    "message": "ऑडिट करें"
-  },
-  "snapDetailDeveloper": {
-    "message": "डेवलपर"
-  },
-  "snapDetailLastUpdated": {
-    "message": "अपडेट किया गया"
-  },
-  "snapDetailManageSnap": {
-    "message": "Snap को प्रबंधित करें"
-  },
-  "snapDetailTags": {
-    "message": "टैग"
-  },
-  "snapDetailVersion": {
-    "message": "वर्शन"
-  },
   "snapDetailWebsite": {
     "message": "वेबसाइट"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "एक Snap अकाउंट बनाएं"
-  },
-  "snapDetailsInstalled": {
-    "message": "इंस्टॉल किया गया"
-  },
-  "snapInstall": {
-    "message": "Snap इंस्टाल करें"
   },
   "snapInstallRequest": {
     "message": "$1 इंस्टॉल करने से इसे निम्नलिखित अनुमतियां मिलती हैं। अगर आप $1 पर भरोसा करते हैं तो ही जारी रखें।",
@@ -3844,9 +3762,6 @@
   "snapInstallationErrorTitle": {
     "message": "इंस्टॉलेशन नहीं हो पाया",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "ऑडिट किया गया"
   },
   "snapResultError": {
     "message": "गड़बड़ी"
@@ -4791,9 +4706,6 @@
   "transactionDetailGasHeading": {
     "message": "अनुमानित गैस फ़ीस"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "अनुमानित"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "गैस फ़ीस के बारे में और अधिक जानें"
   },
@@ -4929,12 +4841,6 @@
   "unknown": {
     "message": "अज्ञात"
   },
-  "unknownCameraError": {
-    "message": "आपके कैमरे तक पहुंचने की कोशिश करते समय एक गड़बड़ी हुई। कृपया फिर से कोशिश करें..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "ओह! कुछ गलत हो गया...."
-  },
   "unknownCollection": {
     "message": "अनाम संग्रह"
   },
@@ -5014,10 +4920,6 @@
   },
   "verifyContractDetails": {
     "message": "थर्ड-पार्टी विवरण वेरीफ़ाई करें"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "टोकन डेसीमल $1 पर पाया जा सकता है",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "इस टोकन को $1 पर वेरीफ़ाई करें",

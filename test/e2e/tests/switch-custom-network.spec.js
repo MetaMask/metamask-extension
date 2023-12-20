@@ -1,24 +1,14 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../fixture-builder');
 const {
-  convertToHexValue,
   withFixtures,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
+  generateGanacheOptions,
 } = require('../helpers');
 
 describe('Switch ethereum chain', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-    concurrent: { port: 8546, chainId: 1338, ganacheOptions2: {} },
-  };
-
   it('should successfully change the network in response to wallet_switchEthereumChain', async function () {
     await withFixtures(
       {
@@ -26,7 +16,13 @@ describe('Switch ethereum chain', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: generateGanacheOptions({
+          concurrent: {
+            port: 8546,
+            chainId: 1338,
+            ganacheOptions2: {},
+          },
+        }),
         title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
@@ -46,7 +42,7 @@ describe('Switch ethereum chain', function () {
         await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -77,7 +73,7 @@ describe('Switch ethereum chain', function () {
         await driver.waitUntilXWindowHandles(3);
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 

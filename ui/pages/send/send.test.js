@@ -110,7 +110,7 @@ const baseStore = {
     addressBook: {
       [CHAIN_IDS.GOERLI]: [],
     },
-    cachedBalances: {
+    accountsByChainId: {
       [CHAIN_IDS.GOERLI]: {},
     },
     accounts: {
