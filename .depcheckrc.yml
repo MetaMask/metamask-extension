@@ -37,6 +37,7 @@ ignores:
   - 'source-map-explorer'
   - 'playwright'
   - 'wait-on'
+  - 'tsx' #used in .devcontainer
   # development tool
   - 'nyc'
   # storybook
