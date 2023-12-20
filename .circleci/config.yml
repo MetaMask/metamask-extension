@@ -997,7 +997,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:single test/e2e/vault-decryption.spec.js --browser chrome --retries 2 --debug
+              yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 2 --debug
             fi
           no_output_timeout: 5m
 
