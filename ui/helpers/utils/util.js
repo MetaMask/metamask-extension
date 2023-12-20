@@ -4,15 +4,14 @@ import BigNumber from 'bignumber.js';
 import * as ethUtil from 'ethereumjs-util';
 import { DateTime } from 'luxon';
 import { getFormattedIpfsUrl } from '@metamask/assets-controllers';
-import slip44 from '@metamask/slip44';
 import * as lodash from 'lodash';
 import bowser from 'bowser';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import { getSnapPrefix } from '@metamask/snaps-utils';
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { stripSnapPrefix } from '@metamask/snaps-utils';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-rpc-methods';
 // eslint-disable-next-line import/no-duplicates
 import { isObject } from '@metamask/utils';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 // eslint-disable-next-line import/no-duplicates
 import { isStrictHexString } from '@metamask/utils';
 import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
@@ -28,12 +27,9 @@ import {
 } from '../../../shared/constants/labels';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { OUTDATED_BROWSER_VERSIONS } from '../constants/common';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-import {
-  SNAPS_DERIVATION_PATHS,
-  SNAPS_METADATA,
-} from '../../../shared/constants/snaps';
-///: END:ONLY_INCLUDE_IN
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
+import { SNAPS_METADATA } from '../../../shared/constants/snaps';
+///: END:ONLY_INCLUDE_IF
 // formatData :: ( date: <Unix Timestamp> ) -> String
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import { hexToDecimal } from '../../../shared/modules/conversion.utils';
@@ -554,21 +550,6 @@ export function roundToDecimalPlacesRemovingExtraZeroes(
 }
 
 /**
- * Gets the name of the SLIP-44 protocol corresponding to the specified
- * `coin_type`.
- *
- * @param {string | number} coinType - The SLIP-44 `coin_type` value whose name
- * to retrieve.
- * @returns {string | undefined} The name of the protocol if found.
- */
-export function coinTypeToProtocolName(coinType) {
-  if (String(coinType) === '1') {
-    return 'Test Networks';
-  }
-  return slip44[coinType]?.name || undefined;
-}
-
-/**
  * Tests "nullishness". Used to guard a section of a component from being
  * rendered based on a value.
  *
@@ -579,47 +560,22 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-/**
- * @param {string[]} path
- * @param {string} curve
- * @returns {string | null}
- */
-export function getSnapDerivationPathName(path, curve) {
-  const pathMetadata = SNAPS_DERIVATION_PATHS.find(
-    (derivationPath) =>
-      derivationPath.curve === curve &&
-      lodash.isEqual(derivationPath.path, path),
-  );
-
-  if (pathMetadata) {
-    return pathMetadata.name;
-  }
-
-  // If the curve is secp256k1 and the path is a valid BIP44 path
-  // we try looking for the network/protocol name in SLIP44
-  if (
-    curve === 'secp256k1' &&
-    path[0] === 'm' &&
-    path[1] === `44'` &&
-    path[2].endsWith(`'`)
-  ) {
-    const coinType = path[2].slice(0, -1);
-    return coinTypeToProtocolName(coinType) ?? null;
-  }
-
-  return null;
-}
-
-export const removeSnapIdPrefix = (snapId) =>
-  snapId?.replace(getSnapPrefix(snapId), '');
-
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export const getSnapName = (snapId, subjectMetadata) => {
   if (SNAPS_METADATA[snapId]?.name) {
     return SNAPS_METADATA[snapId].name;
   }
 
-  return subjectMetadata?.name ?? removeSnapIdPrefix(snapId);
+  if (subjectMetadata) {
+    return subjectMetadata.name;
+  }
+
+  // Mirrors a legacy behaviour of stripSnapPrefix
+  if (!snapId) {
+    return null;
+  }
+
+  return stripSnapPrefix(snapId);
 };
 
 export const getSnapRoute = (snapId) => {
@@ -645,7 +601,7 @@ export const getDedupedSnaps = (request, permissions) => {
   return dedupedSnaps.length > 0 ? dedupedSnaps : requestedSnapKeys;
 };
 
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 /**
  * The method escape RTL character in string

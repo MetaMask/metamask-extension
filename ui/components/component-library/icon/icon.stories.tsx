@@ -23,11 +23,12 @@ import {
   ButtonLinkSize,
   Label,
   Text,
+  TextField,
+  TextFieldSize,
   TextFieldSearch,
   ButtonIconSize,
   Box,
 } from '..';
-import { TextField, TEXT_FIELD_SIZES } from '../text-field/deprecated';
 import { Icon } from './icon';
 import { IconName, IconSize } from './icon.types';
 
@@ -120,7 +121,7 @@ export const DefaultStory: StoryFn<typeof Icon> = (args) => {
                   placeholder={item}
                   value={item}
                   readOnly
-                  size={TEXT_FIELD_SIZES.SM}
+                  size={TextFieldSize.Sm}
                   inputProps={{
                     variant: TextVariant.bodyXs,
                     textAlign: TextAlign.Center,

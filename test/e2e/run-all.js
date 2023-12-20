@@ -150,10 +150,7 @@ async function main() {
     testPaths = await getTestPathsForTestDir(testDir);
   } else if (buildType === 'mmi') {
     const testDir = path.join(__dirname, 'tests');
-    testPaths = [
-      ...(await getTestPathsForTestDir(testDir)),
-      path.join(__dirname, 'metamask-ui.spec.js'),
-    ];
+    testPaths = [...(await getTestPathsForTestDir(testDir))];
   } else {
     const testDir = path.join(__dirname, 'tests');
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
@@ -162,7 +159,6 @@ async function main() {
     testPaths = [
       ...(await getTestPathsForTestDir(testDir)),
       ...filteredFlaskAndMainTests,
-      path.join(__dirname, 'metamask-ui.spec.js'),
     ];
   }
 

@@ -14,6 +14,7 @@ import type { KeyringControllerGetAccountsAction } from '@metamask/keyring-contr
 import browser from 'webextension-polyfill';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
+import { SnapId } from '@metamask/snaps-sdk';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
@@ -28,7 +29,7 @@ import { isBlockedUrl } from './utils/isBlockedUrl';
  */
 export const getAccountsBySnapId = async (
   controller: MetamaskController,
-  snapId: string,
+  snapId: SnapId,
 ) => {
   const snapKeyring: SnapKeyring = await controller.getSnapKeyring();
   return await snapKeyring.getAccountsBySnapId(snapId);
@@ -50,8 +51,8 @@ type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
   'SnapKeyringBuilder',
   SnapKeyringBuilderAllowActions,
   never,
-  string,
-  string
+  SnapKeyringBuilderAllowActions['type'],
+  never
 >;
 
 /**

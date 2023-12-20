@@ -1,18 +1,13 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, unlockWallet } = require('../helpers');
+const {
+  withFixtures,
+  unlockWallet,
+  WINDOW_TITLES,
+  generateGanacheOptions,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_sendTransaction', function () {
-  const ganacheOptions = {
-    hardfork: 'london',
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   const expectedHash =
     '0x855951a65dcf5949dc54beb032adfb604c52a0a548a0f616799d6873a9521470';
   it('confirms a new transaction', async function () {
@@ -22,7 +17,7 @@ describe('eth_sendTransaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -50,7 +45,7 @@ describe('eth_sendTransaction', function () {
 
         // confirm transaction in mm popup
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.switchToWindowWithTitle('E2E Test Dapp');
         const actualHash = await driver.executeScript(
@@ -67,7 +62,7 @@ describe('eth_sendTransaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -95,7 +90,7 @@ describe('eth_sendTransaction', function () {
 
         // reject transaction in mm popup
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle('MetaMask Notification');
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({ text: 'Reject', tag: 'button' });
         await driver.switchToWindowWithTitle('E2E Test Dapp');
         const result = await driver

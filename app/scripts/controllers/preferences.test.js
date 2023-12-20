@@ -364,7 +364,7 @@ describe('preferences controller', () => {
     });
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   describe('setUseExternalNameSources', () => {
     it('should default to true', () => {
       expect(
@@ -379,5 +379,5 @@ describe('preferences controller', () => {
       ).toStrictEqual(false);
     });
   });
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 });

@@ -10,19 +10,28 @@ import {
 import { getCurrentChainId } from '../../../selectors';
 import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { BannerAlert, Box, ButtonLink } from '../../component-library';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 
 export default function DeprecatedNetworks() {
   const currentChainID = useSelector(getCurrentChainId);
   const [isShowingWarning, setIsShowingWarning] = useState(false);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const t = useI18nContext();
+
+  // To add a deprecation warning to a network, add it to the array
+  // `DEPRECATED_NETWORKS` and as a new case to `getDeprecationWarningCopy()`
+  const DEPRECATED_NETWORKS = [CHAIN_IDS.AURORA, CHAIN_IDS.GOERLI];
+
   useEffect(() => {
-    if (completedOnboarding && currentChainID === '0x4e454152') {
+    if (completedOnboarding && DEPRECATED_NETWORKS.includes(currentChainID)) {
       setIsShowingWarning(true);
     } else {
       setIsShowingWarning(false);
     }
   }, [currentChainID, completedOnboarding]);
+
+  const { bannerAlertDescription, actionBtnLinkURL } =
+    getDeprecationWarningCopy(t, currentChainID);
 
   return isShowingWarning ? (
     <Box
@@ -33,16 +42,31 @@ export default function DeprecatedNetworks() {
     >
       <BannerAlert
         severity={Severity.Warning}
-        description={t('deprecatedAuroraNetworkMsg')}
+        description={bannerAlertDescription}
         onClose={() => setIsShowingWarning(false)}
         actionButtonLabel={t('learnMoreUpperCase')}
         actionButtonProps={{
           className: 'deprecated-networks__content__inline-link',
-          href: 'https://mainnet.aurora.dev/',
+          href: actionBtnLinkURL,
           variant: ButtonLink,
           externalLink: true,
         }}
       />
     </Box>
   ) : null;
+}
+
+function getDeprecationWarningCopy(t, currentChainID) {
+  let bannerAlertDescription, actionBtnLinkURL;
+
+  if (currentChainID === CHAIN_IDS.AURORA) {
+    bannerAlertDescription = t('deprecatedAuroraNetworkMsg');
+    actionBtnLinkURL = 'https://mainnet.aurora.dev/';
+  } else if (currentChainID === CHAIN_IDS.GOERLI) {
+    bannerAlertDescription = t('deprecatedGoerliNetworkMsg');
+    actionBtnLinkURL =
+      'https://github.com/eth-clients/goerli#goerli-goerlitzer-testnet';
+  }
+
+  return { bannerAlertDescription, actionBtnLinkURL };
 }

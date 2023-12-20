@@ -32,6 +32,12 @@
         "removeEventListener": true
       }
     },
+    "react-beautiful-dnd": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    },
     "react-dnd-html5-backend": {
       "globals": {
         "clearTimeout": true,

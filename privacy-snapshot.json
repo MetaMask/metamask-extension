@@ -19,6 +19,7 @@
   "fonts.gstatic.com",
   "gas-api.metaswap.codefi.network",
   "github.com",
+  "localhost:8000",
   "localhost:8545",
   "mainnet.infura.io",
   "metamask.github.io",
@@ -38,5 +39,6 @@
   "token-api.metaswap.codefi.network",
   "tx-insights.metaswap.codefi.network",
   "unresponsive-rpc.url",
-  "www.4byte.directory"
+  "www.4byte.directory",
+  "price-api.metafi.codefi.network"
 ]

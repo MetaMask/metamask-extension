@@ -12,10 +12,10 @@ import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { Box, Icon, IconName, Text } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { SECOND } from '../../../../shared/constants/time';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { getURLHostName } from '../../../helpers/utils/util';
@@ -56,18 +56,18 @@ export default class TransactionListItemDetails extends PureComponent {
     isCustomNetwork: PropTypes.bool,
     history: PropTypes.object,
     blockExplorerLinkText: PropTypes.object,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     getCustodianTransactionDeepLink: PropTypes.func,
-    selectedIdentity: PropTypes.object,
+    selectedAccount: PropTypes.object,
     transactionNote: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
     justCopied: false,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     custodyTransactionDeepLink: null,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   handleBlockExplorerClick = () => {
@@ -139,28 +139,28 @@ export default class TransactionListItemDetails extends PureComponent {
     const {
       recipientAddress,
       tryReverseResolveAddress,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-      selectedIdentity,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      selectedAccount,
       transactionGroup,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this._mounted = true;
-    const address = selectedIdentity?.address;
+    const address = selectedAccount?.address;
     const custodyId = transactionGroup?.primaryTransaction?.custodyId;
 
     if (this._mounted && address && custodyId) {
       this.getCustodianTransactionDeepLink(address, custodyId);
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     if (recipientAddress) {
       tryReverseResolveAddress(recipientAddress);
     }
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getCustodianTransactionDeepLink = async (address, custodyId) => {
     const { getCustodianTransactionDeepLink } = this.props;
 
@@ -177,15 +177,15 @@ export default class TransactionListItemDetails extends PureComponent {
   componentWillUnmount() {
     this._mounted = false;
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   render() {
     const { t } = this.context;
     const {
       justCopied,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       custodyTransactionDeepLink,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     } = this.state;
     const {
       transactionGroup,
@@ -205,9 +205,9 @@ export default class TransactionListItemDetails extends PureComponent {
       showCancel,
       transactionStatus: TransactionStatus,
       blockExplorerLinkText,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       transactionNote,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
     const {
       primaryTransaction: transaction,
@@ -289,7 +289,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 </Tooltip>
               </div>
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
                 custodyTransactionDeepLink &&
                   custodyTransactionDeepLink.url && (
                     <Tooltip
@@ -310,7 +310,7 @@ export default class TransactionListItemDetails extends PureComponent {
                       </Button>
                     </Tooltip>
                   )
-                ///: END:ONLY_INCLUDE_IN
+                ///: END:ONLY_INCLUDE_IF
               }
             </div>
           </div>
@@ -365,7 +365,7 @@ export default class TransactionListItemDetails extends PureComponent {
                 className="transaction-list-item-details__transaction-breakdown"
               />
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
                 transactionNote && transactionNote.length !== 0 && (
                   <Box className="transaction-list-item-details__transaction-breakdown">
                     <Text as="h4" className="transaction-breakdown__title">
@@ -376,7 +376,7 @@ export default class TransactionListItemDetails extends PureComponent {
                     </Text>
                   </Box>
                 )
-                ///: END:ONLY_INCLUDE_IN
+                ///: END:ONLY_INCLUDE_IF
               }
               {transactionGroup.initialTransaction.type !==
                 TransactionType.incoming && (

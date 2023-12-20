@@ -277,7 +277,7 @@ describe('PPOM Blockaid Alert - Set Approval to All @no-mmi', function () {
 
         // Wait for confirmation pop-up
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const bannerAlertFoundByTitle = await driver.findElement({
           css: bannerAlertSelector,

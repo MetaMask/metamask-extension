@@ -1,26 +1,56 @@
-const { withFixtures, unlockWallet } = require('../helpers');
+const { strict: assert } = require('assert');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  unlockWallet,
+  getEventPayloads,
+  WINDOW_TITLES,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
+/**
+ * mocks the segment api multiple times for specific payloads that we expect to
+ * see when these tests are run. In this case we are looking for
+ * 'Snap Installed'. Do not use the constants from the metrics constants files,
+ * because if these change we want a strong indicator to our data team that the
+ * shape of data will change.
+ *
+ * @param {import('mockttp').Mockttp} mockServer
+ * @returns {Promise<import('mockttp/dist/pluggable-admin').MockttpClientResponse>[]}
+ */
+
+async function mockSegment(mockServer) {
+  return [
+    await mockServer
+      .forPost('https://api.segment.io/v1/batch')
+      .withJsonBodyIncluding({
+        batch: [{ type: 'track', event: 'Snap Installed' }],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+        };
+      }),
+  ];
+}
+
 describe('Test Snap Installed', function () {
   it('can tell if a snap is installed', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
-        },
-      ],
-    };
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        fixtures: new FixtureBuilder()
+          .withMetaMetricsController({
+            metaMetricsId: 'fake-metrics-id',
+            participateInMetaMetrics: true,
+          })
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
         title: this.test.fullTitle(),
+        testSpecificMock: mockSegment,
       },
-      async ({ driver }) => {
+      async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect
@@ -39,7 +69,7 @@ describe('Test Snap Installed', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.clickElement({
@@ -70,6 +100,18 @@ describe('Test Snap Installed', function () {
           text: 'Reconnect to Dialogs Snap',
         });
 
+        // check that snap installed event metrics have been sent
+        const events = await getEventPayloads(driver, mockedEndpoints);
+        assert.deepStrictEqual(events[0].properties, {
+          snap_id: 'npm:@metamask/dialog-example-snap',
+          origin: 'https://metamask.github.io',
+          version: '2.1.0',
+          category: 'Snaps',
+          locale: 'en',
+          chain_id: '0x539',
+          environment_type: 'background',
+        });
+
         const errorButton = await driver.findElement('#connecterrors');
         await driver.scrollToElement(errorButton);
         await driver.delay(500);
@@ -78,7 +120,7 @@ describe('Test Snap Installed', function () {
         // switch to metamask extension and click connect
         windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.clickElement({
