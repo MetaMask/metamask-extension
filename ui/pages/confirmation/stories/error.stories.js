@@ -181,6 +181,7 @@ export const TemplateOnlyStory = () => {
               balance: '0xFFFFFFFFFFFFFFFFFF',
               name: 'Test Account',
             },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
         },
         icon: null,
