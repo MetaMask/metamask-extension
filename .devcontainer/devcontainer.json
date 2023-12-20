@@ -2,6 +2,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "eamodio.gitlens",
         "github.codespaces",
         "github.copilot",
         "github.copilot-chat",
