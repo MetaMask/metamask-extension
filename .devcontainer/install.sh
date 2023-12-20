@@ -381,6 +381,8 @@ fi
 # Set fox as wallpaper
 fbsetbg -c /workspaces/metamask-extension/app/images/icon-512.png
 
+git config --global pull.rebase true
+
 # Run whatever was passed in
 log "Executing \"\$@\"."
 exec "\$@"
