@@ -574,6 +574,7 @@
     "terser": "^5.7.0",
     "through2": "^4.0.2",
     "ts-node": "^10.9.2",
+    "tsx": "^4.7.1",
     "ttest": "^2.1.1",
     "typescript": "~5.3.3",
     "vinyl": "^2.2.1",
@@ -658,7 +659,8 @@
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@metamask/ethjs-query>babel-runtime>core-js": false,
       "@storybook/test-runner>@swc/core": false,
-      "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail": false
+      "@lavamoat/lavadome-react>@lavamoat/preinstall-always-fail": false,
+      "tsx>esbuild": false
     }
   },
   "packageManager": "yarn@4.0.2"
