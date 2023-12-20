@@ -8,7 +8,6 @@ const {
   largeDelayMs,
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
-  findAnotherAccountFromAccountList,
   openActionMenuAndStartSendFlow,
   unlockWallet,
   WALLET_PASSWORD,
@@ -232,14 +231,9 @@ describe('Import flow @no-mmi', function () {
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 4',
         });
-
-        const accountMenuItemSelector = await findAnotherAccountFromAccountList(
-          driver,
-          4,
-          'Account 4',
-        );
+        await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.findElement({
-          css: `${accountMenuItemSelector} .mm-tag`,
+          css: `.multichain-account-list-item--selected .multichain-account-list-item__content .mm-tag`,
           text: 'Imported',
         });
 
