@@ -4,7 +4,9 @@
   },
   "appState": {
     "networkDropdownOpen": false,
-    "importNftsModal": { "open": false },
+    "importNftsModal": {
+      "open": false
+    },
     "gasIsLoading": false,
     "isLoading": false,
     "modal": {
@@ -221,6 +223,26 @@
             "eth_signTypedData_v4"
           ],
           "type": "eip155:eoa"
+        },
+        "694225f4-d30b-4e77-a900-c8bbce735b42": {
+          "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
+          "id": "694225f4-d30b-4e77-a900-c8bbce735b42",
+          "metadata": {
+            "name": "Test Account 4",
+            "keyring": {
+              "type": "Custody test"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
         }
       },
       "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"
@@ -275,7 +297,9 @@
     "selectedNetworkClientId": "goerli",
     "networksMetadata": {
       "goerli": {
-        "EIPS": { "1559": true },
+        "EIPS": {
+          "1559": true
+        },
         "status": "available"
       }
     },
@@ -350,6 +374,10 @@
       },
       "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+        "balance": "0x0"
+      },
+      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
         "balance": "0x0"
       }
     },
@@ -1497,8 +1525,12 @@
         "time": 1528133319641,
         "origin": "metamask",
         "type": "transaction",
-        "requestData": { "txId": "testTransactionId" },
-        "requestState": { "test": "value" }
+        "requestData": {
+          "txId": "testTransactionId"
+        },
+        "requestState": {
+          "test": "value"
+        }
       }
     },
     "pendingApprovalCount": 1,

@@ -37,6 +37,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
+  getInternalAccounts,
 } from '../../../selectors';
 import { setSelectedAccount } from '../../../store/actions';
 import {
@@ -52,6 +53,7 @@ import {
 } from '../../../helpers/constants/routes';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import { getAccountLabel } from '../../../helpers/utils/accounts';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -64,6 +66,34 @@ const ACTION_MODES = {
   IMPORT: 'import',
 };
 
+/**
+ * Merges ordered accounts with balances with each corresponding account data from internal accounts
+ *
+ * @param accountsWithBalances - ordered accounts with balances
+ * @param internalAccounts - internal accounts
+ * @returns merged accounts list with balances and internal account data
+ */
+const mergeAccounts = (accountsWithBalances, internalAccounts) => {
+  return accountsWithBalances.map((account) => {
+    const internalAccount = internalAccounts.find(
+      (intAccount) => intAccount.address === account.address,
+    );
+    if (internalAccount) {
+      return {
+        ...account,
+        ...internalAccount,
+        name: internalAccount.metadata.name || account.name,
+        keyring: internalAccount.metadata.keyring,
+        label: getAccountLabel(
+          internalAccount.metadata.keyring.type,
+          internalAccount,
+        ),
+      };
+    }
+    return account;
+  });
+};
+
 export const AccountListMenu = ({
   onClose,
   showAccountCreation = true,
@@ -72,6 +102,7 @@ export const AccountListMenu = ({
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const internalAccounts = useSelector(getInternalAccounts);
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
@@ -97,6 +128,7 @@ export const AccountListMenu = ({
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
+  searchResults = mergeAccounts(searchResults, internalAccounts);
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {
