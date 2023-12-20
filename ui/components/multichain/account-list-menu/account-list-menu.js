@@ -30,7 +30,7 @@ import {
   TextColor,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   JustifyContent,
-   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
