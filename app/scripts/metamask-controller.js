@@ -2865,6 +2865,9 @@ export default class MetamaskController extends EventEmitter {
       setAccountLabel: (address, label) => {
         this.preferencesController.setAccountLabel(address, label);
         const account = this.accountsController.getAccountByAddress(address);
+        if (account === undefined) {
+          throw new Error(`No account found for address: ${address}`);
+        }
         this.accountsController.setAccountName(account.id, label);
       },
 
