@@ -128,7 +128,7 @@ export const AccountListItem = ({
             : AvatarAccountVariant.Jazzicon
         }
         marginInlineEnd={2}
-      ></AvatarAccount>
+      />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
