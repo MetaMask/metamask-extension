@@ -45,6 +45,10 @@ async function getBuilds(branch: string) {
 
   const artifacts = (await response.json()).items;
 
+  if (!artifacts || artifacts.length === 0) {
+    return [];
+  }
+
   const builds = artifacts.filter((artifact: any) =>
     artifact.path.endsWith('.zip'),
   );
@@ -54,7 +58,25 @@ async function getBuilds(branch: string) {
   return builds;
 }
 
+function getVersionNumber(builds: any[]) {
+  for (const build of builds) {
+    const versionRegex =
+      /builds\/metamask-chrome-(?<version>\d+\.\d+\.\d+).zip/;
+
+    const versionNumber = build.path.match(versionRegex)?.groups?.version;
+
+    if (versionNumber) {
+      return versionNumber;
+    }
+  }
+}
+
 async function downloadBuilds(builds: any[]) {
+  if (!builds || builds.length === 0) {
+    console.log('no builds found');
+    return;
+  }
+
   const buildPromises = [] as Promise<any>[];
 
   for (const build of builds) {
@@ -75,22 +97,35 @@ async function downloadBuilds(builds: any[]) {
   console.log('downloads complete');
 }
 
-async function unzipBuilds(folder: 'builds' | 'builds-test') {
-  exec('mkdir -p dist');
+async function unzipBuilds(
+  folder: 'builds' | 'builds-test',
+  versionNumber: string,
+) {
+  if (!versionNumber) {
+    return;
+  }
 
-  exec(`unzip ${folder}/metamask-chrome-*.zip -d dist/chrome`);
+  execSync('rm -rf dist && mkdir -p dist');
 
-  exec(`unzip ${folder}/metamask-firefox-*.zip -d dist/firefox`);
+  execSync(
+    `unzip ${folder}/metamask-chrome-${versionNumber}.zip -d dist/chrome`,
+  );
+
+  execSync(
+    `unzip ${folder}/metamask-firefox-${versionNumber}.zip -d dist/firefox`,
+  );
 }
 
 async function main() {
   const branch = getGitBranch();
 
   const builds = await getBuilds(branch);
-  // const builds = await getBuilds('e2e-revoke-permissions2');
+
   await downloadBuilds(builds);
 
-  unzipBuilds('builds');
+  const versionNumber = getVersionNumber(builds);
+
+  unzipBuilds('builds-test', versionNumber);
 }
 
 main();
