@@ -611,6 +611,7 @@ const connectToDapp = async (driver) => {
     text: 'Connect',
     tag: 'button',
   });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 };
 
 const PRIVATE_KEY =
