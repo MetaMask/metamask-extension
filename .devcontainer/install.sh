@@ -20,8 +20,6 @@ USERNAME="${USERNAME:-"${_REMOTE_USER:-"automatic"}"}"
 
 WEBSOCKETIFY_VERSION=0.10.0
 
-echo 'export DISPLAY=:1' >> ~/.bashrc
-
 package_list="
     tigervnc-standalone-server \
     tigervnc-common \
