@@ -48,7 +48,7 @@ const sendTransaction = async (
   const accountFrom = await client.getAccountFrom();
   const accounTo = await client.getAccountTo();
 
-  await mainMenuPage.closeDeprecatedNetworksBanner();
+  // await mainMenuPage.closeDeprecatedNetworksBanner();
 
   const accountsPopup = new MMIAccountMenuPage(page);
   await accountsPopup.accountsMenu();
