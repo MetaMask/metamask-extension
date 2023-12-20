@@ -10,7 +10,7 @@ function getGitBranch() {
   return gitOutput.match(branchRegex)?.groups?.branch || 'develop';
 }
 
-async function getBuilds(branch: string) {
+async function getCircleJobs(branch: string) {
   let response = await fetch(
     `https://circleci.com/api/v2/project/gh/MetaMask/metamask-extension/pipeline?branch=${branch}`,
   );
@@ -33,27 +33,32 @@ async function getBuilds(branch: string) {
 
   const jobs = (await response.json()).items;
 
-  const jobPublishPrereleaseId = jobs.find(
-    (job: any) => job.name === 'job-publish-prerelease',
-  ).job_number;
+  return jobs;
+}
 
-  console.log('jobPublishPrereleaseId', jobPublishPrereleaseId);
+async function getBuilds(branch: string, jobNames: string[]) {
+  const jobs = await getCircleJobs(branch);
+  let builds = [] as any[];
 
-  response = await fetch(
-    `https://circleci.com/api/v2/project/gh/MetaMask/metamask-extension/${jobPublishPrereleaseId}/artifacts`,
-  );
+  for (const jobName of jobNames) {
+    const jobId = jobs.find((job: any) => job.name === jobName).job_number;
 
-  const artifacts = (await response.json()).items;
+    console.log('jobName', jobName, 'jobId', jobId);
 
-  if (!artifacts || artifacts.length === 0) {
-    return [];
+    const response = await fetch(
+      `https://circleci.com/api/v2/project/gh/MetaMask/metamask-extension/${jobId}/artifacts`,
+    );
+
+    const artifacts = (await response.json()).items;
+
+    if (!artifacts || artifacts.length === 0) {
+      return [];
+    }
+
+    builds = builds.concat(
+      artifacts.filter((artifact: any) => artifact.path.endsWith('.zip')),
+    );
   }
-
-  const builds = artifacts.filter((artifact: any) =>
-    artifact.path.endsWith('.zip'),
-  );
-
-  console.log('builds', builds);
 
   return builds;
 }
@@ -119,7 +124,10 @@ async function unzipBuilds(
 async function main() {
   const branch = getGitBranch();
 
-  const builds = await getBuilds(branch);
+  // const builds = await getBuilds(branch, ['job-publish-prerelease']);
+  const builds = await getBuilds(branch, ['prep-build', 'prep-build-test']);
+
+  console.log('builds', builds);
 
   await downloadBuilds(builds);
 
