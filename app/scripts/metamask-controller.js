@@ -182,6 +182,7 @@ import { LOG_EVENT } from '../../shared/constants/logs';
 import {
   getTokenIdParam,
   fetchTokenBalance,
+  fetchERC1155Balance,
 } from '../../shared/lib/token-util.ts';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
@@ -3323,9 +3324,11 @@ export default class MetamaskController extends EventEmitter {
       ...tokenListDetails,
       ...userDefinedTokenDetails,
     };
+
     const tokenDetailsStandardIsERC20 =
       isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC20) ||
       tokenDetails.erc20 === true;
+
     const noEvidenceThatTokenIsAnNFT =
       !tokenId &&
       !isEqualCaseInsensitive(tokenDetails.standard, TokenStandard.ERC1155) &&
@@ -3371,6 +3374,35 @@ export default class MetamaskController extends EventEmitter {
         userAddress,
         tokenId,
       );
+    }
+
+    const tokenDetailsStandardIsERC1155 = isEqualCaseInsensitive(
+      details.standard,
+      TokenStandard.ERC1155,
+    );
+
+    if (tokenDetailsStandardIsERC1155) {
+      try {
+        const balance = await fetchERC1155Balance(
+          address,
+          userAddress,
+          tokenId,
+          this.provider,
+        );
+
+        const balanceToUse = balance?._hex
+          ? parseInt(balance._hex, 16).toString()
+          : null;
+
+        details = {
+          ...details,
+          balance: balanceToUse,
+        };
+      } catch (e) {
+        // If the `fetchTokenBalance` call failed, `details` remains undefined, and we
+        // fall back to the below `assetsContractController.getTokenStandardAndDetails` call
+        log.warning('Failed to get token balance. Error:', e);
+      }
     }
 
     return {
