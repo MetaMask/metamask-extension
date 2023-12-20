@@ -1321,18 +1321,6 @@
         "crypto": true
       }
     },
-    "@metamask/keyring-api": {
-      "packages": {
-        "@metamask/keyring-api>uuid": true,
-        "@metamask/utils": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/keyring-api>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
     "@metamask/keyring-controller": {
       "packages": {
         "@metamask/eth-keyring-controller": true,
