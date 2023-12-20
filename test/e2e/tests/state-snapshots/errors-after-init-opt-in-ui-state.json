@@ -22,6 +22,7 @@
     "pendingTokens": "object",
     "customNonceValue": "",
     "useBlockie": false,
+    "useRequestQueue": false,
     "featureFlags": {},
     "welcomeScreenSeen": false,
     "currentLocale": "en",
@@ -89,7 +90,6 @@
     "useTokenDetection": false,
     "useNftDetection": false,
     "useCurrencyRateCheck": true,
-    "useRequestQueue": false,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
@@ -153,7 +153,9 @@
     "allNftContracts": "object",
     "allNfts": "object",
     "ignoredNfts": "object",
-    "domains": { "metamask": "networkConfigurationId" },
+    "domains": {
+      "metamask": "networkConfigurationId"
+    },
     "perDomainNetwork": "boolean",
     "logs": "object",
     "snaps": "object",
