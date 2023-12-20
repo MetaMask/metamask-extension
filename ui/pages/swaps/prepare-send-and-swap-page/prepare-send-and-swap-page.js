@@ -459,16 +459,24 @@ export default function PrepareSendAndSwapPage({
     // If new Swap From is same as Swap To, we are going into the Send flow, update Send token to match the new Swap From
     if (token.address === toTokenAddress) {
       dispatch(
-        updateSendAsset({
-          type: token.type === 'erc20' ? AssetType.token : AssetType.native,
-          details: {
-            address: token.address,
-            symbol: token.symbol,
-            decimals: token.decimals,
-            standard: token.type,
-            isERC721: token.isERC721,
+        updateSendAsset(
+          {
+            type: token.type === 'erc20' ? AssetType.token : AssetType.native,
+            details: {
+              address: token.address,
+              symbol: token.symbol,
+              decimals: token.decimals,
+              standard: token.type,
+              isERC721: token.isERC721,
+            },
           },
-        }),
+          { initialAssetSet: true }, // don't reset send amount to 0
+        ),
+      );
+      dispatch(
+        updateSendAmount(
+          getAtomicHexFromDecimalValue(fromTokenInputValue, token.decimals),
+        ),
       );
     }
   };
@@ -505,20 +513,34 @@ export default function PrepareSendAndSwapPage({
       // If new Swap To is same as Swap From, we are going into the Send flow, update Send token to match the new Swap To
       if (token.address === fromTokenAddress) {
         dispatch(
-          updateSendAsset({
-            type: token.type === 'erc20' ? AssetType.token : AssetType.native,
-            details: {
-              address: token.address,
-              symbol: token.symbol,
-              decimals: token.decimals,
-              standard: token.type,
-              isERC721: token.isERC721,
+          updateSendAsset(
+            {
+              type: token.type === 'erc20' ? AssetType.token : AssetType.native,
+              details: {
+                address: token.address,
+                symbol: token.symbol,
+                decimals: token.decimals,
+                standard: token.type,
+                isERC721: token.isERC721,
+              },
             },
-          }),
+            { initialAssetSet: true }, // don't reset send amount to 0
+          ),
+        );
+        dispatch(
+          updateSendAmount(
+            getAtomicHexFromDecimalValue(fromTokenInputValue, token.decimals),
+          ),
         );
       }
     },
-    [dispatch, latestAddedTokenTo, toAddress, fromTokenAddress],
+    [
+      dispatch,
+      latestAddedTokenTo,
+      toAddress,
+      fromTokenAddress,
+      fromTokenInputValue,
+    ],
   );
 
   const tokensWithBalancesFromToken = tokensWithBalances.find((token) =>
