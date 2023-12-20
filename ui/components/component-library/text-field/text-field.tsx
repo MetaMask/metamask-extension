@@ -20,7 +20,7 @@ import {
 } from './text-field.types';
 
 export const TextField: TextFieldComponent = React.forwardRef(
-  <C extends React.ElementType = 'input'>(
+  <C extends React.ElementType = 'div'>(
     {
       autoComplete,
       autoFocus,
