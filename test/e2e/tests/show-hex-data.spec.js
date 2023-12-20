@@ -73,7 +73,6 @@ describe('Check the toggle for hex data', function () {
     if (process.env.MULTICHAIN) {
       return;
     }
-    
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
