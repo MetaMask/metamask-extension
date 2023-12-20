@@ -460,7 +460,7 @@ const onboardingCompleteWalletCreation = async (driver) => {
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
 };
 
-const onboardingCompleteWalletCreationWithOptout = async (driver) => {
+const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
   // wait for h2 to appear
   await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
   // opt-out from third party API
@@ -485,7 +485,7 @@ const onboardingPinExtension = async (driver) => {
   await driver.clickElement('[data-testid="pin-extension-done"]');
 };
 
-const completeCreateNewWalletOnboardingFlowWithOptout = async (
+const completeCreateNewWalletOnboardingFlowWithOptOut = async (
   driver,
   password,
 ) => {
@@ -493,7 +493,7 @@ const completeCreateNewWalletOnboardingFlowWithOptout = async (
   await onboardingChooseMetametricsOption(driver, false);
   await onboardingCreatePassword(driver, password);
   await onboardingRevealAndConfirmSRP(driver);
-  await onboardingCompleteWalletCreationWithOptout(driver);
+  await onboardingCompleteWalletCreationWithOptOut(driver);
 };
 
 const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
@@ -983,7 +983,7 @@ module.exports = {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
-  completeCreateNewWalletOnboardingFlowWithOptout,
+  completeCreateNewWalletOnboardingFlowWithOptOut,
   openSRPRevealQuiz,
   passwordUnlockOpenSRPRevealQuiz,
   completeSRPRevealQuiz,

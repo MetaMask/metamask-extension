@@ -7,7 +7,7 @@ const {
   openSRPRevealQuiz,
   completeSRPRevealQuiz,
   tapAndHoldToRevealSRP,
-  completeCreateNewWalletOnboardingFlowWithOptout,
+  completeCreateNewWalletOnboardingFlowWithOptOut,
 } = require('./helpers');
 
 const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
@@ -86,7 +86,7 @@ describe('Vault Decryptor Page', function () {
         // to the first one.
         await driver.switchToWindowWithTitle('MetaMask');
         // create a new vault through onboarding flow
-        await completeCreateNewWalletOnboardingFlowWithOptout(
+        await completeCreateNewWalletOnboardingFlowWithOptOut(
           driver,
           WALLET_PASSWORD,
         );

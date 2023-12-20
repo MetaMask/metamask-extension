@@ -987,7 +987,6 @@ jobs:
 
   test-e2e-chrome-vault-decryption:
     executor: node-browsers-large
-    parallelism: 24
     steps:
       - run: *shallow-git-clone
       - attach_workspace:
