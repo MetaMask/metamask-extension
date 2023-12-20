@@ -1,26 +1,17 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
   withFixtures,
   DAPP_URL,
   openDapp,
   unlockWallet,
   WINDOW_TITLES,
+  defaultGanacheOptions,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('ERC1155 NFTs testdapp interaction', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   it('should mint ERC1155 token', async function () {
     await withFixtures(
@@ -29,7 +20,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
@@ -84,7 +75,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
@@ -141,7 +132,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -227,7 +218,7 @@ describe('ERC1155 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },

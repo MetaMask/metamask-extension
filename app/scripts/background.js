@@ -28,6 +28,7 @@ import {
   ENVIRONMENT_TYPE_FULLSCREEN,
   EXTENSION_MESSAGES,
   PLATFORM_FIREFOX,
+  MESSAGE_TYPE,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
   ///: END:ONLY_INCLUDE_IF
@@ -103,6 +104,7 @@ const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
 let versionedData;
+const tabOriginMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
   global.stateHooks.metamaskGetState = localStore.get.bind(localStore);
@@ -200,7 +202,6 @@ browser.runtime.onConnect.addListener(async (...args) => {
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
-
   // This is set in `setupController`, which is called as part of initialization
   connectExternal(...args);
 });
@@ -453,6 +454,41 @@ export async function loadStateFromPersistence() {
 }
 
 /**
+ * Emit event of DappViewed,
+ * which should only be tracked only after a user opts into metrics and connected to the dapp
+ *
+ * @param {string} origin - URL of visited dapp
+ * @param {object} connectSitePermissions - Permission state to get connected accounts
+ * @param {object} preferencesController - Preference Controller to get total created accounts
+ */
+function emitDappViewedMetricEvent(
+  origin,
+  connectSitePermissions,
+  preferencesController,
+) {
+  const numberOfTotalAccounts = Object.keys(
+    preferencesController.store.getState().identities,
+  ).length;
+  const connectAccountsCollection =
+    connectSitePermissions.permissions.eth_accounts.caveats;
+  if (connectAccountsCollection) {
+    const numberOfConnectedAccounts = connectAccountsCollection[0].value.length;
+    controller.metaMetricsController.trackEvent({
+      event: MetaMetricsEventName.DappViewed,
+      category: MetaMetricsEventCategory.InpageProvider,
+      referrer: {
+        url: origin,
+      },
+      properties: {
+        is_first_visit: false,
+        number_of_accounts: numberOfTotalAccounts,
+        number_of_accounts_connected: numberOfConnectedAccounts,
+      },
+    });
+  }
+}
+
+/**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
  * Streams emitted state updates to platform-specific storage strategy.
@@ -663,13 +699,39 @@ export function setupController(
         connectionStream: portStream,
       });
     } else {
+      // this is triggered when a new tab is opened, or origin(url) is changed
       if (remotePort.sender && remotePort.sender.tab && remotePort.sender.url) {
         const tabId = remotePort.sender.tab.id;
         const url = new URL(remotePort.sender.url);
         const { origin } = url;
 
+        // store the orgin to corresponding tab so it can provide infor for onActivated listener
+        if (!Object.keys(tabOriginMapping).includes(tabId)) {
+          tabOriginMapping[tabId] = origin;
+        }
+        const connectSitePermissions =
+          controller.permissionController.state.subjects[origin];
+        // when the dapp is not connected, connectSitePermissions is undefined
+        const isConnectedToDapp = connectSitePermissions !== undefined;
+        // when open a new tab, this event will trigger twice, only 2nd time is with dapp loaded
+        const isTabLoaded = remotePort.sender.tab.title !== 'New Tab';
+
+        // *** Emit DappViewed metric event when ***
+        // - refresh the dapp
+        // - open dapp in a new tab
+        if (isConnectedToDapp && isTabLoaded) {
+          emitDappViewedMetricEvent(
+            origin,
+            connectSitePermissions,
+            controller.preferencesController,
+          );
+        }
+
         remotePort.onMessage.addListener((msg) => {
-          if (msg.data && msg.data.method === 'eth_requestAccounts') {
+          if (
+            msg.data &&
+            msg.data.method === MESSAGE_TYPE.ETH_REQUEST_ACCOUNTS
+          ) {
             requestAccountTabIds[origin] = tabId;
           }
         });
@@ -918,6 +980,31 @@ async function onInstall() {
     addAppInstalledEvent();
     platform.openExtensionInBrowser();
   }
+  onNavigateToTab();
+}
+
+function onNavigateToTab() {
+  browser.tabs.onActivated.addListener((onActivatedTab) => {
+    if (controller) {
+      const { tabId } = onActivatedTab;
+      const currentOrigin = tabOriginMapping[tabId];
+      // *** Emit DappViewed metric event when ***
+      // - navigate to a connected dapp
+      if (currentOrigin) {
+        const connectSitePermissions =
+          controller.permissionController.state.subjects[currentOrigin];
+        // when the dapp is not connected, connectSitePermissions is undefined
+        const isConnectedToDapp = connectSitePermissions !== undefined;
+        if (isConnectedToDapp) {
+          emitDappViewedMetricEvent(
+            currentOrigin,
+            connectSitePermissions,
+            controller.preferencesController,
+          );
+        }
+      }
+    }
+  });
 }
 
 function setupSentryGetStateGlobal(store) {

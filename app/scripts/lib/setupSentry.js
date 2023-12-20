@@ -54,6 +54,9 @@ export const SENTRY_BACKGROUND_STATE = {
   NetworkOrderController: {
     orderedNetworkList: [],
   },
+  AccountOrderController: {
+    pinnedAccountList: [],
+  },
   AppMetadataController: {
     currentAppVersion: true,
     currentMigrationVersion: true,
@@ -83,14 +86,12 @@ export const SENTRY_BACKGROUND_STATE = {
     showBetaHeader: true,
     showProductTour: true,
     showTestnetMessageInDropdown: true,
+    surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
-  },
-  CachedBalancesController: {
-    cachedBalances: false,
   },
   CronjobController: {
     jobs: false,

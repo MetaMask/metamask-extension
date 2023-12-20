@@ -603,9 +603,6 @@
   "search": {
     "message": "সার্চ করুন"
   },
-  "searchResults": {
-    "message": "অনুসন্ধানের ফলাফলগুলি"
-  },
   "securityAndPrivacy": {
     "message": "নিরাপত্তা এবং গোপনীয়তা"
   },
@@ -773,12 +770,6 @@
   },
   "unknown": {
     "message": "অজানা"
-  },
-  "unknownCameraError": {
-    "message": "আপনার ক্যামেরা অ্যাক্সেস করার চেষ্টা করার সময় একটি ত্রুটি হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "ওহো! কিছু সমস্যা হয়েছে...."
   },
   "unknownNetwork": {
     "message": "অজানা ব্যক্তিগত নেটওয়ার্ক"

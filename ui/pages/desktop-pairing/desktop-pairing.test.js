@@ -1,6 +1,7 @@
 import React from 'react';
 import reactRouterDom from 'react-router-dom';
 import { waitFor, act, screen, fireEvent } from '@testing-library/react';
+import { flushPromises } from '../../../test/lib/timer-helpers';
 import actions from '../../store/actions';
 import configureStore from '../../store/store';
 import { renderWithProvider } from '../../../test/jest';
@@ -27,12 +28,6 @@ const mockedActions = actions;
 describe('Desktop Pairing page', () => {
   const mockHistoryPush = jest.fn();
   const handleCopy = jest.fn();
-
-  function flushPromises() {
-    // Wait for promises running in the non-async timer callback to complete.
-    // From https://github.com/facebook/jest/issues/2157#issuecomment-897935688
-    return new Promise(jest.requireActual('timers').setImmediate);
-  }
 
   beforeEach(() => {
     jest

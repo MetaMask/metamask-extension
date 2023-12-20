@@ -416,6 +416,10 @@ class Driver {
     return newHandle;
   }
 
+  async refresh() {
+    await this.driver.navigate().refresh();
+  }
+
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
   }

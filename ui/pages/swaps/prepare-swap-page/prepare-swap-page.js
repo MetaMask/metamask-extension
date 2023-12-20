@@ -120,13 +120,13 @@ import {
   ButtonLinkSize,
   Modal,
   ModalOverlay,
-  ModalContent,
-  ModalHeader,
   BannerAlert,
   Text,
   TextField,
   TextFieldSize,
 } from '../../../components/component-library';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { SWAPS_NOTIFICATION_ROUTE } from '../../../helpers/constants/routes';
 import ImportToken from '../import-token';
 import TransactionSettings from '../transaction-settings/transaction-settings';

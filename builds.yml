@@ -28,9 +28,12 @@ buildTypes:
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/3.4.2/index.html
-      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Main build uses the default browser manifest
     manifestOverrides: false
+    # Build name used in multiple user-readable places
+    # eg. eip6963
+    buildNameOverride: MetaMask
 
   beta:
     features:
@@ -45,6 +48,7 @@ buildTypes:
     isPrerelease: true
     # Folder which contains overrides to browser manifests
     manifestOverrides: ./app/build-types/beta/manifest/
+    buildNameOverride: MetaMask Beta
 
   flask:
     # Code surrounded using code fences for that feature
@@ -66,9 +70,10 @@ buildTypes:
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
-      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/dev/registry.json
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://metamask.github.io/snaps-directory-staging/main/account-management
     isPrerelease: true
     manifestOverrides: ./app/build-types/flask/manifest/
+    buildNameOverride: MetaMask Flask
 
   desktop:
     features:
@@ -86,9 +91,10 @@ buildTypes:
       - SUPPORT_REQUEST_LINK: https://metamask-flask.zendesk.com/hc/en-us/requests/new
       - INFURA_ENV_KEY_REF: INFURA_FLASK_PROJECT_ID
       - SEGMENT_WRITE_KEY_REF: SEGMENT_FLASK_WRITE_KEY
-      - KEYRING_SNAPS_REGISTRY_URL: https://metamask.github.io/keyring-snaps-registry/prod/registry.json
+      - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     isPrerelease: true
     manifestOverrides: ./app/build-types/desktop/manifest/
+    buildNameOverride: false
 
   mmi:
     features:
@@ -109,6 +115,7 @@ buildTypes:
     # Leaving it on for backwards compatibility
     isPrerelease: true
     manifestOverrides: ./app/build-types/mmi/manifest/
+    buildNameOverride: MetaMask Institutional
 
 # Build types are composed of a set of features.
 # Each feature can have code fences that add new code
@@ -255,7 +262,6 @@ env:
   # Determines if feature flagged Multichain UI should be used
   - MULTICHAIN: ''
   - NETWORK_ACCOUNT_DND: ''
-
   ###
   # Meta variables
   ###

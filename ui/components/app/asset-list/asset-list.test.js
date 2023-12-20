@@ -78,9 +78,9 @@ const render = (
           conversionRate: CONVERSION_RATE,
         },
       },
-      cachedBalances: {
+      accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
-          [selectedAddress]: balance,
+          [selectedAddress]: { balance },
         },
       },
       contractExchangeRates: {

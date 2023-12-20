@@ -590,9 +590,6 @@
   "search": {
     "message": "Cerca"
   },
-  "searchResults": {
-    "message": "Resultats de Cerca"
-  },
   "securityAndPrivacy": {
     "message": "Seguretat i privacitat"
   },
@@ -754,12 +751,6 @@
   },
   "unknown": {
     "message": "Desconegut"
-  },
-  "unknownCameraError": {
-    "message": "Hi ha hagut un error mentre intentaves accedir a la teva càmera"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ups! Hi ha alguna cosa que no ha funcionat..."
   },
   "unknownNetwork": {
     "message": "Xarxa privada desconeguda"
