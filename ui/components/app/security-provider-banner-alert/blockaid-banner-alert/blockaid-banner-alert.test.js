@@ -201,8 +201,8 @@ describe('Blockaid Banner Alert', () => {
     expect(container).toMatchSnapshot();
     expect(container.querySelector('.disclosure')).toBeInTheDocument();
     expect(getByText("Something doesn't look right?")).toBeInTheDocument();
-    expect(getByText('Report a problem')).toBeInTheDocument();
-    expect(getByRole('link', { name: 'Report a problem' })).toBeInTheDocument();
+    expect(getByText('Report an issue')).toBeInTheDocument();
+    expect(getByRole('link', { name: 'Report an issue' })).toBeInTheDocument();
   });
 
   describe('when rendering description', () => {

@@ -54,7 +54,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Report a problem
+                Report an issue
               </a>
               
                
@@ -146,7 +146,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Report a problem
+                Report an issue
               </a>
               
                
@@ -216,7 +216,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
                 rel="noopener noreferrer"
                 target="_blank"
               >
-                Report a problem
+                Report an issue
               </a>
               
                
@@ -309,7 +309,7 @@ exports[`Blockaid Banner Alert should render details section even when features 
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  Report a problem
+                  Report an issue
                 </a>
                 
                  
@@ -415,7 +415,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  Report a problem
+                  Report an issue
                 </a>
                 
                  
@@ -509,7 +509,7 @@ exports[`Blockaid Banner Alert should render link to report url 1`] = `
                   rel="noopener noreferrer"
                   target="_blank"
                 >
-                  Report a problem
+                  Report an issue
                 </a>
                 
                  

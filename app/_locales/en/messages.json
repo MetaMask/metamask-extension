@@ -3785,7 +3785,7 @@
     "message": "replace"
   },
   "reportProblem": {
-    "message": "Report a problem"
+    "message": "Report an issue"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
