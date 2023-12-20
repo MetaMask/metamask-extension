@@ -5,15 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-
-## [11.7.2]
-### Fixed
-- Fixed the activity list occasionally incorrectly showing transaction statuses as failed, pending or dropped [#22319](https://github.com/MetaMask/metamask-extension/pull/22319)
 ## [11.7.3]
+### Changed
+- Migrated request towards OpenSea API from V1 to V2 [#22324](https://github.com/MetaMask/metamask-extension/pull/22324)
+- Changed requests towards CoinGecko requests from UI directly into from internal pricing api [#22152](https://github.com/MetaMask/metamask-extension/pull/22152)
 ### Fixed
 - Ensure fiat token balances are displayed on the homescreen [#22295](https://github.com/MetaMask/metamask-extension/pull/22295)
 
 ## [11.7.2]
+### Fixed
+- Fixed the activity list occasionally incorrectly showing transaction statuses as failed, pending or dropped [#22319](https://github.com/MetaMask/metamask-extension/pull/22319)
 
 ## [11.7.1]
 ### Added
