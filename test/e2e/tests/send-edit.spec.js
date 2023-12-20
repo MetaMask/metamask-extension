@@ -19,10 +19,10 @@ describe('Editing Confirm Transaction', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
         if (process.env.MULTICHAIN) {
           return;
         }
+        await unlockWallet(driver);
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );
@@ -89,10 +89,10 @@ describe('Editing Confirm Transaction', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
         if (process.env.MULTICHAIN) {
           return;
         }
+        await unlockWallet(driver);
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );

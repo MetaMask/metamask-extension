@@ -2,7 +2,6 @@ const { strict: assert } = require('assert');
 const {
   withFixtures,
   unlockWallet,
-  waitForAccountRendered,
   defaultGanacheOptions,
   getEventPayloads,
 } = require('../../helpers');
@@ -38,7 +37,6 @@ describe('Unlock wallet', function () {
       },
       async ({ driver, mockedEndpoint }) => {
         await unlockWallet(driver);
-        await waitForAccountRendered(driver);
         const events = await getEventPayloads(driver, mockedEndpoint);
         assert.equal(events.length, 3);
         assertBatchValue(events[0], 'Home', '/');

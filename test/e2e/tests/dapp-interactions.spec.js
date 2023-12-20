@@ -30,7 +30,7 @@ describe('Dapp interactions', function () {
         await driver.clickElement('#addEthereumChain');
         await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-        await unlockWallet(driver);
+        await unlockWallet(driver, { navigate: false });
         const notification = await driver.isElementPresent({
           text: 'Allow this site to add a network?',
           tag: 'h3',

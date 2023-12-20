@@ -765,15 +765,18 @@ async function unlockWallet(
     waitLoginSuccess: true,
   },
 ) {
-  if (options.navigate !== false) {
+  if (options.navigate) {
     await driver.navigate();
   }
 
   await driver.fill('#password', WALLET_PASSWORD);
   await driver.press('#password', driver.Key.ENTER);
 
-  if (options.waitLoginSuccess !== false) {
+  if (options.waitLoginSuccess) {
     await driver.waitForElementNotPresent('[data-testid="unlock-page"]');
+  }
+  if (options.navigate) {
+    await waitForAccountRendered(driver);
   }
 }
 
