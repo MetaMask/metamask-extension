@@ -1977,7 +1977,8 @@ export function getKeyringSnapAccounts(state) {
 
   const keyringAccounts = Object.values(internalAccounts).filter(
     (internalAccount) => {
-      return internalAccount.metadata.keyring.type === KeyringType.snap;
+      const { keyring } = internalAccount.metadata;
+      return keyring.type === KeyringType.snap;
     },
   );
   return keyringAccounts;
