@@ -267,7 +267,6 @@
     "@metamask/ethjs": "^0.5.1",
     "@metamask/ethjs-contract": "^0.3.4",
     "@metamask/ethjs-query": "^0.5.3",
-    "@metamask/gas-fee-controller": "^10.0.1",
     "@metamask/gas-fee-controller": "^12.0.0",
     "@metamask/jazzicon": "^2.0.0",
     "@metamask/keyring-api": "^1.0.0",
