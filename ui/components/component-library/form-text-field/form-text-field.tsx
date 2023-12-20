@@ -21,11 +21,8 @@ import {
   FormTextFieldComponent,
 } from './form-text-field.types';
 
-export const FormTextField: FormTextFieldComponent = React.forwardRef<
-  PolymorphicRef<any>,
-  FormTextFieldProps<any>
->(
-  (
+export const FormTextField: FormTextFieldComponent = React.forwardRef(
+  <C extends React.ElementType = 'div'>(
     {
       autoComplete,
       autoFocus,
@@ -57,8 +54,8 @@ export const FormTextField: FormTextFieldComponent = React.forwardRef<
       type = 'text',
       value,
       ...props
-    },
-    ref,
+    }: FormTextFieldProps<C>,
+    ref?: PolymorphicRef<C>,
   ) => {
     return (
       <Box
