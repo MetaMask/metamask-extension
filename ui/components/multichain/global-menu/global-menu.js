@@ -106,12 +106,36 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   supportLink = SUPPORT_REQUEST_LINK;
   ///: END:ONLY_INCLUDE_IF
 
+  // Accessibility improvement for popover
+  const lastItemRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const lastItem = lastItemRef.current;
+    const handleKeyDown = (event) => {
+      if (event.key === 'Tab' && !event.shiftKey) {
+        event.preventDefault();
+        closeMenu();
+      }
+    };
+
+    if (lastItem) {
+      lastItem.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      if (lastItem) {
+        lastItem.removeEventListener('keydown', handleKeyDown);
+      }
+    };
+  }, [closeMenu]);
+
   return (
     <Popover
       referenceElement={anchorElement}
       isOpen={isOpen}
       padding={0}
       onClickOutside={closeMenu}
+      onPressEscKey={closeMenu}
       style={{
         overflow: 'hidden',
         minWidth: 225,
@@ -293,6 +317,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
         {t('settings')}
       </MenuItem>
       <MenuItem
+        ref={lastItemRef} // ref for last item in GlobalMenu
         iconName={IconName.Lock}
         onClick={() => {
           dispatch(lockMetamask());
