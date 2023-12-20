@@ -41,6 +41,7 @@ const initialState = {
     autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
     showFiatInTestnets: false,
     showTestNetworks: false,
+    showExtensionInFullSizeView: false,
     useNativeCurrencyAsPrimaryCurrency: true,
   },
   firstTimeFlowType: null,

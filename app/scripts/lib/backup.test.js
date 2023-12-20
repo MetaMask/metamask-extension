@@ -160,6 +160,7 @@ const jsonData = JSON.stringify({
       hideZeroBalanceTokens: false,
       showFiatInTestnets: false,
       showTestNetworks: true,
+      showExtensionInFullSizeView: false,
       useNativeCurrencyAsPrimaryCurrency: true,
     },
     ipfsGateway: 'dweb.link',

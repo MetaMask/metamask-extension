@@ -4164,6 +4164,12 @@
   "show": {
     "message": "Show"
   },
+  "showExtensionInFullSizeView": {
+    "message": "Show extension in full size view"
+  },
+  "showExtensionInFullSizeViewDescription": {
+    "message": "When enabled, it will automatically open the extension in full size view after clicking on the extension icon"
+  },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
   },

@@ -2834,6 +2834,10 @@ export function setShowTestNetworks(value: boolean) {
   return setPreference('showTestNetworks', value);
 }
 
+export function setShowExtensionInFullSizeView(value: boolean) {
+  return setPreference('showExtensionInFullSizeView', value);
+}
+
 export function setAutoLockTimeLimit(value: boolean) {
   return setPreference('autoLockTimeLimit', value);
 }

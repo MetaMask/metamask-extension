@@ -196,6 +196,7 @@ export const SENTRY_BACKGROUND_STATE = {
       hideZeroBalanceTokens: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
+      showExtensionInFullSizeView: false,
       useNativeCurrencyAsPrimaryCurrency: true,
     },
     selectedAddress: false,
