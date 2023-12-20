@@ -43,5 +43,5 @@
 
   "runArgs": ["--shm-size=1g"],
 
-  "updateContentCommand": "sudo .devcontainer/install.sh && nvm use && yarn --immutable && yarn tsx .devcontainer/setup-browsers.ts"
+  "updateContentCommand": "sudo .devcontainer/install.sh && yarn --immutable && yarn tsx .devcontainer/setup-browsers.ts && echo 'export DISPLAY=:1' >> ~/.bashrc"
 }
