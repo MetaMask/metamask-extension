@@ -571,6 +571,7 @@
     "terser": "^5.7.0",
     "through2": "^4.0.2",
     "ts-node": "^10.5.0",
+    "tsx": "^4.7.0",
     "ttest": "^2.1.1",
     "typescript": "~4.5.0",
     "vinyl": "^2.2.1",
@@ -653,7 +654,8 @@
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
-      "@metamask/ethjs-query>babel-runtime>core-js": false
+      "@metamask/ethjs-query>babel-runtime>core-js": false,
+      "tsx>esbuild": false
     }
   },
   "packageManager": "yarn@4.0.2"

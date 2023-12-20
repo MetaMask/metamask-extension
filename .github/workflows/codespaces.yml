@@ -1,0 +1,29 @@
+name: Codespaces
+
+on:
+  push:
+    # Update this to build images for other branches
+    branches:
+      - 'codespaces**'
+
+    # Update this list of there are other files you want to watch to do cache updates
+    # paths:
+    #   - '**/yarn.lock'
+
+jobs:
+  yarn-cache:
+    name: Generate cache image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1 # This retrieves only the latest commit.
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'yarn'
+
+      - run: yarn --immutable
