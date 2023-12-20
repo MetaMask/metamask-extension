@@ -3784,7 +3784,7 @@
   "replace": {
     "message": "replace"
   },
-  "reportProblem": {
+  "reportIssue": {
     "message": "Report an issue"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {

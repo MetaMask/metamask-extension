@@ -74,7 +74,7 @@ function SecurityProviderBannerAlert({
               externalLink
               onClick={onClickSupportLink}
             >
-              {t('reportProblem')}
+              {t('reportIssue')}
             </ButtonLink>,
           ])}
         </Text>
