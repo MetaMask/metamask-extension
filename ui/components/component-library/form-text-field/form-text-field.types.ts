@@ -67,6 +67,6 @@ export type FormTextFieldProps<C extends React.ElementType> =
     FormTextFieldWithLabelProps | FormTextFieldWithoutLabelProps
   >;
 
-export type FormTextFieldComponent = <C extends React.ElementType = 'input'>(
+export type FormTextFieldComponent = <C extends React.ElementType = 'div'>(
   props: FormTextFieldProps<C>,
 ) => React.ReactElement | null;
