@@ -16,7 +16,9 @@ import {
   ModalOverlay,
   Text,
 } from '../../component-library';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import ToggleButton from '../../ui/toggle-button';
+///: END:ONLY_INCLUDE_IF
 import { TextFieldSearch } from '../../component-library/text-field-search/deprecated';
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
@@ -38,11 +40,15 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getShowMostRecentAccountFirst,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import {
   setSelectedAccount,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   setShowMostRecentAccountFirst,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../store/actions';
 
 import {
@@ -93,10 +99,10 @@ export const AccountListMenu = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
-  const showMostRecentAccountFirst = useSelector(getShowMostRecentAccountFirst);
-
   let searchKeys = ['name', 'address'];
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const showMostRecentAccountFirst = useSelector(getShowMostRecentAccountFirst);
+
   searchKeys = ['name', 'address', 'vault'];
   ///: END:ONLY_INCLUDE_IF
 
@@ -130,14 +136,14 @@ export const AccountListMenu = ({
     }
   }
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const handleToggle = (value) => {
     const shouldShowMostRecentFAccountirst = !value;
     dispatch(setShowMostRecentAccountFirst(shouldShowMostRecentFAccountirst));
   };
 
-  const sortedSearchResults = searchResults;
   if (showMostRecentAccountFirst) {
-    sortedSearchResults.sort((a, b) => {
+    searchResults.sort((a, b) => {
       if (a.lastSelected && b.lastSelected) {
         return b.lastSelected - a.lastSelected;
       }
@@ -147,6 +153,7 @@ export const AccountListMenu = ({
       return 1;
     });
   }
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -341,22 +348,26 @@ export const AccountListMenu = ({
             ) : null}
 
             {/* Show most recently used account first - toggle */}
-            <Box
-              padding={4}
-              paddingTop={0}
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <Text>{t('showRecentlyUsedFirst')}</Text>
-              <ToggleButton
-                value={showMostRecentAccountFirst}
-                onToggle={handleToggle}
-              />
-            </Box>
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+              <Box
+                padding={4}
+                paddingTop={0}
+                display={Display.Flex}
+                justifyContent={JustifyContent.spaceBetween}
+              >
+                <Text>{t('showRecentlyUsedFirst')}</Text>
+                <ToggleButton
+                  value={showMostRecentAccountFirst}
+                  onToggle={handleToggle}
+                />
+              </Box>
+              ///: END:ONLY_INCLUDE_IF
+            }
 
             {/* Account list block */}
             <Box className="multichain-account-menu-popover__list">
-              {sortedSearchResults.length === 0 && searchQuery !== '' ? (
+              {searchResults.length === 0 && searchQuery !== '' ? (
                 <Text
                   paddingLeft={4}
                   paddingRight={4}
@@ -366,7 +377,7 @@ export const AccountListMenu = ({
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              {sortedSearchResults.map((account) => {
+              {searchResults.map((account) => {
                 const connectedSite = connectedSites[account.address]?.find(
                   ({ origin }) => origin === currentTabOrigin,
                 );

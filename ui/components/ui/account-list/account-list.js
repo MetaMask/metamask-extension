@@ -1,21 +1,41 @@
-import React, { memo, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  memo,
+  useLayoutEffect,
+  useRef,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  useState,
+  ///: END:ONLY_INCLUDE_IF
+} from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { isEqual } from 'lodash';
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import Fuse from 'fuse.js';
+import { TextFieldSearch } from '../../component-library/text-field-search';
+///: END:ONLY_INCLUDE_IF
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import CheckBox, { CHECKED, INDETERMINATE, UNCHECKED } from '../check-box';
 import Identicon from '../identicon';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display';
 import { PRIMARY } from '../../../helpers/constants/common';
 import Tooltip from '../tooltip';
-import { Box, Text, Icon, IconName } from '../../component-library';
-import { TextFieldSearch } from '../../component-library/text-field-search';
+
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  Box,
+  Text,
+  ///: END:ONLY_INCLUDE_IF
+  Icon,
+  IconName,
+} from '../../component-library';
+
 import {
   IconColor,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Size,
   TextColor,
   BlockSize,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 
 const AccountList = ({
@@ -35,9 +55,11 @@ const AccountList = ({
     selectedAccountScrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [selectedAccounts]);
 
+  let searchResults = accounts;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const [searchQuery, setSearchQuery] = useState('');
 
-  let searchResults = accounts;
   if (searchQuery) {
     const fuse = new Fuse(accounts, {
       threshold: 0.2,
@@ -49,6 +71,7 @@ const AccountList = ({
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
+  ///: END:ONLY_INCLUDE_IF
 
   const Header = () => {
     let checked;
@@ -108,18 +131,21 @@ const AccountList = ({
     return (
       <div className="choose-account-list__wrapper">
         <div className="choose-account-list__list">
-          {searchResults.length === 0 && searchQuery !== '' ? (
-            <Text
-              paddingLeft={4}
-              paddingRight={4}
-              paddingTop={4}
-              paddingBottom={4}
-              color={TextColor.textMuted}
-            >
-              {t('noAccountsFound')}
-            </Text>
-          ) : null}
-
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+            searchResults.length === 0 && searchQuery !== '' ? (
+              <Text
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={4}
+                paddingBottom={4}
+                color={TextColor.textMuted}
+              >
+                {t('noAccountsFound')}
+              </Text>
+            ) : null
+            ///: END:ONLY_INCLUDE_IF
+          }
           {searchResults.map((account, index) => {
             const { address, addressLabel, balance } = account;
             const isSelectedAccount = selectedAccounts.has(address);
@@ -173,22 +199,26 @@ const AccountList = ({
 
   return (
     <div className="choose-account-list">
-      <Box paddingTop={6} width={BlockSize.Full}>
-        {accounts.length > 1 && (
-          <TextFieldSearch
-            size={Size.SM}
-            width={BlockSize.Full}
-            placeholder={t('searchAccounts')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            clearButtonOnClick={() => setSearchQuery('')}
-            clearButtonProps={{
-              size: Size.SM,
-            }}
-            inputProps={{ autoFocus: true }}
-          />
-        )}
-      </Box>
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        <Box paddingTop={6} width={BlockSize.Full}>
+          {accounts.length > 1 && (
+            <TextFieldSearch
+              size={Size.SM}
+              width={BlockSize.Full}
+              placeholder={t('searchAccounts')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              clearButtonOnClick={() => setSearchQuery('')}
+              clearButtonProps={{
+                size: Size.SM,
+              }}
+              inputProps={{ autoFocus: true }}
+            />
+          )}
+        </Box>
+        ///: END:ONLY_INCLUDE_IF
+      }
       <Header />
       <List />
     </div>
