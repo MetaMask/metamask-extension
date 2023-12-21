@@ -86,6 +86,7 @@ export const CreateAccount = ({ onActionComplete }) => {
     <Box as="form" onSubmit={onSubmit}>
       <FormTextField
         autoFocus
+        id="account-name"
         label={t('accountName')}
         placeholder={defaultAccountName}
         onChange={(event) => setNewAccountName(event.target.value)}
