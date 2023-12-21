@@ -16,6 +16,7 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
@@ -49,6 +50,7 @@ import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
 import SecurityTab from './security-tab';
 import ContactListTab from './contact-list-tab';
+import DeveloperOptionsTab from './developer-options-tab';
 import ExperimentalTab from './experimental-tab';
 import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
@@ -328,6 +330,11 @@ class SettingsPage extends PureComponent {
         key: EXPERIMENTAL_ROUTE,
       },
       {
+        content: t('developerOptions'),
+        icon: <Icon name={IconName.CodeCircle} />,
+        key: DEVELOPER_OPTIONS_ROUTE,
+      },
+      {
         content: t('about'),
         icon: <Icon name={IconName.Info} />,
         key: ABOUT_US_ROUTE,
@@ -387,6 +394,11 @@ class SettingsPage extends PureComponent {
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
+        <Route
+          exact
+          path={DEVELOPER_OPTIONS_ROUTE}
+          component={DeveloperOptionsTab}
+        />
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route

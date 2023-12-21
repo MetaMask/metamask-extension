@@ -5,6 +5,7 @@ const ASSET_ROUTE = '/asset';
 const SETTINGS_ROUTE = '/settings';
 const GENERAL_ROUTE = '/settings/general';
 const ADVANCED_ROUTE = '/settings/advanced';
+const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 const EXPERIMENTAL_ROUTE = '/settings/experimental';
 const SECURITY_ROUTE = '/settings/security';
 const ABOUT_US_ROUTE = '/settings/about-us';
@@ -114,6 +115,8 @@ const PATH_NAME_MAP = {
   [SETTINGS_ROUTE]: 'Settings Page',
   [GENERAL_ROUTE]: 'General Settings Page',
   [ADVANCED_ROUTE]: 'Advanced Settings Page',
+  // DEVELOPER_OPTIONS_ROUTE not included because we're not tracking analytics for this page
+  // [DEVELOPER_OPTIONS_ROUTE]: 'Experimental Settings Page',
   [EXPERIMENTAL_ROUTE]: 'Experimental Settings Page',
   [SECURITY_ROUTE]: 'Security Settings Page',
   [ABOUT_US_ROUTE]: 'About Us Page',
@@ -235,6 +238,7 @@ export {
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   CONFIRMATION_V_NEXT_ROUTE,
   ADVANCED_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
   EXPERIMENTAL_ROUTE,
   SECURITY_ROUTE,
   GENERAL_ROUTE,
