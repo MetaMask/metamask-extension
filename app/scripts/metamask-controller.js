@@ -543,10 +543,14 @@ export default class MetamaskController extends EventEmitter {
             listener({ selectedAddress: newlySelectedInternalAccount.address });
           },
         ),
-      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:networkDidChange',
-      ),
+      onNetworkDidChange: (cb) =>
+        networkControllerMessenger.subscribe(
+          'NetworkController:networkDidChange',
+          () => {
+            const networkState = this.networkController.state;
+            return cb(networkState);
+          },
+        ),
       onTokenListStateChange: (listener) =>
         this.controllerMessenger.subscribe(
           `${this.tokenListController.name}:stateChange`,
