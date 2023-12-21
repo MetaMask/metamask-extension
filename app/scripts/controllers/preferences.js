@@ -414,7 +414,7 @@ export default class PreferencesController {
    * Removes any unknown identities, and returns the resulting selected address.
    *
    * @param {Array<string>} addresses - known to the vault.
-   * @returns {Promise<string>} selectedAddress the selected address.
+   * @returns {string} selectedAddress the selected address.
    */
   syncAddresses(addresses) {
     if (!Array.isArray(addresses) || addresses.length === 0) {
