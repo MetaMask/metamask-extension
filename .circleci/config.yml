@@ -1205,7 +1205,7 @@ jobs:
           no_output_timeout: 10m
       - store_artifacts:
           name: html-report and artifacts
-          path: public/playwright/playwright-reports/swap
+          path: public/playwright/playwright-reports
       - store_test_results:
           name: report for pipeline integration
           path: public/playwright/playwright-reports/junit/test-results.xml
