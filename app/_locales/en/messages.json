@@ -412,6 +412,9 @@
     "message": "$1 and $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
   },
+  "announcements": {
+    "message": "Announcements"
+  },
   "appDescription": {
     "message": "An Ethereum Wallet in your Browser",
     "description": "The description of the application"
@@ -1375,6 +1378,12 @@
   },
   "details": {
     "message": "Details"
+  },
+  "developerOptions": {
+    "message": "Developer Options"
+  },
+  "developerOptionsResetStatesAnnouncementsDescription": {
+    "message": "Resets isShown boolean to false for all announcements. Announcements are the notifications shown in the What's New popup modal."
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -3902,6 +3911,9 @@
   "reset": {
     "message": "Reset"
   },
+  "resetStates": {
+    "message": "Reset States"
+  },
   "resetWallet": {
     "message": "Reset wallet"
   },
@@ -4686,6 +4698,9 @@
   },
   "stateLogsDescription": {
     "message": "State logs contain your public account addresses and sent transactions."
+  },
+  "states": {
+    "message": "States"
   },
   "status": {
     "message": "Status"
