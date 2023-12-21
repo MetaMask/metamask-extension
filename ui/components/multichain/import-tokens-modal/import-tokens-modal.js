@@ -475,7 +475,7 @@ export const ImportTokensModal = ({ onClose }) => {
         >
           {t('importTokensCamelCase')}
         </ModalHeader>
-        <Box>
+        <Box className="import-tokens-modal__body">
           <Tabs t={t} tabsClassName="import-tokens-modal__tabs">
             {showSearchTab ? (
               <Tab
