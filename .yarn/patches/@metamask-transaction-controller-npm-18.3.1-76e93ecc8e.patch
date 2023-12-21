@@ -1,0 +1,13 @@
+diff --git a/dist/utils/gas.js b/dist/utils/gas.js
+index b83a0bfda01e5f97f960296111e9076aa9e0e1a5..98a0d65a8849f93b46e2c37d46367ffe966cef26 100644
+--- a/dist/utils/gas.js
++++ b/dist/utils/gas.js
+@@ -120,7 +120,7 @@ function requiresFixedGas({ ethQuery, txMeta, providerConfig, }) {
+             return false;
+         }
+         if (!to) {
+-            return true;
++            return false;
+         }
+         const code = yield getCode(ethQuery, to);
+         return !data && (!code || code === '0x');
