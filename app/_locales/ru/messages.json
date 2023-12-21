@@ -3142,10 +3142,6 @@
   "portfolioDashboard": {
     "message": "Панель инструментов Portfolio"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Предпочтительный тип подключения к Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Подготовка свопа..."
   },
