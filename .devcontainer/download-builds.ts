@@ -17,7 +17,7 @@ async function getCircleJobs(branch: string) {
 
   const pipelineId = (await response.json()).items[0].id;
 
-  console.log('pipelineId', pipelineId);
+  console.log('pipelineId:', pipelineId);
 
   response = await fetch(
     `https://circleci.com/api/v2/pipeline/${pipelineId}/workflow`,
@@ -25,7 +25,7 @@ async function getCircleJobs(branch: string) {
 
   const workflowId = (await response.json()).items[0].id;
 
-  console.log('workflowId', workflowId);
+  console.log('workflowId:', workflowId);
 
   response = await fetch(
     `https://circleci.com/api/v2/workflow/${workflowId}/job`,
@@ -43,7 +43,7 @@ async function getBuilds(branch: string, jobNames: string[]) {
   for (const jobName of jobNames) {
     const jobId = jobs.find((job: any) => job.name === jobName).job_number;
 
-    console.log('jobName', jobName, 'jobId', jobId);
+    console.log(`jobName: ${jobName}, jobId: ${jobId}`);
 
     const response = await fetch(
       `https://circleci.com/api/v2/project/gh/MetaMask/metamask-extension/${jobId}/artifacts`,
@@ -65,8 +65,7 @@ async function getBuilds(branch: string, jobNames: string[]) {
 
 function getVersionNumber(builds: any[]) {
   for (const build of builds) {
-    const versionRegex =
-      /builds\/metamask-chrome-(?<version>\d+\.\d+\.\d+).zip/;
+    const versionRegex = /metamask-chrome-(?<version>\d+\.\d+\.\d+).zip/;
 
     const versionNumber = build.path.match(versionRegex)?.groups?.version;
 
@@ -78,7 +77,9 @@ function getVersionNumber(builds: any[]) {
 
 async function downloadBuilds(builds: any[]) {
   if (!builds || builds.length === 0) {
-    console.log('no builds found');
+    console.log(
+      'No builds found on CircleCI for the current branch, you will have to build the Extension yourself',
+    );
     return;
   }
 
@@ -110,7 +111,7 @@ async function unzipBuilds(
     return;
   }
 
-  execSync('rm -rf dist && mkdir -p dist');
+  execSync('sudo rm -rf dist && mkdir -p dist');
 
   execSync(
     `unzip ${folder}/metamask-chrome-${versionNumber}.zip -d dist/chrome`,
@@ -119,21 +120,29 @@ async function unzipBuilds(
   execSync(
     `unzip ${folder}/metamask-firefox-${versionNumber}.zip -d dist/firefox`,
   );
+
+  console.log(`unzipped ${folder} into ./dist`);
 }
 
-async function main() {
+async function main(jobNames: string[]) {
   const branch = getGitBranch();
 
-  // const builds = await getBuilds(branch, ['job-publish-prerelease']);
-  const builds = await getBuilds(branch, ['prep-build', 'prep-build-test']);
+  const builds = await getBuilds(branch, jobNames);
 
   console.log('builds', builds);
 
   await downloadBuilds(builds);
 
   const versionNumber = getVersionNumber(builds);
+  const folder = builds[0].path.split('/')[0];
 
-  unzipBuilds('builds-test', versionNumber);
+  unzipBuilds(folder, versionNumber);
 }
 
-main();
+let args = process.argv.slice(2);
+
+if (!args || args.length === 0) {
+  args = ['prep-build'];
+}
+
+main(args);

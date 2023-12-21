@@ -13,7 +13,8 @@
         "editor.formatOnSave": true,
         "git.autofetch": true,
         "git.ignoreRebaseWarning": true,
-        "git.rebaseWhenSync": true
+        "git.rebaseWhenSync": true,
+        "gitlens.showWelcomeOnInstall": false
       },
       "tasks": [
         {
@@ -31,6 +32,8 @@
   "image": "mcr.microsoft.com/devcontainers/universal:2-linux",
 
   "name": "MM Extension Codespace",
+
+  "otherPortsAttributes": { "onAutoForward": "ignore" },
 
   "portsAttributes": {
     "5901": {
