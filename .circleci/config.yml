@@ -1199,7 +1199,7 @@ jobs:
       - run:
           name: test:e2e:chrome:swap
           command: |
-            TESTFILES=$(circleci tests glob "test/e2e/swap/**/*.spec.ts")
+            TESTFILES=$(circleci tests glob "test/e2e/playwright/swap/**/*.spec.ts")
             echo "$TESTFILES"
             echo "$TESTFILES" | circleci tests run --command="xvfb-run xargs yarn playwright test --project=swap" verbose --split-by=timings
           no_output_timeout: 10m
