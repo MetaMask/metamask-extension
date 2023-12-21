@@ -1,4 +1,4 @@
-import React from 'react';
+import {LavaDome as LavaDomeReact} from "@lavamoat/lavadome-react";
 import PropTypes from 'prop-types';
 import {
   BannerAlert,
@@ -50,7 +50,7 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
           variant={TextVariant.bodySm}
           style={{ wordBreak: 'break-word' }}
         >
-          {privateKey}
+          <LavaDomeReact text={privateKey} />
         </Text>
         <ButtonIcon
           onClick={() => handlePrivateKeyCopy(privateKey)}
