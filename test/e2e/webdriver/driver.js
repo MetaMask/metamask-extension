@@ -416,6 +416,10 @@ class Driver {
     return newHandle;
   }
 
+  async refresh() {
+    await this.driver.navigate().refresh();
+  }
+
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
   }
@@ -535,10 +539,17 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
-    const screenshot = await this.driver.takeScreenshot();
-    await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
-      encoding: 'base64',
-    });
+    // On occassion there may be a bug in the offscreen document which does
+    // not render visibly to the user and therefore no screenshot can be
+    // taken. In this case we skip the screenshot and log the error.
+    try {
+      const screenshot = await this.driver.takeScreenshot();
+      await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+        encoding: 'base64',
+      });
+    } catch (e) {
+      console.error('Failed to take screenshot', e);
+    }
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
     const uiState = await this.driver.executeScript(

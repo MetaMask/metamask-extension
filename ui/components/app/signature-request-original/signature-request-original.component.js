@@ -3,17 +3,17 @@ import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { SubjectType } from '@metamask/permission-controller';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import LedgerInstructionField from '../ledger-instruction-field';
 import { MESSAGE_TYPE } from '../../../../shared/constants/app';
 import {
   getURLHostName,
   sanitizeString,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   shortenAddress,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/utils/util';
 import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
@@ -26,33 +26,33 @@ import {
   TextAlign,
   TextColor,
   Size,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   IconColor,
   Display,
   BlockSize,
   TextVariant,
   BackgroundColor,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 import {
   ButtonLink,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Box,
   Icon,
   IconName,
   Text,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 
 import SignatureRequestHeader from '../signature-request-header';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapLegacyAuthorshipHeader from '../snaps/snap-legacy-authorship-header';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
@@ -79,12 +79,12 @@ export default class SignatureRequestOriginal extends Component {
     mostRecentOverviewPage: PropTypes.string.isRequired,
     resolvePendingApproval: PropTypes.func.isRequired,
     completedTx: PropTypes.func.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     // Used to show a warning if the signing account is not the selected account
     // Largely relevant for contract wallet custodians
     selectedAccount: PropTypes.object,
     mmiOnSignCallback: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
@@ -153,12 +153,9 @@ export default class SignatureRequestOriginal extends Component {
     return (
       <div className="request-signature__body">
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-          <BlockaidBannerAlert
-            securityAlertResponse={txData?.securityAlertResponse}
-            margin={4}
-          />
-          ///: END:ONLY_INCLUDE_IN
+          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+          <BlockaidBannerAlert txData={txData} margin={4} />
+          ///: END:ONLY_INCLUDE_IF
         }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
@@ -166,7 +163,7 @@ export default class SignatureRequestOriginal extends Component {
           />
         )}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           this.props.selectedAccount.address ===
           this.props.fromAccount.address ? null : (
             <Box
@@ -190,12 +187,12 @@ export default class SignatureRequestOriginal extends Component {
               </Text>
             </Box>
           )
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         <div className="request-signature__origin">
           {
             // Use legacy authorship header for snaps
-            ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+            ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             targetSubjectMetadata?.subjectType === SubjectType.Snap ? (
               <SnapLegacyAuthorshipHeader
                 snapId={targetSubjectMetadata.origin}
@@ -203,7 +200,7 @@ export default class SignatureRequestOriginal extends Component {
                 marginRight={4}
               />
             ) : (
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
               <SiteOrigin
                 title={txData.msgParams.origin}
                 siteOrigin={txData.msgParams.origin}
@@ -214,9 +211,9 @@ export default class SignatureRequestOriginal extends Component {
                 }
                 chip
               />
-              ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+              ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             )
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
         </div>
         <Typography
@@ -271,12 +268,12 @@ export default class SignatureRequestOriginal extends Component {
       mostRecentOverviewPage,
       txData,
     } = this.props;
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     if (this.props.mmiOnSignCallback) {
       await this.props.mmiOnSignCallback(txData);
       return;
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     await resolvePendingApproval(txData.id);
     completedTx(txData.id);
@@ -329,12 +326,12 @@ export default class SignatureRequestOriginal extends Component {
           if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
             this.setState({ showSignatureRequestWarning: true });
           } else {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             if (this.props.mmiOnSignCallback) {
               await this.props.mmiOnSignCallback(txData);
               return;
             }
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
 
             await resolvePendingApproval(txData.id);
             clearConfirmTransaction();
@@ -342,9 +339,9 @@ export default class SignatureRequestOriginal extends Component {
           }
         }}
         disabled={
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           Boolean(txData?.custodyId) ||
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
           hardwareWalletRequiresConnection
         }
       />

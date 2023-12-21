@@ -1,9 +1,9 @@
 const {
-  convertToHexValue,
   openDapp,
   switchToNotificationWindow,
   withFixtures,
   unlockWallet,
+  defaultGanacheOptions,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
@@ -11,16 +11,6 @@ const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
 const SIGNATURE_TYPE = {
   TYPED_V3: 'v3',
   TYPED_V4: 'v4',
-};
-
-const ganacheOptions = {
-  accounts: [
-    {
-      secretKey:
-        '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-      balance: convertToHexValue(25000000000000000000),
-    },
-  ],
 };
 
 async function openTestSnaps(driver) {
@@ -151,7 +141,7 @@ describe('Petnames', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -187,7 +177,7 @@ describe('Petnames', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -226,7 +216,7 @@ describe('Petnames', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

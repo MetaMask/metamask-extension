@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "添加 NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "了解使用 MetaMask Snaps 来保护账户安全的选项"
-  },
   "addSuggestedNFTs": {
     "message": "添加推荐的 NFT"
   },
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "保证金"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "了解详情"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "由于以太坊的协议有变化：Rinkeby、Ropsten 和 Kovan 测试网络可能无法可靠地工作，很快就会被弃用。"
-  },
   "description": {
     "message": "描述"
   },
@@ -1661,42 +1652,19 @@
     "message": "$1 小时",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 分钟",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 分钟",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "可能在 $1 内",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "有可能在 $1 以内",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 秒",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 秒",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "很可能在 $1 以内",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "使用的燃料"
   },
   "general": {
     "message": "通用"
-  },
-  "getStarted": {
-    "message": "开始进行"
   },
   "globalTitle": {
     "message": "全局菜单"
@@ -3499,9 +3467,6 @@
   "searchAccounts": {
     "message": "搜索账户"
   },
-  "searchResults": {
-    "message": "搜索结果"
-  },
   "secretRecoveryPhrase": {
     "message": "私钥助记词"
   },
@@ -3757,9 +3722,6 @@
   "smartContracts": {
     "message": "智能合约"
   },
-  "smartSwap": {
-    "message": "智能兑换"
-  },
   "smartSwapsAreHere": {
     "message": "智能兑换已推出！"
   },
@@ -3772,9 +3734,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "智能兑换暂时不可用。"
   },
-  "snapConfigure": {
-    "message": "配置"
-  },
   "snapConnectionWarning": {
     "message": "$1想连接$2。只有在您信任此网站的情况下才能继续。",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3783,49 +3742,8 @@
     "message": "此内容来自$1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "选择如何使用 MetaMask Snaps 来保护您的新账户。"
-  },
-  "snapCreateAccountTitle": {
-    "message": "创建 $1 账户",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "由MetaMask创建"
-  },
-  "snapDetailAudits": {
-    "message": "审核"
-  },
-  "snapDetailDeveloper": {
-    "message": "开发者"
-  },
-  "snapDetailLastUpdated": {
-    "message": "已更新"
-  },
-  "snapDetailManageSnap": {
-    "message": "管理snap"
-  },
-  "snapDetailTags": {
-    "message": "标签"
-  },
-  "snapDetailVersion": {
-    "message": "版本"
-  },
   "snapDetailWebsite": {
     "message": "网站"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "创建Snap账户"
-  },
-  "snapDetailsInstalled": {
-    "message": "已安装"
-  },
-  "snapInstall": {
-    "message": "安装Snap"
   },
   "snapInstallRequest": {
     "message": "安装$1，将向其授予以下权限。只有在您信任$1的情况下才能继续。",
@@ -3844,9 +3762,6 @@
   "snapInstallationErrorTitle": {
     "message": "安装失败",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "已审核"
   },
   "snapResultError": {
     "message": "错误"
@@ -4791,9 +4706,6 @@
   "transactionDetailGasHeading": {
     "message": "估算的燃料费"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "估算"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "了解更多关于燃料费的信息"
   },
@@ -4929,12 +4841,6 @@
   "unknown": {
     "message": "未知"
   },
-  "unknownCameraError": {
-    "message": "尝试访问您的相机时出错。请重试……"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "糟糕！出问题了...."
-  },
   "unknownCollection": {
     "message": "未命名的收藏"
   },
@@ -5014,10 +4920,6 @@
   },
   "verifyContractDetails": {
     "message": "验证第三方详情"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "代币小数可以在 $1 上找到",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "在 $1 上验证此代币",

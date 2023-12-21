@@ -4,7 +4,9 @@
   },
   "appState": {
     "networkDropdownOpen": false,
-    "importNftsModal": { "open": false },
+    "importNftsModal": {
+      "open": false
+    },
     "gasIsLoading": false,
     "isLoading": false,
     "modal": {
@@ -140,6 +142,111 @@
         "id": "chain5"
       }
     },
+    "internalAccounts": {
+      "accounts": {
+        "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
+          "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+          "id": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
+          "metadata": {
+            "name": "Test Account",
+            "keyring": {
+              "type": "HD Key Tree"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "07c2cfec-36c9-46c4-8115-3836d3ac9047": {
+          "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+          "id": "07c2cfec-36c9-46c4-8115-3836d3ac9047",
+          "metadata": {
+            "name": "Test Account 2",
+            "keyring": {
+              "type": "HD Key Tree"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "15e69915-2a1a-4019-93b3-916e11fd432f": {
+          "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+          "id": "15e69915-2a1a-4019-93b3-916e11fd432f",
+          "metadata": {
+            "name": "Ledger Hardware 2",
+            "keyring": {
+              "type": "Ledger Hardware"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "784225f4-d30b-4e77-a900-c8bbce735b88": {
+          "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+          "id": "784225f4-d30b-4e77-a900-c8bbce735b88",
+          "metadata": {
+            "name": "Test Account 3",
+            "keyring": {
+              "type": "HD Key Tree"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        },
+        "694225f4-d30b-4e77-a900-c8bbce735b42": {
+          "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
+          "id": "694225f4-d30b-4e77-a900-c8bbce735b42",
+          "metadata": {
+            "name": "Test Account 4",
+            "keyring": {
+              "type": "Custody test"
+            }
+          },
+          "options": {},
+          "methods": [
+            "personal_sign",
+            "eth_sign",
+            "eth_signTransaction",
+            "eth_signTypedData_v1",
+            "eth_signTypedData_v3",
+            "eth_signTypedData_v4"
+          ],
+          "type": "eip155:eoa"
+        }
+      },
+      "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"
+    },
     "keyrings": [
       {
         "type": "HD Key Tree",
@@ -190,7 +297,9 @@
     "selectedNetworkClientId": "goerli",
     "networksMetadata": {
       "goerli": {
-        "EIPS": { "1559": true },
+        "EIPS": {
+          "1559": true
+        },
         "status": "available"
       }
     },
@@ -234,7 +343,13 @@
         "message": "Hello, http://localhost:8086!"
       }
     },
-    "cachedBalances": {},
+    "accountsByChainId": {
+      "0x5": {
+        "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
+          "balance": "0x15f6f0b9d4f8d000"
+        }
+      }
+    },
     "incomingTransactionsPreferences": {
       "0x1": true,
       "0xe708": false,
@@ -259,6 +374,10 @@
       },
       "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
         "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+        "balance": "0x0"
+      },
+      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
         "balance": "0x0"
       }
     },
@@ -315,6 +434,8 @@
     "useCurrencyRateCheck": true,
     "useNftDetection": true,
     "openSeaEnabled": true,
+    "orderedNetworkList": [],
+    "pinnedAccountList": [],
     "advancedGasFee": {
       "0x5": {
         "maxBaseFee": "75",
@@ -1404,8 +1525,12 @@
         "time": 1528133319641,
         "origin": "metamask",
         "type": "transaction",
-        "requestData": { "txId": "testTransactionId" },
-        "requestState": { "test": "value" }
+        "requestData": {
+          "txId": "testTransactionId"
+        },
+        "requestState": {
+          "test": "value"
+        }
       }
     },
     "pendingApprovalCount": 1,

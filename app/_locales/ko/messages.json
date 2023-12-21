@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "NFT 추가"
   },
-  "addSnapAccountModalDescription": {
-    "message": "MetaMask Snap으로 계정 보안을 유지할 수 있는 옵션을 확인하세요"
-  },
   "addSuggestedNFTs": {
     "message": "추천 NFT 추가"
   },
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "예치"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "자세히 알아보기"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "이더리움 프로토콜 변경으로 인해 Rinkeby, Ropsten 및 Kovan 테스트 네트워크가 안정적으로 작동하지 않을 수 있습니다. 해당 네트워크는 곧 사용이 중단될 예정입니다."
-  },
   "description": {
     "message": "설명"
   },
@@ -1661,42 +1652,19 @@
     "message": "$1 시간",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 분",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 분",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "약 $1 후",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "아마도 < $1 후",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 초",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 초",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "거의 < $1 이내",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "가스 사용됨"
   },
   "general": {
     "message": "일반"
-  },
-  "getStarted": {
-    "message": "시작하기"
   },
   "globalTitle": {
     "message": "글로벌 메뉴"
@@ -3499,9 +3467,6 @@
   "searchAccounts": {
     "message": "계정 검색"
   },
-  "searchResults": {
-    "message": "검색 결과"
-  },
   "secretRecoveryPhrase": {
     "message": "비밀복구구문"
   },
@@ -3757,9 +3722,6 @@
   "smartContracts": {
     "message": "스마트 계약"
   },
-  "smartSwap": {
-    "message": "스마트 스왑"
-  },
   "smartSwapsAreHere": {
     "message": "스마트 스왑이 시작되었습니다!"
   },
@@ -3772,9 +3734,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "스마트 스왑을 잠시 사용할 수 없습니다."
   },
-  "snapConfigure": {
-    "message": "구성"
-  },
   "snapConnectionWarning": {
     "message": "$1에서 $2 스냅 연결을 원합니다. 해당 웹사이트를 신뢰할 수 있는 경우에만 진행하세요.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3783,49 +3742,8 @@
     "message": "콘텐츠 출처: $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "MetaMask 스냅으로 새 계정의 보안을 유지하는 방법을 선택하세요."
-  },
-  "snapCreateAccountTitle": {
-    "message": "$1 계정 생성",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "스냅",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "MetaMask 제공"
-  },
-  "snapDetailAudits": {
-    "message": "감사"
-  },
-  "snapDetailDeveloper": {
-    "message": "개발자"
-  },
-  "snapDetailLastUpdated": {
-    "message": "업데이트됨"
-  },
-  "snapDetailManageSnap": {
-    "message": "스냅 관리"
-  },
-  "snapDetailTags": {
-    "message": "태그"
-  },
-  "snapDetailVersion": {
-    "message": "버전"
-  },
   "snapDetailWebsite": {
     "message": "웹사이트"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "스냅 계정 만들기"
-  },
-  "snapDetailsInstalled": {
-    "message": "설치됨"
-  },
-  "snapInstall": {
-    "message": "스냅 설치"
   },
   "snapInstallRequest": {
     "message": "$1 설치는 다음과 같은 권한을 허용합니다. $1 스냅을 신뢰하는 경우에만 계속 진행하세요.",
@@ -3844,9 +3762,6 @@
   "snapInstallationErrorTitle": {
     "message": "설치 실패",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "감사 완료됨"
   },
   "snapResultError": {
     "message": "오류"
@@ -4791,9 +4706,6 @@
   "transactionDetailGasHeading": {
     "message": "예상 가스비"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "예상치"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "가스 요금 자세히 알아보기"
   },
@@ -4929,12 +4841,6 @@
   "unknown": {
     "message": "알 수 없음"
   },
-  "unknownCameraError": {
-    "message": "카메라에 액세스하는 도중 오류가 발생했습니다. 다시 시도하세요..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "죄송합니다! 문제가 생겼습니다...."
-  },
   "unknownCollection": {
     "message": "제목 미지정 컬렉션"
   },
@@ -5014,10 +4920,6 @@
   },
   "verifyContractDetails": {
     "message": "타사 세부 정보 확인"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "토큰 십진수는 $1에서 찾을 수 있습니다.",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "$1에서 이 토큰 확인",

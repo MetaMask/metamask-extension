@@ -1,5 +1,12 @@
 {
-  "AccountTracker": { "accounts": "object" },
+  "AccountOrderController": { "pinnedAccountList": {} },
+  "AccountTracker": {
+    "accounts": "object",
+    "accountsByChainId": "object"
+  },
+  "AccountsController": {
+    "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
+  },
   "AddressBookController": { "addressBook": "object" },
   "AlertController": {
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
@@ -33,14 +40,14 @@
     "termsOfUseLastAgreed": "number",
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
-    "snapsInstallPrivacyWarningShown": true
+    "snapsInstallPrivacyWarningShown": true,
+    "surveyLinkLastClickedOrClosed": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
-  "CachedBalancesController": { "cachedBalances": "object" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
@@ -63,6 +70,7 @@
   "EnsController": { "ensResolutionsByAddress": "object" },
   "GasFeeController": {
     "gasFeeEstimates": {},
+    "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none"
   },
@@ -99,6 +107,9 @@
       }
     },
     "networkConfigurations": "object"
+  },
+  "NetworkOrderController": {
+    "orderedNetworkList": { "0": "string", "1": "string", "2": "string" }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -226,7 +237,10 @@
     "tokensChainsCache": {},
     "preventPollingOnNetworkRestart": true
   },
-  "TokenRatesController": { "contractExchangeRates": "object" },
+  "TokenRatesController": {
+    "contractExchangeRates": "object",
+    "contractExchangeRatesByChainId": "object"
+  },
   "TokensController": {
     "tokens": "object",
     "ignoredTokens": "object",

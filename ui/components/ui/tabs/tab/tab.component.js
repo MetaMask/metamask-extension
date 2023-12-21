@@ -10,6 +10,7 @@ import Box from '../../box';
 
 const Tab = (props) => {
   const {
+    buttonClassName,
     activeClassName,
     className,
     'data-testid': dataTestId,
@@ -40,6 +41,7 @@ const Tab = (props) => {
         textAlign={TextAlign.Center}
         display={DISPLAY.BLOCK}
         width={BLOCK_SIZES.FULL}
+        className={buttonClassName}
       >
         {name}
       </Box>
@@ -49,6 +51,7 @@ const Tab = (props) => {
 
 Tab.propTypes = {
   activeClassName: PropTypes.string,
+  buttonClassName: PropTypes.string,
   className: PropTypes.string,
   'data-testid': PropTypes.string,
   isActive: PropTypes.bool, // required, but added using React.cloneElement
@@ -60,6 +63,7 @@ Tab.propTypes = {
 
 Tab.defaultProps = {
   activeClassName: undefined,
+  buttonClassName: undefined,
   className: undefined,
   onClick: undefined,
   'data-testid': undefined,

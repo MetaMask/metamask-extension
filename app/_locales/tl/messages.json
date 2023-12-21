@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Magdagdag ng mga NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Tuklasin ang mga opsyon upang mapanatiling ligtas ang iyong MetaMask Snaps"
-  },
   "addSuggestedNFTs": {
     "message": "Magdagdag ng mga iminumungkahing NFT"
   },
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "Deposito"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Matuto pa"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Dahil sa mga pagbabago ng protokol ng Ethereum: ang mga test network na Rinkeby, Ropsten at Kovan ay maaaring hindi gumana tulad ng maaasahan at malapit nang itigil ang paggamit."
-  },
   "description": {
     "message": "Deskripsyon"
   },
@@ -1661,42 +1652,19 @@
     "message": "$1 oras",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 minuto",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Baka sa $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Posible sa < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 na segundo",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 seg",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Napakaposible sa < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Nagamit na Gas"
   },
   "general": {
     "message": "Pangkalahatan"
-  },
-  "getStarted": {
-    "message": "Magsimula"
   },
   "globalTitle": {
     "message": "Global menu"
@@ -3499,9 +3467,6 @@
   "searchAccounts": {
     "message": "Maghanap ng mga account"
   },
-  "searchResults": {
-    "message": "Mga resulta ng paghahanap"
-  },
   "secretRecoveryPhrase": {
     "message": "Lihim na Parirala sa Pagbawi"
   },
@@ -3757,9 +3722,6 @@
   "smartContracts": {
     "message": "Mga smart na kontrata"
   },
-  "smartSwap": {
-    "message": "Smart swap"
-  },
   "smartSwapsAreHere": {
     "message": "Nandito na ang mga Smart Swap!"
   },
@@ -3772,9 +3734,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Pansamantalang hindi available ang mga Smart Swap."
   },
-  "snapConfigure": {
-    "message": "I-configure"
-  },
   "snapConnectionWarning": {
     "message": "Gustong kumonekta ng $1 sa $2. Magpatuloy lang kung pinagkakatiwalaan mo ang website na ito.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3783,49 +3742,8 @@
     "message": "Ang nilalamang ito ay nagmumula sa $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Piliin kung paano gawing ligtas ang iyong bagong account gamit ang mga MetaMask Snap."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Gumawa ng $1 account",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Sa pamamagitan ng MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "I-audit"
-  },
-  "snapDetailDeveloper": {
-    "message": "Developer"
-  },
-  "snapDetailLastUpdated": {
-    "message": "In-update"
-  },
-  "snapDetailManageSnap": {
-    "message": "Pamahalaan ang snap"
-  },
-  "snapDetailTags": {
-    "message": "Mga Tag"
-  },
-  "snapDetailVersion": {
-    "message": "Bersyon"
-  },
   "snapDetailWebsite": {
     "message": "Website"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Gumawa ng Snap Account"
-  },
-  "snapDetailsInstalled": {
-    "message": "Na-install"
-  },
-  "snapInstall": {
-    "message": "I-install ang snap"
   },
   "snapInstallRequest": {
     "message": "Ang pag-install ng $1 ay nagbibigay dito ng mga sumusunod na pahintulot. Magpatuloy lang kung pinagkakatiwalaan mo ang $1.",
@@ -3844,9 +3762,6 @@
   "snapInstallationErrorTitle": {
     "message": "Nabigo ang pag-install",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "In-audit"
   },
   "snapResultError": {
     "message": "Error"
@@ -4791,9 +4706,6 @@
   "transactionDetailGasHeading": {
     "message": "Tinantyang bayad sa gas"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "tinantya"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Alamin pa ang tungkol sa mga bayad sa gas"
   },
@@ -4929,12 +4841,6 @@
   "unknown": {
     "message": "Hindi Alam"
   },
-  "unknownCameraError": {
-    "message": "Nagkaroon ng error habang sinusubukang i-access ang iyong camera. Pakisubukan ulit..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Nagkaproblema...."
-  },
   "unknownCollection": {
     "message": "Walang pangalang koleksyon"
   },
@@ -5014,10 +4920,6 @@
   },
   "verifyContractDetails": {
     "message": "I-verify ang mga detalye ng third-party"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Ang token decimal ay maaaring matagpuan sa $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "I-verify ang token na ito sa $1",

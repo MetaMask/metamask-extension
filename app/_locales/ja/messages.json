@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "NFTを追加"
   },
-  "addSnapAccountModalDescription": {
-    "message": "MetaMask Snapsでアカウントのセキュリティを確保する方法をご覧ください"
-  },
   "addSuggestedNFTs": {
     "message": "推奨されたNFTを追加"
   },
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "入金"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "詳細"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "イーサリアムのプロトコル変更のため: Rinkeby、Ropsten、Kovanテストネットワークは動作が安定しない可能性があり、近いうちに非推奨になります。"
-  },
   "description": {
     "message": "説明"
   },
@@ -1661,42 +1652,19 @@
     "message": "$1時間",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1分",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1分",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "おそらく$1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "$1未満の可能性が高い",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1秒",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1秒",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "$1未満の可能性が非常に高い",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "ガス使用量"
   },
   "general": {
     "message": "一般"
-  },
-  "getStarted": {
-    "message": "開始"
   },
   "globalTitle": {
     "message": "グローバルメニュー"
@@ -3499,9 +3467,6 @@
   "searchAccounts": {
     "message": "アカウントを検索"
   },
-  "searchResults": {
-    "message": "検索結果"
-  },
   "secretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズ"
   },
@@ -3757,9 +3722,6 @@
   "smartContracts": {
     "message": "スマートコントラクト"
   },
-  "smartSwap": {
-    "message": "スマートスワップ"
-  },
   "smartSwapsAreHere": {
     "message": "スマートスワップの登場です！"
   },
@@ -3772,9 +3734,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "スマートスワップは一時的にご利用いただけません。"
   },
-  "snapConfigure": {
-    "message": "構成"
-  },
   "snapConnectionWarning": {
     "message": "$1が$2への接続を要求しています。このWebサイトが信頼できる場合にのみ続行してください。",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3783,49 +3742,8 @@
     "message": "このコンテンツは$1からのものです",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "MetaMask Snapで新規アカウントのセキュリティを確保する方法を選択してください。"
-  },
-  "snapCreateAccountTitle": {
-    "message": "$1アカウントの作成",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "By MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "監査"
-  },
-  "snapDetailDeveloper": {
-    "message": "開発者"
-  },
-  "snapDetailLastUpdated": {
-    "message": "更新済み"
-  },
-  "snapDetailManageSnap": {
-    "message": "snapの管理"
-  },
-  "snapDetailTags": {
-    "message": "タグ"
-  },
-  "snapDetailVersion": {
-    "message": "バージョン"
-  },
   "snapDetailWebsite": {
     "message": "Webサイト"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "スナップアカウントの作成"
-  },
-  "snapDetailsInstalled": {
-    "message": "インストール済み"
-  },
-  "snapInstall": {
-    "message": "snapをインストール"
   },
   "snapInstallRequest": {
     "message": "$1をインストールすることで、次のアクセス許可が付与されます。$1を信頼できる場合にのみ続行してください。",
@@ -3844,9 +3762,6 @@
   "snapInstallationErrorTitle": {
     "message": "インストールに失敗しました",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "監査済み"
   },
   "snapResultError": {
     "message": "エラー"
@@ -4791,9 +4706,6 @@
   "transactionDetailGasHeading": {
     "message": "ガス代見積もり"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "見積もり"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "ガス代に関する詳細"
   },
@@ -4929,12 +4841,6 @@
   "unknown": {
     "message": "不明"
   },
-  "unknownCameraError": {
-    "message": "カメラへのアクセス時にエラーが発生しました。もう一度実行してください..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "申し訳ありません。問題が発生しました..."
-  },
   "unknownCollection": {
     "message": "無名のコレクション"
   },
@@ -5014,10 +4920,6 @@
   },
   "verifyContractDetails": {
     "message": "サードパーティの詳細を確認"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "トークンの10進数は$1にあります",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "このトークンを$1で検証",

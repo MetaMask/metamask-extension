@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Προσθήκη των NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Ανακαλύψτε επιλογές για να διατηρήσετε τον λογαριασμό σας ασφαλή με το MetaMask Snaps"
-  },
   "addSuggestedNFTs": {
     "message": "Προσθήκη προτεινόμενων NFT"
   },
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "Κατάθεση"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Μάθετε περισσότερα"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Λόγω των αλλαγών στο πρωτόκολλο του Ethereum: τα δοκιμαστικά δίκτυα Rinkeby, Ropsten και Kovan μπορεί να μη λειτουργούν τόσο αξιόπιστα και θα καταργηθούν σύντομα."
-  },
   "description": {
     "message": "Περιγραφή"
   },
@@ -1661,42 +1652,19 @@
     "message": "$1 ώρες",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 λεπτά",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 λεπτά",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Ίσως σε $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Πιθανό σε < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 δευτερόλεπτα",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 δευτ",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Πολύ πιθανό σε < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Τέλος συναλλαγής που χρησιμοποιήθηκε"
   },
   "general": {
     "message": "Γενικά"
-  },
-  "getStarted": {
-    "message": "Ξεκινήστε"
   },
   "globalTitle": {
     "message": "Γενικό μενού"
@@ -3499,9 +3467,6 @@
   "searchAccounts": {
     "message": "Αναζήτηση λογαριασμών"
   },
-  "searchResults": {
-    "message": "Αποτελέσματα αναζήτησης"
-  },
   "secretRecoveryPhrase": {
     "message": "Μυστική Φράση Ανάκτησης"
   },
@@ -3757,9 +3722,6 @@
   "smartContracts": {
     "message": "Έξυπνα συμβόλαια"
   },
-  "smartSwap": {
-    "message": "Έξυπνες ανταλλαγές"
-  },
   "smartSwapsAreHere": {
     "message": "Οι Έξυπνες Ανταλλαγές είναι εδώ!"
   },
@@ -3772,9 +3734,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Οι Έξυπνες Ανταλλαγές είναι προσωρινά μη διαθέσιμες."
   },
-  "snapConfigure": {
-    "message": "Διαμόρφωση"
-  },
   "snapConnectionWarning": {
     "message": "Το $1 θέλει να συνδεθεί με το $2. Συνεχίστε μόνο αν εμπιστεύεστε αυτόν τον ιστότοπο.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3783,49 +3742,8 @@
     "message": "Αυτό το περιεχόμενο προέρχεται από το $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Επιλέξτε πώς θα προστατεύσετε τον νέο σας λογαριασμό χρησιμοποιώντας το MetaMask Snaps."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Δημιουργήστε έναν $1 λογαριασμό",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Από το MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Έλεγχος"
-  },
-  "snapDetailDeveloper": {
-    "message": "Προγραμματιστής"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Ενημερώθηκε"
-  },
-  "snapDetailManageSnap": {
-    "message": "Διαχείριση του snap"
-  },
-  "snapDetailTags": {
-    "message": "Ετικέτες"
-  },
-  "snapDetailVersion": {
-    "message": "Έκδοση"
-  },
   "snapDetailWebsite": {
     "message": "Ιστότοπος"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Δημιουργήστε έναν λογαριασμό στο Snap"
-  },
-  "snapDetailsInstalled": {
-    "message": "Εγκαταστάθηκε"
-  },
-  "snapInstall": {
-    "message": "Εγκατάσταση του snap"
   },
   "snapInstallRequest": {
     "message": "Με την εγκατάσταση, εκχωρούνται στο $1 οι ακόλουθες άδειες. Συνεχίστε μόνο αν εμπιστεύεστε το $1.",
@@ -3844,9 +3762,6 @@
   "snapInstallationErrorTitle": {
     "message": "Η εγκατάσταση απέτυχε",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "Ελέγχθηκε"
   },
   "snapResultError": {
     "message": "Σφάλμα"
@@ -4791,9 +4706,6 @@
   "transactionDetailGasHeading": {
     "message": "Εκτιμώμενο τέλος συναλλαγής"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "εκτιμώμενο"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Μάθετε περισσότερα για τα τέλη συναλλαγών"
   },
@@ -4929,12 +4841,6 @@
   "unknown": {
     "message": "Άγνωστο"
   },
-  "unknownCameraError": {
-    "message": "Προέκυψε ένα σφάλμα κατά την προσπάθεια πρόσβασης στην κάμερά σας. Προσπαθήστε ξανά..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ουπς! Κάτι πήγε στραβά...."
-  },
   "unknownCollection": {
     "message": "Ανώνυμη συλλογή"
   },
@@ -5014,10 +4920,6 @@
   },
   "verifyContractDetails": {
     "message": "Επαλήθευση στοιχείων τρίτων"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Το token με δεκαδικά ψηφία μπορεί να βρεθεί στο $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Επαλήθευση αυτού του token στο $1",

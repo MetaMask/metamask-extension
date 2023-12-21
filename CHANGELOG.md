@@ -6,6 +6,59 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [11.7.1]
+### Added
+- Added mapping to hardcode a mapping of ChainIDs to currency symbols [#22292](https://github.com/MetaMask/metamask-extension/pull/22292)
+
+### Changed
+- Updated onboarding flow to ensure user is prompted for password during reminder based backup [#22307](https://github.com/MetaMask/metamask-extension/pull/22297)
+
+### Fixed
+- Fixed QR scan functionality when sending a transaction to another contact [#22297](https://github.com/MetaMask/metamask-extension/pull/22297)
+- Fixed incorrect warnings when adding a chain from a dapp [#22309](https://github.com/MetaMask/metamask-extension/pull/22309)
+- Stopped unnecessary Cryptocompare polling when initialize the UI ([#22326](https://github.com/MetaMask/metamask-extension/pull/22326))
+
+## [11.7.0]
+### Added
+- Added auto-suggestion for ticker symbols in the network form ([#21843](https://github.com/MetaMask/metamask-extension/pull/21843))
+- [MMI] Added a new button to "Continue to wallet" ([#21838](https://github.com/MetaMask/metamask-extension/pull/21838))
+- [FLASK] Enabled the snaps home page feature ([#21581](https://github.com/MetaMask/metamask-extension/pull/21581))
+- [FLASK] Enabled the use of markdown links in custom UI ([#21887](https://github.com/MetaMask/metamask-extension/pull/21887))
+- [FLASK] Added a manual snap update feature from the snap view component in extension ([#21773](https://github.com/MetaMask/metamask-extension/pull/21773))
+- [FLASK] Added support for snaps domain resolution ([#19131](https://github.com/MetaMask/metamask-extension/pull/19131))
+
+### Changed
+- Deprecated U2F and Ledger Live on Chrome ([#18794](https://github.com/MetaMask/metamask-extension/pull/18794))
+- Updated the copy for NFT Media display ([#21713](https://github.com/MetaMask/metamask-extension/pull/21713))
+- Updated the Popular Networks List ([#21902](https://github.com/MetaMask/metamask-extension/pull/21902))
+- Removed unnecessary redirection for swap pages and updated smart swap copy ([#21935](https://github.com/MetaMask/metamask-extension/pull/21935))
+- [MMI] Relocated the custodian logo ([#21819](https://github.com/MetaMask/metamask-extension/pull/21819))
+- [MMI] Prevented the back button from appearing when the user is in the popup view ([#21851](https://github.com/MetaMask/metamask-extension/pull/21851))
+- [MMI] Guarded logic for specific transaction metadata ([#21959](https://github.com/MetaMask/metamask-extension/pull/21959))
+
+### Fixed
+- Fixed the copy for backup options in advanced settings ([#21715](https://github.com/MetaMask/metamask-extension/pull/21715))
+- Hide loading spinner when the async transaction approval modal is present ([#21637](https://github.com/MetaMask/metamask-extension/pull/21637))
+- Fixed the display of the currency preferences toggle ([#21985](https://github.com/MetaMask/metamask-extension/pull/21985))
+- Fixed the warning about the missing strong random number source ([#21953](https://github.com/MetaMask/metamask-extension/pull/21953))
+- Fixed the issue where the per dapp selected network state is enabled even when the request queue experimental toggle is disabled ([#21946](https://github.com/MetaMask/metamask-extension/pull/21946))
+- Fixed the alignment of the NFT send button([#21829](https://github.com/MetaMask/metamask-extension/pull/21829))
+- Fixed the warning copy when adding a custom network with an existing currency symbol ([#21500](https://github.com/MetaMask/metamask-extension/pull/21500))
+- Stopped unnecessary CoinGecko polling with UI closed and auto token detection on ([#22123](https://github.com/MetaMask/metamask-extension/pull/22123))
+- Reduce occurence of bug that can cause fiat balances of tokens to be hidden or excessively stale ([#22151](https://github.com/MetaMask/metamask-extension/pull/22151))
+
+## [11.6.3]
+### Fixed
+- Fixed a problem related with passing the wrong method name to TransactionController ([#22102](https://github.com/MetaMask/metamask-extension/pull/22102))
+
+## [11.6.2]
+### Fixed
+- Fixed a problem with including links in Snaps custom UI ([#22086](https://github.com/MetaMask/metamask-extension/pull/22086))
+
+## [11.6.1]
+### Fixed
+- Updates MMI extension package to the latest version since it includes a fix for the Tx status from custodian transactions. ([#22065](https://github.com/MetaMask/metamask-extension/pull/22065))
+
 ## [11.6.0]
 ### Added
 - Introduced the Swedish Krona (SEK) as an available currency option. ([21782](https://github.com/MetaMask/metamask-extension/pull/21782))
@@ -4205,7 +4258,12 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 ### Uncategorized
 - Added the ability to restore accounts from seed words.
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.6.0...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.7.1...HEAD
+[11.7.1]: https://github.com/MetaMask/metamask-extension/compare/v11.7.0...v11.7.1
+[11.7.0]: https://github.com/MetaMask/metamask-extension/compare/v11.6.3...v11.7.0
+[11.6.3]: https://github.com/MetaMask/metamask-extension/compare/v11.6.2...v11.6.3
+[11.6.2]: https://github.com/MetaMask/metamask-extension/compare/v11.6.1...v11.6.2
+[11.6.1]: https://github.com/MetaMask/metamask-extension/compare/v11.6.0...v11.6.1
 [11.6.0]: https://github.com/MetaMask/metamask-extension/compare/v11.5.2...v11.6.0
 [11.5.2]: https://github.com/MetaMask/metamask-extension/compare/v11.5.1...v11.5.2
 [11.5.1]: https://github.com/MetaMask/metamask-extension/compare/v11.5.0...v11.5.1
