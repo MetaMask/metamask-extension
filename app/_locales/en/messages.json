@@ -3058,6 +3058,15 @@
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
   },
+  "notifications29SettingFullscreenActionText": {
+    "message": "Enable Fullscreen Mode"
+  },
+  "notifications29SettingFullscreenDescription": {
+    "message": "Now you can set up MetaMask to open in fullscreen. To enable, go to Settings > Advanced and turn on \"Enable Fullscreen Mode\"."
+  },
+  "notifications29SettingFullscreenTitle": {
+    "message": "Enable Fullscreen Mode Setting"
+  },
   "notificationsBuySellActionText": {
     "message": "Try it on MetaMask Portfolio"
   },

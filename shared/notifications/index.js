@@ -8,6 +8,7 @@ export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
 export const NOTIFICATION_OPEN_BETA_SNAPS = 26;
 export const NOTIFICATION_BUY_SELL_BUTTON = 27;
 export const NOTIFICATION_U2F_LEDGER_LIVE = 28;
+export const NOTIFICATION_SETTING_FULLSCREEN = 29;
 
 export const UI_NOTIFICATIONS = {
   1: {
@@ -169,6 +170,14 @@ export const UI_NOTIFICATIONS = {
   [NOTIFICATION_U2F_LEDGER_LIVE]: {
     id: Number(NOTIFICATION_U2F_LEDGER_LIVE),
     date: null,
+  },
+  [NOTIFICATION_SETTING_FULLSCREEN]: {
+    id: Number(NOTIFICATION_SETTING_FULLSCREEN),
+    date: null,
+    image: {
+      src: 'images/onboarding-pin-browser.svg',
+      width: '100%',
+    },
   },
 };
 
@@ -451,6 +460,17 @@ export const getTranslatedUINotifications = (t, locale) => {
       date: UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
             new Date(UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date),
+          )
+        : '',
+    },
+    [NOTIFICATION_SETTING_FULLSCREEN]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_SETTING_FULLSCREEN],
+      title: t('notifications29SettingFullscreenTitle'),
+      description: [t('notifications29SettingFullscreenDescription')],
+      actionText: t('notifications29SettingFullscreenActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_SETTING_FULLSCREEN].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_SETTING_FULLSCREEN].date),
           )
         : '',
     },
