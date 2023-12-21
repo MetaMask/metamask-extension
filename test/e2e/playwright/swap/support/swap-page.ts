@@ -95,6 +95,6 @@ export class SwapPage {
   }
 
   async waitForInsufficentBalance() {
-    await this.page.waitForSelector('text="Insufficient balance"');
+    await this.page.waitForSelector('text="Insuffiient balance"');
   }
 }
