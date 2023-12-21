@@ -1203,6 +1203,18 @@ jobs:
             echo "$TESTFILES"
             echo "$TESTFILES" | circleci tests run --command="xvfb-run xargs yarn playwright test --project=swap" verbose --split-by=timings
           no_output_timeout: 10m
+      - slack/notify:
+          branch_pattern: Version-v*
+          event: fail
+          mentions: <@davide.brocchetto>
+          template: basic_fail_1
+          channel: C06BLC1F17B
+      - slack/notify:
+          branch_pattern: develop
+          event: fail
+          mentions: <@davide.brocchetto>
+          template: basic_fail_1
+          channel: C06BLC1F17B
       - store_artifacts:
           name: html-report and artifacts
           path: public/playwright/playwright-reports
