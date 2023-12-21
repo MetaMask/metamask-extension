@@ -1,10 +1,10 @@
-const { Builder } = require('selenium-webdriver');
-const Firefox = require('selenium-webdriver/firefox');
+import { Builder } from 'selenium-webdriver';
+import Firefox from 'selenium-webdriver/firefox';
 
-const options = new Firefox.Options().setAcceptInsecureCerts(true);
+const options: any = new Firefox.Options().setAcceptInsecureCerts(true);
 
 const builder = new Builder().forBrowser('firefox').setFirefoxOptions(options);
 
-const driver = builder.build();
+const driver: any = builder.build();
 
 driver.installAddon('./dist/firefox', true);
