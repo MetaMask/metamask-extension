@@ -201,6 +201,11 @@ const CHAINLIST_CHAIN_IDS_MAP = {
   ACALA_NETWORK: '0x313',
 } as const;
 
+// To add a deprecation warning to a network, add it to the array
+// `DEPRECATED_NETWORKS` and as a new case to `getDeprecationWarningCopy() in
+// `ui/components/ui/deprecated-networks/deprecated-networks.js`.
+export const DEPRECATED_NETWORKS = [CHAIN_IDS.AURORA, CHAIN_IDS.GOERLI];
+
 /**
  * The largest possible chain ID we can handle.
  * Explanation: https://gist.github.com/rekmarks/a47bd5f2525936c4b8eee31a16345553
