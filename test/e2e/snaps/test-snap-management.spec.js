@@ -121,7 +121,10 @@ describe('Test Snap Management', function () {
           css: '[data-testid="global-menu-notification-count"]',
           text: '1',
         });
-        await driver.clickElement('.menu__background');
+        // this click will close the menu
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
 
         // try to remove snap
         await driver.clickElement({
