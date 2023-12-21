@@ -68,7 +68,7 @@ const STORE_MOCK = {
           methods: [...Object.values(EthMethod)],
           type: EthAccountType.Eoa,
         },
-      }
+      },
     },
   },
 };
