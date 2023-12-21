@@ -3107,7 +3107,7 @@
     "message": "Enable Full Size View"
   },
   "notificationsSettingFullSizeDescription": {
-    "message": "Now you can set up MetaMask to open in full-size view. To enable, go to Settings > Advanced and turn on \"Show extension in full size view\"."
+    "message": "Now you can set up MetaMask to open in full-size view! To enable, go to Settings > Advanced and turn on \"Show extension in full size view\"."
   },
   "notificationsSettingFullSizeTitle": {
     "message": "Enable Full Size View"
