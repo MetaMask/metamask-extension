@@ -4,7 +4,6 @@
 ; This variable is required
 INFURA_PROJECT_ID=00000000000
 
-;PASSWORD=METAMASK PASSWORD
 ;SEGMENT_WRITE_KEY=
 ;SWAPS_USE_DEV_APIS=
 ;PORTFOLIO_URL=
@@ -14,3 +13,11 @@ INFURA_PROJECT_ID=00000000000
 ;PHISHING_WARNING_PAGE_URL=
 BLOCKAID_FILE_CDN=
 BLOCKAID_PUBLIC_KEY=
+
+; -- DEV-ONLY VARIABLES
+
+; Bypasses login page if set with your login password
+;PASSWORD=METAMASK PASSWORD
+
+; Used to show all allowed announcements in the What's New modal
+;DEV_WHATS_NEW_SHOW_ALL=

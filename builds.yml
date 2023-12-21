@@ -262,6 +262,14 @@ env:
   # Determines if feature flagged Multichain UI should be used
   - MULTICHAIN: ''
   - NETWORK_ACCOUNT_DND: ''
+
+  ###
+  # Dev variables
+  ###
+
+  # Used to show all allowed announcements in the What's New modal
+  - DEV_WHATS_NEW_SHOW_ALL: false
+
   ###
   # Meta variables
   ###

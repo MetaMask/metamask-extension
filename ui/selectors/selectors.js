@@ -1266,10 +1266,11 @@ function getAllowedAnnouncementIds(state) {
 export function getSortedAnnouncementsToShow(state) {
   const announcements = Object.values(state.metamask.announcements);
   const allowedAnnouncementIds = getAllowedAnnouncementIds(state);
-  const announcementsToShow = announcements.filter(
-    (announcement) =>
-      !announcement.isShown && allowedAnnouncementIds[announcement.id],
-  );
+  const announcementsToShow = announcements.filter((announcement) => {
+    return process.env.DEV_WHATS_NEW_SHOW_ALL
+      ? allowedAnnouncementIds[announcement.id]
+      : !announcement.isShown && allowedAnnouncementIds[announcement.id];
+  });
   const announcementsSortedByDate = announcementsToShow.sort(
     (a, b) => new Date(b.date) - new Date(a.date),
   );
