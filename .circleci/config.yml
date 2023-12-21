@@ -326,6 +326,7 @@ workflows:
           requires:
             - prep-build-ts-migration-dashboard
             - prep-build-test-mswapmi-playwright
+            - prep-build-test-swap-playwright
 
 jobs:
   trigger-beta-build:
