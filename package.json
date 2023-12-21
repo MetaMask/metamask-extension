@@ -113,7 +113,9 @@
     "check-pr-has-required-labels": "ts-node ./.github/scripts/check-pr-has-required-labels.ts",
     "close-release-bug-report-issue": "ts-node ./.github/scripts/close-release-bug-report-issue.ts",
     "check-template-and-add-labels": "ts-node ./.github/scripts/check-template-and-add-labels.ts",
-    "audit": "yarn npm audit --recursive --environment production --severity moderate --ignore '@metamask/types (deprecation)'"
+    "audit": "yarn npm audit --recursive --environment production --severity moderate --ignore '@metamask/types (deprecation)'",
+    "download-builds": "yarn tsx .devcontainer/download-builds.ts prep-build",
+    "download-builds:test": "yarn tsx .devcontainer/download-builds.ts prep-build-test"
   },
   "resolutions": {
     "simple-update-notifier@^1.0.0": "^2.0.0",
