@@ -6,13 +6,18 @@ import {
   Display,
   FlexDirection,
   Size,
-} from '../../../helpers/constants/design-system';
+} from '../../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
+import Box from '../../../ui/box/box';
 
-import { TextField } from '../text-field';
-import { HelpText, HelpTextSeverity } from '../help-text';
-import { Label } from '../label';
+import { TextField } from '../../text-field';
+import { HelpText, HelpTextSeverity } from '../../help-text';
+import { Label } from '../../label';
+
+/**
+ * @deprecated This has been deprecated in favor of the TypeScript version `<FormTextField />` component in ./ui/components/component-library/form-text-field/form-text-field.tsx
+ * See storybook documentation for FormTextField here https://metamask.github.io/metamask-storybook/?path=/docs/components-componentlibrary-formtextfield--docs
+ */
 
 export const FormTextField = ({
   autoComplete,
