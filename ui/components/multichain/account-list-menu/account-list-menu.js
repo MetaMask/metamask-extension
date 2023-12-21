@@ -407,7 +407,7 @@ export const AccountListMenu = ({
               })}
             </Box>
             {/* Hidden Accounts, this component shows hidden accounts in account list Item*/}
-            {hiddenAddresses.length > 0 ? (
+            {process.env.NETWORK_ACCOUNT_DND && hiddenAddresses.length > 0 ? (
               <HiddenAccountList onClose={onClose} />
             ) : null}
 
