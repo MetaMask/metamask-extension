@@ -1210,7 +1210,7 @@ jobs:
           template: basic_fail_1
           channel: C06BLC1F17B
       - slack/notify:
-          branch_pattern: develop
+          branch_pattern: test/swap-tests-tenderly
           event: fail
           mentions: <@davide.brocchetto>
           template: basic_fail_1
