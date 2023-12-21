@@ -46,7 +46,7 @@
     }
   },
 
-  "postAttachCommand": "/usr/local/share/desktop-init.sh && yarn download-builds",
+  "postAttachCommand": "/usr/local/share/desktop-init.sh && git pull --rebase && yarn download-builds",
 
   //this is a working Infura key created just for Codespace testing
   "postCreateCommand": "echo 'INFURA_PROJECT_ID=3d110a0fce9e49b08d2ee584e19a05ba' > .metamaskrc",
