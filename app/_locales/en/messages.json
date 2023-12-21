@@ -3103,6 +3103,15 @@
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
   },
+  "notificationsSettingFullSizeActionText": {
+    "message": "Enable Full Size View"
+  },
+  "notificationsSettingFullSizeDescription": {
+    "message": "Now you can set up MetaMask to open in full-size view! To enable, go to Settings > Advanced and turn on \"Show extension in full size view\"."
+  },
+  "notificationsSettingFullSizeTitle": {
+    "message": "Enable Full Size View"
+  },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
     "description": "Description of a notification in the 'See What's New' popup. Describes the U2F and Ledger Live connection modes are now deprecated"

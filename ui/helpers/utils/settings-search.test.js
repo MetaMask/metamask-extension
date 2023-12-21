@@ -35,6 +35,8 @@ const t = (key) => {
       return 'Select this to show gas price and limit controls directly on the send and confirm screens.';
     case 'showHexData':
       return 'Show hex data';
+    case 'showExtensionInFullSizeView':
+      return 'Show extension in full size view';
     case 'showHexDataDescription':
       return 'Select this to show the hex data field on the send screen';
     case 'showFiatConversionInTestnets':

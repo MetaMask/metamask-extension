@@ -13,6 +13,7 @@ import {
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
   NOTIFICATION_U2F_LEDGER_LIVE,
+  NOTIFICATION_SETTING_FULL_SIZE_VIEW,
   getTranslatedUINotifications,
 } from '../../../../shared/notifications';
 import { I18nContext } from '../../../contexts/i18n';
@@ -124,6 +125,12 @@ function getActionFunctionById(id, history) {
     },
     [NOTIFICATION_U2F_LEDGER_LIVE]: () => {
       updateViewedNotifications({ [NOTIFICATION_U2F_LEDGER_LIVE]: true });
+    },
+    [NOTIFICATION_SETTING_FULL_SIZE_VIEW]: () => {
+      updateViewedNotifications({
+        [NOTIFICATION_SETTING_FULL_SIZE_VIEW]: true,
+      });
+      history.push(`${ADVANCED_ROUTE}#extension-full-size-view`);
     },
   };
 
@@ -352,6 +359,7 @@ export default function WhatsNewPopup({ onClose }) {
     [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
     [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
     [NOTIFICATION_U2F_LEDGER_LIVE]: renderFirstNotification,
+    [NOTIFICATION_SETTING_FULL_SIZE_VIEW]: renderFirstNotification,
   };
 
   return (
