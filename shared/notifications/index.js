@@ -465,9 +465,9 @@ export const getTranslatedUINotifications = (t, locale) => {
     },
     [NOTIFICATION_SETTING_FULL_SIZE_VIEW]: {
       ...UI_NOTIFICATIONS[NOTIFICATION_SETTING_FULL_SIZE_VIEW],
-      title: t('notifications29SettingFullSizeTitle'),
-      description: [t('notifications29SettingFullSizeDescription')],
-      actionText: t('notifications29SettingFullSizeActionText'),
+      title: t('notificationsSettingFullSizeTitle'),
+      description: [t('notificationsSettingFullSizeDescription')],
+      actionText: t('notificationsSettingFullSizeActionText'),
       date: UI_NOTIFICATIONS[NOTIFICATION_SETTING_FULL_SIZE_VIEW].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
             new Date(
