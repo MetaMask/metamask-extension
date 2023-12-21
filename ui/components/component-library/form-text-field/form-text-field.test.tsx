@@ -3,10 +3,7 @@ import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
 
 import { renderWithUserEvent } from '../../../../test/lib/render-helpers';
-
-import { Size } from '../../../helpers/constants/design-system';
-
-import { FormTextField } from './form-text-field';
+import { FormTextField, FormTextFieldSize } from '.';
 
 describe('FormTextField', () => {
   it('should render correctly', () => {
@@ -239,15 +236,15 @@ describe('FormTextField', () => {
     const { getByTestId } = render(
       <>
         <FormTextField
-          size={Size.SM}
+          size={FormTextFieldSize.Sm}
           textFieldProps={{ 'data-testid': 'sm' }}
         />
         <FormTextField
-          size={Size.MD}
+          size={FormTextFieldSize.Md}
           textFieldProps={{ 'data-testid': 'md' }}
         />
         <FormTextField
-          size={Size.LG}
+          size={FormTextFieldSize.Lg}
           textFieldProps={{ 'data-testid': 'lg' }}
         />
       </>,

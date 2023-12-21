@@ -29,7 +29,7 @@ export { ButtonPrimary, ButtonPrimarySize } from './button-primary';
 export { ButtonSecondary, ButtonSecondarySize } from './button-secondary';
 export { Checkbox } from './checkbox';
 export { Container } from './container';
-export { FormTextField } from './form-text-field';
+export { FormTextField, FormTextFieldSize } from './form-text-field';
 export { HeaderBase } from './header-base';
 export { HelpText, HelpTextSeverity } from './help-text';
 export { Icon, IconName, IconSize } from './icon';
