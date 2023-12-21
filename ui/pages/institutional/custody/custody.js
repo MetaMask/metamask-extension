@@ -653,6 +653,9 @@ const CustodyPage = () => {
             setApiUrl('');
             setAddNewTokenClicked(false);
 
+            // eslint-disable-next-line no-undef
+            localStorage.removeItem('tempConnectRequest');
+
             history.push(DEFAULT_ROUTE);
 
             trackEvent({

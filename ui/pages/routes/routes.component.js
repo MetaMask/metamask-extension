@@ -349,10 +349,6 @@ export default class Routes extends Component {
           exact
         />
         <Authenticated
-          path={CONFIRM_ADD_CUSTODIAN_TOKEN}
-          component={ConfirmAddCustodianToken}
-        />
-        <Authenticated
           path={CUSTODY_ACCOUNT_ROUTE}
           component={CustodyPage}
           exact
