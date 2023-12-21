@@ -528,9 +528,6 @@ export function connectHardware(
 
     let accounts: { address: string }[];
     try {
-      if (deviceName === HardwareDeviceNames.ledger) {
-        await submitRequestToBackground('establishLedgerTransportPreference');
-      }
       if (
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
@@ -4084,16 +4081,6 @@ export function getOpenMetamaskTabsIds(): ThunkAction<
       [tabId: string]: boolean;
     }>('getOpenMetamaskTabsIds');
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs));
-  };
-}
-
-export function setLedgerTransportPreference(
-  value: LedgerTransportTypes,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('setLedgerTransportPreference', [value]);
-    dispatch(hideLoadingIndication());
   };
 }
 
