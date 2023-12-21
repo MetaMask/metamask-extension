@@ -3058,15 +3058,6 @@
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
   },
-  "notifications29SettingFullSizeActionText": {
-    "message": "Enable Full Size View"
-  },
-  "notifications29SettingFullSizeDescription": {
-    "message": "Now you can set up MetaMask to open in full-size view. To enable, go to Settings > Advanced and turn on \"Show extension in full size view\"."
-  },
-  "notifications29SettingFullSizeTitle": {
-    "message": "Enable Full Size View"
-  },
   "notificationsBuySellActionText": {
     "message": "Try it on MetaMask Portfolio"
   },
@@ -3111,6 +3102,15 @@
   },
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
+  },
+  "notificationsSettingFullSizeActionText": {
+    "message": "Enable Full Size View"
+  },
+  "notificationsSettingFullSizeDescription": {
+    "message": "Now you can set up MetaMask to open in full-size view. To enable, go to Settings > Advanced and turn on \"Show extension in full size view\"."
+  },
+  "notificationsSettingFullSizeTitle": {
+    "message": "Enable Full Size View"
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
