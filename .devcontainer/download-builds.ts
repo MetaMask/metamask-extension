@@ -103,23 +103,28 @@ async function downloadBuilds(builds: any[]) {
   console.log('downloads complete');
 }
 
-async function unzipBuilds(
-  folder: 'builds' | 'builds-test',
-  versionNumber: string,
-) {
+function unzipBuilds(folder: 'builds' | 'builds-test', versionNumber: string) {
   if (!versionNumber) {
     return;
   }
 
-  execSync('sudo rm -rf dist && mkdir -p dist');
+  if (process.platform === 'win32') {
+    execSync(`rmdir /s /q dist & mkdir dist\\chrome & mkdir dist\\firefox`);
+  } else {
+    execSync('sudo rm -rf dist && mkdir -p dist');
+  }
 
-  execSync(
-    `unzip ${folder}/metamask-chrome-${versionNumber}.zip -d dist/chrome`,
-  );
-
-  execSync(
-    `unzip ${folder}/metamask-firefox-${versionNumber}.zip -d dist/firefox`,
-  );
+  for (const browser of ['chrome', 'firefox']) {
+    if (process.platform === 'win32') {
+      execSync(
+        `tar -xf ${folder}/metamask-${browser}-${versionNumber}.zip -C dist/${browser}`,
+      );
+    } else {
+      execSync(
+        `unzip ${folder}/metamask-${browser}-${versionNumber}.zip -d dist/${browser}`,
+      );
+    }
+  }
 
   console.log(`unzipped ${folder} into ./dist`);
 }
