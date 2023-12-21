@@ -391,6 +391,8 @@ EOF
 
 echo "${VNC_PASSWORD}" | vncpasswd -f > /usr/local/etc/vscode-dev-containers/vnc-passwd
 chmod +x /usr/local/share/desktop-init.sh /usr/local/bin/set-resolution
+chgrp -R codespace .
+chown -R codespace .
 
 # Set up fluxbox config
 copy_fluxbox_config "/root"

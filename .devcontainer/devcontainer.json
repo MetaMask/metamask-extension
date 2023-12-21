@@ -37,7 +37,8 @@
 
   "portsAttributes": {
     "5901": {
-      "label": "local VNC"
+      "label": "local VNC",
+      "onAutoForward": "ignore"
     },
     "6080": {
       "label": "noVNC web",
