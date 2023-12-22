@@ -1077,11 +1077,9 @@ export default class SwapsController {
         sourceAmount,
         sourceToken,
         trade,
-        // fee: metaMaskFee, // TODO api hasn't implemented this yet
+        fee: metaMaskFee,
         multiLayerL1TradeFeeTotal, // TODO also this prob
       } = quote;
-
-      const metaMaskFee = 0.743; // TODO remove once fee is implemented
 
       // If the From token balance is not enough, the quote.gasParams === null
       // Just ignore the gas part of the top quote determination in this case
