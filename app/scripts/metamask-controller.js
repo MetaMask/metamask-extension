@@ -3304,6 +3304,10 @@ export default class MetamaskController extends EventEmitter {
 
       openFavourite: this.openFavourite.bind(this),
 
+      deleteFavourite: preferencesController.deleteFavourite.bind(
+        preferencesController,
+      ),
+
       // EnsController
       tryReverseResolveAddress:
         ensController.reverseResolveAddress.bind(ensController),
@@ -4819,6 +4823,9 @@ export default class MetamaskController extends EventEmitter {
       inputSubjectType,
     );
 
+    const pageKeyEventStream = mux.createStream('page_key_events');
+    pageKeyEventStream.on('data', this.handePageKeyEvent.bind(this));
+
     // TODO:LegacyProvider: Delete
     if (sender.url) {
       // legacy streams
@@ -6111,6 +6118,37 @@ export default class MetamaskController extends EventEmitter {
   async backToSafetyPhishingWarning() {
     const extensionURL = this.platform.getExtensionURL();
     await this.platform.switchToAnotherURL(undefined, extensionURL);
+  }
+
+  handePageKeyEvent(event) {
+    console.log(event);
+    if (event.target === 'EXTENSION_BACKGROUND' && event.data?.pressedNumber) {
+      const { pressedNumber } = event.data;
+      const { favourites } = this.preferencesController.store.getState();
+      console.log('favourites', favourites);
+      const { appActiveTab, showFavouriteNumbers } =
+        this.appStateController.store.getState();
+      const origin = event.data?.origin;
+      const originMismatch = origin !== appActiveTab.origin;
+
+      if (originMismatch || !showFavouriteNumbers) {
+        return;
+      }
+      let favouriteHref;
+
+      for (const key in favourites) {
+        if (favourites[key]) {
+          const favourite = favourites[key];
+          if (Number(favourite.number) === Number(pressedNumber)) {
+            favouriteHref = favourite.href;
+            break;
+          }
+        }
+      }
+      if (favouriteHref) {
+        this.openFavourite({ href: favouriteHref });
+      }
+    }
   }
 
   async openFavourite({ href: favouriteHref }) {

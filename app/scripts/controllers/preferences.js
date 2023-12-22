@@ -17,6 +17,26 @@ const testNetworks = {
   [CHAIN_IDS.LINEA_SEPOLIA]: true,
 };
 
+function reNumber(data) {
+  const entries = Object.entries(data).map(([key, value]) => ({
+    key,
+    number: value.number,
+  }));
+
+  entries.sort((a, b) => a.number - b.number);
+
+  const rankedEntries = entries.map((entry, index) => ({
+    key: entry.key,
+    rank: index + 1,
+  }));
+
+  rankedEntries.forEach((entry) => {
+    data[entry.key].number = entry.rank;
+  });
+
+  return data;
+}
+
 export default class PreferencesController {
   /**
    *
@@ -150,6 +170,17 @@ export default class PreferencesController {
     const { favourites } = this.store.getState();
     this.store.updateState({
       favourites: { ...favourites, [favourite.href]: favourite },
+    });
+  }
+
+  deleteFavourite(favouriteToDelete) {
+    const { favourites } = this.store.getState();
+    let newFavourites = { ...favourites };
+    delete newFavourites[favouriteToDelete.href];
+    newFavourites = reNumber(newFavourites);
+
+    this.store.updateState({
+      favourites: newFavourites,
     });
   }
 

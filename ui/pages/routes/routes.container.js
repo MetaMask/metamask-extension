@@ -71,7 +71,8 @@ function mapStateToProps(state) {
   const { alertOpen, alertMessage, isLoading, loadingMessage } = appState;
   const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
     getPreferences(state);
-  const { completedOnboarding, showFavourites } = state.metamask;
+  const { completedOnboarding, showFavourites, showFavouriteNumbers } =
+    state.metamask;
 
   // If there is more than one connected account to activeTabOrigin,
   // *BUT* the current account is not one of them, show the banner
@@ -147,6 +148,7 @@ function mapStateToProps(state) {
     isSelectActionModalOpen: state.appState.showSelectActionModal,
     backgroundShowFavourites: showFavourites,
     favourites: getFavourites(state),
+    backgroundShowFavouriteNumbers: showFavouriteNumbers,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     isShowKeyringSnapRemovalResultModal:
       state.appState.showKeyringRemovalSnapModal,

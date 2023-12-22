@@ -4956,8 +4956,12 @@ export function setBackgroundShowFavouriteNumbers({ showFavouriteNumbers }) {
   ]);
 }
 
-export function openFavourite(href) {
+export function openFavourite({ href }) {
   return submitRequestToBackground('openFavourite', [{ href }]);
+}
+
+export function deleteFavourite(favouriteToDelete) {
+  return submitRequestToBackground('deleteFavourite', [favouriteToDelete]);
 }
 
 /**

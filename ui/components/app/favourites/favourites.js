@@ -11,6 +11,8 @@ import {
   Text,
   TextFieldSearch,
 } from '../../component-library';
+import Button from '../../ui/button';
+
 import {
   BlockSize,
   Display,
@@ -20,7 +22,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getFavourites } from '../../../selectors';
-import { openFavourite } from '../../../store/actions';
+import { openFavourite, deleteFavourite } from '../../../store/actions';
 import FavouriteItem from './favourite-item';
 
 const Favourites = ({ onClose, showFavouriteNumbers }) => {
@@ -30,6 +32,7 @@ const Favourites = ({ onClose, showFavouriteNumbers }) => {
   const favourites = Object.values(_favourites);
 
   const [searchQuery, setSearchQuery] = useState('');
+  const [deleteMode, setDeleteMode] = useState(false);
 
   let searchResults = favourites;
   if (searchQuery) {
@@ -73,7 +76,7 @@ const Favourites = ({ onClose, showFavouriteNumbers }) => {
               <TextFieldSearch
                 size={Size.SM}
                 width={BlockSize.Full}
-                placeholder={t('searchAccounts')}
+                placeholder="Search Favourites"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 clearButtonOnClick={() => setSearchQuery('')}
@@ -84,7 +87,7 @@ const Favourites = ({ onClose, showFavouriteNumbers }) => {
               />
             </Box>
           ) : null}
-          {/* Account list block */}
+          {/* Favourites list block */}
           <Box className="favourites-items__list">
             {searchResults.length === 0 && searchQuery !== '' ? (
               <Text
@@ -101,15 +104,31 @@ const Favourites = ({ onClose, showFavouriteNumbers }) => {
                 return (
                   <FavouriteItem
                     {...favouriteItem}
-                    onClick={(href) => openFavourite(href)}
+                    onClick={(href) => {
+                      if (deleteMode) {
+                        deleteFavourite(favouriteItem);
+                      } else {
+                        openFavourite(href);
+                      }
+                    }}
                     showFavouriteNumbers={showFavouriteNumbers}
                     num={favouriteItem.number}
                     key={`favourite-item-${index}`}
+                    className={deleteMode ? 'favourite-item--delete' : ''}
+                    deleteMode={deleteMode}
                   />
                 );
               })}
             </div>
           </Box>
+          <div className="favourites-delete">
+            <Button
+              type={deleteMode ? '' : 'danger'}
+              onClick={() => setDeleteMode(!deleteMode)}
+            >
+              {deleteMode ? t('done') : t('delete')}
+            </Button>
+          </div>
         </>
       </ModalContent>
     </Modal>

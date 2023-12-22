@@ -31,6 +31,7 @@
     overflow: auto;
     padding-left: 6px;
     padding-right: 6px;
+    height: 100%;
   }
 }
 
@@ -59,8 +60,40 @@
   }
 }
 
+.favourite-item > .favourite-item--delete {
+  &__circle {
+    background: var(--color-error-default);
+  }
+}
+
+.favourite-item--delete {
+  .mm-text {
+    color: var(--color-error-default);
+  }
+}
+
+.favourite-item--delete:hover {
+  .mm-text {
+    color: var(--color-error-default);
+  }
+}
+
+.favourites-delete {
+  display: flex;
+  padding-left: 25%;
+  padding-right: 25%;
+}
+
 .favourite-item:hover {
   color: blue;
+}
+
+.favourite-item__delete-icon {
+  position: absolute;
+  right: 12px;
+  color: red;
+  background: black;
+  border-radius: 16px;
 }
 
 .favourite-number {

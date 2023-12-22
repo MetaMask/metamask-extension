@@ -27,12 +27,34 @@
       }
     },
     "open-favourites": {
-      "suggested_key": "Alt+Shift+F",
+      "suggested_key": {
+        "windows": "Alt+Shift+F",
+        "mac": "Alt+Shift+F",
+        "chromeos": "Alt+Shift+F",
+        "linux": "Alt+Shift+F",
+        "default": "Alt+Shift+F"
+      },
       "description": "Open the favourites page within MetaMask"
     },
     "add-to-favourites": {
-      "suggested_key": "Alt+Shift+S",
+      "suggested_key": {
+        "windows": "Alt+Shift+S",
+        "mac": "Alt+Shift+S",
+        "chromeos": "Alt+Shift+S",
+        "linux": "Alt+Shift+S",
+        "default": "Alt+Shift+S"
+      },
       "description": "Add the page in the current tab to MetaMask favourites"
+    },
+    "show-favourite-numbers": {
+      "suggested_key": {
+        "windows": "Alt+Shift+A",
+        "mac": "Alt+Shift+A",
+        "chromeos": "Alt+Shift+A",
+        "linux": "Alt+Shift+A",
+        "default": "Alt+Shift+A"
+      },
+      "description": "Show numbers of the top 9 favourites, to guide command usage when switching between favourites"
     }
   },
   "content_scripts": [

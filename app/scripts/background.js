@@ -828,7 +828,7 @@ export function setupController(
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
         sidePanelIsOpen = true;
 
-        endOfStream(portStream, () => {
+        finished(portStream, () => {
           sidePanelIsOpen = false;
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
@@ -1267,6 +1267,14 @@ function onNavigateToTab() {
         controller.preferencesController.addToFavourites(favouriteInfo);
       }
     }
+
+    if (command === 'show-favourite-numbers') {
+      const { showFavouriteNumbers } =
+        controller.appStateController.store.getState();
+      controller.appStateController.setShowFavouriteNumbers({
+        showFavouriteNumbers: !showFavouriteNumbers,
+      });
+    }
   });
 
   browser.tabs.onActivated.addListener(async ({ tabId }) => {
@@ -1314,20 +1322,6 @@ function onNavigateToTab() {
       favIconUrl,
     });
   });
-
-  // browser.tabs.onCreated.addListener(async ({ tabId }) => {
-  //   const activeTab = await browser.tabs.get(tabId);
-  //   const { id, title, url, favIconUrl } = activeTab;
-  //   const { origin, protocol, host, href } = url ? new URL(url) : {};
-
-  //   console.log({ id, title, origin, protocol, url })
-
-  //   if (!origin || origin === 'null') {
-  //     return {};
-  //   }
-
-  //   controller.appStateController.setAppActiveTab({ id, title, origin, protocol, url, host, href, favIconUrl })
-  // })
 }
 
 function setupSentryGetStateGlobal(store) {
