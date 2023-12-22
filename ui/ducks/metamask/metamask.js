@@ -190,6 +190,19 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    case actionConstants.RESET_ONBOARDING: {
+      return {
+        ...metamaskState,
+        completedOnboarding: false,
+        firstTimeFlowType: null,
+        isInitialized: false,
+        isUnlocked: false,
+        onboardingTabs: {},
+        seedPhraseBackedUp: null,
+        welcomeScreenSeen: false,
+      };
+    }
+
     case actionConstants.SET_FIRST_TIME_FLOW_TYPE: {
       return {
         ...metamaskState,

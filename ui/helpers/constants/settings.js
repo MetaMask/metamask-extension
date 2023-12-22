@@ -460,4 +460,11 @@ export const SETTINGS_CONSTANTS = [
     route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-announcements`,
     icon: IconName.CodeCircle,
   },
+  {
+    tabMessage: (t) => t('developerOptions'),
+    sectionMessage: (t) => t('onboarding'),
+    descriptionMessage: (t) => t('developerOptionsResetStatesOnboarding'),
+    route: `${DEVELOPER_OPTIONS_ROUTE}#reset-states-onboarding`,
+    icon: IconName.CodeCircle,
+  },
 ];

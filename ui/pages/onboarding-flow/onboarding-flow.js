@@ -65,7 +65,14 @@ export default function OnboardingFlow() {
   const t = useI18nContext();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const nextRoute = useSelector(getFirstTimeFlowTypeRoute);
-  const isFromReminder = new URLSearchParams(search).get('isFromReminder');
+
+  /**
+   * @todo revert back logic
+   * @hack This is a hack to bypass these conditions and allow the Developer Options Setting,
+   * to reset Onboarding to work.
+   */
+  const isFromReminder = true;
+  // const isFromReminder = new URLSearchParams(search).get('isFromReminder');
   const trackEvent = useContext(MetaMetricsContext);
 
   useEffect(() => {
