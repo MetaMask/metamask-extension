@@ -1,11 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ONBOARDING_SECURE_YOUR_WALLET_ROUTE } from '../../../helpers/constants/routes';
 
 import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
-
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import {
   resetOnboarding,
   resetViewedNotifications,
@@ -34,6 +38,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
@@ -54,7 +59,15 @@ const DeveloperOptionsTab = () => {
   const handleResetOnboardingClick = useCallback(async () => {
     await dispatch(resetOnboarding());
     setHasResetOnboarding(true);
-  }, [dispatch]);
+
+    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
+    if (isPopup) {
+      global.platform.openExtensionInBrowser(backUpSRPRoute);
+    } else {
+      history.push(backUpSRPRoute);
+    }
+  }, [dispatch, history]);
 
   useEffect(() => {
     handleSettingsRefs(t, t('developerOptions'), settingsRefs);
