@@ -4,6 +4,8 @@ import {
   handleSettingsRefs,
 } from '../../../helpers/utils/settings-search';
 
+import { resetViewedNotifications } from '../../../store/actions';
+
 import {
   Box,
   Button,
@@ -68,7 +70,7 @@ const DeveloperOptionsTab = () => {
             <Button
               variant={ButtonVariant.Primary}
               onClick={() => {
-                console.log('todo: update state');
+                resetViewedNotifications();
               }}
             >
               {t('reset')}

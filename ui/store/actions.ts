@@ -4407,6 +4407,10 @@ export function updateViewedNotifications(notificationIdViewedStatusMap: {
   ]);
 }
 
+export function resetViewedNotifications() {
+  return submitRequestToBackground('resetViewedNotifications');
+}
+
 export async function setAlertEnabledness(
   alertId: string,
   enabledness: boolean,

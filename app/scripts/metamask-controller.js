@@ -3480,6 +3480,9 @@ export default class MetamaskController extends EventEmitter {
       updateViewedNotifications: announcementController.updateViewed.bind(
         announcementController,
       ),
+      resetViewedNotifications: announcementController.resetViewedState.bind(
+        announcementController,
+      ),
 
       // GasFeeController
       gasFeeStartPollingByNetworkClientId:
