@@ -25,8 +25,8 @@ export type AccountOrderControllerupdateAccountsListAction = {
 
 // Describes the action for updating the accounts list
 export type AccountOrderControllerhideAccountsListAction = {
-  type: `${typeof controllerName}:hideAccountsList`;
-  handler: AccountOrderController['hideAccountsList'];
+  type: `${typeof controllerName}:updateHiddenAccountsList`;
+  handler: AccountOrderController['updateHiddenAccountsList'];
 };
 
 // Union of all possible actions for the messenger
@@ -113,7 +113,7 @@ export class AccountOrderController extends BaseController<
    * @param accountList - The list of accounts to hide in the state.
    */
 
-  hideAccountsList(accountList: []) {
+  updateHiddenAccountsList(accountList: []) {
     this.update((state) => {
       state.hiddenAccountList = accountList;
       return state;

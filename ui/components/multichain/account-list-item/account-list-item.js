@@ -286,7 +286,7 @@ export const AccountListItem = ({
           identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
+          isRemovable={identity.keyring?.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
           isPinned={process.env.NETWORK_ACCOUNT_DND ? isPinned : null}
           isHidden={process.env.NETWORK_ACCOUNT_DND ? isHidden : null}

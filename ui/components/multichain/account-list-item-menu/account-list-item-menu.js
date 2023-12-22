@@ -34,9 +34,9 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
-  hideAccountsList,
   showModal,
   updateAccountsList,
+  updateHiddenAccountsList,
 } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
@@ -149,14 +149,14 @@ export const AccountListItemMenu = ({
     if (pinnedAccountList.includes(address)) {
       handleUnpinning(address);
     }
-    dispatch(hideAccountsList(updatedHiddenAccountList));
+    dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
   };
 
   const handleUnhidding = (address) => {
     const updatedHiddenAccountList = hiddenAccountList.filter(
       (item) => item !== address,
     );
-    dispatch(hideAccountsList(updatedHiddenAccountList));
+    dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
   };
 
   return (

@@ -111,6 +111,7 @@ export const AccountListMenu = ({
   const history = useHistory();
   const dispatch = useDispatch();
   const hiddenAddresses = useSelector(getHiddenAccountsList);
+  const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
@@ -119,8 +120,7 @@ export const AccountListMenu = ({
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
   let searchResults = process.env.NETWORK_ACCOUNT_DND
-    ? // eslint-disable-next-line react-hooks/rules-of-hooks
-      useSelector(getUpdatedAndSortedAccounts)
+    ? updatedAccountsList
     : accounts;
   if (searchQuery) {
     const fuse = new Fuse(accounts, {

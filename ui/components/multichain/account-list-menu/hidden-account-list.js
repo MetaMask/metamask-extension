@@ -84,6 +84,7 @@ export const HiddenAccountList = ({ onClose }) => {
           <Icon
             name={showListItem ? IconName.ArrowUp : IconName.ArrowDown}
             size={IconSize.Sm}
+            color={IconColor.iconDefault}
           />
         </Box>
       </Box>

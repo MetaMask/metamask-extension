@@ -3612,11 +3612,13 @@ export function updateAccountsList(
  *
  * @param hiddenAccountList
  */
-export function hideAccountsList(
+export function updateHiddenAccountsList(
   hiddenAccountList: [],
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
-    await submitRequestToBackground('hideAccountsList', [hiddenAccountList]);
+    await submitRequestToBackground('updateHiddenAccountsList', [
+      hiddenAccountList,
+    ]);
   };
 }
 
