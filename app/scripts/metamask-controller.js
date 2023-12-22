@@ -1,5 +1,15 @@
 import EventEmitter from 'events';
 import pump from 'pump';
+import {
+  AssetsContractController,
+  CurrencyRateController,
+  NftController,
+  NftDetectionController,
+  TokenListController,
+  TokenRatesController,
+  TokensController,
+  CodefiTokenPricesServiceV2,
+} from '@metamask/assets-controllers';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
 import { JsonRpcEngine } from 'json-rpc-engine';
@@ -45,15 +55,7 @@ import {
   ApprovalRequestNotFoundError,
 } from '@metamask/approval-controller';
 import { ControllerMessenger } from '@metamask/base-controller';
-import {
-  AssetsContractController,
-  CurrencyRateController,
-  NftController,
-  NftDetectionController,
-  TokenListController,
-  TokenRatesController,
-  TokensController,
-} from '@metamask/assets-controllers';
+
 import { PhishingController } from '@metamask/phishing-controller';
 import { AnnouncementController } from '@metamask/announcement-controller';
 import { NetworkController } from '@metamask/network-controller';
@@ -534,15 +536,7 @@ export default class MetamaskController extends EventEmitter {
         chainId: this.networkController.state.providerConfig.chainId,
         onPreferencesStateChange: (listener) =>
           this.preferencesController.store.subscribe(listener),
-        // This handler is misnamed, and is a known issue that will be resolved
-        // by planned refactors. It should be onNetworkDidChange which happens
-        // AFTER the provider in the network controller is updated to reflect
-        // the new state of the network controller. In #18041 we changed this
-        // handler to be triggered by the change in the network state because
-        // that is what the handler name implies, but this triggers too soon
-        // causing the provider of the AssetsContractController to trail the
-        // network provider by one update.
-        onNetworkStateChange: (cb) =>
+        onNetworkDidChange: (cb) =>
           networkControllerMessenger.subscribe(
             'NetworkController:networkDidChange',
             () => {
@@ -571,10 +565,14 @@ export default class MetamaskController extends EventEmitter {
       onPreferencesStateChange: this.preferencesController.store.subscribe.bind(
         this.preferencesController.store,
       ),
-      onNetworkStateChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:stateChange',
-      ),
+      onNetworkDidChange: (cb) =>
+        networkControllerMessenger.subscribe(
+          'NetworkController:networkDidChange',
+          () => {
+            const networkState = this.networkController.state;
+            return cb(networkState);
+          },
+        ),
       onTokenListStateChange: (listener) =>
         this.controllerMessenger.subscribe(
           `${this.tokenListController.name}:stateChange`,
@@ -582,9 +580,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       getNetworkClientById: this.networkController.getNetworkClientById.bind(
         this.networkController,
-      ),
-      getERC20TokenName: this.assetsContractController.getERC20TokenName.bind(
-        this.assetsContractController,
       ),
       config: { provider: this.provider },
       state: initState.TokensController,
@@ -667,6 +662,7 @@ export default class MetamaskController extends EventEmitter {
           this.assetsContractController,
         ),
       addNft: this.nftController.addNft.bind(this.nftController),
+      getNftApi: this.nftController.getNftApi.bind(this.nftController),
       getNftState: () => this.nftController.state,
     });
 
@@ -822,8 +818,15 @@ export default class MetamaskController extends EventEmitter {
           this.preferencesController.store.subscribe.bind(
             this.preferencesController.store,
           ),
+        tokenPricesService: new CodefiTokenPricesServiceV2(),
+        getNetworkClientById: this.networkController.getNetworkClientById.bind(
+          this.networkController,
+        ),
       },
-      {},
+      {
+        allTokens: this.tokensController.state.allTokens,
+        allDetectedTokens: this.tokensController.state.allDetectedTokens,
+      },
       initState.TokenRatesController,
     );
     if (this.preferencesController.store.getState().useCurrencyRateCheck) {
@@ -5446,7 +5449,10 @@ export default class MetamaskController extends EventEmitter {
       this.nftController.checkAndUpdateSingleNftOwnershipStatus(
         knownNft,
         false,
-        { userAddress, chainId },
+        // TODO add networkClientId once it is available in the transactionMeta
+        // the chainId previously passed here didn't actually allow us to check for ownership on a non globally selected network
+        // because the check would use the provider for the globally selected network, not the chainId passed here.
+        { userAddress },
       );
     }
   }

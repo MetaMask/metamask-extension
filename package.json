@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.7.2",
+  "version": "11.7.3",
   "private": true,
   "repository": {
     "type": "git",
@@ -245,7 +245,7 @@
     "@metamask/address-book-controller": "^3.0.0",
     "@metamask/announcement-controller": "^4.0.0",
     "@metamask/approval-controller": "^3.4.0",
-    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A18.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-18.0.0-48bf74a7fa.patch",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A22.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-22.0.0-6af3715fb2.patch",
     "@metamask/base-controller": "^3.2.0",
     "@metamask/browser-passworder": "^4.1.0",
     "@metamask/contract-metadata": "^2.3.1",
@@ -271,7 +271,7 @@
     "@metamask/message-manager": "^7.3.0",
     "@metamask/metamask-eth-abis": "^3.0.0",
     "@metamask/name-controller": "^3.0.0",
-    "@metamask/network-controller": "^15.2.0",
+    "@metamask/network-controller": "^16.0.0",
     "@metamask/notification-controller": "^3.0.0",
     "@metamask/obs-store": "^8.1.0",
     "@metamask/permission-controller": "^6.0.0",
