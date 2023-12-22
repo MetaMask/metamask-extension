@@ -224,7 +224,7 @@ export default class SwapsController {
   // that quotes will no longer be available after 1 or 2 minutes. When fetchAndSetQuotes is first called, it receives fetch parameters that are stored in
   // state. These stored parameters are used on subsequent calls made during polling.
   // Note: we stop polling after 3 requests, until new quotes are explicitly asked for. The logic that enforces that maximum is in the body of fetchAndSetQuotes
-  pollForNewQuotes() {
+  pollForNewQuotesBase(fetchAndSetQuotesFn) {
     const {
       swapsState: {
         swapsQuoteRefreshTime,
@@ -238,7 +238,7 @@ export default class SwapsController {
       : swapsQuotePrefetchingRefreshTime;
     this.pollingTimeout = setTimeout(() => {
       const { swapsState } = this.store.getState();
-      this.fetchAndSetQuotes(
+      fetchAndSetQuotesFn(
         swapsState.fetchParams,
         swapsState.fetchParams?.metaData,
         true,
@@ -246,26 +246,12 @@ export default class SwapsController {
     }, quotesRefreshRateInMs);
   }
 
+  pollForNewQuotes() {
+    this.pollForNewQuotesBase(this.fetchAndSetQuotes.bind(this));
+  }
+
   pollForNewQuotesV2() {
-    const {
-      swapsState: {
-        swapsQuoteRefreshTime,
-        swapsQuotePrefetchingRefreshTime,
-        quotesPollingLimitEnabled,
-      },
-    } = this.store.getState();
-    // swapsQuoteRefreshTime is used on the View Quote page, swapsQuotePrefetchingRefreshTime is used on the Build Quote page.
-    const quotesRefreshRateInMs = quotesPollingLimitEnabled
-      ? swapsQuoteRefreshTime
-      : swapsQuotePrefetchingRefreshTime;
-    this.pollingTimeout = setTimeout(() => {
-      const { swapsState } = this.store.getState();
-      this.fetchAndSetQuotesV2(
-        swapsState.fetchParams,
-        swapsState.fetchParams?.metaData,
-        true,
-      );
-    }, quotesRefreshRateInMs);
+    this.pollForNewQuotesBase(this.fetchAndSetQuotesV2.bind(this));
   }
 
   stopPollingForQuotes() {
