@@ -12,9 +12,9 @@ jest.mock('react-redux', () => ({
 jest.mock('../../../../selectors', () => ({
   getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
   getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
-  getMetaMaskAccountsOrdered: () => [
-    { name: `account1:mockState` },
-    { name: `account2:mockState` },
+  getInternalAccountsSortedByKeyring: () => [
+    { address: 'address-1', metadata: { name: `account1:mockState` } },
+    { address: 'address-2', metadata: { name: `account2:mockState` } },
   ],
   getCurrentNetworkTransactions: (s) => `getCurrentNetworkTransactions:${s}`,
 }));
