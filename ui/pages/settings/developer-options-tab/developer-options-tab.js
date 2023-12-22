@@ -44,7 +44,7 @@ const DeveloperOptionsTab = () => {
   }, []);
 
   useEffect(() => {
-    handleSettingsRefs(t, t('experimental'), settingsRefs);
+    handleSettingsRefs(t, t('developerOptions'), settingsRefs);
   }, [t, settingsRefs]);
 
   return (
