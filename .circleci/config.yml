@@ -1207,12 +1207,12 @@ jobs:
           event: fail
           mentions: <@davide.brocchetto>
           template: basic_fail_1
-          channel: C06BLC1F17B
+          channel: C06BEG71R1S
       - slack/notify:
           event: fail
           mentions: <@davide.brocchetto>
           template: basic_fail_1
-          channel: C06BLC1F17B
+          channel: C06BEG71R1S
       - store_artifacts:
           name: html-report and artifacts
           path: public/playwright/playwright-reports
