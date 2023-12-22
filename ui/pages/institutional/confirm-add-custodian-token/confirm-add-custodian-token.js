@@ -84,7 +84,7 @@ const ConfirmAddCustodianToken = () => {
       );
     })();
 
-    history.push(CUSTODY_ACCOUNT_ROUTE);
+    return history.push(CUSTODY_ACCOUNT_ROUTE);
   }, [
     connectRequest,
     dispatch,
