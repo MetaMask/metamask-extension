@@ -2,19 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ONBOARDING_SECURE_YOUR_WALLET_ROUTE } from '../../../helpers/constants/routes';
-
-import {
-  getNumberOfSettingsInSection,
-  handleSettingsRefs,
-} from '../../../helpers/utils/settings-search';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import {
-  resetOnboarding,
-  resetViewedNotifications,
-} from '../../../store/actions';
-
 import {
   Box,
   Button,
@@ -32,8 +19,19 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
+import { ONBOARDING_SECURE_YOUR_WALLET_ROUTE } from '../../../helpers/constants/routes';
+import {
+  getNumberOfSettingsInSection,
+  handleSettingsRefs,
+} from '../../../helpers/utils/settings-search';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import {
+  resetOnboarding,
+  resetViewedNotifications,
+} from '../../../store/actions';
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
+import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
