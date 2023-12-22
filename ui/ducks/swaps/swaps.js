@@ -1573,6 +1573,256 @@ export const signAndSendTransactions = (
   };
 };
 
+export const signAndSendTransactionsV2 = (
+  history,
+  trackEvent,
+  additionalTrackingParams,
+) => {
+  return async (dispatch, getState) => {
+    const state = getState();
+    const chainId = getCurrentChainId(state);
+    const hardwareWalletUsed = isHardwareWallet(state);
+    const networkAndAccountSupports1559 =
+      checkNetworkAndAccountSupports1559(state);
+    let swapsLivenessForNetwork = {
+      swapsFeatureIsLive: false,
+    };
+    try {
+      const swapsFeatureFlags = await fetchSwapsFeatureFlags();
+      swapsLivenessForNetwork = getSwapsLivenessForNetwork(
+        chainId,
+        swapsFeatureFlags,
+      );
+    } catch (error) {
+      log.error('Failed to fetch Swaps liveness, defaulting to false.', error);
+    }
+    await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
+
+    if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
+      await history.push(SWAPS_MAINTENANCE_ROUTE);
+      return;
+    }
+
+    const customSwapsGas = getCustomSwapsGas(state);
+    const customMaxFeePerGas = getCustomMaxFeePerGas(state);
+    const customMaxPriorityFeePerGas = getCustomMaxPriorityFeePerGas(state);
+    const fetchParams = getFetchParams(state);
+    const { metaData, value: swapTokenValue, slippage } = fetchParams;
+    const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
+    await dispatch(setBackgroundSwapRouteState('awaiting'));
+    await dispatch(stopPollingForQuotes());
+
+    if (!hardwareWalletUsed) {
+      history.push(AWAITING_SWAP_ROUTE);
+    }
+
+    const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
+
+    let maxFeePerGas;
+    let maxPriorityFeePerGas;
+    let baseAndPriorityFeePerGas;
+    let decEstimatedBaseFee;
+
+    if (networkAndAccountSupports1559) {
+      const {
+        high: { suggestedMaxFeePerGas, suggestedMaxPriorityFeePerGas },
+        estimatedBaseFee = '0',
+      } = getGasFeeEstimates(state);
+      decEstimatedBaseFee = decGWEIToHexWEI(estimatedBaseFee);
+      maxFeePerGas =
+        customMaxFeePerGas || decGWEIToHexWEI(suggestedMaxFeePerGas);
+      maxPriorityFeePerGas =
+        customMaxPriorityFeePerGas ||
+        decGWEIToHexWEI(suggestedMaxPriorityFeePerGas);
+      baseAndPriorityFeePerGas = addHexes(
+        decEstimatedBaseFee,
+        maxPriorityFeePerGas,
+      );
+    }
+
+    const usedQuote = getUsedQuote(state);
+    const usedTradeTxParams = usedQuote.trade;
+
+    const estimatedGasLimit = new BigNumber(
+      usedQuote?.gasEstimate || `0x0`,
+      16,
+    );
+    const estimatedGasLimitWithMultiplier = estimatedGasLimit
+      .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
+      .round(0)
+      .toString(16);
+    const maxGasLimit =
+      customSwapsGas ||
+      (usedQuote?.gasEstimate
+        ? estimatedGasLimitWithMultiplier
+        : `0x${decimalToHex(usedQuote?.gasParams.maxGas || 0)}`);
+
+    const usedGasPrice = getUsedSwapsGasPrice(state);
+    usedTradeTxParams.gas = maxGasLimit;
+    if (networkAndAccountSupports1559) {
+      usedTradeTxParams.maxFeePerGas = maxFeePerGas;
+      usedTradeTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
+      delete usedTradeTxParams.gasPrice;
+    } else {
+      usedTradeTxParams.gasPrice = usedGasPrice;
+    }
+
+    const usdConversionRate = getUSDConversionRate(state);
+    const destinationValue = calcTokenAmount(
+      usedQuote.destinationAmount,
+      destinationTokenInfo.decimals || 18,
+    ).toPrecision(8);
+    const usedGasLimitEstimate =
+      usedQuote?.gasEstimateWithRefund ||
+      `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
+    const totalGasLimitEstimate = new BigNumber(usedGasLimitEstimate, 16)
+      .plus(usedQuote.approvalNeeded?.gas || '0x0', 16)
+      .toString(16);
+    const gasEstimateTotalInUSD = getValueFromWeiHex({
+      value: calcGasTotal(
+        totalGasLimitEstimate,
+        networkAndAccountSupports1559 ? baseAndPriorityFeePerGas : usedGasPrice,
+      ),
+      toCurrency: 'usd',
+      conversionRate: usdConversionRate,
+      numberOfDecimals: 6,
+    });
+    const smartTransactionsOptInStatus = getSmartTransactionsOptInStatus(state);
+    const smartTransactionsEnabled = getSmartTransactionsEnabled(state);
+    const currentSmartTransactionsEnabled =
+      getCurrentSmartTransactionsEnabled(state);
+    const swapMetaData = {
+      token_from: sourceTokenInfo.symbol,
+      token_from_amount: String(swapTokenValue),
+      token_to: destinationTokenInfo.symbol,
+      token_to_amount: destinationValue,
+      slippage,
+      custom_slippage: slippage !== 2,
+      best_quote_source: getTopQuote(state)?.aggregator,
+      available_quotes: getQuotes(state)?.length,
+      other_quote_selected:
+        usedQuote.aggregator !== getTopQuote(state)?.aggregator,
+      other_quote_selected_source:
+        usedQuote.aggregator === getTopQuote(state)?.aggregator
+          ? ''
+          : usedQuote.aggregator,
+      gas_fees: gasEstimateTotalInUSD,
+      estimated_gas: estimatedGasLimit.toString(10),
+      suggested_gas_price: fastGasEstimate,
+      used_gas_price: hexWEIToDecGWEI(usedGasPrice),
+      average_savings: usedQuote.savings?.total,
+      performance_savings: usedQuote.savings?.performance,
+      fee_savings: usedQuote.savings?.fee,
+      median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+      is_hardware_wallet: hardwareWalletUsed,
+      hardware_wallet_type: getHardwareWalletType(state),
+      stx_enabled: smartTransactionsEnabled,
+      current_stx_enabled: currentSmartTransactionsEnabled,
+      stx_user_opt_in: smartTransactionsOptInStatus,
+      ...additionalTrackingParams,
+    };
+    if (networkAndAccountSupports1559) {
+      swapMetaData.max_fee_per_gas = maxFeePerGas;
+      swapMetaData.max_priority_fee_per_gas = maxPriorityFeePerGas;
+      swapMetaData.base_and_priority_fee_per_gas = baseAndPriorityFeePerGas;
+    }
+
+    trackEvent({
+      event: MetaMetricsEventName.SwapStarted,
+      category: MetaMetricsEventCategory.Swaps,
+      sensitiveProperties: swapMetaData,
+    });
+
+    if (!isContractAddressValid(usedTradeTxParams.to, chainId)) {
+      captureMessage('Invalid contract address', {
+        extra: {
+          token_from: swapMetaData.token_from,
+          token_to: swapMetaData.token_to,
+          contract_address: usedTradeTxParams.to,
+        },
+      });
+      await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
+      history.push(SWAPS_ERROR_ROUTE);
+      return;
+    }
+
+    let finalApproveTxMeta;
+    const approveTxParams = getApproveTxParams(state);
+
+    // For hardware wallets we go to the Awaiting Signatures page first and only after a user
+    // completes 1 or 2 confirmations, we redirect to the Awaiting Swap page.
+    if (hardwareWalletUsed) {
+      history.push(AWAITING_SIGNATURES_ROUTE);
+    }
+
+    if (approveTxParams) {
+      if (networkAndAccountSupports1559) {
+        approveTxParams.maxFeePerGas = maxFeePerGas;
+        approveTxParams.maxPriorityFeePerGas = maxPriorityFeePerGas;
+        delete approveTxParams.gasPrice;
+      }
+
+      try {
+        finalApproveTxMeta = await addTransactionAndWaitForPublish(
+          { ...approveTxParams, amount: '0x0' },
+          {
+            requireApproval: false,
+            type: TransactionType.swapApproval,
+            swaps: {
+              hasApproveTx: true,
+              meta: {
+                type: TransactionType.swapApproval,
+                sourceTokenSymbol: sourceTokenInfo.symbol,
+              },
+            },
+          },
+        );
+      } catch (e) {
+        await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
+        history.push(SWAPS_ERROR_ROUTE);
+        return;
+      }
+    }
+
+    try {
+      await addTransactionAndWaitForPublish(usedTradeTxParams, {
+        requireApproval: false,
+        type: TransactionType.swap,
+        swaps: {
+          hasApproveTx: Boolean(approveTxParams),
+          meta: {
+            estimatedBaseFee: decEstimatedBaseFee,
+            sourceTokenSymbol: sourceTokenInfo.symbol,
+            destinationTokenSymbol: destinationTokenInfo.symbol,
+            type: TransactionType.swap,
+            destinationTokenDecimals: destinationTokenInfo.decimals,
+            destinationTokenAddress: destinationTokenInfo.address,
+            swapMetaData,
+            swapTokenValue,
+            approvalTxId: finalApproveTxMeta?.id,
+          },
+        },
+      });
+    } catch (e) {
+      const errorKey = e.message.includes('EthAppPleaseEnableContractData')
+        ? CONTRACT_DATA_DISABLED_ERROR
+        : SWAP_FAILED_ERROR;
+      console.error(e);
+      await dispatch(setSwapsErrorKey(errorKey));
+      history.push(SWAPS_ERROR_ROUTE);
+      return;
+    }
+
+    // Only after a user confirms swapping on a hardware wallet (second `updateAndApproveTx` call above),
+    // we redirect to the Awaiting Swap page.
+    if (hardwareWalletUsed) {
+      history.push(AWAITING_SWAP_ROUTE);
+    }
+
+    await forceUpdateMetamaskState(dispatch);
+  };
+};
+
 export function fetchMetaSwapsGasPriceEstimates() {
   return async (dispatch, getState) => {
     const state = getState();

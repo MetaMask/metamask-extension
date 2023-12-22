@@ -201,7 +201,7 @@ export async function fetchQuotesInfoV2(
         from: quote.trade.from,
         data: quote.trade.data,
         amount: decimalToHex(quote.trade.value),
-        gas: decimalToHex(quote.maxGas),
+        gas: decimalToHex(quote.gasParams.maxGas),
       });
 
       let { approvalNeeded } = quote;

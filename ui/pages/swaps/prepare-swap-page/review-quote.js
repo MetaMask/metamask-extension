@@ -51,6 +51,7 @@ import {
   fetchSwapsSmartTransactionFees,
   getSmartTransactionFees,
   getCurrentSmartTransactionsEnabled,
+  signAndSendTransactionsV2,
 } from '../../../ducks/swaps/swaps';
 import {
   conversionRateSelector,
@@ -91,6 +92,7 @@ import {
   getRenderableNetworkFeesForQuote,
   getFeeForSmartTransaction,
   formatSwapsValueForDisplay,
+  quotesToRenderableDataV2,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
 import {
@@ -146,7 +148,7 @@ let intervalId;
 const GAS_FEES_LEARN_MORE_URL =
   'https://community.metamask.io/t/what-is-gas-why-do-transactions-take-so-long/3172';
 
-export default function ReviewQuote({ setReceiveToAmount }) {
+export default function ReviewQuote({ setReceiveToAmount, isApiV2 = false }) {
   const history = useHistory();
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -365,7 +367,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const approveGas = approveTxParams?.gas;
 
   const renderablePopoverData = useMemo(() => {
-    return quotesToRenderableData({
+    const params = {
       quotes,
       gasPrice: networkAndAccountSupports1559
         ? baseAndPriorityFeePerGas
@@ -381,7 +383,12 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         smartTransactionFees?.tradeTxFees,
       nativeCurrencySymbol,
       multiLayerL1ApprovalFeeTotal,
-    });
+    };
+
+    if (isApiV2) {
+      return quotesToRenderableDataV2(params);
+    }
+    return quotesToRenderableData(params);
   }, [
     quotes,
     gasPrice,
@@ -397,6 +404,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     smartTransactionsEnabled,
     smartTransactionsOptInStatus,
     multiLayerL1ApprovalFeeTotal,
+    isApiV2,
   ]);
 
   const renderableDataForUsedQuote = renderablePopoverData.find(
@@ -1063,6 +1071,14 @@ export default function ReviewQuote({ setReceiveToAmount }) {
             additionalTrackingParams,
           }),
         );
+      } else if (isApiV2) {
+        dispatch(
+          signAndSendTransactionsV2(
+            history,
+            trackEvent,
+            additionalTrackingParams,
+          ),
+        );
       } else {
         dispatch(
           signAndSendTransactions(
@@ -1352,4 +1368,5 @@ export default function ReviewQuote({ setReceiveToAmount }) {
 
 ReviewQuote.propTypes = {
   setReceiveToAmount: PropTypes.func.isRequired,
+  isApiV2: PropTypes.bool,
 };

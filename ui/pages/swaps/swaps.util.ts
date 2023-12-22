@@ -558,6 +558,161 @@ export function quotesToRenderableData({
   });
 }
 
+export function quotesToRenderableDataV2({
+  quotes,
+  gasPrice,
+  conversionRate,
+  currentCurrency,
+  approveGas,
+  tokenConversionRates,
+  chainId,
+  smartTransactionEstimatedGas,
+  nativeCurrencySymbol,
+  multiLayerL1ApprovalFeeTotal,
+}: {
+  quotes: object;
+  gasPrice: string;
+  conversionRate: number;
+  currentCurrency: string;
+  approveGas: string;
+  tokenConversionRates: Record<string, any>;
+  chainId: keyof typeof SWAPS_CHAINID_DEFAULT_TOKEN_MAP;
+  smartTransactionEstimatedGas: IndividualTxFees;
+  nativeCurrencySymbol: string;
+  multiLayerL1ApprovalFeeTotal: string | null;
+}): Record<string, any> {
+  return Object.values(quotes).map((quote) => {
+    const {
+      destinationAmount = 0,
+      sourceAmount = 0,
+      sourceTokenInfo,
+      destinationTokenInfo,
+      slippage,
+      aggregatorType,
+      aggregator,
+      gasEstimateWithRefund,
+      gasParams,
+      fee,
+      trade,
+      multiLayerL1TradeFeeTotal,
+    } = quote;
+
+    const averageGas = gasParams?.averageGas;
+
+    let multiLayerL1FeeTotal = null;
+    if (
+      multiLayerL1TradeFeeTotal !== null &&
+      multiLayerL1ApprovalFeeTotal !== null
+    ) {
+      multiLayerL1FeeTotal = sumHexes(
+        multiLayerL1TradeFeeTotal || '0x0',
+        multiLayerL1ApprovalFeeTotal || '0x0',
+      );
+    } else if (multiLayerL1TradeFeeTotal !== null) {
+      multiLayerL1FeeTotal = multiLayerL1TradeFeeTotal;
+    }
+    const sourceValue = calcTokenAmount(
+      sourceAmount,
+      sourceTokenInfo.decimals,
+    ).toString(10);
+    const destinationValue = calcTokenAmount(
+      destinationAmount,
+      destinationTokenInfo.decimals,
+    ).toPrecision(8);
+
+    let feeInFiat = null;
+    let feeInEth = null;
+    let rawNetworkFees = null;
+    let rawEthFee = null;
+
+    ({ feeInFiat, feeInEth, rawNetworkFees, rawEthFee } =
+      getRenderableNetworkFeesForQuote({
+        tradeGas: gasEstimateWithRefund || decimalToHex(averageGas || 800000),
+        approveGas,
+        gasPrice,
+        currentCurrency,
+        conversionRate,
+        tradeValue: trade.value,
+        sourceSymbol: sourceTokenInfo.symbol,
+        sourceAmount,
+        chainId,
+        multiLayerL1FeeTotal,
+      }));
+
+    if (smartTransactionEstimatedGas) {
+      ({ feeInFiat, feeInEth } = getFeeForSmartTransaction({
+        chainId,
+        currentCurrency,
+        conversionRate,
+        nativeCurrencySymbol,
+        feeInWeiDec: smartTransactionEstimatedGas.feeEstimate,
+      }));
+    }
+
+    const slippageMultiplier = new BigNumber(100 - slippage).div(100);
+    const minimumAmountReceived = new BigNumber(destinationValue)
+      .times(slippageMultiplier)
+      .toFixed(6);
+
+    const tokenConversionRate =
+      tokenConversionRates[destinationTokenInfo.address];
+    const ethValueOfTrade = isSwapsDefaultTokenSymbol(
+      destinationTokenInfo.symbol,
+      chainId,
+    )
+      ? calcTokenAmount(destinationAmount, destinationTokenInfo.decimals).minus(
+          rawEthFee,
+          10,
+        )
+      : new BigNumber(tokenConversionRate || 0, 10)
+          .times(
+            calcTokenAmount(destinationAmount, destinationTokenInfo.decimals),
+            10,
+          )
+          .minus(rawEthFee, 10);
+
+    let liquiditySourceKey;
+    let renderedSlippage = slippage;
+
+    if (aggregatorType === 'AGG') {
+      liquiditySourceKey = 'swapAggregator';
+    } else if (aggregatorType === 'RFQ') {
+      liquiditySourceKey = 'swapRequestForQuotation';
+      renderedSlippage = 0;
+    } else if (aggregatorType === 'DEX') {
+      liquiditySourceKey = 'swapDecentralizedExchange';
+    } else if (aggregatorType === 'CONTRACT') {
+      liquiditySourceKey = 'swapDirectContract';
+    } else {
+      liquiditySourceKey = 'swapUnknown';
+    }
+
+    return {
+      aggId: aggregator,
+      amountReceiving: `${destinationValue} ${destinationTokenInfo.symbol}`,
+      destinationTokenDecimals: destinationTokenInfo.decimals,
+      destinationTokenSymbol: destinationTokenInfo.symbol,
+      destinationTokenValue: formatSwapsValueForDisplay(destinationValue),
+      destinationIconUrl: destinationTokenInfo.iconUrl,
+      isBestQuote: quote.isBestQuote,
+      liquiditySourceKey,
+      feeInEth,
+      detailedNetworkFees: `${feeInEth} (${feeInFiat})`,
+      networkFees: feeInFiat,
+      quoteSource: aggregatorType,
+      rawNetworkFees,
+      slippage: renderedSlippage,
+      sourceTokenDecimals: sourceTokenInfo.decimals,
+      sourceTokenSymbol: sourceTokenInfo.symbol,
+      sourceTokenValue: sourceValue,
+      sourceTokenIconUrl: sourceTokenInfo.iconUrl,
+      ethValueOfTrade,
+      minimumAmountReceived,
+      metaMaskFee: fee,
+    };
+  });
+}
+
 export function formatSwapsValueForDisplay(
   destinationAmount: string | BigNumber,
 ): string {
