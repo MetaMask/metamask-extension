@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   getNumberOfSettingsInSection,
   handleSettingsRefs,
@@ -10,19 +10,25 @@ import {
   Box,
   Button,
   ButtonVariant,
+  Icon,
+  IconName,
+  IconSize,
   Text,
 } from '../../../components/component-library';
 import {
+  IconColor,
   TextColor,
   Display,
   FlexDirection,
   JustifyContent,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
+  const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
 
   const settingsRefs = Array(
     getNumberOfSettingsInSection(t, t('developerOptions')),
@@ -31,6 +37,11 @@ const DeveloperOptionsTab = () => {
     .map(() => {
       return React.createRef();
     });
+
+  const handleResetAnnouncementClick = useCallback(() => {
+    resetViewedNotifications();
+    setHasResetAnnouncements(true);
+  }, []);
 
   useEffect(() => {
     handleSettingsRefs(t, t('experimental'), settingsRefs);
@@ -69,12 +80,27 @@ const DeveloperOptionsTab = () => {
           <div className="settings-page__content-item-col">
             <Button
               variant={ButtonVariant.Primary}
-              onClick={() => {
-                resetViewedNotifications();
-              }}
+              onClick={handleResetAnnouncementClick}
             >
               {t('reset')}
             </Button>
+          </div>
+          <div className="settings-page__content-item-col">
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              paddingLeft={2}
+              paddingRight={2}
+              style={{ height: '40px', width: '40px' }}
+            >
+              <Icon
+                className="settings-page-developer-options__icon-check"
+                name={IconName.Check}
+                color={IconColor.successDefault}
+                size={IconSize.Lg}
+                hidden={!hasResetAnnouncements}
+              />
+            </Box>
           </div>
         </Box>
       </div>
