@@ -13,7 +13,9 @@ import {
   getShouldHideZeroBalanceTokens,
   getIsBuyableChain,
   getCurrentChainId,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   getSwapsDefaultToken,
+  ///: END:ONLY_INCLUDE_IF
   getSelectedAddress,
   getPreferences,
 } from '../../../selectors';
@@ -36,8 +38,9 @@ import {
   BalanceOverview,
   AssetListConversionButton,
 } from '../../multichain';
-
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import useRamps from '../../../hooks/experiences/useRamps';
+///: END:ONLY_INCLUDE_IF
 import { Display } from '../../../helpers/constants/design-system';
 
 import { ReceiveModal } from '../../multichain/receive-modal';
@@ -108,8 +111,10 @@ const AssetList = ({ onClickAsset }) => {
   const isBuyableChain = useSelector(getIsBuyableChain);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   const shouldShowReceive = balanceIsZero;
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const { openBuyCryptoInPdapp } = useRamps();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
@@ -130,24 +135,28 @@ const AssetList = ({ onClickAsset }) => {
           display={Display.Flex}
           gap={2}
         >
-          {shouldShowBuy ? (
-            <AssetListConversionButton
-              variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.BUY}
-              onClick={() => {
-                openBuyCryptoInPdapp();
-                trackEvent({
-                  event: MetaMetricsEventName.NavBuyButtonClicked,
-                  category: MetaMetricsEventCategory.Navigation,
-                  properties: {
-                    location: 'Home',
-                    text: 'Buy',
-                    chain_id: chainId,
-                    token_symbol: defaultSwapsToken,
-                  },
-                });
-              }}
-            />
-          ) : null}
+          {
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+            shouldShowBuy ? (
+              <AssetListConversionButton
+                variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.BUY}
+                onClick={() => {
+                  openBuyCryptoInPdapp();
+                  trackEvent({
+                    event: MetaMetricsEventName.NavBuyButtonClicked,
+                    category: MetaMetricsEventCategory.Navigation,
+                    properties: {
+                      location: 'Home',
+                      text: 'Buy',
+                      chain_id: chainId,
+                      token_symbol: defaultSwapsToken,
+                    },
+                  });
+                }}
+              />
+            ) : null
+            ///: END:ONLY_INCLUDE_IF
+          }
           {shouldShowReceive ? (
             <AssetListConversionButton
               variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.RECEIVE}
