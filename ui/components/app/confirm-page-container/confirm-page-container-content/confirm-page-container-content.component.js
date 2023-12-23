@@ -208,6 +208,7 @@ export default class ConfirmPageContainerContent extends Component {
           origin={origin}
           toAddress={toAddress}
           transactionType={transactionType}
+          networkName={networkName}
         />
         {this.renderContent()}
         {!supportsEIP1559 &&

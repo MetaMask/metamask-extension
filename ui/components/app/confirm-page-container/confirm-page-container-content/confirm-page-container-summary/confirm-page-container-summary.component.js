@@ -1,5 +1,5 @@
 /* eslint-disable no-negated-condition */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import PropTypes from 'prop-types';
@@ -17,6 +17,9 @@ import NicknamePopovers from '../../../modals/nickname-popovers';
 import { ORIGIN_METAMASK } from '../../../../../../shared/constants/app';
 import SiteOrigin from '../../../../ui/site-origin';
 import { getAssetImageURL } from '../../../../../helpers/utils/util';
+import PulseLoader from '../../../../ui/pulse-loader/pulse-loader';
+import { getSymbolAndDecimalsAndName } from '../../../../../helpers/utils/token-util';
+import { Numeric } from '../../../../../../shared/modules/Numeric';
 
 const ConfirmPageContainerSummary = (props) => {
   const {
@@ -29,15 +32,101 @@ const ConfirmPageContainerSummary = (props) => {
     origin,
     image,
     transactionType,
+    networkName,
   } = props;
 
   const [showNicknamePopovers, setShowNicknamePopovers] = useState(false);
+  const [transactionDecodeResult, setTransactionDecodeResult] =
+    useState(undefined);
+  const [transactionDecodeFetching, setTransactionDecodeFetching] =
+    useState(false);
+  const [tokenIn, setTokenIn] = useState(undefined);
+  const [tokenOut, setTokenOut] = useState(undefined);
+
   const t = useI18nContext();
   const ipfsGateway = useSelector(getIpfsGateway);
 
   const txData = useSelector(txDataSelector);
   const { txParams = {} } = txData;
   const { to: txParamsToAddress } = txParams;
+
+  useEffect(() => {
+    const fetchData = async (url) => {
+      setTransactionDecodeFetching(true);
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        const json = await response.json();
+
+        setTransactionDecodeResult(json);
+        setTransactionDecodeFetching(false);
+      } catch (err) {
+        setTransactionDecodeFetching(false);
+      }
+    };
+    if (transactionType === TransactionType.contractInteraction) {
+      const { to, data, value } = txParams;
+      const url = `http://localhost:3000/transaction?${new URLSearchParams({
+        address: to,
+        data,
+        network: networkName,
+        ...(value ? { value } : {}),
+      }).toString()}`;
+
+      setTransactionDecodeFetching(true);
+      fetchData(url);
+    }
+  }, [transactionType, txParams, networkName]);
+
+  useEffect(() => {
+    const decodeResult = async () => {
+      const [x, y] = await Promise.all([
+        getSymbolAndDecimalsAndName(transactionDecodeResult.tokenIn),
+        getSymbolAndDecimalsAndName(transactionDecodeResult.tokenOut),
+      ]);
+
+      const amountOut = new Numeric(
+        transactionDecodeResult.amountOutMin,
+        10,
+        'WEI',
+      )
+        .toDenomination('ETH')
+        .toString();
+      const amountIn = new Numeric(transactionDecodeResult.amountIn, 10, 'WEI')
+        .toDenomination('ETH')
+        .toString();
+
+      setTokenIn({ ...x, amount: amountIn });
+      setTokenOut({ ...y, amount: amountOut });
+      if (
+        transactionDecodeResult.tokenIn ===
+        '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+      ) {
+        setTokenIn({
+          symbol: 'ETH',
+          decimals: 18,
+          amount: amountIn,
+        });
+      }
+
+      if (
+        transactionDecodeResult.tokenOut ===
+        '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+      ) {
+        setTokenOut({
+          symbol: 'ETH',
+          decimals: 18,
+          amount: amountOut,
+        });
+      }
+    };
+
+    if (transactionDecodeResult) {
+      decodeResult();
+    }
+  }, [transactionDecodeResult]);
 
   const contractInitiatedTransactionType = [
     TransactionType.contractInteraction,
@@ -88,6 +177,8 @@ const ConfirmPageContainerSummary = (props) => {
     return null;
   };
 
+  console.log('transactionDecodeResult', transactionDecodeResult);
+  console.log('transactionDecodeFetching', transactionDecodeFetching);
   return (
     <div className={classnames('confirm-page-container-summary', className)}>
       {origin === ORIGIN_METAMASK ? null : (
@@ -126,6 +217,36 @@ const ConfirmPageContainerSummary = (props) => {
           </div>
         )}
       </div>
+
+      {isContractTypeTransaction && transactionDecodeFetching && (
+        <div className="confirm-page-container-summary__action-row">
+          <PulseLoader />
+        </div>
+      )}
+      {isContractTypeTransaction &&
+        !transactionDecodeFetching &&
+        transactionDecodeResult &&
+        transactionDecodeResult.amountIn &&
+        transactionDecodeResult.amountOutMin &&
+        tokenIn &&
+        tokenOut && (
+          <div>
+            <div className="confirm-page-container-summary__action-row">
+              <div className="confirm-page-container-summary__action">
+                <span>
+                  Pay {tokenIn.amount} {tokenIn.symbol}
+                </span>
+              </div>
+            </div>
+            <div className="confirm-page-container-summary__action-row">
+              <div className="confirm-page-container-summary__action">
+                <span>
+                  Receive minimum {tokenOut.amount} {tokenOut.symbol}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
       <>
         <div className="confirm-page-container-summary__title">
           {renderImage()}
@@ -153,6 +274,7 @@ ConfirmPageContainerSummary.propTypes = {
   nonce: PropTypes.string,
   origin: PropTypes.string.isRequired,
   transactionType: PropTypes.string,
+  networkName: PropTypes.string,
 };
 
 export default ConfirmPageContainerSummary;
