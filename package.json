@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.7.0",
+  "version": "11.7.1",
   "private": true,
   "repository": {
     "type": "git",
@@ -249,7 +249,7 @@
     "@metamask/address-book-controller": "^3.0.0",
     "@metamask/announcement-controller": "^4.0.0",
     "@metamask/approval-controller": "^3.4.0",
-    "@metamask/assets-controllers": "^22.0.0",
+    "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A22.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-22.0.0-6af3715fb2.patch",
     "@metamask/base-controller": "^4.0.0",
     "@metamask/browser-passworder": "^4.3.0",
     "@metamask/contract-metadata": "^2.3.1",
@@ -294,7 +294,7 @@
     "@metamask/snaps-rpc-methods": "^4.0.3",
     "@metamask/snaps-sdk": "^1.2.0",
     "@metamask/snaps-utils": "^5.1.0",
-    "@metamask/transaction-controller": "^18.3.0",
+    "@metamask/transaction-controller": "^18.3.1",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",

@@ -23,13 +23,13 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonVariant,
-  FormTextField,
   IconName,
   Label,
   Modal,
   ModalOverlay,
   Text,
 } from '../../../component-library';
+import { FormTextField } from '../../../component-library/form-text-field/deprecated';
 import { ModalContent } from '../../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import {

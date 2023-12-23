@@ -3142,10 +3142,6 @@
   "portfolioDashboard": {
     "message": "Dashboard ng Portfolio"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Napiling Uri ng Ledger Connection",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Inihahanda ang pag-swap..."
   },

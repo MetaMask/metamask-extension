@@ -3142,10 +3142,6 @@
   "portfolioDashboard": {
     "message": "Πίνακας ελέγχου χαρτοφυλακίου"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Προτιμώμενος τύπος σύνδεσης στο Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Προετοιμασία ανταλλαγής..."
   },
