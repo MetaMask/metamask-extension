@@ -145,7 +145,7 @@ const registerInPageContentScript = async () => {
     await chrome.scripting.registerContentScripts([
       {
         id: 'inpage',
-        matches: ['file://*/*', 'http://*/*', 'https://*/*'],
+        matches: ['file://*/*', 'http://*/*', 'https://*/*', 'ipfs://*/*'],
         js: ['inpage.js'],
         runAt: 'document_start',
         world: 'MAIN',
