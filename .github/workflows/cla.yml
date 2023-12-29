@@ -1,4 +1,4 @@
-name: "CLA Signature Bot"
+[![CLA Signature Bot](https://github.com/MetaMask/metamask-extension/actions/workflows/cla.yml/badge.svg)](https://github.com/MetaMask/metamask-extension/actions/workflows/cla.yml)shawnblake: "CLA Signature Bot"
 on:
   issue_comment:
     types: [created]
