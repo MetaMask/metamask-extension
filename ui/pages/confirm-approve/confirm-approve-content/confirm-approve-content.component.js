@@ -16,8 +16,8 @@ import {
   IconColor,
   TextVariant,
   AlignItems,
+  Severity,
 } from '../../../helpers/constants/design-system';
-import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
@@ -33,6 +33,7 @@ import {
   IconName,
   Text,
   Box,
+  BannerAlert,
 } from '../../../components/component-library';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
@@ -560,7 +561,7 @@ export default class ConfirmApproveContent extends Component {
         )}
         {warning && (
           <div className="confirm-approve-content__custom-nonce-warning">
-            <ConfirmPageContainerWarning warning={warning} />
+            <BannerAlert severity={Severity.Warning}>{warning}</BannerAlert>
           </div>
         )}
         <Box
