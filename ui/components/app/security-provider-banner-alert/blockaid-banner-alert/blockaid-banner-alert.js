@@ -49,7 +49,7 @@ const REASON_TO_TITLE_TKEY = Object.freeze({
   [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
 });
 
-function BlockaidBannerAlert({ txData, ...props }) {
+function BlockaidBannerAlert({ txData, networkName, ...props }) {
   const { securityAlertResponse, origin, msgParams, type, txParams } = txData;
 
   const t = useContext(I18nContext);
@@ -58,7 +58,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     return null;
   }
 
-  const { reason, result_type: resultType, features } = securityAlertResponse;
+  const { reason, result_type: resultType, features, block } = securityAlertResponse;
 
   if (resultType === BlockaidResultType.Benign) {
     return null;
@@ -91,7 +91,11 @@ function BlockaidBannerAlert({ txData, ...props }) {
     domain: origin ?? msgParams?.origin,
     jsonRpcMethod: type,
     jsonRpcParams: JSON.stringify(txParams ?? msgParams),
+    blockNumber: block,
+    chain: networkName,
     classification: reason,
+    result: result_type,
+    features: features,
   };
   const jsonData = JSON.stringify(reportData);
 
