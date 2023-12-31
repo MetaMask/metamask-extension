@@ -39,7 +39,6 @@ const TransactionAlerts = ({
   setUserAcknowledgedGasMissing,
   tokenSymbol,
   txData,
-  networkName,
 }) => {
   const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
     useGasFeeContext();
@@ -94,7 +93,6 @@ const TransactionAlerts = ({
         <BlockaidBannerAlert
           onClickSupportLink={onClickSupportLink}
           txData={txData}
-          networkName={networkName}
         />
         ///: END:ONLY_INCLUDE_IF
       }
