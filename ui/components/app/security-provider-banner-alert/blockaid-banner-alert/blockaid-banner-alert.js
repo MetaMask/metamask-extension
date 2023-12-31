@@ -94,7 +94,7 @@ function BlockaidBannerAlert({ txData, networkName, ...props }) {
     blockNumber: block,
     chain: networkName,
     classification: reason,
-    result: result_type,
+    resultType: resultType,
     features: features,
   };
   const jsonData = JSON.stringify(reportData);
