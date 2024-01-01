@@ -3494,41 +3494,29 @@ export default class MetamaskController extends EventEmitter {
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer),
       );
 
-      // Scan accounts until we find an empty one
-      const { chainId } = this.networkController.state.providerConfig;
+      // Scan accounts and apply checks
       const ethQuery = new EthQuery(this.provider);
       const accounts = await this.keyringController.getAccounts();
-      let address = accounts[accounts.length - 1];
+      let emptyAccountsCounter = 0;
 
-      for (let count = accounts.length; ; count++) {
-        const balance = await this.getBalance(address, ethQuery);
+      for (
+        let index = accounts.length - 1;
+        emptyAccountsCounter < 10;
+        index++
+      ) {
+        let address = accounts[index];
+        const isAccountEmpty = await this.isAccountEmpty(address, ethQuery);
 
-        if (balance === '0x0') {
-          // This account has no balance, so check for tokens
-          await this.detectTokensController.detectNewTokens({
-            selectedAddress: address,
-          });
-
-          const tokens =
-            this.tokensController.state.allTokens?.[chainId]?.[address];
-          const detectedTokens =
-            this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
-
-          if (
-            (tokens?.length ?? 0) === 0 &&
-            (detectedTokens?.length ?? 0) === 0
-          ) {
-            // This account has no balance or tokens
-            if (count !== 1) {
-              await this.removeAccount(address);
-            }
-            break;
+        if (isAccountEmpty) {
+          emptyAccountsCounter += 1;
+          if (index !== 0) {
+            await this.removeAccount(address);
           }
+        } else {
+          emptyAccountsCounter = 0;
+          ({ addedAccountAddress: address } =
+            await this.keyringController.addNewAccount(index + 1));
         }
-
-        // This account has assets, so check the next one
-        ({ addedAccountAddress: address } =
-          await this.keyringController.addNewAccount(count));
       }
 
       // This must be set as soon as possible to communicate to the
@@ -3543,6 +3531,28 @@ export default class MetamaskController extends EventEmitter {
     } finally {
       releaseLock();
     }
+  }
+
+  async isAccountEmpty(address, ethQuery) {
+    const balance = await this.getBalance(address, ethQuery);
+    const nonce = await this.getNonce(address, ethQuery);
+
+    // Check if account has no balance and nonce is 0
+    if (balance === '0x0' && nonce === '0x0') {
+      // Check for tokens
+      await this.detectTokensController.detectNewTokens({
+        selectedAddress: address,
+      });
+      const { chainId } = this.networkController.state.providerConfig;
+      const tokens =
+        this.tokensController.state.allTokens?.[chainId]?.[address];
+      const detectedTokens =
+        this.tokensController.state.allDetectedTokens?.[chainId]?.[address];
+
+      return (tokens?.length ?? 0) === 0 && (detectedTokens?.length ?? 0) === 0;
+    }
+
+    return false;
   }
 
   /**

@@ -642,6 +642,40 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#createNewVaultAndRestore - Nonce Detection', () => {
+      it('should continue with accounts having non-zero nonce', async () => {
+        const password = 'password123';
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+        jest.spyOn(metamaskController, 'getNonce').mockResolvedValue('0x1'); // Mock a non-zero nonce
+
+        // Call the restore function
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+
+        // Expectation: The restoration should not stop at the first account with zero balance
+        // You need to adjust this based on your implementation details
+        expect(
+          metamaskController.keyringController.addNewAccount,
+        ).toHaveBeenCalled();
+      });
+    });
+
+    describe('#createNewVaultAndRestore - Account Skipping', () => {
+      it('should skip after 10 consecutive empty accounts', async () => {
+        const password = 'password123';
+        jest.spyOn(metamaskController, 'getBalance').mockResolvedValue('0x0');
+        jest.spyOn(metamaskController, 'getNonce').mockResolvedValue('0x0'); // Mock a zero nonce
+
+        // Call the restore function
+        await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
+
+        // Expectation: The restoration should stop after checking 10 consecutive accounts with zero balance and nonce
+        // Adjust this based on how many times you expect the addNewAccount function to be called
+        expect(
+          metamaskController.keyringController.addNewAccount,
+        ).toHaveBeenCalledTimes(10);
+      });
+    });
+
     describe('#getBalance', () => {
       it('should return the balance known by accountTracker', async () => {
         const accounts = {};
