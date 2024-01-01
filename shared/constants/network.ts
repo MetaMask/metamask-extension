@@ -350,7 +350,7 @@ const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
 
 export const ETH_TOKEN_IMAGE_URL = './images/eth_logo.png';
 export const TEST_ETH_TOKEN_IMAGE_URL = './images/eth-logo-testnet.svg';
-export const ETC_TOKEN_IMAGE_URL = './images/etc_logo.svg';
+export const ETC_TOKEN_IMAGE_URL = './images/etc-logo.svg';
 export const TEST_ETC_TOKEN_IMAGE_URL = './images/etc-logo-testnet.svg';
 export const LINEA_GOERLI_TOKEN_IMAGE_URL = './images/linea-logo-testnet.png';
 export const LINEA_MAINNET_TOKEN_IMAGE_URL = './images/linea-logo-mainnet.png';
