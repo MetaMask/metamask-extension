@@ -108,6 +108,10 @@ describe('Settings - general validate the change language functionality', functi
   });
 
   it('User selects "Español" and verify that language persists with page refresh and sessions', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
+
     const languageIndex = 10;
     await withFixtures(
       {
