@@ -80,7 +80,7 @@ import {
 import { getGasLoadingAnimationIsShowing } from '../../ducks/app/app';
 import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
-import { getAccountType, getIsUsingPaymaster } from '../../selectors/selectors';
+import { getIsUsingPaymaster } from '../../selectors/selectors';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../shared/constants/app';

@@ -87,7 +87,7 @@ import {
 import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
 
-import SimpleSmartAccount from 'simple-smart-account';
+import { SimpleSmartContractAccount } from 'simple-smart-contract-account';
 
 import { AccountsController } from '@metamask/accounts-controller';
 
@@ -4202,13 +4202,15 @@ export default class MetamaskController extends EventEmitter {
         currentAccount,
       );
 
-      const smartContractAccount = new SimpleSmartAccount(
-        simpleAccountOwner,
-        process.env.SIMPLE_ACCOUNT_SALT,
-        undefined,
+      const smartContractAccount = new SimpleSmartContractAccount({
+        bundler: 'http://localhost:3000/rpc',
+        entrypoint: '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b',
+        owner: simpleAccountOwner,
         privateKey,
-        this.provider,
-      );
+        provider: this.provider,
+        salt: process.env.SIMPLE_ACCOUNT_SALT,
+        simpleAccountFactory: '0x4aFf835038b16dccDb1670103C4877A8F93E5219',
+      });
 
       const result =
         await this.userOperationController.addUserOperationFromTransaction(

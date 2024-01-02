@@ -1,0 +1,49 @@
+{
+    "private": true,
+    "name": "aa-bundler",
+    "version": "0.2.0",
+    "author": "Dror Tirosh",
+    "license": "MIT",
+    "workspaces": {
+        "packages": [
+            "packages/*"
+        ],
+        "nohoist": [
+            "**eslint**"
+        ]
+    },
+    "scripts": {
+        "bundler": "yarn --cwd packages/bundler bundler",
+        "runop": "yarn --cwd packages/bundler runop",
+        "runop-goerli": "yarn runop --network goerli --unsafe",
+        "create-all-deps": "jq '.dependencies,.devDependencies' packages/*/package.json |sort  -u > all.deps",
+        "depcheck": "lerna exec --no-bail --stream --parallel -- npx depcheck",
+        "hardhat-node": "lerna run hardhat-node --stream --no-prefix --",
+        "hardhat-deploy": "lerna run hardhat-deploy --stream --no-prefix --",
+        "lerna-clear": "lerna run clear",
+        "lerna-lint": "lerna run lint --stream --parallel -- ",
+        "lerna-test": "lerna run hardhat-test --stream",
+        "lerna-tsc": "lerna run tsc --scope @account-abstraction/*",
+        "lerna-watch-tsc": "lerna run --parallel watch-tsc",
+        "lint-fix": "lerna run lint-fix --parallel",
+        "clear": "lerna run clear",
+        "hardhat-compile": "lerna run hardhat-compile",
+        "preprocess": "yarn lerna-clear && yarn hardhat-compile && yarn lerna-tsc",
+        "runop-self": "ts-node ./packages/bundler/src/runner/runop.ts --deployFactory --selfBundler --unsafe",
+        "ci": "env ; yarn depcheck; yarn preprocess ; yarn lerna-test"
+    },
+    "dependencies": {
+        "@typescript-eslint/eslint-plugin": "^5.33.0",
+        "@typescript-eslint/parser": "^5.33.0",
+        "depcheck": "^1.4.3",
+        "eslint": "^8.21.0",
+        "eslint-config-standard-with-typescript": "^22.0.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-n": "^15.2.4",
+        "eslint-plugin-promise": "^6.0.0",
+        "lerna": "^5.4.0",
+        "typescript": "^4.7.4",
+        "webpack": "^5.74.0",
+        "webpack-cli": "^4.10.0"
+    }
+}

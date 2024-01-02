@@ -1,0 +1,14 @@
+{
+  "mnemonic": "./bundler.mnemonic.txt",
+  "network": "http://127.0.0.1:8545",
+  "beneficiary": "0x8890d2dAB1922Bec92922f7E6879D5c65ba333f4",
+  "port": "3000",
+  "entryPoint": "0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b",
+  "minBalance": "0",
+  "gasFactor": "1",
+  "maxBundleGas": 5e6,
+  "minStake": "1",
+  "minUnstakeDelay": 0,
+  "autoBundleInterval": 3,
+  "autoBundleMempoolSize": 10
+}

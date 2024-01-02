@@ -1,0 +1,43 @@
+{
+  "name": "@account-abstraction/bundler",
+  "version": "0.6.2",
+  "license": "MIT",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/packages/bundler/src/index.js",
+  "types": "./dist/packages/bundler/src/index.d.ts",
+  "scripts": {
+    "runop": "ts-node ./src/runner/runop.ts",
+    "bundler": "ts-node ./src/exec.ts --config ./localconfig/bundler.config.json",
+    "clear": "rm -rf dist artifacts cache src/types",
+    "hardhat-compile": "hardhat compile",
+    "hardhat-node": "npx hardhat node --no-deploy",
+    "hardhat-node-with-deploy": "npx hardhat node",
+    "hardhat-deploy": "hardhat deploy",
+    "hardhat-test": "hardhat test",
+    "lint": "eslint -f unix .",
+    "lint-fix": "eslint -f unix . --fix",
+    "tsc": "tsc",
+    "watch-tsc": "tsc -w --preserveWatchOutput"
+  },
+  "dependencies": {
+    "@account-abstraction/contracts": "^0.6.0",
+    "@account-abstraction/sdk": "^0.6.0",
+    "@ethersproject/abi": "^5.7.0",
+    "@ethersproject/properties": "^5.7.0",
+    "@ethersproject/providers": "^5.7.0",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "async-mutex": "^0.4.0",
+    "commander": "^9.4.0",
+    "cors": "^2.8.5",
+    "debug": "^4.3.4",
+    "ethers": "^5.7.0",
+    "express": "^4.18.1",
+    "hardhat-gas-reporter": "^1.0.8",
+    "ow": "^0.28.1"
+  },
+  "yalcSig": "bdc66878ab02d1570a7dcf720d31549a"
+}

@@ -12,6 +12,23 @@
     "@metamask/transaction-controller": {
       "signature": "d4d692944a04b604dbfdbefe60061479",
       "file": true
+    },
+    "@account-abstraction/bundler": {
+      "signature": "bdc66878ab02d1570a7dcf720d31549a",
+      "file": true
+    },
+    "@account-abstraction/validation-manager": {
+      "signature": "fc20f4e41c745a3ec9b98acf958689d9",
+      "file": true
+    },
+    "simple-smart-contract-account": {
+      "signature": "5efb718d01484251c05dbbc8e380d3ea",
+      "file": true
+    },
+    "@account-abstraction/utils": {
+      "signature": "a990e66250cc48344c6b76bb94ea13b7",
+      "file": true,
+      "replaced": "0.6.0"
     }
   }
 }

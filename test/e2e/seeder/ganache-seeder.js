@@ -20,8 +20,7 @@ class GanacheSeeder {
    */
 
   async deploySmartContract(contractName) {
-    const ethersProvider = new Web3Provider(this.ganacheProvider, 'any');
-    const signer = ethersProvider.getSigner();
+    const signer = this.#getSigner();
     const fromAddress = await signer.getAddress();
     const contractFactory = new ContractFactory(
       contractConfiguration[contractName].abi,
@@ -38,11 +37,20 @@ class GanacheSeeder {
         contractConfiguration[SMART_CONTRACTS.HST].decimalUnits,
         contractConfiguration[SMART_CONTRACTS.HST].tokenSymbol,
       );
+    } else if (contractName === SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY) {
+      contract = await contractFactory.deploy(
+        '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b',
+      );
     } else {
       contract = await contractFactory.deploy();
     }
 
-    await contract.deployTransaction.wait();
+    const receipt = await contract.deployTransaction.wait();
+
+    console.log('Deployed smart contract', {
+      contractName,
+      contractAddress: receipt.contractAddress,
+    });
 
     if (contractName === SMART_CONTRACTS.NFTS) {
       const transaction = await contract.mintNFTs(1, {
@@ -60,7 +68,21 @@ class GanacheSeeder {
       );
       await transaction.wait();
     }
+
     this.storeSmartContractAddress(contractName, contract.address);
+  }
+
+  async transfer(to, value) {
+    const signer = this.#getSigner();
+
+    const sendAccount = await signer.sendTransaction({
+      to,
+      value,
+    });
+
+    await sendAccount.wait();
+
+    console.log('Completed transfer', { to, value });
   }
 
   /**
@@ -84,6 +106,11 @@ class GanacheSeeder {
    */
   getContractRegistry() {
     return this.smartContractRegistry;
+  }
+
+  #getSigner() {
+    const ethersProvider = new Web3Provider(this.ganacheProvider, 'any');
+    return ethersProvider.getSigner();
   }
 }
 
