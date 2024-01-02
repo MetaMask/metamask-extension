@@ -521,8 +521,6 @@ describe('Actions', () => {
         (_, __, ___, cb) => cb(),
       );
 
-      background.establishLedgerTransportPreference.callsFake((cb) => cb());
-
       setBackgroundConnection(background);
 
       await store.dispatch(
@@ -541,8 +539,6 @@ describe('Actions', () => {
       background.connectHardware.callsFake((_, __, ___, cb) =>
         cb(new Error('error')),
       );
-
-      background.establishLedgerTransportPreference.callsFake((cb) => cb());
 
       setBackgroundConnection(background);
 

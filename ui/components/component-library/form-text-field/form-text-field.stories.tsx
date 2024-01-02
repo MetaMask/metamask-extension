@@ -1,3 +1,4 @@
+import { StoryFn, Meta } from '@storybook/react';
 import React, { useState, useEffect } from 'react';
 import { useArgs } from '@storybook/client-api';
 
@@ -10,15 +11,14 @@ import {
   IconColor,
 } from '../../../helpers/constants/design-system';
 
-import Box from '../../ui/box/box';
 import {
+  Box,
   ButtonLink,
   ButtonPrimary,
   ButtonSecondary,
   HelpText,
   Label,
   Text,
-  TextFieldSize,
   TextFieldType,
   Icon,
   IconName,
@@ -29,158 +29,12 @@ import { FormTextField } from './form-text-field';
 
 import README from './README.mdx';
 
-const marginSizeControlOptions = [
-  undefined,
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  'auto',
-];
-
 export default {
   title: 'Components/ComponentLibrary/FormTextField',
-
   component: FormTextField,
   parameters: {
     docs: {
       page: README,
-    },
-  },
-  argTypes: {
-    value: {
-      control: 'text',
-    },
-    onChange: {
-      action: 'onChange',
-    },
-    labelProps: {
-      control: 'object',
-    },
-    textFieldProps: {
-      control: 'object',
-    },
-    helpTextProps: {
-      control: 'object',
-    },
-    autoComplete: {
-      control: 'boolean',
-      table: { category: 'text field base props' },
-    },
-    autoFocus: {
-      control: 'boolean',
-      table: { category: 'text field base props' },
-    },
-    className: {
-      control: 'text',
-      table: { category: 'text field base props' },
-    },
-    disabled: {
-      control: 'boolean',
-      table: { category: 'text field base props' },
-    },
-    error: {
-      control: 'boolean',
-      table: { category: 'text field base props' },
-    },
-    id: {
-      control: 'text',
-      table: { category: 'text field base props' },
-    },
-    inputProps: {
-      control: 'object',
-      table: { category: 'text field base props' },
-    },
-    startAccessory: {
-      control: 'text',
-      table: { category: 'text field base props' },
-    },
-    maxLength: {
-      control: 'number',
-      table: { category: 'text field base props' },
-    },
-    name: {
-      control: 'text',
-      table: { category: 'text field base props' },
-    },
-    onBlur: {
-      action: 'onBlur',
-      table: { category: 'text field base props' },
-    },
-    onClick: {
-      action: 'onClick',
-      table: { category: 'text field base props' },
-    },
-    onFocus: {
-      action: 'onFocus',
-      table: { category: 'text field base props' },
-    },
-    onKeyDown: {
-      action: 'onKeyDown',
-      table: { category: 'text field base props' },
-    },
-    onKeyUp: {
-      action: 'onKeyUp',
-      table: { category: 'text field base props' },
-    },
-    placeholder: {
-      control: 'text',
-      table: { category: 'text field base props' },
-    },
-    readOnly: {
-      control: 'boolean',
-      table: { category: 'text field base props' },
-    },
-    required: {
-      control: 'boolean',
-      table: { category: 'text field base props' },
-    },
-    endAccessory: {
-      control: 'text',
-      table: { category: 'text field base props' },
-    },
-    size: {
-      control: 'select',
-      options: Object.values(TextFieldSize),
-      table: { category: 'text field base props' },
-    },
-    type: {
-      control: 'select',
-      options: Object.values(TextFieldType),
-      table: { category: 'text field base props' },
-    },
-    truncate: {
-      control: 'boolean',
-      table: { category: 'text field base props' },
-    },
-    marginTop: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginRight: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginBottom: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
-    },
-    marginLeft: {
-      options: marginSizeControlOptions,
-      control: 'select',
-      table: { category: 'box props' },
     },
   },
   args: {
@@ -189,10 +43,10 @@ export default {
     id: 'form-text-field',
     helpText: 'Help text',
   },
-};
+} as Meta<typeof FormTextField>;
 
-const Template = (args) => {
-  const [{ value }, updateArgs] = useArgs();
+const Template: StoryFn<typeof FormTextField> = (args) => {
+  const [{ value = '' }, updateArgs] = useArgs();
   const handleOnChange = (e) => {
     updateArgs({ value: e.target.value });
   };
@@ -217,8 +71,8 @@ LabelStory.args = {
   helpText: '',
 };
 
-export const HelpTextStory = (args) => {
-  const [{ value }, updateArgs] = useArgs();
+export const HelpTextStory: StoryFn<typeof FormTextField> = (args) => {
+  const [{ value = '' }, updateArgs] = useArgs();
   const handleOnChange = (e) => {
     updateArgs({ value: e.target.value });
   };
@@ -248,7 +102,7 @@ HelpTextStory.args = {
   helpText: 'HelpText content appears here',
 };
 
-export const FormExample = () => {
+export const FormExample: StoryFn<typeof FormTextField> = () => {
   const FORM_STATE = {
     DEFAULT: 'default',
     SUCCESS: 'success',
@@ -373,7 +227,11 @@ export const FormExample = () => {
           <ButtonPrimary type="submit">Submit</ButtonPrimary>
         </Box>
       </Box>
-      <ButtonSecondary icon={IconName.Close} onClick={handleClearForm} danger>
+      <ButtonSecondary
+        endIconName={IconName.Close}
+        onClick={handleClearForm}
+        danger
+      >
         Clear form
       </ButtonSecondary>
       {submitted === FORM_STATE.SUCCESS && (
@@ -389,7 +247,7 @@ export const FormExample = () => {
   );
 };
 
-export const CustomLabelOrHelpText = () => (
+export const CustomLabelOrHelpText: StoryFn<typeof FormTextField> = () => (
   <>
     <Text marginBottom={4}>
       Examples of how one might customize the Label or HelpText within the
@@ -423,6 +281,7 @@ export const CustomLabelOrHelpText = () => (
     />
     <FormTextField
       label="Swap from"
+      id="swap-from"
       placeholder="0"
       type={TextFieldType.Number}
     />

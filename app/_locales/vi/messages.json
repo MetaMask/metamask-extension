@@ -3142,10 +3142,6 @@
   "portfolioDashboard": {
     "message": "Trang tổng quan Danh mục đầu tư"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Dạng kết nối Ledger ưu tiên",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Đang chuẩn bị hoán đổi..."
   },
