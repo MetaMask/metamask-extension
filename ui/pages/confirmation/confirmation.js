@@ -101,6 +101,7 @@ const alertStateReducer = produce((state, action) => {
  * @param state.useSafeChainsListValidation
  * @param state.matchedChain
  * @param state.providerError
+ * @param state.preventAlertsForAddChainValidation
  * @returns {[alertState: object, dismissAlert: Function]} A tuple with
  * the current alert state and function to dismiss an alert by id
  */
@@ -111,6 +112,7 @@ function useAlertState(
     useSafeChainsListValidation,
     matchedChain,
     providerError,
+    preventAlertsForAddChainValidation = false,
   } = {},
 ) {
   const [alertState, dispatch] = useReducer(alertStateReducer, {});
@@ -125,7 +127,7 @@ function useAlertState(
    */
   useEffect(() => {
     let isMounted = true;
-    if (pendingConfirmation) {
+    if (pendingConfirmation && !preventAlertsForAddChainValidation) {
       getTemplateAlerts(pendingConfirmation, {
         unapprovedTxsCount,
         useSafeChainsListValidation,
@@ -150,6 +152,7 @@ function useAlertState(
     useSafeChainsListValidation,
     matchedChain,
     providerError,
+    preventAlertsForAddChainValidation,
   ]);
 
   const dismissAlert = useCallback(
@@ -209,6 +212,10 @@ export default function ConfirmationPage({
     useState(0);
   const pendingConfirmation = pendingConfirmations[currentPendingConfirmation];
   const [matchedChain, setMatchedChain] = useState({});
+  const [chainFetchComplete, setChainFetchComplete] = useState(false);
+  const preventAlertsForAddChainValidation =
+    pendingConfirmation?.type === ApprovalType.AddEthereumChain &&
+    !chainFetchComplete;
   const [currencySymbolWarning, setCurrencySymbolWarning] = useState(null);
   const [providerError, setProviderError] = useState(null);
   const [alertState, dismissAlert] = useAlertState(pendingConfirmation, {
@@ -216,6 +223,7 @@ export default function ConfirmationPage({
     useSafeChainsListValidation,
     matchedChain,
     providerError,
+    preventAlertsForAddChainValidation,
   });
   const [templateState] = useTemplateState(pendingConfirmation);
   const [showWarningModal, setShowWarningModal] = useState(false);
@@ -328,7 +336,7 @@ export default function ConfirmationPage({
   }, [approvalFlows]);
 
   useEffect(() => {
-    async function fetchSafeChainsList() {
+    async function fetchSafeChainsList(_pendingConfirmation) {
       try {
         if (useSafeChainsListValidation) {
           const response = await fetchWithCache({
@@ -340,13 +348,14 @@ export default function ConfirmationPage({
           const _matchedChain = safeChainsList.find(
             (chain) =>
               chain.chainId ===
-              parseInt(pendingConfirmation.requestData.chainId, 16),
+              parseInt(_pendingConfirmation.requestData.chainId, 16),
           );
           setMatchedChain(_matchedChain);
+          setChainFetchComplete(true);
           setProviderError(null);
           if (
             _matchedChain?.nativeCurrency?.symbol?.toLowerCase() ===
-            pendingConfirmation.requestData.ticker?.toLowerCase()
+            _pendingConfirmation.requestData.ticker?.toLowerCase()
           ) {
             setCurrencySymbolWarning(null);
           } else {
@@ -362,13 +371,19 @@ export default function ConfirmationPage({
         setProviderError(error);
         setMatchedChain(null);
         setCurrencySymbolWarning(null);
+        setChainFetchComplete(true);
         // Swallow the error here to not block the user from adding a custom network
       }
     }
     if (pendingConfirmation?.type === ApprovalType.AddEthereumChain) {
-      fetchSafeChainsList();
+      fetchSafeChainsList(pendingConfirmation);
     }
-  }, [pendingConfirmation, t, useSafeChainsListValidation]);
+  }, [
+    pendingConfirmation,
+    t,
+    useSafeChainsListValidation,
+    setChainFetchComplete,
+  ]);
 
   if (!pendingConfirmation) {
     if (approvalFlows.length > 0) {

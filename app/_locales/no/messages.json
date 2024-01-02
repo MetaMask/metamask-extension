@@ -593,9 +593,6 @@
   "search": {
     "message": "Søk"
   },
-  "searchResults": {
-    "message": "Søkeresultater"
-  },
   "securityAndPrivacy": {
     "message": "Sikkerhet og personvern"
   },
@@ -754,12 +751,6 @@
   },
   "unknown": {
     "message": "Ukjent"
-  },
-  "unknownCameraError": {
-    "message": "Det oppsto en feil under forsøket på å få tilgang til kameraet ditt. Vær så snill og prøv på nytt..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Oisann! Noe gikk galt.... "
   },
   "unknownNetwork": {
     "message": "Ukjent privat nettverk"

@@ -220,7 +220,7 @@ export function createNewVaultAndGetSeedPhrase(
 
     try {
       await createNewVault(password);
-      const seedPhrase = await verifySeedPhrase();
+      const seedPhrase = await getSeedPhrase(password);
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -243,7 +243,7 @@ export function unlockAndGetSeedPhrase(
 
     try {
       await submitPassword(password);
-      const seedPhrase = await verifySeedPhrase();
+      const seedPhrase = await getSeedPhrase(password);
       await forceUpdateMetamaskState(dispatch);
       return seedPhrase;
     } catch (error) {
@@ -298,9 +298,10 @@ export function verifyPassword(password: string): Promise<boolean> {
   });
 }
 
-export async function verifySeedPhrase() {
+export async function getSeedPhrase(password: string) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
-    'verifySeedPhrase',
+    'getSeedPhrase',
+    [password],
   );
   return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
@@ -314,7 +315,7 @@ export function requestRevealSeedWords(
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await verifySeedPhrase();
+      const seedPhrase = await getSeedPhrase(password);
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
@@ -526,9 +527,6 @@ export function connectHardware(
 
     let accounts: { address: string }[];
     try {
-      if (deviceName === HardwareDeviceNames.ledger) {
-        await submitRequestToBackground('establishLedgerTransportPreference');
-      }
       if (
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
@@ -3593,6 +3591,19 @@ export function updateNetworksList(
   };
 }
 
+/**
+ * Updates the pinned accounts list
+ *
+ * @param pinnedAccountList
+ */
+export function updateAccountsList(
+  pinnedAccountList: [],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateAccountsList', [pinnedAccountList]);
+  };
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * Updates the caveat value for the specified origin, permission and caveat type.
@@ -3762,6 +3773,15 @@ export function setNewTokensImported(
   return {
     type: actionConstants.SET_NEW_TOKENS_IMPORTED,
     payload: newTokensImported,
+  };
+}
+
+export function setNewTokensImportedError(
+  newTokensImportedError: string,
+): PayloadAction<string> {
+  return {
+    type: actionConstants.SET_NEW_TOKENS_IMPORTED_ERROR,
+    payload: newTokensImportedError,
   };
 }
 
@@ -4029,16 +4049,6 @@ export function getOpenMetamaskTabsIds(): ThunkAction<
       [tabId: string]: boolean;
     }>('getOpenMetamaskTabsIds');
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs));
-  };
-}
-
-export function setLedgerTransportPreference(
-  value: LedgerTransportTypes,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('setLedgerTransportPreference', [value]);
-    dispatch(hideLoadingIndication());
   };
 }
 
@@ -4696,9 +4706,5 @@ export async function setSnapsAddSnapAccountModalDismissed() {
   await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
     true,
   ]);
-}
-
-export async function updateSnapRegistry() {
-  await submitRequestToBackground('updateSnapRegistry', []);
 }
 ///: END:ONLY_INCLUDE_IF

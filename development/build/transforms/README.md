@@ -16,9 +16,9 @@ this.store.updateStructure({
   ...,
   GasFeeController: this.gasFeeController,
   TokenListController: this.tokenListController,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   SnapController: this.snapController,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 });
 ```
 
@@ -36,7 +36,7 @@ Note that multiple build types can be specified by separating them with
 commands inside the parameter parentheses:
 
 ```javascript
-///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 ```
 
 It's critical that this transform runs before anything else processes our code.

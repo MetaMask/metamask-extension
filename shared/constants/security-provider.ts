@@ -74,3 +74,6 @@ export const SECURITY_PROVIDER_MESSAGE_SEVERITY = {
   MALICIOUS: 1,
   NOT_SAFE: 2,
 };
+
+export const FALSE_POSITIVE_REPORT_BASE_URL = 'https://report.blockaid.io/tx';
+export const UTM_SOURCE = 'metamask-ppom';

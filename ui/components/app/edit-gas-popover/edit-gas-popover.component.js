@@ -13,12 +13,12 @@ import {
 import {
   Modal,
   ModalOverlay,
-  ModalContent,
-  ModalHeader,
   Button,
   ButtonVariant,
   ButtonSize,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import EditGasDisplay from '../edit-gas-display';
 
 import { I18nContext } from '../../../contexts/i18n';
