@@ -20,6 +20,8 @@ import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
 import { IconName } from '../../../../ui/components/component-library/icon';
 import { isBlockedUrl } from './utils/isBlockedUrl';
+import { GetSubjectMetadata } from '@metamask/permission-controller';
+import { getSnapName } from '../../../../ui/helpers/utils/util';
 
 /**
  * Get the addresses of the accounts managed by a given Snap.
@@ -46,7 +48,8 @@ type SnapKeyringBuilderAllowActions =
   | RejectRequest
   | MaybeUpdateState
   | TestOrigin
-  | KeyringControllerGetAccountsAction;
+  | KeyringControllerGetAccountsAction
+  | GetSubjectMetadata;
 
 type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
   'SnapKeyringBuilder',
@@ -178,11 +181,40 @@ export const snapKeyringBuilder = (
                 ],
               });
             } catch (error) {
+              const subjectMetadata = controllerMessenger.call(
+                'SubjectMetadataController:getSubjectMetadata',
+                origin,
+              );
+
+              const snapName = getSnapName(origin, subjectMetadata);
+
               await controllerMessenger.call('ApprovalController:showError', {
                 header: [snapAuthorshipHeader],
                 title: t('snapAccountCreationFailed') as string,
                 icon: IconName.UserCircleAdd,
-                error: (error as Error).message,
+                error: [
+                  {
+                    key: 'description',
+                    name: 'Text',
+                    children: [
+                      t(
+                        'snapAccountCreationFailedDescription',
+                        snapName,
+                      ) as string,
+                    ],
+                    properties: {
+                      marginBottom: '2',
+                    },
+                  },
+                  {
+                    key: 'error',
+                    name: 'ActionableMessage',
+                    properties: {
+                      type: 'danger',
+                      message: (error as Error).message,
+                    },
+                  },
+                ],
               });
               throw new Error(
                 `Error occurred while creating snap account: ${
@@ -233,18 +265,54 @@ export const snapKeyringBuilder = (
               await removeAccountHelper(address);
               await handleUserInput(confirmationResult);
               await persistKeyringHelper();
-              await controllerMessenger.call('ApprovalController:showSuccess', {
+              // This isn't actually an error, but we show it as one for styling reasons
+              await controllerMessenger.call('ApprovalController:showError', {
                 header: [snapAuthorshipHeader],
                 icon: IconName.UserCircleRemove,
                 title: t('snapAccountRemoved') as string,
-                message: t('snapAccountRemoved') as string,
+                error: [
+                  {
+                    name: 'Text',
+                    key: 'description',
+                    children: [t('snapAccountRemovedDescription') as string],
+                  },
+                ],
               });
             } catch (error) {
+              const subjectMetadata = controllerMessenger.call(
+                'SubjectMetadataController:getSubjectMetadata',
+                snapId,
+              );
+
+              const snapName = getSnapName(snapId, subjectMetadata);
+
               await controllerMessenger.call('ApprovalController:showError', {
                 header: [snapAuthorshipHeader],
                 icon: IconName.UserCircleRemove,
                 title: t('snapAccountRemovalFailed') as string,
-                error: (error as Error).message,
+                error: [
+                  {
+                    key: 'description',
+                    name: 'Text',
+                    children: [
+                      t(
+                        'snapAccountRemovalFailedDescription',
+                        snapName,
+                      ) as string,
+                    ],
+                    properties: {
+                      marginBottom: '2',
+                    },
+                  },
+                  {
+                    key: 'error',
+                    name: 'ActionableMessage',
+                    properties: {
+                      type: 'danger',
+                      message: (error as Error).message,
+                    },
+                  },
+                ],
               });
               throw new Error(
                 `Error occurred while removing snap account: ${
