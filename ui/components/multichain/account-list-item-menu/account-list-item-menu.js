@@ -1,29 +1,30 @@
-import React, { useContext, useRef, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getHardwareWalletType,
   getAccountTypeForKeyring,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  getPinnedAccountsList,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMaskAccountsOrdered,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { findKeyringForAddress } from '../../../ducks/metamask/metamask';
 import { MenuItem } from '../../ui/menu';
 import {
   IconName,
+  ModalFocus,
   Popover,
   PopoverPosition,
-  ModalFocus,
   PopoverRole,
   Text,
 } from '../../component-library';
@@ -31,7 +32,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { showModal } from '../../../store/actions';
+import { showModal, updateAccountsList } from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
@@ -45,6 +46,7 @@ export const AccountListItemMenu = ({
   isRemovable,
   identity,
   isOpen,
+  isPinned,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -59,12 +61,14 @@ export const AccountListItemMenu = ({
   );
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  const pinnedAccountList = useSelector(getPinnedAccountsList);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
   const accounts = useSelector(getMetaMaskAccountsOrdered);
 
   const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   // Handle Tab key press for accessibility inside the popover and will close the popover on the last MenuItem
   const lastItemRef = useRef(null);
@@ -81,30 +85,37 @@ export const AccountListItemMenu = ({
     } else {
       lastItemRef.current = accountDetailsItemRef.current;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     removeJWTItemRef.current,
     removeAccountItemRef.current,
     accountDetailsItemRef.current,
   ]);
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Tab' && event.target === lastItemRef.current) {
-      // If Tab is pressed at the last item to close popover and focus to next element in DOM
-      onClose();
-    }
-  };
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === 'Tab' && event.target === lastItemRef.current) {
+        // If Tab is pressed at the last item to close popover and focus to next element in DOM
+        onClose();
+      }
+    },
+    [onClose],
+  );
 
   // Handle click outside of the popover to close it
   const popoverDialogRef = useRef(null);
 
-  const handleClickOutside = (event) => {
-    if (
-      popoverDialogRef?.current &&
-      !popoverDialogRef.current.contains(event.target)
-    ) {
-      onClose();
-    }
-  };
+  const handleClickOutside = useCallback(
+    (event) => {
+      if (
+        popoverDialogRef?.current &&
+        !popoverDialogRef.current.contains(event.target)
+      ) {
+        onClose();
+      }
+    },
+    [onClose],
+  );
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -112,7 +123,19 @@ export const AccountListItemMenu = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, [handleClickOutside]);
+
+  const handlePinning = (address) => {
+    const updatedPinnedAccountList = [...pinnedAccountList, address];
+    dispatch(updateAccountsList(updatedPinnedAccountList));
+  };
+
+  const handleUnpinning = (address) => {
+    const updatedPinnedAccountList = pinnedAccountList.filter(
+      (item) => item !== address,
+    );
+    dispatch(updateAccountsList(updatedPinnedAccountList));
+  };
 
   return (
     <Popover
@@ -140,6 +163,22 @@ export const AccountListItemMenu = ({
             textProps={{ variant: TextVariant.bodySm }}
             address={identity.address}
           />
+          {process.env.NETWORK_ACCOUNT_DND ? (
+            <MenuItem
+              data-testid="account-list-menu-pin"
+              onClick={() => {
+                isPinned
+                  ? handleUnpinning(identity.address)
+                  : handlePinning(identity.address);
+                onClose();
+              }}
+              iconName={isPinned ? IconName.Unpin : IconName.Pin}
+            >
+              <Text variant={TextVariant.bodySm}>
+                {isPinned ? t('unpin') : t('pinToTop')}
+              </Text>
+            </MenuItem>
+          ) : null}
           {isRemovable ? (
             <MenuItem
               ref={removeAccountItemRef}
@@ -169,7 +208,7 @@ export const AccountListItemMenu = ({
             </MenuItem>
           ) : null}
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             isCustodial ? (
               <MenuItem
                 ref={removeJWTItemRef}
@@ -203,7 +242,7 @@ export const AccountListItemMenu = ({
                 <Text variant={TextVariant.bodySm}>{t('removeJWT')}</Text>
               </MenuItem>
             ) : null
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
         </div>
       </ModalFocus>
@@ -234,6 +273,10 @@ AccountListItemMenu.propTypes = {
    * Represents if the account should be removable
    */
   isRemovable: PropTypes.bool.isRequired,
+  /**
+   * Represents pinned accounts
+   */
+  isPinned: PropTypes.bool,
   /**
    * Identity of the account
    */

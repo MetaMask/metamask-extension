@@ -1,21 +1,21 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
-} from '@metamask-institutional/portfolio-dashboard';
+  getWaitForConfirmDeepLinkDialog,
+} from '../../selectors/institutional/selectors';
 import { mmiActionsFactory } from '../../store/institutional/institution-background';
-import { getWaitForConfirmDeepLinkDialog } from '../../selectors/institutional/selectors';
 import { getInstitutionalConnectRequests } from '../../ducks/institutional/institutional';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import {
   activeTabHasPermissions,
   getFirstPermissionRequest,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getFirstSnapInstallOrUpdateRequest,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   getIsMainnet,
   getOriginOfCurrentTab,
   getTotalUnapprovedCount,
@@ -37,6 +37,8 @@ import {
   getSuggestedTokens,
   getSuggestedNfts,
   getApprovalFlows,
+  getShowSurveyToast,
+  getNewTokensImportedError,
 } from '../../selectors';
 
 import {
@@ -54,9 +56,8 @@ import {
   setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  removeSnapError,
-  ///: END:ONLY_INCLUDE_IN
+  setSurveyLinkLastClickedOrClosed,
+  setNewTokensImportedError,
 } from '../../store/actions';
 import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -89,9 +90,9 @@ const mapStateToProps = (state) => {
   const totalUnapprovedCount = getTotalUnapprovedCount(state);
   const swapsEnabled = getSwapsFeatureIsLive(state);
   const pendingConfirmations = getUnapprovedTemplatedConfirmations(state);
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const institutionalConnectRequests = getInstitutionalConnectRequests(state);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const envType = getEnvironmentType();
   const isPopup = envType === ENVIRONMENT_TYPE_POPUP;
@@ -103,12 +104,12 @@ const mapStateToProps = (state) => {
 
   // getFirstPermissionRequest should be updated with snap update logic once we hit main extension release
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   if (!firstPermissionsRequest) {
     firstPermissionsRequest = getFirstSnapInstallOrUpdateRequest(state);
     firstPermissionsRequestId = firstPermissionsRequest?.metadata.id || null;
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const originOfCurrentTab = getOriginOfCurrentTab(state);
   const shouldShowWeb3ShimUsageNotification =
@@ -138,8 +139,7 @@ const mapStateToProps = (state) => {
     selectedAddress,
     firstPermissionsRequestId,
     totalUnapprovedCount,
-    hasApprovalFlows:
-      Array.isArray(getApprovalFlows) && getApprovalFlows(state).length > 0,
+    hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
     defaultHomeActiveTabName,
     firstTimeFlowType,
@@ -153,10 +153,6 @@ const mapStateToProps = (state) => {
     pendingConfirmations,
     infuraBlocked: getInfuraBlocked(state),
     announcementsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    errorsToShow: metamask.snapErrors,
-    shouldShowErrors: Object.entries(metamask.snapErrors || []).length > 0,
-    ///: END:ONLY_INCLUDE_IN
     showWhatsNewPopup: getShowWhatsNewPopup(state),
     showRecoveryPhraseReminder: getShowRecoveryPhraseReminder(state),
     showTermsOfUsePopup: getShowTermsOfUse(state),
@@ -168,29 +164,28 @@ const mapStateToProps = (state) => {
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
+    newTokensImportedError: getNewTokensImportedError(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    showSurveyToast: getShowSurveyToast(state),
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
     institutionalConnectRequests,
     modalOpen: state.appState.modal.open,
     mmiPortfolioUrl: getMmiPortfolioUrl(state),
     mmiPortfolioEnabled: getMmiPortfolioEnabled(state),
     notificationsToShow: getSortedAnnouncementsToShow(state).length > 0,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   return {
     closeNotificationPopup: () => closeNotificationPopup(),
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    removeSnapError: async (id) => await removeSnapError(id),
-    ///: END:ONLY_INCLUDE_IN
     setConnectedStatusPopoverHasBeenShown: () =>
       dispatch(setConnectedStatusPopoverHasBeenShown()),
     onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
@@ -220,16 +215,21 @@ const mapDispatchToProps = (dispatch) => {
     setNewTokensImported: (newTokens) => {
       dispatch(setNewTokensImported(newTokens));
     },
+    setNewTokensImportedError: (msg) => {
+      dispatch(setNewTokensImportedError(msg));
+    },
     clearNewNetworkAdded: () => {
       dispatch(setNewNetworkAdded({}));
     },
     setActiveNetwork: (networkConfigurationId) => {
       dispatch(setActiveNetwork(networkConfigurationId));
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
+    setSurveyLinkLastClickedOrClosed: (time) =>
+      dispatch(setSurveyLinkLastClickedOrClosed(time)),
   };
 };
 

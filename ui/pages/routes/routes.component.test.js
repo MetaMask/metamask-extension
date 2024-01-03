@@ -5,6 +5,12 @@ import { fireEvent } from '@testing-library/react';
 import { SEND_STAGES } from '../../ducks/send';
 import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
+import {
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../shared/constants/network';
+import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
 import Routes from '.';
 
 const mockShowNetworkDropdown = jest.fn();
@@ -28,10 +34,6 @@ jest.mock('../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
   showNetworkDropdown: () => mockShowNetworkDropdown,
   hideNetworkDropdown: () => mockHideNetworkDropdown,
-  setMouseUserState: jest.fn().mockImplementation((payload) => ({
-    type: 'SET_MOUSE_USER_STATE',
-    payload,
-  })),
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -52,7 +54,18 @@ jest.mock('../../ducks/domains', () => ({
   initializeDomainSlice: () => ({ type: 'XXX' }),
 }));
 
+jest.mock('../../hooks/useIsOriginalNativeTokenSymbol', () => {
+  return {
+    useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
+
+jest.mock(
+  '../../components/app/metamask-template-renderer/safe-component-list',
+);
+
 describe('Routes Component', () => {
+  useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
   afterEach(() => {
     mockShowNetworkDropdown.mockClear();
     mockHideNetworkDropdown.mockClear();
@@ -66,6 +79,7 @@ describe('Routes Component', () => {
           stage: SEND_STAGES.ADD_RECIPIENT,
         },
       });
+
       const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
 
       const networkDisplay = getByTestId('network-display');
@@ -75,6 +89,14 @@ describe('Routes Component', () => {
     it('should render with network change disabled while user is in send page', () => {
       const store = configureMockStore()({
         ...mockSendState,
+        metamask: {
+          ...mockSendState.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
+        },
       });
       const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
 
@@ -88,6 +110,14 @@ describe('Routes Component', () => {
         send: {
           ...mockSendState.send,
           stage: SEND_STAGES.EDIT,
+        },
+        metamask: {
+          ...mockSendState.metamask,
+          providerConfig: {
+            chainId: CHAIN_IDS.GOERLI,
+            nickname: GOERLI_DISPLAY_NAME,
+            type: NETWORK_TYPES.GOERLI,
+          },
         },
       });
       const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);

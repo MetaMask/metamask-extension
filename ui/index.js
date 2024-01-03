@@ -10,6 +10,7 @@ import { AlertTypes } from '../shared/constants/alerts';
 import { maskObject } from '../shared/modules/object.utils';
 import { SENTRY_UI_STATE } from '../app/scripts/lib/setupSentry';
 import { ENVIRONMENT_TYPE_POPUP } from '../shared/constants/app';
+import { COPY_OPTIONS } from '../shared/constants/copy';
 import switchDirection from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import * as actions from './store/actions';
@@ -26,7 +27,7 @@ import {
 } from './ducks/metamask/metamask';
 import Root from './pages';
 import txHelper from './helpers/utils/tx-helper';
-import { _setBackgroundConnection } from './store/action-queue';
+import { setBackgroundConnection } from './store/background-connection';
 
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
@@ -38,7 +39,7 @@ let reduxStore;
  * @param backgroundConnection - connection object to background
  */
 export const updateBackgroundConnection = (backgroundConnection) => {
-  _setBackgroundConnection(backgroundConnection);
+  setBackgroundConnection(backgroundConnection);
   backgroundConnection.onNotification((data) => {
     if (data.method === 'sendUpdate') {
       reduxStore.dispatch(actions.updateMetamaskState(data.params[0]));
@@ -54,7 +55,7 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   let desktopEnabled = false;
 
   backgroundConnection.getDesktopEnabled(function (err, result) {
@@ -64,7 +65,7 @@ export default function launchMetamaskUi(opts, cb) {
 
     desktopEnabled = result;
   });
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
@@ -73,9 +74,9 @@ export default function launchMetamaskUi(opts, cb) {
         err,
         {
           ...metamaskState,
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
           desktopEnabled,
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         },
         backgroundConnection,
       );
@@ -86,9 +87,9 @@ export default function launchMetamaskUi(opts, cb) {
       cb(
         null,
         store,
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
         backgroundConnection,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       );
     });
   });
@@ -163,7 +164,6 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     metamaskState.unapprovedDecryptMsgs,
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
-    metamaskState.networkId,
     metamaskState.providerConfig.chainId,
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;
@@ -274,7 +274,7 @@ window.logState = function (toClipboard) {
     if (err) {
       console.error(err.message);
     } else if (toClipboard) {
-      copyToClipboard(result);
+      copyToClipboard(result, COPY_OPTIONS);
       console.log('State log copied');
     } else {
       console.log(result);

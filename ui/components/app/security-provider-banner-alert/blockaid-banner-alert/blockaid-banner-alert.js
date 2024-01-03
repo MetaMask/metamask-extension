@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
 
 import { Text } from '../../../component-library';
-import { Severity } from '../../../../helpers/constants/design-system';
+import {
+  OverflowWrap,
+  Severity,
+} from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
 
 import {
@@ -12,6 +15,9 @@ import {
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
+import { getReportUrl } from './blockaid-banner-utils';
+
+const zlib = require('zlib');
 
 /** Reason to description translation key mapping. Grouped by translations. */
 const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
@@ -29,7 +35,6 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 
   [BlockaidReason.rawSignatureFarming]: 'blockaidDescriptionMightLoseAssets',
   [BlockaidReason.tradeOrderFarming]: 'blockaidDescriptionMightLoseAssets',
-  [BlockaidReason.unfairTrade]: 'blockaidDescriptionMightLoseAssets',
 
   [BlockaidReason.rawNativeTokenTransfer]: 'blockaidDescriptionTransferFarming',
   [BlockaidReason.transferFarming]: 'blockaidDescriptionTransferFarming',
@@ -44,7 +49,9 @@ const REASON_TO_TITLE_TKEY = Object.freeze({
   [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
 });
 
-function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
+function BlockaidBannerAlert({ txData, ...props }) {
+  const { securityAlertResponse, origin, msgParams, type, txParams } = txData;
+
   const t = useContext(I18nContext);
 
   if (!securityAlertResponse) {
@@ -64,7 +71,7 @@ function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
   const description = t(REASON_TO_DESCRIPTION_TKEY[reason] || 'other');
 
   const details = features?.length ? (
-    <Text as="ul">
+    <Text as="ul" overflowWrap={OverflowWrap.BreakWord}>
       {features.map((feature, i) => (
         <li key={`blockaid-detail-${i}`}>• {feature}</li>
       ))}
@@ -80,6 +87,18 @@ function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
 
   const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
 
+  const reportData = {
+    domain: origin ?? msgParams?.origin,
+    jsonRpcMethod: type,
+    jsonRpcParams: JSON.stringify(txParams ?? msgParams),
+    classification: reason,
+  };
+  const jsonData = JSON.stringify(reportData);
+
+  const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
+
+  const reportUrl = getReportUrl(encodedData);
+
   return (
     <SecurityProviderBannerAlert
       description={description}
@@ -87,13 +106,14 @@ function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
       provider={isFailedResultType ? null : SecurityProvider.Blockaid}
       severity={severity}
       title={title}
+      reportUrl={reportUrl}
       {...props}
     />
   );
 }
 
 BlockaidBannerAlert.propTypes = {
-  securityAlertResponse: PropTypes.object,
+  txData: PropTypes.object,
 };
 
 export default BlockaidBannerAlert;

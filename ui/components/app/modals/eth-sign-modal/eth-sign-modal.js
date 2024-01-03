@@ -10,13 +10,13 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   ButtonSecondarySize,
-  FormTextField,
   Icon,
   IconName,
   IconSize,
   Label,
   Text,
 } from '../../../component-library';
+import { FormTextField } from '../../../component-library/form-text-field/deprecated';
 import {
   AlignItems,
   Display,

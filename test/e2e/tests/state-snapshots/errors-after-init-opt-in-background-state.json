@@ -1,5 +1,12 @@
 {
-  "AccountTracker": { "accounts": "object" },
+  "AccountOrderController": { "pinnedAccountList": {} },
+  "AccountTracker": {
+    "accounts": "object",
+    "accountsByChainId": "object"
+  },
+  "AccountsController": {
+    "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
+  },
   "AddressBookController": { "addressBook": "object" },
   "AlertController": {
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
@@ -34,23 +41,23 @@
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
-    "serviceWorkerLastActiveTime": 0
+    "surveyLinkLastClickedOrClosed": "object"
   },
   "ApprovalController": {
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
     "approvalFlows": "object"
   },
-  "CachedBalancesController": { "cachedBalances": "object" },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
-    "conversionDate": "number",
-    "conversionRate": 1700,
-    "nativeCurrency": "ETH",
     "currentCurrency": "usd",
-    "pendingCurrentCurrency": null,
-    "pendingNativeCurrency": null,
-    "usdConversionRate": 1700
+    "currencyRates": {
+      "ETH": {
+        "conversionDate": "number",
+        "conversionRate": 1700,
+        "usdConversionRate": 1700
+      }
+    }
   },
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
@@ -63,6 +70,7 @@
   "EnsController": { "ensResolutionsByAddress": "object" },
   "GasFeeController": {
     "gasFeeEstimates": {},
+    "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none"
   },
@@ -83,7 +91,6 @@
   },
   "NetworkController": {
     "selectedNetworkClientId": "string",
-    "networkId": "1337",
     "providerConfig": {
       "chainId": "0x539",
       "nickname": "Localhost 8545",
@@ -101,6 +108,9 @@
     },
     "networkConfigurations": "object"
   },
+  "NetworkOrderController": {
+    "orderedNetworkList": { "0": "string", "1": "string", "2": "string" }
+  },
   "NftController": {
     "allNftContracts": "object",
     "allNfts": "object",
@@ -112,6 +122,14 @@
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
     "onboardingTabs": "object"
+  },
+  "PPOMController": {
+    "versionInfo": {},
+    "storageMetadata": {},
+    "chainStatus": {
+      "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
+    },
+    "versionFileETag": "string"
   },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
@@ -125,12 +143,15 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
+    "useRequestQueue": false,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
     "openSeaEnabled": false,
+    "securityAlertsEnabled": "boolean",
+    "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
     "featureFlags": {},
     "incomingTransactionsPreferences": {},
@@ -151,10 +172,16 @@
     "snapRegistryList": "object",
     "transactionSecurityCheckEnabled": false,
     "theme": "light",
+    "snapsAddSnapAccountModalDismissed": "boolean",
     "isLineaMainnetReleased": true,
     "selectedAddress": "string"
   },
-  "SelectedNetworkController": { "domains": {}, "perDomainNetwork": "boolean" },
+  "SelectedNetworkController": {
+    "domains": {
+      "metamask": "networkConfigurationId"
+    },
+    "perDomainNetwork": "boolean"
+  },
   "SignatureController": {
     "unapprovedMsgs": "object",
     "unapprovedPersonalMsgs": "object",
@@ -171,9 +198,9 @@
     }
   },
   "SnapController": {
-    "snapErrors": "object",
     "snaps": "object",
-    "snapStates": "object"
+    "snapStates": "object",
+    "unencryptedSnapStates": "object"
   },
   "SnapsRegistry": { "database": "object", "lastUpdated": "object" },
   "SubjectMetadataController": { "subjectMetadata": "object" },
@@ -210,7 +237,10 @@
     "tokensChainsCache": {},
     "preventPollingOnNetworkRestart": true
   },
-  "TokenRatesController": { "contractExchangeRates": "object" },
+  "TokenRatesController": {
+    "contractExchangeRates": "object",
+    "contractExchangeRatesByChainId": "object"
+  },
   "TokensController": {
     "tokens": "object",
     "ignoredTokens": "object",
@@ -219,5 +249,9 @@
     "allIgnoredTokens": {},
     "allDetectedTokens": {}
   },
-  "TxController": { "transactions": "object" }
+  "TxController": {
+    "lastFetchedBlockNumbers": "object",
+    "methodData": "object",
+    "transactions": "object"
+  }
 }

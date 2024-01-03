@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { SubjectType } from '@metamask/permission-controller';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import PermissionsConnectHeader from '../../permissions-connect-header';
 import Tooltip from '../../../ui/tooltip';
 import PermissionsConnectPermissionList from '../../permissions-connect-permission-list';
@@ -103,11 +103,11 @@ export default class PermissionPageContainerContent extends PureComponent {
     const { subjectMetadata } = this.props;
     const { t } = this.context;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     if (subjectMetadata.subjectType === SubjectType.Snap) {
       return t('allowThisSnapTo');
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     return subjectMetadata.extensionId
       ? t('allowExternalExtensionTo', [subjectMetadata.extensionId])

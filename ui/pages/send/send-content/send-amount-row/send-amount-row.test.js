@@ -4,7 +4,11 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { AssetType } from '../../../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../../shared/constants/transaction';
+import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
 import SendAmountRow from '.';
 
 const mockUpdateSendAmount = jest.fn();
@@ -14,7 +18,14 @@ jest.mock('../../../../ducks/send', () => ({
   updateSendAmount: () => mockUpdateSendAmount,
 }));
 
+jest.mock('../../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+  return {
+    useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
+
 describe('SendAmountRow Component', () => {
+  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
   describe('render', () => {
     describe('Native Asset Type', () => {
       const mockStore = configureMockStore([thunk])(mockSendState);
@@ -72,7 +83,9 @@ describe('SendAmountRow Component', () => {
               '1-tx': {
                 asset: {
                   balance: '',
-                  details: null,
+                  details: {
+                    standard: TokenStandard.ERC721,
+                  },
                   error: null,
                   type: AssetType.NFT,
                 },
@@ -86,6 +99,35 @@ describe('SendAmountRow Component', () => {
         const { container } = renderWithProvider(<SendAmountRow />, mockStore);
 
         expect(container).toMatchSnapshot();
+      });
+
+      it('should render amount field and balance for erc1155', () => {
+        const nftState = {
+          ...mockSendState,
+          send: {
+            currentTransactionUUID: '1-tx',
+            draftTransactions: {
+              '1-tx': {
+                asset: {
+                  balance: '',
+                  details: {
+                    balance: '2',
+                    standard: TokenStandard.ERC1155,
+                  },
+                  error: null,
+                  type: AssetType.NFT,
+                },
+              },
+            },
+          },
+        };
+
+        const mockStore = configureMockStore([thunk])(nftState);
+
+        const { getByText } = renderWithProvider(<SendAmountRow />, mockStore);
+
+        expect(getByText('Amount:')).toBeInTheDocument();
+        expect(getByText('Balance: 2 tokens')).toBeInTheDocument();
       });
     });
   });

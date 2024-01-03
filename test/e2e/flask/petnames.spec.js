@@ -1,4 +1,10 @@
-const { withFixtures, openDapp, convertToHexValue } = require('../helpers');
+const {
+  openDapp,
+  switchToNotificationWindow,
+  withFixtures,
+  unlockWallet,
+  defaultGanacheOptions,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
 
@@ -6,22 +12,6 @@ const SIGNATURE_TYPE = {
   TYPED_V3: 'v3',
   TYPED_V4: 'v4',
 };
-
-const ganacheOptions = {
-  accounts: [
-    {
-      secretKey:
-        '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-      balance: convertToHexValue(25000000000000000000),
-    },
-  ],
-};
-
-async function login(driver) {
-  await driver.navigate();
-  await driver.fill('#password', 'correct horse battery staple');
-  await driver.press('#password', driver.Key.ENTER);
-}
 
 async function openTestSnaps(driver) {
   const handle = await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
@@ -40,21 +30,19 @@ async function installNameLookupSnap(driver) {
   await driver.delay(1000);
 
   // Confirm Connect Modal
-  focusNotification(driver);
+  await switchToNotificationWindow(driver, 4);
   await driver.clickElement({
     text: 'Connect',
     tag: 'button',
   });
 
   // Confirm Install Modal
-  await driver.waitForSelector({ text: 'Install' });
   await driver.clickElement({
     text: 'Install',
     tag: 'button',
   });
 
   // Success Modal
-  await driver.waitForSelector({ text: 'OK' });
   await driver.clickElement({
     text: 'OK',
     tag: 'button',
@@ -71,12 +59,6 @@ async function createSignatureRequest(driver, type) {
 
 async function rejectSignatureRequest(driver) {
   await driver.clickElement({ text: 'Reject', tag: 'button' });
-  await driver.delay(3000);
-}
-
-async function focusNotification(driver) {
-  const windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('MetaMask Notification', windowHandles);
   await driver.delay(3000);
 }
 
@@ -159,14 +141,14 @@ describe('Petnames', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
-        await focusNotification(driver);
+        await switchToNotificationWindow(driver, 3);
         await expectName(driver, '0xCD2a3...DD826', false);
         await expectName(driver, '0xbBbBB...bBBbB', false);
         await saveName(driver, '0xCD2a3...DD826', undefined, 'test.lens');
@@ -178,7 +160,7 @@ describe('Petnames', function () {
         await rejectSignatureRequest(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
-        await focusNotification(driver);
+        await switchToNotificationWindow(driver, 3);
         await expectName(driver, 'test.lens', true);
         await expectName(driver, 'test2.lens', true);
         await showThirdPartyDetails(driver);
@@ -195,14 +177,14 @@ describe('Petnames', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
-        await focusNotification(driver);
+        await switchToNotificationWindow(driver, 3);
         await expectName(driver, '0xCD2a3...DD826', false);
         await expectName(driver, '0xDeaDb...DbeeF', false);
         await expectName(driver, '0xbBbBB...bBBbB', false);
@@ -217,7 +199,7 @@ describe('Petnames', function () {
         await rejectSignatureRequest(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
-        await focusNotification(driver);
+        await switchToNotificationWindow(driver, 3);
         await expectName(driver, 'test.lens', true);
         await expectName(driver, 'Test Token 2', true);
         await showThirdPartyDetails(driver);
@@ -234,20 +216,20 @@ describe('Petnames', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await login(driver);
+        await unlockWallet(driver);
         await openDapp(driver);
         await openTestSnaps(driver);
         await installNameLookupSnap(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
-        await focusNotification(driver);
+        await switchToNotificationWindow(driver, 4);
         await expectProposedNames(driver, '0xCD2a3...DD826', [
           ['test.lens', 'Lens Protocol'],
-          ['example.domain - 0xcd2 / 0x539', 'Name Lookup Example Snap'],
+          ['cd2.1337.test.domain', 'Name Lookup Example Snap'],
         ]);
       },
     );

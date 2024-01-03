@@ -8,6 +8,7 @@ import { startNewDraftTransaction } from '../../../ducks/send';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
 import { AssetType } from '../../../../shared/constants/transaction';
 import {
   removeAndIgnoreNft,
@@ -48,9 +49,11 @@ jest.mock('../../../store/actions.ts', () => ({
 
 describe('NFT Details', () => {
   const mockStore = configureMockStore([thunk])(mockState);
-
-  const nfts =
-    mockState.metamask.allNfts[mockState.metamask.selectedAddress][toHex(5)];
+  const selectedAddress =
+    mockState.metamask.internalAccounts.accounts[
+      mockState.metamask.internalAccounts.selectedAccount
+    ].address;
+  const nfts = mockState.metamask.allNfts[selectedAddress][toHex(5)];
 
   const props = {
     nft: nfts[5],
@@ -111,7 +114,7 @@ describe('NFT Details', () => {
     const copyAddressButton = queryByTestId('nft-address-copy');
     fireEvent.click(copyAddressButton);
 
-    expect(copyToClipboard).toHaveBeenCalledWith(nfts[5].address);
+    expect(copyToClipboard).toHaveBeenCalledWith(nfts[5].address, COPY_OPTIONS);
   });
 
   it('should navigate to draft transaction send route with ERC721 data', async () => {
@@ -146,6 +149,20 @@ describe('NFT Details', () => {
 
     const nftSendButton = queryByTestId('nft-send-button');
     expect(nftSendButton).not.toBeInTheDocument();
+  });
+
+  it('should render send button if it is an ERC1155', () => {
+    const nftProps = {
+      nft: nfts[1],
+    };
+    const { queryByTestId } = renderWithProvider(
+      <NftDetails {...nftProps} />,
+      mockStore,
+    );
+
+    const nftSendButton = queryByTestId('nft-send-button');
+
+    expect(nftSendButton).not.toBeDisabled();
   });
 
   describe(`Alternative Networks' OpenSea Links`, () => {

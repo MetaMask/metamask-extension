@@ -1,20 +1,16 @@
 const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
+const {
+  withFixtures,
+  openDapp,
+  unlockWallet,
+  WINDOW_TITLES,
+  generateGanacheOptions,
+} = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Failing contract interaction ', function () {
   const smartContract = SMART_CONTRACTS.FAILING;
-  const ganacheOptions = {
-    hardfork: 'london',
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   it('should display a warning when the contract interaction is expected to fail', async function () {
     await withFixtures(
       {
@@ -22,17 +18,15 @@ describe('Failing contract interaction ', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();
@@ -44,7 +38,7 @@ describe('Failing contract interaction ', function () {
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -67,15 +61,11 @@ describe('Failing contract interaction ', function () {
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindow(extension);
         await driver.clickElement({ text: 'Activity', tag: 'button' });
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-        );
 
-        // display the transaction status
-        const transactionStatus = await driver.findElement(
-          '.activity-list-item:nth-of-type(1) .transaction-status-label',
-        );
-        assert.equal(await transactionStatus.getText(), 'Failed');
+        await driver.findElement({
+          css: '.activity-list-item .transaction-status-label',
+          text: 'Failed',
+        });
       },
     );
   });
@@ -83,16 +73,6 @@ describe('Failing contract interaction ', function () {
 
 describe('Failing contract interaction on non-EIP1559 network', function () {
   const smartContract = SMART_CONTRACTS.FAILING;
-  const ganacheOptions = {
-    hardfork: 'berlin',
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   it('should display a warning when the contract interaction is expected to fail', async function () {
     await withFixtures(
       {
@@ -100,17 +80,15 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'berlin' }),
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, contractRegistry }) => {
         const contractAddress = await contractRegistry.getContractAddress(
           smartContract,
         );
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver, contractAddress);
         let windowHandles = await driver.getAllWindowHandles();
@@ -127,7 +105,7 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -154,11 +132,10 @@ describe('Failing contract interaction on non-EIP1559 network', function () {
           '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
         );
 
-        // display the transaction status
-        const transactionStatus = await driver.findElement(
-          '.activity-list-item:nth-of-type(1) .transaction-status-label',
-        );
-        assert.equal(await transactionStatus.getText(), 'Failed');
+        await driver.findElement({
+          css: '.activity-list-item .transaction-status-label',
+          text: 'Failed',
+        });
       },
     );
   });
