@@ -144,6 +144,17 @@ export const snapKeyringBuilder = (
           properties: { snapId: origin },
         };
 
+        const learnMoreLink = {
+          name: 'a',
+          key: 'learnMore',
+          properties: {
+            href: 'https://support.metamask.io/hc/en-us/articles/360015289452-How-to-add-accounts-in-your-wallet',
+            rel: 'noopener noreferrer',
+            target: '_blank',
+          },
+          children: t('learnMoreUpperCase') as string,
+        };
+
         try {
           const confirmationResult = Boolean(
             await controllerMessenger.call(
@@ -176,7 +187,11 @@ export const snapKeyringBuilder = (
                   {
                     name: 'Text',
                     key: 'description',
-                    children: [t('snapAccountCreatedDescription') as string],
+                    children: [
+                      t('snapAccountCreatedDescription') as string,
+                      ' ',
+                      learnMoreLink,
+                    ],
                   },
                 ],
               });
@@ -201,6 +216,8 @@ export const snapKeyringBuilder = (
                         'snapAccountCreationFailedDescription',
                         snapName,
                       ) as string,
+                      ' ',
+                      learnMoreLink,
                     ],
                     properties: {
                       marginBottom: '2',
@@ -247,6 +264,17 @@ export const snapKeyringBuilder = (
           properties: { snapId },
         };
 
+        const learnMoreLink = {
+          name: 'a',
+          key: 'learnMore',
+          properties: {
+            href: 'https://support.metamask.io/hc/en-us/articles/360057435092-How-to-remove-an-account-from-your-MetaMask-wallet',
+            rel: 'noopener noreferrer',
+            target: '_blank',
+          },
+          children: t('learnMoreUpperCase') as string,
+        };
+
         try {
           const confirmationResult = Boolean(
             await controllerMessenger.call(
@@ -274,7 +302,12 @@ export const snapKeyringBuilder = (
                   {
                     name: 'Text',
                     key: 'description',
-                    children: [t('snapAccountRemovedDescription') as string],
+
+                    children: [
+                      t('snapAccountRemovedDescription') as string,
+                      ' ',
+                      learnMoreLink,
+                    ],
                   },
                 ],
               });
@@ -299,6 +332,8 @@ export const snapKeyringBuilder = (
                         'snapAccountRemovalFailedDescription',
                         snapName,
                       ) as string,
+                      ' ',
+                      learnMoreLink,
                     ],
                     properties: {
                       marginBottom: '2',
