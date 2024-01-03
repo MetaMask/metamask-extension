@@ -274,7 +274,7 @@ export default function ConfirmationPage({
 
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   if (
-    [...Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES)].includes(
+    Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES).includes(
       pendingConfirmation?.type,
     )
   ) {
