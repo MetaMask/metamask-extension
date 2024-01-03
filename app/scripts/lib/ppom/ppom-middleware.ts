@@ -7,7 +7,7 @@ import {
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import PreferencesController from '../../controllers/preferences';
+import { PreferencesController } from '../../controllers/preferences';
 
 const { sentry } = global as any;
 
