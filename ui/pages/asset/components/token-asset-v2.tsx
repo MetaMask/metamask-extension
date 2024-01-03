@@ -14,8 +14,7 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import CrosshairPlugin from 'chartjs-plugin-crosshair';
-import { produceWithPatches } from 'immer';
-import { getCurrentCurrency, getTokenList } from '../../../selectors';
+import { getCurrentChainId, getCurrentCurrency, getTokenList } from '../../../selectors';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import {
@@ -25,8 +24,12 @@ import {
   Text,
 } from '../../../components/component-library';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 
 const TokenAssetV2 = ({ token }: { token: Token }) => {
+  // todo what if chain not supported?  how to determine?
+  const chainId = hexToDecimal(useSelector(getCurrentChainId));
+
   // todo do we support all of these? fallback to something like usd?
   // can controller export list of supported?
   // see token rates controller
@@ -45,27 +48,27 @@ const TokenAssetV2 = ({ token }: { token: Token }) => {
   const [prices, setHistoricalPrices] = useState<any>(); // todo better type
   const [timeRange, setTimeRange] = useState('1D');
 
-  // todo chain id
-  // todo canonicalize address?
+  // todo canonicalize address?  is that necessary?
   // cache these when clicking between????
 
+  // todo what if
   useEffect(() => {
     fetch(
-      `https://price-api.metafi.codefi.network/v1/chains/1/spot-prices/${token.address}?vsCurrency=${currency}`,
+      `https://price-api.metafi.codefi.network/v1/chains/${chainId}/spot-prices/${token.address}?vsCurrency=${currency}`,
     )
       .then((data) => data.json())
       .then((data) => setSpotPrices(data));
-  }, [token.address, currency]);
+  }, [chainId, token.address, currency]);
 
   // todo for big time ranges do we need to reduce number of data points client side?
 
   useEffect(() => {
     fetch(
-      `https://price-api.metafi.codefi.network/v1/chains/1/historical-prices/${token.address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
+      `https://price-api.metafi.codefi.network/v1/chains/${chainId}/historical-prices/${token.address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
     )
       .then((data) => data.json())
       .then((data) => setHistoricalPrices(data.prices));
-  }, [token.address, currency, timeRange]);
+  }, [chainId, token.address, currency, timeRange]);
 
   if (!prices) {
     return <></>;
