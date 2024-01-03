@@ -12,6 +12,7 @@ import { getUnapprovedTransactions } from '../selectors';
  */
 export const useDraftTransactionWithTxParams = () => {
   const draftTransaction = useSelector(getCurrentDraftTransaction);
+
   const unapprovedTxs = useSelector(getUnapprovedTransactions);
 
   let transactionData = {};

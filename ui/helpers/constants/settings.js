@@ -104,13 +104,6 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
-    sectionMessage: (t) => t('preferredLedgerConnectionType'),
-    descriptionMessage: (t) => t('preferredLedgerConnectionType'),
-    route: `${ADVANCED_ROUTE}#ledger-connection`,
-    icon: 'fas fa-sliders-h',
-  },
-  {
-    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('dismissReminderField'),
     descriptionMessage: (t) => t('dismissReminderDescriptionField'),
     route: `${ADVANCED_ROUTE}#dismiss-secretrecovery`,

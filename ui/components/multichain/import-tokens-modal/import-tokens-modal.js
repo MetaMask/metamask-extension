@@ -42,7 +42,6 @@ import {
   Box,
   ButtonLink,
   ButtonPrimary,
-  FormTextField,
   Modal,
   ModalContent,
   ModalHeader,
@@ -51,6 +50,7 @@ import {
   ButtonSecondary,
   IconName,
 } from '../../component-library';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import TokenSearch from '../../app/import-token/token-search';
 import TokenList from '../../app/import-token/token-list';
 
@@ -475,7 +475,7 @@ export const ImportTokensModal = ({ onClose }) => {
         >
           {t('importTokensCamelCase')}
         </ModalHeader>
-        <Box>
+        <Box className="import-tokens-modal__body">
           <Tabs t={t} tabsClassName="import-tokens-modal__tabs">
             {showSearchTab ? (
               <Tab

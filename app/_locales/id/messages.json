@@ -3142,10 +3142,6 @@
   "portfolioDashboard": {
     "message": "Dasbor Portofolio"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Jenis koneksi Ledger yang dipilih",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Mempersiapkan pertukaran..."
   },

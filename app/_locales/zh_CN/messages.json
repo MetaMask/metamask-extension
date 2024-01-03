@@ -3142,10 +3142,6 @@
   "portfolioDashboard": {
     "message": "Portfolio 控制面板"
   },
-  "preferredLedgerConnectionType": {
-    "message": "首选 Ledger 连接类型",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "正在准备交换......"
   },

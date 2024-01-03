@@ -888,6 +888,9 @@
   "connectingTo": {
     "message": "Connecting to $1"
   },
+  "connectingToDeprecatedNetwork": {
+    "message": "'$1' is being phased out and may not work. Try another network."
+  },
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
@@ -1224,8 +1227,8 @@
   "deprecatedAuroraNetworkMsg": {
     "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
   },
-  "deprecatedGoerliNetworkMsg": {
-    "message": "Due to the protocol changes of Ethereum: Goerli test network may not work as reliably and will be deprecated soon."
+  "deprecatedGoerliNtwrkMsg": {
+    "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
   "description": {
     "message": "Description"
@@ -1725,6 +1728,9 @@
     "message": "I accept the risks",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
   },
+  "floatAmountToken": {
+    "message": "Token amount must be an integer"
+  },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
   },
@@ -1898,6 +1904,7 @@
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
+
   "hideToken": {
     "message": "Hide token"
   },
@@ -2545,6 +2552,9 @@
   },
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
+  },
+  "negativeOrZeroAmountToken": {
+    "message": "Cannot send negative or zero amounts of Tokens"
   },
   "network": {
     "message": "Network:"
@@ -3596,10 +3606,6 @@
   "portfolioDashboard": {
     "message": "Portfolio Dashboard"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Preferred Ledger connection type",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preferredProvider": {
     "message": "Select your preferred provider"
   },
@@ -3776,6 +3782,9 @@
   },
   "replace": {
     "message": "replace"
+  },
+  "reportIssue": {
+    "message": "Report an issue"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"

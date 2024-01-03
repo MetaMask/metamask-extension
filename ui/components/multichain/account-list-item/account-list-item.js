@@ -16,11 +16,11 @@ import {
   AvatarTokenSize,
   Box,
   ButtonIcon,
+  Icon,
   IconName,
   IconSize,
   Tag,
   Text,
-  Icon,
 } from '../../component-library';
 import {
   AlignItems,
@@ -37,14 +37,10 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
-import {
-  findKeyringForAddress,
-  getNativeCurrency,
-} from '../../../ducks/metamask/metamask';
+import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
   MetaMetricsEventCategory,
@@ -56,27 +52,6 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
-
-function getLabel(t, { type }) {
-  switch (type) {
-    case KeyringType.qr:
-      return HardwareKeyringNames.qr;
-    case KeyringType.imported:
-      return t('imported');
-    case KeyringType.trezor:
-      return HardwareKeyringNames.trezor;
-    case KeyringType.ledger:
-      return HardwareKeyringNames.ledger;
-    case KeyringType.lattice:
-      return HardwareKeyringNames.lattice;
-    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-    case KeyringType.snap:
-      return `${t('snaps')} (${t('beta')})`;
-    ///: END:ONLY_INCLUDE_IF
-    default:
-      return null;
-  }
-}
 
 export const AccountListItem = ({
   identity,
@@ -113,11 +88,6 @@ export const AccountListItem = ({
       itemRef.current?.scrollIntoView?.();
     }
   }, [itemRef, selected]);
-
-  const keyring = useSelector((state) =>
-    findKeyringForAddress(state, identity.address),
-  );
-  const label = getLabel(t, keyring);
 
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
@@ -158,7 +128,7 @@ export const AccountListItem = ({
             : AvatarAccountVariant.Jazzicon
         }
         marginInlineEnd={2}
-      ></AvatarAccount>
+      />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -271,13 +241,16 @@ export const AccountListItem = ({
             </Box>
           )}
         </Box>
-        {label ? (
+        {identity.label ? (
           <Tag
-            label={label}
+            label={identity.label}
             labelProps={{
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
             }}
+            startIconName={
+              identity.keyring.type === KeyringType.snap ? IconName.Snaps : null
+            }
           />
         ) : null}
       </Box>
@@ -309,7 +282,7 @@ export const AccountListItem = ({
           identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={keyring?.type !== KeyringType.hdKeyTree}
+          isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
           isPinned={process.env.NETWORK_ACCOUNT_DND ? isPinned : null}
         />
@@ -326,6 +299,10 @@ AccountListItem.propTypes = {
     name: PropTypes.string.isRequired,
     address: PropTypes.string.isRequired,
     balance: PropTypes.string.isRequired,
+    keyring: PropTypes.shape({
+      type: PropTypes.string.isRequired,
+    }).isRequired,
+    label: PropTypes.string,
   }).isRequired,
   /**
    * Represents if this account is currently selected

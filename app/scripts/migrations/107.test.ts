@@ -1,286 +1,157 @@
-import { NameType } from '@metamask/name-controller';
-import { FALLBACK_VARIATION } from '../lib/AccountIdentitiesPetnamesBridge';
-import { migrate, version } from './107';
-
-const oldVersion = 106;
-
-const ADDRESS_1 = '0xc0ffee254729296a45a3885639AC7E10F9d54979';
-const NAME_1 = 'TestName1';
-const ADDRESS_2 = '0xc0ffee254729296a45a3885639AC7E10F9d54978';
-const NAME_2 = 'TestName2';
-const ADDRESS_3 = '0xc0ffee254729296a45a3885639AC7E10F9d54977';
-const NAME_3 = 'TestName3';
+import { migrate } from './107';
 
 describe('migration #107', () => {
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: oldVersion },
+      meta: { version: 106 },
       data: {},
     };
 
     const newStorage = await migrate(oldStorage);
 
-    expect(newStorage.meta).toStrictEqual({ version });
+    expect(newStorage.meta).toStrictEqual({ version: 107 });
   });
 
-  it('does nothing if no preferences state', async () => {
-    const oldState = {
-      OtherController: {},
+  it('does nothing if no CachedBalancesController state', async () => {
+    const oldData = {
+      some: 'data',
     };
 
-    const transformedState = await migrate({
-      meta: { version: oldVersion },
-      data: oldState,
-    });
+    const oldStorage = {
+      meta: { version: 106 },
+      data: oldData,
+    };
 
-    expect(transformedState.data).toEqual(oldState);
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data).toStrictEqual(oldData);
   });
 
-  it('does nothing if no account id entries', async () => {
-    const oldState = {
-      OtherController: {},
-      PreferencesController: {
-        identities: {},
+  it('migrates balances correctly and removes CachedBalancesController', async () => {
+    const cachedBalancesMock = {
+      '0x1': {
+        '0xAccount1': '0x100',
+        '0xAccount2': '0x200',
+      },
+      '0x2': {
+        '0xAccount3': '0x300',
       },
     };
 
-    const transformedState = await migrate({
-      meta: { version: oldVersion },
-      data: oldState,
-    });
+    const oldData = {
+      CachedBalancesController: {
+        cachedBalances: cachedBalancesMock,
+      },
+      AccountTracker: {},
+    };
 
-    expect(transformedState.data).toEqual(oldState);
-  });
+    const oldStorage = {
+      meta: { version: 106 },
+      data: oldData,
+    };
 
-  it('adds name entries', async () => {
-    const oldState = {
-      OtherController: {},
-      PreferencesController: {
-        identities: {
-          [ADDRESS_1]: {
-            name: NAME_1,
-            address: ADDRESS_1,
-          },
-          [ADDRESS_2]: {
-            name: NAME_2,
-            address: ADDRESS_2,
-          },
-          [ADDRESS_3]: {
-            name: NAME_3,
-            address: ADDRESS_3,
-          },
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data.CachedBalancesController).toBeUndefined();
+    expect(newStorage.data.AccountTracker).toStrictEqual({
+      accountsByChainId: {
+        '0x1': {
+          '0xAccount1': { address: '0xAccount1', balance: '0x100' },
+          '0xAccount2': { address: '0xAccount2', balance: '0x200' },
         },
-      },
-    };
-
-    const transformedState = await migrate({
-      meta: { version: oldVersion },
-      data: oldState,
-    });
-
-    expect(transformedState.data).toEqual({
-      ...oldState,
-      NameController: {
-        names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            [ADDRESS_1.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_1,
-                sourceId: null,
-                proposedNames: {},
-              },
-            },
-            [ADDRESS_2.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_2,
-                sourceId: null,
-                proposedNames: {},
-              },
-            },
-            [ADDRESS_3.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_3,
-                sourceId: null,
-                proposedNames: {},
-              },
-            },
-          },
+        '0x2': {
+          '0xAccount3': { address: '0xAccount3', balance: '0x300' },
         },
       },
     });
   });
 
-  it('keeps existing name entries', async () => {
-    const oldState = {
-      OtherController: {},
-      PreferencesController: {
-        identities: {
-          [ADDRESS_1]: {
-            name: NAME_1,
-            address: ADDRESS_1,
-          },
-        },
+  it('preserves existing AccountTracker data when not overlapping with cachedBalances data', async () => {
+    const cachedBalancesMock = {
+      '0x1': {
+        '0xAccount1': '0x100',
       },
-      NameController: {
-        names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            [ADDRESS_2.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_2,
-                sourceId: 'ens',
-                proposedNames: {},
-              },
-            },
-          },
+    };
+
+    const existingAccountTrackerData = {
+      accountsByChainId: {
+        '0x2': {
+          '0xAccount4': { address: '0xAccount4', balance: '0x400' },
         },
       },
     };
 
-    const transformedState = await migrate({
-      meta: { version: oldVersion },
-      data: oldState,
-    });
+    const oldData = {
+      CachedBalancesController: {
+        cachedBalances: cachedBalancesMock,
+      },
+      AccountTracker: existingAccountTrackerData,
+    };
 
-    expect(transformedState.data).toEqual({
-      ...oldState,
-      NameController: {
-        names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            [ADDRESS_1.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_1,
-                sourceId: null,
-                proposedNames: {},
-              },
-            },
-            [ADDRESS_2.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_2,
-                sourceId: 'ens',
-                proposedNames: {},
-              },
-            },
-          },
+    const oldStorage = {
+      meta: { version: 106 },
+      data: oldData,
+    };
+
+    const newStorage = await migrate(oldStorage);
+
+    expect(newStorage.data.AccountTracker).toStrictEqual({
+      accountsByChainId: {
+        '0x1': {
+          '0xAccount1': { address: '0xAccount1', balance: '0x100' },
         },
+        ...existingAccountTrackerData.accountsByChainId,
       },
     });
   });
 
-  it('ignores account id entry if existing petname', async () => {
-    const oldState = {
-      OtherController: {},
-      PreferencesController: {
-        identities: {
-          [ADDRESS_1]: {
-            name: NAME_1,
-            address: ADDRESS_1,
-          },
-        },
+  it('preserves existing AccountTracker data when it already has a chainId/accountAddress combo in the cachedBalances data', async () => {
+    const cachedBalancesMock = {
+      '0x1': {
+        '0xAccount1': '0x100',
       },
-      NameController: {
-        names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            [ADDRESS_1.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_2,
-                sourceId: 'ens',
-                proposedNames: {},
-              },
-            },
-          },
+      '0x4': {
+        '0xAccount3': '0x400',
+      },
+    };
+
+    const existingAccountTrackerData = {
+      accountsByChainId: {
+        '0x1': {
+          '0xAccount1': { address: '0xAccount1', balance: '0x400' },
+        },
+        '0x2': {
+          '0xAccount4': { address: '0xAccount4', balance: '0x400' },
         },
       },
     };
 
-    const transformedState = await migrate({
-      meta: { version: oldVersion },
-      data: oldState,
-    });
-
-    expect(transformedState.data).toEqual({
-      ...oldState,
-      NameController: {
-        names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            [ADDRESS_1.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_2,
-                sourceId: 'ens',
-                proposedNames: {},
-              },
-            },
-          },
-        },
+    const oldData = {
+      CachedBalancesController: {
+        cachedBalances: cachedBalancesMock,
       },
-    });
-  });
-
-  it('ignores account id entry if no name or address', async () => {
-    const oldState = {
-      OtherController: {},
-      PreferencesController: {
-        identities: {
-          [ADDRESS_1]: {
-            name: NAME_1,
-            address: '',
-          },
-          [ADDRESS_2]: {
-            name: '',
-            address: ADDRESS_2,
-          },
-          [ADDRESS_3]: {
-            name: NAME_3,
-            address: ADDRESS_3,
-          },
-        },
-      },
+      AccountTracker: existingAccountTrackerData,
     };
 
-    const transformedState = await migrate({
-      meta: { version: oldVersion },
-      data: oldState,
-    });
-
-    expect(transformedState.data).toEqual({
-      ...oldState,
-      NameController: {
-        names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            [ADDRESS_3.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_3,
-                sourceId: null,
-                proposedNames: {},
-              },
-            },
-          },
-        },
-      },
-    });
-  });
-
-  it('does not modify state if there are no changes.', async () => {
-    const oldState = {
-      OtherController: {},
-      PreferencesController: {
-        identities: {
-          [ADDRESS_1]: {
-            name: NAME_1,
-            address: '',
-          },
-          [ADDRESS_2]: {
-            name: '',
-            address: ADDRESS_2,
-          },
-        },
-      },
+    const oldStorage = {
+      meta: { version: 106 },
+      data: oldData,
     };
 
-    const transformedState = await migrate({
-      meta: { version: oldVersion },
-      data: oldState,
-    });
+    const newStorage = await migrate(oldStorage);
 
-    expect(transformedState.data).toEqual(oldState);
+    expect(newStorage.data.AccountTracker).toStrictEqual({
+      accountsByChainId: {
+        '0x1': {
+          '0xAccount1': { address: '0xAccount1', balance: '0x400' },
+        },
+        '0x2': {
+          '0xAccount4': { address: '0xAccount4', balance: '0x400' },
+        },
+        '0x4': {
+          '0xAccount3': { address: '0xAccount3', balance: '0x400' },
+        },
+      },
+    });
   });
 });

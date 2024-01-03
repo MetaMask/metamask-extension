@@ -41,13 +41,14 @@ describe('Security Provider Banner Alert', () => {
       />,
     );
 
+    expect(getByText('[seeDetails]')).toBeInTheDocument();
     expect(getByText(mockTitle)).toBeInTheDocument();
     expect(getByText(mockDescription)).toBeInTheDocument();
     expect(container.querySelector('.disclosure')).toBeInTheDocument();
   });
 
-  it('should not render disclosure component if no details were provided', () => {
-    const { container } = renderWithProvider(
+  it('should render disclosure component if no details were provided', () => {
+    const { container, getByText } = renderWithProvider(
       <SecurityProviderBannerAlert
         description={mockDescription}
         provider={SecurityProvider.Blockaid}
@@ -56,6 +57,10 @@ describe('Security Provider Banner Alert', () => {
       />,
     );
 
-    expect(container.querySelector('.disclosure')).not.toBeInTheDocument();
+    expect(container).toMatchSnapshot();
+    expect(getByText('[seeDetails]')).toBeInTheDocument();
+    expect(getByText(mockTitle)).toBeInTheDocument();
+    expect(getByText(mockDescription)).toBeInTheDocument();
+    expect(container.querySelector('.disclosure')).toBeInTheDocument();
   });
 });

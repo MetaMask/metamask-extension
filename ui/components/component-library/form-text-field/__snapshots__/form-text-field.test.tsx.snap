@@ -3,7 +3,7 @@
 exports[`FormTextField should render correctly 1`] = `
 <div>
   <div
-    class="box mm-form-text-field box--display-flex box--flex-direction-column"
+    class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column"
   >
     <div
       class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"

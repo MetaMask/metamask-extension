@@ -1,16 +1,22 @@
-import { cloneDeep, isEmpty } from 'lodash';
-import { FALLBACK_VARIATION } from '../lib/AccountIdentitiesPetnamesBridge';
-import { PreferencesControllerState } from '../controllers/preferences';
-
-type VersionedData = {
-  meta: { version: number };
-  data: Record<string, unknown>;
-};
+import { cloneDeep } from 'lodash';
+import { hasProperty, isObject } from '@metamask/utils';
 
 export const version = 107;
 
+interface AccountBalance {
+  address: string;
+  balance: string;
+}
+
+interface AccountTrackerControllerState {
+  accountsByChainId: Record<string, Record<string, AccountBalance>>;
+  accounts: Record<string, AccountBalance>;
+  currentBlockGasLimit: string;
+  currentBlockGasLimitByChainId: Record<string, string>;
+}
+
 /**
- * Copy all account identity entries from PreferencesController to NameController.
+ * Migrates state from the now removed CachedBalancesController to the AccountTrackerController and formats it accordingly.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -18,61 +24,64 @@ export const version = 107;
  * @param originalVersionedData.data - The persisted MetaMask state, keyed by controller.
  * @returns Updated versioned MetaMask extension state.
  */
-export async function migrate(
-  originalVersionedData: VersionedData,
-): Promise<VersionedData> {
+export async function migrate(originalVersionedData: {
+  meta: { version: number };
+  data: Record<string, unknown>;
+}) {
   const versionedData = cloneDeep(originalVersionedData);
   versionedData.meta.version = version;
-  transformState(versionedData.data);
+  versionedData.data = transformState(versionedData.data);
   return versionedData;
 }
 
-function transformState(state: Record<string, any>) {
-  const identities: PreferencesControllerState['identities'] =
-    state?.PreferencesController?.identities ?? {};
-
-  const names = state?.NameController?.names?.ethereumAddress ?? {};
-
-  if (isEmpty(Object.keys(identities))) {
-    return;
+function transformState(state: Record<string, unknown>) {
+  if (
+    !hasProperty(state, 'CachedBalancesController') ||
+    !isObject(state.CachedBalancesController) ||
+    !hasProperty(state.CachedBalancesController, 'cachedBalances') ||
+    !isObject(state.CachedBalancesController.cachedBalances) ||
+    !hasProperty(state, 'AccountTracker') ||
+    !isObject(state.AccountTracker)
+  ) {
+    return state;
   }
 
-  let hasChanges = false;
+  if (!state.AccountTracker.accountsByChainId) {
+    state.AccountTracker.accountsByChainId = {};
+  }
 
-  for (const address of Object.keys(identities)) {
-    const accountEntry = identities[address];
+  const accountTrackerControllerState =
+    state.AccountTracker as unknown as AccountTrackerControllerState;
 
-    const normalizedAddress = address.toLowerCase();
-    const nameEntry = names[normalizedAddress] ?? {};
-    const petnameExists = Boolean(nameEntry[FALLBACK_VARIATION]?.name);
+  const cachedBalances = state.CachedBalancesController
+    .cachedBalances as Record<string, Record<string, string>>;
 
-    // Ignore if petname already set, or if account entry is missing name or address.
-    if (
-      petnameExists ||
-      !accountEntry.name?.length ||
-      !accountEntry.address?.length ||
-      !normalizedAddress?.length
-    ) {
-      continue;
+  Object.keys(cachedBalances).forEach((chainId) => {
+    if (!accountTrackerControllerState.accountsByChainId[chainId]) {
+      accountTrackerControllerState.accountsByChainId[chainId] = {};
     }
 
-    names[normalizedAddress] = nameEntry;
+    Object.keys(cachedBalances[chainId]).forEach((accountAddress) => {
+      // if the account is already in the accountsByChainId state, don't overwrite it
+      if (
+        accountTrackerControllerState.accountsByChainId[chainId][
+          accountAddress
+        ] === undefined
+      ) {
+        const balance = cachedBalances[chainId][accountAddress];
+        accountTrackerControllerState.accountsByChainId[chainId][
+          accountAddress
+        ] = {
+          address: accountAddress,
+          balance,
+        };
+      }
+    });
+  });
 
-    nameEntry[FALLBACK_VARIATION] = {
-      name: accountEntry.name,
-      sourceId: null,
-      proposedNames: {},
-    };
+  delete state.CachedBalancesController;
 
-    hasChanges = true;
-  }
+  state.AccountTracker = accountTrackerControllerState;
 
-  if (hasChanges) {
-    state.NameController = {
-      ...state.NameController,
-      names: {
-        ethereumAddress: names,
-      },
-    };
-  }
+  return state;
 }
