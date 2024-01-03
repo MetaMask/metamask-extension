@@ -259,7 +259,7 @@ describe('AbstractPetnamesBridge', () => {
       expect(bridge.updateSourceEntry).toHaveBeenCalledTimes(1);
       expect(bridge.updateSourceEntry).toHaveBeenCalledWith(
         ChangeType.ADDED,
-        createPetnameEntry(NAME_MOCK),
+        createPetnameEntry(ADDRESS_MOCK, NAME_MOCK),
       );
     });
 
