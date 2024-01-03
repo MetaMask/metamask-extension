@@ -32,7 +32,7 @@ describe('Test Snap Name Lookup', function () {
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
-        let windowHandles = await driver.waitUntilXWindowHandles(
+        const windowHandles = await driver.waitUntilXWindowHandles(
           3,
           1000,
           10000,
