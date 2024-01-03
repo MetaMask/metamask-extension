@@ -4272,19 +4272,15 @@
   "snapAccountCreated": {
     "message": "Account created"
   },
-  "snapAccountRemovalFailedDescription": {
-    "message": "$1 didn't manage to remove this account for you.",
-    "description": "$1 is the snap name"
-  },
-  "snapAccountCreationFailedDescription": {
-    "message": "$1 didn't manage to create an account for you.",
-    "description": "$1 is the snap name"
-  },
   "snapAccountCreatedDescription": {
     "message": "Your new account is ready to use!"
   },
   "snapAccountCreationFailed": {
     "message": "Account creation failed"
+  },
+  "snapAccountCreationFailedDescription": {
+    "message": "$1 didn't manage to create an account for you.",
+    "description": "$1 is the snap name"
   },
   "snapAccountRedirectFinishSigningTitle": {
     "message": "Finish signing"
@@ -4294,6 +4290,10 @@
   },
   "snapAccountRemovalFailed": {
     "message": "Account removal failed"
+  },
+  "snapAccountRemovalFailedDescription": {
+    "message": "$1 didn't manage to remove this account for you.",
+    "description": "$1 is the snap name"
   },
   "snapAccountRemoved": {
     "message": "Account removed"

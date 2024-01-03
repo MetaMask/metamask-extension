@@ -968,7 +968,7 @@ export default class MetamaskController extends EventEmitter {
         'PhishingController:test',
         'PhishingController:maybeUpdateState',
         'KeyringController:getAccounts',
-        'SubjectMetadataController:getSubjectMetadata'
+        'SubjectMetadataController:getSubjectMetadata',
       ],
     });
 
