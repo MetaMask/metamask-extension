@@ -3497,26 +3497,27 @@ export default class MetamaskController extends EventEmitter {
       // Scan accounts and apply checks
       const ethQuery = new EthQuery(this.provider);
       const accounts = await this.keyringController.getAccounts();
-      let emptyAccountsCounter = 0;
+      let count = accounts.length;
+      let address = accounts[count - 1];
+      let emptyAccounts = [];
+      const numEmptyToScan = 10;
 
-      for (
-        let index = accounts.length - 1;
-        emptyAccountsCounter < 10;
-        index++
-      ) {
-        let address = accounts[index];
+      for (; ; count++) {
         const isAccountEmpty = await this.isAccountEmpty(address, ethQuery);
-
-        if (isAccountEmpty) {
-          emptyAccountsCounter += 1;
-          if (index !== 0) {
-            await this.removeAccount(address);
-          }
-        } else {
-          emptyAccountsCounter = 0;
-          ({ addedAccountAddress: address } =
-            await this.keyringController.addNewAccount(index + 1));
+        isAccountEmpty ? emptyAccounts.push(address) : (emptyAccounts = []);
+        if (emptyAccounts.length === numEmptyToScan) {
+          break;
         }
+
+        ({ addedAccountAddress: address } =
+          await this.keyringController.addNewAccount(count));
+      }
+
+      // Leave initial account if everything was empty
+      const start = count === numEmptyToScan ? 1 : 0;
+
+      for (let i = start; i < emptyAccounts.length; i++) {
+        await this.removeAccount(emptyAccounts[i]);
       }
 
       // This must be set as soon as possible to communicate to the
@@ -3535,10 +3536,10 @@ export default class MetamaskController extends EventEmitter {
 
   async isAccountEmpty(address, ethQuery) {
     const balance = await this.getBalance(address, ethQuery);
-    const nonce = await this.getNonce(address, ethQuery);
+    // TODO: const nonce = await this.getNonce(address, ethQuery);
 
     // Check if account has no balance and nonce is 0
-    if (balance === '0x0' && nonce === '0x0') {
+    if (balance === '0x0' /* && nonce === '0x0' */) {
       // Check for tokens
       await this.detectTokensController.detectNewTokens({
         selectedAddress: address,
