@@ -44,24 +44,20 @@ class Bundler {
     estimateUserOperationGas(userOperation, entrypoint) {
         return __awaiter(this, void 0, void 0, function* () {
             log('Estimating gas', { url: __classPrivateFieldGet(this, _Bundler_url, "f"), userOperation, entrypoint });
-            const response = yield __classPrivateFieldGet(this, _Bundler_instances, "m", _Bundler_query).call(this, 'eth_estimateUserOperationGas', [
-                userOperation,
-                entrypoint,
-            ]);
+            const response = yield __classPrivateFieldGet(this, _Bundler_instances, "m", _Bundler_query).call(this, 'eth_estimateUserOperationGas', [userOperation, entrypoint]);
             log('Estimated gas', { response });
             return response;
         });
     }
     /**
      * Retrieve the receipt for a user operation.
-     * Returns `null` or `undefined` if the user operation is still pending.
      * @param hash - The hash of the user operation.
-     * @returns The receipt for the user operation.
+     * @returns The receipt for the user operation, or `undefined` if the user operation is pending.
      */
     getUserOperationReceipt(hash) {
         return __awaiter(this, void 0, void 0, function* () {
             log('Getting user operation receipt', { url: __classPrivateFieldGet(this, _Bundler_url, "f"), hash });
-            return (yield __classPrivateFieldGet(this, _Bundler_instances, "m", _Bundler_query).call(this, 'eth_getUserOperationReceipt', [hash]));
+            return yield __classPrivateFieldGet(this, _Bundler_instances, "m", _Bundler_query).call(this, 'eth_getUserOperationReceipt', [hash]);
         });
     }
     /**

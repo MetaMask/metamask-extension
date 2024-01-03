@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.validateSignUserOperationResponse = exports.validateUpdateUserOperationResponse = exports.validatePrepareUserOperationResponse = exports.validateAddUserOperationOptions = exports.validateAddUserOperationRequest = void 0;
+const transaction_controller_1 = require("@metamask/transaction-controller");
 const utils_1 = require("@metamask/utils");
 const superstruct_1 = require("superstruct");
 const constants_1 = require("../constants");
@@ -35,6 +36,17 @@ function validateAddUserOperationOptions(options) {
             updateUserOperation: (0, superstruct_1.func)(),
             signUserOperation: (0, superstruct_1.func)(),
         }),
+        swaps: (0, superstruct_1.optional)((0, superstruct_1.object)({
+            approvalTxId: (0, superstruct_1.optional)((0, superstruct_1.string)()),
+            destinationTokenAddress: (0, superstruct_1.optional)((0, superstruct_1.string)()),
+            destinationTokenDecimals: (0, superstruct_1.optional)((0, superstruct_1.number)()),
+            destinationTokenSymbol: (0, superstruct_1.optional)((0, superstruct_1.string)()),
+            estimatedBaseFee: (0, superstruct_1.optional)((0, superstruct_1.string)()),
+            sourceTokenSymbol: (0, superstruct_1.optional)((0, superstruct_1.string)()),
+            swapMetaData: (0, superstruct_1.optional)((0, superstruct_1.object)()),
+            swapTokenValue: (0, superstruct_1.optional)((0, superstruct_1.string)()),
+        })),
+        type: (0, superstruct_1.optional)((0, superstruct_1.enums)(Object.values(transaction_controller_1.TransactionType))),
     });
     validate(options, ValidOptions, 'Invalid options to add user operation');
 }

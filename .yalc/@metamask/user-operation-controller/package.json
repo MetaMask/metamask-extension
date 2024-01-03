@@ -31,13 +31,13 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@metamask/approval-controller": "^5.0.0",
+    "@metamask/approval-controller": "^5.1.0",
     "@metamask/base-controller": "^4.0.0",
-    "@metamask/controller-utils": "^6.1.0",
+    "@metamask/controller-utils": "^8.0.0",
     "@metamask/eth-query": "^4.0.0",
     "@metamask/gas-fee-controller": "^11.0.0",
     "@metamask/network-controller": "^17.0.0",
-    "@metamask/polling-controller": "^2.0.0",
+    "@metamask/polling-controller": "^3.0.0",
     "@metamask/transaction-controller": "^18.3.0",
     "@metamask/utils": "^8.2.0",
     "ethereumjs-util": "^7.0.10",
@@ -47,10 +47,10 @@
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "@metamask/approval-controller": "^5.0.0",
+    "@metamask/approval-controller": "^5.1.0",
     "@metamask/gas-fee-controller": "^11.0.0",
     "@metamask/network-controller": "^17.0.0",
-    "@metamask/polling-controller": "^2.0.0",
+    "@metamask/polling-controller": "^3.0.0",
     "@metamask/transaction-controller": "^18.3.0"
   },
   "engines": {
@@ -60,5 +60,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "yalcSig": "c99663a93d0da3a9167adf120d1fc95b"
+  "yalcSig": "27e3870b8e7174c94bfb29664eadc38e"
 }

@@ -11,11 +11,12 @@ const types_1 = require("../types");
  * @returns The equivalent transaction metadata object.
  */
 function getTransactionMetadata(metadata) {
-    var _a;
-    const { actualGasCost, actualGasUsed, baseFeePerGas, chainId, error: rawError, origin, transactionHash, id, time, transactionParams, transactionType, userFeeLevel, userOperation, } = metadata;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
+    const { actualGasCost, actualGasUsed, baseFeePerGas, chainId, error: rawError, origin, transactionHash, id, swapsMetadata, time, transactionParams, transactionType, userFeeLevel, userOperation, } = metadata;
     if (!transactionParams) {
         return undefined;
     }
+    // effectiveGasPrice = actualGasCost / actualGasUsed
     const effectiveGasPrice = actualGasCost && actualGasUsed
         ? (0, ethereumjs_util_1.addHexPrefix)(new ethereumjs_util_1.BN((0, ethereumjs_util_1.stripHexPrefix)(actualGasCost), 16)
             .div(new ethereumjs_util_1.BN((0, ethereumjs_util_1.stripHexPrefix)(actualGasUsed), 16))
@@ -40,35 +41,34 @@ function getTransactionMetadata(metadata) {
     }[metadata.status];
     const gas = addHex(userOperation.preVerificationGas, userOperation.verificationGasLimit, userOperation.callGasLimit);
     const hasPaymaster = userOperation.paymasterAndData !== constants_1.EMPTY_BYTES;
-    const maxFeePerGas = hasPaymaster ? '0x0' : userOperation.maxFeePerGas;
+    const maxFeePerGas = hasPaymaster ? constants_1.VALUE_ZERO : userOperation.maxFeePerGas;
     const maxPriorityFeePerGas = hasPaymaster
-        ? '0x0'
+        ? constants_1.VALUE_ZERO
         : userOperation.maxPriorityFeePerGas;
     const nonce = userOperation.nonce === constants_1.EMPTY_BYTES ? undefined : userOperation.nonce;
     const txParams = Object.assign(Object.assign({}, transactionParams), { from: userOperation.sender, gas,
         nonce,
         maxFeePerGas,
         maxPriorityFeePerGas });
-    // Since the user operations only support EIP-1559, we won't need this.
+    // User operations only support EIP-1559 gas fee properties.
     delete txParams.gasPrice;
-    return {
-        baseFeePerGas: (_a = baseFeePerGas) !== null && _a !== void 0 ? _a : undefined,
-        chainId: chainId,
-        error,
-        hash: transactionHash !== null && transactionHash !== void 0 ? transactionHash : undefined,
-        id,
-        isUserOperation: true,
-        origin,
+    const swaps = {
+        approvalTxId: (_a = swapsMetadata === null || swapsMetadata === void 0 ? void 0 : swapsMetadata.approvalTxId) !== null && _a !== void 0 ? _a : undefined,
+        destinationTokenAddress: (_b = swapsMetadata === null || swapsMetadata === void 0 ? void 0 : swapsMetadata.destinationTokenAddress) !== null && _b !== void 0 ? _b : undefined,
+        destinationTokenDecimals: (_c = swapsMetadata === null || swapsMetadata === void 0 ? void 0 : swapsMetadata.destinationTokenDecimals) !== null && _c !== void 0 ? _c : undefined,
+        destinationTokenSymbol: (_d = swapsMetadata === null || swapsMetadata === void 0 ? void 0 : swapsMetadata.destinationTokenSymbol) !== null && _d !== void 0 ? _d : undefined,
+        estimatedBaseFee: (_e = swapsMetadata === null || swapsMetadata === void 0 ? void 0 : swapsMetadata.estimatedBaseFee) !== null && _e !== void 0 ? _e : undefined,
+        sourceTokenSymbol: (_f = swapsMetadata === null || swapsMetadata === void 0 ? void 0 : swapsMetadata.sourceTokenSymbol) !== null && _f !== void 0 ? _f : undefined,
+        swapMetaData: (_g = swapsMetadata === null || swapsMetadata === void 0 ? void 0 : swapsMetadata.swapMetaData) !== null && _g !== void 0 ? _g : undefined,
+        swapTokenValue: (_h = swapsMetadata === null || swapsMetadata === void 0 ? void 0 : swapsMetadata.swapTokenValue) !== null && _h !== void 0 ? _h : undefined,
+    };
+    return Object.assign({ baseFeePerGas: (_j = baseFeePerGas) !== null && _j !== void 0 ? _j : undefined, chainId: chainId, error, hash: transactionHash !== null && transactionHash !== void 0 ? transactionHash : undefined, id, isUserOperation: true, origin,
         status,
         time,
-        txParams,
-        txReceipt: {
+        txParams, txReceipt: {
             effectiveGasPrice: effectiveGasPrice !== null && effectiveGasPrice !== void 0 ? effectiveGasPrice : undefined,
             gasUsed: actualGasUsed !== null && actualGasUsed !== void 0 ? actualGasUsed : undefined,
-        },
-        type: transactionType !== null && transactionType !== void 0 ? transactionType : undefined,
-        userFeeLevel: userFeeLevel,
-    };
+        }, type: transactionType !== null && transactionType !== void 0 ? transactionType : undefined, userFeeLevel: userFeeLevel }, swaps);
 }
 exports.getTransactionMetadata = getTransactionMetadata;
 /**

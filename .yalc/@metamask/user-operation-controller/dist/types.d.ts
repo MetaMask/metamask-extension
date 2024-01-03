@@ -97,6 +97,8 @@ export declare type UserOperationMetadata = {
     origin: string;
     /** Current status of the user operation. */
     status: UserOperationStatus;
+    /** Metadata specific to swap transactions. */
+    swapsMetadata: SwapsMetadata | null;
     /** Timestamp of when the user operation was created. */
     time: number;
     /** Hash of the transaction that submitted the user operation to the entrypoint. */
@@ -243,5 +245,24 @@ export declare type UserOperationReceipt = {
         /** Hash of the confirmed transaction. */
         transactionHash: string;
     };
+};
+/** Information specific to user operations created from swap transactions. */
+export declare type SwapsMetadata = {
+    /** ID of the associated approval transaction. */
+    approvalTxId: string | null;
+    /** Address of the destination token. */
+    destinationTokenAddress: string | null;
+    /** Number of decimals of the destination token. */
+    destinationTokenDecimals: number | null;
+    /** Symbol of the destination token. */
+    destinationTokenSymbol: string | null;
+    /** Estimated base fee of the swap. */
+    estimatedBaseFee: string | null;
+    /** Symbol of the source token. */
+    sourceTokenSymbol: string | null;
+    /** Untyped raw metadata values. */
+    swapMetaData: Record<string, never> | null;
+    /** Value of the token being swapped. */
+    swapTokenValue: string | null;
 };
 //# sourceMappingURL=types.d.ts.map

@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@metamask/user-operation-controller": {
-      "signature": "c99663a93d0da3a9167adf120d1fc95b",
+      "signature": "27e3870b8e7174c94bfb29664eadc38e",
       "file": true
     },
     "simple-smart-account": {
@@ -10,8 +10,9 @@
       "file": true
     },
     "@metamask/transaction-controller": {
-      "signature": "d4d692944a04b604dbfdbefe60061479",
-      "file": true
+      "signature": "b1374e8565b7cee6003e6c794d96f391",
+      "file": true,
+      "replaced": "patch:@metamask/transaction-controller@npm%3A18.3.0#~/.yarn/patches/@metamask-transaction-controller-npm-18.3.0-134200017c.patch"
     },
     "@account-abstraction/bundler": {
       "signature": "bdc66878ab02d1570a7dcf720d31549a",

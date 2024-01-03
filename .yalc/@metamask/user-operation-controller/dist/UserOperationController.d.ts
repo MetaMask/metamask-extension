@@ -4,13 +4,14 @@ import type { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { BaseController } from '@metamask/base-controller';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
 import type { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
-import { type TransactionMeta, type TransactionParams } from '@metamask/transaction-controller';
+import { type TransactionMeta, type TransactionParams, type TransactionType } from '@metamask/transaction-controller';
 import EventEmitter from 'events';
 import type { Patch } from 'immer';
 import type { SmartContractAccount, UserOperationMetadata } from './types';
 declare const controllerName = "UserOperationController";
 declare type Events = {
     'transaction-updated': [metadata: TransactionMeta];
+    'user-operation-added': [metadata: UserOperationMetadata];
     'user-operation-confirmed': [metadata: UserOperationMetadata];
     'user-operation-failed': [metadata: UserOperationMetadata, error: Error];
     [key: `${string}:confirmed`]: [metadata: UserOperationMetadata];
@@ -36,6 +37,7 @@ export declare type UserOperationControllerActions = GetUserOperationState | Net
 export declare type UserOperationControllerEvents = UserOperationStateChange;
 export declare type UserOperationControllerMessenger = RestrictedControllerMessenger<typeof controllerName, UserOperationControllerActions, UserOperationControllerEvents, UserOperationControllerActions['type'], UserOperationControllerEvents['type']>;
 export declare type UserOperationControllerOptions = {
+    entrypoint: string;
     getGasFeeEstimates: () => Promise<GasFeeState>;
     interval?: number;
     messenger: UserOperationControllerMessenger;
@@ -48,11 +50,23 @@ export declare type AddUserOperationRequest = {
     to?: string;
     value?: string;
 };
+export declare type AddUserOperationSwapOptions = {
+    approvalTxId?: string;
+    destinationTokenAddress?: string;
+    destinationTokenDecimals?: number;
+    destinationTokenSymbol?: string;
+    estimatedBaseFee?: string;
+    sourceTokenSymbol?: string;
+    swapMetaData?: Record<string, unknown>;
+    swapTokenValue?: string;
+};
 export declare type AddUserOperationOptions = {
     networkClientId: string;
     origin: string;
     requireApproval?: boolean;
     smartContractAccount: SmartContractAccount;
+    swaps?: AddUserOperationSwapOptions;
+    type?: TransactionType;
 };
 export declare type AddUserOperationResponse = {
     id: string;
@@ -69,11 +83,12 @@ export declare class UserOperationController extends BaseController<typeof contr
      * Construct a UserOperationController instance.
      *
      * @param options - Controller options.
+     * @param options.entrypoint - Address of the entrypoint contract.
      * @param options.getGasFeeEstimates - Callback to get gas fee estimates.
      * @param options.messenger - Restricted controller messenger for the user operation controller.
      * @param options.state - Initial state to set on the controller.
      */
-    constructor({ getGasFeeEstimates, messenger, state, }: UserOperationControllerOptions);
+    constructor({ entrypoint, getGasFeeEstimates, messenger, state, }: UserOperationControllerOptions);
     /**
      * Create and submit a user operation.
      *
@@ -99,6 +114,8 @@ export declare class UserOperationController extends BaseController<typeof contr
      * @param options.origin - Origin of the user operation, such as the hostname of a dApp.
      * @param options.requireApproval - Whether to require user approval before submitting the user operation. Defaults to true.
      * @param options.smartContractAccount - Smart contract abstraction to provide the contract specific values such as call data and nonce.
+     * @param options.swaps - Swap metadata to record with the user operation.
+     * @param options.type - Type of the transaction.
      */
     addUserOperationFromTransaction(transaction: TransactionParams, options: AddUserOperationOptions): Promise<AddUserOperationResponse>;
     startPollingByNetworkClientId(networkClientId: string): string;

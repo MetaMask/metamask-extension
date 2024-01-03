@@ -147,6 +147,7 @@ function getSuggestedGasFees(request) {
         try {
             const { gasFeeEstimates, gasEstimateType } = yield getGasFeeEstimates();
             if (gasEstimateType === gas_fee_controller_1.GAS_ESTIMATE_TYPES.FEE_MARKET) {
+                /* istanbul ignore next */
                 const { medium: { suggestedMaxPriorityFeePerGas, suggestedMaxFeePerGas } = {}, } = gasFeeEstimates;
                 if (suggestedMaxPriorityFeePerGas && suggestedMaxFeePerGas) {
                     const values = {

@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateGas = void 0;
 const controller_utils_1 = require("@metamask/controller-utils");
 const ethereumjs_util_1 = require("ethereumjs-util");
-const constants_1 = require("../constants");
 const Bundler_1 = require("../helpers/Bundler");
 const logger_1 = require("../logger");
 const log = (0, logger_1.createModuleLogger)(logger_1.projectLogger, 'gas');
@@ -24,8 +23,9 @@ const GAS_ESTIMATE_MULTIPLIER = 1.5;
  * Populates the gas properties for a user operation.
  * @param metadata - The metadata for the user operation.
  * @param prepareResponse - The prepare response from the smart contract account.
+ * @param entrypoint - Address of the entrypoint contract.
  */
-function updateGas(metadata, prepareResponse) {
+function updateGas(metadata, prepareResponse, entrypoint) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const { userOperation } = metadata;
@@ -43,10 +43,10 @@ function updateGas(metadata, prepareResponse) {
         }
         const payload = Object.assign(Object.assign({}, userOperation), { callGasLimit: '0x1', preVerificationGas: '0x1', verificationGasLimit: '0x1' });
         const bundler = new Bundler_1.Bundler(metadata.bundlerUrl);
-        const estimate = yield bundler.estimateUserOperationGas(payload, constants_1.ENTRYPOINT);
+        const estimate = yield bundler.estimateUserOperationGas(payload, entrypoint);
         userOperation.callGasLimit = normalizeGasEstimate(estimate.callGasLimit);
         userOperation.preVerificationGas = normalizeGasEstimate(estimate.preVerificationGas);
-        userOperation.verificationGasLimit = normalizeGasEstimate((_a = estimate.verificationGasLimit) !== null && _a !== void 0 ? _a : estimate.verificationGas);
+        userOperation.verificationGasLimit = normalizeGasEstimate(((_a = estimate.verificationGasLimit) !== null && _a !== void 0 ? _a : estimate.verificationGas));
         log('Using buffered gas values from bundler estimate', {
             callGasLimit: userOperation.callGasLimit,
             preVerificationGas: userOperation.preVerificationGas,

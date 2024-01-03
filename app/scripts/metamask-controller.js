@@ -134,10 +134,6 @@ import {
 
 import { UserOperationController } from '@metamask/user-operation-controller';
 
-///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
-///: END:ONLY_INCLUDE_IF
-
 import {
   TransactionController,
   TransactionStatus,
@@ -145,6 +141,7 @@ import {
 } from '@metamask/transaction-controller';
 
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -265,7 +262,7 @@ import SwapsController from './controllers/swaps';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
-import { previousValueComparator } from './lib/util';
+import { addHexPrefix, previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
@@ -1738,11 +1735,10 @@ export default class MetamaskController extends EventEmitter {
     ///: END:ONLY_INCLUDE_IF
 
     this.userOperationController = new UserOperationController({
-      blockTracker: this.blockTracker,
+      entrypoint: '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b',
       getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
         this.gasFeeController,
       ),
-      getTransactions: () => this.txController.getTransactions(),
       messenger: this.controllerMessenger.getRestricted({
         name: 'UserOperationController',
         allowedActions: [
@@ -1750,9 +1746,31 @@ export default class MetamaskController extends EventEmitter {
           'NetworkController:getNetworkClientById',
         ],
       }),
-      provider: this.provider,
       state: initState.UserOperationController,
     });
+
+    this.userOperationController.hub.on(
+      'user-operation-added',
+      (userOperationMetadata) => {
+        const transactionMeta = this.txController.state.transactions.find(
+          (tx) => tx.id === userOperationMetadata.id,
+        );
+
+        if (!transactionMeta) {
+          return;
+        }
+
+        if (transactionMeta.type === TransactionType.swap) {
+          this.txController.hub.emit('transaction-new-swap', {
+            transactionMeta,
+          });
+        } else if (transactionMeta.type === TransactionType.swapApproval) {
+          this.txController.hub.emit('transaction-new-swap-approval', {
+            transactionMeta,
+          });
+        }
+      },
+    );
 
     this.userOperationController.hub.on('transaction-updated', (txMeta) => {
       txMeta.txParams.from = this.preferencesController.getSelectedAddress();
@@ -4168,10 +4186,16 @@ export default class MetamaskController extends EventEmitter {
 
   // Used by swaps.
   async addTransactionAndWaitForPublish(txParams, options) {
-    const { transactionMeta, waitForSubmit } =
-      await this._addTransactionOrUserOperation(txParams, options);
+    const { waitForHash } = await this._addTransactionOrUserOperation(
+      txParams,
+      options,
+    );
 
-    await waitForSubmit();
+    const transactionHash = await waitForHash();
+
+    const transactionMeta = this.txController.state.transactions.find(
+      (tx) => tx.hash === transactionHash,
+    );
 
     return transactionMeta;
   }
@@ -4212,15 +4236,27 @@ export default class MetamaskController extends EventEmitter {
         simpleAccountFactory: '0x4aFf835038b16dccDb1670103C4877A8F93E5219',
       });
 
+      const swaps = options.swaps?.meta;
+
+      if (swaps?.type) {
+        delete swaps.type;
+      }
+
       const result =
         await this.userOperationController.addUserOperationFromTransaction(
-          txParams,
+          {
+            ...txParams,
+            maxFeePerGas: addHexPrefix(txParams.maxFeePerGas),
+            maxPriorityFeePerGas: addHexPrefix(txParams.maxPriorityFeePerGas),
+          },
           {
             networkClientId:
               this.networkController.state.selectedNetworkClientId,
             origin: options.origin,
             requireApproval: options.requireApproval,
             smartContractAccount,
+            type: options.type,
+            swaps,
           },
         );
 

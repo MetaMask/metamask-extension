@@ -22,7 +22,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _UserOperationController_instances, _UserOperationController_getGasFeeEstimates, _UserOperationController_pendingUserOperationTracker, _UserOperationController_addUserOperation, _UserOperationController_prepareAndSubmitUserOperation, _UserOperationController_waitForConfirmation, _UserOperationController_createMetadata, _UserOperationController_prepareUserOperation, _UserOperationController_addPaymasterData, _UserOperationController_approveUserOperation, _UserOperationController_signUserOperation, _UserOperationController_submitUserOperation, _UserOperationController_failUserOperation, _UserOperationController_createEmptyUserOperation, _UserOperationController_updateMetadata, _UserOperationController_updateTransaction, _UserOperationController_addPendingUserOperationTrackerListeners, _UserOperationController_requestApproval, _UserOperationController_getTransactionType, _UserOperationController_getProvider, _UserOperationController_updateUserOperationAfterApproval, _UserOperationController_regenerateUserOperation;
+var _UserOperationController_instances, _UserOperationController_entrypoint, _UserOperationController_getGasFeeEstimates, _UserOperationController_pendingUserOperationTracker, _UserOperationController_addUserOperation, _UserOperationController_prepareAndSubmitUserOperation, _UserOperationController_waitForConfirmation, _UserOperationController_createMetadata, _UserOperationController_prepareUserOperation, _UserOperationController_addPaymasterData, _UserOperationController_approveUserOperation, _UserOperationController_signUserOperation, _UserOperationController_submitUserOperation, _UserOperationController_failUserOperation, _UserOperationController_createEmptyUserOperation, _UserOperationController_updateMetadata, _UserOperationController_updateTransaction, _UserOperationController_addPendingUserOperationTrackerListeners, _UserOperationController_requestApproval, _UserOperationController_getTransactionType, _UserOperationController_getProvider, _UserOperationController_updateUserOperationAfterApproval, _UserOperationController_regenerateUserOperation;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserOperationController = void 0;
 const base_controller_1 = require("@metamask/base-controller");
@@ -57,11 +57,12 @@ class UserOperationController extends base_controller_1.BaseController {
      * Construct a UserOperationController instance.
      *
      * @param options - Controller options.
+     * @param options.entrypoint - Address of the entrypoint contract.
      * @param options.getGasFeeEstimates - Callback to get gas fee estimates.
      * @param options.messenger - Restricted controller messenger for the user operation controller.
      * @param options.state - Initial state to set on the controller.
      */
-    constructor({ getGasFeeEstimates, messenger, state, }) {
+    constructor({ entrypoint, getGasFeeEstimates, messenger, state, }) {
         super({
             name: controllerName,
             metadata: stateMetadata,
@@ -69,9 +70,11 @@ class UserOperationController extends base_controller_1.BaseController {
             state: Object.assign(Object.assign({}, getDefaultState()), state),
         });
         _UserOperationController_instances.add(this);
+        _UserOperationController_entrypoint.set(this, void 0);
         _UserOperationController_getGasFeeEstimates.set(this, void 0);
         _UserOperationController_pendingUserOperationTracker.set(this, void 0);
         this.hub = new events_1.default();
+        __classPrivateFieldSet(this, _UserOperationController_entrypoint, entrypoint, "f");
         __classPrivateFieldSet(this, _UserOperationController_getGasFeeEstimates, getGasFeeEstimates, "f");
         __classPrivateFieldSet(this, _UserOperationController_pendingUserOperationTracker, new PendingUserOperationTracker_1.PendingUserOperationTracker({
             getUserOperations: () => (0, lodash_1.cloneDeep)(Object.values(this.state.userOperations)),
@@ -110,6 +113,8 @@ class UserOperationController extends base_controller_1.BaseController {
      * @param options.origin - Origin of the user operation, such as the hostname of a dApp.
      * @param options.requireApproval - Whether to require user approval before submitting the user operation. Defaults to true.
      * @param options.smartContractAccount - Smart contract abstraction to provide the contract specific values such as call data and nonce.
+     * @param options.swaps - Swap metadata to record with the user operation.
+     * @param options.type - Type of the transaction.
      */
     addUserOperationFromTransaction(transaction, options) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -129,12 +134,12 @@ class UserOperationController extends base_controller_1.BaseController {
     }
 }
 exports.UserOperationController = UserOperationController;
-_UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationController_pendingUserOperationTracker = new WeakMap(), _UserOperationController_instances = new WeakSet(), _UserOperationController_addUserOperation = function _UserOperationController_addUserOperation(request, options) {
+_UserOperationController_entrypoint = new WeakMap(), _UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationController_pendingUserOperationTracker = new WeakMap(), _UserOperationController_instances = new WeakSet(), _UserOperationController_addUserOperation = function _UserOperationController_addUserOperation(request, options) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, logger_1.projectLogger)('Adding user operation', { request, options });
-        const { networkClientId, origin, transaction } = options;
+        const { networkClientId, origin, transaction, swaps } = options;
         const { chainId, provider } = yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_getProvider).call(this, networkClientId);
-        const metadata = yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_createMetadata).call(this, chainId, origin, transaction);
+        const metadata = yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_createMetadata).call(this, chainId, origin, transaction, swaps);
         const cache = {
             chainId,
             metadata,
@@ -180,6 +185,7 @@ _UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationContr
         try {
             yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_prepareUserOperation).call(this, cache);
             yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_addPaymasterData).call(this, metadata, smartContractAccount);
+            this.hub.emit('user-operation-added', metadata);
             if (requireApproval !== false) {
                 resultCallbacks = yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_approveUserOperation).call(this, cache);
             }
@@ -207,8 +213,8 @@ _UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationContr
             });
         });
     });
-}, _UserOperationController_createMetadata = function _UserOperationController_createMetadata(chainId, origin, transaction) {
-    var _a;
+}, _UserOperationController_createMetadata = function _UserOperationController_createMetadata(chainId, origin, transaction, swaps) {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     return __awaiter(this, void 0, void 0, function* () {
         const metadata = {
             actualGasCost: null,
@@ -221,9 +227,21 @@ _UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationContr
             id: (0, uuid_1.v1)(),
             origin,
             status: types_1.UserOperationStatus.Unapproved,
+            swapsMetadata: swaps
+                ? {
+                    approvalTxId: (_a = swaps.approvalTxId) !== null && _a !== void 0 ? _a : null,
+                    destinationTokenAddress: (_b = swaps.destinationTokenAddress) !== null && _b !== void 0 ? _b : null,
+                    destinationTokenDecimals: (_c = swaps.destinationTokenDecimals) !== null && _c !== void 0 ? _c : null,
+                    destinationTokenSymbol: (_d = swaps.destinationTokenSymbol) !== null && _d !== void 0 ? _d : null,
+                    estimatedBaseFee: (_e = swaps.estimatedBaseFee) !== null && _e !== void 0 ? _e : null,
+                    sourceTokenSymbol: (_f = swaps.sourceTokenSymbol) !== null && _f !== void 0 ? _f : null,
+                    swapMetaData: (_g = swaps.swapMetaData) !== null && _g !== void 0 ? _g : null,
+                    swapTokenValue: (_h = swaps.swapTokenValue) !== null && _h !== void 0 ? _h : null,
+                }
+                : null,
             time: Date.now(),
             transactionHash: null,
-            transactionParams: (_a = transaction) !== null && _a !== void 0 ? _a : null,
+            transactionParams: (_j = transaction) !== null && _j !== void 0 ? _j : null,
             transactionType: null,
             userFeeLevel: null,
             userOperation: __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_createEmptyUserOperation).call(this, transaction),
@@ -234,11 +252,12 @@ _UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationContr
     });
 }, _UserOperationController_prepareUserOperation = function _UserOperationController_prepareUserOperation(cache) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { chainId, metadata, options: { smartContractAccount }, provider, request, transaction, } = cache;
+        const { chainId, metadata, options, provider, request, transaction } = cache;
         const { data, to, value } = request;
         const { id, transactionParams, userOperation } = metadata;
+        const { smartContractAccount } = options;
         (0, logger_1.projectLogger)('Preparing user operation', { id });
-        const transactionType = yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_getTransactionType).call(this, transaction, provider);
+        const transactionType = yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_getTransactionType).call(this, transaction, provider, options);
         metadata.transactionType = transactionType !== null && transactionType !== void 0 ? transactionType : null;
         (0, logger_1.projectLogger)('Determined transaction type', transactionType);
         yield (0, gas_fees_1.updateGasFees)({
@@ -263,7 +282,7 @@ _UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationContr
         userOperation.sender = sender;
         userOperation.signature = dummySignature !== null && dummySignature !== void 0 ? dummySignature : constants_1.EMPTY_BYTES;
         metadata.bundlerUrl = bundlerUrl;
-        yield (0, gas_1.updateGas)(metadata, response);
+        yield (0, gas_1.updateGas)(metadata, response, __classPrivateFieldGet(this, _UserOperationController_entrypoint, "f"));
         __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_updateMetadata).call(this, metadata);
     });
 }, _UserOperationController_addPaymasterData = function _UserOperationController_addPaymasterData(metadata, smartContractAccount) {
@@ -282,8 +301,7 @@ _UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationContr
     return __awaiter(this, void 0, void 0, function* () {
         (0, logger_1.projectLogger)('Requesting approval');
         const { metadata } = cache;
-        const { resultCallbacks, value: rawValue } = yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_requestApproval).call(this, metadata);
-        const value = rawValue;
+        const { resultCallbacks, value } = yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_requestApproval).call(this, metadata);
         const updatedTransaction = value === null || value === void 0 ? void 0 : value.txMeta;
         if (updatedTransaction) {
             yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_updateUserOperationAfterApproval).call(this, cache, updatedTransaction);
@@ -312,7 +330,7 @@ _UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationContr
         const { userOperation } = metadata;
         (0, logger_1.projectLogger)('Submitting user operation', userOperation);
         const bundler = new Bundler_1.Bundler(metadata.bundlerUrl);
-        const hash = yield bundler.sendUserOperation(userOperation, constants_1.ENTRYPOINT);
+        const hash = yield bundler.sendUserOperation(userOperation, __classPrivateFieldGet(this, _UserOperationController_entrypoint, "f"));
         metadata.hash = hash;
         metadata.status = types_1.UserOperationStatus.Submitted;
         __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_updateMetadata).call(this, metadata);
@@ -383,10 +401,13 @@ _UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationContr
             expectsResult: true,
         }, true));
     });
-}, _UserOperationController_getTransactionType = function _UserOperationController_getTransactionType(transaction, provider) {
+}, _UserOperationController_getTransactionType = function _UserOperationController_getTransactionType(transaction, provider, options) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!transaction) {
             return undefined;
+        }
+        if (options.type) {
+            return options.type;
         }
         const ethQuery = new eth_query_1.default(provider);
         const result = (0, transaction_controller_1.determineTransactionType)(transaction, ethQuery);
@@ -407,7 +428,7 @@ _UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationContr
         const usingPaymaster = userOperation.paymasterAndData !== constants_1.EMPTY_BYTES;
         const updatedMaxFeePerGas = (0, ethereumjs_util_1.addHexPrefix)(updatedTransaction.txParams.maxFeePerGas);
         const updatedMaxPriorityFeePerGas = (0, ethereumjs_util_1.addHexPrefix)(updatedTransaction.txParams.maxPriorityFeePerGas);
-        let refreshUserOperation = false;
+        let regenerateUserOperation = false;
         const previousMaxFeePerGas = userOperation.maxFeePerGas;
         const previousMaxPriorityFeePerGas = userOperation.maxPriorityFeePerGas;
         if (previousMaxFeePerGas !== updatedMaxFeePerGas ||
@@ -420,21 +441,21 @@ _UserOperationController_getGasFeeEstimates = new WeakMap(), _UserOperationContr
             });
             userOperation.maxFeePerGas = updatedMaxFeePerGas;
             userOperation.maxPriorityFeePerGas = updatedMaxPriorityFeePerGas;
-            refreshUserOperation = usingPaymaster;
+            regenerateUserOperation = usingPaymaster;
         }
         const previousData = (_a = request.data) !== null && _a !== void 0 ? _a : constants_1.EMPTY_BYTES;
         const updatedData = (_b = updatedTransaction.txParams.data) !== null && _b !== void 0 ? _b : constants_1.EMPTY_BYTES;
         if (previousData !== updatedData) {
             (0, logger_1.projectLogger)('Data updated during approval', { previousData, updatedData });
-            refreshUserOperation = true;
+            regenerateUserOperation = true;
         }
-        const previousValue = (_c = request.value) !== null && _c !== void 0 ? _c : '0x0';
-        const updatedValue = (_d = updatedTransaction.txParams.value) !== null && _d !== void 0 ? _d : '0x0';
+        const previousValue = (_c = request.value) !== null && _c !== void 0 ? _c : constants_1.VALUE_ZERO;
+        const updatedValue = (_d = updatedTransaction.txParams.value) !== null && _d !== void 0 ? _d : constants_1.VALUE_ZERO;
         if (previousValue !== updatedValue) {
             (0, logger_1.projectLogger)('Value updated during approval', { previousValue, updatedValue });
-            refreshUserOperation = true;
+            regenerateUserOperation = true;
         }
-        if (refreshUserOperation) {
+        if (regenerateUserOperation) {
             const updatedRequest = Object.assign(Object.assign({}, request), { data: updatedData, maxFeePerGas: updatedMaxFeePerGas, maxPriorityFeePerGas: updatedMaxPriorityFeePerGas, value: updatedValue });
             yield __classPrivateFieldGet(this, _UserOperationController_instances, "m", _UserOperationController_regenerateUserOperation).call(this, Object.assign(Object.assign({}, cache), { request: updatedRequest }));
         }

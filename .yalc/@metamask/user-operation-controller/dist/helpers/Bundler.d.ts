@@ -7,9 +7,9 @@ export declare type BundlerEstimateUserOperationGasResponse = {
     /** Estimated gas required to compensate the bundler for any pre-verification. */
     preVerificationGas: number | string;
     /** Estimated gas required to verify the user operation. */
-    verificationGas: number | string;
+    verificationGas?: number | string;
     /** Estimated gas required to verify the user operation. */
-    verificationGasLimit: number | string;
+    verificationGasLimit?: number | string;
     /** Estimated gas required for the execution of the user operation. */
     callGasLimit: number | string;
 };
@@ -29,9 +29,8 @@ export declare class Bundler {
     estimateUserOperationGas(userOperation: UserOperation, entrypoint: string): Promise<BundlerEstimateUserOperationGasResponse>;
     /**
      * Retrieve the receipt for a user operation.
-     * Returns `null` or `undefined` if the user operation is still pending.
      * @param hash - The hash of the user operation.
-     * @returns The receipt for the user operation.
+     * @returns The receipt for the user operation, or `undefined` if the user operation is pending.
      */
     getUserOperationReceipt(hash?: string): Promise<UserOperationReceipt | undefined>;
     /**

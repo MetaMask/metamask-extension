@@ -11,6 +11,7 @@ const {
 } = require('../helpers');
 
 const FixtureBuilder = require('../fixture-builder');
+const { buildQuote, reviewQuote } = require('../tests/swaps/shared');
 
 async function createDappTransaction(driver, transaction) {
   await openDapp(
@@ -108,6 +109,37 @@ describe('User Operations', function () {
           convertETHToHexGwei(1),
           true,
         );
+
+        await openConfirmedTransaction(driver);
+
+        await expectTransactionDetail(driver, 0, '0'); // Nonce
+      },
+    );
+  });
+
+  it('from swap', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        title: this.test.fullTitle(),
+        useBundler: true,
+        ganacheOptions: {
+          hardfork: 'london',
+        },
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        await buildQuote(driver, {
+          amount: 0.001,
+          swapTo: 'USDC',
+        });
+        await reviewQuote(driver, {
+          amount: 0.001,
+          swapFrom: 'TESTETH',
+          swapTo: 'USDC',
+        });
+        await driver.clickElement({ text: 'Swap', tag: 'button' });
+        await driver.clickElement({ text: 'Close', tag: 'button' });
 
         await openConfirmedTransaction(driver);
 
