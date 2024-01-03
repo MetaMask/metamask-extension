@@ -19,7 +19,7 @@ describe('Test Snap getEntropy', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect
+        // navigate to test snaps page and connect to get-entropy snap
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
         const snapButton = await driver.findElement('#connectGetEntropySnap');
