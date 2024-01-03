@@ -472,7 +472,6 @@ export default class ConfirmTransactionBase extends Component {
                   userAcknowledgedGasMissing={userAcknowledgedGasMissing}
                 />
                 <FeeDetailsComponent
-                  supportsEIP1559={this.supportsEIP1559}
                   useCurrencyRateCheck={useCurrencyRateCheck}
                   txData={txData}
                 />
