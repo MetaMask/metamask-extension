@@ -1,10 +1,10 @@
 import React, {
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useReducer,
   useState,
-  useContext,
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,14 +28,12 @@ import { Size, TextColor } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  getMemoizedUnapprovedTemplatedConfirmations,
-  getUnapprovedTxCount,
   getApprovalFlows,
-  getTotalUnapprovedCount,
-  useSafeChainsListValidationSelector,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+  getMemoizedUnapprovedTemplatedConfirmations,
   getSnapsMetadata,
-  ///: END:ONLY_INCLUDE_IF
+  getTotalUnapprovedCount,
+  getUnapprovedTxCount,
+  useSafeChainsListValidationSelector,
 } from '../../../selectors';
 import NetworkDisplay from '../../../components/app/network-display/network-display';
 import Callout from '../../../components/ui/callout';
@@ -51,9 +49,9 @@ import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/cons
 import { DAY } from '../../../../shared/constants/time';
 import ConfirmationFooter from './components/confirmation-footer';
 import {
-  getTemplateValues,
   getTemplateAlerts,
   getTemplateState,
+  getTemplateValues,
 } from './templates';
 
 // TODO(rekmarks): This component and all of its sub-components should probably
@@ -280,6 +278,9 @@ export default function ConfirmationPage({
   const isSnapCustomUIDialog = SNAP_CUSTOM_UI_DIALOG.includes(
     pendingConfirmation?.type,
   );
+  console.log(
+    `PENDING CONFIRMATION: ${JSON.stringify(pendingConfirmation, null, 2)}`,
+  );
   const isSnapPrompt =
     pendingConfirmation?.type === ApprovalType.SnapDialogPrompt;
   let useSnapHeader = isSnapDialog;
@@ -492,6 +493,13 @@ export default function ConfirmationPage({
       handleSubmitResult(submitResult);
     }
   };
+
+  if (
+    pendingConfirmation.type ===
+    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.preinstalledSnap
+  ) {
+    history.push(DEFAULT_ROUTE);
+  }
 
   return (
     <div className="confirmation-page">

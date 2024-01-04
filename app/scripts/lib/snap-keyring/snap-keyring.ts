@@ -5,16 +5,16 @@ import type { SnapController } from '@metamask/snaps-controllers';
 import browser from 'webextension-polyfill';
 import { SnapId } from '@metamask/snaps-sdk';
 import {
+  MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventAccountType,
 } from '../../../../shared/constants/metametrics';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
 import { IconName } from '../../../../ui/components/component-library/icon';
 import { isBlockedUrl } from './utils/isBlockedUrl';
-import { showSuccess, showError } from './utils/showResult';
+import { showError, showSuccess } from './utils/showResult';
 import { SnapKeyringBuilderMessenger } from './types';
 
 /**
@@ -189,7 +189,21 @@ export const snapKeyringBuilder = (
                 MetaMetricsEventName.AddSnapAccountSuccessViewed,
               );
 
-              if (!preinstalledSnap) {
+              if (preinstalledSnap) {
+                // For preinstalled snaps redirect to account page for newly added account
+                controllerMessenger.call('ApprovalController:endFlow', {
+                  id: addAccountApprovalId,
+                });
+                await controllerMessenger.call(
+                  'ApprovalController:addRequest',
+                  {
+                    origin: snapId,
+                    type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.preinstalledSnap,
+                  },
+                  false,
+                );
+              } else {
+                // Show success dialog for added account
                 await showSuccess(
                   controllerMessenger,
                   snapId,
