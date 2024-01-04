@@ -23,7 +23,7 @@ describe('Test Snap Management', function () {
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
 
-        // find and scroll to the correct card and click first
+        // find and scroll to the notifications card and click first
         const snapButton = await driver.findElement('#connectnotifications');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);

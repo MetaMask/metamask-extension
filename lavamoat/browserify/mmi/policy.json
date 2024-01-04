@@ -919,17 +919,9 @@
         "console.info": true
       },
       "packages": {
-        "@metamask/approval-controller>@metamask/base-controller": true,
         "@metamask/approval-controller>nanoid": true,
-        "eth-rpc-errors": true
-      }
-    },
-    "@metamask/approval-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
+        "@metamask/base-controller": true,
+        "@metamask/providers>@metamask/rpc-errors": true
       }
     },
     "@metamask/approval-controller>nanoid": {
