@@ -10,6 +10,7 @@ import {
   importKey,
   EncryptionKey,
 } from '@metamask/browser-passworder';
+import type { Json } from '@metamask/utils';
 
 /**
  * A factory function for the encrypt method of the browser-passworder library,
@@ -57,7 +58,7 @@ const encryptWithDetailFactory =
  * @param iterations - The number of iterations to use for the PBKDF2 algorithm.
  * @returns A function that checks if the vault was encrypted with the given number of iterations.
  */
-const isVaultUpdatedFactory = (iterations: number) => async (vault: string) =>
+const isVaultUpdatedFactory = (iterations: number) => (vault: string) =>
   isVaultUpdated(vault, {
     algorithm: 'PBKDF2',
     params: {
@@ -76,10 +77,13 @@ const isVaultUpdatedFactory = (iterations: number) => async (vault: string) =>
  */
 export const encryptorFactory = (iterations: number) => ({
   encrypt: encryptFactory(iterations),
-  encryptWithKey,
+  // @ts-expect-error: Known type mismatch
+  encryptWithKey: (key: unknown, object: Json) => encryptWithKey(key, object),
   encryptWithDetail: encryptWithDetailFactory(iterations),
   decrypt,
-  decryptWithKey,
+  decryptWithKey: (key: unknown, encryptedString: string) =>
+    // @ts-expect-error: Known type mismatch
+    decryptWithKey(key, encryptedString),
   decryptWithDetail,
   keyFromPassword,
   isVaultUpdated: isVaultUpdatedFactory(iterations),

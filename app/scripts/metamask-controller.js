@@ -306,6 +306,7 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
 import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
+import { MetamaskWallet } from './metamask-wallet';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -328,6 +329,8 @@ export default class MetamaskController extends EventEmitter {
     const { isFirstMetaMaskControllerSetup } = opts;
 
     this.defaultMaxListeners = 20;
+
+    this.wallet = new MetamaskWallet();
 
     this.sendUpdate = debounce(
       this.privateSendUpdate.bind(this),
