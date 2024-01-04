@@ -208,7 +208,7 @@ export const SnapUIRenderer = ({
     getInterfaceState(state, interfaceId),
   );
 
-  const [internalState, setInternalState] = useState(interfaceState);
+  const [internalState, setInternalState] = useState(interfaceState ?? {});
 
   const handleEvent = ({ eventType, componentName, parentForm, value }) => {
     const snapRequestDebounced = debounce(
