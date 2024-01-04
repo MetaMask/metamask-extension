@@ -206,7 +206,7 @@ export const TokenListItem = ({
                   tooltipInnerClassName="multichain-token-list-item__tooltip"
                 >
                   <Text
-                    as="div"
+                    as="span"
                     fontWeight={FontWeight.Medium}
                     variant={TextVariant.bodyMd}
                     ellipsis
@@ -222,7 +222,7 @@ export const TokenListItem = ({
                 </Tooltip>
               ) : (
                 <Text
-                  as="div"
+                  as="span"
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   ellipsis
