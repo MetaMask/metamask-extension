@@ -62,6 +62,7 @@ describe('User Operations', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .with4337Account()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test.fullTitle(),
@@ -75,7 +76,7 @@ describe('User Operations', function () {
         await unlockWallet(driver);
 
         await createDappTransaction(driver, {
-          from: DEFAULT_FIXTURE_ACCOUNT,
+          from: '0x03f522D61308F19aE950DFf351179434bAb665E8',
           to: DEFAULT_FIXTURE_ACCOUNT,
           value: convertETHToHexGwei(1),
           data: '0x',
@@ -93,7 +94,7 @@ describe('User Operations', function () {
   it('from send transaction', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().with4337Account().build(),
         title: this.test.fullTitle(),
         useBundler: true,
         ganacheOptions: {
@@ -120,7 +121,7 @@ describe('User Operations', function () {
   it('from swap', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().build(),
+        fixtures: new FixtureBuilder().with4337Account().build(),
         title: this.test.fullTitle(),
         useBundler: true,
         ganacheOptions: {

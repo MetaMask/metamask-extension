@@ -87,8 +87,6 @@ import {
 import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
 
-import { SimpleSmartContractAccount } from 'simple-smart-contract-account';
-
 import { AccountsController } from '@metamask/accounts-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -262,7 +260,7 @@ import SwapsController from './controllers/swaps';
 import MetaMetricsController from './controllers/metametrics';
 import { segment } from './lib/segment';
 import createMetaRPCHandler from './lib/createMetaRPCHandler';
-import { addHexPrefix, previousValueComparator } from './lib/util';
+import { previousValueComparator } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import { hardwareKeyringBuilderFactory } from './lib/hardware-keyring-builder-factory';
 import EncryptionPublicKeyController from './controllers/encryption-public-key';
@@ -290,6 +288,11 @@ import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-b
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
+import {
+  addDappTransaction,
+  addTransactionAndWaitForPublish,
+  addTransactionOnly,
+} from './lib/transaction/util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1835,7 +1838,10 @@ export default class MetamaskController extends EventEmitter {
         return []; // changing this is a breaking change
       },
       // tx signing
-      processTransaction: this.newUnapprovedTransaction.bind(this),
+      processTransaction: (transactionParams, dappRequest) =>
+        addDappTransaction(
+          this.getAddTransactionRequest({ transactionParams, dappRequest }),
+        ),
       // msg signing
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       processEthSignMessage: this.signatureController.newUnsignedMessage.bind(
@@ -3030,9 +3036,23 @@ export default class MetamaskController extends EventEmitter {
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
       getNextNonce: this.getNextNonce.bind(this),
-      addTransaction: this.addTransaction.bind(this),
-      addTransactionAndWaitForPublish:
-        this.addTransactionAndWaitForPublish.bind(this),
+      addTransaction: (transactionParams, transactionOptions) =>
+        addTransactionOnly(
+          this.getAddTransactionRequest({
+            transactionParams,
+            transactionOptions,
+          }),
+        ),
+      addTransactionAndWaitForPublish: (
+        transactionParams,
+        transactionOptions,
+      ) =>
+        addTransactionAndWaitForPublish(
+          this.getAddTransactionRequest({
+            transactionParams,
+            transactionOptions,
+          }),
+        ),
       createTransactionEventFragment:
         createTransactionEventFragmentWithTxId.bind(
           null,
@@ -4156,136 +4176,20 @@ export default class MetamaskController extends EventEmitter {
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
-  /**
-   * Called when a Dapp suggests a new tx to be signed.
-   * this wrapper needs to exist so we can provide a reference to
-   *  "newUnapprovedTransaction" before "txController" is instantiated
-   *
-   * @param {object} txParams - The transaction parameters.
-   * @param {object} [req] - The original request, containing the origin.
-   */
-  async newUnapprovedTransaction(txParams, req) {
-    // Options are passed explicitly as an additional security measure
-    // to ensure approval is not disabled
-    const { waitForHash } = await this._addTransactionOrUserOperation(
-      txParams,
-      {
-        actionId: req.id,
-        method: req.method,
-        origin: req.origin,
-        // This is the default behaviour but specified here for clarity
-        requireApproval: true,
-        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        securityAlertResponse: req.securityAlertResponse,
-        ///: END:ONLY_INCLUDE_IF
-      },
-    );
-
-    return await waitForHash();
-  }
-
-  // Used by swaps.
-  async addTransactionAndWaitForPublish(txParams, options) {
-    const { waitForHash } = await this._addTransactionOrUserOperation(
-      txParams,
-      options,
-    );
-
-    const transactionHash = await waitForHash();
-
-    const transactionMeta = this.txController.state.transactions.find(
-      (tx) => tx.hash === transactionHash,
-    );
-
-    return transactionMeta;
-  }
-
-  // Used by send.
-  async addTransaction(txParams, options) {
-    const { transactionMeta, waitForSubmit } =
-      await this._addTransactionOrUserOperation(txParams, options);
-
-    waitForSubmit().catch(() => {
-      // Not concerned with result
-    });
-
-    return transactionMeta;
-  }
-
-  async _addTransactionOrUserOperation(txParams, options) {
-    const simpleAccountOwner = process.env.SIMPLE_ACCOUNT_OWNER;
-    const currentAccount = this.preferencesController.getSelectedAddress();
-
-    const isSCA =
-      simpleAccountOwner &&
-      currentAccount.toLowerCase() === simpleAccountOwner.toLowerCase();
-
-    if (isSCA) {
-      const privateKey = await this.keyringController.exportAccount(
-        process.env.PASSWORD,
-        currentAccount,
-      );
-
-      const smartContractAccount = new SimpleSmartContractAccount({
-        bundler: 'http://localhost:3000/rpc',
-        entrypoint: '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b',
-        owner: simpleAccountOwner,
-        privateKey,
-        provider: this.provider,
-        salt: process.env.SIMPLE_ACCOUNT_SALT,
-        simpleAccountFactory: '0x4aFf835038b16dccDb1670103C4877A8F93E5219',
-      });
-
-      const swaps = options.swaps?.meta;
-
-      if (swaps?.type) {
-        delete swaps.type;
-      }
-
-      const result =
-        await this.userOperationController.addUserOperationFromTransaction(
-          {
-            ...txParams,
-            maxFeePerGas: addHexPrefix(txParams.maxFeePerGas),
-            maxPriorityFeePerGas: addHexPrefix(txParams.maxPriorityFeePerGas),
-          },
-          {
-            networkClientId:
-              this.networkController.state.selectedNetworkClientId,
-            origin: options.origin,
-            requireApproval: options.requireApproval,
-            smartContractAccount,
-            type: options.type,
-            swaps,
-          },
-        );
-
-      this.userOperationController.startPollingByNetworkClientId(
-        this.networkController.state.selectedNetworkClientId,
-      );
-
-      const transactionMeta = this.txController.state.transactions.find(
-        (tx) => tx.id === result.id,
-      );
-
-      return {
-        waitForSubmit: result.hash,
-        waitForHash: result.transactionHash,
-        transactionMeta,
-      };
-    }
-
-    // Options are passed explicitly as an additional security measure
-    // to ensure approval is not disabled
-    const { transactionMeta, result } = await this.txController.addTransaction(
-      txParams,
-      options,
-    );
-
+  getAddTransactionRequest({
+    transactionParams,
+    transactionOptions,
+    dappRequest,
+  }) {
     return {
-      transactionMeta,
-      waitForSubmit: () => result,
-      waitForHash: () => result,
+      dappRequest,
+      networkClientId: this.networkController.state.selectedNetworkClientId,
+      provider: this.provider,
+      selectedAccount: this.accountsController.getSelectedAccount(),
+      transactionController: this.txController,
+      transactionOptions,
+      transactionParams,
+      userOperationController: this.userOperationController,
     };
   }
 

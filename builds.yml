@@ -263,8 +263,18 @@ env:
   - MULTICHAIN: ''
   - NETWORK_ACCOUNT_DND: ''
   - PAYMASTER_ADDRESS: null
-  - SIMPLE_ACCOUNT_OWNER: null
-  - SIMPLE_ACCOUNT_SALT: null
+
+  ###
+  # Account Abstraction (EIP-4337)
+  ###
+  - EIP_4337_FORCE: null
+  - EIP_4337_BUNDLER: null
+  - EIP_4337_ENTRYPOINT: null
+  - EIP_4337_SIMPLE_ACCOUNT_OWNER: null
+  - EIP_4337_SIMPLE_ACCOUNT_SALT: null
+  - EIP_4337_SIMPLE_ACCOUNT_PRIVATE_KEY: null
+  - EIP_4337_SIMPLE_ACCOUNT_FACTORY: null
+
   ###
   # Meta variables
   ###
