@@ -3828,7 +3828,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:23.0.0":
+"@metamask/assets-controllers@npm:^23.0.0":
   version: 23.0.0
   resolution: "@metamask/assets-controllers@npm:23.0.0"
   dependencies:
