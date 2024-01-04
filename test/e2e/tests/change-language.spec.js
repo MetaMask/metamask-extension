@@ -90,7 +90,6 @@ describe('Settings - general tab, validate the change language functionality:', 
           selectors.localeSelect,
         );
         await dropdownElement.click();
-        console.log(' dropdownElement:', dropdownElement);
         const options = await dropdownElement.findElements(
           By.tagName('option'),
         );
@@ -101,7 +100,6 @@ describe('Settings - general tab, validate the change language functionality:', 
         const islabelTextChanged = await driver.isElementPresent(
           selectors.currentLanguageLabel,
         );
-        console.log(islabelTextChanged);
         assert.equal(islabelTextChanged, true, 'Language did not change');
       },
     );
