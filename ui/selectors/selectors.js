@@ -1199,7 +1199,7 @@ export const getUnreadNotificationsCount = createSelector(
 
 export const getInterfaces = (state) => state.metamask.interfaces;
 
-export const getInteraceState = (state, interfaceId) =>
+export const getInterfaceState = (state, interfaceId) =>
   state.metamask.interfaces[interfaceId].state;
 
 ///: END:ONLY_INCLUDE_IF

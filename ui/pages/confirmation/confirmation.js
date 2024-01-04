@@ -26,7 +26,7 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getTargetSubjectMetadata,
   getRequestState,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   getUnapprovedTemplatedConfirmations,
   getUnapprovedTxCount,
   getApprovalFlows,
@@ -273,7 +273,7 @@ export default function ConfirmationPage({
     targetSubjectMetadata &&
     getSnapName(pendingConfirmation?.origin, targetSubjectMetadata);
   const isSnapInterface = pendingConfirmation?.type === 'snap_interface';
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const INPUT_STATE_CONFIRMATIONS = [
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
@@ -300,7 +300,7 @@ export default function ConfirmationPage({
           {
             ///: BEGIN:ONLY_INCLUDE_IF(snaps)
             snapName: isSnapDialog && snapName,
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
             ...pendingConfirmation,
           },
           t,
@@ -321,7 +321,7 @@ export default function ConfirmationPage({
     isSnapDialog,
     snapName,
     isSnapInterface,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   ]);
 
   useEffect(() => {
@@ -534,7 +534,7 @@ export default function ConfirmationPage({
                 </Callout>
               ))
           }
-          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
           style={
             isSnapDialog
               ? {
@@ -550,7 +550,7 @@ export default function ConfirmationPage({
                 }
               : {}
           }
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
           onSubmit={handleSubmit}
           onCancel={templatedValues.onCancel}
           submitText={templatedValues.submitText}

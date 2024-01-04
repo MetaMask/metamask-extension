@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { isComponent, ButtonTypes } from '@metamask/snaps-sdk';
-import { UserInputEventTypes } from '@metamask/snaps-utils';
+import {
+  isComponent,
+  ButtonTypes,
+  UserInputEventTypes,
+} from '@metamask/snaps-sdk';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce } from 'lodash';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
@@ -20,7 +24,7 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../ui/box';
 import { getSnapName } from '../../../../helpers/utils/util';
 import {
-  getInteraceState,
+  getInterfaceState,
   getTargetSubjectMetadata,
 } from '../../../../selectors';
 import { Text } from '../../../component-library';
@@ -162,7 +166,7 @@ export const UI_MAPPING = {
       type: element.inputType,
       onChange: (event) =>
         handleEvent({
-          eventType: UserInputEventTypes.InputChangeEvent,
+          eventType: 'stateChange',
           componentName: element.name,
           parentForm: form,
           value: event.target.value,
@@ -201,7 +205,7 @@ export const SnapUIRenderer = ({
   const snapName = getSnapName(snapId, targetSubjectMetadata);
 
   const interfaceState = useSelector((state) =>
-    getInteraceState(state, interfaceId),
+    getInterfaceState(state, interfaceId),
   );
 
   const [internalState, setInternalState] = useState(interfaceState);
@@ -235,10 +239,11 @@ export const SnapUIRenderer = ({
       (state) => dispatch(updateInterfaceState(interfaceId, state)),
       200,
     );
+    if (eventType !== 'stateChange') {
+      snapRequestDebounced();
+    }
 
-    snapRequestDebounced();
-
-    if (eventType === UserInputEventTypes.InputChangeEvent) {
+    if (eventType === 'stateChange') {
       const state = parentForm
         ? {
             ...internalState,
