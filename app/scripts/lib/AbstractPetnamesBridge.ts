@@ -162,7 +162,7 @@ export abstract class AbstractPetnamesBridge {
             value,
             type,
             name: entry.name,
-            sourceId: entry.sourceId,
+            sourceId: entry.sourceId ?? undefined,
             variation,
           });
         }

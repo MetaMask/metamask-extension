@@ -1,4 +1,5 @@
 import {
+  FALLBACK_VARIATION,
   NameController,
   NameControllerState,
   NameType,
@@ -7,10 +8,7 @@ import {
   PreferencesController,
   PreferencesControllerState,
 } from '../controllers/preferences';
-import {
-  AccountIdentitiesPetnamesBridge,
-  FALLBACK_VARIATION,
-} from './AccountIdentitiesPetnamesBridge';
+import { AccountIdentitiesPetnamesBridge } from './AccountIdentitiesPetnamesBridge';
 import { PetnameEntry } from './AbstractPetnamesBridge';
 
 const ADDRESS_MOCK = '0xabc';
@@ -27,7 +25,7 @@ function createPetnameEntry(address: string, name: string): PetnameEntry {
     value: address,
     name,
     type: NameType.ETHEREUM_ADDRESS,
-    sourceId: null,
+    sourceId: undefined,
     variation: FALLBACK_VARIATION,
   };
 }
@@ -67,9 +65,9 @@ function createNameStateWithPetname(
   };
 }
 
-const EMPTY_PREFERENCES_STATE: PreferencesControllerState = {
+const EMPTY_PREFERENCES_STATE = {
   identities: {},
-};
+} as PreferencesControllerState;
 
 /**
  * Creates PreferencesControllerState containing a single identity with the given name and address.

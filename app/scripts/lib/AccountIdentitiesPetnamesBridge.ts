@@ -1,4 +1,8 @@
-import { NameController, NameType } from '@metamask/name-controller';
+import {
+  FALLBACK_VARIATION,
+  NameController,
+  NameType,
+} from '@metamask/name-controller';
 import {
   PreferencesController,
   AccountIdentityEntry,
@@ -8,8 +12,6 @@ import {
   AbstractPetnamesBridge,
   PetnamesBridgeMessenger,
 } from './AbstractPetnamesBridge';
-
-export const FALLBACK_VARIATION = '*';
 
 /**
  * A petnames bridge that uses the account identities from the preferences controller as the source.
@@ -39,7 +41,7 @@ export class AccountIdentitiesPetnamesBridge extends AbstractPetnamesBridge {
       value: identity.address,
       type: NameType.ETHEREUM_ADDRESS,
       name: identity.name,
-      sourceId: null,
+      sourceId: undefined,
       variation: FALLBACK_VARIATION,
     }));
   }

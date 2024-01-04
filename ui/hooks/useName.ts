@@ -1,4 +1,8 @@
-import { NameEntry, NameType } from '@metamask/name-controller';
+import {
+  FALLBACK_VARIATION,
+  NameEntry,
+  NameType,
+} from '@metamask/name-controller';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { getCurrentChainId, getNames } from '../selectors';
@@ -22,8 +26,6 @@ function getVariationKey(type: string, chainId: string): string {
       return '';
   }
 }
-
-export const FALLBACK_VARIATION = '*';
 
 export function useName(
   value: string,
