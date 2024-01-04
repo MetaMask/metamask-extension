@@ -15,6 +15,19 @@ const selectors = {
   ethOverviewSend: '[data-testid="eth-overview-send"]',
   ensInput: '[data-testid="ens-input"]',
   nftsTab: '[data-testid="home__nfts-tab"]',
+  labelSpanish: { tag: 'span', text: 'Idioma actual' },
+  primaryCurrencyLabel: { tag: 'span', text: 'Moneda principal' },
+  currentLanguageLabel: { tag: 'span', text: 'Current language' },
+  tooltipText: '[data-original-title="Copiar al Portapapeles"]',
+  advanceText: { text: 'Avanceret', tag: 'div' },
+  waterText: '[placeholder="Søg"]',
+  headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
+  buttonText: { css: '[data-testid="auto-lockout-button"]', text: 'Gem' },
+  dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'div' },
+  accountTooltipText: '[data-original-title="क्लिपबोर्ड पर कॉपी करें"]',
+  bridgeTooltipText: '[data-original-title="इस नेटवर्क पर उपलब्ध नहीं है"]',
+  hyperText: { text: 'Tudjon meg többet', tag: 'a' },
+  headerText: { text: 'الإعدادات', tag: 'h3' },
 };
 
 async function changeLanguage({ driver, languageIndex }) {
@@ -28,7 +41,7 @@ async function changeLanguage({ driver, languageIndex }) {
   await options[languageIndex].click();
 }
 
-describe('Settings - general validate the change language functionality', function () {
+describe('Settings - general tab, validate the change language functionality:', function () {
   it('User selects "Español" language and verify that changing the language from the default', async function () {
     const languageIndex = 10;
     await withFixtures(
@@ -44,15 +57,10 @@ describe('Settings - general validate the change language functionality', functi
 
         await changeLanguage({ driver, languageIndex });
         // Validate the label changes
-        const advanceText = await driver.findElement({
-          tag: 'span',
-          text: 'Idioma actual',
-        });
-        assert.equal(
-          await advanceText.getText(),
-          'Idioma Actual',
-          'Language did not change',
+        const isLanguageLabelChanged = await driver.isElementPresent(
+          selectors.labelSpanish,
         );
+        assert.equal(isLanguageLabelChanged, true, 'Language did not change');
       },
     );
   });
@@ -70,15 +78,10 @@ describe('Settings - general validate the change language functionality', functi
       async ({ driver }) => {
         await unlockWallet(driver);
         await changeLanguage({ driver, languageIndex });
-        const advanceText = await driver.findElement({
-          tag: 'span',
-          text: 'Idioma actual',
-        });
-        assert.equal(
-          await advanceText.getText(),
-          'Idioma Actual',
-          'Language did not change',
+        const isLanguageLabelChanged = await driver.isElementPresent(
+          selectors.primaryCurrencyLabel,
         );
+        assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
         await driver.delay(2000);
 
@@ -95,14 +98,11 @@ describe('Settings - general validate the change language functionality', functi
 
         await driver.delay(2000);
 
-        const labelText = await driver.findElement(
-          By.css('.settings-page__content-label'),
+        const islabelTextChanged = await driver.isElementPresent(
+          selectors.currentLanguageLabel,
         );
-        assert.equal(
-          await labelText.getText(),
-          'Current Language',
-          'Language did not change',
-        );
+        console.log(islabelTextChanged);
+        assert.equal(islabelTextChanged, true, 'Language did not change');
       },
     );
   });
@@ -126,24 +126,21 @@ describe('Settings - general validate the change language functionality', functi
         await changeLanguage({ driver, languageIndex });
 
         await driver.refresh();
-        const advanceText = await driver.findElement({
-          tag: 'span',
-          text: 'Idioma actual',
-        });
-        assert.equal(
-          await advanceText.getText(),
-          'Idioma Actual',
-          'Language did not change',
+        const isLanguageLabelChanged = await driver.isElementPresent(
+          selectors.labelSpanish,
         );
+        assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
         await driver.navigate();
 
         await driver.delay(2000);
         // Validating the tooltip
+        const isHeaderTooltipChanged = await driver.isElementPresent(
+          selectors.tooltipText,
+        );
+
         assert.equal(
-          await driver.isElementPresent(
-            '[data-original-title="Copiar al Portapapeles"]',
-          ),
+          isHeaderTooltipChanged,
           true,
           'Language changes is not reflected on the toolTip',
         );
@@ -165,34 +162,38 @@ describe('Settings - general validate the change language functionality', functi
         await unlockWallet(driver);
         await changeLanguage({ driver, languageIndex });
 
-        await driver.clickElement({ text: 'Avanceret', tag: 'div' });
+        await driver.clickElement(selectors.advanceText);
 
         // Confirm that the language change is reflected in search box water text
+        const isWaterTextChanged = await driver.isElementPresent(
+          selectors.waterText,
+        );
+
         assert.equal(
-          await driver.isElementPresent('[placeholder="Søg"]'),
+          isWaterTextChanged,
           true,
           'Water text in the search box does not match with the selected language',
         );
 
         // Confirm that the language change is reflected in headers
+        const isHeaderTextChanged = await driver.isElementPresent(
+          selectors.headerTextDansk,
+        );
 
         assert.equal(
-          await driver.isElementPresent({
-            text: 'Indstillinger',
-            tag: 'h3',
-          }),
+          isHeaderTextChanged,
           true,
           'Language change is not reflected in headers',
         );
 
         // Confirm that the language change is reflected in button
-        const buttonText = await driver.findElement(
-          '[data-testid="auto-lockout-button"]',
+        const isButtonTextChanged = await driver.isElementPresent(
+          selectors.buttonText,
         );
 
         assert.equal(
-          await buttonText.getText(),
-          'Gem',
+          isButtonTextChanged,
+          true,
           'Language change is not reflected in button',
         );
       },
@@ -220,11 +221,11 @@ describe('Settings - general validate the change language functionality', functi
         await driver.clickElement(selectors.ethOverviewSend);
         await driver.fill(selectors.ensInput, 'test');
         // Validate the language change is reflected in the dialog message
+        const isDialogMessageChanged = await driver.isElementPresent(
+          selectors.dialogText,
+        );
         assert.equal(
-          await driver.isElementPresent({
-            text: 'Empfängeradresse ist unzulässig',
-            tag: 'div',
-          }),
+          isDialogMessageChanged,
           true,
           'Language change is not reflected in dialog message',
         );
@@ -251,18 +252,21 @@ describe('Settings - general validate the change language functionality', functi
         await changeLanguage({ driver, languageIndex });
         await driver.clickElement(selectors.appHeaderLogo);
         // Validate the account tooltip
+        const isAccountTooltipChanged = await driver.isElementPresent(
+          selectors.accountTooltipText,
+        );
+
         assert.equal(
-          await driver.isElementPresent(
-            '[data-original-title="क्लिपबोर्ड पर कॉपी करें"]',
-          ),
+          isAccountTooltipChanged,
           true,
           'Language changes is not reflected on the account toolTip',
         );
         // Validate the bridge tooltip
+        const isBridgeTooltipChanged = await driver.isElementPresent(
+          selectors.bridgeTooltipText,
+        );
         assert.equal(
-          await driver.isElementPresent(
-            '[data-original-title="इस नेटवर्क पर उपलब्ध नहीं है"]',
-          ),
+          isBridgeTooltipChanged,
           true,
           'Language changes is not reflected on the bridge toolTip',
         );
@@ -285,12 +289,13 @@ describe('Settings - general validate the change language functionality', functi
         await changeLanguage({ driver, languageIndex });
         await driver.clickElement(selectors.appHeaderLogo);
         await driver.clickElement(selectors.nftsTab);
+
+        const isHyperTextChanged = await driver.isElementPresent(
+          selectors.hyperText,
+        );
         // Validate the hypertext
         assert.equal(
-          await driver.isElementPresent({
-            text: 'Tudjon meg többet',
-            tag: 'a',
-          }),
+          isHyperTextChanged,
           true,
           'Language change is not reflected on hypertext',
         );
@@ -310,12 +315,13 @@ describe('Settings - general validate the change language functionality', functi
       async ({ driver }) => {
         await unlockWallet(driver);
         await changeLanguage({ driver, languageIndex });
+
+        const isHeaderTextChanged = await driver.isElementPresent(
+          selectors.headerText,
+        );
         // Validate the header text
         assert.equal(
-          await driver.isElementPresent({
-            text: 'الإعدادات',
-            tag: 'h3',
-          }),
+          isHeaderTextChanged,
           true,
           'Language change is not reflected in headers',
         );
