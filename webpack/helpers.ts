@@ -45,6 +45,7 @@ export const mergeEnv = (userEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv => {
     env = require('dotenv').parse(rawConfig);
   } catch {
     console.log("No .metamaskrc file found, using default env");
+    env.INFURA_PROJECT_ID = "00000000000000000000000000000000";
   }
 
   env.METAMASK_VERSION = getMetaMaskVersion();
