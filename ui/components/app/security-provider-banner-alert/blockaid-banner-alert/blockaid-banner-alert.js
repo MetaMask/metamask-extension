@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
+import BlockaidPackage from '@blockaid/ppom_release/package.json';
 
 import { Text } from '../../../component-library';
 import {
@@ -92,7 +93,9 @@ function BlockaidBannerAlert({ txData, ...props }) {
     jsonRpcMethod: type,
     jsonRpcParams: JSON.stringify(txParams ?? msgParams),
     classification: reason,
+    blockaidVersion: BlockaidPackage.version,
   };
+
   const jsonData = JSON.stringify(reportData);
 
   const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
