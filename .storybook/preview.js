@@ -3,7 +3,7 @@
 
 Instead, use export const parameters = {}; and export const decorators = []; in your .storybook/preview.js. Addon authors similarly should use such an export in a preview entry file (see Preview entries).
   * */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
