@@ -3924,17 +3924,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/base-controller@npm:4.0.0"
-  dependencies:
-    "@metamask/utils": "npm:^8.2.0"
-    immer: "npm:^9.0.6"
-  checksum: 9e8819289a159ed3b91b1629f273cf33bb4034b872984c15eafcfc07a9ab1ed9b7c27c61839f7ebbfc5c259718f771d6f92362ad3c6a0c2434aecd840e9b239a
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:^4.0.1":
+"@metamask/base-controller@npm:^4.0.0, @metamask/base-controller@npm:^4.0.1":
   version: 4.0.1
   resolution: "@metamask/base-controller@npm:4.0.1"
   dependencies:
