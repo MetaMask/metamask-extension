@@ -1,5 +1,4 @@
-import { NameType } from '@metamask/name-controller';
-import { FALLBACK_VARIATION } from '../lib/AccountIdentitiesPetnamesBridge';
+import { FALLBACK_VARIATION, NameType } from '@metamask/name-controller';
 import { migrate, version } from './108';
 
 const oldVersion = 107;

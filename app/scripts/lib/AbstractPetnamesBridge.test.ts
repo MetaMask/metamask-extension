@@ -27,7 +27,7 @@ function createPetnameEntry(address: string, name: string): PetnameEntry {
     value: address,
     name,
     type: NameType.ETHEREUM_ADDRESS,
-    sourceId: null,
+    sourceId: undefined,
     variation: CHAIN_ID_MOCK,
   };
 }

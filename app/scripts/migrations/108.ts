@@ -1,5 +1,5 @@
 import { cloneDeep, isEmpty } from 'lodash';
-import { FALLBACK_VARIATION } from '../lib/AccountIdentitiesPetnamesBridge';
+import { FALLBACK_VARIATION } from '@metamask/name-controller';
 import { PreferencesControllerState } from '../controllers/preferences';
 
 type VersionedData = {

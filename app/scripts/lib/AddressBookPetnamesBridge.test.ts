@@ -2,6 +2,7 @@ import {
   NameController,
   NameControllerState,
   NameType,
+  SetNameRequest,
 } from '@metamask/name-controller';
 import {
   AddressBookController,
@@ -148,7 +149,7 @@ describe('AddressBookPetnamesBridge', () => {
         name: NAME_MOCK,
         sourceId: 'ens',
         variation: CHAIN_ID_MOCK,
-      });
+      } as SetNameRequest);
     });
 
     it('updates entry when address book entry is updated', () => {
@@ -181,7 +182,7 @@ describe('AddressBookPetnamesBridge', () => {
         name: NAME_2_MOCK,
         sourceId: undefined,
         variation: CHAIN_ID_MOCK,
-      });
+      } as SetNameRequest);
     });
 
     it('deletes entry when address book entry is deleted', () => {
@@ -208,9 +209,9 @@ describe('AddressBookPetnamesBridge', () => {
         value: ADDRESS_MOCK,
         type: NameType.ETHEREUM_ADDRESS,
         name: null,
-        sourceId: null,
+        sourceId: undefined,
         variation: CHAIN_ID_MOCK,
-      });
+      } as SetNameRequest);
     });
   });
 
