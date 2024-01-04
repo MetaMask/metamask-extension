@@ -84,7 +84,6 @@ export class ResultTemplate {
               justifyContent: JustifyContent.center,
               height: BlockSize.Full,
               style: {
-                gap: '16px',
                 alignSelf: AlignItems.stretch,
               },
             },
@@ -132,9 +131,6 @@ export class ResultTemplate {
                   textAlign: TextAlign.Center,
                   flexDirection: FlexDirection.Column,
                   width: BlockSize.Full,
-                  style: {
-                    gap: '16px',
-                  },
                 },
                 children: isSuccess
                   ? processString(message, t('resultPageSuccessDefaultMessage'))
