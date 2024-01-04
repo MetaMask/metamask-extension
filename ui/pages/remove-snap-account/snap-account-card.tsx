@@ -1,13 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {
-  getInternalAccounts,
-  getMetaMaskAccountsOrdered,
-} from '../../selectors';
+import { getMetaMaskAccountsOrdered, mergeAccounts } from '../../selectors';
 import { BlockSize, BorderRadius } from '../../helpers/constants/design-system';
 import { Box } from '../../components/component-library';
 import { AccountListItem } from '../../components/multichain';
-import { mergeAccounts } from '../../components/multichain/account-list-menu/account-list-menu';
 
 // Wrapper component of AccountListItem with proper styling and auto populating information for the selected account
 export const SnapAccountCard = ({
@@ -18,9 +14,7 @@ export const SnapAccountCard = ({
   remove?: boolean;
 }) => {
   const accounts = useSelector(getMetaMaskAccountsOrdered);
-  const internalAccounts = useSelector(getInternalAccounts);
-  // We should stop using mergeAccounts and write a new selector instead
-  const mergedAccounts = mergeAccounts(accounts, internalAccounts);
+  const mergedAccounts = useSelector((state) => mergeAccounts(state, accounts));
   const identity = mergedAccounts.find(
     (account: { address: string }) => account.address === address,
   );

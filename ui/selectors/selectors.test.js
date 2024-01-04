@@ -10,6 +10,7 @@ import {
   OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
 import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
+import { getAccountLabel } from '../helpers/utils/accounts';
 import * as selectors from './selectors';
 
 jest.mock('../../shared/modules/network.utils', () => {
@@ -112,6 +113,36 @@ describe('Selectors', () => {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
         ],
       );
+    });
+  });
+
+  // TODO: (redundant test) Remove this once we update `getMetaMaskIdentities` selector
+  describe('#mergeAccounts', () => {
+    it('returns a list of merged accounts with balances and internal accounts', () => {
+      const accountsWithBalances =
+        selectors.getMetaMaskAccountsOrdered(mockState);
+      const internalAccounts = selectors.getInternalAccounts(mockState);
+      const internalAccountsMap = new Map(
+        internalAccounts.map((acc) => [acc.address, acc]),
+      );
+      const expectedMergedAccounts = accountsWithBalances.map((account) => {
+        const internalAccount = internalAccountsMap.get(account.address);
+        return {
+          ...account,
+          ...internalAccount,
+          name: internalAccount?.metadata?.name || account.name,
+          keyring: internalAccount?.metadata?.keyring,
+          label: internalAccount
+            ? getAccountLabel(
+                internalAccount.metadata?.keyring?.type,
+                internalAccount,
+              )
+            : null,
+        };
+      });
+      expect(
+        selectors.mergeAccounts(mockState, accountsWithBalances),
+      ).toStrictEqual(expectedMergedAccounts);
     });
   });
 

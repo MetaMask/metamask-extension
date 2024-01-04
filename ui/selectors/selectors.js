@@ -101,6 +101,7 @@ import {
   SURVEY_END_TIME,
   SURVEY_START_TIME,
 } from '../helpers/constants/survey';
+import { getAccountLabel } from '../helpers/utils/accounts';
 import {
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -378,6 +379,37 @@ export function getInternalAccountsSortedByKeyring(state) {
       return 1;
     }
     return 0;
+  });
+}
+
+/**
+ * Merges accounts with balances with each corresponding account data from internal accounts
+ *
+ * @param state - redux state
+ * @param accountsWithBalances - list of accounts with balances
+ * @returns merged accounts list with balances and internal account data
+ */
+// TODO: remove this selector once we update getMetaMaskIdentities
+export function mergeAccounts(state, accountsWithBalances) {
+  const internalAccounts = getInternalAccounts(state);
+  const internalAccountsMap = new Map(
+    internalAccounts.map((acc) => [acc.address, acc]),
+  );
+  return accountsWithBalances.map((account) => {
+    const internalAccount = internalAccountsMap.get(account.address);
+    if (internalAccount) {
+      return {
+        ...account,
+        ...internalAccount,
+        name: internalAccount.metadata?.name || account.name,
+        keyring: internalAccount.metadata?.keyring,
+        label: getAccountLabel(
+          internalAccount.metadata?.keyring?.type,
+          internalAccount,
+        ),
+      };
+    }
+    return account;
   });
 }
 
