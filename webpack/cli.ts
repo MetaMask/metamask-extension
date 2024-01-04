@@ -113,7 +113,7 @@ export function generateCli(
     .config()
     // enable ENV parsing, which allows the user to specify webpack options via
     // environment variables prefixed with `MM_`
-    .env('MM')
+    .env('BUNDLE')
     // use the scriptName in --help output
     .scriptName('yarn webpack')
     .example(
