@@ -1,0 +1,9 @@
+.gas-details-item-title {
+  &__estimate {
+    font-weight: 400;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    line-height: inherit;
+  }
+}

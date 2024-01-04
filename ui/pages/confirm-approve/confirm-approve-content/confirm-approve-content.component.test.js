@@ -8,12 +8,7 @@ import ConfirmApproveContent from '.';
 
 const renderComponent = (props) => {
   const store = configureMockStore([])({
-    metamask: {
-      providerConfig: { chainId: '0x0' },
-      preferences: {
-        useNativeCurrencyAsPrimaryCurrency: true,
-      },
-    },
+    metamask: { providerConfig: { chainId: '0x0' } },
   });
   return renderWithProvider(<ConfirmApproveContent {...props} />, store);
 };
@@ -24,6 +19,7 @@ const props = {
   tokenSymbol: 'TestDappNFTs (#1)',
   assetStandard: TokenStandard.ERC721,
   tokenImage: 'https://metamask.github.io/test-dapp/metamask-fox.svg',
+  showCustomizeGasModal: jest.fn(),
   data: '0x095ea7b30000000000000000000000009bc5baf874d2da8d216ae9f137804184ee5afef40000000000000000000000000000000000000000000000000000000000011170',
   toAddress: '0x9bc5baf874d2da8d216ae9f137804184ee5afef4',
   currentCurrency: 'usd',
@@ -78,10 +74,12 @@ describe('ConfirmApproveContent Component', () => {
     ).toBeInTheDocument();
     expect(queryByText(`${props.ethTransactionTotal} ETH`)).toBeInTheDocument();
     expect(queryByText(`$10.00`)).toBeInTheDocument();
+    fireEvent.click(editButtons[0]);
+    expect(props.showCustomizeGasModal).toHaveBeenCalledTimes(1);
 
     expect(queryByText('Nonce')).toBeInTheDocument();
     expect(queryByText('2')).toBeInTheDocument();
-    fireEvent.click(editButtons[0]);
+    fireEvent.click(editButtons[1]);
     expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(1);
 
     const showViewTxDetails = getByText('View full transaction details');
@@ -138,10 +136,12 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('A fee is associated with this request.'),
     ).toBeInTheDocument();
     expect(queryByText(`${props.ethTransactionTotal} ETH`)).toBeInTheDocument();
+    fireEvent.click(editButtons[0]);
+    expect(props.showCustomizeGasModal).toHaveBeenCalledTimes(2);
 
     expect(queryByText('Nonce')).toBeInTheDocument();
     expect(queryByText('2')).toBeInTheDocument();
-    fireEvent.click(editButtons[0]);
+    fireEvent.click(editButtons[1]);
     expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(2);
 
     const showViewTxDetails = getByText('View full transaction details');
@@ -198,10 +198,12 @@ describe('ConfirmApproveContent Component', () => {
       queryByText('A fee is associated with this request.'),
     ).toBeInTheDocument();
     expect(queryByText(`${props.ethTransactionTotal} ETH`)).toBeInTheDocument();
+    fireEvent.click(editButtons[0]);
+    expect(props.showCustomizeGasModal).toHaveBeenCalledTimes(3);
 
     expect(queryByText('Nonce')).toBeInTheDocument();
     expect(queryByText('2')).toBeInTheDocument();
-    fireEvent.click(editButtons[0]);
+    fireEvent.click(editButtons[1]);
     expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(3);
 
     const showViewTxDetails = getByText('View full transaction details');
@@ -255,10 +257,12 @@ describe('ConfirmApproveContent Component', () => {
     ).toBeInTheDocument();
     expect(queryByText(`${props.ethTransactionTotal} ETH`)).toBeInTheDocument();
     expect(queryByText(`$10.00`)).not.toBeInTheDocument();
+    fireEvent.click(editButtons[0]);
+    expect(props.showCustomizeGasModal).toHaveBeenCalledTimes(4);
 
     expect(queryByText('Nonce')).toBeInTheDocument();
     expect(queryByText('2')).toBeInTheDocument();
-    fireEvent.click(editButtons[0]);
+    fireEvent.click(editButtons[1]);
     expect(props.showCustomizeNonceModal).toHaveBeenCalledTimes(4);
 
     const showViewTxDetails = getByText('View full transaction details');

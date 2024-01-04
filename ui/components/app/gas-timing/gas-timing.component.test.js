@@ -16,7 +16,6 @@ describe('Gas timing', () => {
   it('renders nothing when gas is loading', () => {
     // Fails the networkAndAccountSupports1559 check
     const nullGasState = {
-      send: { draftTransactions: {} },
       metamask: {
         gasFeeEstimates: null,
         gasEstimateType: GasEstimateTypes.feeMarket,
@@ -29,18 +28,54 @@ describe('Gas timing', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('renders gas timing time when high estimate is chosen', async () => {
+  it('renders "very likely" when high estimate is chosen', async () => {
     const mockStore = configureMockStore()(mockState);
 
     const props = {
-      maxPriorityFeePerGas: '1000000',
+      maxPriorityFeePerGas: '10',
     };
 
-    const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
+    const { queryByText } = renderWithProvider(
+      <GasTiming {...props} />,
+      mockStore,
+    );
 
     await waitFor(() => {
-      expect(screen.queryByText('Market')).toBeInTheDocument();
-      expect(screen.getByTestId('gas-timing-time')).toBeInTheDocument();
+      expect(queryByText(/Very likely in/u)).toBeInTheDocument();
+    });
+  });
+
+  it('renders "likely" when medium estimate is chosen', async () => {
+    const mockStore = configureMockStore()(mockState);
+
+    const props = {
+      maxPriorityFeePerGas: '8',
+    };
+
+    const { queryByText } = renderWithProvider(
+      <GasTiming {...props} />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(queryByText(/Likely in/u)).toBeInTheDocument();
+    });
+  });
+
+  it('renders "maybe" when low estimate is chosen', async () => {
+    const mockStore = configureMockStore()(mockState);
+
+    const props = {
+      maxPriorityFeePerGas: '3',
+    };
+
+    const { queryByText } = renderWithProvider(
+      <GasTiming {...props} />,
+      mockStore,
+    );
+
+    await waitFor(() => {
+      expect(queryByText(/Maybe in/u)).toBeInTheDocument();
     });
   });
 });

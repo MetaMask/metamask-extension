@@ -1,30 +1,29 @@
 import React, { useContext, useEffect, useState } from 'react';
-import BigNumber from 'bignumber.js';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
-import { Box, Text } from '../../component-library';
-import {
-  Display,
-  FONT_WEIGHT,
-  TextColor,
-  TextVariant,
-  TypographyVariant,
-} from '../../../helpers/constants/design-system';
+import BigNumber from 'bignumber.js';
+
+import { GasEstimateTypes } from '../../../../shared/constants/gas';
+
+import { usePrevious } from '../../../hooks/usePrevious';
+import { I18nContext } from '../../../contexts/i18n';
+import { useGasFeeContext } from '../../../contexts/gasFee';
+
 import {
   getGasEstimateType,
   getGasFeeEstimates,
   getIsGasEstimatesLoading,
 } from '../../../ducks/metamask/metamask';
 
-import { GAS_FORM_ERRORS } from '../../../helpers/constants/gas';
-import { GasEstimateTypes } from '../../../../shared/constants/gas';
-import { I18nContext } from '../../../contexts/i18n';
 import Typography from '../../ui/typography/typography';
+import {
+  TypographyVariant,
+  FONT_WEIGHT,
+} from '../../../helpers/constants/design-system';
+
 import { getGasFeeTimeEstimate } from '../../../store/actions';
-import { useGasFeeContext } from '../../../contexts/gasFee';
-import { usePrevious } from '../../../hooks/usePrevious';
-import { useDraftTransactionWithTxParams } from '../../../hooks/useDraftTransactionWithTxParams';
+import { GAS_FORM_ERRORS } from '../../../helpers/constants/gas';
 
 // Once we reach this second threshold, we switch to minutes as a unit
 const SECOND_CUTOFF = 90;
@@ -33,9 +32,9 @@ const SECOND_CUTOFF = 90;
 const toHumanReadableTime = (milliseconds = 1, t) => {
   const seconds = Math.ceil(milliseconds / 1000);
   if (seconds <= SECOND_CUTOFF) {
-    return t('gasTimingSecondsShort', [seconds]);
+    return t('gasTimingSeconds', [seconds]);
   }
-  return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
+  return t('gasTimingMinutes', [Math.ceil(seconds / 60)]);
 };
 export default function GasTiming({
   maxFeePerGas = 0,
@@ -49,8 +48,6 @@ export default function GasTiming({
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
   const t = useContext(I18nContext);
   const { estimateUsed } = useGasFeeContext();
-
-  const transactionData = useDraftTransactionWithTxParams();
 
   // If the user has chosen a value lower than the low gas fee estimate,
   // We'll need to use the useEffect hook below to make a call to calculate
@@ -118,15 +115,8 @@ export default function GasTiming({
 
   const { low = {}, medium = {}, high = {} } = gasFeeEstimates;
 
-  const estimateToUse =
-    estimateUsed || transactionData.userFeeLevel || 'medium';
-  let text = t(estimateToUse);
-  let time = '';
+  let text = '';
   let attitude = 'positive';
-
-  if (estimateToUse === 'low') {
-    text = t('gasTimingLow');
-  }
 
   // Anything medium or faster is positive
   if (
@@ -137,64 +127,52 @@ export default function GasTiming({
       Number(maxPriorityFeePerGas) < Number(high.suggestedMaxPriorityFeePerGas)
     ) {
       // Medium
-      time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
+      text = t('gasTimingPositive', [
+        toHumanReadableTime(low.maxWaitTimeEstimate, t),
+      ]);
     } else {
       // High
-      time = toHumanReadableTime(high.minWaitTimeEstimate, t);
-    }
-  } else if (isUnknownLow) {
-    // If the user has chosen a value less than our low estimate,
-    // calculate a potential wait time
-
-    if (estimateToUse === 'low') {
-      attitude = 'negative';
-    }
-    // If we didn't get any useful information, show the
-    // "unknown processing time" message
-    if (
-      !customEstimatedTime ||
-      customEstimatedTime === 'unknown' ||
-      customEstimatedTime?.upperTimeBound === 'unknown'
-    ) {
-      text = t('editGasTooLow');
-      attitude = 'negative';
-    } else {
-      time = toHumanReadableTime(
-        Number(customEstimatedTime?.upperTimeBound),
-        t,
-      );
+      text = t('gasTimingVeryPositive', [
+        toHumanReadableTime(high.minWaitTimeEstimate, t),
+      ]);
     }
   } else {
-    time = toHumanReadableTime(low.maxWaitTimeEstimate, t);
+    if (estimateUsed === 'low') {
+      attitude = 'negative';
+    }
+    // If the user has chosen a value less than our low estimate,
+    // calculate a potential wait time
+    if (isUnknownLow) {
+      // If we didn't get any useful information, show the
+      // "unknown processing time" message
+      if (
+        !customEstimatedTime ||
+        customEstimatedTime === 'unknown' ||
+        customEstimatedTime?.upperTimeBound === 'unknown'
+      ) {
+        text = t('editGasTooLow');
+        attitude = 'negative';
+      } else {
+        text = t('gasTimingNegative', [
+          toHumanReadableTime(Number(customEstimatedTime?.upperTimeBound), t),
+        ]);
+      }
+    } else {
+      text = t('gasTimingNegative', [
+        toHumanReadableTime(low.maxWaitTimeEstimate, t),
+      ]);
+    }
   }
 
-  const getColorFromAttitude = () => {
-    switch (attitude) {
-      case 'positive':
-        return TextColor.successDefault;
-      case 'warning':
-        return TextColor.warningDefault;
-      case 'negative':
-        return TextColor.errorDefault;
-      default:
-        return TextColor.successDefault;
-    }
-  };
-
   return (
-    <Box display={Display.Flex}>
-      <Text color={TextColor.textMuted} variant={TextVariant.bodyXs}>
-        {text}
-      </Text>
-
-      <Text
-        variant={TextVariant.bodyXs}
-        marginLeft={1}
-        color={getColorFromAttitude()}
-      >
-        <span data-testid="gas-timing-time">~{time}</span>
-      </Text>
-    </Box>
+    <Typography
+      variant={TypographyVariant.H7}
+      className={classNames('gas-timing', {
+        [`gas-timing--${attitude}`]: attitude,
+      })}
+    >
+      {text}
+    </Typography>
   );
 }
 

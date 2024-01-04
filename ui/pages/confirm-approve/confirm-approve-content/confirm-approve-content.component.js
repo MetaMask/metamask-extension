@@ -8,9 +8,11 @@ import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import Button from '../../../components/ui/button';
 import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
+import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
 import SecurityProviderBannerMessage from '../../../components/app/security-provider-banner-message/security-provider-banner-message';
 import {
+  BLOCK_SIZES,
   DISPLAY,
   TextColor,
   IconColor,
@@ -40,7 +42,6 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
 import CustomNonce from '../../../components/app/custom-nonce';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
-import FeeDetailsComponent from '../../../components/app/fee-details-component/fee-details-component';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
@@ -53,6 +54,7 @@ export default class ConfirmApproveContent extends Component {
   static propTypes = {
     tokenSymbol: PropTypes.string,
     siteImage: PropTypes.string,
+    showCustomizeGasModal: PropTypes.func,
     origin: PropTypes.string,
     data: PropTypes.string,
     toAddress: PropTypes.string,
@@ -100,12 +102,18 @@ export default class ConfirmApproveContent extends Component {
     showHeader = true,
     symbol,
     title,
+    showEdit,
+    showAdvanceGasFeeOptions = false,
+    onEditClick,
     content,
     footer,
     noBorder,
-    showFeeDetails = false,
   }) {
-    const { supportsEIP1559, txData, useCurrencyRateCheck } = this.props;
+    const {
+      supportsEIP1559,
+      renderSimulationFailureWarning,
+      userAcknowledgedGasMissing,
+    } = this.props;
     const { t } = this.context;
     return (
       <div
@@ -126,20 +134,28 @@ export default class ConfirmApproveContent extends Component {
                 </div>
               </>
             )}
+            {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
+              <Box width={BLOCK_SIZES.ONE_SIXTH}>
+                <Button
+                  type="link"
+                  className="confirm-approve-content__small-blue-text"
+                  onClick={() => onEditClick()}
+                >
+                  {t('edit')}
+                </Button>
+              </Box>
+            )}
+            {showEdit &&
+              showAdvanceGasFeeOptions &&
+              supportsEIP1559 &&
+              !renderSimulationFailureWarning && (
+                <EditGasFeeButton
+                  userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                />
+              )}
           </div>
         )}
         <div className="confirm-approve-content__card-content">{content}</div>
-
-        {showFeeDetails && (
-          <Box marginBottom={4}>
-            <FeeDetailsComponent
-              txData={txData}
-              supportsEIP1559={supportsEIP1559}
-              useCurrencyRateCheck={useCurrencyRateCheck}
-            />
-          </Box>
-        )}
-
         {footer}
       </div>
     );
@@ -520,6 +536,7 @@ export default class ConfirmApproveContent extends Component {
       siteImage,
       origin,
       tokenSymbol,
+      showCustomizeGasModal,
       useNonceField,
       warning,
       txData,
@@ -639,7 +656,7 @@ export default class ConfirmApproveContent extends Component {
             title: t('transactionFee'),
             showEdit: true,
             showAdvanceGasFeeOptions: true,
-            showFeeDetails: true,
+            onEditClick: showCustomizeGasModal,
             content: this.renderTransactionDetailsContent(),
             noBorder: useNonceField || !showFullTxDetails,
             footer: !useNonceField && (
@@ -667,7 +684,6 @@ export default class ConfirmApproveContent extends Component {
               </div>
             ),
           })}
-
           {useNonceField &&
             this.renderApproveContentCard({
               showHeader: false,

@@ -53,7 +53,6 @@ export function useCurrencyDisplay(
   const isUserPreferredCurrency = currency === currentCurrency;
 
   const value = useMemo(() => {
-    let ethDisplayValue;
     if (displayValue) {
       return displayValue;
     }
@@ -61,17 +60,11 @@ export function useCurrencyDisplay(
       currency === nativeCurrency ||
       (!isUserPreferredCurrency && !nativeCurrency)
     ) {
-      ethDisplayValue = new Numeric(inputValue, 16, EtherDenomination.WEI)
+      return new Numeric(inputValue, 16, EtherDenomination.WEI)
         .toDenomination(denomination || EtherDenomination.ETH)
-        .round(numberOfDecimals || 6)
+        .round(numberOfDecimals || 2)
         .toBase(10)
         .toString();
-
-      if (ethDisplayValue === '0' && inputValue && Number(inputValue) !== 0) {
-        ethDisplayValue = '<0.000001';
-      }
-
-      return ethDisplayValue;
     } else if (isUserPreferredCurrency && conversionRate) {
       return formatCurrency(
         getValueFromWeiHex({
