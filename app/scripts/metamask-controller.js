@@ -547,10 +547,14 @@ export default class MetamaskController extends EventEmitter {
             listener({ selectedAddress: newlySelectedInternalAccount.address });
           },
         ),
-      onNetworkDidChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:stateChange',
-      ),
+      onNetworkDidChange: (cb) =>
+        networkControllerMessenger.subscribe(
+          'NetworkController:networkDidChange',
+          () => {
+            const networkState = this.networkController.state;
+            return cb(networkState);
+          },
+        ),
       onTokenListStateChange: (listener) =>
         this.controllerMessenger.subscribe(
           `${this.tokenListController.name}:stateChange`,
@@ -558,9 +562,6 @@ export default class MetamaskController extends EventEmitter {
         ),
       getNetworkClientById: this.networkController.getNetworkClientById.bind(
         this.networkController,
-      ),
-      getERC20TokenName: this.assetsContractController.getERC20TokenName.bind(
-        this.assetsContractController,
       ),
       config: {
         provider: this.provider,
@@ -967,6 +968,7 @@ export default class MetamaskController extends EventEmitter {
         'PhishingController:test',
         'PhishingController:maybeUpdateState',
         'KeyringController:getAccounts',
+        'SubjectMetadataController:getSubjectMetadata',
       ],
     });
 
@@ -3741,7 +3743,6 @@ export default class MetamaskController extends EventEmitter {
   async getKeyringForDevice(deviceName, hdPath = null) {
     const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringName = null;
-    console.log(deviceName);
     if (
       deviceName !== HardwareDeviceNames.trezor &&
       deviceName !== HardwareDeviceNames.ledger &&
