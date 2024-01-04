@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { ALERT_STATE } from '../../../../ducks/alerts';
@@ -13,6 +13,7 @@ import {
   getOriginOfCurrentTab,
   getOrderedConnectedAccountsForActiveTab,
   getSelectedInternalAccount,
+  getInternalAccounts,
 } from '../../../../selectors';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
@@ -34,6 +35,7 @@ const UnconnectedAccountAlert = () => {
   );
   const origin = useSelector(getOriginOfCurrentTab);
   const account = useSelector(getSelectedInternalAccount);
+  const internalAccounts = useSelector(getInternalAccounts);
   const { address: selectedAddress } = account;
   const [dontShowThisAgain, setDontShowThisAgain] = useState(false);
 
@@ -101,7 +103,12 @@ const UnconnectedAccountAlert = () => {
         connectAccount={() => dispatch(connectAccount(selectedAddress))}
         connectedAccounts={connectedAccounts}
         selectedAddress={selectedAddress}
-        setSelectedAccount={(accountId) => dispatch(switchToAccount(accountId))}
+        setSelectedAddress={(address) => {
+          const { id: accountId } = internalAccounts.find(
+            (internalAccount) => internalAccount.address === address,
+          );
+          dispatch(switchToAccount(accountId));
+        }}
         shouldRenderListOptions={false}
       />
     </Popover>

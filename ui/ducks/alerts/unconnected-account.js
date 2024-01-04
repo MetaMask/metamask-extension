@@ -122,8 +122,8 @@ export const switchToAccount = (accountId) => {
     try {
       await dispatch(switchAccountRequested());
       await dispatch(setSelectedInternalAccount(accountId));
-      const internalAcocunt = getInternalAccount(state, accountId);
-      await dispatch(setSelectedAccount(internalAcocunt.address));
+      const internalAccount = getInternalAccount(state, accountId);
+      await dispatch(setSelectedAccount(internalAccount.address));
       await dispatch(switchAccountSucceeded());
     } catch (error) {
       console.error(error);

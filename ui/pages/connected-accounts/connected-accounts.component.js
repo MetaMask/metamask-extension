@@ -21,7 +21,7 @@ export default function ConnectedAccounts({
   permissions = undefined,
   selectedAddress,
   removePermittedAccount,
-  setSelectedAddress,
+  setSelectedAccount,
   subjectMetadata,
   originOfActiveTab,
   permissionSubjects,
@@ -99,7 +99,7 @@ export default function ConnectedAccounts({
           connectedAccounts={connectedAccounts}
           selectedAddress={selectedAddress}
           removePermittedAccount={removePermittedAccount}
-          setSelectedAddress={setSelectedAddress}
+          setSelectedAccount={setSelectedAccount}
           shouldRenderListOptions
         />
       </Box>
@@ -130,7 +130,7 @@ ConnectedAccounts.propTypes = {
   isActiveTabExtension: PropTypes.bool.isRequired,
   selectedAddress: PropTypes.string.isRequired,
   removePermittedAccount: PropTypes.func.isRequired,
-  setSelectedAddress: PropTypes.func.isRequired,
+  setSelectedAccount: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   subjectMetadata: PropTypes.arrayOf(PropTypes.object).isRequired,
   originOfActiveTab: PropTypes.string,

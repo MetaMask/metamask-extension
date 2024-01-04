@@ -55,8 +55,8 @@ describe('add-recipient container', () => {
         domainWarning: 'mockSendDomainResolutionWarning:mockState',
         nonContacts: [],
         ownedAccounts: [
-          { name: 'account1:mockState' },
-          { name: 'account2:mockState' },
+          { name: 'account1:mockState', address: 'address-1' },
+          { name: 'account2:mockState', address: 'address-2' },
         ],
         userInput: 'mockRecipientUserInput:mockState',
         recipient: 'mockRecipient:mockState',
