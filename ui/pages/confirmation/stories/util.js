@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { NetworkStatus } from '@metamask/network-controller';
 import { NetworkType } from '@metamask/controller-utils';
 import configureStore from '../../../store/store';
+import testData from '../../../../.storybook/test-data';
 import { Box } from '../../../components/component-library';
 
 const STORE_MOCK = {
@@ -14,6 +15,7 @@ const STORE_MOCK = {
         accounts: ['0x71C7656EC7ab88b098defB751B7401B5f6d8976F'],
         type: 'TestKeyring',
       },
+      ...testData.metamask.keyrings,
     ],
     networksMetadata: {
       testNetworkClientId: {
@@ -38,6 +40,10 @@ const STORE_MOCK = {
       },
     },
     tokenList: {},
+    accounts: testData.metamask.accounts,
+    identities: testData.metamask.identities,
+    internalAccounts: testData.metamask.internalAccounts,
+    accountsByChainId: testData.metamask.accountsByChainId,
   },
 };
 
