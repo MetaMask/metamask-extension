@@ -7315,7 +7315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/components@npm:7.4.6, @storybook/components@npm:^7.0.0, @storybook/components@npm:^7.4.6":
+"@storybook/components@npm:7.4.6":
   version: 7.4.6
   resolution: "@storybook/components@npm:7.4.6"
   dependencies:
@@ -7336,7 +7336,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/components@npm:7.5.3":
+"@storybook/components@npm:7.5.3, @storybook/components@npm:^7.0.0, @storybook/components@npm:^7.4.6":
   version: 7.5.3
   resolution: "@storybook/components@npm:7.5.3"
   dependencies:
@@ -7367,7 +7367,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/core-common@npm:7.4.6, @storybook/core-common@npm:^7.0.0-beta.0 || ^7.0.0-rc.0 || ^7.0.0":
+"@storybook/core-common@npm:7.4.6":
   version: 7.4.6
   resolution: "@storybook/core-common@npm:7.4.6"
   dependencies:
@@ -7398,7 +7398,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/core-common@npm:7.5.3":
+"@storybook/core-common@npm:7.5.3, @storybook/core-common@npm:^7.0.0-beta.0 || ^7.0.0-rc.0 || ^7.0.0":
   version: 7.5.3
   resolution: "@storybook/core-common@npm:7.5.3"
   dependencies:
@@ -7429,7 +7429,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/core-events@npm:7.4.6, @storybook/core-events@npm:^7.0.0, @storybook/core-events@npm:^7.4.6":
+"@storybook/core-events@npm:7.4.6":
   version: 7.4.6
   resolution: "@storybook/core-events@npm:7.4.6"
   dependencies:
@@ -7438,7 +7438,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/core-events@npm:7.5.3":
+"@storybook/core-events@npm:7.5.3, @storybook/core-events@npm:^7.0.0, @storybook/core-events@npm:^7.4.6":
   version: 7.5.3
   resolution: "@storybook/core-events@npm:7.5.3"
   dependencies:
@@ -7529,7 +7529,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/csf-tools@npm:7.4.6, @storybook/csf-tools@npm:^7.0.0-beta.0 || ^7.0.0-rc.0 || ^7.0.0":
+"@storybook/csf-tools@npm:7.4.6":
   version: 7.4.6
   resolution: "@storybook/csf-tools@npm:7.4.6"
   dependencies:
@@ -7546,7 +7546,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/csf-tools@npm:7.5.3":
+"@storybook/csf-tools@npm:7.5.3, @storybook/csf-tools@npm:^7.0.0-beta.0 || ^7.0.0-rc.0 || ^7.0.0":
   version: 7.5.3
   resolution: "@storybook/csf-tools@npm:7.5.3"
   dependencies:
@@ -7750,7 +7750,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/preview-api@npm:7.4.6, @storybook/preview-api@npm:^7.0.0-beta.0 || ^7.0.0-rc.0 || ^7.0.0":
+"@storybook/preview-api@npm:7.4.6":
   version: 7.4.6
   resolution: "@storybook/preview-api@npm:7.4.6"
   dependencies:
@@ -7772,7 +7772,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/preview-api@npm:7.5.3":
+"@storybook/preview-api@npm:7.5.3, @storybook/preview-api@npm:^7.0.0-beta.0 || ^7.0.0-rc.0 || ^7.0.0":
   version: 7.5.3
   resolution: "@storybook/preview-api@npm:7.5.3"
   dependencies:
@@ -8007,7 +8007,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/theming@npm:7.4.6, @storybook/theming@npm:^7.0.0, @storybook/theming@npm:^7.4.6":
+"@storybook/theming@npm:7.4.6":
   version: 7.4.6
   resolution: "@storybook/theming@npm:7.4.6"
   dependencies:
@@ -8022,7 +8022,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/theming@npm:7.5.3":
+"@storybook/theming@npm:7.5.3, @storybook/theming@npm:^7.0.0, @storybook/theming@npm:^7.4.6":
   version: 7.5.3
   resolution: "@storybook/theming@npm:7.5.3"
   dependencies:
@@ -9219,16 +9219,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^18":
-  version: 18.18.8
-  resolution: "@types/node@npm:18.18.8"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 25346cda374c3bb630a9055cf8b7dd49729d53502b81ba647336f459c751f66c73ae9ba755a63d7bd05b07afa2c90b5627af985998ef5cdb0bafb2db5ec7b520
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:^18.0.0":
+"@types/node@npm:^18, @types/node@npm:^18.0.0":
   version: 18.18.9
   resolution: "@types/node@npm:18.18.9"
   dependencies:
@@ -16069,18 +16060,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-register@npm:^3.4.0":
-  version: 3.4.2
-  resolution: "esbuild-register@npm:3.4.2"
-  dependencies:
-    debug: "npm:^4.3.4"
-  peerDependencies:
-    esbuild: ">=0.12 <1"
-  checksum: 38504907851ec053722d36f331cff800a5f0b1a429871597e44e7e07192ecf13ca6e8171e3ad91feae17d18895359cbaee053cbec3da233ac2217fc71823b167
-  languageName: node
-  linkType: hard
-
-"esbuild-register@npm:^3.5.0":
+"esbuild-register@npm:^3.4.0, esbuild-register@npm:^3.5.0":
   version: 3.5.0
   resolution: "esbuild-register@npm:3.5.0"
   dependencies:
