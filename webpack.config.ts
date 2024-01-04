@@ -1,65 +1,70 @@
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import webpack, {
-  DefinePlugin,
-  type Configuration,
-} from 'webpack';
-import sass from 'sass';
+import webpack, { DefinePlugin, type Configuration } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import postcssRTLCSS from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
+import type { SemVerVersion } from '@metamask/utils';
 import {
-  Manifest,
+  type Browser,
+  type Manifest,
   generateManifest,
   mergeEnv,
   getEntries,
   getLastCommitDatetimeUtc,
-  Browser
 } from './webpack/helpers';
-import type { SemVerVersion } from '@metamask/utils';
-import { CodeFenceLoaderOptions } from './webpack/loaders/codeFenceLoader';
 import { parseArgv } from './webpack/cli';
+
+import type { CodeFenceLoaderOptions } from './webpack/loaders/codeFenceLoader';
 
 const { options, features } = parseArgv(process.argv.slice(2));
 
 if (options.snow || options.lavamoat) {
-  throw new Error("The webpack build doesn't support lavamoat or snow yet. So sorry.");
+  throw new Error(
+    "The webpack build doesn't support lavamoat or snow yet. So sorry.",
+  );
 }
 
 if (options.browser.length > 1) {
-  throw new Error(`The webpack build doesn't support multiple browsers yet. So sorry.`);
+  throw new Error(
+    `The webpack build doesn't support multiple browsers yet. So sorry.`,
+  );
 }
 
 if (options.manifest_version === 3) {
-  throw new Error("The webpack build doesn't support manifest version 3 yet. So sorry.");
+  throw new Error(
+    "The webpack build doesn't support manifest version 3 yet. So sorry.",
+  );
 }
 
 const entry = getEntries(join(__dirname, 'app'));
 
 // removes fenced code blocks from the source
-const codeFenceLoader: webpack.RuleSetRule & { options: CodeFenceLoaderOptions } = {
+const codeFenceLoader: webpack.RuleSetRule & {
+  options: CodeFenceLoaderOptions;
+} = {
   loader: require.resolve('./webpack/loaders/codeFenceLoader'),
   options: {
-    features
-  }
+    features,
+  },
 };
 
 /**
  * Speedy Web Compiler (swc)
  */
 const swcLoader = {
-  loader: "swc-loader",
+  loader: 'swc-loader',
   options: {
     env: {
-      targets: readFileSync("./.browserslistrc", "utf-8")
+      targets: readFileSync('./.browserslistrc', 'utf-8'),
     },
     sourceMaps: true,
     jsc: {
       parser: {
         jsx: true,
-      }
-    }
+      },
+    },
   },
 };
 
@@ -79,7 +84,7 @@ const plugins = [
   new HtmlBundlerPlugin({
     // Disable the HTML preprocessor as we currently use Squirrley in an
     // html-loader instead.
-    preprocessor: false
+    preprocessor: false,
   }),
   new webpack.ProvidePlugin({
     // Make a global `process` variable that points to the `process` package.
@@ -91,7 +96,10 @@ const plugins = [
     patterns: [
       { from: 'app/_locales', to: '_locales' },
       { from: 'app/images', to: 'images' },
-      { from: "app/vendor/trezor/content-script.js", to: 'vendor/trezor/content-script.js' },
+      {
+        from: 'app/vendor/trezor/content-script.js',
+        to: 'vendor/trezor/content-script.js',
+      },
       {
         from: `app/manifest/v${MANIFEST_VERSION}/_base.json`,
         to: 'manifest.json',
@@ -117,7 +125,7 @@ const plugins = [
       acc[`process.env.${key}`] = JSON.stringify(val);
       return acc;
     }, {}),
-  )
+  ),
 ];
 
 if (options.progress) {
@@ -127,14 +135,16 @@ if (options.progress) {
 
 if (options.zip) {
   const { ZipPlugin } = require('./webpack/plugins/ZipPlugin');
-  plugins.push(new ZipPlugin({
-    outFilePath: '../../../builds/metamask.zip',
-    mtime: getLastCommitDatetimeUtc(),
-    excludeExtensions: [".map"],
-    // `level: 9` is the highest; it may increase build time by ~5% over
-    // `level: 0`
-    level: 9
-  }));
+  plugins.push(
+    new ZipPlugin({
+      outFilePath: '../../../builds/metamask.zip',
+      mtime: getLastCommitDatetimeUtc(),
+      excludeExtensions: ['.map'],
+      // `level: 9` is the highest; it may increase build time by ~5% over
+      // `level: 0`
+      level: 9,
+    }),
+  );
 }
 
 const config: Configuration = {
@@ -202,8 +212,7 @@ const config: Configuration = {
     type: 'filesystem',
     // `cache.name` can be used create separate caches for different build types
     name: 'MetaMask',
-    // TODO: instead of `compilerSettings` we should use all of the
-    version: JSON.stringify(options),
+    version: process.argv.join(' '),
     buildDependencies: {
       // Invalidates the build cache when the listed files change
       // `__filename` makes all dependencies of *this* file - build dependencies
@@ -220,11 +229,15 @@ const config: Configuration = {
     //  extension. Alternatively, we could output all js files to a subdir and
     // not worry about it
     chunkFilename: ({ chunk }) => {
-      if (chunk!.id?.toString().startsWith('_')) return '-[id].js';
+      if (chunk!.id?.toString().startsWith('_')) {
+        return '-[id].js';
+      }
       return '[id].js';
     },
     filename: ({ runtime: name }) => {
-      if (name === "contentscript" || name === "inpage") return `[name].js`;
+      if (name === 'contentscript' || name === 'inpage') {
+        return `[name].js`;
+      }
       return '[name].[contenthash].js';
     },
     path: resolve(__dirname, `dist/webpack/${BROWSER}`),
@@ -260,7 +273,7 @@ const config: Configuration = {
             loader: swcLoader.loader,
             options: {
               sourceMaps: swcLoader.options.sourceMaps,
-              env: swcLoader.options.env
+              env: swcLoader.options.env,
             },
           },
           codeFenceLoader,
@@ -270,10 +283,7 @@ const config: Configuration = {
       {
         test: /\.(js|mjs|jsx)$/u,
         exclude: /node_modules/u,
-        use: [
-          swcLoader,
-          codeFenceLoader,
-        ],
+        use: [swcLoader, codeFenceLoader],
       },
       // vendor javascript, and vendor javascript with jsx
       {
@@ -283,9 +293,7 @@ const config: Configuration = {
           // ESM is the worst thing to happen to JavaScript since JavaScript.
           fullySpecified: false,
         },
-        use: [
-          swcLoader
-        ],
+        use: [swcLoader],
       },
       // css, sass/scss
       {
@@ -332,7 +340,7 @@ const config: Configuration = {
                 // will use `node-sass` if `sass` isn't found.
                 // Once https://github.com/sass/sass/issues/3296 is implemented
                 // we should see an improvement by switching to sass-embedded.
-                implementation: sass,
+                implementation: 'sass',
 
                 // The order of includePaths is important; prefer our own
                 // folders over `node_modules`
@@ -398,13 +406,13 @@ const config: Configuration = {
     minimize: options.minify,
   },
 
-  devtool: options.devtool,
+  devtool: options.devtool === 'none' ? false : options.devtool,
 
-  plugins
+  plugins,
 };
 
 webpack(config, (err, stats) => {
   err && console.error(err);
   stats && console.log(stats.toString({ colors: true }));
-  config.watch && console.log("\n🦊 Watching for changes…");
+  config.watch && console.log('\n🦊 Watching for changes…');
 });
