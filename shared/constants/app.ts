@@ -30,7 +30,9 @@ export const MESSAGE_TYPE = {
   ADD_ETHEREUM_CHAIN: 'wallet_addEthereumChain',
   ETH_ACCOUNTS: RestrictedMethods.eth_accounts,
   ETH_DECRYPT: 'eth_decrypt',
+  ETH_CHAIN_ID: 'eth_chainId',
   ETH_GET_ENCRYPTION_PUBLIC_KEY: 'eth_getEncryptionPublicKey',
+  ETH_GET_BLOCK_BY_NUMBER: 'eth_getBlockByNumber',
   ETH_REQUEST_ACCOUNTS: 'eth_requestAccounts',
   ETH_SIGN: 'eth_sign',
   ETH_SIGN_TYPED_DATA: 'eth_signTypedData',
@@ -62,12 +64,6 @@ export const MESSAGE_TYPE = {
   MMI_OPEN_ADD_HARDWARE_WALLET: 'metamaskinstitutional_openAddHardwareWallet',
   ///: END:ONLY_INCLUDE_IF
 } as const;
-
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-// eslint-disable-next-line prefer-destructuring
-export const KEYRING_SNAPS_REGISTRY_URL =
-  process.env.KEYRING_SNAPS_REGISTRY_URL;
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export const SNAP_DIALOG_TYPES = {

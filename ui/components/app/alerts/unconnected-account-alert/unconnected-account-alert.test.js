@@ -6,7 +6,7 @@ import thunk from 'redux-thunk';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 
-import { tick } from '../../../../../test/lib/tick';
+import { tick } from '../../../../../test/lib/timer-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 
 import * as actions from '../../../../store/actions';
@@ -40,10 +40,10 @@ describe('Unconnected Account Alert', () => {
     },
   };
 
-  const cachedBalances = {
-    [CHAIN_IDS]: {
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x0',
-      '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': '0x0',
+  const accountsByChainId = {
+    [CHAIN_IDS.MAINNET]: {
+      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': { balance: '0x0' },
+      '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': { balance: '0x0' },
     },
   };
 
@@ -62,10 +62,10 @@ describe('Unconnected Account Alert', () => {
       selectedAddress,
       identities,
       accounts,
-      cachedBalances,
+      accountsByChainId,
       keyrings,
       providerConfig: {
-        chainId: CHAIN_IDS,
+        chainId: CHAIN_IDS.MAINNET,
       },
       permissionHistory: {
         'https://test.dapp': {

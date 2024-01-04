@@ -54,6 +54,9 @@ export const SENTRY_BACKGROUND_STATE = {
   NetworkOrderController: {
     orderedNetworkList: [],
   },
+  AccountOrderController: {
+    pinnedAccountList: [],
+  },
   AppMetadataController: {
     currentAppVersion: true,
     currentMigrationVersion: true,
@@ -89,9 +92,6 @@ export const SENTRY_BACKGROUND_STATE = {
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
-  },
-  CachedBalancesController: {
-    cachedBalances: false,
   },
   CronjobController: {
     jobs: false,

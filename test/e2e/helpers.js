@@ -611,6 +611,7 @@ const connectToDapp = async (driver) => {
     text: 'Connect',
     tag: 'button',
   });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 };
 
 const PRIVATE_KEY =
@@ -623,6 +624,37 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
+};
+
+const multipleGanacheOptions = {
+  accounts: [
+    {
+      secretKey: PRIVATE_KEY,
+      balance: convertETHToHexGwei(25),
+    },
+    {
+      secretKey: PRIVATE_KEY_TWO,
+      balance: convertETHToHexGwei(25),
+    },
+  ],
+};
+
+const generateGanacheOptions = ({
+  secretKey = PRIVATE_KEY,
+  balance = convertETHToHexGwei(25),
+  ...otherProps
+}) => {
+  const accounts = [
+    {
+      secretKey,
+      balance,
+    },
+  ];
+
+  return {
+    accounts,
+    ...otherProps, // eg: hardfork
+  };
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
@@ -709,20 +741,6 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';
-
-const DEFAULT_GANACHE_OPTIONS = {
-  accounts: [
-    {
-      secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(25),
-    },
-  ],
-};
-
-const generateGanacheOptions = (overrides) => ({
-  ...DEFAULT_GANACHE_OPTIONS,
-  ...overrides,
-});
 
 async function waitForAccountRendered(driver) {
   await driver.waitForSelector(
@@ -947,6 +965,7 @@ module.exports = {
   openDapp,
   switchToOrOpenDapp,
   connectToDapp,
+  multipleGanacheOptions,
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
@@ -957,7 +976,6 @@ module.exports = {
   generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
-  DEFAULT_GANACHE_OPTIONS,
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,

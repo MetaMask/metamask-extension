@@ -5,12 +5,16 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { GAS_LIMITS, MIN_GAS_LIMIT_HEX } from '../../../shared/constants/gas';
 import { calcTokenAmount } from '../../../shared/lib/transactions-controller-utils';
 import { CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP } from '../../../shared/constants/network';
-import { AssetType } from '../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../shared/constants/transaction';
 import { readAddressAsContract } from '../../../shared/modules/contract-utils';
 import {
   addGasBuffer,
   generateERC20TransferData,
   generateERC721TransferData,
+  generateERC1155TransferData,
   getAssetTransferData,
 } from '../../pages/send/send.utils';
 import { getGasPriceInHexWei } from '../../selectors';
@@ -132,6 +136,7 @@ export async function estimateGasLimitForSend({
     // Call into the background process that will simulate transaction
     // execution on the node and return an estimate of gasLimit
     const estimatedGasLimit = await estimateGas(paramsForGasEstimate);
+
     const estimateWithBuffer = addGasBuffer(
       estimatedGasLimit,
       blockGasLimit,
@@ -168,6 +173,7 @@ export async function estimateGasLimitForSend({
 export function generateTransactionParams(sendState) {
   const draftTransaction =
     sendState.draftTransactions[sendState.currentTransactionUUID];
+
   const txParams = {
     // If the fromAccount has been specified we use that, if not we use the
     // selected account.
@@ -178,6 +184,7 @@ export function generateTransactionParams(sendState) {
     // or the type of transaction.
     gas: draftTransaction.gas.gasLimit,
   };
+
   switch (draftTransaction.asset.type) {
     case AssetType.token:
       // When sending a token the to address is the contract address of
@@ -192,6 +199,7 @@ export function generateTransactionParams(sendState) {
         sendToken: draftTransaction.asset.details,
       });
       break;
+
     case AssetType.NFT:
       // When sending a token the to address is the contract address of
       // the token being sent. The value is set to '0x0' and the data
@@ -199,13 +207,23 @@ export function generateTransactionParams(sendState) {
       // amount.
       txParams.to = draftTransaction.asset.details.address;
       txParams.value = '0x0';
-      txParams.data = generateERC721TransferData({
-        toAddress: draftTransaction.recipient.address,
-        fromAddress:
-          draftTransaction.fromAccount?.address ??
-          sendState.selectedAccount.address,
-        tokenId: draftTransaction.asset.details.tokenId,
-      });
+      txParams.data =
+        draftTransaction.asset.details?.standard === TokenStandard.ERC721
+          ? generateERC721TransferData({
+              toAddress: draftTransaction.recipient.address,
+              fromAddress:
+                draftTransaction.fromAccount?.address ??
+                sendState.selectedAccount.address,
+              tokenId: draftTransaction.asset.details.tokenId,
+            })
+          : generateERC1155TransferData({
+              toAddress: draftTransaction.recipient.address,
+              fromAddress:
+                draftTransaction.fromAccount?.address ??
+                sendState.selectedAccount.address,
+              tokenId: draftTransaction.asset.details.tokenId,
+              amount: parseInt(draftTransaction.amount.value, 16).toString(),
+            });
       break;
     case AssetType.native:
     default:

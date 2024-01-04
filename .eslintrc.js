@@ -285,6 +285,7 @@ module.exports = {
         'shared/**/*.test.ts',
         'test/helpers/*.js',
         'test/jest/*.js',
+        'test/lib/timer-helpers.js',
         'test/e2e/helpers.test.js',
         'ui/**/*.test.js',
         'ui/__mocks__/*.js',

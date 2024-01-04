@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import FileInput from 'react-simple-file-input';
 import {
   ButtonLink,
-  FormTextField,
   TextFieldSize,
   TextFieldType,
   Text,
@@ -14,6 +13,7 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { displayWarning } from '../../../store/actions';
