@@ -4,12 +4,11 @@ export type ManifestV3 = chrome.runtime.ManifestV3;
 
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
-
+import type zlib from 'node:zlib';
 import chalk from "chalk";
 import { SemVerVersion, isValidSemVerVersion } from '@metamask/utils';
 import { merge } from 'lodash';
 import { type EntryObject } from "webpack";
-import type zlib from 'node:zlib';
 
 /**
  * Supported browsers

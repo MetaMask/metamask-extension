@@ -1,11 +1,16 @@
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import webpack, { DefinePlugin, type Configuration } from 'webpack';
+import webpack, {
+  type Configuration,
+  type WebpackPluginInstance,
+  DefinePlugin,
+  ProvidePlugin,
+} from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import postcssRTLCSS from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
-import type { SemVerVersion } from '@metamask/utils';
+import { type SemVerVersion } from '@metamask/utils';
 import {
   type Browser,
   type Manifest,
@@ -15,24 +20,24 @@ import {
   getLastCommitDatetimeUtc,
 } from './webpack/helpers';
 import { parseArgv } from './webpack/cli';
+import { type CodeFenceLoaderOptions } from './webpack/loaders/codeFenceLoader';
+import { type SwcLoaderOptions } from './webpack/loaders/swcLoader';
 
-import type { CodeFenceLoaderOptions } from './webpack/loaders/codeFenceLoader';
+const { config, features } = parseArgv(process.argv.slice(2));
 
-const { options, features } = parseArgv(process.argv.slice(2));
-
-if (options.snow || options.lavamoat) {
+if (config.snow || config.lavamoat) {
   throw new Error(
     "The webpack build doesn't support lavamoat or snow yet. So sorry.",
   );
 }
 
-if (options.browser.length > 1) {
+if (config.browser.length > 1) {
   throw new Error(
     `The webpack build doesn't support multiple browsers yet. So sorry.`,
   );
 }
 
-if (options.manifest_version === 3) {
+if (config.manifest_version === 3) {
   throw new Error(
     "The webpack build doesn't support manifest version 3 yet. So sorry.",
   );
@@ -51,42 +56,64 @@ const codeFenceLoader: webpack.RuleSetRule & {
 };
 
 /**
- * Speedy Web Compiler (swc)
+ * Gets the Speedy Web Compiler (SWC) loader for the given syntax.
+ * @param syntax
+ * @param enableJsx
+ * @param devMode
+ * @returns
  */
-const swcLoader = {
-  loader: 'swc-loader',
-  options: {
-    env: {
-      targets: readFileSync('./.browserslistrc', 'utf-8'),
-    },
-    sourceMaps: true,
-    jsc: {
-      parser: {
-        jsx: true,
+function getSwcLoader(
+  syntax: 'typescript' | 'ecmascript',
+  enableJsx: boolean,
+  config: ReturnType<typeof parseArgv>["config"],
+) {
+  return {
+    loader: require.resolve('webpack/loaders/swcLoader'),
+    options: {
+      env: {
+        targets: readFileSync('./.browserslistrc', 'utf-8'),
       },
-    },
-  },
-};
+      jsc: {
+        transform: {
+          react: {
+            development: config.mode === "development",
+            refresh: config.mode === "development" && config.watch,
+          },
+        },
+        parser:
+          syntax === 'typescript'
+            ? {
+              syntax,
+              tsx: enableJsx,
+            }
+            : {
+              syntax,
+              jsx: enableJsx,
+            },
+      },
+    } as const satisfies SwcLoaderOptions,
+  };
+}
 
 // TODO: build once, then copy to each browser's folder then update the
 // manifests
-const BROWSER = options.browser[0] as Browser;
+const BROWSER = config.browser[0] as Browser;
 
 // TODO: make these dynamic. yargs, maybe?
 const NAME = 'MetaMask';
 const DESCRIPTION = `MetaMask ${BROWSER} Extension`;
-const MANIFEST_VERSION = options.manifest_version;
+const MANIFEST_VERSION = config.manifest_version;
 // TODO: figure out what build.yml's env vars are doing and them do the merge
 // stuff.
 const ENV = mergeEnv({});
 
-const plugins = [
+const plugins: WebpackPluginInstance[] = [
   new HtmlBundlerPlugin({
     // Disable the HTML preprocessor as we currently use Squirrley in an
     // html-loader instead.
     preprocessor: false,
   }),
-  new webpack.ProvidePlugin({
+  new ProvidePlugin({
     // Make a global `process` variable that points to the `process` package.
     process: 'process/browser',
     // Make a global `Buffer` variable that points to the `buffer` package.
@@ -108,7 +135,7 @@ const plugins = [
             manifestBytes.toString('utf-8'),
           );
           const browserManifest = generateManifest(baseManifest, {
-            mode: options.mode,
+            mode: config.mode,
             browser: BROWSER,
             description: DESCRIPTION,
             name: NAME,
@@ -128,12 +155,20 @@ const plugins = [
   ),
 ];
 
-if (options.progress) {
-  const { ProgressPlugin } = require('webpack');
-  plugins.push(new ProgressPlugin());
+if (config.mode === "development" && config.watch) {
+  const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+  plugins.push(new ReactRefreshWebpackPlugin());
 }
 
-if (options.zip) {
+if (config.progress) {
+  // conditionally load the progress plugin only when needed
+  const { ProgressPlugin } = require('webpack');
+  plugins.push(new ProgressPlugin());
+} else {
+  console.log('🦊 Running build…');
+}
+
+if (config.zip) {
   const { ZipPlugin } = require('./webpack/plugins/ZipPlugin');
   plugins.push(
     new ZipPlugin({
@@ -147,12 +182,15 @@ if (options.zip) {
   );
 }
 
-const config: Configuration = {
+const webpackOptions = {
   context: __dirname,
   entry,
-  name: `MetaMask Webpack—${options.mode}`,
-  mode: options.mode,
-  watch: options.watch,
+  devServer: {
+    hot: config.watch && config.mode === "development",
+  },
+  name: `MetaMask Webpack—${config.mode}`,
+  mode: config.mode,
+  watch: config.watch,
 
   // eventually we should avoid any code that uses node globals.
   node: {
@@ -268,32 +306,23 @@ const config: Configuration = {
       {
         test: /\.(ts|mts|tsx)$/u,
         exclude: /node_modules/u,
-        use: [
-          {
-            loader: swcLoader.loader,
-            options: {
-              sourceMaps: swcLoader.options.sourceMaps,
-              env: swcLoader.options.env,
-            },
-          },
-          codeFenceLoader,
-        ],
+        use: [getSwcLoader('typescript', true, config), codeFenceLoader],
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(js|mjs|jsx)$/u,
         exclude: /node_modules/u,
-        use: [swcLoader, codeFenceLoader],
+        use: [getSwcLoader('ecmascript', true, config), codeFenceLoader],
       },
-      // vendor javascript, and vendor javascript with jsx
+      // vendor javascript
       {
-        test: /\.(js|mjs|jsx)$/u,
+        test: /\.(js|mjs)$/u,
         include: /node_modules/u,
         resolve: {
           // ESM is the worst thing to happen to JavaScript since JavaScript.
           fullySpecified: false,
         },
-        use: [swcLoader],
+        use: [getSwcLoader('ecmascript', false, config)],
       },
       // css, sass/scss
       {
@@ -372,6 +401,8 @@ const config: Configuration = {
   },
 
   optimization: {
+    sideEffects: true,
+
     // TODO: create one runtime bundle for all chunks, but not for contentscript
     // or inpage.js
     // runtimeChunk: 'single',
@@ -403,16 +434,17 @@ const config: Configuration = {
     // 'deterministic'` results in faster recompilations in cases
     // where a child chunk changes, but the parent chunk does not.
     moduleIds: 'deterministic',
-    minimize: options.minify,
+    minimize: config.uglify,
   },
 
-  devtool: options.devtool === 'none' ? false : options.devtool,
+  devtool: config.devtool === 'none' ? false : config.devtool,
 
   plugins,
-};
+} as const satisfies Configuration & { devServer?: { hot?: boolean } };
 
-webpack(config, (err, stats) => {
+webpack(webpackOptions, (err, stats) => {
   err && console.error(err);
   stats && console.log(stats.toString({ colors: true }));
+  // if we are in watch mode log a message to the console
   config.watch && console.log('\n🦊 Watching for changes…');
 });

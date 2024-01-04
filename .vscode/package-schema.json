@@ -64,9 +64,9 @@
               "type": "string",
               "description": "Polyfill's node's stream API for use in the browser (webpack)"
             },
-            "swc-loader": {
+            "@swc/core": {
               "type": "string",
-              "description": "Transpiles javascript and typescript using swc (webpack)"
+              "description": "Transpiles javascript and typescript (webpack)"
             },
             "vm-browserify": {
               "type": "string",
@@ -79,6 +79,14 @@
             "rimraf": {
               "type": "string",
               "description": "Provides a cross-platform way of deleting files from the command line (webpack)"
+            },
+            "json-schema-to-ts": {
+              "type": "string",
+              "description": "Generates typescript types from json schemas (webpack)"
+            },
+            "@pmmmwh/react-refresh-webpack-plugin": {
+              "type": "string",
+              "description": "Provides hot reloading for react components (webpack)"
             }
           }
         }
