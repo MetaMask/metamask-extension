@@ -3816,16 +3816,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/approval-controller@npm:^3.4.0":
-  version: 3.4.0
-  resolution: "@metamask/approval-controller@npm:3.4.0"
+"@metamask/approval-controller@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@metamask/approval-controller@npm:5.1.0"
   dependencies:
-    "@metamask/base-controller": "npm:^3.0.0"
-    "@metamask/utils": "npm:^5.0.2"
-    eth-rpc-errors: "npm:^4.0.2"
-    immer: "npm:^9.0.6"
+    "@metamask/base-controller": "npm:^4.0.0"
+    "@metamask/rpc-errors": "npm:^6.1.0"
+    "@metamask/utils": "npm:^8.2.0"
     nanoid: "npm:^3.1.31"
-  checksum: 594dd505c771a4dc81d457c466016d612419b70b18e43c494ce7d1c15cb1e3d53bf63054a4df0ad191b7dddc051b0d8ddf8f649e83fc7ca32ff602fd564f0bb1
+  checksum: 4419485f4d56f3eb1f3a842006c83539fb8ea9bb6a7f55f1134945f3e4c4ee0e4956afb60bd9856a7b6a08803b49c663b7f409c04e75503a35b90bf434576b96
   languageName: node
   linkType: hard
 
@@ -3932,6 +3931,16 @@ __metadata:
     "@metamask/utils": "npm:^8.2.0"
     immer: "npm:^9.0.6"
   checksum: 9e8819289a159ed3b91b1629f273cf33bb4034b872984c15eafcfc07a9ab1ed9b7c27c61839f7ebbfc5c259718f771d6f92362ad3c6a0c2434aecd840e9b239a
+  languageName: node
+  linkType: hard
+
+"@metamask/base-controller@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "@metamask/base-controller@npm:4.0.1"
+  dependencies:
+    "@metamask/utils": "npm:^8.2.0"
+    immer: "npm:^9.0.6"
+  checksum: 9c32a26c3fbc091b97156c101738b4ab1391f3e4c3f0ba838489c43ec12a7c73c75c8f451f61368733750e17bcb959ac36f5aaa6d4626a0544b8390a03b1f9d6
   languageName: node
   linkType: hard
 
@@ -4525,15 +4534,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/name-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/name-controller@npm:3.0.0"
+"@metamask/name-controller@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "@metamask/name-controller@npm:4.0.1"
   dependencies:
-    "@metamask/base-controller": "npm:^3.2.2"
-    "@metamask/utils": "npm:^6.2.0"
+    "@metamask/base-controller": "npm:^4.0.1"
+    "@metamask/utils": "npm:^8.2.0"
     async-mutex: "npm:^0.2.6"
-    immer: "npm:^9.0.6"
-  checksum: 8754f3b2e64c9bdac36d882fd4cbc650eef7322beaa6fb5095f5e289bae15f8658aa74f9183832423aaeec40edebfd14c14cb6da7a38224789f35f080079425a
+  checksum: 177e5b48e9e6c62579fb314d2db5e47c9bfb68035eb0d2e75431f765f98cdcaef4ade946f77769ddf9f0d45a483d44028dde7224ead2e427d2878d2a4a24e421
   languageName: node
   linkType: hard
 
@@ -24380,7 +24388,7 @@ __metadata:
     "@metamask/accounts-controller": "npm:^4.0.0"
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^4.0.0"
-    "@metamask/approval-controller": "npm:^3.4.0"
+    "@metamask/approval-controller": "npm:^5.1.0"
     "@metamask/assets-controllers": "patch:@metamask/assets-controllers@npm%3A22.0.0#~/.yarn/patches/@metamask-assets-controllers-npm-22.0.0-6af3715fb2.patch"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^4.0.0"
@@ -24413,7 +24421,7 @@ __metadata:
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
-    "@metamask/name-controller": "npm:^3.0.0"
+    "@metamask/name-controller": "npm:^4.0.0"
     "@metamask/network-controller": "npm:^16.0.0"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"

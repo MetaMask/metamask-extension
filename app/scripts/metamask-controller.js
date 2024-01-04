@@ -969,6 +969,7 @@ export default class MetamaskController extends EventEmitter {
         'PhishingController:test',
         'PhishingController:maybeUpdateState',
         'KeyringController:getAccounts',
+        'SubjectMetadataController:getSubjectMetadata',
       ],
     });
 
@@ -3751,7 +3752,6 @@ export default class MetamaskController extends EventEmitter {
   async getKeyringForDevice(deviceName, hdPath = null) {
     const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringName = null;
-    console.log(deviceName);
     if (
       deviceName !== HardwareDeviceNames.trezor &&
       deviceName !== HardwareDeviceNames.ledger &&
