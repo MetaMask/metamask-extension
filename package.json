@@ -7,8 +7,8 @@
     "url": "https://github.com/MetaMask/metamask-extension.git"
   },
   "scripts": {
-    "webpack": "npx -y tsx webpack.config.ts",
-    "webpack:clearcache": "npx -y rimraf@5.0.5 node_modules/.cache/webpack",
+    "webpack": "tsx webpack.config.ts",
+    "webpack:clearcache": "rimraf node_modules/.cache/webpack",
     "postinstall": "yarn webpack:clearcache && yarn webpack",
     "start": "yarn build:dev dev --apply-lavamoat=false --snow=false",
     "start:mv3": "ENABLE_MV3=true yarn build:dev dev --apply-lavamoat=false",
@@ -547,6 +547,7 @@
     "redux-mock-store": "^1.5.4",
     "remote-redux-devtools": "^0.5.16",
     "resolve-url-loader": "^3.1.5",
+    "rimraf": "^5.0.5",
     "sass": "^1.32.4",
     "sass-loader": "^13.3.2",
     "schema-utils": "^4.2.0",
@@ -569,6 +570,7 @@
     "terser": "^5.7.0",
     "through2": "^4.0.2",
     "ts-node": "^10.9.2",
+    "tsx": "^4.7.0",
     "ttest": "^2.1.1",
     "typescript": "~5.3.3",
     "vinyl": "^2.2.1",

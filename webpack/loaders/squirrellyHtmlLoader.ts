@@ -1,5 +1,5 @@
 import type { LoaderContext } from 'webpack';
-import type {JSONSchema7 } from 'schema-utils/declarations/validate';
+import type { JSONSchema7 } from 'schema-utils/declarations/validate';
 import { validate } from 'schema-utils';
 import { render } from 'squirrelly';
 

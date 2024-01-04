@@ -10,17 +10,12 @@ import { SemVerVersion, isValidSemVerVersion } from '@metamask/utils';
 import { merge } from 'lodash';
 import { type EntryObject } from "webpack";
 import type zlib from 'node:zlib';
-export const loadBuildTypesConfig = require("../development/lib/build-type").loadBuildTypesConfig;
 
 /**
  * Supported browsers
  */
-export enum Browser {
-  Brave = 'brave',
-  Chrome = 'chrome',
-  Firefox = 'firefox',
-  Opera = 'opera',
-}
+export const Browsers = ["brave", "chrome", "firefox", "opera"] as const;
+export type Browser = typeof Browsers[number];
 
 /**
  *
@@ -59,7 +54,7 @@ export const mergeEnv = (userEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv => {
   env.METAMASK_BUILD_APP_ID = 'io.metamask';
   env.IN_TEST = false;
 
-  const finalEnv =  { ...userEnv, ...env };
+  const finalEnv = { ...userEnv, ...env };
 
   const INFURA_PROJECT_ID = finalEnv.INFURA_PROJECT_ID;
   // if we don't have an INFURA_PROJECT_ID at build time we should bail!

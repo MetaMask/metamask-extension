@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import webpack, {
   DefinePlugin,
@@ -9,156 +10,38 @@ import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
 import postcssRTLCSS from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
 import {
-  Browser,
   Manifest,
   generateManifest,
   mergeEnv,
   getEntries,
   getLastCommitDatetimeUtc,
-  loadBuildTypesConfig
+  Browser
 } from './webpack/helpers';
 import type { SemVerVersion } from '@metamask/utils';
-import { terminalWidth } from 'yargs';
-import yargs from 'yargs/yargs';
-import { hideBin } from 'yargs/helpers';
 import { CodeFenceLoaderOptions } from './webpack/loaders/codeFenceLoader';
-import { readFileSync } from 'node:fs';
+import { parseArgv } from './webpack/cli';
 
-const builtTypesConfig = loadBuildTypesConfig();
-const modeOptions = {
-  alias: "m",
-  description: "Mode",
-  default: "development" as const,
-  choices: ["development", "production"] as const,
-}
-const argv = hideBin(process.argv);
-function getMode(){
-  const { mode } = yargs(argv)
-    .help(false)
-    .showHelpOnFail(false)
-    .option("mode", modeOptions).parseSync();
-    return mode;
-}
-const allFeatures = Object.keys(builtTypesConfig.features)
+const { options, features } = parseArgv(process.argv.slice(2));
 
-const args = yargs(argv)
-  .strict()
-  .version(false)
-  .alias("help", "?")
-  .wrap(Math.min(120, terminalWidth()))
-  .option("mode", modeOptions)
-  .option("watch", {
-    alias: "w",
-    description: "Run build and watch for files changes.",
-    type: "boolean",
-    default: false,
-  }).option("cache", {
-    alias: "c",
-    description: "Cache changes for faster rebuilds",
-    type: "boolean",
-    default: true,
-  }).option("progress", {
-    alias: "p",
-    description: "Show progress",
-    type: "boolean",
-    default: true,
-  }).option("zip", {
-    alias: "z",
-    description: "Zip",
-    type: "boolean",
-    default: false,
-  }).option("minify", {
-    alias: "mi",
-    description: "Minify the output",
-    type: "boolean",
-    default: false,
-  }).option("target", {
-    alias: "t",
-    description: "Target",
-    type: "string",
-    default: "Chrome" as const,
-    array: true,
-    choices: ["Chrome", "Firefox"] as const,
-  }).option("manifest_version", {
-    alias: "mv",
-    description: "Manifest Version",
-    type: "number",
-    default: 2 as const,
-    choices: [2, 3] as const,
-  }).option("type", {
-    alias: "y",
-    description: "Build type",
-    type: "string",
-    default: "main" as const,
-    choices: ["none", ...Object.keys(builtTypesConfig.buildTypes)],
-  }).option("feature", {
-    alias: "f",
-    description: "Features you want enabled that are not automatically included in the selected build type",
-    array: true,
-    type: "string",
-    defaultDescription: "all",
-    choices: allFeatures,
-  }).option("devtool", {
-    alias: "d",
-    description: "Devtool",
-    defaultDescription: 'When mode is `production`, `hidden-source-map`, otherwise `source-map`.',
-    default: () => {
-      const mode = getMode();
-      return mode === "production" ? "hidden-source-map" : "source-map";
-    },
-    choices: ["source-map", "hidden-source-map"] as const,
-    coerce: (arg) => {
-      return arg;
-    }
-  }).option("lavamoat", {
-    alias: "l",
-    description: "Apply lavamoat to the build assets",
-    defaultDescription: 'When mode is `production`, `true`, otherwise `false`.',
-    type: "boolean",
-    default: () => {
-      const mode = getMode();
-      return mode === "production";
-    },
-  }).option("snow", {
-    alias: "s",
-    description: "Apply Snow to the build assets",
-    defaultDescription: 'When mode is `production`, `true`, otherwise `false`.',
-    type: "boolean",
-    default: () => {
-      const mode = getMode();
-      return mode === "production";
-    },
-  })
-  .parseSync();
-
-if (args.snow || args.lavamoat) {
+if (options.snow || options.lavamoat) {
   throw new Error("The webpack build doesn't support lavamoat or snow yet. So sorry.");
 }
 
-if (args.target.length > 1){
-  throw new Error("The webpack build doesn't support multiple targets yet. So sorry.");
+if (options.browser.length > 1) {
+  throw new Error(`The webpack build doesn't support multiple browsers yet. So sorry.`);
 }
 
-if (args.manifest_version === 3) {
+if (options.manifest_version === 3) {
   throw new Error("The webpack build doesn't support manifest version 3 yet. So sorry.");
 }
 
-if ((args.feature?.length || 0) > 0) {
-  throw new Error("The webpack build doesn't support ad hoc features yet. So sorry.");
-}
-
 const entry = getEntries(join(__dirname, 'app'));
-
-const { features } = builtTypesConfig.buildTypes[args.type];
 
 // removes fenced code blocks from the source
 const codeFenceLoader: webpack.RuleSetRule & { options: CodeFenceLoaderOptions } = {
   loader: require.resolve('./webpack/loaders/codeFenceLoader'),
   options: {
-    features: {
-      active: new Set(features),
-      all: new Set(allFeatures),
-    }
+    features
   }
 };
 
@@ -182,12 +65,12 @@ const swcLoader = {
 
 // TODO: build once, then copy to each browser's folder then update the
 // manifests
-const BROWSER = Browser[args.target[0]];
+const BROWSER = options.browser[0] as Browser;
 
 // TODO: make these dynamic. yargs, maybe?
 const NAME = 'MetaMask';
 const DESCRIPTION = `MetaMask ${BROWSER} Extension`;
-const MANIFEST_VERSION: Manifest['manifest_version'] = 2;
+const MANIFEST_VERSION = options.manifest_version;
 // TODO: figure out what build.yml's env vars are doing and them do the merge
 // stuff.
 const ENV = mergeEnv({});
@@ -217,7 +100,7 @@ const plugins = [
             manifestBytes.toString('utf-8'),
           );
           const browserManifest = generateManifest(baseManifest, {
-            mode: args.mode,
+            mode: options.mode,
             browser: BROWSER,
             description: DESCRIPTION,
             name: NAME,
@@ -237,12 +120,12 @@ const plugins = [
   )
 ];
 
-if (args.progress) {
+if (options.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
 }
 
-if (args.zip) {
+if (options.zip) {
   const { ZipPlugin } = require('./webpack/plugins/ZipPlugin');
   plugins.push(new ZipPlugin({
     outFilePath: '../../../builds/metamask.zip',
@@ -257,9 +140,9 @@ if (args.zip) {
 const config: Configuration = {
   context: __dirname,
   entry,
-  name: `MetaMask Webpack—${args.mode}`,
-  watch: args.watch,
-  mode: args.mode,
+  name: `MetaMask Webpack—${options.mode}`,
+  mode: options.mode,
+  watch: options.watch,
 
   // eventually we should avoid any code that uses node globals.
   node: {
@@ -320,7 +203,7 @@ const config: Configuration = {
     // `cache.name` can be used create separate caches for different build types
     name: 'MetaMask',
     // TODO: instead of `compilerSettings` we should use all of the
-    version: JSON.stringify(args),
+    version: JSON.stringify(options),
     buildDependencies: {
       // Invalidates the build cache when the listed files change
       // `__filename` makes all dependencies of *this* file - build dependencies
@@ -512,24 +395,16 @@ const config: Configuration = {
     // 'deterministic'` results in faster recompilations in cases
     // where a child chunk changes, but the parent chunk does not.
     moduleIds: 'deterministic',
-    minimize: args.minify,
+    minimize: options.minify,
   },
 
-  devtool: args.devtool,
+  devtool: options.devtool,
 
   plugins
 };
 
 webpack(config, (err, stats) => {
-  if (err) {
-    console.error(err);
-  }
-  if(stats?.hasErrors()){
-    stats.compilation.errors.forEach((error) => {
-      console.error(error.message || error);
-    });
-  }
-  console.log("done");
+  err && console.error(err);
+  stats && console.log(stats.toString({ colors: true }));
+  config.watch && console.log("\n🦊 Watching for changes…");
 });
-
-// export default config;

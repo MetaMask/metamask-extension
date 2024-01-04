@@ -71,6 +71,14 @@
             "vm-browserify": {
               "type": "string",
               "description": "Polyfill's node's vm API for use in the browser (webpack)"
+            },
+            "tsx": {
+              "type": "string",
+              "description": "Provides blazing fast typescript compilation (no type checking) (webpack)"
+            },
+            "rimraf": {
+              "type": "string",
+              "description": "Provides a cross-platform way of deleting files from the command line (webpack)"
             }
           }
         }
