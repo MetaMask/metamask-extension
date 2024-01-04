@@ -39,11 +39,16 @@ export const getMetaMaskVersion = (): SemVerVersion => {
  * @throws Throws an error if `process.env` is invalid or missing required fields.
  */
 export const mergeEnv = (userEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv => {
-  const rawConfig = readFileSync(join(__dirname, '../.metamaskrc'));
-  const env = require('dotenv').parse(rawConfig);
+  let env: NodeJS.ProcessEnv = {};
+  try {
+    const rawConfig = readFileSync(join(__dirname, '../.metamaskrc'));
+    env = require('dotenv').parse(rawConfig);
+  } catch {
+    console.log("No .metamaskrc file found, using default env");
+  }
 
   env.METAMASK_VERSION = getMetaMaskVersion();
-  env.METAMASK_DEBUG = true;
+  env.METAMASK_DEBUG = "1";
 
   // TODO: these should be dynamic somehow
   env.PHISHING_WARNING_PAGE_URL = 'http://localhost:9999';
@@ -52,7 +57,7 @@ export const mergeEnv = (userEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv => {
   env.METAMASK_BUILD_NAME = 'MM Webpack Test';
   env.METAMASK_BUILD_ICON = 'data:image:./images/icon-64.png';
   env.METAMASK_BUILD_APP_ID = 'io.metamask';
-  env.IN_TEST = false;
+  //env.IN_TEST = "0";
 
   const finalEnv = { ...userEnv, ...env };
 
