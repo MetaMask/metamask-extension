@@ -70,7 +70,7 @@ const SignatureRequestOriginalWarning = ({
       >
         {t('signatureRequestWarning', [
           <a
-            href="https://consensys.net/blog/metamask/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask/"
+            href="https://consensys.io/blog/the-seal-of-approval-know-what-youre-consenting-to-with-permissions-and-approvals-in-metamask"
             target="_blank"
             type="link"
             key="non_custodial_link"

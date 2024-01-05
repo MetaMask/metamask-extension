@@ -27,11 +27,11 @@ describe('Test Snap update via snaps component', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // open a new tab and navigate to test snaps page and connect
+        // open a new tab and navigate to test snaps page
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
 
-        // find and scroll to the correct card and click first
+        // find and scroll to the correct card and connect to update snap
         const snapButton = await driver.findElement('#connectUpdate');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);

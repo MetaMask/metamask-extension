@@ -1008,10 +1008,10 @@
     "message": "Create password"
   },
   "createSnapAccountDescription": {
-    "message": "$1 wants to add a new Snap account to your wallet"
+    "message": "$1 wants to add a new account to MetaMask."
   },
   "createSnapAccountTitle": {
-    "message": "Create Snap account"
+    "message": "Create account"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -3764,11 +3764,8 @@
   "removeSnap": {
     "message": "Remove Snap"
   },
-  "removeSnapAccountBannerDescription": {
-    "message": "Be sure you can access this account on your own before removing it"
-  },
   "removeSnapAccountDescription": {
-    "message": "$1 wants to remove this account from MetaMask:"
+    "message": "If you proceed, this account will no longer be available in MetaMask."
   },
   "removeSnapAccountTitle": {
     "message": "Remove account"
@@ -4273,7 +4270,17 @@
     "description": "$1 is an external link to FAQ and Risk Disclosures"
   },
   "snapAccountCreated": {
-    "message": "Your account is ready!"
+    "message": "Account created"
+  },
+  "snapAccountCreatedDescription": {
+    "message": "Your new account is ready to use!"
+  },
+  "snapAccountCreationFailed": {
+    "message": "Account creation failed"
+  },
+  "snapAccountCreationFailedDescription": {
+    "message": "$1 didn't manage to create an account for you.",
+    "description": "$1 is the snap name"
   },
   "snapAccountRedirectFinishSigningTitle": {
     "message": "Finish signing"
@@ -4281,8 +4288,18 @@
   "snapAccountRedirectSiteDescription": {
     "message": "Follow the instructions from $1"
   },
+  "snapAccountRemovalFailed": {
+    "message": "Account removal failed"
+  },
+  "snapAccountRemovalFailedDescription": {
+    "message": "$1 didn't manage to remove this account for you.",
+    "description": "$1 is the snap name"
+  },
   "snapAccountRemoved": {
     "message": "Account removed"
+  },
+  "snapAccountRemovedDescription": {
+    "message": "This account will no longer be available to use in MetaMask."
   },
   "snapAccounts": {
     "message": "Account Snaps"
