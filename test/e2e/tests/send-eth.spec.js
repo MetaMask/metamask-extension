@@ -125,9 +125,9 @@ describe('Send ETH non-contract address with data that matches ERC20 transfer da
         );
         await driver.clickElement('[data-testid="sender-to-recipient__name"]');
 
-        const recipientAddress = await driver.findElements({
-          text: '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
-        });
+        const recipientAddress = await await driver.findElements(
+          'input[value="0xc427D562164062a23a5cFf596A4a3208e72Acd28"]',
+        );
 
         assert.equal(recipientAddress.length, 1);
       },
