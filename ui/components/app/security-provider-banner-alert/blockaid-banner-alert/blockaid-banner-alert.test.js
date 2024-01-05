@@ -197,7 +197,7 @@ describe('Blockaid Banner Alert', () => {
     expect(getByRole('link', { name: 'Report an issue' })).toBeInTheDocument();
   });
 
-  it('should render link to report url 2', () => {
+  it('should pass required data in Report an issue URL', () => {
     const { getByRole } = renderWithLocalization(
       <BlockaidBannerAlert
         txData={{
