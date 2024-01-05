@@ -321,7 +321,7 @@
         "snapDescription": "A simple private key is a randomly generated string of characters that is used to sign transactions. This private key is stored securely within this snap.",
         "tags": ["EOA"],
         "developer": "Metamask",
-        "website": "https://www.consensys.net/",
+        "website": "https://www.consensys.io/",
         "auditUrls": ["auditUrl1", "auditUrl2"],
         "version": "1.0.0",
         "lastUpdated": "April 20, 2023"

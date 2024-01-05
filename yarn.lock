@@ -4524,15 +4524,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/name-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/name-controller@npm:3.0.0"
+"@metamask/name-controller@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "@metamask/name-controller@npm:4.0.1"
   dependencies:
-    "@metamask/base-controller": "npm:^3.2.2"
-    "@metamask/utils": "npm:^6.2.0"
+    "@metamask/base-controller": "npm:^4.0.1"
+    "@metamask/utils": "npm:^8.2.0"
     async-mutex: "npm:^0.2.6"
-    immer: "npm:^9.0.6"
-  checksum: 8754f3b2e64c9bdac36d882fd4cbc650eef7322beaa6fb5095f5e289bae15f8658aa74f9183832423aaeec40edebfd14c14cb6da7a38224789f35f080079425a
+  checksum: 177e5b48e9e6c62579fb314d2db5e47c9bfb68035eb0d2e75431f765f98cdcaef4ade946f77769ddf9f0d45a483d44028dde7224ead2e427d2878d2a4a24e421
   languageName: node
   linkType: hard
 
@@ -24411,7 +24410,7 @@ __metadata:
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
-    "@metamask/name-controller": "npm:^3.0.0"
+    "@metamask/name-controller": "npm:^4.0.0"
     "@metamask/network-controller": "npm:^16.0.0"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
