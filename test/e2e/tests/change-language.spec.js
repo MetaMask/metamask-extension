@@ -131,7 +131,7 @@ describe('Settings - general tab, validate the change language functionality:', 
 
         await driver.navigate();
 
-        await driver.delay(2000);
+        await driver.isElementPresent(selectors.tooltipText);
         // Validating the tooltip
         const isHeaderTooltipChanged = await driver.isElementPresent(
           selectors.tooltipText,
