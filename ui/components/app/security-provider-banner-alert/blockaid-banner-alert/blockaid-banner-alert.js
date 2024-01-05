@@ -19,7 +19,7 @@ import { Text } from '../../../component-library';
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
 import { getReportUrl } from './blockaid-banner-utils';
 
-// const zlib = require('zlib');
+const zlib = require('zlib');
 
 /** Reason to description translation key mapping. Grouped by translations. */
 const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
@@ -109,9 +109,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const jsonData = JSON.stringify(reportData);
 
-  // const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
-
-  const encodedData = JSON.stringify(jsonData);
+  const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
 
   const reportUrl = getReportUrl(encodedData);
 

@@ -7,6 +7,10 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
+jest.mock('zlib', () => ({
+  gzipSync: (val) => val,
+}));
+
 const mockSecurityAlertResponse = {
   result_type: BlockaidResultType.Warning,
   reason: BlockaidReason.setApprovalForAll,
@@ -209,7 +213,7 @@ describe('Blockaid Banner Alert', () => {
 
     const elm = getByRole('link', { name: 'Report an issue' });
     expect(elm.href).toBe(
-      'https://blockaid-false-positive-portal.metamask.io/?data=%22%7B%5C%22classification%5C%22%3A%5C%22set_approval_for_all%5C%22%2C%5C%22blockaidVersion%5C%22%3A%5C%221.4.0%5C%22%2C%5C%22resultType%5C%22%3A%5C%22Warning%5C%22%7D%22&utm_source=metamask-ppom',
+      'https://blockaid-false-positive-portal.metamask.io/?data=%7B%22classification%22%3A%22set_approval_for_all%22%2C%22blockaidVersion%22%3A%221.3.3%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom',
     );
   });
 
