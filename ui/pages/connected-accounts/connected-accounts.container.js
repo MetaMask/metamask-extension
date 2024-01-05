@@ -12,7 +12,7 @@ import { isExtensionUrl } from '../../helpers/utils/util';
 import {
   addPermittedAccount,
   removePermittedAccount,
-  setSelectedAddress,
+  setSelectedInternalAccount,
 } from '../../store/actions';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ConnectedAccounts from './connected-accounts.component';
@@ -48,7 +48,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(addPermittedAccount(origin, address)),
     removePermittedAccount: (origin, address) =>
       dispatch(removePermittedAccount(origin, address)),
-    setSelectedAddress: (address) => dispatch(setSelectedAddress(address)),
+    setSelectedAccount: (accountId) =>
+      dispatch(setSelectedInternalAccount(accountId)),
   };
 };
 
