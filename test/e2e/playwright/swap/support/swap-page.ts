@@ -29,6 +29,12 @@ export class SwapPage {
 
   readonly backButton: Locator;
 
+  readonly switchTokensButton: Locator;
+
+  readonly importTokensButton: Locator;
+
+  readonly importButton: Locator;
+
   constructor(page: Page) {
     this.page = page;
     this.swapButton = this.page.getByTestId('token-overview-button-swap');
@@ -43,6 +49,11 @@ export class SwapPage {
       'prepare-swap-page-swap-from',
     );
     this.swapToDropDown = this.page.getByTestId('prepare-swap-page-swap-to');
+    this.switchTokensButton = this.page.getByTestId(
+      'prepare-swap-page-switch-tokens',
+    );
+    this.importTokensButton = this.page.locator('text="Import tokens"').first();
+    this.importButton = this.page.locator('text=Import (');
     this.tokenSearch = this.page.locator(
       '[id="list-with-search__text-search"]',
     );
@@ -77,12 +88,22 @@ export class SwapPage {
     await this.tokenSearch.fill(options.to);
     await this.page.waitForTimeout(500);
     await this.tokenList.first().click();
-    await this.page.waitForSelector('text=/New quotes in 0:24/');
+    await this.page.waitForSelector('text=/New quotes in 0:26/');
   }
 
   async swap() {
     await this.footerButton.click(); // Swap button
     await this.page.waitForTimeout(1000);
+  }
+
+  async switchTokens() {
+    await this.switchTokensButton.click();
+  }
+
+  async importTokens() {
+    await this.importTokensButton.click();
+    await this.page.waitForTimeout(500);
+    await this.importButton.click();
   }
 
   async gotBack() {
@@ -95,6 +116,6 @@ export class SwapPage {
   }
 
   async waitForInsufficentBalance() {
-    await this.page.waitForSelector('text="Insuffiient balance"');
+    await this.page.waitForSelector('text="Insufficient balance"');
   }
 }
