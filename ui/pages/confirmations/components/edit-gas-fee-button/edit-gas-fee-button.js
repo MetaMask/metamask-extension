@@ -114,7 +114,7 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
                 </Text>
               )}
               <Text variant={TextVariant.bodySm} as="h6">
-                <b>{t('maxBaseFee')}</b> {maxFeePerGas}
+                <b>{t('maxFee')}</b> {maxFeePerGas}
               </Text>
               <Text variant={TextVariant.bodySm} as="h6">
                 <b>{t('maxPriorityFee')}</b> {maxPriorityFeePerGas}
