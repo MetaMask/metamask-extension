@@ -3829,8 +3829,8 @@ __metadata:
   linkType: hard
 
 "@metamask/assets-controllers@npm:^23.0.0":
-  version: 23.0.0
-  resolution: "@metamask/assets-controllers@npm:23.0.0"
+  version: 23.1.0
+  resolution: "@metamask/assets-controllers@npm:23.1.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -3860,7 +3860,7 @@ __metadata:
     "@metamask/approval-controller": ^5.1.1
     "@metamask/network-controller": ^17.1.0
     "@metamask/preferences-controller": ^5.0.1
-  checksum: 9f7d2076bed250e7749435f9e862e024b30e42e42eecc7056534b2508883a3204d617c4e2e4d3431181c363418c521e8a043e22d4b948f5d891b8d9089b3bc80
+  checksum: 2aae427b6a63c20f9521b20b47c2b3b8771eaa35fbcf4c66b36a263eb12bee62484238ae4c34551020254b0f2c0eb9ead26a47051eb16d696abaff830a357af9
   languageName: node
   linkType: hard
 
@@ -3889,19 +3889,6 @@ __metadata:
   linkType: hard
 
 "@metamask/base-controller@npm:^4.0.0, @metamask/base-controller@npm:^4.0.1":
-<<<<<<< HEAD
-  version: 4.0.1
-  resolution: "@metamask/base-controller@npm:4.0.1"
-  dependencies:
-    "@metamask/utils": "npm:^8.2.0"
-    immer: "npm:^9.0.6"
-  checksum: 9c32a26c3fbc091b97156c101738b4ab1391f3e4c3f0ba838489c43ec12a7c73c75c8f451f61368733750e17bcb959ac36f5aaa6d4626a0544b8390a03b1f9d6
-  languageName: node
-  linkType: hard
-
-"@metamask/base-controller@npm:^4.0.1":
-=======
->>>>>>> feat: fix yarn dedupe
   version: 4.0.1
   resolution: "@metamask/base-controller@npm:4.0.1"
   dependencies:
@@ -3980,21 +3967,6 @@ __metadata:
     ethereumjs-util: "npm:^7.0.10"
     fast-deep-equal: "npm:^3.1.3"
   checksum: b90150d6de7920787fecf96b08e81963dd93b4a191de4ec05ab076c53ad247db072722705d08b91b2dbb6da91f9e3c5667167742ea8115c1c1b8a9c1739c624c
-  languageName: node
-  linkType: hard
-
-"@metamask/controller-utils@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "@metamask/controller-utils@npm:8.0.0"
-  dependencies:
-    "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/ethjs-unit": "npm:^0.2.1"
-    "@metamask/utils": "npm:^8.2.0"
-    "@spruceid/siwe-parser": "npm:1.1.3"
-    eth-ens-namehash: "npm:^2.0.8"
-    ethereumjs-util: "npm:^7.0.10"
-    fast-deep-equal: "npm:^3.1.3"
-  checksum: df5216ebef5ff75526a74d4fb5d5b257ec06cafd1e3fb68ed4560f97138fd5346f4834933a0374e2e5c9dc0309a84de1fb981621496e9dec8157e63a041f4685
   languageName: node
   linkType: hard
 
@@ -4361,20 +4333,6 @@ __metadata:
   linkType: hard
 
 "@metamask/json-rpc-engine@npm:^7.1.1, @metamask/json-rpc-engine@npm:^7.2.0, @metamask/json-rpc-engine@npm:^7.3.0, @metamask/json-rpc-engine@npm:^7.3.1":
-<<<<<<< HEAD
-  version: 7.3.1
-  resolution: "@metamask/json-rpc-engine@npm:7.3.1"
-  dependencies:
-    "@metamask/rpc-errors": "npm:^6.1.0"
-    "@metamask/safe-event-emitter": "npm:^3.0.0"
-    "@metamask/utils": "npm:^8.2.0"
-  checksum: 3988ec9229964c8c3c9172ad8ef36bea2f20e63d0dd720431db89a0031b7692c5ebaa2c53afe9896a823b334f4d5eb718e48a5db00477fe8b7643d332ae3010d
-  languageName: node
-  linkType: hard
-
-"@metamask/json-rpc-engine@npm:^7.3.1":
-=======
->>>>>>> feat: fix yarn dedupe
   version: 7.3.1
   resolution: "@metamask/json-rpc-engine@npm:7.3.1"
   dependencies:
