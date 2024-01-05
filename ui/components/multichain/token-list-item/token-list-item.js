@@ -37,6 +37,7 @@ import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import {
   getCurrentChainId,
   getCurrentNetwork,
+  getMetaMetricsId,
   getNativeCurrencyImage,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
@@ -54,6 +55,7 @@ import { setSelectedNetworkConfigurationId } from '../../../store/actions';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { getProviderConfig } from '../../../ducks/metamask/metamask';
+import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 
 export const TokenListItem = ({
   className,
@@ -70,6 +72,7 @@ export const TokenListItem = ({
   const t = useI18nContext();
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const trackEvent = useContext(MetaMetricsContext);
+  const metaMetricsId = useSelector(getMetaMetricsId);
   const chainId = useSelector(getCurrentChainId);
 
   // Scam warning
@@ -95,6 +98,8 @@ export const TokenListItem = ({
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        const url = getPortfolioUrl('stake', 'ext_stake_button', metaMetricsId);
+        global.platform.openTab({ url });
         trackEvent({
           event: MetaMetricsEventName.StakingEntryPointClicked,
           category: MetaMetricsEventCategory.Tokens,
