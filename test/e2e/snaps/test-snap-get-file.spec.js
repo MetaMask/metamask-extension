@@ -19,7 +19,7 @@ describe('Test Snap Get File', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect to dialog snap
+        // navigate to test snaps page and connect to get-file snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
         const dialogButton = await driver.findElement('#connectgetfile');
