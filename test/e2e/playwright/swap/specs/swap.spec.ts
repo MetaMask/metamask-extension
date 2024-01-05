@@ -1,13 +1,13 @@
 import { test } from '@playwright/test';
 
-import { ChromeExtensionPage } from '../pageObjects/extension-page';
-import { SignUpPage } from '../pageObjects/signup-page';
-import { NetworkController } from '../pageObjects/network-controller-page';
-import { SwapPage } from '../pageObjects/swap-page';
+import { ChromeExtensionPage } from '../support/extension-page';
+import { SignUpPage } from '../support/signup-page';
+import { NetworkController } from '../support/network-controller-page';
+import { SwapPage } from '../support/swap-page';
 
 let swapPage, networkController;
 
-test.beforeAll('Initialize extension and import wallet', async () => {
+test.beforeEach('Initialize extension and import wallet', async () => {
   const extension = new ChromeExtensionPage();
   const page = await extension.initExtension();
 
@@ -16,60 +16,44 @@ test.beforeAll('Initialize extension and import wallet', async () => {
 
   networkController = new NetworkController(page);
   swapPage = new SwapPage(page);
-});
 
-test('Switch to Tenderly', async () => {
   await networkController.addCustomNetwork({
     name: 'Tenderly',
-    url: 'https://rpc.tenderly.co/fork/e3a0948b-a9df-46be-a45b-afa572ea62ee',
+    url: 'https://rpc.tenderly.co/fork/c2e7fb02-9c2e-40ee-b911-ebf5b0326f96',
     chainID: '1',
     symbol: 'ETH',
   });
 });
 
-test('Swap ETH to DAI', async () => {
+test('Swap ETH to DAI - Switch to Arbitrum and fetch quote - Switch ETH - WETH', async () => {
   await swapPage.fetchQuote({ to: 'DAI', qty: '.001' });
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
-});
 
-test('Switch to Arbitrum and fetch quote', async () => {
   await networkController.addPopularNetwork();
   await swapPage.fetchQuote({ to: 'USDC', qty: '.001' });
   await swapPage.waitForInsufficentBalance();
   await swapPage.gotBack();
-  await networkController.selectNetwork('Tenderly');
-});
 
-test('Swap ETH to WETH', async () => {
+  await networkController.selectNetwork('Tenderly');
   await swapPage.fetchQuote({ to: 'WETH', qty: '.001' });
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
 });
 
-test('Switch to Avalanche and fetch quote', async () => {
-  await networkController.addPopularNetwork();
-  await swapPage.fetchQuote({ to: 'USDC', qty: '.001' });
-  await swapPage.waitForInsufficentBalance();
-  await swapPage.gotBack();
-  await networkController.selectNetwork('Tenderly');
-});
-
-test('Swap WETH to ETH', async () => {
-  await swapPage.fetchQuote({ from: 'WETH', to: 'ETH', qty: '.001' });
+test('Swap WETH to ETH - Switch to Avalanche and fetch quote - Switch DAI - USDC', async () => {
+  await swapPage.fetchQuote({ from: 'ETH', to: 'WETH', qty: '.001' });
+  await swapPage.switchTokens();
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
-});
 
-test('Switch to BNB Chain and fetch quote', async () => {
   await networkController.addPopularNetwork();
   await swapPage.fetchQuote({ to: 'USDC', qty: '.001' });
   await swapPage.waitForInsufficentBalance();
   await swapPage.gotBack();
-  await networkController.selectNetwork('Tenderly');
-});
 
-test('Swap DAI to USDC', async () => {
+  await networkController.selectNetwork('Tenderly');
+  await swapPage.importTokens();
   await swapPage.fetchQuote({ from: 'DAI', to: 'USDC', qty: '1' });
   await swapPage.swap();
   await swapPage.waitForTransactionToComplete();
