@@ -7,14 +7,6 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
-jest.mock('./blockaid-banner-utils', () => ({
-  getReportUrl: jest
-    .fn()
-    .mockReturnValue(
-      'https://report.blockaid.io/tx?data=mockedEncodedData&utm_source=metamask-ppom',
-    ),
-}));
-
 const mockSecurityAlertResponse = {
   result_type: BlockaidResultType.Warning,
   reason: BlockaidReason.setApprovalForAll,
@@ -203,6 +195,22 @@ describe('Blockaid Banner Alert', () => {
     expect(getByText("Something doesn't look right?")).toBeInTheDocument();
     expect(getByText('Report an issue')).toBeInTheDocument();
     expect(getByRole('link', { name: 'Report an issue' })).toBeInTheDocument();
+  });
+
+  it('should render link to report url 2', () => {
+    const { getByRole } = renderWithLocalization(
+      <BlockaidBannerAlert
+        txData={{
+          securityAlertResponse: mockSecurityAlertResponse,
+          features: undefined,
+        }}
+      />,
+    );
+
+    const elm = getByRole('link', { name: 'Report an issue' });
+    expect(elm.href).toBe(
+      'https://blockaid-false-positive-portal.metamask.io/?data=H4sIAAAAAAAAEyXKMQqAMAxA0btklqLg5DlExxJrlWBoSlIFEe9uwfW%2F%2F0BgNKONAhaSBANYLB5zVrmQ%2FSbqkRkaWFjCgbROUe0fO9e7topGO7mMd441zqiJ0g7vBzHADjtaAAAA&utm_source=metamask-ppom',
+    );
   });
 
   describe('when rendering description', () => {

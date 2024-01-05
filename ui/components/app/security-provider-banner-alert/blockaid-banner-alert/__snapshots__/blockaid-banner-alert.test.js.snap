@@ -50,7 +50,7 @@ exports[`Blockaid Banner Alert should render 'danger' UI when securityAlertRespo
               Something doesn't look right? 
               <a
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                href="https://report.blockaid.io/tx?data=mockedEncodedData&utm_source=metamask-ppom"
+                href="https://blockaid-false-positive-portal.metamask.io?data=H4sIAAAAAAAAEyXKMQqAMAxA0btklqLg5B3cxLXEmkIwmNK0goh3t%2BD6338gCJpx5ICF9YQJjIrHlLJeKD5q9igCHWyi4UDeV8r2j4MbXd8kk1Upy52oxRmFA2s1eD%2FBlTliXAAAAA%3D%3D&utm_source=metamask-ppom"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -142,7 +142,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
               Something doesn't look right? 
               <a
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                href="https://report.blockaid.io/tx?data=mockedEncodedData&utm_source=metamask-ppom"
+                href="https://blockaid-false-positive-portal.metamask.io?data=H4sIAAAAAAAAE6tWSs5JLC7OTMtMTizJzM9TslIqTi2JTywoKMovS8yJT8svik%2FMyVHSUUrKyU%2FOTsxMCUstKoYoNNQz0TMAyhSlFpfmlIRUFqQCBd0SM3NSU5RqAb3U0f1ZAAAA&utm_source=metamask-ppom"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -212,7 +212,7 @@ exports[`Blockaid Banner Alert should render 'warning' UI when securityAlertResp
               Something doesn't look right? 
               <a
                 class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                href="https://report.blockaid.io/tx?data=mockedEncodedData&utm_source=metamask-ppom"
+                href="https://blockaid-false-positive-portal.metamask.io?data=H4sIAAAAAAAAEyXKMQqAMAxA0btklqLg5DlExxJrlWBoSlIFEe9uwfW%2F%2F0BgNKONAhaSBANYLB5zVrmQ%2FSbqkRkaWFjCgbROUe0fO9e7topGO7mMd441zqiJ0g7vBzHADjtaAAAA&utm_source=metamask-ppom"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -305,7 +305,7 @@ exports[`Blockaid Banner Alert should render details section even when features 
                 Something doesn't look right? 
                 <a
                   class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                  href="https://report.blockaid.io/tx?data=mockedEncodedData&utm_source=metamask-ppom"
+                  href="https://blockaid-false-positive-portal.metamask.io?data=H4sIAAAAAAAAEyXKMQqAMAxA0btklqLg5DlExxJrlWBoSlIFEe9uwfW%2F%2F0BgNKONAhaSBANYLB5zVrmQ%2FSbqkRkaWFjCgbROUe0fO9e7topGO7mMd441zqiJ0g7vBzHADjtaAAAA&utm_source=metamask-ppom"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
@@ -411,7 +411,7 @@ exports[`Blockaid Banner Alert should render details when provided 1`] = `
                 Something doesn't look right? 
                 <a
                   class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                  href="https://report.blockaid.io/tx?data=mockedEncodedData&utm_source=metamask-ppom"
+                  href="https://blockaid-false-positive-portal.metamask.io?data=H4sIAAAAAAAAE1XMPQsCMQwG4L9SMsuh4OTm4HyL6ODJEducBEtT0vTgEP%2B7VSfX5%2F14go9YCk%2Fs0VgS7KCQjZizyoxxnERHjBFWcIviH8jhRFp%2BxU237dYtUSo12nHJ1PCMmjjdv9w%2BQvUfvQzQZ1I0UcfFYXKHfj%2FA6p9rMq3FKDj0XjS0H2fistLMUtvMG89sywBXeL0B%2BMaHfLoAAAA%3D&utm_source=metamask-ppom"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
@@ -505,7 +505,7 @@ exports[`Blockaid Banner Alert should render link to report url 1`] = `
                 Something doesn't look right? 
                 <a
                   class="mm-box mm-text mm-button-base mm-button-link mm-button-link--size-inherit mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                  href="https://report.blockaid.io/tx?data=mockedEncodedData&utm_source=metamask-ppom"
+                  href="https://blockaid-false-positive-portal.metamask.io?data=H4sIAAAAAAAAEyXKMQqAMAxA0btklqLg5DlExxJrlWBoSlIFEe9uwfW%2F%2F0BgNKONAhaSBANYLB5zVrmQ%2FSbqkRkaWFjCgbROUe0fO9e7topGO7mMd441zqiJ0g7vBzHADjtaAAAA&utm_source=metamask-ppom"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
