@@ -352,6 +352,9 @@
   "alerts": {
     "message": "Alerts"
   },
+  "all": {
+    "message": "All"
+  },
   "allConnections": {
     "message": "All Connections"
   },
@@ -3259,6 +3262,18 @@
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
   },
+  "oneDay": {
+    "message": "1D"
+  },
+  "oneMonth": {
+    "message": "1M"
+  },
+  "oneWeek": {
+    "message": "1W"
+  },
+  "oneYear": {
+    "message": "1Y"
+  },
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
   },
@@ -5211,6 +5226,9 @@
   },
   "thisCollection": {
     "message": "this collection"
+  },
+  "threeMonths": {
+    "message": "3M"
   },
   "time": {
     "message": "Time"
