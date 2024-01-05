@@ -115,6 +115,7 @@
     "metaMetricsId": "fake-metrics-id",
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
+    "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object",
     "currentCurrency": "usd",
