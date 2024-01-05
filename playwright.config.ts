@@ -65,7 +65,7 @@ const config: PlaywrightTestConfig = {
     },
     {
       name: 'swap',
-      testMatch: '*swap/*swap.spec.ts',
+      testMatch: '*swap/specs/*swap.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
       },
