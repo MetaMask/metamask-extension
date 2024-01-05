@@ -209,7 +209,7 @@ describe('Blockaid Banner Alert', () => {
 
     const elm = getByRole('link', { name: 'Report an issue' });
     expect(elm.href).toBe(
-      'https://blockaid-false-positive-portal.metamask.io/?data=H4sIAAAAAAAAEyXKMQqAMAxA0btklqLg5DlExxJrlWBoSlIFEe9uwfW%2F%2F0BgNKONAhaSBANYLB5zVrmQ%2FSbqkRkaWFjCgbROUe0fO9e7topGO7mMd441zqiJ0g7vBzHADjtaAAAA&utm_source=metamask-ppom',
+      'http://localhost/%EF%BF%BD%08%00%00%00%00%00%00%13%%EF%BF%BD1%EF%BF%BD0%0C@%D1%BBd%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD9D%EF%BF%BD%12k%EF%BF%BD%60hJR%05%11%EF%BF%BDn%EF%BF%BD%EF%BF%BD%EF%BF%BD%EF%BF%BD@%604%EF%BF%BD%EF%BF%BD%02%16%EF%BF%BD%04%03X,%1EsV%EF%BF%BD%EF%BF%BD%EF%BF%BD&%EF%BF%BD%19%1AXX%C2%81%EF%BF%BDNQ%EF%BF%BD%1F;%D7%BB%EF%BF%BD%EF%BF%BDF;%EF%BF%BD%EF%BF%BDw%EF%BF%BD5%CE%A8%EF%BF%BD%EF%BF%BD%0E%EF%BF%BD%071%EF%BF%BD%0E;Z',
     );
   });
 

@@ -17,7 +17,7 @@ import {
 import { Text } from '../../../component-library';
 
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
-import { getReportUrl } from './blockaid-banner-utils';
+// import { getReportUrl } from './blockaid-banner-utils';
 
 const zlib = require('zlib');
 
@@ -111,7 +111,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
 
-  const reportUrl = getReportUrl(encodedData);
+  // const reportUrl = getReportUrl(encodedData);
 
   return (
     <SecurityProviderBannerAlert
@@ -120,7 +120,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
       provider={isFailedResultType ? null : SecurityProvider.Blockaid}
       severity={severity}
       title={title}
-      reportUrl={reportUrl}
+      reportUrl={encodedData}
       {...props}
     />
   );
