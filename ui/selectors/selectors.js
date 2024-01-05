@@ -389,7 +389,6 @@ export function getInternalAccountsSortedByKeyring(state) {
  * @param accountsWithBalances - list of accounts with balances
  * @returns merged accounts list with balances and internal account data
  */
-// TODO: remove this selector once we update getMetaMaskIdentities
 export function mergeAccounts(state, accountsWithBalances) {
   const internalAccounts = getInternalAccounts(state);
   const internalAccountsMap = new Map(

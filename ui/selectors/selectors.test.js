@@ -116,7 +116,6 @@ describe('Selectors', () => {
     });
   });
 
-  // TODO: (redundant test) Remove this once we update `getMetaMaskIdentities` selector
   describe('#mergeAccounts', () => {
     it('returns a list of merged accounts with balances and internal accounts', () => {
       const accountsWithBalances =
