@@ -2049,7 +2049,6 @@
     },
     "@metamask/snaps-controllers": {
       "globals": {
-        "DecompressionStream": true,
         "URL": true,
         "chrome.offscreen.createDocument": true,
         "chrome.offscreen.hasDocument": true,
@@ -2170,6 +2169,7 @@
         "fetch": true
       },
       "packages": {
+        "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-sdk>is-svg": true,
         "@metamask/utils": true,
         "superstruct": true
