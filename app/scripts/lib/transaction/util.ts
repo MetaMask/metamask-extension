@@ -13,9 +13,9 @@ import {
 import { addHexPrefix } from 'ethereumjs-util';
 import { SimpleSmartContractAccount } from 'simple-smart-contract-account';
 
-export type AddTransactionOptions = Parameters<
-  TransactionController['addTransaction']
->[1];
+export type AddTransactionOptions = NonNullable<
+  Parameters<TransactionController['addTransaction']>[1]
+>;
 
 type BaseAddTransactionRequest = {
   networkClientId: string;
@@ -26,8 +26,12 @@ type BaseAddTransactionRequest = {
   userOperationController: UserOperationController;
 };
 
-export type AddTransactionRequest = BaseAddTransactionRequest & {
+type FinalAddTransactionRequest = BaseAddTransactionRequest & {
   transactionOptions: AddTransactionOptions;
+};
+
+export type AddTransactionRequest = FinalAddTransactionRequest & {
+  waitForSubmit: boolean;
 };
 
 export type AddDappTransactionRequest = BaseAddTransactionRequest & {
@@ -59,47 +63,51 @@ export async function addDappTransaction(
   return (await waitForHash()) as string;
 }
 
-export async function addTransactionOnly(
+export async function addTransaction(
   request: AddTransactionRequest,
 ): Promise<TransactionMeta> {
-  const { transactionMeta, waitForSubmit } =
-    await addTransactionOrUserOperation(request);
+  const { waitForSubmit } = request;
 
-  waitForSubmit().catch(() => {
-    // Not concerned with result.
-  });
+  const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
+    request,
+  );
 
-  return transactionMeta as TransactionMeta;
-}
+  if (!waitForSubmit) {
+    waitForHash().catch(() => {
+      // Not concerned with result.
+    });
 
-export async function addTransactionAndWaitForPublish(
-  request: AddTransactionRequest,
-) {
-  const { waitForHash } = await addTransactionOrUserOperation(request);
+    return transactionMeta as TransactionMeta;
+  }
+
   const transactionHash = await waitForHash();
 
-  const transactionMeta = getTransactionByHash(
+  const finalTransactionMeta = getTransactionByHash(
     transactionHash as string,
     request.transactionController,
   );
 
-  return transactionMeta;
+  return finalTransactionMeta as TransactionMeta;
 }
 
-async function addTransactionOrUserOperation(request: AddTransactionRequest) {
+async function addTransactionOrUserOperation(
+  request: FinalAddTransactionRequest,
+) {
   const { selectedAccount } = request;
 
   const isSmartContractAccount =
     process.env.EIP_4337_FORCE ?? selectedAccount.type === 'eip155:eip4337';
 
   if (isSmartContractAccount) {
-    return addUserOperation(request);
+    return addUserOperationWithController(request);
   }
 
-  return addTransaction(request);
+  return addTransactionWithController(request);
 }
 
-async function addTransaction(request: AddTransactionRequest) {
+async function addTransactionWithController(
+  request: FinalAddTransactionRequest,
+) {
   const { transactionController, transactionOptions, transactionParams } =
     request;
 
@@ -111,12 +119,13 @@ async function addTransaction(request: AddTransactionRequest) {
 
   return {
     transactionMeta,
-    waitForSubmit: () => result,
     waitForHash: () => result,
   };
 }
 
-async function addUserOperation(request: AddTransactionRequest) {
+async function addUserOperationWithController(
+  request: FinalAddTransactionRequest,
+) {
   const {
     networkClientId,
     provider,
@@ -163,7 +172,6 @@ async function addUserOperation(request: AddTransactionRequest) {
 
   return {
     transactionMeta,
-    waitForSubmit: result.hash,
     waitForHash: result.transactionHash,
   };
 }

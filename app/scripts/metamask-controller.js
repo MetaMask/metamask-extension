@@ -288,11 +288,7 @@ import { TrezorOffscreenBridge } from './lib/offscreen-bridge/trezor-offscreen-b
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
-import {
-  addDappTransaction,
-  addTransactionAndWaitForPublish,
-  addTransactionOnly,
-} from './lib/transaction/util';
+import { addDappTransaction, addTransaction } from './lib/transaction/util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -3037,20 +3033,22 @@ export default class MetamaskController extends EventEmitter {
       estimateGas: this.estimateGas.bind(this),
       getNextNonce: this.getNextNonce.bind(this),
       addTransaction: (transactionParams, transactionOptions) =>
-        addTransactionOnly(
+        addTransaction(
           this.getAddTransactionRequest({
             transactionParams,
             transactionOptions,
+            waitForSubmit: false,
           }),
         ),
       addTransactionAndWaitForPublish: (
         transactionParams,
         transactionOptions,
       ) =>
-        addTransactionAndWaitForPublish(
+        addTransaction(
           this.getAddTransactionRequest({
             transactionParams,
             transactionOptions,
+            waitForSubmit: true,
           }),
         ),
       createTransactionEventFragment:
