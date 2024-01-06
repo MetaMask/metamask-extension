@@ -1515,30 +1515,9 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/name-controller>@metamask/base-controller": true,
-        "@metamask/name-controller>@metamask/utils": true,
+        "@metamask/base-controller": true,
+        "@metamask/utils": true,
         "eth-json-rpc-filters>async-mutex": true
-      }
-    },
-    "@metamask/name-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/name-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/network-controller": {
