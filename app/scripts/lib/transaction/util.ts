@@ -202,6 +202,7 @@ async function getSmartContractAccount(
     bundler: process.env.EIP_4337_BUNDLER as string,
     entrypoint: process.env.EIP_4337_ENTRYPOINT as string,
     owner: process.env.EIP_4337_SIMPLE_ACCOUNT_OWNER as string,
+    paymasterAddress: process.env.EIP_4337_VERIFYING_PAYMASTER as string,
     privateKey: process.env.EIP_4337_SIMPLE_ACCOUNT_PRIVATE_KEY as string,
     provider: provider as any,
     salt: process.env.EIP_4337_SIMPLE_ACCOUNT_SALT as string,

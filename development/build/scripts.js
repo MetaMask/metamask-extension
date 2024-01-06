@@ -1235,6 +1235,10 @@ async function setEnvironmentVariables({
         : undefined,
     EIP_4337_SIMPLE_ACCOUNT_SALT:
       variables.getMaybe('EIP_4337_SIMPLE_ACCOUNT_SALT') || '0x1',
+    EIP_4337_VERIFYING_PAYMASTER:
+      variables.getMaybe('EIP_4337_VERIFYING_PAYMASTER') || testing
+        ? '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7'
+        : undefined,
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,

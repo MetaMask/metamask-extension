@@ -1,6 +1,7 @@
 const { Web3Provider } = require('@ethersproject/providers');
-const { ContractFactory } = require('@ethersproject/contracts');
+const { ContractFactory, Contract } = require('@ethersproject/contracts');
 
+const { ENTRYPOINT, DEFAULT_FIXTURE_ACCOUNT } = require('../constants');
 const { SMART_CONTRACTS, contractConfiguration } = require('./smart-contracts');
 const GanacheContractAddressRegistry = require('./ganache-contract-address-registry');
 
@@ -22,6 +23,7 @@ class GanacheSeeder {
   async deploySmartContract(contractName) {
     const signer = this.#getSigner();
     const fromAddress = await signer.getAddress();
+
     const contractFactory = new ContractFactory(
       contractConfiguration[contractName].abi,
       contractConfiguration[contractName].bytecode,
@@ -38,8 +40,11 @@ class GanacheSeeder {
         contractConfiguration[SMART_CONTRACTS.HST].tokenSymbol,
       );
     } else if (contractName === SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY) {
+      contract = await contractFactory.deploy(ENTRYPOINT);
+    } else if (contractName === SMART_CONTRACTS.VERIFYING_PAYMASTER) {
       contract = await contractFactory.deploy(
-        '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b',
+        ENTRYPOINT,
+        DEFAULT_FIXTURE_ACCOUNT,
       );
     } else {
       contract = await contractFactory.deploy();
@@ -83,6 +88,27 @@ class GanacheSeeder {
     await sendAccount.wait();
 
     console.log('Completed transfer', { to, value });
+  }
+
+  async paymasterDeposit(amount) {
+    const paymasterAddress = this.smartContractRegistry.getContractAddress(
+      SMART_CONTRACTS.VERIFYING_PAYMASTER,
+    );
+
+    const paymasterFactory = new Contract(
+      paymasterAddress,
+      contractConfiguration[SMART_CONTRACTS.VERIFYING_PAYMASTER].abi,
+      this.#getSigner(),
+    );
+
+    const transaction = await paymasterFactory.deposit({
+      value: amount,
+      gasLimit: '0xFFFFF',
+    });
+
+    await transaction.wait();
+
+    console.log('Completed paymaster deposit', { amount });
   }
 
   /**

@@ -6,12 +6,12 @@ const {
   DAPP_URL,
   WINDOW_TITLES,
   sendTransaction,
-  DEFAULT_FIXTURE_ACCOUNT,
   convertETHToHexGwei,
 } = require('../helpers');
 
 const FixtureBuilder = require('../fixture-builder');
 const { buildQuote, reviewQuote } = require('../tests/swaps/shared');
+const { DEFAULT_FIXTURE_ACCOUNT } = require('../constants');
 
 async function createDappTransaction(driver, transaction) {
   await openDapp(
