@@ -6,11 +6,11 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import Tooltip from '../../ui/tooltip';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { SECOND } from '../../../../shared/constants/time';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import CustodyLabels from '../../institutional/custody-labels/custody-labels';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { Icon, IconName, IconSize } from '../../component-library';
 import { IconColor } from '../../../helpers/constants/design-system';
 import { COPY_OPTIONS } from '../../../../shared/constants/copy';
@@ -25,13 +25,13 @@ class SelectedAccount extends Component {
   };
 
   static propTypes = {
-    selectedIdentity: PropTypes.object.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    selectedAccount: PropTypes.object.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType: PropTypes.string,
     accountDetails: PropTypes.object,
     provider: PropTypes.object,
     isCustodianSupportedChain: PropTypes.bool,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   componentDidMount() {
@@ -48,16 +48,16 @@ class SelectedAccount extends Component {
   render() {
     const { t } = this.context;
     const {
-      selectedIdentity,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      selectedAccount,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       accountType,
       accountDetails,
       provider,
       isCustodianSupportedChain,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
-    const checksummedAddress = toChecksumHexAddress(selectedIdentity.address);
+    const checksummedAddress = toChecksumHexAddress(selectedAccount.address);
 
     let title = this.state.copied
       ? t('copiedExclamation')
@@ -65,7 +65,7 @@ class SelectedAccount extends Component {
 
     let showAccountCopyIcon = true;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const custodyLabels = accountDetails
       ? accountDetails[checksummedAddress]?.labels
       : {};
@@ -84,7 +84,7 @@ class SelectedAccount extends Component {
       : t('custodyWrongChain', [provider.nickname || provider.type]);
 
     showAccountCopyIcon = isCustodianSupportedChain;
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     return (
       <div className="selected-account">
@@ -96,9 +96,9 @@ class SelectedAccount extends Component {
           <button
             className="selected-account__clickable"
             data-testid="selected-account-click"
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             disabled={!isCustodianSupportedChain}
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
             onClick={() => {
               this.setState({ copied: true });
               this.copyTimeout = setTimeout(
@@ -109,13 +109,13 @@ class SelectedAccount extends Component {
             }}
           >
             <div className="selected-account__name">
-              {selectedIdentity.name}
+              {selectedAccount.metadata.name}
             </div>
             <div className="selected-account__address">
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
                 showCustodyLabels && <CustodyLabels labels={custodyLabels} />
-                ///: END:ONLY_INCLUDE_IN
+                ///: END:ONLY_INCLUDE_IF
               }
               {shortenAddress(checksummedAddress)}
               {showAccountCopyIcon && (

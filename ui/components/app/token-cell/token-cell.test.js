@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 
+import { useIsOriginalTokenSymbol } from '../../../hooks/useIsOriginalTokenSymbol';
 import TokenCell from '.';
 
 jest.mock('react-redux', () => {
@@ -22,15 +23,25 @@ jest.mock('../../../hooks/useTokenFiatAmount', () => {
     useTokenFiatAmount: jest.fn(),
   };
 });
+
+jest.mock('../../../hooks/useIsOriginalTokenSymbol', () => {
+  return {
+    useIsOriginalTokenSymbol: jest.fn(),
+  };
+});
 describe('Token Cell', () => {
   const mockState = {
     metamask: {
-      currentCurrency: 'usd',
       selectedAddress: '0xAddress',
       contractExchangeRates: {
         '0xAnotherToken': 0.015,
       },
-      conversionRate: 7.0,
+      currentCurrency: 'usd',
+      currencyRates: {
+        ETH: {
+          conversionRate: 7.0,
+        },
+      },
       preferences: {},
       providerConfig: {
         chainId: '0x1',
@@ -39,6 +50,8 @@ describe('Token Cell', () => {
       },
     },
   };
+
+  useIsOriginalTokenSymbol.mockReturnValue(true);
 
   // two tokens with the same symbol but different addresses
   const MOCK_GET_TOKEN_LIST = {

@@ -10,7 +10,11 @@ const render = (useNativeCurrencyAsPrimaryCurrency = true) => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      conversionRate: 1618,
+      currencyRates: {
+        ETH: {
+          conversionRate: 1618,
+        },
+      },
       preferences: {
         ...mockState.metamask.preferences,
         showFiatInTestnets: true,

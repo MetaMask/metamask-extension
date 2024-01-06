@@ -1,34 +1,25 @@
-const { strict: assert } = require('assert');
-const { withFixtures } = require('../helpers');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  unlockWallet,
+  WINDOW_TITLES,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Get Locale', function () {
   it('test snap_getLocale functionality', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
-        },
-      ],
-    };
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
+        await unlockWallet(driver);
 
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        // navigate to test snaps page and connect to dialog snap
+        // navigate to test snaps page and connect to get-locale snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
         const dialogButton = await driver.findElement('#connectgetlocale');
@@ -44,7 +35,7 @@ describe('Test Snap Get Locale', function () {
           10000,
         );
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.clickElement({
@@ -74,44 +65,16 @@ describe('Test Snap Get Locale', function () {
         // wait for npm installation success
         await driver.waitForSelector({
           css: '#connectgetlocale',
-          text: 'Reconnect to Get Locale Snap',
+          text: 'Reconnect to Localization Snap',
         });
 
         // click on alert dialog
         await driver.clickElement('#sendGetLocaleHelloButton');
-        await driver.delay(500);
-
-        // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.delay(500);
-
-        // check dialog contents
-        const result = await driver.findElement('.snap-ui-renderer__panel');
-        await driver.scrollToElement(result);
-        await driver.delay(500);
-        assert.equal(
-          await result.getText(),
-          'Hello https://metamask.github.io!\nThis is a dialog!',
-        );
-
-        // click ok button
-        await driver.clickElement({
-          text: 'OK',
-          tag: 'button',
-        });
-
-        // switch back to test snaps tab
-        windowHandles = await driver.waitUntilXWindowHandles(2, 1000, 10000);
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
 
         // check for result correctness
         await driver.waitForSelector({
           css: '#getLocaleResult',
-          text: 'null',
+          text: '"Hello, world!"',
         });
 
         // try switching language to dansk
@@ -149,24 +112,12 @@ describe('Test Snap Get Locale', function () {
 
         // click on alert dialog
         await driver.clickElement('#sendGetLocaleHelloButton');
-        await driver.delay(500);
 
-        // switch to dialog popup
-        windowHandles = await driver.waitUntilXWindowHandles(3, 1000, 10000);
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
-        await driver.delay(500);
-
-        // check dialog contents for dansk result
-        const result2 = await driver.findElement('.snap-ui-renderer__panel');
-        await driver.scrollToElement(result2);
-        await driver.delay(500);
-        assert.equal(
-          await result2.getText(),
-          'Hej https://metamask.github.io!\nDette er en dialog!',
-        );
+        // check for result correctness
+        await driver.waitForSelector({
+          css: '#getLocaleResult',
+          text: '"Hej, verden!"',
+        });
       },
     );
   });

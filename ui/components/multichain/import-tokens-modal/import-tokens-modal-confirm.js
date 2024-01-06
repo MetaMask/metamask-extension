@@ -1,71 +1,80 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import {
-  Box,
-  ButtonPrimary,
-  ButtonSecondary,
+  getCurrentNetwork,
+  getTestNetworkBackgroundColor,
+  getTokenList,
+} from '../../../selectors';
+import {
   Text,
+  Box,
+  AvatarToken,
+  BadgeWrapper,
+  AvatarNetwork,
+  AvatarNetworkSize,
 } from '../../component-library';
 import {
-  AlignItems,
-  Display,
-  Size,
+  TextVariant,
   TextAlign,
   TextColor,
-  TextVariant,
+  FontWeight,
+  Display,
+  AlignItems,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
-import TokenBalance from '../../ui/token-balance/token-balance';
-import Identicon from '../../ui/identicon';
-import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getPendingTokens } from '../../../ducks/metamask/metamask';
+import TokenBalance from '../../ui/token-balance/token-balance';
+import { I18nContext } from '../../../contexts/i18n';
 
-export const ImportTokensModalConfirm = ({ onBackClick, onImportClick }) => {
-  const t = useI18nContext();
+export const ImportTokensModalConfirm = () => {
+  const t = useContext(I18nContext);
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
   const pendingTokens = useSelector(getPendingTokens);
-
+  const tokenList = useSelector(getTokenList);
   return (
-    <Box paddingTop={4} paddingBottom={4}>
-      <Text textAlign={TextAlign.Center}>{t('likeToImportTokens')}</Text>
-      <Box marginTop={4} marginBottom={4}>
-        <Box display={Display.Flex}>
-          <Text
-            variant={TextVariant.bodySm}
-            className="import-tokens-modal__token-name"
-          >
-            {t('token')}
-          </Text>
-          <Text
-            variant={TextVariant.bodySm}
-            className="import-tokens-modal__token-balance"
-          >
-            {t('balance')}
-          </Text>
-        </Box>
+    <Box paddingTop={6}>
+      <Text textAlign={TextAlign.Center}>
+        {Object.keys(pendingTokens).length === 1
+          ? t('likeToImportToken')
+          : t('likeToImportTokens')}
+      </Text>
+      <Box paddingTop={6}>
         <Box
-          display={Display.Flex}
-          className="import-tokens-modal__confirm-token-list"
+          flexDirection={FlexDirection.Column}
+          className="import-tokens-modal__confirmation-list"
         >
           {Object.entries(pendingTokens).map(([address, token]) => {
-            const { name, symbol } = token;
+            const { name, symbol, iconUrl } = token;
+            const tokenImage =
+              iconUrl || tokenList[address.toLowerCase()]?.iconUrl;
             return (
-              <Box
-                key={address}
-                marginBottom={4}
-                display={Display.Flex}
-                className="import-tokens-modal__confirm-token-list-item"
-              >
+              <Box key={address} padding={4} display={Display.Flex}>
                 <Box
                   display={Display.Flex}
-                  alignItems={AlignItems.center}
                   className="import-tokens-modal__confirm-token-list-item-wrapper"
                 >
-                  <Identicon diameter={36} address={address} />
-                  <Box
-                    marginInlineStart={4}
-                    className="import-tokens-modal__confirm-token-list-item-wrapper__text"
+                  <BadgeWrapper
+                    badge={
+                      <AvatarNetwork
+                        size={AvatarNetworkSize.Xs}
+                        name={currentNetwork?.nickname}
+                        src={currentNetwork?.rpcPrefs?.imageUrl}
+                        backgroundColor={testNetworkBackgroundColor}
+                      />
+                    }
+                    marginRight={4}
+                    marginTop={1}
                   >
-                    <Text ellipsis>{name}</Text>
+                    <AvatarToken name={symbol} src={tokenImage} showHalo />
+                  </BadgeWrapper>
+                  <Box>
+                    <Text
+                      fontWeight={FontWeight.Medium}
+                      variant={TextVariant.bodyMd}
+                    >
+                      {name || symbol}
+                    </Text>
                     <Text
                       variant={TextVariant.bodySm}
                       color={TextColor.textAlternative}
@@ -74,41 +83,24 @@ export const ImportTokensModalConfirm = ({ onBackClick, onImportClick }) => {
                     </Text>
                   </Box>
                 </Box>
-                <Box
-                  className="import-tokens-modal__token-balance"
-                  alignItems={AlignItems.flexStart}
-                >
-                  <TokenBalance token={token} />
+                <Box alignItems={AlignItems.flexStart}>
+                  <TokenBalance
+                    textProps={{
+                      font: FontWeight.Medium,
+                      variant: TextVariant.bodyLgMedium,
+                    }}
+                    suffixProps={{
+                      font: FontWeight.Medium,
+                      variant: TextVariant.bodyLgMedium,
+                    }}
+                    token={token}
+                  />
                 </Box>
               </Box>
             );
           })}
         </Box>
-        <Box display={Display.Flex} gap={2} marginTop={4}>
-          <ButtonSecondary size={Size.LG} onClick={onBackClick} block>
-            {t('back')}
-          </ButtonSecondary>
-          <ButtonPrimary
-            size={Size.LG}
-            onClick={onImportClick}
-            block
-            data-testid="import-tokens-modal-import-button"
-          >
-            {t('import')}
-          </ButtonPrimary>
-        </Box>
       </Box>
     </Box>
   );
-};
-
-ImportTokensModalConfirm.propTypes = {
-  /**
-   * Executes when the Back button is clicked
-   */
-  onBackClick: PropTypes.func.isRequired,
-  /**
-   * Executes when the Import button is clicked
-   */
-  onImportClick: PropTypes.func.isRequired,
 };

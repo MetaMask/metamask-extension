@@ -232,9 +232,6 @@
   "editContact": {
     "message": "ערוך איש קשר"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "שם ENS לא נמצא ברשת הנוכחית. נסה/י לעבור לרשת אתריום הראשית."
-  },
   "ensRegistrationError": {
     "message": "שגיאה ברישום שם ENS"
   },
@@ -609,9 +606,6 @@
   "search": {
     "message": "חפש"
   },
-  "searchResults": {
-    "message": "תוצאות חיפוש"
-  },
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
   },
@@ -779,12 +773,6 @@
   },
   "unknown": {
     "message": "לא ידוע"
-  },
-  "unknownCameraError": {
-    "message": "אירעה שגיאה במהלך הניסיון לקבל גישה למצלמה שלך. נא לנסות שוב..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "אופס! משהו השתבש...."
   },
   "unknownNetwork": {
     "message": "רשת פרטית לא ידועה"

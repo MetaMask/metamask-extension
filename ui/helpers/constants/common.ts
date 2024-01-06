@@ -4,10 +4,10 @@ export const SECONDARY = 'SECONDARY';
 const _contractAddressLink =
   'https://metamask.zendesk.com/hc/en-us/articles/360020028092-What-is-the-known-contract-address-warning-';
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 const _mmiWebSite = 'https://metamask.io/institutions/';
 export const MMI_WEB_SITE = _mmiWebSite;
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 // eslint-disable-next-line prefer-destructuring
 export const SUPPORT_REQUEST_LINK = process.env.SUPPORT_REQUEST_LINK;

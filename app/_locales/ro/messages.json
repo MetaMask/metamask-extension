@@ -232,9 +232,6 @@
   "editContact": {
     "message": "Editați contact"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Numele ENS nu s-a găsit pe rețeaua curentă. Încercați să comutați la Rețeaua Ethereum principală."
-  },
   "ensRegistrationError": {
     "message": "Eroare la înregistrarea numelui ENS"
   },
@@ -599,9 +596,6 @@
   "search": {
     "message": "Caută"
   },
-  "searchResults": {
-    "message": "Rezultate căutare"
-  },
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
   },
@@ -763,12 +757,6 @@
   },
   "unknown": {
     "message": "Necunoscută"
-  },
-  "unknownCameraError": {
-    "message": "A survenit o eroare la accesarea camerei. Încercați din nou..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Hopa! A apărut o eroare..."
   },
   "unknownNetwork": {
     "message": "Rețea privată necunoscută"

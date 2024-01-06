@@ -2,16 +2,28 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import CurrencyInput from '.';
 
+jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+  return {
+    useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
 describe('CurrencyInput Component', () => {
+  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+
   const mockStore = {
     metamask: {
-      nativeCurrency: 'ETH',
       currentCurrency: 'usd',
-      conversionRate: 231.06,
+      currencyRates: {
+        ETH: {
+          conversionRate: 231.06,
+        },
+      },
       providerConfig: {
         chainId: '0x5',
+        ticker: 'ETH',
       },
       preferences: {
         showFiatInTestnets: true,
@@ -137,6 +149,7 @@ describe('CurrencyInput Component', () => {
       const props = {
         onChange: jest.fn(),
         onPreferenceToggle: jest.fn(),
+        hexValue: 'f602f2234d0ea',
         featureSecondary: true,
       };
 

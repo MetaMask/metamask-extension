@@ -10,35 +10,25 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
-import {
-  Text,
-  Box,
-  Tag,
-  ButtonLink,
-} from '../../../components/component-library';
+import { Text, Box, Tag } from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
   Display,
   FlexDirection,
   JustifyContent,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   FontWeight,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   AlignItems,
   FlexWrap,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IF(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
-///: END:ONLY_INCLUDE_IN
-import {
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  BLOCKAID_TERMS_OF_USE,
-  ///: END:ONLY_INCLUDE_IN
-  OPENSEA_TERMS_OF_USE,
-} from '../../../../shared/lib/ui-utils';
+///: END:ONLY_INCLUDE_IF
+import { OPENSEA_TERMS_OF_USE } from '../../../../shared/lib/ui-utils';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -50,13 +40,15 @@ export default class ExperimentalTab extends PureComponent {
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
     securityAlertsEnabled: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: PropTypes.bool,
     setAddSnapAccountEnabled: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
+    useRequestQueue: PropTypes.bool,
+    setUseRequestQueue: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -80,7 +72,7 @@ export default class ExperimentalTab extends PureComponent {
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   /**
    * toggleSecurityAlert
    *
@@ -102,7 +94,7 @@ export default class ExperimentalTab extends PureComponent {
       this.toggleTransactionSecurityCheck(true);
     }
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * toggleTransactionSecurityCheck
@@ -130,9 +122,9 @@ export default class ExperimentalTab extends PureComponent {
     const { t } = this.context;
 
     const {
-      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       securityAlertsEnabled,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       transactionSecurityCheckEnabled,
     } = this.props;
 
@@ -157,7 +149,7 @@ export default class ExperimentalTab extends PureComponent {
           </Text>
           <div className="settings-page__content-description">
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+              ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
               <>
                 <Text
                   variant={TextVariant.bodySmBold}
@@ -192,16 +184,7 @@ export default class ExperimentalTab extends PureComponent {
                       marginTop={0}
                       marginRight={1}
                     >
-                      {t('blockaidMessage', [
-                        <ButtonLink
-                          variant="bodyMd"
-                          href={BLOCKAID_TERMS_OF_USE}
-                          externalLink
-                          key="blockaid-terms-of-use"
-                        >
-                          {t('terms')}
-                        </ButtonLink>,
-                      ])}
+                      {t('blockaidMessage')}
                     </Text>
                   </div>
                   <ToggleButton
@@ -210,7 +193,7 @@ export default class ExperimentalTab extends PureComponent {
                   />
                 </Box>
               </>
-              ///: END:ONLY_INCLUDE_IN
+              ///: END:ONLY_INCLUDE_IF
             }
             <Box
               display={Display.Flex}
@@ -230,24 +213,18 @@ export default class ExperimentalTab extends PureComponent {
                   </Text>
                   <Tag marginLeft={2} label="Beta" />
                 </Box>
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  color={TextColor.textAlternative}
-                  marginTop={0}
-                  marginRight={1}
-                >
+                <div className="settings-page__content-description">
                   {t('openSeaMessage', [
-                    <ButtonLink
-                      variant="bodyMd"
-                      href={OPENSEA_TERMS_OF_USE}
-                      externalLink
+                    <a
                       key="opensea-terms-of-use"
+                      href={OPENSEA_TERMS_OF_USE}
+                      rel="noreferrer"
+                      target="_blank"
                     >
                       {t('terms')}
-                    </ButtonLink>,
+                    </a>,
                   ])}
-                </Text>
+                </div>
               </div>
               <ToggleButton
                 value={transactionSecurityCheckEnabled}
@@ -260,7 +237,7 @@ export default class ExperimentalTab extends PureComponent {
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   renderDesktopEnableButton() {
     const { t } = this.context;
 
@@ -292,9 +269,9 @@ export default class ExperimentalTab extends PureComponent {
       </>
     );
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   renderKeyringSnapsToggle() {
     const { t, trackEvent } = this.context;
     const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
@@ -336,20 +313,22 @@ export default class ExperimentalTab extends PureComponent {
                 >
                   {t('addSnapAccountToggle')}
                 </Text>
-                <ToggleButton
-                  dataTestId="add-snap-account-toggle"
-                  value={addSnapAccountEnabled}
-                  onToggle={(value) => {
-                    trackEvent({
-                      event: MetaMetricsEventName.AddSnapAccountEnabled,
-                      category: MetaMetricsEventCategory.Settings,
-                      properties: {
-                        enabled: !value,
-                      },
-                    });
-                    setAddSnapAccountEnabled(!value);
-                  }}
-                />
+                <div data-testid="add-account-snap-toggle-div">
+                  <ToggleButton
+                    value={addSnapAccountEnabled}
+                    dataTestId="add-account-snap-toggle-button"
+                    onToggle={(value) => {
+                      trackEvent({
+                        event: MetaMetricsEventName.AddSnapAccountEnabled,
+                        category: MetaMetricsEventCategory.Settings,
+                        properties: {
+                          enabled: !value,
+                        },
+                      });
+                      setAddSnapAccountEnabled(!value);
+                    }}
+                  />
+                </div>
               </div>
               <Text
                 variant={TextVariant.bodySm}
@@ -365,22 +344,52 @@ export default class ExperimentalTab extends PureComponent {
       </>
     );
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
+
+  renderToggleRequestQueue() {
+    const { t } = this.context;
+    const { useRequestQueue, setUseRequestQueue } = this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[7]}
+        className="settings-page__content-row settings-page__content-row-experimental"
+        data-testid="experimental-setting-toggle-request-queue"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('toggleRequestQueueField')}</span>
+          <div className="settings-page__content-description">
+            {t('toggleRequestQueueDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            className="request-queue-toggle"
+            value={useRequestQueue || false}
+            onToggle={(value) => setUseRequestQueue(!value)}
+            offLabel={t('toggleRequestQueueOff')}
+            onLabel={t('toggleRequestQueueOn')}
+          />
+        </div>
+      </Box>
+    );
+  }
 
   render() {
     return (
       <div className="settings-page__body">
         {this.renderSecurityAlertsToggle()}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           this.renderKeyringSnapsToggle()
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
           this.renderDesktopEnableButton()
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
+        {this.renderToggleRequestQueue()}
       </div>
     );
   }

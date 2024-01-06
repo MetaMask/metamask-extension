@@ -7,6 +7,8 @@ import { FormTextField } from './form-text-field';
 
 The `FormTextField` is an input component to create forms. It bundles the [TextField](/docs/components-componentlibrary-textfield--default-story), [Label](/docs/components-componentlibrary-label--default-story) and [HelpText](/docs/components-componentlibrary-helptext--default-story) components together.
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-formtextfield--default-story" />
 </Canvas>
@@ -270,7 +272,7 @@ import {
   FormTextField,
   HelpText,
   Label,
-  TEXT_FIELD_TYPES,
+  TextFieldType,
   Text,
 } from '../../component-library';
 
@@ -306,12 +308,12 @@ import {
   placeholder="Enter a number"
   endAccessory={<ButtonLink>Max</ButtonLink>}
   marginBottom={4}
-  type={TEXT_FIELD_TYPES.NUMBER}
+  type={TextFieldType.Number}
 />
 <FormTextField
   label="Swap from"
   placeholder="0"
-  type={TEXT_FIELD_TYPES.NUMBER}
+  type={TextFieldType.Number}
 />
 <Box
   display={Display.Flex}

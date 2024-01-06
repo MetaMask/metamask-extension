@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithProvider, screen, fireEvent } from '../../../../test/jest';
+import { fireEvent, renderWithProvider, screen } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 

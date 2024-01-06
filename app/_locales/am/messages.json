@@ -223,9 +223,6 @@
   "editContact": {
     "message": "ዕውቂያን አርትዕ"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "የ ENS ስም በአሁኑ ኔትወርክ ላይ አልተገኘም። ወደ ዋናው የ Ethereum አውታረ መረብ ለመቀየር ይሞክሩ።"
-  },
   "ensRegistrationError": {
     "message": "በ ENS የስም ምዝገባ ላይ የተፈጠረ ስህተት"
   },
@@ -597,9 +594,6 @@
   "search": {
     "message": "ፍለጋ"
   },
-  "searchResults": {
-    "message": "ውጤቶችን ፈልግ"
-  },
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
   },
@@ -767,12 +761,6 @@
   },
   "unknown": {
     "message": "ያልታወቀ"
-  },
-  "unknownCameraError": {
-    "message": "ወደ ስልክዎ ለመድረስ ሲሞከር የተፈጠረ ስህተት አለ። እባክዎ እንደገና ይሞክሩ..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "ኤጭ! የሆነ ችግር ተፈጥሯል..."
   },
   "unknownNetwork": {
     "message": "የማይታወቅ የግል አውታረ መረብ"

@@ -6,7 +6,6 @@ import {
   PriorityLevels,
 } from '../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { ETH } from '../../../../helpers/constants/common';
 import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 
@@ -63,13 +62,20 @@ const renderComponent = ({
 } = {}) => {
   const store = configureStore({
     metamask: {
-      nativeCurrency: ETH,
+      currencyRates: {},
       providerConfig: {
         chainId: CHAIN_IDS.GOERLI,
         nickname: GOERLI_DISPLAY_NAME,
         type: NETWORK_TYPES.GOERLI,
       },
-      cachedBalances: {},
+      accountsByChainId: {
+        [CHAIN_IDS.GOERLI]: {
+          '0xAddress': {
+            address: '0xAddress',
+            balance: '0x176e5b6f173ebe66',
+          },
+        },
+      },
       accounts: {
         '0xAddress': {
           address: '0xAddress',
