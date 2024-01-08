@@ -618,9 +618,6 @@
   "cancel": {
     "message": "कैंसिल करें"
   },
-  "cancelEdit": {
-    "message": "बदलाव करना कैंसिल करें"
-  },
   "cancelPopoverTitle": {
     "message": "ट्रांसेक्शन कैंसिल करें"
   },
@@ -3382,12 +3379,6 @@
   "sendSpecifiedTokens": {
     "message": "$1 भेजें",
     "description": "Symbol of the specified token"
-  },
-  "sendTo": {
-    "message": "को भेजें"
-  },
-  "sendTokens": {
-    "message": "टोकन भेजें"
   },
   "sendingDisabled": {
     "message": "ERC-1155 NFT एसेट्स भेजने को अभी सपोर्ट नहीं किया जाता।"

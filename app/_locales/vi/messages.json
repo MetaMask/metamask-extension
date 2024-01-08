@@ -618,9 +618,6 @@
   "cancel": {
     "message": "Hủy"
   },
-  "cancelEdit": {
-    "message": "Hủy chỉnh sửa"
-  },
   "cancelPopoverTitle": {
     "message": "Hủy giao dịch"
   },
@@ -3382,12 +3379,6 @@
   "sendSpecifiedTokens": {
     "message": "Gửi $1",
     "description": "Symbol of the specified token"
-  },
-  "sendTo": {
-    "message": "Gửi đến"
-  },
-  "sendTokens": {
-    "message": "Gửi token"
   },
   "sendingDisabled": {
     "message": "Gửi tài sản NFT ERC-1155 chưa được hỗ trợ."
