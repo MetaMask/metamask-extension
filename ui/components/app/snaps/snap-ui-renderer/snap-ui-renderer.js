@@ -6,9 +6,7 @@ import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  TypographyVariant,
   OverflowWrap,
-  FontWeight,
   TextVariant,
   BorderColor,
   TextColor,
@@ -37,11 +35,10 @@ export const UI_MAPPING = {
     },
   }),
   heading: (props) => ({
-    element: 'Typography',
+    element: 'Text',
     children: props.value,
     props: {
-      variant: TypographyVariant.H4,
-      fontWeight: FontWeight.Bold,
+      variant: TextVariant.headingSm,
       overflowWrap: OverflowWrap.Anywhere,
     },
   }),
