@@ -457,7 +457,6 @@ export default class ConfirmTransactionBase extends Component {
           isBuyableChain={isBuyableChain}
           tokenSymbol={tokenSymbol}
         />
-        {renderSimulationFailureWarning && simulationFailureWarning()}
         <TransactionDetail
           disableEditGasFeeButton
           disabled={isDisabled()}
@@ -466,6 +465,7 @@ export default class ConfirmTransactionBase extends Component {
             renderSimulationFailureWarning ? null : () => this.handleEditGas()
           }
           rows={[
+            renderSimulationFailureWarning && simulationFailureWarning(),
             !renderSimulationFailureWarning && (
               <div key="confirm-transaction-base_confirm-gas-display">
                 <ConfirmGasDisplay
