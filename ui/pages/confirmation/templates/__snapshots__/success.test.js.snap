@@ -18,7 +18,7 @@ exports[`success template matches the snapshot 1`] = `
       >
         <div
           class="box box--flex-direction-column box--justify-content-center box--align-items-center box--height-full box--display-flex"
-          style="gap: 16px; align-self: stretch;"
+          style="align-self: stretch;"
         >
           <div
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-icon mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-success-default mm-box--background-color-success-muted mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
@@ -35,7 +35,6 @@ exports[`success template matches the snapshot 1`] = `
           </h3>
           <div
             class="box box--flex-direction-column box--align-items-center box--text-align-center box--width-full box--display-flex"
-            style="gap: 16px;"
           >
             Success message
           </div>

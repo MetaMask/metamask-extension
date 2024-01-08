@@ -6,13 +6,14 @@ import { waitFor } from '@testing-library/react';
 import Confirmation from '../confirmation';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
+import mockState from '../../../../test/data/mock-state.json';
 
 const middleware = [thunk];
 
 const mockApprovalId = 1;
 const mockSnapOrigin = 'npm:@metamask/snap-test';
 const mockSnapName = 'Test Snap Account Name';
-const mockPublicAddress = '0x000000000000000000000000000000000000000';
+const mockPublicAddress = '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
 const providerConfig = {
   chainId: '0x5',
 };
@@ -26,6 +27,7 @@ const mockApproval = {
 };
 const mockBaseStore = {
   metamask: {
+    ...mockState.metamask,
     pendingApprovals: {
       [mockApprovalId]: mockApproval,
     },
@@ -55,11 +57,6 @@ describe('remove-snap-account confirmation', () => {
     );
     await waitFor(() => {
       expect(getByText(`Remove account`)).toBeInTheDocument();
-      expect(
-        getByText(
-          `${mockSnapName} wants to remove this account from MetaMask:`,
-        ),
-      ).toBeInTheDocument();
       expect(container.querySelector('.callout')).toBeDefined();
       expect(container).toMatchSnapshot();
     });

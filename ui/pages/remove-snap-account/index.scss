@@ -16,3 +16,21 @@
     width: $width-screen-lg-min;
   }
 }
+
+.snap-account-card {
+  .multichain-account-list-item {
+    pointer-events: none;
+  }
+}
+
+.snap-account-card-remove {
+  .multichain-account-list-item {
+    background-color: var(--color-transparent);
+    pointer-events: none;
+
+    &__selected-indicator {
+      background-color: var(--color-error-default);
+    }
+  }
+}
+

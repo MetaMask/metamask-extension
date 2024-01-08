@@ -7,8 +7,8 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
-describe('Test Snap networkAccess', function () {
-  it('test the network-access endowment', async function () {
+describe('Test Snap Homepage', function () {
+  it('tests snap home page functionality', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
@@ -19,13 +19,15 @@ describe('Test Snap networkAccess', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect to network-access snap
+        // navigate to test snaps page and connect
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
-        const dialogButton = await driver.findElement('#connectnetwork-access');
-        await driver.scrollToElement(dialogButton);
+
+        // find and scroll to the honmepage test and connect
+        const snapButton1 = await driver.findElement('#connecthomepage');
+        await driver.scrollToElement(snapButton1);
         await driver.delay(1000);
-        await driver.clickElement('#connectnetwork-access');
+        await driver.clickElement('#connecthomepage');
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
@@ -57,23 +59,47 @@ describe('Test Snap networkAccess', function () {
           tag: 'button',
         });
 
-        // switch to test snaps tab
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        // switch to metamask page and open the three dots menu
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+          windowHandles,
+        );
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
 
-        // wait for npm installation success
+        // wait for the snaps menu item
         await driver.waitForSelector({
-          css: '#connectnetwork-access',
-          text: 'Reconnect to Network Access Snap',
+          text: 'Snaps',
+          tag: 'div',
         });
 
-        // click on alert dialog
-        await driver.clickElement('#sendNetworkAccessTest');
-        await driver.delay(500);
+        // try to click on the snaps item
+        await driver.clickElement({
+          text: 'Snaps',
+          tag: 'div',
+        });
 
-        // check for result correctness
+        // wait for the snap to be clickable
         await driver.waitForSelector({
-          css: '#networkAccessResult',
-          text: '"hello": "world"',
+          text: 'Home Page Example Snap',
+          tag: 'p',
+        });
+
+        // try to click the snap
+        await driver.clickElement({
+          text: 'Home Page Example Snap',
+          tag: 'p',
+        });
+
+        // check that the home page appears and contains the right info
+        await driver.waitForSelector({
+          text: 'Content from Home Page Example Snap',
+          tag: 'p',
+        });
+        await driver.waitForSelector({
+          text: 'Welcome to my Snap home page!',
+          tag: 'p',
         });
       },
     );
