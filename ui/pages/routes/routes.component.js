@@ -8,7 +8,6 @@ import IdleTimer from 'react-idle-timer';
 import browserAPI from 'webextension-polyfill';
 ///: END:ONLY_INCLUDE_IF
 
-import SendTransactionScreen from '../send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirm-transaction';
 import Home from '../home';
@@ -296,7 +295,7 @@ export default class Routes extends Component {
         />
         <Authenticated
           path={SEND_ROUTE}
-          component={process.env.MULTICHAIN ? SendPage : SendTransactionScreen}
+          component={SendPage}
           exact
         />
         <Authenticated
