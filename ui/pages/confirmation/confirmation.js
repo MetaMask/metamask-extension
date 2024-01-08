@@ -257,6 +257,7 @@ export default function ConfirmationPage({
 
   ///: BEGIN:ONLY_INCLUDE_IF(snaps,keyring-snaps)
   const isSnapDialog = SNAP_DIALOG_TYPE.includes(pendingConfirmation?.type);
+  let useSnapHeader = isSnapDialog;
 
   // When pendingConfirmation is undefined, this will also be undefined
   const snapName =
@@ -270,6 +271,16 @@ export default function ConfirmationPage({
     ApprovalType.SnapDialogPrompt,
     ///: END:ONLY_INCLUDE_IF
   ];
+
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  if (
+    Object.values(SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES).includes(
+      pendingConfirmation?.type,
+    )
+  ) {
+    useSnapHeader = false;
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   // Generating templatedValues is potentially expensive, and if done on every render
   // will result in a new object. Avoiding calling this generation unnecessarily will
@@ -468,7 +479,7 @@ export default function ConfirmationPage({
         ) : null}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-          isSnapDialog && (
+          useSnapHeader && (
             <SnapAuthorshipHeader snapId={pendingConfirmation?.origin} />
           )
           ///: END:ONLY_INCLUDE_IF

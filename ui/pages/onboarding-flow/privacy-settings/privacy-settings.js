@@ -197,7 +197,7 @@ export default function PrivacySettings() {
               <>
                 {t('onboardingAdvancedPrivacyNetworkDescription', [
                   <a
-                    href="https://consensys.net/privacy-policy/"
+                    href="https://consensys.io/privacy-policy/"
                     key="link"
                     target="_blank"
                     rel="noopener noreferrer"
