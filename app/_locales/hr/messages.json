@@ -623,9 +623,6 @@
   "send": {
     "message": "Pošalji"
   },
-  "sendTokens": {
-    "message": "Pošalji tokene"
-  },
   "settings": {
     "message": "Postavke"
   },

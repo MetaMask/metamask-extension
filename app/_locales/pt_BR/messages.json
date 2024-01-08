@@ -308,9 +308,6 @@
   "cancel": {
     "message": "Cancelar"
   },
-  "cancelEdit": {
-    "message": "Cancelar edição"
-  },
   "cancelPopoverTitle": {
     "message": "Cancelar transação"
   },
@@ -1824,12 +1821,6 @@
   "sendSpecifiedTokens": {
     "message": "Enviar $1",
     "description": "Symbol of the specified token"
-  },
-  "sendTo": {
-    "message": "Enviar para"
-  },
-  "sendTokens": {
-    "message": "Enviar tokens"
   },
   "sendingDisabled": {
     "message": "O envio de ativos NFT ERC-1155 ainda não é aceito."

@@ -610,9 +610,6 @@
   "send": {
     "message": "Hantar"
   },
-  "sendTokens": {
-    "message": "Hantar Token"
-  },
   "settings": {
     "message": "Tetapan"
   },

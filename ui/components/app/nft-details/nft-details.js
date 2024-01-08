@@ -159,6 +159,7 @@ export default function NftDetails({ nft }) {
         details: nft,
       }),
     );
+    // We only allow sending one NFT at a time
     history.push(SEND_ROUTE);
   };
 
