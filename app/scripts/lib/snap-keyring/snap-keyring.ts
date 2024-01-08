@@ -16,6 +16,10 @@ import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import { SnapId } from '@metamask/snaps-sdk';
 import { GetSubjectMetadata } from '@metamask/permission-controller';
+import {
+  AccountsControllerGetAccountByAddressAction,
+  AccountsControllerSetSelectedAccountAction,
+} from '@metamask/accounts-controller';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
@@ -49,7 +53,9 @@ type SnapKeyringBuilderAllowActions =
   | MaybeUpdateState
   | TestOrigin
   | KeyringControllerGetAccountsAction
-  | GetSubjectMetadata;
+  | GetSubjectMetadata
+  | AccountsControllerSetSelectedAccountAction
+  | AccountsControllerGetAccountByAddressAction;
 
 type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
   'SnapKeyringBuilder',
@@ -172,6 +178,19 @@ export const snapKeyringBuilder = (
               await handleUserInput(confirmationResult);
               await persistKeyringHelper();
               setSelectedAccountHelper(address);
+              const internalAccount = controllerMessenger.call(
+                'AccountsController:getAccountByAddress',
+                address,
+              );
+              if (!internalAccount) {
+                throw new Error(
+                  `Internal account not found for address: ${address}`,
+                );
+              }
+              controllerMessenger.call(
+                'AccountsController:setSelectedAccount',
+                internalAccount.id,
+              );
               await controllerMessenger.call('ApprovalController:showSuccess', {
                 header: [snapAuthorshipHeader],
                 title: t('snapAccountCreated') as string,
