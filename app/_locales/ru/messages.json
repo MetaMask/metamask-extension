@@ -609,9 +609,6 @@
   "cancel": {
     "message": "Отмена"
   },
-  "cancelEdit": {
-    "message": "Отменить изменение"
-  },
   "cancelPopoverTitle": {
     "message": "Отменить транзакцию"
   },
@@ -3308,12 +3305,6 @@
   "sendSpecifiedTokens": {
     "message": "Отправить $1",
     "description": "Symbol of the specified token"
-  },
-  "sendTo": {
-    "message": "Отправить в адрес"
-  },
-  "sendTokens": {
-    "message": "Отправить токены"
   },
   "sendingDisabled": {
     "message": "Отправка NFT-активов ERC-1155 пока не поддерживается."

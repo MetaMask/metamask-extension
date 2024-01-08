@@ -53,11 +53,6 @@ describe('Snap Account Transfers', function (this: Suite) {
     // send 1 ETH from Account 2 to Account 1
     await sendTransaction(driver, PUBLIC_KEY, 1, isAsyncFlow);
 
-    // TODO: Update Test when Multichain Send Flow is added
-    if (process.env.MULTICHAIN) {
-      return;
-    }
-
     if (isAsyncFlow) {
       await driver.assertElementNotPresent({
         text: 'Please complete the transaction on the Snap.',
