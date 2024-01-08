@@ -790,11 +790,19 @@ const TEST_SEED_PHRASE_TWO =
 
 // Usually happens when onboarded to make sure the state is retrieved from metamaskState properly, or after txn is made
 const locateAccountBalanceDOM = async (driver, ganacheServer) => {
-  const balance = await ganacheServer.getBalance();
-  await driver.findElement({
-    css: '[data-testid="eth-overview__primary-currency"]',
-    text: `${balance} ETH`,
-  });
+  const balance = await ganacheServer.getFiatBalance();
+  if (process.env.MULTICHAIN) {
+    await driver.clickElement(`[data-testid="home__asset-tab"]`);
+    await driver.findElement({
+      css: '[data-testid="token-balance-overview-currency-display"]',
+      text: `$${balance}`,
+    });
+  } else {
+    await driver.findElement({
+      css: '[data-testid="eth-overview__primary-currency"]',
+      text: `$${balance}`,
+    });
+  }
 };
 
 const WALLET_PASSWORD = 'correct horse battery staple';
