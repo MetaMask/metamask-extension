@@ -17,6 +17,7 @@ import UserPreferencedCurrencyDisplay from '../../components/app/user-preference
 
 import { PRIMARY, SECONDARY } from '../../helpers/constants/common';
 import TextField from '../../components/ui/text-field';
+import SimulationErrorMessage from '../../components/ui/simulation-error-message';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { getMethodName } from '../../helpers/utils/metrics';
 import {
@@ -428,6 +429,20 @@ export default class ConfirmTransactionBase extends Component {
       </div>
     ) : null;
 
+    const simulationFailureWarning = () => (
+      <div
+        className="confirm-page-container-content__error-container"
+        key="confirm-transaction-base_simulation-error-container"
+      >
+        <SimulationErrorMessage
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+          setUserAcknowledgedGasMissing={() =>
+            this.setUserAcknowledgedGasMissing()
+          }
+        />
+      </div>
+    );
+
     return (
       <div className="confirm-page-container-content__details">
         <TransactionAlerts
@@ -442,15 +457,16 @@ export default class ConfirmTransactionBase extends Component {
           isBuyableChain={isBuyableChain}
           tokenSymbol={tokenSymbol}
         />
-        {!renderSimulationFailureWarning && (
-          <TransactionDetail
-            disableEditGasFeeButton
-            disabled={isDisabled()}
-            userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-            onEdit={
-              renderSimulationFailureWarning ? null : () => this.handleEditGas()
-            }
-            rows={[
+        {renderSimulationFailureWarning && simulationFailureWarning()}
+        <TransactionDetail
+          disableEditGasFeeButton
+          disabled={isDisabled()}
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+          onEdit={
+            renderSimulationFailureWarning ? null : () => this.handleEditGas()
+          }
+          rows={[
+            !renderSimulationFailureWarning && (
               <div key="confirm-transaction-base_confirm-gas-display">
                 <ConfirmGasDisplay
                   userAcknowledgedGasMissing={userAcknowledgedGasMissing}
@@ -460,10 +476,10 @@ export default class ConfirmTransactionBase extends Component {
                   useCurrencyRateCheck={useCurrencyRateCheck}
                   txData={txData}
                 />
-              </div>,
-            ]}
-          />
-        )}
+              </div>
+            ),
+          ]}
+        />
         <TransactionDetail
           disableEditGasFeeButton
           disabled={isDisabled()}
