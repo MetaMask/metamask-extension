@@ -131,9 +131,9 @@ describe('Import flow @no-mmi', function () {
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
-        await driver.fill('.unit-input__input', '1');
+        await driver.fill('input[placeholder="0"]', '1');
         // Continue to next screen
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
