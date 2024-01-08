@@ -1,5 +1,3 @@
-@import './send-content/send-gas-row/send-gas-row';
-
 .send {
   &__header {
     position: relative;
@@ -103,10 +101,6 @@
       align-items: center;
       cursor: pointer;
       padding: 16px;
-
-      &:hover {
-        background-color: var(--color-background-hover);
-      }
 
       .identicon {
         margin-right: 1rem;

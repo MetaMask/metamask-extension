@@ -34,7 +34,10 @@ export default function AssetPicker({ asset }: { asset: Asset }) {
       ? nativeCurrencyImage
       : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore: type 'string' can't be used to index type '{}'
-        tokenList?.[asset.details?.address?.toLowerCase()]?.iconUrl;
+        tokenList?.[asset.details?.address?.toLowerCase()]?.iconUrl ||
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore: Object is possibly 'undefined'.
+        asset.details.image;
 
   // TODO: Handle long symbols in the UI
   const symbol =

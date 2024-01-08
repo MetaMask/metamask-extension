@@ -35,7 +35,7 @@ describe('Send NFT', function () {
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Edit the NFT, ensure same address, and move forward
         await driver.clickElement(
@@ -51,7 +51,7 @@ describe('Send NFT', function () {
           '0xc427d562164062a23a5cff596a4a3208e72acd28',
         );
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Confirm the send
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -102,23 +102,14 @@ describe('Send NFT', function () {
         await driver.delay(1000);
         await driver.clickElement('.nft-item__container');
 
-        // TODO: Update Test when Multichain Send Flow is added
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         await driver.clickElement({ text: 'Send', tag: 'button' });
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
-
         await driver.delay(1000);
 
-        await driver.fill('input[placeholder="0"]', '1');
-
-        await driver.delay(1000);
-
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Edit the NFT, ensure same address, and move forward
         await driver.clickElement(
@@ -134,9 +125,7 @@ describe('Send NFT', function () {
           '0xc427d562164062a23a5cff596a4a3208e72acd28',
         );
 
-        await driver.fill('input[placeholder="0"]', '1');
-
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Confirm the send
         await driver.clickElement({ text: 'Confirm', tag: 'button' });

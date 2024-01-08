@@ -618,9 +618,6 @@
   "cancel": {
     "message": "Kanselahin"
   },
-  "cancelEdit": {
-    "message": "Kanselahin ang Pag-edit"
-  },
   "cancelPopoverTitle": {
     "message": "Kanselahin ang transaksyon"
   },
@@ -3382,12 +3379,6 @@
   "sendSpecifiedTokens": {
     "message": "Magpadala ng $1",
     "description": "Symbol of the specified token"
-  },
-  "sendTo": {
-    "message": "Ipadala kay"
-  },
-  "sendTokens": {
-    "message": "Magpadala ng Mga Token"
   },
   "sendingDisabled": {
     "message": "Ang pagpapadala ng mga asset na ERC-1155 NFT ay hindi pa suportado."

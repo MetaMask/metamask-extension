@@ -19,9 +19,6 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );
@@ -34,9 +31,9 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement(
           '.confirm-page-container-header__back-button',
         );
-        await driver.fill('.unit-input__input', '2.2');
+        await driver.fill('input[placeholder="0"]', '2.2');
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         await driver.clickElement({ text: 'Edit', tag: 'button' });
 
@@ -88,9 +85,6 @@ describe('Editing Confirm Transaction', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         const transactionAmounts = await driver.findElements(
           '.currency-display-component__text',
         );
@@ -103,9 +97,9 @@ describe('Editing Confirm Transaction', function () {
         await driver.clickElement(
           '.confirm-page-container-header__back-button',
         );
-        await driver.fill('.unit-input__input', '2.2');
+        await driver.fill('input[placeholder="0"]', '2.2');
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // open gas fee popover
         await driver.clickElement('[data-testid="edit-gas-fee-icon"]');

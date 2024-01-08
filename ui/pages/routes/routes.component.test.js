@@ -1,15 +1,9 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent } from '@testing-library/react';
-
 import { SEND_STAGES } from '../../ducks/send';
+import { CHAIN_IDS, NETWORK_TYPES } from '../../../shared/constants/network';
 import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
-import {
-  CHAIN_IDS,
-  GOERLI_DISPLAY_NAME,
-  NETWORK_TYPES,
-} from '../../../shared/constants/network';
 import { useIsOriginalNativeTokenSymbol } from '../../hooks/useIsOriginalNativeTokenSymbol';
 import Routes from '.';
 
@@ -71,61 +65,6 @@ describe('Routes Component', () => {
     mockHideNetworkDropdown.mockClear();
   });
   describe('render during send flow', () => {
-    it('should render with network change disabled while adding recipient for send flow', () => {
-      const store = configureMockStore()({
-        ...mockSendState,
-        send: {
-          ...mockSendState.send,
-          stage: SEND_STAGES.ADD_RECIPIENT,
-        },
-      });
-
-      const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
-
-      const networkDisplay = getByTestId('network-display');
-      fireEvent.click(networkDisplay);
-      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
-    });
-    it('should render with network change disabled while user is in send page', () => {
-      const store = configureMockStore()({
-        ...mockSendState,
-        metamask: {
-          ...mockSendState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-            type: NETWORK_TYPES.GOERLI,
-          },
-        },
-      });
-      const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
-
-      const networkDisplay = getByTestId('network-display');
-      fireEvent.click(networkDisplay);
-      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
-    });
-    it('should render with network change disabled while editing a send transaction', () => {
-      const store = configureMockStore()({
-        ...mockSendState,
-        send: {
-          ...mockSendState.send,
-          stage: SEND_STAGES.EDIT,
-        },
-        metamask: {
-          ...mockSendState.metamask,
-          providerConfig: {
-            chainId: CHAIN_IDS.GOERLI,
-            nickname: GOERLI_DISPLAY_NAME,
-            type: NETWORK_TYPES.GOERLI,
-          },
-        },
-      });
-      const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
-
-      const networkDisplay = getByTestId('network-display');
-      fireEvent.click(networkDisplay);
-      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
-    });
     it('should render when send transaction is not active', () => {
       const store = configureMockStore()({
         ...mockSendState,

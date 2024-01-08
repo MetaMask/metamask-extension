@@ -132,22 +132,18 @@ describe('MetaMask Responsive UI', function () {
         // Send ETH from inside MetaMask
         // starts to send a transaction
         await openActionMenuAndStartSendFlow(driver);
-        // TODO: Update Test when Multichain Send Flow is added
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         );
 
-        const inputAmount = await driver.fill('.unit-input__input', '1');
+        const inputAmount = await driver.fill('input[placeholder="0"]', '1');
 
         const inputValue = await inputAmount.getProperty('value');
         assert.equal(inputValue, '1');
 
         // confirming transcation
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // finds the transaction in the transactions list

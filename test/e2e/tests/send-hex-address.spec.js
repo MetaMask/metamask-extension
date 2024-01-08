@@ -37,7 +37,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -71,9 +71,6 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
 
         // Send ETH
         await openActionMenuAndStartSendFlow(driver);
-        if (process.env.MULTICHAIN) {
-          return;
-        }
         // Type address without hex prefix
         await driver.fill(
           'input[placeholder="Enter public address (0x) or ENS name"]',
@@ -83,7 +80,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           css: '.ens-input__selected-input__title',
           text: hexPrefixedAddress,
         });
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -144,7 +141,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           css: '.transaction-detail-item',
           text: '0.000042 ETH',
         });
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Confirm transaction
         await driver.findElement({
@@ -208,7 +205,7 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
           css: '.transaction-detail-item',
           text: '0.000042 ETH',
         });
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Confirm transaction
         await driver.findElement({

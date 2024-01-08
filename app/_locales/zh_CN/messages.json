@@ -618,9 +618,6 @@
   "cancel": {
     "message": "取消"
   },
-  "cancelEdit": {
-    "message": "取消编辑"
-  },
   "cancelPopoverTitle": {
     "message": "取消交易"
   },
@@ -3382,12 +3379,6 @@
   "sendSpecifiedTokens": {
     "message": "发送 $1",
     "description": "Symbol of the specified token"
-  },
-  "sendTo": {
-    "message": "发送到"
-  },
-  "sendTokens": {
-    "message": "发送代币"
   },
   "sendingDisabled": {
     "message": "尚不支持发送ERC-1155 NFT资产。"
