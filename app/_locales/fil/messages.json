@@ -554,9 +554,6 @@
   "send": {
     "message": "Ipadala"
   },
-  "sendTokens": {
-    "message": "Magpadala ng Mga Token"
-  },
   "settings": {
     "message": "Mga Setting"
   },

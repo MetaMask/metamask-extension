@@ -8,7 +8,6 @@ import IdleTimer from 'react-idle-timer';
 import browserAPI from 'webextension-polyfill';
 ///: END:ONLY_INCLUDE_IF
 
-import SendTransactionScreen from '../confirmations/send';
 import Swaps from '../swaps';
 import ConfirmTransaction from '../confirmations/confirm-transaction';
 import Home from '../home';
@@ -325,11 +324,7 @@ export default class Routes extends Component {
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
           component={ConfirmTransaction}
         />
-        <Authenticated
-          path={SEND_ROUTE}
-          component={process.env.MULTICHAIN ? SendPage : SendTransactionScreen}
-          exact
-        />
+        <Authenticated path={SEND_ROUTE} component={SendPage} exact />
         <Authenticated
           path={`${TOKEN_DETAILS}/:address/`}
           component={TokenDetailsPage}
@@ -547,7 +542,7 @@ export default class Routes extends Component {
         exact: false,
       }),
     );
-    if (process.env.MULTICHAIN && isMultichainSend) {
+    if (isMultichainSend) {
       return true;
     }
 
