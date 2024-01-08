@@ -614,9 +614,6 @@
   "send": {
     "message": "Skicka"
   },
-  "sendTokens": {
-    "message": "Skicka tokens"
-  },
   "settings": {
     "message": "Inställningar"
   },

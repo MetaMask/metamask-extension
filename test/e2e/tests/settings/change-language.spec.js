@@ -23,7 +23,7 @@ const selectors = {
   waterText: '[placeholder="Søg"]',
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
   buttonText: { css: '[data-testid="auto-lockout-button"]', text: 'Gem' },
-  dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'div' },
+  dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'p' },
   accountTooltipText: '[data-original-title="क्लिपबोर्ड पर कॉपी करें"]',
   bridgeTooltipText: '[data-original-title="इस नेटवर्क पर उपलब्ध नहीं है"]',
   hyperText: { text: 'Tudjon meg többet', tag: 'a' },
@@ -107,10 +107,6 @@ describe('Settings - general tab, validate the change language functionality:', 
   });
 
   it('User selects "Español" and verify that language persists with page refresh and sessions @no-mmi', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
-
     const languageIndex = 10;
     await withFixtures(
       {
@@ -197,10 +193,6 @@ describe('Settings - general tab, validate the change language functionality:', 
   });
 
   it('User selects "Deutsch" language and verify that error messages are updated with the selected language change', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
-
     const languageIndex = 7;
     await withFixtures(
       {
@@ -230,10 +222,6 @@ describe('Settings - general tab, validate the change language functionality:', 
   });
 
   it('User selects "मानक हिन्दी" language and verify that tooltips are updated with the selected language change @no-mmi', async function () {
-    if (process.env.MULTICHAIN) {
-      return;
-    }
-
     const languageIndex = 19;
     await withFixtures(
       {

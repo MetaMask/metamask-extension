@@ -738,36 +738,31 @@ const sendScreenToConfirmScreen = async (
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
   await driver.fill('.unit-input__input', quantity);
-  if (process.env.MULTICHAIN) {
-    // check if element exists and click it
-    await driver
-      .findElement({
-        text: 'I understand',
-        tag: 'button',
-      })
-      .then(
-        (_found) => {
-          driver.clickElement({
-            text: 'I understand',
-            tag: 'button',
-          });
-        },
-        (error) => {
-          console.error('Element not found.', error);
-        },
-      );
 
-    await driver.clickElement({
-      text: 'Continue',
+  // check if element exists and click it
+  await driver
+    .findElement({
+      text: 'I understand',
       tag: 'button',
-    });
-  } else {
-    await driver.clickElement({
-      text: 'Next',
-      tag: 'button',
-      css: '[data-testid="page-container-footer-next"]',
-    });
-  }
+    })
+    .then(
+      (_found) => {
+        driver.clickElement({
+          text: 'I understand',
+          tag: 'button',
+        });
+      },
+      (error) => {
+        console.error('Element not found.', error);
+      },
+    );
+
+  await driver.clickElement({ text: 'Continue', tag: 'button' });
+
+  await driver.clickElement({
+    text: 'Continue',
+    tag: 'button',
+  });
 };
 
 const sendTransaction = async (
@@ -776,26 +771,16 @@ const sendTransaction = async (
   quantity,
   isAsyncFlow = false,
 ) => {
-  // TODO: Update Test when Multichain Send Flow is added
-  if (process.env.MULTICHAIN) {
-    return;
-  }
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill('[data-testid="ens-input"]', recipientAddress);
-  await driver.fill('.unit-input__input', quantity);
-
-  // We need to wait for the text "Max Fee: 0.000xxxx ETH" before continuing
-  await driver.findElement({ text: '0.000', tag: 'span' });
-
+  await driver.fill('[placeholder="0"]', quantity);
   await driver.clickElement({
-    text: 'Next',
+    text: 'Continue',
     tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
   });
   await driver.clickElement({
     text: 'Confirm',
     tag: 'button',
-    css: '[data-testid="page-container-footer-next"]',
   });
 
   // the default is to do this block, but if we're testing an async flow, it would get stuck here

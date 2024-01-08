@@ -618,9 +618,6 @@
   "cancel": {
     "message": "Άκυρο"
   },
-  "cancelEdit": {
-    "message": "Ακύρωση επεξεργασίας"
-  },
   "cancelPopoverTitle": {
     "message": "Ακύρωση συναλλαγής"
   },
@@ -3382,12 +3379,6 @@
   "sendSpecifiedTokens": {
     "message": "Αποστολή $1",
     "description": "Symbol of the specified token"
-  },
-  "sendTo": {
-    "message": "Αποστολή σε"
-  },
-  "sendTokens": {
-    "message": "Στείλτε tokens"
   },
   "sendingDisabled": {
     "message": "Η αποστολή περιουσιακών στοιχείων ERC-1155 NFT δεν υποστηρίζεται ακόμη."
