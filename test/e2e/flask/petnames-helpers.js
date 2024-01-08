@@ -40,6 +40,8 @@ async function saveName(driver, value, name, proposedName) {
   if (name) {
     const input = await driver.findElement('.form-combo-field input');
     await input.fill(name);
+    // Pressing enter before saving is needed for firefox to get the dropdown to go away.
+    await input.press(driver.Key.ENTER);
   }
 
   await driver.clickElement({ text: 'Save', tag: 'button' });
