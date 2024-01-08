@@ -28,7 +28,6 @@ import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import {
   isBalanceCached,
   getIsSwapsChain,
-  getSelectedAccountCachedBalance,
   getCurrentChainId,
   getPreferences,
   getSelectedAddress,
@@ -103,11 +102,9 @@ const EthOverview = ({ className, showAddress }) => {
     shouldHideZeroBalanceTokens,
   );
 
-  const balance = useSelector(getSelectedAccountCachedBalance);
   const isSwapsChain = useSelector(getIsSwapsChain);
 
-  let balanceToUse = totalWeiBalance;
-  balanceToUse = balance;
+  const balanceToUse = totalWeiBalance;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
