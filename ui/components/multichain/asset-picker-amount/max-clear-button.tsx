@@ -38,6 +38,7 @@ export default function MaxClearButton({ asset }: { asset: Asset }) {
       onClick={onClick}
       marginLeft="auto"
       textProps={{ variant: TextVariant.bodySm }}
+      data-testid="max-clear-button"
     >
       {maxModeOn ? t('clear') : t('max')}
     </ButtonLink>
