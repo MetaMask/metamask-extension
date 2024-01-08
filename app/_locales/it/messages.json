@@ -390,9 +390,6 @@
   "cancel": {
     "message": "Annulla"
   },
-  "cancelEdit": {
-    "message": "Annulla modifica"
-  },
   "cancelPopoverTitle": {
     "message": "Annulla transazione"
   },
@@ -1376,9 +1373,6 @@
   "sendSpecifiedTokens": {
     "message": "Invia $1",
     "description": "Symbol of the specified token"
-  },
-  "sendTokens": {
-    "message": "Invia Tokens"
   },
   "settings": {
     "message": "Impostazioni"

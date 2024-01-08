@@ -116,7 +116,6 @@ describe('Send NFT', function () {
           'input[placeholder="Enter public address (0x) or ENS name"]',
           '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
         );
-
         await driver.delay(1000);
 
         await driver.fill('input[placeholder="0"]', '1');
