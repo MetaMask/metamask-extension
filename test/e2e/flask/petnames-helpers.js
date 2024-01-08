@@ -40,7 +40,6 @@ async function saveName(driver, value, name, proposedName) {
   if (name) {
     const input = await driver.findElement('.form-combo-field input');
     await input.fill(name);
-    await input.press(driver.Key.ENTER);
   }
 
   await driver.clickElement({ text: 'Save', tag: 'button' });
