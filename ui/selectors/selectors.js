@@ -464,6 +464,10 @@ export function getAllTokens(state) {
   return state.metamask.allTokens;
 }
 
+export const getConfirmationExchangeRates = (state) => {
+  return state.metamask.confirmationExchangeRates;
+};
+
 export function getSelectedAccount(state) {
   const accounts = getMetaMaskAccounts(state);
   const selectedAccount = getSelectedInternalAccount(state);
