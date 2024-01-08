@@ -40,6 +40,8 @@ export const UI_MAPPING = {
     props: {
       variant: TextVariant.headingSm,
       overflowWrap: OverflowWrap.Anywhere,
+      marginTop: 1,
+      marginBottom: 1,
     },
   }),
   text: (props) => ({
@@ -60,8 +62,8 @@ export const UI_MAPPING = {
     props: {
       className: 'snap-ui-renderer__divider',
       backgroundColor: BorderColor.borderDefault,
-      marginTop: 2,
-      marginBottom: 2,
+      marginTop: 1,
+      marginBottom: 1,
     },
   }),
   copyable: (props) => ({
@@ -69,6 +71,8 @@ export const UI_MAPPING = {
     props: {
       text: props.value,
       sensitive: props.sensitive,
+      marginTop: 1,
+      marginBottom: 1,
     },
   }),
   image: (props) => ({
