@@ -121,10 +121,16 @@ describe('Backup and Restore', function () {
 
         // Verify restore
         await driver.clickElement({ text: 'Contacts', tag: 'div' });
-        const recipient = await driver.findElement('[data-testid="recipient"]');
-        assert.ok(
-          /Test\sAccount\s*0x0c54...AaFb/u.test(await recipient.getText()),
+
+        const recipientLabel = await driver.findElement(
+          '[data-testid="address-list-item-label"]',
         );
+        assert.equal('Test Account', await recipientLabel.getText());
+
+        const recipientAddress = await driver.findElement(
+          '[data-testid="address-list-item-address"]',
+        );
+        assert.equal('0x0c54F...7AaFb', await recipientAddress.getText());
       },
     );
   });

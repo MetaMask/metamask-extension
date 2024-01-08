@@ -54,6 +54,7 @@ exports[`AddressListItem renders the address and label 1`] = `
     >
       <p
         class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+        data-testid="address-list-item-label"
       >
         <span>
           <div
