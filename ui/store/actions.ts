@@ -2461,6 +2461,13 @@ export function hideImportNftsModal(): Action {
   };
 }
 
+export function setConfirmationExchangeRates(value: Record<string, any>) {
+  return {
+    type: actionConstants.SET_CONFIRMATION_EXCHANGE_RATES,
+    value,
+  };
+}
+
 export function showIpfsModal(): Action {
   return {
     type: actionConstants.SHOW_IPFS_MODAL_OPEN,
