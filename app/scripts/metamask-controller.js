@@ -1166,6 +1166,7 @@ export default class MetamaskController extends EventEmitter {
         `${this.approvalController.name}:updateRequestState`,
         `${this.permissionController.name}:grantPermissions`,
         `${this.subjectMetadataController.name}:getSubjectMetadata`,
+        `${this.subjectMetadataController.name}:addSubjectMetadata`,
         `${this.phishingController.name}:maybeUpdateState`,
         `${this.phishingController.name}:testOrigin`,
         'ExecutionService:executeSnap',
