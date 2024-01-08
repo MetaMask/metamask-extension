@@ -1,9 +1,11 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
+import { useSelector } from 'react-redux';
 
 import Box from '../../ui/box/box';
 import Button from '../../ui/button';
+import EditGasFeeButton from '../edit-gas-fee-button/edit-gas-fee-button';
 import { Text } from '../../component-library';
 import {
   AlignItems,
@@ -16,9 +18,14 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { I18nContext } from '../../../contexts/i18n';
+import { getPreferences } from '../../../selectors';
 import { ConfirmGasDisplay } from '../confirm-gas-display';
+import MultiLayerFeeMessage from '../multilayer-fee-message/multi-layer-fee-message';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
+import TransactionDetailItem from '../transaction-detail-item/transaction-detail-item.component';
+import UserPreferencedCurrencyDisplay from '../user-preferenced-currency-display';
 
 export default function ApproveContentCard({
   showHeader = true,
@@ -32,8 +39,12 @@ export default function ApproveContentCard({
   supportsEIP1559,
   renderTransactionDetailsContent,
   renderDataContent,
+  isMultiLayerFeeNetwork,
   ethTransactionTotal,
   nativeCurrency,
+  fullTxData,
+  hexMinimumTransactionFee,
+  hexTransactionTotal,
   fiatTransactionTotal,
   currentCurrency,
   isSetApproveForAll,
@@ -44,6 +55,7 @@ export default function ApproveContentCard({
   useCurrencyRateCheck,
 }) {
   const t = useContext(I18nContext);
+  const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
 
   return (
     <Box
@@ -88,6 +100,14 @@ export default function ApproveContentCard({
               </Button>
             </Box>
           )}
+          {showEdit &&
+            showAdvanceGasFeeOptions &&
+            supportsEIP1559 &&
+            !renderSimulationFailureWarning && (
+              <EditGasFeeButton
+                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+              />
+            )}
         </Box>
       )}
       <Box
@@ -96,7 +116,9 @@ export default function ApproveContentCard({
         className="approve-content-card-container__card-content"
       >
         {renderTransactionDetailsContent &&
-          (supportsEIP1559 && !renderSimulationFailureWarning ? (
+          (!isMultiLayerFeeNetwork &&
+          supportsEIP1559 &&
+          !renderSimulationFailureWarning ? (
             <ConfirmGasDisplay
               userAcknowledgedGasMissing={userAcknowledgedGasMissing}
             />
@@ -106,44 +128,85 @@ export default function ApproveContentCard({
               flexDirection={FlexDirection.Row}
               justifyContent={JustifyContent.spaceBetween}
             >
-              <Box>
-                <Text
-                  variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
-                  as="h6"
+              {isMultiLayerFeeNetwork ? (
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  className="approve-content-card-container__transaction-details-extra-content"
                 >
-                  {t('feeAssociatedRequest')}
-                </Text>
-              </Box>
-              <Box
-                display={Display.Flex}
-                flexDirection={FlexDirection.Column}
-                alignItems={AlignItems.flexEnd}
-                textAlign={TextAlign.Right}
-              >
-                {useCurrencyRateCheck && (
+                  <TransactionDetailItem
+                    key="approve-content-card-min-tx-fee"
+                    detailTitle={t('transactionDetailLayer2GasHeading')}
+                    detailTotal={
+                      <UserPreferencedCurrencyDisplay
+                        type={PRIMARY}
+                        value={hexMinimumTransactionFee}
+                        hideLabel={!useNativeCurrencyAsPrimaryCurrency}
+                        numberOfDecimals={18}
+                      />
+                    }
+                    detailText={
+                      <UserPreferencedCurrencyDisplay
+                        type={SECONDARY}
+                        value={hexMinimumTransactionFee}
+                        hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
+                      />
+                    }
+                    noBold
+                    flexWidthValues
+                  />
+                  <MultiLayerFeeMessage
+                    transaction={fullTxData}
+                    layer2fee={hexTransactionTotal}
+                    nativeCurrency={nativeCurrency}
+                    plainStyle
+                  />
+                </Box>
+              ) : (
+                <>
                   <Box>
                     <Text
-                      variant={TextVariant.headingSm}
-                      fontWeight={FontWeight.Bold}
-                      color={TextColor.textDefault}
-                      as="h4"
+                      variant={TextVariant.bodySm}
+                      color={TextColor.textAlternative}
+                      as="h6"
                     >
-                      {formatCurrency(fiatTransactionTotal, currentCurrency)}
+                      {t('feeAssociatedRequest')}
                     </Text>
                   </Box>
-                )}
-                <Box>
-                  <Text
-                    variant={TextVariant.bodySm}
-                    fontWeight={FontWeight.Normal}
-                    color={TextColor.textMuted}
-                    as="h6"
+                  <Box
+                    display={Display.Flex}
+                    flexDirection={FlexDirection.Column}
+                    alignItems={AlignItems.flexEnd}
+                    textAlign={TextAlign.Right}
                   >
-                    {`${ethTransactionTotal} ${nativeCurrency}`}
-                  </Text>
-                </Box>
-              </Box>
+                    {useCurrencyRateCheck && (
+                      <Box>
+                        <Text
+                          variant={TextVariant.headingSm}
+                          fontWeight={FontWeight.Bold}
+                          color={TextColor.textDefault}
+                          as="h4"
+                        >
+                          {formatCurrency(
+                            fiatTransactionTotal,
+                            currentCurrency,
+                          )}
+                        </Text>
+                      </Box>
+                    )}
+                    <Box>
+                      <Text
+                        variant={TextVariant.bodySm}
+                        fontWeight={FontWeight.Normal}
+                        color={TextColor.textMuted}
+                        as="h6"
+                      >
+                        {`${ethTransactionTotal} ${nativeCurrency}`}
+                      </Text>
+                    </Box>
+                  </Box>
+                </>
+              )}
             </Box>
           ))}
         {renderDataContent && (
@@ -236,6 +299,10 @@ ApproveContentCard.propTypes = {
    */
   renderDataContent: PropTypes.bool,
   /**
+   * Is multi-layer fee network or not
+   */
+  isMultiLayerFeeNetwork: PropTypes.bool,
+  /**
    * Total sum of the transaction in native currency
    */
   ethTransactionTotal: PropTypes.string,
@@ -243,6 +310,18 @@ ApproveContentCard.propTypes = {
    * Current native currency
    */
   nativeCurrency: PropTypes.string,
+  /**
+   * Current transaction
+   */
+  fullTxData: PropTypes.object,
+  /**
+   * Total sum of the transaction converted to hex value
+   */
+  hexTransactionTotal: PropTypes.string,
+  /**
+   * Minimum transaction fee converted to hex value
+   */
+  hexMinimumTransactionFee: PropTypes.string,
   /**
    * Total sum of the transaction in fiat currency
    */

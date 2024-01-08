@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -72,7 +72,6 @@ import SecurityProviderBannerMessage from '../../components/app/security-provide
 import { Icon, IconName, Text } from '../../components/component-library';
 import { ConfirmPageContainerWarning } from '../../components/app/confirm-page-container/confirm-page-container-content';
 import CustomNonce from '../../components/app/custom-nonce';
-import FeeDetailsComponent from '../../components/app/fee-details-component/fee-details-component';
 
 const ALLOWED_HOSTS = ['portfolio.metamask.io'];
 
@@ -283,13 +282,13 @@ export default function TokenAllowance({
     );
   };
 
-  const handleNextNonce = useCallback(() => {
+  const handleNextNonce = () => {
     dispatch(getNextNonce());
-  }, [getNextNonce, dispatch]);
+  };
 
   useEffect(() => {
-    dispatch(getNextNonce());
-  }, [getNextNonce, dispatch]);
+    handleNextNonce();
+  }, [dispatch]);
 
   const handleUpdateCustomNonce = (value) => {
     dispatch(updateCustomNonce(value));
@@ -535,14 +534,6 @@ export default function TokenAllowance({
           />
         </Box>
       )}
-      <Box marginRight={4} marginLeft={4}>
-        <FeeDetailsComponent
-          supportsEIP1559={supportsEIP1559}
-          useCurrencyRateCheck={useCurrencyRateCheck}
-          txData={txData}
-          shouldShow={!isFirstPage}
-        />
-      </Box>
       {useNonceField && (
         <Box marginTop={4} marginRight={4} marginLeft={4}>
           <CustomNonce

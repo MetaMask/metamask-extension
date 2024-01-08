@@ -258,6 +258,7 @@ export default function ConfirmApprove({
               assetName={assetName}
               assetStandard={assetStandard}
               tokenAddress={tokenAddress}
+              showCustomizeGasModal={approveTransaction}
               data={customData || transactionData}
               toAddress={toAddress}
               currentCurrency={currentCurrency}

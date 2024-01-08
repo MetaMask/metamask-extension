@@ -59,7 +59,8 @@ describe('GasDetailsItem', () => {
   it('should render label', async () => {
     render();
     await waitFor(() => {
-      expect(screen.queryAllByText('Market')[0]).toBeInTheDocument();
+      expect(screen.queryByText('Gas')).toBeInTheDocument();
+      expect(screen.queryByText('(estimated)')).toBeInTheDocument();
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
@@ -125,9 +126,7 @@ describe('GasDetailsItem', () => {
   it('should not return null even if there is simulationError if user acknowledged gasMissing warning', async () => {
     render();
     await waitFor(() => {
-      expect(screen.queryAllByText('Market')[0]).toBeInTheDocument();
-      expect(screen.queryByText('Max fee:')).toBeInTheDocument();
-      expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
+      expect(screen.queryByText('Gas')).toBeInTheDocument();
     });
   });
 

@@ -64,7 +64,8 @@ describe('ConfirmGasDisplay', () => {
         userFeeLevel: 'medium',
       },
     });
-    expect(screen.queryByText('Estimated fee')).toBeInTheDocument();
+    expect(screen.queryByText('Gas')).toBeInTheDocument();
+    expect(screen.queryByText('(estimated)')).toBeInTheDocument();
     expect(screen.queryByText('Max fee:')).toBeInTheDocument();
     expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
   });
