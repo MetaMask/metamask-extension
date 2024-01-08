@@ -699,6 +699,11 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
+export function getPetnamesEnabled(state) {
+  const { petnamesEnabled } = getPreferences(state);
+  return Boolean(petnamesEnabled);
+}
+
 export function getTestNetworkBackgroundColor(state) {
   const currentNetwork = state.metamask.providerConfig.ticker;
   switch (true) {

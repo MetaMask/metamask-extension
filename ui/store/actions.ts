@@ -2831,6 +2831,10 @@ export function setShowTestNetworks(value: boolean) {
   return setPreference('showTestNetworks', value);
 }
 
+export function setPetnamesEnabled(value: boolean) {
+  return setPreference('petnamesEnabled', value);
+}
+
 export function setAutoLockTimeLimit(value: boolean) {
   return setPreference('autoLockTimeLimit', value);
 }

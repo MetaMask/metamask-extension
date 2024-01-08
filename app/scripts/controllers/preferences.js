@@ -90,6 +90,7 @@ export default class PreferencesController {
         showTestNetworks: false,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
+        petnamesEnabled: true,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
