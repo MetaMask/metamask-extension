@@ -35,19 +35,17 @@ export default {
       },
     ],
     accountToConnect: {
-      'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-        address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        metadata: {
-          name: 'This is a Really Long Account Name',
-          keyring: {
-            type: 'HD Key Tree',
-          },
+      address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      metadata: {
+        name: 'This is a Really Long Account Name',
+        keyring: {
+          type: 'HD Key Tree',
         },
-        options: {},
-        methods: [...Object.values(EthMethod)],
-        type: EthAccountType.Eoa,
       },
+      options: {},
+      methods: [...Object.values(EthMethod)],
+      type: EthAccountType.Eoa,
     },
   },
 };
