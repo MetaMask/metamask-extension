@@ -6,6 +6,7 @@ const {
   defaultGanacheOptions,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
 const {
   expectName,
   focusTestDapp,
@@ -13,7 +14,6 @@ const {
   saveName,
   clickName,
 } = require('./petnames-helpers');
-const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
 
 const SIGNATURE_TYPE = {
   TYPED_V3: 'v3',
