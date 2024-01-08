@@ -271,7 +271,6 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   TokenRatesController: {
     contractExchangeRates: false,
-    contractExchangeRatesByChainId: false,
   },
   TokensController: {
     allDetectedTokens: {

@@ -226,10 +226,7 @@
     "tokensChainsCache": {},
     "preventPollingOnNetworkRestart": true
   },
-  "TokenRatesController": {
-    "contractExchangeRates": "object",
-    "contractExchangeRatesByChainId": "object"
-  },
+  "TokenRatesController": { "contractExchangeRates": "object" },
   "TokensController": {
     "tokens": "object",
     "ignoredTokens": "object",

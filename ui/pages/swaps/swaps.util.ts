@@ -210,20 +210,19 @@ export async function fetchSwapsFeatureFlags(): Promise<any> {
   });
 }
 
-export async function fetchTokenPrice(
-  tokenContractAddress: string,
-): Promise<any> {
-  const query = `spot-prices?tokenAddresses=${tokenContractAddress}&vsCurrency=eth&includeMarketData=false`;
+export async function fetchTokenPrice(address: string): Promise<any> {
+  const query = `contract_addresses=${address}&vs_currencies=eth`;
 
   const prices = await fetchWithCache({
-    url: `https://price-api.metafi.codefi.network/v2/chains/1/${query}`,
+    url: `https://api.coingecko.com/api/v3/simple/token_price/ethereum?${query}`,
     fetchOptions: {
       method: 'GET',
+      headers: { 'X-Requested-With': 'metamask.dec.jan.2024' },
     },
     cacheOptions: { cacheRefreshTime: 60000 },
     functionName: 'fetchTokenPrice',
   });
-  return prices?.[tokenContractAddress]?.eth;
+  return prices?.[address]?.eth;
 }
 
 export async function fetchSwapsGasPrices(chainId: any): Promise<
