@@ -21,7 +21,7 @@ const selectors = {
   waterText: '[placeholder="Søg"]',
   headerTextDansk: { text: 'Indstillinger', tag: 'h3' },
   buttonText: { css: '[data-testid="auto-lockout-button"]', text: 'Gem' },
-  dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'div' },
+  dialogText: { text: 'Empfängeradresse ist unzulässig', tag: 'p' },
   accountTooltipText: '[data-original-title="क्लिपबोर्ड पर कॉपी करें"]',
   bridgeTooltipText: '[data-original-title="इस नेटवर्क पर उपलब्ध नहीं है"]',
   hyperText: { text: 'Tudjon meg többet', tag: 'a' },
