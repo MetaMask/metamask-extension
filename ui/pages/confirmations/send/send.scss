@@ -107,10 +107,6 @@
       cursor: pointer;
       padding: 16px;
 
-      &:hover {
-        background-color: var(--color-background-hover);
-      }
-
       .identicon {
         margin-right: 1rem;
         flex: 0 0 auto;

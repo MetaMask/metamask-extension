@@ -17,389 +17,550 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
     <div
       class="send__select-recipient-wrapper__list"
     >
-      <div
-        class="box send__select-recipient-wrapper__group box--flex-direction-row"
-        data-testid="recipient-group"
+      <button
+        class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
       >
         <div
-          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
           <div
-            class=""
+            class="mm-avatar-account__jazzicon"
           >
             <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(250, 58, 0);"
+              <svg
+                height="24"
+                width="24"
+                x="0"
+                y="0"
               >
-                <svg
-                  height="28"
-                  width="28"
+                <rect
+                  fill="#18CDF2"
+                  height="24"
+                  transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
+                  width="24"
                   x="0"
                   y="0"
-                >
-                  <rect
-                    fill="#18CDF2"
-                    height="28"
-                    transform="translate(-0.9173443158196976 -2.8912485607779366) rotate(328.9 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#035E56"
-                    height="28"
-                    transform="translate(-16.01115399522804 9.268404137780026) rotate(176.2 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26602"
-                    height="28"
-                    transform="translate(14.584361765945934 -12.429497257622447) rotate(468.9 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
+                />
+                <rect
+                  fill="#035E56"
+                  height="24"
+                  transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F26602"
+                  height="24"
+                  transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+              </svg>
             </div>
-          </div>
-          <div
-            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-            data-testid="recipient"
-          >
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
-            >
-              Test Account
-            </p>
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-            >
-              0x0dcd...e7bc
-            </p>
           </div>
         </div>
         <div
-          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
         >
-          <div
-            class=""
+          <p
+            class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+            data-testid="address-list-item-label"
           >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
+            T
+            e
+            s
+            t
+             
+            A
+            c
+            c
+            o
+            u
+            n
+            t
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="address-list-item-address"
+          >
+            <div>
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(245, 143, 0);"
+                aria-describedby="tippy-tooltip-10"
+                class=""
+                data-original-title="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
               >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#018E74"
-                    height="28"
-                    transform="translate(5.524091896954402 -4.749745570944453) rotate(358.4 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#18CAF2"
-                    height="28"
-                    transform="translate(6.724913619395038 -10.621076649467508) rotate(414.8 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#C81474"
-                    height="28"
-                    transform="translate(-4.907795154940259 -21.945972385956175) rotate(322.3 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
+                0x0dcd5...3e7bc
               </div>
             </div>
           </div>
+        </div>
+      </button>
+      <button
+        class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
           <div
-            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-            data-testid="recipient"
+            class="mm-avatar-account__jazzicon"
           >
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(245, 143, 0);"
             >
-              Test Account 2
-            </p>
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-            >
-              0xec1a...251b
-            </p>
+              <svg
+                height="24"
+                width="24"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#018E74"
+                  height="24"
+                  transform="translate(4.7349359116752 -4.0712104893809595) rotate(358.4 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#18CAF2"
+                  height="24"
+                  transform="translate(5.764211673767176 -9.103779985257862) rotate(414.8 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#C81474"
+                  height="24"
+                  transform="translate(-4.206681561377365 -18.81083347367672) rotate(322.3 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
           </div>
         </div>
         <div
-          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
         >
-          <div
-            class=""
+          <p
+            class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+            data-testid="address-list-item-label"
           >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
+            T
+            e
+            s
+            t
+             
+            A
+            c
+            c
+            o
+            u
+            n
+            t
+             
+            2
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="address-list-item-address"
+          >
+            <div>
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(249, 100, 1);"
+                aria-describedby="tippy-tooltip-11"
+                class=""
+                data-original-title="0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
               >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#C81432"
-                    height="28"
-                    transform="translate(-0.510690249475231 -2.7159619403490534) rotate(331.7 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#187AF2"
-                    height="28"
-                    transform="translate(-11.127931122273568 5.54021528290869) rotate(160.5 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FB183E"
-                    height="28"
-                    transform="translate(25.084575445435807 -2.611206239472919) rotate(517.6 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
+                0xec1ad...9251b
               </div>
             </div>
           </div>
+        </div>
+      </button>
+      <button
+        class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
           <div
-            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-            data-testid="recipient"
+            class="mm-avatar-account__jazzicon"
           >
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(249, 100, 1);"
             >
-              Ledger Hardware 2
-            </p>
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-            >
-              0xc42e...8813
-            </p>
+              <svg
+                height="24"
+                width="24"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#C81432"
+                  height="24"
+                  transform="translate(-0.437734499550198 -2.3279673774420457) rotate(331.7 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#187AF2"
+                  height="24"
+                  transform="translate(-9.538226676234487 4.7487559567788775) rotate(160.5 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#FB183E"
+                  height="24"
+                  transform="translate(21.501064667516403 -2.238176776691073) rotate(517.6 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
           </div>
         </div>
         <div
-          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
         >
-          <div
-            class=""
+          <p
+            class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+            data-testid="address-list-item-label"
           >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
+            L
+            e
+            d
+            g
+            e
+            r
+             
+            H
+            a
+            r
+            d
+            w
+            a
+            r
+            e
+             
+            2
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="address-list-item-address"
+          >
+            <div>
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(242, 206, 2);"
+                aria-describedby="tippy-tooltip-12"
+                class=""
+                data-original-title="0xc42edfcc21ed14dda456aa0756c153f7985d8813"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
               >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#2340E1"
-                    height="28"
-                    transform="translate(-1.7054541409645272 -0.893781972900803) rotate(257.0 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#016D8E"
-                    height="28"
-                    transform="translate(11.213543194590896 2.66257866392058) rotate(77.0 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F5F500"
-                    height="28"
-                    transform="translate(11.486654880888956 -19.46641853277226) rotate(465.0 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
+                0xc42ed...d8813
               </div>
             </div>
           </div>
+        </div>
+      </button>
+      <button
+        class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
           <div
-            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-            data-testid="recipient"
+            class="mm-avatar-account__jazzicon"
           >
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(242, 206, 2);"
             >
-              Test Account 3
-            </p>
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-            >
-              0xeb9e...4823
-            </p>
+              <svg
+                height="24"
+                width="24"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#2340E1"
+                  height="24"
+                  transform="translate(-1.4618178351124518 -0.7660988339149738) rotate(257.0 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#016D8E"
+                  height="24"
+                  transform="translate(9.611608452506482 2.2822102833604974) rotate(77.0 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F5F500"
+                  height="24"
+                  transform="translate(9.845704183619105 -16.68550159951908) rotate(465.0 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
           </div>
         </div>
         <div
-          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
         >
-          <div
-            class=""
+          <p
+            class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+            data-testid="address-list-item-label"
           >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
+            T
+            e
+            s
+            t
+             
+            A
+            c
+            c
+            o
+            u
+            n
+            t
+             
+            3
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="address-list-item-address"
+          >
+            <div>
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(24, 125, 242);"
+                aria-describedby="tippy-tooltip-13"
+                class=""
+                data-original-title="0xeb9e64b93097bc15f01f13eae97015c57ab64823"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
               >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#C81435"
-                    height="28"
-                    transform="translate(-1.8544047661519008 -1.6499475479241468) rotate(249.5 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F5E400"
-                    height="28"
-                    transform="translate(-1.3241332948360764 10.505504944881555) rotate(269.5 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F96001"
-                    height="28"
-                    transform="translate(6.630832321372173 21.724427796185292) rotate(216.3 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
+                0xeb9e6...64823
               </div>
             </div>
           </div>
+        </div>
+      </button>
+      <button
+        class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
           <div
-            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-            data-testid="recipient"
+            class="mm-avatar-account__jazzicon"
           >
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(24, 125, 242);"
             >
-              Snap Account 1
-            </p>
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-            >
-              0xb552...ee5d
-            </p>
+              <svg
+                height="24"
+                width="24"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#C81435"
+                  height="24"
+                  transform="translate(-1.589489799558772 -1.4142407553635543) rotate(249.5 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F5E400"
+                  height="24"
+                  transform="translate(-1.1349713955737797 9.004718524184188) rotate(269.5 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F96001"
+                  height="24"
+                  transform="translate(5.683570561176149 18.620938111015967) rotate(216.3 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
           </div>
         </div>
         <div
-          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
         >
-          <div
-            class=""
+          <p
+            class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+            data-testid="address-list-item-label"
           >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
+            S
+            n
+            a
+            p
+             
+            A
+            c
+            c
+            o
+            u
+            n
+            t
+             
+            <span>
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(250, 62, 0);"
+                aria-describedby="tippy-tooltip-14"
+                class=""
+                data-original-title="'1' is similar to 'l'."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
               >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
+                <span
+                  class="confusable__point"
                 >
-                  <rect
-                    fill="#238FE1"
-                    height="28"
-                    transform="translate(-3.696976537625548 4.334010253908054) rotate(161.9 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FB1891"
-                    height="28"
-                    transform="translate(-3.8726006416348677 11.341987744107225) rotate(224.3 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F90901"
-                    height="28"
-                    transform="translate(-23.479125860782805 -13.386102528655465) rotate(344.7 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
+                  1
+                </span>
+              </div>
+            </span>
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="address-list-item-address"
+          >
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-15"
+                class=""
+                data-original-title="0xb552685e3d2790efd64a175b00d51f02cdafee5d"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                0xb5526...fee5d
               </div>
             </div>
           </div>
+        </div>
+      </button>
+      <button
+        class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
           <div
-            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-            data-testid="recipient"
+            class="mm-avatar-account__jazzicon"
           >
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 62, 0);"
             >
-              Test Account 4
-            </p>
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-            >
-              0xca8f...f281
-            </p>
+              <svg
+                height="24"
+                width="24"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#238FE1"
+                  height="24"
+                  transform="translate(-3.1688370322504693 3.7148659319211887) rotate(161.9 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#FB1891"
+                  height="24"
+                  transform="translate(-3.3193719785441727 9.721703780663336) rotate(224.3 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F90901"
+                  height="24"
+                  transform="translate(-20.124965023528116 -11.47380216741897) rotate(344.7 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
           </div>
         </div>
-      </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
+        >
+          <p
+            class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+            data-testid="address-list-item-label"
+          >
+            T
+            e
+            s
+            t
+             
+            A
+            c
+            c
+            o
+            u
+            n
+            t
+             
+            4
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="address-list-item-address"
+          >
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-16"
+                class=""
+                data-original-title="0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                0xca8f1...Cf281
+              </div>
+            </div>
+          </div>
+        </div>
+      </button>
     </div>
     <div
       class="send__select-recipient-wrapper__group-item"
@@ -579,389 +740,550 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
     <div
       class="send__select-recipient-wrapper__list"
     >
-      <div
-        class="box send__select-recipient-wrapper__group box--flex-direction-row"
-        data-testid="recipient-group"
+      <button
+        class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
       >
         <div
-          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
         >
           <div
-            class=""
+            class="mm-avatar-account__jazzicon"
           >
             <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 58, 0);"
             >
-              <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(250, 58, 0);"
+              <svg
+                height="24"
+                width="24"
+                x="0"
+                y="0"
               >
-                <svg
-                  height="28"
-                  width="28"
+                <rect
+                  fill="#18CDF2"
+                  height="24"
+                  transform="translate(-0.786295127845455 -2.478213052095374) rotate(328.9 12 12)"
+                  width="24"
                   x="0"
                   y="0"
-                >
-                  <rect
-                    fill="#18CDF2"
-                    height="28"
-                    transform="translate(-0.9173443158196976 -2.8912485607779366) rotate(328.9 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#035E56"
-                    height="28"
-                    transform="translate(-16.01115399522804 9.268404137780026) rotate(176.2 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F26602"
-                    height="28"
-                    transform="translate(14.584361765945934 -12.429497257622447) rotate(468.9 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
-              </div>
+                />
+                <rect
+                  fill="#035E56"
+                  height="24"
+                  transform="translate(-13.723846281624033 7.94434640381145) rotate(176.2 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F26602"
+                  height="24"
+                  transform="translate(12.500881513667943 -10.653854792247811) rotate(468.9 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+              </svg>
             </div>
-          </div>
-          <div
-            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-            data-testid="recipient"
-          >
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
-            >
-              Test Account
-            </p>
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-            >
-              0x0dcd...e7bc
-            </p>
           </div>
         </div>
         <div
-          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
         >
-          <div
-            class=""
+          <p
+            class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+            data-testid="address-list-item-label"
           >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
+            T
+            e
+            s
+            t
+             
+            A
+            c
+            c
+            o
+            u
+            n
+            t
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="address-list-item-address"
+          >
+            <div>
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(245, 143, 0);"
+                aria-describedby="tippy-tooltip-1"
+                class=""
+                data-original-title="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
               >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#018E74"
-                    height="28"
-                    transform="translate(5.524091896954402 -4.749745570944453) rotate(358.4 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#18CAF2"
-                    height="28"
-                    transform="translate(6.724913619395038 -10.621076649467508) rotate(414.8 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#C81474"
-                    height="28"
-                    transform="translate(-4.907795154940259 -21.945972385956175) rotate(322.3 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
+                0x0dcd5...3e7bc
               </div>
             </div>
           </div>
+        </div>
+      </button>
+      <button
+        class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
           <div
-            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-            data-testid="recipient"
+            class="mm-avatar-account__jazzicon"
           >
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(245, 143, 0);"
             >
-              Test Account 2
-            </p>
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-            >
-              0xec1a...251b
-            </p>
+              <svg
+                height="24"
+                width="24"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#018E74"
+                  height="24"
+                  transform="translate(4.7349359116752 -4.0712104893809595) rotate(358.4 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#18CAF2"
+                  height="24"
+                  transform="translate(5.764211673767176 -9.103779985257862) rotate(414.8 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#C81474"
+                  height="24"
+                  transform="translate(-4.206681561377365 -18.81083347367672) rotate(322.3 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
           </div>
         </div>
         <div
-          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
         >
-          <div
-            class=""
+          <p
+            class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+            data-testid="address-list-item-label"
           >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
+            T
+            e
+            s
+            t
+             
+            A
+            c
+            c
+            o
+            u
+            n
+            t
+             
+            2
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="address-list-item-address"
+          >
+            <div>
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(249, 100, 1);"
+                aria-describedby="tippy-tooltip-2"
+                class=""
+                data-original-title="0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
               >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#C81432"
-                    height="28"
-                    transform="translate(-0.510690249475231 -2.7159619403490534) rotate(331.7 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#187AF2"
-                    height="28"
-                    transform="translate(-11.127931122273568 5.54021528290869) rotate(160.5 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FB183E"
-                    height="28"
-                    transform="translate(25.084575445435807 -2.611206239472919) rotate(517.6 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
+                0xec1ad...9251b
               </div>
             </div>
           </div>
+        </div>
+      </button>
+      <button
+        class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
           <div
-            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-            data-testid="recipient"
+            class="mm-avatar-account__jazzicon"
           >
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(249, 100, 1);"
             >
-              Ledger Hardware 2
-            </p>
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-            >
-              0xc42e...8813
-            </p>
+              <svg
+                height="24"
+                width="24"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#C81432"
+                  height="24"
+                  transform="translate(-0.437734499550198 -2.3279673774420457) rotate(331.7 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#187AF2"
+                  height="24"
+                  transform="translate(-9.538226676234487 4.7487559567788775) rotate(160.5 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#FB183E"
+                  height="24"
+                  transform="translate(21.501064667516403 -2.238176776691073) rotate(517.6 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
           </div>
         </div>
         <div
-          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
         >
-          <div
-            class=""
+          <p
+            class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+            data-testid="address-list-item-label"
           >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
+            L
+            e
+            d
+            g
+            e
+            r
+             
+            H
+            a
+            r
+            d
+            w
+            a
+            r
+            e
+             
+            2
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="address-list-item-address"
+          >
+            <div>
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(242, 206, 2);"
+                aria-describedby="tippy-tooltip-3"
+                class=""
+                data-original-title="0xc42edfcc21ed14dda456aa0756c153f7985d8813"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
               >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#2340E1"
-                    height="28"
-                    transform="translate(-1.7054541409645272 -0.893781972900803) rotate(257.0 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#016D8E"
-                    height="28"
-                    transform="translate(11.213543194590896 2.66257866392058) rotate(77.0 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F5F500"
-                    height="28"
-                    transform="translate(11.486654880888956 -19.46641853277226) rotate(465.0 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
+                0xc42ed...d8813
               </div>
             </div>
           </div>
+        </div>
+      </button>
+      <button
+        class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
           <div
-            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-            data-testid="recipient"
+            class="mm-avatar-account__jazzicon"
           >
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(242, 206, 2);"
             >
-              Test Account 3
-            </p>
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-            >
-              0xeb9e...4823
-            </p>
+              <svg
+                height="24"
+                width="24"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#2340E1"
+                  height="24"
+                  transform="translate(-1.4618178351124518 -0.7660988339149738) rotate(257.0 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#016D8E"
+                  height="24"
+                  transform="translate(9.611608452506482 2.2822102833604974) rotate(77.0 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F5F500"
+                  height="24"
+                  transform="translate(9.845704183619105 -16.68550159951908) rotate(465.0 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
           </div>
         </div>
         <div
-          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
         >
-          <div
-            class=""
+          <p
+            class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+            data-testid="address-list-item-label"
           >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
+            T
+            e
+            s
+            t
+             
+            A
+            c
+            c
+            o
+            u
+            n
+            t
+             
+            3
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="address-list-item-address"
+          >
+            <div>
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(24, 125, 242);"
+                aria-describedby="tippy-tooltip-4"
+                class=""
+                data-original-title="0xeb9e64b93097bc15f01f13eae97015c57ab64823"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
               >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
-                >
-                  <rect
-                    fill="#C81435"
-                    height="28"
-                    transform="translate(-1.8544047661519008 -1.6499475479241468) rotate(249.5 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F5E400"
-                    height="28"
-                    transform="translate(-1.3241332948360764 10.505504944881555) rotate(269.5 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F96001"
-                    height="28"
-                    transform="translate(6.630832321372173 21.724427796185292) rotate(216.3 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
+                0xeb9e6...64823
               </div>
             </div>
           </div>
+        </div>
+      </button>
+      <button
+        class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
           <div
-            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-            data-testid="recipient"
+            class="mm-avatar-account__jazzicon"
           >
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(24, 125, 242);"
             >
-              Snap Account 1
-            </p>
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-            >
-              0xb552...ee5d
-            </p>
+              <svg
+                height="24"
+                width="24"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#C81435"
+                  height="24"
+                  transform="translate(-1.589489799558772 -1.4142407553635543) rotate(249.5 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F5E400"
+                  height="24"
+                  transform="translate(-1.1349713955737797 9.004718524184188) rotate(269.5 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F96001"
+                  height="24"
+                  transform="translate(5.683570561176149 18.620938111015967) rotate(216.3 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
           </div>
         </div>
         <div
-          class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
         >
-          <div
-            class=""
+          <p
+            class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+            data-testid="address-list-item-label"
           >
-            <div
-              class="identicon"
-              style="height: 28px; width: 28px; border-radius: 14px;"
-            >
+            S
+            n
+            a
+            p
+             
+            A
+            c
+            c
+            o
+            u
+            n
+            t
+             
+            <span>
               <div
-                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(250, 62, 0);"
+                aria-describedby="tippy-tooltip-5"
+                class=""
+                data-original-title="'1' is similar to 'l'."
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
               >
-                <svg
-                  height="28"
-                  width="28"
-                  x="0"
-                  y="0"
+                <span
+                  class="confusable__point"
                 >
-                  <rect
-                    fill="#238FE1"
-                    height="28"
-                    transform="translate(-3.696976537625548 4.334010253908054) rotate(161.9 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#FB1891"
-                    height="28"
-                    transform="translate(-3.8726006416348677 11.341987744107225) rotate(224.3 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                  <rect
-                    fill="#F90901"
-                    height="28"
-                    transform="translate(-23.479125860782805 -13.386102528655465) rotate(344.7 14 14)"
-                    width="28"
-                    x="0"
-                    y="0"
-                  />
-                </svg>
+                  1
+                </span>
+              </div>
+            </span>
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="address-list-item-address"
+          >
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-6"
+                class=""
+                data-original-title="0xb552685e3d2790efd64a175b00d51f02cdafee5d"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                0xb5526...fee5d
               </div>
             </div>
           </div>
+        </div>
+      </button>
+      <button
+        class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+        >
           <div
-            class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-            data-testid="recipient"
+            class="mm-avatar-account__jazzicon"
           >
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            <div
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(250, 62, 0);"
             >
-              Test Account 4
-            </p>
-            <p
-              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-            >
-              0xca8f...f281
-            </p>
+              <svg
+                height="24"
+                width="24"
+                x="0"
+                y="0"
+              >
+                <rect
+                  fill="#238FE1"
+                  height="24"
+                  transform="translate(-3.1688370322504693 3.7148659319211887) rotate(161.9 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#FB1891"
+                  height="24"
+                  transform="translate(-3.3193719785441727 9.721703780663336) rotate(224.3 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+                <rect
+                  fill="#F90901"
+                  height="24"
+                  transform="translate(-20.124965023528116 -11.47380216741897) rotate(344.7 12 12)"
+                  width="24"
+                  x="0"
+                  y="0"
+                />
+              </svg>
+            </div>
           </div>
         </div>
-      </div>
+        <div
+          class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+          style="overflow: hidden;"
+        >
+          <p
+            class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+            data-testid="address-list-item-label"
+          >
+            T
+            e
+            s
+            t
+             
+            A
+            c
+            c
+            o
+            u
+            n
+            t
+             
+            4
+          </p>
+          <div
+            class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+            data-testid="address-list-item-address"
+          >
+            <div>
+              <div
+                aria-describedby="tippy-tooltip-7"
+                class=""
+                data-original-title="0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"
+                data-tooltipped=""
+                style="display: inline;"
+                tabindex="0"
+              >
+                0xca8f1...Cf281
+              </div>
+            </div>
+          </div>
+        </div>
+      </button>
     </div>
     <div
       class="send__select-recipient-wrapper__list"
@@ -981,83 +1303,117 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
         <div
           class="send__select-recipient-wrapper__recent-group-wrapper"
         />
-        <div
-          class="box send__select-recipient-wrapper__group box--flex-direction-row"
-          data-testid="recipient-group"
+        <button
+          class="mm-box address-list-item mm-box--padding-4 mm-box--display-flex mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
         >
           <div
-            class="box send__select-recipient-wrapper__group-label box--margin-top-2 box--margin-right-4 box--margin-bottom-2 box--margin-left-4 box--flex-direction-row"
-          >
-            <p
-              class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
-            >
-              A
-            </p>
-          </div>
-          <div
-            class="box send__select-recipient-wrapper__group-item box--padding-4 box--flex-direction-row"
+            class="mm-box mm-text mm-avatar-base mm-avatar-base--size-sm mm-avatar-account mm-text--body-sm mm-text--text-transform-uppercase mm-box--margin-inline-end-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
           >
             <div
-              class=""
+              class="mm-avatar-account__jazzicon"
             >
               <div
-                class="identicon"
-                style="height: 28px; width: 28px; border-radius: 14px;"
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 24px; height: 24px; display: inline-block; background: rgb(249, 100, 1);"
               >
-                <div
-                  style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 28px; height: 28px; display: inline-block; background: rgb(249, 100, 1);"
+                <svg
+                  height="24"
+                  width="24"
+                  x="0"
+                  y="0"
                 >
-                  <svg
-                    height="28"
-                    width="28"
+                  <rect
+                    fill="#C81432"
+                    height="24"
+                    transform="translate(-0.437734499550198 -2.3279673774420457) rotate(331.7 12 12)"
+                    width="24"
                     x="0"
                     y="0"
+                  />
+                  <rect
+                    fill="#187AF2"
+                    height="24"
+                    transform="translate(-9.538226676234487 4.7487559567788775) rotate(160.5 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#FB183E"
+                    height="24"
+                    transform="translate(21.501064667516403 -2.238176776691073) rotate(517.6 12 12)"
+                    width="24"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
+            style="overflow: hidden;"
+          >
+            <p
+              class="mm-box mm-text address-list-item__label mm-text--body-md-medium mm-text--text-align-left mm-box--padding-0 mm-box--width-full mm-box--color-text-default"
+              data-testid="address-list-item-label"
+            >
+              A
+              d
+              d
+              r
+              e
+              s
+              s
+               
+              B
+              o
+              o
+              k
+               
+              A
+              c
+              c
+              o
+              u
+              n
+              t
+               
+              <span>
+                <div
+                  aria-describedby="tippy-tooltip-8"
+                  class=""
+                  data-original-title="'1' is similar to 'l'."
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  <span
+                    class="confusable__point"
                   >
-                    <rect
-                      fill="#C81432"
-                      height="28"
-                      transform="translate(-0.510690249475231 -2.7159619403490534) rotate(331.7 14 14)"
-                      width="28"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#187AF2"
-                      height="28"
-                      transform="translate(-11.127931122273568 5.54021528290869) rotate(160.5 14 14)"
-                      width="28"
-                      x="0"
-                      y="0"
-                    />
-                    <rect
-                      fill="#FB183E"
-                      height="28"
-                      transform="translate(25.084575445435807 -2.611206239472919) rotate(517.6 14 14)"
-                      width="28"
-                      x="0"
-                      y="0"
-                    />
-                  </svg>
+                    1
+                  </span>
+                </div>
+              </span>
+            </p>
+            <div
+              class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
+              data-testid="address-list-item-address"
+            >
+              <div>
+                <div
+                  aria-describedby="tippy-tooltip-9"
+                  class=""
+                  data-original-title="0xc42edfcc21ed14dda456aa0756c153f7985d8813"
+                  data-tooltipped=""
+                  style="display: inline;"
+                  tabindex="0"
+                >
+                  0xc42ed...d8813
                 </div>
               </div>
             </div>
-            <div
-              class="box send__select-recipient-wrapper__group-item__content box--flex-direction-row"
-              data-testid="recipient"
-            >
-              <p
-                class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
-              >
-                Address Book Account 1
-              </p>
-              <p
-                class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
-              >
-                0xc42e...8813
-              </p>
-            </div>
           </div>
-        </div>
+        </button>
       </div>
     </div>
   </div>

@@ -627,9 +627,6 @@
   "send": {
     "message": "שלח"
   },
-  "sendTokens": {
-    "message": "שלח טוקנים"
-  },
   "settings": {
     "message": "הגדרות"
   },

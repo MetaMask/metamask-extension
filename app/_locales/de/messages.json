@@ -618,9 +618,6 @@
   "cancel": {
     "message": "Stornieren"
   },
-  "cancelEdit": {
-    "message": "Bearbeiten stornieren"
-  },
   "cancelPopoverTitle": {
     "message": "Transaktion stornieren"
   },
@@ -3382,12 +3379,6 @@
   "sendSpecifiedTokens": {
     "message": "$1 senden",
     "description": "Symbol of the specified token"
-  },
-  "sendTo": {
-    "message": "Senden an"
-  },
-  "sendTokens": {
-    "message": "Tokens senden"
   },
   "sendingDisabled": {
     "message": "Das Senden von ERC-1155 NFT-Assets wird noch nicht unterstützt."
