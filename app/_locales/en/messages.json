@@ -726,9 +726,6 @@
   "cancel": {
     "message": "Cancel"
   },
-  "cancelEdit": {
-    "message": "Cancel edit"
-  },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
@@ -4385,12 +4382,6 @@
     "message": "Send $1",
     "description": "Symbol of the specified token"
   },
-  "sendTo": {
-    "message": "Send to"
-  },
-  "sendTokens": {
-    "message": "Send tokens"
-  },
   "sendingDisabled": {
     "message": "Sending of ERC-1155 NFT assets is not yet supported."
   },
@@ -5042,9 +5033,6 @@
   },
   "submitted": {
     "message": "Submitted"
-  },
-  "suggestedBy": {
-    "message": "Suggested by"
   },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
