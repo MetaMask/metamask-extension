@@ -336,6 +336,7 @@ export const SENTRY_UI_STATE = {
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
