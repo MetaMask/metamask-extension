@@ -178,14 +178,18 @@
   }
 
   &__new-tokens-imported-notification {
-    margin-bottom: 4px;
-    margin-inline-start: 8px;
     padding: 8px;
+    bottom: 16px !important; //Adding important here else it will take bottom:8px in home-notification-wrapper--show-first> div
 
     @include screen-sm-min {
       margin-bottom: 50px;
       margin-inline-end: 8px;
-      left: 70%;
+      margin-right: 40%;
+    }
+
+    @include screen-sm-max {
+      left: 5%;
+      right: 5% !important; // Adding important else it will take right:8px defined in .home-notification-wrapper--show-first> div
     }
 
     &-title,
@@ -197,7 +201,6 @@
       @include H3;
 
       margin-inline-end: 12px;
-      padding-top: 12px;
       color: var(--color-success-default);
     }
 
@@ -272,5 +275,12 @@
       font-size: 12px;
       line-height: 140.62%;
     }
+  }
+
+  &__survey-banner {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
   }
 }

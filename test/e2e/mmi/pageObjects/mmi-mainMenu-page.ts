@@ -116,6 +116,10 @@ export class MMIMainMenuPage {
     );
   }
 
+  async closeDeprecatedNetworksBanner() {
+    await this.page.locator('.mm-banner-base__close-button').click();
+  }
+
   async closeSettings() {
     await this.closeSettingsBtn.click();
   }

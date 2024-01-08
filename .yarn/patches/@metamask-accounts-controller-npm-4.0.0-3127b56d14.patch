@@ -1,0 +1,18 @@
+diff --git a/dist/utils.js b/dist/utils.js
+index 810f229841ffff83f7a28191bc558862b1809e01..2daf3b12cf8a77aad9a5e0a6167734540805ecfc 100644
+--- a/dist/utils.js
++++ b/dist/utils.js
+@@ -36,6 +36,13 @@ function keyringTypeToName(keyringType) {
+         case keyring_controller_1.KeyringTypes.custody: {
+             return 'Custody';
+         }
++        /**
++         * PATCH INFORMATION - The keyring type used for custody account has been changed from 'Custody' to 'Custody - JSONRPC'.
++         * To do: Develop a better solution to keep all keyring types in sync.
++         */
++        case 'Custody - JSONRPC': {
++            return 'Custody';
++        }
+         default: {
+             throw new Error(`Unknown keyring ${keyringType}`);
+         }

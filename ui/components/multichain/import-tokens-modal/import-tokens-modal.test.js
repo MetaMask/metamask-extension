@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 import configureStore from '../../../store/store';
@@ -7,6 +7,7 @@ import {
   clearPendingTokens,
   getTokenStandardAndDetails,
   setPendingTokens,
+  setConfirmationExchangeRates,
 } from '../../../store/actions';
 import mockState from '../../../../test/data/mock-state.json';
 import { TokenStandard } from '../../../../shared/constants/transaction';
@@ -22,6 +23,9 @@ jest.mock('../../../store/actions', () => ({
   clearPendingTokens: jest
     .fn()
     .mockImplementation(() => ({ type: 'CLEAR_PENDING_TOKENS' })),
+  setConfirmationExchangeRates: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'SET_CONFIRMATION_EXCHANGE_RATES' })),
 }));
 
 describe('ImportTokensModal', () => {
@@ -43,7 +47,7 @@ describe('ImportTokensModal', () => {
         getByText(`Add the tokens you've acquired using MetaMask`),
       ).toBeInTheDocument();
       expect(getByText('Next')).toBeDisabled();
-      expect(getByPlaceholderText('Search')).toBeInTheDocument();
+      expect(getByPlaceholderText('Search tokens')).toBeInTheDocument();
     });
 
     it('shows the token detection notice when setting is off', () => {
@@ -79,10 +83,29 @@ describe('ImportTokensModal', () => {
       ).toStrictEqual(tokenAddress);
     });
 
-    it('edits token symbol', () => {
+    it('edits token symbol', async () => {
       const { getByText, getByTestId } = render();
       const customTokenButton = getByText('Custom token');
       fireEvent.click(customTokenButton);
+
+      // Enter token address first
+      const tokenAddress = '0xB7b78f0Caa05C4743b231ACa619f60124FEA4261';
+      const eventTokenAddress = { target: { value: tokenAddress } };
+      fireEvent.change(
+        getByTestId('import-tokens-modal-custom-address'),
+        eventTokenAddress,
+      );
+
+      expect(
+        getByTestId('import-tokens-modal-custom-address').value,
+      ).toStrictEqual(tokenAddress);
+
+      // wait for the symbol input to be in the document
+      await waitFor(() =>
+        expect(
+          getByTestId('import-tokens-modal-custom-symbol'),
+        ).toBeInTheDocument(),
+      );
 
       const tokenSymbol = 'META';
       const event = { target: { value: tokenSymbol } };
@@ -93,10 +116,25 @@ describe('ImportTokensModal', () => {
       ).toStrictEqual(tokenSymbol);
     });
 
-    it('edits token decimal precision', () => {
+    it('edits token decimal precision', async () => {
       const { getByText, getByTestId } = render();
       const customTokenButton = getByText('Custom token');
       fireEvent.click(customTokenButton);
+
+      // Enter token address first
+      const tokenAddress = '0xB7b78f0Caa05C4743b231ACa619f60124FEA4261';
+      const eventTokenAddress = { target: { value: tokenAddress } };
+      fireEvent.change(
+        getByTestId('import-tokens-modal-custom-address'),
+        eventTokenAddress,
+      );
+
+      // wait for the decimals input to be in the document
+      await waitFor(() =>
+        expect(
+          getByTestId('import-tokens-modal-custom-decimals'),
+        ).toBeInTheDocument(),
+      );
 
       const tokenPrecision = '2';
       const event = { target: { value: tokenPrecision } };
@@ -144,20 +182,27 @@ describe('ImportTokensModal', () => {
 
       expect(getByText('Next')).not.toBeDisabled();
 
-      fireEvent.click(getByText('Next'));
-
-      expect(setPendingTokens).toHaveBeenCalledWith({
-        customToken: {
-          address: tokenAddress,
-          decimals: Number(tokenPrecision),
-          standard: TokenStandard.ERC20,
-          symbol: tokenSymbol,
-        },
-        selectedTokens: {},
-        tokenAddressList: [],
+      act(() => {
+        fireEvent.click(getByText('Next'));
       });
 
-      expect(getByText('Import')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(setPendingTokens).toHaveBeenCalledWith({
+          customToken: {
+            address: tokenAddress,
+            decimals: Number(tokenPrecision),
+            standard: TokenStandard.ERC20,
+            symbol: tokenSymbol,
+            name: '',
+          },
+          selectedTokens: {},
+          tokenAddressList: [],
+        });
+
+        expect(setConfirmationExchangeRates).toHaveBeenCalled();
+
+        expect(getByText('Import')).toBeInTheDocument();
+      });
     });
 
     it('cancels out of import token flow', () => {

@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
@@ -48,9 +49,9 @@ describe('EthOverview', () => {
         type: NETWORK_TYPES.MAINNET,
         ticker: 'ETH',
       },
-      cachedBalances: {
-        '0x1': {
-          '0x1': '0x1F4',
+      accountsByChainId: {
+        [CHAIN_IDS.MAINNET]: {
+          '0x1': { address: '0x1', balance: '0x1F4' },
         },
       },
       preferences: {
@@ -75,6 +76,37 @@ describe('EthOverview', () => {
         },
       },
       selectedAddress: '0x1',
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x1',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Account 1',
+              keyring: {
+                type: KeyringType.imported,
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+          'e9b992f9-e151-4317-b8b7-c771bb73dd02': {
+            address: '0x2',
+            id: 'e9b992f9-e151-4317-b8b7-c771bb73dd02',
+            metadata: {
+              name: 'Account 2',
+              keyring: {
+                type: KeyringType.imported,
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
       keyrings: [
         {
           type: KeyringType.imported,
@@ -124,7 +156,7 @@ describe('EthOverview', () => {
 
       const primaryBalance = queryByTestId(ETH_OVERVIEW_PRIMARY_CURRENCY);
       expect(primaryBalance).toBeInTheDocument();
-      expect(primaryBalance).toHaveTextContent('0ETH');
+      expect(primaryBalance).toHaveTextContent('<0.000001ETH');
       expect(queryByText('*')).not.toBeInTheDocument();
     });
 
@@ -137,9 +169,9 @@ describe('EthOverview', () => {
               address: '0x1',
             },
           },
-          cachedBalances: {
-            '0x1': {
-              '0x1': '0x24da51d247e8b8',
+          accountsByChainId: {
+            [CHAIN_IDS.MAINNET]: {
+              '0x1': { address: '0x1', balance: '0x24da51d247e8b8' },
             },
           },
         },

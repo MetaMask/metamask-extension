@@ -1,26 +1,31 @@
 import { test } from '../helpers/extension-loader';
 import { ChromeExtensionPage } from '../pageObjects/mmi-extension-page';
 import { MMISignUpPage } from '../pageObjects/mmi-signup-page';
-import { checkLinkURL } from '../helpers/utils';
+import {
+  checkLinkURL,
+  closePages,
+  getPageAndCloseRepeated,
+} from '../helpers/utils';
 import { MMIMainMenuPage } from '../pageObjects/mmi-mainMenu-page';
 import { Auth0Page } from '../pageObjects/mmi-auth0-page';
+import { MMIMainPage } from '../pageObjects/mmi-main-page';
 
-const portfolio = 'https://dev.metamask-institutional.io/portfolio';
-const swap = 'https://dev.metamask-institutional.io/swap';
-const stake = 'https://dev.metamask-institutional.io/stake';
+const portfolio = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/portfolio`;
+const swap = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/swap`;
+const stake = `${process.env.MMI_E2E_MMI_DASHBOARD_URL}/stake`;
 const support = 'https://mmi-support.zendesk.com/hc/en-us';
 const supportContactUs =
   'https://mmi-support.zendesk.com/hc/en-us/requests/new';
 const mmiHomePage = 'https://metamask.io/institutions/';
-const privacyAndPolicy = 'https://consensys.net/privacy-policy/';
+const privacyAndPolicy = 'https://consensys.io/privacy-policy';
 const hwWalletPrivacyAndSecurity =
   'https://support.metamask.io/hc/en-us/articles/4408552261275';
 const openSeaTermsOfUse = 'https://opensea.io/securityproviderterms';
 const metamaskAttributions = 'https://metamask.io/attributions/';
-const termsOfUse = 'https://consensys.net/terms-of-use/';
+const termsOfUse = 'https://consensys.io/terms-of-use';
 
-test.describe.skip('MMI Navigation', () => {
-  test('MMI full navigation links', async ({ page, context }) => {
+test.describe('MMI Navigation', () => {
+  test('MMI full navigation links', async ({ context }) => {
     test.slow();
     // Getting extension id of MMI
     const extensions = new ChromeExtensionPage(await context.newPage());
@@ -38,7 +43,6 @@ test.describe.skip('MMI Navigation', () => {
     await signUp.start();
     await signUp.authentication();
     await signUp.info();
-    await signUp.close();
 
     // This is removed to improve test performance
     // Signin auth0
@@ -46,44 +50,66 @@ test.describe.skip('MMI Navigation', () => {
     await auth0.signIn();
     await auth0.page.close();
 
+    // Close pages not used to remove data from logs
+    await closePages(context, ['metamask-institutional.io']);
+    const mainPage = new MMIMainPage(
+      await getPageAndCloseRepeated(context, 'home.html'),
+    );
+
     // Check main page links
     await checkLinkURL(
       context,
-      page,
+      mainPage.page,
+      'Portfolio',
+      portfolio,
+      'button',
+    );
+
+    await checkLinkURL(context, mainPage.page, 'Stake', stake, 'button');
+
+    await checkLinkURL(context, mainPage.page, 'Swap', swap, 'button');
+
+    await checkLinkURL(
+      context,
+      mainPage.page,
       'MetaMask Institutional support',
       support,
     );
-    await checkLinkURL(context, page, 'Stake', stake, 'button');
-    // Check that portfolio link is correct - is done async to reduce test time
-    await checkLinkURL(context, page, 'Portfolio', portfolio, 'button');
-    await checkLinkURL(context, page, 'Swap', swap, 'button');
 
     // Check NFT and Activity tab links
-    const mainMenuPage = new MMIMainMenuPage(page, extensionId as string);
-    await mainMenuPage.goto();
-    await mainMenuPage.activityTab.click();
+    await mainPage.activityTab.click();
     await checkLinkURL(
       context,
-      page,
+      mainPage.page,
       'MetaMask Institutional support',
       support,
     );
-    await mainMenuPage.NFTsTab.click();
+    await mainPage.NFTsTab.click();
     await checkLinkURL(
       context,
-      page,
+      mainPage.page,
       'MetaMask Institutional support',
       support,
     );
 
     // Check main menu links
+    const mainMenuPage = new MMIMainMenuPage(
+      mainPage.page,
+      extensionId as string,
+    );
     await mainMenuPage.openMenu();
-    await checkLinkURL(context, page, 'Support', support, 'button');
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Support',
+      support,
+      'button',
+    );
 
     await mainMenuPage.openMenu();
     await checkLinkURL(
       context,
-      page,
+      mainMenuPage.page,
       'Portfolio Dashboard',
       portfolio,
       'button',
@@ -93,21 +119,66 @@ test.describe.skip('MMI Navigation', () => {
     await mainMenuPage.selectMenuOption('settings');
 
     await mainMenuPage.selectSettings('Advance');
-    await checkLinkURL(context, page, 'learn more', hwWalletPrivacyAndSecurity);
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'learn more',
+      hwWalletPrivacyAndSecurity,
+    );
 
     await mainMenuPage.selectSettings('Security & privacy');
-    await checkLinkURL(context, page, 'Privacy policy', privacyAndPolicy);
-    await checkLinkURL(context, page, 'Learn More', privacyAndPolicy);
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Privacy policy',
+      privacyAndPolicy,
+    );
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Learn More',
+      privacyAndPolicy,
+    );
 
     await mainMenuPage.selectSettings('Experimental');
-    await checkLinkURL(context, page, 'learn more', openSeaTermsOfUse);
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'learn more',
+      openSeaTermsOfUse,
+    );
 
     await mainMenuPage.selectSettings('About');
-    await checkLinkURL(context, page, 'Privacy policy', privacyAndPolicy);
-    await checkLinkURL(context, page, 'Terms of use', termsOfUse);
-    await checkLinkURL(context, page, 'Attributions', metamaskAttributions);
-    await checkLinkURL(context, page, 'Visit our support center', support);
-    await checkLinkURL(context, page, 'Visit our website', mmiHomePage);
-    await checkLinkURL(context, page, 'Contact us', supportContactUs);
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Privacy policy',
+      privacyAndPolicy,
+    );
+    await checkLinkURL(context, mainMenuPage.page, 'Terms of use', termsOfUse);
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Attributions',
+      metamaskAttributions,
+    );
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Visit our support center',
+      support,
+    );
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Visit our website',
+      mmiHomePage,
+    );
+    await checkLinkURL(
+      context,
+      mainMenuPage.page,
+      'Contact us',
+      supportContactUs,
+    );
   });
 });

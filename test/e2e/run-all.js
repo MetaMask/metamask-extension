@@ -11,6 +11,7 @@ const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 const FLASK_ONLY_TESTS = [
   'petnames.spec.js',
   'test-snap-txinsights-v2.spec.js',
+  'test-snap-homepage.spec.js',
 ];
 
 const getTestPathsForTestDir = async (testDir) => {
@@ -150,10 +151,7 @@ async function main() {
     testPaths = await getTestPathsForTestDir(testDir);
   } else if (buildType === 'mmi') {
     const testDir = path.join(__dirname, 'tests');
-    testPaths = [
-      ...(await getTestPathsForTestDir(testDir)),
-      path.join(__dirname, 'metamask-ui.spec.js'),
-    ];
+    testPaths = [...(await getTestPathsForTestDir(testDir))];
   } else {
     const testDir = path.join(__dirname, 'tests');
     const filteredFlaskAndMainTests = featureTestsOnMain.filter((p) =>
@@ -162,7 +160,6 @@ async function main() {
     testPaths = [
       ...(await getTestPathsForTestDir(testDir)),
       ...filteredFlaskAndMainTests,
-      path.join(__dirname, 'metamask-ui.spec.js'),
     ];
   }
 

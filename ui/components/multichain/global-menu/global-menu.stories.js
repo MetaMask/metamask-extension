@@ -15,6 +15,7 @@ export default {
   args: {
     closeMenu: () => undefined,
     anchorElement: null,
+    isOpen: true,
   },
 };
 

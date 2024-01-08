@@ -5,10 +5,12 @@ export class MMIMainPage {
 
   readonly activityTab: Locator;
 
+  readonly NFTsTab: Locator;
+
   constructor(page: Page) {
     this.page = page;
-
-    this.activityTab = page.locator('button:has-text("Activity")');
+    this.activityTab = page.getByRole('button', { name: /activity/iu });
+    this.NFTsTab = page.getByRole('button', { name: /nfts/iu });
   }
 
   async closeWhatsNewBanner() {

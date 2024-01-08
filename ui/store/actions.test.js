@@ -25,11 +25,6 @@ const defaultState = {
     identities: {
       '0xFirstAddress': {},
     },
-    cachedBalances: {
-      '0x1': {
-        '0xFirstAddress': '0x0',
-      },
-    },
   },
 };
 const mockStore = (state = defaultState) => configureStore(middleware)(state);
@@ -237,11 +232,6 @@ describe('Actions', () => {
           accounts: {
             '0xAnotherAddress': {
               balance: '0x0',
-            },
-          },
-          cachedBalances: {
-            '0x1': {
-              '0xAnotherAddress': '0x0',
             },
           },
           identities: {
@@ -531,8 +521,6 @@ describe('Actions', () => {
         (_, __, ___, cb) => cb(),
       );
 
-      background.establishLedgerTransportPreference.callsFake((cb) => cb());
-
       setBackgroundConnection(background);
 
       await store.dispatch(
@@ -551,8 +539,6 @@ describe('Actions', () => {
       background.connectHardware.callsFake((_, __, ___, cb) =>
         cb(new Error('error')),
       );
-
-      background.establishLedgerTransportPreference.callsFake((cb) => cb());
 
       setBackgroundConnection(background);
 
@@ -1989,11 +1975,6 @@ describe('Actions', () => {
             },
             identities: {
               '0xFirstAddress': {},
-            },
-            cachedBalances: {
-              '0x1': {
-                '0xFirstAddress': '0x0',
-              },
             },
           }),
         ),
