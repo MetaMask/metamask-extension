@@ -44,7 +44,7 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
       >
         <AvatarNetwork
           src={fromNetworkDetails.iconUrl}
-          name={fromNetworkDetails.iconUrl}
+          name={fromNetworkDetails.nickname}
           size={AvatarNetworkSize.Xl}
           marginBottom={2}
         />

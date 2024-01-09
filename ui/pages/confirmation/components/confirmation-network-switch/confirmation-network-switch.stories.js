@@ -14,12 +14,13 @@ export default {
   args: {
     toNetwork: {
       chainId: '0xa',
-      ticker: 'ETH',
+      ticker: 'OP',
       nickname: 'Optimism',
       rpcUrl: 'https://optimism-mainnet.infura.io',
     },
     fromNetwork: {
       chainId: '1',
+      ticker: 'ETH',
       nickname: 'Ethereum Mainnet',
     },
   },
