@@ -283,7 +283,6 @@ export default function NameDetails({
               ? t('nameInstructionsSaved')
               : t('nameInstructionsNew')}
           </Text>
-          <hr className="name-details__line" />
           {/* @ts-ignore */}
           <FormTextField
             id="address"
@@ -314,7 +313,6 @@ export default function NameDetails({
               value={name}
               options={proposedNameOptions}
               placeholder={t('nameSetPlaceholder')}
-              noOptionsText={t('nameNoProposedNames')}
               onChange={handleNameChange}
               onOptionClick={handleProposedNameClick}
             />

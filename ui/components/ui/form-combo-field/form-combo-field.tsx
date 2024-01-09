@@ -82,18 +82,15 @@ function Option({
 
 function Dropdown({
   maxDropdownHeight,
-  noOptionsText,
   onOptionClick,
   options,
   width,
 }: {
   maxDropdownHeight?: number;
-  noOptionsText?: string;
   onOptionClick: (option?: FormComboFieldOption) => void;
   options: FormComboFieldOption[];
   width: number;
 }) {
-  const t = useContext(I18nContext);
   const ref = useRef<any>();
   const maxHeight = maxDropdownHeight ?? 179;
   const [dropdownHeight, setDropdownHeight] = useState(0);
@@ -111,12 +108,6 @@ function Dropdown({
         'form-combo-field__dropdown__scroll': dropdownHeight > maxHeight,
       })}
     >
-      {options.length === 0 && (
-        <Option
-          option={{ primaryLabel: noOptionsText ?? t('comboNoOptions') }}
-          onClick={() => onOptionClick(undefined)}
-        />
-      )}
       {options.map((option, index) => (
         <Option
           key={index}
@@ -132,7 +123,6 @@ function Dropdown({
 
 export default function FormComboField({
   maxDropdownHeight,
-  noOptionsText,
   onChange,
   onOptionClick,
   options,
@@ -223,7 +213,6 @@ export default function FormComboField({
       {dropdownVisible && (
         <Dropdown
           maxDropdownHeight={maxDropdownHeight}
-          noOptionsText={noOptionsText}
           onOptionClick={handleOptionClick}
           options={options}
           width={valueWidth}
