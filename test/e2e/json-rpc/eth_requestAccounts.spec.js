@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { defaultGanacheOptions, withFixtures } = require('../helpers');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_requestAccounts', function () {
@@ -14,9 +18,7 @@ describe('eth_requestAccounts', function () {
         title: this.test.title,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // eth_requestAccounts
         await driver.openNewPage(`http://127.0.0.1:8080`);
