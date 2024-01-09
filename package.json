@@ -219,7 +219,11 @@
     "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch",
     "nonce-tracker@npm:^3.0.0": "patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch",
     "@metamask/accounts-controller@npm:^4.0.0": "patch:@metamask/accounts-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-4.0.0-3127b56d14.patch",
-    "@trezor/connect-web": "9.0.11"
+    "@trezor/connect-web": "9.0.11",
+    "@metamask/polling-controller": "^4.0.0",
+    "@metamask/polling-controller@npm:^1.0.2": "patch:@metamask/polling-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-polling-controller-npm-4.0.0-52c29c5a78.patch",
+    "@metamask/polling-controller@npm:^4.0.0": "patch:@metamask/polling-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-polling-controller-npm-4.0.0-52c29c5a78.patch",
+    "@metamask/polling-controller@npm:^2.0.0": "patch:@metamask/polling-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-polling-controller-npm-4.0.0-52c29c5a78.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",
@@ -279,7 +283,7 @@
     "@metamask/obs-store": "^8.1.0",
     "@metamask/permission-controller": "^7.0.0",
     "@metamask/phishing-controller": "^8.0.0",
-    "@metamask/polling-controller": "^1.0.1",
+    "@metamask/polling-controller": "patch:@metamask/polling-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-polling-controller-npm-4.0.0-52c29c5a78.patch",
     "@metamask/post-message-stream": "^7.0.0",
     "@metamask/ppom-validator": "^0.10.0",
     "@metamask/providers": "^14.0.2",
@@ -294,7 +298,8 @@
     "@metamask/snaps-rpc-methods": "^4.1.0",
     "@metamask/snaps-sdk": "^1.2.0",
     "@metamask/snaps-utils": "^5.1.1",
-    "@metamask/transaction-controller": "^18.3.1",
+    "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@19.0.1-preview.353ee83b",
+    "@metamask/user-operation-controller": "npm:@metamask-previews/user-operation-controller@0.0.0-preview.353ee83b",
     "@metamask/utils": "^8.2.1",
     "@ngraveio/bc-ur": "^1.1.6",
     "@popperjs/core": "^2.4.0",

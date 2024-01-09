@@ -1911,6 +1911,36 @@ export function getNameSources(state) {
   return state.metamask.nameSources || {};
 }
 
+export function getUserOperations(state) {
+  return state.metamask.userOperations || {};
+}
+
+export function getUserOperation(state) {
+  const { confirmTransaction } = state;
+  const { txData } = confirmTransaction;
+  const { id, isUserOperation } = txData;
+
+  if (!isUserOperation) {
+    return undefined;
+  }
+
+  const userOperations = getUserOperations(state);
+
+  return userOperations[id];
+}
+
+export function getIsUsingPaymaster(state) {
+  const userOperation = getUserOperation(state);
+
+  if (!userOperation) {
+    return false;
+  }
+
+  const paymasterData = userOperation.userOperation?.paymasterAndData;
+
+  return paymasterData && paymasterData.length && paymasterData !== '0x';
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(desktop)
 /**
  * To get the `desktopEnabled` value which determines whether we use the desktop app
