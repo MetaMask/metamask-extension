@@ -66,7 +66,7 @@ describe('TokenListItem', () => {
     expect(props.onClick).toHaveBeenCalled();
   });
 
-  it('handles staking click and fires onClick', async () => {
+  it('handles clicking staking opens tab', async () => {
     const store = configureMockStore()(state);
     const { queryByTestId } = renderWithProvider(
       <TokenListItem isStakeable {...props} />,
