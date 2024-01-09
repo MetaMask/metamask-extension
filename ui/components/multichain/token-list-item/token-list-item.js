@@ -90,11 +90,15 @@ export const TokenListItem = ({
       : title;
   const stakeableTitle = (
     <Box
+      as="button"
+      backgroundColor={BackgroundColor.transparent}
       data-testid={`staking-entrypoint-${chainId}`}
       display={Display.InlineFlex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
       gap={1}
+      paddingInline={0}
+      tabIndex="0"
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
