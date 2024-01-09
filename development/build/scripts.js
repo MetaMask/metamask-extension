@@ -305,7 +305,7 @@ function createScriptTasks({
     // In MV3 we will need to build our offscreen entry point bundle and any
     // entry points for iframes that we want to lockdown with LavaMoat.
     if (process.env.ENABLE_MV3 === 'true') {
-      standardEntryPoints.push('offscreen', 'trezor-iframe');
+      standardEntryPoints.push('offscreen', 'trezor-iframe', 'ledger-iframe');
     }
 
     const standardSubtask = createTask(
@@ -323,6 +323,8 @@ function createScriptTasks({
               return './offscreen/scripts/offscreen.ts';
             case 'trezor-iframe':
               return './offscreen/scripts/trezor-iframe.ts';
+            case 'ledger-iframe':
+              return './offscreen/scripts/ledger-iframe.ts';
             default:
               return `./app/scripts/${label}.js`;
           }
@@ -817,6 +819,16 @@ function createFactoredBuild({
               browserPlatforms,
               applyLavaMoat,
               destinationFileName: 'load-trezor-iframe.js',
+            });
+            break;
+          }
+          case 'ledger-iframe': {
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              applyLavaMoat,
+              destinationFileName: 'load-ledger-iframe.js',
             });
             break;
           }

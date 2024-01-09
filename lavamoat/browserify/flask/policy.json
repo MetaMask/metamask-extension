@@ -787,17 +787,9 @@
         "console.info": true
       },
       "packages": {
-        "@metamask/approval-controller>@metamask/base-controller": true,
         "@metamask/approval-controller>nanoid": true,
-        "eth-rpc-errors": true
-      }
-    },
-    "@metamask/approval-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
+        "@metamask/base-controller": true,
+        "@metamask/providers>@metamask/rpc-errors": true
       }
     },
     "@metamask/approval-controller>nanoid": {
@@ -812,6 +804,7 @@
         "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console.error": true,
         "console.log": true,
         "setInterval": true,
         "setTimeout": true
@@ -1523,30 +1516,9 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/name-controller>@metamask/base-controller": true,
-        "@metamask/name-controller>@metamask/utils": true,
+        "@metamask/base-controller": true,
+        "@metamask/utils": true,
         "eth-json-rpc-filters>async-mutex": true
-      }
-    },
-    "@metamask/name-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/name-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/network-controller": {
@@ -2077,7 +2049,6 @@
     },
     "@metamask/snaps-controllers": {
       "globals": {
-        "DecompressionStream": true,
         "URL": true,
         "chrome.offscreen.createDocument": true,
         "chrome.offscreen.hasDocument": true,
@@ -2198,6 +2169,7 @@
         "fetch": true
       },
       "packages": {
+        "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-sdk>is-svg": true,
         "@metamask/utils": true,
         "superstruct": true
@@ -2685,6 +2657,11 @@
       },
       "packages": {
         "browserify>process": true
+      }
+    },
+    "@storybook/addon-docs>remark-external-links>mdast-util-definitions": {
+      "packages": {
+        "react-markdown>unist-util-visit": true
       }
     },
     "@storybook/addon-knobs>qs": {
@@ -4473,16 +4450,11 @@
         "console.warn": true
       },
       "packages": {
-        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": true,
+        "@storybook/addon-docs>remark-external-links>mdast-util-definitions": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>mdurl": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-builder": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-generated": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-position": true,
-        "react-markdown>unist-util-visit": true
-      }
-    },
-    "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": {
-      "packages": {
         "react-markdown>unist-util-visit": true
       }
     },

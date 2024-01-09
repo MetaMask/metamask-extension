@@ -16,6 +16,7 @@ export default class SendRowWrapper extends Component {
 
   renderAmountFormRow() {
     const { children, errorType = '', label, showError = false } = this.props;
+
     const formField = Array.isArray(children)
       ? children[1] || children[0]
       : children;

@@ -3,7 +3,7 @@
 
 Instead, use export const parameters = {}; and export const decorators = []; in your .storybook/preview.js. Addon authors similarly should use such an export in a preview entry file (see Preview entries).
   * */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { action } from '@storybook/addon-actions';
 import { Provider } from 'react-redux';
 import configureStore from '../ui/store/store';
@@ -16,8 +16,10 @@ import testData from './test-data.js';
 import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { setBackgroundConnection } from '../ui/store/background-connection';
-import MetaMaskStorybookTheme from './metamask-storybook-theme';
-import { addons } from '@storybook/addons';
+import { metamaskStorybookTheme } from './metamask-storybook-theme';
+import { DocsContainer } from '@storybook/addon-docs';
+import { useDarkMode } from 'storybook-dark-mode';
+import { themes } from '@storybook/theming';
 
 export const parameters = {
   backgrounds: {
@@ -28,7 +30,23 @@ export const parameters = {
     ],
   },
   docs: {
-    theme: MetaMaskStorybookTheme,
+    container: (context) => {
+      const isDark = useDarkMode();
+
+      const props = {
+        ...context,
+        theme: isDark
+          ? { ...themes.dark, ...metamaskStorybookTheme }
+          : { ...themes.light, ...metamaskStorybookTheme },
+        'data-theme': isDark ? 'dark' : 'light',
+      };
+
+      return (
+        <div data-theme={isDark ? 'dark' : 'light'}>
+          <DocsContainer {...props} />
+        </div>
+      );
+    },
   },
   options: {
     storySort: {
@@ -81,15 +99,9 @@ const proxiedBackground = new Proxy(
 setBackgroundConnection(proxiedBackground);
 
 const metamaskDecorator = (story, context) => {
-  const [isDark, setDark] = useState(false);
-  const channel = addons.getChannel();
+  const isDark = useDarkMode();
   const currentLocale = context.globals.locale;
   const current = allLocales[currentLocale];
-
-  useEffect(() => {
-    channel.on('DARK_MODE', setDark);
-    return () => channel.off('DARK_MODE', setDark);
-  }, [channel, setDark]);
 
   useEffect(() => {
     const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -121,6 +133,4 @@ const metamaskDecorator = (story, context) => {
   );
 };
 
-export const decorators = [
-  metamaskDecorator,
-];
+export const decorators = [metamaskDecorator];
