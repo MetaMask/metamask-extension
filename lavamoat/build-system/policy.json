@@ -23,12 +23,7 @@
     },
     "@babel/code-frame>chalk>ansi-styles": {
       "packages": {
-        "@babel/code-frame>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "@babel/code-frame>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "@babel/code-frame>chalk>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "@babel/code-frame>chalk>supports-color": {
@@ -1201,6 +1196,11 @@
     "@metamask/jazzicon>color>clone": {
       "globals": {
         "Buffer": true
+      }
+    },
+    "@metamask/jazzicon>color>color-convert": {
+      "packages": {
+        "@metamask/jazzicon>color>color-convert>color-name": true
       }
     },
     "@metamask/utils": {
@@ -3534,12 +3534,7 @@
     },
     "gulp-livereload>chalk>ansi-styles": {
       "packages": {
-        "gulp-livereload>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "gulp-livereload>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "gulp-livereload>chalk>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "gulp-livereload>chalk>supports-color": {
@@ -3813,12 +3808,7 @@
     },
     "gulp-rtlcss>rtlcss>chalk>ansi-styles": {
       "packages": {
-        "gulp-rtlcss>rtlcss>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "gulp-rtlcss>rtlcss>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "gulp-rtlcss>rtlcss>chalk>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "gulp-rtlcss>rtlcss>chalk>supports-color": {
@@ -6238,12 +6228,7 @@
     },
     "lavamoat>@babel/highlight>chalk>ansi-styles": {
       "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "lavamoat>@babel/highlight>chalk>supports-color": {
@@ -8446,12 +8431,7 @@
     },
     "stylelint>table>slice-ansi>ansi-styles": {
       "packages": {
-        "stylelint>table>slice-ansi>ansi-styles>color-convert": true
-      }
-    },
-    "stylelint>table>slice-ansi>ansi-styles>color-convert": {
-      "packages": {
-        "stylelint>table>slice-ansi>ansi-styles>color-convert>color-name": true
+        "@metamask/jazzicon>color>color-convert": true
       }
     },
     "stylelint>table>string-width": {
