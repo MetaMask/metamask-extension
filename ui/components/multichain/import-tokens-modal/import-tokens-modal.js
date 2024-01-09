@@ -544,7 +544,7 @@ export const ImportTokensModal = ({ onClose }) => {
                                   history.push(
                                     `${SECURITY_ROUTE}#auto-detect-tokens`,
                                   );
-                                  history.push(mostRecentOverviewPage);
+                                  onClose();
                                 }}
                               >
                                 {t('enableFromSettings')}
