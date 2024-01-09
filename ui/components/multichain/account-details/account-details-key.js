@@ -22,6 +22,8 @@ import {
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 
+const inTest = Boolean(process.env.IN_TEST);
+
 export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
   const t = useI18nContext();
 
@@ -51,7 +53,7 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
           variant={TextVariant.bodySm}
           style={{ wordBreak: 'break-word' }}
         >
-          <LavaDomeReact text={privateKey} />
+          <LavaDomeReact unsafeOpenModeShadow={inTest} text={privateKey} />
         </Text>
         <ButtonIcon
           onClick={() => handlePrivateKeyCopy(privateKey)}

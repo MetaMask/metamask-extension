@@ -93,16 +93,25 @@ describe('AccountDetails', () => {
 
   it('displays the private key when sent in props', () => {
     const samplePrivateKey = '8675309';
+    const textHook = 'FIND_ME';
 
     const { queryByText } = renderWithProvider(
-      <AccountDetailsKey
-        accountName="Account 1"
-        onClose={jest.fn()}
-        privateKey={samplePrivateKey}
-      />,
+      <div>
+        {textHook}
+        <AccountDetailsKey
+          accountName="Account 1"
+          onClose={jest.fn()}
+          privateKey={samplePrivateKey}
+        />
+      </div>,
     );
 
-    expect(queryByText(samplePrivateKey)).toBeInTheDocument();
+    const hook = queryByText(textHook);
+    const root = hook.parentElement.querySelector('span');
+    const parts = Array.from(root.shadowRoot.querySelectorAll('span'));
+    const extractedPrivateKey = parts.map(node =>
+      node.shadowRoot?.firstChild?.textContent).join('');
+    expect(extractedPrivateKey).toContain(samplePrivateKey);
   });
 
   it('should call AccountDetails.onClose()', () => {
