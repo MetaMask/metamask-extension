@@ -79,7 +79,7 @@ export const HiddenAccountList = ({ onClose }) => {
           </Box>
         </Box>
         <Box
-          gap={1}
+          gap={2}
           display={Display.Flex}
           alignItems={AlignItems.center}
           width={BlockSize.OneThird}

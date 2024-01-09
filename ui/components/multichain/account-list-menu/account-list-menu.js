@@ -10,9 +10,7 @@ import {
   ButtonSecondary,
   ButtonSecondarySize,
   ButtonVariant,
-  Icon,
   IconName,
-  IconSize,
   Modal,
   ModalOverlay,
   Text,
@@ -363,7 +361,7 @@ export const AccountListMenu = ({
                     alignItems={AlignItems.center}
                     justifyContent={JustifyContent.center}
                   >
-                    <Icon name={IconName.DragDrop} size={IconSize.Lg} />
+                    <img src="./images/pinning-animation.svg" alt="pinning" />
                   </Box>
                 }
                 onClose={() => hideAccountBanner()}

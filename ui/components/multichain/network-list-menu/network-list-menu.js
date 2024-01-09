@@ -45,9 +45,6 @@ import {
   ModalOverlay,
   Text,
   BannerBase,
-  Icon,
-  IconName,
-  IconSize,
 } from '../../component-library';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
@@ -278,7 +275,10 @@ export const NetworkListMenu = ({ onClose }) => {
                   alignItems={AlignItems.center}
                   justifyContent={JustifyContent.center}
                 >
-                  <Icon name={IconName.DragDrop} size={IconSize.Lg} />
+                  <img
+                    src="./images/dragging-animation.svg"
+                    alt="drag-and-drop"
+                  />
                 </Box>
               }
               onClose={() => hideNetworkBanner()}
