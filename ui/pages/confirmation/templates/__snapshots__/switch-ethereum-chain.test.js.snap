@@ -56,10 +56,9 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              T
+              ?
             </div>
             <p
-              align="center"
               class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--justify-content-center mm-box--color-text-default"
             >
               Test initial state
@@ -84,7 +83,6 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
               T
             </div>
             <p
-              align="center"
               class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--justify-content-center mm-box--color-text-default"
             >
               Test chain
@@ -175,10 +173,9 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
             <div
               class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              T
+              ?
             </div>
             <p
-              align="center"
               class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--justify-content-center mm-box--color-text-default"
             >
               Test initial state
@@ -203,7 +200,6 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
               T
             </div>
             <p
-              align="center"
               class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--justify-content-center mm-box--color-text-default"
             >
               Test chain
