@@ -1285,6 +1285,10 @@ export function getPinnedAccountsList(state) {
   return state.metamask.pinnedAccountList;
 }
 
+export function getHiddenAccountsList(state) {
+  return state.metamask.hiddenAccountList;
+}
+
 export function getShowRecoveryPhraseReminder(state) {
   const {
     recoveryPhraseReminderLastShown,
@@ -1861,22 +1865,38 @@ export function getCustomTokenAmount(state) {
 export function getUpdatedAndSortedAccounts(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const pinnedAddresses = getPinnedAccountsList(state);
+  const hiddenAddresses = getHiddenAccountsList(state);
 
   accounts.forEach((account) => {
-    account.pinned = Boolean(pinnedAddresses?.includes(account.address));
+    account.pinned = Boolean(pinnedAddresses.includes(account.address));
+    account.hidden = Boolean(hiddenAddresses.includes(account.address));
   });
 
-  const notPinnedAccounts = accounts.filter(
-    (account) => !pinnedAddresses.includes(account.address),
-  );
-
   const sortedPinnedAccounts = pinnedAddresses
-    .map((address) => accounts.find((account) => account.address === address))
+    ?.map((address) => accounts.find((account) => account.address === address))
     .filter((account) =>
-      Boolean(account && pinnedAddresses.includes(account.address)),
+      Boolean(
+        account &&
+          pinnedAddresses.includes(account.address) &&
+          !hiddenAddresses?.includes(account.address),
+      ),
     );
 
-  const sortedSearchResults = [...sortedPinnedAccounts, ...notPinnedAccounts];
+  const notPinnedAccounts = accounts.filter(
+    (account) =>
+      !pinnedAddresses.includes(account.address) &&
+      !hiddenAddresses.includes(account.address),
+  );
+
+  const filteredHiddenAccounts = accounts.filter((account) =>
+    hiddenAddresses.includes(account.address),
+  );
+
+  const sortedSearchResults = [
+    ...sortedPinnedAccounts,
+    ...notPinnedAccounts,
+    ...filteredHiddenAccounts,
+  ];
 
   return sortedSearchResults;
 }

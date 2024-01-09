@@ -79,6 +79,8 @@ export { Modal, useModalContext } from './modal';
 export type { ModalProps } from './modal';
 export { ModalBody } from './modal-body';
 export type { ModalBodyProps } from './modal-body';
+export { ModalFooter } from './modal-footer';
+export type { ModalFooterProps } from './modal-footer';
 
 // Molecules
 export { BannerBase } from './banner-base';
