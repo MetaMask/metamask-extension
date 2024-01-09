@@ -317,7 +317,6 @@ export default function NameDetails({
               onOptionClick={handleProposedNameClick}
             />
           </Label>
-          <hr className="name-details__line" />
           <Button
             variant={ButtonVariant.Primary}
             startIconName={hasSavedName ? undefined : IconName.Save}
