@@ -82,7 +82,7 @@ import { isLegacyTransaction } from '../../helpers/utils/transactions.util';
 import { CUSTOM_GAS_ESTIMATE } from '../../../shared/constants/gas';
 
 // eslint-disable-next-line import/no-duplicates
-import { getIsUsingPaymaster } from '../../selectors/selectors';
+import { getIsUsingPaymaster } from '../../selectors/account-abstraction';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 // eslint-disable-next-line import/no-duplicates
