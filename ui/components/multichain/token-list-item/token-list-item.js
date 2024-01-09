@@ -222,10 +222,10 @@ export const TokenListItem = ({
                   >
                     {isStakeable ? (
                       <>
-                        {tokenTitle} {stakeableTitle}
+                        {tokenSymbol} {stakeableTitle}
                       </>
                     ) : (
-                      tokenTitle
+                      tokenSymbol
                     )}
                   </Text>
                 </Tooltip>
@@ -238,10 +238,10 @@ export const TokenListItem = ({
                 >
                   {isStakeable ? (
                     <Box display={Display.InlineBlock}>
-                      {tokenTitle} {stakeableTitle}
+                      {tokenSymbol} {stakeableTitle}
                     </Box>
                   ) : (
-                    tokenTitle
+                    tokenSymbol
                   )}
                 </Text>
               )}
@@ -275,7 +275,7 @@ export const TokenListItem = ({
             color={TextColor.textAlternative}
             data-testid="multichain-token-list-item-value"
           >
-            {primary} {tokenSymbol}{' '}
+            {tokenTitle}
           </Text>
         </Box>
       </Box>
