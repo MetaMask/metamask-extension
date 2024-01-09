@@ -541,10 +541,10 @@ export const ImportTokensModal = ({ onClose }) => {
                                 key="token-detection-announcement"
                                 className="import-tokens-modal__autodetect"
                                 onClick={() => {
+                                  onClose();
                                   history.push(
                                     `${SECURITY_ROUTE}#auto-detect-tokens`,
                                   );
-                                  history.push(mostRecentOverviewPage);
                                 }}
                               >
                                 {t('enableFromSettings')}
