@@ -1,4 +1,4 @@
-import { runBundler, BundlerServer } from '@account-abstraction/bundler';
+import { runBundler, BundlerServer } from 'test-bundler';
 
 const ARGS = [
   '-',

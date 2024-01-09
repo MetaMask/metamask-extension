@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@metamask/user-operation-controller": {
-      "signature": "27e3870b8e7174c94bfb29664eadc38e",
+      "signature": "bc55a5f0400c1628bd44555cdbd75978",
       "file": true
     },
     "simple-smart-account": {
@@ -30,6 +30,14 @@
       "signature": "a990e66250cc48344c6b76bb94ea13b7",
       "file": true,
       "replaced": "0.6.0"
+    },
+    "@matthewwalsh0-org/test-bundler": {
+      "signature": "027b291f0c6074f71ee3d01d8bf2161b",
+      "file": true
+    },
+    "test-bundler": {
+      "signature": "0e53f747a967c68bd2ff5d4593d36352",
+      "file": true
     }
   }
 }

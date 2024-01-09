@@ -9,7 +9,7 @@ import semver from 'semver';
 ///: END:ONLY_INCLUDE_IF
 import { createSelector } from 'reselect';
 import { NameType } from '@metamask/name-controller';
-import { TransactionStatus, TransactionType } from '@metamask/transaction-controller';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { addHexPrefix } from '../../app/scripts/lib/util';
 import {
   TEST_CHAINS,
@@ -1837,16 +1837,34 @@ export function getNameSources(state) {
   return state.metamask.nameSources || {};
 }
 
-export function getIsUsingPaymaster(state) {
+export function getUserOperations(state) {
+  return state.metamask.userOperations || {};
+}
+
+export function getUserOperation(state) {
   const { confirmTransaction } = state;
   const { txData } = confirmTransaction;
-  const { txParams, type } = txData;
+  const { id, isUserOperation } = txData;
 
-  return (
-    type === TransactionType.userOperation &&
-    txParams?.maxFeePerGas === '0x0' &&
-    txParams?.maxPriorityFeePerGas === '0x0'
-  );
+  if (!isUserOperation) {
+    return undefined;
+  }
+
+  const userOperations = getUserOperations(state);
+
+  return userOperations[id];
+}
+
+export function getIsUsingPaymaster(state) {
+  const userOperation = getUserOperation(state);
+
+  if (!userOperation) {
+    return false;
+  }
+
+  const paymasterData = userOperation.userOperation?.paymasterAndData;
+
+  return paymasterData && paymasterData.length && paymasterData !== '0x';
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(desktop)

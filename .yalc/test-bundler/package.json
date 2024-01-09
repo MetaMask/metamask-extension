@@ -1,0 +1,41 @@
+{
+  "name": "test-bundler",
+  "version": "0.0.1",
+  "author": "Dror Tirosh",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:clean": "rm -rf dist tsconfig.tsbuildinfo && yarn build",
+    "build:watch": "tsc -w --preserveWatchOutput",
+    "clean": "rm -rf dist artifacts cache src/contract-types",
+    "depcheck": "npx depcheck",
+    "hardhat:compile": "hardhat compile",
+    "lint": "eslint -f unix .",
+    "lint:fix": "eslint -f unix . --fix",
+    "setup": "yarn clean && yarn hardhat:compile && yarn build:clean",
+    "test": "yarn hardhat test src/bundler/test/* && yarn hardhat test src/sdk/test/*"
+  },
+  "dependencies": {
+    "@account-abstraction/contracts": "^0.6.0",
+    "@ethersproject/abi": "^5.7.0",
+    "@ethersproject/abstract-provider": "^5.7.0",
+    "@ethersproject/abstract-signer": "^5.7.0",
+    "@ethersproject/networks": "^5.7.0",
+    "@ethersproject/properties": "^5.7.0",
+    "@ethersproject/providers": "^5.7.0",
+    "async-mutex": "^0.4.0",
+    "body-parser": "^1.20.0",
+    "commander": "^9.4.0",
+    "cors": "^2.8.5",
+    "debug": "^4.3.4",
+    "ethers": "^5.7.0",
+    "express": "^4.18.1",
+    "ow": "^0.28.1"
+  },
+  "yalcSig": "0e53f747a967c68bd2ff5d4593d36352"
+}

@@ -41,7 +41,7 @@ function updateGas(metadata, prepareResponse, entrypoint) {
             });
             return;
         }
-        const payload = Object.assign(Object.assign({}, userOperation), { callGasLimit: '0x1', preVerificationGas: '0x1', verificationGasLimit: '0x1' });
+        const payload = Object.assign(Object.assign({}, userOperation), { maxFeePerGas: '0x0', maxPriorityFeePerGas: '0x0', callGasLimit: '0x0', preVerificationGas: '0x0', verificationGasLimit: '0xF4240' });
         const bundler = new Bundler_1.Bundler(metadata.bundlerUrl);
         const estimate = yield bundler.estimateUserOperationGas(payload, entrypoint);
         userOperation.callGasLimit = normalizeGasEstimate(estimate.callGasLimit);
