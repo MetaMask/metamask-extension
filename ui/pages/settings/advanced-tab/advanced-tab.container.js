@@ -11,6 +11,7 @@ import {
   setDisabledRpcMethodPreference,
   setDismissSeedBackUpReminder,
   setFeatureFlag,
+  setShowExtensionInFullSizeView,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
   setUseNonceField,
@@ -32,6 +33,7 @@ export const mapStateToProps = (state) => {
   const {
     showFiatInTestnets,
     showTestNetworks,
+    showExtensionInFullSizeView,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
   } = getPreferences(state);
 
@@ -40,6 +42,7 @@ export const mapStateToProps = (state) => {
     sendHexData,
     showFiatInTestnets,
     showTestNetworks,
+    showExtensionInFullSizeView,
     autoLockTimeLimit,
     useNonceField,
     dismissSeedBackUpReminder,
@@ -63,6 +66,9 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setShowTestNetworks: (value) => {
       return dispatch(setShowTestNetworks(value));
+    },
+    setShowExtensionInFullSizeView: (value) => {
+      return dispatch(setShowExtensionInFullSizeView(value));
     },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));
