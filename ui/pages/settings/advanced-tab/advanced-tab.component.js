@@ -61,7 +61,7 @@ export default class AdvancedTab extends PureComponent {
       eth_sign: PropTypes.bool.isRequired,
     }),
     petnamesEnabled: PropTypes.bool.isRequired,
-    setPetnamesEnable: PropTypes.func.isRequired,
+    setPetnamesEnabled: PropTypes.func.isRequired,
   };
 
   state = {
@@ -341,7 +341,7 @@ export default class AdvancedTab extends PureComponent {
 
   renderTogglePetnames() {
     const { t } = this.context;
-    const { petnamesEnabled, setPetnamesEnable } = this.props;
+    const { petnamesEnabled, setPetnamesEnabled } = this.props;
 
     return (
       <Box
@@ -363,7 +363,7 @@ export default class AdvancedTab extends PureComponent {
         <div className="settings-page__content-item-col">
           <ToggleButton
             value={petnamesEnabled}
-            onToggle={(value) => setPetnamesEnable(!value)}
+            onToggle={(value) => setPetnamesEnabled(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
           />

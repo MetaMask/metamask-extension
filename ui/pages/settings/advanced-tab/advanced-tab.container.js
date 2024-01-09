@@ -34,7 +34,7 @@ export const mapStateToProps = (state) => {
     showFiatInTestnets,
     showTestNetworks,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
-    petnamesEnabled,
+    petnamesEnabled = true,
   } = getPreferences(state);
 
   return {

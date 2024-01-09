@@ -107,9 +107,7 @@ export default class PreferencesController {
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IF
       isLineaMainnetReleased: false,
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       useExternalNameSources: true,
-      ///: END:ONLY_INCLUDE_IF
       ...opts.initState,
     };
 
@@ -271,7 +269,6 @@ export default class PreferencesController {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   /**
    * Setter for the `useExternalNameSources` property
    *
@@ -282,7 +279,6 @@ export default class PreferencesController {
       useExternalNameSources,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `advancedGasFee` property

@@ -701,7 +701,7 @@ export function getShowTestNetworks(state) {
 
 export function getPetnamesEnabled(state) {
   const { petnamesEnabled } = getPreferences(state);
-  return Boolean(petnamesEnabled);
+  return Boolean(petnamesEnabled ?? true);
 }
 
 export function getTestNetworkBackgroundColor(state) {

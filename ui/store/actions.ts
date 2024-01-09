@@ -4550,7 +4550,6 @@ export function setUseRequestQueue(val: boolean): void {
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
 export function setUseExternalNameSources(val: boolean): void {
   try {
     submitRequestToBackground('setUseExternalNameSources', [val]);
@@ -4558,7 +4557,6 @@ export function setUseExternalNameSources(val: boolean): void {
     logErrorWithMessage(error);
   }
 }
-///: END:ONLY_INCLUDE_IF
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);

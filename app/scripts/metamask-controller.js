@@ -115,7 +115,7 @@ import {
   ERC721,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
+
 import {
   NameController,
   ENSNameProvider,
@@ -123,7 +123,6 @@ import {
   TokenNameProvider,
   LensNameProvider,
 } from '@metamask/name-controller';
-///: END:ONLY_INCLUDE_IF
 
 import {
   QueuedRequestController,
@@ -221,10 +220,8 @@ import {
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
@@ -1694,7 +1691,6 @@ export default class MetamaskController extends EventEmitter {
       initState.SmartTransactionsController,
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(petnames)
     const isExternalNameSourcesEnabled = () =>
       this.preferencesController.store.getState().useExternalNameSources;
 
@@ -1735,7 +1731,6 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: ['NameController:stateChange'],
       }),
     }).init();
-    ///: END:ONLY_INCLUDE_IF
 
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
@@ -1914,9 +1909,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       PPOMController: this.ppomController,
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       NameController: this.nameController,
-      ///: END:ONLY_INCLUDE_IF
       ...resetOnRestartStore,
     });
 
@@ -1962,9 +1955,7 @@ export default class MetamaskController extends EventEmitter {
           this.institutionalFeaturesController.store,
         MmiConfigurationController: this.mmiConfigurationController.store,
         ///: END:ONLY_INCLUDE_IF
-        ///: BEGIN:ONLY_INCLUDE_IF(petnames)
         NameController: this.nameController,
-        ///: END:ONLY_INCLUDE_IF
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
@@ -2715,12 +2706,10 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
       setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
@@ -3296,12 +3285,10 @@ export default class MetamaskController extends EventEmitter {
       // E2E testing
       throwTestError: this.throwTestError.bind(this),
 
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       updateProposedNames: this.nameController.updateProposedNames.bind(
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
-      ///: END:ONLY_INCLUDE_IF
     };
   }
 
