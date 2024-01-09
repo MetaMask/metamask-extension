@@ -147,10 +147,10 @@ export const AccountListItem = ({
               alignItems={AlignItems.center}
               gap={2}
             >
-              {process.env.NETWORK_ACCOUNT_DND && isPinned ? (
+              {isPinned ? (
                 <Icon name={IconName.Pin} size={IconSize.Xs} />
               ) : null}
-              {process.env.NETWORK_ACCOUNT_DND && isHidden ? (
+              {isHidden ? (
                 <Icon name={IconName.EyeSlash} size={IconSize.Xs} />
               ) : null}
               <Text
@@ -288,8 +288,8 @@ export const AccountListItem = ({
           isOpen={accountOptionsMenuOpen}
           isRemovable={identity.keyring?.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
-          isPinned={process.env.NETWORK_ACCOUNT_DND ? isPinned : null}
-          isHidden={process.env.NETWORK_ACCOUNT_DND ? isHidden : null}
+          isPinned={isPinned}
+          isHidden={isHidden}
         />
       ) : null}
     </Box>

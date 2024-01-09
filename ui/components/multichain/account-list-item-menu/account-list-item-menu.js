@@ -185,7 +185,7 @@ export const AccountListItemMenu = ({
             textProps={{ variant: TextVariant.bodySm }}
             address={identity.address}
           />
-          {process.env.NETWORK_ACCOUNT_DND && !isHidden ? (
+          {isHidden ? null : (
             <MenuItem
               data-testid="account-list-menu-pin"
               onClick={() => {
@@ -200,23 +200,21 @@ export const AccountListItemMenu = ({
                 {isPinned ? t('unpin') : t('pinToTop')}
               </Text>
             </MenuItem>
-          ) : null}
-          {process.env.NETWORK_ACCOUNT_DND ? (
-            <MenuItem
-              data-testid="account-list-menu-hide"
-              onClick={() => {
-                isHidden
-                  ? handleUnhidding(identity.address)
-                  : handleHidding(identity.address);
-                onClose();
-              }}
-              iconName={isHidden ? IconName.Eye : IconName.EyeSlash}
-            >
-              <Text variant={TextVariant.bodySm}>
-                {isHidden ? t('showAccount') : t('hideAccount')}
-              </Text>
-            </MenuItem>
-          ) : null}
+          )}
+          <MenuItem
+            data-testid="account-list-menu-hide"
+            onClick={() => {
+              isHidden
+                ? handleUnhidding(identity.address)
+                : handleHidding(identity.address);
+              onClose();
+            }}
+            iconName={isHidden ? IconName.Eye : IconName.EyeSlash}
+          >
+            <Text variant={TextVariant.bodySm}>
+              {isHidden ? t('showAccount') : t('hideAccount')}
+            </Text>
+          </MenuItem>
           {isRemovable ? (
             <MenuItem
               ref={removeAccountItemRef}

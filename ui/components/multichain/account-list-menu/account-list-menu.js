@@ -119,9 +119,7 @@ export const AccountListMenu = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
 
-  let searchResults = process.env.NETWORK_ACCOUNT_DND
-    ? updatedAccountsList
-    : accounts;
+  let searchResults = updatedAccountsList;
   if (searchQuery) {
     const fuse = new Fuse(accounts, {
       threshold: 0.2,
@@ -390,16 +388,8 @@ export const AccountListMenu = ({
                       connectedAvatar={connectedSite?.iconUrl}
                       connectedAvatarName={connectedSite?.name}
                       showOptions
-                      isPinned={
-                        process.env.NETWORK_ACCOUNT_DND
-                          ? Boolean(account.pinned)
-                          : null
-                      }
-                      isHidden={
-                        process.env.NETWORK_ACCOUNT_DND
-                          ? Boolean(account.hidden)
-                          : null
-                      }
+                      isPinned={Boolean(account.pinned)}
+                      isHidden={Boolean(account.hidden)}
                       {...accountListItemProps}
                     />
                   </Box>
@@ -407,7 +397,7 @@ export const AccountListMenu = ({
               })}
             </Box>
             {/* Hidden Accounts, this component shows hidden accounts in account list Item*/}
-            {process.env.NETWORK_ACCOUNT_DND && hiddenAddresses.length > 0 ? (
+            {hiddenAddresses.length > 0 ? (
               <HiddenAccountList onClose={onClose} />
             ) : null}
 

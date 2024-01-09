@@ -118,16 +118,8 @@ export const HiddenAccountList = ({ onClose }) => {
                   connectedAvatar={connectedSite?.iconUrl}
                   connectedAvatarName={connectedSite?.name}
                   showOptions
-                  isPinned={
-                    process.env.NETWORK_ACCOUNT_DND
-                      ? Boolean(account.pinned)
-                      : null
-                  }
-                  isHidden={
-                    process.env.NETWORK_ACCOUNT_DND
-                      ? Boolean(account.hidden)
-                      : null
-                  }
+                  isPinned={Boolean(account.pinned)}
+                  isHidden={Boolean(account.hidden)}
                 />
               </Box>
             );
