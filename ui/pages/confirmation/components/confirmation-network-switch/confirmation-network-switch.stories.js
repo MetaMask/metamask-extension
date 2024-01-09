@@ -13,8 +13,10 @@ export default {
   },
   args: {
     toNetwork: {
-      chainId: 'chainId',
-      nickname: 'Binance Smart Chain Mainnet',
+      chainId: '0xa',
+      ticker: 'ETH',
+      nickname: 'Optimism',
+      rpcUrl: 'https://optimism-mainnet.infura.io',
     },
     fromNetwork: {
       chainId: '1',

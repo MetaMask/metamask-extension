@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -12,7 +11,6 @@ import {
   JustifyContent,
   BlockSize,
   AlignItems,
-  TextAlign,
 } from '../../../../helpers/constants/design-system';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -74,7 +72,7 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
           marginBottom={2}
         />
         <Text display={Display.Flex} justifyContent={JustifyContent.center}>
-          {newNetwork.nickname}
+          {toNetworkDetails.nickname}
         </Text>
       </Box>
     </Box>
