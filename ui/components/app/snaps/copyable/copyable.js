@@ -18,7 +18,12 @@ import { ShowMore } from '../show-more';
 import { SECOND } from '../../../../../shared/constants/time';
 import { useTimeout } from '../../../../hooks/useTimeout';
 
-export const Copyable = ({ text, sensitive = false, marginTop, marginBottom }) => {
+export const Copyable = ({
+  text,
+  sensitive = false,
+  marginTop,
+  marginBottom,
+}) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
   const [isVisible, setIsVisible] = useState(!sensitive);
