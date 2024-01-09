@@ -3136,6 +3136,7 @@ export default class MetamaskController extends EventEmitter {
       updateCaveat: this.updateCaveat.bind(this),
       updateNetworksList: this.updateNetworksList.bind(this),
       updateAccountsList: this.updateAccountsList.bind(this),
+      updateHiddenAccountsList: this.updateHiddenAccountsList.bind(this),
       getPhishingResult: async (website) => {
         await phishingController.maybeUpdateState();
 
@@ -5485,6 +5486,15 @@ export default class MetamaskController extends EventEmitter {
   updateAccountsList = (pinnedAccountList) => {
     try {
       this.accountOrderController.updateAccountsList(pinnedAccountList);
+    } catch (err) {
+      log.error(err.message);
+      throw err;
+    }
+  };
+
+  updateHiddenAccountsList = (hiddenAccountList) => {
+    try {
+      this.accountOrderController.updateHiddenAccountsList(hiddenAccountList);
     } catch (err) {
       log.error(err.message);
       throw err;
