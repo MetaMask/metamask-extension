@@ -13,6 +13,7 @@ import {
   Display,
   IconColor,
   JustifyContent,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -25,6 +26,7 @@ import {
 import { setSelectedAccount } from '../../../store/actions';
 import {
   AvatarIcon,
+  AvatarIconSize,
   Box,
   Icon,
   IconName,
@@ -68,9 +70,12 @@ export const HiddenAccountList = ({ onClose }) => {
             iconName={IconName.EyeSlash}
             color={IconColor.infoDefault}
             backgroundColor={BackgroundColor.infoMuted}
+            size={AvatarIconSize.Sm}
           />
           <Box display={Display.Flex}>
-            <Text>{t('hiddenAccounts')}</Text>
+            <Text variant={TextVariant.bodyMdMedium}>
+              {t('hiddenAccounts')}
+            </Text>
           </Box>
         </Box>
         <Box
@@ -80,7 +85,9 @@ export const HiddenAccountList = ({ onClose }) => {
           width={BlockSize.OneThird}
           justifyContent={JustifyContent.flexEnd}
         >
-          <Text>{hiddenAddresses.length}</Text>
+          <Text variant={TextVariant.bodyMdMedium}>
+            {hiddenAddresses.length}
+          </Text>
           <Icon
             name={showListItem ? IconName.ArrowUp : IconName.ArrowDown}
             size={IconSize.Sm}

@@ -4,12 +4,15 @@ import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  BannerBase,
   Box,
   ButtonLink,
   ButtonSecondary,
   ButtonSecondarySize,
   ButtonVariant,
+  Icon,
   IconName,
+  IconSize,
   Modal,
   ModalOverlay,
   Text,
@@ -20,9 +23,11 @@ import { TextFieldSearch } from '../../component-library/text-field-search/depre
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
+  JustifyContent,
   Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -39,8 +44,10 @@ import {
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   getInternalAccounts,
+  getOnboardedInThisUISession,
+  getShowAccountBanner,
 } from '../../../selectors';
-import { setSelectedAccount } from '../../../store/actions';
+import { hideAccountBanner, setSelectedAccount } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -55,6 +62,7 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
 import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
@@ -118,6 +126,11 @@ export const AccountListMenu = ({
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
+  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
+  const showAccountBanner = useSelector(getShowAccountBanner);
+  const showBanner =
+    completedOnboarding && !onboardedInThisUISession && showAccountBanner;
 
   let searchResults = updatedAccountsList;
   if (searchQuery) {
@@ -337,6 +350,26 @@ export const AccountListMenu = ({
                 />
               </Box>
             ) : null}
+            {/* Accounts Pinning Update Banner */}
+            {showBanner ? (
+              <BannerBase
+                className="network-list-menu__banner"
+                marginLeft={4}
+                marginRight={4}
+                backgroundColor={BackgroundColor.backgroundAlternative}
+                startAccessory={
+                  <Box
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    justifyContent={JustifyContent.center}
+                  >
+                    <Icon name={IconName.DragDrop} size={IconSize.Lg} />
+                  </Box>
+                }
+                onClose={() => hideAccountBanner()}
+                description={t('accountsPinningBannerDescription')}
+              />
+            ) : null}
             {/* Account list block */}
             <Box className="multichain-account-menu-popover__list">
               {searchResults.length === 0 && searchQuery !== '' ? (
@@ -400,7 +433,6 @@ export const AccountListMenu = ({
             {hiddenAddresses.length > 0 ? (
               <HiddenAccountList onClose={onClose} />
             ) : null}
-
             {/* Add / Import / Hardware button */}
             {showAccountCreation ? (
               <Box

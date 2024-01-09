@@ -7,6 +7,7 @@ import Fuse from 'fuse.js';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { NetworkListItem } from '../network-list-item';
 import {
+  hideNetworkBanner,
   setActiveNetwork,
   setProviderType,
   setShowTestNetworks,
@@ -22,6 +23,8 @@ import {
   getShowTestNetworks,
   getTestNetworks,
   getOrderedNetworksList,
+  getOnboardedInThisUISession,
+  getShowNetworkBanner,
 } from '../../../selectors';
 import ToggleButton from '../../ui/toggle-button';
 import {
@@ -115,11 +118,10 @@ export const NetworkListMenu = ({ onClose }) => {
   }, [dispatch, currentlyOnTestNetwork]);
   const [searchQuery, setSearchQuery] = useState('');
   const [items, setItems] = useState([...networksList]);
-  const [showBanner, setShowBanner] = useState(true);
-
-  const onBannerClose = () => {
-    setShowBanner(false);
-  };
+  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
+  const showNetworkBanner = useSelector(getShowNetworkBanner);
+  const showBanner =
+    completedOnboarding && !onboardedInThisUISession && showNetworkBanner;
 
   const onDragEnd = (result) => {
     const newItems = [...items];
@@ -279,8 +281,8 @@ export const NetworkListMenu = ({ onClose }) => {
                   <Icon name={IconName.DragDrop} size={IconSize.Lg} />
                 </Box>
               }
-              onClose={() => onBannerClose()}
-              description={t('DragAndDropBanner')}
+              onClose={() => hideNetworkBanner()}
+              description={t('dragAndDropBanner')}
             />
           ) : null}
           <Box className="multichain-network-list-menu">
