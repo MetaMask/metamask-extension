@@ -4780,7 +4780,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/polling-controller@npm:^4.0.0":
+"@metamask/polling-controller@npm:4.0.0":
   version: 4.0.0
   resolution: "@metamask/polling-controller@npm:4.0.0"
   dependencies:
@@ -4794,6 +4794,23 @@ __metadata:
   peerDependencies:
     "@metamask/network-controller": ^17.1.0
   checksum: b309b3ea131b854f162f831ea48f87afee6787960ce44febbeefc980c5dcd84138d7b412ac317d8c65bf3e4bae7a2e8f2b70839185a9baf88d3b7d010c2ffe42
+  languageName: node
+  linkType: hard
+
+"@metamask/polling-controller@patch:@metamask/polling-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-polling-controller-npm-4.0.0-52c29c5a78.patch":
+  version: 4.0.0
+  resolution: "@metamask/polling-controller@patch:@metamask/polling-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-polling-controller-npm-4.0.0-52c29c5a78.patch::version=4.0.0&hash=bca1d1"
+  dependencies:
+    "@metamask/base-controller": "npm:^4.0.1"
+    "@metamask/controller-utils": "npm:^8.0.1"
+    "@metamask/network-controller": "npm:^17.1.0"
+    "@metamask/utils": "npm:^8.2.0"
+    "@types/uuid": "npm:^8.3.0"
+    fast-json-stable-stringify: "npm:^2.1.0"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/network-controller": ^17.1.0
+  checksum: 7136882cf70c848391e1d74c5707909b959da336e975f29c604521d4d694499a2b6cb4c982ed6c04bfc22c658ee3d409eed03db72fbebf16e118e13cdb125e7c
   languageName: node
   linkType: hard
 
