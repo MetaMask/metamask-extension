@@ -141,7 +141,7 @@ const TransactionAlerts = ({
           {t('lowPriorityMessage')}
         </BannerAlert>
       )}
-      {!isUsingPaymaster && supportsEIP1559 && isNetworkBusy ? (
+      {supportsEIP1559 && isNetworkBusy ? (
         <BannerAlert severity={SEVERITIES.WARNING}>
           {t('networkIsBusy')}
         </BannerAlert>
@@ -153,7 +153,7 @@ const TransactionAlerts = ({
       )}
       {isUsingPaymaster && (
         <BannerAlert data-testid="paymaster-alert" severity={SEVERITIES.INFO}>
-          The gas for this transaction will be paid by a paymaster.
+          {t('paymasterInUse')}
         </BannerAlert>
       )}
     </div>

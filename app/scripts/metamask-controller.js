@@ -1758,47 +1758,13 @@ export default class MetamaskController extends EventEmitter {
 
     this.userOperationController.hub.on(
       'user-operation-added',
-      (userOperationMetadata) => {
-        const transactionMeta = this.txController.state.transactions.find(
-          (tx) => tx.id === userOperationMetadata.id,
-        );
-
-        if (!transactionMeta) {
-          return;
-        }
-
-        if (transactionMeta.type === TransactionType.swap) {
-          this.txController.hub.emit('transaction-new-swap', {
-            transactionMeta,
-          });
-        } else if (transactionMeta.type === TransactionType.swapApproval) {
-          this.txController.hub.emit('transaction-new-swap-approval', {
-            transactionMeta,
-          });
-        }
-      },
+      this._onUserOperationAdded.bind(this),
     );
 
-    this.userOperationController.hub.on('transaction-updated', (txMeta) => {
-      txMeta.txParams.from = this.preferencesController.getSelectedAddress();
-
-      const transactionExists = this.txController.state.transactions.some(
-        (tx) => tx.id === txMeta.id,
-      );
-
-      if (!transactionExists) {
-        this.txController.state.transactions.push(txMeta);
-      }
-
-      this.txController.updateTransaction(
-        txMeta,
-        'Generated from user operation',
-      );
-
-      this.txController.hub.emit('transaction-status-update', {
-        transactionMeta: txMeta,
-      });
-    });
+    this.userOperationController.hub.on(
+      'transaction-updated',
+      this._onUserOperationTransactionUpdated.bind(this),
+    );
 
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
@@ -5756,5 +5722,47 @@ export default class MetamaskController extends EventEmitter {
         matomoEvent: true,
       },
     );
+  }
+
+  _onUserOperationAdded(userOperationMeta) {
+    const transactionMeta = this.txController.state.transactions.find(
+      (tx) => tx.id === userOperationMeta.id,
+    );
+
+    if (!transactionMeta) {
+      return;
+    }
+
+    if (transactionMeta.type === TransactionType.swap) {
+      this.txController.hub.emit('transaction-new-swap', {
+        transactionMeta,
+      });
+    } else if (transactionMeta.type === TransactionType.swapApproval) {
+      this.txController.hub.emit('transaction-new-swap-approval', {
+        transactionMeta,
+      });
+    }
+  }
+
+  _onUserOperationTransactionUpdated(transactionMeta) {
+    transactionMeta.txParams.from =
+      this.preferencesController.getSelectedAddress();
+
+    const transactionExists = this.txController.state.transactions.some(
+      (tx) => tx.id === transactionMeta.id,
+    );
+
+    if (!transactionExists) {
+      this.txController.state.transactions.push(transactionMeta);
+    }
+
+    this.txController.updateTransaction(
+      transactionMeta,
+      'Generated from user operation',
+    );
+
+    this.txController.hub.emit('transaction-status-update', {
+      transactionMeta,
+    });
   }
 }
