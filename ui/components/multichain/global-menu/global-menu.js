@@ -143,70 +143,29 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       borderStyle={BorderStyle.none}
       position={PopoverPosition.BottomEnd}
     >
-      <AccountDetailsMenuItem
-        metricsLocation={METRICS_LOCATION}
-        closeMenu={closeMenu}
-        address={address}
-      />
-      <ViewExplorerMenuItem
-        metricsLocation={METRICS_LOCATION}
-        closeMenu={closeMenu}
-        address={address}
-      />
-      <Box
-        borderColor={BorderColor.borderMuted}
-        width={BlockSize.Full}
-        style={{ height: '1px', borderBottomWidth: 0 }}
-      ></Box>
-      <MenuItem
-        iconName={IconName.Connect}
-        disabled={hasUnapprovedTransactions}
-        onClick={() => {
-          history.push(CONNECTED_ROUTE);
-          trackEvent({
-            event: MetaMetricsEventName.NavConnectedSitesOpened,
-            category: MetaMetricsEventCategory.Navigation,
-            properties: {
-              location: METRICS_LOCATION,
-            },
-          });
-          closeMenu();
-        }}
-        data-testid="global-menu-connected-sites"
-      >
-        {t('connectedSites')}
-      </MenuItem>
-
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        mmiPortfolioEnabled && (
-          <MenuItem
-            iconName={IconName.Diagram}
-            onClick={() => {
-              trackEvent({
-                category: MetaMetricsEventCategory.Navigation,
-                event: MetaMetricsEventName.MMIPortfolioButtonClicked,
-              });
-              window.open(
-                `${mmiPortfolioUrl}?metametricsId=${metaMetricsId}`,
-                '_blank',
-              );
-              closeMenu();
-            }}
-            data-testid="global-menu-mmi-portfolio"
-          >
-            {t('portfolioDashboard')}
-          </MenuItem>
-        )
-        ///: END:ONLY_INCLUDE_IF
-      }
-      {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
+      <Text as="div">
+        <AccountDetailsMenuItem
+          metricsLocation={METRICS_LOCATION}
+          closeMenu={closeMenu}
+          address={address}
+        />
+        <ViewExplorerMenuItem
+          metricsLocation={METRICS_LOCATION}
+          closeMenu={closeMenu}
+          address={address}
+        />
+        <Box
+          borderColor={BorderColor.borderMuted}
+          width={BlockSize.Full}
+          style={{ height: '1px', borderBottomWidth: 0 }}
+        ></Box>
         <MenuItem
-          iconName={IconName.Expand}
+          iconName={IconName.Connect}
+          disabled={hasUnapprovedTransactions}
           onClick={() => {
-            global.platform.openExtensionInBrowser();
+            history.push(CONNECTED_ROUTE);
             trackEvent({
-              event: MetaMetricsEventName.AppWindowExpanded,
+              event: MetaMetricsEventName.NavConnectedSitesOpened,
               category: MetaMetricsEventCategory.Navigation,
               properties: {
                 location: METRICS_LOCATION,
@@ -214,127 +173,170 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
             });
             closeMenu();
           }}
-          data-testid="global-menu-expand"
+          data-testid="global-menu-connected-sites"
         >
-          {t('expandView')}
+          {t('connectedSites')}
         </MenuItem>
-      )}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-        notifySnaps.length ? (
-          <>
+
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+          mmiPortfolioEnabled && (
             <MenuItem
-              iconName={IconName.Notification}
+              iconName={IconName.Diagram}
               onClick={() => {
+                trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: MetaMetricsEventName.MMIPortfolioButtonClicked,
+                });
+                window.open(
+                  `${mmiPortfolioUrl}?metametricsId=${metaMetricsId}`,
+                  '_blank',
+                );
                 closeMenu();
-                history.push(NOTIFICATIONS_ROUTE);
               }}
+              data-testid="global-menu-mmi-portfolio"
             >
-              {t('notifications')}
-              {unreadNotificationsCount > 0 && (
-                <Text
-                  as="span"
-                  display={Display.InlineBlock}
-                  justifyContent={JustifyContent.center}
-                  alignItems={AlignItems.center}
-                  backgroundColor={BackgroundColor.primaryDefault}
-                  color={TextColor.primaryInverse}
-                  padding={[0, 1, 0, 1]}
-                  variant={TextVariant.bodyXs}
-                  textAlign={TextAlign.Center}
-                  data-testid="global-menu-notification-count"
-                  style={{
-                    borderRadius: '16px',
-                    minWidth: '24px',
-                  }}
-                  marginInlineStart={2}
-                >
-                  {unreadNotificationsCount > 99
-                    ? '99+'
-                    : unreadNotificationsCount}
-                </Text>
-              )}
+              {t('portfolioDashboard')}
             </MenuItem>
-          </>
-        ) : null
-        ///: END:ONLY_INCLUDE_IF(snaps)
-      }
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          )
+          ///: END:ONLY_INCLUDE_IF
+        }
+        {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
+          <MenuItem
+            iconName={IconName.Expand}
+            onClick={() => {
+              global.platform.openExtensionInBrowser();
+              trackEvent({
+                event: MetaMetricsEventName.AppWindowExpanded,
+                category: MetaMetricsEventCategory.Navigation,
+                properties: {
+                  location: METRICS_LOCATION,
+                },
+              });
+              closeMenu();
+            }}
+            data-testid="global-menu-expand"
+          >
+            {t('expandView')}
+          </MenuItem>
+        )}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          notifySnaps.length ? (
+            <>
+              <MenuItem
+                iconName={IconName.Notification}
+                onClick={() => {
+                  closeMenu();
+                  history.push(NOTIFICATIONS_ROUTE);
+                }}
+              >
+                {t('notifications')}
+                {unreadNotificationsCount > 0 && (
+                  <Text
+                    as="span"
+                    display={Display.InlineBlock}
+                    justifyContent={JustifyContent.center}
+                    alignItems={AlignItems.center}
+                    backgroundColor={BackgroundColor.primaryDefault}
+                    color={TextColor.primaryInverse}
+                    padding={[0, 1, 0, 1]}
+                    variant={TextVariant.bodyXs}
+                    textAlign={TextAlign.Center}
+                    data-testid="global-menu-notification-count"
+                    style={{
+                      borderRadius: '16px',
+                      minWidth: '24px',
+                    }}
+                    marginInlineStart={2}
+                  >
+                    {unreadNotificationsCount > 99
+                      ? '99+'
+                      : unreadNotificationsCount}
+                  </Text>
+                )}
+              </MenuItem>
+            </>
+          ) : null
+          ///: END:ONLY_INCLUDE_IF(snaps)
+        }
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+          <MenuItem
+            iconName={IconName.Snaps}
+            onClick={() => {
+              history.push(SNAPS_ROUTE);
+              closeMenu();
+            }}
+            showInfoDot={snapsUpdatesAvailable}
+          >
+            {t('snaps')}
+          </MenuItem>
+          ///: END:ONLY_INCLUDE_IF(snaps)
+        }
         <MenuItem
-          iconName={IconName.Snaps}
+          iconName={IconName.MessageQuestion}
           onClick={() => {
-            history.push(SNAPS_ROUTE);
+            global.platform.openTab({ url: supportLink });
+            trackEvent(
+              {
+                category: MetaMetricsEventCategory.Home,
+                event: MetaMetricsEventName.SupportLinkClicked,
+                properties: {
+                  url: supportLink,
+                  location: METRICS_LOCATION,
+                },
+              },
+              {
+                contextPropsIntoEventProperties: [
+                  MetaMetricsContextProp.PageTitle,
+                ],
+              },
+            );
             closeMenu();
           }}
-          showInfoDot={snapsUpdatesAvailable}
+          data-testid="global-menu-support"
         >
-          {t('snaps')}
+          {supportText}
         </MenuItem>
-        ///: END:ONLY_INCLUDE_IF(snaps)
-      }
-      <MenuItem
-        iconName={IconName.MessageQuestion}
-        onClick={() => {
-          global.platform.openTab({ url: supportLink });
-          trackEvent(
-            {
-              category: MetaMetricsEventCategory.Home,
-              event: MetaMetricsEventName.SupportLinkClicked,
+        <MenuItem
+          iconName={IconName.Setting}
+          disabled={hasUnapprovedTransactions}
+          onClick={() => {
+            history.push(SETTINGS_ROUTE);
+            trackEvent({
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.NavSettingsOpened,
               properties: {
-                url: supportLink,
                 location: METRICS_LOCATION,
               },
-            },
-            {
-              contextPropsIntoEventProperties: [
-                MetaMetricsContextProp.PageTitle,
-              ],
-            },
-          );
-          closeMenu();
-        }}
-        data-testid="global-menu-support"
-      >
-        {supportText}
-      </MenuItem>
-      <MenuItem
-        iconName={IconName.Setting}
-        disabled={hasUnapprovedTransactions}
-        onClick={() => {
-          history.push(SETTINGS_ROUTE);
-          trackEvent({
-            category: MetaMetricsEventCategory.Navigation,
-            event: MetaMetricsEventName.NavSettingsOpened,
-            properties: {
-              location: METRICS_LOCATION,
-            },
-          });
-          closeMenu();
-        }}
-        data-testid="global-menu-settings"
-      >
-        {t('settings')}
-      </MenuItem>
-      <MenuItem
-        ref={lastItemRef} // ref for last item in GlobalMenu
-        iconName={IconName.Lock}
-        onClick={() => {
-          dispatch(lockMetamask());
-          history.push(DEFAULT_ROUTE);
-          trackEvent({
-            category: MetaMetricsEventCategory.Navigation,
-            event: MetaMetricsEventName.AppLocked,
-            properties: {
-              location: METRICS_LOCATION,
-            },
-          });
-          closeMenu();
-        }}
-        data-testid="global-menu-lock"
-      >
-        {t('lockMetaMask')}
-      </MenuItem>
+            });
+            closeMenu();
+          }}
+          data-testid="global-menu-settings"
+        >
+          {t('settings')}
+        </MenuItem>
+        <MenuItem
+          ref={lastItemRef} // ref for last item in GlobalMenu
+          iconName={IconName.Lock}
+          onClick={() => {
+            dispatch(lockMetamask());
+            history.push(DEFAULT_ROUTE);
+            trackEvent({
+              category: MetaMetricsEventCategory.Navigation,
+              event: MetaMetricsEventName.AppLocked,
+              properties: {
+                location: METRICS_LOCATION,
+              },
+            });
+            closeMenu();
+          }}
+          data-testid="global-menu-lock"
+        >
+          {t('lockMetaMask')}
+        </MenuItem>
+      </Text>
     </Popover>
   );
 };
