@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "11.7.1",
+  "version": "11.7.3",
   "private": true,
   "repository": {
     "type": "git",
@@ -404,12 +404,13 @@
     "@metamask/eslint-config-typescript": "^9.0.1",
     "@metamask/forwarder": "^1.1.0",
     "@metamask/phishing-warning": "^3.0.0",
-    "@metamask/test-dapp": "^7.2.0",
+    "@metamask/test-dapp": "^7.3.1",
     "@playwright/test": "^1.39.0",
     "@sentry/cli": "^2.19.4",
     "@storybook/addon-a11y": "^7.4.6",
     "@storybook/addon-actions": "^7.4.6",
     "@storybook/addon-designs": "^7.0.5",
+    "@storybook/addon-docs": "^7.4.6",
     "@storybook/addon-essentials": "^7.4.6",
     "@storybook/addon-knobs": "^7.0.2",
     "@storybook/addon-mdx-gfm": "^7.4.6",
