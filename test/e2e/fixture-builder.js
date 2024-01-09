@@ -297,6 +297,8 @@ function defaultFixture() {
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
+          // TODO(dbrans): Remove this once we remove the petnamesEnabled toggle from the advanced preferences.
+          petnamesEnabled: false,
         },
         selectedAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         theme: 'light',
@@ -418,6 +420,8 @@ function onboardingFixture() {
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
+          // TODO(dbrans): Remove this once we remove the petnamesEnabled toggle from the advanced preferences.
+          petnamesEnabled: false,
         },
         theme: 'light',
         useBlockie: false,
