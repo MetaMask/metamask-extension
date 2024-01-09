@@ -1,5 +1,5 @@
 import React from 'react';
-import {LavaDome as LavaDomeReact} from '@lavamoat/lavadome-react';
+import { LavaDome as LavaDomeReact } from '@lavamoat/lavadome-react';
 import PropTypes from 'prop-types';
 import {
   BannerAlert,
