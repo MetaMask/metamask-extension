@@ -570,6 +570,7 @@
     "stylelint": "^13.6.1",
     "superstruct": "^1.0.3",
     "terser": "^5.7.0",
+    "terser-webpack-plugin": "^5.3.10",
     "through2": "^4.0.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.7.0",
@@ -585,6 +586,7 @@
     "webextension-polyfill": "^0.8.0",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
     "yargs": "^17.7.2"
   },
   "engines": {
@@ -667,7 +669,10 @@
       "jsdom>ws>utf-8-validate": false,
       "$root$": false,
       "nodegit": false,
-      "tsx>esbuild": false
+      "tsx>esbuild": false,
+      "@pmmmwh/react-refresh-webpack-plugin>core-js-pure": false,
+      "@storybook/react-webpack5>@storybook/builder-webpack5>@swc/core": false,
+      "@swc/core": false
     }
   },
   "packageManager": "yarn@4.0.0-rc.48"

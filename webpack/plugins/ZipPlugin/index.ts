@@ -13,7 +13,7 @@ export class ZipPlugin {
   /**
    * File types that can be compressed well using DEFLATE compression
    */
-  static compressableFileTypes = [
+  static compressibleFileTypes = [
     ".js",
     ".mjs",
     ".cjs",
@@ -100,7 +100,7 @@ export class ZipPlugin {
           const asset = assets[assetName];
 
           let zipFile: ZipPassThrough | AsyncZipDeflate;
-          if (ZipPlugin.compressableFileTypes.includes(path.extname(assetName))) {
+          if (ZipPlugin.compressibleFileTypes.includes(path.extname(assetName))) {
             zipFile = new AsyncZipDeflate(assetName, compressionOptions);
           } else {
             zipFile = new ZipPassThrough(assetName);

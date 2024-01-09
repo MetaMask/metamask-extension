@@ -139,7 +139,7 @@ function getCopyTargets(
         '@fortawesome/fontawesome-free',
         'webfonts/',
       ),
-      dest: `fonts`,
+      dest: `webfonts`,
     },
     {
       src: getPathInsideNodeModules('react-responsive-carousel', 'lib/styles/'),

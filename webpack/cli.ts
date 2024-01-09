@@ -1,28 +1,31 @@
 import type { Options } from 'yargs';
 import yargs from 'yargs/yargs';
-import { Browser, Browsers, Manifest } from './helpers';
+import { Browsers, type Browser, type Manifest } from './helpers';
 
 type Optionses = { [key: string]: Options };
-type OptionsKeys = keyof Omit<ReturnType<typeof getOptions>, "include" | "exclude">;
+type OptionsKeys = keyof Omit<
+  ReturnType<typeof getOptions>,
+  'add_feature' | 'omit_feature'
+>;
 
-
-// `modeOptions` is separate because it is used multiple times
-const modeOptions = {
-  mode: {
-    alias: 'm',
+// `envOptions` is a separate object because it is used multiple times
+const envOptions = {
+  env: {
+    alias: 'e',
     array: false,
     default: 'development' as const,
     description:
       'Enables/disables production optimizations or development hints.',
     choices: ['development', 'production'] as const,
     group: 'Build options:',
-    // `as const` makes it easier for devs to see the values of the type when hovering over it in their IDE
-    // `satisfies Options` enables type checking, without loosing the `const` property of the values, which
-    // is neccessary yargs to infer the final types
   },
+  // `as const` makes it easier for developers to see the values of the type
+  // when hovering over it in their IDE. `satisfies Options` enables type
+  // checking, without loosing the `const` property of the values, which is
+  // necessary for yargs to infer the final types
 } as const satisfies Optionses;
 
-// TODO: get these types working
+// TODO: get these `build-type` types working without having to use `as` here.
 const { loadBuildTypesConfig } = require('../development/lib/build-type') as {
   loadBuildTypesConfig: () => {
     features: { [x: string]: unknown };
@@ -32,18 +35,19 @@ const { loadBuildTypesConfig } = require('../development/lib/build-type') as {
 
 /**
  * Yargs doesn't support comma-separated arrays, e.g.,
- * `myprogram --multi one,two,three --multi four`, this function gives us the
+ * `program --multi one,two,three --multi four`, this function gives us the
  * ability to "coerce" the CSV string into an array, so the result will now be:
  * `{ multi: ['one', 'two', 'three', 'four'] }`.
  *
- * Note: CSV parsing is a naive string-split-on-comma approach.
+ * Note: CSV parsing is a naive string-split-on-comma approach, this isn't a
+ * full CSV parser.
  *
  * @param array
  */
 function parseArrayOptionAsCsv<T extends string = string>(
   array: string[],
 ): T[] {
-  return array.flatMap<T>((v) => v.split(',') as T[]);
+  return array.flatMap<T>((value) => value.split(',') as T[]);
 }
 
 /**
@@ -51,18 +55,18 @@ function parseArrayOptionAsCsv<T extends string = string>(
  * for production.
  *
  * @param argv
- * @param modeOptions
+ * @param envOptions
  * @param options
  * @returns
  */
-function getIsProduction(argv: string[], options: typeof modeOptions): boolean {
-  const { mode } = yargs()
+function getIsProduction(argv: string[], options: typeof envOptions): boolean {
+  const { env } = yargs()
     .help(false)
     .version(false)
     .showHelpOnFail(false)
     .options(options)
     .parseSync(argv);
-  return mode === 'production';
+  return env === 'production';
 }
 
 /**
@@ -78,18 +82,21 @@ export const parseArgv = (argv: string[]) => {
   const allBuildTypeNames = Object.keys(buildTypes);
   const allFeatureNames = Object.keys(allFeatures);
 
-  // peek ahead at the args to determine if we're in production mode as some
-  // defaults are different for production vs development.
-  const isProduction = getIsProduction(argv, modeOptions);
+  // peek ahead at the args to determine if we're in a production environment as
+  // some defaults are different for production vs development.
+  const isProduction = getIsProduction(argv, envOptions);
 
   const options = getOptions(isProduction, allBuildTypeNames, allFeatureNames);
-  const cli = generateCli(options);
-  const { $0, _, include, i, exclude, e, ...config } = cli.parseSync(argv);
+  const args = generateCli(options, 'yarn webpack').parseSync(argv);
+  // the properties $0, _, a, o, etc. are added by yargs, but we don't need to
+  // return them to the caller, so we omit them here
+  const { $0, _, a, o, add_feature: add, omit_feature: omit, ...config } = args;
 
+  // set up feature flags
   const active = new Set<string>();
   const defaultFeaturesForBuildType = buildTypes[config.type]?.features ?? [];
-  const setActive = (f: string) => exclude.includes(f) || active.add(f);
-  [defaultFeaturesForBuildType, include].forEach((a) => a.forEach(setActive));
+  const setActive = (f: string) => omit.includes(f) || active.add(f);
+  [defaultFeaturesForBuildType, add].forEach((a) => a.forEach(setActive));
 
   return {
     features: {
@@ -97,7 +104,9 @@ export const parseArgv = (argv: string[]) => {
       all: new Set(allFeatureNames),
     },
     // narrow the `config` type to only the options we're returning
-    config: config satisfies { [key in OptionsKeys as key]: typeof config[key] },
+    config: config as {
+      [key in OptionsKeys]: (typeof config)[key];
+    },
   };
 };
 
@@ -106,39 +115,40 @@ export const parseArgv = (argv: string[]) => {
  *
  * @param argv
  * @param options
+ * @param command
+ * @param name
  */
-export function generateCli<T extends ReturnType<typeof getOptions>>(
-  options: T,
-) {
+export function generateCli<
+  T extends Optionses = ReturnType<typeof getOptions>,
+>(options: T, name: string) {
   const cli = yargs()
     // Ensure unrecognized commands/options are reported as errors.
     .strict()
+    // use the scriptName in `--help` output
+    .scriptName(name)
     // wrap output at a maximum of 120 characters or `process.stdout.columns`
     .wrap(Math.min(120, process.stdout.columns))
-    // enable the `completion` command, which outputs a bash completion script
-    .completion(
-      'completion',
-      'To enable bash/zsh completions, concat the script generated by running this command to your .bashrc or .bash_profile (or .zshrc for zsh).',
-    )
-    // enable the --config command, which allows the user to specify a custom
+    // enable the `--config` command, which allows the user to specify a custom
     // config file containing webpack options
     .config()
     // enable ENV parsing, which allows the user to specify webpack options via
     // environment variables prefixed with `BUNDLE_`
     // TODO: choose a better name than `BUNDLE` (it looks like `MM` is already being used in CI for ✨something✨)
     .env('BUNDLE')
-    // use the scriptName in `--help` output
-    .scriptName('yarn webpack')
+    // enable the `completion` command, which outputs a bash completion script
+    .completion(
+      'completion',
+      'Enable bash/zsh completions; concat the script generated by running this command to your .bashrc or .bash_profile',
+    )
     .example(
-      '$0 --mode development --browser brave --browser chrome --zip',
-      'Builds the extension in dev mode for Chrome & Brave; generates zip files for both.',
+      '$0 --env development --browser brave --browser chrome --zip',
+      'Builds the extension for development for Chrome & Brave; generate zip files for both',
     )
     .example(
       '$0 completion',
-      'Generates a bash completion script for the `yarn webpack` command.',
+      `Generates a bash completion script for the \`${name}\` command`,
     )
-    .options(options);
-
+    .options(options)
   return cli;
 }
 
@@ -147,13 +157,14 @@ function getOptions(
   buildTypes: string[],
   allFeatures: string[],
 ) {
+  const securityDesc = "If `env` is 'production', `true`, otherwise `false`";
   return {
-    ...modeOptions,
+    ...envOptions,
     watch: {
       alias: 'w',
       array: false,
       default: false,
-      description: 'Run build and watch for files changes.',
+      description: 'Build then watch for files changes',
       group: 'Developer assistance:',
       type: 'boolean',
     },
@@ -161,7 +172,7 @@ function getOptions(
       alias: 'c',
       array: false,
       default: true,
-      description: 'Cache changes for faster rebuilds.',
+      description: 'Cache build for faster rebuilds',
       group: 'Developer assistance:',
       type: 'boolean',
     },
@@ -169,7 +180,7 @@ function getOptions(
       alias: 'p',
       array: false,
       default: true,
-      description: 'Show build progress.',
+      description: 'Show build progress',
       group: 'Developer assistance:',
       type: 'boolean',
     },
@@ -178,8 +189,8 @@ function getOptions(
       array: false,
       default: isProduction ? 'hidden-source-map' : 'source-map',
       defaultDescription:
-        'If mode is `production`, `hidden-source-map`, otherwise `source-map`.',
-      description: 'Sourcemap type to generate.',
+        "If `env` is 'production', 'hidden-source-map', otherwise 'source-map'",
+      description: 'Sourcemap type to generate',
       choices: ['none', 'source-map', 'hidden-source-map'] as const,
       group: 'Developer assistance:',
       type: 'string',
@@ -188,26 +199,30 @@ function getOptions(
       alias: 'z',
       array: false,
       default: false,
-      description: 'Generate a zip file of the build.',
+      description: 'Generate a zip file of the build',
       group: 'Build options:',
       type: 'boolean',
     },
-    uglify: {
-      alias: 'u',
+    minify: {
+      alias: 'm',
       array: false,
       default: isProduction,
-      defaultDescription: 'If mode is `production`, `true`, otherwise `false`.',
-      description: 'Minify the output.',
+      defaultDescription: "If `env` is 'production', `true`, otherwise `false`",
+      description: 'Minify the output',
       group: 'Build options:',
       type: 'boolean',
     },
     browser: {
       alias: 'b',
       array: true,
-      choices: Browsers,
-      coerce: (array: string[]) => parseArrayOptionAsCsv<Browser>(array),
+      choices: ['all', ...Browsers],
+      coerce: (array: string[]) => {
+        const browsers = parseArrayOptionAsCsv<Browser | 'all'>(array);
+        const set = new Set(browsers);
+        return set.has('all') ? [...Browsers] : [...set];
+      },
       default: 'chrome',
-      description: 'Browsers to build for.',
+      description: 'Browsers to build for',
       group: 'Build options:',
       type: 'string',
     },
@@ -216,7 +231,7 @@ function getOptions(
       array: false,
       choices: [2, 3] as Manifest['manifest_version'][],
       default: 2 as Manifest['manifest_version'],
-      description: 'Changes manifest.json format to the provided version\'s schema.',
+      description: "Changes manifest.json format to the given version's schema",
       group: 'Build options:',
       type: 'number',
     },
@@ -225,30 +240,27 @@ function getOptions(
       array: false,
       choices: ['none', ...buildTypes],
       default: 'main' as const,
-      description:
-        'Enables/disables feature flags based on the given type (main, beta, flask, etc).',
+      description: 'Configure features for the build (main, beta, etc)',
       group: 'Build options:',
       type: 'string',
     },
-    include: {
-      alias: 'i',
+    add_feature: {
+      alias: 'a',
       array: true,
       choices: allFeatures,
       coerce: parseArrayOptionAsCsv,
       default: [] as typeof allFeatures,
-      description:
-        'Enables features that are not included in the selected build type.',
+      description: 'Add features not be included in the selected build `type`',
       group: 'Build options:',
       type: 'string',
     },
-    exclude: {
-      alias: 'e',
+    omit_feature: {
+      alias: 'o',
       array: true,
       choices: allFeatures,
       coerce: parseArrayOptionAsCsv,
       default: [] as typeof allFeatures,
-      description:
-        'Disables features that are included in the selected build type.',
+      description: 'Omit features included in the selected build `type`',
       group: 'Build options:',
       type: 'string',
     },
@@ -256,9 +268,8 @@ function getOptions(
       alias: 'l',
       array: false,
       default: isProduction,
-      defaultDescription: 'If mode is `production`, `true`, otherwise `false`.',
-      description:
-        'Apply LavaMoat (https://github.com/LavaMoat/LavaMoat) to the build assets.',
+      defaultDescription: securityDesc,
+      description: 'Apply LavaMoat to the build assets',
       group: 'Security:',
       type: 'boolean',
     },
@@ -266,9 +277,8 @@ function getOptions(
       alias: 's',
       array: false,
       default: isProduction,
-      defaultDescription: 'If mode is `production`, `true`, otherwise `false`.',
-      description:
-        'Apply Snow (https://github.com/LavaMoat/Snow) to the build assets.',
+      defaultDescription: securityDesc,
+      description: 'Apply Snow to the build assets',
       group: 'Security:',
       type: 'boolean',
     },

@@ -8,26 +8,34 @@ import webpack, {
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
 import HtmlBundlerPlugin from 'html-bundler-webpack-plugin';
-import postcssRTLCSS from 'postcss-rtlcss';
+import postcssRtlCss from 'postcss-rtlcss';
 import autoprefixer from 'autoprefixer';
+import type WebpackDevServerType from 'webpack-dev-server';
+import type ReactRefreshPluginType from '@pmmmwh/react-refresh-webpack-plugin';
 import { type SemVerVersion } from '@metamask/utils';
 import {
   type Browser,
   type Manifest,
   generateManifest,
   mergeEnv,
-  getEntries,
-  getLastCommitDatetimeUtc,
+  combineEntriesFromManifestAndDir,
+  getLastCommitDateTimeUtc,
+  getMinimizers,
 } from './webpack/helpers';
 import { parseArgv } from './webpack/cli';
 import { type CodeFenceLoaderOptions } from './webpack/loaders/codeFenceLoader';
 import { type SwcLoaderOptions } from './webpack/loaders/swcLoader';
 
+// HMR can't be used until all circular dependencies in the codebase are removed
+// see:  https://github.com/MetaMask/metamask-extension/issues/22450
+// TODO: remove this variable when HMR is ready
+const HMR_READY = false;
+
 const { config, features } = parseArgv(process.argv.slice(2));
 
 if (config.snow || config.lavamoat) {
   throw new Error(
-    "The webpack build doesn't support lavamoat or snow yet. So sorry.",
+    "The webpack build doesn't support LavaMoat or Snow yet. So sorry.",
   );
 }
 
@@ -39,11 +47,17 @@ if (config.browser.length > 1) {
 
 if (config.manifest_version === 3) {
   throw new Error(
-    "The webpack build doesn't support manifest version 3 yet. So sorry.",
+    "The webpack build doesn't support manifest_version 3 yet. So sorry.",
   );
 }
 
-const entry = getEntries(join(__dirname, 'app'));
+const dir = join(__dirname, 'app');
+
+const MANIFEST_VERSION = config.manifest_version;
+const baseManifest: Manifest = JSON.parse(
+  readFileSync(join(dir, `manifest/v${MANIFEST_VERSION}/_base.json`)).toString("utf-8"),
+);
+const { entry, scripts } = combineEntriesFromManifestAndDir(baseManifest, dir);
 
 // removes fenced code blocks from the source
 const codeFenceLoader: webpack.RuleSetRule & {
@@ -57,15 +71,16 @@ const codeFenceLoader: webpack.RuleSetRule & {
 
 /**
  * Gets the Speedy Web Compiler (SWC) loader for the given syntax.
+ *
  * @param syntax
  * @param enableJsx
- * @param devMode
+ * @param config
  * @returns
  */
 function getSwcLoader(
   syntax: 'typescript' | 'ecmascript',
   enableJsx: boolean,
-  config: ReturnType<typeof parseArgv>["config"],
+  config: ReturnType<typeof parseArgv>['config'],
 ) {
   return {
     loader: require.resolve('webpack/loaders/swcLoader'),
@@ -76,8 +91,8 @@ function getSwcLoader(
       jsc: {
         transform: {
           react: {
-            development: config.mode === "development",
-            refresh: config.mode === "development" && config.watch,
+            development: config.env === 'development',
+            refresh: HMR_READY && config.env === 'development' && config.watch,
           },
         },
         parser:
@@ -102,7 +117,6 @@ const BROWSER = config.browser[0] as Browser;
 // TODO: make these dynamic. yargs, maybe?
 const NAME = 'MetaMask';
 const DESCRIPTION = `MetaMask ${BROWSER} Extension`;
-const MANIFEST_VERSION = config.manifest_version;
 // TODO: figure out what build.yml's env vars are doing and them do the merge
 // stuff.
 const ENV = mergeEnv({});
@@ -124,10 +138,6 @@ const plugins: WebpackPluginInstance[] = [
       { from: 'app/_locales', to: '_locales' },
       { from: 'app/images', to: 'images' },
       {
-        from: 'app/vendor/trezor/content-script.js',
-        to: 'vendor/trezor/content-script.js',
-      },
-      {
         from: `app/manifest/v${MANIFEST_VERSION}/_base.json`,
         to: 'manifest.json',
         transform: (manifestBytes: Buffer, _path: string) => {
@@ -135,7 +145,7 @@ const plugins: WebpackPluginInstance[] = [
             manifestBytes.toString('utf-8'),
           );
           const browserManifest = generateManifest(baseManifest, {
-            mode: config.mode,
+            env: config.env,
             browser: BROWSER,
             description: DESCRIPTION,
             name: NAME,
@@ -148,24 +158,23 @@ const plugins: WebpackPluginInstance[] = [
   }),
   new DefinePlugin(
     // replace `process.env.*` with the values from `ENV`
-    Object.entries(ENV).reduce((acc: any, [key, val]) => {
+    Object.entries(ENV).reduce((acc: Record<string, string>, [key, val]) => {
       acc[`process.env.${key}`] = JSON.stringify(val);
       return acc;
     }, {}),
   ),
 ];
 
-if (config.mode === "development" && config.watch) {
-  const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+// enable React Refresh in 'development' mode when `watch` is enabled
+if (HMR_READY && config.env === 'development' && config.watch) {
+  const ReactRefreshWebpackPlugin: typeof ReactRefreshPluginType = require('@pmmmwh/react-refresh-webpack-plugin');
   plugins.push(new ReactRefreshWebpackPlugin());
 }
 
+// enable the Progress plugin
 if (config.progress) {
-  // conditionally load the progress plugin only when needed
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
-} else {
-  console.log('🦊 Running build…');
 }
 
 if (config.zip) {
@@ -173,7 +182,7 @@ if (config.zip) {
   plugins.push(
     new ZipPlugin({
       outFilePath: '../../../builds/metamask.zip',
-      mtime: getLastCommitDatetimeUtc(),
+      mtime: getLastCommitDateTimeUtc(),
       excludeExtensions: ['.map'],
       // `level: 9` is the highest; it may increase build time by ~5% over
       // `level: 0`
@@ -185,11 +194,8 @@ if (config.zip) {
 const webpackOptions = {
   context: __dirname,
   entry,
-  devServer: {
-    hot: config.watch && config.mode === "development",
-  },
-  name: `MetaMask Webpack—${config.mode}`,
-  mode: config.mode,
+  name: `MetaMask Webpack—${config.env}`,
+  mode: config.env,
   watch: config.watch,
 
   // eventually we should avoid any code that uses node globals.
@@ -232,25 +238,37 @@ const webpackOptions = {
     // or when we just don't want to have to use the actual path to the module.
     // (please don't abuse alias, just use relative paths as God intended)
     alias: {
-      buffer: require.resolve('buffer/'),
-      fs: false,
+      buffer$: require.resolve('buffer/'),
+      fs$: false,
 
       // #region micro-ftch
       // micro-ftch can't be webpacked without these aliases, as webpack will
       // attempt to load them but micro-ftch doesn't define `browser` compatible
       // fields.
-      http: require.resolve('stream-http'),
-      https: require.resolve('https-browserify'),
-      zlib: false,
+      http$: require.resolve('stream-http'),
+      https$: require.resolve('https-browserify'),
+      zlib$: false,
       // #endregion micro-ftch
+      // remove react-devtools in production builds
+      'react-devtools$':
+        config.env === 'production' ? false : 'react-devtools',
+      // remove remote-redux-devtools unless METAMASK_DEBUG is enabled
+      'remote-redux-devtools$': !ENV.METAMASK_DEBUG
+        ? false
+        : 'remote-redux-devtools',
+      // #region remove developer tooling in production builds
     },
   },
 
   cache: {
-    type: 'filesystem',
-    // `cache.name` can be used create separate caches for different build types
-    name: 'MetaMask',
+    // TODO: cache.name (and version, actually) could be used create separate
+    // caches for different build types. Should we use these?
+    // name: ???,
     version: process.argv.join(' '),
+
+    allowCollectingMemory: true,
+    type: 'filesystem',
+    name: 'MetaMask',
     buildDependencies: {
       // Invalidates the build cache when the listed files change
       // `__filename` makes all dependencies of *this* file - build dependencies
@@ -260,29 +278,26 @@ const webpackOptions = {
 
   output: {
     crossOriginLoading: 'anonymous',
-    // chunkFilename is required because in some cases webpack may generate a
+    // filenames for *initial* files (essentially JS entry points)
+    filename: '[name].[contenthash].js',
+    // chunkFilename is used because in some cases webpack may generate a
     // filename that starts with "_", which chrome does not allow at the root of
-    // the extension directory (subdirs are fine). If we switch to
-    // `output.module = true` this function be updated to use return an `.mjs`
-    //  extension. Alternatively, we could output all js files to a subdir and
-    // not worry about it
+    // the extension directory (subdirectories are fine). If we switch to
+    // `output.module = true` this function must be updated to use return an
+    // `.mjs` extension. Alternatively, we could output all js files to a
+    // subdirectory and not have to worry about it.
     chunkFilename: ({ chunk }) => {
       if (chunk!.id?.toString().startsWith('_')) {
-        return '-[id].js';
+        return '-[id].[contenthash].js';
       }
-      return '[id].js';
+      return '[id].[contenthash].js';
     },
-    filename: ({ runtime: name }) => {
-      if (name === 'contentscript' || name === 'inpage') {
-        return `[name].js`;
-      }
-      return '[name].[contenthash].js';
-    },
+
     path: resolve(__dirname, `dist/webpack/${BROWSER}`),
     // Clean the output directory before emit, so that only the latest build
     // files remain. Nearly 0 performance penalty for this clean up step.
     clean: true,
-    // relative to HTML page. Thios value is essentially prepended to asset URLs
+    // relative to HTML page. This value is essentially prepended to asset URLs
     // in the output HTML, i.e., `<script src="<publicPath><resourcePath>">`.
     publicPath: '',
   },
@@ -292,7 +307,7 @@ const webpackOptions = {
     // order, i.e., bottom to top, (or right to left depending on the current
     // formatting of the file)
     rules: [
-      // html: use the squirrelly templating engine for html files
+      // html: use the squirrelly template engine for html files
       {
         test: /\.html?$/u,
         loader: require.resolve('./webpack/loaders/squirrellyHtmlLoader'),
@@ -334,7 +349,7 @@ const webpackOptions = {
             loader: 'postcss-loader',
             options: {
               postcssOptions: {
-                plugins: [autoprefixer(), postcssRTLCSS()],
+                plugins: [autoprefixer(), postcssRtlCss()],
               },
             },
           },
@@ -344,8 +359,8 @@ const webpackOptions = {
             options: {
               sassOptions: {
                 // We don't need to specify the charset because the HTML already
-                // does and browser's use the HTML's charset for CSS.
-                // Additionally, webpack+sass can cause problems with the
+                // does and browsers use the HTML's charset for CSS.
+                // Additionally, webpack + sass can cause problems with the
                 // charset placement, as described here:
                 // https://github.com/webpack-contrib/css-loader/issues/1212
                 charset: false,
@@ -387,13 +402,21 @@ const webpackOptions = {
       },
       // images, fonts, wasm, etc.
       {
-        test: /\.(png|jpe?g|ico|webp|svg|gif|ttf|eot|woff|woff2|wasm)$/u,
+        test: /\.(png|jpe?g|ico|webp|svg|gif|ttf|eot|woff|woff2)$/u,
         type: 'asset/resource',
         generator: {
           filename: 'assets/[name].[hash:8][ext]',
         },
       },
+      {
+        test: /\.wasm$/,
+        type: 'asset/resource',
+      },
     ],
+  },
+
+  experiments: {
+    layers: true
   },
 
   stats: {
@@ -401,10 +424,21 @@ const webpackOptions = {
   },
 
   optimization: {
-    sideEffects: true,
+    // only enable sideEffects, providedExports, and removeAvailableModules for
+    // production, as these options slow down the build
+    sideEffects: config.env === 'production',
+    providedExports: config.env === 'production',
+    removeAvailableModules: config.env === 'production',
+    usedExports: config.env === 'production',
 
-    // TODO: create one runtime bundle for all chunks, but not for contentscript
-    // or inpage.js
+    // 'deterministic' results in faster recompilations in cases where a child
+    // chunk changes, but the parent chunk does not.
+    moduleIds: 'deterministic',
+    minimize: config.minify,
+    minimizer: config.minify ? getMinimizers() : [],
+
+    // TODO: create one runtime bundle for all chunks, but not for
+    // scripts/contentscript.js, scripts/inpage.js, etc.
     // runtimeChunk: 'single',
     splitChunks: {
       // Impose a 4MB JS file size limit due to Firefox limitations
@@ -414,37 +448,62 @@ const webpackOptions = {
       // Optimize duplication and caching by splitting chunks by shared modules
       // and cache group.
       cacheGroups: {
-        vendor: {
-          // js files in node modules or subdirs of node_modules
-          test: /[\\/]node_modules[\\/].*?\.[jt]sx?$/,
-          name: 'vendors',
-          chunks({ name }) {
-            return name !== 'inpage' && name !== 'contentscript';
-          },
-        },
-        scripts: {
+        js: {
+          // only our own ts/js files
           test: /(?!.*\/node_modules\/).+\.[jt]sx?$/u,
-          name: 'scripts',
-          chunks({ name }) {
-            return name !== 'inpage' && name !== 'contentscript';
-          },
+          name: 'js',
+          // ignore scripts that were found in the manifest, as these
+          // are always loaded by the browser extension platform
+          chunks: ({ name }) => !name || !scripts.includes(name),
+        },
+        vendor: {
+          // ts/js files in node modules or subdirectories of node_modules
+          test: /[\\/]node_modules[\\/].*?\.[jt]sx?$/,
+          name: 'vendor',
+          // ignore scripts that were found in the manifest, as these
+          // are always loaded by the browser extension platform
+          chunks: ({ name }) => !name || !scripts.includes(name),
         },
       },
     },
-    // 'deterministic'` results in faster recompilations in cases
-    // where a child chunk changes, but the parent chunk does not.
-    moduleIds: 'deterministic',
-    minimize: config.uglify,
   },
 
   devtool: config.devtool === 'none' ? false : config.devtool,
 
   plugins,
-} as const satisfies Configuration & { devServer?: { hot?: boolean } };
+} as const satisfies Configuration;
 
-webpack(webpackOptions, (err, stats) => {
-  err && console.error(err);
-  stats && console.log(stats.toString({ colors: true }));
-  // if we are in watch mode log a message to the console
-  config.watch && console.log('\n🦊 Watching for changes…');
-});
+if (HMR_READY && config.watch) {
+  // Use `webpack-dev-server` to enable HMR
+  const WebpackDevServer: typeof WebpackDevServerType = require('webpack-dev-server');
+  const options = {
+    hot: config.env === 'development',
+    liveReload: config.env === 'development',
+    server: {
+      // TODO: is there any benefit to using https?
+      type: 'https',
+    },
+    // always use loopback, as 0.0.0.0 tends to fail on some machines
+    host: 'localhost',
+    devMiddleware: {
+      // the extension cannot be served from memory, so we need to write files
+      // to disk
+      writeToDisk: true,
+    },
+    // we don't need/have a "static" directory, so disable it
+    static: false,
+    allowedHosts: 'all',
+  } as const satisfies WebpackDevServerType.Configuration;
+
+  const server = new WebpackDevServer(options, webpack(webpackOptions));
+  server.start();
+} else {
+  console.log('🦊 Running build…');
+  webpack(webpackOptions, (err, stats) => {
+    err && console.error(err);
+    stats && console.log(stats.toString({ colors: true }));
+    if (config.watch) {
+      console.log('🦊 Watching for changes…');
+    }
+  });
+}

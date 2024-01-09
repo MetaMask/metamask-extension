@@ -3126,7 +3126,7 @@
       },
       "packages": {
         "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>http-parser-js": true,
-        "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>websocket-extensions": true
+        "webpack-dev-server>sockjs>websocket-driver>websocket-extensions": true
       }
     },
     "gulp-livereload>tiny-lr>faye-websocket>websocket-driver>http-parser-js": {
@@ -6942,6 +6942,18 @@
         "terser>@jridgewell/source-map": true
       }
     },
+    "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
+      "globals": {
+        "define": true
+      }
+    },
+    "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
     "terser>@jridgewell/source-map": {
       "globals": {
         "Buffer": true,
@@ -6954,8 +6966,8 @@
         "define": true
       },
       "packages": {
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true,
         "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/set-array": true,
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
         "terser>@jridgewell/source-map>@jridgewell/trace-mapping": true
       }
     },
@@ -6964,25 +6976,13 @@
         "define": true
       }
     },
-    "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
-      }
-    },
     "terser>@jridgewell/source-map>@jridgewell/trace-mapping": {
       "globals": {
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
-      }
-    },
-    "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": {
-      "globals": {
-        "define": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "terser>source-map-support>buffer-from": {
@@ -7086,8 +7086,8 @@
         "define": true
       },
       "packages": {
-        "terser>@jridgewell/source-map>@jridgewell/gen-mapping>@jridgewell/sourcemap-codec": true,
-        "terser>@jridgewell/source-map>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/resolve-uri": true,
+        "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
     "ts-node>acorn-walk": {

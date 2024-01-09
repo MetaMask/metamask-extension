@@ -746,7 +746,9 @@ export default class MetamaskController extends EventEmitter {
       }),
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
       provider: this.provider,
-      ppomProvider: { PPOM: PPOMModule.PPOM, ppomInit: PPOMModule.default },
+      ppomProvider: {
+        PPOM: PPOMModule.PPOM, ppomInit: () => PPOMModule.default(process.env.PPOM_URI)
+      },
       state: initState.PPOMController,
       chainId: this.networkController.state.providerConfig.chainId,
       onNetworkChange: networkControllerMessenger.subscribe.bind(
@@ -839,8 +841,8 @@ export default class MetamaskController extends EventEmitter {
       onboardingController: this.onboardingController,
       initState:
         isManifestV3 &&
-        isFirstMetaMaskControllerSetup === false &&
-        initState.AccountTracker?.accounts
+          isFirstMetaMaskControllerSetup === false &&
+          initState.AccountTracker?.accounts
           ? { accounts: initState.AccountTracker.accounts }
           : { accounts: {} },
       onAccountRemoved: this.controllerMessenger.subscribe.bind(
@@ -3536,9 +3538,8 @@ export default class MetamaskController extends EventEmitter {
    */
 
   getAccountLabel(name, index, hdPathDescription) {
-    return `${name[0].toUpperCase()}${name.slice(1)} ${
-      parseInt(index, 10) + 1
-    } ${hdPathDescription || ''}`.trim();
+    return `${name[0].toUpperCase()}${name.slice(1)} ${parseInt(index, 10) + 1
+      } ${hdPathDescription || ''}`.trim();
   }
 
   /**
@@ -5199,10 +5200,10 @@ export default class MetamaskController extends EventEmitter {
         params:
           newAccounts.length < 2
             ? // If the length is 1 or 0, the accounts are sorted by definition.
-              newAccounts
+            newAccounts
             : // If the length is 2 or greater, we have to execute
-              // `eth_accounts` vi this method.
-              await this.getPermittedAccounts(origin),
+            // `eth_accounts` vi this method.
+            await this.getPermittedAccounts(origin),
       });
     }
 

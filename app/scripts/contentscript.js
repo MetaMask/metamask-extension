@@ -55,13 +55,13 @@ let extensionMux,
  * Injects a script tag into the current document
  *
  * @param {string} src - Path to code to be executed in the current document.
- * @example injectScript(chrome.extension.getURL('inpage.js'))
+ * @example injectScript(chrome.extension.getURL('scripts/inpage.js'))
  */
 function injectScript(src) {
   try {
     const script = document.createElement("script");
     // A script that has been injected into the DOM is executed asynchronously
-    // by default, but we need inpage.js to block so `window.ethereum` is
+    // by default, but we need scripts/inpage.js to block so `window.ethereum` is
     // available before the page's own scripts load.
     script.async = false
     script.src = src;
@@ -541,7 +541,7 @@ const start = () => {
 
   if (shouldInjectProvider()) {
     if (!isManifestV3) {
-      injectScript(chrome.extension.getURL('inpage.js'))
+      injectScript(chrome.extension.getURL('scripts/inpage.js'))
     }
     initStreams();
 
