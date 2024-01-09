@@ -1,0 +1,17 @@
+.mm-container {
+  --size: 100%;
+
+  &--max-width-sm {
+    --size: 360px;
+  }
+
+  &--max-width-md {
+    --size: 480px;
+  }
+
+  &--max-width-lg {
+    --size: 720px;
+  }
+
+  max-width: var(--size);
+}

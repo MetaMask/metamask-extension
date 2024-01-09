@@ -1,6 +1,11 @@
 const { strict: assert } = require('assert');
 
-const { convertToHexValue, withFixtures, openDapp } = require('../../helpers');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  openDapp,
+  unlockWallet,
+} = require('../../helpers');
 const FixtureBuilder = require('../../fixture-builder');
 const {
   METAMASK_HOTLIST_DIFF_URL,
@@ -14,16 +19,6 @@ const {
 } = require('./mocks');
 
 describe('Phishing Detection', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
-
   describe('Phishing Detection Mock', function () {
     it('should be updated to use v1 of the API', function () {
       // Update the fixture in phishing-controller/mocks.js if this test fails
@@ -42,8 +37,8 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -54,9 +49,7 @@ describe('Phishing Detection', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await openDapp(driver);
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
         await driver.clickElement({
@@ -75,8 +68,8 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -91,9 +84,7 @@ describe('Phishing Detection', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
 
         const iframe = await driver.findElement('iframe');
@@ -116,8 +107,8 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -132,9 +123,7 @@ describe('Phishing Detection', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );
@@ -160,8 +149,8 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
         testSpecificMock: (mockServer) => {
           setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -173,9 +162,7 @@ describe('Phishing Detection', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await openDapp(driver);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
@@ -200,8 +187,8 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -212,9 +199,7 @@ describe('Phishing Detection', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await driver.openNewPage(phishingSite.href);
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
@@ -238,8 +223,8 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.PhishFort,
@@ -250,9 +235,7 @@ describe('Phishing Detection', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await driver.openNewPage('http://127.0.0.1:8080');
 
         await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
@@ -274,8 +257,8 @@ describe('Phishing Detection', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
         testSpecificMock: async (mockServer) => {
           return setupPhishingDetectionMocks(mockServer, {
             blockProvider: BlockProvider.MetaMask,
@@ -290,9 +273,7 @@ describe('Phishing Detection', function () {
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
         await driver.openNewPage(
           `http://localhost:8080?extensionUrl=${driver.extensionUrl}`,
         );

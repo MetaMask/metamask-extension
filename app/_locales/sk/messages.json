@@ -226,9 +226,6 @@
   "editContact": {
     "message": "Upraviť kontakt"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Názov ENS sa nenašiel v aktuálnej sieti. Skúste sa prepnúť na hlavnú sieť Ethereum."
-  },
   "ensRegistrationError": {
     "message": "Chyba pri registrácii názvu ENS"
   },
@@ -584,9 +581,6 @@
   "search": {
     "message": "Hledat"
   },
-  "searchResults": {
-    "message": "Výsledky vyhľadávania"
-  },
   "securityAndPrivacy": {
     "message": "Bezpečnosť a súkromie"
   },
@@ -748,12 +742,6 @@
   },
   "unknown": {
     "message": "Neznámé"
-  },
-  "unknownCameraError": {
-    "message": "Pri pokuse o prístup k fotoaparátu sa vyskytla chyba. Skúste znova..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Och! Niečo zlyhalo..."
   },
   "unknownNetwork": {
     "message": "Neznámá soukromá síť"

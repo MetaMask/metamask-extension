@@ -6,6 +6,7 @@ const {
   switchToNotificationWindow,
   WINDOW_TITLES,
   DAPP_URL,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -19,12 +20,10 @@ describe('Multiple ERC20 Watch Asset', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver, undefined, DAPP_URL);
 

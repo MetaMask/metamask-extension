@@ -73,10 +73,6 @@ describe('network utils', () => {
       expect(isTokenDetectionEnabledForNetwork('0xa86a')).toBe(true);
     });
 
-    it('returns true given the chain ID for Aurora', () => {
-      expect(isTokenDetectionEnabledForNetwork('0x4e454152')).toBe(true);
-    });
-
     it('returns false given a string that is not the chain ID for Mainnet, BSC, Polygon, or Avalanche', () => {
       expect(isTokenDetectionEnabledForNetwork('some other chain ID')).toBe(
         false,

@@ -1,9 +1,9 @@
-import React, { useContext, useState, useRef, useCallback } from 'react';
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, matchPath } from 'react-router-dom';
+import { matchPath, useHistory } from 'react-router-dom';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -27,31 +27,27 @@ import {
   JustifyContent,
 } from '../../../helpers/constants/design-system';
 import {
+  Box,
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  PickerNetwork,
-  Box,
   IconSize,
+  PickerNetwork,
 } from '../../component-library';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-import { getCustodianIconForAddress } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IN
 import {
   getCurrentChainId,
   getCurrentNetwork,
   getOnboardedInThisUISession,
   getOriginOfCurrentTab,
-  getSelectedIdentity,
   getShowProductTour,
   getTestNetworkBackgroundColor,
+  getSelectedInternalAccount,
   getUnapprovedTransactions,
-  getSelectedAddress,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getTheme,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-import { GlobalMenu, ProductTour, AccountPicker } from '..';
+import { AccountPicker, GlobalMenu, ProductTour } from '..';
 
 import {
   hideProductTour,
@@ -67,7 +63,7 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../../../ducks/metamask/metamask';
-import { getSendStage, SEND_STAGES } from '../../../ducks/send';
+import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
@@ -84,27 +80,23 @@ export const AppHeader = ({ location }) => {
   const t = useI18nContext();
   const chainId = useSelector(getCurrentChainId);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  const selectedAddress = useSelector(getSelectedAddress);
-  const custodianIcon = useSelector((state) =>
-    getCustodianIconForAddress(state, selectedAddress),
-  );
-  const theme = useSelector((state) => getTheme(state));
-  ///: END:ONLY_INCLUDE_IN
-
   // Used for account picker
-  const identity = useSelector(getSelectedIdentity);
+  const internalAccount = useSelector(getSelectedInternalAccount);
   const dispatch = useDispatch();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showProductTourPopup = useSelector(getShowProductTour);
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  const theme = useSelector((state) => getTheme(state));
+  ///: END:ONLY_INCLUDE_IF
 
   // Used for network icon / dropdown
   const currentNetwork = useSelector(getCurrentNetwork);
   const testNetworkBackgroundColor = useSelector(getTestNetworkBackgroundColor);
 
   // Used for copy button
-  const currentAddress = useSelector(getSelectedAddress);
+  const currentAddress = internalAccount?.address;
   const checksummedCurrentAddress = toChecksumHexAddress(currentAddress);
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
 
@@ -186,11 +178,9 @@ export const AppHeader = ({ location }) => {
           <MetafoxLogo
             unsetIconHeight
             onClick={async () => history.push(DEFAULT_ROUTE)}
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-            custodyImgSrc={custodianIcon}
-            isUnlocked={isUnlocked}
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             theme={theme}
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           />
         </Box>
       ) : null}
@@ -288,10 +278,10 @@ export const AppHeader = ({ location }) => {
                 />
               ) : null}
 
-              {identity ? (
+              {internalAccount ? (
                 <AccountPicker
-                  address={identity.address}
-                  name={identity.name}
+                  address={internalAccount.address}
+                  name={internalAccount.metadata.name}
                   onClick={() => {
                     dispatch(toggleAccountMenu());
 
@@ -343,24 +333,6 @@ export const AppHeader = ({ location }) => {
                         />
                       </Box>
                     ))}{' '}
-                  {
-                    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                    custodianIcon && (
-                      <Box
-                        display={Display.Flex}
-                        alignItems={AlignItems.center}
-                        className="custody-logo"
-                        data-testid="custody-logo"
-                      >
-                        <img
-                          src={custodianIcon}
-                          className="custody-logo--icon"
-                          alt=""
-                        />
-                      </Box>
-                    )
-                    ///: END:ONLY_INCLUDE_IN
-                  }
                   {popupStatus && multichainProductTourStep === 2 ? (
                     <ProductTour
                       className="multichain-app-header__product-tour"
@@ -411,12 +383,11 @@ export const AppHeader = ({ location }) => {
                     />
                   </Box>
                 </Box>
-                {accountOptionsMenuOpen ? (
-                  <GlobalMenu
-                    anchorElement={menuRef.current}
-                    closeMenu={() => setAccountOptionsMenuOpen(false)}
-                  />
-                ) : null}
+                <GlobalMenu
+                  anchorElement={menuRef.current}
+                  isOpen={accountOptionsMenuOpen}
+                  closeMenu={() => setAccountOptionsMenuOpen(false)}
+                />
                 {showProductTour &&
                 popupStatus &&
                 multichainProductTourStep === 3 ? (

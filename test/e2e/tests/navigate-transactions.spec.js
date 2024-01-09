@@ -1,36 +1,25 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
   withFixtures,
   openDapp,
   locateAccountBalanceDOM,
+  unlockWallet,
+  generateGanacheOptions,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Navigate transactions', function () {
-  const ganacheOptions = {
-    hardfork: 'london',
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   it('should navigate the unapproved transactions', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withTransactionControllerMultipleTransactions()
           .build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // navigate transactions
         await driver.clickElement('[data-testid="next-page"]');
@@ -115,13 +104,11 @@ describe('Navigate transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .withTransactionControllerMultipleTransactions()
           .build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="next-page"]');
         let navigationElement = await driver.findElement(
@@ -161,13 +148,11 @@ describe('Navigate transactions', function () {
         fixtures: new FixtureBuilder()
           .withTransactionControllerMultipleTransactions()
           .build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // reject transaction
         await driver.clickElement({ text: 'Reject', tag: 'button' });
@@ -191,13 +176,11 @@ describe('Navigate transactions', function () {
         fixtures: new FixtureBuilder()
           .withTransactionControllerMultipleTransactions()
           .build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -221,13 +204,11 @@ describe('Navigate transactions', function () {
         fixtures: new FixtureBuilder()
           .withTransactionControllerMultipleTransactions()
           .build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: generateGanacheOptions({ hardfork: 'london' }),
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // reject transactions
         await driver.clickElement({ text: 'Reject 4', tag: 'a' });

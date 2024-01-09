@@ -18,10 +18,19 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../../shared/constants/network';
-import { getProviderConfig } from '../../../../ducks/metamask/metamask';
 
-export default function ConfirmationNetworkSwitch({ newNetwork }) {
-  const { chainId, nickname, type } = useSelector(getProviderConfig);
+const getNetworkDetails = (network) => {
+  return {
+    ...network,
+    nickname: network.nickname ?? NETWORK_TO_NAME_MAP[network.chainId],
+    iconUrl:
+      network.iconUrl ?? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId],
+  };
+};
+
+export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
+  const fromNetworkDetails = getNetworkDetails(fromNetwork);
+  const toNetworkDetails = getNetworkDetails(toNetwork);
 
   return (
     <Box
@@ -36,21 +45,13 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         display={Display.Block}
       >
         <AvatarNetwork
-          src={
-            chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-              ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]
-              : ''
-          }
-          name={nickname}
+          src={fromNetworkDetails.iconUrl}
+          name={fromNetworkDetails.iconUrl}
           size={AvatarNetworkSize.Xl}
           marginBottom={2}
         />
-        <Text
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          align={TextAlign.Center}
-        >
-          {nickname || NETWORK_TO_NAME_MAP[type]}
+        <Text display={Display.Flex} justifyContent={JustifyContent.center}>
+          {fromNetworkDetails.nickname}
         </Text>
       </Box>
       <Box
@@ -67,20 +68,12 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
         display={Display.Block}
       >
         <AvatarNetwork
-          src={
-            newNetwork.chainId in CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-              ? CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[newNetwork.chainId]
-              : ''
-          }
-          name={newNetwork.nickname}
+          src={toNetworkDetails.iconUrl}
+          name={toNetworkDetails.nickname}
           size={AvatarNetworkSize.Xl}
           marginBottom={2}
         />
-        <Text
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          align={TextAlign.Center}
-        >
+        <Text display={Display.Flex} justifyContent={JustifyContent.center}>
           {newNetwork.nickname}
         </Text>
       </Box>
@@ -89,8 +82,14 @@ export default function ConfirmationNetworkSwitch({ newNetwork }) {
 }
 
 ConfirmationNetworkSwitch.propTypes = {
-  newNetwork: PropTypes.shape({
+  toNetwork: PropTypes.shape({
     chainId: PropTypes.string.isRequired,
     nickname: PropTypes.string.isRequired,
+    type: PropTypes.string,
+  }),
+  fromNetwork: PropTypes.shape({
+    chainId: PropTypes.string.isRequired,
+    nickname: PropTypes.string.isRequired,
+    type: PropTypes.string,
   }),
 };

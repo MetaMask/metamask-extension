@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
-import { TransactionType } from '../../../../../../shared/constants/transaction';
+import { TransactionType } from '@metamask/transaction-controller';
 import { toChecksumHexAddress } from '../../../../../../shared/modules/hexstring-utils';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import useAddressDetails from '../../../../../hooks/useAddressDetails';

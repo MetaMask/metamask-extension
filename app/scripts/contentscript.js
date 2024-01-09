@@ -17,8 +17,7 @@ const inpageContent = fs.readFileSync(
   path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js'),
   'utf8',
 );
-const inpageSuffix = `//# sourceURL=${browser.runtime.getURL('inpage.js')}\n`;
-const inpageBundle = inpageContent + inpageSuffix;
+const inpageBundle = inpageContent;
 
 // contexts
 const CONTENT_SCRIPT = 'metamask-contentscript';

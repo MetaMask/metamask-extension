@@ -9,28 +9,26 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IN(build-main)
-import { showSnapAccountExperimentalToggle } from '../../../../shared/modules/snap-accounts';
-///: END:ONLY_INCLUDE_IN
 
 import { Text, Box, Tag } from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
   Display,
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  FontWeight,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
-  AlignItems,
   FlexDirection,
-  FlexWrap,
   JustifyContent,
-  ///: END:ONLY_INCLUDE_IN
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  FontWeight,
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
+  AlignItems,
+  FlexWrap,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
+///: BEGIN:ONLY_INCLUDE_IF(desktop)
 import DesktopEnableButton from '../../../components/app/desktop-enable-button';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
+import { OPENSEA_TERMS_OF_USE } from '../../../../shared/lib/ui-utils';
 
 export default class ExperimentalTab extends PureComponent {
   static contextTypes = {
@@ -42,13 +40,15 @@ export default class ExperimentalTab extends PureComponent {
     transactionSecurityCheckEnabled: PropTypes.bool,
     setTransactionSecurityCheckEnabled: PropTypes.func,
     securityAlertsEnabled: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: PropTypes.bool,
     setAddSnapAccountEnabled: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
+    useRequestQueue: PropTypes.bool,
+    setUseRequestQueue: PropTypes.func,
   };
 
   settingsRefs = Array(
@@ -72,7 +72,7 @@ export default class ExperimentalTab extends PureComponent {
     handleSettingsRefs(t, t('experimental'), this.settingsRefs);
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   /**
    * toggleSecurityAlert
    *
@@ -94,7 +94,7 @@ export default class ExperimentalTab extends PureComponent {
       this.toggleTransactionSecurityCheck(true);
     }
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * toggleTransactionSecurityCheck
@@ -122,9 +122,9 @@ export default class ExperimentalTab extends PureComponent {
     const { t } = this.context;
 
     const {
-      ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       securityAlertsEnabled,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       transactionSecurityCheckEnabled,
     } = this.props;
 
@@ -141,93 +141,103 @@ export default class ExperimentalTab extends PureComponent {
           ref={this.settingsRefs[1]}
           className="settings-page__content-row settings-page__content-row-experimental"
         >
-          <div className="settings-page__content-item">
-            <Text
-              variant={TextVariant.inherit}
-              color={TextColor.textAlternative}
-            >
-              {t('securityAlerts')}
-            </Text>
-            <div className="settings-page__content-description">
-              <Text variant={TextVariant.bodySm}>
-                {t('securityAlertsDescription')}
-              </Text>
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-                <>
-                  <Text
-                    variant={TextVariant.bodySmBold}
-                    color={TextColor.textAlternative}
-                    marginTop={4}
-                  >
-                    {t('preferredProvider')}
-                  </Text>
-                  <div
-                    data-testid="settings-toggle-security-alert-blockaid"
-                    className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option"
-                  >
-                    <div>
-                      <Box display={Display.Flex}>
-                        <Text
-                          variant={TextVariant.bodyMd}
-                          color={TextColor.textDefault}
-                        >
-                          {t('blockaid')}
-                        </Text>
-                        <Tag marginLeft={2} label="Recommended" />
-                      </Box>
+          <Text variant={TextVariant.inherit} color={TextColor.textAlternative}>
+            {t('securityAlerts')}
+          </Text>
+          <Text variant={TextVariant.bodySm}>
+            {t('securityAlertsDescription')}
+          </Text>
+          <div className="settings-page__content-description">
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+              <>
+                <Text
+                  variant={TextVariant.bodySmBold}
+                  color={TextColor.textAlternative}
+                  marginTop={4}
+                >
+                  {t('preferredProvider')}
+                </Text>
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Row}
+                  justifyContent={JustifyContent.spaceBetween}
+                  gap={4}
+                  marginTop={3}
+                  marginBottom={3}
+                  data-testid="settings-toggle-security-alert-blockaid"
+                >
+                  <div>
+                    <Box display={Display.Flex}>
                       <Text
-                        variant={TextVariant.bodySm}
-                        as="h6"
-                        color={TextColor.textAlternative}
-                        marginTop={0}
-                        marginRight={1}
+                        variant={TextVariant.bodyMd}
+                        color={TextColor.textDefault}
                       >
-                        {t('blockaidMessage')}
+                        {t('blockaid')}
                       </Text>
-                    </div>
-                    <ToggleButton
-                      value={securityAlertsEnabled}
-                      onToggle={this.toggleSecurityAlert.bind(this)}
-                    />
-                  </div>
-                </>
-                ///: END:ONLY_INCLUDE_IN
-              }
-              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
-                <div>
-                  <Box display={Display.Flex}>
+                      <Tag marginLeft={2} label="Recommended" />
+                    </Box>
                     <Text
-                      variant={TextVariant.bodyMd}
-                      color={TextColor.textDefault}
+                      variant={TextVariant.bodySm}
+                      as="h6"
+                      color={TextColor.textAlternative}
+                      marginTop={0}
+                      marginRight={1}
                     >
-                      {t('openSeaLabel')}
+                      {t('blockaidMessage')}
                     </Text>
-                    <Tag marginLeft={2} label="Beta" />
-                  </Box>
+                  </div>
+                  <ToggleButton
+                    value={securityAlertsEnabled}
+                    onToggle={this.toggleSecurityAlert.bind(this)}
+                  />
+                </Box>
+              </>
+              ///: END:ONLY_INCLUDE_IF
+            }
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              justifyContent={JustifyContent.spaceBetween}
+              gap={4}
+              marginTop={3}
+              marginBottom={3}
+            >
+              <div>
+                <Box display={Display.Flex}>
                   <Text
-                    variant={TextVariant.bodySm}
-                    as="h6"
-                    color={TextColor.textAlternative}
-                    marginTop={0}
-                    marginRight={1}
+                    variant={TextVariant.bodyMd}
+                    color={TextColor.textDefault}
                   >
-                    {t('openSeaMessage')}
+                    {t('openSeaLabel')}
                   </Text>
+                  <Tag marginLeft={2} label="Beta" />
+                </Box>
+                <div className="settings-page__content-description">
+                  {t('openSeaMessage', [
+                    <a
+                      key="opensea-terms-of-use"
+                      href={OPENSEA_TERMS_OF_USE}
+                      rel="noreferrer"
+                      target="_blank"
+                    >
+                      {t('terms')}
+                    </a>,
+                  ])}
                 </div>
-                <ToggleButton
-                  value={transactionSecurityCheckEnabled}
-                  onToggle={this.toggleTransactionSecurityCheck.bind(this)}
-                />
               </div>
-            </div>
+              <ToggleButton
+                value={transactionSecurityCheckEnabled}
+                onToggle={this.toggleTransactionSecurityCheck.bind(this)}
+              />
+            </Box>
           </div>
         </div>
       </>
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   renderDesktopEnableButton() {
     const { t } = this.context;
 
@@ -259,10 +269,10 @@ export default class ExperimentalTab extends PureComponent {
       </>
     );
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  keyringSnapsToggle() {
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  renderKeyringSnapsToggle() {
     const { t, trackEvent } = this.context;
     const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
 
@@ -293,7 +303,7 @@ export default class ExperimentalTab extends PureComponent {
                 {t('snapAccountsDescription')}
               </Text>
 
-              <div className="settings-page__content-item-col settings-page__content-item-col__security-toggle-option">
+              <div className="settings-page__content-item-col">
                 <Text
                   variant={TextVariant.bodyMd}
                   as="h5"
@@ -303,20 +313,22 @@ export default class ExperimentalTab extends PureComponent {
                 >
                   {t('addSnapAccountToggle')}
                 </Text>
-                <ToggleButton
-                  dataTestId="add-snap-account-toggle"
-                  value={addSnapAccountEnabled}
-                  onToggle={(value) => {
-                    trackEvent({
-                      event: MetaMetricsEventName.AddSnapAccountEnabled,
-                      category: MetaMetricsEventCategory.Settings,
-                      properties: {
-                        enabled: !value,
-                      },
-                    });
-                    setAddSnapAccountEnabled(!value);
-                  }}
-                />
+                <div data-testid="add-account-snap-toggle-div">
+                  <ToggleButton
+                    value={addSnapAccountEnabled}
+                    dataTestId="add-account-snap-toggle-button"
+                    onToggle={(value) => {
+                      trackEvent({
+                        event: MetaMetricsEventName.AddSnapAccountEnabled,
+                        category: MetaMetricsEventCategory.Settings,
+                        properties: {
+                          enabled: !value,
+                        },
+                      });
+                      setAddSnapAccountEnabled(!value);
+                    }}
+                  />
+                </div>
               </div>
               <Text
                 variant={TextVariant.bodySm}
@@ -332,21 +344,35 @@ export default class ExperimentalTab extends PureComponent {
       </>
     );
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  renderKeyringSnapsToggle() {
-    let toggle = null;
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-    toggle = this.keyringSnapsToggle();
-    ///: END:ONLY_INCLUDE_IN
+  renderToggleRequestQueue() {
+    const { t } = this.context;
+    const { useRequestQueue, setUseRequestQueue } = this.props;
+    return (
+      <Box
+        ref={this.settingsRefs[7]}
+        className="settings-page__content-row settings-page__content-row-experimental"
+        data-testid="experimental-setting-toggle-request-queue"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('toggleRequestQueueField')}</span>
+          <div className="settings-page__content-description">
+            {t('toggleRequestQueueDescription')}
+          </div>
+        </div>
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main)
-    if (!showSnapAccountExperimentalToggle()) {
-      toggle = null;
-    }
-    ///: END:ONLY_INCLUDE_IN
-
-    return toggle;
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            className="request-queue-toggle"
+            value={useRequestQueue || false}
+            onToggle={(value) => setUseRequestQueue(!value)}
+            offLabel={t('toggleRequestQueueOff')}
+            onLabel={t('toggleRequestQueueOn')}
+          />
+        </div>
+      </Box>
+    );
   }
 
   render() {
@@ -354,15 +380,16 @@ export default class ExperimentalTab extends PureComponent {
       <div className="settings-page__body">
         {this.renderSecurityAlertsToggle()}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           this.renderKeyringSnapsToggle()
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
           this.renderDesktopEnableButton()
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
+        {this.renderToggleRequestQueue()}
       </div>
     );
   }

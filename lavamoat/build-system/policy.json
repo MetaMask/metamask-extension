@@ -23,7 +23,12 @@
     },
     "@babel/code-frame>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "@babel/code-frame>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "@babel/code-frame>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "@babel/code-frame>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "@babel/code-frame>chalk>supports-color": {
@@ -906,7 +911,7 @@
         "@babel/core": true,
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider": true,
-        "@babel/preset-env>semver": true
+        "@babel/preset-env>babel-plugin-polyfill-corejs2>semver": true
       }
     },
     "@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider": {
@@ -932,6 +937,12 @@
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
+      }
+    },
+    "@babel/preset-env>babel-plugin-polyfill-corejs2>semver": {
+      "globals": {
+        "console": true,
+        "process": true
       }
     },
     "@babel/preset-env>babel-plugin-polyfill-corejs3": {
@@ -1177,6 +1188,11 @@
         "readable-stream>util-deprecate": true
       }
     },
+    "@metamask/build-utils": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
     "@metamask/eth-token-tracker>deep-equal>is-date-object": {
       "packages": {
         "koa>is-generator-function>has-tostringtag": true
@@ -1187,9 +1203,58 @@
         "Buffer": true
       }
     },
-    "@metamask/jazzicon>color>color-convert": {
+    "@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
       "packages": {
-        "@metamask/jazzicon>color>color-convert>color-name": true
+        "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "@sentry/cli>which": {
+      "builtin": {
+        "path.join": true
+      },
+      "globals": {
+        "process.cwd": true,
+        "process.env.OSTYPE": true,
+        "process.env.PATH": true,
+        "process.env.PATHEXT": true,
+        "process.platform": true
+      },
+      "packages": {
+        "@sentry/cli>which>isexe": true
+      }
+    },
+    "@sentry/cli>which>isexe": {
+      "builtin": {
+        "fs": true
+      },
+      "globals": {
+        "TESTING_WINDOWS": true,
+        "process.env.PATHEXT": true,
+        "process.getgid": true,
+        "process.getuid": true,
+        "process.platform": true
       }
     },
     "@storybook/addon-knobs>qs": {
@@ -2082,9 +2147,9 @@
         "process.platform": true
       },
       "packages": {
+        "@sentry/cli>which": true,
         "cross-spawn>path-key": true,
-        "cross-spawn>shebang-command": true,
-        "mocha>which": true
+        "cross-spawn>shebang-command": true
       }
     },
     "cross-spawn>path-key": {
@@ -3160,7 +3225,7 @@
     },
     "eslint>minimatch>brace-expansion": {
       "packages": {
-        "mocha>minimatch>brace-expansion>concat-map": true,
+        "eslint>minimatch>brace-expansion>concat-map": true,
         "stylelint>balanced-match": true
       }
     },
@@ -3299,8 +3364,16 @@
     },
     "globalthis>define-properties": {
       "packages": {
+        "globalthis>define-properties>define-data-property": true,
         "globalthis>define-properties>has-property-descriptors": true,
         "globalthis>define-properties>object-keys": true
+      }
+    },
+    "globalthis>define-properties>define-data-property": {
+      "packages": {
+        "globalthis>define-properties>has-property-descriptors": true,
+        "string.prototype.matchall>es-abstract>gopd": true,
+        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "globalthis>define-properties>has-property-descriptors": {
@@ -3461,7 +3534,12 @@
     },
     "gulp-livereload>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "gulp-livereload>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "gulp-livereload>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "gulp-livereload>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "gulp-livereload>chalk>supports-color": {
@@ -3735,7 +3813,12 @@
     },
     "gulp-rtlcss>rtlcss>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "gulp-rtlcss>rtlcss>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "gulp-rtlcss>rtlcss>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "gulp-rtlcss>rtlcss>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "gulp-rtlcss>rtlcss>chalk>supports-color": {
@@ -6155,7 +6238,12 @@
     },
     "lavamoat>@babel/highlight>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "lavamoat>@babel/highlight>chalk>supports-color": {
@@ -6369,33 +6457,6 @@
       },
       "packages": {
         "chalk>supports-color>has-flag": true
-      }
-    },
-    "mocha>which": {
-      "builtin": {
-        "path.join": true
-      },
-      "globals": {
-        "process.cwd": true,
-        "process.env.OSTYPE": true,
-        "process.env.PATH": true,
-        "process.env.PATHEXT": true,
-        "process.platform": true
-      },
-      "packages": {
-        "mocha>which>isexe": true
-      }
-    },
-    "mocha>which>isexe": {
-      "builtin": {
-        "fs": true
-      },
-      "globals": {
-        "TESTING_WINDOWS": true,
-        "process.env.PATHEXT": true,
-        "process.getgid": true,
-        "process.getuid": true,
-        "process.platform": true
       }
     },
     "nock>debug": {
@@ -7688,16 +7749,21 @@
         "WeakRef": true
       },
       "packages": {
-        "browserify>has": true,
         "browserify>has>function-bind": true,
         "string.prototype.matchall>es-abstract>has-proto": true,
+        "string.prototype.matchall>get-intrinsic>hasown": true,
         "string.prototype.matchall>has-symbols": true
+      }
+    },
+    "string.prototype.matchall>get-intrinsic>hasown": {
+      "packages": {
+        "browserify>has>function-bind": true
       }
     },
     "string.prototype.matchall>internal-slot": {
       "packages": {
-        "browserify>has": true,
         "string.prototype.matchall>get-intrinsic": true,
+        "string.prototype.matchall>get-intrinsic>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
     },
@@ -7705,7 +7771,14 @@
       "packages": {
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
+        "string.prototype.matchall>regexp.prototype.flags>set-function-name": true
+      }
+    },
+    "string.prototype.matchall>regexp.prototype.flags>set-function-name": {
+      "packages": {
+        "globalthis>define-properties>define-data-property": true,
+        "globalthis>define-properties>has-property-descriptors": true,
+        "string.prototype.matchall>es-abstract>function.prototype.name>functions-have-names": true
       }
     },
     "string.prototype.matchall>side-channel": {
@@ -8066,7 +8139,7 @@
         "process.platform": true
       },
       "packages": {
-        "mocha>which>isexe": true
+        "@sentry/cli>which>isexe": true
       }
     },
     "stylelint>globjoin": {
@@ -8373,7 +8446,12 @@
     },
     "stylelint>table>slice-ansi>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "stylelint>table>slice-ansi>ansi-styles>color-convert": true
+      }
+    },
+    "stylelint>table>slice-ansi>ansi-styles>color-convert": {
+      "packages": {
+        "stylelint>table>slice-ansi>ansi-styles>color-convert>color-name": true
       }
     },
     "stylelint>table>string-width": {

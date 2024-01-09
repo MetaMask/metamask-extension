@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Добавить NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Откройте для себя варианты обеспечения безопасности своего счета с помощью MetaMask Snaps"
-  },
   "addSuggestedNFTs": {
     "message": "Добавить рекомендованные NFT"
   },
@@ -441,10 +438,6 @@
   },
   "attemptSendingAssets": {
     "message": "Попытка отправки активов напрямую из одной сети в другую может привести к необратимой потере активов. Следует использовать мост."
-  },
-  "attemptToCancelSwap": {
-    "message": "Попытка отменить своп на ~$1",
-    "description": "$1 could be e.g. $2.98, it is a cost for cancelling a Smart Swap"
   },
   "attemptingConnect": {
     "message": "Попытка подключения к блокчейну..."
@@ -662,7 +655,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Сеть с ID блокчейна $1 может использовать другой символ валюты ($2), чем тот, который вы ввели. Подтвердите, прежде чем продолжить.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Выберите свою сеть"
@@ -1131,12 +1124,6 @@
   "deposit": {
     "message": "Депозит"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Подробнее"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Из-за изменений протокола Ethereum: тестовые сети Rinkeby, Ropsten, Kovan могут работать не очень надежно и скоро будут признаны устаревшими."
-  },
   "description": {
     "message": "Описание"
   },
@@ -1402,15 +1389,6 @@
   "enableFromSettings": {
     "message": " Включите его в Настройках."
   },
-  "enableOpenSeaAPI": {
-    "message": "Включить API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
-  },
-  "enableSmartSwaps": {
-    "message": "Включить смарт-свопы"
-  },
   "enableSnap": {
     "message": "Включить"
   },
@@ -1440,12 +1418,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Недопустимый символ для ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Имя ENS не найдено в текущей сети. Попробуйте переключиться на Мейн-нет Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Сеть не поддерживает ENS"
   },
   "ensRegistrationError": {
     "message": "Ошибка при регистрации имени ENS"
@@ -1680,42 +1652,19 @@
     "message": "$1 ч",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 минут(-ы)",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 мин.",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Может быть, через $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Вероятно, через < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 секунд(-ы)",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 сек.",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Весьма вероятно, через < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Использовано газа"
   },
   "general": {
     "message": "Общие"
-  },
-  "getStarted": {
-    "message": "Начало работы"
   },
   "globalTitle": {
     "message": "Глобальное меню"
@@ -2119,25 +2068,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Включите «данные смарт-контракта» или «слепую подпись» в своем устройстве Ledger."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Включите «Использовать Ledger Live» в разделе «Настройки» > «Дополнительно»."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Убедитесь, что Ledger подключен, и выберите приложение Ethereum."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Откройте и разблокируйте приложение Ledger Live."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Настройте подключение Ledger к MetaMask. Рекомендуется $1, но возможны и другие варианты. См. подробнее здесь: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Не удалось открыть Ledger. Он может быть подключен к другой программе. Закройте Ledger Live или другие приложения, подключенные к Ledger, и снова попробуйте подключиться."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "приложение Ledger Live"
@@ -2147,9 +2082,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live слишком долго не отвечает, или время ожидания подключения истекло. Убедитесь, что приложение Ledger Live открыто и устройство разблокировано."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Если приложение Ledger Live открыто, отключите любое открытое соединение с Ledger Live и закройте это приложение."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger не подключен. Если хотите подключить Ledger, нажмите «Продолжить» еще раз и одобрите HID-подключение",
@@ -2229,9 +2161,6 @@
   "makeSureNoOneWatching": {
     "message": "Убедитесь, что никто не смотрит",
     "description": "Warning to users to be care while creating and saving their new Secret Recovery Phrase"
-  },
-  "malformedData": {
-    "message": "Искаженные данные"
   },
   "max": {
     "message": "Макс."
@@ -2524,9 +2453,6 @@
   },
   "noSnaps": {
     "message": "Snaps не установлены."
-  },
-  "noThanksVariant2": {
-    "message": "Нет, спасибо."
   },
   "noTransactions": {
     "message": "У вас нет транзакций"
@@ -3124,10 +3050,6 @@
     "message": "Доступ в Интернет.",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessNetworkDescription": {
-    "message": "Разрешите snap доступ к Интернету. Его можно использовать как для отправки, так и для получения данных со сторонних серверов.",
-    "description": "An extended description of the `endowment:network-access` permission."
-  },
   "permission_accessSnap": {
     "message": "Подключение к спапу $1.",
     "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
@@ -3140,17 +3062,9 @@
     "message": "Планируйте и выполняйте периодические действия.",
     "description": "The description for the `snap_cronjob` permission"
   },
-  "permission_cronjobDescription": {
-    "message": "Разрешите snap выполнять действия, которые выполняются периодически в фиксированное время, даты или интервалы. Это можно использовать для запуска срочных взаимодействий или уведомлений.",
-    "description": "An extended description for the `snap_cronjob` permission"
-  },
   "permission_dialog": {
     "message": "Отображение диалоговых окон в MetaMask.",
     "description": "The description for the `snap_dialog` permission"
-  },
-  "permission_dialogDescription": {
-    "message": "Разрешите snap отображать всплывающие окна MetaMask с настраиваемым текстом, полем ввода и кнопками для одобрения или отклонения действия.\nМожет использоваться для создания, например, оповещения, подтверждения и процедуры получения согласия для snap.",
-    "description": "An extended description for the `snap_dialog` permission"
   },
   "permission_ethereumAccounts": {
     "message": "См. адрес, баланс счета, активность и рекомендуйте транзакции для одобрения",
@@ -3160,89 +3074,29 @@
     "message": "Получите доступ к поставщику Ethereum.",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
-  "permission_ethereumProviderDescription": {
-    "message": "Разрешите snap связываться с MetaMask напрямую, чтобы она могла считывать данные из блокчейна и предлагать сообщения и транзакции.",
-    "description": "An extended description for the `endowment:ethereum-provider` permission"
-  },
-  "permission_getEntropy": {
-    "message": "Извлекайте произвольные ключи, уникальные для этого snap.",
-    "description": "The description for the `snap_getEntropy` permission"
-  },
-  "permission_getEntropyDescription": {
-    "message": "Разрешите snap извлекать произвольные ключи, уникальные для этого snap, не раскрывая их. Эти ключи отделены от вашего(-их) счета(-ов) MetaMask и не связаны с вашими закрытыми ключами или секретной фразой для восстановления. Другие snaps не могут получить доступ к этой информации.",
-    "description": "An extended description for the `snap_getEntropy` permission"
-  },
   "permission_lifecycleHooks": {
     "message": "Используйте хуки жизненного цикла.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
-  },
-  "permission_lifecycleHooksDescription": {
-    "message": "Разрешите snap использовать обработчики жизненного цикла для запуска кода в определенное время в течение его жизненного цикла.",
-    "description": "An extended description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_manageAccounts": {
     "message": "Добавляйте счета Ethereum и управляйте ими",
     "description": "The description for `snap_manageAccounts` permission"
   },
-  "permission_manageBip32Keys": {
-    "message": "Контролируйте свои счета и активы в $1 ($2).",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
-  },
-  "permission_manageBip32KeysDescription": {
-    "message": "Разрешите snap извлекать пары ключей BIP-32 на основе вашей секретной фразы для восстановления, не раскрывая ее. Это дает полный доступ ко всем счетам и активам на $1.\nБлагодаря способности управлять ключами, snap может поддерживать множество протоколов блокчейна, кроме Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip32Entropy` permission. $1 is a derivation path (name)"
-  },
-  "permission_manageBip44Keys": {
-    "message": "Контролируйте свои счета и активы «$1».",
-    "description": "The description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g. 'Filecoin'."
-  },
-  "permission_manageBip44KeysDescription": {
-    "message": "Разрешите snap извлекать пары ключей BIP-44 на основе вашей секретной фразы для восстановления, не раскрывая ее. Это дает полный доступ ко всем счетам и активам на $1.\nБлагодаря способности управлять ключами snap может поддерживать множество протоколов блокчейна, кроме Ethereum (EVM).",
-    "description": "An extended description for the `snap_getBip44Entropy` permission. $1 is the name of a protocol, e.g., 'Filecoin'."
-  },
-  "permission_manageNamedBip32Keys": {
-    "message": "Контролируйте свои счета и активы $1.",
-    "description": "The description for the `snap_getBip32Entropy` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'. $2 is the plain derivation path, e.g. 'm/44'/0'/0''."
-  },
   "permission_manageState": {
     "message": "Храните и управляйте его данными на вашем устройстве.",
     "description": "The description for the `snap_manageState` permission"
-  },
-  "permission_manageStateDescription": {
-    "message": "Разрешите snap безопасно хранить, обновлять и извлекать данные с помощью шифрования. Другие snaps не могут получить доступ к этой информации.",
-    "description": "An extended description for the `snap_manageState` permission"
   },
   "permission_notifications": {
     "message": "Показать уведомления.",
     "description": "The description for the `snap_notify` permission"
   },
-  "permission_notificationsDescription": {
-    "message": "Разрешите snap отображать уведомления в MetaMask. Текст короткого уведомления может отображаться snap для получения информации, требующей действий, или срочной информации.",
-    "description": "An extended description for the `snap_notify` permission"
-  },
-  "permission_rpc": {
-    "message": "Разрешите $1 напрямую взаимодействовать с этим snap.",
-    "description": "The description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
-  "permission_rpcDescription": {
-    "message": "Разрешите $1 отправлять сообщения в адрес snap и получать ответ от snap.",
-    "description": "An extended description for the `endowment:rpc` permission. $1 is 'other snaps' or 'websites'."
-  },
   "permission_transactionInsight": {
     "message": "Получайте и отображайте подробную информацию о транзакциях.",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-  "permission_transactionInsightDescription": {
-    "message": "Разрешите snap декодировать транзакции и показывать информацию в пользовательском интерфейсе MetaMask. Это можно использовать для защиты от фишинга и обеспечения безопасности.",
-    "description": "An extended description for the `endowment:transaction-insight` permission"
-  },
   "permission_transactionInsightOrigin": {
     "message": "Смотрите происхождение веб-сайтов, которые предлагают транзакции",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
-  },
-  "permission_transactionInsightOriginDescription": {
-    "message": "Разрешить snap видеть происхождение (URI) веб-сайтов, предлагающих транзакции. Это можно использовать для защиты от фишинга и обеспечения безопасности.",
-    "description": "An extended description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_unknown": {
     "message": "Неизвестное разрешение: $1",
@@ -3252,10 +3106,6 @@
     "message": "Просмотрите свой открытый ключ для $1 ($2).",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a derivation path, e.g. 'm/44'/0'/0''. $2 is the elliptic curve name, e.g. 'secp256k1'."
   },
-  "permission_viewBip32PublicKeysDescription": {
-    "message": "Разрешите snap просматривать ваши открытые ключи (и адреса) для $1. Это не дает никакого контроля над счетами или активами.",
-    "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name)"
-  },
   "permission_viewNamedBip32PublicKeys": {
     "message": "Просмотрите свой открытый ключ для $1.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
@@ -3263,10 +3113,6 @@
   "permission_webAssembly": {
     "message": "Поддержка WebAssembly.",
     "description": "The description of the `endowment:webassembly` permission."
-  },
-  "permission_webAssemblyDescription": {
-    "message": "Разрешите snap доступ к низкоуровневым средам исполнения через WebAssembly.",
-    "description": "An extended description of the `endowment:webassembly` permission."
   },
   "permissions": {
     "message": "Разрешения"
@@ -3295,10 +3141,6 @@
   },
   "portfolioDashboard": {
     "message": "Панель инструментов Portfolio"
-  },
-  "preferredLedgerConnectionType": {
-    "message": "Предпочтительный тип подключения к Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "Подготовка свопа..."
@@ -3621,9 +3463,6 @@
   "searchAccounts": {
     "message": "Поиск счетов"
   },
-  "searchResults": {
-    "message": "Результаты поиска"
-  },
   "secretRecoveryPhrase": {
     "message": "Секретная фраза для восстановления"
   },
@@ -3879,9 +3718,6 @@
   "smartContracts": {
     "message": "Смарт-контракты"
   },
-  "smartSwap": {
-    "message": "Смарт-своп"
-  },
   "smartSwapsAreHere": {
     "message": "Появились смарт-свопы!"
   },
@@ -3894,12 +3730,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Смарт-свопы временно недоступны."
   },
-  "smartSwapsSubDescription": {
-    "message": "* Смарт-свопы попытаются отправить вашу транзакцию в частном порядке несколько раз. Если все попытки не увенчаются успехом, транзакция будет транслироваться публично, чтобы гарантировать успешное завершение вашего свопа."
-  },
-  "snapConfigure": {
-    "message": "Настроить"
-  },
   "snapConnectionWarning": {
     "message": "$1 хочет подключиться к $2. Продолжайте, только если вы доверяете этому сайту.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3908,49 +3738,8 @@
     "message": "Этот контент поступает от $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Выберите способ защиты вашего нового счета с помощью MetaMask Snaps."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Создать новый счет $1",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "От MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Аудит"
-  },
-  "snapDetailDeveloper": {
-    "message": "Разработчик"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Обновлено"
-  },
-  "snapDetailManageSnap": {
-    "message": "Управление snap"
-  },
-  "snapDetailTags": {
-    "message": "Теги"
-  },
-  "snapDetailVersion": {
-    "message": "Версия"
-  },
   "snapDetailWebsite": {
     "message": "Веб-сайт"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Создать счет Snap"
-  },
-  "snapDetailsInstalled": {
-    "message": "Установлена"
-  },
-  "snapInstall": {
-    "message": "Установить snap"
   },
   "snapInstallRequest": {
     "message": "Установка $1 дает ему следующие разрешения. Продолжайте, только если доверяете $1.",
@@ -3959,24 +3748,8 @@
   "snapInstallSuccess": {
     "message": "Установка завершена"
   },
-  "snapInstallWarningCheck": {
-    "message": "Чтобы подтвердить, что вы понимаете, отметьте все.",
-    "description": "Warning message used in popup displayed on snap install. $1 is the snap name."
-  },
-  "snapInstallWarningCheckPlural": {
-    "message": "Чтобы подтвердить, что вы понимаете, отметьте все ячейки.",
-    "description": "Warning message used in popup displayed on snap install when having multiple permissions. $1 is the snap name."
-  },
   "snapInstallWarningHeading": {
     "message": "Действуйте с осторожностью"
-  },
-  "snapInstallWarningKeyAccess": {
-    "message": "Передать управление счетом $2 $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
-  },
-  "snapInstallWarningPublicKeyAccess": {
-    "message": "Предоставьте $2 доступ к открытому ключу к $1",
-    "description": "The first parameter is the name of the snap and the second one is the protocol"
   },
   "snapInstallationErrorDescription": {
     "message": "Не удалось установить $1.",
@@ -3986,9 +3759,6 @@
     "message": "Ошибка установки",
     "description": "Error title used when snap installation fails."
   },
-  "snapIsAudited": {
-    "message": "Проверена"
-  },
   "snapResultError": {
     "message": "Ошибка"
   },
@@ -3997,9 +3767,6 @@
   },
   "snapResultSuccessDescription": {
     "message": "$1 готово к использованию"
-  },
-  "snapUpdate": {
-    "message": "Обновить snap"
   },
   "snapUpdateAvailable": {
     "message": "Доступно обновление"
@@ -4012,18 +3779,11 @@
     "message": "Ошибка обновления",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1 хочет обновить $2 до $3, что дает ему следующие разрешения. Продолжайте, только если доверяете $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "Обновление завершено"
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Загрузка аналитики по транзакции..."
   },
   "snapsInvalidUIError": {
     "message": "Пользовательский интерфейс, указанный snap, недействителен."
@@ -4291,9 +4051,6 @@
     "message": "Своп завершится через <",
     "description": "'<' means 'less than', e.g. Swap will complete in < 2:59"
   },
-  "stxTooltip": {
-    "message": "Моделируйте транзакции перед отправкой, чтобы снизить транзакционные издержки и сократить число отказов."
-  },
   "stxTryingToCancel": {
     "message": "Попытка отменить транзакцию..."
   },
@@ -4308,9 +4065,6 @@
   },
   "stxUserCancelledDescription": {
     "message": "Ваша транзакция была отменена, и вы не вносили никакой ненужной платы за газ."
-  },
-  "stxYouCanOptOut": {
-    "message": "Вы можете отказаться в любое время в расширенных настройках."
   },
   "submit": {
     "message": "Отправить"
@@ -4629,9 +4383,6 @@
   "swapSource": {
     "message": "Источник ликвидности"
   },
-  "swapSourceInfo": {
-    "message": "Мы ищем по разным источникам ликвидности (биржи, агрегаторы и профессиональные маркет-мейкеры), чтобы найти лучшие курсы и самые низкие комиссии сети."
-  },
   "swapSuggested": {
     "message": "Рекомендуется своп"
   },
@@ -4942,18 +4693,6 @@
   "transactionCreated": {
     "message": "В $2 создана транзакция на сумму $1."
   },
-  "transactionData": {
-    "message": "Данные транзакции"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Расшифровано Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Подтвержденный контракт на $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "Расшифровка транзакции недоступна для ID блокчейна $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Рекомендовано сайтом"
   },
@@ -4962,9 +4701,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Примерная плата за газ"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "примерная"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Подробнее о плате за газ"
@@ -5085,9 +4821,6 @@
   "twelveHrTitle": {
     "message": "12 ч:"
   },
-  "txInsightsNotSupported": {
-    "message": "Для этого контракта сейчас не поддерживается аналитика транзакций."
-  },
   "typeYourSRP": {
     "message": "Введите секретную фразу для восстановления"
   },
@@ -5103,12 +4836,6 @@
   },
   "unknown": {
     "message": "Неизвестно"
-  },
-  "unknownCameraError": {
-    "message": "При попытке получить доступ к вашей камере произошла ошибка. Попробуйте еще раз..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ой! Что-то пошло не так...."
   },
   "unknownCollection": {
     "message": "Безымянная коллекция"
@@ -5131,10 +4858,6 @@
   "unrecognizedChain": {
     "message": "Эта пользовательская сеть не распознана. Мы рекомендуем $1, прежде чем продолжить",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
-  },
-  "unrecognizedProtocol": {
-    "message": "$1 (Нераспознанный протокол)",
-    "description": "Shown when the protocol is unknown by the extension. $1 is the protocol code."
   },
   "unsendableAsset": {
     "message": "Отправка токенов NFT (ERC-721) сейчас не поддерживается",
@@ -5193,10 +4916,6 @@
   },
   "verifyContractDetails": {
     "message": "Проверьте информацию о третьей стороне"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Число десятичных знаков токена можно найти на $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Проверить этот токен на $1",
