@@ -83,13 +83,8 @@ describe('Create Snap Account', function (this: Suite) {
         });
 
         await driver.findElement({
-          css: '[data-testid="create-snap-account-content-description"]',
-          text: 'MetaMask Simple Snap Keyring wants to add a new Snap account to your wallet',
-        });
-
-        await driver.findElement({
           css: '[data-testid="create-snap-account-content-title"]',
-          text: 'Create Snap account',
+          text: 'Create account',
         });
       },
     );
@@ -159,8 +154,8 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.clickElement('[data-testid="confirmation-submit-button"]');
 
         await driver.findElement({
-          tag: 'div',
-          text: 'Your account is ready!',
+          tag: 'h3',
+          text: 'Account created',
         });
 
         // click the okay button
@@ -182,7 +177,7 @@ describe('Create Snap Account', function (this: Suite) {
 
         await driver.findElement({
           css: '[data-testid="account-menu-icon"]',
-          text: 'Account 2',
+          text: 'Snap Account 1',
         });
       },
     );

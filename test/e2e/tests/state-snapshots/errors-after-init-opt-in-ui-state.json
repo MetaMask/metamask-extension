@@ -18,6 +18,7 @@
     "networkConfigurations": "object",
     "addressBook": "object",
     "contractExchangeRates": "object",
+    "confirmationExchangeRates": {},
     "contractExchangeRatesByChainId": "object",
     "pendingTokens": "object",
     "customNonceValue": "",
@@ -116,8 +117,8 @@
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "conversionRate": 1300,
+        "usdConversionRate": 1300
       }
     },
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },

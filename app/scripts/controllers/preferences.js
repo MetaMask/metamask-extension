@@ -94,6 +94,8 @@ export default class PreferencesController {
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       useAddressBarEnsResolution: true,
+      // Ledger transport type is deprecated. We currently only support webhid
+      // on chrome, and u2f on firefox.
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
@@ -414,7 +416,7 @@ export default class PreferencesController {
    * Removes any unknown identities, and returns the resulting selected address.
    *
    * @param {Array<string>} addresses - known to the vault.
-   * @returns {Promise<string>} selectedAddress the selected address.
+   * @returns {string} selectedAddress the selected address.
    */
   syncAddresses(addresses) {
     if (!Array.isArray(addresses) || addresses.length === 0) {
@@ -589,21 +591,14 @@ export default class PreferencesController {
   /**
    * A setter for the `ledgerTransportType` property.
    *
-   * @param {string} ledgerTransportType - Either 'ledgerLive', 'webhid' or 'u2f'
+   * @deprecated We no longer support specifying a ledger transport type other
+   * than webhid, therefore managing a preference is no longer necessary.
+   * @param {LedgerTransportTypes.webhid} ledgerTransportType - 'webhid'
    * @returns {string} The transport type that was set.
    */
   setLedgerTransportPreference(ledgerTransportType) {
     this.store.updateState({ ledgerTransportType });
     return ledgerTransportType;
-  }
-
-  /**
-   * A getter for the `ledgerTransportType` property.
-   *
-   * @returns {string} The current preferred Ledger transport type.
-   */
-  getLedgerTransportPreference() {
-    return this.store.getState().ledgerTransportType;
   }
 
   /**

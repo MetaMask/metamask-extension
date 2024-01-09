@@ -93,7 +93,7 @@ const TransactionAlerts = ({
         ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
         <BlockaidBannerAlert
           onClickSupportLink={onClickSupportLink}
-          securityAlertResponse={txData?.securityAlertResponse}
+          txData={txData}
         />
         ///: END:ONLY_INCLUDE_IF
       }

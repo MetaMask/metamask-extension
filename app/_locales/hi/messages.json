@@ -3142,10 +3142,6 @@
   "portfolioDashboard": {
     "message": "पोर्टफोलियो डैशबोर्ड"
   },
-  "preferredLedgerConnectionType": {
-    "message": "वरीयता वाले Ledger कनेक्शन के प्रकार",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "स्वैप की तैयारी कर रहा है..."
   },

@@ -220,7 +220,7 @@ export function createNewVaultAndGetSeedPhrase(
 
     try {
       await createNewVault(password);
-      const seedPhrase = await verifySeedPhrase();
+      const seedPhrase = await getSeedPhrase(password);
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -243,7 +243,7 @@ export function unlockAndGetSeedPhrase(
 
     try {
       await submitPassword(password);
-      const seedPhrase = await verifySeedPhrase();
+      const seedPhrase = await getSeedPhrase(password);
       await forceUpdateMetamaskState(dispatch);
       return seedPhrase;
     } catch (error) {
@@ -298,9 +298,10 @@ export function verifyPassword(password: string): Promise<boolean> {
   });
 }
 
-export async function verifySeedPhrase() {
+export async function getSeedPhrase(password: string) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
-    'verifySeedPhrase',
+    'getSeedPhrase',
+    [password],
   );
   return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
@@ -314,7 +315,7 @@ export function requestRevealSeedWords(
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await verifySeedPhrase();
+      const seedPhrase = await getSeedPhrase(password);
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
@@ -526,9 +527,6 @@ export function connectHardware(
 
     let accounts: { address: string }[];
     try {
-      if (deviceName === HardwareDeviceNames.ledger) {
-        await submitRequestToBackground('establishLedgerTransportPreference');
-      }
       if (
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
@@ -2463,6 +2461,13 @@ export function hideImportNftsModal(): Action {
   };
 }
 
+export function setConfirmationExchangeRates(value: Record<string, any>) {
+  return {
+    type: actionConstants.SET_CONFIRMATION_EXCHANGE_RATES,
+    value,
+  };
+}
+
 export function showIpfsModal(): Action {
   return {
     type: actionConstants.SHOW_IPFS_MODAL_OPEN,
@@ -4051,16 +4056,6 @@ export function getOpenMetamaskTabsIds(): ThunkAction<
       [tabId: string]: boolean;
     }>('getOpenMetamaskTabsIds');
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs));
-  };
-}
-
-export function setLedgerTransportPreference(
-  value: LedgerTransportTypes,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('setLedgerTransportPreference', [value]);
-    dispatch(hideLoadingIndication());
   };
 }
 

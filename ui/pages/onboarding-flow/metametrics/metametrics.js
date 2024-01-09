@@ -188,7 +188,7 @@ export default function OnboardingMetametrics() {
       >
         {t('onboardingMetametricsInfuraTerms', [
           <a
-            href="https://consensys.net/blog/news/consensys-data-retention-update/"
+            href="https://consensys.io/blog/consensys-data-retention-update"
             target="_blank"
             rel="noopener noreferrer"
             key="retention-link"

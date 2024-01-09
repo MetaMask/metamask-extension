@@ -18,7 +18,7 @@ describe('Deprecated networks', function () {
         await driver.clickElement({ text: 'Goerli' });
 
         const deprecationWarningText =
-          'Due to the protocol changes of Ethereum: Goerli test network may not work as reliably and will be deprecated soon.';
+          'Because of updates to the Ethereum system, the Goerli test network will be phased out soon.';
         const isDeprecationWarningDisplayed = await driver.isElementPresent({
           text: deprecationWarningText,
         });
