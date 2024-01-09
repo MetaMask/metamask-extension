@@ -56,6 +56,7 @@ describe('Settings - general tab, validate the change language functionality:', 
         await unlockWallet(driver);
 
         await changeLanguage({ driver, languageIndex });
+
         // Validate the label changes
         const isLanguageLabelChanged = await driver.isElementPresent(
           selectors.labelSpanish,
@@ -132,11 +133,11 @@ describe('Settings - general tab, validate the change language functionality:', 
         await driver.navigate();
 
         await driver.isElementPresent(selectors.tooltipText);
+
         // Validating the tooltip
         const isHeaderTooltipChanged = await driver.isElementPresent(
           selectors.tooltipText,
         );
-
         assert.equal(
           isHeaderTooltipChanged,
           true,
@@ -166,7 +167,6 @@ describe('Settings - general tab, validate the change language functionality:', 
         const isWaterTextChanged = await driver.isElementPresent(
           selectors.waterText,
         );
-
         assert.equal(
           isWaterTextChanged,
           true,
@@ -177,7 +177,6 @@ describe('Settings - general tab, validate the change language functionality:', 
         const isHeaderTextChanged = await driver.isElementPresent(
           selectors.headerTextDansk,
         );
-
         assert.equal(
           isHeaderTextChanged,
           true,
@@ -188,7 +187,6 @@ describe('Settings - general tab, validate the change language functionality:', 
         const isButtonTextChanged = await driver.isElementPresent(
           selectors.buttonText,
         );
-
         assert.equal(
           isButtonTextChanged,
           true,
@@ -215,9 +213,10 @@ describe('Settings - general tab, validate the change language functionality:', 
       async ({ driver }) => {
         await unlockWallet(driver);
         await changeLanguage({ driver, languageIndex });
-        await driver.clickElement(selectors.appHeaderLogo);
+        await driver.navigate();
         await driver.clickElement(selectors.ethOverviewSend);
         await driver.fill(selectors.ensInput, 'test');
+
         // Validate the language change is reflected in the dialog message
         const isDialogMessageChanged = await driver.isElementPresent(
           selectors.dialogText,
@@ -231,7 +230,7 @@ describe('Settings - general tab, validate the change language functionality:', 
     );
   });
 
-  it('User selects "मानक हिन्दी" language and verify that tooltips are updated with the selected language change', async function () {
+  it('User selects "मानक हिन्दी" language and verify that tooltips are updated with the selected language change @no-mmi', async function () {
     if (process.env.MULTICHAIN) {
       return;
     }
@@ -248,17 +247,18 @@ describe('Settings - general tab, validate the change language functionality:', 
       async ({ driver }) => {
         await unlockWallet(driver);
         await changeLanguage({ driver, languageIndex });
-        await driver.clickElement(selectors.appHeaderLogo);
+        await driver.navigate();
+
         // Validate the account tooltip
         const isAccountTooltipChanged = await driver.isElementPresent(
           selectors.accountTooltipText,
         );
-
         assert.equal(
           isAccountTooltipChanged,
           true,
           'Language changes is not reflected on the account toolTip',
         );
+
         // Validate the bridge tooltip
         const isBridgeTooltipChanged = await driver.isElementPresent(
           selectors.bridgeTooltipText,
@@ -285,13 +285,13 @@ describe('Settings - general tab, validate the change language functionality:', 
       async ({ driver }) => {
         await unlockWallet(driver);
         await changeLanguage({ driver, languageIndex });
-        await driver.clickElement(selectors.appHeaderLogo);
+        await driver.navigate();
         await driver.clickElement(selectors.nftsTab);
 
+        // Validate the hypertext
         const isHyperTextChanged = await driver.isElementPresent(
           selectors.hyperText,
         );
-        // Validate the hypertext
         assert.equal(
           isHyperTextChanged,
           true,
@@ -314,10 +314,10 @@ describe('Settings - general tab, validate the change language functionality:', 
         await unlockWallet(driver);
         await changeLanguage({ driver, languageIndex });
 
+        // Validate the header text
         const isHeaderTextChanged = await driver.isElementPresent(
           selectors.headerText,
         );
-        // Validate the header text
         assert.equal(
           isHeaderTextChanged,
           true,
