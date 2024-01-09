@@ -795,12 +795,12 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
     await driver.clickElement(`[data-testid="home__asset-tab"]`);
     await driver.findElement({
       css: '[data-testid="token-balance-overview-currency-display"]',
-      text: `$ ${balance}`,
+      text: `$ ${balance} USD`,
     });
   } else {
     await driver.findElement({
       css: '[data-testid="eth-overview__primary-currency"]',
-      text: `$ ${balance}`,
+      text: `$ ${balance} USD`,
     });
   }
 };
