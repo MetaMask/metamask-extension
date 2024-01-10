@@ -148,10 +148,18 @@ export const AccountListItem = ({
               gap={2}
             >
               {isPinned ? (
-                <Icon name={IconName.Pin} size={IconSize.Xs} />
+                <Icon
+                  name={IconName.Pin}
+                  size={IconSize.Xs}
+                  className="account-pinned-icon"
+                />
               ) : null}
               {isHidden ? (
-                <Icon name={IconName.EyeSlash} size={IconSize.Xs} />
+                <Icon
+                  name={IconName.EyeSlash}
+                  size={IconSize.Xs}
+                  className="account-hidden-icon"
+                />
               ) : null}
               <Text
                 as="button"
@@ -286,7 +294,7 @@ export const AccountListItem = ({
           identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={identity.keyring?.type !== KeyringType.hdKeyTree}
+          isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
           isPinned={isPinned}
           isHidden={isHidden}
