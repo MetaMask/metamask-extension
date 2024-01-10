@@ -1183,7 +1183,7 @@ export default function PrepareSendAndSwapPage({
           />
         )}
         {showReviewQuote && !isSendFlow && (
-          <ReviewQuote setReceiveToAmount={setReceiveToAmount} />
+          <ReviewQuote setReceiveToAmount={setReceiveToAmount} isApiV2 />
         )}
       </div>
       {!areQuotesPresent && !isSendFlow && (
