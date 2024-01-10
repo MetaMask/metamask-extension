@@ -253,5 +253,8 @@
     "lastFetchedBlockNumbers": "object",
     "methodData": "object",
     "transactions": "object"
+  },
+  "UserOperationController": {
+    "userOperations": "object"
   }
 }
