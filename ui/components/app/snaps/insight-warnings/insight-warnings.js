@@ -32,7 +32,7 @@ import { SnapUIRenderer } from '../snap-ui-renderer';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { stripHttpSchemes } from '../../../../helpers/utils/util';
 
-export default function TxInsightWarnings({
+export default function InsightWarnings({
   warnings,
   type = 'confirming',
   origin,
@@ -67,7 +67,7 @@ export default function TxInsightWarnings({
   const Warnings = () => {
     const lastWarningIdx = warnings.length - 1;
     return (
-      <Box className="tx-insights-warnings-modal__content">
+      <Box className="insights-warnings-modal__content">
         {warnings.map((warning, idx) => {
           const { snapId, content } = warning;
           return (
@@ -99,7 +99,7 @@ export default function TxInsightWarnings({
       isOpen
       isClosedOnEscapeKey={false}
       isClosedOnOutsideClick={false}
-      className="tx-insights-warnings-modal"
+      className="insights-warnings-modal"
     >
       <ModalOverlay />
       <ModalContent>
@@ -122,16 +122,16 @@ export default function TxInsightWarnings({
             paddingTop={4}
             paddingBottom={4}
           >
-            {t('transactionInsightWarningHeader')}
+            {t('insightWarningHeader')}
           </Text>
         </ModalHeader>
         <Text variant={TextVariant.bodyMd} paddingBottom={4}>
           {warnings.length === 1
-            ? t('transactionInsightWarningContentSingular', [
+            ? t('insightWarningContentSingular', [
                 type,
                 results[type].noun,
               ])
-            : t('transactionInsightWarningContentPlural', [
+            : t('insightWarningContentPlural', [
                 warnings.length,
                 type,
                 results[type].noun,
@@ -156,7 +156,7 @@ export default function TxInsightWarnings({
             variant={TextVariant.bodySm}
             isChecked={isChecked}
             onChange={handleOnChange}
-            label={t('transactionInsightWarningCheckboxMessage', [
+            label={t('insightWarningCheckboxMessage', [
               t(results[type].imperative),
               stripHttpSchemes(origin),
             ])}
@@ -190,7 +190,7 @@ export default function TxInsightWarnings({
   );
 }
 
-TxInsightWarnings.propTypes = {
+InsightWarnings.propTypes = {
   /**
    * An array of warnings returned from tx-insight snaps that deem their content 'critical'
    */

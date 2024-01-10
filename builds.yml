@@ -27,7 +27,7 @@ buildTypes:
       - SEGMENT_WRITE_KEY_REF: SEGMENT_PROD_WRITE_KEY
       - ALLOW_LOCAL_SNAPS: false
       - REQUIRE_SNAPS_ALLOWLIST: true
-      - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/3.4.3/index.html
+      - IFRAME_EXECUTION_ENVIRONMENT_URL: http://localhost:6363/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
     # Main build uses the default browser manifest
     manifestOverrides: false

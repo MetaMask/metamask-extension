@@ -5439,19 +5439,19 @@
   "transactionHistoryTotalGasFee": {
     "message": "Total gas fee"
   },
-  "transactionInsightWarningCheckboxMessage": {
+  "insightWarningCheckboxMessage": {
     "message": "$1 the request by $2",
     "description": "$1 is the action i.e. sign, confirm. $2 is the origin making the request."
   },
-  "transactionInsightWarningContentPlural": {
+  "insightWarningContentPlural": {
     "message": "Review $1 warnings before $2. Once made, your $3 is irreversible.",
     "description": "$1 is the number of warnings, $2 is the action (i.e. signing) and $3 is the result (i.e. signature, transaction)"
   },
-  "transactionInsightWarningContentSingular": {
+  "insightWarningContentSingular": {
     "message": "Review 1 warning before $1. Once made, your $2 is irreversible.",
     "description": "$1 is the action (i.e. signing) and $2 is the result (i.e. signature, transaction)"
   },
-  "transactionInsightWarningHeader": {
+  "insightWarningHeader": {
     "message": "This request may be risky"
   },
   "transactionNote": {

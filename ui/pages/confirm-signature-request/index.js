@@ -25,6 +25,7 @@ import {
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { getSendTo } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
+import { useSignatureInsights } from '../../hooks/useSignatureInsights';
 
 const signatureSelect = (txData, targetSubjectMetadata) => {
   const {
@@ -73,6 +74,23 @@ const ConfirmTxScreen = ({ match }) => {
 
   const [prevValue, setPrevValues] = useState();
   const history = useHistory();
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
+  useState(false);
+  const { data } = useSignatureInsights();
+
+  const warnings = data?.reduce((warningsArr, promise) => {
+    if (promise.response?.severity === SeverityLevel.Critical) {
+      const {
+        snapId,
+        response: { content },
+      } = promise;
+      warningsArr.push({ snapId, content });
+    }
+    return warningsArr;
+  }, []);
+  ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
     const unconfTxList = txHelper(
@@ -201,17 +219,36 @@ const ConfirmTxScreen = ({ match }) => {
   const SigComponent = signatureSelect(txData, targetSubjectMetadata);
 
   return (
-    <SigComponent
-      history={history}
-      txData={txData}
-      key={txData.id}
-      identities={identities}
-      currentCurrency={currentCurrency}
-      blockGasLimit={blockGasLimit}
-      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-      selectedAccount={selectedAccount}
-      ///: END:ONLY_INCLUDE_IF
-    />
+    <>
+      <SigComponent
+        history={history}
+        txData={txData}
+        key={txData.id}
+        identities={identities}
+        currentCurrency={currentCurrency}
+        blockGasLimit={blockGasLimit}
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+        selectedAccount={selectedAccount}
+        ///: END:ONLY_INCLUDE_IF
+      />
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      }
+      {isShowingSigInsightWarnings && (
+        <InsightWarnings
+          warnings={warnings}
+          origin={origin}
+          onCancel={() => setIsShowingSigInsightWarnings(false)}
+          onSubmit={() => {
+            handleSubmit();
+            setIsShowingSigInsightWarnings(false);
+          }}
+        />
+      )}
+      {
+        ///: END:ONLY_INCLUDE_IF
+      }
+    </>
   );
 };
 
