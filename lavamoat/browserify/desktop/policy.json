@@ -476,9 +476,9 @@
       },
       "packages": {
         "@ngraveio/bc-ur": true,
+        "@swc/helpers>tslib": true,
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true,
-        "mockttp>graphql-tag>tslib": true
+        "ethereumjs-util>ethereum-cryptography>bs58check": true
       }
     },
     "@keystonehq/bc-ur-registry-eth>hdkey": {
@@ -1446,7 +1446,7 @@
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect": true,
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/utils": true,
-        "mockttp>graphql-tag>tslib": true,
+        "@swc/helpers>tslib": true,
         "webpack>events": true
       }
     },
@@ -1462,7 +1462,7 @@
       },
       "packages": {
         "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": true,
-        "mockttp>graphql-tag>tslib": true
+        "@swc/helpers>tslib": true
       }
     },
     "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport": {
@@ -2897,6 +2897,11 @@
         "string.prototype.matchall>side-channel": true
       }
     },
+    "@swc/helpers>tslib": {
+      "globals": {
+        "define": true
+      }
+    },
     "@truffle/codec": {
       "packages": {
         "@truffle/codec>@truffle/abi-utils": true,
@@ -3954,7 +3959,7 @@
         "setTimeout": true
       },
       "packages": {
-        "mockttp>graphql-tag>tslib": true
+        "@swc/helpers>tslib": true
       }
     },
     "eth-keyring-controller>@metamask/browser-passworder": {
@@ -4609,11 +4614,6 @@
         "Intl": true
       }
     },
-    "mockttp>graphql-tag>tslib": {
-      "globals": {
-        "define": true
-      }
-    },
     "nanoid": {
       "globals": {
         "crypto": true,
@@ -4830,7 +4830,7 @@
         "setTimeout": true
       },
       "packages": {
-        "mockttp>graphql-tag>tslib": true
+        "@swc/helpers>tslib": true
       }
     },
     "react-focus-lock>react-clientside-effect": {
@@ -4849,7 +4849,7 @@
         "console.error": true
       },
       "packages": {
-        "mockttp>graphql-tag>tslib": true,
+        "@swc/helpers>tslib": true,
         "react": true,
         "react-focus-lock>use-sidecar>detect-node-es": true
       }
