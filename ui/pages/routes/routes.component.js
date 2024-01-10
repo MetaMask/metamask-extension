@@ -293,11 +293,7 @@ export default class Routes extends Component {
           path={`${CONFIRM_TRANSACTION_ROUTE}/:id?`}
           component={ConfirmTransaction}
         />
-        <Authenticated
-          path={SEND_ROUTE}
-          component={SendPage}
-          exact
-        />
+        <Authenticated path={SEND_ROUTE} component={SendPage} exact />
         <Authenticated
           path={`${TOKEN_DETAILS}/:address/`}
           component={TokenDetailsPage}
