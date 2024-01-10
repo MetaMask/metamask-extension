@@ -787,17 +787,9 @@
         "console.info": true
       },
       "packages": {
-        "@metamask/approval-controller>@metamask/base-controller": true,
         "@metamask/approval-controller>nanoid": true,
-        "eth-rpc-errors": true
-      }
-    },
-    "@metamask/approval-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
+        "@metamask/base-controller": true,
+        "@metamask/providers>@metamask/rpc-errors": true
       }
     },
     "@metamask/approval-controller>nanoid": {
@@ -812,6 +804,7 @@
         "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console.error": true,
         "console.log": true,
         "setInterval": true,
         "setTimeout": true
@@ -1446,30 +1439,9 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/name-controller>@metamask/base-controller": true,
-        "@metamask/name-controller>@metamask/utils": true,
+        "@metamask/base-controller": true,
+        "@metamask/utils": true,
         "eth-json-rpc-filters>async-mutex": true
-      }
-    },
-    "@metamask/name-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/name-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/network-controller": {
@@ -1907,6 +1879,7 @@
         "fetch": true
       },
       "packages": {
+        "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-sdk>is-svg": true,
         "@metamask/utils": true,
         "superstruct": true

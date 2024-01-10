@@ -124,7 +124,8 @@ export default function NftDetails({ nft }) {
   };
 
   const openSeaLink = getOpenSeaLink();
-  const sendDisabled = standard !== TokenStandard.ERC721;
+  const sendDisabled =
+    standard !== TokenStandard.ERC721 && standard !== TokenStandard.ERC1155;
   const inPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const onSend = async () => {

@@ -151,6 +151,20 @@ describe('NFT Details', () => {
     expect(nftSendButton).not.toBeInTheDocument();
   });
 
+  it('should render send button if it is an ERC1155', () => {
+    const nftProps = {
+      nft: nfts[1],
+    };
+    const { queryByTestId } = renderWithProvider(
+      <NftDetails {...nftProps} />,
+      mockStore,
+    );
+
+    const nftSendButton = queryByTestId('nft-send-button');
+
+    expect(nftSendButton).not.toBeDisabled();
+  });
+
   describe(`Alternative Networks' OpenSea Links`, () => {
     it('should open opeasea link with goeli testnet chainId', async () => {
       global.platform = { openTab: jest.fn() };

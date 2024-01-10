@@ -3142,10 +3142,6 @@
   "portfolioDashboard": {
     "message": "Portföy Kontrol Paneli"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Tercih Edilen Ledger bağlantı türü",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Swap hazırlanıyor..."
   },

@@ -3146,10 +3146,6 @@
   "portfolioDashboard": {
     "message": "Painel do portfólio"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Tipo de conexão preferencial com o Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Preparando troca..."
   },

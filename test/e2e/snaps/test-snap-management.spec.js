@@ -23,7 +23,7 @@ describe('Test Snap Management', function () {
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
 
-        // find and scroll to the correct card and click first
+        // find and scroll to the notifications card and click first
         const snapButton = await driver.findElement('#connectnotifications');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);
@@ -121,7 +121,10 @@ describe('Test Snap Management', function () {
           css: '[data-testid="global-menu-notification-count"]',
           text: '1',
         });
-        await driver.clickElement('.menu__background');
+        // this click will close the menu
+        await driver.clickElement(
+          '[data-testid="account-options-menu-button"]',
+        );
 
         // try to remove snap
         await driver.clickElement({
