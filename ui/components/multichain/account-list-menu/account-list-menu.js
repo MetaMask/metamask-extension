@@ -73,7 +73,7 @@ const ACTION_MODES = {
  * @param internalAccounts - internal accounts
  * @returns merged accounts list with balances and internal account data
  */
-const mergeAccounts = (accountsWithBalances, internalAccounts) => {
+export const mergeAccounts = (accountsWithBalances, internalAccounts) => {
   return accountsWithBalances.map((account) => {
     const internalAccount = internalAccounts.find(
       (intAccount) => intAccount.address === account.address,
