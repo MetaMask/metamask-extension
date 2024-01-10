@@ -3828,9 +3828,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/assets-controllers@npm:^23.0.0":
-  version: 23.1.0
-  resolution: "@metamask/assets-controllers@npm:23.1.0"
+"@metamask/assets-controllers@npm:^24.0.0":
+  version: 24.0.0
+  resolution: "@metamask/assets-controllers@npm:24.0.0"
   dependencies:
     "@ethersproject/address": "npm:^5.7.0"
     "@ethersproject/bignumber": "npm:^5.7.0"
@@ -3845,7 +3845,7 @@ __metadata:
     "@metamask/metamask-eth-abis": "npm:3.0.0"
     "@metamask/network-controller": "npm:^17.1.0"
     "@metamask/polling-controller": "npm:^4.0.0"
-    "@metamask/preferences-controller": "npm:^5.0.1"
+    "@metamask/preferences-controller": "npm:^6.0.0"
     "@metamask/rpc-errors": "npm:^6.1.0"
     "@metamask/utils": "npm:^8.2.0"
     "@types/uuid": "npm:^8.3.0"
@@ -3859,8 +3859,8 @@ __metadata:
   peerDependencies:
     "@metamask/approval-controller": ^5.1.1
     "@metamask/network-controller": ^17.1.0
-    "@metamask/preferences-controller": ^5.0.1
-  checksum: 2aae427b6a63c20f9521b20b47c2b3b8771eaa35fbcf4c66b36a263eb12bee62484238ae4c34551020254b0f2c0eb9ead26a47051eb16d696abaff830a357af9
+    "@metamask/preferences-controller": ^6.0.0
+  checksum: f9c857e26e04ca8463421434fad3096161d24e776da85c136689ac93a402f9cdafc175c8bd11b64a93d0d38d54109a541fedfee0d93b9e7eb1e1372904b68694
   languageName: node
   linkType: hard
 
@@ -4754,13 +4754,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/preferences-controller@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "@metamask/preferences-controller@npm:5.0.1"
+"@metamask/preferences-controller@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "@metamask/preferences-controller@npm:6.0.0"
   dependencies:
     "@metamask/base-controller": "npm:^4.0.1"
     "@metamask/controller-utils": "npm:^8.0.1"
-  checksum: 393088eff97375a70d197627ee45bdca681253c397da96005784b0aecb0611762c899594471158af9403feef6587d2a1e92a85ca5010369f65ddd3af782e5c7c
+  checksum: 963df49ff9f79204586ee38873823d11d4c75587212e0a9c8c835f9fbdbbaeadebe34fe635d36b3e9cb3d3cf9f4ecf3ddc0fec6ec366284294b01b2420cde895
   languageName: node
   linkType: hard
 
@@ -24633,7 +24633,7 @@ __metadata:
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^4.0.0"
     "@metamask/approval-controller": "npm:^5.1.0"
-    "@metamask/assets-controllers": "npm:^23.0.0"
+    "@metamask/assets-controllers": "npm:^24.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
     "@metamask/base-controller": "npm:^4.0.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
