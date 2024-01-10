@@ -3,14 +3,14 @@
   transition: background-color background 0.2s;
 
   & .show-more__button {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative) 33%);
+    background: linear-gradient(90deg, var(--color-background-alternative) 0%, var(--color-background-alternative) 33%);
   }
 
   &:hover {
     background-color: var(--color-background-alternative-hover);
 
     & .show-more__button {
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative-hover) 33%);
+      background: linear-gradient(90deg, var(--color-background-alternative-hover) 0%, var(--color-background-alternative-hover) 33%);
     }
   }
 
@@ -18,14 +18,14 @@
     background-color: var(--color-background-alternative-pressed);
 
     & .show-more__button {
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative-pressed) 33%);
+      background: linear-gradient(90deg, var(--color-background-alternative-pressed) 0%, var(--color-background-alternative-pressed) 33%);
     }
 
     &:hover {
       background-color: var(--color-background-alternative-pressed);
 
       & .show-more__button {
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative-pressed) 33%);
+        background: linear-gradient(90deg, var(--color-background-alternative-pressed) 0%, var(--color-background-alternative-pressed) 33%);
       }
     }
   }
