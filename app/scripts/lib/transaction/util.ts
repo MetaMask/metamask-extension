@@ -42,7 +42,11 @@ export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
   const { dappRequest } = request;
-  const { id: actionId, method, origin, securityAlertResponse } = dappRequest;
+  const { id: actionId, method, origin } = dappRequest;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  const securityAlertResponse = { dappRequest };
+  ///: END:ONLY_INCLUDE_IF
 
   const transactionOptions: AddTransactionOptions = {
     actionId,
@@ -53,7 +57,7 @@ export async function addDappTransaction(
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     securityAlertResponse,
     ///: END:ONLY_INCLUDE_IF
-  };
+  } as any;
 
   const { waitForHash } = await addTransactionOrUserOperation({
     ...request,
