@@ -485,29 +485,26 @@ export default class ConfirmTransactionBase extends Component {
           disabled={isDisabled()}
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           rows={[
-            !renderSimulationFailureWarning && (
-              <TransactionDetailItem
-                key="confirm-transaction-base-total-item"
-                detailTitle={t('total')}
-                detailText={
-                  useCurrencyRateCheck &&
-                  renderTotalDetailText(getTotalAmount())
-                }
-                detailTotal={renderTotalMaxAmount(true)}
-                subTitle={t('transactionDetailGasTotalSubtitle')}
-                subText={
-                  <div className="confirm-page-container-content__total-amount">
-                    <LoadingHeartBeat
-                      estimateUsed={this.props.txData?.userFeeLevel}
-                    />
-                    <strong key="editGasSubTextAmountLabel">
-                      {t('editGasSubTextAmountLabel')}
-                    </strong>{' '}
-                    {renderTotalMaxAmount(true)}
-                  </div>
-                }
-              />
-            ),
+            <TransactionDetailItem
+              key="confirm-transaction-base-total-item"
+              detailTitle={t('total')}
+              detailText={
+                useCurrencyRateCheck && renderTotalDetailText(getTotalAmount())
+              }
+              detailTotal={renderTotalMaxAmount(true)}
+              subTitle={t('transactionDetailGasTotalSubtitle')}
+              subText={
+                <div className="confirm-page-container-content__total-amount">
+                  <LoadingHeartBeat
+                    estimateUsed={this.props.txData?.userFeeLevel}
+                  />
+                  <strong key="editGasSubTextAmountLabel">
+                    {t('editGasSubTextAmountLabel')}
+                  </strong>{' '}
+                  {renderTotalMaxAmount(true)}
+                </div>
+              }
+            />,
           ]}
         />
         {nonceField}
