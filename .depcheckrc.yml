@@ -60,6 +60,21 @@ ignores:
   - 'resolve-url-loader'
   # jest environments
   - 'jest-environment-jsdom'
+  # webpack
+  - '@pmmmwh/react-refresh-webpack-plugin'
+  - '@swc/helpers'
+  - 'browserify-aes'
+  - 'buffer'
+  - 'crypto-browserify'
+  - 'html-bundler-webpack-plugin'
+  - 'json-schema-to-ts'
+  - 'os-browserify'
+  - 'postcss-loader'
+  - 'process'
+  - 'stream-http'
+  - 'vm-browserify'
+  - 'webpack-cli'
+  - 'webpack-dev-server'
 
 # files depcheck should not parse
 ignorePatterns:
