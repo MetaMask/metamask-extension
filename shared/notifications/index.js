@@ -494,7 +494,7 @@ export const getTranslatedUINotifications = (t, locale) => {
         t('notificationsBlockaidDefaultDescriptionTwo'),
         t('notificationsBlockaidDefaultDescriptionThree'),
       ],
-      actionText: t('gotIt'),
+      actionText: t('notificationsBlockaidDefaultDescriptionThreeActionText'),
       date: UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
             new Date(UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date),

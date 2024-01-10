@@ -3074,6 +3074,9 @@
   "notificationsBlockaidDefaultDescriptionThree": {
     "message": "Only on Ethereum Mainnet. More networks available soon."
   },
+  "notificationsBlockaidDefaultDescriptionThreeActionText": {
+    "message": "Got it"
+  },
   "notificationsBlockaidDefaultDescriptionTwo": {
     "message": "Always do your own due diligence before approving requests."
   },
