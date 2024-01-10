@@ -89,14 +89,13 @@ export default function Name({
         onClick={handleClick}
       >
         <Icon name={iconName} className="name__icon" size={IconSize.Lg} />
-        {!hasName && (
-          <Text className="name__value" variant={TextVariant.bodyMd}>
-            {formattedValue}
-          </Text>
-        )}
-        {hasName && (
+        {hasName ? (
           <Text className="name__name" variant={TextVariant.bodyMd}>
             {name}
+          </Text>
+        ) : (
+          <Text className="name__value" variant={TextVariant.bodyMd}>
+            {formattedValue}
           </Text>
         )}
       </div>
