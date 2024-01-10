@@ -13,7 +13,6 @@ import {
   setFeatureFlag,
   setShowFiatConversionOnTestnetsPreference,
   setShowTestNetworks,
-  setPetnamesEnabled,
   setUseNonceField,
   showModal,
 } from '../../../store/actions';
@@ -34,7 +33,6 @@ export const mapStateToProps = (state) => {
     showFiatInTestnets,
     showTestNetworks,
     autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT,
-    petnamesEnabled = true,
   } = getPreferences(state);
 
   return {
@@ -46,7 +44,6 @@ export const mapStateToProps = (state) => {
     useNonceField,
     dismissSeedBackUpReminder,
     disabledRpcMethodPreferences,
-    petnamesEnabled,
   };
 };
 
@@ -66,9 +63,6 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setShowTestNetworks: (value) => {
       return dispatch(setShowTestNetworks(value));
-    },
-    setPetnamesEnabled: (value) => {
-      return dispatch(setPetnamesEnabled(value));
     },
     setAutoLockTimeLimit: (value) => {
       return dispatch(setAutoLockTimeLimit(value));

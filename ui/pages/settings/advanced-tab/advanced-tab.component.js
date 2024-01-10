@@ -60,8 +60,6 @@ export default class AdvancedTab extends PureComponent {
     disabledRpcMethodPreferences: PropTypes.shape({
       eth_sign: PropTypes.bool.isRequired,
     }),
-    petnamesEnabled: PropTypes.bool.isRequired,
-    setPetnamesEnabled: PropTypes.func.isRequired,
   };
 
   state = {
@@ -331,39 +329,6 @@ export default class AdvancedTab extends PureComponent {
           <ToggleButton
             value={showTestNetworks}
             onToggle={(value) => setShowTestNetworks(!value)}
-            offLabel={t('off')}
-            onLabel={t('on')}
-          />
-        </div>
-      </Box>
-    );
-  }
-
-  renderTogglePetnames() {
-    const { t } = this.context;
-    const { petnamesEnabled, setPetnamesEnabled } = this.props;
-
-    return (
-      <Box
-        ref={this.settingsRefs[4]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-show-testnet-conversion"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
-      >
-        <div className="settings-page__content-item">
-          <span>{t('petnamesEnabledToggle')}</span>
-          <div className="settings-page__content-description">
-            {t('petnamesEnabledToggleDescription')}
-          </div>
-        </div>
-
-        <div className="settings-page__content-item-col">
-          <ToggleButton
-            value={petnamesEnabled}
-            onToggle={(value) => setPetnamesEnabled(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
           />

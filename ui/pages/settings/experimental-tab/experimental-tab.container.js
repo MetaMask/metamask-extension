@@ -10,6 +10,7 @@ import {
   setAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   setUseRequestQueue,
+  setPetnamesEnabled,
 } from '../../../store/actions';
 import {
   getIsTransactionSecurityCheckEnabled,
@@ -20,10 +21,12 @@ import {
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   getUseRequestQueue,
+  getPetnamesEnabled,
 } from '../../../selectors';
 import ExperimentalTab from './experimental-tab.component';
 
 const mapStateToProps = (state) => {
+  const petnamesEnabled = getPetnamesEnabled(state);
   return {
     transactionSecurityCheckEnabled:
       getIsTransactionSecurityCheckEnabled(state),
@@ -36,6 +39,7 @@ const mapStateToProps = (state) => {
     addSnapAccountEnabled: getIsAddSnapAccountEnabled(state),
     ///: END:ONLY_INCLUDE_IF
     useRequestQueue: getUseRequestQueue(state),
+    petnamesEnabled,
   };
 };
 
@@ -51,6 +55,9 @@ const mapDispatchToProps = (dispatch) => {
     setAddSnapAccountEnabled: (val) => setAddSnapAccountEnabled(val),
     ///: END:ONLY_INCLUDE_IF
     setUseRequestQueue: (val) => dispatch(setUseRequestQueue(val)),
+    setPetnamesEnabled: (value) => {
+      return dispatch(setPetnamesEnabled(value));
+    },
   };
 };
 
