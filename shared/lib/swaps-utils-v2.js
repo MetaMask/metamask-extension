@@ -176,9 +176,6 @@ export async function fetchQuotesInfoV2(
   if (exchangeList) {
     urlParams.exchangeList = exchangeList;
   }
-  if (shouldEnableDirectWrapping(chainId, sourceToken, destinationToken)) {
-    urlParams.enableDirectWrapping = true;
-  }
 
   const queryString = new URLSearchParams(urlParams).toString();
   const tradeURL = `${getBaseApi('quote', chainId)}${queryString}`;
