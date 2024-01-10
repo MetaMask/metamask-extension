@@ -50,7 +50,7 @@ describe('Send ETH', function () {
           await driver.assertElementNotPresent('.send-v2__error-amount');
 
           const amountMax = await driver.findClickableElement(
-            '.send-v2__amount-max',
+            '[data-testid="max-clear-button"]',
           );
           await amountMax.click();
 
