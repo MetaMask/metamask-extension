@@ -310,6 +310,7 @@ export default function NameDetails({
           >
             {t('nameLabel')}
             <FormComboField
+              hideDropdownIfNoOptions
               value={name}
               options={proposedNameOptions}
               placeholder={t('nameSetPlaceholder')}

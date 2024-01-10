@@ -19,6 +19,9 @@ export interface FormComboFieldOption {
 }
 
 export interface FormComboFieldProps {
+  /** Whether to hide the 'no option' when there are no options to display. */
+  hideDropdownIfNoOptions?: boolean;
+
   /** The maximum height of the dropdown in pixels. */
   maxDropdownHeight?: number;
 
@@ -81,16 +84,21 @@ function Option({
 }
 
 function Dropdown({
+  hideDropdownIfNoOptions,
   maxDropdownHeight,
+  noOptionsText,
   onOptionClick,
   options,
   width,
 }: {
+  hideDropdownIfNoOptions: boolean;
   maxDropdownHeight?: number;
+  noOptionsText?: string;
   onOptionClick: (option?: FormComboFieldOption) => void;
   options: FormComboFieldOption[];
   width: number;
 }) {
+  const t = useContext(I18nContext);
   const ref = useRef<any>();
   const maxHeight = maxDropdownHeight ?? 179;
   const [dropdownHeight, setDropdownHeight] = useState(0);
@@ -108,6 +116,12 @@ function Dropdown({
         'form-combo-field__dropdown__scroll': dropdownHeight > maxHeight,
       })}
     >
+      {options.length === 0 && !hideDropdownIfNoOptions && (
+        <Option
+          option={{ primaryLabel: noOptionsText ?? t('comboNoOptions') }}
+          onClick={() => onOptionClick(undefined)}
+        />
+      )}
       {options.map((option, index) => (
         <Option
           key={index}
@@ -122,7 +136,9 @@ function Dropdown({
 }
 
 export default function FormComboField({
+  hideDropdownIfNoOptions = false,
   maxDropdownHeight,
+  noOptionsText,
   onChange,
   onOptionClick,
   options,
@@ -212,7 +228,9 @@ export default function FormComboField({
       </div>
       {dropdownVisible && (
         <Dropdown
+          hideDropdownIfNoOptions={hideDropdownIfNoOptions}
           maxDropdownHeight={maxDropdownHeight}
+          noOptionsText={noOptionsText}
           onOptionClick={handleOptionClick}
           options={options}
           width={valueWidth}
