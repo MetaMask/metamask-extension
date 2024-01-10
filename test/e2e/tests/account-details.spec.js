@@ -1,5 +1,5 @@
-const { LavaDomeDebug } = require('@lavamoat/lavadome-core');
 const { strict: assert } = require('assert');
+const { LavaDomeDebug } = require('@lavamoat/lavadome-core');
 const {
   defaultGanacheOptions,
   withFixtures,
