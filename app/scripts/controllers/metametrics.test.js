@@ -1031,6 +1031,7 @@ describe('MetaMetricsController', function () {
         securityAlertsEnabled: true,
         theme: 'default',
         useTokenDetection: true,
+        useNativeCurrencyAsPrimaryCurrency: false,
         desktopEnabled: false,
         security_providers: [],
         names: {
@@ -1086,6 +1087,7 @@ describe('MetaMetricsController', function () {
         [MetaMetricsUserTrait.ThreeBoxEnabled]: false,
         [MetaMetricsUserTrait.Theme]: 'default',
         [MetaMetricsUserTrait.TokenDetectionEnabled]: true,
+        [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]: false,
         [MetaMetricsUserTrait.DesktopEnabled]: false,
         [MetaMetricsUserTrait.SecurityProviders]: ['blockaid'],
         ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
