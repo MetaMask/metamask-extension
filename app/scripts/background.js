@@ -935,11 +935,28 @@ async function triggerUi() {
     tabs.length > 0 &&
     tabs[0].extData &&
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
-  if (
+
+  let shouldTriggerUi =
     !uiIsTriggering &&
     (isVivaldi || !popupIsOpen) &&
-    !currentlyActiveMetamaskTab
+    !currentlyActiveMetamaskTab;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  const FORCE_OPEN_APPROVALS = [
+    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+  ];
+  const currentPendingApproval = Object.values(
+    controller.approvalController.state.pendingApprovals,
+  )[0];
+  if (
+    currentPendingApproval &&
+    FORCE_OPEN_APPROVALS.includes(currentPendingApproval?.type)
   ) {
+    shouldTriggerUi = true;
+  }
+  ///: END:ONLY_INCLUDE_IF
+
+  if (shouldTriggerUi) {
     uiIsTriggering = true;
     try {
       const currentPopupId = controller.appStateController.getCurrentPopupId();
