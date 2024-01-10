@@ -180,7 +180,8 @@ export default function SortList({
                   },
                 )}
               >
-                {quoteSource}
+                {/* TODO remove aggId */}
+                {quoteSource} {aggId}
               </div>
             </div>
             <div
