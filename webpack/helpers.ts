@@ -39,6 +39,8 @@ export const getMetaMaskVersion = (): SemVerVersion => {
  * @throws Throws an error if `process.env` is invalid or missing required fields.
  */
 export const mergeEnv = (userEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv => {
+  // TODO: throw this whole function in the trash and import env vars the way
+  // the gulp build system does it.
   let env: NodeJS.ProcessEnv = {};
   try {
     const rawConfig = readFileSync(join(__dirname, '../.metamaskrc'));
@@ -48,8 +50,10 @@ export const mergeEnv = (userEnv: NodeJS.ProcessEnv): NodeJS.ProcessEnv => {
     env.INFURA_PROJECT_ID = '00000000000000000000000000000000';
   }
 
-  env.PPOM_URI = `new URL('@blockaid/ppom_release/ppom_bg.wasm', import.meta.url)`;
   env.METAMASK_VERSION = getMetaMaskVersion();
+  env.BLOCKAID_FILE_CDN = 'static.metafi.codefi.network/api/v1/confirmations/ppom';
+  env.BLOCKAID_PUBLIC_KEY = '066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88';
+  env.SUPPORT_LINK = "https://support.metamask.io";
   env.METAMASK_DEBUG;
 
   // TODO: these should be dynamic somehow

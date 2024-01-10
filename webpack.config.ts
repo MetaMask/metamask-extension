@@ -3,7 +3,6 @@ import { join, resolve } from 'node:path';
 import webpack, {
   type Configuration,
   type WebpackPluginInstance,
-  DefinePlugin,
   ProvidePlugin,
 } from 'webpack';
 import CopyPlugin from 'copy-webpack-plugin';
@@ -81,6 +80,7 @@ function getSwcLoader(
   syntax: 'typescript' | 'ecmascript',
   enableJsx: boolean,
   config: ReturnType<typeof parseArgv>['config'],
+  envs: Record<string, string> = {},
 ) {
   return {
     loader: require.resolve('webpack/loaders/swcLoader'),
@@ -89,11 +89,17 @@ function getSwcLoader(
         targets: readFileSync('./.browserslistrc', 'utf-8'),
       },
       jsc: {
+        externalHelpers: true,
         transform: {
           react: {
             development: config.env === 'development',
             refresh: HMR_READY && config.env === 'development' && config.watch,
           },
+          optimizer: {
+            globals: {
+              envs
+            }
+          }
         },
         parser:
           syntax === 'typescript'
@@ -118,8 +124,13 @@ const BROWSER = config.browser[0] as Browser;
 const NAME = 'MetaMask';
 const DESCRIPTION = `MetaMask ${BROWSER} Extension`;
 // TODO: figure out what build.yml's env vars are doing and them do the merge
-// stuff.
+// stuff. Also, fix all this crappy ENV code.
 const ENV = mergeEnv({});
+const envsStringified = Object.entries(ENV).reduce((acc: Record<string, string>, [key, val]) => {
+  acc[`${key}`] = JSON.stringify(val);
+  return acc;
+  // PPOM_URI is only here because the gulp build process doesn't understand `import.meta.url`
+}, { "PPOM_URI": `new URL('@blockaid/ppom_release/ppom_bg.wasm', import.meta.url)` })
 
 const plugins: WebpackPluginInstance[] = [
   new HtmlBundlerPlugin({
@@ -155,14 +166,7 @@ const plugins: WebpackPluginInstance[] = [
         },
       },
     ],
-  }),
-  new DefinePlugin(
-    // replace `process.env.*` with the values from `ENV`
-    Object.entries(ENV).reduce((acc: Record<string, string>, [key, val]) => {
-      acc[`process.env.${key}`] = JSON.stringify(val);
-      return acc;
-    }, {}),
-  ),
+  })
 ];
 
 // enable React Refresh in 'development' mode when `watch` is enabled
@@ -230,7 +234,7 @@ const webpackOptions = {
       path: require.resolve('path-browserify'),
       vm: require.resolve('vm-browserify'),
       os: require.resolve('os-browserify/browser'),
-      crypto: require.resolve('./webpack/polyfills/browser-crypto'),
+      crypto: require.resolve('crypto-browserify'),
       // #endregion node polyfills
     },
 
@@ -321,13 +325,13 @@ const webpackOptions = {
       {
         test: /\.(ts|mts|tsx)$/u,
         exclude: /node_modules/u,
-        use: [getSwcLoader('typescript', true, config), codeFenceLoader],
+        use: [getSwcLoader('typescript', true, config, envsStringified), codeFenceLoader],
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(js|mjs|jsx)$/u,
         exclude: /node_modules/u,
-        use: [getSwcLoader('ecmascript', true, config), codeFenceLoader],
+        use: [getSwcLoader('ecmascript', true, config, envsStringified), codeFenceLoader],
       },
       // vendor javascript
       {
@@ -337,7 +341,7 @@ const webpackOptions = {
           // ESM is the worst thing to happen to JavaScript since JavaScript.
           fullySpecified: false,
         },
-        use: [getSwcLoader('ecmascript', false, config)],
+        use: [getSwcLoader('ecmascript', false, config, envsStringified)],
       },
       // css, sass/scss
       {

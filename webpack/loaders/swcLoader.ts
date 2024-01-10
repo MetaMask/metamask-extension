@@ -2,7 +2,8 @@ import type { LoaderContext } from 'webpack';
 import type { JSONSchema7 } from 'schema-utils/declarations/validate';
 import type { FromSchema } from 'json-schema-to-ts';
 import { validate } from 'schema-utils';
-import { transform } from '@swc/core';
+import { transform, type Options } from '@swc/core';
+import { satisfies } from 'semver';
 
 // the schema here is limited to only the options we actually use
 // there are loads more options available to SWC we could add.
@@ -23,9 +24,50 @@ const schema = {
     jsc: {
       type: 'object',
       properties: {
+        externalHelpers: {
+          type: "boolean",
+          default: false
+        },
         transform: {
           type: 'object',
           properties: {
+            optimizer: {
+              type: 'object',
+              properties: {
+                globals: {
+                  description: "",
+                  type: 'object',
+                  properties: {
+                    envs: {
+                      description: "Replaces environment variables (`if (process.env.DEBUG) `) with specified values/expressions at compile time.",
+                      anyOf: [
+                        {
+                          type: "array",
+                          items: {
+                            type: "string"
+                          }
+                        },
+                        {
+                          type: "object",
+                          additionalProperties: {
+                            type: "string"
+                          }
+                        }
+                      ],
+                    },
+                    vars: {
+                      description: "Replaces variables `if(__DEBUG__){}` with specified values/expressions at compile time.",
+                      type: "object",
+                      additionalProperties: {
+                        type: "string"
+                      }
+                    },
+                  },
+                  additionalProperties: false,
+                },
+              },
+              additionalProperties: false,
+            },
             react: {
               description: 'Effective only if `syntax` supports ƒ.',
               type: 'object',
@@ -91,7 +133,7 @@ const schema = {
   additionalProperties: false,
 } as const satisfies JSONSchema7;
 
-export type SwcLoaderOptions = FromSchema<typeof schema>;
+export type SwcLoaderOptions = FromSchema<typeof schema, { keepDefaultedPropertiesOptional: true }>;
 
 const configuration = {
   name: swcLoader.name,
@@ -108,11 +150,14 @@ export default function swcLoader(
   const filename = this.resourcePath;
   const swcOptions = {
     ...options,
+    envName: this.mode,
     filename,
     inputSourceMap,
     sourceMaps: this.sourceMap,
     sourceFileName: filename,
-  };
+    // TODO: remove cast when swc's `Options` type is fixed
+    // see: https://github.com/swc-project/swc/issues/8494
+  } as Options;
 
   const callback = this.async();
   transform(source, swcOptions).then(
