@@ -10,7 +10,10 @@
     },
     "AnnouncementController": { "announcements": "object" },
     "NetworkOrderController": { "orderedNetworkList": {} },
-    "AccountOrderController": { "pinnedAccountList": {} },
+    "AccountOrderController": {
+      "pinnedAccountList": {},
+      "hiddenAccountList": {}
+    },
     "AppStateController": {
       "browserEnvironment": {},
       "nftsDropdownState": {},
