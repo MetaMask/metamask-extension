@@ -1,0 +1,15 @@
+diff --git a/lib/webdriver.js b/lib/webdriver.js
+index b8d7bca7adff15c399027c91372176afd06c17eb..579f4bb1d03c8d17b33499bb7eaa862f3fd02a1b 100755
+--- a/lib/webdriver.js
++++ b/lib/webdriver.js
+@@ -1435,7 +1435,10 @@ class WebDriver {
+    */
+   async onLogEvent(connection, callback) {
+     this._wsConnection.on('message', (message) => {
++      console.log('onLogEvent message', message)
+       const params = JSON.parse(message)
++      console.log('onLogEvent params', params)
++      console.log('onLogEvent params', params && params.params && params.params.stackTrace && params.params.stackTrace.callFrames)
+       if (params.method === 'Runtime.consoleAPICalled') {
+         const consoleEventParams = params['params']
+         let event = {

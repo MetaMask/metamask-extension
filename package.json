@@ -550,7 +550,7 @@
     "resolve-url-loader": "^3.1.5",
     "sass": "^1.32.4",
     "sass-loader": "^10.1.1",
-    "selenium-webdriver": "^4.15.0",
+    "selenium-webdriver": "patch:selenium-webdriver@npm%3A4.15.0#~/.yarn/patches/selenium-webdriver-npm-4.15.0-0c3a933190.patch",
     "semver": "^7.5.4",
     "serve-handler": "^6.1.2",
     "sinon": "^9.0.0",

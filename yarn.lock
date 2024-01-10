@@ -24608,7 +24608,7 @@ __metadata:
     resolve-url-loader: "npm:^3.1.5"
     sass: "npm:^1.32.4"
     sass-loader: "npm:^10.1.1"
-    selenium-webdriver: "npm:^4.15.0"
+    selenium-webdriver: "patch:selenium-webdriver@npm%3A4.15.0#~/.yarn/patches/selenium-webdriver-npm-4.15.0-0c3a933190.patch"
     semver: "npm:^7.5.4"
     serve-handler: "npm:^6.1.2"
     ses: "npm:^0.18.8"
@@ -30694,7 +30694,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"selenium-webdriver@npm:^4.15.0":
+"selenium-webdriver@npm:4.15.0":
   version: 4.15.0
   resolution: "selenium-webdriver@npm:4.15.0"
   dependencies:
@@ -30702,6 +30702,17 @@ __metadata:
     tmp: "npm:^0.2.1"
     ws: "npm:>=8.14.2"
   checksum: 77c0c3b250e04a7eea70aa4edad3abbe9f4683fac29c6bc0fb365423c986de657bc6a174e25e8a679f32ff9be39fdd397c84d60168dafefb621f18b04031f0e3
+  languageName: node
+  linkType: hard
+
+"selenium-webdriver@patch:selenium-webdriver@npm%3A4.15.0#~/.yarn/patches/selenium-webdriver-npm-4.15.0-0c3a933190.patch":
+  version: 4.15.0
+  resolution: "selenium-webdriver@patch:selenium-webdriver@npm%3A4.15.0#~/.yarn/patches/selenium-webdriver-npm-4.15.0-0c3a933190.patch::version=4.15.0&hash=179ff7"
+  dependencies:
+    jszip: "npm:^3.10.1"
+    tmp: "npm:^0.2.1"
+    ws: "npm:>=8.14.2"
+  checksum: d12216f84a0db0955341494b6a65eb38a8d17a4bbfb251034f2e0102864f416e3ba17140a86d310234ae918500b5541ecd46586f7011ec99a610d98926c8e89e
   languageName: node
   linkType: hard
 
