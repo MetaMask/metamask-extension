@@ -1,5 +1,8 @@
 {
-  "AccountOrderController": { "pinnedAccountList": {} },
+  "AccountOrderController": {
+    "pinnedAccountList": {},
+    "hiddenAccountList": {}
+  },
   "AccountTracker": {
     "accounts": "object",
     "accountsByChainId": "object"
