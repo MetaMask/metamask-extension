@@ -74,6 +74,7 @@ import {
   ModalContentSize,
   ModalHeader,
   ModalBody,
+  ModalFooter,
 } from '../../component-library';
 
 <ModalContent size={ModalContentSize.Sm}>
@@ -83,6 +84,7 @@ import {
   <ModalBody>
     <Text marginBottom={4}>This ModalContent is using size: sm</Text>
   </ModalBody>
+  <ModalFooter onSubmit={handleOnClose}>
 </ModalContent>;
 
 <ModalContent size={ModalContentSize.Md}>
@@ -97,6 +99,7 @@ import {
     This ModalContent is using size: lg
   </ModalHeader>
   <Text marginBottom={4}>This ModalContent is using size: lg</Text>
+  <ModalFooter onSubmit={handleOnClose}>
 </ModalContent>;
 
 /* Using a className
@@ -112,5 +115,6 @@ import {
     This ModalContent has size set using modalDialogProps and adding a className
     setting a max width (max-width: 800px)
   </Text>
+  <ModalFooter onSubmit={handleOnClose}>
 </ModalContent>;
 ```
