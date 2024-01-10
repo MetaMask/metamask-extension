@@ -581,6 +581,7 @@ class Driver {
     const { exceptions } = this;
     const cdpConnection = await this.driver.createCDPConnection('page');
     await this.driver.onLogException(cdpConnection, (exception) => {
+      console.log('checkBrowserForExceptions exception', exception)
       const { description } = exception.exceptionDetails.exception;
       exceptions.push(description);
       logBrowserError(failOnConsoleError, description);
@@ -613,6 +614,8 @@ class Driver {
           );
           if (!ignore) {
             errors.push(eventDescription?.description);
+            console.log('checkBrowserForConsoleErrors eventDescription', eventDescription)
+            
             logBrowserError(failOnConsoleError, eventDescription?.description);
           }
         } else if (event.args.length !== 0) {
@@ -621,6 +624,7 @@ class Driver {
 
           // The values are in the "printf" form of [message, ...substitutions]
           // so use sprintf to parse
+          console.log('checkBrowserForConsoleErrors event', event)
           logBrowserError(failOnConsoleError, sprintf(...values));
         }
       }
