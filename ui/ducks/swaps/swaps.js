@@ -1648,7 +1648,7 @@ export const signAndSendTransactionsV2 = (
       16,
     );
     const estimatedGasLimitWithMultiplier = estimatedGasLimit
-      .times(usedQuote?.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
+      .times(usedQuote?.gasParams.gasMultiplier || FALLBACK_GAS_MULTIPLIER, 10)
       .round(0)
       .toString(16);
     const maxGasLimit =
@@ -1674,7 +1674,7 @@ export const signAndSendTransactionsV2 = (
     ).toPrecision(8);
     const usedGasLimitEstimate =
       usedQuote?.gasEstimateWithRefund ||
-      `0x${decimalToHex(usedQuote?.averageGas || 0)}`;
+      `0x${decimalToHex(usedQuote?.gasParams.averageGas || 0)}`;
     const totalGasLimitEstimate = new BigNumber(usedGasLimitEstimate, 16)
       .plus(usedQuote.approvalNeeded?.gas || '0x0', 16)
       .toString(16);
@@ -1710,10 +1710,17 @@ export const signAndSendTransactionsV2 = (
       estimated_gas: estimatedGasLimit.toString(10),
       suggested_gas_price: fastGasEstimate,
       used_gas_price: hexWEIToDecGWEI(usedGasPrice),
-      average_savings: usedQuote.savings?.total,
-      performance_savings: usedQuote.savings?.performance,
-      fee_savings: usedQuote.savings?.fee,
-      median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+      // average_savings: usedQuote.savings?.total,
+      // performance_savings: usedQuote.savings?.performance,
+      // fee_savings: usedQuote.savings?.fee,
+      // median_metamask_fee: usedQuote.savings?.medianMetaMaskFee,
+
+      // TODO remove dummy fields
+      average_savings: '-0.000009149571665723895334174022698613',
+      performance_savings: '0.000007496795708635',
+      fee_savings: '0.000022',
+      median_metamask_fee: '0.000038580191371886707440100882723834',
+
       is_hardware_wallet: hardwareWalletUsed,
       hardware_wallet_type: getHardwareWalletType(state),
       stx_enabled: smartTransactionsEnabled,
