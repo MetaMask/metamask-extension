@@ -1,0 +1,13 @@
+{
+  "version": "v1",
+  "packages": {
+    "test-bundler": {
+      "signature": "0e53f747a967c68bd2ff5d4593d36352",
+      "file": true
+    },
+    "simple-smart-contract-account": {
+      "signature": "b51c46fd599b44ed6c45afc9220660b0",
+      "file": true
+    }
+  }
+}

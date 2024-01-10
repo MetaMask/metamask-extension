@@ -1,4 +1,5 @@
 import { InternalAccount } from '@metamask/keyring-api';
+import { Provider } from '@metamask/network-controller';
 import {
   TransactionController,
   TransactionMeta,
@@ -6,9 +7,11 @@ import {
 } from '@metamask/transaction-controller';
 import {
   AddUserOperationOptions,
+  SmartContractAccount,
   UserOperationController,
 } from '@metamask/user-operation-controller';
 import { addHexPrefix } from 'ethereumjs-util';
+import { SimpleSmartContractAccount } from 'simple-smart-contract-account';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -16,6 +19,7 @@ export type AddTransactionOptions = NonNullable<
 
 type BaseAddTransactionRequest = {
   networkClientId: string;
+  provider: Provider;
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
   transactionController: TransactionController;
@@ -38,11 +42,7 @@ export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
   const { dappRequest } = request;
-  const { id: actionId, method, origin } = dappRequest;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const { securityAlertResponse } = dappRequest;
-  ///: END:ONLY_INCLUDE_IF
+  const { id: actionId, method, origin, securityAlertResponse } = dappRequest;
 
   const transactionOptions: AddTransactionOptions = {
     actionId,
@@ -95,7 +95,8 @@ async function addTransactionOrUserOperation(
 ) {
   const { selectedAccount } = request;
 
-  const isSmartContractAccount = selectedAccount.type === 'eip155:eip4337';
+  const isSmartContractAccount =
+    process.env.EIP_4337_FORCE ?? selectedAccount.type === 'eip155:eip4337';
 
   if (isSmartContractAccount) {
     return addUserOperationWithController(request);
@@ -127,6 +128,7 @@ async function addUserOperationWithController(
 ) {
   const {
     networkClientId,
+    provider,
     transactionController,
     transactionOptions,
     transactionParams,
@@ -148,10 +150,13 @@ async function addUserOperationWithController(
     delete swaps.type;
   }
 
+  const smartContractAccount = await getSmartContractAccount(provider);
+
   const options: AddUserOperationOptions = {
     networkClientId,
     origin,
     requireApproval,
+    smartContractAccount,
     swaps,
     type,
   } as any;
@@ -187,4 +192,20 @@ function getTransactionByHash(
   return transactionController.state.transactions.find(
     (tx) => tx.hash === transactionHash,
   );
+}
+
+// Temporary until sample 4337 snap is available.
+async function getSmartContractAccount(
+  provider: Provider,
+): Promise<SmartContractAccount> {
+  return new SimpleSmartContractAccount({
+    bundler: process.env.EIP_4337_BUNDLER as string,
+    entrypoint: process.env.EIP_4337_ENTRYPOINT as string,
+    owner: process.env.EIP_4337_SIMPLE_ACCOUNT_OWNER as string,
+    paymasterAddress: process.env.EIP_4337_VERIFYING_PAYMASTER as string,
+    privateKey: process.env.EIP_4337_SIMPLE_ACCOUNT_PRIVATE_KEY as string,
+    provider: provider as any,
+    salt: process.env.EIP_4337_SIMPLE_ACCOUNT_SALT as string,
+    simpleAccountFactory: process.env.EIP_4337_SIMPLE_ACCOUNT_FACTORY as string,
+  });
 }

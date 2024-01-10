@@ -15,6 +15,8 @@ import {
   addTransaction,
 } from './util';
 
+jest.mock('simple-smart-contract-account');
+
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
 };
@@ -201,6 +203,7 @@ describe('Transaction Utils', () => {
           networkClientId: TRANSACTION_REQUEST_MOCK.networkClientId,
           origin: TRANSACTION_OPTIONS_MOCK.origin,
           requireApproval: TRANSACTION_OPTIONS_MOCK.requireApproval,
+          smartContractAccount: expect.anything(),
           swaps: undefined,
           type: TRANSACTION_OPTIONS_MOCK.type,
         });
@@ -399,6 +402,7 @@ describe('Transaction Utils', () => {
           networkClientId: TRANSACTION_REQUEST_MOCK.networkClientId,
           origin: TRANSACTION_OPTIONS_MOCK.origin,
           requireApproval: true,
+          smartContractAccount: expect.anything(),
           swaps: undefined,
           type: undefined,
         });

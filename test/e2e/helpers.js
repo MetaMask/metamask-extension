@@ -14,6 +14,9 @@ const PhishingWarningPageServer = require('./phishing-warning-page-server');
 const { buildWebDriver } = require('./webdriver');
 const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
+const { Bundler } = require('./bundler');
+const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
+const { DEFAULT_FIXTURE_ACCOUNT, SENDER } = require('./constants');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -27,6 +30,8 @@ const createDownloadFolder = async (downloadsFolder) => {
 };
 
 const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
+
+const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 async function withFixtures(options, testSuite) {
   const {
@@ -43,9 +48,12 @@ async function withFixtures(options, testSuite) {
     testSpecificMock = function () {
       // do nothing.
     },
+    useBundler,
   } = options;
+
   const fixtureServer = new FixtureServer();
   const ganacheServer = new Ganache();
+  const bundlerServer = new Bundler();
   const https = await mockttp.generateCACertificate();
   const mockServer = mockttp.getLocal({ https, cors: true });
   let secondaryGanacheServer;
@@ -77,6 +85,32 @@ async function withFixtures(options, testSuite) {
         ...ganacheOptions2,
       });
     }
+
+    if (useBundler) {
+      const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+
+      await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
+
+      await ganacheSeeder.deploySmartContract(
+        SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY,
+      );
+
+      await ganacheSeeder.deploySmartContract(
+        SMART_CONTRACTS.VERIFYING_PAYMASTER,
+      );
+
+      await ganacheSeeder.transfer(SENDER, convertETHToHexGwei(10));
+
+      await ganacheSeeder.transfer(
+        DEFAULT_FIXTURE_ACCOUNT,
+        convertETHToHexGwei(10),
+      );
+
+      await ganacheSeeder.paymasterDeposit(convertETHToHexGwei(1));
+
+      await bundlerServer.start();
+    }
+
     await fixtureServer.start();
     fixtureServer.loadJsonState(fixtures, contractRegistry);
     await phishingPageServer.start();
@@ -223,9 +257,15 @@ async function withFixtures(options, testSuite) {
     if (!failed || process.env.E2E_LEAVE_RUNNING !== 'true') {
       await fixtureServer.stop();
       await ganacheServer.quit();
+
       if (ganacheOptions?.concurrent) {
         await secondaryGanacheServer.quit();
       }
+
+      if (useBundler) {
+        await bundlerServer.stop();
+      }
+
       if (webDriver) {
         await driver.quit();
       }
@@ -647,8 +687,6 @@ const PRIVATE_KEY =
 
 const PRIVATE_KEY_TWO =
   '0xa444f52ea41e3a39586d7069cb8e8233e9f6b9dea9cbb700cce69ae860661cc8';
-
-const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
