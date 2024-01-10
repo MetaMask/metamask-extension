@@ -1,3 +1,4 @@
+import {LavaDomeDebug} from '@lavamoat/lavadome-core';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -108,10 +109,7 @@ describe('AccountDetails', () => {
 
     const hook = queryByText(textHook);
     const root = hook.parentElement.querySelector('span');
-    const parts = Array.from(root.shadowRoot.querySelectorAll('span'));
-    const extractedPrivateKey = parts.map(node =>
-      node.shadowRoot?.firstChild?.textContent).join('');
-    expect(extractedPrivateKey).toContain(samplePrivateKey);
+    expect(LavaDomeDebug.getTextByRoot(root)).toContain(samplePrivateKey);
   });
 
   it('should call AccountDetails.onClose()', () => {
