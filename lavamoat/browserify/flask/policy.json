@@ -533,6 +533,7 @@
     "@lavamoat/lavadome-react": {
       "globals": {
         "Document.prototype": true,
+        "console.warn": true,
         "Element.prototype": true,
         "Node.prototype": true,
         "document": true
