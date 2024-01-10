@@ -27,6 +27,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { NetworkClientId } from '@metamask/network-controller';
+import { Component } from '@metamask/snaps-sdk';
 import { getMethodDataAsync } from '../helpers/utils/transactions.util';
 import switchDirection from '../../shared/lib/switch-direction';
 import {
@@ -4719,6 +4720,10 @@ export const updateInterfaceState =
     submitRequestToBackground('updateInterfaceState', [id, state]);
     return forceUpdateMetamaskState(dispatch);
   };
+
+export const createInterface = (snapId: string, content: Component) => {
+  return submitRequestToBackground('createInterface', [snapId, content]);
+};
 ///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)

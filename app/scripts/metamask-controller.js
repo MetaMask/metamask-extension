@@ -83,7 +83,7 @@ import {
   IframeExecutionService,
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
-  InterfaceController,
+  SnapInterfaceController,
 } from '@metamask/snaps-controllers';
 import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 ///: END:ONLY_INCLUDE_IF
@@ -1179,6 +1179,8 @@ export default class MetamaskController extends EventEmitter {
         'SnapsRegistry:getMetadata',
         'SnapsRegistry:update',
         'SnapsRegistry:resolveVersion',
+        'SnapInterfaceController:getInterface',
+        'SubjectMetadataController:addSubjectMetadata',
       ],
     });
 
@@ -1288,19 +1290,13 @@ export default class MetamaskController extends EventEmitter {
         '0x025b65308f0f0fb8bc7f7ff87bfc296e0330eee5d3c1d1ee4a048b2fd6a86fa0a6',
     });
 
-    const interfaceControllerMessenger = this.controllerMessenger.getRestricted(
-      {
-        name: 'InterfaceController',
-        allowedActions: [
-          `${this.approvalController.name}:addRequest`,
-          `${this.approvalController.name}:updateRequestState`,
-          `${this.approvalController.name}:acceptRequest`,
-        ],
-      },
-    );
-    this.interfaceController = new InterfaceController({
-      messenger: interfaceControllerMessenger,
-      state: initState.InterfaceController,
+    const snapInterfaceControllerMessenger =
+      this.controllerMessenger.getRestricted({
+        name: 'SnapInterfaceController',
+      });
+    this.snapInterfaceController = new SnapInterfaceController({
+      messenger: snapInterfaceControllerMessenger,
+      state: initState.SnapInterfaceController,
     });
 
     ///: END:ONLY_INCLUDE_IF
@@ -1914,7 +1910,7 @@ export default class MetamaskController extends EventEmitter {
       LoggingController: this.loggingController,
       ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       SnapController: this.snapController,
-      InterfaceController: this.interfaceController,
+      SnapInterfaceController: this.snapInterfaceController,
       CronjobController: this.cronjobController,
       SnapsRegistry: this.snapsRegistry,
       NotificationController: this.notificationController,
@@ -1967,7 +1963,7 @@ export default class MetamaskController extends EventEmitter {
         TxController: this.txController,
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         SnapController: this.snapController,
-        InterfaceController: this.interfaceController,
+        SnapInterfaceController: this.snapInterfaceController,
         CronjobController: this.cronjobController,
         SnapsRegistry: this.snapsRegistry,
         NotificationController: this.notificationController,
@@ -2285,17 +2281,18 @@ export default class MetamaskController extends EventEmitter {
               origin,
             ).result;
           },
-          showInterface: (...args) =>
-            this.interfaceController.showInterface(...args),
-          updateInterface: (...args) =>
-            this.interfaceController.updateInterface(...args),
-          resolveInterface: (...args) =>
-            this.interfaceController.resolveInterface(...args),
-          readInterface: (...args) =>
-            this.interfaceController.readInterface(...args),
-          getInterfaceState: (...args) => {
-            this.interfaceController.getInterfaceState(...args);
-          },
+          createInterface: this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'SnapInterfaceController:createInterface',
+          ),
+          updateInterface: this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'SnapInterfaceController:updateInterface',
+          ),
+          getInterfaceState: this.controllerMessenger.call.bind(
+            this.controllerMessenger,
+            'SnapInterfaceController:getInterfaceState',
+          ),
           ///: END:ONLY_INCLUDE_IF
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           getSnapKeyring: this.getSnapKeyring.bind(this),
@@ -3140,8 +3137,13 @@ export default class MetamaskController extends EventEmitter {
 
         return phishingController.test(website);
       },
-      updateInterfaceState: this.interfaceController.updateInterfaceState.bind(
-        this.interfaceController,
+      updateInterfaceState: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapInterfaceController:updateInterfaceState',
+      ),
+      createInterface: this.controllerMessenger.call.bind(
+        this.controllerMessenger,
+        'SnapInterfaceController:createInterface',
       ),
       ///: END:ONLY_INCLUDE_IF
       ///: BEGIN:ONLY_INCLUDE_IF(desktop)
