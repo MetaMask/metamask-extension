@@ -19,7 +19,7 @@ const render = (state = {}) => {
 };
 
 describe('FeeDetailsComponent', () => {
-  it('should render correctly', () => {
+  it('renders "Fee details"', () => {
     render();
     expect(screen.queryByText('Fee details')).toBeInTheDocument();
   });
