@@ -91,6 +91,7 @@ import {
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
 import {
+  NOTIFICATION_BLOCKAID_DEFAULT,
   NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
@@ -1244,7 +1245,7 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    29: true,
+    [NOTIFICATION_BLOCKAID_DEFAULT]: true,
     ///: END:ONLY_INCLUDE_IF
   };
 }

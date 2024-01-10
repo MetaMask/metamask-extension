@@ -8,6 +8,7 @@ export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
 export const NOTIFICATION_OPEN_BETA_SNAPS = 26;
 export const NOTIFICATION_BUY_SELL_BUTTON = 27;
 export const NOTIFICATION_U2F_LEDGER_LIVE = 28;
+export const NOTIFICATION_BLOCKAID_DEFAULT = 29;
 
 export const UI_NOTIFICATIONS = {
   1: {
@@ -171,8 +172,8 @@ export const UI_NOTIFICATIONS = {
     date: null,
   },
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  29: {
-    id: 29,
+  [NOTIFICATION_BLOCKAID_DEFAULT]: {
+    id: Number(NOTIFICATION_BLOCKAID_DEFAULT),
     date: null,
     image: {
       src: 'images/blockaid-security-provider.svg',
@@ -465,18 +466,18 @@ export const getTranslatedUINotifications = (t, locale) => {
         : '',
     },
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    29: {
-      ...UI_NOTIFICATIONS[29],
-      title: t('notifications29Title'),
+    [NOTIFICATION_BLOCKAID_DEFAULT]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT],
+      title: t('notificationsBlockaidDefaultTitle'),
       description: [
-        t('notifications29DescriptionOne'),
-        t('notifications29DescriptionTwo'),
-        t('notifications29DescriptionThree'),
+        t('notificationsBlockaidDefaultDescriptionOne'),
+        t('notificationsBlockaidDefaultDescriptionTwo'),
+        t('notificationsBlockaidDefaultDescriptionThree'),
       ],
-      actionText: t('notifications29ActionText'),
-      date: UI_NOTIFICATIONS[29].date
+      actionText: t('gotIt'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
-            new Date(UI_NOTIFICATIONS[29].date),
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date),
           )
         : '',
     },

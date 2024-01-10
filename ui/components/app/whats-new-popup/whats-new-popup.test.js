@@ -4,6 +4,7 @@ import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import WhatsNewPopup from './whats-new-popup';
+import { NOTIFICATION_BLOCKAID_DEFAULT } from '../../../../shared/notifications';
 
 const render = () => {
   const store = configureStore({
@@ -97,9 +98,9 @@ const render = () => {
           id: 23,
           isShown: false,
         },
-        29: {
+        [NOTIFICATION_BLOCKAID_DEFAULT]: {
           date: '2022-07-24',
-          id: 29,
+          id: Number(NOTIFICATION_BLOCKAID_DEFAULT),
           isShown: false,
         },
       },

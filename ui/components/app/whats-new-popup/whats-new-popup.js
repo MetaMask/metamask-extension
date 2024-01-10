@@ -9,6 +9,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import {
+  NOTIFICATION_BLOCKAID_DEFAULT,
   NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
@@ -126,8 +127,8 @@ function getActionFunctionById(id, history) {
       updateViewedNotifications({ [NOTIFICATION_U2F_LEDGER_LIVE]: true });
     },
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    29: () => {
-      updateViewedNotifications({ 29: true });
+    [NOTIFICATION_BLOCKAID_DEFAULT]: () => {
+      updateViewedNotifications({ [NOTIFICATION_BLOCKAID_DEFAULT]: true });
     },
     ///: END:ONLY_INCLUDE_IF
   };
@@ -358,7 +359,7 @@ export default function WhatsNewPopup({ onClose }) {
     [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
     [NOTIFICATION_U2F_LEDGER_LIVE]: renderFirstNotification,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    29: renderFirstNotification,
+    [NOTIFICATION_BLOCKAID_DEFAULT]: renderFirstNotification,
     ///: END:ONLY_INCLUDE_IF
   };
 

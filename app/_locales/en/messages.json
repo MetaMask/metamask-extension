@@ -2987,19 +2987,16 @@
   "notifications24Title": {
     "message": "Advanced gas fees by network"
   },
-  "notifications29ActionText": {
-    "message": "Got it"
-  },
-  "notifications29DescriptionOne": {
+  "notificationsBlockaidDefaultDescriptionOne": {
     "message": "Stay safe from scams while still protecting your privacy with security alerts powered by Blockaid. This feature is now on by default for all MetaMask users."
   },
-  "notifications29DescriptionThree": {
+  "notificationsBlockaidDefaultDescriptionThree": {
     "message": "Only on Ethereum Mainnet. More networks available soon."
   },
-  "notifications29DescriptionTwo": {
+  "notificationsBlockaidDefaultDescriptionTwo": {
     "message": "Always do your own due diligence before approving requests."
   },
-  "notifications29Title": {
+  "notificationsBlockaidDefaultTitle": {
     "message": "Stay safe with security alerts"
   },
   "notifications3ActionText": {
