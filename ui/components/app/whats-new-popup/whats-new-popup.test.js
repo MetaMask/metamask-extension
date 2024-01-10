@@ -3,8 +3,8 @@ import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
-import WhatsNewPopup from './whats-new-popup';
 import { NOTIFICATION_BLOCKAID_DEFAULT } from '../../../../shared/notifications';
+import WhatsNewPopup from './whats-new-popup';
 
 const render = () => {
   const store = configureStore({
