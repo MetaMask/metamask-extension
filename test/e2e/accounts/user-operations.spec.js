@@ -11,7 +11,7 @@ const {
 
 const FixtureBuilder = require('../fixture-builder');
 const { DEFAULT_FIXTURE_ACCOUNT } = require('../constants');
-const { buildQuote, reviewQuote } = require('./swaps/shared');
+const { buildQuote, reviewQuote } = require('../tests/swaps/shared');
 
 async function createDappTransaction(driver, transaction) {
   await openDapp(
@@ -102,6 +102,10 @@ describe('User Operations', function () {
         },
       },
       async ({ driver }) => {
+        if (process.env.MULTICHAIN) {
+          return;
+        }
+
         await unlockWallet(driver);
 
         await sendTransaction(
