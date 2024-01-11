@@ -226,7 +226,7 @@ describe('Confirm Transaction Base', () => {
   });
 
   it('should render only total fee details if simulation fails', () => {
-    mockedStore.confirmTransaction.txData.simulationFails = true;
+    mockedStore.send.hasSimulationError = true;
     const store = configureMockStore(middleware)(mockedStore);
     const { queryByText } = renderWithProvider(
       <ConfirmTransactionBase actionKey="confirm" />,
