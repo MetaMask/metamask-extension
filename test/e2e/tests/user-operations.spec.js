@@ -10,8 +10,8 @@ const {
 } = require('../helpers');
 
 const FixtureBuilder = require('../fixture-builder');
-const { buildQuote, reviewQuote } = require('../tests/swaps/shared');
 const { DEFAULT_FIXTURE_ACCOUNT } = require('../constants');
+const { buildQuote, reviewQuote } = require('./swaps/shared');
 
 async function createDappTransaction(driver, transaction) {
   await openDapp(

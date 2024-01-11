@@ -45,7 +45,7 @@ export async function addDappTransaction(
   const { id: actionId, method, origin } = dappRequest;
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const securityAlertResponse = { dappRequest };
+  const { securityAlertResponse } = dappRequest;
   ///: END:ONLY_INCLUDE_IF
 
   const transactionOptions: AddTransactionOptions = {
