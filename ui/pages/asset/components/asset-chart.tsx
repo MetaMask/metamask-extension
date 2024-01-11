@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import 'chartjs-adapter-moment';
-import { Token } from '@metamask/assets-controllers';
 import { useSelector } from 'react-redux';
 import {
   Chart,
@@ -18,7 +17,6 @@ import { getCurrentChainId, getCurrentCurrency } from '../../../selectors';
 import {
   AlignItems,
   BackgroundColor,
-  BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
@@ -39,6 +37,7 @@ import {
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getPrecision } from './util';
 
 /** Time range units supported by the price API */
 type TimeRange = `${number}D` | `${number}M` | `${number}Y`;
@@ -132,10 +131,15 @@ const chartOptions = {
   },
 } as const;
 
-const TokenChart = ({ token }: { token: Token }) => {
+const AssetChart = ({
+  address,
+  symbol,
+}: {
+  address: string;
+  symbol: string;
+}) => {
   const t = useI18nContext();
 
-  // todo what if chain not supported?  how to determine?
   const chainId = hexToDecimal(useSelector(getCurrentChainId));
 
   // todo do we support all of these? fallback to something like usd?
@@ -149,25 +153,24 @@ const TokenChart = ({ token }: { token: Token }) => {
   // todo canonicalize address?  is that necessary?
   // cache these when clicking between???? for a limited amount of time?
 
-  // todo handle 404?
-  // todo for big time ranges do we need to reduce number of data points client side?
   useEffect(() => {
     setPrices(undefined);
     // todo delete delay
-    new Promise((r) => setTimeout(r, 2000))
+    new Promise((r) => setTimeout(r, 0))
       .then(() =>
         fetch(
-          `https://price-api.metafi-dev.codefi.network/v1/chains/${chainId}/historical-prices/${token.address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
+          `https://price-api.metafi-dev.codefi.network/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
         ),
       )
       .then((resp) => (resp.status === 200 ? resp.json() : { prices: [] }))
       .then((data) => setPrices(data.prices));
-  }, [chainId, token.address, currency, timeRange]);
+  }, [chainId, address, currency, timeRange]);
 
   const renderChart = () => {
     if (prices === undefined) {
       return (
         <Box
+          // TODO
           style={{ height: '50vw' }}
           borderRadius={BorderRadius.LG}
           margin={4}
@@ -183,7 +186,6 @@ const TokenChart = ({ token }: { token: Token }) => {
           alignItems={AlignItems.center}
           borderRadius={BorderRadius.LG}
           margin={4}
-          // height={BlockSize.Full}
           backgroundColor={BackgroundColor.backgroundAlternative}
         >
           <Icon name={IconName.Info} size={IconSize.Xl} />
@@ -211,7 +213,7 @@ const TokenChart = ({ token }: { token: Token }) => {
       labels: prices.map((item: any) => new Date(item[0])),
       datasets: [
         {
-          label: token.symbol,
+          label: symbol,
           data: prices.map((item: any) => item[1]),
           borderColor: lineColor,
           elements: {
@@ -247,8 +249,12 @@ const TokenChart = ({ token }: { token: Token }) => {
                 : TextColor.errorDefault
             }
           >
-            {formatCurrency(Math.abs(priceDelta).toFixed(2), currency)} (
-            {priceDelta >= 0 ? '+' : ''}
+            {formatCurrency(
+              `${priceDelta}`,
+              currency,
+              getPrecision(priceDelta),
+            )}{' '}
+            ({priceDelta >= 0 ? '+' : ''}
             {(100 * ((lastPrice - firstPrice) / firstPrice)).toFixed(2)}%)
           </Text>
         </Box>
@@ -285,4 +291,4 @@ const TokenChart = ({ token }: { token: Token }) => {
   );
 };
 
-export default TokenChart;
+export default AssetChart;
