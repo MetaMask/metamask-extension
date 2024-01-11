@@ -1,5 +1,9 @@
 import { AddressBookController } from '@metamask/address-book-controller';
-import { NameController, NameType } from '@metamask/name-controller';
+import {
+  NameController,
+  NameType,
+  NameOrigin,
+} from '@metamask/name-controller';
 import {
   AbstractPetnamesBridge,
   PetnamesBridgeMessenger,
@@ -49,6 +53,7 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
           variation: normalizedChainId,
           type: NameType.ETHEREUM_ADDRESS,
           sourceId: isEns ? 'ens' : undefined,
+          origin: NameOrigin.ADDRESS_BOOK,
         });
       }
     }

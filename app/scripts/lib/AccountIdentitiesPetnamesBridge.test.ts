@@ -3,6 +3,7 @@ import {
   NameController,
   NameControllerState,
   NameType,
+  NameOrigin,
 } from '@metamask/name-controller';
 import {
   PreferencesController,
@@ -44,10 +45,14 @@ const EMPTY_NAME_STATE: NameControllerState = {
  *
  * @param address
  * @param name
+ * @param sourceId
+ * @param origin
  */
 function createNameStateWithPetname(
   address: string,
   name: string,
+  sourceId: string | null = null,
+  origin: NameOrigin | null = null,
 ): NameControllerState {
   return {
     ...EMPTY_NAME_STATE,
@@ -56,8 +61,9 @@ function createNameStateWithPetname(
         [address]: {
           [FALLBACK_VARIATION]: {
             name,
-            sourceId: null,
             proposedNames: {},
+            sourceId,
+            origin,
           },
         },
       },

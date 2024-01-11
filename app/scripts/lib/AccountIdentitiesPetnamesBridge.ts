@@ -2,6 +2,7 @@ import {
   FALLBACK_VARIATION,
   NameController,
   NameType,
+  NameOrigin,
 } from '@metamask/name-controller';
 import {
   PreferencesController,
@@ -43,6 +44,7 @@ export class AccountIdentitiesPetnamesBridge extends AbstractPetnamesBridge {
       name: identity.name,
       sourceId: undefined,
       variation: FALLBACK_VARIATION,
+      origin: NameOrigin.ACCOUNT_IDENTITY,
     }));
   }
 
