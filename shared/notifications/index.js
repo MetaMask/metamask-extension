@@ -9,6 +9,7 @@ export const NOTIFICATION_OPEN_BETA_SNAPS = 26;
 export const NOTIFICATION_BUY_SELL_BUTTON = 27;
 export const NOTIFICATION_U2F_LEDGER_LIVE = 28;
 export const NOTIFICATION_STAKING_PORTFOLIO = 29;
+export const NOTIFICATION_BLOCKAID_DEFAULT = 30;
 
 export const UI_NOTIFICATIONS = {
   1: {
@@ -179,6 +180,16 @@ export const UI_NOTIFICATIONS = {
       width: '100%',
     },
   },
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  [NOTIFICATION_BLOCKAID_DEFAULT]: {
+    id: Number(NOTIFICATION_BLOCKAID_DEFAULT),
+    date: null,
+    image: {
+      src: 'images/blockaid-security-provider.svg',
+      width: '100%',
+    },
+  },
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
@@ -474,5 +485,22 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    [NOTIFICATION_BLOCKAID_DEFAULT]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT],
+      title: t('notificationsBlockaidDefaultTitle'),
+      description: [
+        t('notificationsBlockaidDefaultDescriptionOne'),
+        t('notificationsBlockaidDefaultDescriptionTwo'),
+        t('notificationsBlockaidDefaultDescriptionThree'),
+      ],
+      actionText: t('notificationsBlockaidDefaultDescriptionThreeActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date),
+          )
+        : '',
+    },
+    ///: END:ONLY_INCLUDE_IF
   };
 };
