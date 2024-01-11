@@ -219,7 +219,6 @@
     "semver@7.3.8": "^7.5.4",
     "@metamask/eth-keyring-controller@npm:^13.0.1": "patch:@metamask/eth-keyring-controller@npm%3A13.0.1#~/.yarn/patches/@metamask-eth-keyring-controller-npm-13.0.1-06ff83faad.patch",
     "nonce-tracker@npm:^3.0.0": "patch:nonce-tracker@npm%3A3.0.0#~/.yarn/patches/nonce-tracker-npm-3.0.0-c5e9a93f9d.patch",
-    "@metamask/accounts-controller@npm:^4.0.0": "patch:@metamask/accounts-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-4.0.0-3127b56d14.patch",
     "@trezor/connect-web": "9.0.11"
   },
   "dependencies": {
@@ -246,7 +245,7 @@
     "@metamask-institutional/rpc-allowlist": "^1.0.0",
     "@metamask-institutional/sdk": "^0.1.23",
     "@metamask-institutional/transaction-update": "^0.1.32",
-    "@metamask/accounts-controller": "^5.0.0",
+    "@metamask/accounts-controller": "patch:@metamask/accounts-controller@npm%3A5.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-5.0.0-f877105fa0.patch",
     "@metamask/address-book-controller": "^3.0.0",
     "@metamask/announcement-controller": "^5.0.1",
     "@metamask/approval-controller": "^5.1.0",
