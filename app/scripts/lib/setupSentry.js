@@ -512,8 +512,18 @@ export default function setupSentry({ release, getState }) {
       new FilterEvents({ getMetaMetricsEnabled }),
       new Dedupe(),
       new ExtraErrorData(),
+      new Sentry.BrowserTracing(),
     ],
     release,
+    /**
+     * Setting a value for `tracesSampleRate` enables performance monitoring in Sentry.
+     * Once performance monitoring is enabled, transactions are sent to Sentry every time
+     * a user loads a page or navigates within the app.
+     * Since the amount of traffic the app gets is important, this means a lot of
+     * transactions are sent. By setting `tracesSampleRate` to a value lower than 1.0, we
+     * reduce the volume of transactions to a more reasonable amount.
+     */
+    tracesSampleRate: 0.1,
     beforeSend: (report) => rewriteReport(report, getState),
     beforeBreadcrumb: beforeBreadcrumb(getState),
   });
