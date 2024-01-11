@@ -48,18 +48,18 @@
       }
 
       &.clicked {
-        background-color: var(--color-error-muted-active);
+        background-color: var(--color-error-muted-pressed);
 
         & .show-more__button {
-          background: linear-gradient(90deg, transparent 0%, var(--color-error-muted-active) 33%);
+          background: linear-gradient(90deg, transparent 0%, var(--color-error-muted-pressed) 33%);
         }
 
 
         &:hover {
-          background-color: var(--color-error-muted-active);
+          background-color: var(--color-error-muted-pressed);
 
           & .show-more__button {
-            background: linear-gradient(90deg, transparent 0%, var(--color-error-muted-active) 33%);
+            background: linear-gradient(90deg, transparent 0%, var(--color-error-muted-pressed) 33%);
           }
         }
       }
