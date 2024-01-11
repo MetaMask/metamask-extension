@@ -193,6 +193,7 @@ export default class Home extends PureComponent {
     setActiveNetwork: PropTypes.func,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
     showSurveyToast: PropTypes.bool.isRequired,
+    hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
     mmiPortfolioEnabled: PropTypes.bool,
@@ -349,12 +350,17 @@ export default class Home extends PureComponent {
   }
 
   componentDidUpdate(_prevProps, prevState) {
-    const { closeNotificationPopup, isNotification } = this.props;
+    const {
+      closeNotificationPopup,
+      isNotification,
+      hasAllowedPopupRedirectApprovals,
+    } = this.props;
+
     const { notificationClosing } = this.state;
 
     if (notificationClosing && !prevState.notificationClosing) {
       closeNotificationPopup();
-    } else if (isNotification) {
+    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
       this.checkStatusAndNavigate();
     }
   }

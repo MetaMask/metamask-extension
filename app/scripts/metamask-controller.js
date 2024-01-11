@@ -175,6 +175,7 @@ import {
   SNAP_DIALOG_TYPES,
   ///: END:ONLY_INCLUDE_IF
   POLLING_TOKEN_ENVIRONMENT_TYPES,
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
 } from '../../shared/constants/app';
 import {
   MetaMetricsEventCategory,
@@ -4142,8 +4143,18 @@ export default class MetamaskController extends EventEmitter {
       options,
     );
 
-    result.catch(() => {
-      // Not concerned with result
+    result.then(() => {
+      setTimeout(() => {
+        this.approvalController.addAndShowApprovalRequest({
+          origin: 'npm:@test/test-snap',
+          requestData: {
+            url: 'test.com',
+            message: 'Test Message',
+            isBlockedUrl: false,
+          },
+          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+        });
+      }, 10000);
     });
 
     return transactionMeta;
