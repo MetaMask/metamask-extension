@@ -1,6 +1,7 @@
 import {
   NameController,
   NameControllerState,
+  NameOrigin,
   NameType,
 } from '@metamask/name-controller';
 import {
@@ -13,6 +14,7 @@ import {
 const ADDRESS_MOCK = '0xabc';
 const NAME_MOCK = 'name1';
 const CHAIN_ID_MOCK = '0x1';
+const ORIGIN_MOCK = NameOrigin.ADDRESS_BOOK;
 
 const NO_SOURCE_ENTRIES: PetnameEntry[] = [];
 
@@ -29,6 +31,7 @@ function createPetnameEntry(address: string, name: string): PetnameEntry {
     type: NameType.ETHEREUM_ADDRESS,
     sourceId: undefined,
     variation: CHAIN_ID_MOCK,
+    origin: ORIGIN_MOCK,
   };
 }
 
@@ -57,6 +60,7 @@ function createNameState(address: string, name: string): NameControllerState {
             name,
             sourceId: null,
             proposedNames: {},
+            origin: ORIGIN_MOCK,
           },
         },
       },
@@ -186,7 +190,10 @@ describe('AbstractPetnamesBridge', () => {
 
       expect(nameController.setName).toHaveBeenCalledTimes(1);
       expect(nameController.setName).toHaveBeenCalledWith({
-        ...createPetnameEntry(ADDRESS_MOCK, NAME_MOCK),
+        value: ADDRESS_MOCK,
+        variation: CHAIN_ID_MOCK,
+        type: NameType.ETHEREUM_ADDRESS,
+        // Name is set to null. sourceId and origin should not be set.
         name: null,
       });
     });

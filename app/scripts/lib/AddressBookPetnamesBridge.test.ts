@@ -1,6 +1,7 @@
 import {
   NameController,
   NameControllerState,
+  NameOrigin,
   NameType,
   SetNameRequest,
 } from '@metamask/name-controller';
@@ -57,13 +58,8 @@ const EMPTY_NAME_STATE: NameControllerState = {
  *
  * @param address
  * @param name
- * @param sourceId
  */
-function createNameState(
-  address: string,
-  name: string,
-  sourceId: string | null,
-): NameControllerState {
+function createNameState(address: string, name: string): NameControllerState {
   return {
     ...EMPTY_NAME_STATE,
     names: {
@@ -71,8 +67,9 @@ function createNameState(
         [address]: {
           [CHAIN_ID_MOCK]: {
             name,
-            sourceId,
+            sourceId: null,
             proposedNames: {},
+            origin: NameOrigin.ADDRESS_BOOK,
           },
         },
       },
@@ -149,6 +146,7 @@ describe('AddressBookPetnamesBridge', () => {
         name: NAME_MOCK,
         sourceId: 'ens',
         variation: CHAIN_ID_MOCK,
+        origin: NameOrigin.ADDRESS_BOOK,
       } as SetNameRequest);
     });
 
@@ -157,7 +155,7 @@ describe('AddressBookPetnamesBridge', () => {
         createAddressBookState(ADDRESS_MOCK, NAME_MOCK, true),
       );
       const nameController = createNameControllerMock(
-        createNameState(ADDRESS_MOCK, NAME_MOCK, null),
+        createNameState(ADDRESS_MOCK, NAME_MOCK),
       );
 
       new AddressBookPetnamesBridge({
@@ -182,6 +180,7 @@ describe('AddressBookPetnamesBridge', () => {
         name: NAME_2_MOCK,
         sourceId: undefined,
         variation: CHAIN_ID_MOCK,
+        origin: NameOrigin.ADDRESS_BOOK,
       } as SetNameRequest);
     });
 
@@ -190,7 +189,7 @@ describe('AddressBookPetnamesBridge', () => {
         createAddressBookState(ADDRESS_MOCK, NAME_MOCK, true),
       );
       const nameController = createNameControllerMock(
-        createNameState(ADDRESS_MOCK, NAME_MOCK, null),
+        createNameState(ADDRESS_MOCK, NAME_MOCK),
       );
       new AddressBookPetnamesBridge({
         addressBookController,
@@ -227,7 +226,7 @@ describe('AddressBookPetnamesBridge', () => {
         messenger,
       }).init();
 
-      nameController.state = createNameState(ADDRESS_MOCK, NAME_MOCK, null);
+      nameController.state = createNameState(ADDRESS_MOCK, NAME_MOCK);
 
       const listener = messenger.subscribe.mock.calls[0][1] as () => void;
       listener();
@@ -245,7 +244,7 @@ describe('AddressBookPetnamesBridge', () => {
         createAddressBookState(ADDRESS_MOCK, NAME_MOCK, false),
       );
       const nameController = createNameControllerMock(
-        createNameState(ADDRESS_MOCK, NAME_MOCK, null),
+        createNameState(ADDRESS_MOCK, NAME_MOCK),
       );
       new AddressBookPetnamesBridge({
         addressBookController,
@@ -253,7 +252,7 @@ describe('AddressBookPetnamesBridge', () => {
         messenger,
       }).init();
 
-      nameController.state = createNameState(ADDRESS_MOCK, NAME_2_MOCK, null);
+      nameController.state = createNameState(ADDRESS_MOCK, NAME_2_MOCK);
 
       const listener = messenger.subscribe.mock.calls[0][1] as () => void;
       listener();
@@ -271,7 +270,7 @@ describe('AddressBookPetnamesBridge', () => {
         createAddressBookState(ADDRESS_MOCK, NAME_MOCK, false),
       );
       const nameController = createNameControllerMock(
-        createNameState(ADDRESS_MOCK, NAME_MOCK, null),
+        createNameState(ADDRESS_MOCK, NAME_MOCK),
       );
       new AddressBookPetnamesBridge({
         addressBookController,
