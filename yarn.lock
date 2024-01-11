@@ -3758,7 +3758,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/accounts-controller@npm:^5.0.0":
+"@metamask/accounts-controller@npm:5.0.0":
   version: 5.0.0
   resolution: "@metamask/accounts-controller@npm:5.0.0"
   dependencies:
@@ -3774,6 +3774,25 @@ __metadata:
   peerDependencies:
     "@metamask/keyring-controller": ^9.0.0
   checksum: 7f1759a89603ae6072cd9a475d61d1c58300ebd32f9a42111329da0403cce41f991c85cfd52811171ffbfc762b94f8470d15885c7b79620288c39e146fb0ae4d
+  languageName: node
+  linkType: hard
+
+"@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A5.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-5.0.0-f877105fa0.patch":
+  version: 5.0.0
+  resolution: "@metamask/accounts-controller@patch:@metamask/accounts-controller@npm%3A5.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-5.0.0-f877105fa0.patch::version=5.0.0&hash=aa3146"
+  dependencies:
+    "@metamask/base-controller": "npm:^3.2.3"
+    "@metamask/eth-snap-keyring": "npm:^2.0.0"
+    "@metamask/keyring-api": "npm:^1.1.0"
+    "@metamask/snaps-utils": "npm:^3.2.0"
+    "@metamask/utils": "npm:^8.2.0"
+    deepmerge: "npm:^4.2.2"
+    ethereumjs-util: "npm:^7.0.10"
+    immer: "npm:^9.0.6"
+    uuid: "npm:^8.3.2"
+  peerDependencies:
+    "@metamask/keyring-controller": ^9.0.0
+  checksum: 83d027fdc604cb13242b91fe87b7408986d06ae9de8015797961ad744d702052220551817292ee2f2f03be430d2819b038984e841dac420d410fb8f5bfdc3474
   languageName: node
   linkType: hard
 
@@ -24597,7 +24616,7 @@ __metadata:
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
     "@metamask-institutional/sdk": "npm:^0.1.23"
     "@metamask-institutional/transaction-update": "npm:^0.1.32"
-    "@metamask/accounts-controller": "npm:^5.0.0"
+    "@metamask/accounts-controller": "patch:@metamask/accounts-controller@npm%3A5.0.0#~/.yarn/patches/@metamask-accounts-controller-npm-5.0.0-f877105fa0.patch"
     "@metamask/address-book-controller": "npm:^3.0.0"
     "@metamask/announcement-controller": "npm:^5.0.1"
     "@metamask/approval-controller": "npm:^5.1.0"
