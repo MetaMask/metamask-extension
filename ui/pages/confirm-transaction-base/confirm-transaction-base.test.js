@@ -237,7 +237,7 @@ describe('Confirm Transaction Base', () => {
     expect(queryByText('Amount + gas fee')).toBeInTheDocument();
 
     expect(queryByText('Estimated fee')).not.toBeInTheDocument();
-    expect(queryByText('Fee details')).not.toBeInTheDocument();
+    expect(queryByText('Fee details')).toBeInTheDocument();
   });
 
   it('should contain L1 L2 fee details for optimism', () => {
