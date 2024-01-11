@@ -1,12 +1,6 @@
-import { runBundler, BundlerServer } from 'test-bundler';
+import { startBundler, BundlerServer } from '@metamask/test-bundler';
 
-const ARGS = [
-  '-',
-  '-',
-  '--unsafe',
-  '--config',
-  `${__dirname}/bundler.config.json`,
-];
+const CONFIG_FILE = `${__dirname}/bundler.config.json`;
 
 export class Bundler {
   #server: BundlerServer | undefined;
@@ -15,7 +9,11 @@ export class Bundler {
     console.log('Starting bundler');
 
     try {
-      this.#server = await runBundler(ARGS);
+      this.#server = await startBundler({
+        configFile: CONFIG_FILE,
+        unsafe: true,
+      });
+
       await this.#server.asyncStart();
     } catch (e) {
       console.log('Failed to start bundler', e);

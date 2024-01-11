@@ -5325,6 +5325,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/test-bundler@file:.yalc/@metamask/test-bundler::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/test-bundler@file:.yalc/@metamask/test-bundler#.yalc/@metamask/test-bundler::hash=57cd25&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@account-abstraction/contracts": "npm:^0.6.0"
+    "@ethersproject/abi": "npm:^5.7.0"
+    "@ethersproject/abstract-provider": "npm:^5.7.0"
+    "@ethersproject/abstract-signer": "npm:^5.7.0"
+    "@ethersproject/networks": "npm:^5.7.0"
+    "@ethersproject/properties": "npm:^5.7.0"
+    "@ethersproject/providers": "npm:^5.7.0"
+    async-mutex: "npm:^0.4.0"
+    body-parser: "npm:^1.20.0"
+    commander: "npm:^9.4.0"
+    cors: "npm:^2.8.5"
+    debug: "npm:^4.3.4"
+    ethers: "npm:^5.7.0"
+    express: "npm:^4.18.1"
+    ow: "npm:^0.28.1"
+  checksum: 9b5b182d575959707e8603c827b6abedbf43c3531e76b0e63430f1ce3fae51bb42cbca93c28c732ac32ca719a1abcc9ca441836befabf4c84e8338a1c8819a6a
+  languageName: node
+  linkType: hard
+
 "@metamask/test-dapp@npm:^7.3.1":
   version: 7.3.1
   resolution: "@metamask/test-dapp@npm:7.3.1"
@@ -25186,6 +25209,7 @@ __metadata:
     "@metamask/snaps-rpc-methods": "npm:^4.1.0"
     "@metamask/snaps-sdk": "npm:^1.2.0"
     "@metamask/snaps-utils": "npm:^5.1.1"
+    "@metamask/test-bundler": "file:.yalc/@metamask/test-bundler"
     "@metamask/test-dapp": "npm:^7.3.1"
     "@metamask/transaction-controller": "npm:@metamask-previews/transaction-controller@19.0.1-preview.353ee83b"
     "@metamask/user-operation-controller": "npm:@metamask-previews/user-operation-controller@0.0.0-preview.353ee83b"
@@ -25434,7 +25458,6 @@ __metadata:
     stylelint: "npm:^13.6.1"
     superstruct: "npm:^1.0.3"
     terser: "npm:^5.7.0"
-    test-bundler: "file:.yalc/test-bundler"
     through2: "npm:^4.0.2"
     ts-node: "npm:^10.5.0"
     ttest: "npm:^2.1.1"
@@ -33470,29 +33493,6 @@ __metadata:
   bin:
     terser: bin/terser
   checksum: 3b2b82e8cf93a40502a5abbac42b531f356c34f5b2090cd122a21f4596561a8fc743988ee2d07f44449c70b498db3d70712810ad80806496807e44b9d65abf1c
-  languageName: node
-  linkType: hard
-
-"test-bundler@file:.yalc/test-bundler::locator=metamask-crx%40workspace%3A.":
-  version: 0.0.1
-  resolution: "test-bundler@file:.yalc/test-bundler#.yalc/test-bundler::hash=0918a9&locator=metamask-crx%40workspace%3A."
-  dependencies:
-    "@account-abstraction/contracts": "npm:^0.6.0"
-    "@ethersproject/abi": "npm:^5.7.0"
-    "@ethersproject/abstract-provider": "npm:^5.7.0"
-    "@ethersproject/abstract-signer": "npm:^5.7.0"
-    "@ethersproject/networks": "npm:^5.7.0"
-    "@ethersproject/properties": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    async-mutex: "npm:^0.4.0"
-    body-parser: "npm:^1.20.0"
-    commander: "npm:^9.4.0"
-    cors: "npm:^2.8.5"
-    debug: "npm:^4.3.4"
-    ethers: "npm:^5.7.0"
-    express: "npm:^4.18.1"
-    ow: "npm:^0.28.1"
-  checksum: edead23b2b05be44a896af4c314aec151b46bcc413943809d024cf5365ed99eb64082a50a0fc01840c68f2025bf2dca9432ade4b54136d61578ad0c32d522eb1
   languageName: node
   linkType: hard
 

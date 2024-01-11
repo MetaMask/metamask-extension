@@ -8,6 +8,10 @@
     "simple-smart-contract-account": {
       "signature": "b51c46fd599b44ed6c45afc9220660b0",
       "file": true
+    },
+    "@metamask/test-bundler": {
+      "signature": "b203f451b07e714f181c17303ba220d7",
+      "file": true
     }
   }
 }
