@@ -84,17 +84,14 @@ describe('ENS', function () {
         await driver.waitForElementNotPresent('.loading-overlay');
 
         await openActionMenuAndStartSendFlow(driver);
-        // TODO: Update Test when Multichain Send Flow is added
-        if (process.env.MULTICHAIN) {
-          return;
-        }
+
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           sampleEnsDomain,
         );
 
         await driver.clickElement(
-          '.send__select-recipient-wrapper__group-item__title',
+          '.multichain-account-list-item__account-name__button',
         );
 
         await driver.findElement({

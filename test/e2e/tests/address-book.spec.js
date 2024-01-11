@@ -35,14 +35,14 @@ describe('Address Book', function () {
         await logInWithBalanceValidation(driver, ganacheServer);
         await openActionMenuAndStartSendFlow(driver);
 
-        const recipientRowTitle = await driver.findElement(
-          '.send__select-recipient-wrapper__group-item__title',
+        const recipientTitle = await driver.findElement(
+          '.multichain-account-list-item__account-name__button',
         );
 
-        const recipientRowTitleString = await recipientRowTitle.getText();
+        const recipientRowTitleString = await recipientTitle.getText();
         assert.equal(recipientRowTitleString, 'Test Name 1');
         await driver.clickElement(
-          '.send__select-recipient-wrapper__group-item',
+          '.multichain-account-list-item__account-name__button',
         );
 
         await driver.fill('input[placeholder="0"]', '2');
