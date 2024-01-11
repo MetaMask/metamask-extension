@@ -35,7 +35,7 @@ const UnconnectedAccountAlert = () => {
     getOrderedConnectedAccountsForActiveTab,
   );
   const internalAccounts = useSelector(getInternalAccounts);
-  // Temporary fix until
+  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
   const connectedAccountsWithName = connectedAccounts.map((account) => {
     account.name = internalAccounts.find(
       (internalAccount) => internalAccount.address === account.address,
@@ -44,7 +44,7 @@ const UnconnectedAccountAlert = () => {
   });
   const origin = useSelector(getOriginOfCurrentTab);
   const selectedIdentity = useSelector(getSelectedIdentity);
-  // Temporary fix until
+  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
   const selectedIdentityWithName = {
     ...selectedIdentity,
     name: internalAccounts.find(

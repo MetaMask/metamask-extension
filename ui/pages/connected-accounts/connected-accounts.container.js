@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
   const accountToConnect = getAccountToConnectToActiveTab(state);
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
   const internalAccounts = getInternalAccounts(state);
-  // Temporary fix until
+  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
   const connectedAccountsWithName = connectedAccounts.map((account) => {
     const updatedAccount = {
       ...account,
