@@ -1,7 +1,7 @@
 .confirm-add-suggested-nft {
   &__card {
     margin: 16px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
   }
 
   &__header {
