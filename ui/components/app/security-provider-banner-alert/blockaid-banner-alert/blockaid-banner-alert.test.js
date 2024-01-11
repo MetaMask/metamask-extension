@@ -1,4 +1,5 @@
 import React from 'react';
+import * as Sentry from '@sentry/browser';
 import { renderWithLocalization } from '../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../helpers/constants/design-system';
 import {
@@ -7,6 +8,7 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
+jest.mock('@sentry/browser');
 jest.mock('zlib', () => ({
   gzipSync: (val) => val,
 }));
@@ -260,6 +262,26 @@ describe('Blockaid Banner Alert', () => {
 
         expect(getByText(expectedDescription)).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('when reason does not map to a description', () => {
+    it('renders the "other" description translation and logs a Sentry exception', () => {
+      const stubOtherDescription =
+        'If you approve this request, you might lose your assets.';
+      const { getByText } = renderWithLocalization(
+        <BlockaidBannerAlert
+          txData={{
+            securityAlertResponse: {
+              ...mockSecurityAlertResponse,
+              reason: 'unmappedReason',
+            },
+          }}
+        />,
+      );
+
+      expect(getByText(stubOtherDescription)).toBeInTheDocument();
+      expect(Sentry.captureException).toHaveBeenCalledTimes(1);
     });
   });
 });
