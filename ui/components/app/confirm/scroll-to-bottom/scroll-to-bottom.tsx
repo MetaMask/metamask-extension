@@ -32,11 +32,11 @@ interface ContentProps extends StyleUtilityProps {
   /**
    * Is true when all content has been displayed
    */
-  hasViewedContent: boolean;
+  hasViewedContent?: boolean;
   /**
    * Setter function for hasViewedContent
    */
-  setHasViewedContent: Dispatch<SetStateAction<boolean>>;
+  setHasViewedContent?: Dispatch<SetStateAction<boolean>>;
 }
 
 const ScrollToBottom = ({
@@ -62,7 +62,7 @@ const ScrollToBottom = ({
 
     setShowScrollDown(!isAtBottom);
 
-    if (isAtBottom) {
+    if (isAtBottom && setHasViewedContent) {
       setHasViewedContent(true);
     }
   }, 100);
