@@ -55,7 +55,8 @@ describe('Transfer custom tokens @no-mmi', function () {
         });
         await driver.fill('input[placeholder="0"]', '1');
         await driver.waitForSelector('.transaction-detail-item__detail-values');
-        await driver.clickElement('[data-testid="page-container-footer-next"]');
+
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // check transaction details
         await driver.waitForSelector({
