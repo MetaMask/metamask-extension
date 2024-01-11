@@ -39,6 +39,7 @@ import {
   getApprovalFlows,
   getShowSurveyToast,
   getNewTokensImportedError,
+  hasPendingApprovals,
 } from '../../selectors';
 
 import {
@@ -67,6 +68,9 @@ import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/app';
 import {
   AlertTypes,
@@ -127,6 +131,12 @@ const mapStateToProps = (state) => {
 
   const hasWatchNftPendingApprovals = getSuggestedNfts(state).length > 0;
 
+  const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+    ///: END:ONLY_INCLUDE_IF
+  ]);
+
   return {
     forgottenPassword,
     hasWatchTokenPendingApprovals,
@@ -168,6 +178,7 @@ const mapStateToProps = (state) => {
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
     showSurveyToast: getShowSurveyToast(state),
+    hasAllowedPopupRedirectApprovals,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
     institutionalConnectRequests,
