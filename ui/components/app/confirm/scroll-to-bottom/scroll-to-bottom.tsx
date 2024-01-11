@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { debounce } from 'lodash';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
@@ -23,21 +29,42 @@ interface ContentProps extends StyleUtilityProps {
    * Elements that go in the page content section
    */
   children: React.ReactNode | React.ReactNode[];
+  /**
+   * Is true when all content has been displayed
+   */
+  hasViewedContent: boolean;
+  /**
+   * Setter function for hasViewedContent
+   */
+  setHasViewedContent: Dispatch<SetStateAction<boolean>>;
 }
 
-const ScrollToBottom = ({ children, ...props }: ContentProps) => {
+const ScrollToBottom = ({
+  children,
+  hasViewedContent,
+  setHasViewedContent,
+  ...props
+}: ContentProps) => {
   const t = useContext(I18nContext);
-  const [showScrollDown, setShowScrollDown] = useState(true);
+  const [showScrollDown, setShowScrollDown] = useState(false);
 
   const containerRef = React.createRef<HTMLSpanElement>();
   const bottomRef = React.createRef<HTMLDivElement>();
 
   const handleDebouncedScroll = debounce((target) => {
     const isScrollable = target.scrollHeight > target.clientHeight;
+    if (!isScrollable) {
+      return;
+    }
+
     const isAtBottom =
       target.scrollHeight - target.scrollTop === target.clientHeight;
 
-    setShowScrollDown(isScrollable && !isAtBottom);
+    setShowScrollDown(!isAtBottom);
+
+    if (isAtBottom) {
+      setHasViewedContent(true);
+    }
   }, 100);
 
   const handleScroll = (e: React.WheelEvent<HTMLDivElement>) => {
@@ -59,7 +86,8 @@ const ScrollToBottom = ({ children, ...props }: ContentProps) => {
 
     const isScrollable =
       currentContainerRef.scrollHeight > currentContainerRef.clientHeight;
-    setShowScrollDown(isScrollable);
+
+    isScrollable ? setShowScrollDown(isScrollable) : setHasViewedContent(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
