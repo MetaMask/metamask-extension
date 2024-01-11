@@ -4,7 +4,11 @@
 Write a short description of the changes included in this pull request, also include relevant motivation and context. Have in mind the following questions:
 1. What is the reason for the change?
 2. What is the improvement/solution?
+
+If you want to include an "Open in GitHub Codespaces" button, then uncomment that line and replace PR_NUMBER with your actual PR number (there is unfortunately no automatic method)
 -->
+
+<!-- [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/MetaMask/metamask-extension/pull/PR_NUMBER?quickstart=1) -->
 
 ## **Related issues**
 
