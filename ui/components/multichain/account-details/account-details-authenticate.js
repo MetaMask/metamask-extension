@@ -14,8 +14,8 @@ import {
   Box,
   ButtonPrimary,
   ButtonSecondary,
-  FormTextField,
 } from '../../component-library';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
 
 export const AccountDetailsAuthenticate = ({
   address,

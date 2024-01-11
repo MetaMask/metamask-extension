@@ -2,7 +2,10 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import LoadingScreen from '../../ui/loading-screen';
 import { SECOND } from '../../../../shared/constants/time';
-import { NETWORK_TYPES } from '../../../../shared/constants/network';
+import {
+  DEPRECATED_NETWORKS,
+  NETWORK_TYPES,
+} from '../../../../shared/constants/network';
 import Popover from '../../ui/popover/popover.component';
 import {
   ButtonPrimary,
@@ -54,8 +57,16 @@ export default class LoadingNetworkScreen extends PureComponent {
       return loadingMessage;
     }
     const { providerConfig, providerId } = this.props;
+
     const providerName = providerConfig.type;
     const { t } = this.context;
+
+    if (DEPRECATED_NETWORKS.includes(providerConfig.chainId)) {
+      const deprecatedNetworkName =
+        providerConfig.nickname || providerConfig.type;
+
+      return t('connectingToDeprecatedNetwork', [deprecatedNetworkName]);
+    }
 
     switch (providerName) {
       case NETWORK_TYPES.MAINNET:

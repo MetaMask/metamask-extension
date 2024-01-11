@@ -32,6 +32,10 @@ import {
   LINEA_MAINNET_DISPLAY_NAME,
   LINEA_MAINNET_TOKEN_IMAGE_URL,
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
+  ARBITRUM_DISPLAY_NAME,
+  OPTIMISM_DISPLAY_NAME,
+  BASE_DISPLAY_NAME,
+  ZK_SYNC_ERA_DISPLAY_NAME,
   CHAIN_ID_TOKEN_IMAGE_MAP,
 } from '../../shared/constants/network';
 import {
@@ -91,6 +95,7 @@ import {
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
   NOTIFICATION_U2F_LEDGER_LIVE,
+  NOTIFICATION_STAKING_PORTFOLIO,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -459,6 +464,10 @@ export function getSelectedAccountCachedBalance(state) {
 export function getAllTokens(state) {
   return state.metamask.allTokens;
 }
+
+export const getConfirmationExchangeRates = (state) => {
+  return state.metamask.confirmationExchangeRates;
+};
 
 export function getSelectedAccount(state) {
   const accounts = getMetaMaskAccounts(state);
@@ -1235,6 +1244,7 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
+    [NOTIFICATION_STAKING_PORTFOLIO]: true,
   };
 }
 
@@ -1275,6 +1285,10 @@ export function getOrderedNetworksList(state) {
 
 export function getPinnedAccountsList(state) {
   return state.metamask.pinnedAccountList;
+}
+
+export function getHiddenAccountsList(state) {
+  return state.metamask.hiddenAccountList;
 }
 
 export function getShowRecoveryPhraseReminder(state) {
@@ -1628,13 +1642,22 @@ export const getTokenDetectionSupportNetworkByChainId = (state) => {
       return LINEA_GOERLI_DISPLAY_NAME;
     case CHAIN_IDS.LINEA_MAINNET:
       return LINEA_MAINNET_DISPLAY_NAME;
+    case CHAIN_IDS.ARBITRUM:
+      return ARBITRUM_DISPLAY_NAME;
+    case CHAIN_IDS.OPTIMISM:
+      return OPTIMISM_DISPLAY_NAME;
+    case CHAIN_IDS.BASE:
+      return BASE_DISPLAY_NAME;
+    case CHAIN_IDS.ZKSYNC_ERA:
+      return ZK_SYNC_ERA_DISPLAY_NAME;
     default:
       return '';
   }
 };
 /**
  * To check if the chainId supports token detection,
- * currently it returns true for Ethereum Mainnet, BSC, Polygon, Avalanche, and Linea
+ * currently it returns true for Ethereum Mainnet, BSC, Polygon,
+ * Avalanche, Linea, Arbitrum, Optimism, Base, and zkSync
  *
  * @param {*} state
  * @returns Boolean
@@ -1648,6 +1671,10 @@ export function getIsDynamicTokenListAvailable(state) {
     CHAIN_IDS.AVALANCHE,
     CHAIN_IDS.LINEA_GOERLI,
     CHAIN_IDS.LINEA_MAINNET,
+    CHAIN_IDS.ARBITRUM,
+    CHAIN_IDS.OPTIMISM,
+    CHAIN_IDS.BASE,
+    CHAIN_IDS.ZKSYNC_ERA,
   ].includes(chainId);
 }
 
@@ -1840,22 +1867,38 @@ export function getCustomTokenAmount(state) {
 export function getUpdatedAndSortedAccounts(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const pinnedAddresses = getPinnedAccountsList(state);
+  const hiddenAddresses = getHiddenAccountsList(state);
 
   accounts.forEach((account) => {
-    account.pinned = Boolean(pinnedAddresses?.includes(account.address));
+    account.pinned = Boolean(pinnedAddresses.includes(account.address));
+    account.hidden = Boolean(hiddenAddresses.includes(account.address));
   });
 
-  const notPinnedAccounts = accounts.filter(
-    (account) => !pinnedAddresses.includes(account.address),
-  );
-
   const sortedPinnedAccounts = pinnedAddresses
-    .map((address) => accounts.find((account) => account.address === address))
+    ?.map((address) => accounts.find((account) => account.address === address))
     .filter((account) =>
-      Boolean(account && pinnedAddresses.includes(account.address)),
+      Boolean(
+        account &&
+          pinnedAddresses.includes(account.address) &&
+          !hiddenAddresses?.includes(account.address),
+      ),
     );
 
-  const sortedSearchResults = [...sortedPinnedAccounts, ...notPinnedAccounts];
+  const notPinnedAccounts = accounts.filter(
+    (account) =>
+      !pinnedAddresses.includes(account.address) &&
+      !hiddenAddresses.includes(account.address),
+  );
+
+  const filteredHiddenAccounts = accounts.filter((account) =>
+    hiddenAddresses.includes(account.address),
+  );
+
+  const sortedSearchResults = [
+    ...sortedPinnedAccounts,
+    ...notPinnedAccounts,
+    ...filteredHiddenAccounts,
+  ];
 
   return sortedSearchResults;
 }

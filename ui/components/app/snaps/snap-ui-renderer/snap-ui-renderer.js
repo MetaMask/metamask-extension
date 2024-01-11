@@ -42,7 +42,7 @@ export const UI_MAPPING = {
     props: {
       variant: TypographyVariant.H4,
       fontWeight: FontWeight.Bold,
-      overflowWrap: OverflowWrap.BreakWord,
+      overflowWrap: OverflowWrap.Anywhere,
     },
   }),
   text: (props) => ({

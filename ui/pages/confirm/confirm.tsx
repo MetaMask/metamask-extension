@@ -5,6 +5,7 @@ import { Footer, Page } from '../../components/multichain/pages/page';
 import { BackgroundColor } from '../../helpers/constants/design-system';
 
 import { Header } from '../../components/app/confirm/header';
+import { Footer as ConfirmFooter } from '../../components/app/confirm/footer';
 import syncConfirmPath from '../../hooks/confirm/syncConfirmPath';
 import setCurrentConfirmation from '../../hooks/confirm/setCurrentConfirmation';
 
@@ -58,7 +59,9 @@ const Confirm = () => {
         Nam eget leo ut purus pulvinar sodales. Nullam ornare euismod dignissim.
         Duis blandit commodo viverra.
       </ScrollToBottom>
-      <Footer>Footer</Footer>
+      <Footer>
+        <ConfirmFooter />
+      </Footer>
     </Page>
   );
 };

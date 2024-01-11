@@ -3142,10 +3142,6 @@
   "portfolioDashboard": {
     "message": "Portfolioダッシュボード"
   },
-  "preferredLedgerConnectionType": {
-    "message": "優先Ledger接続タイプ",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "スワップを準備しています..."
   },
