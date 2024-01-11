@@ -40,7 +40,7 @@ export const ShowMore = ({ children, ...props }) => {
             bottom: 0,
             right: 0,
             // Avoids see-through with muted colors
-            background: `linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-${BackgroundColor.backgroundDefault}) 33%)`,
+            background: `linear-gradient(90deg, transparent 0%, var(--color-${BackgroundColor.backgroundDefault}) 33%)`,
           }}
         >
           <Button
