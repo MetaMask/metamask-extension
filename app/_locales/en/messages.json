@@ -3068,6 +3068,21 @@
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
   },
+  "notificationsBlockaidDefaultDescriptionOne": {
+    "message": "Stay safe from scams while still protecting your privacy with security alerts powered by Blockaid. This feature is now on by default for all MetaMask users."
+  },
+  "notificationsBlockaidDefaultDescriptionThree": {
+    "message": "Only on Ethereum Mainnet. More networks available soon."
+  },
+  "notificationsBlockaidDefaultDescriptionThreeActionText": {
+    "message": "Got it"
+  },
+  "notificationsBlockaidDefaultDescriptionTwo": {
+    "message": "Always do your own due diligence before approving requests."
+  },
+  "notificationsBlockaidDefaultTitle": {
+    "message": "Stay safe with security alerts"
+  },
   "notificationsBuySellActionText": {
     "message": "Try it on MetaMask Portfolio"
   },
