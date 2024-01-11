@@ -14,7 +14,7 @@ const selectors = {
   appHeaderLogo: '[data-testid="app-header-logo"]',
   ethOverviewSend: '[data-testid="eth-overview-send"]',
   ensInput: '[data-testid="ens-input"]',
-  quantity: '.unit-input__input',
+  quantity: 'input[placeholder="0"]',
   hexDataInput: '.send-v2__hex-data__input',
   nextPageButton: '[data-testid="page-container-footer-next"]',
   hexButton: { text: 'Hex', tag: 'button' },

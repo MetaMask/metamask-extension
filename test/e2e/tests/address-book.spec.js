@@ -33,12 +33,8 @@ describe('Address Book', function () {
       },
       async ({ driver, ganacheServer }) => {
         await logInWithBalanceValidation(driver, ganacheServer);
-
         await openActionMenuAndStartSendFlow(driver);
-        // TODO: Update Test when Multichain Send Flow is added
-        if (process.env.MULTICHAIN) {
-          return;
-        }
+
         const recipientRowTitle = await driver.findElement(
           '.send__select-recipient-wrapper__group-item__title',
         );
@@ -49,9 +45,9 @@ describe('Address Book', function () {
           '.send__select-recipient-wrapper__group-item',
         );
 
-        await driver.fill('.unit-input__input', '2');
+        await driver.fill('input[placeholder="0"]', '2');
 
-        await driver.clickElement({ text: 'Next', tag: 'button' });
+        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
