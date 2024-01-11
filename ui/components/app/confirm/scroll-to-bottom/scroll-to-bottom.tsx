@@ -87,7 +87,11 @@ const ScrollToBottom = ({
     const isScrollable =
       currentContainerRef.scrollHeight > currentContainerRef.clientHeight;
 
-    isScrollable ? setShowScrollDown(isScrollable) : setHasViewedContent(true);
+    if (isScrollable) {
+      setShowScrollDown(isScrollable);
+    } else if (setHasViewedContent) {
+      setHasViewedContent(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -121,6 +125,7 @@ const ScrollToBottom = ({
         <div ref={bottomRef} style={{ height: '1px' }}></div>
         {showScrollDown && (
           <ButtonIcon
+            className={'confirm-scroll-to-bottom__button'}
             onClick={handleButtonClick}
             iconName={IconName.Arrow2Down}
             ariaLabel={t('scrollDown')}
@@ -129,18 +134,6 @@ const ScrollToBottom = ({
             color={IconColor.primaryDefault}
             display={Display.Flex}
             size={ButtonIconSize.Md}
-            style={{
-              bottom: '12px',
-              position: 'absolute',
-              margin: '0 auto',
-              left: '0',
-              right: '0',
-              height: '36px',
-              width: '36px',
-              boxShadow: 'var(--shadow-size-md) var(--color-shadow-default)',
-              /** arbitrary value to ensure bottom is above content */
-              zIndex: '201',
-            }}
           />
         )}
       </Box>
