@@ -1,5 +1,6 @@
 import { startBundler, BundlerServer } from '@metamask/test-bundler';
 
+const BUNDLER_URL = 'http://localhost:3000/rpc';
 const CONFIG_FILE = `${__dirname}/bundler.config.json`;
 
 export class Bundler {
@@ -33,5 +34,23 @@ export class Bundler {
     } catch (e) {
       console.log('Error while stopping bundler', e);
     }
+  }
+
+  async getUserOperationReceipt(userOperationHash: string) {
+    const response = await fetch(BUNDLER_URL, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'eth_getUserOperationReceipt',
+        params: [userOperationHash],
+      }),
+    });
+
+    return (await response.json()).result;
   }
 }

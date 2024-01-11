@@ -191,6 +191,7 @@ async function withFixtures(options, testSuite) {
       ganacheServer,
       secondaryGanacheServer,
       mockedEndpoint,
+      bundlerServer,
     });
 
     // At this point the suite has executed successfully, so we can log out a success message

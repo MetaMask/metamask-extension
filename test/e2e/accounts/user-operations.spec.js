@@ -9,6 +9,9 @@ const {
   convertETHToHexGwei,
 } = require('../helpers');
 
+const USER_OPERATION_HASH =
+  '0x45fe99ef2a6d7993da06a2b3972bd00bd67006a825c8cac823191e9562899940';
+
 const FixtureBuilder = require('../fixture-builder');
 const { DEFAULT_FIXTURE_ACCOUNT } = require('../constants');
 const { buildQuote, reviewQuote } = require('../tests/swaps/shared');
@@ -57,6 +60,22 @@ async function expectTransactionDetail(driver, rowIndex, expectedText) {
   });
 }
 
+async function expectTransactionDetails(driver, bundlerServer) {
+  const hexToDecimalString = (hex) => String(parseInt(hex, 16));
+
+  const receipt = await bundlerServer.getUserOperationReceipt(
+    USER_OPERATION_HASH,
+  );
+
+  await expectTransactionDetail(driver, 0, hexToDecimalString(receipt.nonce));
+
+  await expectTransactionDetail(
+    driver,
+    3,
+    hexToDecimalString(receipt.actualGasUsed),
+  );
+}
+
 describe('User Operations', function () {
   it('from dApp transaction', async function () {
     await withFixtures(
@@ -72,7 +91,7 @@ describe('User Operations', function () {
           hardfork: 'london',
         },
       },
-      async ({ driver }) => {
+      async ({ driver, bundlerServer }) => {
         await unlockWallet(driver);
 
         await createDappTransaction(driver, {
@@ -86,7 +105,7 @@ describe('User Operations', function () {
         await switchToExtension(driver);
         await openConfirmedTransaction(driver);
 
-        await expectTransactionDetail(driver, 0, '0'); // Nonce
+        expectTransactionDetails(driver, bundlerServer);
       },
     );
   });
@@ -101,7 +120,7 @@ describe('User Operations', function () {
           hardfork: 'london',
         },
       },
-      async ({ driver }) => {
+      async ({ driver, bundlerServer }) => {
         if (process.env.MULTICHAIN) {
           return;
         }
@@ -117,7 +136,7 @@ describe('User Operations', function () {
 
         await openConfirmedTransaction(driver);
 
-        await expectTransactionDetail(driver, 0, '0'); // Nonce
+        expectTransactionDetails(driver, bundlerServer);
       },
     );
   });
@@ -132,7 +151,7 @@ describe('User Operations', function () {
           hardfork: 'london',
         },
       },
-      async ({ driver }) => {
+      async ({ driver, bundlerServer }) => {
         await unlockWallet(driver);
         await buildQuote(driver, {
           amount: 0.001,
@@ -148,7 +167,7 @@ describe('User Operations', function () {
 
         await openConfirmedTransaction(driver);
 
-        await expectTransactionDetail(driver, 0, '0'); // Nonce
+        expectTransactionDetails(driver, bundlerServer);
       },
     );
   });
