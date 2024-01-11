@@ -46,5 +46,6 @@ export function useName(
     name: nameEntry?.name ?? null,
     sourceId: nameEntry?.sourceId ?? null,
     proposedNames: nameEntry?.proposedNames ?? {},
+    origin: nameEntry?.origin ?? null,
   };
 }
