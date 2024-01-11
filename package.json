@@ -246,7 +246,7 @@
     "@metamask-institutional/rpc-allowlist": "^1.0.0",
     "@metamask-institutional/sdk": "^0.1.23",
     "@metamask-institutional/transaction-update": "^0.1.32",
-    "@metamask/accounts-controller": "^4.0.0",
+    "@metamask/accounts-controller": "^5.0.0",
     "@metamask/address-book-controller": "^3.0.0",
     "@metamask/announcement-controller": "^5.0.1",
     "@metamask/approval-controller": "^5.1.0",
