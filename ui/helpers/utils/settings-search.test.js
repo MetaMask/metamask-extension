@@ -57,8 +57,6 @@ const t = (key) => {
       return 'IPFS Gateway';
     case 'ipfsGatewayDescription':
       return 'Enter the URL of the IPFS CID gateway to use for ENS content resolution.';
-    case 'preferredLedgerConnectionType':
-      return 'Preferred ledger connection type';
     case 'dismissReminderField':
       return 'Dismiss Secret Recovery Phrase backup reminder';
     case 'dismissReminderDescriptionField':
@@ -153,7 +151,7 @@ describe('Settings Search Utils', () => {
     });
 
     it('should get good advanced section number', () => {
-      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(12);
+      expect(getNumberOfSettingsInSection(t, t('advanced'))).toStrictEqual(11);
     });
 
     it('should get good contact section number', () => {

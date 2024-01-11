@@ -7,10 +7,12 @@ import {
   Display,
   FlexDirection,
 } from '../../helpers/constants/design-system';
+import SnapAuthorshipHeader from '../../components/app/snaps/snap-authorship-header';
 import { SnapAccountRedirectContent } from './components';
 
 export interface SnapAccountRedirectProps {
   url: string;
+  snapId: string;
   snapName: string;
   isBlockedUrl: boolean;
   message: string;
@@ -18,6 +20,7 @@ export interface SnapAccountRedirectProps {
 
 const SnapAccountRedirect = ({
   url,
+  snapId,
   snapName,
   isBlockedUrl,
   message,
@@ -30,17 +33,19 @@ const SnapAccountRedirect = ({
       borderStyle={BorderStyle.none}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.center}
-      paddingLeft={4}
-      paddingRight={4}
     >
+      <SnapAuthorshipHeader snapId={snapId} />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         height={BlockSize.Full}
+        paddingLeft={4}
+        paddingRight={4}
       >
         <SnapAccountRedirectContent
           url={url}
+          snapId={snapId}
           snapName={snapName}
           isBlockedUrl={isBlockedUrl}
           message={message}

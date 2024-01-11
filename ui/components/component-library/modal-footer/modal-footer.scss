@@ -1,0 +1,7 @@
+.mm-modal-footer {
+  &__button {
+    // wrap buttons if content overflows the width of the button
+    // button take up all available space whether horizontally or vertically aligned
+    flex: 1 0 auto;
+  }
+}

@@ -46,19 +46,7 @@ describe('create-snap-account confirmation', () => {
       store,
     );
     await waitFor(() => {
-      expect(getByText(`Create Snap account`)).toBeInTheDocument();
-      expect(
-        getByText(
-          `${mockSnapName} wants to add a new Snap account to your wallet`,
-        ),
-      ).toMatchInlineSnapshot(`
-        <p
-          class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-text--overflow-wrap-anywhere mm-box--padding-0 mm-box--sm:padding-4 mm-box--color-text-default"
-          data-testid="create-snap-account-content-description"
-        >
-          Test Snap Account Name wants to add a new Snap account to your wallet
-        </p>
-      `);
+      expect(getByText(`Create account`)).toBeInTheDocument();
       expect(container.querySelector('.callout')).toBeDefined();
       expect(container).toMatchSnapshot();
     });

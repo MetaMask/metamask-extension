@@ -176,6 +176,11 @@ function defaultFixture() {
           23: {
             date: null,
             id: 23,
+            isShown: true,
+          },
+          30: {
+            date: null,
+            id: 30,
             isShown: false,
           },
           ///: END:ONLY_INCLUDE_IF
@@ -186,6 +191,7 @@ function defaultFixture() {
       },
       AccountOrderController: {
         pinnedAccountList: [],
+        hiddenAccountList: [],
       },
       AppStateController: {
         browserEnvironment: {},

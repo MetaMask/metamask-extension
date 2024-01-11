@@ -134,7 +134,6 @@ export default class ConfirmApproveContent extends Component {
           <Box marginBottom={4}>
             <FeeDetailsComponent
               txData={txData}
-              supportsEIP1559={supportsEIP1559}
               useCurrencyRateCheck={useCurrencyRateCheck}
             />
           </Box>
@@ -550,10 +549,7 @@ export default class ConfirmApproveContent extends Component {
       >
         {
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-          <BlockaidBannerAlert
-            securityAlertResponse={txData?.securityAlertResponse}
-            margin={4}
-          />
+          <BlockaidBannerAlert txData={txData} margin={4} />
           ///: END:ONLY_INCLUDE_IF
         }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (

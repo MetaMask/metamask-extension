@@ -894,6 +894,9 @@
   "connectingTo": {
     "message": "Connecting to $1"
   },
+  "connectingToDeprecatedNetwork": {
+    "message": "'$1' is being phased out and may not work. Try another network."
+  },
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
@@ -1011,10 +1014,10 @@
     "message": "Create password"
   },
   "createSnapAccountDescription": {
-    "message": "$1 wants to add a new Snap account to your wallet"
+    "message": "$1 wants to add a new account to MetaMask."
   },
   "createSnapAccountTitle": {
-    "message": "Create Snap account"
+    "message": "Create account"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -1230,8 +1233,8 @@
   "deprecatedAuroraNetworkMsg": {
     "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
   },
-  "deprecatedGoerliNetworkMsg": {
-    "message": "Due to the protocol changes of Ethereum: Goerli test network may not work as reliably and will be deprecated soon."
+  "deprecatedGoerliNtwrkMsg": {
+    "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
   },
   "description": {
     "message": "Description"
@@ -1731,6 +1734,9 @@
     "message": "I accept the risks",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
   },
+  "floatAmountToken": {
+    "message": "Token amount must be an integer"
+  },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
   },
@@ -1892,8 +1898,14 @@
   "hexData": {
     "message": "Hex data"
   },
+  "hiddenAccounts": {
+    "message": "Hidden accounts"
+  },
   "hide": {
     "message": "Hide"
+  },
+  "hideAccount": {
+    "message": "Hide account"
   },
   "hideFullTransactionDetails": {
     "message": "Hide full transaction details"
@@ -1904,6 +1916,7 @@
   "hideSentitiveInfo": {
     "message": "Hide sensitive information"
   },
+
   "hideToken": {
     "message": "Hide token"
   },
@@ -2552,6 +2565,9 @@
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
   },
+  "negativeOrZeroAmountToken": {
+    "message": "Cannot send negative or zero amounts of Tokens"
+  },
   "network": {
     "message": "Network:"
   },
@@ -3058,6 +3074,21 @@
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
   },
+  "notificationsBlockaidDefaultDescriptionOne": {
+    "message": "Stay safe from scams while still protecting your privacy with security alerts powered by Blockaid. This feature is now on by default for all MetaMask users."
+  },
+  "notificationsBlockaidDefaultDescriptionThree": {
+    "message": "Only on Ethereum Mainnet. More networks available soon."
+  },
+  "notificationsBlockaidDefaultDescriptionThreeActionText": {
+    "message": "Got it"
+  },
+  "notificationsBlockaidDefaultDescriptionTwo": {
+    "message": "Always do your own due diligence before approving requests."
+  },
+  "notificationsBlockaidDefaultTitle": {
+    "message": "Stay safe with security alerts"
+  },
   "notificationsBuySellActionText": {
     "message": "Try it on MetaMask Portfolio"
   },
@@ -3102,6 +3133,18 @@
   },
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
+  },
+  "notificationsStakingPortfolioActionText": {
+    "message": "Got it",
+    "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  },
+  "notificationsStakingPortfolioDescription": {
+    "message": "Now you can stake ETH and manage your rewards all in one place.",
+    "description": "Description for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  },
+  "notificationsStakingPortfolioTitle": {
+    "message": "Stake smarter in Portfolio",
+    "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
@@ -3602,10 +3645,6 @@
   "portfolioDashboard": {
     "message": "Portfolio Dashboard"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Preferred Ledger connection type",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preferredProvider": {
     "message": "Select your preferred provider"
   },
@@ -3764,11 +3803,8 @@
   "removeSnap": {
     "message": "Remove Snap"
   },
-  "removeSnapAccountBannerDescription": {
-    "message": "Be sure you can access this account on your own before removing it"
-  },
   "removeSnapAccountDescription": {
-    "message": "$1 wants to remove this account from MetaMask:"
+    "message": "If you proceed, this account will no longer be available in MetaMask."
   },
   "removeSnapAccountTitle": {
     "message": "Remove account"
@@ -3782,6 +3818,9 @@
   },
   "replace": {
     "message": "replace"
+  },
+  "reportIssue": {
+    "message": "Report an issue"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
@@ -4164,6 +4203,9 @@
   "show": {
     "message": "Show"
   },
+  "showAccount": {
+    "message": "Show account"
+  },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
   },
@@ -4270,7 +4312,17 @@
     "description": "$1 is an external link to FAQ and Risk Disclosures"
   },
   "snapAccountCreated": {
-    "message": "Your account is ready!"
+    "message": "Account created"
+  },
+  "snapAccountCreatedDescription": {
+    "message": "Your new account is ready to use!"
+  },
+  "snapAccountCreationFailed": {
+    "message": "Account creation failed"
+  },
+  "snapAccountCreationFailedDescription": {
+    "message": "$1 didn't manage to create an account for you.",
+    "description": "$1 is the snap name"
   },
   "snapAccountRedirectFinishSigningTitle": {
     "message": "Finish signing"
@@ -4278,8 +4330,18 @@
   "snapAccountRedirectSiteDescription": {
     "message": "Follow the instructions from $1"
   },
+  "snapAccountRemovalFailed": {
+    "message": "Account removal failed"
+  },
+  "snapAccountRemovalFailedDescription": {
+    "message": "$1 didn't manage to remove this account for you.",
+    "description": "$1 is the snap name"
+  },
   "snapAccountRemoved": {
     "message": "Account removed"
+  },
+  "snapAccountRemovedDescription": {
+    "message": "This account will no longer be available to use in MetaMask."
   },
   "snapAccounts": {
     "message": "Account Snaps"
