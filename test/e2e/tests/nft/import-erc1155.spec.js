@@ -1,23 +1,14 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
   withFixtures,
   unlockWallet,
+  defaultGanacheOptions,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('Import ERC1155 NFT', function () {
   const smartContract = SMART_CONTRACTS.ERC1155;
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   it('should be able to import an ERC1155 NFT that user owns', async function () {
     await withFixtures(
@@ -26,14 +17,13 @@ describe('Import ERC1155 NFT', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // After login, go to NFTs tab, open the import NFT/ERC1155 form
@@ -75,14 +65,13 @@ describe('Import ERC1155 NFT', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
         const contractAddress =
           contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
         await unlockWallet(driver);
 
         // After login, go to NFTs tab, open the import NFT form

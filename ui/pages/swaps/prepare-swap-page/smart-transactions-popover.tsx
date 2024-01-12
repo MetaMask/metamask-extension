@@ -12,8 +12,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
   Box,
@@ -22,6 +20,8 @@ import {
   ButtonLink,
   ButtonLinkSize,
 } from '../../../components/component-library';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { SMART_SWAPS_FAQ_AND_RISK_DISCLOSURES_URL } from '../../../../shared/constants/swaps';
 
 interface Props {
@@ -99,7 +99,7 @@ export default function SmartTransactionsPopover({
             onClick={onStartSwapping}
             width={BlockSize.Full}
           >
-            {t('startSwapping')}
+            {t('enableSmartSwaps')}
           </Button>
           <Button
             type="link"

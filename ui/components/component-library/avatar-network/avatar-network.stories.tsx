@@ -103,7 +103,6 @@ export const Src: StoryFn<typeof AvatarNetwork> = (args) => (
     <AvatarNetwork {...args} src="./images/bsc-filled.svg" />
     <AvatarNetwork {...args} src="./images/fantom-opera.svg" />
     <AvatarNetwork {...args} src="./images/harmony-one.svg" />
-    <AvatarNetwork {...args} src="./images/aurora.png" />
   </Box>
 );
 

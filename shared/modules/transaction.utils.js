@@ -2,11 +2,8 @@ import { isHexString } from 'ethereumjs-util';
 import { Interface } from '@ethersproject/abi';
 import { abiERC721, abiERC20, abiERC1155 } from '@metamask/metamask-eth-abis';
 import log from 'loglevel';
-import {
-  AssetType,
-  TokenStandard,
-  TransactionType,
-} from '../constants/transaction';
+import { TransactionType } from '@metamask/transaction-controller';
+import { AssetType, TokenStandard } from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
@@ -43,7 +40,7 @@ const erc1155Interface = new Interface(abiERC1155);
  * Determines if the maxFeePerGas and maxPriorityFeePerGas fields are supplied
  * and valid inputs. This will return false for non hex string inputs.
  *
- * @param {import("../constants/transaction").TransactionMeta} transaction -
+ * @param {import('@metamask/transaction-controller').TransactionMeta} transaction -
  *  the transaction to check
  * @returns {boolean} true if transaction uses valid EIP1559 fields
  */
@@ -59,7 +56,7 @@ export function isEIP1559Transaction(transaction) {
  * supplied and that the gasPrice field is valid if it is provided. This will
  * return false if gasPrice is a non hex string.
  *
- * @param {import("../constants/transaction").TransactionMeta} transaction -
+ * @param {import('@metamask/transaction-controller').TransactionMeta} transaction -
  *  the transaction to check
  * @returns {boolean} true if transaction uses valid Legacy fields OR lacks
  *  EIP1559 fields
@@ -76,7 +73,7 @@ export function isLegacyTransaction(transaction) {
 /**
  * Determine if a transactions gas fees in txParams match those in its dappSuggestedGasFees property
  *
- * @param {import("../constants/transaction").TransactionMeta} transaction -
+ * @param {import('@metamask/transaction-controller').TransactionMeta} transaction -
  *  the transaction to check
  * @returns {boolean} true if both the txParams and dappSuggestedGasFees are objects with truthy gas fee properties,
  *   and those properties are strictly equal
@@ -205,7 +202,7 @@ const INFERRABLE_TRANSACTION_TYPES = [
  * transaction is dealing with, as well as the standard for the token if it
  * is a token transaction.
  *
- * @param {import('../constants/transaction').TransactionMeta} txMeta -
+ * @param {import('@metamask/transaction-controller').TransactionMeta} txMeta -
  *  transaction meta object
  * @param {EthQuery} query - EthQuery instance
  * @param {Function} getTokenStandardAndDetails - function to get token

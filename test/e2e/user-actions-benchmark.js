@@ -12,6 +12,7 @@ const {
   withFixtures,
   openActionMenuAndStartSendFlow,
   logInWithBalanceValidation,
+  unlockWallet,
 } = require('./helpers');
 const FixtureBuilder = require('./fixture-builder');
 
@@ -34,9 +35,7 @@ async function loadNewAccount() {
       ganacheOptions,
     },
     async ({ driver }) => {
-      await driver.navigate();
-      await driver.fill('#password', 'correct horse battery staple');
-      await driver.press('#password', driver.Key.ENTER);
+      await unlockWallet(driver);
 
       await driver.clickElement('[data-testid="account-menu-icon"]');
       await driver.clickElement(
@@ -67,7 +66,6 @@ async function confirmTx() {
       ganacheOptions,
     },
     async ({ driver, ganacheServer }) => {
-      await driver.navigate();
       await logInWithBalanceValidation(driver, ganacheServer);
 
       await openActionMenuAndStartSendFlow(driver);

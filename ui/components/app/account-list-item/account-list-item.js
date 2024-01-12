@@ -10,17 +10,17 @@ export default function AccountListItem({
   displayAddress = false,
   handleClick,
   icon = null,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   hideDefaultMismatchWarning = false,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 }) {
   const { name, address, balance } = account || {};
 
   let showDefaultMismatchWarning = true;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   showDefaultMismatchWarning = !hideDefaultMismatchWarning;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <div
@@ -81,10 +81,10 @@ AccountListItem.propTypes = {
    * Pass icon component to be displayed. Currently not used
    */
   icon: PropTypes.node,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   /**
    * MMI Prop, will hide the default AccountMismatchWarning when needed
    */
   hideDefaultMismatchWarning: PropTypes.bool,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 };

@@ -9,7 +9,7 @@ The selected network is Sepolia.",
 4,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
 5,Proceed to Connect with MetaMask.,,,
 6,Connect with the current account.,,,
-7,"In test dapp, click ""send legacy transaction"".",,MetaMask notification screen is shown. Estimated gas fee is displayed. Edit button is displayed.,Take a note for the estimated gas fee.
+7,"In test dapp, click ""send legacy transaction"".",,MetaMask Dialog screen is shown. Estimated gas fee is displayed. Edit button is displayed.,Take a note for the estimated gas fee.
 8,"On notification screen, click ""Edit"".",,"Edit screen is shown. Gas fee information message is shown. ""Edit suggested gas fee"" button is displayed.",
 9,"On edit screen, click ""Edit suggested gas fee"".",,Editable gas limit and gas price input fields are displayed.,
 10,"In gas price input field, enter a different value, and click ""Save"".",e.g. 50,"On notification screen, the displayed gas fee is different from previous one.","Take a note for the current gas fee. "

@@ -142,7 +142,9 @@ export class CustodianTestClient implements ICustodianTestClient {
           signedTransactionTime as string,
         );
         if (!transaction) {
-          throw Error('Tx not found');
+          throw Error(
+            '🥲 Tx not found -> getEIP721TransactionStatusCreatedByTimestamp. Retrying...',
+          );
         }
         break;
       } catch (error) {
@@ -152,7 +154,9 @@ export class CustodianTestClient implements ICustodianTestClient {
           console.log(`Retrying in ${retryInterval / 1000} seconds...`);
           await new Promise((resolve) => setTimeout(resolve, retryInterval));
         } else {
-          throw error;
+          throw error(
+            `👎 Max retries (${maxRetries}) reached. Saturn tx not found.`,
+          );
         }
       }
     }
@@ -194,7 +198,9 @@ export class CustodianTestClient implements ICustodianTestClient {
         );
         return id;
       } catch (e) {
-        console.error(e);
+        console.error(
+          '🥲 Tx not found -> getEIP721TransactionStatusCreated. Retrying...',
+        );
       }
       retries += 1;
       if (retries < maxRetries) {

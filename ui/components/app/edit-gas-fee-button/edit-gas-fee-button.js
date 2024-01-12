@@ -7,9 +7,9 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { PRIORITY_LEVEL_ICON_MAP } from '../../../helpers/constants/gas';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionEventFragment } from '../../../hooks/useTransactionEventFragment';
@@ -37,22 +37,22 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
   if (!supportsEIP1559 || !estimateUsed || !editEnabled) {
     return null;
   }
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   let icon = estimateUsed;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   let title = estimateUsed;
   if (
     estimateUsed === PriorityLevels.high &&
     editGasMode === EditGasModes.swaps
   ) {
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     icon = 'swapSuggested';
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     title = 'swapSuggested';
   } else if (estimateUsed === PriorityLevels.tenPercentIncreased) {
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     icon = undefined;
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     title = 'tenPercentIncreased';
   }
 
@@ -74,13 +74,13 @@ export default function EditGasFeeButton({ userAcknowledgedGasMissing }) {
     <div className="edit-gas-fee-button">
       <button onClick={openEditGasFeeModal} data-testid="edit-gas-fee-button">
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           icon && (
             <span className="edit-gas-fee-button__icon">
               {PRIORITY_LEVEL_ICON_MAP[icon]}
             </span>
           )
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         <span className="edit-gas-fee-button__label">{t(title)}</span>
         <Icon

@@ -1,20 +1,25 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
+import BlockaidPackage from '@blockaid/ppom_release/package.json';
 
-import { Text } from '../../../component-library';
+import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import {
   OverflowWrap,
   Severity,
 } from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
-
 import {
   BlockaidReason,
   BlockaidResultType,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
+import { Text } from '../../../component-library';
+
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
+import { getReportUrl } from './blockaid-banner-utils';
+
+const zlib = require('zlib');
 
 /** Reason to description translation key mapping. Grouped by translations. */
 const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
@@ -46,14 +51,22 @@ const REASON_TO_TITLE_TKEY = Object.freeze({
   [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
 });
 
-function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
+function BlockaidBannerAlert({ txData, ...props }) {
+  const { securityAlertResponse, origin, msgParams, type, txParams, chainId } =
+    txData;
+
   const t = useContext(I18nContext);
 
   if (!securityAlertResponse) {
     return null;
   }
 
-  const { reason, result_type: resultType, features } = securityAlertResponse;
+  const {
+    reason,
+    result_type: resultType,
+    features,
+    block,
+  } = securityAlertResponse;
 
   if (resultType === BlockaidResultType.Benign) {
     return null;
@@ -82,6 +95,24 @@ function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
 
   const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
 
+  const reportData = {
+    domain: origin ?? msgParams?.origin,
+    jsonRpcMethod: type,
+    jsonRpcParams: JSON.stringify(txParams ?? msgParams),
+    blockNumber: block,
+    chain: NETWORK_TO_NAME_MAP[chainId],
+    classification: reason,
+    blockaidVersion: BlockaidPackage.version,
+    resultType,
+    reproduce: JSON.stringify(features),
+  };
+
+  const jsonData = JSON.stringify(reportData);
+
+  const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
+
+  const reportUrl = getReportUrl(encodedData);
+
   return (
     <SecurityProviderBannerAlert
       description={description}
@@ -89,13 +120,14 @@ function BlockaidBannerAlert({ securityAlertResponse, ...props }) {
       provider={isFailedResultType ? null : SecurityProvider.Blockaid}
       severity={severity}
       title={title}
+      reportUrl={reportUrl}
       {...props}
     />
   );
 }
 
 BlockaidBannerAlert.propTypes = {
-  securityAlertResponse: PropTypes.object,
+  txData: PropTypes.object,
 };
 
 export default BlockaidBannerAlert;

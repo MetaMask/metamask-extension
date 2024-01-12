@@ -1,12 +1,12 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import {
   EditGasModes,
   GasEstimateTypes,
   PriorityLevels,
 } from '../../../../shared/constants/gas';
-import { TransactionEnvelopeType } from '../../../../shared/constants/transaction';
 
 import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import { renderWithProvider } from '../../../../test/jest';

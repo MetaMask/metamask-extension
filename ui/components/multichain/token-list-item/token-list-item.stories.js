@@ -37,6 +37,7 @@ export default {
     tokenImage: './images/eth_logo.png',
     tokenSymbol: CURRENCY_SYMBOLS.ETH,
     title: 'Ethereum',
+    isOriginalTokenSymbol: true,
   },
 };
 
@@ -63,6 +64,9 @@ DefaultStory.decorators = [
     </Provider>
   ),
 ];
+DefaultStory.args = {
+  isStakeable: true,
+};
 
 export const ChaosStory = (args) => (
   <div

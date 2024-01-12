@@ -3,6 +3,10 @@ import EthQuery, { Provider } from '@metamask/eth-query';
 import { BigNumber } from 'bignumber.js';
 import { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
 import {
   determineTransactionAssetType,
@@ -13,11 +17,9 @@ import {
   hexWEIToDecGWEI,
 } from '../../../../shared/modules/conversion.utils';
 import {
-  TransactionType,
   TokenStandard,
   TransactionApprovalAmountType,
   TransactionMetaMetricsEvent,
-  TransactionMeta,
 } from '../../../../shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
@@ -32,12 +34,13 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IN
+import { getBlockaidMetricsParams } from '../../../../ui/helpers/utils/metrics';
+///: END:ONLY_INCLUDE_IF
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
@@ -195,7 +198,7 @@ export const handleTransactionConfirmed = async (
   const { transactionMeta } = transactionEventPayload;
   const { txReceipt } = transactionMeta;
 
-  extraParams.gas_used = txReceipt.gasUsed;
+  extraParams.gas_used = txReceipt?.gasUsed;
 
   const { submittedTime } = transactionMeta;
 
@@ -203,7 +206,7 @@ export const handleTransactionConfirmed = async (
     extraParams.completion_time = getTransactionCompletionTime(submittedTime);
   }
 
-  if (txReceipt.status === '0x0') {
+  if (txReceipt?.status === '0x0') {
     extraParams.status = METRICS_STATUS_FAILED;
   }
   await createUpdateFinalizeTransactionEventFragment({
@@ -359,7 +362,7 @@ export const handlePostTransactionBalanceUpdate = async (
   },
 ) => {
   if (getParticipateInMetrics() && transactionMeta.swapMetaData) {
-    if (transactionMeta.txReceipt.status === '0x0') {
+    if (transactionMeta.txReceipt?.status === '0x0') {
       trackEvent({
         event: 'Swap Failed',
         sensitiveProperties: { ...transactionMeta.swapMetaData },
@@ -384,7 +387,7 @@ export const handlePostTransactionBalanceUpdate = async (
         : null;
 
       const estimatedVsUsedGasRatio =
-        transactionMeta.txReceipt.gasUsed &&
+        transactionMeta.txReceipt?.gasUsed &&
         transactionMeta.swapMetaData.estimated_gas
           ? `${new BigNumber(transactionMeta.txReceipt.gasUsed, 16)
               .div(transactionMeta.swapMetaData.estimated_gas, 10)
@@ -422,7 +425,7 @@ export const handlePostTransactionBalanceUpdate = async (
   }
 };
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 /**
  * This function is called when a transaction metadata updated in the MMI controller.
  *
@@ -446,7 +449,7 @@ export const handleMMITransactionUpdate = async (
     transactionMetricsRequest,
   });
 };
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 function calculateTransactionsCost(
   transactionMeta: TransactionMeta,
@@ -460,8 +463,8 @@ function calculateTransactionsCost(
     );
   }
   const tradeGasCost = calcGasTotal(
-    transactionMeta.txReceipt.gasUsed,
-    transactionMeta.txReceipt.effectiveGasPrice,
+    transactionMeta.txReceipt?.gasUsed,
+    transactionMeta.txReceipt?.effectiveGasPrice,
   );
   const tradeAndApprovalGasCost = new BigNumber(tradeGasCost, 16)
     .plus(approvalGasCost, 16)
@@ -753,7 +756,6 @@ async function buildEventFragmentProperties({
     defaultGasEstimates,
     originalType,
     replacedById,
-    metamaskNetworkId: network,
     customTokenAmount,
     dappProposedTokenAmount,
     currentTokenBalance,
@@ -761,12 +763,11 @@ async function buildEventFragmentProperties({
     finalApprovalAmount,
     contractMethodName,
     securityProviderResponse,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     securityAlertResponse,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     simulationFails,
   } = transactionMeta;
-
   const query = new EthQuery(transactionMetricsRequest.provider);
   const source = referrer === ORIGIN_METAMASK ? 'user' : 'dapp';
 
@@ -790,16 +791,16 @@ async function buildEventFragmentProperties({
     if (estimateType) {
       gasParams.default_estimate = estimateType;
       let defaultMaxFeePerGas =
-        transactionMeta.defaultGasEstimates.maxFeePerGas;
+        transactionMeta.defaultGasEstimates?.maxFeePerGas;
       let defaultMaxPriorityFeePerGas =
-        transactionMeta.defaultGasEstimates.maxPriorityFeePerGas;
+        transactionMeta.defaultGasEstimates?.maxPriorityFeePerGas;
 
       if (
         [
           GasRecommendations.low,
           GasRecommendations.medium,
           GasRecommendations.high,
-        ].includes(estimateType)
+        ].includes(estimateType as GasRecommendations)
       ) {
         const { gasFeeEstimates } =
           await transactionMetricsRequest.getEIP1559GasFeeEstimates();
@@ -817,10 +818,10 @@ async function buildEventFragmentProperties({
       }
     }
 
-    if (transactionMeta.defaultGasEstimates.gas) {
+    if (transactionMeta.defaultGasEstimates?.gas) {
       gasParams.default_gas = transactionMeta.defaultGasEstimates.gas;
     }
-    if (transactionMeta.defaultGasEstimates.gasPrice) {
+    if (transactionMeta.defaultGasEstimates?.gasPrice) {
       gasParams.default_gas_price =
         transactionMeta.defaultGasEstimates.gasPrice;
     }
@@ -845,17 +846,19 @@ async function buildEventFragmentProperties({
     eip1559Version = '2';
   }
 
-  const contractInteractionTypes = [
-    TransactionType.contractInteraction,
-    TransactionType.tokenMethodApprove,
-    TransactionType.tokenMethodSafeTransferFrom,
-    TransactionType.tokenMethodSetApprovalForAll,
-    TransactionType.tokenMethodTransfer,
-    TransactionType.tokenMethodTransferFrom,
-    TransactionType.smart,
-    TransactionType.swap,
-    TransactionType.swapApproval,
-  ].includes(type);
+  const contractInteractionTypes =
+    type &&
+    [
+      TransactionType.contractInteraction,
+      TransactionType.tokenMethodApprove,
+      TransactionType.tokenMethodSafeTransferFrom,
+      TransactionType.tokenMethodSetApprovalForAll,
+      TransactionType.tokenMethodTransfer,
+      TransactionType.tokenMethodTransferFrom,
+      TransactionType.smart,
+      TransactionType.swap,
+      TransactionType.swapApproval,
+    ].includes(type);
 
   const contractMethodNames = {
     APPROVE: 'Approve',
@@ -868,7 +871,7 @@ async function buildEventFragmentProperties({
   let transactionType = TransactionType.simpleSend;
   if (type === TransactionType.cancel) {
     transactionType = TransactionType.cancel;
-  } else if (type === TransactionType.retry) {
+  } else if (type === TransactionType.retry && originalType) {
     transactionType = originalType;
   } else if (type === TransactionType.deployContract) {
     transactionType = TransactionType.deployContract;
@@ -926,37 +929,28 @@ async function buildEventFragmentProperties({
   }
 
   let uiCustomizations;
+  let additionalBlockaidParams;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  // eslint-disable-next-line no-lonely-if
+  if (securityProviderResponse?.flagAsDangerous === 1) {
+    uiCustomizations = ['flagged_as_malicious'];
+  } else if (securityProviderResponse?.flagAsDangerous === 2) {
+    uiCustomizations = ['flagged_as_safety_unknown'];
+  } else {
+    uiCustomizations = null;
+  }
+
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   if (securityAlertResponse?.result_type === BlockaidResultType.Failed) {
     uiCustomizations = ['security_alert_failed'];
   } else {
-    ///: END:ONLY_INCLUDE_IN
-    // eslint-disable-next-line no-lonely-if
-    if (securityProviderResponse?.flagAsDangerous === 1) {
-      uiCustomizations = ['flagged_as_malicious'];
-    } else if (securityProviderResponse?.flagAsDangerous === 2) {
-      uiCustomizations = ['flagged_as_safety_unknown'];
-    } else {
-      uiCustomizations = null;
-    }
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  }
-  ///: END:ONLY_INCLUDE_IN
-
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  const additionalBlockaidParams = {} as Record<string, any>;
-
-  if (securityProviderResponse?.providerRequestsCount) {
-    Object.keys(securityProviderResponse.providerRequestsCount).forEach(
-      (key) => {
-        const metricKey = `ppom_${key}_count`;
-        additionalBlockaidParams[metricKey] =
-          securityProviderResponse.providerRequestsCount[key];
-      },
+    additionalBlockaidParams = getBlockaidMetricsParams(
+      securityAlertResponse as any,
     );
+    uiCustomizations = additionalBlockaidParams?.ui_customizations ?? null;
   }
-  ///: END:ONLY_INCLUDE_IN
+
+  ///: END:ONLY_INCLUDE_IF
 
   if (simulationFails) {
     if (uiCustomizations === null) {
@@ -971,7 +965,7 @@ async function buildEventFragmentProperties({
     referrer,
     source,
     status,
-    network,
+    network: `${parseInt(chainId, 16)}`,
     eip_1559_version: eip1559Version,
     gas_edit_type: 'none',
     gas_edit_attempted: 'none',
@@ -985,19 +979,18 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
-    ui_customizations: uiCustomizations,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ...additionalBlockaidParams,
+    ui_customizations: uiCustomizations?.length > 0 ? uiCustomizations : null,
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     security_alert_response:
       securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
     security_alert_reason:
       securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
-    ...additionalBlockaidParams,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     gas_estimation_failed: Boolean(simulationFails),
   } as Record<string, any>;
 
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
-    transactionMetricsRequest.getSelectedAddress,
     transactionMetricsRequest.getAccountType,
     transactionMetricsRequest.getDeviceModel,
     transactionMetricsRequest.snapAndHardwareMessenger,

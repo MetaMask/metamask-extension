@@ -137,6 +137,6 @@ export interface TextFieldStyleUtilityProps
 export type TextFieldProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, TextFieldStyleUtilityProps>;
 
-export type TextFieldComponent = <C extends React.ElementType = 'input'>(
+export type TextFieldComponent = <C extends React.ElementType = 'div'>(
   props: TextFieldProps<C>,
 ) => React.ReactElement | null;

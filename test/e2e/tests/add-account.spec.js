@@ -6,10 +6,10 @@ const {
   sendTransaction,
   findAnotherAccountFromAccountList,
   waitForAccountRendered,
-  convertToHexValue,
   regularDelayMs,
   unlockWallet,
   WALLET_PASSWORD,
+  generateGanacheOptions,
 } = require('../helpers');
 
 const FixtureBuilder = require('../fixture-builder');
@@ -19,15 +19,10 @@ describe('Add account', function () {
   const firstAccount = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
   const secondAccount = '0x3ED0eE22E0685Ebbf07b2360A8331693c413CC59';
 
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
+  const ganacheOptions = generateGanacheOptions({
+    secretKey:
+      '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
+  });
 
   it('should display correct new account name after create', async function () {
     await withFixtures(
@@ -37,7 +32,6 @@ describe('Add account', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -163,12 +157,11 @@ describe('Add account', function () {
         });
 
         // Check address of 2nd account
-        const accountTwoSelector = await findAnotherAccountFromAccountList(
-          driver,
-          2,
-          'Account 2',
-        );
-        await driver.clickElement(accountTwoSelector);
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement({
+          css: `.multichain-account-list-item__account-name__button`,
+          text: 'Account 2',
+        });
 
         await driver.findElement({
           css: process.env.MULTICHAIN
@@ -191,7 +184,6 @@ describe('Add account', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');

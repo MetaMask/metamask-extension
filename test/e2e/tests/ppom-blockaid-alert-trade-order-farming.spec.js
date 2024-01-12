@@ -107,7 +107,6 @@ describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
       },
 
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
@@ -120,7 +119,7 @@ describe('PPOM Blockaid Alert - Set Trade farming order @no-mmi', function () {
 
         // Wait for confirmation pop-up
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const bannerAlertFoundByTitle = await driver.findElement({
           css: bannerAlertSelector,

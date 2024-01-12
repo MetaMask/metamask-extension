@@ -29,6 +29,7 @@ const initialState = {
   networkConfigurations: {},
   addressBook: [],
   contractExchangeRates: {},
+  confirmationExchangeRates: {},
   pendingTokens: {},
   customNonceValue: '',
   useBlockie: false,
@@ -36,8 +37,10 @@ const initialState = {
   welcomeScreenSeen: false,
   currentLocale: '',
   currentBlockGasLimit: '',
+  currentBlockGasLimitByChainId: {},
   preferences: {
     autoLockTimeLimit: DEFAULT_AUTO_LOCK_TIME_LIMIT,
+    showExtensionInFullSizeView: false,
     showFiatInTestnets: false,
     showTestNetworks: false,
     useNativeCurrencyAsPrimaryCurrency: true,
@@ -176,15 +179,20 @@ export default function reduceMetamask(state = initialState, action) {
         nextNonce: action.payload,
       };
     }
+    case actionConstants.SET_CONFIRMATION_EXCHANGE_RATES:
+      return {
+        ...metamaskState,
+        confirmationExchangeRates: action.value,
+      };
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
     case actionConstants.FORCE_DISABLE_DESKTOP: {
       return {
         ...metamaskState,
         desktopEnabled: false,
       };
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     default:
       return metamaskState;

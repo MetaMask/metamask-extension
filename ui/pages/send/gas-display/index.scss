@@ -4,9 +4,6 @@
 
   .transaction-detail-rows {
     padding: 10px;
-    border-radius: 8px;
-    border: 1px solid var(--color-border-default);
-    margin: 16px 16px;
 
     .transaction-detail-item {
       &:not(:first-child) {
