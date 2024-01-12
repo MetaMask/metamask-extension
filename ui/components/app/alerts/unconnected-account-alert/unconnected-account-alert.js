@@ -33,9 +33,16 @@ const UnconnectedAccountAlert = () => {
   const connectedAccounts = useSelector(
     getOrderedConnectedAccountsForActiveTab,
   );
+  const internalAccounts = useSelector(getInternalAccounts);
+  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
+  const connectedAccountsWithName = connectedAccounts.map((account) => {
+    account.name = internalAccounts.find(
+      (internalAccount) => internalAccount.address === account.address,
+    )?.metadata.name;
+    return account;
+  });
   const origin = useSelector(getOriginOfCurrentTab);
   const account = useSelector(getSelectedInternalAccount);
-  const internalAccounts = useSelector(getInternalAccounts);
   const { address: selectedAddress } = account;
   const [dontShowThisAgain, setDontShowThisAgain] = useState(false);
 
@@ -101,7 +108,7 @@ const UnconnectedAccountAlert = () => {
       <ConnectedAccountsList
         accountToConnect={account}
         connectAccount={() => dispatch(connectAccount(selectedAddress))}
-        connectedAccounts={connectedAccounts}
+        connectedAccounts={connectedAccountsWithName}
         selectedAddress={selectedAddress}
         setSelectedAddress={(address) => {
           const { id: accountId } = internalAccounts.find(

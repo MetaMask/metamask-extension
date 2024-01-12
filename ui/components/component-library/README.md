@@ -70,8 +70,7 @@ import { Button } from '../../component-library';
 All of our components should allow access to children components through an object prop. The example below adds a data test id to the child `Text` component inside `BannerAlert`.
 
 ```jsx
-import { Severity } from '../../../helpers/constants/design-system';
-import { BannerAlert } from '../../component-library';
+import { BannerAlert, BannerAlertSeverity } from '../../component-library';
 
 <BannerAlert
   severity={Severity.Danger}
@@ -83,10 +82,6 @@ import { BannerAlert } from '../../component-library';
 ### Accessibility
 
 Allowing everyone to access web3 regardless of disability is an important part of what we do at MetaMask. Ensuring accessibility in our components is a priority. We strive to achieve this by maintaining proper color contrast in our components and implementing necessary aria label props. If you have any questions regarding accessibility reach out and we will support you as much as possible. Additionally, your suggestions for improvement are welcome, as we continue our journey towards greater accessibility. Together, let's create an inclusive web3 experience for all 🦾
-
-## TypeScript
-
-We are currently in the process of migrating all component-library components to TypeScript. Feel free to contribute by creating a PR against one of [these issues](https://github.com/MetaMask/metamask-extension/issues?q=is%3Aissue+is%3Aopen+Migrate+components+to+TS)
 
 ## Support
 

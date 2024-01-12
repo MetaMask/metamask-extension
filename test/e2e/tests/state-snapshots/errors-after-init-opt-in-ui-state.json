@@ -133,6 +133,8 @@
     "announcements": "object",
     "orderedNetworkList": { "0": "string", "1": "string", "2": "string" },
     "pinnedAccountList": {},
+    "hiddenAccountList": {},
+    "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},
     "estimatedGasFeeTimeBounds": {},

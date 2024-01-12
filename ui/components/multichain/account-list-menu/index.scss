@@ -9,5 +9,9 @@
 
   &__list {
     overflow: auto;
+
+    &--menu-item-hidden {
+      opacity: 0.5;
+    }
   }
 }

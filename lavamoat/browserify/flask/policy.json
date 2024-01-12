@@ -2659,6 +2659,11 @@
         "browserify>process": true
       }
     },
+    "@storybook/addon-docs>remark-external-links>mdast-util-definitions": {
+      "packages": {
+        "react-markdown>unist-util-visit": true
+      }
+    },
     "@storybook/addon-knobs>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
@@ -2724,7 +2729,6 @@
         "HTMLElement": true,
         "HTMLImageElement": true,
         "HTMLVideoElement": true,
-        "URL.createObjectURL": true,
         "clearTimeout": true,
         "console.error": true,
         "console.warn": true,
@@ -2738,17 +2742,20 @@
     },
     "@zxing/library": {
       "globals": {
+        "HTMLImageElement": true,
+        "HTMLVideoElement": true,
         "TextDecoder": true,
         "TextEncoder": true,
+        "URL.createObjectURL": true,
         "btoa": true,
-        "clearTimeout": true,
-        "define": true,
-        "document.createElement": true,
-        "document.createElementNS": true,
-        "document.getElementById": true,
-        "navigator.mediaDevices.enumerateDevices": true,
-        "navigator.mediaDevices.getUserMedia": true,
+        "console.log": true,
+        "console.warn": true,
+        "document": true,
+        "navigator": true,
         "setTimeout": true
+      },
+      "packages": {
+        "@zxing/library>ts-custom-error": true
       }
     },
     "addons-linter>sha.js": {
@@ -4445,16 +4452,11 @@
         "console.warn": true
       },
       "packages": {
-        "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": true,
+        "@storybook/addon-docs>remark-external-links>mdast-util-definitions": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>mdurl": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-builder": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-generated": true,
         "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-position": true,
-        "react-markdown>unist-util-visit": true
-      }
-    },
-    "react-markdown>remark-rehype>mdast-util-to-hast>mdast-util-definitions": {
-      "packages": {
         "react-markdown>unist-util-visit": true
       }
     },
