@@ -7,6 +7,7 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
+const { mockNPM } = require('./mock');
 
 describe('Test Snap bip-32', function () {
   it('tests various functions of bip-32', async function () {
@@ -16,6 +17,7 @@ describe('Test Snap bip-32', function () {
         ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
         title: this.test.fullTitle(),
+        testSpecificMock: mockNPM,
       },
       async ({ driver }) => {
         await unlockWallet(driver);

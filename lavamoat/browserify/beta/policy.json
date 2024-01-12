@@ -907,6 +907,14 @@
         "immer": true
       }
     },
+    "@metamask/bip32-example-snap>@noble/ed25519": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
     "@metamask/browser-passworder": {
       "globals": {
         "CryptoKey": true,
@@ -1887,9 +1895,9 @@
     },
     "@metamask/snaps-sdk>@metamask/key-tree": {
       "packages": {
+        "@metamask/bip32-example-snap>@noble/ed25519": true,
         "@metamask/scure-bip39": true,
         "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": true,
-        "@metamask/snaps-sdk>@metamask/key-tree>@noble/ed25519": true,
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "eth-lattice-keyring>@noble/secp256k1": true
@@ -1906,14 +1914,6 @@
         "nock>debug": true,
         "semver": true,
         "superstruct": true
-      }
-    },
-    "@metamask/snaps-sdk>@metamask/key-tree>@noble/ed25519": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "@metamask/snaps-sdk>is-svg": {

@@ -907,6 +907,14 @@
         "immer": true
       }
     },
+    "@metamask/bip32-example-snap>@noble/ed25519": {
+      "globals": {
+        "crypto": true
+      },
+      "packages": {
+        "browserify>browser-resolve": true
+      }
+    },
     "@metamask/browser-passworder": {
       "globals": {
         "CryptoKey": true,
@@ -2016,14 +2024,14 @@
         "@metamask/snaps-controllers>nanoid": true,
         "@metamask/snaps-controllers>readable-stream": true,
         "@metamask/snaps-controllers>readable-web-to-node-stream": true,
-        "@metamask/snaps-controllers>tar-stream": true,
         "@metamask/snaps-rpc-methods": true,
         "@metamask/snaps-sdk": true,
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "@metamask/utils": true,
         "browserify>browserify-zlib": true,
-        "json-rpc-middleware-stream": true
+        "json-rpc-middleware-stream": true,
+        "tar-stream": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -2072,32 +2080,6 @@
         "webpack>events": true
       }
     },
-    "@metamask/snaps-controllers>tar-stream": {
-      "packages": {
-        "@metamask/snaps-controllers>tar-stream>b4a": true,
-        "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
-        "@metamask/snaps-controllers>tar-stream>streamx": true,
-        "browserify>browser-resolve": true
-      }
-    },
-    "@metamask/snaps-controllers>tar-stream>b4a": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      }
-    },
-    "@metamask/snaps-controllers>tar-stream>streamx": {
-      "packages": {
-        "@metamask/snaps-controllers>tar-stream>fast-fifo": true,
-        "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": true,
-        "webpack>events": true
-      }
-    },
-    "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": {
-      "globals": {
-        "queueMicrotask": true
-      }
-    },
     "@metamask/snaps-rpc-methods": {
       "packages": {
         "@metamask/permission-controller": true,
@@ -2123,9 +2105,9 @@
     },
     "@metamask/snaps-sdk>@metamask/key-tree": {
       "packages": {
+        "@metamask/bip32-example-snap>@noble/ed25519": true,
         "@metamask/scure-bip39": true,
         "@metamask/snaps-sdk>@metamask/key-tree>@metamask/utils": true,
-        "@metamask/snaps-sdk>@metamask/key-tree>@noble/ed25519": true,
         "@metamask/utils>@noble/hashes": true,
         "@metamask/utils>@scure/base": true,
         "eth-lattice-keyring>@noble/secp256k1": true
@@ -2142,14 +2124,6 @@
         "nock>debug": true,
         "semver": true,
         "superstruct": true
-      }
-    },
-    "@metamask/snaps-sdk>@metamask/key-tree>@noble/ed25519": {
-      "globals": {
-        "crypto": true
-      },
-      "packages": {
-        "browserify>browser-resolve": true
       }
     },
     "@metamask/snaps-sdk>is-svg": {
@@ -4842,6 +4816,32 @@
       "globals": {
         "console.warn": true,
         "define": true
+      }
+    },
+    "tar-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "tar-stream>b4a": true,
+        "tar-stream>fast-fifo": true,
+        "tar-stream>streamx": true
+      }
+    },
+    "tar-stream>b4a": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
+      }
+    },
+    "tar-stream>streamx": {
+      "packages": {
+        "tar-stream>fast-fifo": true,
+        "tar-stream>streamx>queue-tick": true,
+        "webpack>events": true
+      }
+    },
+    "tar-stream>streamx>queue-tick": {
+      "globals": {
+        "queueMicrotask": true
       }
     },
     "terser>source-map-support>buffer-from": {
