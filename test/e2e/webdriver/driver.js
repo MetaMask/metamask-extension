@@ -94,6 +94,9 @@ class Driver {
       CONTROL: '\uE009',
       COMMAND: '\uE03D',
       MODIFIER: process.platform === 'darwin' ? Key.COMMAND : Key.CONTROL,
+      SHIFT: '\uE008',
+      OPTION: '\u2325',
+      M: '\u006D',
     };
   }
 
@@ -332,6 +335,10 @@ class Driver {
     );
   }
 
+  retrieveDriverActions() {
+    return this.driver.actions();
+  }
+
   async assertElementNotPresent(rawLocator) {
     let dataTab;
     try {
@@ -449,6 +456,11 @@ class Driver {
       timeElapsed += delayStep;
     }
     throw new Error('waitUntilXWindowHandles timed out polling window handles');
+  }
+
+  async getWindowTitleByHandlerId(handlerId) {
+    await this.driver.switchTo().window(handlerId);
+    return await this.driver.getTitle();
   }
 
   async switchToWindowWithTitle(
