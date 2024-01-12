@@ -4,6 +4,7 @@ import {
   getTokenExchangeRates,
   getCurrentCurrency,
   getShouldShowFiat,
+  getConfirmationExchangeRates,
 } from '../selectors';
 import { getTokenFiatAmount } from '../helpers/utils/token-util';
 import { getConversionRate } from '../ducks/metamask/metamask';
@@ -33,17 +34,21 @@ export function useTokenFiatAmount(
     getTokenExchangeRates,
     shallowEqual,
   );
+  const confirmationExchangeRates = useSelector(getConfirmationExchangeRates);
+  const mergedRates = {
+    ...contractExchangeRates,
+    ...confirmationExchangeRates,
+  };
   const conversionRate = useSelector(getConversionRate);
   const currentCurrency = useSelector(getCurrentCurrency);
   const userPrefersShownFiat = useSelector(getShouldShowFiat);
   const showFiat = overrides.showFiat ?? userPrefersShownFiat;
-  const contractExchangeTokenKey = Object.keys(contractExchangeRates).find(
-    (key) => isEqualCaseInsensitive(key, tokenAddress),
+  const contractExchangeTokenKey = Object.keys(mergedRates).find((key) =>
+    isEqualCaseInsensitive(key, tokenAddress),
   );
   const tokenExchangeRate =
     overrides.exchangeRate ??
-    (contractExchangeTokenKey &&
-      contractExchangeRates[contractExchangeTokenKey]);
+    (contractExchangeTokenKey && mergedRates[contractExchangeTokenKey]);
   const formattedFiat = useMemo(
     () =>
       getTokenFiatAmount(

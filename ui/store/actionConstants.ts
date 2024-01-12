@@ -2,6 +2,8 @@ export const GO_HOME = 'GO_HOME';
 // modal state
 export const MODAL_OPEN = 'UI_MODAL_OPEN';
 export const MODAL_CLOSE = 'UI_MODAL_CLOSE';
+export const SET_CONFIRMATION_EXCHANGE_RATES =
+  'SET_CONFIRMATION_EXCHANGE_RATES';
 // alert state
 export const ALERT_OPEN = 'UI_ALERT_OPEN';
 export const ALERT_CLOSE = 'UI_ALERT_CLOSE';

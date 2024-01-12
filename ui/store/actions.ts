@@ -2461,6 +2461,13 @@ export function hideImportNftsModal(): Action {
   };
 }
 
+export function setConfirmationExchangeRates(value: Record<string, any>) {
+  return {
+    type: actionConstants.SET_CONFIRMATION_EXCHANGE_RATES,
+    value,
+  };
+}
+
 export function showIpfsModal(): Action {
   return {
     type: actionConstants.SHOW_IPFS_MODAL_OPEN,
@@ -2833,6 +2840,10 @@ export function setShowTestNetworks(value: boolean) {
 
 export function setPetnamesEnabled(value: boolean) {
   return setPreference('petnamesEnabled', value);
+}
+
+export function setShowExtensionInFullSizeView(value: boolean) {
+  return setPreference('showExtensionInFullSizeView', value);
 }
 
 export function setAutoLockTimeLimit(value: boolean) {
@@ -3605,6 +3616,21 @@ export function updateAccountsList(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     await submitRequestToBackground('updateAccountsList', [pinnedAccountList]);
+  };
+}
+
+/**
+ * Hides account in the accounts list
+ *
+ * @param hiddenAccountList
+ */
+export function updateHiddenAccountsList(
+  hiddenAccountList: [],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateHiddenAccountsList', [
+      hiddenAccountList,
+    ]);
   };
 }
 

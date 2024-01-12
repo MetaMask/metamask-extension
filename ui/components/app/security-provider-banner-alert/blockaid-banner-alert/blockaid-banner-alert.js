@@ -1,19 +1,21 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
+import BlockaidPackage from '@blockaid/ppom_release/package.json';
 
-import { Text } from '../../../component-library';
+import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 import {
   OverflowWrap,
   Severity,
 } from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
-
 import {
   BlockaidReason,
   BlockaidResultType,
   SecurityProvider,
 } from '../../../../../shared/constants/security-provider';
+import { Text } from '../../../component-library';
+
 import SecurityProviderBannerAlert from '../security-provider-banner-alert';
 import { getReportUrl } from './blockaid-banner-utils';
 
@@ -50,7 +52,8 @@ const REASON_TO_TITLE_TKEY = Object.freeze({
 });
 
 function BlockaidBannerAlert({ txData, ...props }) {
-  const { securityAlertResponse, origin, msgParams, type, txParams } = txData;
+  const { securityAlertResponse, origin, msgParams, type, txParams, chainId } =
+    txData;
 
   const t = useContext(I18nContext);
 
@@ -58,7 +61,12 @@ function BlockaidBannerAlert({ txData, ...props }) {
     return null;
   }
 
-  const { reason, result_type: resultType, features } = securityAlertResponse;
+  const {
+    reason,
+    result_type: resultType,
+    features,
+    block,
+  } = securityAlertResponse;
 
   if (resultType === BlockaidResultType.Benign) {
     return null;
@@ -91,8 +99,14 @@ function BlockaidBannerAlert({ txData, ...props }) {
     domain: origin ?? msgParams?.origin,
     jsonRpcMethod: type,
     jsonRpcParams: JSON.stringify(txParams ?? msgParams),
+    blockNumber: block,
+    chain: NETWORK_TO_NAME_MAP[chainId],
     classification: reason,
+    blockaidVersion: BlockaidPackage.version,
+    resultType,
+    reproduce: JSON.stringify(features),
   };
+
   const jsonData = JSON.stringify(reportData);
 
   const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;

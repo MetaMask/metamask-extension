@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 
 import configureStore from '../../../store/store';
@@ -7,6 +7,7 @@ import {
   clearPendingTokens,
   getTokenStandardAndDetails,
   setPendingTokens,
+  setConfirmationExchangeRates,
 } from '../../../store/actions';
 import mockState from '../../../../test/data/mock-state.json';
 import { TokenStandard } from '../../../../shared/constants/transaction';
@@ -22,6 +23,9 @@ jest.mock('../../../store/actions', () => ({
   clearPendingTokens: jest
     .fn()
     .mockImplementation(() => ({ type: 'CLEAR_PENDING_TOKENS' })),
+  setConfirmationExchangeRates: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'SET_CONFIRMATION_EXCHANGE_RATES' })),
 }));
 
 describe('ImportTokensModal', () => {
@@ -178,21 +182,27 @@ describe('ImportTokensModal', () => {
 
       expect(getByText('Next')).not.toBeDisabled();
 
-      fireEvent.click(getByText('Next'));
-
-      expect(setPendingTokens).toHaveBeenCalledWith({
-        customToken: {
-          address: tokenAddress,
-          decimals: Number(tokenPrecision),
-          standard: TokenStandard.ERC20,
-          symbol: tokenSymbol,
-          name: '',
-        },
-        selectedTokens: {},
-        tokenAddressList: [],
+      act(() => {
+        fireEvent.click(getByText('Next'));
       });
 
-      expect(getByText('Import')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(setPendingTokens).toHaveBeenCalledWith({
+          customToken: {
+            address: tokenAddress,
+            decimals: Number(tokenPrecision),
+            standard: TokenStandard.ERC20,
+            symbol: tokenSymbol,
+            name: '',
+          },
+          selectedTokens: {},
+          tokenAddressList: [],
+        });
+
+        expect(setConfirmationExchangeRates).toHaveBeenCalled();
+
+        expect(getByText('Import')).toBeInTheDocument();
+      });
     });
 
     it('cancels out of import token flow', () => {
