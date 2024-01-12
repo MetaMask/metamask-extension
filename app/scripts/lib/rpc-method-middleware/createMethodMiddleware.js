@@ -1,10 +1,5 @@
 import { permissionRpcMethods } from '@metamask/permission-controller';
-import {
-  selectHooks,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-  permittedMethods as permittedSnapMethods,
-  ///: END:ONLY_INCLUDE_IN
-} from '@metamask/snaps-rpc-methods';
+import { selectHooks } from '@metamask/snaps-rpc-methods';
 import { ethErrors } from 'eth-rpc-errors';
 import { flatten } from 'lodash';
 import { UNSUPPORTED_RPC_METHODS } from '../../../../shared/constants/network';
@@ -75,42 +70,3 @@ export function createMethodMiddleware(hooks) {
     return next();
   };
 }
-
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
-const snapHandlerMap = permittedSnapMethods.reduce((map, handler) => {
-  for (const methodName of handler.methodNames) {
-    map.set(methodName, handler);
-  }
-  return map;
-}, new Map());
-
-export function createSnapMethodMiddleware(isSnap, hooks) {
-  return async function methodMiddleware(req, res, next, end) {
-    const handler = snapHandlerMap.get(req.method);
-    if (handler) {
-      if (/^snap_/iu.test(req.method) && !isSnap) {
-        return end(ethErrors.rpc.methodNotFound());
-      }
-
-      const { implementation, hookNames } = handler;
-      try {
-        // Implementations may or may not be async, so we must await them.
-        return await implementation(
-          req,
-          res,
-          next,
-          end,
-          selectHooks(hooks, hookNames),
-        );
-      } catch (error) {
-        if (process.env.METAMASK_DEBUG) {
-          console.error(error);
-        }
-        return end(error);
-      }
-    }
-
-    return next();
-  };
-}
-///: END:ONLY_INCLUDE_IN

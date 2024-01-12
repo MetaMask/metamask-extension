@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import {
   getAddressBook,
   getAddressBookEntry,
-  getMetaMaskAccountsOrdered,
+  getInternalAccountsSortedByKeyring,
   getCurrentNetworkTransactions,
 } from '../../../../selectors';
 
@@ -19,10 +19,10 @@ import {
   getDomainResolution,
   getDomainError,
   getDomainWarning,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   getResolvingSnap,
   getDomainType,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../ducks/domains';
 import AddRecipient from './add-recipient.component';
 
@@ -30,10 +30,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(AddRecipient);
 
 function mapStateToProps(state) {
   const domainResolution = getDomainResolution(state);
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const resolvingSnap = getResolvingSnap(state);
   const domainType = getDomainType(state);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   let addressBookEntryName = '';
   if (domainResolution) {
     const addressBookEntry = getAddressBookEntry(state, domainResolution) || {};
@@ -58,7 +58,14 @@ function mapStateToProps(state) {
     return b.timestamp - a.timestamp;
   });
 
-  const ownedAccounts = getMetaMaskAccountsOrdered(state);
+  const ownedAccounts = getInternalAccountsSortedByKeyring(state).map(
+    ({ address, metadata }) => {
+      return {
+        address,
+        name: metadata.name,
+      };
+    },
+  );
 
   return {
     addressBook,
@@ -71,10 +78,10 @@ function mapStateToProps(state) {
     ownedAccounts,
     userInput: getRecipientUserInput(state),
     recipient: getRecipient(state),
-    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     resolvingSnap,
     domainType,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 }
 

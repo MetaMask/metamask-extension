@@ -1,5 +1,5 @@
 import {
-  BaseControllerV2,
+  BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import {
@@ -65,7 +65,7 @@ const metadata = {
  * This controller subscribes to network state changes and ensures
  * that the network list is updated based on the latest network configurations.
  */
-export class NetworkOrderController extends BaseControllerV2<
+export class NetworkOrderController extends BaseController<
   typeof controllerName,
   NetworkOrderControllerState,
   NetworkOrderControllerMessenger

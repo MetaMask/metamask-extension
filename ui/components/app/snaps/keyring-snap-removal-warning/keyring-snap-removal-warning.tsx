@@ -10,12 +10,12 @@ import {
   ButtonSize,
   ButtonVariant,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
   TextField,
 } from '../../../component-library';
+import { ModalContent } from '../../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import {
   BlockSize,
   Display,

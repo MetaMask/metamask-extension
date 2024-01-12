@@ -129,8 +129,8 @@ export default class SelectHardware extends Component {
     return (
       <>
         <div className="hw-connect__btn-wrapper">
-          {this.shouldShowConnectButton() && this.renderConnectToLedgerButton()}
-          {this.shouldShowConnectButton() && this.renderConnectToTrezorButton()}
+          {this.renderConnectToLedgerButton()}
+          {this.renderConnectToTrezorButton()}
         </div>
         <div
           className="hw-connect__btn-wrapper"

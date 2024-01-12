@@ -7,11 +7,11 @@ import {
   AvatarAccountVariant,
   Box,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import QrView from '../../ui/qr-code';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getMetaMaskAccountsOrdered, getUseBlockie } from '../../../selectors';

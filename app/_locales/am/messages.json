@@ -594,9 +594,6 @@
   "search": {
     "message": "ፍለጋ"
   },
-  "searchResults": {
-    "message": "ውጤቶችን ፈልግ"
-  },
   "securityAndPrivacy": {
     "message": "ደህንነት እና ግላዊነት"
   },
@@ -764,12 +761,6 @@
   },
   "unknown": {
     "message": "ያልታወቀ"
-  },
-  "unknownCameraError": {
-    "message": "ወደ ስልክዎ ለመድረስ ሲሞከር የተፈጠረ ስህተት አለ። እባክዎ እንደገና ይሞክሩ..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "ኤጭ! የሆነ ችግር ተፈጥሯል..."
   },
   "unknownNetwork": {
     "message": "የማይታወቅ የግል አውታረ መረብ"

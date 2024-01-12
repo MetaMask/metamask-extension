@@ -924,33 +924,13 @@
     "message": "$1 horas",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 minutos",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Quizás en $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Probablemente en < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 segundos",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Muy probable en < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gas usado"
@@ -1656,10 +1636,6 @@
     "message": "+ $1 más",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Tipo de conexión de Ledger preferida",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "prev": {
     "message": "Ant."
   },
@@ -1820,9 +1796,6 @@
   },
   "searchAccounts": {
     "message": "Buscar cuentas"
-  },
-  "searchResults": {
-    "message": "Resultados de la búsqueda"
   },
   "secretRecoveryPhrase": {
     "message": "Frase secreta de recuperación"
@@ -2473,9 +2446,6 @@
   "transactionDetailGasHeading": {
     "message": "Tarifa estimada de gas"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "estimada"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Más información sobre las tarifas de gas"
   },
@@ -2574,12 +2544,6 @@
   "unknown": {
     "message": "Desconocido"
   },
-  "unknownCameraError": {
-    "message": "Error al intentar acceder a la cámara. Vuelva a intentarlo..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Lo lamentamos, se produjo un error..."
-  },
   "unknownNetwork": {
     "message": "Red privada desconocida"
   },
@@ -2626,10 +2590,6 @@
   },
   "userName": {
     "message": "Nombre de usuario"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Los decimales del token se pueden encontrar en $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Verificar este token en $1",

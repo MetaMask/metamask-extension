@@ -1,5 +1,5 @@
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   openDapp,
   locateAccountBalanceDOM,
@@ -11,15 +11,6 @@ const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Deploy contract and call contract methods', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   const smartContract = SMART_CONTRACTS.PIGGYBANK;
   it('should display the correct account balance after contract interactions', async function () {
     await withFixtures(
@@ -28,7 +19,7 @@ describe('Deploy contract and call contract methods', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
       },
@@ -51,7 +42,7 @@ describe('Deploy contract and call contract methods', function () {
         });
 
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({
           css: '.confirm-page-container-summary__action__name',
           text: 'Deposit',
@@ -76,7 +67,7 @@ describe('Deploy contract and call contract methods', function () {
         await driver.clickElement('#withdrawButton');
         await driver.waitUntilXWindowHandles(3);
 
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
         await driver.waitUntilXWindowHandles(2);
         await driver.switchToWindowWithTitle(

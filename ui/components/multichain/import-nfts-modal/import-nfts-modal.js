@@ -41,16 +41,16 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   ButtonSecondarySize,
-  FormTextField,
   Icon,
   IconName,
   IconSize,
   Label,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
 } from '../../component-library';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import Tooltip from '../../ui/tooltip';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
 import { checkTokenIdExists } from '../../../helpers/utils/util';

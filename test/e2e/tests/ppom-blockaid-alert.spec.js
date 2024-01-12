@@ -138,6 +138,22 @@ async function mockInfuraWithMaliciousResponses(mockServer) {
     });
 }
 
+async function mockInfuraWithFailedResponses(mockServer) {
+  await mockInfura(mockServer);
+
+  await mockServer
+    .forPost()
+    .withJsonBodyIncluding({
+      method: 'debug_traceCall',
+      params: [{ accessList: [], data: '0x00000000' }],
+    })
+    .thenCallback(() => {
+      return {
+        statusCode: 500,
+      };
+    });
+}
+
 /**
  * Tests various Blockaid PPOM security alerts. Some other tests live in separate files due to
  * the need for more sophisticated JSON-RPC mock requests. Some example PPOM Blockaid
@@ -283,6 +299,7 @@ describe('Confirmation Security Alert - Blockaid @no-mmi', function () {
           })
           .build(),
         defaultGanacheOptions,
+        testSpecificMock: mockInfuraWithFailedResponses,
         title: this.test.fullTitle(),
       },
 

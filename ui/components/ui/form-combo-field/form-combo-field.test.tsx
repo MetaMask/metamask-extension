@@ -55,6 +55,26 @@ describe('FormComboField', () => {
     expect(baseElement).toMatchSnapshot();
   });
 
+  it('should not render "no options" if hideDropdownIfNoOptions is specified', async () => {
+    const { baseElement, getByPlaceholderText } = renderWithProvider(
+      <FormComboField
+        hideDropdownIfNoOptions
+        value={VALUE_MOCK}
+        options={[]}
+        placeholder={PLACEHOLDER_MOCK}
+        noOptionsText={NO_OPTIONS_TEXT_MOCK}
+      />,
+    );
+
+    const input = getByPlaceholderText(PLACEHOLDER_MOCK);
+
+    await act(async () => {
+      fireEvent.click(input);
+    });
+
+    expect(baseElement).toMatchSnapshot();
+  });
+
   it('calls onChange with primary label on option click', async () => {
     const onChangeMock = jest.fn();
 
