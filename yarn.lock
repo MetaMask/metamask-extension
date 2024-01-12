@@ -3807,12 +3807,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/announcement-controller@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/announcement-controller@npm:4.0.0"
+"@metamask/announcement-controller@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/announcement-controller@npm:5.0.1"
   dependencies:
-    "@metamask/base-controller": "npm:^3.0.0"
-  checksum: c694dbb858c25dd87d8481f76fa9437f790af6475430f0e7cde0a69283f1aa7857265d48d07ef50e8e8e44365e3e19659e00fa05e11a8abd7bdc84b1b0a192e9
+    "@metamask/base-controller": "npm:^4.0.1"
+  checksum: 25198a8e8a4feddb984269dad516fc20aa458cdeb183fe0c3b0dbc9973cbaf753cdaf4b97b54ce0b3c4456b0d1c65b18e750248131127792cb5f7327ed0b56de
   languageName: node
   linkType: hard
 
@@ -4230,10 +4230,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/etherscan-link@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@metamask/etherscan-link@npm:2.2.0"
-  checksum: 76f1a4b683bb16c5263c51dc7cad83093b2a236a13ac509d51a531a7de52d551ae3314266194ba066e5b9cc4e2c1b79dccf961b98dc29978a8225962c232bb62
+"@metamask/etherscan-link@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/etherscan-link@npm:3.0.0"
+  checksum: 23507194742c4e6b262e8057aff7f61cb4c276d37c3e2c57e1c046df492fc44cefc5dd29744daa884fe18ca99115454f1a9941ea984e6ddec849f51215fd2e93
   languageName: node
   linkType: hard
 
@@ -24631,7 +24631,7 @@ __metadata:
     "@metamask-institutional/transaction-update": "npm:^0.1.32"
     "@metamask/accounts-controller": "npm:^4.0.0"
     "@metamask/address-book-controller": "npm:^3.0.0"
-    "@metamask/announcement-controller": "npm:^4.0.0"
+    "@metamask/announcement-controller": "npm:^5.0.1"
     "@metamask/approval-controller": "npm:^5.1.0"
     "@metamask/assets-controllers": "npm:^24.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
@@ -24650,11 +24650,11 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^12.0.1"
     "@metamask/eth-keyring-controller": "npm:^15.1.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:^2.0.1"
-    "@metamask/eth-query": "npm:^3.0.1"
+    "@metamask/eth-query": "npm:^4.0.0"
     "@metamask/eth-snap-keyring": "npm:^2.1.1"
     "@metamask/eth-token-tracker": "npm:^4.0.0"
     "@metamask/eth-trezor-keyring": "npm:^3.0.0"
-    "@metamask/etherscan-link": "npm:^2.2.0"
+    "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/ethjs-query": "npm:^0.5.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^10.0.1"

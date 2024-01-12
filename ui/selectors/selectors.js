@@ -707,6 +707,11 @@ export function getShowTestNetworks(state) {
   return Boolean(showTestNetworks);
 }
 
+export function getShowExtensionInFullSizeView(state) {
+  const { showExtensionInFullSizeView } = getPreferences(state);
+  return Boolean(showExtensionInFullSizeView);
+}
+
 export function getTestNetworkBackgroundColor(state) {
   const currentNetwork = state.metamask.providerConfig.ticker;
   switch (true) {
