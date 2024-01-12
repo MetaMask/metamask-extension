@@ -146,6 +146,7 @@ const AssetV2 = ({
           <Box>
             <Text variant={TextVariant.bodyMdBold}>
               {balance} {symbol}
+              {/* TODO: Try to show fiat value of balance here */}
             </Text>
           </Box>
         </Box>
