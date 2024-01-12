@@ -248,6 +248,7 @@ describe('Dapp viewed Event @no-mmi', function () {
           text: 'Connect',
           tag: 'button',
         });
+        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.clickElement(
           '[data-testid="choose-account-list-operate-all-check-box"]',

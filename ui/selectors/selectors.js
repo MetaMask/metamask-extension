@@ -91,6 +91,9 @@ import {
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  NOTIFICATION_BLOCKAID_DEFAULT,
+  ///: END:ONLY_INCLUDE_IF
   NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
@@ -1236,7 +1239,7 @@ function getAllowedAnnouncementIds(state) {
     21: false,
     22: false,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    23: true,
+    23: false,
     ///: END:ONLY_INCLUDE_IF
     24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
@@ -1245,6 +1248,9 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
     [NOTIFICATION_STAKING_PORTFOLIO]: true,
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    [NOTIFICATION_BLOCKAID_DEFAULT]: true,
+    ///: END:ONLY_INCLUDE_IF
   };
 }
 

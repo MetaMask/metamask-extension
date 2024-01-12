@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { useLocation } from 'react-router-dom';
 import { NetworkType } from '@metamask/controller-utils';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { SEND_STAGES, startNewDraftTransaction } from '../../ducks/send';
 import { domainInitialState } from '../../ducks/domains';
 import { setBackgroundConnection } from '../../store/background-connection';
@@ -117,6 +118,24 @@ const baseStore = {
       '0x0': { balance: '0x0', address: '0x0' },
     },
     identities: { '0x0': { address: '0x0' } },
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0x1',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Test Account',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {
       '0x32e6c34cd57087abbd59b5a4aecc4cb495924356': {
