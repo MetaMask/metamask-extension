@@ -1,3 +1,5 @@
+@use "design-system";
+
 .snap-view {
   $height-screen-sm-max: 100%;
   $width-screen-sm-min: 85vw;
@@ -7,25 +9,53 @@
   width: 100%;
   flex-flow: column nowrap;
 
-  @include screen-sm-max {
+  @include design-system.screen-sm-max {
     height: $height-screen-sm-max;
   }
 
-  @include screen-sm-min {
+  @include design-system.screen-sm-min {
     width: $width-screen-sm-min;
   }
 
-  @include screen-md-min {
+  @include design-system.screen-md-min {
     width: $width-screen-md-min;
   }
 
-  @include screen-lg-min {
+  @include design-system.screen-lg-min {
     width: $width-screen-lg-min;
   }
 
   &__content {
-    @include screen-sm-max {
-      padding: 0 16px 16px 16px;
+    padding: 32px;
+
+    @include design-system.screen-sm-max {
+      padding: 16px;
+    }
+
+    &__description {
+      &__wrapper {
+        position: relative;
+        overflow: hidden;
+        max-height: 5.5rem;
+
+        @include design-system.screen-md-min {
+          max-height: 6rem;
+        }
+
+        &.open {
+          max-height: none;
+        }
+      }
+
+      &__more-button {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: unset;
+        padding: 0;
+        padding-left: 32px;
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-default) 33%);
+      }
     }
 
     &__permissions {
