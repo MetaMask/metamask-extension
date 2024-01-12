@@ -37,6 +37,7 @@ describe('Petnames - Transactions', function () {
         await switchToNotificationWindow(driver, 3);
         await expectName(driver, '0x0c54F...7AaFb', false);
         await saveName(driver, '0x0c54F...7AaFb', 'test.lens', undefined);
+        // TODO: REMOVE THIS COMMENT ADDED JUST SO I COULD COMMENT ON ABOVE LINE IN GITHUB.
         await rejectSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
         await createTransactionRequest(driver);
