@@ -1,7 +1,7 @@
 {
-  "autoBundleInterval": 3,
-  "autoBundleMempoolSize": 10,
-  "beneficiary": "0x8890d2dAB1922Bec92922f7E6879D5c65ba333f4",
+  "autoBundleInterval": 0,
+  "autoBundleMempoolSize": 1,
+  "beneficiary": "0x5CfE73b6021E818B776b421B1c4Db2474086a7e1",
   "entryPoint": "0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b",
   "maxBundleGas": 5e6,
   "minBalance": "0",
