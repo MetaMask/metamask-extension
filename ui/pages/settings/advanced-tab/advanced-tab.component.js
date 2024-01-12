@@ -48,10 +48,12 @@ export default class AdvancedTab extends PureComponent {
     sendHexData: PropTypes.bool,
     showFiatInTestnets: PropTypes.bool,
     showTestNetworks: PropTypes.bool,
+    showExtensionInFullSizeView: PropTypes.bool,
     autoLockTimeLimit: PropTypes.number,
     setAutoLockTimeLimit: PropTypes.func.isRequired,
     setShowFiatConversionOnTestnetsPreference: PropTypes.func.isRequired,
     setShowTestNetworks: PropTypes.func.isRequired,
+    setShowExtensionInFullSizeView: PropTypes.func.isRequired,
     setDismissSeedBackUpReminder: PropTypes.func.isRequired,
     dismissSeedBackUpReminder: PropTypes.bool.isRequired,
     backupUserData: PropTypes.func.isRequired,
@@ -329,6 +331,40 @@ export default class AdvancedTab extends PureComponent {
           <ToggleButton
             value={showTestNetworks}
             onToggle={(value) => setShowTestNetworks(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+          />
+        </div>
+      </Box>
+    );
+  }
+
+  renderToggleExtensionInFullSizeView() {
+    const { t } = this.context;
+    const { showExtensionInFullSizeView, setShowExtensionInFullSizeView } =
+      this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[7]}
+        className="settings-page__content-row"
+        data-testid="advanced-setting-show-extension-in-full-size-view"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        gap={4}
+      >
+        <div className="settings-page__content-item">
+          <span>{t('showExtensionInFullSizeView')}</span>
+          <div className="settings-page__content-description">
+            {t('showExtensionInFullSizeViewDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            value={showExtensionInFullSizeView}
+            onToggle={(value) => setShowExtensionInFullSizeView(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
           />
@@ -661,6 +697,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderHexDataOptIn()}
         {this.renderShowConversionInTestnets()}
         {this.renderToggleTestNetworks()}
+        {this.renderToggleExtensionInFullSizeView()}
         {this.renderUseNonceOptIn()}
         {this.renderAutoLockTimeLimit()}
         {this.renderUserDataBackup()}

@@ -451,6 +451,11 @@ class Driver {
     throw new Error('waitUntilXWindowHandles timed out polling window handles');
   }
 
+  async getWindowTitleByHandlerId(handlerId) {
+    await this.driver.switchTo().window(handlerId);
+    return await this.driver.getTitle();
+  }
+
   async switchToWindowWithTitle(
     title,
     initialWindowHandles,
