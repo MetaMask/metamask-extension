@@ -283,7 +283,6 @@ export default function NameDetails({
               ? t('nameInstructionsSaved')
               : t('nameInstructionsNew')}
           </Text>
-          <hr className="name-details__line" />
           {/* @ts-ignore */}
           <FormTextField
             id="address"
@@ -311,15 +310,14 @@ export default function NameDetails({
           >
             {t('nameLabel')}
             <FormComboField
+              hideDropdownIfNoOptions
               value={name}
               options={proposedNameOptions}
               placeholder={t('nameSetPlaceholder')}
-              noOptionsText={t('nameNoProposedNames')}
               onChange={handleNameChange}
               onOptionClick={handleProposedNameClick}
             />
           </Label>
-          <hr className="name-details__line" />
           <Button
             variant={ButtonVariant.Primary}
             startIconName={hasSavedName ? undefined : IconName.Save}
