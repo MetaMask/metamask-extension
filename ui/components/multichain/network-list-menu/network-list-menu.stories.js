@@ -3,11 +3,11 @@ import { Provider } from 'react-redux';
 import testData from '../../../../.storybook/test-data';
 import configureStore from '../../../store/store';
 import {
-  OPTIMISM_DISPLAY_NAME,
-  CHAIN_IDS,
-  OPTIMISM_TOKEN_IMAGE_URL,
-  BSC_DISPLAY_NAME,
   BNB_TOKEN_IMAGE_URL,
+  BSC_DISPLAY_NAME,
+  CHAIN_IDS,
+  OPTIMISM_DISPLAY_NAME,
+  OPTIMISM_TOKEN_IMAGE_URL,
 } from '../../../../shared/constants/network';
 import { NetworkListMenu } from '.';
 
@@ -18,6 +18,7 @@ const customNetworkStore = configureStore({
     preferences: {
       showTestNetworks: true,
     },
+    orderedNetworkList: [],
     networkConfigurations: {
       ...testData.metamask.networkConfigurations,
       ...{

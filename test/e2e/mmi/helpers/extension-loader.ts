@@ -10,6 +10,9 @@ export const test = base.extend({
       headless: false,
       args: [`--disable-extensions-except=${extensionPath}`],
     };
+    if (process.env.HEADLESS === 'true') {
+      launchOptions.args.push('--headless=new');
+    }
     const context = await chromium.launchPersistentContext('', launchOptions);
     await use(context);
     await context.close();

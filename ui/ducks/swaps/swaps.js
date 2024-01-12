@@ -4,6 +4,7 @@ import log from 'loglevel';
 
 import { captureMessage } from '@sentry/browser';
 
+import { TransactionType } from '@metamask/transaction-controller';
 import {
   addToken,
   addTransactionAndWaitForPublish,
@@ -78,7 +79,6 @@ import {
   Slippage,
 } from '../../../shared/constants/swaps';
 import {
-  TransactionType,
   IN_PROGRESS_TRANSACTION_STATUSES,
   SmartTransactionStatus,
 } from '../../../shared/constants/transaction';

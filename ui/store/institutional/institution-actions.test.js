@@ -24,11 +24,6 @@ const defaultState = {
     identities: {
       '0xFirstAddress': {},
     },
-    cachedBalances: {
-      '0x1': {
-        '0xFirstAddress': '0x0',
-      },
-    },
     custodyStatusMaps: {
       saturn: {
         signed: {

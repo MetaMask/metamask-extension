@@ -91,6 +91,26 @@ body:
   - type: markdown
     attributes:
       value: |
+        ## **Stakeholder Review (for MetaMask employees only)**
+
+  - type: checkboxes
+    id: stakeholder-review
+    attributes:
+      label: Stakeholder review needed before the work gets merged
+      options:
+        - label: Engineering (needed in most cases)
+        - label: Design
+        - label: Product
+        - label: QA (automation tests are required to pass before merging PRs but not all changes are covered by automation tests - please review if QA is needed beyond automation tests)
+        - label: Security
+        - label: Legal
+        - label: Marketing
+        - label: Management (please specify)
+        - label: Other (please specify)
+
+  - type: markdown
+    attributes:
+      value: |
         ## **References**
 
   - type: textarea

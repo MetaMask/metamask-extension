@@ -1,13 +1,13 @@
 import { ResultComponent } from '@metamask/approval-controller';
 
-type TemplateRendererComponent = {
+export type TemplateRendererComponent = {
   key: string;
   element: string;
   props?: Record<string, unknown>;
   children?:
     | string
     | TemplateRendererComponent
-    | (string | TemplateRendererComponent)[];
+    | (undefined | string | TemplateRendererComponent)[];
 };
 
 /**
@@ -64,12 +64,10 @@ export function processString(
  */
 export function processHeader(
   header: (string | ResultComponent)[] | undefined,
-):
-  | string
-  | TemplateRendererComponent
-  | (string | TemplateRendererComponent)[]
-  | undefined {
-  return convertResultComponents(header);
+) {
+  return convertResultComponents(header) as
+    | undefined
+    | (string | TemplateRendererComponent)[];
 }
 
 /**

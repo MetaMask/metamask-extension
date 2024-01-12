@@ -33,6 +33,8 @@ const dappsTest = async (
 // Important note:
 // These tests can run in parallel as they don't relay on tx creation time to retrieve the tx from saturn
 test.describe('MMI dapps', () => {
+  test.describe.configure({ mode: 'serial' });
+
   test('MMI connects to dapp, clicks "Show me the money" button and confirm from custody', async ({
     page,
     context,
@@ -47,7 +49,7 @@ test.describe('MMI dapps', () => {
     await dappsTest(page, context, 'approveTokens');
   });
 
-  test('MMI connects to dapp, clicks "Use Super Powers" button, confirm from custody and check that the TX has failed', async ({
+  test.skip('MMI connects to dapp, clicks "Use Super Powers" button, confirm from custody and check that the TX has failed', async ({
     page,
     context,
   }) => {

@@ -169,7 +169,7 @@ describe('selectors', () => {
             address: '0x617b3f8050a0bd94b6b1da02b4384ee5b4df13f4',
           },
         },
-        cachedBalances: {},
+        accountsByChainId: {},
         subjects: {
           'https://remix.ethereum.org': {
             permissions: {

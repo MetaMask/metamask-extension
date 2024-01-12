@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { withFixtures, defaultGanacheOptions } = require('../helpers');
+const {
+  withFixtures,
+  defaultGanacheOptions,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_accounts', function () {
@@ -10,15 +14,14 @@ describe('eth_accounts', function () {
         fixtures: new FixtureBuilder()
           .withKeyringControllerAdditionalAccountVault()
           .withPreferencesControllerAdditionalAccountIdentities()
+          .withAccountsControllerAdditionalAccountIdentities()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // eth_accounts
         await driver.openNewPage(`http://127.0.0.1:8080`);
@@ -33,8 +36,8 @@ describe('eth_accounts', function () {
         );
 
         assert.deepStrictEqual(accounts, [
-          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
           '0x09781764c08de8ca82e156bbf156a3ca217c7950',
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         ]);
       },
     );

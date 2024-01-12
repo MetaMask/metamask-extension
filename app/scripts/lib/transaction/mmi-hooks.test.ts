@@ -1,4 +1,4 @@
-import { TransactionStatus } from '../../../../shared/constants/transaction';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import {
   afterTransactionSign,
   beforeCheckPendingTransaction,

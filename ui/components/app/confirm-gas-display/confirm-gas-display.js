@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import {
   checkNetworkAndAccountSupports1559,
   txDataSelector,
@@ -9,7 +10,6 @@ import {
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import GasDetailsItem from '../gas-details-item';
 import { getCurrentDraftTransaction } from '../../../ducks/send';
-import { TransactionEnvelopeType } from '../../../../shared/constants/transaction';
 import { ConfirmLegacyGasDisplay } from './confirm-legacy-gas-display';
 
 const ConfirmGasDisplay = ({ userAcknowledgedGasMissing = false }) => {

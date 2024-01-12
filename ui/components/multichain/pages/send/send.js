@@ -35,10 +35,10 @@ import { MetaMetricsEventCategory } from '../../../../../shared/constants/metame
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import {
   SendPageAccountPicker,
-  SendPageRecipientInput,
+  SendPageContent,
   SendPageNetworkPicker,
   SendPageRecipient,
-  SendPageContent,
+  SendPageRecipientInput,
 } from './components';
 
 export const SendPage = () => {

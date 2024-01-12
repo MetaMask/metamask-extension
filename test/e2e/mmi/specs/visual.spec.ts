@@ -47,6 +47,8 @@ test.describe('MMI visual', () => {
     const accounts = await client.getSelectedAccounts();
     const accountA = accounts[0];
 
+    await mainMenuPage.closeDeprecatedNetworksBanner();
+
     const accountsPopup = new MMIAccountMenuPage(page);
 
     await accountsPopup.accountMenuScreenshot('connect_custodian.png');
