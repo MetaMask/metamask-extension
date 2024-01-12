@@ -1981,7 +1981,9 @@
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "@metamask/utils": true,
         "browserify>browserify-zlib": true,
-        "json-rpc-middleware-stream": true
+        "json-rpc-middleware-stream": true,
+        "peek-stream": true,
+        "pumpify": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -1994,8 +1996,8 @@
         "@metamask/snaps-controllers>readable-stream": true,
         "browserify>buffer": true,
         "browserify>concat-stream>typedarray": true,
-        "pumpify>inherits": true,
-        "terser>source-map-support>buffer-from": true
+        "peek-stream>buffer-from": true,
+        "pumpify>inherits": true
       }
     },
     "@metamask/snaps-controllers>nanoid": {
@@ -3126,6 +3128,27 @@
         "crypto.getRandomValues": true
       }
     },
+    "duplexify": {
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "duplexify>readable-stream": true,
+        "duplexify>stream-shift": true,
+        "end-of-stream": true,
+        "pumpify>inherits": true
+      }
+    },
+    "duplexify>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
+      }
+    },
     "end-of-stream": {
       "packages": {
         "browserify>process": true,
@@ -4039,6 +4062,37 @@
         "readable-stream": true
       }
     },
+    "peek-stream": {
+      "packages": {
+        "browserify>buffer": true,
+        "peek-stream>buffer-from": true,
+        "peek-stream>duplexify": true,
+        "peek-stream>through2": true
+      }
+    },
+    "peek-stream>buffer-from": {
+      "packages": {
+        "browserify>buffer": true
+      }
+    },
+    "peek-stream>duplexify": {
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "duplexify>stream-shift": true,
+        "end-of-stream": true,
+        "pumpify>inherits": true,
+        "readable-stream": true
+      }
+    },
+    "peek-stream>through2": {
+      "packages": {
+        "browserify>process": true,
+        "browserify>util": true,
+        "readable-stream": true,
+        "watchify>xtend": true
+      }
+    },
     "promise-to-callback": {
       "packages": {
         "promise-to-callback>is-fn": true,
@@ -4078,6 +4132,13 @@
     "pump>once": {
       "packages": {
         "pump>once>wrappy": true
+      }
+    },
+    "pumpify": {
+      "packages": {
+        "duplexify": true,
+        "pump": true,
+        "pumpify>inherits": true
       }
     },
     "qrcode-generator": {
@@ -4794,11 +4855,6 @@
       "globals": {
         "console.warn": true,
         "define": true
-      }
-    },
-    "terser>source-map-support>buffer-from": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "uuid": {
