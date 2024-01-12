@@ -1,0 +1,117 @@
+diff --git a/dist/cjs/snaps/location/npm.js b/dist/cjs/snaps/location/npm.js
+index 263f15632f25f734b67e5a53de827c32e996657f..7c2f57569f41120ca80dd86ed087622913d97606 100644
+--- a/dist/cjs/snaps/location/npm.js
++++ b/dist/cjs/snaps/location/npm.js
+@@ -33,6 +33,8 @@ const _utils = require("@metamask/utils");
+ const _browserifyzlib = require("browserify-zlib");
+ const _concatstream = /*#__PURE__*/ _interop_require_default(require("concat-stream"));
+ const _getnpmtarballurl = /*#__PURE__*/ _interop_require_default(require("get-npm-tarball-url"));
++const _peekstream = /*#__PURE__*/ _interop_require_default(require("peek-stream"));
++const _pumpify = /*#__PURE__*/ _interop_require_default(require("pumpify"));
+ const _readablestream = require("readable-stream");
+ const _readablewebtonodestream = require("readable-web-to-node-stream");
+ const _tarstream = require("tar-stream");
+@@ -228,7 +230,7 @@ class NpmLocation extends BaseNpmLocation {
+             // before we can actually grab any files from it.
+             // To prevent recursion-based zip bombs, we should not allow recursion here.
+             (0, _readablestream.pipeline)(// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+-            getNodeStream(tarballResponse.body), (0, _browserifyzlib.createGunzip)(), createTarballStream(getNpmCanonicalBasePath(this.meta.registry, this.meta.packageName), files), (error)=>{
++            getNodeStream(tarballResponse.body), createGzipDecompressionStream(2), createTarballStream(getNpmCanonicalBasePath(this.meta.registry, this.meta.packageName), files), (error)=>{
+                 error ? reject(error) : resolve(files);
+             });
+         });
+@@ -322,6 +324,28 @@ function getNpmCanonicalBasePath(registryUrl, packageName) {
+     }
+     return new _readablewebtonodestream.ReadableWebToNodeStream(stream);
+ }
++/**
++ * Recursively creates a Gzip decompression stream.
++ *
++ * @param maxRecursion - The maximum number of times we can recurse through the function.
++ * @returns The decompression stream.
++ */ function createGzipDecompressionStream(maxRecursion) {
++    return (0, _peekstream.default)({
++        newline: false,
++        maxBuffer: 3
++    }, function(data, swap) {
++        if (maxRecursion <= 0) {
++            swap(new Error('Maximum recursion reached'));
++            return;
++        }
++        // Detect gzip
++        if (data[0] === 0x1f && data[1] === 0x8b && data[2] === 0x08) {
++            swap(null, (0, _pumpify.default)((0, _browserifyzlib.createGunzip)(), createGzipDecompressionStream(maxRecursion - 1)));
++        } else {
++            swap(null, new _readablestream.PassThrough());
++        }
++    });
++}
+ /**
+  * Creates a `tar-stream` that will get the necessary files from an npm Snap
+  * package tarball (`.tgz` file).
+diff --git a/dist/esm/snaps/location/npm.js b/dist/esm/snaps/location/npm.js
+index e1144f2085ffc2a082674e26c7e891fa286a1f0d..605d5e8a694eba3d1b8f2c662ff99f90abc1c1b7 100644
+--- a/dist/esm/snaps/location/npm.js
++++ b/dist/esm/snaps/location/npm.js
+@@ -66,7 +66,9 @@ import { assert, assertIsSemVerVersion, assertStruct, isObject, isValidSemVerVer
+ import { createGunzip } from 'browserify-zlib';
+ import concat from 'concat-stream';
+ import getNpmTarballUrl from 'get-npm-tarball-url';
+-import { pipeline } from 'readable-stream';
++import peek from 'peek-stream';
++import pumpify from 'pumpify';
++import { pipeline, PassThrough } from 'readable-stream';
+ import { ReadableWebToNodeStream } from 'readable-web-to-node-stream';
+ import { extract as tarExtract } from 'tar-stream';
+ export const DEFAULT_NPM_REGISTRY = new URL('https://registry.npmjs.org');
+@@ -196,7 +198,7 @@ export class NpmLocation extends BaseNpmLocation {
+             // before we can actually grab any files from it.
+             // To prevent recursion-based zip bombs, we should not allow recursion here.
+             pipeline(// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+-            getNodeStream(tarballResponse.body), createGunzip(), createTarballStream(getNpmCanonicalBasePath(this.meta.registry, this.meta.packageName), files), (error)=>{
++            getNodeStream(tarballResponse.body), createGzipDecompressionStream(2), createTarballStream(getNpmCanonicalBasePath(this.meta.registry, this.meta.packageName), files), (error)=>{
+                 error ? reject(error) : resolve(files);
+             });
+         });
+@@ -306,6 +308,28 @@ export class NpmLocation extends BaseNpmLocation {
+     }
+     return new ReadableWebToNodeStream(stream);
+ }
++/**
++ * Recursively creates a Gzip decompression stream.
++ *
++ * @param maxRecursion - The maximum number of times we can recurse through the function.
++ * @returns The decompression stream.
++ */ function createGzipDecompressionStream(maxRecursion) {
++    return peek({
++        newline: false,
++        maxBuffer: 3
++    }, function(data, swap) {
++        if (maxRecursion <= 0) {
++            swap(new Error('Maximum recursion reached'));
++            return;
++        }
++        // Detect gzip
++        if (data[0] === 0x1f && data[1] === 0x8b && data[2] === 0x08) {
++            swap(null, pumpify(createGunzip(), createGzipDecompressionStream(maxRecursion - 1)));
++        } else {
++            swap(null, new PassThrough());
++        }
++    });
++}
+ /**
+  * Creates a `tar-stream` that will get the necessary files from an npm Snap
+  * package tarball (`.tgz` file).
+diff --git a/package.json b/package.json
+index da0c48ca014d3f41abc25f9dd019ae1aa1b5b556..6ad309dfa88976d00ab58a67c5bc14a19d997933 100644
+--- a/package.json
++++ b/package.json
+@@ -62,6 +62,8 @@
+     "immer": "^9.0.6",
+     "json-rpc-middleware-stream": "^5.0.0",
+     "nanoid": "^3.1.31",
++    "peek-stream": "^1.1.3",
++    "pumpify": "^2.0.1",
+     "readable-stream": "^3.6.2",
+     "readable-web-to-node-stream": "^3.0.2",
+     "tar-stream": "^3.1.6"
