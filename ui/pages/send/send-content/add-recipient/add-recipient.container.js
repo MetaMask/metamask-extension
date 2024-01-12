@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import {
   getAddressBook,
   getAddressBookEntry,
-  getMetaMaskAccountsOrdered,
+  getInternalAccountsSortedByKeyring,
   getCurrentNetworkTransactions,
 } from '../../../../selectors';
 
@@ -58,7 +58,14 @@ function mapStateToProps(state) {
     return b.timestamp - a.timestamp;
   });
 
-  const ownedAccounts = getMetaMaskAccountsOrdered(state);
+  const ownedAccounts = getInternalAccountsSortedByKeyring(state).map(
+    ({ address, metadata }) => {
+      return {
+        address,
+        name: metadata.name,
+      };
+    },
+  );
 
   return {
     addressBook,
