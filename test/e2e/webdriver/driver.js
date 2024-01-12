@@ -94,9 +94,6 @@ class Driver {
       CONTROL: '\uE009',
       COMMAND: '\uE03D',
       MODIFIER: process.platform === 'darwin' ? Key.COMMAND : Key.CONTROL,
-      SHIFT: '\uE008',
-      OPTION: '\u2325',
-      M: '\u006D',
     };
   }
 
@@ -333,10 +330,6 @@ class Driver {
       'arguments[0].scrollIntoView(true)',
       element,
     );
-  }
-
-  retrieveDriverActions() {
-    return this.driver.actions();
   }
 
   async assertElementNotPresent(rawLocator) {
