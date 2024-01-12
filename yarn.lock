@@ -4281,19 +4281,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-query@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/ethjs-query@npm:0.5.0"
-  dependencies:
-    babel-runtime: "npm:^6.26.0"
-    ethjs-format: "npm:0.2.7"
-    ethjs-rpc: "npm:0.2.0"
-    promise-to-callback: "npm:^1.0.0"
-  checksum: 8a207c0af64c2ec8cf9380e0bea3285bd50c1ffc8b952ad3f3ce347b79d6a19fec3428e854a6e4da410bf840ebdc2250638c3f6b41387c8601baa10bea025f91
-  languageName: node
-  linkType: hard
-
-"@metamask/ethjs-query@npm:^0.5.2":
+"@metamask/ethjs-query@npm:^0.5.0, @metamask/ethjs-query@npm:^0.5.2":
   version: 0.5.3
   resolution: "@metamask/ethjs-query@npm:0.5.3"
   dependencies:
