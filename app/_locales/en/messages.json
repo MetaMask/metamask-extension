@@ -5297,7 +5297,8 @@
     "message": "this collection"
   },
   "threeMonthsAbbreviation": {
-    "message": "3M"
+    "message": "3M",
+    "description": "Shortened form of '3 months'"
   },
   "time": {
     "message": "Time"
