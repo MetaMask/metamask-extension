@@ -68,7 +68,14 @@ const renderComponent = ({
         nickname: GOERLI_DISPLAY_NAME,
         type: NETWORK_TYPES.GOERLI,
       },
-      cachedBalances: {},
+      accountsByChainId: {
+        [CHAIN_IDS.GOERLI]: {
+          '0xAddress': {
+            address: '0xAddress',
+            balance: '0x176e5b6f173ebe66',
+          },
+        },
+      },
       accounts: {
         '0xAddress': {
           address: '0xAddress',

@@ -40,7 +40,6 @@
 @import 'snaps/show-more/index';
 @import 'snaps/tx-insight-warnings/index';
 @import 'gas-details-item/index';
-@import 'gas-details-item/gas-details-item-title/index';
 @import 'gas-timing/index';
 @import 'hold-to-reveal-button/index';
 @import 'home-notification/index';
@@ -100,9 +99,12 @@
 @import 'transaction-alerts/transaction-alerts';
 @import 'name/index';
 @import 'name/name-details/index';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 @import '../institutional/interactive-replacement-token-notification/index';
 @import '../institutional/confirm-remove-jwt-modal/index';
 @import '../institutional/custody-confirm-link-modal/index';
 @import '../institutional/transaction-failed-modal/index';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(conf-redesign)
+@import 'confirm/header/header.scss';
+///: END:ONLY_INCLUDE_IF

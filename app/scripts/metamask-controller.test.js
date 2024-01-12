@@ -24,6 +24,8 @@ import { createTestProviderTools } from '../../test/stub/provider';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
 import { LOG_EVENT } from '../../shared/constants/logs';
+import mockEncryptor from '../../test/lib/mock-encryptor';
+import * as tokenUtils from '../../shared/lib/token-util.ts';
 import { deferredPromise } from './lib/util';
 import MetaMaskController from './metamask-controller';
 
@@ -317,15 +319,7 @@ describe('MetaMaskController', () => {
 
       metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {
@@ -600,14 +594,15 @@ describe('MetaMaskController', () => {
       });
 
       it('should restore any consecutive accounts with balances without extra zero balance accounts', async () => {
+        // Give account 1 a balance
         jest
           .spyOn(metamaskController, 'getBalance')
           .mockImplementation((address) => {
             switch (address) {
               case TEST_ADDRESS:
-              case TEST_ADDRESS_3:
                 return Promise.resolve('0x14ced5122ce0a000');
               case TEST_ADDRESS_2:
+              case TEST_ADDRESS_3:
                 return Promise.resolve('0x0');
               default:
                 return Promise.reject(
@@ -616,20 +611,33 @@ describe('MetaMaskController', () => {
             }
           });
 
+        // Give account 2 a token
+        jest
+          .spyOn(metamaskController.tokensController, 'state', 'get')
+          .mockReturnValue({
+            allTokens: {},
+            allIgnoredTokens: {},
+            allDetectedTokens: { '0x1': { [TEST_ADDRESS_2]: [{}] } },
+          });
+
         const startTime = Date.now();
         await metamaskController.createNewVaultAndRestore(
           'foobar1337',
           TEST_SEED,
         );
 
+        // Expect first account to be selected
         const identities = cloneDeep(metamaskController.getState().identities);
         expect(
           identities[TEST_ADDRESS].lastSelected >= startTime &&
             identities[TEST_ADDRESS].lastSelected <= Date.now(),
         ).toStrictEqual(true);
+
+        // Expect first 2 accounts to be restored
         delete identities[TEST_ADDRESS].lastSelected;
         expect(identities).toStrictEqual({
           [TEST_ADDRESS]: { address: TEST_ADDRESS, name: DEFAULT_LABEL },
+          [TEST_ADDRESS_2]: { address: TEST_ADDRESS_2, name: 'Account 2' },
         });
       });
     });
@@ -822,15 +830,7 @@ describe('MetaMaskController', () => {
 
         const localMetaMaskController = new MetaMaskController({
           showUserConfirmation: noop,
-          encryptor: {
-            encrypt(_, object) {
-              this.object = object;
-              return Promise.resolve('mock-encrypted');
-            },
-            decrypt() {
-              return Promise.resolve(this.object);
-            },
-          },
+          encryptor: mockEncryptor,
           initState: {
             ...cloneDeep(firstTimeState),
             KeyringController: {
@@ -917,6 +917,17 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.preferencesController, 'setAccountLabel')
           .mockReturnValue();
 
+        jest
+          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
+          .mockReturnValue({
+            account: {
+              id: '2d47e693-26c2-47cb-b374-6151199bbe3f',
+            },
+          });
+        jest
+          .spyOn(metamaskController.accountsController, 'setAccountName')
+          .mockReturnValue();
+
         await metamaskController.unlockHardwareWalletAccount(
           accountToUnlock,
           HardwareDeviceNames.trezor,
@@ -961,6 +972,18 @@ describe('MetaMaskController', () => {
           metamaskController.preferencesController.setAccountLabel,
         ).toHaveBeenCalledTimes(1);
       });
+
+      it('should call accountsController.getAccountByAddress', async () => {
+        expect(
+          metamaskController.accountsController.getAccountByAddress,
+        ).toHaveBeenCalledTimes(1);
+      });
+
+      it('should call accountsController.setAccountName', async () => {
+        expect(
+          metamaskController.accountsController.setAccountName,
+        ).toHaveBeenCalledTimes(1);
+      });
     });
 
     describe('#addNewAccount', () => {
@@ -971,10 +994,10 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('#verifyseedPhrase', () => {
-      it('errors when no keying is provided', async () => {
-        await expect(metamaskController.verifySeedPhrase()).rejects.toThrow(
-          'No HD keyring found',
+    describe('#getSeedPhrase', () => {
+      it('errors when no password is provided', async () => {
+        await expect(metamaskController.getSeedPhrase()).rejects.toThrow(
+          'KeyringController - Cannot unlock without a previous vault.',
         );
       });
 
@@ -1539,7 +1562,7 @@ describe('MetaMaskController', () => {
           standard: 'ERC1155',
           decimals: 18,
           symbol: 'DAI',
-          balance: '333',
+          balance: '1',
         };
 
         metamaskController.tokenListController.update(() => {
@@ -1559,11 +1582,17 @@ describe('MetaMaskController', () => {
           )
           .mockReturnValue(tokenData);
 
+        const spyOnFetchERC1155Balance = jest
+          .spyOn(tokenUtils, 'fetchERC1155Balance')
+          .mockReturnValue({ _hex: '0x1' });
+
         const tokenDetails =
           await metamaskController.getTokenStandardAndDetails(
             '0xAAA75474e89094c44da98b954eedeac495271d0f',
             '0xf0d172594caedee459b89ad44c94098e474571b6',
           );
+
+        expect(spyOnFetchERC1155Balance).toHaveBeenCalled();
         expect(tokenDetails.standard).toStrictEqual(
           tokenData.standard.toUpperCase(),
         );
@@ -1824,15 +1853,7 @@ describe('MetaMaskController', () => {
 
       const metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {
@@ -1856,15 +1877,7 @@ describe('MetaMaskController', () => {
 
       const metamaskController = new MetaMaskController({
         showUserConfirmation: noop,
-        encryptor: {
-          encrypt(_, object) {
-            this.object = object;
-            return Promise.resolve('mock-encrypted');
-          },
-          decrypt() {
-            return Promise.resolve(this.object);
-          },
-        },
+        encryptor: mockEncryptor,
         initState: cloneDeep(firstTimeState),
         initLangCode: 'en_US',
         platform: {

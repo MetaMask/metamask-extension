@@ -54,6 +54,10 @@ export const SENTRY_BACKGROUND_STATE = {
   NetworkOrderController: {
     orderedNetworkList: [],
   },
+  AccountOrderController: {
+    pinnedAccountList: [],
+    hiddenAccountList: [],
+  },
   AppMetadataController: {
     currentAppVersion: true,
     currentMigrationVersion: true,
@@ -83,14 +87,12 @@ export const SENTRY_BACKGROUND_STATE = {
     showBetaHeader: true,
     showProductTour: true,
     showTestnetMessageInDropdown: true,
+    surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
     timeoutMinutes: true,
     trezorModel: true,
     usedNetworks: true,
-  },
-  CachedBalancesController: {
-    cachedBalances: false,
   },
   CronjobController: {
     jobs: false,
@@ -193,6 +195,7 @@ export const SENTRY_BACKGROUND_STATE = {
     preferences: {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
+      showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
       useNativeCurrencyAsPrimaryCurrency: true,
@@ -283,6 +286,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   TokenRatesController: {
     contractExchangeRates: false,
+    contractExchangeRatesByChainId: false,
   },
   TokensController: {
     allDetectedTokens: {
@@ -334,11 +338,12 @@ export const SENTRY_UI_STATE = {
     nextNonce: true,
     pendingTokens: false,
     welcomeScreenSeen: true,
+    confirmationExchangeRates: true,
     useSafeChainsListValidation: true,
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   },
   unconnectedAccount: true,
 };

@@ -9,19 +9,19 @@ import { ellipsify } from '../../send.utils';
 import Confusable from '../../../../components/ui/confusable';
 import {
   Text,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   AvatarIcon,
   AvatarIconSize,
   IconName,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../components/component-library';
 import Box from '../../../../components/ui/box';
 import {
   TextColor,
   TextVariant,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   IconColor,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/constants/design-system';
 
 export default class AddRecipient extends Component {
@@ -43,10 +43,10 @@ export default class AddRecipient extends Component {
       error: PropTypes.string,
       warning: PropTypes.string,
     }),
-    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     domainType: PropTypes.string,
     resolvingSnap: PropTypes.string,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     updateRecipientUserInput: PropTypes.func,
   };
 
@@ -154,7 +154,7 @@ export default class AddRecipient extends Component {
   }
 
   renderExplicitAddress(address, name, type) {
-    ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     const { t } = this.context;
     const { domainType } = this.props;
     if (domainType === 'Other') {
@@ -197,7 +197,7 @@ export default class AddRecipient extends Component {
         </div>
       );
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     return (
       <div
         key={address}

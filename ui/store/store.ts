@@ -24,12 +24,12 @@ export interface TemporaryMessageDataType {
     metamaskId: string;
     data: string;
   };
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   metadata?: {
     custodyId?: string;
   };
   status?: string;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 }
 
 export interface MessagesIndexedById {
@@ -80,9 +80,9 @@ interface TemporaryBackgroundState {
   };
   gasFeeEstimates: GasFeeEstimates;
   gasEstimateType: GasEstimateType;
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   custodyAccountDetails?: { [key: string]: any };
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   internalAccounts: {
     accounts: {
       [key: string]: InternalAccount;

@@ -606,9 +606,6 @@
   "search": {
     "message": "חפש"
   },
-  "searchResults": {
-    "message": "תוצאות חיפוש"
-  },
   "securityAndPrivacy": {
     "message": "אבטחה ופרטיות"
   },
@@ -776,12 +773,6 @@
   },
   "unknown": {
     "message": "לא ידוע"
-  },
-  "unknownCameraError": {
-    "message": "אירעה שגיאה במהלך הניסיון לקבל גישה למצלמה שלך. נא לנסות שוב..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "אופס! משהו השתבש...."
   },
   "unknownNetwork": {
     "message": "רשת פרטית לא ידועה"

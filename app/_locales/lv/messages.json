@@ -605,9 +605,6 @@
   "search": {
     "message": "Meklēt"
   },
-  "searchResults": {
-    "message": "Meklēšanas rezultāti"
-  },
   "securityAndPrivacy": {
     "message": "Drošība un konfidencialitāte"
   },
@@ -775,12 +772,6 @@
   },
   "unknown": {
     "message": "Nezināma"
-  },
-  "unknownCameraError": {
-    "message": "Mēģinot piekļūt kamerai, radās kļūda. Lūdzu, mēģiniet vēlreiz..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ak vai! Radās problēma..."
   },
   "unknownNetwork": {
     "message": "Nezināms privātais tīkls"

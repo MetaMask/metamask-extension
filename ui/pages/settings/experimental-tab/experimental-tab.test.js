@@ -103,7 +103,7 @@ describe('ExperimentalTab', () => {
       },
     );
 
-    const toggle = getByTestId('add-snap-account-toggle');
+    const toggle = getByTestId('add-account-snap-toggle-button');
     fireEvent.click(toggle);
 
     await waitFor(() => {

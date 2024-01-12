@@ -23,7 +23,7 @@ import {
   IconName,
   IconSize,
 } from '../../component-library';
-import { getSelectedIdentity } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors';
 import Tooltip from '../../ui/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 
@@ -35,7 +35,7 @@ export const ConnectedSiteMenu = ({
   onClick,
 }) => {
   const t = useI18nContext();
-  const selectedAccount = useSelector(getSelectedIdentity);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const isConnectedtoOtherAccountOrSnap =
     status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT ||
     status === STATUS_CONNECTED_TO_SNAP;
@@ -54,7 +54,7 @@ export const ConnectedSiteMenu = ({
         title={
           status === STATUS_NOT_CONNECTED
             ? t('statusNotConnectedAccount')
-            : `${selectedAccount?.name} ${text}`
+            : `${selectedAccount?.metadata.name} ${text}`
         }
         data-testid="multichain-connected-site-menu__tooltip"
         position="bottom"

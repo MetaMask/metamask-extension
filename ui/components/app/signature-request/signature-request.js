@@ -2,23 +2,23 @@ import React, {
   useContext,
   useState,
   useEffect,
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   useCallback,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from 'react';
 import {
   useDispatch,
   useSelector,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   shallowEqual,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from 'react-redux';
 import PropTypes from 'prop-types';
 import { memoize } from 'lodash';
 import { ethErrors, serializeError } from 'eth-rpc-errors';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import {
   resolvePendingApproval,
   completedTx,
@@ -28,11 +28,11 @@ import {
   doesAddressRequireLedgerHidConnection,
   getSubjectMetadata,
   getTotalUnapprovedMessagesCount,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   accountsWithSendEtherInfoSelector,
   getSelectedAccount,
   getAccountType,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import {
   getProviderConfig,
@@ -40,10 +40,10 @@ import {
 } from '../../../ducks/metamask/metamask';
 import {
   sanitizeMessage,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getAccountByAddress,
   shortenAddress,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/utils/util';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useRejectTransactionModal } from '../../../hooks/useRejectTransactionModal';
@@ -56,9 +56,9 @@ import ContractDetailsModal from '../modals/contract-details-modal';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi,blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi,blockaid)
   MetaMetricsEventName,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../../shared/constants/metametrics';
 import { SECURITY_PROVIDER_MESSAGE_SEVERITY } from '../../../../shared/constants/security-provider';
 
@@ -67,12 +67,12 @@ import {
   TextColor,
   TextVariant,
   Size,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   IconColor,
   BackgroundColor,
   Display,
   BlockSize,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/design-system';
 import {
   ButtonVariant,
@@ -80,24 +80,24 @@ import {
   ButtonLink,
   TagUrl,
   Text,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   Icon,
   IconName,
   Box,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../component-library';
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 // eslint-disable-next-line import/order
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../shared/constants/app';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
 import { showCustodyConfirmLink } from '../../../store/institutional/institution-actions';
 import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessage';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
@@ -128,7 +128,7 @@ const SignatureRequest = ({ txData }) => {
   const isLedgerWallet = useSelector((state) => isAddressLedger(state, from));
   const { handleCancelAll } = useRejectTransactionModal();
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   // Used to show a warning if the signing account is not the selected account
   // Largely relevant for contract wallet custodians
   const selectedAccount = useSelector(getSelectedAccount);
@@ -141,7 +141,7 @@ const SignatureRequest = ({ txData }) => {
   );
   const { address } = getAccountByAddress(allAccounts, from) || {};
   const { custodySignFn } = useMMICustodySignMessage();
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
     setMessageIsScrollable(
@@ -162,7 +162,7 @@ const SignatureRequest = ({ txData }) => {
     return { sanitizedMessage, domain, primaryType };
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const onClickSupportLink = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
@@ -175,14 +175,14 @@ const SignatureRequest = ({ txData }) => {
       },
     });
   }, []);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const onSign = async () => {
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     if (accountType === 'custody') {
       await custodySignFn(txData);
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     await dispatch(resolvePendingApproval(id));
     completedTx(id);
@@ -224,7 +224,7 @@ const SignatureRequest = ({ txData }) => {
     primaryType,
   } = parseMessage(data);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   useEffect(() => {
     if (txData.custodyId) {
       showCustodianDeepLink({
@@ -253,7 +253,7 @@ const SignatureRequest = ({ txData }) => {
     isNotification,
     trackEvent,
   ]);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <div className="signature-request">
@@ -266,15 +266,15 @@ const SignatureRequest = ({ txData }) => {
       </div>
       <div className="signature-request-content">
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
           <BlockaidBannerAlert
-            securityAlertResponse={txData?.securityAlertResponse}
+            txData={txData}
             marginLeft={4}
             marginRight={4}
             marginBottom={4}
             onClickSupportLink={onClickSupportLink}
           />
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         {(txData?.securityProviderResponse?.flagAsDangerous !== undefined &&
           txData?.securityProviderResponse?.flagAsDangerous !==
@@ -286,7 +286,7 @@ const SignatureRequest = ({ txData }) => {
           />
         ) : null}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           selectedAccount.address === address ? null : (
             <Box
               className="request-signature__mismatch-info"
@@ -313,7 +313,7 @@ const SignatureRequest = ({ txData }) => {
               </Text>
             </Box>
           )
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         <div className="signature-request__origin">
           <TagUrl
@@ -379,9 +379,9 @@ const SignatureRequest = ({ txData }) => {
         cancelAction={onCancel}
         signAction={onSign}
         disabled={
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           Boolean(txData?.custodyId) ||
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
           hardwareWalletRequiresConnection ||
           (messageIsScrollable && !hasScrolledMessage)
         }

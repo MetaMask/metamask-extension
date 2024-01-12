@@ -290,9 +290,9 @@ export const nonceSortedTransactionsSelector = createSelector(
       let shouldNotBeGrouped =
         typeof nonce === 'undefined' || type === TransactionType.incoming;
 
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       shouldNotBeGrouped = shouldNotBeGrouped || Boolean(transaction.custodyId);
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
 
       if (shouldNotBeGrouped) {
         const transactionGroup = {
@@ -594,6 +594,6 @@ const TRANSACTION_APPROVAL_TYPES = [
 export function hasTransactionPendingApprovals(state) {
   return (
     hasUnapprovedTransactionsInCurrentNetwork(state) ||
-    TRANSACTION_APPROVAL_TYPES.some((type) => hasPendingApprovals(state, type))
+    hasPendingApprovals(state, TRANSACTION_APPROVAL_TYPES)
   );
 }

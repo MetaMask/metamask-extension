@@ -13,6 +13,9 @@ const identity = {
     '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'
   ],
   balance: '0x152387ad22c3f0',
+  keyring: {
+    type: 'HD Key Tree',
+  },
 };
 
 const DEFAULT_PROPS = {
@@ -104,16 +107,43 @@ describe('AccountListItem', () => {
     expect(getByAltText(`${connectedAvatarName} logo`)).toBeInTheDocument();
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  it('renders the snap label for snap accounts', () => {
-    const { getByText } = render({
+  it('does not render a tag for a null label', () => {
+    const { container } = render({
+      identity: {
+        ...identity,
+        label: null,
+      },
+    });
+    expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
+  });
+
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  it('renders the snap label for unnamed snap accounts', () => {
+    const { container } = render({
       identity: {
         address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
         name: 'Snap Account',
+        balance: '0x0',
+        keyring: 'Snap Keyring',
+        label: 'Snaps (Beta)',
       },
     });
-
-    expect(getByText('Snaps (Beta)')).toBeInTheDocument();
+    const tag = container.querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Snaps (Beta)');
   });
-  ///: END:ONLY_INCLUDE_IN
+
+  it('renders the snap name for named snap accounts', () => {
+    const { container } = render({
+      identity: {
+        address: '0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D',
+        name: 'Snap Account',
+        balance: '0x0',
+        keyring: 'Snap Keyring',
+        label: 'Test Snap Name (Beta)',
+      },
+    });
+    const tag = container.querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Test Snap Name (Beta)');
+  });
+  ///: END:ONLY_INCLUDE_IF
 });
