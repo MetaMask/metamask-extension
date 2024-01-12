@@ -28,8 +28,7 @@ import {
   getShowTermsOfUse,
   getShowOutdatedBrowserWarning,
   getNewNetworkAdded,
-  hasUnsignedQRHardwareTransaction,
-  hasUnsignedQRHardwareMessage,
+  getIsSigningQRHardwareTransaction,
   getNewNftAddedMessage,
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
@@ -123,10 +122,6 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       Web3ShimUsageAlertStates.recorded;
 
-  const isSigningQRHardwareTransaction =
-    hasUnsignedQRHardwareTransaction(state) ||
-    hasUnsignedQRHardwareMessage(state);
-
   const hasWatchTokenPendingApprovals = getSuggestedTokens(state).length > 0;
 
   const hasWatchNftPendingApprovals = getSuggestedNfts(state).length > 0;
@@ -170,7 +165,7 @@ const mapStateToProps = (state) => {
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
     seedPhraseBackedUp,
     newNetworkAddedName: getNewNetworkAdded(state),
-    isSigningQRHardwareTransaction,
+    isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),

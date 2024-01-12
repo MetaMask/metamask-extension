@@ -99,21 +99,21 @@ function shouldCloseNotificationPopup({
   institutionalConnectRequests,
   ///: END:ONLY_INCLUDE_IF
 }) {
-  let shouldCLose =
+  let shouldClose =
     isNotification &&
     totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  shouldCLose &&=
+  shouldClose &&=
     // MMI User must be shown a deeplink
     !waitForConfirmDeepLinkDialog &&
     // MMI User is connecting to custodian
     institutionalConnectRequests.length === 0;
   ///: END:ONLY_INCLUDE_IF
 
-  return shouldCLose;
+  return shouldClose;
 }
 
 export default class Home extends PureComponent {
