@@ -17,6 +17,7 @@ import { getCurrentChainId, getCurrentCurrency } from '../../../selectors';
 import {
   AlignItems,
   BackgroundColor,
+  BorderColor,
   BorderRadius,
   Display,
   FlexDirection,
@@ -212,7 +213,11 @@ const AssetChart = ({
         {label}
       </ButtonPrimary>
     ) : (
-      <ButtonSecondary {...opts} size={ButtonSecondarySize.Sm}>
+      <ButtonSecondary
+        {...opts}
+        size={ButtonSecondarySize.Sm}
+        borderColor={BorderColor.transparent}
+      >
         {label}
       </ButtonSecondary>
     );
