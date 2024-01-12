@@ -101,7 +101,6 @@ SenderAddress.propTypes = {
 };
 
 export function RecipientWithAddress({
-  // TODO: REMOVE THIS COMMENT ADDED JUST SO I COULD COMMENT ON ABOVE LINE IN GITHUB.
   checksummedRecipientAddress,
   onRecipientClick,
   addressOnly,
