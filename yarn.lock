@@ -4230,10 +4230,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/etherscan-link@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@metamask/etherscan-link@npm:2.2.0"
-  checksum: 76f1a4b683bb16c5263c51dc7cad83093b2a236a13ac509d51a531a7de52d551ae3314266194ba066e5b9cc4e2c1b79dccf961b98dc29978a8225962c232bb62
+"@metamask/etherscan-link@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@metamask/etherscan-link@npm:3.0.0"
+  checksum: 23507194742c4e6b262e8057aff7f61cb4c276d37c3e2c57e1c046df492fc44cefc5dd29744daa884fe18ca99115454f1a9941ea984e6ddec849f51215fd2e93
   languageName: node
   linkType: hard
 
@@ -24654,7 +24654,7 @@ __metadata:
     "@metamask/eth-snap-keyring": "npm:^2.1.1"
     "@metamask/eth-token-tracker": "npm:^4.0.0"
     "@metamask/eth-trezor-keyring": "npm:^3.0.0"
-    "@metamask/etherscan-link": "npm:^2.2.0"
+    "@metamask/etherscan-link": "npm:^3.0.0"
     "@metamask/ethjs-query": "npm:^0.5.0"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^10.0.1"
