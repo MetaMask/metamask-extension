@@ -65,7 +65,7 @@ describe('AccountListItem', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the three-dot menu to lauch the details menu', () => {
+  it('renders the three-dot menu to launch the details menu', () => {
     render({ showOptions: true });
     const optionsButton = document.querySelector(
       '[aria-label="Test Account Options"]',

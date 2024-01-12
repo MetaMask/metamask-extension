@@ -331,7 +331,7 @@ TokenListItem.propTypes = {
    */
   title: PropTypes.string,
   /**
-   * tokenImage represnts the image of the token icon
+   * tokenImage represents the image of the token icon
    */
   tokenImage: PropTypes.string,
   /**
