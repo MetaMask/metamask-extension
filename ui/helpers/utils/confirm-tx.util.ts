@@ -2,9 +2,9 @@ import currencyFormatter from 'currency-formatter';
 import currencies from 'currency-formatter/currencies';
 import { BigNumber } from 'bignumber.js';
 
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { EtherDenomination } from '../../../shared/constants/common';
-import { TransactionMeta } from '../../../shared/constants/transaction';
 
 export function getHexGasTotal({ gasLimit = '0x0', gasPrice = '0x0' }): string {
   return new Numeric(gasLimit, 16)

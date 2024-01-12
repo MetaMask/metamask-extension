@@ -1,0 +1,6 @@
+.mm-select-wrapper {
+  &__popover {
+    overflow: hidden;
+    z-index: $dropdown-z-index;
+  }
+}

@@ -26,10 +26,10 @@ export const DefaultStory: StoryFn<typeof SmartTransactionPopover> = () => {
       {isShowingModal && (
         <SmartTransactionPopover
           isOpen={isShowingModal}
-          onEnableSmartTransactionsClick={() => {
-            console.log('onEnableSmartTransactionsClick');
+          onStartSwapping={() => {
+            console.log('onStartSwapping');
           }}
-          onCloseSmartTransactionsOptInPopover={toggleModal}
+          onManageStxInSettings={toggleModal}
         />
       )}
     </>

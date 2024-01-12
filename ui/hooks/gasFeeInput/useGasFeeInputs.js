@@ -62,7 +62,7 @@ import { useTransactionFunctions } from './useTransactionFunctions';
  * @property {DecGweiString} [minimumCostInHexWei] - minimum cost of transaction in HexWei.
  * @property {string} [estimateUsed] - estimate used in the transaction.
  * @property {boolean} [isNetworkBusy] - true if network is busy.
- * @property {() => void} [onManualChange] - function to call when transaciton is manually changed.
+ * @property {() => void} [onManualChange] - function to call when transaction is manually changed.
  * @property {boolean} [balanceError] - true if user balance is less than transaction value.
  * @property {object} [gasErrors] - object of gas errors.
  * @property {boolean} [hasGasErrors] - true if there are gas errors.

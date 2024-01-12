@@ -230,7 +230,7 @@ exports[`Security Tab should match snapshot 1`] = `
               </a>
                APIs to display your balance and token price. 
               <a
-                href="https://consensys.net/privacy-policy/"
+                href="https://consensys.io/privacy-policy/"
                 rel="noreferrer"
                 target="_blank"
               >
@@ -759,7 +759,7 @@ exports[`Security Tab should match snapshot 1`] = `
                
               We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our 
               <a
-                href="https://consensys.net/privacy-policy/"
+                href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -1072,7 +1072,7 @@ exports[`Security Tab should match snapshot 1`] = `
                
               We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services. 
               <a
-                href="https://consensys.net/privacy-policy/"
+                href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -1202,22 +1202,23 @@ exports[`Security Tab should match snapshot 1`] = `
       </div>
       <div
         class="mm-box settings-page__content-row mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--justify-content-space-between"
+        id="display-nft-media"
       >
         <div
           class="settings-page__content-item"
         >
           <span>
-            Enable OpenSea API
+            Display NFT media
           </span>
           <div
             class="settings-page__content-description"
           >
-            Use OpenSea's API to fetch NFT data. NFT auto-detection relies on OpenSea's API, and will not be available when this is turned off.
+            Displaying NFT media and data exposes your IP address to OpenSea or other third parties. This can allow attackers to associate your IP address with your Ethereum address. NFT autodetection relies on this setting, and won't be available when this is turned off.
           </div>
         </div>
         <div
           class="settings-page__content-item-col"
-          data-testid="enableOpenSeaAPI"
+          data-testid="displayNftMedia"
         >
           <label
             class="toggle-button toggle-button--on"

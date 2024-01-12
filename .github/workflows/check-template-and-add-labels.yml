@@ -1,0 +1,31 @@
+name: Check template and add labels
+
+on:
+  issues:
+    types: [opened, edited]
+  pull_request_target:
+    types: [opened, edited]
+
+jobs:
+  check-template-and-add-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1 # This retrieves only the latest commit.
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Check template and add labels
+        id: check-template-and-add-labels
+        env:
+          LABEL_TOKEN: ${{ secrets.LABEL_TOKEN }}
+        run: npm run check-template-and-add-labels

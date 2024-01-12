@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { EtherDenomination } from '../constants/common';
-import { TransactionEnvelopeType } from '../constants/transaction';
 import { Numeric } from '../modules/Numeric';
 import { isSwapsDefaultTokenSymbol } from '../modules/swaps.utils';
 

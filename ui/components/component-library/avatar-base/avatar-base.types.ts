@@ -25,7 +25,7 @@ export interface AvatarBaseStyleUtilityProps extends TextStyleUtilityProps {
   /**
    * The children to be rendered inside the AvatarBase
    */
-  children: React.ReactNode;
+  children?: React.ReactNode;
   /**
    * The background color of the AvatarBase
    * Defaults to Color.backgroundAlternative

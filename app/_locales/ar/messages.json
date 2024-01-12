@@ -236,9 +236,6 @@
   "editContact": {
     "message": "تعديل جهة الاتصال"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "لم يتم العثور على اسم ENS على الشبكة الحالية. حاول التبديل إلى شبكة الإيثيريوم الرئيسية."
-  },
   "ensRegistrationError": {
     "message": "خطأ في تسجيل اسم ENS"
   },
@@ -609,9 +606,6 @@
   "search": {
     "message": "البحث"
   },
-  "searchResults": {
-    "message": "نتائج البحث"
-  },
   "securityAndPrivacy": {
     "message": "الأمن والخصوصية"
   },
@@ -779,12 +773,6 @@
   },
   "unknown": {
     "message": "غير معروف"
-  },
-  "unknownCameraError": {
-    "message": "حدث خطأ أثناء محاولة الوصول إلى الكاميرا. يُرجى إعادة المحاولة..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "عذرًا! وقع خطأٌ ما..."
   },
   "unknownNetwork": {
     "message": "شبكة خاصة مجهولة"

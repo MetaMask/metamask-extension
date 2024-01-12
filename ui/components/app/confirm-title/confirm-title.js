@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { TransactionType } from '../../../../shared/constants/transaction';
+import { TransactionType } from '@metamask/transaction-controller';
 import { PRIMARY } from '../../../helpers/constants/common';
 import { Text } from '../../component-library';
 import {

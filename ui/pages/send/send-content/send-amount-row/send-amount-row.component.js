@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import SendRowWrapper from '../send-row-wrapper';
 import UserPreferencedCurrencyInput from '../../../../components/app/user-preferenced-currency-input';
 import UserPreferencedTokenInput from '../../../../components/app/user-preferenced-token-input';
-import { AssetType } from '../../../../../shared/constants/transaction';
+import {
+  AssetType,
+  TokenStandard,
+} from '../../../../../shared/constants/transaction';
+import { Box } from '../../../../components/component-library';
+import UnitInput from '../../../../components/ui/unit-input';
 import AmountMaxButton from './amount-max-button';
 
 export default class SendAmountRow extends Component {
@@ -44,8 +49,34 @@ export default class SendAmountRow extends Component {
   render() {
     const { inError, asset } = this.props;
 
-    if (asset.type === AssetType.NFT) {
+    if (
+      asset.type === AssetType.NFT &&
+      asset.details.standard === TokenStandard.ERC721
+    ) {
       return null;
+    }
+
+    if (
+      asset.type === AssetType.NFT &&
+      asset.details.standard === TokenStandard.ERC1155
+    ) {
+      return (
+        <Box>
+          <SendRowWrapper
+            label={`${this.context.t('amount')}:`}
+            showError={inError}
+            errorType="amount"
+          >
+            <UnitInput onChange={this.handleChange} type="number" min="0">
+              <Box className="currency-input__conversion-component">
+                {`${this.context.t('balance')}:`} {`${asset.details.balance} `}
+                {`${this.context.t('tokens').toLowerCase()}`}
+                {asset.details.symbol ?? ''}
+              </Box>
+            </UnitInput>
+          </SendRowWrapper>
+        </Box>
+      );
     }
 
     return (

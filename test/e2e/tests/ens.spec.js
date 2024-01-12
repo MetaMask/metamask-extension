@@ -1,5 +1,9 @@
-const { strict: assert } = require('assert');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  openActionMenuAndStartSendFlow,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('ENS', function () {
@@ -65,33 +69,25 @@ describe('ENS', function () {
         };
       });
   }
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   it('domain resolves to a correct address', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
         testSpecificMock: mockInfura,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.waitForElementNotPresent('.loading-overlay');
 
-        await driver.clickElement('[data-testid="eth-overview-send"]');
-
+        await openActionMenuAndStartSendFlow(driver);
+        // TODO: Update Test when Multichain Send Flow is added
+        if (process.env.MULTICHAIN) {
+          return;
+        }
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or ENS name"]',
           sampleEnsDomain,
@@ -101,25 +97,15 @@ describe('ENS', function () {
           '.send__select-recipient-wrapper__group-item__title',
         );
 
-        const currentEnsDomain = await driver.findElement(
-          '.ens-input__selected-input__title',
-        );
+        await driver.findElement({
+          css: '.ens-input__selected-input__title',
+          text: 'test.eth',
+        });
 
-        assert.equal(
-          await currentEnsDomain.getText(),
-          'test.eth',
-          'Domain name not correct',
-        );
-
-        const resolvedAddress = await driver.findElement(
-          '.ens-input__selected-input__subtitle',
-        );
-
-        assert.equal(
-          await resolvedAddress.getText(),
-          `0x${sampleAddress}`,
-          'Resolved address not correct',
-        );
+        await driver.findElement({
+          css: '.ens-input__selected-input__subtitle',
+          text: `0x${sampleAddress}`,
+        });
       },
     );
   });

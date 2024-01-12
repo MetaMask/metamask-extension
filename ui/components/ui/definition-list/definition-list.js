@@ -9,9 +9,10 @@ import {
   OVERFLOW_WRAP,
   TextColor,
   IconColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import Tooltip from '../tooltip';
-import { Icon, IconName, IconSize } from '../../component-library';
+import { Icon, IconName, IconSize, Text } from '../../component-library';
 
 const MARGIN_MAP = {
   [Size.XS]: 0,
@@ -26,6 +27,7 @@ export default function DefinitionList({
   termTypography = {},
   definitionTypography = {},
   tooltips = {},
+  warnings = {},
   gapSize = Size.SM,
 }) {
   return (
@@ -73,6 +75,11 @@ export default function DefinitionList({
           >
             {definition}
           </Typography>
+          {warnings[term] && (
+            <Text variant={TextVariant.bodySm} color={TextColor.warningDefault}>
+              {warnings[term]}
+            </Text>
+          )}
         </React.Fragment>
       ))}
     </dl>
@@ -85,6 +92,7 @@ DefinitionList.propTypes = {
     PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   ),
   tooltips: PropTypes.objectOf(PropTypes.string),
+  warnings: PropTypes.objectOf(PropTypes.string),
   termTypography: PropTypes.shape({
     ...omit(TypographyVariant.propTypes, ['tag', 'className', 'boxProps']),
   }),

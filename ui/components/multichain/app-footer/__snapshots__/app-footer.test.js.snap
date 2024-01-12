@@ -30,6 +30,7 @@ exports[`App Footer should match snapshot 1`] = `
         tabindex="0"
       >
         <button
+          aria-label="Select action"
           class="mm-box mm-button-icon mm-button-icon--size-lg app-footer__actions-button mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-full"
           data-testid="app-footer-actions-button"
         >

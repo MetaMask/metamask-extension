@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router-dom';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
 import { useDispatch, useSelector } from 'react-redux';
-import { SnapCaveatType } from '@metamask/rpc-methods';
+import { SnapCaveatType } from '@metamask/snaps-rpc-methods';
 import { Box, IconName, IconSize, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MenuItem } from '../../ui/menu';

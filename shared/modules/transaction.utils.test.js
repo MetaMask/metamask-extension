@@ -1,6 +1,6 @@
 import EthQuery from '@metamask/ethjs-query';
+import { TransactionType } from '@metamask/transaction-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
-import { TransactionType } from '../constants/transaction';
 import {
   determineTransactionType,
   isEIP1559Transaction,
@@ -124,14 +124,14 @@ describe('Transaction.utils', function () {
 
       const result = await determineTransactionType(
         {
-          to: '0xabc',
+          to: '0xabcabcabcabcabcabcabcabcabcabcabcabcabca',
           data: '',
         },
         new EthQuery(_provider),
       );
       expect(result).toMatchObject({
         type: TransactionType.simpleSend,
-        getCodeResponse: null,
+        getCodeResponse: '0x',
       });
     });
 

@@ -13,7 +13,6 @@ import {
   OverflowWrap,
   FlexDirection,
   Display,
-  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -26,7 +25,7 @@ import {
   getCurrentChainId,
   getCurrentNetwork,
   getIpfsGateway,
-  getSelectedIdentity,
+  getSelectedInternalAccount,
 } from '../../../selectors';
 import AssetNavigation from '../../../pages/asset/components/asset-navigation';
 import { getNftContracts } from '../../../ducks/metamask/metamask';
@@ -81,9 +80,9 @@ export default function NftDetails({ nft }) {
   const nftContractName = nftContracts.find(({ address: contractAddress }) =>
     isEqualCaseInsensitive(contractAddress, address),
   )?.name;
-  const selectedAccountName = useSelector(
-    (state) => getSelectedIdentity(state).name,
-  );
+  const {
+    metadata: { name: selectedAccountName },
+  } = useSelector(getSelectedInternalAccount);
   const nftImageAlt = getNftImageAlt(nft);
   const nftSrcUrl = imageOriginal ?? image;
   const nftImageURL = getAssetImageURL(imageOriginal ?? image, ipfsGateway);
@@ -125,7 +124,8 @@ export default function NftDetails({ nft }) {
   };
 
   const openSeaLink = getOpenSeaLink();
-  const sendDisabled = standard !== TokenStandard.ERC721;
+  const sendDisabled =
+    standard !== TokenStandard.ERC721 && standard !== TokenStandard.ERC1155;
   const inPopUp = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
   const onSend = async () => {
@@ -143,11 +143,7 @@ export default function NftDetails({ nft }) {
       return <div style={{ height: '30px' }} />;
     }
     return (
-      <Box
-        display={Display.Flex}
-        width={inPopUp ? BlockSize.Full : BlockSize.Half}
-        margin={inPopUp ? [4, 0] : null}
-      >
+      <Box display={Display.Flex} margin={inPopUp ? [4, 0] : null}>
         <Button
           type="primary"
           onClick={onSend}
