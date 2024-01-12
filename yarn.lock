@@ -5327,7 +5327,7 @@ __metadata:
 
 "@metamask/test-bundler@file:.yalc/@metamask/test-bundler::locator=metamask-crx%40workspace%3A.":
   version: 0.0.0
-  resolution: "@metamask/test-bundler@file:.yalc/@metamask/test-bundler#.yalc/@metamask/test-bundler::hash=57cd25&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/test-bundler@file:.yalc/@metamask/test-bundler#.yalc/@metamask/test-bundler::hash=647ca4&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@account-abstraction/contracts": "npm:^0.6.0"
     "@ethersproject/abi": "npm:^5.7.0"
@@ -5344,7 +5344,7 @@ __metadata:
     ethers: "npm:^5.7.0"
     express: "npm:^4.18.1"
     ow: "npm:^0.28.1"
-  checksum: 9b5b182d575959707e8603c827b6abedbf43c3531e76b0e63430f1ce3fae51bb42cbca93c28c732ac32ca719a1abcc9ca441836befabf4c84e8338a1c8819a6a
+  checksum: a924d5e8a64d92b1550f221860d3a3ad69b41cc71192529c886374400b6f314649329f8867da1f4709db0bfe64c2b666820e63a10c20f09995560e5c43a2d297
   languageName: node
   linkType: hard
 
