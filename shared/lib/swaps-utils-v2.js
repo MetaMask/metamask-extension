@@ -9,7 +9,6 @@ import {
   clientIdHeader,
   constructTxParams,
   getBaseUrlForNewSwapsApi,
-  shouldEnableDirectWrapping,
   truthyDigitString,
   truthyString,
   validHex,
@@ -92,25 +91,27 @@ export const QUOTE_VALIDATORS_V2 = [
     property: 'priceSlippage',
     type: 'object',
     validator: (priceSlippage) =>
-      priceSlippage &&
-      (priceSlippage.ratio === null ||
-        typeof priceSlippage.ratio === 'number') &&
-      (priceSlippage.calculationError === null ||
-        typeof priceSlippage.calculationError === 'string') &&
-      (priceSlippage.bucket === null ||
-        typeof priceSlippage.bucket === 'string') &&
-      (priceSlippage.sourceAmountInUSD === null ||
-        typeof priceSlippage.sourceAmountInUSD === 'number') &&
-      (priceSlippage.destinationAmountInUSD === null ||
-        typeof priceSlippage.destinationAmountInUSD === 'number') &&
-      (priceSlippage.sourceAmountInNativeCurrency === null ||
-        typeof priceSlippage.sourceAmountInNativeCurrency === 'number') &&
-      (priceSlippage.destinationAmountInNativeCurrency === null ||
-        typeof priceSlippage.destinationAmountInNativeCurrency === 'number') &&
-      (priceSlippage.sourceAmountInETH === null ||
-        typeof priceSlippage.sourceAmountInETH === 'number') &&
-      (priceSlippage.destinationAmountInETH === null ||
-        typeof priceSlippage.destinationAmountInETH === 'number'),
+      priceSlippage === null ||
+      (priceSlippage &&
+        (priceSlippage.ratio === null ||
+          typeof priceSlippage.ratio === 'number') &&
+        (priceSlippage.calculationError === null ||
+          typeof priceSlippage.calculationError === 'string') &&
+        (priceSlippage.bucket === null ||
+          typeof priceSlippage.bucket === 'string') &&
+        (priceSlippage.sourceAmountInUSD === null ||
+          typeof priceSlippage.sourceAmountInUSD === 'number') &&
+        (priceSlippage.destinationAmountInUSD === null ||
+          typeof priceSlippage.destinationAmountInUSD === 'number') &&
+        (priceSlippage.sourceAmountInNativeCurrency === null ||
+          typeof priceSlippage.sourceAmountInNativeCurrency === 'number') &&
+        (priceSlippage.destinationAmountInNativeCurrency === null ||
+          typeof priceSlippage.destinationAmountInNativeCurrency ===
+            'number') &&
+        (priceSlippage.sourceAmountInETH === null ||
+          typeof priceSlippage.sourceAmountInETH === 'number') &&
+        (priceSlippage.destinationAmountInETH === null ||
+          typeof priceSlippage.destinationAmountInETH === 'number')),
   },
 ];
 
