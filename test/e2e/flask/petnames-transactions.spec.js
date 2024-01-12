@@ -18,7 +18,7 @@ async function createTransactionRequest(driver) {
   await driver.delay(3000);
 }
 
-describe('Petnames', function () {
+describe('Petnames - Transactions', function () {
   it('can save names for addresses in transaction requests', async function () {
     await withFixtures(
       {

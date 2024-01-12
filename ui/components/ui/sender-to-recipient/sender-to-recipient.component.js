@@ -129,23 +129,16 @@ export function RecipientWithAddress({
     );
   }
 
-  let displayName;
-  if (petnamesEnabled) {
-    displayName = (
-      <Name value={recipientAddress} type={NameType.ETHEREUM_ADDRESS} />
-    );
-  } else {
-    displayName =
-      recipientName ||
+  const displayName = petnamesEnabled ? (
+    <Name value={recipientAddress} type={NameType.ETHEREUM_ADDRESS} />
+  ) : (
+    (recipientName ||
       recipientNickname ||
       recipientMetadataName ||
       recipientEns ||
-      shortenAddress(checksummedRecipientAddress);
-
-    if (addressOnly && !displayName) {
-      displayName = t('newContract');
-    }
-  }
+      shortenAddress(checksummedRecipientAddress)) ??
+    (!addressOnly && t('newContract'))
+  );
 
   return (
     <>
