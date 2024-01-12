@@ -43,7 +43,7 @@ describe('Editing Confirm Transaction', function () {
         );
         await gasPriceInput.fill('8');
         await gasLimitInput.fill('100000');
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
+        await driver.clickElement({ text: 'Save', tag: 'button' });
 
         // has correct updated value on the confirm screen the transaction
         await driver.waitForSelector({
