@@ -352,6 +352,9 @@
   "alerts": {
     "message": "Alerts"
   },
+  "all": {
+    "message": "All"
+  },
   "allConnections": {
     "message": "All Connections"
   },
@@ -364,6 +367,12 @@
   "allOfYour": {
     "message": "All of your $1",
     "description": "$1 is the symbol or name of the token that the user is approving spending"
+  },
+  "allTimeHigh": {
+    "message": "All time high"
+  },
+  "allTimeLow": {
+    "message": "All time low"
   },
   "allYourNFTsOf": {
     "message": "All of your NFTs from $1",
@@ -570,6 +579,10 @@
   "betaWalletCreationSuccessReminder2": {
     "message": "MetaMask Beta will never ask you for your Secret Recovery Phrase."
   },
+  "billionAbbreviation": {
+    "message": "B",
+    "description": "Shortened form of 'billion'"
+  },
   "blockExplorerAccountAction": {
     "message": "Account",
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Account in Explorer"
@@ -726,6 +739,9 @@
   },
   "chromeRequiredForHardwareWallets": {
     "message": "You need to use MetaMask on Google Chrome in order to connect to your Hardware Wallet."
+  },
+  "circulatingSupply": {
+    "message": "Circulating supply"
   },
   "clear": {
     "message": "Clear"
@@ -997,6 +1013,9 @@
   },
   "copyTransactionId": {
     "message": "Copy transaction ID"
+  },
+  "couldNotFetchDataForToken": {
+    "message": "We could not fetch any data for this token"
   },
   "create": {
     "message": "Create"
@@ -2396,6 +2415,12 @@
   "manageInSettings": {
     "message": "Manage in settings"
   },
+  "marketCap": {
+    "message": "Market Cap"
+  },
+  "marketDetails": {
+    "message": "Market details"
+  },
   "max": {
     "message": "Max"
   },
@@ -2441,6 +2466,10 @@
   },
   "metrics": {
     "message": "Metrics"
+  },
+  "millionAbbreviation": {
+    "message": "M",
+    "description": "Shortened form of 'million'"
   },
   "mismatchAccount": {
     "message": "Your selected account ($1) is different than the account trying to sign ($2)"
@@ -2751,6 +2780,9 @@
   },
   "noAddressForName": {
     "message": "No address has been set for this name."
+  },
+  "noChartData": {
+    "message": "No chart data"
   },
   "noConversionDateAvailable": {
     "message": "No currency conversion date available"
@@ -3291,6 +3323,22 @@
   "onboardingUsePhishingDetectionDescription": {
     "message": "Phishing detection alerts rely on communication with $1. jsDeliver will have access to your IP address. View $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
+  },
+  "oneDayAbbreviation": {
+    "message": "1D",
+    "description": "Shortened form of '1 day'"
+  },
+  "oneMonthAbbreviation": {
+    "message": "1M",
+    "description": "Shortened form of '1 month'"
+  },
+  "oneWeekAbbreviation": {
+    "message": "1W",
+    "description": "Shortened form of '1 week'"
+  },
+  "oneYearAbbreviation": {
+    "message": "1Y",
+    "description": "Shortened form of '1 year'"
   },
   "onlyAddTrustedNetworks": {
     "message": "A malicious network provider can lie about the state of the blockchain and record your network activity. Only add custom networks you trust."
@@ -5248,6 +5296,9 @@
   "thisCollection": {
     "message": "this collection"
   },
+  "threeMonthsAbbreviation": {
+    "message": "3M"
+  },
   "time": {
     "message": "Time"
   },
@@ -5330,6 +5381,9 @@
   "tokenDecimalFetchFailed": {
     "message": "Token decimal required. Find it on: $1"
   },
+  "tokenDecimal": {
+    "message": "Token decimal"
+  },
   "tokenDecimalTitle": {
     "message": "Token decimal:"
   },
@@ -5372,6 +5426,9 @@
   },
   "total": {
     "message": "Total"
+  },
+  "totalVolume": {
+    "message": "Total volume"
   },
   "transaction": {
     "message": "transaction"
@@ -5492,6 +5549,10 @@
   },
   "transferFrom": {
     "message": "Transfer from"
+  },
+  "trillionAbbreviation": {
+    "message": "T",
+    "description": "Shortened form of 'trillion'"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "We're having trouble connecting your Ledger. $1",
@@ -5712,6 +5773,9 @@
   "visitWebSite": {
     "message": "Visit our website"
   },
+  "volume": {
+    "message": "Volume"
+  },
   "wallet": {
     "message": "Wallet"
   },
@@ -5821,6 +5885,12 @@
   },
   "yourAccounts": {
     "message": "Your accounts"
+  },
+  "yourActivity": {
+    "message": "Your activity"
+  },
+  "yourBalance": {
+    "message": "Your balance"
   },
   "yourFundsMayBeAtRisk": {
     "message": "Your funds may be at risk"
