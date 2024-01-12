@@ -101,7 +101,6 @@ SenderAddress.propTypes = {
 };
 
 export function RecipientWithAddress({
-  recipientAddress,
   // TODO: REMOVE THIS COMMENT ADDED JUST SO I COULD COMMENT ON ABOVE LINE IN GITHUB.
   checksummedRecipientAddress,
   onRecipientClick,
@@ -131,7 +130,10 @@ export function RecipientWithAddress({
   }
 
   const displayName = petnamesEnabled ? (
-    <Name value={recipientAddress} type={NameType.ETHEREUM_ADDRESS} />
+    <Name
+      value={checksummedRecipientAddress}
+      type={NameType.ETHEREUM_ADDRESS}
+    />
   ) : (
     (recipientName ||
       recipientNickname ||
@@ -187,7 +189,6 @@ export function RecipientWithAddress({
 }
 
 RecipientWithAddress.propTypes = {
-  recipientAddress: PropTypes.string,
   checksummedRecipientAddress: PropTypes.string,
   recipientName: PropTypes.string,
   recipientMetadataName: PropTypes.string,
@@ -251,7 +252,6 @@ export default function SenderToRecipient({
       <Arrow variant={variant} />
       {recipientAddress ? (
         <RecipientWithAddress
-          recipientAddress={recipientAddress}
           checksummedRecipientAddress={checksummedRecipientAddress}
           onRecipientClick={onRecipientClick}
           addressOnly={addressOnly}
