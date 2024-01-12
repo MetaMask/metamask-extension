@@ -10,6 +10,9 @@ ignores:
   - '@fortawesome/fontawesome-free'
   - 'punycode'
 
+  # TODO: remove before merging the typescript PR
+  - 'eslint-import-resolver-node'
+
   #
   # dev deps
   #
