@@ -41,7 +41,7 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import NftOptions from '../nft-options/nft-options';
 import Button from '../../ui/button';
-import { startNewDraftTransaction } from '../../../ducks/send';
+import { startNewDraftTransaction, updateSendAmount } from '../../../ducks/send';
 import InfoTooltip from '../../ui/info-tooltip';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
@@ -135,6 +135,7 @@ export default function NftDetails({ nft }) {
         details: nft,
       }),
     );
+    dispatch(updateSendAmount(1));
     history.push(SEND_ROUTE);
   };
 
