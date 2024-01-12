@@ -14,6 +14,7 @@ import {
   getOrderedConnectedAccountsForActiveTab,
   getSelectedAddress,
   getSelectedIdentity,
+  getInternalAccounts,
 } from '../../../../selectors';
 import { isExtensionUrl, getURLHost } from '../../../../helpers/utils/util';
 import Popover from '../../../ui/popover';
@@ -33,8 +34,24 @@ const UnconnectedAccountAlert = () => {
   const connectedAccounts = useSelector(
     getOrderedConnectedAccountsForActiveTab,
   );
+  const internalAccounts = useSelector(getInternalAccounts);
+  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
+  const connectedAccountsWithName = connectedAccounts.map((account) => {
+    account.name = internalAccounts.find(
+      (internalAccount) => internalAccount.address === account.address,
+    )?.metadata.name;
+    return account;
+  });
   const origin = useSelector(getOriginOfCurrentTab);
   const selectedIdentity = useSelector(getSelectedIdentity);
+  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
+  const selectedIdentityWithName = {
+    ...selectedIdentity,
+    name: internalAccounts.find(
+      (internalAccount) =>
+        internalAccount.address === selectedIdentity?.address,
+    )?.metadata.name,
+  };
   const selectedAddress = useSelector(getSelectedAddress);
   const [dontShowThisAgain, setDontShowThisAgain] = useState(false);
 
@@ -98,9 +115,9 @@ const UnconnectedAccountAlert = () => {
       footer={footer}
     >
       <ConnectedAccountsList
-        accountToConnect={selectedIdentity}
+        accountToConnect={selectedIdentityWithName}
         connectAccount={() => dispatch(connectAccount(selectedAddress))}
-        connectedAccounts={connectedAccounts}
+        connectedAccounts={connectedAccountsWithName}
         selectedAddress={selectedAddress}
         setSelectedAddress={(address) => dispatch(switchToAccount(address))}
         shouldRenderListOptions={false}
