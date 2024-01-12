@@ -257,10 +257,6 @@ const AssetChart = ({
             />
           );
         }
-        // TODO: These boxes are placeholders for the chart while data is fetching or not available.
-        // They should be the same height as the chart, which maintains a 1:2 aspect ratio.
-        // 50vw is perfect in popup mode, but is too large in fullscreen mode since we don't use the full
-        // viewport. We really want height to be "50% of the parent's width", not 50% of the viewport's width.
         return prices?.length === 0 ? (
           <Box
             style={{ height: '50vw' }}
@@ -279,6 +275,10 @@ const AssetChart = ({
             <Text>{t('couldNotFetchDataForToken')}</Text>
           </Box>
         ) : (
+          // TODO: This box is a skeleton for the chart while data is fetching. It (and the box above)
+          // should be the same height as the chart, which maintains a 1:2 aspect ratio. 50vw is perfect
+          // in popup mode, but is too large in fullscreen mode since the full viewport is not used.
+          // We really want height to be "50% of the parent's width", not 50% of the viewport's width.
           <Box
             style={{ height: '50vw' }}
             borderRadius={BorderRadius.LG}
