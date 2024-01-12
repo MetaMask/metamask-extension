@@ -1,9 +1,11 @@
+/// <reference types="node" />
 import type { Provider } from '@ethersproject/providers';
 import type { Signer } from 'ethers';
 import type { Express, Response, Request } from 'express';
 import type { BundlerConfig } from './BundlerConfig';
 import type { DebugMethodHandler } from './DebugMethodHandler';
 import type { UserOpMethodHandler } from './UserOpMethodHandler';
+import EventEmitter from 'events';
 export declare class BundlerServer {
     readonly methodHandler: UserOpMethodHandler;
     readonly debugHandler: DebugMethodHandler;
@@ -11,6 +13,7 @@ export declare class BundlerServer {
     readonly provider: Provider;
     readonly wallet: Signer;
     app: Express;
+    hub: EventEmitter;
     private readonly httpServer;
     constructor(methodHandler: UserOpMethodHandler, debugHandler: DebugMethodHandler, config: BundlerConfig, provider: Provider, wallet: Signer);
     startingPromise: Promise<void>;

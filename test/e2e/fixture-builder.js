@@ -8,6 +8,7 @@ const { NetworkStatus } = require('@metamask/network-controller');
 const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
+const { SENDER, DEFAULT_FIXTURE_ACCOUNT } = require('./constants');
 
 function defaultFixture() {
   return {
@@ -676,9 +677,9 @@ class FixtureBuilder {
                 {
                   type: 'restrictReturnedAccounts',
                   value: [
-                    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
+                    DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
                     '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                    '0x03f522d61308f19ae950dff351179434bab665e8',
+                    SENDER.toLowerCase(),
                   ],
                 },
               ],

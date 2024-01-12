@@ -6,6 +6,8 @@ const CONFIG_FILE = `${__dirname}/bundler.config.json`;
 export class Bundler {
   #server: BundlerServer | undefined;
 
+  #userOperationHashes: string[] = [];
+
   async start() {
     console.log('Starting bundler');
 
@@ -13,6 +15,10 @@ export class Bundler {
       this.#server = await startBundler({
         configFile: CONFIG_FILE,
         unsafe: true,
+      });
+
+      this.#server.hub.on('user-operation-added', (userOperationHash) => {
+        this.#userOperationHashes.push(userOperationHash);
       });
 
       await this.#server.asyncStart();
@@ -34,6 +40,10 @@ export class Bundler {
     } catch (e) {
       console.log('Error while stopping bundler', e);
     }
+  }
+
+  getUserOperationHashes(): string[] {
+    return this.#userOperationHashes;
   }
 
   async getUserOperationReceipt(userOperationHash: string) {

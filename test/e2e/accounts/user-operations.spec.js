@@ -9,11 +9,8 @@ const {
   convertETHToHexGwei,
 } = require('../helpers');
 
-const USER_OPERATION_HASH =
-  '0x45fe99ef2a6d7993da06a2b3972bd00bd67006a825c8cac823191e9562899940';
-
 const FixtureBuilder = require('../fixture-builder');
-const { DEFAULT_FIXTURE_ACCOUNT } = require('../constants');
+const { DEFAULT_FIXTURE_ACCOUNT, SENDER } = require('../constants');
 const { buildQuote, reviewQuote } = require('../tests/swaps/shared');
 
 async function createDappTransaction(driver, transaction) {
@@ -26,6 +23,20 @@ async function createDappTransaction(driver, transaction) {
   );
 
   await new Promise((resolve) => setTimeout(resolve, 5000));
+}
+
+async function createSwap(driver) {
+  await buildQuote(driver, {
+    amount: 0.001,
+    swapTo: 'USDC',
+  });
+  await reviewQuote(driver, {
+    amount: 0.001,
+    swapFrom: 'TESTETH',
+    swapTo: 'USDC',
+  });
+  await driver.clickElement({ text: 'Swap', tag: 'button' });
+  await driver.clickElement({ text: 'Close', tag: 'button' });
 }
 
 async function confirmTransaction(driver) {
@@ -63,9 +74,19 @@ async function expectTransactionDetail(driver, rowIndex, expectedText) {
 async function expectTransactionDetails(driver, bundlerServer) {
   const hexToDecimalString = (hex) => String(parseInt(hex, 16));
 
+  const userOperationHash = await bundlerServer.getUserOperationHashes()[0];
+
+  if (!userOperationHash) {
+    throw new Error('No user operation hash found');
+  }
+
   const receipt = await bundlerServer.getUserOperationReceipt(
-    USER_OPERATION_HASH,
+    userOperationHash,
   );
+
+  if (!receipt) {
+    throw new Error('No user operation receipt found');
+  }
 
   await expectTransactionDetail(driver, 0, hexToDecimalString(receipt.nonce));
 
@@ -95,7 +116,7 @@ describe('User Operations', function () {
         await unlockWallet(driver);
 
         await createDappTransaction(driver, {
-          from: '0x03f522D61308F19aE950DFf351179434bAb665E8',
+          from: SENDER,
           to: DEFAULT_FIXTURE_ACCOUNT,
           value: convertETHToHexGwei(1),
           data: '0x',
@@ -104,8 +125,7 @@ describe('User Operations', function () {
         await confirmTransaction(driver);
         await switchToExtension(driver);
         await openConfirmedTransaction(driver);
-
-        expectTransactionDetails(driver, bundlerServer);
+        await expectTransactionDetails(driver, bundlerServer);
       },
     );
   });
@@ -135,8 +155,7 @@ describe('User Operations', function () {
         );
 
         await openConfirmedTransaction(driver);
-
-        expectTransactionDetails(driver, bundlerServer);
+        await expectTransactionDetails(driver, bundlerServer);
       },
     );
   });
@@ -153,21 +172,9 @@ describe('User Operations', function () {
       },
       async ({ driver, bundlerServer }) => {
         await unlockWallet(driver);
-        await buildQuote(driver, {
-          amount: 0.001,
-          swapTo: 'USDC',
-        });
-        await reviewQuote(driver, {
-          amount: 0.001,
-          swapFrom: 'TESTETH',
-          swapTo: 'USDC',
-        });
-        await driver.clickElement({ text: 'Swap', tag: 'button' });
-        await driver.clickElement({ text: 'Close', tag: 'button' });
-
+        await createSwap(driver);
         await openConfirmedTransaction(driver);
-
-        expectTransactionDetails(driver, bundlerServer);
+        await expectTransactionDetails(driver, bundlerServer);
       },
     );
   });

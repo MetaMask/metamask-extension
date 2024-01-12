@@ -1,6 +1,6 @@
-# Test Bundler
+# MetaMask Test Bundler
 
-An EIP-4337 bundler to be used in MetaMask client E2E tests.
+An EIP-4337 bundler used in MetaMask client E2E tests.
 
 > [!NOTE]
 > Forked from [eth-infinitism/bundler](https://github.com/eth-infinitism/bundler).
@@ -8,18 +8,20 @@ An EIP-4337 bundler to be used in MetaMask client E2E tests.
 ## Usage
 
 ### Start Server
+
 ```typescript
 import { startBundler, BundlerServer } from '@metamask/test-bundler';
 
 const server = await startBundler({
   configFile: './some-directory/bundler.config.json',
-  unsafe: true // Disable extra validations requiring RPC debug methods.
+  unsafe: true, // Disable extra validations requiring RPC debug methods.
 });
 ```
 
 The server is accessible at `http://localhost:3000/rpc` by default.
 
 ### Stop Server
+
 ```typescript
 await server.stop();
 ```
@@ -28,7 +30,7 @@ await server.stop();
 
 The server is primarily configured using a JSON file:
 
-```json
+```javascript
 {
   // Delay in seconds before submitting any pending user operations in a transaction.
   "autoBundleInterval": 3,

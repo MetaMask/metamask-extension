@@ -12,6 +12,7 @@ const ethers_1 = require("ethers");
 const utils_1 = require("ethers/lib/utils");
 const express_1 = __importDefault(require("express"));
 const utils_2 = require("../utils");
+const events_1 = __importDefault(require("events"));
 const debug = (0, debug_1.default)('aa.rpc');
 class BundlerServer {
     constructor(methodHandler, debugHandler, config, provider, wallet) {
@@ -21,6 +22,7 @@ class BundlerServer {
         this.provider = provider;
         this.wallet = wallet;
         this.app = (0, express_1.default)();
+        this.hub = new events_1.default();
         this.app.use((0, cors_1.default)());
         this.app.use(body_parser_1.default.json());
         this.app.get('/', this.intro.bind(this));
@@ -142,6 +144,9 @@ class BundlerServer {
                 break;
             case 'eth_sendUserOperation':
                 result = await this.methodHandler.sendUserOperation(params[0], params[1]);
+                if (result === null || result === void 0 ? void 0 : result.length) {
+                    this.hub.emit('user-operation-added', result);
+                }
                 break;
             case 'eth_estimateUserOperationGas':
                 result = await this.methodHandler.estimateUserOperationGas(params[0], params[1]);
