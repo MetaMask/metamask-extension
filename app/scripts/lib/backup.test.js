@@ -158,6 +158,7 @@ const jsonData = JSON.stringify({
     forgottenPassword: false,
     preferences: {
       hideZeroBalanceTokens: false,
+      showExtensionInFullSizeView: false,
       showFiatInTestnets: false,
       showTestNetworks: true,
       useNativeCurrencyAsPrimaryCurrency: true,
