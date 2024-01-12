@@ -534,10 +534,9 @@ export default function TokenAllowance({
       )}
       <Box marginRight={4} marginLeft={4}>
         <FeeDetailsComponent
-          supportsEIP1559={supportsEIP1559}
           useCurrencyRateCheck={useCurrencyRateCheck}
           txData={txData}
-          shouldShow={!isFirstPage}
+          hideGasDetails={isFirstPage}
         />
       </Box>
       {useNonceField && (

@@ -95,7 +95,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
-import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 export const ImportTokensModal = ({ onClose }) => {
@@ -124,7 +123,6 @@ export const ImportTokensModal = ({ onClose }) => {
     ({ metamask }) => metamask.useTokenDetection,
   );
   const networkName = useSelector(getTokenDetectionSupportNetworkByChainId);
-  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
   const nativeCurrency = useSelector(getNativeCurrency);
 
   // Custom token stuff
@@ -541,10 +539,10 @@ export const ImportTokensModal = ({ onClose }) => {
                                 key="token-detection-announcement"
                                 className="import-tokens-modal__autodetect"
                                 onClick={() => {
+                                  onClose();
                                   history.push(
                                     `${SECURITY_ROUTE}#auto-detect-tokens`,
                                   );
-                                  history.push(mostRecentOverviewPage);
                                 }}
                               >
                                 {t('enableFromSettings')}
@@ -606,10 +604,10 @@ export const ImportTokensModal = ({ onClose }) => {
                                   type="link"
                                   key="import-token-token-detection-announcement"
                                   onClick={() => {
+                                    onClose();
                                     history.push(
                                       `${SECURITY_ROUTE}#auto-detect-tokens`,
                                     );
-                                    history.push(mostRecentOverviewPage);
                                   }}
                                 >
                                   {t('inYourSettings')}

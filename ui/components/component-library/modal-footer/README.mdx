@@ -1,0 +1,147 @@
+import { Controls, Canvas } from '@storybook/blocks';
+
+import * as ModalFooterStories from './modal-footer.stories';
+
+# ModalFooter
+
+`ModalFooter` is a footer component that handles the submit and cancel buttons of the [`Modal`](?path=/docs/components-componentlibrary-modal--docs)
+
+<Canvas of={ModalFooterStories.DefaultStory} />
+
+## Props
+
+<Controls of={ModalFooterStories.DefaultStory} />
+
+### On Submit
+
+The `onSubmit` prop is a function that will be called when the submit button is clicked.
+
+<Canvas of={ModalFooterStories.OnSubmit} />
+
+```jsx
+import { ModalFooter } from '../../component-library';
+
+<ModalFooter onSubmit={handleOnSubmit} />;
+```
+
+### On Cancel
+
+The `onCancel` prop is a function that will be called when the cancel button is clicked.
+
+<Canvas of={ModalFooterStories.OnCancel} />
+
+```jsx
+import { ModalFooter } from '../../component-library';
+
+<ModalFooter onCancel={handleOnCancel} />;
+```
+
+### Submit Button Props Cancel Button Props
+
+The `submitButtonProps` and `cancelButtonProps` props are objects that will be spread onto the submit and cancel buttons respectively. This allows you to pass in any valid `Button` props to the submit and cancel buttons. Ideally button strings are short but if they are long the submit and cancel buttons will stack vertically.
+
+Note: The stacking of the submit and cancel button will not work if you construct your own `ModalFooter` component using the `Button` components. Additonal CSS is needed.
+
+<Canvas of={ModalFooterStories.SubmitButtonPropsCancelButtonProps} />
+
+```jsx
+import { ModalFooter } from '../../component-library';
+
+<ModalFooter
+  onSubmit={handleOnSubmit}
+  submitButtonProps={{ children: 'I want to approve' }}
+  onCancel={handleOnCancel}
+  cancelButtonProps={{
+    children: 'Cancel this',
+  }}
+/>;
+```
+
+### Children
+
+Use the `children` prop to pass any in any valid React children to the `ModalFooter`. The children will appear above the submit and cancel buttons and outside of the internal `Container` component. If you require children above the buttons, you can build your own `ModalFooter` component using the `Button` and `Container` components.
+
+<Canvas of={ModalFooterStories.Children} />
+
+```jsx
+import {
+  BlockSize,
+  Display,
+  FlexDirection,
+} from '../../../helpers/constants/design-system';
+import {
+  ModalFooter,
+  Checkbox,
+  Container,
+  ContainerMaxWidth,
+} from '../../component-library';
+
+const [checked, setChecked] = React.useState(false);
+const handleCheckboxChange = () => setChecked(!checked);
+
+<ModalFooter
+  display={Display.Flex}
+  flexDirection={FlexDirection.Column}
+  alignItems={AlignItems.flexStart}
+  gap={4}
+  onSubmit={handleOnSubmit}
+  onCancel={handleOnCancel}
+>
+  <Container
+    maxWidth={ContainerMaxWidth.Sm}
+    marginLeft="auto"
+    marginRight="auto"
+    marginBottom={4}
+  >
+    <Checkbox
+      label="I agree to the terms and conditions"
+      isChecked={checked}
+      onChange={handleCheckboxChange}
+    />
+  </Container>
+</ModalFooter>;
+```
+
+### Container Props
+
+The `ModalFooter` has an internal container that prevents the buttons from being large widths. You can override these props by passing in a `containerProps` prop. Below shows the `Container` with different `maxWidth` and `backgroundColor` props. To see the button retain it's width at different `ModalContent` sizes see the [ModalContent size story](?path=/story/components-componentlibrary-modalcontent--size).
+
+- Light red shows the `Container` bounding box
+- Light blue shows the `ModalFooter` bounding box
+
+<Canvas of={ModalFooterStories.ContainerProps} />
+
+```jsx
+import {
+  ModalFooter,
+  Box,
+  Display,
+  FlexDirection,
+  BackgroundColor,
+  ContainerMaxWidth,
+} from '../../component-library';
+
+<Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={4}>
+  <ModalFooter
+    containerProps={{
+      maxWidth: ContainerMaxWidth.Md,
+      backgroundColor: BackgroundColor.errorMuted,
+    }}
+    backgroundColor={BackgroundColor.primaryMuted}
+  />
+  <ModalFooter
+    containerProps={{
+      maxWidth: ContainerMaxWidth.Lg,
+      backgroundColor: BackgroundColor.errorMuted,
+    }}
+    backgroundColor={BackgroundColor.primaryMuted}
+  />
+  <ModalFooter
+    containerProps={{
+      maxWidth: null,
+      backgroundColor: BackgroundColor.errorMuted,
+    }}
+    backgroundColor={BackgroundColor.primaryMuted}
+  />
+</Box>;
+```

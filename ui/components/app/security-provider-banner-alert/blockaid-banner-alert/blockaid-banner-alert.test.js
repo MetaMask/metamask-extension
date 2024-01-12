@@ -7,12 +7,8 @@ import {
 } from '../../../../../shared/constants/security-provider';
 import BlockaidBannerAlert from '.';
 
-jest.mock('./blockaid-banner-utils', () => ({
-  getReportUrl: jest
-    .fn()
-    .mockReturnValue(
-      'https://report.blockaid.io/tx?data=mockedEncodedData&utm_source=metamask-ppom',
-    ),
+jest.mock('zlib', () => ({
+  gzipSync: (val) => val,
 }));
 
 const mockSecurityAlertResponse = {
@@ -203,6 +199,22 @@ describe('Blockaid Banner Alert', () => {
     expect(getByText("Something doesn't look right?")).toBeInTheDocument();
     expect(getByText('Report an issue')).toBeInTheDocument();
     expect(getByRole('link', { name: 'Report an issue' })).toBeInTheDocument();
+  });
+
+  it('should pass required data in Report an issue URL', () => {
+    const { getByRole } = renderWithLocalization(
+      <BlockaidBannerAlert
+        txData={{
+          securityAlertResponse: mockSecurityAlertResponse,
+          features: undefined,
+        }}
+      />,
+    );
+
+    const elm = getByRole('link', { name: 'Report an issue' });
+    expect(elm.href).toBe(
+      'https://blockaid-false-positive-portal.metamask.io/?data=%7B%22classification%22%3A%22set_approval_for_all%22%2C%22blockaidVersion%22%3A%221.4.0%22%2C%22resultType%22%3A%22Warning%22%7D&utm_source=metamask-ppom',
+    );
   });
 
   describe('when rendering description', () => {

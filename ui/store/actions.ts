@@ -3611,6 +3611,21 @@ export function updateAccountsList(
   };
 }
 
+/**
+ * Hides account in the accounts list
+ *
+ * @param hiddenAccountList
+ */
+export function updateHiddenAccountsList(
+  hiddenAccountList: [],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateHiddenAccountsList', [
+      hiddenAccountList,
+    ]);
+  };
+}
+
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 /**
  * Updates the caveat value for the specified origin, permission and caveat type.
