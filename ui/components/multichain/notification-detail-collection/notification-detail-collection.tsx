@@ -35,8 +35,6 @@ export const NotificationDetailCollection: FC<
 > = ({ icon, label, collection }) => {
   const { badgeSrc, src } = icon;
 
-  console.log('src', src);
-
   const badgeIcon = (
     <AvatarToken
       src={badgeSrc}
