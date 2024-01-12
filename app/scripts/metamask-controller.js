@@ -294,6 +294,7 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
+import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -909,7 +910,7 @@ export default class MetamaskController extends EventEmitter {
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
-    if (this.canUseHardwareWallets()) {
+    if (isManifestV3 === false) {
       const keyringOverrides = this.opts.overrides?.keyrings;
 
       const additionalKeyringTypes = [
@@ -951,10 +952,11 @@ export default class MetamaskController extends EventEmitter {
         );
       }
       ///: END:ONLY_INCLUDE_IF
-    } else if (isManifestV3) {
+    } else {
       additionalKeyrings.push(
         hardwareKeyringBuilderFactory(TrezorKeyring, TrezorOffscreenBridge),
         hardwareKeyringBuilderFactory(LedgerKeyring, LedgerOffscreenBridge),
+        hardwareKeyringBuilderFactory(LatticeKeyringOffscreen),
       );
     }
 
@@ -2093,10 +2095,6 @@ export default class MetamaskController extends EventEmitter {
       this.tokenListController.stop();
       this.tokenRatesController.stop();
     }
-  }
-
-  canUseHardwareWallets() {
-    return !isManifestV3 || process.env.HARDWARE_WALLETS_MV3;
   }
 
   resetStates(resetMethods) {
@@ -3776,14 +3774,6 @@ export default class MetamaskController extends EventEmitter {
   async getKeyringForDevice(deviceName, hdPath = null) {
     const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringName = null;
-    if (
-      deviceName !== HardwareDeviceNames.trezor &&
-      deviceName !== HardwareDeviceNames.ledger &&
-      deviceName !== HardwareDeviceNames.QR &&
-      !this.canUseHardwareWallets()
-    ) {
-      throw new Error('Hardware wallets are not supported on this version.');
-    }
     switch (deviceName) {
       case HardwareDeviceNames.trezor:
         keyringName = keyringOverrides?.trezor?.type || TrezorKeyring.type;
