@@ -91,7 +91,7 @@ describe('NewNetworkInfo', () => {
           type: 'mainnet',
         },
         useTokenDetection: false,
-        nativeCurrency: 'ETH',
+        currencyRates: {},
       },
     };
 
@@ -184,7 +184,7 @@ describe('NewNetworkInfo', () => {
             type: 'mainnet',
           },
           useTokenDetection: true,
-          nativeCurrency: 'ETH',
+          currencyRates: {},
         },
       };
 

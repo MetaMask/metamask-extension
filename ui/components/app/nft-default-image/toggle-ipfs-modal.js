@@ -5,11 +5,11 @@ import {
   Box,
   ButtonPrimary,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { hideIpfsModal, setIpfsGateway } from '../../../store/actions';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';

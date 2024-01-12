@@ -16,6 +16,7 @@ describe('CancelTransactionGasFee Component', () => {
         nickname: GOERLI_DISPLAY_NAME,
         type: NETWORK_TYPES.GOERLI,
       },
+      currencyRates: {},
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: false,
       },

@@ -148,7 +148,7 @@ async function main() {
       `--timeout=${testTimeoutInMilliseconds}`,
       '--reporter=mocha-junit-reporter',
       '--reporter-options',
-      `mochaFile=test/test-results/e2e/[hash].xml`,
+      `mochaFile=test/test-results/e2e/[hash].xml,toConsole=true`,
       ...extraArgs,
       e2eTestPath,
       exit,

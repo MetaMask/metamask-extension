@@ -35,6 +35,7 @@ import {
   TextColor,
   TextAlign,
   TextVariant,
+  BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import {
   CUSTODY_ACCOUNT_DONE_ROUTE,
@@ -351,7 +352,9 @@ const CustodyPage = () => {
     setConnectError('');
     setSelectError('');
 
-    history.push(CUSTODY_ACCOUNT_ROUTE);
+    window.innerWidth > 400
+      ? history.push(CUSTODY_ACCOUNT_ROUTE)
+      : global.platform.closeCurrentWindow();
   };
 
   const setSelectAllAccounts = (e) => {
@@ -381,7 +384,10 @@ const CustodyPage = () => {
   }
 
   return (
-    <Box className="page-container">
+    <Box
+      className="main-container"
+      backgroundColor={BackgroundColor.backgroundDefault}
+    >
       {connectError && (
         <Text
           data-testid="connect-error"
@@ -404,7 +410,6 @@ const CustodyPage = () => {
           padding={4}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
-          className="page-container__content"
           width={BlockSize.Full}
         >
           <Box
@@ -448,23 +453,25 @@ const CustodyPage = () => {
             className="page-container__content"
             width={BlockSize.Full}
           >
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              marginBottom={4}
-              marginTop={4}
-            >
-              <ButtonIcon
-                data-testid="custody-back-button"
-                ariaLabel={t('back')}
-                iconName={IconName.ArrowLeft}
-                size={IconSize.Sm}
-                color={Color.iconDefault}
-                onClick={cancelConnectCustodianToken}
-                display={[Display.Flex]}
-              />
-              <Text>{t('back')}</Text>
-            </Box>
+            {window.innerWidth > 400 && (
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                marginBottom={4}
+                marginTop={4}
+              >
+                <ButtonIcon
+                  data-testid="custody-back-button"
+                  ariaLabel={t('back')}
+                  iconName={IconName.ArrowLeft}
+                  size={IconSize.Sm}
+                  color={Color.iconDefault}
+                  onClick={cancelConnectCustodianToken}
+                  display={[Display.Flex]}
+                />
+                <Text>{t('back')}</Text>
+              </Box>
+            )}
             {selectedCustodianImage && (
               <Box display={Display.Flex} alignItems={AlignItems.center}>
                 <img
@@ -553,15 +560,104 @@ const CustodyPage = () => {
         </>
       )}
       {accounts && accounts.length > 0 && (
-        <>
-          <Box padding={[5, 7, 2]} width={BlockSize.Full}>
+        <CustodyAccountList
+          custody={selectedCustodianName}
+          accounts={accounts}
+          onAccountChange={(account) => {
+            setSelectedAccounts((prevSelectedAccounts) => {
+              const updatedSelectedAccounts = { ...prevSelectedAccounts };
+
+              if (updatedSelectedAccounts[account.address]) {
+                delete updatedSelectedAccounts[account.address];
+              } else {
+                updatedSelectedAccounts[account.address] = {
+                  name: account.name,
+                  custodianDetails: account.custodianDetails,
+                  labels: account.labels,
+                  token: currentJwt,
+                  apiUrl,
+                  chainId: account.chainId,
+                  custodyType: selectedCustodianType,
+                  custodyName: selectedCustodianName,
+                };
+              }
+
+              return updatedSelectedAccounts;
+            });
+          }}
+          selectedAccounts={selectedAccounts}
+          onAddAccounts={async () => {
+            try {
+              const selectedCustodian = custodians.find(
+                (custodian) => custodian.envName === selectedCustodianName,
+              );
+              const firstAccountKey = Object.keys(selectedAccounts).shift();
+
+              await dispatch(
+                mmiActions.connectCustodyAddresses(
+                  selectedCustodianType,
+                  selectedCustodianName,
+                  selectedAccounts,
+                ),
+              );
+
+              dispatch(setSelectedAddress(firstAccountKey.toLowerCase()));
+
+              trackEvent({
+                category: MetaMetricsEventCategory.MMI,
+                event: MetaMetricsEventName.CustodialAccountsConnected,
+                properties: {
+                  custodian: selectedCustodianName,
+                  numberOfAccounts: Object.keys(selectedAccounts).length,
+                  chainId,
+                },
+              });
+
+              history.push({
+                pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
+                state: {
+                  imgSrc: selectedCustodian && selectedCustodian.iconUrl,
+                  title: t('custodianAccountAddedTitle', [
+                    (selectedCustodian && selectedCustodian.displayName) ||
+                      'Custodian',
+                  ]),
+                  description: t('custodianAccountAddedDesc'),
+                },
+              });
+            } catch (e) {
+              setSelectError(e.message);
+            }
+          }}
+          onCancel={() => {
+            setAccounts(null);
+            setSelectedCustodianName(null);
+            setSelectedCustodianType(null);
+            setSelectedAccounts({});
+            setCurrentJwt('');
+            setApiUrl('');
+            setAddNewTokenClicked(false);
+
+            history.push(DEFAULT_ROUTE);
+
+            trackEvent({
+              category: MetaMetricsEventCategory.MMI,
+              event: MetaMetricsEventName.CustodianConnectionCanceled,
+              properties: {
+                custodian: selectedCustodianName,
+                numberOfAccounts: Object.keys(selectedAccounts).length,
+                chainId,
+              },
+            });
+          }}
+        >
+          <Box paddingTop={4} paddingBottom={4} width={BlockSize.Full}>
             <Text as="h4">{t('selectAnAccount')}</Text>
             <Text marginTop={2} marginBottom={2}>
               {t('selectAnAccountHelp')}
             </Text>
           </Box>
           <Box
-            padding={[5, 7, 0]}
+            paddingBottom={4}
             display={Display.Flex}
             flexDirection={FlexDirection.Row}
             justifyContent={JustifyContent.flexStart}
@@ -572,111 +668,22 @@ const CustodyPage = () => {
               id="selectAllAccounts"
               data-testid={`select-all-accounts-selected-${isCheckBoxSelected}`}
               name="selectAllAccounts"
-              marginRight={2}
               marginLeft={2}
               value={{}}
               onChange={(e) => setSelectAllAccounts(e)}
               checked={isCheckBoxSelected}
             />
-            <Label htmlFor="selectAllAccounts">{t('selectAllAccounts')}</Label>
+            <Label marginLeft={2} htmlFor="selectAllAccounts">
+              {t('selectAllAccounts')}
+            </Label>
           </Box>
-          <CustodyAccountList
-            custody={selectedCustodianName}
-            accounts={accounts}
-            onAccountChange={(account) => {
-              setSelectedAccounts((prevSelectedAccounts) => {
-                const updatedSelectedAccounts = { ...prevSelectedAccounts };
-
-                if (updatedSelectedAccounts[account.address]) {
-                  delete updatedSelectedAccounts[account.address];
-                } else {
-                  updatedSelectedAccounts[account.address] = {
-                    name: account.name,
-                    custodianDetails: account.custodianDetails,
-                    labels: account.labels,
-                    token: currentJwt,
-                    apiUrl,
-                    chainId: account.chainId,
-                    custodyType: selectedCustodianType,
-                    custodyName: selectedCustodianName,
-                  };
-                }
-
-                return updatedSelectedAccounts;
-              });
-            }}
-            selectedAccounts={selectedAccounts}
-            onAddAccounts={async () => {
-              try {
-                const selectedCustodian = custodians.find(
-                  (custodian) => custodian.envName === selectedCustodianName,
-                );
-                const firstAccountKey = Object.keys(selectedAccounts).shift();
-
-                await dispatch(
-                  mmiActions.connectCustodyAddresses(
-                    selectedCustodianType,
-                    selectedCustodianName,
-                    selectedAccounts,
-                  ),
-                );
-
-                dispatch(setSelectedAddress(firstAccountKey.toLowerCase()));
-
-                trackEvent({
-                  category: MetaMetricsEventCategory.MMI,
-                  event: MetaMetricsEventName.CustodialAccountsConnected,
-                  properties: {
-                    custodian: selectedCustodianName,
-                    numberOfAccounts: Object.keys(selectedAccounts).length,
-                    chainId,
-                  },
-                });
-
-                history.push({
-                  pathname: CUSTODY_ACCOUNT_DONE_ROUTE,
-                  state: {
-                    imgSrc: selectedCustodian && selectedCustodian.iconUrl,
-                    title: t('custodianAccountAddedTitle', [
-                      (selectedCustodian && selectedCustodian.displayName) ||
-                        'Custodian',
-                    ]),
-                    description: t('custodianAccountAddedDesc'),
-                  },
-                });
-              } catch (e) {
-                setSelectError(e.message);
-              }
-            }}
-            onCancel={() => {
-              setAccounts(null);
-              setSelectedCustodianName(null);
-              setSelectedCustodianType(null);
-              setSelectedAccounts({});
-              setCurrentJwt('');
-              setApiUrl('');
-              setAddNewTokenClicked(false);
-
-              history.push(DEFAULT_ROUTE);
-
-              trackEvent({
-                category: MetaMetricsEventCategory.MMI,
-                event: MetaMetricsEventName.CustodianConnectionCanceled,
-                properties: {
-                  custodian: selectedCustodianName,
-                  numberOfAccounts: Object.keys(selectedAccounts).length,
-                  chainId,
-                },
-              });
-            }}
-          />
-        </>
+        </CustodyAccountList>
       )}
       {accounts && accounts.length === 0 && (
-        <>
+        <Box className="page-container">
           <Box
             data-testid="custody-accounts-empty"
-            padding={[6, 7, 2]}
+            padding={7}
             className="page-container__content"
           >
             <Text
@@ -701,14 +708,16 @@ const CustodyPage = () => {
               {t('close')}
             </Button>
           </Box>
-        </>
+        </Box>
       )}
 
       {isConfirmConnectCustodianModalVisible && (
         <ConfirmConnectCustodianModal
           onModalClose={() => setIsConfirmConnectCustodianModalVisible(false)}
           custodianName={selectedCustodianDisplayName}
-          custodianURL={matchedCustodian?.website}
+          custodianURL={
+            matchedCustodian?.onboardingUrl || matchedCustodian?.website
+          }
         />
       )}
     </Box>

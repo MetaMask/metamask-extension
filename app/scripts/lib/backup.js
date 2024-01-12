@@ -5,11 +5,13 @@ export default class Backup {
     const {
       preferencesController,
       addressBookController,
+      accountsController,
       networkController,
       trackMetaMetricsEvent,
     } = opts;
 
     this.preferencesController = preferencesController;
+    this.accountsController = accountsController;
     this.addressBookController = addressBookController;
     this.networkController = networkController;
     this._trackMetaMetricsEvent = trackMetaMetricsEvent;
@@ -17,7 +19,8 @@ export default class Backup {
 
   async restoreUserData(jsonString) {
     const existingPreferences = this.preferencesController.store.getState();
-    const { preferences, addressBook, network } = JSON.parse(jsonString);
+    const { preferences, addressBook, network, internalAccounts } =
+      JSON.parse(jsonString);
     if (preferences) {
       preferences.identities = existingPreferences.identities;
       preferences.lostIdentities = existingPreferences.lostIdentities;
@@ -34,7 +37,11 @@ export default class Backup {
       this.networkController.loadBackup(network);
     }
 
-    if (preferences || addressBook || network) {
+    if (internalAccounts) {
+      this.accountsController.loadBackup(internalAccounts);
+    }
+
+    if (preferences || addressBook || network || internalAccounts) {
       this._trackMetaMetricsEvent({
         event: 'User Data Imported',
         category: 'Backup',
@@ -45,6 +52,9 @@ export default class Backup {
   async backupUserData() {
     const userData = {
       preferences: { ...this.preferencesController.store.getState() },
+      internalAccounts: {
+        internalAccounts: this.accountsController.state.internalAccounts,
+      },
       addressBook: { ...this.addressBookController.state },
       network: {
         networkConfigurations:

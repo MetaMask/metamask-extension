@@ -65,3 +65,11 @@ test-results/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# MMI Playwright
+public/playwright
+test/e2e/mmi/.env
+test/e2e/mmi/playwright.config.ts
+test/e2e/mmi/specs/**/*-darwin.png
+test/e2e/mmi/dist/
+

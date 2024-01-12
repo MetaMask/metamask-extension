@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { panel, text, heading, divider, copyable } from '@metamask/snaps-ui';
+import { panel, text, heading, divider, copyable } from '@metamask/snaps-sdk';
 import configureStore from '../../../../store/store';
 import testData from '../../../../../.storybook/test-data';
 import { SnapUIRenderer } from '.';

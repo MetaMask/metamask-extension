@@ -229,9 +229,6 @@
   "editContact": {
     "message": "Edit Kenalan"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nama ENS tidak ditemui di rangkaian semasa. Cuba beralih kepada Rangkaian Ethereum Utama."
-  },
   "ensRegistrationError": {
     "message": "Ralat dalam pendaftaran nama ENS"
   },
@@ -592,9 +589,6 @@
   "search": {
     "message": "Carian"
   },
-  "searchResults": {
-    "message": "Hasil Carian"
-  },
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
   },
@@ -759,12 +753,6 @@
   },
   "unknown": {
     "message": "Tidak diketahui"
-  },
-  "unknownCameraError": {
-    "message": "Terdapat ralat semasa cuba mengakses kamera anda. Sila cuba sekali lagi..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Alamak! Ada yang tak kena...."
   },
   "unknownNetwork": {
     "message": "Rangkaian Persendirian Tidak Dikenali"

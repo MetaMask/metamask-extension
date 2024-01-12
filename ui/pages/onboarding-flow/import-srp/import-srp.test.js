@@ -21,8 +21,10 @@ const TEST_SEED =
 describe('Import SRP', () => {
   const mockState = {
     metamask: {
-      identities: {},
-      selectedAddress: '',
+      internalAccounts: {
+        accounts: {},
+        selectedAccount: '',
+      },
     },
   };
 

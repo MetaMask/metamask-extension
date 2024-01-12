@@ -20,13 +20,9 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getCurrentChainId,
-  getUSDConversionRate,
-  conversionRateSelector,
-  getCurrentCurrency,
   getRpcPrefsForCurrentProvider,
 } from '../../../selectors';
 import { SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../shared/constants/swaps';
-import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import {
   DEFAULT_ROUTE,
   BUILD_QUOTE_ROUTE,
@@ -51,10 +47,7 @@ import { MetaMetricsEventCategory } from '../../../../shared/constants/metametri
 import { SmartTransactionStatus } from '../../../../shared/constants/transaction';
 
 import SwapsFooter from '../swaps-footer';
-import {
-  showRemainingTimeInMinAndSec,
-  getFeeForSmartTransaction,
-} from '../swaps.util';
+import { showRemainingTimeInMinAndSec } from '../swaps.util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import CreateNewSwap from '../create-new-swap';
 import ViewOnBlockExplorer from '../view-on-block-explorer';
@@ -100,10 +93,6 @@ export default function SmartTransactionStatusPage() {
     rpcPrefs.blockExplorerUrl ??
     SWAPS_CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
     null;
-  const nativeCurrencySymbol = useSelector(getNativeCurrency);
-  const conversionRate = useSelector(conversionRateSelector);
-  const USDConversionRate = useSelector(getUSDConversionRate);
-  const currentCurrency = useSelector(getCurrentCurrency);
 
   let smartTransactionStatus = SmartTransactionStatus.pending;
   let latestSmartTransaction = {};
@@ -277,14 +266,6 @@ export default function SmartTransactionStatusPage() {
     latestSmartTransaction.cancellable && !cancelSwapLinkClicked;
 
   const CancelSwap = () => {
-    const { feeInFiat } = getFeeForSmartTransaction({
-      chainId,
-      currentCurrency,
-      conversionRate,
-      USDConversionRate,
-      nativeCurrencySymbol,
-      feeInWeiDec: cancellationFeeWei || 0,
-    });
     return (
       <Box marginBottom={0}>
         <a
@@ -301,7 +282,7 @@ export default function SmartTransactionStatusPage() {
             dispatch(cancelSwapsSmartTransaction(latestSmartTransactionUuid));
           }}
         >
-          {t('attemptToCancelSwap', [feeInFiat])}
+          {t('attemptToCancelSwapForFree')}
         </a>
       </Box>
     );

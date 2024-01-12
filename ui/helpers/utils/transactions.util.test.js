@@ -1,10 +1,10 @@
 import { HttpProvider } from 'ethjs';
 import nock from 'nock';
 import {
-  TransactionGroupStatus,
-  TransactionStatus,
   TransactionEnvelopeType,
-} from '../../../shared/constants/transaction';
+  TransactionStatus,
+} from '@metamask/transaction-controller';
+import { TransactionGroupStatus } from '../../../shared/constants/transaction';
 import * as utils from './transactions.util';
 
 describe('Transactions utils', () => {

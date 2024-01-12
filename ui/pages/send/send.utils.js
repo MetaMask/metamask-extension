@@ -6,6 +6,7 @@ import { Numeric } from '../../../shared/modules/Numeric';
 import {
   TOKEN_TRANSFER_FUNCTION_SIGNATURE,
   NFT_TRANSFER_FROM_FUNCTION_SIGNATURE,
+  NFT_SAFE_TRANSFER_FROM_FUNCTION_SIGNATURE,
 } from './send.constants';
 
 export {
@@ -13,8 +14,10 @@ export {
   getAssetTransferData,
   generateERC20TransferData,
   generateERC721TransferData,
+  generateERC1155TransferData,
   isBalanceSufficient,
   isTokenBalanceSufficient,
+  isERC1155BalanceSufficient,
   ellipsify,
 };
 
@@ -39,6 +42,13 @@ function isBalanceSufficient({
 function isTokenBalanceSufficient({ amount = '0x0', tokenBalance, decimals }) {
   const amountNumeric = new Numeric(amount, 16).shiftedBy(decimals);
   const tokenBalanceNumeric = new Numeric(tokenBalance, 16);
+
+  return tokenBalanceNumeric.greaterThanOrEqualTo(amountNumeric);
+}
+
+function isERC1155BalanceSufficient({ amount = '0', tokenBalance }) {
+  const amountNumeric = new Numeric(amount, 16);
+  const tokenBalanceNumeric = new Numeric(tokenBalance, 10);
 
   return tokenBalanceNumeric.greaterThanOrEqualTo(amountNumeric);
 }
@@ -113,10 +123,46 @@ function generateERC721TransferData({
   );
 }
 
+function generateERC1155TransferData({
+  toAddress = '0x0',
+  fromAddress = '0x0',
+  tokenId,
+  amount = '1',
+  data = '0',
+}) {
+  if (!tokenId) {
+    return undefined;
+  }
+  return (
+    NFT_SAFE_TRANSFER_FROM_FUNCTION_SIGNATURE +
+    Array.prototype.map
+      .call(
+        abi.rawEncode(
+          ['address', 'address', 'uint256', 'uint256', 'bytes'],
+          [
+            addHexPrefix(fromAddress),
+            addHexPrefix(toAddress),
+            tokenId,
+            amount,
+            data,
+          ],
+        ),
+        (x) => `00${x.toString(16)}`.slice(-2),
+      )
+      .join('')
+  );
+}
+
 function getAssetTransferData({ sendToken, fromAddress, toAddress, amount }) {
   switch (sendToken.standard) {
     case TokenStandard.ERC721:
       return generateERC721TransferData({
+        toAddress,
+        fromAddress,
+        tokenId: sendToken.tokenId,
+      });
+    case TokenStandard.ERC1155:
+      return generateERC1155TransferData({
         toAddress,
         fromAddress,
         tokenId: sendToken.tokenId,

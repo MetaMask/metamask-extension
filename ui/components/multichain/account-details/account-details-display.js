@@ -13,9 +13,9 @@ import {
 } from '../../../selectors';
 import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import {
-  ButtonSecondarySize,
-  ButtonSecondary,
   Box,
+  ButtonSecondary,
+  ButtonSecondarySize,
 } from '../../component-library';
 import {
   AlignItems,
