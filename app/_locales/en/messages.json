@@ -4196,6 +4196,12 @@
   "showAccount": {
     "message": "Show account"
   },
+  "showExtensionInFullSizeView": {
+    "message": "Show extension in full-size view"
+  },
+  "showExtensionInFullSizeViewDescription": {
+    "message": "Turn this on to make full-size view your default when you click the extension icon."
+  },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
   },
