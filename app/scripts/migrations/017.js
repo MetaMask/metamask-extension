@@ -4,8 +4,8 @@ This migration sets transactions who were retried and marked as failed to submit
 
 */
 
+import { TransactionStatus } from '@metamask/transaction-controller';
 import { cloneDeep } from 'lodash';
-import { TransactionStatus } from '../../../shared/constants/transaction';
 
 const version = 17;
 

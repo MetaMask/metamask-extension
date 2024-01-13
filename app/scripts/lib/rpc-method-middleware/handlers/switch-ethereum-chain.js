@@ -25,8 +25,12 @@ const switchEthereumChain = {
     setProviderType: true,
     setActiveNetwork: true,
     requestUserApproval: true,
+    getNetworkConfigurations: true,
+    getNetworkClientIdForDomain: true,
+    getProviderConfig: true,
   },
 };
+
 export default switchEthereumChain;
 
 function findExistingNetwork(chainId, findNetworkConfigurationBy) {
@@ -60,6 +64,7 @@ async function switchEthereumChainHandler(
     setProviderType,
     setActiveNetwork,
     requestUserApproval,
+    getProviderConfig,
   },
 ) {
   if (!req.params?.[0] || typeof req.params[0] !== 'object') {
@@ -103,13 +108,29 @@ async function switchEthereumChainHandler(
       }),
     );
   }
-  const requestData = findExistingNetwork(_chainId, findNetworkConfigurationBy);
-  if (requestData) {
+
+  const requestData = {
+    toNetworkConfiguration: findExistingNetwork(
+      _chainId,
+      findNetworkConfigurationBy,
+    ),
+  };
+
+  requestData.fromNetworkConfiguration = getProviderConfig();
+
+  if (requestData.toNetworkConfiguration) {
     const currentChainId = getCurrentChainId();
+
+    // we might want to change all this so that it displays the network you are switching from -> to (in a way that is domain - specific)
+
+    const networkClientId = findNetworkClientIdByChainId(_chainId);
+
     if (currentChainId === _chainId) {
+      setNetworkClientIdForDomain(req.origin, networkClientId);
       res.result = null;
       return end();
     }
+
     try {
       const approvedRequestData = await requestUserApproval({
         origin,
@@ -125,7 +146,6 @@ async function switchEthereumChainHandler(
       } else {
         await setActiveNetwork(approvedRequestData.id);
       }
-      const networkClientId = findNetworkClientIdByChainId(_chainId);
       setNetworkClientIdForDomain(req.origin, networkClientId);
       res.result = null;
     } catch (error) {
@@ -133,6 +153,7 @@ async function switchEthereumChainHandler(
     }
     return end();
   }
+
   return end(
     ethErrors.provider.custom({
       code: 4902, // To-be-standardized "unrecognized chain ID" error

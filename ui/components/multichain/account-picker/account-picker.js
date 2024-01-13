@@ -4,22 +4,18 @@ import classnames from 'classnames';
 import { useSelector } from 'react-redux';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
-  Box,
   AvatarAccount,
   AvatarAccountVariant,
-  Icon,
-  IconName,
-  Text,
   ButtonBase,
   ButtonBaseSize,
+  IconName,
+  Text,
 } from '../../component-library';
 import {
   AlignItems,
   BackgroundColor,
-  BlockSize,
   BorderRadius,
   Display,
-  FlexDirection,
   IconColor,
   Size,
   TextColor,
@@ -37,6 +33,7 @@ export const AccountPicker = ({
   addressProps = {},
   labelProps = {},
   textProps = {},
+  className = '',
   ...props
 }) => {
   const useBlockie = useSelector(getUseBlockie);
@@ -44,7 +41,7 @@ export const AccountPicker = ({
 
   return (
     <ButtonBase
-      className="multichain-account-picker"
+      className={classnames('multichain-account-picker', className)}
       data-testid="account-menu-icon"
       onClick={onClick}
       backgroundColor={BackgroundColor.transparent}
@@ -52,59 +49,50 @@ export const AccountPicker = ({
       ellipsis
       textProps={{
         display: Display.Flex,
-        gap: 2,
         alignItems: AlignItems.center,
+        gap: 1,
         ...textProps,
       }}
       size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Md}
       disabled={disabled}
+      endIconName={IconName.ArrowDown}
+      endIconProps={{
+        color: IconColor.iconDefault,
+        size: Size.SM,
+      }}
       {...props}
     >
-      <Box
-        display={Display.Flex}
-        className="multichain-account-picker-container"
-        flexDirection={FlexDirection.Column}
-        width={BlockSize.Full}
+      <AvatarAccount
+        variant={
+          useBlockie
+            ? AvatarAccountVariant.Blockies
+            : AvatarAccountVariant.Jazzicon
+        }
+        address={address}
+        size={Size.SM}
+        borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
+      />
+      <Text
+        as="span"
+        ellipsis
+        {...labelProps}
+        className={classnames(
+          'multichain-account-picker__label',
+          labelProps.className ?? '',
+        )}
       >
-        <Box display={Display.Flex} alignItems={AlignItems.center} gap={1}>
-          <AvatarAccount
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
-            address={address}
-            size={Size.SM}
-            borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
-          />
+        {name}
+        {showAddress ? (
           <Text
-            as="span"
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodySm}
             ellipsis
-            {...labelProps}
-            className={classnames(
-              'multichain-account-picker__label',
-              labelProps.className ?? '',
-            )}
+            {...addressProps}
           >
-            {name}
-            {showAddress ? (
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodySm}
-                ellipsis
-                {...addressProps}
-              >
-                {shortenedAddress}
-              </Text>
-            ) : null}
+            {shortenedAddress}
           </Text>
-          <Icon
-            name={IconName.ArrowDown}
-            color={IconColor.iconDefault}
-            size={Size.SM}
-          />
-        </Box>
-      </Box>
+        ) : null}
+      </Text>
     </ButtonBase>
   );
 };
@@ -130,7 +118,6 @@ AccountPicker.propTypes = {
    * Represents if the account address should display
    */
   showAddress: PropTypes.bool,
-
   /**
    * Represents if the AccountPicker should take full width
    */
@@ -147,4 +134,8 @@ AccountPicker.propTypes = {
    * Props to be added to the text element
    */
   textProps: PropTypes.object,
+  /**
+   * Additional className to be added to the AccountPicker
+   */
+  className: PropTypes.string,
 };

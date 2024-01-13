@@ -1,5 +1,5 @@
 import Bowser from 'bowser';
-import { BN } from 'ethereumjs-util';
+import { BN, toChecksumAddress } from 'ethereumjs-util';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { addHexPrefixToObjectValues } from '../../../shared/lib/swaps-utils';
 import { toPrecisionWithoutTrailingZeros } from '../../../shared/lib/transactions-controller-utils';
@@ -944,11 +944,11 @@ describe('util', () => {
           },
         ],
       },
-      '0x2df920B180c58766951395c26ecF1EC206343334': {
+      '0x2dF920B180C58766951395C26ecF1Ec206343334': {
         collectionName: 'toto',
         nfts: [
           {
-            address: '0x2df920B180c58766951395c26ecF1EC206343334',
+            address: '0x2dF920B180C58766951395C26ecF1Ec206343334',
             description: 'toto',
             favorite: false,
             name: 'toto#3453',
@@ -970,14 +970,11 @@ describe('util', () => {
         ],
       },
     };
-    it('should return true if it exists', () => {
-      expect(
-        util.checkTokenIdExists(
-          '0x2df920B180c58766951395c26ecF1EC206343334',
-          '3453',
-          data,
-        ),
-      ).toBeTruthy();
+    it('should return true if it exists regardless if the entered value is checksum address or not', () => {
+      const adr = '0x2df920B180c58766951395c26ecF1EC206343334';
+      const checksumAdre = toChecksumAddress(adr);
+      expect(util.checkTokenIdExists(adr, '3453', data)).toBeTruthy();
+      expect(util.checkTokenIdExists(checksumAdre, '3453', data)).toBeTruthy();
     });
 
     it('should return true if it exists in decimal format', () => {

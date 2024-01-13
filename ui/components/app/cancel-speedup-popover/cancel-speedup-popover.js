@@ -12,7 +12,6 @@ import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/ut
 import { useGasFeeContext } from '../../../contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
-import EditGasFeeButton from '../edit-gas-fee-button';
 import GasDetailsItem from '../gas-details-item';
 import Box from '../../ui/box';
 import InfoTooltip from '../../ui/info-tooltip';
@@ -23,9 +22,9 @@ import {
   ButtonLink,
   Modal,
   ModalOverlay,
-  ModalContent,
-  ModalHeader,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
 const CancelSpeedupPopover = () => {
   const {
@@ -146,9 +145,6 @@ const CancelSpeedupPopover = () => {
             flexDirection={FlexDirection.Column}
             marginTop={2}
           >
-            <div className="cancel-speedup-popover__edit-gas-button">
-              {!appIsLoading && <EditGasFeeButton />}
-            </div>
             <div className="cancel-speedup-popover__gas-details">
               <GasDetailsItem />
             </div>

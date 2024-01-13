@@ -1,36 +1,41 @@
-import React, { useContext, useMemo, useRef, useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { debounce } from 'lodash';
-import { getCurrentLocale } from '../../../ducks/locale/locale';
-import { I18nContext } from '../../../contexts/i18n';
-import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
-import Popover from '../../ui/popover';
-import { Text, ButtonPrimary } from '../../component-library';
-import { updateViewedNotifications } from '../../../store/actions';
-import {
-  NOTIFICATION_BUY_SELL_BUTTON,
-  NOTIFICATION_DROP_LEDGER_FIREFOX,
-  NOTIFICATION_OPEN_BETA_SNAPS,
-  getTranslatedUINotifications,
-} from '../../../../shared/notifications';
-import { getSortedAnnouncementsToShow } from '../../../selectors';
-import {
-  BUILD_QUOTE_ROUTE,
-  PREPARE_SWAP_ROUTE,
-  ADVANCED_ROUTE,
-  EXPERIMENTAL_ROUTE,
-  SECURITY_ROUTE,
-} from '../../../helpers/constants/routes';
-import { TextVariant } from '../../../helpers/constants/design-system';
-import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
+import PropTypes from 'prop-types';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import {
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  NOTIFICATION_BLOCKAID_DEFAULT,
+  ///: END:ONLY_INCLUDE_IF
+  NOTIFICATION_BUY_SELL_BUTTON,
+  NOTIFICATION_DROP_LEDGER_FIREFOX,
+  NOTIFICATION_OPEN_BETA_SNAPS,
+  NOTIFICATION_U2F_LEDGER_LIVE,
+  getTranslatedUINotifications,
+  NOTIFICATION_STAKING_PORTFOLIO,
+} from '../../../../shared/notifications';
+import { I18nContext } from '../../../contexts/i18n';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
+import { TextVariant } from '../../../helpers/constants/design-system';
+import {
+  ADVANCED_ROUTE,
+  BUILD_QUOTE_ROUTE,
+  EXPERIMENTAL_ROUTE,
+  PREPARE_SWAP_ROUTE,
+  SECURITY_ROUTE,
+} from '../../../helpers/constants/routes';
+import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
+import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
+import { getSortedAnnouncementsToShow } from '../../../selectors';
+import { updateViewedNotifications } from '../../../store/actions';
+import { ButtonPrimary, Text } from '../../component-library';
+import Popover from '../../ui/popover';
 
 function getActionFunctionById(id, history) {
   const actionFunctions = {
@@ -97,12 +102,12 @@ function getActionFunctionById(id, history) {
     22: () => {
       updateViewedNotifications({ 22: true });
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     23: () => {
       updateViewedNotifications({ 23: true });
       history.push(`${EXPERIMENTAL_ROUTE}#security-alerts`);
     },
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     24: () => {
       updateViewedNotifications({ 24: true });
     },
@@ -121,6 +126,17 @@ function getActionFunctionById(id, history) {
         url: 'https://portfolio.metamask.io/sell/build-quote',
       });
     },
+    [NOTIFICATION_U2F_LEDGER_LIVE]: () => {
+      updateViewedNotifications({ [NOTIFICATION_U2F_LEDGER_LIVE]: true });
+    },
+    [NOTIFICATION_STAKING_PORTFOLIO]: () => {
+      updateViewedNotifications({ [NOTIFICATION_STAKING_PORTFOLIO]: true });
+    },
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    [NOTIFICATION_BLOCKAID_DEFAULT]: () => {
+      updateViewedNotifications({ [NOTIFICATION_BLOCKAID_DEFAULT]: true });
+    },
+    ///: END:ONLY_INCLUDE_IF
   };
 
   return actionFunctions[id];
@@ -339,14 +355,19 @@ export default function WhatsNewPopup({ onClose }) {
     19: renderFirstNotification,
     21: renderFirstNotification,
     22: renderFirstNotification,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     23: renderFirstNotification,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     24: renderFirstNotification,
     // This syntax is unusual, but very helpful here.  It's equivalent to `notificationRenderers[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
     [NOTIFICATION_DROP_LEDGER_FIREFOX]: renderFirstNotification,
     [NOTIFICATION_OPEN_BETA_SNAPS]: renderFirstNotification,
     [NOTIFICATION_BUY_SELL_BUTTON]: renderFirstNotification,
+    [NOTIFICATION_U2F_LEDGER_LIVE]: renderFirstNotification,
+    [NOTIFICATION_STAKING_PORTFOLIO]: renderFirstNotification,
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    [NOTIFICATION_BLOCKAID_DEFAULT]: renderFirstNotification,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   return (

@@ -77,10 +77,10 @@ export default class SecurityTab extends PureComponent {
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
     useAddressBarEnsResolution: PropTypes.bool.isRequired,
     setUseAddressBarEnsResolution: PropTypes.func.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+    ///: BEGIN:ONLY_INCLUDE_IF(petnames)
     useExternalNameSources: PropTypes.bool.isRequired,
     setUseExternalNameSources: PropTypes.func.isRequired,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
@@ -729,16 +729,17 @@ export default class SecurityTab extends PureComponent {
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
         gap={4}
+        id="display-nft-media"
       >
         <div className="settings-page__content-item">
-          <span>{t('enableOpenSeaAPI')}</span>
+          <span>{t('displayNftMedia')}</span>
           <div className="settings-page__content-description">
-            {t('enableOpenSeaAPIDescription')}
+            {t('displayNftMediaDescription')}
           </div>
         </div>
         <div
           className="settings-page__content-item-col"
-          data-testid="enableOpenSeaAPI"
+          data-testid="displayNftMedia"
         >
           <ToggleButton
             value={openSeaEnabled}
@@ -817,7 +818,7 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   renderExternalNameSourcesToggle() {
     const { t } = this.context;
     const { useExternalNameSources, setUseExternalNameSources } = this.props;
@@ -852,7 +853,7 @@ export default class SecurityTab extends PureComponent {
       </Box>
     );
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   render() {
     const { warning } = this.props;
@@ -914,7 +915,7 @@ export default class SecurityTab extends PureComponent {
         </div>
 
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+          ///: BEGIN:ONLY_INCLUDE_IF(petnames)
         }
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('settingsSubHeadingSignatures')}
@@ -923,7 +924,7 @@ export default class SecurityTab extends PureComponent {
           {this.renderExternalNameSourcesToggle()}
         </div>
         {
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
 
         <span className="settings-page__security-tab-sub-header">

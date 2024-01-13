@@ -22,7 +22,7 @@ export default class EditApprovalPermission extends PureComponent {
   static propTypes = {
     decimals: PropTypes.number,
     hideModal: PropTypes.func.isRequired,
-    selectedIdentity: PropTypes.object,
+    selectedAccount: PropTypes.object,
     tokenAmount: PropTypes.string,
     customTokenAmount: PropTypes.string,
     tokenSymbol: PropTypes.string,
@@ -46,14 +46,14 @@ export default class EditApprovalPermission extends PureComponent {
     const { t } = this.context;
     const {
       hideModal,
-      selectedIdentity,
+      selectedAccount,
       tokenAmount,
       tokenSymbol,
       tokenBalance,
       customTokenAmount,
       origin,
     } = this.props;
-    const { name, address } = selectedIdentity || {};
+    const { name, address } = selectedAccount || {};
     const { selectedOptionIsUnlimited } = this.state;
 
     return (

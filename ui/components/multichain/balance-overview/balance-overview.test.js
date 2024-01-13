@@ -10,7 +10,11 @@ const render = (useNativeCurrencyAsPrimaryCurrency = true) => {
     ...mockState,
     metamask: {
       ...mockState.metamask,
-      conversionRate: 1618,
+      currencyRates: {
+        ETH: {
+          conversionRate: 1618,
+        },
+      },
       preferences: {
         ...mockState.metamask.preferences,
         showFiatInTestnets: true,
@@ -28,7 +32,7 @@ describe('Balance Overview and Portfolio for Tokens', () => {
   it('should output correct ETH total value', () => {
     const { container } = render();
     expect(container).toMatchSnapshot();
-    expect(screen.getByText('0.001')).toBeInTheDocument();
+    expect(screen.getByText('0.0013')).toBeInTheDocument();
   });
 
   it('should output correct USD total value', () => {

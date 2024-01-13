@@ -9,6 +9,7 @@ module.exports = {
     '/node_modules',
     '/notices',
     '/test',
+    '/public',
   ],
 
   rules: {

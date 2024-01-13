@@ -769,6 +769,49 @@ export const OnPressEscKey: StoryFn<typeof Popover> = (args) => {
   );
 };
 
+export const OnClickOutside: StoryFn<typeof Popover> = (args) => {
+  const [referenceElement, setReferenceElement] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Set Popover Ref
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleClickOutside = () => {
+    setIsOpen(false);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setBoxRef}
+        onClick={handleClick}
+        backgroundColor={BackgroundColor.primaryAlternative}
+        style={{ width: 200, height: 200 }}
+        color={TextColor.primaryInverse}
+        as="button"
+      >
+        Click to open
+      </Box>
+      <Popover
+        referenceElement={referenceElement}
+        onClickOutside={handleClickOutside}
+        isOpen={isOpen}
+        {...args}
+      >
+        Click outside to close
+      </Popover>
+    </>
+  );
+};
+
+OnClickOutside.storyName = 'onClickOutside';
+
 export const WithPopoverHeader: StoryFn<typeof Popover> = (args) => {
   const [refTitleElement, setRefTitleElement] = useState();
   const [isOpen, setIsOpen] = useState(true);

@@ -177,11 +177,10 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval @no-mmi', function () {
           .build(),
         defaultGanacheOptions,
         testSpecificMock: mockInfura,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
 
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
@@ -194,7 +193,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Approval @no-mmi', function () {
 
         // Wait for confirmation pop-up
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const bannerAlertFoundByTitle = await driver.findElement({
           css: bannerAlertSelector,

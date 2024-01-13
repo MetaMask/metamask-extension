@@ -580,6 +580,10 @@ export class Numeric {
     return this.isNegative() === false;
   }
 
+  isFloat() {
+    return this.value.decimalPlaces() > 0;
+  }
+
   /**
    * Get a base 16 hexadecimal string representation of the Numeric that is
    * 0x prefixed. This operation bypasses the currently set base of the

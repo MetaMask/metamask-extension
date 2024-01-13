@@ -197,7 +197,7 @@ export function renderDesktopError({
       );
       break;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+    ///: BEGIN:ONLY_INCLUDE_IF(desktop)
     // This route only exists on the Desktop App
     case EXTENSION_ERROR_PAGE_TYPES.ROUTE_NOT_FOUND:
       content = (
@@ -213,7 +213,7 @@ export function renderDesktopError({
         </>
       );
       break;
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     case EXTENSION_ERROR_PAGE_TYPES.PAIRING_KEY_NOT_MATCH:
       content = (

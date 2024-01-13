@@ -1,4 +1,5 @@
 import { warn } from 'loglevel';
+import { PollingControllerOnly } from '@metamask/polling-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -20,7 +21,7 @@ const DEFAULT_INTERVAL = MINUTE * 3;
  * A controller that polls for token exchange
  * rates based on a user's current token list
  */
-export default class DetectTokensController {
+export default class DetectTokensController extends PollingControllerOnly {
   /**
    * Creates a DetectTokensController
    *
@@ -33,6 +34,9 @@ export default class DetectTokensController {
    * @param config.assetsContractController
    * @param config.trackMetaMetricsEvent
    * @param config.messenger
+   * @param config.getCurrentSelectedAccount
+   * @param config.getNetworkClientById
+   * @param config.disableLegacyInterval
    */
   constructor({
     messenger,
@@ -43,35 +47,60 @@ export default class DetectTokensController {
     tokensController,
     assetsContractController = null,
     trackMetaMetricsEvent,
+    getCurrentSelectedAccount,
+    getNetworkClientById,
+    disableLegacyInterval = false,
   } = {}) {
+    super();
+    this.getNetworkClientById = getNetworkClientById;
     this.messenger = messenger;
     this.assetsContractController = assetsContractController;
     this.tokensController = tokensController;
     this.preferences = preferences;
-    this.interval = interval;
+    if (!disableLegacyInterval) {
+      this.interval = interval;
+    }
     this.network = network;
     this.tokenList = tokenList;
     this.useTokenDetection =
       this.preferences?.store.getState().useTokenDetection;
-    this.selectedAddress = this.preferences?.store.getState().selectedAddress;
+    this.selectedAddress = getCurrentSelectedAccount().address;
     this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
       return token.address;
     });
+    this.setIntervalLength(interval);
     this.hiddenTokens = this.tokensController?.state.ignoredTokens;
     this.detectedTokens = this.tokensController?.state.detectedTokens;
     this.chainId = this.getChainIdFromNetworkStore();
     this._trackMetaMetricsEvent = trackMetaMetricsEvent;
 
-    preferences?.store.subscribe(({ selectedAddress, useTokenDetection }) => {
-      if (
-        this.selectedAddress !== selectedAddress ||
-        this.useTokenDetection !== useTokenDetection
-      ) {
-        this.selectedAddress = selectedAddress;
+    messenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (account) => {
+        const useTokenDetection =
+          this.preferences?.store.getState().useTokenDetection;
+        if (
+          this.selectedAddress !== account.address ||
+          this.useTokenDetection !== useTokenDetection
+        ) {
+          this.selectedAddress = account.address;
+          this.useTokenDetection = useTokenDetection;
+          this.restartTokenDetection({
+            selectedAddress: this.selectedAddress,
+          });
+        }
+      },
+    );
+
+    preferences?.store.subscribe(({ useTokenDetection }) => {
+      if (this.useTokenDetection !== useTokenDetection) {
         this.useTokenDetection = useTokenDetection;
-        this.restartTokenDetection({ selectedAddress });
+        this.restartTokenDetection({
+          selectedAddress: this.selectedAddress,
+        });
       }
     });
+
     tokensController?.subscribe(
       ({ tokens = [], ignoredTokens = [], detectedTokens = [] }) => {
         this.tokenAddresses = tokens.map((token) => {
@@ -89,7 +118,19 @@ export default class DetectTokensController {
       }
     });
 
+    messenger.subscribe('TokenListController:stateChange', () => {
+      this.restartTokenDetection();
+    });
+
     this.#registerKeyringHandlers();
+  }
+
+  async _executePoll(networkClientId, options) {
+    const networkClient = this.getNetworkClientById(networkClientId);
+    await this.detectNewTokens({
+      ...options,
+      chainId: networkClient.configuration.chainId,
+    });
   }
 
   /**

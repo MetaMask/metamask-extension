@@ -1,11 +1,10 @@
 import { renderHook } from '@testing-library/react-hooks';
 
-import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
-
 import {
   TransactionStatus,
   TransactionType,
-} from '../../../shared/constants/transaction';
+} from '@metamask/transaction-controller';
+import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 
 import { useGasFeeErrors } from './useGasFeeErrors';
 

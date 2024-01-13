@@ -35,5 +35,5 @@
     "ui/**/*.test.tsx"
   ],
   "extends": "@tsconfig/node16/tsconfig.json",
-  "include": ["app", "development", "shared", "types", "ui"]
+  "include": ["app", "development", "shared", "types", "ui", "offscreen"]
 }
