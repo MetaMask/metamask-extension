@@ -143,16 +143,20 @@ export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
       borderStyle={BorderStyle.none}
       position={PopoverPosition.BottomEnd}
     >
-      <AccountDetailsMenuItem
-        metricsLocation={METRICS_LOCATION}
-        closeMenu={closeMenu}
-        address={account.address}
-      />
-      <ViewExplorerMenuItem
-        metricsLocation={METRICS_LOCATION}
-        closeMenu={closeMenu}
-        address={account.address}
-      />
+      {account && (
+        <>
+          <AccountDetailsMenuItem
+            metricsLocation={METRICS_LOCATION}
+            closeMenu={closeMenu}
+            address={account.address}
+          />
+          <ViewExplorerMenuItem
+            metricsLocation={METRICS_LOCATION}
+            closeMenu={closeMenu}
+            address={account.address}
+          />
+        </>
+      )}
       <Box
         borderColor={BorderColor.borderMuted}
         width={BlockSize.Full}
