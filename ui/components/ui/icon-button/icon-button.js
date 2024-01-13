@@ -28,10 +28,10 @@ export default function IconButton({
       {renderWrapper(
         <>
           <div className="icon-button__circle">{Icon}</div>
-          {label.length > 9 ? (
+          {label.length > 10 ? (
             <Tooltip title={label} position="bottom">
               <Text
-                className="icon-button__label"
+                className="icon-button__label-large"
                 ellipsis
                 variant={TextVariant.bodySm}
               >

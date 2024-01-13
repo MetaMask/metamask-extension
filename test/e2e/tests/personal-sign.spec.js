@@ -1,38 +1,29 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   openDapp,
   regularDelayMs,
+  unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Personal sign', function () {
   it('can initiate and confirm a personal sign', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: convertToHexValue(25000000000000000000),
-        },
-      ],
-    };
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses[0];
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         await driver.clickElement('#personalSign');
@@ -40,7 +31,7 @@ describe('Personal sign', function () {
         await driver.waitUntilXWindowHandles(3);
         const windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -57,30 +48,19 @@ describe('Personal sign', function () {
     );
   });
   it('can queue multiple personal signs and confirm', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: convertToHexValue(25000000000000000000),
-        },
-      ],
-    };
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
-        title: this.test.title,
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
       },
       async ({ driver, ganacheServer }) => {
         const addresses = await ganacheServer.getAccounts();
         const publicAddress = addresses[0];
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await openDapp(driver);
         // Create personal sign
@@ -96,7 +76,7 @@ describe('Personal sign', function () {
         await driver.clickElement('#personalSign');
 
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 

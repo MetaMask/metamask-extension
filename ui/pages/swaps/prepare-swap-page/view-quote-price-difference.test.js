@@ -9,10 +9,19 @@ describe('View Price Quote Difference', () => {
   const mockState = {
     metamask: {
       tokens: [],
-      providerConfig: { type: NETWORK_TYPES.RPC, nickname: '', rpcUrl: '' },
+      providerConfig: {
+        type: NETWORK_TYPES.RPC,
+        nickname: '',
+        rpcUrl: '',
+        ticker: 'ETH',
+      },
       preferences: { showFiatInTestnets: true },
       currentCurrency: 'usd',
-      conversionRate: 600.0,
+      currencyRates: {
+        ETH: {
+          conversionRate: 600.0,
+        },
+      },
     },
   };
 

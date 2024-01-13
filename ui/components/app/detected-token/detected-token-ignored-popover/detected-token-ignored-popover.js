@@ -11,13 +11,13 @@ import {
   Text,
   Modal,
   ModalOverlay,
-  ModalContent,
-  ModalHeader,
   Button,
   BUTTON_VARIANT,
   Box,
   BUTTON_SIZES,
 } from '../../../component-library';
+import { ModalContent } from '../../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 
 const DetectedTokenIgnoredPopover = ({
   partiallyIgnoreDetectedTokens,

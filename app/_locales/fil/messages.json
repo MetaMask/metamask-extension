@@ -208,9 +208,6 @@
   "editContact": {
     "message": "I-edit ang Contact"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Hindi nakita ang ENS name sa kasalukuyang network. Subukang lumipat sa Ethereum Mainnet."
-  },
   "ensRegistrationError": {
     "message": "May error sa pagrerehistro ng ENS name"
   },
@@ -536,9 +533,6 @@
   "search": {
     "message": "Hanapin"
   },
-  "searchResults": {
-    "message": "Mga Resulta ng Paghahanap"
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -694,12 +688,6 @@
   },
   "unknown": {
     "message": "Hindi Alam"
-  },
-  "unknownCameraError": {
-    "message": "Nagkaroon ng error habang sinusubukang i-access ang iyong camera. Pakisubukang muli..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Nagkaroon ng problema...."
   },
   "unknownNetwork": {
     "message": "Hindi Kilalang Pribadong Network"

@@ -5,6 +5,8 @@ import { Popover } from './popover';
 
 Popover is an overlay that appears by the trigger used for menus, additional contents, and contains at least one focusable element.
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-popover--default-story" />
 </Canvas>
@@ -196,6 +198,24 @@ const handleClick = () => {
 };
 
 <Popover onPressEscKey={() => setIsOpen(false)}>
+  Press esc key to close
+</Popover>;
+```
+
+### onClickOutside
+
+`onClickOutside` is a callback function that is invoked when the user clicks outside of the `Popover` component
+
+```jsx
+import { Popover } from '../../component-library';
+
+const [isOpen, setIsOpen] = useState(false);
+
+const handleClick = () => {
+  setIsOpen(!isOpen);
+};
+
+<Popover onClickOutside={() => setIsOpen(false)}>
   Press esc key to close
 </Popover>;
 ```

@@ -24,7 +24,7 @@ function getActualDataFrom(transactionBreakdownRows) {
 describe('TransactionBreakdown', () => {
   const store = configureMockStore()({
     metamask: {
-      nativeCurrency: null,
+      currencyRates: {},
       preferences: {},
       providerConfig: {
         chainId: CHAIN_IDS.MAINNET,

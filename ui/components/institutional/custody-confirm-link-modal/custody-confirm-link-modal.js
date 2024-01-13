@@ -30,12 +30,12 @@ import {
   Button,
   BUTTON_VARIANT,
   Modal,
-  ModalHeader,
-  ModalContent,
   ModalOverlay,
   Text,
   Box,
 } from '../../component-library';
+import { ModalContent } from '../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../component-library/modal-header/deprecated';
 
 const CustodyConfirmLink = ({ hideModal }) => {
   const t = useI18nContext();

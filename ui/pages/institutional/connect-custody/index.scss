@@ -1,13 +1,12 @@
 .custody-account-list {
   flex: 1;
-  max-height: 50vh;
   overflow: auto;
 
   &__item {
     border-bottom: 1px solid #d2d8dd;
 
     input {
-      margin: 12px 0 0 10px;
+      margin: 12px 0 0 4px;
     }
 
     &__title {

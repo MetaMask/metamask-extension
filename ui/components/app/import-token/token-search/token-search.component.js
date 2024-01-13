@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
-import { TextFieldSearch } from '../../../component-library';
-import { BlockSize } from '../../../../helpers/constants/design-system';
+import { TextFieldSearch } from '../../../component-library/text-field-search/deprecated';
+import { BlockSize, Size } from '../../../../helpers/constants/design-system';
 
 export default class TokenSearch extends Component {
   static contextTypes = {
@@ -12,12 +12,14 @@ export default class TokenSearch extends Component {
 
   static defaultProps = {
     error: null,
+    searchClassName: undefined,
   };
 
   static propTypes = {
     onSearch: PropTypes.func,
     error: PropTypes.string,
     tokenList: PropTypes.object,
+    searchClassName: PropTypes.string,
   };
 
   state = {
@@ -56,19 +58,29 @@ export default class TokenSearch extends Component {
     this.props.onSearch({ searchQuery, results });
   }
 
+  clear() {
+    this.setState({ searchQuery: '' });
+  }
+
   render() {
     const { error } = this.props;
     const { searchQuery } = this.state;
+    const { searchClassName } = this.props;
 
     return (
       <TextFieldSearch
-        placeholder={this.context.t('search')}
+        className={searchClassName}
+        placeholder={this.context.t('searchTokens')}
         value={searchQuery}
         onChange={(e) => this.handleSearch(e.target.value)}
         error={error}
         autoFocus
         autoComplete={false}
         width={BlockSize.Full}
+        clearButtonOnClick={() => this.clear()}
+        clearButtonProps={{
+          size: Size.SM,
+        }}
       />
     );
   }

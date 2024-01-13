@@ -49,9 +49,11 @@ jest.mock('../../../store/actions.ts', () => ({
 
 describe('NFT Details', () => {
   const mockStore = configureMockStore([thunk])(mockState);
-
-  const nfts =
-    mockState.metamask.allNfts[mockState.metamask.selectedAddress][toHex(5)];
+  const selectedAddress =
+    mockState.metamask.internalAccounts.accounts[
+      mockState.metamask.internalAccounts.selectedAccount
+    ].address;
+  const nfts = mockState.metamask.allNfts[selectedAddress][toHex(5)];
 
   const props = {
     nft: nfts[5],
@@ -147,6 +149,20 @@ describe('NFT Details', () => {
 
     const nftSendButton = queryByTestId('nft-send-button');
     expect(nftSendButton).not.toBeInTheDocument();
+  });
+
+  it('should render send button if it is an ERC1155', () => {
+    const nftProps = {
+      nft: nfts[1],
+    };
+    const { queryByTestId } = renderWithProvider(
+      <NftDetails {...nftProps} />,
+      mockStore,
+    );
+
+    const nftSendButton = queryByTestId('nft-send-button');
+
+    expect(nftSendButton).not.toBeDisabled();
   });
 
   describe(`Alternative Networks' OpenSea Links`, () => {

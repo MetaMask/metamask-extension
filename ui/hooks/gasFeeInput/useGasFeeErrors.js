@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
+import { TransactionType } from '@metamask/transaction-controller';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
 import {
   checkNetworkAndAccountSupports1559,
@@ -10,7 +11,6 @@ import { bnGreaterThan, bnLessThan } from '../../helpers/utils/util';
 import { GAS_FORM_ERRORS } from '../../helpers/constants/gas';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { PENDING_STATUS_HASH } from '../../helpers/constants/transactions';
-import { TransactionType } from '../../../shared/constants/transaction';
 
 const HIGH_FEE_WARNING_MULTIPLIER = 1.5;
 

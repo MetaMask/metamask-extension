@@ -35,9 +35,21 @@ function SecurityProviderBannerAlert({
   provider,
   severity,
   title,
+  reportUrl,
   ...props
 }) {
   const t = useContext(I18nContext);
+
+  const getDisclosureTitle = () => {
+    if (details) {
+      return t('seeDetails');
+    }
+    /**
+     * TODO: When Disclosure component is updated to support different text based on the state (open/closed),
+     * this should be revisited
+     */
+    return t('seeDetails');
+  };
 
   return (
     <BannerAlert
@@ -48,24 +60,25 @@ function SecurityProviderBannerAlert({
     >
       <Text marginTop={2}>{description}</Text>
 
-      {details && (
-        <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
-          {details}
-          <Text marginTop={3} display={Display.Flex}>
-            {t('somethingDoesntLookRight', [
-              <ButtonLink
-                key={`security-provider-button-supporturl-${provider}`}
-                size={Size.inherit}
-                href={ZENDESK_URLS.SUPPORT_URL}
-                externalLink
-                onClick={onClickSupportLink}
-              >
-                {t('contactUs')}
-              </ButtonLink>,
-            ])}
-          </Text>
-        </Disclosure>
-      )}
+      <Disclosure
+        title={getDisclosureTitle()}
+        variant={DisclosureVariant.Arrow}
+      >
+        {details}
+        <Text marginTop={3} display={Display.Flex}>
+          {t('somethingDoesntLookRight', [
+            <ButtonLink
+              key={`security-provider-button-supporturl-${provider}`}
+              size={Size.inherit}
+              href={reportUrl || ZENDESK_URLS.SUPPORT_URL}
+              externalLink
+              onClick={onClickSupportLink}
+            >
+              {t('reportIssue')}
+            </ButtonLink>,
+          ])}
+        </Text>
+      </Disclosure>
 
       {provider && (
         <Text
@@ -121,6 +134,9 @@ SecurityProviderBannerAlert.propTypes = {
 
   /** Function to be called when the support link is clicked */
   onClickSupportLink: PropTypes.func,
+
+  /** URL to open when report an issue link is clicked */
+  reportUrl: PropTypes.string,
 };
 
 export default SecurityProviderBannerAlert;

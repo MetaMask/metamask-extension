@@ -11,6 +11,7 @@ import {
   Modal,
   ModalContent,
   ModalHeader,
+  ModalBody,
   ModalOverlay,
   Button,
   BUTTON_VARIANT,
@@ -93,39 +94,41 @@ const ConfirmRemoveJWT = ({
       <ModalOverlay />
       <ModalContent>
         <ModalHeader onClose={hideModal}>{t('removeJWT')}</ModalHeader>
-        <Box
-          display={Display.Flex}
-          padding={2}
-          borderRadius={BorderRadius.SM}
-          className="confirm-action-jwt__jwt"
-        >
-          <Text ellipsis>
-            {showMore && token ? token : `...${token.slice(-9)}`}
-          </Text>
-        </Box>
-        {!showMore && (
-          <Text
-            color={TextColor.goerli}
-            marginLeft={2}
-            className="confirm-action-jwt__show-more"
+        <ModalBody>
+          <Box
+            display={Display.Flex}
+            padding={2}
+            borderRadius={BorderRadius.SM}
+            className="confirm-action-jwt__jwt"
           >
-            <a rel="noopener noreferrer" onClick={handleShowMore}>
-              {t('showMore')}
-            </a>
+            <Text ellipsis>
+              {showMore && token ? token : `...${token.slice(-9)}`}
+            </Text>
+          </Box>
+          {!showMore && (
+            <Text
+              color={TextColor.goerli}
+              marginLeft={2}
+              className="confirm-action-jwt__show-more"
+            >
+              <a rel="noopener noreferrer" onClick={handleShowMore}>
+                {t('showMore')}
+              </a>
+            </Text>
+          )}
+          <Text
+            as="h6"
+            textAlign={TextAlign.Center}
+            variant={TextVariant.bodySm}
+            marginTop={2}
+          >
+            {t('removeJWTDescription')}
           </Text>
-        )}
-        <Text
-          as="h6"
-          textAlign={TextAlign.Center}
-          variant={TextVariant.bodySm}
-          marginTop={2}
-        >
-          {t('removeJWTDescription')}
-        </Text>
-        <Box className="confirm-action-jwt__accounts-list">
-          <CustodyAccountList accounts={tokenAccounts} rawList />
-        </Box>
-        <Box display={Display.Flex}>
+          <Box className="confirm-action-jwt__accounts-list">
+            <CustodyAccountList accounts={tokenAccounts} rawList />
+          </Box>
+        </ModalBody>
+        <Box display={Display.Flex} padding={4}>
           <Button
             block
             variant={BUTTON_VARIANT.PRIMARY}

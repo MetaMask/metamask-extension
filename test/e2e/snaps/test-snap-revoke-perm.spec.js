@@ -1,33 +1,26 @@
-const { withFixtures } = require('../helpers');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  WINDOW_TITLES,
+  switchToNotificationWindow,
+  unlockWallet,
+} = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap revoke permission', function () {
   it('can revoke a permission', async function () {
-    const ganacheOptions = {
-      accounts: [
-        {
-          secretKey:
-            '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-          balance: 25000000000000000000,
-        },
-      ],
-    };
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         failOnConsoleError: false,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
+        await unlockWallet(driver);
 
-        // enter pw into extension
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
-
-        // navigate to test snaps page and connect
+        // navigate to test snaps page and connect to ethereum-provider snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
         const snapButton = await driver.findElement(
@@ -39,15 +32,7 @@ describe('Test Snap revoke permission', function () {
         await driver.delay(1000);
 
         // switch to metamask extension and click connect
-        const windowHandles = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles,
-        );
+        await switchToNotificationWindow(driver, 3);
         await driver.clickElement({
           text: 'Connect',
           tag: 'button',
@@ -68,7 +53,7 @@ describe('Test Snap revoke permission', function () {
         });
 
         // switch to test snap page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // wait for npm installation success
         await driver.waitForSelector({
@@ -85,15 +70,7 @@ describe('Test Snap revoke permission', function () {
         await driver.clickElement('#sendEthproviderAccounts');
 
         // switch to metamask window and click through confirmations
-        const windowHandles2 = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles2,
-        );
+        await switchToNotificationWindow(driver, 3);
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
@@ -105,7 +82,7 @@ describe('Test Snap revoke permission', function () {
         });
 
         // switch to test snap page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // check the results of the message signature using waitForSelector
         await driver.waitForSelector({
@@ -114,8 +91,9 @@ describe('Test Snap revoke permission', function () {
         });
 
         // switch to the original MM tab
-        const extensionPage = windowHandles[0];
-        await driver.switchToWindow(extensionPage);
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
         await driver.delay(1000);
 
         // click on the global action menu
@@ -145,7 +123,7 @@ describe('Test Snap revoke permission', function () {
         });
 
         // switch to test snap page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // find and click on send get version
         const snapButton4 = await driver.findElement(
@@ -156,15 +134,8 @@ describe('Test Snap revoke permission', function () {
         await driver.clickElement('#sendEthproviderAccounts');
 
         // switch to metamask window and click through confirmations
-        const windowHandles3 = await driver.waitUntilXWindowHandles(
-          3,
-          1000,
-          10000,
-        );
-        await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
-          windowHandles3,
-        );
+        await driver.delay(500);
+        await switchToNotificationWindow(driver, 3);
         await driver.clickElement({
           text: 'Next',
           tag: 'button',
@@ -176,7 +147,7 @@ describe('Test Snap revoke permission', function () {
         });
 
         // switch to test snap page
-        await driver.switchToWindowWithTitle('Test Snaps', windowHandles);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 
         // check the results of the message signature using waitForSelector
         await driver.waitForSelector({

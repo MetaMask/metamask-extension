@@ -50,8 +50,12 @@ const mapStateToProps = (state, ownProps) => {
   const { location } = ownProps;
   const { pathname } = location;
   const {
-    metamask: { conversionDate },
+    metamask: {
+      providerConfig: { ticker },
+      currencyRates,
+    },
   } = state;
+  const conversionDate = currencyRates[ticker]?.conversionDate;
 
   const pathNameTail = pathname.match(/[^/]+$/u)[0];
   const isAddressEntryPage = pathNameTail.includes('0x');

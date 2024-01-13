@@ -13,6 +13,7 @@ import ConfirmDetailRow from '.';
 describe('Confirm Detail Row Component', () => {
   const mockState = {
     metamask: {
+      currencyRates: {},
       providerConfig: {
         chainId: CHAIN_IDS.GOERLI,
         nickname: GOERLI_DISPLAY_NAME,
