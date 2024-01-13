@@ -16,6 +16,8 @@ To learn how to contribute to the MetaMask project itself, visit our [Internal D
 
 As an alternative to building on your local machine, there is a new option to get a development environment up and running in less than 5 minutes by using GitHub Codespaces. Please note that there is a [Limited Free Monthly Quota](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces), and after that GitHub will start charging you.
 
+_Note: You are billed for both time spent running, and for storage used_
+
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/MetaMask/metamask-extension?quickstart=1)
 
 1. Start by clicking the button above
@@ -24,9 +26,18 @@ As an alternative to building on your local machine, there is a new option to ge
    - Optional steps:
      - Click the button at the upper-right of the Simple Browser tab to open the noVNC window in its own tab
      - Open the noVNC sidebar on the left, click the gear icon, change the Scaling Mode to Remote Resizing
-4. Right-click on the noVNC desktop to launch Chrome or Firefox with MetaMask pre-installed
-5. Change some code, then run `yarn start` to build in dev mode
-6. After a minute or two, it will finish building, and you can see your changes in the noVNC desktop
+4. Wait about 20 extra seconds on the first launch, for the scripts to finish
+5. Right-click on the noVNC desktop to launch Chrome or Firefox with MetaMask pre-installed
+6. Change some code, then run `yarn start` to build in dev mode
+7. After a minute or two, it will finish building, and you can see your changes in the noVNC desktop
+
+### Tips to keep your Codespaces usage lower
+
+- You are billed for both time spent running, and for storage used
+- Codespaces pause after 30 minutes of inactivity, and auto-delete after 30 days of inactivity
+- You can manage your Codespaces here: https://github.com/codespaces
+  - You may want to manually pause them before the 30 minute timeout
+  - If you have several idle Codespaces hanging around for several days, you can quickly run out of storage quota. You should delete the ones you do not plan to use anymore, and probably keep only 1 or 2 in the long-term. It's also possible to re-use old Codespaces and switch the branch, instead of creating new ones and deleting the old ones.
 
 ## Building on your local machine
 
