@@ -624,9 +624,6 @@
   "cancel": {
     "message": "İptal"
   },
-  "cancelEdit": {
-    "message": "Düzenlemeyi İptal Et"
-  },
   "cancelPopoverTitle": {
     "message": "İşlemi iptal et"
   },
@@ -3603,22 +3600,12 @@
     "message": "$1 Gönder",
     "description": "Symbol of the specified token"
   },
-  "sendTo": {
-    "message": "Şuraya gönder:"
-  },
-  "sendTokens": {
-    "message": "Token gönder"
-  },
   "sendingDisabled": {
     "message": "ERC-1155 NFT varlıklarının gönderilmesi henüz desteklenmemektedir."
   },
   "sendingNativeAsset": {
     "message": "$1 Gönderiliyor",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Uyarı: Para kaybı ile sonuçlanabilecek bir token sözleşmesi göndermek üzeresiniz. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sepolia": {
     "message": "Sepolia test ağı"

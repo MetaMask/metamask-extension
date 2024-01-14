@@ -624,9 +624,6 @@
   "cancel": {
     "message": "Annuler"
   },
-  "cancelEdit": {
-    "message": "Annuler la modification"
-  },
   "cancelPopoverTitle": {
     "message": "Annuler la transaction"
   },
@@ -3603,22 +3600,12 @@
     "message": "Envoyer $1",
     "description": "Symbol of the specified token"
   },
-  "sendTo": {
-    "message": "Envoyer à"
-  },
-  "sendTokens": {
-    "message": "Envoyer des jetons"
-  },
   "sendingDisabled": {
     "message": "L’envoi d’actifs ERC-1155 NFT n’est pas encore pris en charge."
   },
   "sendingNativeAsset": {
     "message": "Envoi de $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Attention : vous êtes sur le point d’envoyer des jetons à l’adresse d’un contrat de jetons qui pourrait entraîner une perte de fonds. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sepolia": {
     "message": "Réseau de test Sepolia"

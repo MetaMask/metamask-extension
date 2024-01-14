@@ -624,9 +624,6 @@
   "cancel": {
     "message": "取消"
   },
-  "cancelEdit": {
-    "message": "取消编辑"
-  },
   "cancelPopoverTitle": {
     "message": "取消交易"
   },
@@ -3603,22 +3600,12 @@
     "message": "发送 $1",
     "description": "Symbol of the specified token"
   },
-  "sendTo": {
-    "message": "发送到"
-  },
-  "sendTokens": {
-    "message": "发送代币"
-  },
   "sendingDisabled": {
     "message": "尚不支持发送ERC-1155 NFT资产。"
   },
   "sendingNativeAsset": {
     "message": "正在发送 $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "警告：您将要发送到代币合约，这可能会导致资金损失。$1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sepolia": {
     "message": "Sepolia测试网络"

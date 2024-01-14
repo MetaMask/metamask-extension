@@ -684,9 +684,6 @@
   "cancel": {
     "message": "Cancel"
   },
-  "cancelEdit": {
-    "message": "Cancel edit"
-  },
   "cancelPopoverTitle": {
     "message": "Cancel transaction"
   },
@@ -4149,22 +4146,12 @@
     "message": "Send $1",
     "description": "Symbol of the specified token"
   },
-  "sendTo": {
-    "message": "Send to"
-  },
-  "sendTokens": {
-    "message": "Send tokens"
-  },
   "sendingDisabled": {
     "message": "Sending of ERC-1155 NFT assets is not yet supported."
   },
   "sendingNativeAsset": {
     "message": "Sending $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sendingZeroAmount": {
     "message": "You are sending 0 $1."
@@ -4736,9 +4723,6 @@
   },
   "submitted": {
     "message": "Submitted"
-  },
-  "suggestedBy": {
-    "message": "Suggested by"
   },
   "suggestedTokenSymbol": {
     "message": "Suggested ticker symbol:"
