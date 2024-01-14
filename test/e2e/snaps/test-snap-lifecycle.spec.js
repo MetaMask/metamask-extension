@@ -19,7 +19,7 @@ describe('Test Snap Lifecycle Hooks', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect
+        // navigate to test snaps page and connect to lifecycle-hooks snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
         const snapButton = await driver.findElement('#connectlifecycle-hooks');

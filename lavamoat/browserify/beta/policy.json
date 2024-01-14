@@ -771,15 +771,7 @@
     },
     "@metamask/announcement-controller": {
       "packages": {
-        "@metamask/announcement-controller>@metamask/base-controller": true
-      }
-    },
-    "@metamask/announcement-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
+        "@metamask/base-controller": true
       }
     },
     "@metamask/approval-controller": {
@@ -787,17 +779,9 @@
         "console.info": true
       },
       "packages": {
-        "@metamask/approval-controller>@metamask/base-controller": true,
         "@metamask/approval-controller>nanoid": true,
-        "eth-rpc-errors": true
-      }
-    },
-    "@metamask/approval-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
+        "@metamask/base-controller": true,
+        "@metamask/providers>@metamask/rpc-errors": true
       }
     },
     "@metamask/approval-controller>nanoid": {
@@ -812,6 +796,7 @@
         "URL": true,
         "clearInterval": true,
         "clearTimeout": true,
+        "console.error": true,
         "console.log": true,
         "setInterval": true,
         "setTimeout": true
@@ -822,12 +807,12 @@
         "@ethersproject/providers": true,
         "@metamask/assets-controllers>@metamask/abi-utils": true,
         "@metamask/assets-controllers>@metamask/controller-utils": true,
-        "@metamask/assets-controllers>@metamask/eth-query": true,
         "@metamask/assets-controllers>@metamask/polling-controller": true,
         "@metamask/assets-controllers>cockatiel": true,
         "@metamask/assets-controllers>multiformats": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
+        "@metamask/eth-query": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
@@ -866,12 +851,6 @@
       "packages": {
         "bn.js": true,
         "ethjs>number-to-bn": true
-      }
-    },
-    "@metamask/assets-controllers>@metamask/eth-query": {
-      "packages": {
-        "@metamask/eth-query>json-rpc-random-id": true,
-        "watchify>xtend": true
       }
     },
     "@metamask/assets-controllers>@metamask/polling-controller": {
@@ -1264,17 +1243,11 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/gas-fee-controller>@metamask/eth-query": true,
+        "@metamask/eth-query": true,
         "@metamask/polling-controller": true,
         "ethereumjs-util": true,
         "ethjs>ethjs-unit": true,
         "uuid": true
-      }
-    },
-    "@metamask/gas-fee-controller>@metamask/eth-query": {
-      "packages": {
-        "@metamask/eth-query>json-rpc-random-id": true,
-        "watchify>xtend": true
       }
     },
     "@metamask/jazzicon": {
@@ -1446,30 +1419,9 @@
         "fetch": true
       },
       "packages": {
-        "@metamask/name-controller>@metamask/base-controller": true,
-        "@metamask/name-controller>@metamask/utils": true,
+        "@metamask/base-controller": true,
+        "@metamask/utils": true,
         "eth-json-rpc-filters>async-mutex": true
-      }
-    },
-    "@metamask/name-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
-      }
-    },
-    "@metamask/name-controller>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
       }
     },
     "@metamask/network-controller": {
@@ -1482,10 +1434,10 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/eth-json-rpc-middleware": true,
+        "@metamask/eth-query": true,
         "@metamask/network-controller>@metamask/base-controller": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
-        "@metamask/network-controller>@metamask/eth-query": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
         "@metamask/network-controller>eth-block-tracker": true,
         "@metamask/providers>@metamask/json-rpc-engine": true,
@@ -1527,12 +1479,6 @@
       },
       "packages": {
         "webpack>events": true
-      }
-    },
-    "@metamask/network-controller>@metamask/eth-query": {
-      "packages": {
-        "@metamask/eth-query>json-rpc-random-id": true,
-        "watchify>xtend": true
       }
     },
     "@metamask/network-controller>eth-block-tracker": {
@@ -1907,6 +1853,7 @@
         "fetch": true
       },
       "packages": {
+        "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/snaps-sdk>is-svg": true,
         "@metamask/utils": true,
         "superstruct": true
@@ -2026,11 +1973,11 @@
         "@ethereumjs/tx": true,
         "@ethersproject/abi": true,
         "@metamask/base-controller": true,
+        "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/transaction-controller>@metamask/controller-utils": true,
-        "@metamask/transaction-controller>@metamask/eth-query": true,
         "@metamask/transaction-controller>eth-method-registry": true,
         "@metamask/transaction-controller>nonce-tracker": true,
         "@metamask/utils": true,
@@ -2057,12 +2004,6 @@
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "ethereumjs-util": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/eth-query": {
-      "packages": {
-        "@metamask/eth-query>json-rpc-random-id": true,
-        "watchify>xtend": true
       }
     },
     "@metamask/transaction-controller>eth-method-registry": {
@@ -2445,7 +2386,6 @@
         "HTMLElement": true,
         "HTMLImageElement": true,
         "HTMLVideoElement": true,
-        "URL.createObjectURL": true,
         "clearTimeout": true,
         "console.error": true,
         "console.warn": true,
@@ -2459,17 +2399,20 @@
     },
     "@zxing/library": {
       "globals": {
+        "HTMLImageElement": true,
+        "HTMLVideoElement": true,
         "TextDecoder": true,
         "TextEncoder": true,
+        "URL.createObjectURL": true,
         "btoa": true,
-        "clearTimeout": true,
-        "define": true,
-        "document.createElement": true,
-        "document.createElementNS": true,
-        "document.getElementById": true,
-        "navigator.mediaDevices.enumerateDevices": true,
-        "navigator.mediaDevices.getUserMedia": true,
+        "console.log": true,
+        "console.warn": true,
+        "document": true,
+        "navigator": true,
         "setTimeout": true
+      },
+      "packages": {
+        "@zxing/library>ts-custom-error": true
       }
     },
     "addons-linter>sha.js": {

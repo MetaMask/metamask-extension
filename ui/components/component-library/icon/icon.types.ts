@@ -154,6 +154,7 @@ export enum IconName {
   TrendDown = 'trend-down',
   TrendUp = 'trend-up',
   UserCircleAdd = 'user-circle-add',
+  UserCircleRemove = 'user-circle-remove',
   UserCircle = 'user-circle',
   User = 'user',
   WalletCard = 'wallet-card',

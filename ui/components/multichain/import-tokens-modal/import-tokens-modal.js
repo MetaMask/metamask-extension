@@ -26,6 +26,7 @@ import {
   getTokenList,
   getCurrentNetwork,
   getTestNetworkBackgroundColor,
+  contractExchangeRateSelector,
 } from '../../../selectors';
 import {
   addImportedTokens,
@@ -36,6 +37,7 @@ import {
   setNewTokensImported,
   setNewTokensImportedError,
   hideImportTokensModal,
+  setConfirmationExchangeRates,
 } from '../../../store/actions';
 import {
   BannerAlert,
@@ -67,7 +69,10 @@ import {
   DEFAULT_ROUTE,
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { isValidHexAddress } from '../../../../shared/modules/hexstring-utils';
+import {
+  isValidHexAddress,
+  toChecksumHexAddress,
+} from '../../../../shared/modules/hexstring-utils';
 import { addHexPrefix } from '../../../../app/scripts/lib/util';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../../shared/constants/tokens';
 import {
@@ -77,16 +82,19 @@ import {
 import {
   checkExistingAddresses,
   getURLHostName,
+  fetchTokenExchangeRates,
 } from '../../../helpers/utils/util';
 import { tokenInfoGetter } from '../../../helpers/utils/token-util';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { getPendingTokens } from '../../../ducks/metamask/metamask';
+import {
+  getNativeCurrency,
+  getPendingTokens,
+} from '../../../ducks/metamask/metamask';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsTokenEventSource,
 } from '../../../../shared/constants/metametrics';
-import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
 export const ImportTokensModal = ({ onClose }) => {
@@ -115,7 +123,7 @@ export const ImportTokensModal = ({ onClose }) => {
     ({ metamask }) => metamask.useTokenDetection,
   );
   const networkName = useSelector(getTokenDetectionSupportNetworkByChainId);
-  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
+  const nativeCurrency = useSelector(getNativeCurrency);
 
   // Custom token stuff
   const tokenDetectionInactiveOnNonMainnetSupportedNetwork = useSelector(
@@ -129,6 +137,7 @@ export const ImportTokensModal = ({ onClose }) => {
   const identities = useSelector(getMetaMaskIdentities);
   const tokens = useSelector((state) => state.metamask.tokens);
   const rpcPrefs = useSelector(getRpcPrefsForCurrentProvider);
+  const contractExchangeRates = useSelector(contractExchangeRateSelector);
 
   const [customAddress, setCustomAddress] = useState('');
   const [customAddressError, setCustomAddressError] = useState(null);
@@ -324,7 +333,7 @@ export const ImportTokensModal = ({ onClose }) => {
     return customAddress || Object.keys(selectedTokens).length > 0;
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (hasError()) {
       return;
     }
@@ -348,6 +357,33 @@ export const ImportTokensModal = ({ onClose }) => {
     dispatch(
       setPendingTokens({ customToken, selectedTokens, tokenAddressList }),
     );
+
+    const tempTokensToAdd = {
+      ...selectedTokens,
+      ...(customToken?.address && {
+        [customToken.address]: {
+          ...customToken,
+        },
+      }),
+    };
+
+    const tmpTokens = Object.values(tempTokensToAdd);
+    const tmpTokensToDispatch = tmpTokens.filter(
+      (elm) =>
+        contractExchangeRates?.[toChecksumHexAddress(elm.address)] ===
+        undefined,
+    );
+
+    const tokenAddresses = tmpTokensToDispatch.map((obj) => obj.address);
+    if (tmpTokensToDispatch.length !== 0) {
+      const result = await fetchTokenExchangeRates(
+        nativeCurrency,
+        tokenAddresses,
+        chainId,
+      );
+      // dispatch action
+      dispatch(setConfirmationExchangeRates(result));
+    }
     setMode('confirm');
   };
 
@@ -503,10 +539,10 @@ export const ImportTokensModal = ({ onClose }) => {
                                 key="token-detection-announcement"
                                 className="import-tokens-modal__autodetect"
                                 onClick={() => {
+                                  onClose();
                                   history.push(
                                     `${SECURITY_ROUTE}#auto-detect-tokens`,
                                   );
-                                  history.push(mostRecentOverviewPage);
                                 }}
                               >
                                 {t('enableFromSettings')}
@@ -568,10 +604,10 @@ export const ImportTokensModal = ({ onClose }) => {
                                   type="link"
                                   key="import-token-token-detection-announcement"
                                   onClick={() => {
+                                    onClose();
                                     history.push(
                                       `${SECURITY_ROUTE}#auto-detect-tokens`,
                                     );
-                                    history.push(mostRecentOverviewPage);
                                   }}
                                 >
                                   {t('inYourSettings')}

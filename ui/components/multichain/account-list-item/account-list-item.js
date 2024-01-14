@@ -62,6 +62,7 @@ export const AccountListItem = ({
   connectedAvatarName,
   isPinned = false,
   showOptions = false,
+  isHidden = false,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -107,7 +108,7 @@ export const AccountListItem = ({
         // Without this check, the account will be selected after
         // the account options menu closes
         if (!accountOptionsMenuOpen) {
-          onClick();
+          onClick?.();
         }
       }}
     >
@@ -149,11 +150,14 @@ export const AccountListItem = ({
               {process.env.NETWORK_ACCOUNT_DND && isPinned ? (
                 <Icon name={IconName.Pin} size={IconSize.Xs} />
               ) : null}
+              {process.env.NETWORK_ACCOUNT_DND && isHidden ? (
+                <Icon name={IconName.EyeSlash} size={IconSize.Xs} />
+              ) : null}
               <Text
                 as="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onClick();
+                  onClick?.();
                 }}
                 variant={TextVariant.bodyMdMedium}
                 className="multichain-account-list-item__account-name__button"
@@ -282,9 +286,10 @@ export const AccountListItem = ({
           identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
+          isRemovable={identity.keyring?.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
           isPinned={process.env.NETWORK_ACCOUNT_DND ? isPinned : null}
+          isHidden={process.env.NETWORK_ACCOUNT_DND ? isHidden : null}
         />
       ) : null}
     </Box>
@@ -311,7 +316,7 @@ AccountListItem.propTypes = {
   /**
    * Function to execute when the item is clicked
    */
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   /**
    * Function that closes the menu
    */
@@ -332,6 +337,10 @@ AccountListItem.propTypes = {
    * Represents pinned accounts
    */
   isPinned: PropTypes.bool,
+  /**
+   * Represents hidden accounts
+   */
+  isHidden: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

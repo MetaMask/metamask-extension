@@ -36,7 +36,7 @@ async function mockSegment(mockServer) {
 }
 
 describe('Test Snap Installed', function () {
-  it('can tell if a snap is installed', async function () {
+  it('can tell if a snap is installed and metrics have been sent (mocked)', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -53,7 +53,7 @@ describe('Test Snap Installed', function () {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await unlockWallet(driver);
 
-        // navigate to test snaps page and connect
+        // navigate to test snaps page and connect to dialogs snap
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
         const confirmButton = await driver.findElement('#connectdialogs');
@@ -112,6 +112,7 @@ describe('Test Snap Installed', function () {
           environment_type: 'background',
         });
 
+        // click to connect to errors snap
         const errorButton = await driver.findElement('#connecterrors');
         await driver.scrollToElement(errorButton);
         await driver.delay(500);
