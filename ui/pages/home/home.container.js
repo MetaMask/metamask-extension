@@ -28,8 +28,7 @@ import {
   getShowTermsOfUse,
   getShowOutdatedBrowserWarning,
   getNewNetworkAdded,
-  hasUnsignedQRHardwareTransaction,
-  hasUnsignedQRHardwareMessage,
+  getIsSigningQRHardwareTransaction,
   getNewNftAddedMessage,
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
@@ -39,6 +38,7 @@ import {
   getApprovalFlows,
   getShowSurveyToast,
   getNewTokensImportedError,
+  hasPendingApprovals,
 } from '../../selectors';
 
 import {
@@ -67,6 +67,9 @@ import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/app';
 import {
   AlertTypes,
@@ -119,13 +122,15 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       Web3ShimUsageAlertStates.recorded;
 
-  const isSigningQRHardwareTransaction =
-    hasUnsignedQRHardwareTransaction(state) ||
-    hasUnsignedQRHardwareMessage(state);
-
   const hasWatchTokenPendingApprovals = getSuggestedTokens(state).length > 0;
 
   const hasWatchNftPendingApprovals = getSuggestedNfts(state).length > 0;
+
+  const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+    ///: END:ONLY_INCLUDE_IF
+  ]);
 
   return {
     forgottenPassword,
@@ -160,7 +165,7 @@ const mapStateToProps = (state) => {
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
     seedPhraseBackedUp,
     newNetworkAddedName: getNewNetworkAdded(state),
-    isSigningQRHardwareTransaction,
+    isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
@@ -168,6 +173,7 @@ const mapStateToProps = (state) => {
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
     showSurveyToast: getShowSurveyToast(state),
+    hasAllowedPopupRedirectApprovals,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
     institutionalConnectRequests,
