@@ -64,7 +64,7 @@ interface AssetPickerModalProps {
   asset: Asset;
 }
 
-interface NFT {
+export interface NFT {
   address: string;
   description: string | null;
   favorite: boolean;

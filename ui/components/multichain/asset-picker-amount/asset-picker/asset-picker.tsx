@@ -20,7 +20,10 @@ import {
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { getNativeCurrencyImage, getTokenList } from '../../../../selectors';
 import { getNativeCurrency } from '../../../../ducks/metamask/metamask';
-import { AssetPickerModal } from '../asset-picker-modal/asset-picker-modal';
+import {
+  AssetPickerModal,
+  NFT,
+} from '../asset-picker-modal/asset-picker-modal';
 
 // A component that lets the user pick from a list of assets.
 export default function AssetPicker({ asset }: { asset: Asset }) {
@@ -35,7 +38,7 @@ export default function AssetPicker({ asset }: { asset: Asset }) {
       : // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore: type 'string' can't be used to index type '{}'
         tokenList?.[asset.details?.address?.toLowerCase()]?.iconUrl ||
-        asset.details?.image;
+        (asset.details as unknown as NFT).image;
 
   // TODO: Handle long symbols in the UI
   const symbol =
