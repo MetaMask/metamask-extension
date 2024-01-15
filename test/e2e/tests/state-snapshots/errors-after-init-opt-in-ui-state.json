@@ -29,6 +29,7 @@
     "currentLocale": "en",
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "useNativeCurrencyAsPrimaryCurrency": true
