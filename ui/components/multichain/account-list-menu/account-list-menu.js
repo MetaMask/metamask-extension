@@ -366,6 +366,7 @@ export const AccountListMenu = ({
                 }
                 onClose={() => hideAccountBanner()}
                 description={t('accountsPinningBannerDescription')}
+                marginBottom={4}
               />
             ) : null}
             {/* Account list block */}
