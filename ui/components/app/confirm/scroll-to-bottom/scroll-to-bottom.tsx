@@ -1,11 +1,4 @@
-import React, {
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { debounce } from 'lodash';
+import React, { Dispatch, SetStateAction, useContext, useEffect } from 'react';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
   Box,
@@ -23,6 +16,7 @@ import {
   IconColor,
   BorderRadius,
 } from '../../../../helpers/constants/design-system';
+import { useScrollRequired } from '../../../../hooks/useScrollRequired';
 
 interface ContentProps extends StyleUtilityProps {
   /**
@@ -46,54 +40,21 @@ const ScrollToBottom = ({
   ...props
 }: ContentProps) => {
   const t = useContext(I18nContext);
-  const [showScrollDown, setShowScrollDown] = useState(false);
 
-  const containerRef = React.createRef<HTMLSpanElement>();
-  const bottomRef = React.createRef<HTMLDivElement>();
-
-  const handleDebouncedScroll = debounce((target) => {
-    const isScrollable = target.scrollHeight > target.clientHeight;
-    if (!isScrollable) {
-      return;
-    }
-
-    const isAtBottom =
-      target.scrollHeight - target.scrollTop === target.clientHeight;
-
-    setShowScrollDown(!isAtBottom);
-
-    if (isAtBottom && setHasViewedContent) {
-      setHasViewedContent(true);
-    }
-  }, 100);
-
-  const handleScroll = (e: React.WheelEvent<HTMLDivElement>) => {
-    handleDebouncedScroll(e.target);
-  };
-
-  const handleButtonClick = (e: React.PointerEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    bottomRef.current?.scrollIntoView({
-      behavior: 'smooth',
-    });
-  };
+  const {
+    hasScrolledToBottom,
+    isScrollable,
+    isScrolledToBottom,
+    onScroll,
+    scrollToBottom,
+    ref,
+  } = useScrollRequired([]);
 
   useEffect(() => {
-    const currentContainerRef = containerRef.current;
-    if (!currentContainerRef) {
-      return;
-    }
-
-    const isScrollable =
-      currentContainerRef.scrollHeight > currentContainerRef.clientHeight;
-
-    if (isScrollable) {
-      setShowScrollDown(isScrollable);
-    } else if (setHasViewedContent) {
+    if (hasScrolledToBottom && setHasViewedContent) {
       setHasViewedContent(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [hasScrolledToBottom]);
 
   return (
     <Box
@@ -115,18 +76,18 @@ const ScrollToBottom = ({
         flexDirection={FlexDirection.Column}
         width={BlockSize.Full}
         height={BlockSize.Full}
-        onScroll={handleScroll}
-        ref={containerRef}
+        onScroll={onScroll}
+        ref={ref}
         style={{ overflow: 'auto' }}
         {...props}
       >
         {children}
 
-        <div ref={bottomRef} style={{ height: '1px' }}></div>
-        {showScrollDown && (
+        {/* <div ref={bottomRef} style={{ height: '1px' }}></div> */}
+        {isScrollable && !isScrolledToBottom && (
           <ButtonIcon
             className={'confirm-scroll-to-bottom__button'}
-            onClick={handleButtonClick}
+            onClick={scrollToBottom}
             iconName={IconName.Arrow2Down}
             ariaLabel={t('scrollDown')}
             backgroundColor={BackgroundColor.backgroundDefault}
