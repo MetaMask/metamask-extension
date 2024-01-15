@@ -82,9 +82,9 @@ export const NotificationDetail: FC<NotificationDetailProps> = ({
         className="notification-detail__right-container"
       >
         {/* The item in the right side of the primary row */}
-        {primaryTextRight && primaryTextRight}
+        {primaryTextRight ?? null}
         {/* The item in the right side of the secondary row */}
-        {secondaryTextRight && secondaryTextRight}
+        {secondaryTextRight ?? null}
       </Box>
     </Box>
   );
