@@ -833,6 +833,14 @@ class FixtureBuilder {
     });
   }
 
+  withPreferencesControllerPetnamesEnabled() {
+    return this.withPreferencesController({
+      preferences: {
+        petnamesEnabled: true,
+      },
+    });
+  }
+
   withAccountsController(data) {
     merge(this.fixture.data.AccountsController, data);
     return this;
