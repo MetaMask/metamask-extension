@@ -2,7 +2,9 @@
 
 @import 'info-tab/index';
 @import 'alerts-tab/alerts-tab';
+///: BEGIN:ONLY_INCLUDE_IF(developer-options)
 @import 'developer-options-tab/index';
+///: END:ONLY_INCLUDE_IF
 @import 'networks-tab/index';
 @import 'settings-tab/index';
 @import 'contact-list-tab/index';
@@ -269,9 +271,11 @@
   &__content-row {
     padding: 10px 0 20px;
 
+    ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
     @include screen-sm-max {
       flex-wrap: wrap;
     }
+    ///: END:ONLY_INCLUDE_IF
   }
 
   &__content-item {

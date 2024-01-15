@@ -16,7 +16,10 @@ import {
   CONTACT_ADD_ROUTE,
   CONTACT_EDIT_ROUTE,
   CONTACT_VIEW_ROUTE,
+
+  ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
   DEVELOPER_OPTIONS_ROUTE,
+  ///: END:ONLY_INCLUDE_IF
   EXPERIMENTAL_ROUTE,
   ADD_NETWORK_ROUTE,
   ADD_POPULAR_CUSTOM_NETWORK,
@@ -329,11 +332,13 @@ class SettingsPage extends PureComponent {
         icon: <Icon name={IconName.Flask} />,
         key: EXPERIMENTAL_ROUTE,
       },
+      ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
       {
         content: t('developerOptions'),
         icon: <Icon name={IconName.CodeCircle} />,
         key: DEVELOPER_OPTIONS_ROUTE,
       },
+      ///: END:ONLY_INCLUDE_IF
       {
         content: t('about'),
         icon: <Icon name={IconName.Info} />,
@@ -394,11 +399,17 @@ class SettingsPage extends PureComponent {
         />
         <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
         <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
+        {/*
+        ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
+        */}
         <Route
           exact
           path={DEVELOPER_OPTIONS_ROUTE}
           component={DeveloperOptionsTab}
         />
+        {/*
+        ///: END:ONLY_INCLUDE_IF
+        */}
         <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
         <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route

@@ -56,6 +56,7 @@ buildTypes:
     features:
       - snaps
       - desktop
+      - developer-options
       - build-flask
       - keyring-snaps
       - blockaid
@@ -139,6 +140,7 @@ features:
       - DISABLE_WEB_SOCKET_ENCRYPTION: false
       - SKIP_OTP_PAIRING_FLOW: false
       - WEB_SOCKET_PORT: null
+  developer-options:
   blockaid:
     env:
       - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
