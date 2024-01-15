@@ -4,6 +4,7 @@ const {
   withFixtures,
   unlockWallet,
   defaultGanacheOptions,
+  openActionMenuAndStartSendFlow,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const {
@@ -13,13 +14,24 @@ const {
   saveName,
 } = require('./petnames-helpers');
 
-async function createTransactionRequest(driver) {
+async function createTransactionRequestInDapp(driver) {
   await driver.clickElement('#sendButton');
   await driver.delay(3000);
 }
 
-describe('Petnames', function () {
-  it('can save names for addresses in transaction requests', async function () {
+async function createTransactionRequestInWallet(driver, recipientAddress) {
+  await openActionMenuAndStartSendFlow(driver);
+  await driver.fill(
+    'input[placeholder="Enter public address (0x) or ENS name"]',
+    recipientAddress,
+  );
+
+  await driver.findClickableElement({ text: 'Next', tag: 'button' });
+  await driver.clickElement({ text: 'Next', tag: 'button' });
+}
+
+describe('Petnames - Transactions', function () {
+  it('can save custom names for addresses in transaction requests', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -33,15 +45,66 @@ describe('Petnames', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
-        await createTransactionRequest(driver);
+        await createTransactionRequestInDapp(driver);
         await switchToNotificationWindow(driver, 3);
         await expectName(driver, '0x0c54F...7AaFb', false);
-        await saveName(driver, '0x0c54F...7AaFb', 'test.lens', undefined);
+
+        // Test custom name.
+        await saveName(driver, '0x0c54F...7AaFb', 'Custom Name', undefined);
         await rejectSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
-        await createTransactionRequest(driver);
+        await createTransactionRequestInDapp(driver);
         await switchToNotificationWindow(driver, 3);
-        await expectName(driver, 'test.lens', true);
+        await expectName(driver, 'Custom Name', true);
+
+        // Test proposed name.
+        await saveName(driver, 'Custom Name', undefined, 'test4.lens', true);
+        await rejectSignatureOrTransactionRequest(driver);
+        await focusTestDapp(driver);
+        await createTransactionRequestInDapp(driver);
+        await switchToNotificationWindow(driver, 3);
+        await expectName(driver, 'test4.lens', true);
+      },
+    );
+  });
+
+  it('can update custom names for addresses in transaction requests', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            featureFlags: {
+              sendHexData: true,
+            },
+          })
+          .build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        createTransactionRequestInWallet(
+          driver,
+          '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb',
+        );
+
+        // Test custom name.
+        await saveName(driver, '0x0c54F...7AaFb', 'Custom Name', undefined);
+        await rejectSignatureOrTransactionRequest(driver);
+        await createTransactionRequestInWallet(
+          driver,
+          '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb',
+        );
+        await expectName(driver, 'Custom Name', true);
+
+        // Test proposed name.
+        await saveName(driver, 'Custom Name', undefined, 'test4.lens', true);
+        await rejectSignatureOrTransactionRequest(driver);
+        await createTransactionRequestInWallet(
+          driver,
+          '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb',
+        );
+        await expectName(driver, 'test4.lens', true);
       },
     );
   });
