@@ -1,3 +1,4 @@
+///: BEGIN:ONLY_INCLUDE_IF(developer-options)
 .settings-page-developer-options {
   &__icon-check {
     transition: opacity 0.3s ease-in-out;
@@ -8,3 +9,4 @@
     }
   }
 }
+///: END:ONLY_INCLUDE_IF

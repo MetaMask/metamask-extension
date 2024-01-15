@@ -190,6 +190,7 @@ export default function reduceMetamask(state = initialState, action) {
       };
     }
 
+    ///: BEGIN:ONLY_INCLUDE_IF(developer-options)
     case actionConstants.RESET_ONBOARDING: {
       return {
         ...metamaskState,
@@ -202,6 +203,7 @@ export default function reduceMetamask(state = initialState, action) {
         welcomeScreenSeen: false,
       };
     }
+    ///: END:ONLY_INCLUDE_IF
 
     case actionConstants.SET_FIRST_TIME_FLOW_TYPE: {
       return {
