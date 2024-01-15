@@ -6,6 +6,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { getRandomKey } from '../../../helpers/utils/notification.util';
 
 export interface NotificationListItemTextItemProps {
   text: string;
@@ -33,11 +34,7 @@ export const NotificationListItemText: FC<NotificationListItemTextProps> = ({
   color = TextColor.textDefault,
 }) => {
   const renderItems = items.map(({ text, highlighted }, index) => {
-    const key = `${text
-      .replace(/\s+/gu, '_')
-      .replace(/[^\w-]/gu, '')}-${index}-${Math.random()
-      .toString(36)
-      .substring(2, 15)}`;
+    const key = getRandomKey(text, index);
     const textColor = highlighted ? TextColor.infoDefault : color;
     const separator = index !== items.length - 1 && ' ';
 

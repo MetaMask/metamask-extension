@@ -2,6 +2,7 @@ import {
   formatAmount,
   formatMenuItemDate,
   getLeadingZeroCount,
+  getRandomKey,
 } from './notification.util';
 
 describe('formatMenuItemDate', () => {
@@ -83,5 +84,34 @@ describe('getNotificationData - getLeadingZeroCount() tests', () => {
     expect(getLeadingZeroCount('100.001e1')).toBe(1);
 
     expect(getLeadingZeroCount('0.00120043')).toBe(2);
+  });
+});
+
+describe('getRandomKey', () => {
+  it('should return a string', () => {
+    const result = getRandomKey('test', 1);
+    expect(typeof result).toBe('string');
+  });
+
+  it('should include the provided text and index in the returned string', () => {
+    const text = 'test';
+    const index = 1;
+    const result = getRandomKey(text, index);
+    expect(result).toContain(text);
+    expect(result).toContain(String(index));
+  });
+
+  it('should replace spaces in the provided text with underscores', () => {
+    const text = 'test text';
+    const index = 1;
+    const result = getRandomKey(text, index);
+    expect(result).toContain('test_text');
+  });
+
+  it('should remove non-word characters from the provided text', () => {
+    const text = 'test@text';
+    const index = 1;
+    const result = getRandomKey(text, index);
+    expect(result).toContain('testtext');
   });
 });

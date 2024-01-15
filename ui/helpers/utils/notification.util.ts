@@ -104,3 +104,20 @@ export const formatAmount = (numericAmount: number, opts?: FormatOptions) => {
   // Default to showing the raw amount
   return numericAmount.toString();
 };
+
+/**
+ * Generates a unique key based on the provided text, index, and a random string.
+ *
+ * @param text - The text to be included in the key.
+ * @param index - The index to be included in the key.
+ * @returns The generated unique key.
+ */
+export const getRandomKey = (text: string, index: number) => {
+  const key = `${text
+    .replace(/\s+/gu, '_')
+    .replace(/[^\w-]/gu, '')}-${index}-${Math.random()
+    .toString(36)
+    .substring(2, 15)}`;
+
+  return key;
+};
