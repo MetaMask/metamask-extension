@@ -3807,12 +3807,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/announcement-controller@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/announcement-controller@npm:4.0.0"
+"@metamask/announcement-controller@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@metamask/announcement-controller@npm:5.0.1"
   dependencies:
-    "@metamask/base-controller": "npm:^3.0.0"
-  checksum: c694dbb858c25dd87d8481f76fa9437f790af6475430f0e7cde0a69283f1aa7857265d48d07ef50e8e8e44365e3e19659e00fa05e11a8abd7bdc84b1b0a192e9
+    "@metamask/base-controller": "npm:^4.0.1"
+  checksum: 25198a8e8a4feddb984269dad516fc20aa458cdeb183fe0c3b0dbc9973cbaf753cdaf4b97b54ce0b3c4456b0d1c65b18e750248131127792cb5f7327ed0b56de
   languageName: node
   linkType: hard
 
@@ -24631,7 +24631,7 @@ __metadata:
     "@metamask-institutional/transaction-update": "npm:^0.1.32"
     "@metamask/accounts-controller": "npm:^4.0.0"
     "@metamask/address-book-controller": "npm:^3.0.0"
-    "@metamask/announcement-controller": "npm:^4.0.0"
+    "@metamask/announcement-controller": "npm:^5.0.1"
     "@metamask/approval-controller": "npm:^5.1.0"
     "@metamask/assets-controllers": "npm:^24.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
