@@ -10,11 +10,11 @@ exports[`Name renders address with no saved name 1`] = `
         class="mm-box name__icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/warning.svg');"
       />
-      <span
-        class="name__value"
+      <p
+        class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
       >
         0xC0ffe...54977
-      </span>
+      </p>
     </div>
   </div>
 </div>
@@ -30,11 +30,11 @@ exports[`Name renders address with saved name 1`] = `
         class="mm-box name__icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
         style="mask-image: url('./images/icons/save.svg');"
       />
-      <span
-        class="name__name"
+      <p
+        class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
       >
         TestName
-      </span>
+      </p>
     </div>
   </div>
 </div>
