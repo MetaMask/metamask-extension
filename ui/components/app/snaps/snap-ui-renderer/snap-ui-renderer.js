@@ -6,9 +6,7 @@ import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  TypographyVariant,
   OverflowWrap,
-  FontWeight,
   TextVariant,
   BorderColor,
   TextColor,
@@ -37,12 +35,13 @@ export const UI_MAPPING = {
     },
   }),
   heading: (props) => ({
-    element: 'Typography',
+    element: 'Text',
     children: props.value,
     props: {
-      variant: TypographyVariant.H4,
-      fontWeight: FontWeight.Bold,
+      variant: TextVariant.headingSm,
       overflowWrap: OverflowWrap.Anywhere,
+      marginTop: 1,
+      marginBottom: 1,
     },
   }),
   text: (props) => ({
@@ -63,8 +62,8 @@ export const UI_MAPPING = {
     props: {
       className: 'snap-ui-renderer__divider',
       backgroundColor: BorderColor.borderDefault,
-      marginTop: 2,
-      marginBottom: 2,
+      marginTop: 1,
+      marginBottom: 1,
     },
   }),
   copyable: (props) => ({
@@ -72,6 +71,8 @@ export const UI_MAPPING = {
     props: {
       text: props.value,
       sensitive: props.sensitive,
+      marginTop: 1,
+      marginBottom: 1,
     },
   }),
   image: (props) => ({

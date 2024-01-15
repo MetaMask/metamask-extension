@@ -66,6 +66,7 @@ describe('Snap Account Transfers', function (this: Suite) {
         WINDOW_TITLES.ExtensionInFullScreenView,
       );
       await driver.navigate();
+      await driver.delay(1000);
       await driver.clickElement({
         text: 'Go to site',
         tag: 'button',
