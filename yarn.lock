@@ -3898,6 +3898,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/base-controller@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/base-controller@npm:4.1.0"
+  dependencies:
+    "@metamask/utils": "npm:^8.2.0"
+    immer: "npm:^9.0.6"
+  checksum: a30a404429a2fe7f0e8a291e0f996e81489ca34230d679462a6d8dccaf066b9594fc8935f2fa187cd4f7ab31509d18ce58f8985ae3dea72e4c1f3b61fea19b40
+  languageName: node
+  linkType: hard
+
 "@metamask/browser-passworder@npm:^4.3.0":
   version: 4.3.0
   resolution: "@metamask/browser-passworder@npm:4.3.0"
@@ -4458,14 +4468,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/name-controller@npm:^4.0.0":
-  version: 4.1.0
-  resolution: "@metamask/name-controller@npm:4.1.0"
+"@metamask/name-controller@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@metamask/name-controller@npm:4.2.0"
   dependencies:
-    "@metamask/base-controller": "npm:^4.0.1"
-    "@metamask/utils": "npm:^8.2.0"
+    "@metamask/base-controller": "npm:^4.1.0"
+    "@metamask/utils": "npm:^8.3.0"
     async-mutex: "npm:^0.2.6"
-  checksum: b51e360e23f518b74b1323252db21f83e154a74abd3a333d4e71fdbdfc357c0de75342fc725ea1e94da75b31599e43db0664ed7252a49293720b12980511d4ee
+  checksum: 79a8d1281a85fabc817c47a8d1eb04708d69198db732c1eb17bd61718e476aee75734a8e1ae65253b642feb6d9c96082f47fb30ff3fa9aa8b657d3d2bc217b6a
   languageName: node
   linkType: hard
 
@@ -5252,6 +5262,22 @@ __metadata:
     semver: "npm:^7.5.4"
     superstruct: "npm:^1.0.3"
   checksum: 2a4433e3c883b26bfa9ecd5fe7063d966ebad49bee832f2faeeaa7374a76fb538d6216b156e9b1efc3ca4802a269940c67c63b2b7212e98bf7e31f85a5e74ca5
+  languageName: node
+  linkType: hard
+
+"@metamask/utils@npm:^8.3.0":
+  version: 8.3.0
+  resolution: "@metamask/utils@npm:8.3.0"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.2.0"
+    "@noble/hashes": "npm:^1.3.1"
+    "@scure/base": "npm:^1.1.3"
+    "@types/debug": "npm:^4.1.7"
+    debug: "npm:^4.3.4"
+    pony-cause: "npm:^2.1.10"
+    semver: "npm:^7.5.4"
+    superstruct: "npm:^1.0.3"
+  checksum: 728a4f6b3ab14223a487e8974a21b1917e470ff2c131afc0b8a6a6823839d6cf7454243ddb0ff695ceebede62feaf628f4d32b4b529bb5c044c6c95576a142ef
   languageName: node
   linkType: hard
 
@@ -24665,7 +24691,7 @@ __metadata:
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
-    "@metamask/name-controller": "npm:^4.0.0"
+    "@metamask/name-controller": "npm:^4.2.0"
     "@metamask/network-controller": "npm:^16.0.0"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
