@@ -126,13 +126,8 @@ export default class ExperimentalTab extends PureComponent {
 
     return (
       <Box
-        ref={this.settingsRefs[4]}
-        className="settings-page__content-row"
-        data-testid="advanced-setting-show-testnet-conversion"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        gap={4}
+        ref={this.settingsRefs[0]}
+        className="settings-page__content-row settings-page__content-row-experimental"
       >
         <div className="settings-page__content-item">
           <span>{t('petnamesEnabledToggle')}</span>
@@ -143,10 +138,12 @@ export default class ExperimentalTab extends PureComponent {
 
         <div className="settings-page__content-item-col">
           <ToggleButton
+            className="request-queue-toggle"
             value={petnamesEnabled}
             onToggle={(value) => setPetnamesEnabled(!value)}
             offLabel={t('off')}
             onLabel={t('on')}
+            dataTestId="toggle-petnames"
           />
         </div>
       </Box>
