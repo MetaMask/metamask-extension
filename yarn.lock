@@ -4458,14 +4458,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/name-controller@npm:@metamask-previews/name-controller@4.1.0-preview.5937ab1d":
-  version: 4.1.0-preview.5937ab1d
-  resolution: "@metamask-previews/name-controller@npm:4.1.0-preview.5937ab1d"
+"@metamask/name-controller@npm:^4.0.0":
+  version: 4.1.0
+  resolution: "@metamask/name-controller@npm:4.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^4.0.1"
     "@metamask/utils": "npm:^8.2.0"
     async-mutex: "npm:^0.2.6"
-  checksum: 6bac89961f80066f4288a11b9603f63f49b5fbcd9c0210b4932a8f2f754af4efc84ca5208fd07e5264f487906cee262b8827b04a6c1d426a89f72b4cb5381e55
+  checksum: b51e360e23f518b74b1323252db21f83e154a74abd3a333d4e71fdbdfc357c0de75342fc725ea1e94da75b31599e43db0664ed7252a49293720b12980511d4ee
   languageName: node
   linkType: hard
 
