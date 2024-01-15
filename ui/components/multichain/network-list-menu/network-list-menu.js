@@ -133,7 +133,8 @@ export const NetworkListMenu = ({ onClose }) => {
     dispatch(updateNetworksList(orderedArray));
   };
 
-  let searchResults = [...networksList].length === items.length ? items : [...networksList];
+  let searchResults =
+    [...networksList].length === items.length ? items : [...networksList];
   const isSearching = searchQuery !== '';
 
   if (isSearching) {
