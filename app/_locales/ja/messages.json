@@ -624,9 +624,6 @@
   "cancel": {
     "message": "キャンセル"
   },
-  "cancelEdit": {
-    "message": "編集をキャンセル"
-  },
   "cancelPopoverTitle": {
     "message": "トランザクションをキャンセル"
   },
@@ -3603,22 +3600,12 @@
     "message": "$1を送金",
     "description": "Symbol of the specified token"
   },
-  "sendTo": {
-    "message": "送金先:"
-  },
-  "sendTokens": {
-    "message": "トークンを送信"
-  },
   "sendingDisabled": {
     "message": "ERC-1155 NFTアセットの送信は、まだサポートされていません。"
   },
   "sendingNativeAsset": {
     "message": "$1を送信中",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "警告: 資金の喪失に繋がる可能性のあるトークンコントラクトに送信しようとしています。$1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sepolia": {
     "message": "Sepoliaテストネットワーク"

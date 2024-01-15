@@ -624,9 +624,6 @@
   "cancel": {
     "message": "취소"
   },
-  "cancelEdit": {
-    "message": "편집 취소"
-  },
   "cancelPopoverTitle": {
     "message": "트랜잭션 취소"
   },
@@ -3603,22 +3600,12 @@
     "message": "$1 보내기",
     "description": "Symbol of the specified token"
   },
-  "sendTo": {
-    "message": "보낼 대상:"
-  },
-  "sendTokens": {
-    "message": "토큰 보내기"
-  },
   "sendingDisabled": {
     "message": "ERC-1155 NFT 자산은 아직 지원되지 않습니다."
   },
   "sendingNativeAsset": {
     "message": "$1 보내기",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "경고: 자금 손실이 발생할 수 있는 토큰 계약으로 전송하게 됩니다. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sepolia": {
     "message": "Sepolia 테스트 네트워크"

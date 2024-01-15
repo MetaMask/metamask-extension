@@ -624,9 +624,6 @@
   "cancel": {
     "message": "Hủy"
   },
-  "cancelEdit": {
-    "message": "Hủy chỉnh sửa"
-  },
   "cancelPopoverTitle": {
     "message": "Hủy giao dịch"
   },
@@ -3603,22 +3600,12 @@
     "message": "Gửi $1",
     "description": "Symbol of the specified token"
   },
-  "sendTo": {
-    "message": "Gửi đến"
-  },
-  "sendTokens": {
-    "message": "Gửi token"
-  },
   "sendingDisabled": {
     "message": "Gửi tài sản NFT ERC-1155 chưa được hỗ trợ."
   },
   "sendingNativeAsset": {
     "message": "Gửi $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Cảnh báo: bạn sắp gửi đến một hợp đồng token và điều này có thể dẫn đến nguy cơ mất tiền. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sepolia": {
     "message": "Mạng thử nghiệm Sepolia"

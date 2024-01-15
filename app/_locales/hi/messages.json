@@ -624,9 +624,6 @@
   "cancel": {
     "message": "कैंसिल करें"
   },
-  "cancelEdit": {
-    "message": "बदलाव करना कैंसिल करें"
-  },
   "cancelPopoverTitle": {
     "message": "ट्रांसेक्शन कैंसिल करें"
   },
@@ -3603,22 +3600,12 @@
     "message": "$1 भेजें",
     "description": "Symbol of the specified token"
   },
-  "sendTo": {
-    "message": "को भेजें"
-  },
-  "sendTokens": {
-    "message": "टोकन भेजें"
-  },
   "sendingDisabled": {
     "message": "ERC-1155 NFT एसेट्स भेजने को अभी सपोर्ट नहीं किया जाता।"
   },
   "sendingNativeAsset": {
     "message": "$1 भेजा जा रहा है",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "चेतावनी: आप एक टोकन कॉन्ट्रैक्ट को भेजने वाले हैं जिसके परिणामस्वरूप धन की हानि हो सकती है। $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sepolia": {
     "message": "Sepolia टेस्ट नेटवर्क"

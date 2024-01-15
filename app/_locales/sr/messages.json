@@ -621,9 +621,6 @@
   "send": {
     "message": "Пошаљи"
   },
-  "sendTokens": {
-    "message": "Pošalji tokene"
-  },
   "settings": {
     "message": "Podešavanja"
   },

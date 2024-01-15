@@ -38,6 +38,7 @@ jest.mock('../../../ducks/send/index.js', () => ({
   startNewDraftTransaction: jest
     .fn()
     .mockReturnValue(jest.fn().mockResolvedValue()),
+  updateSendAmount: jest.fn().mockReturnValue(jest.fn()),
 }));
 
 jest.mock('../../../store/actions.ts', () => ({

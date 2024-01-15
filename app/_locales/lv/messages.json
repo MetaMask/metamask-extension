@@ -626,9 +626,6 @@
   "send": {
     "message": "Sūtīt"
   },
-  "sendTokens": {
-    "message": "Nosūtīt marķierus"
-  },
   "settings": {
     "message": "Iestatījumi"
   },

@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { fireEvent } from '@testing-library/react';
 
+import thunk from 'redux-thunk';
 import { SEND_STAGES } from '../../ducks/send';
 import { renderWithProvider } from '../../../test/jest';
 import mockSendState from '../../../test/data/mock-send-state.json';
@@ -15,6 +16,9 @@ import Routes from '.';
 
 const mockShowNetworkDropdown = jest.fn();
 const mockHideNetworkDropdown = jest.fn();
+const mockShowToggleNetworkMenu = jest
+  .fn()
+  .mockImplementation(() => ({ type: 'TOGGLE_NETWORK_MENU' }));
 
 jest.mock('webextension-polyfill', () => ({
   runtime: {
@@ -34,6 +38,7 @@ jest.mock('../../store/actions', () => ({
   addPollingTokenToAppState: jest.fn(),
   showNetworkDropdown: () => mockShowNetworkDropdown,
   hideNetworkDropdown: () => mockHideNetworkDropdown,
+  toggleNetworkMenu: () => mockShowToggleNetworkMenu,
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -69,10 +74,11 @@ describe('Routes Component', () => {
   afterEach(() => {
     mockShowNetworkDropdown.mockClear();
     mockHideNetworkDropdown.mockClear();
+    mockShowToggleNetworkMenu.mockClear();
   });
   describe('render during send flow', () => {
-    it('should render with network change disabled while adding recipient for send flow', () => {
-      const store = configureMockStore()({
+    it('should render with network picker enabled while adding recipient for send flow', () => {
+      const store = configureMockStore([thunk])({
         ...mockSendState,
         send: {
           ...mockSendState.send,
@@ -82,12 +88,12 @@ describe('Routes Component', () => {
 
       const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
 
-      const networkDisplay = getByTestId('network-display');
+      const networkDisplay = getByTestId('send-page-network-picker');
       fireEvent.click(networkDisplay);
-      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
+      expect(mockShowToggleNetworkMenu).toHaveBeenCalled();
     });
-    it('should render with network change disabled while user is in send page', () => {
-      const store = configureMockStore()({
+    it('should render with network change enabled while user is in send page', () => {
+      const store = configureMockStore([thunk])({
         ...mockSendState,
         metamask: {
           ...mockSendState.metamask,
@@ -100,12 +106,12 @@ describe('Routes Component', () => {
       });
       const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
 
-      const networkDisplay = getByTestId('network-display');
+      const networkDisplay = getByTestId('send-page-network-picker');
       fireEvent.click(networkDisplay);
-      expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
+      expect(mockShowToggleNetworkMenu).toHaveBeenCalled();
     });
-    it('should render with network change disabled while editing a send transaction', () => {
-      const store = configureMockStore()({
+    it('should render with network change enabled while editing a send transaction', () => {
+      const store = configureMockStore([thunk])({
         ...mockSendState,
         send: {
           ...mockSendState.send,
@@ -122,7 +128,7 @@ describe('Routes Component', () => {
       });
       const { getByTestId } = renderWithProvider(<Routes />, store, ['/send']);
 
-      const networkDisplay = getByTestId('network-display');
+      const networkDisplay = getByTestId('send-page-network-picker');
       fireEvent.click(networkDisplay);
       expect(mockShowNetworkDropdown).not.toHaveBeenCalled();
     });
