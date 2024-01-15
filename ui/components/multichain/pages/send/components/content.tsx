@@ -79,6 +79,7 @@ export const SendPageContent = () => {
       {showWarningBanner ? (
         <SendPageRow>
           <BannerAlert
+            data-testid='send-warning'
             severity={BannerAlertSeverity.Danger}
             actionButtonLabel={t('tooltipApproveButton')}
             actionButtonOnClick={ackRecipientWarning}
