@@ -303,7 +303,7 @@
     "@metamask/post-message-stream": "^8.0.0",
     "@metamask/ppom-validator": "^0.28.0",
     "@metamask/providers": "^14.0.2",
-    "@metamask/queued-request-controller": "^0.3.0",
+    "@metamask/queued-request-controller": "^0.6.0",
     "@metamask/rate-limit-controller": "^3.0.0",
     "@metamask/safe-event-emitter": "^2.0.0",
     "@metamask/scure-bip39": "^2.0.3",

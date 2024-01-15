@@ -81,27 +81,6 @@ describe('Request Queuing Switch Network on Dapp Send Tx while on different netw
         // Queue confirm tx should show switch chain first when on different network
         await driver.clickElement('#sendButton');
 
-        await switchToNotificationWindow(driver);
-
-        // Switch Chain Confirmation
-        await driver.findElement({
-          css: '[data-testid="network-switch-from-network"]',
-          text: 'Localhost 8546',
-        });
-
-        await driver.findElement({
-          css: '[data-testid="network-switch-to-network"]',
-          text: 'Localhost 8545',
-        });
-
-        // Confirm Switch Chain
-        await driver.findClickableElement({
-          text: 'Switch network',
-          tag: 'button',
-        });
-        await driver.clickElement({ text: 'Switch network', tag: 'button' });
-
-        // Wait for confirm tx after switch network confirmation.
         await driver.delay(regularDelayMs);
 
         await driver.waitUntilXWindowHandles(3);
