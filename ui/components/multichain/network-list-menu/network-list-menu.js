@@ -107,20 +107,23 @@ export const NetworkListMenu = ({ onClose }) => {
   };
 
   const networksList = newOrderNetworks();
-
+  const [items, setItems] = useState([...networksList]);
   useEffect(() => {
     if (currentlyOnTestNetwork) {
       dispatch(setShowTestNetworks(currentlyOnTestNetwork));
     }
   }, [dispatch, currentlyOnTestNetwork]);
+
   const [searchQuery, setSearchQuery] = useState('');
-  const [items, setItems] = useState([...networksList]);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
   const showNetworkBanner = useSelector(getShowNetworkBanner);
   const showBanner =
     completedOnboarding && !onboardedInThisUISession && showNetworkBanner;
 
   const onDragEnd = (result) => {
+    if (!result.destination) {
+      return;
+    }
     const newItems = [...items];
     const [removed] = newItems.splice(result.source.index, 1);
     newItems.splice(result.destination.index, 0, removed);
@@ -130,7 +133,7 @@ export const NetworkListMenu = ({ onClose }) => {
     dispatch(updateNetworksList(orderedArray));
   };
 
-  let searchResults = items;
+  let searchResults = [...networksList].length === items.length ? items : [...networksList];
   const isSearching = searchQuery !== '';
 
   if (isSearching) {
