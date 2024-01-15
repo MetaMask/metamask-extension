@@ -833,6 +833,7 @@ class FixtureBuilder {
     });
   }
 
+  // TODO(dbrans): Remove this once we remove the petnamesEnabled toggle from the experimental preferences.
   withPreferencesControllerPetnamesEnabled() {
     return this.withPreferencesController({
       preferences: {
