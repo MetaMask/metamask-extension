@@ -18,7 +18,12 @@ import { ShowMore } from '../show-more';
 import { SECOND } from '../../../../../shared/constants/time';
 import { useTimeout } from '../../../../hooks/useTimeout';
 
-export const Copyable = ({ text, sensitive = false }) => {
+export const Copyable = ({
+  text,
+  sensitive = false,
+  marginTop,
+  marginBottom,
+}) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
   const [isVisible, setIsVisible] = useState(!sensitive);
@@ -56,6 +61,8 @@ export const Copyable = ({ text, sensitive = false }) => {
       }
       borderRadius={BorderRadius.LG}
       padding={2}
+      marginTop={marginTop}
+      marginBottom={marginBottom}
     >
       {sensitive && (
         <Box marginRight={2} className="copyable__icon">
@@ -133,4 +140,6 @@ export const Copyable = ({ text, sensitive = false }) => {
 Copyable.propTypes = {
   text: PropTypes.string,
   sensitive: PropTypes.bool,
+  marginTop: PropTypes.number,
+  marginBottom: PropTypes.number,
 };
