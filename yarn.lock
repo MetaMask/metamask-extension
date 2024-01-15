@@ -24661,7 +24661,7 @@ __metadata:
     "@metamask/approval-controller": "npm:^5.1.0"
     "@metamask/assets-controllers": "npm:^24.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
-    "@metamask/base-controller": "npm:^4.0.0"
+    "@metamask/base-controller": "npm:^4.1.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^1.0.0"
     "@metamask/contract-metadata": "npm:^2.3.1"
