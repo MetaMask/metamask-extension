@@ -382,7 +382,7 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
-   * Sets whether the product tour should be shown
+   * Sets whether the Account Banner should be shown
    *
    * @param showAccountBanner
    */
