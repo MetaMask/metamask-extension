@@ -3610,11 +3610,11 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
-  "petnamesEnabledToggleDescription": {
-    "message": "This allows you to assign a nickname to any address. This nickname will be visible to you only."
-  },
   "petnamesEnabledToggle": {
     "message": "Petnames"
+  },
+  "petnamesEnabledToggleDescription": {
+    "message": "This allows you to assign a nickname to any address. This nickname will be visible to you only."
   },
   "pinExtensionDescription": {
     "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
