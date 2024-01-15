@@ -708,8 +708,8 @@ export function getShowTestNetworks(state) {
 }
 
 export function getPetnamesEnabled(state) {
-  const { petnamesEnabled } = getPreferences(state);
-  return Boolean(petnamesEnabled ?? true);
+  const { petnamesEnabled = true } = getPreferences(state);
+  return petnamesEnabled;
 }
 
 export function getShowExtensionInFullSizeView(state) {
