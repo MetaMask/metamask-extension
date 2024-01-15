@@ -43,7 +43,10 @@ export const useScrollRequired = (dependencies = []) => {
     setIsScrolledToBottom(true);
 
     if (ref.current) {
-      ref.current.scrollTo(0, ref.current.scrollHeight);
+      ref.current.scrollTo({
+        top: ref.current.scrollHeight,
+        behavior: 'smooth',
+      });
     }
   };
 
