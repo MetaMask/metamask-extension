@@ -1,4 +1,5 @@
 import {
+  FALLBACK_VARIATION,
   NameControllerState,
   NameEntry,
   NameOrigin,
@@ -124,6 +125,62 @@ describe('useName', () => {
       sourceId: SOURCE_ID_MOCK,
       proposedNames: PROPOSED_NAMES_MOCK,
       origin: ORIGIN_MOCK,
+    });
+  });
+
+  describe('fallback variation', () => {
+    it('gets used if specified variation has no entry.', () => {
+      getNamesMock.mockReturnValue({
+        [TYPE_MOCK]: {
+          [VALUE_MOCK]: {
+            [FALLBACK_VARIATION]: {
+              name: NAME_MOCK,
+              proposedNames: PROPOSED_NAMES_MOCK,
+              sourceId: SOURCE_ID_MOCK,
+              origin: ORIGIN_MOCK,
+            },
+          },
+        },
+      });
+
+      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, CHAIN_ID_2_MOCK);
+
+      expect(nameEntry).toStrictEqual<NameEntry>({
+        name: NAME_MOCK,
+        sourceId: SOURCE_ID_MOCK,
+        proposedNames: PROPOSED_NAMES_MOCK,
+        origin: ORIGIN_MOCK,
+      });
+    });
+
+    it('gets used if specified variation has cleared name.', () => {
+      getNamesMock.mockReturnValue({
+        [TYPE_MOCK]: {
+          [VALUE_MOCK]: {
+            [CHAIN_ID_2_MOCK]: {
+              name: null,
+              proposedNames: PROPOSED_NAMES_MOCK,
+              sourceId: null,
+              origin: null,
+            },
+            [FALLBACK_VARIATION]: {
+              name: NAME_MOCK,
+              proposedNames: PROPOSED_NAMES_MOCK,
+              sourceId: SOURCE_ID_MOCK,
+              origin: ORIGIN_MOCK,
+            },
+          },
+        },
+      });
+
+      const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, CHAIN_ID_2_MOCK);
+
+      expect(nameEntry).toStrictEqual<NameEntry>({
+        name: NAME_MOCK,
+        sourceId: SOURCE_ID_MOCK,
+        proposedNames: PROPOSED_NAMES_MOCK,
+        origin: ORIGIN_MOCK,
+      });
     });
   });
 

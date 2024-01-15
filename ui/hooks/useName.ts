@@ -38,9 +38,9 @@ export function useName(
   const typeVariationKey = getVariationKey(type, chainId);
   const variationKey = variation ?? typeVariationKey;
   const variationsToNameEntries = names[type]?.[normalizedValue] || {};
-  const nameEntry =
-    variationsToNameEntries[variationKey] ??
-    variationsToNameEntries[FALLBACK_VARIATION];
+  const nameEntry = variationsToNameEntries[variationKey]?.name
+    ? variationsToNameEntries[variationKey]
+    : variationsToNameEntries[FALLBACK_VARIATION];
 
   return {
     name: nameEntry?.name ?? null,
