@@ -83,7 +83,6 @@ const ScrollToBottom = ({
       >
         {children}
 
-        {/* <div ref={bottomRef} style={{ height: '1px' }}></div> */}
         {isScrollable && !isScrolledToBottom && (
           <ButtonIcon
             className={'confirm-scroll-to-bottom__button'}
