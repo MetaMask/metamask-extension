@@ -3878,16 +3878,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/base-controller@npm:4.0.1":
-  version: 4.0.1
-  resolution: "@metamask/base-controller@npm:4.0.1"
-  dependencies:
-    "@metamask/utils": "npm:^8.2.0"
-    immer: "npm:^9.0.6"
-  checksum: 9c32a26c3fbc091b97156c101738b4ab1391f3e4c3f0ba838489c43ec12a7c73c75c8f451f61368733750e17bcb959ac36f5aaa6d4626a0544b8390a03b1f9d6
-  languageName: node
-  linkType: hard
-
 "@metamask/base-controller@npm:^3.0.0, @metamask/base-controller@npm:^3.2.0, @metamask/base-controller@npm:^3.2.1, @metamask/base-controller@npm:^3.2.2, @metamask/base-controller@npm:^3.2.3":
   version: 3.2.3
   resolution: "@metamask/base-controller@npm:3.2.3"
@@ -3895,6 +3885,16 @@ __metadata:
     "@metamask/utils": "npm:^8.1.0"
     immer: "npm:^9.0.6"
   checksum: 1a3005f4143f0a3e37094ce389ae9c2010194672d67c1b115a401379c1b712fb3d7ce8f1cbc8a4d21cffba61aafba6dc1aaae12172e57b9f14021a2505fadafe
+  languageName: node
+  linkType: hard
+
+"@metamask/base-controller@npm:^4.0.0, @metamask/base-controller@npm:^4.0.1, @metamask/base-controller@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/base-controller@npm:4.1.0"
+  dependencies:
+    "@metamask/utils": "npm:^8.2.0"
+    immer: "npm:^9.0.6"
+  checksum: a30a404429a2fe7f0e8a291e0f996e81489ca34230d679462a6d8dccaf066b9594fc8935f2fa187cd4f7ab31509d18ce58f8985ae3dea72e4c1f3b61fea19b40
   languageName: node
   linkType: hard
 

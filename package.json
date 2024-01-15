@@ -223,10 +223,7 @@
     "@trezor/connect-web": "9.0.11",
     "@metamask/polling-controller@npm:^1.0.2": "patch:@metamask/polling-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-polling-controller-npm-4.0.0-52c29c5a78.patch",
     "@metamask/polling-controller@npm:^4.0.0": "patch:@metamask/polling-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-polling-controller-npm-4.0.0-52c29c5a78.patch",
-    "@metamask/polling-controller@npm:^2.0.0": "patch:@metamask/polling-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-polling-controller-npm-4.0.0-52c29c5a78.patch",
-    "@metamask/base-controller@^4.0.1": "4.0.1",
-    "@metamask/base-controller@^4.0.0": "4.0.1",
-    "@metamask/base-controller@^4.1.0": "4.0.1"
+    "@metamask/polling-controller@npm:^2.0.0": "patch:@metamask/polling-controller@npm%3A4.0.0#~/.yarn/patches/@metamask-polling-controller-npm-4.0.0-52c29c5a78.patch"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.2",

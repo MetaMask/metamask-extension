@@ -906,6 +906,11 @@
         "@metamask/base-controller": true
       }
     },
+    "@metamask/announcement-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
+      }
+    },
     "@metamask/approval-controller": {
       "globals": {
         "console.info": true
