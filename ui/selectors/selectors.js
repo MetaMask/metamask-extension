@@ -44,7 +44,6 @@ import {
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
-import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -166,47 +165,8 @@ export function getCurrentQRHardwareState(state) {
   return qrHardware || {};
 }
 
-export function hasUnsignedQRHardwareTransaction(state) {
-  const { txParams } = state.confirmTransaction.txData;
-  if (!txParams) {
-    return false;
-  }
-  const { from } = txParams;
-  const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === KeyringType.qr);
-  if (!qrKeyring) {
-    return false;
-  }
-  return Boolean(
-    qrKeyring.accounts.find(
-      (account) => account.toLowerCase() === from.toLowerCase(),
-    ),
-  );
-}
-
-export function hasUnsignedQRHardwareMessage(state) {
-  const { type, msgParams } = state.confirmTransaction.txData;
-  if (!type || !msgParams) {
-    return false;
-  }
-  const { from } = msgParams;
-  const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === KeyringType.qr);
-  if (!qrKeyring) {
-    return false;
-  }
-  switch (type) {
-    case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
-    case MESSAGE_TYPE.ETH_SIGN:
-    case MESSAGE_TYPE.PERSONAL_SIGN:
-      return Boolean(
-        qrKeyring.accounts.find(
-          (account) => account.toLowerCase() === from.toLowerCase(),
-        ),
-      );
-    default:
-      return false;
-  }
+export function getIsSigningQRHardwareTransaction(state) {
+  return state.metamask.qrHardware?.sign?.request !== undefined;
 }
 
 export function getCurrentKeyring(state) {
@@ -705,6 +665,11 @@ export function getPreferences({ metamask }) {
 export function getShowTestNetworks(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
+}
+
+export function getShowExtensionInFullSizeView(state) {
+  const { showExtensionInFullSizeView } = getPreferences(state);
+  return Boolean(showExtensionInFullSizeView);
 }
 
 export function getTestNetworkBackgroundColor(state) {
