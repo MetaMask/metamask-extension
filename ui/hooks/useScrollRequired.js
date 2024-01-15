@@ -11,7 +11,7 @@ import { debounce } from 'lodash';
  * @returns Flags for isScrollable and isScrollToBottom, a ref to use for the scrolling content, a scrollToBottom function and a onScroll handler.
  */
 export const useScrollRequired = (dependencies = []) => {
-  const ref = useRef();
+  const ref = useRef(null);
   const [hasScrolledToBottomState, setHasScrolledToBottom] = useState(false);
   const [isScrollableState, setIsScrollable] = useState(false);
   const [isScrolledToBottomState, setIsScrolledToBottom] = useState(false);
