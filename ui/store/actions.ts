@@ -4507,6 +4507,14 @@ export function hideProductTour() {
   return submitRequestToBackground('setShowProductTour', [false]);
 }
 
+export function hideAccountBanner() {
+  return submitRequestToBackground('setShowAccountBanner', [false]);
+}
+
+export function hideNetworkBanner() {
+  return submitRequestToBackground('setShowNetworkBanner', [false]);
+}
+
 // TODO: codeword NOT_A_THUNK @brad-decker
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled: boolean,
