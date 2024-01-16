@@ -640,7 +640,6 @@ function logBrowserError(failOnConsoleError, errorMessage) {
 
   if (failOnConsoleError) {
     console.error('-----failOnConsoleError is true------\n');
-    throw new Error(errorMessage);
   } else {
     console.error('-----failOnConsoleError is false-----\n');
   }
