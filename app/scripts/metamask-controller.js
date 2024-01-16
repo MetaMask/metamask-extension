@@ -956,7 +956,7 @@ export default class MetamaskController extends EventEmitter {
       additionalKeyrings.push(
         hardwareKeyringBuilderFactory(TrezorKeyring, TrezorOffscreenBridge),
         hardwareKeyringBuilderFactory(LedgerKeyring, LedgerOffscreenBridge),
-        hardwareKeyringBuilderFactory(LatticeKeyringOffscreen),
+        keyringBuilderFactory(LatticeKeyringOffscreen),
       );
     }
 
