@@ -3,6 +3,7 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
+  largeDelayMs,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -57,15 +58,12 @@ describe('Import flow', function () {
 
         // Wait for network to change and token list to load from state
         await networkSelectionModal.waitForElementState('hidden');
-        if (process.env.MULTICHAIN) {
-          await driver.findVisibleElement(
-            '[data-testid="multichain-token-list-item-secondary-value"]',
-          );
-        } else {
-          await driver.findVisibleElement(
-            '[data-testid="eth-overview__secondary-currency"]',
-          );
-        }
+        // until we fixed the modal closing before network is switched, this is the temperary solution to wait for network is mainnet
+        await driver.delay(largeDelayMs);
+        const networkDisplayLabel = await driver.findElement(
+          '[data-testid="network-display"]',
+        );
+        assert.equal(await networkDisplayLabel.getText(), 'Ethereum Mainnet');
 
         await driver.clickElement('[data-testid="import-token-button"]');
 
