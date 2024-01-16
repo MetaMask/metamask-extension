@@ -492,8 +492,6 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    console.log(this.selectedNetworkController.state);
-
     if (!this.selectedNetworkController.getNetworkClientIdForDomain('metamask')) {
       this.selectedNetworkController.setNetworkClientIdForMetamask(this.networkController.state.selectedNetworkClientId);
     }
@@ -518,14 +516,11 @@ export default class MetamaskController extends EventEmitter {
       networkConfigurations: this.networkController.state.networkConfigurations,
     });
 
-    this.preferencesController.subscribe(() => {
-      debugger;
-      console.log(this.selectedNetworkController.setPerDappNetwork)
-    })
-
- //    this.selectedNetworkController.update((state) => {
-   //   state.perDomainNetwork = this.preferencesController.getUseRequestQueue();
-   // });
+    this.preferencesController.store.subscribe(({useRequestQueue}) => {
+      if (useRequestQueue !== this.selectedNetworkController.state.perDomainNetwork) {
+        this.selectedNetworkController.setPerDomainNetwork(useRequestQueue);
+      }
+    });
 
     this.assetsContractController = new AssetsContractController(
       {
