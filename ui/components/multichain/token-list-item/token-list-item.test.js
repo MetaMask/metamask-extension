@@ -1,24 +1,35 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import {
+  CHAIN_IDS,
+  CURRENCY_SYMBOLS,
+  NETWORK_TYPES,
+} from '../../../../shared/constants/network';
 import { TokenListItem } from '.';
 
 const state = {
   metamask: {
     providerConfig: {
-      ticker: 'ETH',
+      ticker: CURRENCY_SYMBOLS.ETH,
       nickname: '',
-      chainId: '0x1',
-      type: 'mainnet',
+      chainId: CHAIN_IDS.MAINNET,
+      type: NETWORK_TYPES.MAINNET,
     },
     useTokenDetection: false,
-    nativeCurrency: 'ETH',
+    currencyRates: {},
   },
 };
 
+let openTabSpy;
+
 describe('TokenListItem', () => {
+  beforeAll(() => {
+    global.platform = { openTab: jest.fn() };
+    openTabSpy = jest.spyOn(global.platform, 'openTab');
+  });
   const props = {
     onClick: jest.fn(),
   };
@@ -53,5 +64,29 @@ describe('TokenListItem', () => {
     fireEvent.click(queryByTestId('multichain-token-list-button'));
 
     expect(props.onClick).toHaveBeenCalled();
+  });
+
+  it('handles clicking staking opens tab', async () => {
+    const store = configureMockStore()(state);
+    const { queryByTestId } = renderWithProvider(
+      <TokenListItem isStakeable {...props} />,
+      store,
+    );
+
+    const stakeButton = queryByTestId(
+      `staking-entrypoint-${CHAIN_IDS.MAINNET}`,
+    );
+
+    expect(stakeButton).toBeInTheDocument();
+    expect(stakeButton).not.toBeDisabled();
+
+    fireEvent.click(stakeButton);
+    expect(openTabSpy).toHaveBeenCalledTimes(1);
+
+    await waitFor(() =>
+      expect(openTabSpy).toHaveBeenCalledWith({
+        url: expect.stringContaining('/stake?metamaskEntry=ext_stake_button'),
+      }),
+    );
   });
 });

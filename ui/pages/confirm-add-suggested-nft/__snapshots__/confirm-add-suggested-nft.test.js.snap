@@ -1,0 +1,481 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ConfirmAddSuggestedNFT Component should match snapshot 1`] = `
+{
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div
+      id="popover-content"
+    />
+    <div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+      >
+        <div
+          class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
+        >
+          <div
+            class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+          >
+            <div
+              class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+            >
+              <div
+                class="box box--display-flex box--flex-direction-row box--align-items-center"
+              >
+                <div
+                  class=""
+                >
+                  <div
+                    class="identicon"
+                    style="height: 32px; width: 32px; border-radius: 16px;"
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                    >
+                      <svg
+                        height="32"
+                        width="32"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#18CDF2"
+                          height="32"
+                          transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                          width="32"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#035E56"
+                          height="32"
+                          transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                          width="32"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#F26602"
+                          height="32"
+                          transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                          width="32"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="network-account-balance-header__network-account__ident-icon-ethereum"
+                >
+                  <img
+                    alt="Ethereum Mainnet"
+                    src="./images/eth_logo.png"
+                    style="height: 16px; width: 16px;"
+                  />
+                </div>
+              </div>
+              <div
+                class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
+              >
+                <h6
+                  class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                >
+                  Ethereum Mainnet
+                </h6>
+                <h6
+                  class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+                >
+                  Test Account
+                </h6>
+              </div>
+            </div>
+            <div
+              class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
+            >
+              <h6
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              >
+                Balance
+              </h6>
+              <h6
+                align="end"
+                class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+              >
+                0 ETH
+                 
+              </h6>
+            </div>
+          </div>
+          <div
+            class="mm-box mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center"
+          >
+            <div
+              class="site-origin"
+              title="https://www.opensea.io"
+            >
+              <div
+                class="chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined"
+              >
+                <div
+                  class="chip__left-icon"
+                >
+                  <div
+                    class=""
+                  >
+                    <span
+                      class="icon-with-fallback__fallback"
+                    >
+                      W
+                    </span>
+                  </div>
+                </div>
+                <span
+                  class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+                >
+                  https://www.opensea.io
+                </span>
+              </div>
+            </div>
+          </div>
+          <h2
+            class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--margin-2 mm-box--color-text-default"
+          >
+            Add suggested NFTs
+          </h2>
+          <p
+            class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
+          >
+            <span>
+               
+              This allows the following asset to be added to your wallet.
+               
+            </span>
+          </p>
+        </div>
+        <div
+          class="mm-box confirm-add-suggested-nft__content"
+        >
+          <div
+            class="mm-box confirm-add-suggested-nft__card mm-box--padding-2 mm-box--rounded-md"
+          >
+            <div
+              class="mm-box"
+            >
+              <div
+                class="mm-box confirm-add-suggested-nft__nft-single mm-box--margin-0 mm-box--padding-0 mm-box--rounded-md"
+              >
+                <div
+                  class="mm-box confirm-add-suggested-nft__nft-single-image-default nft-default mm-box--display-flex mm-box--rounded-lg"
+                  data-testid="nft-default-image"
+                  tabindex="0"
+                />
+                <div
+                  class="mm-box mm-box--padding-1 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+                >
+                  <div
+                    class="mm-box confirm-add-suggested-nft__nft-single-sub-details mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-nowrap mm-box--justify-content-space-evenly mm-box--width-full"
+                  >
+                    <p
+                      class="mm-box mm-text confirm-add-suggested-nft__nft-name mm-text--body-md mm-box--color-text-default"
+                      title="0x8b175474e89094c44da98b954eedeac495271d0a"
+                    >
+                      CryptoKitty
+                    </p>
+                    <p
+                      class="mm-box mm-text confirm-add-suggested-nft__nft-tokenId mm-text--body-md mm-box--color-text-default"
+                    >
+                      #
+                      15
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="page-container__footer"
+        >
+          <footer>
+            <button
+              class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+              data-testid="page-container-footer-cancel"
+            >
+              Cancel
+            </button>
+            <button
+              class="button btn--rounded btn-primary page-container__footer-button"
+              data-testid="page-container-footer-next"
+            >
+              Add NFT
+            </button>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </body>,
+  "container": <div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full"
+    >
+      <div
+        class="mm-box confirm-add-suggested-nft__header mm-box--padding-bottom-2"
+      >
+        <div
+          class="box network-account-balance-header box--padding-4 box--display-flex box--flex-direction-row box--justify-content-space-between box--align-items-center"
+        >
+          <div
+            class="box box--display-flex box--gap-2 box--flex-direction-row box--align-items-center"
+          >
+            <div
+              class="box box--display-flex box--flex-direction-row box--align-items-center"
+            >
+              <div
+                class=""
+              >
+                <div
+                  class="identicon"
+                  style="height: 32px; width: 32px; border-radius: 16px;"
+                >
+                  <div
+                    style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
+                  >
+                    <svg
+                      height="32"
+                      width="32"
+                      x="0"
+                      y="0"
+                    >
+                      <rect
+                        fill="#18CDF2"
+                        height="32"
+                        transform="translate(-1.04839350379394 -3.3042840694604987) rotate(328.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#035E56"
+                        height="32"
+                        transform="translate(-18.298461708832043 10.5924618717486) rotate(176.2 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                      <rect
+                        fill="#F26602"
+                        height="32"
+                        transform="translate(16.667842018223922 -14.205139722997082) rotate(468.9 16 16)"
+                        width="32"
+                        x="0"
+                        y="0"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="network-account-balance-header__network-account__ident-icon-ethereum"
+              >
+                <img
+                  alt="Ethereum Mainnet"
+                  src="./images/eth_logo.png"
+                  style="height: 16px; width: 16px;"
+                />
+              </div>
+            </div>
+            <div
+              class="box box--display-flex box--flex-direction-column box--align-items-flex-start"
+            >
+              <h6
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+              >
+                Ethereum Mainnet
+              </h6>
+              <h6
+                class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+              >
+                Test Account
+              </h6>
+            </div>
+          </div>
+          <div
+            class="box box--display-flex box--flex-direction-column box--align-items-flex-end"
+          >
+            <h6
+              class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+            >
+              Balance
+            </h6>
+            <h6
+              align="end"
+              class="mm-box mm-text mm-text--body-sm mm-text--font-weight-bold mm-box--color-text-default"
+            >
+              0 ETH
+               
+            </h6>
+          </div>
+        </div>
+        <div
+          class="mm-box mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-center"
+        >
+          <div
+            class="site-origin"
+            title="https://www.opensea.io"
+          >
+            <div
+              class="chip chip--with-left-icon chip--border-color-border-muted chip--background-color-undefined"
+            >
+              <div
+                class="chip__left-icon"
+              >
+                <div
+                  class=""
+                >
+                  <span
+                    class="icon-with-fallback__fallback"
+                  >
+                    W
+                  </span>
+                </div>
+              </div>
+              <span
+                class="box box--margin-top-1 box--margin-bottom-1 box--flex-direction-row typography chip__label typography--h6 typography--weight-normal typography--style-normal typography--color-text-alternative"
+              >
+                https://www.opensea.io
+              </span>
+            </div>
+          </div>
+        </div>
+        <h2
+          class="mm-box mm-text mm-text--heading-lg mm-text--text-align-center mm-box--margin-2 mm-box--color-text-default"
+        >
+          Add suggested NFTs
+        </h2>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-text--text-align-center mm-box--color-text-default"
+        >
+          <span>
+             
+            This allows the following asset to be added to your wallet.
+             
+          </span>
+        </p>
+      </div>
+      <div
+        class="mm-box confirm-add-suggested-nft__content"
+      >
+        <div
+          class="mm-box confirm-add-suggested-nft__card mm-box--padding-2 mm-box--rounded-md"
+        >
+          <div
+            class="mm-box"
+          >
+            <div
+              class="mm-box confirm-add-suggested-nft__nft-single mm-box--margin-0 mm-box--padding-0 mm-box--rounded-md"
+            >
+              <div
+                class="mm-box confirm-add-suggested-nft__nft-single-image-default nft-default mm-box--display-flex mm-box--rounded-lg"
+                data-testid="nft-default-image"
+                tabindex="0"
+              />
+              <div
+                class="mm-box mm-box--padding-1 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+              >
+                <div
+                  class="mm-box confirm-add-suggested-nft__nft-single-sub-details mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-nowrap mm-box--justify-content-space-evenly mm-box--width-full"
+                >
+                  <p
+                    class="mm-box mm-text confirm-add-suggested-nft__nft-name mm-text--body-md mm-box--color-text-default"
+                    title="0x8b175474e89094c44da98b954eedeac495271d0a"
+                  >
+                    CryptoKitty
+                  </p>
+                  <p
+                    class="mm-box mm-text confirm-add-suggested-nft__nft-tokenId mm-text--body-md mm-box--color-text-default"
+                  >
+                    #
+                    15
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="page-container__footer"
+      >
+        <footer>
+          <button
+            class="button btn--rounded btn-secondary page-container__footer-button page-container__footer-button__cancel"
+            data-testid="page-container-footer-cancel"
+          >
+            Cancel
+          </button>
+          <button
+            class="button btn--rounded btn-primary page-container__footer-button"
+            data-testid="page-container-footer-next"
+          >
+            Add NFT
+          </button>
+        </footer>
+      </div>
+    </div>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;

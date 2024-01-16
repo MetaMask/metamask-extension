@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Kopiraj naslov v odložišče"
   },
-  "copyPrivateKey": {
-    "message": "To je vaš zesebni ključ (kliknite za kopiranje)"
-  },
   "copyToClipboard": {
     "message": "Kopiraj v odložišče"
   },
@@ -214,9 +211,6 @@
   "deleteNetwork": {
     "message": "Izbrišem to omrežje?"
   },
-  "deleteNetworkDescription": {
-    "message": "Ali ste prepričani, da želite izbrisati to omrežje?"
-  },
   "details": {
     "message": "Podrobnosti"
   },
@@ -238,14 +232,8 @@
   "editContact": {
     "message": "Uredi stik"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Imena ENS v trenutnem omrežju ni mogoče najti. Poskusite preklopiti na glavno omrežje Ethereum."
-  },
   "ensRegistrationError": {
     "message": "Napaka pri registraciji imena ENS"
-  },
-  "enterPassword": {
-    "message": "Vnesite geslo"
   },
   "enterPasswordContinue": {
     "message": "Za nadaljevanje vnesite geslo"
@@ -258,9 +246,6 @@
   },
   "expandView": {
     "message": "Razširi pogled"
-  },
-  "exportPrivateKey": {
-    "message": "Izvozi zasebni ključ"
   },
   "failed": {
     "message": "Ni uspelo"
@@ -612,12 +597,6 @@
   "search": {
     "message": "Iskanje"
   },
-  "searchResults": {
-    "message": "Rezultati iskanja"
-  },
-  "searchTokens": {
-    "message": "Iskanje žetonov"
-  },
   "securityAndPrivacy": {
     "message": "Varnost in zasebnost"
   },
@@ -656,9 +635,6 @@
   },
   "showHexDataDescription": {
     "message": "Izberite za prikaz hex podatkov na zaslonu za pošiljanje"
-  },
-  "showPrivateKeys": {
-    "message": "Pokaži zasebni ključ"
   },
   "sigRequest": {
     "message": "Zahteva za podpis"
@@ -780,9 +756,6 @@
   "tryAgain": {
     "message": "Poskusi znova"
   },
-  "typePassword": {
-    "message": "Vnesite vaše MetaMask geslo"
-  },
   "unapproved": {
     "message": "Neodobreno"
   },
@@ -791,12 +764,6 @@
   },
   "unknown": {
     "message": "Neznano"
-  },
-  "unknownCameraError": {
-    "message": "Pri dostopanju do vaše kamere je prišlo do napake. Poskusite znova kasneje ..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Nekaj je šlo narobe ...."
   },
   "unknownNetwork": {
     "message": "Neznano zasebno omrežje"

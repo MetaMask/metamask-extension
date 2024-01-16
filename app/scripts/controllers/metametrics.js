@@ -11,6 +11,7 @@ import {
 import { ObservableStore } from '@metamask/obs-store';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
+import { NameType } from '@metamask/name-controller';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
@@ -21,8 +22,25 @@ import { SECOND } from '../../../shared/constants/time';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
 import { METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM } from '../../../shared/constants/alarms';
 import { checkAlarmExists, generateRandomId, isValidDate } from '../lib/util';
+import {
+  AnonymousTransactionMetaMetricsEvent,
+  TransactionMetaMetricsEvent,
+} from '../../../shared/constants/transaction';
 
 const EXTENSION_UNINSTALL_URL = 'https://metamask.io/uninstalled';
+
+export const overrideAnonymousEventNames = {
+  [TransactionMetaMetricsEvent.added]:
+    AnonymousTransactionMetaMetricsEvent.added,
+  [TransactionMetaMetricsEvent.approved]:
+    AnonymousTransactionMetaMetricsEvent.approved,
+  [TransactionMetaMetricsEvent.finalized]:
+    AnonymousTransactionMetaMetricsEvent.finalized,
+  [TransactionMetaMetricsEvent.rejected]:
+    AnonymousTransactionMetaMetricsEvent.rejected,
+  [TransactionMetaMetricsEvent.submitted]:
+    AnonymousTransactionMetaMetricsEvent.submitted,
+};
 
 const defaultCaptureException = (err) => {
   // throw error on clean stack so its captured by platform integrations (eg sentry)
@@ -126,6 +144,10 @@ export default class MetaMetricsController {
     this.extension = extension;
     this.environment = environment;
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+    this.selectedAddress = prefState.selectedAddress;
+    ///: END:ONLY_INCLUDE_IF
+
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
     const segmentApiCalls = initState?.segmentApiCalls || {};
 
@@ -176,20 +198,23 @@ export default class MetaMetricsController {
     // tracked if the event isn't progressed within that amount of time.
     if (isManifestV3) {
       /* eslint-disable no-undef */
-      chrome.alarms.getAll((alarms) => {
+      this.extension.alarms.getAll().then((alarms) => {
         const hasAlarm = checkAlarmExists(
           alarms,
           METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
         );
 
         if (!hasAlarm) {
-          chrome.alarms.create(METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM, {
-            delayInMinutes: 1,
-            periodInMinutes: 1,
-          });
+          this.extension.alarms.create(
+            METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM,
+            {
+              delayInMinutes: 1,
+              periodInMinutes: 1,
+            },
+          );
         }
       });
-      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+      this.extension.alarms.onAlarm.addListener((alarmInfo) => {
         if (alarmInfo.name === METAMETRICS_FINALIZE_EVENT_FRAGMENT_ALARM) {
           this.finalizeAbandonedFragments();
         }
@@ -431,7 +456,6 @@ export default class MetaMetricsController {
     } else if (participateInMetaMetrics === false) {
       // We also need to stop sentry automatic session tracking at this point
       await globalThis.sentry?.endSession();
-      metaMetricsId = null;
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
     if (participateInMetaMetrics) {
@@ -439,9 +463,9 @@ export default class MetaMetricsController {
       this.clearEventsAfterMetricsOptIn();
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     return metaMetricsId;
   }
@@ -537,15 +561,23 @@ export default class MetaMetricsController {
         );
       }
 
+      // change anonymous event names
+      const anonymousEventName =
+        overrideAnonymousEventNames[`${payload.event}`];
+      const anonymousPayload = {
+        ...payload,
+        event: anonymousEventName ?? payload.event,
+      };
+
       const combinedProperties = merge(
-        payload.sensitiveProperties,
-        payload.properties,
+        anonymousPayload.sensitiveProperties,
+        anonymousPayload.properties,
       );
 
       events.push(
         this._track(
           this._buildEventPayload({
-            ...payload,
+            ...anonymousPayload,
             properties: combinedProperties,
             isDuplicateAnonymizedEvent: true,
           }),
@@ -632,21 +664,21 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsContext}
    */
   _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const mmiProps = {};
 
     if (this.extension?.runtime?.id) {
       mmiProps.extensionId = this.extension.runtime.id;
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     return {
       app: {
         name: 'MetaMask Extension',
         version: this.version,
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         ...mmiProps,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       },
       userAgent: window.navigator.userAgent,
       page,
@@ -677,13 +709,17 @@ export default class MetaMetricsController {
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const mmiProps = {};
 
     if (this.extension?.runtime?.id) {
       mmiProps.extensionId = this.extension.runtime.id;
     }
-    ///: END:ONLY_INCLUDE_IN
+
+    if (this.selectedAddress) {
+      mmiProps.accountAddress = this.selectedAddress;
+    }
+    ///: END:ONLY_INCLUDE_IF
 
     return {
       event,
@@ -703,9 +739,9 @@ export default class MetaMetricsController {
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         ...mmiProps,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       },
       context: this._buildContext(referrer, page),
     };
@@ -719,14 +755,21 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const mmiAccountAddress =
       metamaskState.custodyAccountDetails &&
       Object.keys(metamaskState.custodyAccountDetails).length
         ? Object.keys(metamaskState.custodyAccountDetails)[0]
         : null;
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     const { traits, previousUserTraits } = this.store.getState();
+    let securityProvider;
+    if (metamaskState.securityAlertsEnabled) {
+      securityProvider = 'blockaid';
+    }
+    if (metamaskState.transactionSecurityCheckEnabled) {
+      securityProvider = 'opensea';
+    }
     /** @type {MetaMetricsTraits} */
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
@@ -761,17 +804,22 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      ///: BEGIN:ONLY_INCLUDE_IF(desktop)
       [MetaMetricsUserTrait.DesktopEnabled]:
         metamaskState.desktopEnabled || false,
-      ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
       [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
-      ///: END:ONLY_INCLUDE_IN
-      [MetaMetricsUserTrait.SecurityProviders]:
-        metamaskState.transactionSecurityCheckEnabled ? ['opensea'] : [],
+      ///: END:ONLY_INCLUDE_IF
+      [MetaMetricsUserTrait.SecurityProviders]: securityProvider
+        ? [securityProvider]
+        : [],
+      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
+      [MetaMetricsUserTrait.PetnameAddressCount]:
+        this._getPetnameAddressCount(metamaskState),
+      ///: END:ONLY_INCLUDE_IF
     };
 
     if (!previousUserTraits) {
@@ -1047,5 +1095,30 @@ export default class MetaMetricsController {
       return callback?.(result);
     };
     this.segment[eventType](modifiedPayload, modifiedCallback);
+  }
+
+  /**
+   * Returns the total number of Ethereum addresses with saved petnames,
+   * including all chain ID variations.
+   *
+   * @param {object} metamaskState
+   * @returns {number}
+   */
+  _getPetnameAddressCount(metamaskState) {
+    const addressNames = metamaskState.names?.[NameType.ETHEREUM_ADDRESS] ?? {};
+
+    return Object.keys(addressNames).reduce((totalCount, address) => {
+      const addressEntry = addressNames[address];
+
+      const addressNameCount = Object.keys(addressEntry).reduce(
+        (count, chainId) => {
+          const hasName = Boolean(addressEntry[chainId].name?.length);
+          return count + (hasName ? 1 : 0);
+        },
+        0,
+      );
+
+      return totalCount + addressNameCount;
+    }, 0);
   }
 }

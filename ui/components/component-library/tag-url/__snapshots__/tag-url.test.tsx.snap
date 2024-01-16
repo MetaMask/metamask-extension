@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TagUrl should render the label inside the TagUrl 1`] = `
+<div>
+  <div
+    class="mm-box mm-tag-url mm-box--padding-right-4 mm-box--padding-left-2 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-pill mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
+    data-testid="tag-url"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-favicon mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+    >
+      <span
+        class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-default"
+        style="mask-image: url('./images/icons/global.svg');"
+      />
+    </div>
+    <p
+      class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
+    >
+      https://app.uniswap.org
+    </p>
+  </div>
+</div>
+`;

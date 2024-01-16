@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 import { useSelector } from 'react-redux';
+import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
-  Button,
   AvatarAccount,
   AvatarAccountVariant,
-  Icon,
+  ButtonBase,
+  ButtonBaseSize,
   IconName,
   Text,
 } from '../../component-library';
@@ -14,17 +16,32 @@ import {
   BackgroundColor,
   BorderRadius,
   Display,
-  FontWeight,
   IconColor,
   Size,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
+import { getUseBlockie } from '../../../selectors';
+import { shortenAddress } from '../../../helpers/utils/util';
 
-export const AccountPicker = ({ address, name, onClick, disabled }) => {
-  const useBlockie = useSelector((state) => state.metamask.useBlockie);
+export const AccountPicker = ({
+  address,
+  name,
+  onClick,
+  disabled = false,
+  showAddress = false,
+  addressProps = {},
+  labelProps = {},
+  textProps = {},
+  className = '',
+  ...props
+}) => {
+  const useBlockie = useSelector(getUseBlockie);
+  const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
   return (
-    <Button
-      className="multichain-account-picker"
+    <ButtonBase
+      className={classnames('multichain-account-picker', className)}
       data-testid="account-menu-icon"
       onClick={onClick}
       backgroundColor={BackgroundColor.transparent}
@@ -32,10 +49,18 @@ export const AccountPicker = ({ address, name, onClick, disabled }) => {
       ellipsis
       textProps={{
         display: Display.Flex,
-        gap: 2,
         alignItems: AlignItems.center,
+        gap: 1,
+        ...textProps,
       }}
+      size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Md}
       disabled={disabled}
+      endIconName={IconName.ArrowDown}
+      endIconProps={{
+        color: IconColor.iconDefault,
+        size: Size.SM,
+      }}
+      {...props}
     >
       <AvatarAccount
         variant={
@@ -44,18 +69,31 @@ export const AccountPicker = ({ address, name, onClick, disabled }) => {
             : AvatarAccountVariant.Jazzicon
         }
         address={address}
-        size={Size.XS}
+        size={Size.SM}
         borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
       />
-      <Text as="span" fontWeight={FontWeight.Bold} ellipsis>
+      <Text
+        as="span"
+        ellipsis
+        {...labelProps}
+        className={classnames(
+          'multichain-account-picker__label',
+          labelProps.className ?? '',
+        )}
+      >
         {name}
+        {showAddress ? (
+          <Text
+            color={TextColor.textAlternative}
+            variant={TextVariant.bodySm}
+            ellipsis
+            {...addressProps}
+          >
+            {shortenedAddress}
+          </Text>
+        ) : null}
       </Text>
-      <Icon
-        name={IconName.ArrowDown}
-        color={IconColor.iconDefault}
-        size={Size.SM}
-      />
-    </Button>
+    </ButtonBase>
   );
 };
 
@@ -75,5 +113,29 @@ AccountPicker.propTypes = {
   /**
    * Represents if the AccountPicker should be actionable
    */
-  disabled: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool,
+  /**
+   * Represents if the account address should display
+   */
+  showAddress: PropTypes.bool,
+  /**
+   * Represents if the AccountPicker should take full width
+   */
+  block: PropTypes.bool,
+  /**
+   * Props to be added to the address element
+   */
+  addressProps: PropTypes.object,
+  /**
+   * Props to be added to the label element
+   */
+  labelProps: PropTypes.object,
+  /**
+   * Props to be added to the text element
+   */
+  textProps: PropTypes.object,
+  /**
+   * Additional className to be added to the AccountPicker
+   */
+  className: PropTypes.string,
 };

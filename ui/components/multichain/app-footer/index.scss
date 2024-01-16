@@ -1,0 +1,41 @@
+.app-footer {
+  $height-screen-sm-max: 100%;
+  $width-screen-sm-min: 85vw;
+  $width-screen-md-min: 80vw;
+  $width-screen-lg-min: 62vw;
+
+  bottom: 0;
+  position: sticky;
+  z-index: 55; // we are applying same z-index for header as well
+  min-height: 64px;
+  flex-flow: column nowrap;
+
+  &__contents {
+    height: 64px;
+    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+
+    @include screen-sm-max {
+      height: $height-screen-sm-max;
+    }
+
+    @include screen-sm-min {
+      width: $width-screen-sm-min;
+      margin-bottom: 10vh; // same as main container
+    }
+
+    @include screen-md-min {
+      width: $width-screen-md-min;
+    }
+
+    @include screen-lg-min {
+      width: $width-screen-lg-min;
+    }
+  }
+
+  &__actions-button {
+    &:hover,
+    &:focus {
+      background-color: var(--color-primary-default);
+    }
+  }
+}

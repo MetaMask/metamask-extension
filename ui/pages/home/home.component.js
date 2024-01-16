@@ -2,18 +2,19 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route } from 'react-router-dom';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   MetaMetricsContextProp,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import AssetList from '../../components/app/asset-list';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
 import NftsTab from '../../components/app/nfts-tab';
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import TermsOfUsePopup from '../../components/app/terms-of-use-popup';
 import RecoveryPhraseReminder from '../../components/app/recovery-phrase-reminder';
-///: END:ONLY_INCLUDE_IN
+import WhatsNewPopup from '../../components/app/whats-new-popup';
+///: END:ONLY_INCLUDE_IF
 import HomeNotification from '../../components/app/home-notification';
 import MultipleNotifications from '../../components/app/multiple-notifications';
 import TransactionList from '../../components/app/transaction-list';
@@ -23,7 +24,6 @@ import ConnectedSites from '../connected-sites';
 import ConnectedAccounts from '../connected-accounts';
 import { Tabs, Tab } from '../../components/ui/tabs';
 import { EthOverview } from '../../components/app/wallet-overview';
-import WhatsNewPopup from '../../components/app/whats-new-popup';
 
 import ActionableMessage from '../../components/ui/actionable-message/actionable-message';
 import {
@@ -31,12 +31,14 @@ import {
   Display,
   TextColor,
   TextVariant,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   Size,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
   JustifyContent,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
+  IconColor,
+  BackgroundColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -44,10 +46,12 @@ import {
   ButtonIconSize,
   IconName,
   Box,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
   ButtonLink,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   Text,
+  BannerBase,
+  Icon,
 } from '../../components/component-library';
 
 import {
@@ -63,53 +67,53 @@ import {
   BUILD_QUOTE_ROUTE,
   VIEW_QUOTE_ROUTE,
   CONFIRMATION_V_NEXT_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   ONBOARDING_SECURE_YOUR_WALLET_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   CONFIRM_ADD_CUSTODIAN_TOKEN,
   INTERACTIVE_REPLACEMENT_TOKEN_PAGE,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../helpers/constants/routes';
 import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-///: BEGIN:ONLY_INCLUDE_IN(build-main)
+///: BEGIN:ONLY_INCLUDE_IF(build-main)
 import { SUPPORT_LINK } from '../../../shared/lib/ui-utils';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(build-beta)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import FlaskHomeFooter from './flask/flask-home-footer.component';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import InstitutionalHomeFooter from './institutional/institutional-home-footer';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 function shouldCloseNotificationPopup({
   isNotification,
   totalUnapprovedCount,
   hasApprovalFlows,
   isSigningQRHardwareTransaction,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   waitForConfirmDeepLinkDialog,
   institutionalConnectRequests,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 }) {
-  let shouldCLose =
+  let shouldClose =
     isNotification &&
     totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-  shouldCLose &&=
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  shouldClose &&=
     // MMI User must be shown a deeplink
     !waitForConfirmDeepLinkDialog &&
     // MMI User is connecting to custodian
     institutionalConnectRequests.length === 0;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  return shouldCLose;
+  return shouldClose;
 }
 
 export default class Home extends PureComponent {
@@ -124,7 +128,8 @@ export default class Home extends PureComponent {
     hasTransactionPendingApprovals: PropTypes.bool.isRequired,
     hasWatchTokenPendingApprovals: PropTypes.bool,
     hasWatchNftPendingApprovals: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    setConnectedStatusPopoverHasBeenShown: PropTypes.func,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     shouldShowSeedPhraseReminder: PropTypes.bool.isRequired,
     isPopup: PropTypes.bool,
     connectedStatusPopoverHasBeenShown: PropTypes.bool,
@@ -140,16 +145,20 @@ export default class Home extends PureComponent {
         );
       }
     },
-    ///: END:ONLY_INCLUDE_IN
+    firstTimeFlowType: PropTypes.string,
+    completedOnboarding: PropTypes.bool,
+    showWhatsNewPopup: PropTypes.bool.isRequired,
+    hideWhatsNewPopup: PropTypes.func.isRequired,
+    announcementsToShow: PropTypes.bool.isRequired,
+    onboardedInThisUISession: PropTypes.bool,
+    ///: END:ONLY_INCLUDE_IF
+    newNetworkAddedConfigurationId: PropTypes.string,
     isNotification: PropTypes.bool.isRequired,
     firstPermissionsRequestId: PropTypes.string,
     // This prop is used in the `shouldCloseNotificationPopup` function
     // eslint-disable-next-line react/no-unused-prop-types
     totalUnapprovedCount: PropTypes.number.isRequired,
-    setConnectedStatusPopoverHasBeenShown: PropTypes.func,
     defaultHomeActiveTabName: PropTypes.string,
-    firstTimeFlowType: PropTypes.string,
-    completedOnboarding: PropTypes.bool,
     onTabClick: PropTypes.func.isRequired,
     haveSwapsQuotes: PropTypes.bool.isRequired,
     showAwaitingSwapScreen: PropTypes.bool.isRequired,
@@ -162,14 +171,6 @@ export default class Home extends PureComponent {
     pendingConfirmations: PropTypes.arrayOf(PropTypes.object).isRequired,
     hasApprovalFlows: PropTypes.bool.isRequired,
     infuraBlocked: PropTypes.bool.isRequired,
-    showWhatsNewPopup: PropTypes.bool.isRequired,
-    hideWhatsNewPopup: PropTypes.func.isRequired,
-    announcementsToShow: PropTypes.bool.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-    errorsToShow: PropTypes.object.isRequired,
-    shouldShowErrors: PropTypes.bool.isRequired,
-    removeSnapError: PropTypes.func.isRequired,
-    ///: END:ONLY_INCLUDE_IN
     setRecoveryPhraseReminderHasBeenShown: PropTypes.func.isRequired,
     setRecoveryPhraseReminderLastShown: PropTypes.func.isRequired,
     setTermsOfUseLastAgreed: PropTypes.func.isRequired,
@@ -185,19 +186,21 @@ export default class Home extends PureComponent {
     setRemoveNftMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
+    newTokensImportedError: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
-    newNetworkAddedConfigurationId: PropTypes.string,
+    setNewTokensImportedError: PropTypes.func.isRequired,
     clearNewNetworkAdded: PropTypes.func,
     setActiveNetwork: PropTypes.func,
-    onboardedInThisUISession: PropTypes.bool,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
+    showSurveyToast: PropTypes.bool.isRequired,
+    hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
     mmiPortfolioEnabled: PropTypes.bool,
-    mmiPortfolioUrl: PropTypes.string,
     modalOpen: PropTypes.bool,
     setWaitForConfirmDeepLinkDialog: PropTypes.func,
     waitForConfirmDeepLinkDialog: PropTypes.bool,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
@@ -239,7 +242,7 @@ export default class Home extends PureComponent {
     }
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   checkInstitutionalConnectRequest() {
     const { history, institutionalConnectRequests } = this.props;
     if (
@@ -280,7 +283,7 @@ export default class Home extends PureComponent {
       global.platform.closeCurrentWindow();
     }
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   checkStatusAndNavigate() {
     const {
@@ -299,9 +302,9 @@ export default class Home extends PureComponent {
     } = this.props;
     const stayOnHomePage = Boolean(location?.state?.stayOnHomePage);
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.shouldCloseCurrentWindow();
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     const canRedirect = !isNotification && !stayOnHomePage;
     if (canRedirect && showAwaitingSwapScreen) {
@@ -321,22 +324,22 @@ export default class Home extends PureComponent {
     } else if (pendingConfirmations.length > 0 || hasApprovalFlows) {
       history.push(CONFIRMATION_V_NEXT_ROUTE);
     }
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.checkInstitutionalConnectRequest();
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   }
 
   componentDidMount() {
     this.checkStatusAndNavigate();
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const { setWaitForConfirmDeepLinkDialog } = this.props;
 
     window.addEventListener('beforeunload', () => {
       // If user closes notification window manually, change waitForConfirmDeepLinkDialog to false
       setWaitForConfirmDeepLinkDialog(false);
     });
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   }
 
   static getDerivedStateFromProps(props) {
@@ -347,12 +350,17 @@ export default class Home extends PureComponent {
   }
 
   componentDidUpdate(_prevProps, prevState) {
-    const { closeNotificationPopup, isNotification } = this.props;
+    const {
+      closeNotificationPopup,
+      isNotification,
+      hasAllowedPopupRedirectApprovals,
+    } = this.props;
+
     const { notificationClosing } = this.state;
 
     if (notificationClosing && !prevState.notificationClosing) {
       closeNotificationPopup();
-    } else if (isNotification) {
+    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
       this.checkStatusAndNavigate();
     }
   }
@@ -378,6 +386,23 @@ export default class Home extends PureComponent {
     });
   };
 
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+  onSupportLinkClick = () => {
+    this.context.trackEvent(
+      {
+        category: MetaMetricsEventCategory.Home,
+        event: MetaMetricsEventName.SupportLinkClicked,
+        properties: {
+          url: SUPPORT_LINK,
+        },
+      },
+      {
+        contextPropsIntoEventProperties: [MetaMetricsContextProp.PageTitle],
+      },
+    );
+  };
+  ///: END:ONLY_INCLUDE_IF
+
   onOutdatedBrowserWarningClose = () => {
     const { setOutdatedBrowserWarningLastShown } = this.props;
     setOutdatedBrowserWarningLastShown(new Date().getTime());
@@ -387,20 +412,15 @@ export default class Home extends PureComponent {
     const { t } = this.context;
 
     const {
-      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       history,
       shouldShowSeedPhraseReminder,
       isPopup,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       shouldShowWeb3ShimUsageNotification,
       setWeb3ShimUsageAlertDismissed,
       originOfCurrentTab,
       disableWeb3ShimUsageAlert,
-      ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-      removeSnapError,
-      errorsToShow,
-      shouldShowErrors,
-      ///: END:ONLY_INCLUDE_IN
       infuraBlocked,
       showOutdatedBrowserWarning,
       newNftAddedMessage,
@@ -409,7 +429,9 @@ export default class Home extends PureComponent {
       removeNftMessage,
       setRemoveNftMessage,
       newTokensImported,
+      newTokensImportedError,
       setNewTokensImported,
+      setNewTokensImportedError,
       newNetworkAddedConfigurationId,
       clearNewNetworkAdded,
       setActiveNetwork,
@@ -418,49 +440,14 @@ export default class Home extends PureComponent {
     const onAutoHide = () => {
       setNewNftAddedMessage('');
       setRemoveNftMessage('');
+      setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
+      setNewTokensImportedError('');
     };
 
     const autoHideDelay = 5 * SECOND;
 
     return (
       <MultipleNotifications>
-        {
-          ///: BEGIN:ONLY_INCLUDE_IN(snaps)
-          shouldShowErrors
-            ? Object.entries(errorsToShow).map(([errorId, error]) => {
-                return (
-                  <HomeNotification
-                    classNames={['home__error-message']}
-                    infoText={error.data.snapId}
-                    descriptionText={
-                      <>
-                        <Text
-                          variant={TextVariant.bodyMd}
-                          as="h5"
-                          color={TextColor.textAlternative}
-                        >
-                          {t('somethingWentWrong')}
-                        </Text>
-                        <Text
-                          color={TextColor.textAlternative}
-                          variant={TextVariant.bodySm}
-                          as="h6"
-                        >
-                          {t('snapError', [error.message, error.code])}
-                        </Text>
-                      </>
-                    }
-                    onIgnore={async () => {
-                      await removeSnapError(errorId);
-                    }}
-                    ignoreText="Dismiss"
-                    key="home-error-message"
-                  />
-                );
-              })
-            : null
-          ///: END:ONLY_INCLUDE_IN
-        }
         {newNftAddedMessage === 'success' ? (
           <ActionableMessage
             type="success"
@@ -529,6 +516,8 @@ export default class Home extends PureComponent {
         {newTokensImported ? (
           <ActionableMessage
             type="success"
+            autoHideTime={autoHideDelay}
+            onAutoHide={onAutoHide}
             className="home__new-tokens-imported-notification"
             message={
               <Box display={Display.InlineFlex}>
@@ -561,6 +550,28 @@ export default class Home extends PureComponent {
             }
           />
         ) : null}
+        {newTokensImportedError ? (
+          <ActionableMessage
+            type="danger"
+            className="home__new-tokens-imported-notification"
+            autoHideTime={autoHideDelay}
+            onAutoHide={onAutoHide}
+            message={
+              <Box display={Display.InlineFlex}>
+                <Icon name={IconName.Danger} />
+                <Text variant={TextVariant.bodySm} as="h6">
+                  {t('importTokensError')}
+                </Text>
+                <ButtonIcon
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('close')}
+                  onClick={onAutoHide}
+                />
+              </Box>
+            }
+          />
+        ) : null}
         {shouldShowWeb3ShimUsageNotification ? (
           <HomeNotification
             descriptionText={t('web3ShimUsageNotification', [
@@ -587,7 +598,7 @@ export default class Home extends PureComponent {
           />
         ) : null}
         {
-          ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           shouldShowSeedPhraseReminder ? (
             <HomeNotification
               descriptionText={t('backupApprovalNotice')}
@@ -604,7 +615,7 @@ export default class Home extends PureComponent {
               key="home-backupApprovalNotice"
             />
           ) : null
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         }
         {infuraBlocked && this.state.canShowBlockageNotification ? (
           <HomeNotification
@@ -739,24 +750,25 @@ export default class Home extends PureComponent {
       onTabClick,
       forgottenPassword,
       history,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+      setSurveyLinkLastClickedOrClosed,
+      showSurveyToast,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       connectedStatusPopoverHasBeenShown,
       isPopup,
       seedPhraseBackedUp,
       showRecoveryPhraseReminder,
       showTermsOfUsePopup,
-      ///: END:ONLY_INCLUDE_IN
-      announcementsToShow,
       showWhatsNewPopup,
       hideWhatsNewPopup,
-      firstTimeFlowType,
       completedOnboarding,
       onboardedInThisUISession,
+      announcementsToShow,
+      firstTimeFlowType,
       newNetworkAddedConfigurationId,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       mmiPortfolioEnabled,
-      mmiPortfolioUrl,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
 
     if (forgottenPassword) {
@@ -764,7 +776,9 @@ export default class Home extends PureComponent {
     } else if (this.state.notificationClosing || this.state.redirecting) {
       return null;
     }
+    const tabPadding = process.env.MULTICHAIN ? 4 : 0; // TODO: Remove tabPadding and add paddingTop={4} to parent container Box of Tabs
 
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     const showWhatsNew =
       completedOnboarding &&
       (!onboardedInThisUISession || firstTimeFlowType === 'import') &&
@@ -773,12 +787,11 @@ export default class Home extends PureComponent {
       !process.env.IN_TEST &&
       !newNetworkAddedConfigurationId;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
     const showTermsOfUse =
       completedOnboarding && !onboardedInThisUISession && showTermsOfUsePopup;
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     // The style in activity screen for support is different
     const activitySupportDisplayStyle =
       defaultHomeActiveTabName === 'activity'
@@ -794,7 +807,7 @@ export default class Home extends PureComponent {
             marginTop: 0,
             marginBottom: 4,
           };
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     return (
       <div className="main-container">
         <Route path={CONNECTED_ROUTE} component={ConnectedSites} exact />
@@ -804,17 +817,10 @@ export default class Home extends PureComponent {
           exact
         />
         <div className="home__container">
-          {showWhatsNew ? (
-            <WhatsNewPopup
-              onClose={hideWhatsNewPopup}
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-              mmiPortfolioUrl={mmiPortfolioUrl}
-              ///: END:ONLY_INCLUDE_IN
-            />
-          ) : null}
           {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           }
+          {showWhatsNew ? <WhatsNewPopup onClose={hideWhatsNewPopup} /> : null}
           {!showWhatsNew && showRecoveryPhraseReminder ? (
             <RecoveryPhraseReminder
               hasBackedUp={seedPhraseBackedUp}
@@ -828,26 +834,27 @@ export default class Home extends PureComponent {
             ? this.renderPopover()
             : null}
           {
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
           }
           <div className="home__main-view">
-            <div className="home__balance-wrapper">
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                <EthOverview showAddress />
-                ///: END:ONLY_INCLUDE_IN
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-                <EthOverview
-                  showAddress
-                  mmiPortfolioEnabled={mmiPortfolioEnabled}
-                  mmiPortfolioUrl={mmiPortfolioUrl}
-                />
-                ///: END:ONLY_INCLUDE_IN
-              }
-            </div>
-            <Box style={{ flexGrow: '1' }}>
+            {process.env.MULTICHAIN ? null : (
+              <div className="home__balance-wrapper">
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+                  <EthOverview showAddress />
+                  ///: END:ONLY_INCLUDE_IF
+                }
+                {
+                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                  <EthOverview
+                    showAddress
+                    mmiPortfolioEnabled={mmiPortfolioEnabled}
+                  />
+                  ///: END:ONLY_INCLUDE_IF
+                }
+              </div>
+            )}
+            <Box style={{ flexGrow: '1' }} paddingTop={tabPadding}>
               <Tabs
                 t={this.context.t}
                 defaultActiveTabKey={defaultHomeActiveTabName}
@@ -884,21 +891,53 @@ export default class Home extends PureComponent {
                         history.push(`${ASSET_ROUTE}/${asset}`)
                       }
                     />
+                    {
+                      ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+                      <ButtonLink
+                        size={Size.MD}
+                        startIconName={IconName.MessageQuestion}
+                        data-testid="need-help-link"
+                        href={SUPPORT_LINK}
+                        display={Display.Flex}
+                        justifyContent={JustifyContent.flexStart}
+                        paddingLeft={4}
+                        marginBottom={4}
+                        onClick={this.onSupportLinkClick}
+                        externalLink
+                      >
+                        {t('needHelpLinkText')}
+                      </ButtonLink>
+                      ///: END:ONLY_INCLUDE_IF
+                    }
                   </Box>
                 </Tab>
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
-                  <Tab
-                    activeClassName="home__tab--active"
-                    className="home__tab"
-                    data-testid="home__nfts-tab"
-                    name={this.context.t('nfts')}
-                    tabKey="nfts"
-                  >
-                    <NftsTab />
-                  </Tab>
-                  ///: END:ONLY_INCLUDE_IN
-                }
+                <Tab
+                  activeClassName="home__tab--active"
+                  className="home__tab"
+                  data-testid="home__nfts-tab"
+                  name={this.context.t('nfts')}
+                  tabKey="nfts"
+                >
+                  <NftsTab />
+                  {
+                    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+                    <ButtonLink
+                      size={Size.MD}
+                      startIconName={IconName.MessageQuestion}
+                      data-testid="need-help-link"
+                      href={SUPPORT_LINK}
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.flexStart}
+                      paddingLeft={4}
+                      marginBottom={4}
+                      onClick={this.onSupportLinkClick}
+                      externalLink
+                    >
+                      {t('needHelpLinkText')}
+                    </ButtonLink>
+                    ///: END:ONLY_INCLUDE_IF
+                  }
+                </Tab>
                 <Tab
                   activeClassName="home__tab--active"
                   className="home__tab"
@@ -907,65 +946,71 @@ export default class Home extends PureComponent {
                   tabKey="activity"
                 >
                   <TransactionList />
+                  {
+                    ///: BEGIN:ONLY_INCLUDE_IF(build-main)
+                    <ButtonLink
+                      size={Size.MD}
+                      startIconName={IconName.MessageQuestion}
+                      data-testid="need-help-link"
+                      href={SUPPORT_LINK}
+                      display={Display.Flex}
+                      justifyContent={JustifyContent.center}
+                      marginBottom={4}
+                      marginTop={4}
+                      onClick={this.onSupportLinkClick}
+                      externalLink
+                    >
+                      {t('needHelpLinkText')}
+                    </ButtonLink>
+                    ///: END:ONLY_INCLUDE_IF
+                  }
                 </Tab>
               </Tabs>
               {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-main)
-                <ButtonLink
-                  size={Size.MD}
-                  startIconName={IconName.MessageQuestion}
-                  data-testid="need-help-link"
-                  href={SUPPORT_LINK}
-                  display={Display.Flex}
-                  justifyContent={activitySupportDisplayStyle.justifyContent}
-                  paddingLeft={activitySupportDisplayStyle.paddingLeft}
-                  marginBottom={activitySupportDisplayStyle.marginBottom}
-                  marginTop={activitySupportDisplayStyle.marginTop}
-                  onClick={() => {
-                    this.context.trackEvent(
-                      {
-                        category: MetaMetricsEventCategory.Home,
-                        event: MetaMetricsEventName.SupportLinkClicked,
-                        properties: {
-                          url: SUPPORT_LINK,
-                        },
-                      },
-                      {
-                        contextPropsIntoEventProperties: [
-                          MetaMetricsContextProp.PageTitle,
-                        ],
-                      },
-                    );
-                  }}
-                  externalLink
-                >
-                  {t('needHelpLinkText')}
-                </ButtonLink>
-                ///: END:ONLY_INCLUDE_IN
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
                 <InstitutionalHomeFooter
                   activitySupportDisplayStyle={activitySupportDisplayStyle}
                 />
-                ///: END:ONLY_INCLUDE_IN
+                ///: END:ONLY_INCLUDE_IF
               }
             </Box>
-            <div className="home__support">
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-beta)
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
+              <div className="home__support">
                 <BetaHomeFooter />
-                ///: END:ONLY_INCLUDE_IN
-              }
-              {
-                ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+              </div>
+              ///: END:ONLY_INCLUDE_IF
+            }
+            {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+              <div className="home__support">
                 <FlaskHomeFooter />
-                ///: END:ONLY_INCLUDE_IN
-              }
-            </div>
+              </div>
+              ///: END:ONLY_INCLUDE_IF
+            }
           </div>
-
           {this.renderNotifications()}
+          {showSurveyToast ? (
+            <BannerBase
+              className="home__survey-banner"
+              data-theme="dark"
+              backgroundColor={BackgroundColor.backgroundAlternative}
+              startAccessory={
+                <Icon name={IconName.Heart} color={IconColor.errorDefault} />
+              }
+              title={t('surveyTitle')}
+              actionButtonLabel={t('surveyConversion')}
+              actionButtonOnClick={() => {
+                global.platform.openTab({
+                  url: 'https://www.getfeedback.com/r/Oczu1vP0',
+                });
+                setSurveyLinkLastClickedOrClosed(Date.now());
+              }}
+              onClose={() => {
+                setSurveyLinkLastClickedOrClosed(Date.now());
+              }}
+            />
+          ) : null}
         </div>
       </div>
     );

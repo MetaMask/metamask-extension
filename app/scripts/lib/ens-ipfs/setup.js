@@ -58,18 +58,21 @@ export default function setupEnsIpfsResolver({
     const ipfsGateway = getIpfsGateway();
     const useAddressBarEnsResolution = getUseAddressBarEnsResolution();
 
-    if (!useAddressBarEnsResolution || ipfsGateway === '') {
-      return;
+    const ensSiteUrl = `https://app.ens.domains/name/${name}`;
+
+    // We cannot show this if useAddressBarEnsResolution is off...
+    if (useAddressBarEnsResolution && ipfsGateway) {
+      browser.tabs.update(tabId, { url: 'loading.html' });
     }
 
-    browser.tabs.update(tabId, { url: `loading.html` });
-
-    let url = `https://app.ens.domains/name/${name}`;
+    let url = ensSiteUrl;
 
     // If we're testing ENS domain resolution support,
     // we assume the ENS domains URL
     if (process.env.IN_TEST) {
-      browser.tabs.update(tabId, { url });
+      if (useAddressBarEnsResolution || ipfsGateway) {
+        browser.tabs.update(tabId, { url });
+      }
       return;
     }
 
@@ -79,6 +82,12 @@ export default function setupEnsIpfsResolver({
         name,
       });
       if (type === 'ipfs-ns' || type === 'ipns-ns') {
+        // If the ENS is via IPFS and that setting is disabled,
+        // Do not resolve the ENS
+        if (ipfsGateway === '') {
+          url = null;
+          return;
+        }
         const resolvedUrl = `https://${hash}.${type.slice(
           0,
           4,
@@ -121,7 +130,15 @@ export default function setupEnsIpfsResolver({
     } catch (err) {
       console.warn(err);
     } finally {
-      browser.tabs.update(tabId, { url });
+      // Only forward to destination URL if a URL exists and
+      // useAddressBarEnsResolution is properly
+      if (
+        url &&
+        (useAddressBarEnsResolution ||
+          (!useAddressBarEnsResolution && url !== ensSiteUrl))
+      ) {
+        browser.tabs.update(tabId, { url });
+      }
     }
   }
 }

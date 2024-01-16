@@ -6,15 +6,26 @@ const {
   error: webdriverError,
   Key,
   until,
+  ThenableWebDriver, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
+  WebElement, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
+const { sprintf } = require('sprintf-js');
+const { retry } = require('../../../development/lib/retry');
+
+const PAGES = {
+  BACKGROUND: 'background',
+  HOME: 'home',
+  NOTIFICATION: 'notification',
+  POPUP: 'popup',
+};
 
 /**
  * Temporary workaround to patch selenium's element handle API with methods
  * that match the playwright API for Elements
  *
  * @param {object} element - Selenium Element
- * @param driver
+ * @param {!ThenableWebDriver} driver
  * @returns {object} modified Selenium Element
  */
 function wrapElementWithAPI(element, driver) {
@@ -36,18 +47,26 @@ function wrapElementWithAPI(element, driver) {
         throw new Error(`Provided state: '${state}' is not supported`);
     }
   };
+
+  element.nestedFindElement = async (rawLocator) => {
+    const locator = driver.buildLocator(rawLocator);
+    const newElement = await element.findElement(locator);
+    return wrapElementWithAPI(newElement, driver);
+  };
+
   return element;
 }
 
 until.elementIsNotPresent = function elementIsNotPresent(locator) {
   return new Condition(`Element not present`, function (driver) {
-    return driver.findElements(By.css(locator)).then(function (elements) {
+    return driver.findElements(locator).then(function (elements) {
       return elements.length === 0;
     });
   });
 };
 
 /**
+ * This is MetaMask's custom E2E test driver, wrapping the Selenium WebDriver.
  * For Selenium WebDriver API documentation, see:
  * https://www.selenium.dev/selenium/docs/api/javascript/module/selenium-webdriver/index_exports_WebDriver.html
  */
@@ -187,8 +206,9 @@ class Driver {
     }, this.timeout);
   }
 
-  async waitForElementNotPresent(element) {
-    return await this.driver.wait(until.elementIsNotPresent(element));
+  async waitForElementNotPresent(rawLocator) {
+    const locator = this.buildLocator(rawLocator);
+    return await this.driver.wait(until.elementIsNotPresent(locator));
   }
 
   async quit() {
@@ -197,6 +217,10 @@ class Driver {
 
   // Element interactions
 
+  /**
+   * @param {*} rawLocator
+   * @returns {WebElement}
+   */
   async findElement(rawLocator) {
     const locator = this.buildLocator(rawLocator);
     const element = await this.driver.wait(
@@ -249,16 +273,35 @@ class Driver {
     await element.click();
   }
 
+  /**
+   * for instances where an element such as a scroll button does not
+   * show up because of render differences, proceed to the next step
+   * without causing a test failure, but provide a console log of why.
+   *
+   * @param rawLocator
+   */
   async clickElementSafe(rawLocator) {
-    // for instances where an element such as a scroll button does not
-    // show up because of render differences, proceed to the next step
-    // without causing a test failure, but provide a console log of why.
     try {
       const element = await this.findClickableElement(rawLocator);
       await element.click();
     } catch (e) {
       console.log(`Element ${rawLocator} not found (${e})`);
     }
+  }
+
+  /**
+   * Can fix instances where a normal click produces ElementClickInterceptedError
+   *
+   * @param rawLocator
+   */
+  async clickElementUsingMouseMove(rawLocator) {
+    const element = await this.findClickableElement(rawLocator);
+    await this.scrollToElement(element);
+    await this.driver
+      .actions()
+      .move({ origin: element, x: 1, y: 1 })
+      .click()
+      .perform();
   }
 
   async clickPoint(rawLocator, x, y) {
@@ -342,8 +385,14 @@ class Driver {
 
   // Navigation
 
-  async navigate(page = Driver.PAGES.HOME) {
-    return await this.driver.get(`${this.extensionUrl}/${page}.html`);
+  async navigate(page = PAGES.HOME) {
+    const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
+    // Wait for asyncronous JavaScript to load
+    await this.driver.wait(
+      until.elementLocated(this.buildLocator('.metamask-loaded')),
+      10 * 1000,
+    );
+    return response;
   }
 
   async getCurrentUrl() {
@@ -365,6 +414,10 @@ class Driver {
     const newHandle = await this.driver.switchTo().newWindow();
     await this.openNewURL(url);
     return newHandle;
+  }
+
+  async refresh() {
+    await this.driver.navigate().refresh();
   }
 
   async switchToWindow(handle) {
@@ -398,20 +451,35 @@ class Driver {
     throw new Error('waitUntilXWindowHandles timed out polling window handles');
   }
 
+  async getWindowTitleByHandlerId(handlerId) {
+    await this.driver.switchTo().window(handlerId);
+    return await this.driver.getTitle();
+  }
+
   async switchToWindowWithTitle(
     title,
     initialWindowHandles,
     delayStep = 1000,
     timeout = this.timeout,
+    { retries = 8, retryDelay = 2500 } = {},
   ) {
     let windowHandles =
       initialWindowHandles || (await this.driver.getAllWindowHandles());
     let timeElapsed = 0;
+
     while (timeElapsed <= timeout) {
       for (const handle of windowHandles) {
-        await this.driver.switchTo().window(handle);
+        const handleTitle = await retry(
+          {
+            retries,
+            delay: retryDelay,
+          },
+          async () => {
+            await this.driver.switchTo().window(handle);
+            return await this.driver.getTitle();
+          },
+        );
 
-        const handleTitle = await this.driver.getTitle();
         if (handleTitle === title) {
           return handle;
         }
@@ -462,14 +530,31 @@ class Driver {
 
   // Error handling
 
-  async verboseReportOnFailure(title) {
+  async verboseReportOnFailure(title, error) {
+    if (process.env.CIRCLECI) {
+      console.error(
+        `Failure in ${title}, for more information see the artifacts tab in CI\n`,
+      );
+    } else {
+      console.error(
+        `Failure in ${title}, for more information see the test-artifacts folder\n`,
+      );
+    }
+    console.error(`${error}\n`);
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
-    const screenshot = await this.driver.takeScreenshot();
-    await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
-      encoding: 'base64',
-    });
+    // On occassion there may be a bug in the offscreen document which does
+    // not render visibly to the user and therefore no screenshot can be
+    // taken. In this case we skip the screenshot and log the error.
+    try {
+      const screenshot = await this.driver.takeScreenshot();
+      await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+        encoding: 'base64',
+      });
+    } catch (e) {
+      console.error('Failed to take screenshot', e);
+    }
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
     const uiState = await this.driver.executeScript(
@@ -525,13 +610,23 @@ class Driver {
           (err) => err.description !== undefined,
         );
 
-        const [eventDescription] = eventDescriptions;
-        const ignore = ignoredErrorMessages.some((message) =>
-          eventDescription?.description.includes(message),
-        );
-        if (!ignore) {
-          errors.push(eventDescription?.description);
-          logBrowserError(failOnConsoleError, eventDescription?.description);
+        // If we received an SES_UNHANDLED_REJECTION from Chrome, eventDescriptions.length will be nonzero
+        if (eventDescriptions.length !== 0) {
+          const [eventDescription] = eventDescriptions;
+          const ignore = ignoredErrorMessages.some((message) =>
+            eventDescription?.description.includes(message),
+          );
+          if (!ignore) {
+            errors.push(eventDescription?.description);
+            logBrowserError(failOnConsoleError, eventDescription?.description);
+          }
+        } else if (event.args.length !== 0) {
+          // Extract the values from the array
+          const values = event.args.map((a) => a.value);
+
+          // The values are in the "printf" form of [message, ...substitutions]
+          // so use sprintf to parse
+          logBrowserError(failOnConsoleError, sprintf(...values));
         }
       }
     });
@@ -539,10 +634,15 @@ class Driver {
 }
 
 function logBrowserError(failOnConsoleError, errorMessage) {
+  console.error('\n----Received an error from Chrome----');
+  console.error(errorMessage);
+  console.error('---------End of Chrome error---------');
+
   if (failOnConsoleError) {
+    console.error('-----failOnConsoleError is true------\n');
     throw new Error(errorMessage);
   } else {
-    console.error(new Error(errorMessage));
+    console.error('-----failOnConsoleError is false-----\n');
   }
 }
 
@@ -571,11 +671,4 @@ function collectMetrics() {
   return results;
 }
 
-Driver.PAGES = {
-  BACKGROUND: 'background',
-  HOME: 'home',
-  NOTIFICATION: 'notification',
-  POPUP: 'popup',
-};
-
-module.exports = Driver;
+module.exports = { Driver, PAGES };

@@ -2,20 +2,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import {
+  Box,
   ButtonPrimary,
   ButtonSecondary,
-  Box,
-  BUTTON_SECONDARY_SIZES,
+  ButtonSecondarySize,
 } from '../../component-library';
 import { Display } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
-
-BottomButtons.propTypes = {
-  importAccountFunc: PropTypes.func.isRequired,
-  isPrimaryDisabled: PropTypes.bool.isRequired,
-  onActionComplete: PropTypes.func.isRequired,
-};
 
 export default function BottomButtons({
   importAccountFunc,
@@ -32,7 +26,7 @@ export default function BottomButtons({
           dispatch(actions.hideWarning());
           onActionComplete();
         }}
-        size={BUTTON_SECONDARY_SIZES.LG}
+        size={ButtonSecondarySize.Lg}
         block
       >
         {t('cancel')}
@@ -49,7 +43,7 @@ export default function BottomButtons({
           }
         }}
         disabled={isPrimaryDisabled}
-        size={BUTTON_SECONDARY_SIZES.LG}
+        size={ButtonSecondarySize.Lg}
         data-testid="import-account-confirm-button"
         block
       >
@@ -58,3 +52,18 @@ export default function BottomButtons({
     </Box>
   );
 }
+
+BottomButtons.propTypes = {
+  /**
+   * Function to import the account
+   */
+  importAccountFunc: PropTypes.func.isRequired,
+  /**
+   * Represents if the action button is disabled
+   */
+  isPrimaryDisabled: PropTypes.bool.isRequired,
+  /**
+   * Executes when the primary action is complete
+   */
+  onActionComplete: PropTypes.func.isRequired,
+};

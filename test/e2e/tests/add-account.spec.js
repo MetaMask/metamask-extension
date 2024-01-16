@@ -6,41 +6,38 @@ const {
   sendTransaction,
   findAnotherAccountFromAccountList,
   waitForAccountRendered,
-  convertToHexValue,
   regularDelayMs,
   unlockWallet,
+  WALLET_PASSWORD,
+  generateGanacheOptions,
 } = require('../helpers');
 
 const FixtureBuilder = require('../fixture-builder');
 const { shortenAddress } = require('../../../ui/helpers/utils/util');
 
 describe('Add account', function () {
-  const testPassword = 'correct horse battery staple';
   const firstAccount = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
   const secondAccount = '0x3ED0eE22E0685Ebbf07b2360A8331693c413CC59';
 
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
+  const ganacheOptions = generateGanacheOptions({
+    secretKey:
+      '0x53CB0AB5226EEBF4D872113D98332C1555DC304443BEE1CF759D15798D3C55A9',
+  });
 
   it('should display correct new account name after create', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
@@ -55,12 +52,15 @@ describe('Add account', function () {
     );
   });
 
-  it('should not affect public address when using secret recovery phrase to recover account with non-zero balance', async function () {
+  it('should not affect public address when using secret recovery phrase to recover account with non-zero balance @no-mmi', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
@@ -70,29 +70,35 @@ describe('Add account', function () {
         await completeImportSRPOnboardingFlow(
           driver,
           TEST_SEED_PHRASE,
-          testPassword,
+          WALLET_PASSWORD,
         );
 
         // Check address of 1st account
         await waitForAccountRendered(driver);
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(firstAccount),
         });
 
         // Create 2nd account
         await driver.clickElement('[data-testid="account-menu-icon"]');
         await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
+        await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
         await driver.fill('[placeholder="Account 2"]', '2nd account');
         await driver.clickElement({ text: 'Create', tag: 'button' });
-        await waitForAccountRendered(driver);
 
         // Check address of 2nd account
         await waitForAccountRendered(driver);
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(secondAccount),
         });
 
@@ -137,31 +143,37 @@ describe('Add account', function () {
 
         // Land in 1st account home page
         await driver.findElement('.home__main-view');
-        await waitForAccountRendered(driver);
+
+        if (!process.env.MULTICHAIN) {
+          await waitForAccountRendered(driver);
+        }
 
         // Check address of 1st account
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(firstAccount),
         });
 
         // Check address of 2nd account
-        const accountTwoSelector = await findAnotherAccountFromAccountList(
-          driver,
-          2,
-          'Account 2',
-        );
-        await driver.clickElement(accountTwoSelector);
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement({
+          css: `.multichain-account-list-item__account-name__button`,
+          text: 'Account 2',
+        });
 
         await driver.findElement({
-          css: '.multichain-address-copy-button',
+          css: process.env.MULTICHAIN
+            ? '.multichain-account-picker-container p'
+            : '.multichain-address-copy-button',
           text: shortenAddress(secondAccount),
         });
       },
     );
   });
 
-  it('should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding', async function () {
+  it('should be possible to remove an account imported with a private key, but should not be possible to remove an account generated from the SRP imported in onboarding @no-mmi', async function () {
     const testPrivateKey =
       '14abe6f4aab7f9f626fe981c864d0adeb5685f289ac9270c27b8fd790b4235d6';
 
@@ -169,14 +181,15 @@ describe('Add account', function () {
       {
         fixtures: new FixtureBuilder().build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
-
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement(
           '[data-testid="multichain-account-menu-popover-add-account"]',
         );
@@ -191,7 +204,6 @@ describe('Add account', function () {
         });
 
         await driver.clickElement('[data-testid="account-menu-icon"]');
-
         const menuItems = await driver.findElements(
           '.multichain-account-list-item',
         );
@@ -207,6 +219,9 @@ describe('Add account', function () {
 
         // Create 3rd account with private key
         await driver.clickElement('.mm-text-field');
+        await driver.clickElement(
+          '[data-testid="multichain-account-menu-popover-action-button"]',
+        );
         await driver.clickElement({ text: 'Import account', tag: 'button' });
         await driver.fill('#private-key-box', testPrivateKey);
 

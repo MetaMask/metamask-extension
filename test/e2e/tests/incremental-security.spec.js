@@ -2,6 +2,8 @@ const { strict: assert } = require('assert');
 const { convertToHexValue, withFixtures, openDapp } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
+const WALLET_PASSWORD = 'correct horse battery staple';
+
 describe('Incremental Security', function () {
   const ganacheOptions = {
     accounts: [
@@ -17,13 +19,13 @@ describe('Incremental Security', function () {
       },
     ],
   };
-  it('Back up Secret Recovery Phrase from backup reminder', async function () {
+  it('Back up Secret Recovery Phrase from backup reminder @no-mmi', async function () {
     await withFixtures(
       {
         dapp: true,
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
         ganacheOptions,
-        title: this.test.title,
+        title: this.test.fullTitle(),
         failOnConsoleError: false,
         dappPath: 'send-eth-with-private-key-test',
       },
@@ -115,7 +117,7 @@ describe('Incremental Security', function () {
         // should show a backup reminder
         const backupReminder = await driver.findElements({
           xpath:
-            "//div[contains(@class, 'home-notification__text') and contains(text(), 'Backup your Secret Recovery Phrase to keep your wallet and funds secure')]",
+            "//div[contains(@class, 'home-notification__text') and contains(text(), 'Back up your Secret Recovery Phrase to keep your wallet and funds secure')]",
         });
         assert.equal(backupReminder.length, 1);
 
@@ -124,7 +126,16 @@ describe('Incremental Security', function () {
 
         // reveals the Secret Recovery Phrase
         await driver.clickElement('[data-testid="secure-wallet-recommended"]');
-        await driver.clickElement('[data-testid="recovery-phrase-reveal"]');
+
+        await driver.fill('[placeholder="Password"]', WALLET_PASSWORD);
+        await driver.clickElement({ text: 'Confirm', tag: 'button' });
+        await driver.waitForElementNotPresent('.mm-modal-overlay');
+
+        const recoveryPhraseRevealButton = await driver.findClickableElement(
+          '[data-testid="recovery-phrase-reveal"]',
+        );
+        await recoveryPhraseRevealButton.click();
+
         const chipTwo = await (
           await driver.findElement('[data-testid="recovery-phrase-chip-2"]')
         ).getText();

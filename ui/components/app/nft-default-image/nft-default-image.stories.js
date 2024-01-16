@@ -11,10 +11,15 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => (
+const Template = (args) => (
   <div style={{ width: 200, height: 200 }}>
     <NftDefaultImage {...args} />
   </div>
 );
 
-DefaultStory.storyName = 'Default';
+export const DefaultStory = Template.bind({});
+
+export const WithShowButton = Template.bind({});
+WithShowButton.args = {
+  clickable: true,
+};

@@ -19,6 +19,12 @@ jest.mock('../../../store/actions.ts', () => {
 describe('AdvancedTab Component', () => {
   const mockStore = configureMockStore([thunk])(mockState);
 
+  it('should match snapshot', () => {
+    const { container } = renderWithProvider(<AdvancedTab />, mockStore);
+
+    expect(container).toMatchSnapshot();
+  });
+
   it('should render backup button', () => {
     const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
     const backupButton = queryByTestId('backup-button');

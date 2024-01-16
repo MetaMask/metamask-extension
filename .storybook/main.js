@@ -23,6 +23,7 @@ module.exports = {
     'storybook-dark-mode',
     '@whitespace/storybook-addon-html',
     '@storybook/addon-mdx-gfm',
+    '@storybook/addon-designs',
   ],
   staticDirs: ['../app', './images'],
   // Uses babel.config.js settings and prevents "Missing class properties transform" error

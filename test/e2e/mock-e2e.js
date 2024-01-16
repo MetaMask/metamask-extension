@@ -8,16 +8,49 @@ const {
   mockEmptyStalelistAndHotlist,
 } = require('./tests/phishing-controller/mocks');
 
+const emptyHtmlPage = () => `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>E2E Test Page</title>
+  </head>
+  <body data-testid="empty-page-body">
+    Empty page by MetaMask
+  </body>
+</html>`;
+
+/**
+ * The browser makes requests to domains within its own namespace for
+ * functionality specific to the browser. For example when running E2E tests in
+ * firefox the act of adding the extension from the firefox settins triggers
+ * a series of requests to various mozilla.net or mozilla.com domains. These
+ * are not requests that the extension itself makes.
+ */
+const browserAPIRequestDomains =
+  /^.*\.(googleapis\.com|google\.com|mozilla\.net|mozilla\.com|mozilla\.org|gvt1\.com)$/iu;
+
+/**
+ * @typedef {import('mockttp').Mockttp} Mockttp
+ * @typedef {import('mockttp').MockedEndpoint} MockedEndpoint
+ */
+
+/**
+ * @typedef {object} SetupMockReturn
+ * @property {MockedEndpoint} mockedEndpoint - If a testSpecificMock was provided, returns the mockedEndpoint
+ * @property {() => string[]} getPrivacyReport - A function to get the current privacy report.
+ */
+
 /**
  * Setup E2E network mocks.
  *
- * @param {object} server - The mock server used for network mocks.
- * @param {Function} testSpecificMock - A function for setting up test-specific network mocks
+ * @param {Mockttp} server - The mock server used for network mocks.
+ * @param {(server: Mockttp) => MockedEndpoint} testSpecificMock - A function for setting up test-specific network mocks
  * @param {object} options - Network mock options.
  * @param {string} options.chainId - The chain ID used by the default configured network.
- * @returns
+ * @returns {SetupMockReturn}
  */
 async function setupMocking(server, testSpecificMock, { chainId }) {
+  const privacyReport = new Set();
   await server.forAnyRequest().thenPassThrough({
     beforeRequest: (req) => {
       const { host } = req.headers;
@@ -33,6 +66,35 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
   const mockedEndpoint = await testSpecificMock(server);
 
   // Mocks below this line can be overridden by test-specific mocks
+
+  // Account link
+  const accountLinkRegex =
+    /^https:\/\/etherscan.io\/address\/0x[a-fA-F0-9]{40}$/u;
+  await server.forGet(accountLinkRegex).thenCallback(() => {
+    return {
+      statusCode: 200,
+      body: emptyHtmlPage(),
+    };
+  });
+
+  // Token tracker link
+  const tokenTrackerRegex =
+    /^https:\/\/etherscan.io\/token\/0x[a-fA-F0-9]{40}$/u;
+  await server.forGet(tokenTrackerRegex).thenCallback(() => {
+    return {
+      statusCode: 200,
+      body: emptyHtmlPage(),
+    };
+  });
+
+  // Explorer link
+  const explorerLinkRegex = /^https:\/\/etherscan.io\/tx\/0x[a-fA-F0-9]{64}$/u;
+  await server.forGet(explorerLinkRegex).thenCallback(() => {
+    return {
+      statusCode: 200,
+      body: emptyHtmlPage(),
+    };
+  });
 
   await server
     .forPost(
@@ -388,7 +450,85 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
       };
     });
 
-  return mockedEndpoint;
+  await mockLensNameProvider(server);
+  await mockTokenNameProvider(server, chainId);
+
+  /**
+   * Returns an array of alphanumerically sorted hostnames that were requested
+   * during the current test suite.
+   *
+   * @returns {string[]} privacy report for the current test suite.
+   */
+  function getPrivacyReport() {
+    return [...privacyReport].sort();
+  }
+
+  /**
+   * Listen for requests and add the hostname to the privacy report if it did
+   * not previously exist. This is used to track which hosts are requested
+   * during the current test suite and used to ask for extra scrutiny when new
+   * hosts are added to the privacy-snapshot.json file. We intentionally do not
+   * add hosts to the report that are requested as part of the browsers normal
+   * operation. See the browserAPIRequestDomains regex above.
+   */
+  server.on('request-initiated', (request) => {
+    if (request.headers.host.match(browserAPIRequestDomains) === null) {
+      privacyReport.add(request.headers.host);
+    }
+  });
+
+  return { mockedEndpoint, getPrivacyReport };
 }
 
-module.exports = { setupMocking };
+async function mockLensNameProvider(server) {
+  const handlesByAddress = {
+    '0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826': 'test.lens',
+    '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb': 'test2.lens',
+    '0xcccccccccccccccccccccccccccccccccccccccc': 'test3.lens',
+  };
+
+  await server.forPost('https://api.lens.dev').thenCallback((request) => {
+    const address = request.body?.json?.variables?.address;
+    const handle = handlesByAddress[address];
+
+    return {
+      statusCode: 200,
+      json: {
+        data: {
+          profiles: {
+            items: [
+              {
+                handle,
+              },
+            ],
+          },
+        },
+      },
+    };
+  });
+}
+
+async function mockTokenNameProvider(server) {
+  const namesByAddress = {
+    '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef': 'Test Token',
+    '0xb0bdabea57b0bdabea57b0bdabea57b0bdabea57': 'Test Token 2',
+  };
+
+  for (const address of Object.keys(namesByAddress)) {
+    const name = namesByAddress[address];
+
+    await server
+      .forGet(/https:\/\/token-api\.metaswap\.codefi\.network\/token\/.*/gu)
+      .withQuery({ address })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            name,
+          },
+        };
+      });
+  }
+}
+
+module.exports = { setupMocking, emptyHtmlPage };

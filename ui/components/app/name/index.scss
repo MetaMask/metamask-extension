@@ -1,0 +1,40 @@
+.name {
+  border-radius: 36px;
+  padding: 6px 9px 6px 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  max-width: 100%;
+
+  &__missing {
+    background-color: var(--color-warning-muted);
+  }
+
+  &__saved {
+    background-color: var(--color-info-muted);
+  }
+
+  &__missing &__icon {
+    color: var(--color-warning-default);
+  }
+
+  &__saved &__icon {
+    color: var(--color-info-default);
+  }
+
+  &__value,
+  &__name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__value {
+    color: var(--color-warning-default);
+  }
+
+  &__name {
+    color: var(--color-info-default);
+  }
+}

@@ -1,5 +1,5 @@
 const { buildWebDriver } = require('../webdriver');
-const { withFixtures, tinyDelayMs } = require('../helpers');
+const { withFixtures, tinyDelayMs, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Settings', function () {
@@ -31,21 +31,19 @@ describe('Settings', function () {
     await driver.quit();
   });
 
-  it('Does not lookup IPFS data for ENS Domain when switched off', async function () {
+  it('Does not fetch ENS data for ENS Domain when ENS and IPFS switched off', async function () {
     let server;
 
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        title: this.test.title,
+        title: this.test.fullTitle(),
         testSpecificMock: (mockServer) => {
           server = mockServer;
         },
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // goes to the settings screen
         await driver.clickElement(
@@ -54,7 +52,10 @@ describe('Settings', function () {
         await driver.clickElement({ text: 'Settings', tag: 'div' });
         await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
 
-        // turns off IPFS domain resolution
+        // turns off IPFS setting
+        await driver.clickElement('[data-testid="ipfsToggle"] .toggle-button');
+
+        // turns off ENS domain resolution
         await driver.clickElement(
           '[data-testid="ipfs-gateway-resolution-container"] .toggle-button',
         );

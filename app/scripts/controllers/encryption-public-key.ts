@@ -13,7 +13,7 @@ import {
   OriginalRequest,
 } from '@metamask/message-manager/dist/AbstractMessageManager';
 import {
-  BaseControllerV2,
+  BaseController,
   RestrictedControllerMessenger,
 } from '@metamask/base-controller';
 import { Patch } from 'immer';
@@ -44,7 +44,10 @@ export type CoreMessage = AbstractMessage & {
 };
 
 export type StateMessage = Required<
-  Omit<AbstractMessage, 'securityProviderResponse' | 'metadata' | 'error'>
+  Omit<
+    AbstractMessage,
+    'securityAlertResponse' | 'securityProviderResponse' | 'metadata' | 'error'
+  >
 > & {
   msgParams: string;
 };
@@ -91,7 +94,7 @@ export type EncryptionPublicKeyControllerOptions = {
 /**
  * Controller for requesting encryption public key requests requiring user approval.
  */
-export default class EncryptionPublicKeyController extends BaseControllerV2<
+export default class EncryptionPublicKeyController extends BaseController<
   typeof controllerName,
   EncryptionPublicKeyControllerState,
   EncryptionPublicKeyControllerMessenger

@@ -6,13 +6,17 @@ import { SECOND } from '../../shared/constants/time';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { useEqualityCheck } from './useEqualityCheck';
 
-export function useTokenTracker(
+export function useTokenTracker({
   tokens,
+  address,
   includeFailedTokens = false,
   hideZeroBalanceTokens = false,
-) {
+}) {
   const chainId = useSelector(getCurrentChainId);
-  const userAddress = useSelector(getSelectedAddress, shallowEqual);
+
+  const selectedAddress = useSelector(getSelectedAddress, shallowEqual);
+  const userAddress = address ?? selectedAddress;
+
   const [loading, setLoading] = useState(() => tokens?.length >= 0);
   const [tokensWithBalances, setTokensWithBalances] = useState([]);
   const [error, setError] = useState(null);
@@ -58,11 +62,11 @@ export function useTokenTracker(
   }, []);
 
   const buildTracker = useCallback(
-    (address, tokenList) => {
+    (usersAddress, tokenList) => {
       // clear out previous tracker, if it exists.
       teardownTracker();
       tokenTracker.current = new TokenTracker({
-        userAddress: address,
+        userAddress: usersAddress,
         provider: global.ethereumProvider,
         tokens: tokenList,
         includeFailedTokens,

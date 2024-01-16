@@ -2,7 +2,17 @@ import { migrate, version } from './090';
 
 const PREVIOUS_VERSION = version - 1;
 
+const sentryCaptureExceptionMock = jest.fn();
+
+global.sentry = {
+  captureException: sentryCaptureExceptionMock,
+};
+
 describe('migration #90', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('updates the version metadata', async () => {
     const oldStorage = {
       meta: {
@@ -31,7 +41,7 @@ describe('migration #90', () => {
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('does not change the state if the phishing controller state is invalid', async () => {
+  it('captures an exception if the phishing controller state is invalid', async () => {
     const oldStorage = {
       meta: {
         version: PREVIOUS_VERSION,
@@ -39,9 +49,12 @@ describe('migration #90', () => {
       data: { PhishingController: 'this is not valid' },
     };
 
-    const newStorage = await migrate(oldStorage);
+    await migrate(oldStorage);
 
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledTimes(1);
+    expect(sentryCaptureExceptionMock).toHaveBeenCalledWith(
+      new Error(`typeof state.PhishingController is string`),
+    );
   });
 
   it('does not change the state if the listState property does not exist', async () => {

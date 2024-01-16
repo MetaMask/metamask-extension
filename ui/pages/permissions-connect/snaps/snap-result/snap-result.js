@@ -6,22 +6,20 @@ import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Box from '../../../../components/ui/box/box';
 import {
   AlignItems,
-  BLOCK_SIZES,
+  BlockSize,
   BorderStyle,
-  FLEX_DIRECTION,
-  FONT_WEIGHT,
+  FlexDirection,
+  FontWeight,
   JustifyContent,
   TextVariant,
   BackgroundColor,
   IconColor,
   TextAlign,
-  FontWeight,
 } from '../../../../helpers/constants/design-system';
 import {
   AvatarIcon,
+  AvatarIconSize,
   IconName,
-  IconSize,
-  ValidTag,
   Text,
 } from '../../../../components/component-library';
 import PulseLoader from '../../../../components/ui/pulse-loader/pulse-loader';
@@ -64,25 +62,22 @@ export default function SnapResult({
 
     return (
       <Box
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
-        height={BLOCK_SIZES.FULL}
+        height={BlockSize.Full}
         paddingTop={2}
         paddingBottom={2}
       >
         <AvatarIcon
           className="snap-result__header__icon"
           iconName={IconName.Confirmation}
-          size={IconSize.Xl}
-          iconProps={{
-            size: IconSize.Xl,
-          }}
+          size={AvatarIconSize.Xl}
           color={IconColor.successDefault}
           backgroundColor={BackgroundColor.successMuted}
         />
         <Text
-          fontWeight={FONT_WEIGHT.BOLD}
+          fontWeight={FontWeight.Bold}
           variant={TextVariant.headingLg}
           paddingBottom={2}
           marginTop={4}
@@ -91,7 +86,7 @@ export default function SnapResult({
         </Text>
         <Text textAlign={TextAlign.Center}>
           {t('snapResultSuccessDescription', [
-            <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+            <Text as="span" key="1" fontWeight={FontWeight.Medium}>
               {snapNameToRender}
             </Text>,
           ])}
@@ -108,7 +103,7 @@ export default function SnapResult({
       case 'wallet_installSnap':
         failedScreenTitle = t('snapInstallationErrorTitle');
         failedScreenDescription = t('snapInstallationErrorDescription', [
-          <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+          <Text as="span" key="1" fontWeight={FontWeight.Medium}>
             {snapNameToRender}
           </Text>,
         ]);
@@ -116,7 +111,7 @@ export default function SnapResult({
       case 'wallet_updateSnap':
         failedScreenTitle = t('snapUpdateErrorTitle');
         failedScreenDescription = t('snapUpdateErrorDescription', [
-          <Text as={ValidTag.Span} key="1" fontWeight={FontWeight.Medium}>
+          <Text as="span" key="1" fontWeight={FontWeight.Medium}>
             {snapNameToRender}
           </Text>,
         ]);
@@ -139,9 +134,9 @@ export default function SnapResult({
     <Box
       className="page-container snap-result"
       justifyContent={JustifyContent.spaceBetween}
-      height={BLOCK_SIZES.FULL}
+      height={BlockSize.Full}
       borderStyle={BorderStyle.none}
-      flexDirection={FLEX_DIRECTION.COLUMN}
+      flexDirection={FlexDirection.Column}
     >
       <SnapAuthorshipHeader snapId={targetSubjectMetadata.origin} />
       <Box
@@ -149,7 +144,7 @@ export default function SnapResult({
         paddingLeft={4}
         paddingRight={4}
         alignItems={AlignItems.center}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        flexDirection={FlexDirection.Column}
         style={{
           overflowY: 'auto',
         }}
@@ -157,7 +152,7 @@ export default function SnapResult({
         {isLoading && (
           <Box
             className="snap-result__content__loader-container"
-            flexDirection={FLEX_DIRECTION.COLUMN}
+            flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
           >
@@ -172,7 +167,7 @@ export default function SnapResult({
       <Box
         className="snap-result__footer"
         alignItems={AlignItems.center}
-        flexDirection={FLEX_DIRECTION.COLUMN}
+        flexDirection={FlexDirection.Column}
         style={{
           boxShadow: 'var(--shadow-size-lg) var(--color-shadow-default)',
         }}

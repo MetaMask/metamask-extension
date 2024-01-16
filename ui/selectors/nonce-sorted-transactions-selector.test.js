@@ -1,9 +1,10 @@
 import { head, last } from 'lodash';
-import { CHAIN_IDS } from '../../shared/constants/network';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import {
   TransactionStatus,
   TransactionType,
-} from '../../shared/constants/transaction';
+} from '@metamask/transaction-controller';
+import { CHAIN_IDS } from '../../shared/constants/network';
 import { nonceSortedTransactionsSelector } from './transactions';
 
 const RECIPIENTS = {
@@ -24,12 +25,14 @@ const INCOMING_TX = {
     from: RECIPIENTS.ONE,
     to: SENDERS.ONE,
   },
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const SIGNING_REQUEST = {
   type: TransactionType.sign,
   id: '0-signing',
   status: TransactionStatus.unapproved,
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const SIMPLE_SEND_TX = {
@@ -39,6 +42,7 @@ const SIMPLE_SEND_TX = {
     to: RECIPIENTS.ONE,
   },
   type: TransactionType.simpleSend,
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const TOKEN_SEND_TX = {
@@ -50,12 +54,14 @@ const TOKEN_SEND_TX = {
     data: '0xdata',
   },
   type: TransactionType.tokenMethodTransfer,
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const RETRY_TX = {
   ...SIMPLE_SEND_TX,
   id: '0-retry',
   type: TransactionType.retry,
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const CANCEL_TX = {
@@ -66,6 +72,7 @@ const CANCEL_TX = {
     to: SENDERS.ONE,
   },
   type: TransactionType.cancel,
+  chainId: CHAIN_IDS.MAINNET,
 };
 
 const getStateTree = ({
@@ -80,11 +87,27 @@ const getStateTree = ({
     },
     unapprovedMsgs,
     selectedAddress: SENDERS.ONE,
-    featureFlags: {
-      showIncomingTransactions: true,
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: SENDERS.ONE,
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Test Account',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
-    incomingTransactions: [...incomingTxList],
-    currentNetworkTxList: [...txList],
+    featureFlags: {},
+    transactions: [...incomingTxList, ...txList],
+    incomingTransactionsPreferences: {},
   },
 });
 

@@ -4,6 +4,7 @@ import { HeaderBase, Text, ButtonIcon, ButtonIconSize, IconName } from '..';
 import {
   TextVariant,
   TextAlign,
+  BlockSize,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ModalHeaderProps } from '.';
@@ -23,6 +24,12 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   return (
     <HeaderBase
       className={classnames('mm-modal-header', className)}
+      paddingLeft={4}
+      paddingRight={4}
+      paddingBottom={4}
+      childrenWrapperProps={{
+        width: BlockSize.Full,
+      }}
       startAccessory={
         startAccessory ||
         (onBack && (

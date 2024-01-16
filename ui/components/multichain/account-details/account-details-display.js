@@ -13,9 +13,9 @@ import {
 } from '../../../selectors';
 import { isAbleToExportAccount } from '../../../helpers/utils/util';
 import {
-  BUTTON_SECONDARY_SIZES,
-  ButtonSecondary,
   Box,
+  ButtonSecondary,
+  ButtonSecondarySize,
 } from '../../component-library';
 import {
   AlignItems,
@@ -74,7 +74,7 @@ export const AccountDetailsDisplay = ({
       {exportPrivateKeyFeatureEnabled ? (
         <ButtonSecondary
           block
-          size={BUTTON_SECONDARY_SIZES.LG}
+          size={ButtonSecondarySize.Lg}
           variant={TextVariant.bodyMd}
           onClick={() => {
             trackEvent({
@@ -96,8 +96,20 @@ export const AccountDetailsDisplay = ({
 };
 
 AccountDetailsDisplay.propTypes = {
+  /**
+   * Array of user accounts
+   */
   accounts: PropTypes.array.isRequired,
+  /**
+   * Name of the current account
+   */
   accountName: PropTypes.string.isRequired,
+  /**
+   * Current address
+   */
   address: PropTypes.string.isRequired,
+  /**
+   * Executes upon Export button click
+   */
   onExportClick: PropTypes.func.isRequired,
 };

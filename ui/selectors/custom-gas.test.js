@@ -1,3 +1,5 @@
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
 import { GasEstimateTypes } from '../../shared/constants/gas';
 import { getInitialSendStateWithExistingTxState } from '../../test/jest/mocks';
 import {
@@ -24,8 +26,12 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             low: '1',
           },
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
           },
         },
         gas: {
@@ -41,8 +47,12 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             low: '1',
           },
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
           },
         },
         gas: {
@@ -58,8 +68,12 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             low: '1',
           },
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
           },
         },
         gas: {
@@ -75,8 +89,12 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             low: undefined,
           },
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
           },
         },
         gas: {
@@ -95,8 +113,12 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '150',
           },
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
           },
         },
         gas: {
@@ -112,8 +134,12 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: undefined,
           },
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
           },
         },
         gas: {
@@ -129,8 +155,12 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
           },
         },
         gas: {
@@ -146,8 +176,12 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
           },
         },
         gas: {
@@ -163,8 +197,12 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
           },
         },
         gas: {
@@ -180,8 +218,12 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
           },
         },
         gas: {
@@ -197,8 +239,12 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
           },
         },
         send: getInitialSendStateWithExistingTxState({
@@ -219,8 +265,12 @@ describe('custom-gas selectors', () => {
           gasFeeEstimates: {
             high: '139',
           },
-          networkDetails: {
-            EIPS: {},
+          selectedNetworkClientId: NetworkType.mainnet,
+          networksMetadata: {
+            [NetworkType.mainnet]: {
+              EIPS: {},
+              status: NetworkStatus.Available,
+            },
           },
         },
         send: getInitialSendStateWithExistingTxState({

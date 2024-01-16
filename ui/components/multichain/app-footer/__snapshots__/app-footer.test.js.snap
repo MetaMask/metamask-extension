@@ -1,0 +1,61 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App Footer should match snapshot 1`] = `
+<div>
+  <div
+    class="mm-box app-footer mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center mm-box--width-full mm-box--background-color-background-alternative"
+    data-test-id="app-footer"
+  >
+    <div
+      class="mm-box app-footer__contents mm-box--padding-2 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-background-default"
+    >
+      <a
+        class="mm-box app-footer__button mm-box--padding-2 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-1/3"
+        href="#"
+        tabindex="0"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-alternative"
+          data-testid="app-footer-wallet-button"
+          style="mask-image: url('./images/icons/wallet.svg');"
+        />
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+        >
+          Wallet
+        </p>
+      </a>
+      <div
+        class="mm-box mm-box--padding-2 mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-center mm-box--align-items-center mm-box--width-1/3 mm-box--background-color-background-default"
+        tabindex="0"
+      >
+        <button
+          aria-label="Select action"
+          class="mm-box mm-button-icon mm-button-icon--size-lg app-footer__actions-button mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-full"
+          data-testid="app-footer-actions-button"
+        >
+          <span
+            class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/swap-vertical.svg');"
+          />
+        </button>
+      </div>
+      <a
+        class="mm-box app-footer__button mm-box--padding-2 mm-box--display-flex mm-box--flex-direction-column mm-box--align-items-center mm-box--width-1/3"
+        href="#"
+        tabindex="0"
+      >
+        <span
+          class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-icon-alternative"
+          style="mask-image: url('./images/icons/global.svg');"
+        />
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
+        >
+          Connections
+        </p>
+      </a>
+    </div>
+  </div>
+</div>
+`;

@@ -10,6 +10,7 @@ import {
   getMemoizedAddressBook,
 } from '../../../../../../selectors';
 import NicknamePopovers from '../../../../modals/nickname-popovers';
+import { COPY_OPTIONS } from '../../../../../../../shared/constants/copy';
 
 const Address = ({
   checksummedRecipientAddress,
@@ -47,7 +48,7 @@ const Address = ({
     <div
       className="tx-insight tx-insight-component tx-insight-component-address"
       onClick={() => {
-        copyToClipboard(checksummedRecipientAddress);
+        copyToClipboard(checksummedRecipientAddress, COPY_OPTIONS);
         if (onRecipientClick) {
           onRecipientClick();
         }

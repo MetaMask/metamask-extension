@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Kopier adresse til udklipsholder"
   },
-  "copyPrivateKey": {
-    "message": "Dette er din private nøgle (klik for at kopiere)"
-  },
   "copyToClipboard": {
     "message": "Kopiér til udklipsholderen"
   },
@@ -214,9 +211,6 @@
   "deleteNetwork": {
     "message": "Slet Netværk?"
   },
-  "deleteNetworkDescription": {
-    "message": "Er du sikker på, at du vil slette dette netværk?"
-  },
   "details": {
     "message": "Detaljer"
   },
@@ -238,14 +232,8 @@
   "editContact": {
     "message": "Redigér Kontakt"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS-navn ikke fundet for det nuværende netværk. Prøv at skifte til Ethereums hovednetværk."
-  },
   "ensRegistrationError": {
     "message": "Fejl i ENS-navneregistrering"
-  },
-  "enterPassword": {
-    "message": "Indtast kodeord"
   },
   "enterPasswordContinue": {
     "message": "Indtast adgangskode for at fortsætte"
@@ -258,9 +246,6 @@
   },
   "expandView": {
     "message": "Udvis Visning"
-  },
-  "exportPrivateKey": {
-    "message": "Eksporter privat nøgle"
   },
   "failed": {
     "message": "Mislykkedes"
@@ -605,12 +590,6 @@
   "search": {
     "message": "Søg"
   },
-  "searchResults": {
-    "message": "Søg Resultater"
-  },
-  "searchTokens": {
-    "message": "Søg efter tokens"
-  },
   "securityAndPrivacy": {
     "message": "Sikkerhed & Privatliv"
   },
@@ -646,9 +625,6 @@
   },
   "showHexDataDescription": {
     "message": "Vælg dette for at vise hex-datafeltet på send-skærmen"
-  },
-  "showPrivateKeys": {
-    "message": "Vis private nøgler"
   },
   "sigRequest": {
     "message": "Signaturforespørgsel"
@@ -761,9 +737,6 @@
   "tryAgain": {
     "message": "Prøv igen"
   },
-  "typePassword": {
-    "message": "Skriv din MetaMask-adgangskode"
-  },
   "unapproved": {
     "message": "Ikke godkendt"
   },
@@ -772,12 +745,6 @@
   },
   "unknown": {
     "message": "ukendt"
-  },
-  "unknownCameraError": {
-    "message": "Der opstod en fejl da vi prøvede at tilgå dit kamera. Prøv venligst igen..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Hovsa! Noget gik galt..."
   },
   "unknownNetwork": {
     "message": "Ukendt privat netværk"

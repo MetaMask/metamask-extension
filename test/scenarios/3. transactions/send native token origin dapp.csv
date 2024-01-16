@@ -1,0 +1,22 @@
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,password (8 characters min).,"The Ether balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Ethereum Mainnet.",
+3,Switch networks to a test network.,e.g. Sepolia.,"The Sepolia balance is shown on the overview.
+The wallet address is shown on the overview.
+The selected network is Sepolia.",
+4,Open the test dapp in another tab.,https://metamask.github.io/test-dapp/,,
+5,Enter a public address.,,,
+6,Proceed to connect with MetaMask.,,,
+7,Connect with the current account.,,,
+8,"On test dapp, proceed send legacy transaction.",,"In confirmation notification screen, The recipient's hexadecimal address is shown. The amount is shown. The estimated gas details are shown. The total amount is shown.	",
+9,Confirm the transaction.,,The transaction appears in the activity list. The recipient's hexadecimal address is shown in the activity list item. The amount is shown in the activity list item.,
+10,Open the activity list item.,,"The transaction status, recipient's address, nonce, amount, gas and total are shown in the item details.",
+11,Expand the Activity log.,,"The created, submitted and confirmed activity are shown in the activity log.",
+12,Proceed to view the transaction on the block explorer.	,,The block explorer opens in a new tab.,
+13,"Go back to test dapp, proceed to send EIP1559 transaction.",,"In confirmation notification screen, The recipient's hexadecimal address is shown. The amount is shown. The estimated gas details are shown. The total amount is shown.",
+14,Confirm the transaction.,,"Second transaction appears in the activity list. For the second transaction, the recipient's hexadecimal address is shown in the activity list item. The amount is shown in the activity list item.",
+15,Open the activity list item.,,"Two transactions are shown in total. For the second transaction, the status, recipient's address, nonce, amount, gas and total are shown in the item details.",
+16,Expand the activity log for the second transaction.,,"The created, submitted and confirmed activity are shown in the activity log.",
+17,Proceed to view the second transaction on the block explorer.	,,The block explorer opens in a new tab.,

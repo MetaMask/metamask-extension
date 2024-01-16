@@ -175,9 +175,6 @@
   "copyAddress": {
     "message": "Copiere adresă în clipboard"
   },
-  "copyPrivateKey": {
-    "message": "Aceasta este cheia dumneavoastră privată (clic pentru a copia)"
-  },
   "copyToClipboard": {
     "message": "Copiați în clipboard"
   },
@@ -214,9 +211,6 @@
   "deleteNetwork": {
     "message": "Ștergeți rețeaua?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sigur vreți să ștergeți această rețea?"
-  },
   "details": {
     "message": "Detalii"
   },
@@ -238,14 +232,8 @@
   "editContact": {
     "message": "Editați contact"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Numele ENS nu s-a găsit pe rețeaua curentă. Încercați să comutați la Rețeaua Ethereum principală."
-  },
   "ensRegistrationError": {
     "message": "Eroare la înregistrarea numelui ENS"
-  },
-  "enterPassword": {
-    "message": "Introduceți parola"
   },
   "enterPasswordContinue": {
     "message": "Introduceți parola pentru a continua"
@@ -258,9 +246,6 @@
   },
   "expandView": {
     "message": "Extindeți vizualizarea"
-  },
-  "exportPrivateKey": {
-    "message": "Exportați cheia privată"
   },
   "failed": {
     "message": "Eșuat"
@@ -611,12 +596,6 @@
   "search": {
     "message": "Caută"
   },
-  "searchResults": {
-    "message": "Rezultate căutare"
-  },
-  "searchTokens": {
-    "message": "Căutați token-uri"
-  },
   "securityAndPrivacy": {
     "message": "Securitate și confidențialitate"
   },
@@ -655,9 +634,6 @@
   },
   "showHexDataDescription": {
     "message": "Selectați această opțiune pentru a arăta câmpul de date hexazecimale în ecranul de trimitere."
-  },
-  "showPrivateKeys": {
-    "message": "Afișați cheile private"
   },
   "sigRequest": {
     "message": "Solicitare de semnătură"
@@ -773,9 +749,6 @@
   "tryAgain": {
     "message": "Încearcă din nou"
   },
-  "typePassword": {
-    "message": "Scrieți parola dvs. pentru MetaMask"
-  },
   "unapproved": {
     "message": "Neaprobat"
   },
@@ -784,12 +757,6 @@
   },
   "unknown": {
     "message": "Necunoscută"
-  },
-  "unknownCameraError": {
-    "message": "A survenit o eroare la accesarea camerei. Încercați din nou..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Hopa! A apărut o eroare..."
   },
   "unknownNetwork": {
     "message": "Rețea privată necunoscută"

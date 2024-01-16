@@ -96,7 +96,7 @@ describe('useAddressDetails', () => {
       '0x06195827297c7A80a443b6894d3BDB8824b43896',
     );
     const { toName, isTrusted } = result.current;
-    expect(toName).toBe('0x061...3896');
+    expect(toName).toBe('0x06195...43896');
     expect(isTrusted).toBe(false);
   });
 });

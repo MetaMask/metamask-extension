@@ -19,9 +19,9 @@ describe('DetectedToken', () => {
     expect(screen.getByText('0 FSW')).toBeInTheDocument();
     expect(screen.getAllByText('$0')).toHaveLength(3);
     expect(screen.getAllByText('Token address:')).toHaveLength(3);
-    expect(screen.getByText('0x514...86CA')).toBeInTheDocument();
-    expect(screen.getByText('0xc00...6888')).toBeInTheDocument();
-    expect(screen.getByText('0xfff...26DB')).toBeInTheDocument();
+    expect(screen.getByText('0x51491...986CA')).toBeInTheDocument();
+    expect(screen.getByText('0xc00e9...26888')).toBeInTheDocument();
+    expect(screen.getByText('0xfffff...126DB')).toBeInTheDocument();
     expect(screen.getAllByText('From token lists:')).toHaveLength(3);
     expect(screen.getByText('Aave, Bancor')).toBeInTheDocument();
     expect(screen.getByText('+ 9 more')).toBeInTheDocument();

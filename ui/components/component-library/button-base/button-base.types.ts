@@ -1,10 +1,7 @@
 import { ReactNode } from 'react';
-import type {
-  StyleUtilityProps,
-  PolymorphicComponentPropWithRef,
-} from '../box';
+import type { PolymorphicComponentPropWithRef } from '../box';
 import { IconColor } from '../../../helpers/constants/design-system';
-import { TextDirection, TextProps } from '../text';
+import { TextDirection, TextProps, TextStyleUtilityProps } from '../text';
 import { IconName } from '../icon';
 import type { IconProps } from '../icon';
 
@@ -15,7 +12,9 @@ export enum ButtonBaseSize {
 }
 
 export type ValidButtonTagType = 'button' | 'a';
-export interface ButtonBaseStyleUtilityProps extends StyleUtilityProps {
+
+export interface ButtonBaseStyleUtilityProps
+  extends Omit<TextStyleUtilityProps, 'as' | 'children' | 'ellipsis'> {
   /**
    * The polymorphic `as` prop allows you to change the root HTML element of the Button component between `button` and `a` tag
    *

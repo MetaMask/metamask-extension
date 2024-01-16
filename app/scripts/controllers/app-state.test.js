@@ -21,13 +21,11 @@ describe('AppStateController', () => {
           },
         })),
       },
-      qrHardwareStore: {
-        subscribe: jest.fn(),
-      },
       messenger: {
         call: jest.fn(() => ({
           catch: jest.fn(),
         })),
+        subscribe: jest.fn(),
       },
     });
   };

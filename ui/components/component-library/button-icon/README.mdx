@@ -5,13 +5,13 @@ import { ButtonIcon } from './button-icon';
 
 The `ButtonIcon` is used for icons associated with a user action.
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-buttonicon--default-story" />
 </Canvas>
 
 ## Props
-
-The `ButtonIcon` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
 
 <ArgsTable of={ButtonIcon} />
 
@@ -26,8 +26,7 @@ Use the [IconSearch](/story/components-componentlibrary-icon--default-story) sto
 </Canvas>
 
 ```jsx
-import { ButtonIcon } from '../ui/component-library';
-import { IconName } from '../icon';
+import { ButtonIcon, IconName } from '../../component-library';
 
 <ButtonIcon iconName={IconName.Close} ariaLabel="Close" />;
 ```
@@ -46,8 +45,8 @@ Possible sizes include:
 </Canvas>
 
 ```jsx
-import { ButtonIconSize } from '../../../helpers/constants/design-system';
-import { ButtonIcon } from '../ui/component-library';
+
+import { ButtonIcon, ButtonIconSize, IconName } from '../../component-library';
 
 <ButtonIcon size={ButtonIconSize.Sm} iconName={IconName.Close} ariaLabel="Close"/>
 <ButtonIcon size={ButtonIconSize.Lg} iconName={IconName.Close} ariaLabel="Close"/>
@@ -62,12 +61,12 @@ Use the `ariaLabel` prop to set the name of the ButtonIcon for proper accessibil
 </Canvas>
 
 ```jsx
-import { ButtonIcon, IconName } from '../ui/component-library';
-import { Color } from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
+import { ButtonIcon, IconName } from '../../component-library';
 
 
 <ButtonIcon as="button" iconName={IconName.Close} ariaLabel="Close"/>
-<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={IconName.Export} color={Color.primaryDefault} ariaLabel="Visit MetaMask.io"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={IconName.Export} color={IconColor.primaryDefault} ariaLabel="Visit MetaMask.io"/>
 ```
 
 ### As
@@ -84,12 +83,12 @@ Button `as` options:
 </Canvas>
 
 ```jsx
-import { ButtonIcon, IconName } from '../ui/component-library';
-import { Color } from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
+import { ButtonIcon, IconName } from '../../component-library';
 
 
 <ButtonIcon as="button" iconName={IconName.Close} ariaLabel="Close"/>
-<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={IconName.Export} color={Color.primaryDefault} ariaLabel="Visit MetaMask.io"/>
+<ButtonIcon as="a" href="https://metamask.io/" target="_blank" iconName={IconName.Export} color={IconColor.primaryDefault} ariaLabel="Visit MetaMask.io"/>
 ```
 
 ### Href
@@ -101,14 +100,14 @@ When an `href` prop is passed it will change the element to an anchor(`a`) tag.
 </Canvas>
 
 ```jsx
-import { ButtonIcon, IconName } from '../ui/component-library';
-import { Color } from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
+import { ButtonIcon, IconName } from '../../component-library';
 
 <ButtonIcon
   href="https://metamask.io/"
   target="_blank"
   iconName={IconName.Export}
-  color={Color.primaryDefault}
+  color={IconColor.primaryDefault}
   ariaLabel="Visit MetaMask.io"
 />;
 ```
@@ -122,12 +121,12 @@ Use the `color` prop and the `Color` object to change the color of the `ButtonIc
 </Canvas>
 
 ```jsx
-import { ButtonIcon, IconName } from '../ui/component-library';
-import { Color } from '../../../helpers/constants/design-system';
+import { IconColor } from '../../../helpers/constants/design-system';
+import { ButtonIcon, IconName } from '../../component-library';
 
 <ButtonIcon
   iconName={IconName.Export}
-  color={Color.primaryDefault}
+  color={IconColor.primaryDefault}
   ariaLabel="Visit MetaMask.io"
 />;
 ```
@@ -141,7 +140,7 @@ Use the boolean `disabled` prop to disable button
 </Canvas>
 
 ```jsx
-import { ButtonIcon } from '../ui/component-library';
+import { ButtonIcon, IconName } from '../../component-library';
 
 <ButtonIcon iconName={IconName.Close} disabled ariaLabel="Close" />;
 ```

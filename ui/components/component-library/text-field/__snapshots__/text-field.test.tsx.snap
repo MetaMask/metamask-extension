@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextField should render correctly 1`] = `
+<div>
+  <div
+    class="mm-box mm-text-field mm-text-field--size-md mm-text-field--truncate mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
+  >
+    <input
+      autocomplete="off"
+      class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none"
+      focused="false"
+      type="text"
+      value=""
+    />
+  </div>
+</div>
+`;

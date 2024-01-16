@@ -40,7 +40,6 @@ import {
   signAndSendTransactions,
   getBackgroundSwapRouteState,
   swapsQuoteSelected,
-  getSwapsQuoteRefreshTime,
   getReviewSwapClickedTimestamp,
   getSmartTransactionsOptInStatus,
   signAndSendSwapsSmartTransaction,
@@ -68,9 +67,7 @@ import {
 } from '../../../selectors';
 import { getNativeCurrency, getTokens } from '../../../ducks/metamask/metamask';
 import {
-  safeRefetchQuotes,
   setCustomApproveTxData,
-  setSwapsErrorKey,
   showModal,
   setSwapsQuotesPollingLimitEnabled,
 } from '../../../store/actions';
@@ -78,7 +75,6 @@ import {
   ASSET_ROUTE,
   DEFAULT_ROUTE,
   AWAITING_SWAP_ROUTE,
-  SWAPS_NOTIFICATION_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -97,7 +93,11 @@ import {
   formatSwapsValueForDisplay,
 } from '../swaps.util';
 import { useTokenTracker } from '../../../hooks/useTokenTracker';
-import { QUOTES_EXPIRED_ERROR } from '../../../../shared/constants/swaps';
+import {
+  SLIPPAGE_HIGH_ERROR,
+  SLIPPAGE_LOW_ERROR,
+  MAX_ALLOWED_SLIPPAGE,
+} from '../../../../shared/constants/swaps';
 import { GasRecommendations } from '../../../../shared/constants/gas';
 import CountdownTimer from '../countdown-timer';
 import SwapsFooter from '../swaps-footer';
@@ -107,23 +107,23 @@ import {
   JustifyContent,
   DISPLAY,
   AlignItems,
-  FLEX_DIRECTION,
   TextVariant,
   FRACTIONS,
   TEXT_ALIGN,
   Size,
+  FlexDirection,
   Severity,
 } from '../../../helpers/constants/design-system';
+import {
+  BannerAlert,
+  ButtonLink,
+  Text,
+} from '../../../components/component-library';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
   MetaMetricsEventErrorType,
 } from '../../../../shared/constants/metametrics';
-import {
-  ButtonLink,
-  Text,
-  BannerAlert,
-} from '../../../components/component-library';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { getTokenValueParam } from '../../../../shared/lib/metamask-controller-utils';
@@ -139,6 +139,7 @@ import ExchangeRateDisplay from '../exchange-rate-display';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import useRamps from '../../../hooks/experiences/useRamps';
 import ViewQuotePriceDifference from './view-quote-price-difference';
+import SlippageNotificationModal from './slippage-notification-modal';
 
 let intervalId;
 
@@ -151,7 +152,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const t = useContext(I18nContext);
   const trackEvent = useContext(MetaMetricsContext);
 
-  const [dispatchedSafeRefetch, setDispatchedSafeRefetch] = useState(false);
   const [submitClicked, setSubmitClicked] = useState(false);
   const [selectQuotePopoverShown, setSelectQuotePopoverShown] = useState(false);
   const [warningHidden] = useState(false); // TODO: Check when to use setWarningHidden
@@ -164,6 +164,8 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const { openBuyCryptoInPdapp } = useRamps();
 
   const [acknowledgedPriceDifference, setAcknowledgedPriceDifference] =
+    useState(false);
+  const [slippageNotificationModalOpened, setSlippageNotificationModalOpened] =
     useState(false);
   const priceDifferenceRiskyBuckets = [
     GasRecommendations.high,
@@ -207,7 +209,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const topQuote = useSelector(getTopQuote, isEqual);
   const usedQuote = selectedQuote || topQuote;
   const tradeValue = usedQuote?.trade?.value ?? '0x0';
-  const swapsQuoteRefreshTime = useSelector(getSwapsQuoteRefreshTime);
   const defaultSwapsToken = useSelector(getSwapsDefaultToken, isEqual);
   const chainId = useSelector(getCurrentChainId);
   const nativeCurrencySymbol = useSelector(getNativeCurrency);
@@ -230,6 +231,16 @@ export default function ReviewQuote({ setReceiveToAmount }) {
   const isSmartTransaction =
     currentSmartTransactionsEnabled && smartTransactionsOptInStatus;
 
+  const [slippageErrorKey] = useState(() => {
+    const slippage = Number(fetchParams?.slippage);
+    if (slippage > 0 && slippage <= 1) {
+      return SLIPPAGE_LOW_ERROR;
+    } else if (slippage >= 5 && slippage <= MAX_ALLOWED_SLIPPAGE) {
+      return SLIPPAGE_HIGH_ERROR;
+    }
+    return '';
+  });
+
   /* istanbul ignore next */
   const getTranslatedNetworkName = () => {
     switch (chainId) {
@@ -246,9 +257,13 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       case CHAIN_IDS.AVALANCHE:
         return t('networkNameAvalanche');
       case CHAIN_IDS.OPTIMISM:
-        return t('networkNameOptimism');
+        return t('networkNameOpMainnet');
       case CHAIN_IDS.ARBITRUM:
         return t('networkNameArbitrum');
+      case CHAIN_IDS.ZKSYNC_ERA:
+        return t('networkNameZkSyncEra');
+      case CHAIN_IDS.LINEA_MAINNET:
+        return t('networkNameLinea');
       default:
         throw new Error('This network is not supported for token swaps');
     }
@@ -320,7 +335,10 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     );
   }
 
-  const { tokensWithBalances } = useTokenTracker(swapsTokens, true);
+  const { tokensWithBalances } = useTokenTracker({
+    tokens: swapsTokens,
+    includeFailedTokens: true,
+  });
   const balanceToken =
     fetchParamsSourceToken === defaultSwapsToken.address
       ? defaultSwapsToken
@@ -443,7 +461,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       smartTransactionFees?.tradeTxFees.feeEstimate +
       (smartTransactionFees?.approvalTxFees?.feeEstimate || 0);
     const stxMaxFeeInWeiDec =
-      stxEstimatedFeeInWeiDec * swapsNetworkConfig.stxMaxFeeMultiplier;
+      smartTransactionFees?.tradeTxFees.maxFeeEstimate +
+      (smartTransactionFees?.approvalTxFees?.maxFeeEstimate || 0);
+
     ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,
@@ -531,27 +551,6 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     dispatch,
     isSmartTransaction,
     balanceError,
-  ]);
-
-  useEffect(() => {
-    const currentTime = Date.now();
-    const timeSinceLastFetched = currentTime - quotesLastFetched;
-    if (
-      timeSinceLastFetched > swapsQuoteRefreshTime &&
-      !dispatchedSafeRefetch
-    ) {
-      setDispatchedSafeRefetch(true);
-      dispatch(safeRefetchQuotes());
-    } else if (timeSinceLastFetched > swapsQuoteRefreshTime) {
-      dispatch(setSwapsErrorKey(QUOTES_EXPIRED_ERROR));
-      history.push(SWAPS_NOTIFICATION_ROUTE);
-    }
-  }, [
-    quotesLastFetched,
-    dispatchedSafeRefetch,
-    dispatch,
-    history,
-    swapsQuoteRefreshTime,
   ]);
 
   useEffect(() => {
@@ -1048,9 +1047,50 @@ export default function ReviewQuote({ setReceiveToAmount }) {
     </span>
   );
 
+  const onSwapSubmit = ({ acknowledgedSlippage = false }) => {
+    if (slippageErrorKey && !acknowledgedSlippage) {
+      setSlippageNotificationModalOpened(true);
+      return;
+    }
+    setSubmitClicked(true);
+    if (!balanceError) {
+      if (isSmartTransaction && smartTransactionFees?.tradeTxFees) {
+        dispatch(
+          signAndSendSwapsSmartTransaction({
+            unsignedTransaction,
+            trackEvent,
+            history,
+            additionalTrackingParams,
+          }),
+        );
+      } else {
+        dispatch(
+          signAndSendTransactions(
+            history,
+            trackEvent,
+            additionalTrackingParams,
+          ),
+        );
+      }
+    } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
+      history.push(DEFAULT_ROUTE);
+    } else {
+      history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
+    }
+  };
+
   return (
     <div className="review-quote">
       <div className="review-quote__content">
+        <SlippageNotificationModal
+          isOpen={slippageNotificationModalOpened}
+          setSlippageNotificationModalOpened={
+            setSlippageNotificationModalOpened
+          }
+          slippageErrorKey={slippageErrorKey}
+          onSwapSubmit={onSwapSubmit}
+          currentSlippage={fetchParams?.slippage}
+        />
         {
           /* istanbul ignore next */
           selectQuotePopoverShown && (
@@ -1073,6 +1113,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
             {(showInsufficientWarning || tokenBalanceUnavailable) && (
               <BannerAlert
                 title={t('notEnoughBalance')}
+                titleProps={{ 'data-testid': 'swaps-banner-title' }}
                 severity={Severity.Info}
                 description={actionableBalanceErrorMessage}
                 descriptionProps={{
@@ -1104,7 +1145,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
           marginTop={1}
           marginBottom={0}
           display={DISPLAY.FLEX}
-          flexDirection={FLEX_DIRECTION.COLUMN}
+          flexDirection={FlexDirection.Column}
           className="review-quote__overview"
         >
           <Box
@@ -1293,35 +1334,7 @@ export default function ReviewQuote({ setReceiveToAmount }) {
         </Box>
       </div>
       <SwapsFooter
-        onSubmit={
-          /* istanbul ignore next */ () => {
-            setSubmitClicked(true);
-            if (!balanceError) {
-              if (isSmartTransaction && smartTransactionFees?.tradeTxFees) {
-                dispatch(
-                  signAndSendSwapsSmartTransaction({
-                    unsignedTransaction,
-                    trackEvent,
-                    history,
-                    additionalTrackingParams,
-                  }),
-                );
-              } else {
-                dispatch(
-                  signAndSendTransactions(
-                    history,
-                    trackEvent,
-                    additionalTrackingParams,
-                  ),
-                );
-              }
-            } else if (destinationToken.symbol === defaultSwapsToken.symbol) {
-              history.push(DEFAULT_ROUTE);
-            } else {
-              history.push(`${ASSET_ROUTE}/${destinationToken.address}`);
-            }
-          }
-        }
+        onSubmit={onSwapSubmit}
         submitText={
           isSmartTransaction && swapsSTXLoading ? t('preparingSwap') : t('swap')
         }

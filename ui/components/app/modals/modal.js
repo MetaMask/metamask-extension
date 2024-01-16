@@ -6,26 +6,23 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import isMobileView from '../../../helpers/utils/is-mobile-view';
 import * as actions from '../../../store/actions';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { mmiActionsFactory } from '../../../store/institutional/institution-background';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 // Modal Components
 import AddNetworkModal from '../../../pages/onboarding-flow/add-network-modal';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import ConfirmRemoveJWT from '../../institutional/confirm-remove-jwt-modal';
 import CustodyConfirmLink from '../../institutional/custody-confirm-link-modal';
 import InteractiveReplacementTokenModal from '../../institutional/interactive-replacement-token-modal';
 import TransactionFailed from '../../institutional/transaction-failed-modal';
-///: END:ONLY_INCLUDE_IN
-import AccountDetailsModal from './account-details-modal';
-import ExportPrivateKeyModal from './export-private-key-modal';
+///: END:ONLY_INCLUDE_IF
 import HideTokenConfirmationModal from './hide-token-confirmation-modal';
 import QRScanner from './qr-scanner';
 
 import ConfirmRemoveAccount from './confirm-remove-account';
 import ConfirmResetAccount from './confirm-reset-account';
-import HoldToRevealModal from './hold-to-reveal-modal';
 import TransactionConfirmed from './transaction-confirmed';
 
 import ConfirmDeleteNetwork from './confirm-delete-network';
@@ -85,7 +82,7 @@ const accountModalStyle = {
   },
 };
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 const custodyConfirmModalStyle = {
   mobileModalStyle: {
     width: '95%',
@@ -111,7 +108,7 @@ const custodyConfirmModalStyle = {
     borderRadius: '4px',
   },
 };
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 const MODALS = {
   ONBOARDING_ADD_NETWORK: {
@@ -142,29 +139,6 @@ const MODALS = {
     },
     contentStyle: {
       borderRadius: '10px',
-    },
-  },
-
-  ACCOUNT_DETAILS: {
-    contents: <AccountDetailsModal />,
-    ...accountModalStyle,
-  },
-
-  EXPORT_PRIVATE_KEY: {
-    contents: <ExportPrivateKeyModal />,
-    ...accountModalStyle,
-  },
-
-  HOLD_TO_REVEAL_SRP: {
-    contents: <HoldToRevealModal />,
-    mobileModalStyle: {
-      ...modalContainerMobileStyle,
-    },
-    laptopModalStyle: {
-      ...modalContainerLaptopStyle,
-    },
-    contentStyle: {
-      borderRadius: '8px',
     },
   },
 
@@ -327,7 +301,7 @@ const MODALS = {
     },
   },
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   CONFIRM_REMOVE_JWT: {
     contents: <ConfirmRemoveJWT />,
     mobileModalStyle: {
@@ -372,7 +346,7 @@ const MODALS = {
       borderRadius: '8px',
     },
   },
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   DEFAULT: {
     contents: [],
@@ -393,9 +367,9 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const mmiActions = mmiActionsFactory();
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   return {
     hideModal: (customOnHideOpts) => {
       dispatch(actions.hideModal());
@@ -406,10 +380,10 @@ function mapDispatchToProps(dispatch) {
     hideWarning: () => {
       dispatch(actions.hideWarning());
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 }
 
@@ -426,9 +400,9 @@ class Modal extends Component {
     hideModal: PropTypes.func.isRequired,
     hideWarning: PropTypes.func.isRequired,
     modalState: PropTypes.object.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     setWaitForConfirmDeepLinkDialog: PropTypes.func,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   hide() {
@@ -459,11 +433,11 @@ class Modal extends Component {
         keyboard={false}
         onHide={() => {
           if (modal.onHide) {
-            ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
             if (this.props.modalState.name === 'CUSTODY_CONFIRM_LINK') {
               this.props.setWaitForConfirmDeepLinkDialog(false);
             }
-            ///: END:ONLY_INCLUDE_IN
+            ///: END:ONLY_INCLUDE_IF
             modal.onHide({
               hideWarning: this.props.hideWarning,
             });

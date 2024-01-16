@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import Box from '../../ui/box/box';
+import { Box, Icon, IconName, IconSize, PopoverHeader, Text } from '..';
 import {
   AlignItems,
   BackgroundColor,
@@ -9,8 +9,9 @@ import {
   Display,
   JustifyContent,
   TextAlign,
+  TextColor,
 } from '../../../helpers/constants/design-system';
-import { Icon, IconName, IconSize, PopoverHeader, Text } from '..';
+
 import README from './README.mdx';
 import { Popover, PopoverPosition, PopoverRole } from '.';
 
@@ -78,7 +79,7 @@ const Template: StoryFn<typeof Popover> = (args) => {
         onClick={handleClick}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
         as="button"
       >
         Click to toggle popover
@@ -751,7 +752,7 @@ export const OnPressEscKey: StoryFn<typeof Popover> = (args) => {
         onClick={handleClick}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
         as="button"
       >
         Click to open
@@ -767,6 +768,49 @@ export const OnPressEscKey: StoryFn<typeof Popover> = (args) => {
     </>
   );
 };
+
+export const OnClickOutside: StoryFn<typeof Popover> = (args) => {
+  const [referenceElement, setReferenceElement] = useState();
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Set Popover Ref
+  const setBoxRef = (ref) => {
+    setReferenceElement(ref);
+  };
+
+  const handleClick = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleClickOutside = () => {
+    setIsOpen(false);
+  };
+
+  return (
+    <>
+      <Box
+        ref={setBoxRef}
+        onClick={handleClick}
+        backgroundColor={BackgroundColor.primaryAlternative}
+        style={{ width: 200, height: 200 }}
+        color={TextColor.primaryInverse}
+        as="button"
+      >
+        Click to open
+      </Box>
+      <Popover
+        referenceElement={referenceElement}
+        onClickOutside={handleClickOutside}
+        isOpen={isOpen}
+        {...args}
+      >
+        Click outside to close
+      </Popover>
+    </>
+  );
+};
+
+OnClickOutside.storyName = 'onClickOutside';
 
 export const WithPopoverHeader: StoryFn<typeof Popover> = (args) => {
   const [refTitleElement, setRefTitleElement] = useState();
@@ -835,7 +879,7 @@ export const MouseEventDemo: StoryFn<typeof Popover> = (args) => {
         onMouseLeave={handleMouseLeave}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
       >
         Hover
       </Box>
@@ -872,7 +916,7 @@ export const OnFocusBlur: StoryFn<typeof Popover> = (args) => {
         onBlur={handleClose}
         backgroundColor={BackgroundColor.primaryAlternative}
         style={{ width: 200, height: 200 }}
-        color={Color.primaryInverse}
+        color={TextColor.primaryInverse}
         as="button"
       >
         Focus to open

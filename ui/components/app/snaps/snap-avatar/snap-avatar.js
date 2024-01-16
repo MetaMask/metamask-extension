@@ -37,7 +37,8 @@ const SnapAvatar = ({
 
   const iconUrl = subjectMetadata?.iconUrl;
 
-  const fallbackIcon = friendlyName && friendlyName[0] ? friendlyName[0] : '?';
+  // We choose the first non-symbol char as the fallback icon.
+  const fallbackIcon = friendlyName?.match(/[a-z0-9]/iu)?.[0] ?? '?';
 
   return (
     <BadgeWrapper
@@ -50,7 +51,6 @@ const SnapAvatar = ({
           borderColor={BackgroundColor.backgroundDefault}
           borderWidth={borderWidth}
           iconProps={{
-            size: badgeSize,
             color: IconColor.infoInverse,
           }}
         />
@@ -58,7 +58,12 @@ const SnapAvatar = ({
       position={BadgeWrapperPosition.bottomRight}
     >
       {iconUrl ? (
-        <AvatarFavicon size={avatarSize} src={iconUrl} name={friendlyName} />
+        <AvatarFavicon
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          size={avatarSize}
+          src={iconUrl}
+          name={friendlyName}
+        />
       ) : (
         <AvatarBase
           size={avatarSize}
@@ -67,6 +72,7 @@ const SnapAvatar = ({
           justifyContent={JustifyContent.center}
           color={TextColor.textAlternative}
           style={{ borderWidth: '0px' }}
+          backgroundColor={BackgroundColor.backgroundAlternative}
         >
           {fallbackIcon}
         </AvatarBase>

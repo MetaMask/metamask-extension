@@ -3,6 +3,7 @@ import configureMockStore from 'redux-mock-store';
 import { fireEvent, screen } from '@testing-library/react';
 import { detectNewTokens } from '../../../store/actions';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ImportTokenLink } from '.';
 
 const mockPushHistory = jest.fn();
@@ -19,7 +20,12 @@ jest.mock('react-router-dom', () => {
 });
 
 jest.mock('../../../store/actions.ts', () => ({
-  detectNewTokens: jest.fn().mockReturnValue({ type: '' }),
+  detectNewTokens: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'DETECT_TOKENS' })),
+  showImportTokensModal: jest
+    .fn()
+    .mockImplementation(() => ({ type: 'UI_IMPORT_TOKENS_POPOVER_OPEN' })),
 }));
 
 describe('Import Token Link', () => {
@@ -43,7 +49,7 @@ describe('Import Token Link', () => {
     const mockState = {
       metamask: {
         providerConfig: {
-          chainId: '0x1',
+          chainId: CHAIN_IDS.MAINNET,
         },
       },
     };
@@ -90,6 +96,6 @@ describe('Import Token Link', () => {
     const importToken = screen.getByTestId('import-token-button');
     fireEvent.click(importToken);
 
-    expect(mockPushHistory).toHaveBeenCalledWith('/import-token');
+    expect(screen.getByText('Import tokens')).toBeInTheDocument();
   });
 });

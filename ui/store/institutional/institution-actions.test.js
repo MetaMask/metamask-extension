@@ -2,7 +2,7 @@ import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import MetaMaskController from '../../../app/scripts/metamask-controller';
-import { _setBackgroundConnection } from '../action-queue';
+import { setBackgroundConnection } from '../background-connection';
 import {
   showInteractiveReplacementTokenModal,
   showCustodyConfirmLink,
@@ -24,11 +24,6 @@ const defaultState = {
     identities: {
       '0xFirstAddress': {},
     },
-    cachedBalances: {
-      '0x1': {
-        '0xFirstAddress': '0x0',
-      },
-    },
     custodyStatusMaps: {
       saturn: {
         signed: {
@@ -39,10 +34,11 @@ const defaultState = {
         },
       },
     },
-    currentNetworkTxList: [
+    transactions: [
       {
         id: 0,
         time: 0,
+        chainId: '0x1',
         txParams: {
           from: '0xAddress',
           to: '0xRecipient',
@@ -53,6 +49,7 @@ const defaultState = {
       {
         id: 1,
         time: 1,
+        chainId: '0x1',
         txParams: {
           from: '0xAddress',
           to: '0xRecipient',
@@ -107,7 +104,7 @@ describe('#InstitutionActions', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const expectedActions = [
       {
@@ -130,7 +127,7 @@ describe('#InstitutionActions', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const expectedActions = [
       {
@@ -199,16 +196,14 @@ describe('#updateCustodyState', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const newState = {
       providerConfig: {
         nickname: 'mainnet',
         chainId: '0x1',
       },
-      featureFlags: {
-        showIncomingTransactions: false,
-      },
+      featureFlags: {},
       selectedAddress: '0xAddress',
     };
 
@@ -225,21 +220,20 @@ describe('#updateCustodyState', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const newState = {
       providerConfig: {
         nickname: 'mainnet',
         chainId: '0x1',
       },
-      featureFlags: {
-        showIncomingTransactions: false,
-      },
+      featureFlags: {},
       selectedAddress: '0xAddress',
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 0,
           time: 0,
+          chainId: '0x1',
           txParams: {
             from: '0xAddress',
             to: '0xRecipient',
@@ -250,6 +244,7 @@ describe('#updateCustodyState', () => {
         {
           id: 1,
           time: 1,
+          chainId: '0x1',
           txParams: {
             from: '0xAddress',
             to: '0xRecipient',
@@ -280,21 +275,20 @@ describe('#updateCustodyState', () => {
         .callsFake((_, __, cb) => cb(new Error('error'))),
     });
 
-    _setBackgroundConnection(background.getApi());
+    setBackgroundConnection(background.getApi());
 
     const newState = {
       providerConfig: {
         nickname: 'mainnet',
         chainId: '0x1',
       },
-      featureFlags: {
-        showIncomingTransactions: false,
-      },
+      featureFlags: {},
       selectedAddress: '0xAddress',
-      currentNetworkTxList: [
+      transactions: [
         {
           id: 0,
           time: 0,
+          chainId: '0x1',
           txParams: {
             from: '0xAddress',
             to: '0xRecipient',
@@ -305,6 +299,7 @@ describe('#updateCustodyState', () => {
         {
           id: 1,
           time: 1,
+          chainId: '0x1',
           txParams: {
             from: '0xAddress',
             to: '0xRecipient',

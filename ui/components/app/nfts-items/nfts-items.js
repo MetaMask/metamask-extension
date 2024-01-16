@@ -22,27 +22,41 @@ import {
   getIpfsGateway,
   getSelectedAddress,
   getCurrentNetwork,
+  getOpenSeaEnabled,
 } from '../../../selectors';
-import { ASSET_ROUTE } from '../../../helpers/constants/routes';
+import { ASSET_ROUTE, SEND_ROUTE } from '../../../helpers/constants/routes';
 import { getAssetImageURL } from '../../../helpers/utils/util';
 import { getNftImageAlt } from '../../../helpers/utils/nfts';
 import { updateNftDropDownState } from '../../../store/actions';
 import { usePrevious } from '../../../hooks/usePrevious';
 import { getNftsDropdownState } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { Icon, IconName } from '../../component-library';
+import { Icon, IconName, Text } from '../../component-library';
 import { NftItem } from '../../multichain/nft-item';
+import { updateSendAsset } from '../../../ducks/send';
+import { AssetType } from '../../../../shared/constants/transaction';
 
-const width =
-  getEnvironmentType() === ENVIRONMENT_TYPE_POPUP
-    ? BLOCK_SIZES.ONE_THIRD
-    : BLOCK_SIZES.ONE_SIXTH;
+const width = (isModal) => {
+  const env = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+
+  if (isModal) {
+    return BLOCK_SIZES.ONE_THIRD;
+  }
+  if (env === ENVIRONMENT_TYPE_POPUP) {
+    return BLOCK_SIZES.ONE_THIRD;
+  }
+  return BLOCK_SIZES.ONE_SIXTH;
+};
 
 const PREVIOUSLY_OWNED_KEY = 'previouslyOwned';
 
 export default function NftsItems({
   collections = {},
   previouslyOwnedCollection = {},
+  isModal = false,
+  onCloseModal = {},
+  showTokenId = false,
+  displayPreviouslyOwnedCollection = true,
 }) {
   const dispatch = useDispatch();
   const collectionsKeys = Object.keys(collections);
@@ -53,6 +67,7 @@ export default function NftsItems({
   const currentChain = useSelector(getCurrentNetwork);
   const t = useI18nContext();
   const ipfsGateway = useSelector(getIpfsGateway);
+  const openSeaEnabled = useSelector(getOpenSeaEnabled);
 
   useEffect(() => {
     if (
@@ -90,6 +105,21 @@ export default function NftsItems({
   const history = useHistory();
 
   const renderCollectionImage = (collectionImage, collectionName) => {
+    if (collectionImage?.startsWith('ipfs') && !ipfsGateway) {
+      return (
+        <div className="nfts-items__collection-image-alt">
+          {collectionName?.[0]?.toUpperCase() ?? null}
+        </div>
+      );
+    }
+    if (!openSeaEnabled && !collectionImage?.startsWith('ipfs')) {
+      return (
+        <div className="nfts-items__collection-image-alt">
+          {collectionName?.[0]?.toUpperCase() ?? null}
+        </div>
+      );
+    }
+
     if (collectionImage) {
       return (
         <img
@@ -120,6 +150,18 @@ export default function NftsItems({
     };
 
     dispatch(updateNftDropDownState(newState));
+  };
+
+  const onSendNft = async (nft) => {
+    await dispatch(
+      updateSendAsset({
+        type: AssetType.NFT,
+        details: nft,
+        skipComputeEstimatedGasLimit: true,
+      }),
+    );
+    history.push(SEND_ROUTE);
+    onCloseModal();
   };
 
   const renderCollection = ({ nfts, collectionName, collectionImage, key }) => {
@@ -170,32 +212,43 @@ export default function NftsItems({
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {nfts.map((nft, i) => {
               const { image, address, tokenId, name, imageOriginal } = nft;
-              const nftImage = getAssetImageURL(imageOriginal, ipfsGateway);
+              const nftImage = getAssetImageURL(
+                imageOriginal ?? image,
+                ipfsGateway,
+              );
               const nftImageAlt = getNftImageAlt(nft);
-              const nftImageURL = imageOriginal?.includes('ipfs')
+              const isImageHosted = image?.startsWith('https:');
+              const nftImageURL = imageOriginal?.startsWith('ipfs')
                 ? nftImage
                 : image;
-
-              const handleImageClick = () =>
-                history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
+              const nftSrcUrl = imageOriginal ?? image;
+              const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+              const handleImageClick = () => {
+                if (isModal) {
+                  return onSendNft(nft);
+                }
+                return history.push(`${ASSET_ROUTE}/${address}/${tokenId}`);
+              };
               return (
                 <Box
                   data-testid="nft-wrapper"
-                  width={width}
+                  width={width(isModal)}
                   key={`nft-${i}`}
                   className="nfts-items__item-wrapper"
                 >
                   <NftItem
                     nftImageURL={nftImageURL}
                     alt={nftImageAlt}
-                    src={image}
+                    src={isImageHosted ? image : nftImage}
                     name={name}
                     tokenId={tokenId}
                     networkName={currentChain.nickname}
                     networkSrc={currentChain.rpcPrefs?.imageUrl}
                     onClick={handleImageClick}
+                    isIpfsURL={isIpfsURL}
                     clickable
                   />
+                  {showTokenId ? <Text>{`${t('id')}: ${tokenId}`}</Text> : null}
                 </Box>
               );
             })}
@@ -226,13 +279,15 @@ export default function NftsItems({
               isPreviouslyOwnedCollection: false,
             });
           })}
-          {renderCollection({
-            nfts: previouslyOwnedCollection.nfts,
-            collectionName: previouslyOwnedCollection.collectionName,
-            collectionImage: previouslyOwnedCollection.nfts[0]?.image,
-            isPreviouslyOwnedCollection: true,
-            key: PREVIOUSLY_OWNED_KEY,
-          })}
+          {displayPreviouslyOwnedCollection
+            ? renderCollection({
+                nfts: previouslyOwnedCollection.nfts,
+                collectionName: previouslyOwnedCollection.collectionName,
+                collectionImage: previouslyOwnedCollection.nfts[0]?.image,
+                isPreviouslyOwnedCollection: true,
+                key: PREVIOUSLY_OWNED_KEY,
+              })
+            : null}
         </>
       </Box>
     </div>
@@ -282,4 +337,8 @@ NftsItems.propTypes = {
     collectionImage: PropTypes.string,
     collectionName: PropTypes.string,
   }),
+  isModal: PropTypes.bool,
+  onCloseModal: PropTypes.func,
+  showTokenId: PropTypes.bool,
+  displayPreviouslyOwnedCollection: PropTypes.bool,
 };

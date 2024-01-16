@@ -26,11 +26,12 @@ export default class AppStateController extends EventEmitter {
       initState,
       onInactiveTimeout,
       preferencesStore,
-      qrHardwareStore,
       messenger,
+      extension,
     } = opts;
     super();
 
+    this.extension = extension;
     this.onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.store = new ObservableStore({
       timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
@@ -47,8 +48,14 @@ export default class AppStateController extends EventEmitter {
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
       showProductTour: true,
+      showNetworkBanner: true,
+      showAccountBanner: true,
       trezorModel: null,
       currentPopupId: undefined,
+      // This key is only used for checking if the user had set advancedGasFee
+      // prior to Migration 92.3 where we split out the setting to support
+      // multiple networks.
+      hadAdvancedGasFeesSetPriorToMigration92_3: false,
       ...initState,
       qrHardware: {},
       nftsDropdownState: {},
@@ -57,7 +64,7 @@ export default class AppStateController extends EventEmitter {
         '0x5': true,
         '0x539': true,
       },
-      serviceWorkerLastActiveTime: 0,
+      surveyLinkLastClickedOrClosed: null,
     });
     this.timer = null;
 
@@ -72,9 +79,13 @@ export default class AppStateController extends EventEmitter {
       }
     });
 
-    qrHardwareStore.subscribe((state) => {
-      this.store.updateState({ qrHardware: state });
-    });
+    messenger.subscribe(
+      'KeyringController:qrKeyringStateChange',
+      (qrHardware) =>
+        this.store.updateState({
+          qrHardware,
+        }),
+    );
 
     const { preferences } = preferencesStore.getState();
     this._setInactiveTimeout(preferences.autoLockTimeLimit);
@@ -162,6 +173,12 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
+  setSurveyLinkLastClickedOrClosed(time) {
+    this.store.updateState({
+      surveyLinkLastClickedOrClosed: time,
+    });
+  }
+
   /**
    * Record the timestamp of the last time the user has seen the recovery phrase reminder
    *
@@ -184,7 +201,7 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   /**
    * Record if popover for snaps privacy warning has been shown
    * on the first install of a snap.
@@ -196,7 +213,7 @@ export default class AppStateController extends EventEmitter {
       snapsInstallPrivacyWarningShown: shown,
     });
   }
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Record the timestamp of the last time the user has seen the outdated browser warning
@@ -245,7 +262,7 @@ export default class AppStateController extends EventEmitter {
     if (this.timer) {
       clearTimeout(this.timer);
     } else if (isManifestV3) {
-      chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+      this.extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
     }
 
     if (!timeoutMinutes) {
@@ -253,14 +270,14 @@ export default class AppStateController extends EventEmitter {
     }
 
     if (isManifestV3) {
-      chrome.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
+      this.extension.alarms.create(AUTO_LOCK_TIMEOUT_ALARM, {
         delayInMinutes: timeoutMinutes,
         periodInMinutes: timeoutMinutes,
       });
-      chrome.alarms.onAlarm.addListener((alarmInfo) => {
+      this.extension.alarms.onAlarm.addListener((alarmInfo) => {
         if (alarmInfo.name === AUTO_LOCK_TIMEOUT_ALARM) {
           this.onInactiveTimeout();
-          chrome.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
+          this.extension.alarms.clear(AUTO_LOCK_TIMEOUT_ALARM);
         }
       });
     } else {
@@ -356,6 +373,24 @@ export default class AppStateController extends EventEmitter {
   }
 
   /**
+   * Sets whether the Network Banner should be shown
+   *
+   * @param showNetworkBanner
+   */
+  setShowNetworkBanner(showNetworkBanner) {
+    this.store.updateState({ showNetworkBanner });
+  }
+
+  /**
+   * Sets whether the Account Banner should be shown
+   *
+   * @param showAccountBanner
+   */
+  setShowAccountBanner(showAccountBanner) {
+    this.store.updateState({ showAccountBanner });
+  }
+
+  /**
    * Sets a property indicating the model of the user's Trezor hardware wallet
    *
    * @param trezorModel - The Trezor model.
@@ -389,7 +424,7 @@ export default class AppStateController extends EventEmitter {
     this.store.updateState({ usedNetworks });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   /**
    * Set the interactive replacement token with a url and the old refresh token
    *
@@ -407,7 +442,7 @@ export default class AppStateController extends EventEmitter {
     });
   }
 
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   /**
    * A setter for the currentPopupId which indicates the id of popup window that's currently active
    *
@@ -426,13 +461,11 @@ export default class AppStateController extends EventEmitter {
     return this.store.getState().currentPopupId;
   }
 
-  setServiceWorkerLastActiveTime(serviceWorkerLastActiveTime) {
-    this.store.updateState({
-      serviceWorkerLastActiveTime,
-    });
-  }
-
   _requestApproval() {
+    // If we already have a pending request this is a no-op
+    if (this._approvalRequestId) {
+      return;
+    }
     this._approvalRequestId = uuid();
 
     this.messagingSystem
@@ -446,7 +479,8 @@ export default class AppStateController extends EventEmitter {
         true,
       )
       .catch(() => {
-        // Intentionally ignored as promise not currently used
+        // If the promise fails, we allow a new popup to be triggered
+        this._approvalRequestId = null;
       });
   }
 

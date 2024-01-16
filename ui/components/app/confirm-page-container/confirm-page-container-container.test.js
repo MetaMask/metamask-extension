@@ -3,11 +3,9 @@ import configureMockStore from 'redux-mock-store';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 
 import { BigNumber } from '@ethersproject/bignumber';
+import { TransactionType } from '@metamask/transaction-controller';
 import * as TokenUtil from '../../../../shared/lib/token-util.ts';
-import {
-  TokenStandard,
-  TransactionType,
-} from '../../../../shared/constants/transaction';
+import { TokenStandard } from '../../../../shared/constants/transaction';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import { shortenAddress } from '../../../helpers/utils/util';
@@ -33,7 +31,7 @@ const props = {
     id: 8783053010106567,
     time: 1656448479005,
     status: 'unapproved',
-    metamaskNetworkId: '5',
+    chainId: '0x5',
     originalGasEstimate: '0x5208',
     userEditedGasLimit: false,
     loadingDefaults: false,
@@ -66,7 +64,6 @@ const props = {
     id: 1230035278491151,
     time: 1671022500513,
     status: 'unapproved',
-    metamaskNetworkId: '80001',
     originalGasEstimate: '0xea60',
     userEditedGasLimit: false,
     chainId: '0x13881',
@@ -92,7 +89,6 @@ const props = {
         id: 1230035278491151,
         time: 1671022500513,
         status: 'unapproved',
-        metamaskNetworkId: '80001',
         originalGasEstimate: '0xea60',
         userEditedGasLimit: false,
         chainId: '0x13881',
@@ -319,6 +315,8 @@ describe('Confirm Page Container Container Test', () => {
       };
 
       mockState.metamask.addressBook = addressBook;
+      mockState.confirmTransaction.txData.txParams.to =
+        '0x7a1A4Ad9cc746a70ee58568466f7996dD0aCE4E8';
 
       const store = configureMockStore()(mockState);
 

@@ -1,8 +1,8 @@
-import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import {
   TransactionStatus,
   TransactionType,
-} from '../../../../shared/constants/transaction';
+} from '@metamask/transaction-controller';
+import { GAS_LIMITS } from '../../../../shared/constants/gas';
 import {
   combineTransactionHistories,
   getActivities,
@@ -23,7 +23,6 @@ describe('TransactionActivityLog utils', () => {
               id: 6400627574331058,
               time: 1543958845581,
               status: TransactionStatus.unapproved,
-              metamaskNetworkId: '5',
               chainId: '0x5',
               loadingDefaults: true,
               txParams: {
@@ -71,7 +70,6 @@ describe('TransactionActivityLog utils', () => {
           ],
           id: 6400627574331058,
           loadingDefaults: false,
-          metamaskNetworkId: '5',
           chainId: '0x5',
           status: TransactionStatus.dropped,
           submittedTime: 1543958848135,
@@ -93,7 +91,6 @@ describe('TransactionActivityLog utils', () => {
               id: 6400627574331060,
               time: 1543958857697,
               status: TransactionStatus.unapproved,
-              metamaskNetworkId: '5',
               chainId: '0x5',
               loadingDefaults: false,
               txParams: {
@@ -164,7 +161,6 @@ describe('TransactionActivityLog utils', () => {
           id: 6400627574331060,
           lastGasPrice: '0x4190ab00',
           loadingDefaults: false,
-          metamaskNetworkId: '5',
           chainId: '0x5',
           status: TransactionStatus.confirmed,
           submittedTime: 1543958860054,
@@ -187,7 +183,6 @@ describe('TransactionActivityLog utils', () => {
       const expected = [
         {
           id: 6400627574331058,
-          metamaskNetworkId: '5',
           chainId: '0x5',
           hash: '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           eventKey: 'transactionCreated',
@@ -196,7 +191,6 @@ describe('TransactionActivityLog utils', () => {
         },
         {
           id: 6400627574331058,
-          metamaskNetworkId: '5',
           chainId: '0x5',
           hash: '0xa14f13d36b3901e352ce3a7acb9b47b001e5a3370f06232a0953c6fc6fad91b3',
           eventKey: 'transactionSubmitted',
@@ -205,7 +199,6 @@ describe('TransactionActivityLog utils', () => {
         },
         {
           id: 6400627574331060,
-          metamaskNetworkId: '5',
           chainId: '0x5',
           hash: '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           eventKey: 'transactionResubmitted',
@@ -214,7 +207,6 @@ describe('TransactionActivityLog utils', () => {
         },
         {
           id: 6400627574331060,
-          metamaskNetworkId: '5',
           chainId: '0x5',
           hash: '0xecbe181ee67c4291d04a7cb9ffbf1d5d831e4fbaa89994fd06bab5dd4cc79b33',
           eventKey: 'transactionConfirmed',
@@ -252,7 +244,6 @@ describe('TransactionActivityLog utils', () => {
           {
             id: 5559712943815343,
             loadingDefaults: true,
-            metamaskNetworkId: '5',
             chainId: '0x5',
             status: TransactionStatus.unapproved,
             time: 1535507561452,
@@ -308,15 +299,6 @@ describe('TransactionActivityLog utils', () => {
               path: '/txParams/nonce',
               timestamp: 1535507564439,
               value: '0xa4',
-            },
-            {
-              op: 'add',
-              path: '/nonceDetails',
-              value: {
-                local: {},
-                network: {},
-                params: {},
-              },
             },
           ],
           [
@@ -394,7 +376,6 @@ describe('TransactionActivityLog utils', () => {
         },
         hash: '0xabc',
         chainId: '0x5',
-        metamaskNetworkId: '5',
       };
 
       const expectedResult = [
@@ -405,7 +386,6 @@ describe('TransactionActivityLog utils', () => {
           id: 1,
           hash: '0xabc',
           chainId: '0x5',
-          metamaskNetworkId: '5',
         },
         {
           eventKey: 'transactionSubmitted',
@@ -414,7 +394,6 @@ describe('TransactionActivityLog utils', () => {
           id: 1,
           hash: '0xabc',
           chainId: '0x5',
-          metamaskNetworkId: '5',
         },
         {
           eventKey: 'transactionConfirmed',
@@ -423,7 +402,6 @@ describe('TransactionActivityLog utils', () => {
           id: 1,
           hash: '0xabc',
           chainId: '0x5',
-          metamaskNetworkId: '5',
         },
       ];
 

@@ -270,7 +270,7 @@ describe('Signature Request Data', () => {
         store,
       );
 
-      expect(getByText('0xbBb...BBbB')).toBeInTheDocument();
+      expect(getByText('0xbBbBB...bBBbB')).toBeInTheDocument();
     });
 
     it('should render Identicon for second wallet in "to" array of objects', () => {
@@ -289,7 +289,7 @@ describe('Signature Request Data', () => {
         store,
       );
 
-      expect(getByText('0xB0B...Ea57')).toBeInTheDocument();
+      expect(getByText('0xB0Bda...bEa57')).toBeInTheDocument();
     });
 
     it('should render Identicon for third wallet in "to" array of objects', () => {
@@ -307,8 +307,7 @@ describe('Signature Request Data', () => {
         <SignatureRequestData data={messageData.value} />,
         store,
       );
-
-      expect(getByText('0xB0B...0000')).toBeInTheDocument();
+      expect(getByText('0xB0B0b...00000')).toBeInTheDocument();
     });
 
     it('should escape RTL character in label or value', () => {

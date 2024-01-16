@@ -1,5 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { toHex } from '@metamask/controller-utils';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import testData from '../../../../.storybook/test-data';
 import WrongNetworkNotification from '.';
@@ -13,12 +15,12 @@ describe('Wrong Network Notification', function () {
       ...testData.metamask,
       providerConfig: {
         type: 'test',
-        chainId: '3',
+        chainId: toHex(3),
       },
       selectedAddress: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
-      cachedBalances: {
-        '0x1': {
-          '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': '0x0',
+      accountsByChainId: {
+        [toHex(1)]: {
+          '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },
         },
       },
       custodianSupportedChains: {
@@ -32,6 +34,24 @@ describe('Wrong Network Notification', function () {
           name: 'Custody Account A',
           address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
         },
+      },
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Custody Account A',
+              keyring: {
+                type: 'Custody',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
       keyrings: [
         {
@@ -64,11 +84,11 @@ describe('Wrong Network Notification', function () {
         ...mockStore.metamask,
         providerConfig: {
           type: 'test',
-          chainId: '3',
+          chainId: toHex(3),
         },
-        cachedBalances: {
-          '0x1': {
-            '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': '0x0',
+        accountsByChainId: {
+          [toHex(1)]: {
+            '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },
           },
         },
       },
@@ -90,11 +110,11 @@ describe('Wrong Network Notification', function () {
         ...mockStore.metamask,
         providerConfig: {
           type: 'test',
-          chainId: '3',
+          chainId: toHex(3),
         },
-        cachedBalances: {
-          3: {
-            '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': '0x0',
+        accountsByChainId: {
+          [toHex(3)]: {
+            '0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275': { balance: '0x0' },
           },
         },
       },

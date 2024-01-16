@@ -152,14 +152,14 @@ describe('App State', () => {
 
   it('shows confirm tx page', () => {
     const txs = {
-      unapprovedTxs: {
-        1: {
+      transactions: [
+        {
           id: 1,
         },
-        2: {
+        {
           id: 2,
         },
-      },
+      ],
     };
     const oldState = { ...metamaskState, ...txs };
     const state = reduceApp(oldState, {
@@ -174,14 +174,14 @@ describe('App State', () => {
 
   it('completes tx continues to show pending txs current view context', () => {
     const txs = {
-      unapprovedTxs: {
-        1: {
+      transactions: [
+        {
           id: 1,
         },
-        2: {
+        {
           id: 2,
         },
-      },
+      ],
     };
 
     const oldState = { ...metamaskState, ...txs };
@@ -300,15 +300,6 @@ describe('App State', () => {
     });
 
     expect(state.accountDetail.privateKey).toStrictEqual('private key');
-  });
-
-  it('set mouse user state', () => {
-    const state = reduceApp(metamaskState, {
-      type: actions.SET_MOUSE_USER_STATE,
-      payload: true,
-    });
-
-    expect(state.isMouseUser).toStrictEqual(true);
   });
 
   it('smart transactions - SET_SMART_TRANSACTIONS_ERROR', () => {

@@ -2,8 +2,12 @@ import { connect } from 'react-redux';
 import {
   getAccountToConnectToActiveTab,
   getOrderedConnectedAccountsForActiveTab,
+  getOriginOfCurrentTab,
   getPermissionsForActiveTab,
+  getPermissionSubjects,
   getSelectedAddress,
+  getSubjectMetadata,
+  getInternalAccounts,
 } from '../../selectors';
 import { isExtensionUrl } from '../../helpers/utils/util';
 import {
@@ -18,18 +22,42 @@ const mapStateToProps = (state) => {
   const { activeTab } = state;
   const accountToConnect = getAccountToConnectToActiveTab(state);
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
+  const internalAccounts = getInternalAccounts(state);
+  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
+  const connectedAccountsWithName = connectedAccounts.map((account) => {
+    const updatedAccount = {
+      ...account,
+      name: internalAccounts.find(
+        (internalAccount) => internalAccount.address === account.address,
+      )?.metadata.name,
+    };
+    return updatedAccount;
+  });
+  const accountToConnectWithName = accountToConnect && {
+    ...accountToConnect,
+    name: internalAccounts.find(
+      (internalAccount) =>
+        internalAccount.address === accountToConnect?.address,
+    )?.metadata.name,
+  };
   const permissions = getPermissionsForActiveTab(state);
   const selectedAddress = getSelectedAddress(state);
+  const subjectMetadata = getSubjectMetadata(state);
+  const originOfActiveTab = getOriginOfCurrentTab(state);
+  const permissionSubjects = getPermissionSubjects(state);
 
   const isActiveTabExtension = isExtensionUrl(activeTab);
   return {
-    accountToConnect,
+    accountToConnect: accountToConnectWithName,
     isActiveTabExtension,
     activeTabOrigin: activeTab.origin,
-    connectedAccounts,
+    connectedAccounts: connectedAccountsWithName,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     permissions,
     selectedAddress,
+    subjectMetadata,
+    originOfActiveTab,
+    permissionSubjects,
   };
 };
 

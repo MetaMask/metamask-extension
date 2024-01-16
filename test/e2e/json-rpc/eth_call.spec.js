@@ -1,20 +1,15 @@
 const { strict: assert } = require('assert');
-const { keccak256 } = require('@truffle/codec/dist/lib/evm/utils');
-const { convertToHexValue, withFixtures } = require('../helpers');
+const { keccak } = require('ethereumjs-util');
+const {
+  withFixtures,
+  unlockWallet,
+  defaultGanacheOptions,
+} = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('eth_call', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   it('executes a new message call', async function () {
     await withFixtures(
       {
@@ -22,21 +17,19 @@ describe('eth_call', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
-        title: this.test.title,
+        title: this.test.fullTitle(),
       },
       async ({ driver, _, contractRegistry }) => {
         const contract = contractRegistry.getContractAddress(smartContract);
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // eth_call
         await driver.openNewPage(`http://127.0.0.1:8080`);
-        const balanceOf = `0x${keccak256('balanceOf(address)').toString(
-          'hex',
-        )}`;
+        const balanceOf = `0x${keccak(
+          Buffer.from('balanceOf(address)'),
+        ).toString('hex')}`;
         const walletAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
         const request = JSON.stringify({
           jsonrpc: '2.0',

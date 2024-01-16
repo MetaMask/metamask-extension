@@ -60,8 +60,7 @@ export default function QuizContent({
           key={idx}
           size={btn.size}
           onClick={btn.onClick}
-          label={btn.label}
-          variant={btn.variant}
+          variant={btn.variant as any}
           width={BlockSize.Full}
           data-testid={btn['data-testid']}
         >

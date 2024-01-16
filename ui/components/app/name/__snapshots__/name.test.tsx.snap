@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Name renders address with no saved name 1`] = `
+<div>
+  <div>
+    <div
+      class="name name__missing"
+    >
+      <span
+        class="mm-box name__icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/warning.svg');"
+      />
+      <p
+        class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+      >
+        0xC0ffe...54977
+      </p>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Name renders address with saved name 1`] = `
+<div>
+  <div>
+    <div
+      class="name name__saved"
+    >
+      <span
+        class="mm-box name__icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/save.svg');"
+      />
+      <p
+        class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
+      >
+        TestName
+      </p>
+    </div>
+  </div>
+</div>
+`;

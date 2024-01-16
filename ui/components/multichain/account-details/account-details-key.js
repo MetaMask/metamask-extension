@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   BannerAlert,
+  Box,
   ButtonIcon,
   ButtonPrimary,
   IconName,
-  Box,
   Text,
 } from '../../component-library';
 
@@ -68,7 +68,16 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
 };
 
 AccountDetailsKey.propTypes = {
+  /**
+   * Name of the account
+   */
   accountName: PropTypes.string.isRequired,
+  /**
+   * Executes upon Close button click
+   */
   onClose: PropTypes.func.isRequired,
+  /**
+   * The private key
+   */
   privateKey: PropTypes.string.isRequired,
 };

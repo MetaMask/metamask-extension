@@ -6,14 +6,11 @@ import { getTokenTrackerLink } from '@metamask/etherscan-link';
 import UrlIcon from '../../../components/ui/url-icon';
 import { addressSummary } from '../../../helpers/utils/util';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
-import Box from '../../../components/ui/box';
 import Button from '../../../components/ui/button';
 import SimulationErrorMessage from '../../../components/ui/simulation-error-message';
-import EditGasFeeButton from '../../../components/app/edit-gas-fee-button';
 import MultiLayerFeeMessage from '../../../components/app/multilayer-fee-message';
 import SecurityProviderBannerMessage from '../../../components/app/security-provider-banner-message/security-provider-banner-message';
 import {
-  BLOCK_SIZES,
   DISPLAY,
   TextColor,
   IconColor,
@@ -22,6 +19,9 @@ import {
 } from '../../../helpers/constants/design-system';
 import { ConfirmPageContainerWarning } from '../../../components/app/confirm-page-container/confirm-page-container-content';
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+import BlockaidBannerAlert from '../../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+///: END:ONLY_INCLUDE_IF
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 
 import { TokenStandard } from '../../../../shared/constants/transaction';
@@ -32,22 +32,27 @@ import {
   Icon,
   IconName,
   Text,
+  Box,
 } from '../../../components/component-library';
 import TransactionDetailItem from '../../../components/app/transaction-detail-item/transaction-detail-item.component';
 import UserPreferencedCurrencyDisplay from '../../../components/app/user-preferenced-currency-display';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
 import CustomNonce from '../../../components/app/custom-nonce';
+import { COPY_OPTIONS } from '../../../../shared/constants/copy';
+import FeeDetailsComponent from '../../../components/app/fee-details-component/fee-details-component';
 
 export default class ConfirmApproveContent extends Component {
   static contextTypes = {
     t: PropTypes.func,
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    trackEvent: PropTypes.func,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   static propTypes = {
     tokenSymbol: PropTypes.string,
     siteImage: PropTypes.string,
-    showCustomizeGasModal: PropTypes.func,
     origin: PropTypes.string,
     data: PropTypes.string,
     toAddress: PropTypes.string,
@@ -95,18 +100,12 @@ export default class ConfirmApproveContent extends Component {
     showHeader = true,
     symbol,
     title,
-    showEdit,
-    showAdvanceGasFeeOptions = false,
-    onEditClick,
     content,
     footer,
     noBorder,
+    showFeeDetails = false,
   }) {
-    const {
-      supportsEIP1559,
-      renderSimulationFailureWarning,
-      userAcknowledgedGasMissing,
-    } = this.props;
+    const { supportsEIP1559, txData, useCurrencyRateCheck } = this.props;
     const { t } = this.context;
     return (
       <div
@@ -127,28 +126,19 @@ export default class ConfirmApproveContent extends Component {
                 </div>
               </>
             )}
-            {showEdit && (!showAdvanceGasFeeOptions || !supportsEIP1559) && (
-              <Box width={BLOCK_SIZES.ONE_SIXTH}>
-                <Button
-                  type="link"
-                  className="confirm-approve-content__small-blue-text"
-                  onClick={() => onEditClick()}
-                >
-                  {t('edit')}
-                </Button>
-              </Box>
-            )}
-            {showEdit &&
-              showAdvanceGasFeeOptions &&
-              supportsEIP1559 &&
-              !renderSimulationFailureWarning && (
-                <EditGasFeeButton
-                  userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-                />
-              )}
           </div>
         )}
         <div className="confirm-approve-content__card-content">{content}</div>
+
+        {showFeeDetails && (
+          <Box marginBottom={4}>
+            <FeeDetailsComponent
+              txData={txData}
+              useCurrencyRateCheck={useCurrencyRateCheck}
+            />
+          </Box>
+        )}
+
         {footer}
       </div>
     );
@@ -271,7 +261,7 @@ export default class ConfirmApproveContent extends Component {
           <div className="confirm-approve-content__medium-text">
             <ButtonIcon
               ariaLabel="copy"
-              onClick={() => copyToClipboard(toAddress)}
+              onClick={() => copyToClipboard(toAddress, COPY_OPTIONS)}
               color={IconColor.iconDefault}
               iconName={
                 this.state.copied ? IconName.CopySuccess : IconName.Copy
@@ -292,31 +282,38 @@ export default class ConfirmApproveContent extends Component {
     const { t } = this.context;
     const { data, isSetApproveForAll, isApprovalOrRejection } = this.props;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const { tokenAddress } = this.props;
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     return (
-      <div className="flex-column">
-        <div className="confirm-approve-content__small-text">
+      <Box className="flex-column">
+        <Text className="confirm-approve-content__small-text">
           {isSetApproveForAll
             ? t('functionSetApprovalForAll')
             : t('functionApprove')}
-        </div>
+        </Text>
         {isSetApproveForAll && isApprovalOrRejection !== undefined ? (
-          <div className="confirm-approve-content__small-text">
-            {`${t('parameters')}: ${isApprovalOrRejection}`}
+          <>
+            <Text className="confirm-approve-content__small-text">
+              {`${t('parameters')}: ${isApprovalOrRejection}`}
+            </Text>
             {
-              ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
-              `${t('tokenContractAddress')}: ${tokenAddress}`
-              ///: END:ONLY_INCLUDE_IN
+              ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {`${t('tokenContractAddress')}: ${tokenAddress}`}
+              </Text>
+              ///: END:ONLY_INCLUDE_IF
             }
-          </div>
+          </>
         ) : null}
-        <div className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
+        <Text className="confirm-approve-content__small-text confirm-approve-content__data__data-block">
           {data}
-        </div>
-      </div>
+        </Text>
+      </Box>
     );
   }
 
@@ -417,7 +414,7 @@ export default class ConfirmApproveContent extends Component {
         <span
           className="confirm-approve-content__approval-asset-title"
           onClick={() => {
-            copyToClipboard(tokenAddress);
+            copyToClipboard(tokenAddress, COPY_OPTIONS);
           }}
           title={tokenAddress}
         >
@@ -522,7 +519,6 @@ export default class ConfirmApproveContent extends Component {
       siteImage,
       origin,
       tokenSymbol,
-      showCustomizeGasModal,
       useNonceField,
       warning,
       txData,
@@ -551,6 +547,11 @@ export default class ConfirmApproveContent extends Component {
           'confirm-approve-content--full': showFullTxDetails,
         })}
       >
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+          <BlockaidBannerAlert txData={txData} margin={4} />
+          ///: END:ONLY_INCLUDE_IF
+        }
         {isSuspiciousResponse(txData?.securityProviderResponse) && (
           <SecurityProviderBannerMessage
             securityProviderResponse={txData.securityProviderResponse}
@@ -634,7 +635,7 @@ export default class ConfirmApproveContent extends Component {
             title: t('transactionFee'),
             showEdit: true,
             showAdvanceGasFeeOptions: true,
-            onEditClick: showCustomizeGasModal,
+            showFeeDetails: true,
             content: this.renderTransactionDetailsContent(),
             noBorder: useNonceField || !showFullTxDetails,
             footer: !useNonceField && (
@@ -662,6 +663,7 @@ export default class ConfirmApproveContent extends Component {
               </div>
             ),
           })}
+
           {useNonceField &&
             this.renderApproveContentCard({
               showHeader: false,

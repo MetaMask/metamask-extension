@@ -4,11 +4,7 @@ import sinon from 'sinon';
 import { BigNumber } from '@ethersproject/bignumber';
 import { mapValues } from 'lodash';
 import BigNumberjs from 'bignumber.js';
-import {
-  CHAIN_IDS,
-  NETWORK_IDS,
-  NetworkStatus,
-} from '../../../shared/constants/network';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../../../shared/constants/swaps';
 import { createTestProviderTools } from '../../../test/stub/provider';
 import { SECOND } from '../../../shared/constants/time';
@@ -98,15 +94,6 @@ const MOCK_GET_BUFFERED_GAS_LIMIT = async () => ({
   simulationFails: undefined,
 });
 
-function getMockNetworkController() {
-  return {
-    state: {
-      networkId: NETWORK_IDS.GOERLI,
-      networkStatus: NetworkStatus.Available,
-    },
-  };
-}
-
 const EMPTY_INIT_STATE = {
   swapsState: {
     quotes: {},
@@ -139,7 +126,7 @@ const EMPTY_INIT_STATE = {
 };
 
 const sandbox = sinon.createSandbox();
-const fetchTradesInfoStub = sandbox.stub();
+let fetchTradesInfoStub = sandbox.stub();
 const getCurrentChainIdStub = sandbox.stub();
 getCurrentChainIdStub.returns(CHAIN_IDS.MAINNET);
 const getEIP1559GasFeeEstimatesStub = sandbox.stub(() => {
@@ -157,8 +144,6 @@ describe('SwapsController', function () {
   const getSwapsController = (_provider = provider) => {
     return new SwapsController({
       getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
-      networkController: getMockNetworkController(),
-      onNetworkStateChange: sinon.stub(),
       provider: _provider,
       getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
       getTokenRatesState: MOCK_TOKEN_RATES_STORE,
@@ -201,102 +186,6 @@ describe('SwapsController', function () {
       assert.deepStrictEqual(
         swapsController.getProviderConfig,
         MOCK_GET_PROVIDER_CONFIG,
-      );
-    });
-
-    it('should replace ethers instance when network changes', function () {
-      const networkController = getMockNetworkController();
-      let networkStateChangeListener;
-      const onNetworkStateChange = (listener) => {
-        networkStateChangeListener = listener;
-      };
-      const swapsController = new SwapsController({
-        getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
-        networkController,
-        onNetworkStateChange,
-        provider,
-        getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
-        getTokenRatesState: MOCK_TOKEN_RATES_STORE,
-        fetchTradesInfo: fetchTradesInfoStub,
-        getCurrentChainId: getCurrentChainIdStub,
-      });
-      const currentEthersInstance = swapsController.ethersProvider;
-
-      networkController.state = {
-        networkId: NETWORK_IDS.MAINNET,
-        networkStatus: NetworkStatus.Available,
-      };
-      networkStateChangeListener();
-
-      const newEthersInstance = swapsController.ethersProvider;
-      assert.notStrictEqual(
-        currentEthersInstance,
-        newEthersInstance,
-        'Ethers provider should be replaced',
-      );
-    });
-
-    it('should not replace ethers instance when network changes to loading', function () {
-      const networkController = getMockNetworkController();
-      let networkStateChangeListener;
-      const onNetworkStateChange = (listener) => {
-        networkStateChangeListener = listener;
-      };
-      const swapsController = new SwapsController({
-        getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
-        networkController,
-        onNetworkStateChange,
-        provider,
-        getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
-        getTokenRatesState: MOCK_TOKEN_RATES_STORE,
-        fetchTradesInfo: fetchTradesInfoStub,
-        getCurrentChainId: getCurrentChainIdStub,
-      });
-      const currentEthersInstance = swapsController.ethersProvider;
-
-      networkController.state = {
-        networkId: null,
-        networkStatus: NetworkStatus.Unknown,
-      };
-      networkStateChangeListener();
-
-      const newEthersInstance = swapsController.ethersProvider;
-      assert.strictEqual(
-        currentEthersInstance,
-        newEthersInstance,
-        'Ethers provider should not be replaced',
-      );
-    });
-
-    it('should not replace ethers instance when network changes to the same network', function () {
-      const networkController = getMockNetworkController();
-      let networkStateChangeListener;
-      const onNetworkStateChange = (listener) => {
-        networkStateChangeListener = listener;
-      };
-      const swapsController = new SwapsController({
-        getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
-        networkController,
-        onNetworkStateChange,
-        provider,
-        getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
-        getTokenRatesState: MOCK_TOKEN_RATES_STORE,
-        fetchTradesInfo: fetchTradesInfoStub,
-        getCurrentChainId: getCurrentChainIdStub,
-      });
-      const currentEthersInstance = swapsController.ethersProvider;
-
-      networkController.state = {
-        networkId: NETWORK_IDS.GOERLI,
-        networkStatus: NetworkStatus.Available,
-      };
-      networkStateChangeListener();
-
-      const newEthersInstance = swapsController.ethersProvider;
-      assert.strictEqual(
-        currentEthersInstance,
-        newEthersInstance,
-        'Ethers provider should not be replaced',
       );
     });
   });
@@ -708,14 +597,14 @@ describe('SwapsController', function () {
           gasEstimateWithRefund: '0xb8cae',
           savings: {
             fee: '-0.061067',
-            metaMaskFee: '0.5050505050505050505',
+            metaMaskFee: '0.50505050505050505050505050505050505',
             performance: '6',
-            total: '5.4338824949494949495',
-            medianMetaMaskFee: '0.44444444444444444444',
+            total: '5.43388249494949494949494949494949495',
+            medianMetaMaskFee: '0.444444444444444444444444444444444444',
           },
           ethFee: '0.113536',
           overallValueOfQuote: '49.886464',
-          metaMaskFeeInEth: '0.5050505050505050505',
+          metaMaskFeeInEth: '0.50505050505050505050505050505050505',
           ethValueOfTokens: '50',
         });
         assert.strictEqual(
@@ -773,15 +662,15 @@ describe('SwapsController', function () {
           gasEstimateWithRefund: '0xb8cae',
           savings: {
             fee: '-0.061067',
-            metaMaskFee: '0.5050505050505050505',
+            metaMaskFee: '0.50505050505050505050505050505050505',
             performance: '6',
-            total: '5.4338824949494949495',
-            medianMetaMaskFee: '0.44444444444444444444',
+            total: '5.43388249494949494949494949494949495',
+            medianMetaMaskFee: '0.444444444444444444444444444444444444',
           },
           ethFee: '0.113822',
           multiLayerL1TradeFeeTotal: '0x0103c18816d4e8',
           overallValueOfQuote: '49.886178',
-          metaMaskFeeInEth: '0.5050505050505050505',
+          metaMaskFeeInEth: '0.50505050505050505050505050505050505',
           ethValueOfTokens: '50',
         });
         assert.strictEqual(
@@ -835,7 +724,10 @@ describe('SwapsController', function () {
 
         // Mocked quotes approvalNeeded is null, so it will only be called with the gas
         assert.strictEqual(
-          timedoutGasReturnStub.calledOnceWithExactly(MOCK_APPROVAL_NEEDED),
+          timedoutGasReturnStub.calledOnceWithExactly(
+            MOCK_APPROVAL_NEEDED,
+            TEST_AGG_ID_APPROVAL,
+          ),
           true,
         );
       });
@@ -905,6 +797,128 @@ describe('SwapsController', function () {
         );
 
         assert.strictEqual(newQuotes[topAggId].isBestQuote, undefined);
+      });
+
+      it('should replace ethers instance when called with a different chainId than was current when the controller was instantiated', async function () {
+        fetchTradesInfoStub = sandbox.stub();
+
+        const _swapsController = getSwapsController();
+
+        const currentEthersInstance = _swapsController.ethersProvider;
+
+        await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
+          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.GOERLI,
+        });
+
+        const newEthersInstance = _swapsController.ethersProvider;
+        assert.notStrictEqual(
+          currentEthersInstance,
+          newEthersInstance,
+          'Ethers provider should be replaced',
+        );
+      });
+
+      it('should not replace ethers instance when called with the same chainId that was current when the controller was instantiated', async function () {
+        const _swapsController = new SwapsController({
+          getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
+          provider,
+          getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
+          getTokenRatesState: MOCK_TOKEN_RATES_STORE,
+          fetchTradesInfo: fetchTradesInfoStub,
+          getCurrentChainId: getCurrentChainIdStub,
+        });
+        const currentEthersInstance = _swapsController.ethersProvider;
+
+        await swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
+          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        const newEthersInstance = _swapsController.ethersProvider;
+        assert.strictEqual(
+          currentEthersInstance,
+          newEthersInstance,
+          'Ethers provider should not be replaced',
+        );
+      });
+
+      it('should replace ethers instance, and _ethersProviderChainId, twice when called twice with two different chainIds, and successfully set the _ethersProviderChainId when returning to the original chain', async function () {
+        const _swapsController = new SwapsController({
+          getBufferedGasLimit: MOCK_GET_BUFFERED_GAS_LIMIT,
+          provider,
+          getProviderConfig: MOCK_GET_PROVIDER_CONFIG,
+          getTokenRatesState: MOCK_TOKEN_RATES_STORE,
+          fetchTradesInfo: fetchTradesInfoStub,
+          getCurrentChainId: getCurrentChainIdStub,
+        });
+        const firstEthersInstance = _swapsController.ethersProvider;
+        const firstEthersProviderChainId =
+          _swapsController._ethersProviderChainId;
+
+        await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
+          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.GOERLI,
+        });
+
+        const secondEthersInstance = _swapsController.ethersProvider;
+        const secondEthersProviderChainId =
+          _swapsController._ethersProviderChainId;
+
+        assert.notStrictEqual(
+          firstEthersInstance,
+          secondEthersInstance,
+          'Ethers provider should be replaced',
+        );
+        assert.notStrictEqual(
+          firstEthersInstance,
+          secondEthersProviderChainId,
+          'Ethers provider chainId should be replaced',
+        );
+
+        await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
+          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.LOCALHOST,
+        });
+
+        const thirdEthersInstance = _swapsController.ethersProvider;
+        const thirdEthersProviderChainId =
+          _swapsController._ethersProviderChainId;
+
+        assert.notStrictEqual(
+          firstEthersProviderChainId,
+          thirdEthersInstance,
+          'Ethers provider should be replaced',
+        );
+        assert.notStrictEqual(
+          secondEthersInstance,
+          thirdEthersInstance,
+          'Ethers provider should be replaced',
+        );
+        assert.notStrictEqual(
+          firstEthersInstance,
+          thirdEthersProviderChainId,
+          'Ethers provider chainId should be replaced',
+        );
+        assert.notStrictEqual(
+          secondEthersProviderChainId,
+          thirdEthersProviderChainId,
+          'Ethers provider chainId should be replaced',
+        );
+
+        await _swapsController.fetchAndSetQuotes(MOCK_FETCH_PARAMS, {
+          ...MOCK_FETCH_METADATA,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+
+        const lastEthersProviderChainId =
+          _swapsController._ethersProviderChainId;
+
+        assert.strictEqual(
+          firstEthersProviderChainId,
+          lastEthersProviderChainId,
+          'Ethers provider chainId should match what it was originally',
+        );
       });
     });
 

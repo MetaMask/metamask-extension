@@ -1,7 +1,6 @@
 .toggle-button {
   display: flex;
   cursor: pointer;
-
   $self: &;
 
   &__status {

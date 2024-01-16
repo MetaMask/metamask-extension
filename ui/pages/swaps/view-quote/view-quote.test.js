@@ -2,10 +2,12 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+import { NetworkType } from '@metamask/controller-utils';
+import { NetworkStatus } from '@metamask/network-controller';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import {
   renderWithProvider,
   createSwapsMockStore,
-  setBackgroundConnection,
   MOCKS,
 } from '../../../../test/jest';
 import ViewQuote from '.';
@@ -72,9 +74,11 @@ describe('ViewQuote', () => {
 
   it('renders the component with EIP-1559 enabled', () => {
     const state = createSwapsMockStore();
-    state.metamask.networkDetails = {
-      EIPS: {
-        1559: true,
+    state.metamask.selectedNetworkClientId = NetworkType.mainnet;
+    state.metamask.networksMetadata = {
+      [NetworkType.mainnet]: {
+        EIPS: { 1559: true },
+        status: NetworkStatus.Available,
       },
     };
     const store = configureMockStore(middleware)(state);

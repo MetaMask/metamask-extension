@@ -8,7 +8,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 
-import { Button, Box, BUTTON_VARIANT } from '..';
+import { Button, Box, ButtonVariant } from '..';
 
 import { InputType } from './input.types';
 import { Input } from './input';
@@ -169,7 +169,7 @@ export const Ref = (args) => {
     <Box display={Display.Flex}>
       <Input {...args} ref={inputRef} value={value} onChange={handleOnChange} />
       <Button
-        variant={BUTTON_VARIANT.PRIMARY}
+        variant={ButtonVariant.Primary}
         marginLeft={1}
         onClick={handleOnClick}
       >

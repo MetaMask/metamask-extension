@@ -24,6 +24,11 @@ export async function migrate(originalVersionedData: {
 
 function transformState(state: Record<string, unknown>) {
   if (!isObject(state.NetworkController)) {
+    global.sentry?.captureException?.(
+      new Error(
+        `typeof state.NetworkController is ${typeof state.NetworkController}`,
+      ),
+    );
     return state;
   }
 

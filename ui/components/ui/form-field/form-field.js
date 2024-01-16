@@ -45,6 +45,7 @@ export default function FormField({
   disabled = false,
   placeholder,
   warning,
+  warningProps,
   passwordStrength,
   passwordStrengthText,
   id,
@@ -151,6 +152,7 @@ export default function FormField({
             variant={TextVariant.bodySm}
             as="h6"
             className="form-field__warning"
+            {...warningProps}
           >
             {warning}
           </Text>
@@ -238,6 +240,13 @@ FormField.propTypes = {
    * Show warning message
    */
   warning: PropTypes.string,
+  /**
+   * Props to pass to the warning text component
+   * Accepts all props of the Text component
+   */
+  warningProps: PropTypes.shape({
+    ...Text.propTypes,
+  }),
   /**
    * Handler when fields change
    */

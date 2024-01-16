@@ -1,0 +1,9 @@
+Step,Test steps,Preconditions,Test data,Expected result,Notes
+1,Open the extension.,,,The Welcome Back screen is shown.,
+2,Proceed to Unlock the wallet.,,password (8 characters min).,The Ether balance is shown on the overview. The wallet address is shown on the overview. The selected network is Ethereum Mainnet.        ,
+3,Open Networks in the Settings menu. ,,,A list of main networks and test networks appears. The Add Network button is shown.,
+4,Select the Add Network option. ,,,The extension opens in a new tab. The Add a network manually button is shown. ,
+5,Proceed to Add a network manually.,,,"The network name, RPC URL, Chain ID, currency symbol and block explorer URL fields are shown. ",
+6,Fill in the network details. ,Run a local blockchain.,e.g. Network name: Test; RPC URL: http://localhost:8545; Chain ID: 1337; Currency symbol: ETH,,
+7,Save the changes.,,,The network is successfully added. The option to switch to the added network is shown. The option to dismiss is shown. ,
+8,Proceed to switch the network. ,,,The network is switched. The Ether balance is shown. ,

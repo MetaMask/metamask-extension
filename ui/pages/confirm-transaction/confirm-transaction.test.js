@@ -8,7 +8,7 @@ import * as ConfirmTransactionDucks from '../../ducks/confirm-transaction/confir
 import * as Actions from '../../store/actions';
 import _mockState from '../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
-import { setBackgroundConnection } from '../../../test/jest';
+import { setBackgroundConnection } from '../../store/background-connection';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
@@ -22,7 +22,7 @@ import {
 
 import ConfirmTransaction from '.';
 
-const mockUnapprovedTx = Object.values(_mockState.metamask.unapprovedTxs)[0];
+const mockUnapprovedTx = _mockState.metamask.transactions[0];
 
 const middleware = [thunk];
 
@@ -137,7 +137,7 @@ describe('Confirmation Transaction Page', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        unapprovedTxs: {},
+        transactions: [],
       },
     });
     const { container } = renderWithProvider(<ConfirmTransaction />, mockStore);
@@ -177,12 +177,12 @@ describe('Confirmation Transaction Page', () => {
       ...mockState,
       metamask: {
         ...mockState.metamask,
-        unapprovedTxs: {
-          [mockUnapprovedTx.id]: {
+        transactions: [
+          {
             ...mockUnapprovedTx,
             type: 'transfer',
           },
-        },
+        ],
       },
     });
     const { container } = renderWithProvider(
@@ -237,7 +237,7 @@ describe('Confirmation Transaction Page', () => {
     it('should not call setTransactionToConfirm when transaction id is not provided', () => {
       const mockStore = configureMockStore(middleware)({
         ...mockState,
-        metamask: { ...mockState.metamask, unapprovedTxs: {} },
+        metamask: { ...mockState.metamask, transactions: [] },
       });
       jest.spyOn(ReactRouterDOM, 'useParams').mockImplementation(() => {
         return { id: null };
@@ -272,7 +272,7 @@ describe('Confirmation Transaction Page', () => {
           ...mockState,
           metamask: {
             ...mockState.metamask,
-            unapprovedTxs: {},
+            transactions: [],
           },
         });
         const replaceSpy = jest.fn();

@@ -11,14 +11,6 @@ ignores:
   - 'punycode'
 
   #
-  # snaps flask deps
-  #
-  - '@metamask/rpc-methods-flask'
-  - '@metamask/snaps-controllers-flask'
-  - '@metamask/snaps-ui-flask'
-  - '@metamask/snaps-utils-flask'
-
-  #
   # dev deps
   #
 
@@ -40,6 +32,7 @@ ignores:
   - 'geckodriver'
   - 'jest'
   - 'lavamoat-viz'
+  - 'mocha-junit-reporter'
   - 'prettier-plugin-sort-json' # automatically imported by prettier
   - 'source-map-explorer'
   - 'playwright'
@@ -49,6 +42,7 @@ ignores:
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
+  - '@storybook/addon-designs'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
   - '@storybook/addon-mdx-gfm'

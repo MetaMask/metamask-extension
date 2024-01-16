@@ -1,7 +1,11 @@
 .multichain-account-picker {
-  &:hover,
-  &:focus {
+  &:not([disabled]):hover,
+  &:not([disabled]):focus {
     box-shadow: none;
     background: var(--color-background-default-hover);
+  }
+
+  &-container {
+    overflow: hidden;
   }
 }

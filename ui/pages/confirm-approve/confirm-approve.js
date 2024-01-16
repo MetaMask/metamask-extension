@@ -176,7 +176,14 @@ export default function ConfirmApprove({
   if (assetStandard === undefined) {
     return <ConfirmContractInteraction />;
   }
-  if (assetStandard === TokenStandard.ERC20) {
+
+  let tokenAllowanceImprovements = true;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  tokenAllowanceImprovements = false;
+  ///: END:ONLY_INCLUDE_IF
+
+  if (tokenAllowanceImprovements && assetStandard === TokenStandard.ERC20) {
     return (
       <GasFeeContextProvider transaction={transaction}>
         <TransactionModalContextProvider>
@@ -224,6 +231,7 @@ export default function ConfirmApprove({
       </GasFeeContextProvider>
     );
   }
+
   return (
     <GasFeeContextProvider transaction={transaction}>
       <ConfirmTransactionBase
@@ -250,7 +258,6 @@ export default function ConfirmApprove({
               assetName={assetName}
               assetStandard={assetStandard}
               tokenAddress={tokenAddress}
-              showCustomizeGasModal={approveTransaction}
               data={customData || transactionData}
               toAddress={toAddress}
               currentCurrency={currentCurrency}

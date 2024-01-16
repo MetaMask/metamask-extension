@@ -1,13 +1,13 @@
 import { ResultComponent } from '@metamask/approval-controller';
 
-type TemplateRendererComponent = {
+export type TemplateRendererComponent = {
   key: string;
   element: string;
   props?: Record<string, unknown>;
   children?:
     | string
     | TemplateRendererComponent
-    | (string | TemplateRendererComponent)[];
+    | (undefined | string | TemplateRendererComponent)[];
 };
 
 /**
@@ -54,6 +54,20 @@ export function processString(
   }
 
   return applyBold(currentInput);
+}
+
+/**
+ * Processes a header configuration and returns a value compatible with the template renderer.
+ *
+ * @param header - The header configuration to process.
+ * @returns The processed header.
+ */
+export function processHeader(
+  header: (string | ResultComponent)[] | undefined,
+) {
+  return convertResultComponents(header) as
+    | undefined
+    | (string | TemplateRendererComponent)[];
 }
 
 /**

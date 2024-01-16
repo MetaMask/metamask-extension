@@ -10,7 +10,7 @@ import {
 import {
   callBackgroundMethod,
   submitRequestToBackground,
-} from '../action-queue';
+} from '../background-connection';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
 import { isErrorWithMessage } from '../../../shared/modules/error';
 

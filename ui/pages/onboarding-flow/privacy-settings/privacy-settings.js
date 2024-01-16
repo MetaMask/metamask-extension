@@ -12,62 +12,82 @@ import {
   PRIVACY_POLICY_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
+  Box,
   PickerNetwork,
   Text,
   TextField,
+  ButtonPrimary,
+  ButtonPrimarySize,
+  ButtonSecondary,
+  ButtonSecondarySize,
 } from '../../../components/component-library';
-import Box from '../../../components/ui/box/box';
-import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  FONT_WEIGHT,
   TextColor,
   TextVariant,
-  TypographyVariant,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_PIN_EXTENSION_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getCurrentNetwork } from '../../../selectors';
+import { getAllNetworks, getCurrentNetwork } from '../../../selectors';
 import {
   setCompletedOnboarding,
-  setFeatureFlag,
   setIpfsGateway,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
   setUsePhishDetect,
+  setUse4ByteResolution,
   setUseTokenDetection,
   setUseAddressBarEnsResolution,
   showModal,
   toggleNetworkMenu,
+  setIncomingTransactionsPreferences,
 } from '../../../store/actions';
+import IncomingTransactionToggle from '../../../components/app/incoming-trasaction-toggle/incoming-transaction-toggle';
 import { Setting } from './setting';
 
 export default function PrivacySettings() {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const history = useHistory();
-  const [usePhishingDetection, setUsePhishingDetection] = useState(true);
-  const [turnOnTokenDetection, setTurnOnTokenDetection] = useState(true);
-  const [turnOnCurrencyRateCheck, setTurnOnCurrencyRateCheck] = useState(true);
-  const [showIncomingTransactions, setShowIncomingTransactions] =
-    useState(true);
+
+  const defaultState = useSelector((state) => state.metamask);
+  const {
+    incomingTransactionsPreferences,
+    usePhishDetect,
+    use4ByteResolution,
+    useTokenDetection,
+    useCurrencyRateCheck,
+    useMultiAccountBalanceChecker,
+    ipfsGateway,
+    useAddressBarEnsResolution,
+  } = defaultState;
+
+  const [usePhishingDetection, setUsePhishingDetection] =
+    useState(usePhishDetect);
+  const [turnOn4ByteResolution, setTurnOn4ByteResolution] =
+    useState(use4ByteResolution);
+  const [turnOnTokenDetection, setTurnOnTokenDetection] =
+    useState(useTokenDetection);
+  const [turnOnCurrencyRateCheck, setTurnOnCurrencyRateCheck] =
+    useState(useCurrencyRateCheck);
+
   const [
     isMultiAccountBalanceCheckerEnabled,
     setMultiAccountBalanceCheckerEnabled,
-  ] = useState(true);
-  const [ipfsURL, setIPFSURL] = useState('');
-  const [addressBarResolution, setAddressBarResolution] = useState(true);
+  ] = useState(useMultiAccountBalanceChecker);
+  const [ipfsURL, setIPFSURL] = useState(ipfsGateway);
   const [ipfsError, setIPFSError] = useState(null);
-  const trackEvent = useContext(MetaMetricsContext);
+  const [addressBarResolution, setAddressBarResolution] = useState(
+    useAddressBarEnsResolution,
+  );
 
+  const trackEvent = useContext(MetaMetricsContext);
   const currentNetwork = useSelector(getCurrentNetwork);
+  const allNetworks = useSelector(getAllNetworks);
 
   const handleSubmit = () => {
-    dispatch(
-      setFeatureFlag('showIncomingTransactions', showIncomingTransactions),
-    );
     dispatch(setUsePhishDetect(usePhishingDetection));
+    dispatch(setUse4ByteResolution(turnOn4ByteResolution));
     dispatch(setUseTokenDetection(turnOnTokenDetection));
     dispatch(
       setUseMultiAccountBalanceChecker(isMultiAccountBalanceCheckerEnabled),
@@ -85,7 +105,7 @@ export default function PrivacySettings() {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.OnboardingWalletAdvancedSettings,
       properties: {
-        show_incoming_tx: showIncomingTransactions,
+        show_incoming_tx: incomingTransactionsPreferences,
         use_phising_detection: usePhishingDetection,
         turnon_token_detection: turnOnTokenDetection,
       },
@@ -111,42 +131,23 @@ export default function PrivacySettings() {
     <>
       <div className="privacy-settings" data-testid="privacy-settings">
         <div className="privacy-settings__header">
-          <Typography
-            variant={TypographyVariant.H2}
-            fontWeight={FONT_WEIGHT.BOLD}
-          >
+          <Text variant={TextVariant.headingLg} as="h2">
             {t('advancedConfiguration')}
-          </Typography>
-          <Typography variant={TypographyVariant.H4}>
+          </Text>
+          <Text variant={TextVariant.headingSm} as="h4">
             {t('setAdvancedPrivacySettingsDetails')}
-          </Typography>
+          </Text>
         </div>
         <div
           className="privacy-settings__settings"
           data-testid="privacy-settings-settings"
         >
-          <Setting
-            value={showIncomingTransactions}
-            setValue={setShowIncomingTransactions}
-            title={t('showIncomingTransactions')}
-            description={t('onboardingShowIncomingTransactionsDescription', [
-              <a
-                key="etherscan"
-                href="https://etherscan.io/"
-                target="_blank"
-                rel="noreferrer"
-              >
-                {t('etherscan')}
-              </a>,
-              <a
-                href="https://etherscan.io/privacyPolicy"
-                target="_blank"
-                rel="noreferrer"
-                key="privacyMsg"
-              >
-                {t('privacyMsg')}
-              </a>,
-            ])}
+          <IncomingTransactionToggle
+            allNetworks={allNetworks}
+            setIncomingTransactionsPreferences={(chainId, value) =>
+              dispatch(setIncomingTransactionsPreferences(chainId, value))
+            }
+            incomingTransactionsPreferences={incomingTransactionsPreferences}
           />
           <Setting
             value={usePhishingDetection}
@@ -172,6 +173,12 @@ export default function PrivacySettings() {
             ])}
           />
           <Setting
+            value={turnOn4ByteResolution}
+            setValue={setTurnOn4ByteResolution}
+            title={t('use4ByteResolution')}
+            description={t('use4ByteResolutionDescription')}
+          />
+          <Setting
             value={turnOnTokenDetection}
             setValue={setTurnOnTokenDetection}
             title={t('turnOnTokenDetection')}
@@ -190,7 +197,7 @@ export default function PrivacySettings() {
               <>
                 {t('onboardingAdvancedPrivacyNetworkDescription', [
                   <a
-                    href="https://consensys.net/privacy-policy/"
+                    href="https://consensys.io/privacy-policy/"
                     key="link"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -211,17 +218,15 @@ export default function PrivacySettings() {
                       </>
                     </div>
                   ) : (
-                    <Button
-                      type="secondary"
-                      rounded
-                      large
+                    <ButtonSecondary
+                      size={ButtonSecondarySize.Lg}
                       onClick={(e) => {
                         e.preventDefault();
                         dispatch(showModal({ name: 'ONBOARDING_ADD_NETWORK' }));
                       }}
                     >
                       {t('onboardingAdvancedPrivacyNetworkButton')}
-                    </Button>
+                    </ButtonSecondary>
                   )}
                 </Box>
               </>
@@ -235,6 +240,7 @@ export default function PrivacySettings() {
                 {t('onboardingAdvancedPrivacyIPFSDescription')}
                 <Box paddingTop={2}>
                   <TextField
+                    value={ipfsURL}
                     style={{ width: '100%' }}
                     inputProps={{ 'data-testid': 'ipfs-input' }}
                     onChange={(e) => {
@@ -242,8 +248,8 @@ export default function PrivacySettings() {
                     }}
                   />
                   {ipfsURL ? (
-                    <Typography
-                      variant={TypographyVariant.H7}
+                    <Text
+                      variant={TextVariant.bodySm}
                       color={
                         ipfsError
                           ? TextColor.errorDefault
@@ -251,7 +257,7 @@ export default function PrivacySettings() {
                       }
                     >
                       {ipfsError || t('onboardingAdvancedPrivacyIPFSValid')}
-                    </Typography>
+                    </Text>
                   ) : null}
                 </Box>
               </>
@@ -264,7 +270,7 @@ export default function PrivacySettings() {
             description={
               <>
                 <Text variant={TextVariant.inherit}>
-                  {t('ensDomainsSettingDescriptionIntro')}
+                  {t('ensDomainsSettingDescriptionIntroduction')}
                 </Text>
                 <Box
                   as="ul"
@@ -274,17 +280,14 @@ export default function PrivacySettings() {
                   style={{ listStyleType: 'circle' }}
                 >
                   <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint1')}
+                    {t('ensDomainsSettingDescriptionPart1')}
                   </Text>
                   <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint2')}
-                  </Text>
-                  <Text variant={TextVariant.inherit} as="li">
-                    {t('ensDomainsSettingDescriptionPoint3')}
+                    {t('ensDomainsSettingDescriptionPart2')}
                   </Text>
                 </Box>
                 <Text variant={TextVariant.inherit}>
-                  {t('ensDomainsSettingDescriptionOutro')}
+                  {t('ensDomainsSettingDescriptionOutroduction')}
                 </Text>
               </>
             }
@@ -320,10 +323,15 @@ export default function PrivacySettings() {
               </a>,
             ])}
           />
+          <ButtonPrimary
+            size={ButtonPrimarySize.Lg}
+            onClick={handleSubmit}
+            block
+            marginTop={6}
+          >
+            {t('done')}
+          </ButtonPrimary>
         </div>
-        <Button type="primary" rounded onClick={handleSubmit}>
-          {t('done')}
-        </Button>
       </div>
     </>
   );

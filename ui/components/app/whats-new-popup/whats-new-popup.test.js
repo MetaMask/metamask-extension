@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
+import { NOTIFICATION_BLOCKAID_DEFAULT } from '../../../../shared/notifications';
 import WhatsNewPopup from './whats-new-popup';
 
 const render = () => {
@@ -97,6 +98,11 @@ const render = () => {
           id: 23,
           isShown: false,
         },
+        [NOTIFICATION_BLOCKAID_DEFAULT]: {
+          date: '2022-07-24',
+          id: Number(NOTIFICATION_BLOCKAID_DEFAULT),
+          isShown: false,
+        },
       },
     },
   });
@@ -130,9 +136,6 @@ describe('WhatsNewPopup', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByTestId('whats-new-description-item-1'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('whats-new-description-item-2'),
     ).toBeInTheDocument();
   });
 });

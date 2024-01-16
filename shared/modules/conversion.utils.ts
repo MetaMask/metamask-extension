@@ -156,6 +156,16 @@ export function sumHexes(first: string, ...args: string[]) {
   return total.toPrefixedHexString();
 }
 
+export function sumDecimals(first: string, ...args: string[]) {
+  const firstValue = new Numeric(first, 10);
+  const total = args.reduce(
+    (acc, hexAmount) => acc.add(new Numeric(hexAmount, 10)),
+    firstValue,
+  );
+
+  return total;
+}
+
 export function hexWEIToDecGWEI(value: number | string | BigNumber | BN) {
   return new Numeric(value, 16, EtherDenomination.WEI)
     .toBase(10)

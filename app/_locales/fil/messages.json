@@ -154,9 +154,6 @@
   "copyAddress": {
     "message": "Kopyahin ang address sa clipboard"
   },
-  "copyPrivateKey": {
-    "message": "Ito ang iyong pribadong private key (i-click para kopyahin)"
-  },
   "copyToClipboard": {
     "message": "Kopyahin sa clipboard"
   },
@@ -190,9 +187,6 @@
   "deleteNetwork": {
     "message": "I-delete ang Network?"
   },
-  "deleteNetworkDescription": {
-    "message": "Sigurado ka bang gusto mong i-delete ang network na ito?"
-  },
   "details": {
     "message": "Mga Detalye"
   },
@@ -214,14 +208,8 @@
   "editContact": {
     "message": "I-edit ang Contact"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Hindi nakita ang ENS name sa kasalukuyang network. Subukang lumipat sa Ethereum Mainnet."
-  },
   "ensRegistrationError": {
     "message": "May error sa pagrerehistro ng ENS name"
-  },
-  "enterPassword": {
-    "message": "Ilagay ang password"
   },
   "enterPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
@@ -231,9 +219,6 @@
   },
   "expandView": {
     "message": "I-expand ang View"
-  },
-  "exportPrivateKey": {
-    "message": "I-export ang Private Key"
   },
   "failed": {
     "message": "Nabigo"
@@ -548,12 +533,6 @@
   "search": {
     "message": "Hanapin"
   },
-  "searchResults": {
-    "message": "Mga Resulta ng Paghahanap"
-  },
-  "searchTokens": {
-    "message": "Maghanap ng Mga Token"
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -592,9 +571,6 @@
   },
   "showHexDataDescription": {
     "message": "Piliin ito para ipakita ang hex data field sa screen ng pagpapadala"
-  },
-  "showPrivateKeys": {
-    "message": "Ipakita ang mga Private Key"
   },
   "sign": {
     "message": "I-sign"
@@ -704,9 +680,6 @@
   "tryAgain": {
     "message": "Subukang muli"
   },
-  "typePassword": {
-    "message": "I-type ang iyong password sa MetaMask"
-  },
   "unapproved": {
     "message": "Hindi inaprubahan"
   },
@@ -715,12 +688,6 @@
   },
   "unknown": {
     "message": "Hindi Alam"
-  },
-  "unknownCameraError": {
-    "message": "Nagkaroon ng error habang sinusubukang i-access ang iyong camera. Pakisubukang muli..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Nagkaroon ng problema...."
   },
   "unknownNetwork": {
     "message": "Hindi Kilalang Pribadong Network"

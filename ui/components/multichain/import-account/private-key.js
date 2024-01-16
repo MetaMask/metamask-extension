@@ -1,18 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import {
-  FormTextField,
-  TEXT_FIELD_SIZES,
-  TEXT_FIELD_TYPES,
-} from '../../component-library';
+import { TextFieldSize, TextFieldType } from '../../component-library';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import BottomButtons from './bottom-buttons';
-
-PrivateKeyImportView.propTypes = {
-  importAccountFunc: PropTypes.func.isRequired,
-  onActionComplete: PropTypes.func.isRequired,
-};
 
 export default function PrivateKeyImportView({
   importAccountFunc,
@@ -31,16 +23,16 @@ export default function PrivateKeyImportView({
   }
 
   function _importAccountFunc() {
-    importAccountFunc('Private Key', [privateKey]);
+    importAccountFunc('privateKey', [privateKey]);
   }
 
   return (
     <>
       <FormTextField
         id="private-key-box"
-        size={TEXT_FIELD_SIZES.LARGE}
+        size={TextFieldSize.Lg}
         autoFocus
-        type={TEXT_FIELD_TYPES.PASSWORD}
+        type={TextFieldType.Password}
         helpText={warning}
         error
         label={t('pastePrivateKey')}
@@ -60,3 +52,14 @@ export default function PrivateKeyImportView({
     </>
   );
 }
+
+PrivateKeyImportView.propTypes = {
+  /**
+   * Function to import the account
+   */
+  importAccountFunc: PropTypes.func.isRequired,
+  /**
+   * Executes when the key is imported
+   */
+  onActionComplete: PropTypes.func.isRequired,
+};

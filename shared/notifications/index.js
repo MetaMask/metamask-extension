@@ -1,4 +1,16 @@
 // Messages and descriptions for these locale keys are in app/_locales/en/messages.json
+
+/**
+ * I'm trying something new here, where notifications get names that are translated
+ * into numbers in only one place. This should make merge conflicts easier.
+ */
+export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
+export const NOTIFICATION_OPEN_BETA_SNAPS = 26;
+export const NOTIFICATION_BUY_SELL_BUTTON = 27;
+export const NOTIFICATION_U2F_LEDGER_LIVE = 28;
+export const NOTIFICATION_STAKING_PORTFOLIO = 29;
+export const NOTIFICATION_BLOCKAID_DEFAULT = 30;
+
 export const UI_NOTIFICATIONS = {
   1: {
     id: 1,
@@ -119,19 +131,65 @@ export const UI_NOTIFICATIONS = {
     date: null,
     image: {
       src: 'images/global-menu-block-explorer.svg',
-      width: '100%',
     },
   },
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   23: {
     id: 23,
     date: null,
     image: {
-      src: 'images/blockaid-security-provider.png',
+      src: 'images/blockaid-security-provider.svg',
       width: '100%',
     },
   },
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
+  24: {
+    id: 24,
+    date: null,
+  },
+  // This syntax is unusual, but very helpful here.  It's equivalent to `UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
+  [NOTIFICATION_DROP_LEDGER_FIREFOX]: {
+    id: Number(NOTIFICATION_DROP_LEDGER_FIREFOX),
+    date: null,
+  },
+  [NOTIFICATION_OPEN_BETA_SNAPS]: {
+    id: Number(NOTIFICATION_OPEN_BETA_SNAPS),
+    date: null,
+    image: {
+      src: 'images/introducing-snaps.svg',
+      width: '100%',
+    },
+  },
+  [NOTIFICATION_BUY_SELL_BUTTON]: {
+    id: Number(NOTIFICATION_BUY_SELL_BUTTON),
+    date: null,
+    image: {
+      src: 'images/sell_button_whatsnew.png',
+      width: '100%',
+    },
+  },
+  [NOTIFICATION_U2F_LEDGER_LIVE]: {
+    id: Number(NOTIFICATION_U2F_LEDGER_LIVE),
+    date: null,
+  },
+  [NOTIFICATION_STAKING_PORTFOLIO]: {
+    id: Number(NOTIFICATION_STAKING_PORTFOLIO),
+    date: null,
+    image: {
+      src: 'images/portfolio-stake-notification-light-mode.png',
+      width: '100%',
+    },
+  },
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  [NOTIFICATION_BLOCKAID_DEFAULT]: {
+    id: Number(NOTIFICATION_BLOCKAID_DEFAULT),
+    date: null,
+    image: {
+      src: 'images/blockaid-security-provider.svg',
+      width: '100%',
+    },
+  },
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export const getTranslatedUINotifications = (t, locale) => {
@@ -342,14 +400,13 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     23: {
       ...UI_NOTIFICATIONS[23],
       title: t('notifications23Title'),
       description: [
         t('notifications23DescriptionOne'),
         t('notifications23DescriptionTwo'),
-        t('notifications23DescriptionThree'),
       ],
       actionText: t('notifications23ActionText'),
       date: UI_NOTIFICATIONS[23].date
@@ -358,6 +415,92 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
+    24: {
+      ...UI_NOTIFICATIONS[24],
+      title: t('notifications24Title'),
+      description: t('notifications24Description'),
+      actionText: t('notifications24ActionText'),
+      date: UI_NOTIFICATIONS[24].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[24].date),
+          )
+        : '',
+    },
+    // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
+    [NOTIFICATION_DROP_LEDGER_FIREFOX]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX],
+      title: t('notificationsDropLedgerFirefoxTitle'),
+      description: [t('notificationsDropLedgerFirefoxDescription')],
+      date: UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_DROP_LEDGER_FIREFOX].date),
+          )
+        : '',
+    },
+    [NOTIFICATION_OPEN_BETA_SNAPS]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS],
+      title: t('notificationsOpenBetaSnapsTitle'),
+      description: [
+        t('notificationsOpenBetaSnapsDescriptionOne'),
+        t('notificationsOpenBetaSnapsDescriptionTwo'),
+        t('notificationsOpenBetaSnapsDescriptionThree'),
+      ],
+      actionText: t('notificationsOpenBetaSnapsActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_OPEN_BETA_SNAPS].date),
+          )
+        : '',
+    },
+    [NOTIFICATION_BUY_SELL_BUTTON]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON],
+      title: t('notificationsBuySellTitle'),
+      description: t('notificationsBuySellDescription'),
+      actionText: t('notificationsBuySellActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_BUY_SELL_BUTTON].date),
+          )
+        : '',
+    },
+    [NOTIFICATION_U2F_LEDGER_LIVE]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE],
+      title: t('notificationsU2FLedgerLiveTitle'),
+      description: [t('notificationsU2FLedgerLiveDescription')],
+      date: UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date),
+          )
+        : '',
+    },
+    [NOTIFICATION_STAKING_PORTFOLIO]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO],
+      title: t('notificationsStakingPortfolioTitle'),
+      description: [t('notificationsStakingPortfolioDescription')],
+      actionText: t('notificationsStakingPortfolioActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date),
+          )
+        : '',
+    },
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    [NOTIFICATION_BLOCKAID_DEFAULT]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT],
+      title: t('notificationsBlockaidDefaultTitle'),
+      description: [
+        t('notificationsBlockaidDefaultDescriptionOne'),
+        t('notificationsBlockaidDefaultDescriptionTwo'),
+        t('notificationsBlockaidDefaultDescriptionThree'),
+      ],
+      actionText: t('notificationsBlockaidDefaultDescriptionThreeActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date),
+          )
+        : '',
+    },
+    ///: END:ONLY_INCLUDE_IF
   };
 };

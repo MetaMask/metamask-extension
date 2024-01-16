@@ -1,4 +1,4 @@
-import { TransactionType } from '../../shared/constants/transaction';
+import { TransactionType } from '@metamask/transaction-controller';
 import { renderHookWithProvider } from '../../test/lib/render-helpers';
 import mockState from '../../test/data/mock-state.json';
 import { useTransactionFunctionType } from './useTransactionFunctionType';

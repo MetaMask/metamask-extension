@@ -12,15 +12,17 @@ jest.mock('react-redux', () => ({
 jest.mock('../../../../selectors', () => ({
   getAddressBook: (s) => [{ name: `mockAddressBook:${s}` }],
   getAddressBookEntry: (s) => `mockAddressBookEntry:${s}`,
-  getMetaMaskAccountsOrdered: () => [
-    { name: `account1:mockState` },
-    { name: `account2:mockState` },
+  getInternalAccountsSortedByKeyring: () => [
+    { address: 'address-1', metadata: { name: `account1:mockState` } },
+    { address: 'address-2', metadata: { name: `account2:mockState` } },
   ],
-  currentNetworkTxListSelector: (s) => `currentNetworkTxListSelector:${s}`,
+  getCurrentNetworkTransactions: (s) => `getCurrentNetworkTransactions:${s}`,
 }));
 
 jest.mock('../../../../ducks/domains', () => ({
   getDomainResolution: (s) => `mockSendDomainResolution:${s}`,
+  getDomainType: (s) => `mockSendDomainType:${s}`,
+  getResolvingSnap: (s) => `mockSendResolvingSnap:${s}`,
   getDomainError: (s) => `mockSendDomainResolutionError:${s}`,
   getDomainWarning: (s) => `mockSendDomainResolutionWarning:${s}`,
   useMyAccountsForRecipientSearch: (s) =>
@@ -38,7 +40,6 @@ jest.mock('../../../../ducks/send', () => ({
   getRecipientUserInput: (s) => `mockRecipientUserInput:${s}`,
   getRecipient: (s) => `mockRecipient:${s}`,
 }));
-
 require('./add-recipient.container');
 
 describe('add-recipient container', () => {
@@ -53,11 +54,13 @@ describe('add-recipient container', () => {
         domainWarning: 'mockSendDomainResolutionWarning:mockState',
         nonContacts: [],
         ownedAccounts: [
-          { name: 'account1:mockState' },
-          { name: 'account2:mockState' },
+          { address: 'address-1', name: 'account1:mockState' },
+          { address: 'address-2', name: 'account2:mockState' },
         ],
         userInput: 'mockRecipientUserInput:mockState',
         recipient: 'mockRecipient:mockState',
+        resolvingSnap: 'mockSendResolvingSnap:mockState',
+        domainType: 'mockSendDomainType:mockState',
       });
     });
   });

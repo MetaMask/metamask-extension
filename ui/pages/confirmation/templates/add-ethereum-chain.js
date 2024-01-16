@@ -13,7 +13,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
 
 const UNRECOGNIZED_CHAIN = {
@@ -25,6 +24,20 @@ const UNRECOGNIZED_CHAIN = {
       element: 'MetaMaskTranslation',
       props: {
         translationKey: 'unrecognizedChain',
+      },
+    },
+  },
+};
+
+const SAFE_CHAIN_LIST_PROVIDER_ERROR = {
+  id: 'SAFE_CHAIN_LIST_PROVIDER_ERROR',
+  severity: Severity.Warning,
+  content: {
+    element: 'span',
+    children: {
+      element: 'MetaMaskTranslation',
+      props: {
+        translationKey: 'errorGettingSafeChainList',
       },
     },
   },
@@ -131,41 +144,42 @@ const ERROR_CONNECTING_TO_RPC = {
   },
 };
 
-async function getAlerts(pendingApproval) {
+async function getAlerts(pendingApproval, data) {
   const alerts = [];
-  const safeChainsList =
-    (await fetchWithCache('https://chainid.network/chains.json')) || [];
-  const matchedChain = safeChainsList.find(
-    (chain) =>
-      chain.chainId === parseInt(pendingApproval.requestData.chainId, 16),
-  );
 
   const originIsMetaMask = pendingApproval.origin === 'metamask';
-  if (originIsMetaMask && Boolean(matchedChain)) {
+  if (originIsMetaMask && Boolean(data.matchedChain)) {
     return [];
   }
 
-  if (matchedChain) {
+  if (data.matchedChain) {
     if (
-      matchedChain.name.toLowerCase() !==
+      data.matchedChain.name?.toLowerCase() !==
       pendingApproval.requestData.chainName.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_NAME);
     }
     if (
-      matchedChain.nativeCurrency?.symbol !== pendingApproval.requestData.ticker
+      data.matchedChain.nativeCurrency?.symbol?.toLowerCase() !==
+      pendingApproval.requestData.ticker?.toLowerCase()
     ) {
       alerts.push(MISMATCHED_NETWORK_SYMBOL);
     }
 
     const { origin } = new URL(pendingApproval.requestData.rpcUrl);
-    if (!matchedChain.rpc.map((rpc) => new URL(rpc).origin).includes(origin)) {
+    if (
+      !data.matchedChain.rpc?.map((rpc) => new URL(rpc).origin).includes(origin)
+    ) {
       alerts.push(MISMATCHED_NETWORK_RPC);
     }
   }
 
-  if (!matchedChain) {
-    alerts.push(UNRECOGNIZED_CHAIN);
+  if (!data.matchedChain && data.useSafeChainsListValidation) {
+    if (data.providerError) {
+      alerts.push(SAFE_CHAIN_LIST_PROVIDER_ERROR);
+    } else {
+      alerts.push(UNRECOGNIZED_CHAIN);
+    }
   }
 
   if (alerts.length) {
@@ -182,7 +196,7 @@ function getState(pendingApproval) {
   return {};
 }
 
-function getValues(pendingApproval, t, actions, history) {
+function getValues(pendingApproval, t, actions, history, _, data) {
   const originIsMetaMask = pendingApproval.origin === 'metamask';
   const customRpcUrl = pendingApproval.requestData.rpcUrl;
   return {
@@ -335,6 +349,9 @@ function getValues(pendingApproval, t, actions, history) {
             [t('chainId')]: t('chainIdDefinition'),
             [t('currencySymbol')]: t('currencySymbolDefinition'),
             [t('blockExplorerUrl')]: t('blockExplorerUrlDefinition'),
+          },
+          warnings: {
+            [t('currencySymbol')]: data.currencySymbolWarning,
           },
           dictionary: {
             [t('networkName')]: pendingApproval.requestData.chainName,

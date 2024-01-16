@@ -6,10 +6,14 @@ import {
   PriorityLevels,
 } from '../../../../../shared/constants/gas';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
-import { ETH } from '../../../../helpers/constants/common';
 import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 
+import {
+  CHAIN_IDS,
+  GOERLI_DISPLAY_NAME,
+  NETWORK_TYPES,
+} from '../../../../../shared/constants/network';
 import EditGasItem from './edit-gas-item';
 
 jest.mock('../../../../store/actions', () => ({
@@ -58,22 +62,38 @@ const renderComponent = ({
 } = {}) => {
   const store = configureStore({
     metamask: {
-      nativeCurrency: ETH,
-      providerConfig: {},
-      cachedBalances: {},
+      currencyRates: {},
+      providerConfig: {
+        chainId: CHAIN_IDS.GOERLI,
+        nickname: GOERLI_DISPLAY_NAME,
+        type: NETWORK_TYPES.GOERLI,
+      },
+      accountsByChainId: {
+        [CHAIN_IDS.GOERLI]: {
+          '0xAddress': {
+            address: '0xAddress',
+            balance: '0x176e5b6f173ebe66',
+          },
+        },
+      },
       accounts: {
         '0xAddress': {
           address: '0xAddress',
           balance: '0x176e5b6f173ebe66',
         },
       },
+      identities: {
+        '0xAddress': {},
+      },
       selectedAddress: '0xAddress',
       featureFlags: { advancedInlineGas: true },
       gasEstimateType: 'fee-market',
       gasFeeEstimates: MOCK_FEE_ESTIMATE,
       advancedGasFee: {
-        maxBaseFee: '100',
-        priorityFee: '2',
+        [CHAIN_IDS.GOERLI]: {
+          maxBaseFee: '100',
+          priorityFee: '2',
+        },
       },
     },
   });

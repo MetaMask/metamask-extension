@@ -100,9 +100,6 @@
   "addContact": {
     "message": "Adicionar contato"
   },
-  "addCustomToken": {
-    "message": "Adicionar token personalizado"
-  },
   "addEthereumChainConfirmationDescription": {
     "message": "Isso permitirá que essa rede seja usada dentro da MetaMask."
   },
@@ -147,12 +144,6 @@
   },
   "advancedBaseGasFeeToolTip": {
     "message": "Quando a sua transação for incluída no bloco, qualquer diferença entre a sua taxa de base máxima e a taxa de base real será reembolsada. O cálculo do valor total é feito da seguinte forma: taxa de base máxima (em GWEI) * limite de gás."
-  },
-  "advancedGasFeeDefaultOptIn": {
-    "message": "Salvar estes $1 como meu padrão para \"Avançado\""
-  },
-  "advancedGasFeeDefaultOptOut": {
-    "message": "Sempre utilizar esses valores e a configuração avançada por padrão."
   },
   "advancedGasFeeModalTitle": {
     "message": "Taxa de gás avançada"
@@ -307,9 +298,6 @@
   },
   "busy": {
     "message": "Ocupado"
-  },
-  "buy": {
-    "message": "Comprar"
   },
   "bytes": {
     "message": "Bytes"
@@ -478,9 +466,6 @@
   "copyAddress": {
     "message": "Copiar endereço para a área de transferência"
   },
-  "copyPrivateKey": {
-    "message": "Essa é a sua chave privada (clique para copiar)"
-  },
   "copyRawTransactionData": {
     "message": "Copiar dados brutos da transação"
   },
@@ -583,9 +568,6 @@
   },
   "deleteNetwork": {
     "message": "Excluir rede?"
-  },
-  "deleteNetworkDescription": {
-    "message": "Quer mesmo excluir essa rede?"
   },
   "description": {
     "message": "Descrição"
@@ -740,12 +722,6 @@
   "enableFromSettings": {
     "message": " Ative nas Configurações."
   },
-  "enableOpenSeaAPI": {
-    "message": "Ativar a API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
-  },
   "enableToken": {
     "message": "ativar $1",
     "description": "$1 is a token symbol, e.g. ETH"
@@ -764,12 +740,6 @@
   "ensIllegalCharacter": {
     "message": "Caractere inválido para ENS."
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nome ENS não encontrado na rede atual. Procure trocar para a mainnet do Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "A rede não suporta ENS"
-  },
   "ensRegistrationError": {
     "message": "Erro no registro do nome ENS"
   },
@@ -778,9 +748,6 @@
   },
   "enterMaxSpendLimit": {
     "message": "Digite um limite máximo de gastos"
-  },
-  "enterPassword": {
-    "message": "Digite a senha"
   },
   "enterPasswordContinue": {
     "message": "Digite a senha para continuar"
@@ -837,9 +804,6 @@
   },
   "experimental": {
     "message": "Experimental"
-  },
-  "exportPrivateKey": {
-    "message": "Exportar chave privada"
   },
   "externalExtension": {
     "message": "Extensão externa"
@@ -960,33 +924,13 @@
     "message": "$1 h",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 minutos",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Talvez em $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Provavelmente em < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 segundos",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Muito provavelmente em < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gás usado"
@@ -1200,25 +1144,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Ative \"dados de contrato inteligente\" ou \"assinatura cega\" no seu dispositivo Ledger"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Ative Utilizar Ledger Live em Configurações > Avançado"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Conecte o seu dispositivo Ledger e selecione o app Ethereum"
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Abra e desbloqueie o app Ledger Live"
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Personalize como conectar sua Ledger à MetaMask. Recomenda-se utilizar $1, mas há outras opções. Leia mais aqui: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Não foi possível abrir o dispositivo Ledger. Seu Ledger pode não estar conectado a outros softwares. Feche o Ledger Live ou outros aplicativos conectados ao seu dispositivo Ledger e tente reconectar."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Aplicativo Ledger Live"
@@ -1228,9 +1158,6 @@
   },
   "ledgerTimeout": {
     "message": "O Ledger Live está demorando muito para responder ou a conexão expirou. Certifique-se de que o aplicativo do Ledger Live esteja aberto e que seu dispositivo esteja desbloqueado."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Se o seu aplicativo do Ledger Live estiver aberto, desconecte qualquer conexão aberta com o Ledger Live e feche o aplicativo do Ledger Live."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "O dispositivo ledger não foi conectado. Se deseja conectar seu Ledger, clique em \"Continuar\" novamente e aprove a conexão HID",
@@ -1419,9 +1346,6 @@
   "newContract": {
     "message": "Novo contrato"
   },
-  "newNFTsDetected": {
-    "message": "Novidade! Detecção de NFT"
-  },
   "newNetworkAdded": {
     "message": "“$1” foi adicionado com sucesso!"
   },
@@ -1430,9 +1354,6 @@
   },
   "newPassword": {
     "message": "Nova senha (no mínimo 8 caracteres)"
-  },
-  "newValues": {
-    "message": "novos valores"
   },
   "next": {
     "message": "Seguinte"
@@ -1635,10 +1556,6 @@
   "onboardingPinExtensionTitle": {
     "message": "Sua instalação da MetaMask está concluída!"
   },
-  "onboardingShowIncomingTransactionsDescription": {
-    "message": "A exibição de transações recebidas na sua carteira depende de comunicação com $1. O Etherscan terá acesso ao seu endereço Ethereum e ao seu endereço IP. Veja $2.",
-    "description": "$1 is a clickable link with text defined by the 'etherscan' key. $2 is a clickable link with text defined by the 'privacyMsg' key."
-  },
   "onboardingUsePhishingDetectionDescription": {
     "message": "Os alertas de detecção de phishing dependem de comunicação com $1. O jsDeliver terá acesso ao seu endereço IP. Veja $2.",
     "description": "The $1 is the word 'jsDeliver', from key 'jsDeliver' and $2 is the words Privacy Policy from key 'privacyMsg', both separated here so that it can be wrapped as a link"
@@ -1722,10 +1639,6 @@
   "plusXMore": {
     "message": "E mais $1",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
-  },
-  "preferredLedgerConnectionType": {
-    "message": "Tipo de conexão preferencial com o Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "prev": {
     "message": "Anterior"
@@ -1888,12 +1801,6 @@
   "searchAccounts": {
     "message": "Buscar contas"
   },
-  "searchResults": {
-    "message": "Resultados da busca"
-  },
-  "searchTokens": {
-    "message": "Buscar tokens"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"
   },
@@ -2035,9 +1942,6 @@
   "showPermissions": {
     "message": "Mostrar permissões"
   },
-  "showPrivateKeys": {
-    "message": "Mostrar chaves privadas"
-  },
   "showTestnetNetworks": {
     "message": "Mostrar redes de teste"
   },
@@ -2070,9 +1974,6 @@
   },
   "somethingWentWrong": {
     "message": "Opa! Ocorreu algum erro."
-  },
-  "source": {
-    "message": "Fonte"
   },
   "speedUp": {
     "message": "Acelerar"
@@ -2371,9 +2272,6 @@
   "swapSource": {
     "message": "Fonte de liquidez"
   },
-  "swapSourceInfo": {
-    "message": "Pesquisamos várias fontes de liquidez (exchanges, agregadores e formadores de mercado profissionais) para descobrir as melhores tarifas e as taxas de rede mais baixas."
-  },
   "swapSuggested": {
     "message": "Troca sugerida"
   },
@@ -2543,18 +2441,6 @@
   "transactionCreated": {
     "message": "Transação criada com valor de $1 às $2."
   },
-  "transactionData": {
-    "message": "Dados da transação"
-  },
-  "transactionDecodingAccreditationDecoded": {
-    "message": "Decodificado por Truffle"
-  },
-  "transactionDecodingAccreditationVerified": {
-    "message": "Contrato verificado em $1"
-  },
-  "transactionDecodingUnsupportedNetworkError": {
-    "message": "A decodificação da transação não está disponível para o chainId $1"
-  },
   "transactionDetailDappGasMoreInfo": {
     "message": "Site sugerido"
   },
@@ -2563,9 +2449,6 @@
   },
   "transactionDetailGasHeading": {
     "message": "Taxa de gás estimada"
-  },
-  "transactionDetailGasInfoV2": {
-    "message": "estimada"
   },
   "transactionDetailGasTooltipConversion": {
     "message": "Saiba mais sobre taxas de gás"
@@ -2652,12 +2535,6 @@
   "twelveHrTitle": {
     "message": "12 h:"
   },
-  "txInsightsNotSupported": {
-    "message": "As informações sobre transações não são suportadas para esse contrato, por ora."
-  },
-  "typePassword": {
-    "message": "Digite sua senha da MetaMask"
-  },
   "u2f": {
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
@@ -2670,12 +2547,6 @@
   },
   "unknown": {
     "message": "Desconhecido"
-  },
-  "unknownCameraError": {
-    "message": "Houve um erro ao tentar acessar sua câmera. Tente novamente..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Opa! Ocorreu algum erro..."
   },
   "unknownNetwork": {
     "message": "Rede privada desconhecida"
@@ -2712,9 +2583,6 @@
   "useNftDetection": {
     "message": "Detectar NFTs automaticamente"
   },
-  "useNftDetectionDescription": {
-    "message": "A exibição de mídias e dados de NFTs pode expor seu endereço IP para servidores centralizados. APIs terceirizadas (como a OpenSea) são utilizadas para detectar NFTs na sua carteira. Isso expõe o endereço da sua conta com esses serviços. Deixe essa opção desativada se você não quer que o aplicativo extraia dados desses serviços."
-  },
   "usePhishingDetection": {
     "message": "Usar detecção de phishing"
   },
@@ -2726,10 +2594,6 @@
   },
   "userName": {
     "message": "Nome de usuário"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Os decimais do token podem ser encontrados no $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Verifique esse token no $1",

@@ -7,13 +7,19 @@ import { I18nContext } from '../../../contexts/i18n';
 import {
   getConversionRate,
   getNativeCurrency,
+  getProviderConfig,
 } from '../../../ducks/metamask/metamask';
-import { getCurrentCurrency, getShouldShowFiat } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getCurrentCurrency,
+  getShouldShowFiat,
+} from '../../../selectors';
 import {
   getValueFromWeiHex,
   getWeiHexFromDecimalValue,
 } from '../../../../shared/modules/conversion.utils';
 import { EtherDenomination } from '../../../../shared/constants/common';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 
 /**
  * Component that allows user to enter currency values as a number, and props receive a converted
@@ -25,12 +31,16 @@ import { EtherDenomination } from '../../../../shared/constants/common';
  * @param options0.featureSecondary
  * @param options0.onChange
  * @param options0.onPreferenceToggle
+ * @param options0.swapIcon
+ * @param options0.className
  */
 export default function CurrencyInput({
   hexValue,
   featureSecondary,
   onChange,
   onPreferenceToggle,
+  swapIcon,
+  className = '',
 }) {
   const t = useContext(I18nContext);
 
@@ -38,6 +48,13 @@ export default function CurrencyInput({
   const secondaryCurrency = useSelector(getCurrentCurrency);
   const conversionRate = useSelector(getConversionRate);
   const showFiat = useSelector(getShouldShowFiat);
+  const chainId = useSelector(getCurrentChainId);
+  const { ticker, type } = useSelector(getProviderConfig);
+  const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
+    chainId,
+    ticker,
+    type,
+  );
   const hideSecondary = !showFiat;
   const primarySuffix = preferredCurrency || EtherDenomination.ETH;
   const secondarySuffix = secondaryCurrency.toUpperCase();
@@ -103,6 +120,20 @@ export default function CurrencyInput({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [featureSecondary, initialDecimalValue]);
 
+  const renderSwapButton = () => {
+    if (!isOriginalNativeSymbol) {
+      return null;
+    }
+    return (
+      <button
+        className="currency-input__swap-component"
+        data-testid="currency-swap"
+        onClick={swap}
+      >
+        <i className="fa fa-retweet fa-lg" />
+      </button>
+    );
+  };
   const renderConversionComponent = () => {
     let currency, numberOfDecimals;
 
@@ -113,6 +144,9 @@ export default function CurrencyInput({
         </div>
       );
     }
+    if (!isOriginalNativeSymbol) {
+      return null;
+    }
 
     if (shouldUseFiat) {
       // Display ETH
@@ -120,7 +154,7 @@ export default function CurrencyInput({
       numberOfDecimals = 8;
     } else {
       // Display Fiat
-      currency = secondaryCurrency;
+      currency = isOriginalNativeSymbol ? secondaryCurrency : null;
       numberOfDecimals = 2;
     }
 
@@ -147,18 +181,15 @@ export default function CurrencyInput({
         onPreferenceToggle,
       }}
       dataTestId="currency-input"
-      suffix={shouldUseFiat ? secondarySuffix : primarySuffix}
+      suffix={
+        shouldUseFiat && isOriginalNativeSymbol
+          ? secondarySuffix
+          : primarySuffix
+      }
       onChange={handleChange}
       value={initialDecimalValue}
-      actionComponent={
-        <button
-          className="currency-input__swap-component"
-          data-testid="currency-swap"
-          onClick={swap}
-        >
-          <i className="fa fa-retweet fa-lg" />
-        </button>
-      }
+      className={className}
+      actionComponent={swapIcon ? swapIcon(swap) : renderSwapButton()}
     >
       {renderConversionComponent()}
     </UnitInput>
@@ -170,4 +201,6 @@ CurrencyInput.propTypes = {
   featureSecondary: PropTypes.bool,
   onChange: PropTypes.func,
   onPreferenceToggle: PropTypes.func,
+  swapIcon: PropTypes.func,
+  className: PropTypes.string,
 };

@@ -13,30 +13,36 @@ const mockFeatures = [
 export default {
   title: 'Components/App/SecurityProviderBannerAlert/BlockaidBannerAlert',
   argTypes: {
-    features: {
-      control: 'array',
-      description:
-        'ppomResponse.features value which is a list displayed as SecurityProviderBannerAlert details',
-    },
-    reason: {
-      control: 'select',
-      options: Object.values(BlockaidReason),
-      description: 'ppomResponse.reason value',
-    },
-    resultType: {
-      control: 'select',
-      options: Object.values(BlockaidResultType),
-      description: 'ppomResponse.resultType value',
+    txData: {
+      securityAlertResponse: {
+        features: {
+          control: 'array',
+          description:
+            'securityAlertResponse.features value which is a list displayed as SecurityProviderBannerAlert details',
+        },
+        reason: {
+          control: 'select',
+          options: Object.values(BlockaidReason),
+          description: 'securityAlertResponse.reason value',
+        },
+        result_type: {
+          control: 'select',
+          options: Object.values(BlockaidResultType),
+          description: 'securityAlertResponse.result_type value',
+        },
+      },
     },
   },
   args: {
-    features: mockFeatures,
-    reason: BlockaidReason.setApprovalForAll,
-    resultType: BlockaidResultType.Warning,
+    txData: {
+      securityAlertResponse: {
+        features: mockFeatures,
+        reason: BlockaidReason.setApprovalForAll,
+        result_type: BlockaidResultType.Warning,
+      },
+    },
   },
 };
 
-export const DefaultStory = (args) => (
-  <BlockaidBannerAlert ppomResponse={args} />
-);
+export const DefaultStory = (args) => <BlockaidBannerAlert {...args} />;
 DefaultStory.storyName = 'Default';

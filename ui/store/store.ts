@@ -3,9 +3,10 @@ import { configureStore as baseConfigureStore } from '@reduxjs/toolkit';
 import devtoolsEnhancer from 'remote-redux-devtools';
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { GasEstimateType, GasFeeEstimates } from '@metamask/gas-fee-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
+import { InternalAccount } from '@metamask/keyring-api';
 import rootReducer from '../ducks';
 import { LedgerTransportTypes } from '../../shared/constants/hardware-wallets';
-import { TransactionMeta } from '../../shared/constants/transaction';
 import type { NetworkStatus } from '../../shared/constants/network';
 
 /**
@@ -17,18 +18,18 @@ import type { NetworkStatus } from '../../shared/constants/network';
  * TODO: Replace this
  */
 export interface TemporaryMessageDataType {
-  id: number;
+  id: string;
   type: string;
   msgParams: {
-    metamaskId: number;
+    metamaskId: string;
     data: string;
   };
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   metadata?: {
     custodyId?: string;
   };
   status?: string;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 }
 
 export interface MessagesIndexedById {
@@ -53,7 +54,7 @@ interface TemporaryBackgroundState {
   providerConfig: {
     chainId: string;
   };
-  currentNetworkTxList: TransactionMeta[];
+  transactions: TransactionMeta[];
   selectedAddress: string;
   identities: {
     [address: string]: {
@@ -62,14 +63,16 @@ interface TemporaryBackgroundState {
   };
   ledgerTransportType: LedgerTransportTypes;
   unapprovedDecryptMsgs: MessagesIndexedById;
-  unapprovedTxs: {
-    [transactionId: string]: TransactionMeta;
-  };
   unapprovedMsgs: MessagesIndexedById;
   unapprovedPersonalMsgs: MessagesIndexedById;
   unapprovedTypedMessages: MessagesIndexedById;
-  networkId: string | null;
-  networkStatus: NetworkStatus;
+  networksMetadata: {
+    [NetworkClientId: string]: {
+      EIPS: { [eip: string]: boolean };
+      status: NetworkStatus;
+    };
+  };
+  selectedNetworkClientId: string;
   pendingApprovals: ApprovalControllerState['pendingApprovals'];
   approvalFlows: ApprovalControllerState['approvalFlows'];
   knownMethodData?: {
@@ -77,9 +80,15 @@ interface TemporaryBackgroundState {
   };
   gasFeeEstimates: GasFeeEstimates;
   gasEstimateType: GasEstimateType;
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   custodyAccountDetails?: { [key: string]: any };
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
+  internalAccounts: {
+    accounts: {
+      [key: string]: InternalAccount;
+    };
+    selectedAccount: string;
+  };
 }
 
 type RootReducerReturnType = ReturnType<typeof rootReducer>;

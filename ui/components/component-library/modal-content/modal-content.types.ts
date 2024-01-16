@@ -1,5 +1,8 @@
 import React from 'react';
-import type { StyleUtilityProps } from '../box';
+import type {
+  PolymorphicComponentPropWithRef,
+  StyleUtilityProps,
+} from '../box';
 
 /*
  * ModalContent sizes
@@ -8,10 +11,15 @@ import type { StyleUtilityProps } from '../box';
  * Not to say there won't be more in the future, but to prevent redundant code there is only one for now
  */
 export enum ModalContentSize {
+  // 360px
   Sm = 'sm',
+  // 480px
+  Md = 'md',
+  // 720px
+  Lg = 'lg',
 }
 
-export interface ModalContentProps extends StyleUtilityProps {
+export interface ModalContentStyleUtilityProps extends StyleUtilityProps {
   /**
    * The additional className of the ModalContent component
    */
@@ -21,9 +29,13 @@ export interface ModalContentProps extends StyleUtilityProps {
    */
   children: React.ReactNode;
   /**
-   * The size of ModalContent
-   * Currently only one size is supported ModalContentSize.Sm 360px
-   * See docs for more info
+   * Use the size prop and ModalContentSize enum to change the max-width of the ModalContent
+   *
+   * ModalContentSize.Sm = 360px
+   * ModalContentSize.Md = 480px
+   * ModalContentSize.Lg = 720px
+   *
+   * @default ModalContentSize.Sm
    */
   size?: ModalContentSize;
   /**
@@ -31,3 +43,10 @@ export interface ModalContentProps extends StyleUtilityProps {
    */
   modalDialogProps?: any;
 }
+
+export type ModalContentProps<C extends React.ElementType> =
+  PolymorphicComponentPropWithRef<C, ModalContentStyleUtilityProps>;
+
+export type ModalContentComponent = <C extends React.ElementType = 'div'>(
+  props: ModalContentProps<C>,
+) => React.ReactElement | null;
