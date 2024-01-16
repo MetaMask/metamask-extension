@@ -89,7 +89,7 @@ const ConfirmAddCustodianToken = () => {
         await dispatch(
           mmiActions.removeAddTokenConnectRequest({
             origin: connectRequest.origin,
-            envName: connectRequest.environment,
+            environment: connectRequest.environment,
             token: connectRequest.token,
           }),
         );
