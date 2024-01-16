@@ -109,12 +109,25 @@ export abstract class AbstractPetnamesBridge {
   /**
    * Update the Source with the given entry. To be overridden by two-way subclasses.
    *
-   * @param type
-   * @param entry
+   * @param _type
+   * @param _entry
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected updateSourceEntry(type: ChangeType, entry: PetnameEntry): void {
+  protected updateSourceEntry(_type: ChangeType, _entry: PetnameEntry): void {
     throw new Error('updateSourceEntry must be overridden for two-way bridges');
+  }
+
+  /**
+   * Do you want to sync with only a subset of the petname entries?
+   *
+   * This predicate describes a subset of NameController state that is relevant
+   * to the bridge. Override this method to specify a subset of petname entries.
+   *
+   * @param _targetEntry - The entry to check for membership.
+   * @returns
+   */
+  protected isSyncParticipant(_targetEntry: PetnameEntry): boolean {
+    // All petname entries are sync participants by default.
+    return true;
   }
 
   /**
@@ -154,18 +167,21 @@ export abstract class AbstractPetnamesBridge {
     for (const type of Object.values(NameType)) {
       for (const value of Object.keys(names[type])) {
         for (const variation of Object.keys(names[type][value])) {
-          const entry = names[type][value][variation];
-          if (!entry.name) {
+          const { name, sourceId, origin } = names[type][value][variation];
+          if (!name) {
             continue;
           }
-          entries.push({
+          const entry = {
             value,
             type,
-            name: entry.name,
+            name,
             variation,
-            sourceId: entry.sourceId ?? undefined,
-            origin: entry.origin ?? undefined,
-          });
+            sourceId: sourceId ?? undefined,
+            origin: origin ?? undefined,
+          };
+          if (this.isSyncParticipant(entry)) {
+            entries.push(entry);
+          }
         }
       }
     }
@@ -221,13 +237,11 @@ export abstract class AbstractPetnamesBridge {
       }
     });
 
-    if (this.#isTwoWay) {
-      prevEntriesMap.forEach((oldEntry, oldKey) => {
-        if (!newEntriesMap.has(oldKey)) {
-          deleted.push(oldEntry);
-        }
-      });
-    }
+    prevEntriesMap.forEach((oldEntry, oldKey) => {
+      if (!newEntriesMap.has(oldKey)) {
+        deleted.push(oldEntry);
+      }
+    });
 
     return {
       [ChangeType.ADDED]: added,
