@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Box from '../../../../components/ui/box';
-import SiteIcon from '../../../../components/ui/site-icon';
-import Typography from '../../../../components/ui/typography/typography';
 import {
-  TypographyVariant,
-  FontWeight,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  Box,
+  Text,
+} from '../../../../components/component-library';
+import {
   Display,
   JustifyContent,
   BlockSize,
   AlignItems,
-  TextAlign,
-  TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -43,29 +42,15 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {fromNetworkDetails.iconUrl ? (
-          <SiteIcon
-            icon={fromNetworkDetails.iconUrl}
-            name={fromNetworkDetails.nickname}
-            size={64}
-          />
-        ) : (
-          <div className="confirmation-network-switch__unknown-icon">
-            <i className="fa fa-question fa-2x" />
-          </div>
-        )}
-        <Typography
-          color={TextColor.textDefault}
-          variant={TypographyVariant.H6}
-          fontWeight={FontWeight.Normal}
-          align={TextAlign.Center}
-          boxProps={{
-            display: Display.Flex,
-            justifyContent: JustifyContent.center,
-          }}
-        >
+        <AvatarNetwork
+          src={fromNetworkDetails.iconUrl}
+          name={fromNetworkDetails.nickname}
+          size={AvatarNetworkSize.Xl}
+          marginBottom={2}
+        />
+        <Text display={Display.Flex} justifyContent={JustifyContent.center}>
           {fromNetworkDetails.nickname}
-        </Typography>
+        </Text>
       </Box>
       <Box
         className="confirmation-network-switch__center-icon"
@@ -80,29 +65,15 @@ export default function ConfirmationNetworkSwitch({ toNetwork, fromNetwork }) {
         className="confirmation-network-switch__icon"
         display={Display.Block}
       >
-        {toNetworkDetails.iconUrl ? (
-          <SiteIcon
-            icon={toNetworkDetails.iconUrl}
-            name={toNetworkDetails.nickname}
-            size={64}
-          />
-        ) : (
-          <div className="confirmation-network-switch__unknown-icon">
-            <i className="fa fa-question fa-2x" />
-          </div>
-        )}
-        <Typography
-          color={TextColor.textDefault}
-          variant={TypographyVariant.H6}
-          fontWeight={FontWeight.Normal}
-          align={TextAlign.Center}
-          boxProps={{
-            display: Display.Flex,
-            justifyContent: JustifyContent.center,
-          }}
-        >
+        <AvatarNetwork
+          src={toNetworkDetails.iconUrl}
+          name={toNetworkDetails.nickname}
+          size={AvatarNetworkSize.Xl}
+          marginBottom={2}
+        />
+        <Text display={Display.Flex} justifyContent={JustifyContent.center}>
           {toNetworkDetails.nickname}
-        </Typography>
+        </Text>
       </Box>
     </Box>
   );
