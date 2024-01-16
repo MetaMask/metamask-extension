@@ -3,7 +3,6 @@ import React from 'react';
 import ScrollToBottom from '../../components/app/confirm/scroll-to-bottom';
 import { Footer, Page } from '../../components/multichain/pages/page';
 import { BackgroundColor } from '../../helpers/constants/design-system';
-
 import { Header } from '../../components/app/confirm/header';
 import { Footer as ConfirmFooter } from '../../components/app/confirm/footer';
 import syncConfirmPath from '../../hooks/confirm/syncConfirmPath';
@@ -13,24 +12,24 @@ const Confirm = () => {
   setCurrentConfirmation();
   syncConfirmPath();
 
-  const [hasViewedContent, setHasViewedContent] = React.useState(false);
+  const [hasScrolledToBottom, setHasScrolledToBottom] = React.useState(false);
 
   // TODO: use this to show/hide footer confirm button
   // const [isConfirmable, setIsConfirmable] = React.useState(false);
   // useEffect(() => {
-  //   if (isConfirmable || !hasViewedContent) {
+  //   if (isConfirmable || !hasScrolledToBottom) {
   //     return;
   //   }
   //   setIsConfirmable(true);
-  // }, [hasViewedContent]);
+  // }, [hasScrolledToBottom]);
 
   return (
     <Page backgroundColor={BackgroundColor.backgroundAlternative}>
       <Header />
       <ScrollToBottom
         padding={4}
-        hasViewedContent={hasViewedContent}
-        setHasViewedContent={setHasViewedContent}
+        hasScrolledToBottom={hasScrolledToBottom}
+        setHasScrolledToBottom={setHasScrolledToBottom}
       >
         {/* todo: replace with ConfirmInfo content */}
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel

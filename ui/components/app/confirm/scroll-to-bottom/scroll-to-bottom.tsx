@@ -24,19 +24,19 @@ interface ContentProps extends StyleUtilityProps {
    */
   children: React.ReactNode | React.ReactNode[];
   /**
-   * Is true when all content has been displayed
+   * Optional prop used to pass useScrollRequired's hasScrolledToBottom state up to the parent
    */
-  hasViewedContent?: boolean;
+  hasScrolledToBottom?: boolean;
   /**
-   * Setter function for hasViewedContent
+   * Optional setter function for hasScrolledToBottom
    */
-  setHasViewedContent?: Dispatch<SetStateAction<boolean>>;
+  setHasScrolledToBottom?: Dispatch<SetStateAction<boolean>>;
 }
 
 const ScrollToBottom = ({
   children,
-  hasViewedContent,
-  setHasViewedContent,
+  hasScrolledToBottom: hasScrolledToBottomProp,
+  setHasScrolledToBottom: setHasScrolledToBottomProp,
   ...props
 }: ContentProps) => {
   const t = useContext(I18nContext);
@@ -51,8 +51,8 @@ const ScrollToBottom = ({
   } = useScrollRequired([]);
 
   useEffect(() => {
-    if (hasScrolledToBottom && setHasViewedContent) {
-      setHasViewedContent(true);
+    if (hasScrolledToBottom && setHasScrolledToBottomProp) {
+      setHasScrolledToBottomProp(true);
     }
   }, [hasScrolledToBottom]);
 
