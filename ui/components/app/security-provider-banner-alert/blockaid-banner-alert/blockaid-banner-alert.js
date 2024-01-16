@@ -76,7 +76,9 @@ function BlockaidBannerAlert({ txData, ...props }) {
     captureException(`BlockaidBannerAlert: Unidentified reason '${reason}'`);
   }
 
-  const description = t(REASON_TO_DESCRIPTION_TKEY[reason] || 'other');
+  const description = t(
+    REASON_TO_DESCRIPTION_TKEY[reason] || REASON_TO_DESCRIPTION_TKEY.other,
+  );
 
   const details = features?.length ? (
     <Text as="ul" overflowWrap={OverflowWrap.BreakWord}>
