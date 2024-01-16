@@ -26,7 +26,7 @@
     "user-actions-benchmark:chrome": "SELENIUM_BROWSER=chrome ts-node test/e2e/user-actions-benchmark.js",
     "benchmark:firefox": "SELENIUM_BROWSER=firefox ts-node test/e2e/benchmark.js",
     "build:test": "BLOCKAID_FILE_CDN=static.metafi.codefi.network/api/v1/confirmations/ppom SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn build test",
-    "build:test:flask": "yarn build test --build-type flask",
+    "build:test:flask": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build test --build-type flask",
     "build:test:mmi": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn build test --build-type mmi",
     "build:test:mv3": "ENABLE_MV3=true SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn build test",
     "build:test:dev:mv3": "ENABLE_MV3=true SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' SENTRY_DSN_DEV=https://fake@sentry.io/0000000 yarn build:dev testDev --apply-lavamoat=false",
