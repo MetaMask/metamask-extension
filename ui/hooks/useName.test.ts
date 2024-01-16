@@ -153,7 +153,7 @@ describe('useName', () => {
       });
     });
 
-    it('gets used if specified variation has cleared name.', () => {
+    it('gets used if specified variation has cleared name', () => {
       getNamesMock.mockReturnValue({
         [TYPE_MOCK]: {
           [VALUE_MOCK]: {
