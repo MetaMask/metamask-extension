@@ -10,9 +10,7 @@ const FixtureBuilder = require('../fixture-builder');
 describe('Gas API fallback', function () {
   async function mockGasApiDown(mockServer) {
     await mockServer
-      .forGet(
-        'https://gas-api.metaswap.codefi.network/networks/1337/suggestedGasFees',
-      )
+      .forGet('https://gas.api.cx.metamask.io/networks/1337/suggestedGasFees')
       .always()
       .thenCallback(() => {
         return {

@@ -59,7 +59,7 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
         json: AGGREGATOR_METADATA_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://gas-api.metaswap.codefi.network/networks/1/gasPrices')
+      .forGet('https://gas.api.cx.metamask.io/networks/1/gasPrices')
       .thenCallback(() => ({
         statusCode: 200,
         json: GAS_PRICE_API_MOCK_RESULT,

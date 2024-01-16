@@ -158,9 +158,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     });
 
   await server
-    .forGet(
-      `https://gas-api.metaswap.codefi.network/networks/${chainId}/gasPrices`,
-    )
+    .forGet(`https://gas.api.cx.metamask.io/networks/${chainId}/gasPrices`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -191,7 +189,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
 
   await server
     .forGet(
-      `https://gas-api.metaswap.codefi.network/networks/${chainId}/suggestedGasFees`,
+      `https://gas.api.cx.metamask.io/networks/${chainId}/suggestedGasFees`,
     )
     .thenCallback(() => {
       return {
