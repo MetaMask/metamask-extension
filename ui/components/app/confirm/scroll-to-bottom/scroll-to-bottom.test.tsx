@@ -20,15 +20,15 @@ describe('ScrollToBottom', () => {
     });
 
     it('sets hasViewedContent to true when passed as a param', () => {
-      const mockSetHasViewedContent = jest.fn();
+      const mockSetHasScrolledToBottom = jest.fn();
 
       render(
-        <ScrollToBottom setHasViewedContent={mockSetHasViewedContent}>
+        <ScrollToBottom setHasScrolledToBottom={mockSetHasScrolledToBottom}>
           foobar
         </ScrollToBottom>,
       );
 
-      expect(mockSetHasViewedContent).toHaveBeenCalledWith(true);
+      expect(mockSetHasScrolledToBottom).toHaveBeenCalledWith(true);
     });
   });
 
