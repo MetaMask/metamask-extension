@@ -218,7 +218,6 @@ export const TokenListItem = ({
             alignItems={AlignItems.center}
             gap={1}
           >
-<<<<<<< HEAD
             <Box
               width={isStakeable ? BlockSize.Half : BlockSize.OneThird}
               display={Display.InlineBlock}
@@ -238,10 +237,10 @@ export const TokenListItem = ({
                   >
                     {isStakeable ? (
                       <>
-                        {tokenTitle} {stakeableTitle}
+                        {tokenSymbol} {stakeableTitle}
                       </>
                     ) : (
-                      tokenTitle
+                      tokenSymbol
                     )}
                   </Text>
                 </Tooltip>
@@ -282,29 +281,6 @@ export const TokenListItem = ({
                 textAlign={TextAlign.End}
                 data-testid="multichain-token-list-item-secondary-value"
                 ellipsis={isStakeable}
-=======
-            <Box width={BlockSize.OneThird}>
-              {
-                // top left
-                wrapInTooltip(
-                  <Text
-                    variant={TextVariant.bodyLgMedium}
-                    data-testid="multichain-token-list-item-symbol"
-                    ellipsis
-                  >
-                    {tokenSymbol}
-                  </Text>,
-                  `${tokenSymbol}`,
-                )
-              }
-            </Box>
-            {showScamWarning ? (
-              <Box
-                display={Display.Flex}
-                style={{ overflow: 'hidden' }}
-                width={BlockSize.TwoThirds}
-                justifyContent={JustifyContent.flexEnd}
->>>>>>> 592455bb43 (chaos story alignment)
               >
                 <ButtonIcon
                   iconName={IconName.Danger}
@@ -317,31 +293,30 @@ export const TokenListItem = ({
                   size={IconSize.Lg}
                   backgroundColor={BackgroundColor.transparent}
                 />
-              </Box>
-            ) : (
-              <Box
-                style={{ overflow: 'hidden' }}
-                width={BlockSize.TwoThirds}
-                justifyContent={JustifyContent.flexEnd}
-              >
-                {
-                  // top right
-                  wrapInTooltip(
-                    <Text
-                      fontWeight={FontWeight.Medium}
-                      variant={TextVariant.bodyLgMedium}
-                      textAlign={TextAlign.End}
-                      data-testid="multichain-token-list-item-secondary-value"
-                      ellipsis
-                    >
-                      {secondary}
-                    </Text>,
-                    secondary,
-                    TOKEN_VALUE_THRESHOLD,
-                  )
-                }
-              </Box>
+              </Text>
             )}
+            <Box
+              style={{ overflow: 'hidden' }}
+              width={BlockSize.TwoThirds}
+              justifyContent={JustifyContent.flexEnd}
+            >
+              {
+                // top right
+                wrapInTooltip(
+                  <Text
+                    fontWeight={FontWeight.Medium}
+                    variant={TextVariant.bodyLgMedium}
+                    textAlign={TextAlign.End}
+                    data-testid="multichain-token-list-item-secondary-value"
+                    ellipsis
+                  >
+                    {secondary}
+                  </Text>,
+                  secondary,
+                  TOKEN_VALUE_THRESHOLD,
+                )
+              }
+            </Box>
           </Box>
           <Box
             flexDirection={FlexDirection.Row}
