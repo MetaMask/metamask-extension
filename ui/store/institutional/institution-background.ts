@@ -132,25 +132,26 @@ export function mmiActionsFactory() {
       ),
     getCustodianAccounts: (
       token: string,
-      apiUrl: string,
+      envName: string,
       custody: string,
       getNonImportedAccounts: boolean,
     ) =>
       createAsyncAction(
         'getCustodianAccounts',
-        [token, apiUrl, custody, getNonImportedAccounts],
+        [token, envName, custody, getNonImportedAccounts],
         forceUpdateMetamaskState,
         'Getting custodian accounts...',
       ),
+    // TODO (Bernardo) - It doesn't look like this is being used
     getCustodianAccountsByAddress: (
       jwt: string,
-      apiUrl: string,
+      envName: string,
       address: string,
       custody: string,
     ) =>
       createAsyncAction(
         'getCustodianAccountsByAddress',
-        [jwt, apiUrl, address, custody],
+        [jwt, envName, address, custody],
         forceUpdateMetamaskState,
         'Getting custodian accounts...',
       ),
@@ -221,6 +222,7 @@ export function mmiActionsFactory() {
         custodyType,
         token,
       ]),
+    // TODO (Bernardo) - Online address and newAuthDetails are being used
     setCustodianNewRefreshToken: ({
       address,
       oldAuthDetails,

@@ -100,7 +100,7 @@ export default function InteractiveReplacementTokenPage({ history }) {
         const custodianAccounts = await dispatch(
           getCustodianAccounts(
             connectRequest.token,
-            connectRequest.apiUrl,
+            connectRequest.environment,
             connectRequest.service,
             false,
           ),

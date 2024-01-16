@@ -77,6 +77,7 @@ const ConfirmAddCustodianToken = () => {
 
           let custodianName = connectRequest.service.toLowerCase();
 
+          // TODO  (Bernardo) - This probably should apply to ECA3 custodians as well
           if (connectRequest.service === 'JSONRPC') {
             custodianName = connectRequest.environment;
           }
@@ -108,6 +109,7 @@ const ConfirmAddCustodianToken = () => {
               : 'Custodian RPC cancel',
             custodian: connectRequest.custodian,
             apiUrl: connectRequest.apiUrl,
+            envName: connectRequest.environment,
           },
         });
 
@@ -134,6 +136,7 @@ const ConfirmAddCustodianToken = () => {
       actions: 'Custodian RPC request',
       custodian: connectRequest.custodian,
       apiUrl: connectRequest.apiUrl,
+      envName: connectRequest.environment,
     },
   });
 

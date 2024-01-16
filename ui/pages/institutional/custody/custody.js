@@ -281,7 +281,7 @@ const CustodyPage = () => {
           const accountsValue = await dispatch(
             mmiActions.getCustodianAccounts(
               custodianToken,
-              custodianApiUrl,
+              custodianName,
               custodianType,
               true,
             ),
@@ -324,7 +324,7 @@ const CustodyPage = () => {
             await dispatch(
               mmiActions.getCustodianAccounts(
                 jwt,
-                apiUrl,
+                selectedCustodianName,
                 selectedCustodianType,
                 true,
               ),
@@ -527,7 +527,7 @@ const CustodyPage = () => {
                       const accountsValue = await dispatch(
                         mmiActions.getCustodianAccounts(
                           currentJwt || jwtList[0],
-                          apiUrl,
+                          selectedCustodianName,
                           selectedCustodianType,
                           true,
                         ),
