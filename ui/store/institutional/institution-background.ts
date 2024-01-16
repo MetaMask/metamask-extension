@@ -192,27 +192,29 @@ export function mmiActionsFactory() {
       ),
     removeAddTokenConnectRequest: ({
       origin,
-      apiUrl,
+      environment,
       token,
     }: {
       origin: string;
-      apiUrl: string;
+      environment: string;
       token: string;
     }) =>
-      createAction('removeAddTokenConnectRequest', { origin, apiUrl, token }),
+      createAction('removeAddTokenConnectRequest', {
+        origin,
+        environment,
+        token,
+      }),
     setCustodianConnectRequest: ({
       token,
-      apiUrl,
       custodianType,
-      custodianName,
+      envName,
     }: {
       token: string;
-      apiUrl: string;
       custodianType: string;
-      custodianName: string;
+      envName: string;
     }) =>
       createAsyncAction('setCustodianConnectRequest', [
-        { token, apiUrl, custodianType, custodianName },
+        { token, custodianType, envName },
       ]),
     getCustodianConnectRequest: () =>
       createAsyncAction('getCustodianConnectRequest', []),
@@ -222,22 +224,15 @@ export function mmiActionsFactory() {
         custodyType,
         token,
       ]),
-    // TODO (Bernardo) - Online address and newAuthDetails are being used
     setCustodianNewRefreshToken: ({
       address,
-      oldAuthDetails,
-      oldApiUrl,
-      newAuthDetails,
-      newApiUrl,
+      refreshToken,
     }: {
       address: string;
-      oldAuthDetails: string;
-      oldApiUrl: string;
-      newAuthDetails: string;
-      newApiUrl: string;
+      refreshToken: string;
     }) =>
       createAsyncAction('setCustodianNewRefreshToken', [
-        { address, oldAuthDetails, oldApiUrl, newAuthDetails, newApiUrl },
+        { address, refreshToken },
       ]),
   };
 }

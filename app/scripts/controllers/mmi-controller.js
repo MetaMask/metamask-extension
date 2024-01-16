@@ -278,7 +278,6 @@ export default class MMIController extends EventEmitter {
         name: accounts[item].name,
         custodianDetails: accounts[item].custodianDetails,
         labels: accounts[item].labels,
-        apiUrl: accounts[item].apiUrl,
         custodyType: custodian.keyringClass.type,
         custodianName,
         chainId: accounts[item].chainId,
@@ -534,18 +533,19 @@ export default class MMIController extends EventEmitter {
     return keyring ? keyring.getAllAccountsWithToken(token) : [];
   }
 
-  async setCustodianNewRefreshToken({ address, newAuthDetails }) {
+  async setCustodianNewRefreshToken({ address, refreshToken }) {
     const custodyType = this.custodyController.getCustodyTypeByAddress(
       toChecksumHexAddress(address),
     );
 
     const keyring = await this.addKeyringIfNotExists(custodyType);
 
-    await keyring.replaceRefreshTokenAuthDetails(address, newAuthDetails);
+    await keyring.replaceRefreshTokenAuthDetails(address, refreshToken);
   }
 
   async handleMmiCheckIfTokenIsPresent(req) {
     const { token, envName } = req.params;
+    // TODO (Bernardo) - Check if this is the case
     const custodyType = 'Custody - JSONRPC'; // Only JSONRPC is supported for now
 
     // This can only work if the extension is unlocked

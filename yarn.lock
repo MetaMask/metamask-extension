@@ -3654,14 +3654,14 @@ __metadata:
 
 "@metamask-institutional/custody-controller@patch:@metamask-institutional/custody-controller@npm%3A0.2.18#~/.yarn/patches/@metamask-institutional-custody-controller-npm-0.2.18-73618b9f81.patch":
   version: 0.2.18
-  resolution: "@metamask-institutional/custody-controller@patch:@metamask-institutional/custody-controller@npm%3A0.2.18#~/.yarn/patches/@metamask-institutional-custody-controller-npm-0.2.18-73618b9f81.patch::version=0.2.18&hash=fe8eaa"
+  resolution: "@metamask-institutional/custody-controller@patch:@metamask-institutional/custody-controller@npm%3A0.2.18#~/.yarn/patches/@metamask-institutional-custody-controller-npm-0.2.18-73618b9f81.patch::version=0.2.18&hash=68855e"
   dependencies:
     "@ethereumjs/util": "npm:^8.0.5"
     "@metamask-institutional/custody-keyring": "npm:^1.0.7"
     "@metamask-institutional/sdk": "npm:^0.1.23"
     "@metamask-institutional/types": "npm:^1.0.4"
     "@metamask/obs-store": "npm:^8.0.0"
-  checksum: 56eec224b737fa80459b3350853238a8e45da5559e3561a93e3f60bce012b7eb43b5a9a33f594bcec5e13df9e3259515443a6f46cff197b76121e3cdb7703dca
+  checksum: 1de3a14fea8585a3e85bc32ff905572b1186ecadf50791a9f671f1cd7900d6376df1f078a5d021f57e7c0e91c1d71d1fefaddf5550ec7127c3b0fce2aef6c600
   languageName: node
   linkType: hard
 
@@ -3683,7 +3683,7 @@ __metadata:
 
 "@metamask-institutional/custody-keyring@patch:@metamask-institutional/custody-keyring@npm%3A1.0.7#~/.yarn/patches/@metamask-institutional-custody-keyring-npm-1.0.7-e20ee2bc55.patch":
   version: 1.0.7
-  resolution: "@metamask-institutional/custody-keyring@patch:@metamask-institutional/custody-keyring@npm%3A1.0.7#~/.yarn/patches/@metamask-institutional-custody-keyring-npm-1.0.7-e20ee2bc55.patch::version=1.0.7&hash=4c115c"
+  resolution: "@metamask-institutional/custody-keyring@patch:@metamask-institutional/custody-keyring@npm%3A1.0.7#~/.yarn/patches/@metamask-institutional-custody-keyring-npm-1.0.7-e20ee2bc55.patch::version=1.0.7&hash=608648"
   dependencies:
     "@ethereumjs/tx": "npm:^4.1.1"
     "@ethereumjs/util": "npm:^8.0.5"
@@ -3693,7 +3693,7 @@ __metadata:
     "@metamask/obs-store": "npm:^8.0.0"
     crypto: "npm:^1.0.1"
     lodash.clonedeep: "npm:^4.5.0"
-  checksum: 39a47fe7f675bc68b7038e166b7a4d78c7b6a1c4206231c813a893092d3cf0812baa58ea3bbd7c9a0d1484366963ee1c288029c07b2667450cd6efe80b8521d7
+  checksum: 6ccfb18595edeb7f52a0366291c7c56c82454777ac825cad7d5dc6f195c186eb4e73667095acd5cf160362a08dfc32670a2bfdd740702110edd5627fb182ad6e
   languageName: node
   linkType: hard
 

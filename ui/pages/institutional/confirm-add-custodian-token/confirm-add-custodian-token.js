@@ -49,6 +49,8 @@ const ConfirmAddCustodianToken = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [connectError, setConnectError] = useState('');
 
+  console.log('CONNECT REQUESTS', connectRequests);
+
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
 
   useEffect(() => {
@@ -75,18 +77,10 @@ const ConfirmAddCustodianToken = () => {
             await dispatch(setProviderType(networkType));
           }
 
-          let custodianName = connectRequest.service.toLowerCase();
-
-          // TODO  (Bernardo) - This probably should apply to ECA3 custodians as well
-          if (connectRequest.service === 'JSONRPC') {
-            custodianName = connectRequest.environment;
-          }
-
           await dispatch(
             mmiActions.setCustodianConnectRequest({
               token: connectRequest.token,
-              apiUrl: connectRequest.apiUrl,
-              custodianName,
+              envName: connectRequest.environment,
               custodianType: connectRequest.service,
             }),
           );
@@ -95,7 +89,7 @@ const ConfirmAddCustodianToken = () => {
         await dispatch(
           mmiActions.removeAddTokenConnectRequest({
             origin: connectRequest.origin,
-            apiUrl: connectRequest.apiUrl,
+            envName: connectRequest.environment,
             token: connectRequest.token,
           }),
         );
@@ -108,7 +102,6 @@ const ConfirmAddCustodianToken = () => {
               ? 'Custodian RPC confirm'
               : 'Custodian RPC cancel',
             custodian: connectRequest.custodian,
-            apiUrl: connectRequest.apiUrl,
             envName: connectRequest.environment,
           },
         });
@@ -135,7 +128,6 @@ const ConfirmAddCustodianToken = () => {
     properties: {
       actions: 'Custodian RPC request',
       custodian: connectRequest.custodian,
-      apiUrl: connectRequest.apiUrl,
       envName: connectRequest.environment,
     },
   });

@@ -4,7 +4,6 @@ import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import ConfirmAddCustodianToken from '.';
 
-// TODO (Bernardo) - Add environment to connectionRequest
 const customData = {
   ...testData,
   metamask: {
@@ -22,8 +21,8 @@ const customData = {
           token: 'awesomeTestToken',
           feature: 'custodian',
           service: 'Saturn',
-          apiUrl: 'https://www.apiurl.net/v1',
           chainId: 1,
+          environment: 'test-environment',
         },
       ],
     },
