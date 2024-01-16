@@ -3714,13 +3714,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/institutional-features@npm:^1.2.9":
+"@metamask-institutional/institutional-features@npm:1.2.9":
   version: 1.2.9
   resolution: "@metamask-institutional/institutional-features@npm:1.2.9"
   dependencies:
     "@metamask-institutional/custody-keyring": "npm:^1.0.6"
     "@metamask/obs-store": "npm:^8.0.0"
   checksum: e26eca3030d873d60a42f5596a87009919a7f306bcc9613f8687f4d0d469dac68560e02009f59d141c8c396acfa59de598568cdb3db1f55cf30d39e40fa6e595
+  languageName: node
+  linkType: hard
+
+"@metamask-institutional/institutional-features@patch:@metamask-institutional/institutional-features@npm%3A1.2.9#~/.yarn/patches/@metamask-institutional-institutional-features-npm-1.2.9-83db572b14.patch":
+  version: 1.2.9
+  resolution: "@metamask-institutional/institutional-features@patch:@metamask-institutional/institutional-features@npm%3A1.2.9#~/.yarn/patches/@metamask-institutional-institutional-features-npm-1.2.9-83db572b14.patch::version=1.2.9&hash=52bfa4"
+  dependencies:
+    "@metamask-institutional/custody-keyring": "npm:^1.0.6"
+    "@metamask/obs-store": "npm:^8.0.0"
+  checksum: 4958f05eb0b110d44c92797dd94642a9dd509828cceba7b1077df257d988c1af5f236b0f63d2b22ef4749c53ae49a44cc3cec8a2b719480c56c6580217f36228
   languageName: node
   linkType: hard
 
@@ -24738,7 +24748,7 @@ __metadata:
     "@metamask-institutional/custody-controller": "patch:@metamask-institutional/custody-controller@npm%3A0.2.18#~/.yarn/patches/@metamask-institutional-custody-controller-npm-0.2.18-73618b9f81.patch"
     "@metamask-institutional/custody-keyring": "patch:@metamask-institutional/custody-keyring@npm%3A1.0.7#~/.yarn/patches/@metamask-institutional-custody-keyring-npm-1.0.7-e20ee2bc55.patch"
     "@metamask-institutional/extension": "npm:^0.3.12"
-    "@metamask-institutional/institutional-features": "npm:^1.2.9"
+    "@metamask-institutional/institutional-features": "patch:@metamask-institutional/institutional-features@npm%3A1.2.9#~/.yarn/patches/@metamask-institutional-institutional-features-npm-1.2.9-83db572b14.patch"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"
     "@metamask-institutional/rpc-allowlist": "npm:^1.0.0"
     "@metamask-institutional/sdk": "npm:^0.1.23"

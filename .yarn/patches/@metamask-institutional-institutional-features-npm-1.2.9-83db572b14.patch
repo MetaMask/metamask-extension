@@ -1,0 +1,509 @@
+diff --git a/dist/index.d.ts.map b/dist/index.d.ts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..7fbe13a43349e66a566ede970fb53fc302a241ed
+--- /dev/null
++++ b/dist/index.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,+BAA+B,EAAE,MAAM,0BAA0B,CAAC"}
+\ No newline at end of file
+diff --git a/dist/index.js.map b/dist/index.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..2fedd8729b1094e74ab457cb5079d7cb59192b5d
+--- /dev/null
++++ b/dist/index.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"index.js","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":";;;AAAA,mEAA2E;AAAlE,yIAAA,+BAA+B,OAAA"}
+\ No newline at end of file
+diff --git a/dist/institutional-features.d.ts b/dist/institutional-features.d.ts
+index 52762f88cac6334c17b5c689ae5ec4755ba6d4a9..baf7b8a502ba942eec2a14a4a7c39d7b85a9521e 100644
+--- a/dist/institutional-features.d.ts
++++ b/dist/institutional-features.d.ts
+@@ -5,7 +5,7 @@ export declare class InstitutionalFeaturesController {
+     authenticateToCustodian(origin: string, method: string, token: string, labels: {
+         key: string;
+         value: any;
+-    }[], feature: string, service: string, apiUrl?: string, chainId?: string, environment?: string): void;
++    }[], feature: string, service: string, chainId?: string, environment?: string): void;
+     handleMmiAuthenticate(req: {
+         origin: string;
+         method: string;
+@@ -17,14 +17,13 @@ export declare class InstitutionalFeaturesController {
+             }[];
+             feature: string;
+             service: string;
+-            apiUrl?: string;
+             chainId?: string;
+             environment?: string;
+         };
+     }): boolean;
+-    removeAddTokenConnectRequest({ origin, apiUrl, token }: {
++    removeAddTokenConnectRequest({ origin, environment, token, }: {
+         origin: string;
+-        apiUrl: string;
++        environment: string;
+         token: string;
+     }): void;
+ }
+diff --git a/dist/institutional-features.d.ts.map b/dist/institutional-features.d.ts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..ac0c76e0f5f7e2346fb5faec161353edf272328a
+--- /dev/null
++++ b/dist/institutional-features.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"institutional-features.d.ts","sourceRoot":"","sources":["../src/institutional-features.ts"],"names":[],"mappings":"AAYA,qBAAa,+BAA+B;IACnC,kBAAkB,MAAC;IACnB,KAAK,MAAC;gBAMD,IAAI,GAAE,GAAQ;IAkB1B,uBAAuB,CACrB,MAAM,EAAE,MAAM,EACd,MAAM,EAAE,MAAM,EACd,KAAK,EAAE,MAAM,EACb,MAAM,EAAE;QAAE,GAAG,EAAE,MAAM,CAAC;QAAC,KAAK,EAAE,GAAG,CAAA;KAAE,EAAE,EACrC,OAAO,EAAE,MAAM,EACf,OAAO,EAAE,MAAM,EACf,OAAO,CAAC,EAAE,MAAM,EAChB,WAAW,CAAC,EAAE,MAAM,GACnB,IAAI;IA0BP,qBAAqB,CAAC,GAAG,EAAE;QACzB,MAAM,EAAE,MAAM,CAAC;QACf,MAAM,EAAE,MAAM,CAAC;QACf,MAAM,EAAE;YACN,KAAK,EAAE,MAAM,CAAC;YACd,MAAM,EAAE;gBAAE,GAAG,EAAE,MAAM,CAAC;gBAAC,KAAK,EAAE,GAAG,CAAA;aAAE,EAAE,CAAC;YACtC,OAAO,EAAE,MAAM,CAAC;YAChB,OAAO,EAAE,MAAM,CAAC;YAChB,OAAO,CAAC,EAAE,MAAM,CAAC;YACjB,WAAW,CAAC,EAAE,MAAM,CAAC;SACtB,CAAC;KACH,GAAG,OAAO;IAgCX,4BAA4B,CAAC,EAC3B,MAAM,EACN,WAAW,EACX,KAAK,GACN,EAAE;QACD,MAAM,EAAE,MAAM,CAAC;QACf,WAAW,EAAE,MAAM,CAAC;QACpB,KAAK,EAAE,MAAM,CAAC;KACf,GAAG,IAAI;CAWT"}
+\ No newline at end of file
+diff --git a/dist/institutional-features.js b/dist/institutional-features.js
+index ebcefdbc39aff3525dc1dd348b3edfd788fc56f1..e4877ec2708b1adf6c69da0bfd6f86810a2220cf 100644
+--- a/dist/institutional-features.js
++++ b/dist/institutional-features.js
+@@ -21,7 +21,7 @@ class InstitutionalFeaturesController {
+             },
+         });
+     }
+-    authenticateToCustodian(origin, method, token, labels, feature, service, apiUrl, chainId, environment) {
++    authenticateToCustodian(origin, method, token, labels, feature, service, chainId, environment) {
+         if (!custody_keyring_1.CUSTODIAN_TYPES[service.toUpperCase()]) {
+             throw new Error("No such custodian");
+         }
+@@ -38,7 +38,6 @@ class InstitutionalFeaturesController {
+                         labels,
+                         feature,
+                         service,
+-                        apiUrl,
+                         chainId,
+                         environment,
+                     },
+@@ -59,19 +58,19 @@ class InstitutionalFeaturesController {
+         }
+         switch (req.params.feature) {
+             case "custodian":
+-                this.authenticateToCustodian(req.origin, req.method, req.params.token, req.params.labels, req.params.feature, req.params.service, req.params.apiUrl, req.params.chainId, req.params.environment);
++                this.authenticateToCustodian(req.origin, req.method, req.params.token, req.params.labels, req.params.feature, req.params.service, req.params.chainId, req.params.environment);
+                 break;
+             default:
+                 throw new Error(`Service ${req.params.service} not supported`);
+         }
+         return true;
+     }
+-    removeAddTokenConnectRequest({ origin, apiUrl, token }) {
++    removeAddTokenConnectRequest({ origin, environment, token, }) {
+         const state = this.store.getState();
+         this.store.updateState({
+             institutionalFeatures: {
+                 ...state.institutionalFeatures,
+-                connectRequests: state.institutionalFeatures.connectRequests.filter(request => !(request.origin === origin && request.token === token && request.apiUrl === apiUrl)),
++                connectRequests: state.institutionalFeatures.connectRequests.filter(request => !(request.origin === origin && request.token === token && request.environment === environment)),
+             },
+         });
+     }
+diff --git a/dist/institutional-features.js.map b/dist/institutional-features.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..7bc7cd55fbdca9cdfc964ab4db05ebc47d72ede1
+--- /dev/null
++++ b/dist/institutional-features.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"institutional-features.js","sourceRoot":"","sources":["../src/institutional-features.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/dist/institutional-features.test.d.ts b/dist/institutional-features.test.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..a6f20ff3a1cacbbcfa6f9abc5235b06614eb4de1
+--- /dev/null
++++ b/dist/institutional-features.test.d.ts
+@@ -0,0 +1,2 @@
++export {};
++//# sourceMappingURL=institutional-features.test.d.ts.map
+\ No newline at end of file
+diff --git a/dist/institutional-features.test.d.ts.map b/dist/institutional-features.test.d.ts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..87b2e8abf9d5f6eca3bf653be6cf3a57373009c9
+--- /dev/null
++++ b/dist/institutional-features.test.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"institutional-features.test.d.ts","sourceRoot":"","sources":["../src/institutional-features.test.ts"],"names":[],"mappings":""}
+\ No newline at end of file
+diff --git a/dist/institutional-features.test.js b/dist/institutional-features.test.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..6489016dfbd196537417d24ea71ea5efabfc9af9
+--- /dev/null
++++ b/dist/institutional-features.test.js
+@@ -0,0 +1,137 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++const institutional_features_1 = require("./institutional-features");
++describe("InstitutionalFeaturesController", function () {
++    global.chrome = {
++        runtime: {
++            id: "extensionId",
++        },
++    };
++    const INIT_STATE = {
++        institutionalFeatures: {
++            connectRequests: [],
++        },
++    };
++    const createController = async (initState) => {
++        return await new institutional_features_1.InstitutionalFeaturesController({
++            initState,
++            showConfirmRequest: () => "mock",
++        });
++    };
++    it("should add connectRequest and call showConfirmRequest function", async function () {
++        const controller = await createController(INIT_STATE);
++        const connectRequest = {
++            origin: "origin",
++            method: "custodian",
++            params: {
++                labels: [],
++                feature: "custodian",
++                service: "jupiter",
++                token: "token",
++                environment: "test-environment",
++            },
++        };
++        jest.spyOn(controller, "showConfirmRequest");
++        await controller.handleMmiAuthenticate(connectRequest);
++        expect(controller.showConfirmRequest).toHaveBeenCalled();
++        const state = controller.store.getState();
++        expect(state.institutionalFeatures.connectRequests[0]).toStrictEqual({
++            origin: "origin",
++            method: "custodian",
++            labels: [],
++            feature: "custodian",
++            service: "jupiter",
++            token: "token",
++            chainId: undefined,
++            environment: "test-environment",
++        });
++    });
++    it("should throw Missing parameter: feature", async function () {
++        const controller = await createController(INIT_STATE);
++        const connectRequest = {
++            origin: "origin",
++            method: "custodian",
++            params: {
++                labels: [],
++                service: "custodian",
++                token: "token",
++                feature: undefined,
++            },
++        };
++        expect(() => controller.handleMmiAuthenticate(connectRequest)).toThrow("Missing parameter: feature");
++    });
++    it("should throw Missing parameter: service", async function () {
++        const controller = await createController(INIT_STATE);
++        const connectRequest = {
++            origin: "origin",
++            method: "custodian",
++            params: {
++                labels: [],
++                feature: "feature",
++                token: "token",
++                service: undefined,
++            },
++        };
++        expect(() => controller.handleMmiAuthenticate(connectRequest)).toThrow("Missing parameter: service");
++    });
++    it("should throw Missing parameter: token", async function () {
++        const controller = await createController(INIT_STATE);
++        const connectRequest = {
++            origin: "origin",
++            method: "custodian",
++            params: {
++                labels: [],
++                feature: "feature",
++                service: "custodian",
++                token: undefined,
++            },
++        };
++        expect(() => controller.handleMmiAuthenticate(connectRequest)).toThrow("Missing parameter: token");
++    });
++    it("should remove connectRequests", async function () {
++        const controller = await createController({
++            institutionalFeatures: {
++                ...INIT_STATE.institutionalFeatures,
++                connectRequests: [{ origin: "testOrigin.com", token: "token", environment: "test-environment" }],
++            },
++        });
++        await controller.removeAddTokenConnectRequest({
++            origin: "testOrigin.com",
++            environment: "test-environment",
++            token: "token",
++        });
++        const state = controller.store.getState();
++        expect(state.institutionalFeatures.connectRequests.length).toBe(0);
++    });
++    it("should not remove connectRequests where environment is different", async function () {
++        const controller = await createController({
++            institutionalFeatures: {
++                ...INIT_STATE.institutionalFeatures,
++                connectRequests: [{ origin: "testOrigin.com", token: "token", environment: "test-environment" }],
++            },
++        });
++        await controller.removeAddTokenConnectRequest({
++            origin: "testOrigin.com",
++            environment: "not-the-same",
++            token: "token",
++        });
++        const state = controller.store.getState();
++        expect(state.institutionalFeatures.connectRequests.length).toBe(1);
++    });
++    it("should not remove connectRequests where token is different", async function () {
++        const controller = await createController({
++            institutionalFeatures: {
++                ...INIT_STATE.institutionalFeatures,
++                connectRequests: [{ origin: "testOrigin.com", token: "token", environment: "test-environment" }],
++            },
++        });
++        await controller.removeAddTokenConnectRequest({
++            origin: "testOrigin.com",
++            environment: "test-environment",
++            token: "not-token",
++        });
++        const state = controller.store.getState();
++        expect(state.institutionalFeatures.connectRequests.length).toBe(1);
++    });
++});
++//# sourceMappingURL=institutional-features.test.js.map
+\ No newline at end of file
+diff --git a/dist/institutional-features.test.js.map b/dist/institutional-features.test.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..8e68db57c768fbb6d5aa19ec090d33e426d02ad9
+--- /dev/null
++++ b/dist/institutional-features.test.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"institutional-features.test.js","sourceRoot":"","sources":["../src/institutional-features.test.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/dist/package.json b/dist/package.json
+index c9bee8250514cea7119c6fa3ac76fab1e409cef7..1a9b3ae72e9d54d60c92a9fcd61e81858fa9f50a 100644
+--- a/dist/package.json
++++ b/dist/package.json
+@@ -1,6 +1,6 @@
+ {
+   "name": "@metamask-institutional/institutional-features",
+-  "version": "1.2.9",
++  "version": "1.2.10",
+   "description": "This package will export connectRequest state used across the old @codefi/mmi-sdk library",
+   "author": "Albert Olive <albertolivecorbella@gmail.com>",
+   "homepage": "https://github.com/consensys-vertical-apps/metamask-institutional#readme",
+@@ -27,9 +27,9 @@
+   "bugs": {
+     "url": "https://github.com/consensys-vertical-apps/metamask-institutional/issues"
+   },
+-  "gitHead": "f72735cfeb95c49b3d62364f2a91d86b87da412a",
++  "gitHead": "62ed7639b9145658a4fa1273e35e99d300acdc99",
+   "dependencies": {
+-    "@metamask-institutional/custody-keyring": "^1.0.6",
++    "@metamask-institutional/custody-keyring": "^1.0.7",
+     "@metamask/obs-store": "^8.0.0"
+   },
+   "devDependencies": {
+diff --git a/src/institutional-features.test.ts b/src/institutional-features.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..18953d1943478522ed58e7d35de04eb139c95f8f
+--- /dev/null
++++ b/src/institutional-features.test.ts
+@@ -0,0 +1,144 @@
++import { InstitutionalFeaturesController } from "./institutional-features";
++
++describe("InstitutionalFeaturesController", function () {
++  global.chrome = {
++    runtime: {
++      id: "extensionId",
++    },
++  };
++
++  const INIT_STATE = {
++    institutionalFeatures: {
++      connectRequests: [],
++    },
++  };
++
++  const createController = async initState => {
++    return await new InstitutionalFeaturesController({
++      initState,
++      showConfirmRequest: () => "mock",
++    });
++  };
++
++  it("should add connectRequest and call showConfirmRequest function", async function () {
++    const controller = await createController(INIT_STATE);
++    const connectRequest = {
++      origin: "origin",
++      method: "custodian",
++      params: {
++        labels: [],
++        feature: "custodian",
++        service: "jupiter",
++        token: "token",
++        environment: "test-environment",
++      },
++    };
++    jest.spyOn(controller, "showConfirmRequest");
++    await controller.handleMmiAuthenticate(connectRequest);
++    expect(controller.showConfirmRequest).toHaveBeenCalled();
++    const state = controller.store.getState();
++    expect(state.institutionalFeatures.connectRequests[0]).toStrictEqual({
++      origin: "origin",
++      method: "custodian",
++      labels: [],
++      feature: "custodian",
++      service: "jupiter",
++      token: "token",
++      chainId: undefined,
++      environment: "test-environment",
++    });
++  });
++
++  it("should throw Missing parameter: feature", async function () {
++    const controller = await createController(INIT_STATE);
++    const connectRequest = {
++      origin: "origin",
++      method: "custodian",
++      params: {
++        labels: [],
++        service: "custodian",
++        token: "token",
++        feature: undefined,
++      },
++    };
++    expect(() => controller.handleMmiAuthenticate(connectRequest)).toThrow("Missing parameter: feature");
++  });
++
++  it("should throw Missing parameter: service", async function () {
++    const controller = await createController(INIT_STATE);
++    const connectRequest = {
++      origin: "origin",
++      method: "custodian",
++      params: {
++        labels: [],
++        feature: "feature",
++        token: "token",
++        service: undefined,
++      },
++    };
++    expect(() => controller.handleMmiAuthenticate(connectRequest)).toThrow("Missing parameter: service");
++  });
++
++  it("should throw Missing parameter: token", async function () {
++    const controller = await createController(INIT_STATE);
++    const connectRequest = {
++      origin: "origin",
++      method: "custodian",
++      params: {
++        labels: [],
++        feature: "feature",
++        service: "custodian",
++        token: undefined,
++      },
++    };
++    expect(() => controller.handleMmiAuthenticate(connectRequest)).toThrow("Missing parameter: token");
++  });
++
++  it("should remove connectRequests", async function () {
++    const controller = await createController({
++      institutionalFeatures: {
++        ...INIT_STATE.institutionalFeatures,
++        connectRequests: [{ origin: "testOrigin.com", token: "token", environment: "test-environment" }],
++      },
++    });
++    await controller.removeAddTokenConnectRequest({
++      origin: "testOrigin.com",
++      environment: "test-environment",
++      token: "token",
++    });
++    const state = controller.store.getState();
++    expect(state.institutionalFeatures.connectRequests.length).toBe(0);
++  });
++
++  it("should not remove connectRequests where environment is different", async function () {
++    const controller = await createController({
++      institutionalFeatures: {
++        ...INIT_STATE.institutionalFeatures,
++        connectRequests: [{ origin: "testOrigin.com", token: "token", environment: "test-environment" }],
++      },
++    });
++    await controller.removeAddTokenConnectRequest({
++      origin: "testOrigin.com",
++      environment: "not-the-same",
++      token: "token",
++    });
++    const state = controller.store.getState();
++    expect(state.institutionalFeatures.connectRequests.length).toBe(1);
++  });
++
++  it("should not remove connectRequests where token is different", async function () {
++    const controller = await createController({
++      institutionalFeatures: {
++        ...INIT_STATE.institutionalFeatures,
++        connectRequests: [{ origin: "testOrigin.com", token: "token", environment: "test-environment" }],
++      },
++    });
++    await controller.removeAddTokenConnectRequest({
++      origin: "testOrigin.com",
++      environment: "test-environment",
++      token: "not-token",
++    });
++    const state = controller.store.getState();
++    expect(state.institutionalFeatures.connectRequests.length).toBe(1);
++  });
++});
+diff --git a/src/institutional-features.ts b/src/institutional-features.ts
+index a07110f59230eaa624fa1cc99c8e0302e72d08e2..58701af13d2883f0530d41c3be34b768d91ca2f2 100644
+--- a/src/institutional-features.ts
++++ b/src/institutional-features.ts
+@@ -43,7 +43,6 @@ export class InstitutionalFeaturesController {
+     labels: { key: string; value: any }[],
+     feature: string,
+     service: string,
+-    apiUrl?: string,
+     chainId?: string,
+     environment?: string,
+   ): void {
+@@ -63,7 +62,6 @@ export class InstitutionalFeaturesController {
+             labels,
+             feature,
+             service,
+-            apiUrl,
+             chainId,
+             environment,
+           },
+@@ -81,7 +79,6 @@ export class InstitutionalFeaturesController {
+       labels: { key: string; value: any }[];
+       feature: string;
+       service: string;
+-      apiUrl?: string;
+       chainId?: string;
+       environment?: string;
+     };
+@@ -106,7 +103,6 @@ export class InstitutionalFeaturesController {
+           req.params.labels,
+           req.params.feature,
+           req.params.service,
+-          req.params.apiUrl,
+           req.params.chainId,
+           req.params.environment,
+         );
+@@ -118,13 +114,21 @@ export class InstitutionalFeaturesController {
+     return true;
+   }
+ 
+-  removeAddTokenConnectRequest({ origin, apiUrl, token }: { origin: string; apiUrl: string; token: string }): void {
++  removeAddTokenConnectRequest({
++    origin,
++    environment,
++    token,
++  }: {
++    origin: string;
++    environment: string;
++    token: string;
++  }): void {
+     const state = this.store.getState();
+     this.store.updateState({
+       institutionalFeatures: {
+         ...state.institutionalFeatures,
+         connectRequests: state.institutionalFeatures.connectRequests.filter(
+-          request => !(request.origin === origin && request.token === token && request.apiUrl === apiUrl),
++          request => !(request.origin === origin && request.token === token && request.environment === environment),
+         ),
+       },
+     });
