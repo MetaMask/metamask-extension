@@ -145,6 +145,7 @@ export const CHAIN_IDS = {
   GNOSIS: '0x64',
   ZKSYNC_ERA: '0x144',
   TEST_ETH: '0x539',
+  ANCIENT_TESTNET: '0x1ad1ba8',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
