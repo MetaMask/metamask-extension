@@ -3639,7 +3639,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/custody-controller@npm:^0.2.18":
+"@metamask-institutional/custody-controller@npm:0.2.18":
   version: 0.2.18
   resolution: "@metamask-institutional/custody-controller@npm:0.2.18"
   dependencies:
@@ -3652,7 +3652,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask-institutional/custody-keyring@npm:^1.0.6, @metamask-institutional/custody-keyring@npm:^1.0.7":
+"@metamask-institutional/custody-controller@patch:@metamask-institutional/custody-controller@npm%3A0.2.18#~/.yarn/patches/@metamask-institutional-custody-controller-npm-0.2.18-73618b9f81.patch":
+  version: 0.2.18
+  resolution: "@metamask-institutional/custody-controller@patch:@metamask-institutional/custody-controller@npm%3A0.2.18#~/.yarn/patches/@metamask-institutional-custody-controller-npm-0.2.18-73618b9f81.patch::version=0.2.18&hash=fe8eaa"
+  dependencies:
+    "@ethereumjs/util": "npm:^8.0.5"
+    "@metamask-institutional/custody-keyring": "npm:^1.0.7"
+    "@metamask-institutional/sdk": "npm:^0.1.23"
+    "@metamask-institutional/types": "npm:^1.0.4"
+    "@metamask/obs-store": "npm:^8.0.0"
+  checksum: 56eec224b737fa80459b3350853238a8e45da5559e3561a93e3f60bce012b7eb43b5a9a33f594bcec5e13df9e3259515443a6f46cff197b76121e3cdb7703dca
+  languageName: node
+  linkType: hard
+
+"@metamask-institutional/custody-keyring@npm:1.0.7":
   version: 1.0.7
   resolution: "@metamask-institutional/custody-keyring@npm:1.0.7"
   dependencies:
@@ -3665,6 +3678,22 @@ __metadata:
     crypto: "npm:^1.0.1"
     lodash.clonedeep: "npm:^4.5.0"
   checksum: 4fa8722c7d3ff0e5817d5463628456429362889683f15be2afc2d49cdf4f75afc70e0a53efe8cb2e3577a8145bc7c4721c5cee132b40355ec73cdc113f91e023
+  languageName: node
+  linkType: hard
+
+"@metamask-institutional/custody-keyring@patch:@metamask-institutional/custody-keyring@npm%3A1.0.7#~/.yarn/patches/@metamask-institutional-custody-keyring-npm-1.0.7-e20ee2bc55.patch":
+  version: 1.0.7
+  resolution: "@metamask-institutional/custody-keyring@patch:@metamask-institutional/custody-keyring@npm%3A1.0.7#~/.yarn/patches/@metamask-institutional-custody-keyring-npm-1.0.7-e20ee2bc55.patch::version=1.0.7&hash=4c115c"
+  dependencies:
+    "@ethereumjs/tx": "npm:^4.1.1"
+    "@ethereumjs/util": "npm:^8.0.5"
+    "@metamask-institutional/configuration-client": "npm:^2.0.1"
+    "@metamask-institutional/sdk": "npm:^0.1.23"
+    "@metamask-institutional/types": "npm:^1.0.4"
+    "@metamask/obs-store": "npm:^8.0.0"
+    crypto: "npm:^1.0.1"
+    lodash.clonedeep: "npm:^4.5.0"
+  checksum: 39a47fe7f675bc68b7038e166b7a4d78c7b6a1c4206231c813a893092d3cf0812baa58ea3bbd7c9a0d1484366963ee1c288029c07b2667450cd6efe80b8521d7
   languageName: node
   linkType: hard
 
@@ -24706,8 +24735,8 @@ __metadata:
     "@lavamoat/lavapack": "npm:^6.0.2"
     "@lavamoat/snow": "npm:^2.0.1"
     "@material-ui/core": "npm:^4.11.0"
-    "@metamask-institutional/custody-controller": "npm:^0.2.18"
-    "@metamask-institutional/custody-keyring": "npm:^1.0.7"
+    "@metamask-institutional/custody-controller": "patch:@metamask-institutional/custody-controller@npm%3A0.2.18#~/.yarn/patches/@metamask-institutional-custody-controller-npm-0.2.18-73618b9f81.patch"
+    "@metamask-institutional/custody-keyring": "patch:@metamask-institutional/custody-keyring@npm%3A1.0.7#~/.yarn/patches/@metamask-institutional-custody-keyring-npm-1.0.7-e20ee2bc55.patch"
     "@metamask-institutional/extension": "npm:^0.3.12"
     "@metamask-institutional/institutional-features": "npm:^1.2.9"
     "@metamask-institutional/portfolio-dashboard": "npm:^1.4.0"

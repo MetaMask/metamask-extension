@@ -1,0 +1,702 @@
+diff --git a/dist/custody.d.ts b/dist/custody.d.ts
+index 21d5df93929d78a5d58ee4396d9cd1c23720ba5f..59a6d83fb417b9d706ffb98f0b1936855214a03c 100644
+--- a/dist/custody.d.ts
++++ b/dist/custody.d.ts
+@@ -29,9 +29,9 @@ export declare class CustodyController {
+             custodianName: string;
+         };
+     }): boolean;
+-    handleMmiCheckIfTokenIsPresent({ token, apiUrl, keyring, }: {
++    handleMmiCheckIfTokenIsPresent({ token, envName, keyring, }: {
+         token: string;
+-        apiUrl: string;
++        envName: string;
+         keyring: any;
+     }): Promise<boolean>;
+ }
+diff --git a/dist/custody.d.ts.map b/dist/custody.d.ts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..4135a6b5ff5bc5f09e04e78879101bbd4daed15b
+--- /dev/null
++++ b/dist/custody.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"custody.d.ts","sourceRoot":"","sources":["../src/custody.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,qBAAqB,EAAE,MAAM,+BAA+B,CAAC;AAGtE,OAAO,EAAE,qBAAqB,EAAE,MAAM,SAAS,CAAC;AAYhD,qBAAa,iBAAiB;IACrB,KAAK,MAAC;gBAMD,IAAI,GAAE,GAAQ;IAU1B,qBAAqB,CAAC,OAAO,EAAE,MAAM,EAAE,gBAAgB,EAAE,qBAAqB,GAAG,IAAI;IAWrF,8BAA8B,CAAC,OAAO,EAAE,MAAM,EAAE,eAAe,EAAE,MAAM,EAAE,EAAE,aAAa,EAAE,MAAM,GAAG,IAAI;IAcvG,iBAAiB,CAAC,iBAAiB,EAAE,qBAAqB,EAAE,GAAG,IAAI;IAgBnE,aAAa,CAAC,OAAO,EAAE,MAAM,GAAG,IAAI;IAMpC,+BAA+B,CAAC,4BAA4B,EAAE,OAAO,GAAG,IAAI;IAM5E,iBAAiB,CAAC,OAAO,EAAE,MAAM,GAAG,qBAAqB;IAKzD,uBAAuB,CAAC,OAAO,EAAE,MAAM,GAAG,MAAM;IAKhD,kBAAkB,IAAI,GAAG,CAAC,MAAM,GAAG,OAAO,CAAC;IAW3C,0BAA0B,CAAC,EACzB,KAAK,EACL,MAAM,EACN,aAAa,EACb,aAAa,GACd,EAAE;QACD,KAAK,EAAE,MAAM,CAAC;QACd,MAAM,EAAE,MAAM,CAAC;QACf,aAAa,EAAE,MAAM,CAAC;QACtB,aAAa,EAAE,MAAM,CAAC;KACvB,GAAG,IAAI;IAOR,0BAA0B,IAAI;QAC5B,KAAK,EAAE,MAAM,CAAC;QACd,MAAM,EAAE,MAAM,CAAC;QACf,aAAa,EAAE,MAAM,CAAC;QACtB,aAAa,EAAE,MAAM,CAAC;KACvB;IAQD,uBAAuB,CAAC,GAAG,EAAE;QAC3B,MAAM,EAAE,MAAM,CAAC;QACf,MAAM,EAAE;YACN,aAAa,EAAE,MAAM,CAAC;SACvB,CAAC;KACH,GAAG,OAAO;IAiCL,8BAA8B,CAAC,EACnC,KAAK,EACL,OAAO,EACP,OAAO,GACR,EAAE;QACD,KAAK,EAAE,MAAM,CAAC;QACd,OAAO,EAAE,MAAM,CAAC;QAChB,OAAO,EAAE,GAAG,CAAC;KACd,GAAG,OAAO,CAAC,OAAO,CAAC;CAarB"}
+\ No newline at end of file
+diff --git a/dist/custody.js b/dist/custody.js
+index e6eb83a36855ee12f6534bdb4909ba14a16b17f0..9047278a0813d6567fd9db8ad2124d1d3ad3d845 100644
+--- a/dist/custody.js
++++ b/dist/custody.js
+@@ -114,11 +114,11 @@ class CustodyController {
+         }
+         return false;
+     }
+-    async handleMmiCheckIfTokenIsPresent({ token, apiUrl, keyring, }) {
++    async handleMmiCheckIfTokenIsPresent({ token, envName, keyring, }) {
+         const accounts = await keyring.getAccounts();
+         for (const address of accounts) {
+             const accountDetails = keyring.getAccountDetails(address);
+-            if (accountDetails.apiUrl === apiUrl && accountDetails.authDetails.refreshToken === token) {
++            if (accountDetails.envName === envName && accountDetails.authDetails.refreshToken === token) {
+                 return true;
+             }
+         }
+diff --git a/dist/custody.js.map b/dist/custody.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..102b89c8ec5bb12039b9d30a4492fb17917b33be
+--- /dev/null
++++ b/dist/custody.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"custody.js","sourceRoot":"","sources":["../src/custody.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/dist/custody.test.d.ts b/dist/custody.test.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..7768cc34d603456ac9346c1c8035b9d1ad4e5830
+--- /dev/null
++++ b/dist/custody.test.d.ts
+@@ -0,0 +1,2 @@
++export {};
++//# sourceMappingURL=custody.test.d.ts.map
+\ No newline at end of file
+diff --git a/dist/custody.test.d.ts.map b/dist/custody.test.d.ts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..104adffae7c6a43356408611fd3e2afacb1c95a5
+--- /dev/null
++++ b/dist/custody.test.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"custody.test.d.ts","sourceRoot":"","sources":["../src/custody.test.ts"],"names":[],"mappings":""}
+\ No newline at end of file
+diff --git a/dist/custody.test.js b/dist/custody.test.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..ac99a3c6fabd06c379aaaf02899019b1f85a8476
+--- /dev/null
++++ b/dist/custody.test.js
+@@ -0,0 +1,204 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++const custody_1 = require("./custody");
++describe("CustodyController", function () {
++    const INIT_STATE = {
++        custodyAccountDetails: {},
++        custodyStatusMaps: {},
++        waitForConfirmDeepLinkDialog: false,
++    };
++    const createController = async (initState) => new custody_1.CustodyController({ initState });
++    it("should create custodyController", async function () {
++        const controller = await createController(INIT_STATE);
++        expect(controller).toBeTruthy();
++    });
++    it("should set custodyStatusMap", async function () {
++        const controller = await createController(INIT_STATE);
++        controller.storeCustodyStatusMap("custody", {
++            status: { mmStatus: "status" },
++        });
++        const state = controller.store.getState();
++        expect(state.custodyStatusMaps.custody.status.mmStatus).toBe("status");
++    });
++    it("should set custodianSupportedChains", async function () {
++        const controller = await createController(INIT_STATE);
++        controller.storeSupportedChainsForAddress("0x", ["1", "2"], "jupiter");
++        const state = controller.store.getState();
++        expect(state.custodianSupportedChains).toEqual({
++            "0x": {
++                supportedChains: ["1", "2"],
++                custodianName: "jupiter",
++            },
++        });
++    });
++    it("should set account details", async function () {
++        const controller = await createController(INIT_STATE);
++        controller.setAccountDetails([
++            {
++                address: "0xc96348083d806DFfc546b36e05AF1f9452CDAe91",
++                details: "details",
++                custodyType: "test",
++                custodianName: "saturn",
++            },
++        ]);
++        expect(controller.getCustodyTypeByAddress("0xc96348083d806DFfc546b36e05AF1f9452CDAe91")).toBe("test");
++        expect(controller.getAllCustodyTypes().values().next().value).toBe("test");
++    });
++    it("should get account details", async () => {
++        const controller = await createController(INIT_STATE);
++        controller.setAccountDetails([
++            {
++                address: "0xc96348083d806DFfc546b36e05AF1f9452CDAe91",
++                details: "details",
++                custodyType: "test",
++            },
++        ]);
++        const result = controller.getAccountDetails("0xc96348083d806DFfc546b36e05AF1f9452CDAe91");
++        expect(result.address).toBe("0xc96348083d806DFfc546b36e05AF1f9452CDAe91");
++    });
++    it("should set waitForConfirmDeepLinkDialog to true", async function () {
++        const controller = await createController(INIT_STATE);
++        await controller.setWaitForConfirmDeepLinkDialog(true);
++        const state = controller.store.getState();
++        expect(state.waitForConfirmDeepLinkDialog).toBe(true);
++    });
++    it("should remove account from account details", async function () {
++        const accountToRemove = {
++            ["0xc96348083d806DFfc546b36e05AF1f9452CDAe91"]: {
++                address: "0xc96348083d806DFfc546b36e05AF1f9452CDAe91",
++                details: "details",
++                custodyType: "test",
++            },
++        };
++        const controller = await createController({
++            ...INIT_STATE,
++            custodyAccountDetails: {
++                ...INIT_STATE.custodyAccountDetails,
++                ...accountToRemove,
++            },
++        });
++        controller.removeAccount("0xc96348083d806DFfc546b36e05AF1f9452CDAe91");
++        expect(controller.getCustodyTypeByAddress("0xc96348083d806DFfc546b36e05AF1f9452CDAe91")).toBe(undefined);
++    });
++    it("should set custodianConnectRequest", async function () {
++        const controller = await createController(INIT_STATE);
++        await controller.setCustodianConnectRequest({
++            token: "token",
++            custodianType: "custodianType",
++            custodianName: "custodianName",
++            apiUrl: "https://api",
++        });
++        const state = controller.store.getState();
++        expect(state.custodianConnectRequest.custodianName).toBe("custodianName");
++        expect(state.custodianConnectRequest.custodianType).toBe("custodianType");
++    });
++    it("should return and clear custodianConnectRequest", async function () {
++        const controller = await createController(INIT_STATE);
++        await controller.setCustodianConnectRequest({
++            token: "token",
++            custodianType: "custodianType",
++            custodianName: "custodianName",
++            apiUrl: "https://api",
++        });
++        const connectRequest = await controller.getCustodianConnectRequest();
++        expect(connectRequest.custodianType).toBe("custodianType");
++        expect(connectRequest.custodianName).toBe("custodianName");
++        expect(connectRequest.token).toBe("token");
++        expect(connectRequest.apiUrl).toBe("https://api");
++        const state = controller.store.getState();
++        expect(state.custodianConnectRequest).toStrictEqual({});
++    });
++    it("is okay with a blank api URL", async function () {
++        const controller = await createController(INIT_STATE);
++        await controller.setCustodianConnectRequest({
++            token: "token",
++            custodianType: "custodianType",
++            custodianName: "custodianname",
++            apiUrl: undefined,
++        });
++        const connectRequest = await controller.getCustodianConnectRequest();
++        expect(connectRequest.custodianType).toBe("custodianType");
++        expect(connectRequest.custodianName).toBe("custodianname");
++        expect(connectRequest.token).toBe("token");
++        expect(connectRequest.apiUrl).toBe(undefined);
++        const state = controller.store.getState();
++        expect(state.custodianConnectRequest).toStrictEqual({});
++    });
++    it("should return true for custodian type in use", async function () {
++        const accountMock = {
++            ["0xc96348083d806DFfc546b36e05AF1f9452CDAe91"]: {
++                address: "0xc96348083d806DFfc546b36e05AF1f9452CDAe91",
++                details: "details",
++                custodyType: "Custody - Jupiter",
++            },
++        };
++        const controller = await createController({
++            ...INIT_STATE,
++            custodyAccountDetails: {
++                ...INIT_STATE.custodyAccountDetails,
++                ...accountMock,
++            },
++        });
++        const connectRequest = {
++            origin: "https://jupiter-custody-ui.codefi.network/",
++            params: {
++                custodianName: "jupiter",
++            },
++        };
++        const result = await controller.handleMmiCustodianInUse(connectRequest);
++        expect(result).toBe(true);
++    });
++    it("should fail if the origin does not match", async function () {
++        const accountMock = {
++            ["0xc96348083d806DFfc546b36e05AF1f9452CDAe91"]: {
++                address: "0xc96348083d806DFfc546b36e05AF1f9452CDAe91",
++                details: "details",
++                custodyType: "Custody - Jupiter",
++            },
++        };
++        const controller = await createController({
++            ...INIT_STATE,
++            custodyAccountDetails: {
++                ...INIT_STATE.custodyAccountDetails,
++                ...accountMock,
++            },
++        });
++        const connectRequest = {
++            origin: "http://space.com",
++            params: {
++                custodianName: "jupiter",
++            },
++        };
++        const t = () => {
++            controller.handleMmiCustodianInUse(connectRequest);
++        };
++        expect(t).toThrow("Forbidden");
++    });
++    it("should fail if there is no such custodian", async function () {
++        const accountMock = {
++            ["0xc96348083d806DFfc546b36e05AF1f9452CDAe91"]: {
++                address: "0xc96348083d806DFfc546b36e05AF1f9452CDAe91",
++                details: "details",
++                custodyType: "Custody - Jupiter",
++            },
++        };
++        const controller = await createController({
++            ...INIT_STATE,
++            custodyAccountDetails: {
++                ...INIT_STATE.custodyAccountDetails,
++                ...accountMock,
++            },
++        });
++        const connectRequest = {
++            origin: "https://jupiter-custody-ui.codefi.network/",
++            params: {
++                custodianName: "fake",
++            },
++        };
++        const t = () => {
++            controller.handleMmiCustodianInUse(connectRequest);
++        };
++        expect(t).toThrow("Forbidden");
++    });
++});
++//# sourceMappingURL=custody.test.js.map
+\ No newline at end of file
+diff --git a/dist/custody.test.js.map b/dist/custody.test.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..e6a3206725038a7be4be01668694a313fa6a48ea
+--- /dev/null
++++ b/dist/custody.test.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"custody.test.js","sourceRoot":"","sources":["../src/custody.test.ts"],"names":[],"mappings":"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"}
+\ No newline at end of file
+diff --git a/dist/index.d.ts.map b/dist/index.d.ts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..7360575ae2fc63661d79d175f0f33dbf1baa09a2
+--- /dev/null
++++ b/dist/index.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,iBAAiB,EAAE,MAAM,WAAW,CAAC;AAC9C,OAAO,EAAE,qBAAqB,EAAE,MAAM,SAAS,CAAC;AAChD,OAAO,EAAE,oBAAoB,EAAE,MAAM,SAAS,CAAC"}
+\ No newline at end of file
+diff --git a/dist/index.js.map b/dist/index.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..b224d66a11192de8c360c1b343e4d79875f9f979
+--- /dev/null
++++ b/dist/index.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"index.js","sourceRoot":"","sources":["../src/index.ts"],"names":[],"mappings":";;;AAAA,qCAA8C;AAArC,4GAAA,iBAAiB,OAAA;AAE1B,iCAA+C;AAAtC,6GAAA,oBAAoB,OAAA"}
+\ No newline at end of file
+diff --git a/dist/package.json b/dist/package.json
+index f894141bf070ca787fe7bf1a3e5b7cf8a453516b..47973f14a809443a8029708794bbf9b181a3ac2b 100644
+--- a/dist/package.json
++++ b/dist/package.json
+@@ -27,7 +27,7 @@
+   "bugs": {
+     "url": "https://github.com/consensys-vertical-apps/metamask-institutional/issues"
+   },
+-  "gitHead": "31af65fe04a1e975545502d4795e6d5b383fe964",
++  "gitHead": "62ed7639b9145658a4fa1273e35e99d300acdc99",
+   "dependencies": {
+     "@ethereumjs/util": "^8.0.5",
+     "@metamask-institutional/custody-keyring": "^1.0.7",
+diff --git a/dist/types.d.ts.map b/dist/types.d.ts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..b0eb75f86250d7cc56bc64df45e74eb7e7e6ced5
+--- /dev/null
++++ b/dist/types.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"types.d.ts","sourceRoot":"","sources":["../src/types.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,gCAAgC,EAAE,MAAM,6BAA6B,CAAC;AAE/E,MAAM,WAAW,qBAAqB;IACpC,OAAO,EAAE,MAAM,CAAC;IAChB,IAAI,EAAE,MAAM,CAAC;IACb,gBAAgB,EAAE,gCAAgC,CAAC;IACnD,MAAM,EAAE,MAAM,EAAE,CAAC;IACjB,MAAM,EAAE,MAAM,CAAC;IACf,WAAW,EAAE,MAAM,CAAC;IACpB,OAAO,EAAE,MAAM,CAAC;IAChB,aAAa,EAAE,MAAM,CAAC;CACvB"}
+\ No newline at end of file
+diff --git a/dist/types.js.map b/dist/types.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..c768b79002615c0e69cc6efdcad6a509c1abaaec
+--- /dev/null
++++ b/dist/types.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"types.js","sourceRoot":"","sources":["../src/types.ts"],"names":[],"mappings":""}
+\ No newline at end of file
+diff --git a/dist/utils.d.ts.map b/dist/utils.d.ts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..30fec8a77b90f12c108e4ba01eb0cc57382cfd88
+--- /dev/null
++++ b/dist/utils.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"utils.d.ts","sourceRoot":"","sources":["../src/utils.ts"],"names":[],"mappings":"AAEA,wBAAgB,oBAAoB,CAAC,OAAO,EAAE,MAAM,GAAG,MAAM,CAiB5D"}
+\ No newline at end of file
+diff --git a/dist/utils.js.map b/dist/utils.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..47b235aaf2b14062e7b5e9dc27285d922c463ab8
+--- /dev/null
++++ b/dist/utils.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"utils.js","sourceRoot":"","sources":["../src/utils.ts"],"names":[],"mappings":";;;AAAA,2CAAgF;AAEhF,SAAgB,oBAAoB,CAAC,OAAe;IAClD,IAAI,CAAC,OAAO,EAAE;QAKZ,OAAO,EAAE,CAAC;KACX;IACD,MAAM,WAAW,GAAG,IAAA,mBAAY,EAAC,OAAO,CAAC,CAAC;IAC1C,IAAI,CAAC,IAAA,kBAAW,EAAC,WAAW,CAAC,EAAE;QAK7B,OAAO,WAAW,CAAC;KACpB;IACD,OAAO,IAAA,wBAAiB,EAAC,IAAA,mBAAY,EAAC,OAAO,CAAC,CAAC,CAAC;AAClD,CAAC;AAjBD,oDAiBC"}
+\ No newline at end of file
+diff --git a/dist/utils.test.d.ts b/dist/utils.test.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..c727c85cb6955a6f280988d4ce657f6701f3408f
+--- /dev/null
++++ b/dist/utils.test.d.ts
+@@ -0,0 +1,2 @@
++export {};
++//# sourceMappingURL=utils.test.d.ts.map
+\ No newline at end of file
+diff --git a/dist/utils.test.d.ts.map b/dist/utils.test.d.ts.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..074bacb9650fa9e2d8573d4038ab02d3ffcbb4c3
+--- /dev/null
++++ b/dist/utils.test.d.ts.map
+@@ -0,0 +1 @@
++{"version":3,"file":"utils.test.d.ts","sourceRoot":"","sources":["../src/utils.test.ts"],"names":[],"mappings":""}
+\ No newline at end of file
+diff --git a/dist/utils.test.js b/dist/utils.test.js
+new file mode 100644
+index 0000000000000000000000000000000000000000..261d8e69ddffda215046e9d79b27a5b1e65c334d
+--- /dev/null
++++ b/dist/utils.test.js
+@@ -0,0 +1,14 @@
++"use strict";
++Object.defineProperty(exports, "__esModule", { value: true });
++const utils_1 = require("./utils");
++describe("#toChecksumHexAddress", () => {
++    it("should call toChecksumHexAddress with an address", async () => {
++        const address = (0, utils_1.toChecksumHexAddress)("0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275");
++        expect(address).toEqual("0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275");
++    });
++    it("should call toChecksumHexAddress with an empty address and return an empty string", async () => {
++        const address = (0, utils_1.toChecksumHexAddress)("");
++        expect(address).toEqual("");
++    });
++});
++//# sourceMappingURL=utils.test.js.map
+\ No newline at end of file
+diff --git a/dist/utils.test.js.map b/dist/utils.test.js.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..7887b31b2592c878a3ffbba2252e63b58b4ecc0e
+--- /dev/null
++++ b/dist/utils.test.js.map
+@@ -0,0 +1 @@
++{"version":3,"file":"utils.test.js","sourceRoot":"","sources":["../src/utils.test.ts"],"names":[],"mappings":";;AAAA,mCAA+C;AAE/C,QAAQ,CAAC,uBAAuB,EAAE,GAAG,EAAE;IACrC,EAAE,CAAC,kDAAkD,EAAE,KAAK,IAAI,EAAE;QAChE,MAAM,OAAO,GAAG,IAAA,4BAAoB,EAAC,4CAA4C,CAAC,CAAC;QACnF,MAAM,CAAC,OAAO,CAAC,CAAC,OAAO,CAAC,4CAA4C,CAAC,CAAC;IACxE,CAAC,CAAC,CAAC;IAEH,EAAE,CAAC,mFAAmF,EAAE,KAAK,IAAI,EAAE;QACjG,MAAM,OAAO,GAAG,IAAA,4BAAoB,EAAC,EAAE,CAAC,CAAC;QACzC,MAAM,CAAC,OAAO,CAAC,CAAC,OAAO,CAAC,EAAE,CAAC,CAAC;IAC9B,CAAC,CAAC,CAAC;AACL,CAAC,CAAC,CAAC"}
+\ No newline at end of file
+diff --git a/src/custody.test.ts b/src/custody.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..78c06718b3b0e00a4f5772b03da8c7780dfcf223
+--- /dev/null
++++ b/src/custody.test.ts
+@@ -0,0 +1,232 @@
++import { ITransactionStatus } from "@metamask-institutional/types";
++
++import { CustodyController } from "./custody";
++import { CustodyAccountDetails } from "./types";
++
++describe("CustodyController", function () {
++  const INIT_STATE = {
++    custodyAccountDetails: {},
++    custodyStatusMaps: {},
++    waitForConfirmDeepLinkDialog: false,
++  };
++
++  const createController = async initState => new CustodyController({ initState });
++
++  it("should create custodyController", async function () {
++    const controller = await createController(INIT_STATE);
++    expect(controller).toBeTruthy();
++  });
++
++  it("should set custodyStatusMap", async function () {
++    const controller = await createController(INIT_STATE);
++    controller.storeCustodyStatusMap("custody", {
++      status: { mmStatus: "status" } as ITransactionStatus,
++    });
++    const state = controller.store.getState();
++    expect(state.custodyStatusMaps.custody.status.mmStatus).toBe("status");
++  });
++
++  it("should set custodianSupportedChains", async function () {
++    const controller = await createController(INIT_STATE);
++    controller.storeSupportedChainsForAddress("0x", ["1", "2"], "jupiter");
++    const state = controller.store.getState();
++    expect(state.custodianSupportedChains).toEqual({
++      "0x": {
++        supportedChains: ["1", "2"],
++        custodianName: "jupiter",
++      },
++    });
++  });
++
++  it("should set account details", async function () {
++    const controller = await createController(INIT_STATE);
++    controller.setAccountDetails([
++      {
++        address: "0xc96348083d806DFfc546b36e05AF1f9452CDAe91",
++        details: "details",
++        custodyType: "test",
++        custodianName: "saturn",
++      } as unknown as CustodyAccountDetails,
++    ]);
++    expect(controller.getCustodyTypeByAddress("0xc96348083d806DFfc546b36e05AF1f9452CDAe91")).toBe("test");
++
++    expect(controller.getAllCustodyTypes().values().next().value).toBe("test");
++  });
++
++  it("should get account details", async () => {
++    const controller = await createController(INIT_STATE);
++    controller.setAccountDetails([
++      {
++        address: "0xc96348083d806DFfc546b36e05AF1f9452CDAe91",
++        details: "details",
++        custodyType: "test",
++      } as unknown as CustodyAccountDetails,
++    ]);
++
++    const result = controller.getAccountDetails("0xc96348083d806DFfc546b36e05AF1f9452CDAe91");
++    expect(result.address).toBe("0xc96348083d806DFfc546b36e05AF1f9452CDAe91");
++  });
++
++  it("should set waitForConfirmDeepLinkDialog to true", async function () {
++    const controller = await createController(INIT_STATE);
++    await controller.setWaitForConfirmDeepLinkDialog(true);
++    const state = controller.store.getState();
++    expect(state.waitForConfirmDeepLinkDialog).toBe(true);
++  });
++
++  it("should remove account from account details", async function () {
++    const accountToRemove = {
++      ["0xc96348083d806DFfc546b36e05AF1f9452CDAe91"]: {
++        address: "0xc96348083d806DFfc546b36e05AF1f9452CDAe91",
++        details: "details",
++        custodyType: "test",
++      },
++    };
++    const controller = await createController({
++      ...INIT_STATE,
++      custodyAccountDetails: {
++        ...INIT_STATE.custodyAccountDetails,
++        ...accountToRemove,
++      },
++    });
++    controller.removeAccount("0xc96348083d806DFfc546b36e05AF1f9452CDAe91");
++    expect(controller.getCustodyTypeByAddress("0xc96348083d806DFfc546b36e05AF1f9452CDAe91")).toBe(undefined);
++  });
++
++  it("should set custodianConnectRequest", async function () {
++    const controller = await createController(INIT_STATE);
++    await controller.setCustodianConnectRequest({
++      token: "token",
++      custodianType: "custodianType",
++      custodianName: "custodianName",
++      apiUrl: "https://api",
++    });
++    const state = controller.store.getState();
++    expect(state.custodianConnectRequest.custodianName).toBe("custodianName");
++    expect(state.custodianConnectRequest.custodianType).toBe("custodianType");
++  });
++
++  it("should return and clear custodianConnectRequest", async function () {
++    const controller = await createController(INIT_STATE);
++    await controller.setCustodianConnectRequest({
++      token: "token",
++      custodianType: "custodianType",
++      custodianName: "custodianName",
++      apiUrl: "https://api",
++    });
++    const connectRequest = await controller.getCustodianConnectRequest();
++    expect(connectRequest.custodianType).toBe("custodianType");
++    expect(connectRequest.custodianName).toBe("custodianName");
++    expect(connectRequest.token).toBe("token");
++    expect(connectRequest.apiUrl).toBe("https://api");
++    const state = controller.store.getState();
++    expect(state.custodianConnectRequest).toStrictEqual({});
++  });
++
++  it("is okay with a blank api URL", async function () {
++    const controller = await createController(INIT_STATE);
++    await controller.setCustodianConnectRequest({
++      token: "token",
++      custodianType: "custodianType",
++      custodianName: "custodianname",
++      apiUrl: undefined,
++    });
++    const connectRequest = await controller.getCustodianConnectRequest();
++    expect(connectRequest.custodianType).toBe("custodianType");
++    expect(connectRequest.custodianName).toBe("custodianname");
++    expect(connectRequest.token).toBe("token");
++    expect(connectRequest.apiUrl).toBe(undefined);
++    const state = controller.store.getState();
++    expect(state.custodianConnectRequest).toStrictEqual({});
++  });
++
++  it("should return true for custodian type in use", async function () {
++    const accountMock = {
++      ["0xc96348083d806DFfc546b36e05AF1f9452CDAe91"]: {
++        address: "0xc96348083d806DFfc546b36e05AF1f9452CDAe91",
++        details: "details",
++        custodyType: "Custody - Jupiter",
++      },
++    };
++
++    const controller = await createController({
++      ...INIT_STATE,
++      custodyAccountDetails: {
++        ...INIT_STATE.custodyAccountDetails,
++        ...accountMock,
++      },
++    });
++
++    const connectRequest = {
++      origin: "https://jupiter-custody-ui.codefi.network/",
++      params: {
++        custodianName: "jupiter",
++      },
++    };
++
++    const result = await controller.handleMmiCustodianInUse(connectRequest);
++    expect(result).toBe(true);
++  });
++
++  it("should fail if the origin does not match", async function () {
++    const accountMock = {
++      ["0xc96348083d806DFfc546b36e05AF1f9452CDAe91"]: {
++        address: "0xc96348083d806DFfc546b36e05AF1f9452CDAe91",
++        details: "details",
++        custodyType: "Custody - Jupiter",
++      },
++    };
++
++    const controller = await createController({
++      ...INIT_STATE,
++      custodyAccountDetails: {
++        ...INIT_STATE.custodyAccountDetails,
++        ...accountMock,
++      },
++    });
++
++    const connectRequest = {
++      origin: "http://space.com",
++      params: {
++        custodianName: "jupiter",
++      },
++    };
++
++    const t = () => {
++      controller.handleMmiCustodianInUse(connectRequest);
++    };
++
++    expect(t).toThrow("Forbidden");
++  });
++
++  it("should fail if there is no such custodian", async function () {
++    const accountMock = {
++      ["0xc96348083d806DFfc546b36e05AF1f9452CDAe91"]: {
++        address: "0xc96348083d806DFfc546b36e05AF1f9452CDAe91",
++        details: "details",
++        custodyType: "Custody - Jupiter",
++      },
++    };
++
++    const controller = await createController({
++      ...INIT_STATE,
++      custodyAccountDetails: {
++        ...INIT_STATE.custodyAccountDetails,
++        ...accountMock,
++      },
++    });
++
++    const connectRequest = {
++      origin: "https://jupiter-custody-ui.codefi.network/",
++      params: {
++        custodianName: "fake",
++      },
++    };
++
++    const t = () => {
++      controller.handleMmiCustodianInUse(connectRequest);
++    };
++
++    expect(t).toThrow("Forbidden");
++  });
++});
+diff --git a/src/custody.ts b/src/custody.ts
+index 95b6b0e463b376697a6f837cf05e1542c7fa01a8..9aa23c8135effb2a8a8d76bec4132b74c3c0702d 100644
+--- a/src/custody.ts
++++ b/src/custody.ts
+@@ -104,6 +104,7 @@ export class CustodyController {
+     return custodyTypes;
+   }
+ 
++  // TODO (Bernardo) - This use of apiUrl is for display only
+   setCustodianConnectRequest({
+     token,
+     apiUrl,
+@@ -120,6 +121,7 @@ export class CustodyController {
+     });
+   }
+ 
++  // TODO (Bernardo) - It looks like this is not being called anywhere
+   getCustodianConnectRequest(): {
+     token: string;
+     apiUrl: string;
+@@ -170,27 +172,22 @@ export class CustodyController {
+     return false;
+   }
+ 
++  // TODO (Bernardo) - Ensure extension sends envName and no apiUrl
+   async handleMmiCheckIfTokenIsPresent({
+     token,
+-    apiUrl,
++    envName,
+     keyring,
+   }: {
+     token: string;
+-    apiUrl: string;
++    envName: string;
+     keyring: any;
+   }): Promise<boolean> {
+-    // FIXME: we are not currently storing environment (aka custodian name) in the keyring accountsDetails
+-    // We should be doing this and comparing environment instead of apiUrl
+-    // But this would require migrations
+-    // See MMI-2119
+-
+     const accounts = await keyring.getAccounts();
+ 
+     for (const address of accounts) {
+       const accountDetails = keyring.getAccountDetails(address);
+ 
+-      // TODO: Change to rely on environment instead of apiUrl when MMI-2119 is done
+-      if (accountDetails.apiUrl === apiUrl && accountDetails.authDetails.refreshToken === token) {
++      if (accountDetails.envName === envName && accountDetails.authDetails.refreshToken === token) {
+         return true;
+       }
+     }
+diff --git a/src/utils.test.ts b/src/utils.test.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..4a62236c07f185fc232631a78b5cad411f96a977
+--- /dev/null
++++ b/src/utils.test.ts
+@@ -0,0 +1,13 @@
++import { toChecksumHexAddress } from "./utils";
++
++describe("#toChecksumHexAddress", () => {
++  it("should call toChecksumHexAddress with an address", async () => {
++    const address = toChecksumHexAddress("0x5ab19e7091dd208f352f8e727b6dcc6f8abb6275");
++    expect(address).toEqual("0x5Ab19e7091dD208F352F8E727B6DCC6F8aBB6275");
++  });
++
++  it("should call toChecksumHexAddress with an empty address and return an empty string", async () => {
++    const address = toChecksumHexAddress("");
++    expect(address).toEqual("");
++  });
++});
