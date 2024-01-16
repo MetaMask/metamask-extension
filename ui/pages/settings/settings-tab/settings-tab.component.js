@@ -305,9 +305,9 @@ export default class SettingsTab extends PureComponent {
     const getPrimaryCurrencySettingForMetrics = (newCurrency) => {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Settings,
-        event: MetaMetricsEventName.UseNativeCurrencyAsPrimaryCurrency,
+        event: MetaMetricsEventName.PreferredPrimaryCurrency,
         properties: {
-          use_native_currency_as_primary_currency: newCurrency,
+          preferred_primary_currency: newCurrency ? 'ETH' : 'Fiat',
         },
       });
     };

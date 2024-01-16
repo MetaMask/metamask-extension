@@ -804,7 +804,7 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
-      [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]:
+      [MetaMetricsUserTrait.PreferredPrimaryCurrency]:
         metamaskState.preferences.useNativeCurrencyAsPrimaryCurrency,
       ///: BEGIN:ONLY_INCLUDE_IF(desktop)
       [MetaMetricsUserTrait.DesktopEnabled]:

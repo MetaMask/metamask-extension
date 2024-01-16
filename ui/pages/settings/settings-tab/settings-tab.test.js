@@ -1,9 +1,10 @@
 import React from 'react';
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import mockState from '../../../../test/data/mock-state.json';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
 import SettingsTab from '.';
 import 'jest-canvas-mock';
 
@@ -61,6 +62,29 @@ describe('Settings Tab', () => {
     expect(
       mockSetUseNativeCurrencyAsPrimaryCurrencyPreference,
     ).toHaveBeenCalled();
+  });
+  it('fires event when primary currency setting is toggled', async () => {
+    const mockTrackEvent = jest.fn();
+    const { queryByTestId } = renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <SettingsTab />
+      </MetaMetricsContext.Provider>,
+      mockStore,
+    );
+
+    const fiatCurrencyToggle = queryByTestId('toggle-fiat-currency');
+    console.log(fiatCurrencyToggle);
+    fireEvent.click(fiatCurrencyToggle);
+    await waitFor(() => {
+      expect(mockTrackEvent).toHaveBeenCalled();
+    });
+    // With({
+    //   category: MetaMetricsEventCategory.Settings,
+    //   event: MetaMetricsEventName.PreferredPrimaryCurrency,
+    //   properties: {
+    //     preferred_primary_currency: 'Fiat',
+    //   },
+    // });
   });
 
   it('should display currency symbol for native token', async () => {
