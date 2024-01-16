@@ -645,7 +645,6 @@
       "@storybook/addon-knobs>core-js": false,
       "@storybook/manager-webpack5>core-js": false,
       "@storybook/react-webpack5>@storybook/preset-react-webpack>@pmmmwh/react-refresh-webpack-plugin>core-js-pure": false,
-      "ethjs-contract>babel-runtime>core-js": false,
       "ts-node>@swc/core": false,
       "jsdom>ws>bufferutil": false,
       "jsdom>ws>utf-8-validate": false,
