@@ -341,7 +341,6 @@ export const NetworkListMenu = ({ onClose }) => {
                                   selected={isCurrentNetwork}
                                   focus={isCurrentNetwork && !showSearch}
                                   onClick={() => {
-                                    dispatch(toggleNetworkMenu());
                                     if (network.providerType) {
                                       dispatch(
                                         setProviderType(network.providerType),
@@ -361,6 +360,7 @@ export const NetworkListMenu = ({ onClose }) => {
                                         to_network: network.chainId,
                                       },
                                     });
+                                    dispatch(toggleNetworkMenu());
                                   }}
                                   onDeleteClick={
                                     canDeleteNetwork
