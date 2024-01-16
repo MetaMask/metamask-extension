@@ -3654,14 +3654,14 @@ __metadata:
 
 "@metamask-institutional/custody-controller@patch:@metamask-institutional/custody-controller@npm%3A0.2.18#~/.yarn/patches/@metamask-institutional-custody-controller-npm-0.2.18-73618b9f81.patch":
   version: 0.2.18
-  resolution: "@metamask-institutional/custody-controller@patch:@metamask-institutional/custody-controller@npm%3A0.2.18#~/.yarn/patches/@metamask-institutional-custody-controller-npm-0.2.18-73618b9f81.patch::version=0.2.18&hash=68855e"
+  resolution: "@metamask-institutional/custody-controller@patch:@metamask-institutional/custody-controller@npm%3A0.2.18#~/.yarn/patches/@metamask-institutional-custody-controller-npm-0.2.18-73618b9f81.patch::version=0.2.18&hash=6259cb"
   dependencies:
     "@ethereumjs/util": "npm:^8.0.5"
     "@metamask-institutional/custody-keyring": "npm:^1.0.7"
     "@metamask-institutional/sdk": "npm:^0.1.23"
     "@metamask-institutional/types": "npm:^1.0.4"
     "@metamask/obs-store": "npm:^8.0.0"
-  checksum: 1de3a14fea8585a3e85bc32ff905572b1186ecadf50791a9f671f1cd7900d6376df1f078a5d021f57e7c0e91c1d71d1fefaddf5550ec7127c3b0fce2aef6c600
+  checksum: a98e2a708f4e981bfd7ec301fa92713c882ef952bcc00bef69f4adf37eb608d47b5736327b23a4654d888e0ad4707783f173baa26386d4c621c00f1e805f63e2
   languageName: node
   linkType: hard
 
