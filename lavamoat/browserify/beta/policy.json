@@ -874,7 +874,6 @@
     },
     "@metamask/base-controller": {
       "globals": {
-        "console.error": true,
         "setTimeout": true
       },
       "packages": {
