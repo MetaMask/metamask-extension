@@ -1,7 +1,4 @@
 {
-  "DragAndDropBanner": {
-    "message": "You can drag networks to reorder them. "
-  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -158,6 +155,9 @@
   },
   "accountsConnected": {
     "message": "Accounts connected"
+  },
+  "accountsPinningBannerDescription": {
+    "message": "Keep tabs on what matters by pinning or hiding accounts"
   },
   "active": {
     "message": "Active"
@@ -1406,6 +1406,9 @@
   },
   "downloadStateLogs": {
     "message": "Download state logs"
+  },
+  "dragAndDropBanner": {
+    "message": "You can drag networks to reorder them. "
   },
   "dropped": {
     "message": "Dropped"

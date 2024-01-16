@@ -13,11 +13,13 @@ import {
   Display,
   IconColor,
   JustifyContent,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getConnectedSubjectsForAllAddresses,
   getHiddenAccountsList,
+  getInternalAccounts,
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
   getSelectedAccount,
@@ -25,6 +27,7 @@ import {
 import { setSelectedAccount } from '../../../store/actions';
 import {
   AvatarIcon,
+  AvatarIconSize,
   Box,
   Icon,
   IconName,
@@ -32,6 +35,7 @@ import {
   Text,
 } from '../../component-library';
 import { AccountListItem } from '../account-list-item';
+import { mergeAccounts } from './account-list-menu';
 
 export const HiddenAccountList = ({ onClose }) => {
   const t = useI18nContext();
@@ -39,10 +43,12 @@ export const HiddenAccountList = ({ onClose }) => {
   const dispatch = useDispatch();
   const hiddenAddresses = useSelector(getHiddenAccountsList);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const internalAccounts = useSelector(getInternalAccounts);
+  const mergedAccounts = mergeAccounts(accounts, internalAccounts);
   const selectedAccount = useSelector(getSelectedAccount);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
-  const filteredHiddenAccounts = accounts.filter((account) =>
+  const filteredHiddenAccounts = mergedAccounts.filter((account) =>
     hiddenAddresses.includes(account.address),
   );
   const [showListItem, setShowListItem] = useState(false);
@@ -57,6 +63,8 @@ export const HiddenAccountList = ({ onClose }) => {
         alignItems={AlignItems.center}
         width={BlockSize.Full}
         justifyContent={JustifyContent.spaceBetween}
+        className="hidden-accounts-list"
+        data-testid="hidden-accounts-list"
       >
         <Box
           display={Display.Flex}
@@ -68,19 +76,24 @@ export const HiddenAccountList = ({ onClose }) => {
             iconName={IconName.EyeSlash}
             color={IconColor.infoDefault}
             backgroundColor={BackgroundColor.infoMuted}
+            size={AvatarIconSize.Sm}
           />
           <Box display={Display.Flex}>
-            <Text>{t('hiddenAccounts')}</Text>
+            <Text variant={TextVariant.bodyMdMedium}>
+              {t('hiddenAccounts')}
+            </Text>
           </Box>
         </Box>
         <Box
-          gap={1}
+          gap={2}
           display={Display.Flex}
           alignItems={AlignItems.center}
           width={BlockSize.OneThird}
           justifyContent={JustifyContent.flexEnd}
         >
-          <Text>{hiddenAddresses.length}</Text>
+          <Text variant={TextVariant.bodyMdMedium}>
+            {hiddenAddresses.length}
+          </Text>
           <Icon
             name={showListItem ? IconName.ArrowUp : IconName.ArrowDown}
             size={IconSize.Sm}
@@ -96,7 +109,7 @@ export const HiddenAccountList = ({ onClose }) => {
             );
             return (
               <Box
-                className="multichain-account-menu-popover__list--menu-item-hidden"
+                className="multichain-account-menu-popover__list--menu-item-hidden-account"
                 key={account.address}
               >
                 <AccountListItem
@@ -118,16 +131,8 @@ export const HiddenAccountList = ({ onClose }) => {
                   connectedAvatar={connectedSite?.iconUrl}
                   connectedAvatarName={connectedSite?.name}
                   showOptions
-                  isPinned={
-                    process.env.NETWORK_ACCOUNT_DND
-                      ? Boolean(account.pinned)
-                      : null
-                  }
-                  isHidden={
-                    process.env.NETWORK_ACCOUNT_DND
-                      ? Boolean(account.hidden)
-                      : null
-                  }
+                  isPinned={Boolean(account.pinned)}
+                  isHidden={Boolean(account.hidden)}
                 />
               </Box>
             );
