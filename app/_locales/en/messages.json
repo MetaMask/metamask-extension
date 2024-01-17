@@ -3398,6 +3398,10 @@
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
   },
+  "paymasterInUse": {
+    "message": "The gas for this transaction will be paid by a paymaster.",
+    "description": "Alert shown in transaction confirmation if paymaster in use."
+  },
   "pending": {
     "message": "Pending"
   },
