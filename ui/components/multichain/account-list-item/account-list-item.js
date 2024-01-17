@@ -147,11 +147,19 @@ export const AccountListItem = ({
               alignItems={AlignItems.center}
               gap={2}
             >
-              {process.env.NETWORK_ACCOUNT_DND && isPinned ? (
-                <Icon name={IconName.Pin} size={IconSize.Xs} />
+              {isPinned ? (
+                <Icon
+                  name={IconName.Pin}
+                  size={IconSize.Xs}
+                  className="account-pinned-icon"
+                />
               ) : null}
-              {process.env.NETWORK_ACCOUNT_DND && isHidden ? (
-                <Icon name={IconName.EyeSlash} size={IconSize.Xs} />
+              {isHidden ? (
+                <Icon
+                  name={IconName.EyeSlash}
+                  size={IconSize.Xs}
+                  className="account-hidden-icon"
+                />
               ) : null}
               <Text
                 as="button"
@@ -286,10 +294,10 @@ export const AccountListItem = ({
           identity={identity}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={identity.keyring?.type !== KeyringType.hdKeyTree}
+          isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
-          isPinned={process.env.NETWORK_ACCOUNT_DND ? isPinned : null}
-          isHidden={process.env.NETWORK_ACCOUNT_DND ? isHidden : null}
+          isPinned={isPinned}
+          isHidden={isHidden}
         />
       ) : null}
     </Box>
