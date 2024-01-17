@@ -2923,6 +2923,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowBetaHeader.bind(appStateController),
       setShowProductTour:
         appStateController.setShowProductTour.bind(appStateController),
+      setShowAccountBanner:
+        appStateController.setShowAccountBanner.bind(appStateController),
+      setShowNetworkBanner:
+        appStateController.setShowNetworkBanner.bind(appStateController),
       updateNftDropDownState:
         appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:
@@ -4853,10 +4857,11 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:get',
         ),
-        handleSnapRpcRequest: this.controllerMessenger.call.bind(
+        getAllSnaps: this.controllerMessenger.call.bind(
           this.controllerMessenger,
-          'SnapController:handleRequest',
+          'SnapController:getAll',
         ),
+        handleSnapRpcRequest: this.handleSnapRequest.bind(this),
         getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
           this.subjectMetadataController,
         ),

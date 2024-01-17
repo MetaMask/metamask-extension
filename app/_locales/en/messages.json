@@ -1,7 +1,4 @@
 {
-  "DragAndDropBanner": {
-    "message": "You can drag networks to reorder them. "
-  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -158,6 +155,9 @@
   },
   "accountsConnected": {
     "message": "Accounts connected"
+  },
+  "accountsPinningBannerDescription": {
+    "message": "Keep tabs on what matters by pinning or hiding accounts"
   },
   "active": {
     "message": "Active"
@@ -1413,6 +1413,9 @@
   "downloadStateLogs": {
     "message": "Download state logs"
   },
+  "dragAndDropBanner": {
+    "message": "You can drag networks to reorder them. "
+  },
   "dropped": {
     "message": "Dropped"
   },
@@ -2522,10 +2525,6 @@
   "nameModalTitleSaved": {
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
-  },
-  "nameNoProposedNames": {
-    "message": "No proposed names found",
-    "description": "Text shown in the proposed name dropdown if none found."
   },
   "nameSetPlaceholder": {
     "message": "Set a personal display name...",
@@ -4205,6 +4204,12 @@
   },
   "showAccount": {
     "message": "Show account"
+  },
+  "showExtensionInFullSizeView": {
+    "message": "Show extension in full-size view"
+  },
+  "showExtensionInFullSizeViewDescription": {
+    "message": "Turn this on to make full-size view your default when you click the extension icon."
   },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
