@@ -654,5 +654,5 @@
       "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false
     }
   },
-  "packageManager": "yarn@4.0.0-rc.48"
+  "packageManager": "yarn@4.0.2"
 }
