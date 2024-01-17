@@ -88,6 +88,7 @@ export default function SignatureRequestSIWE({ txData }) {
         },
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onClickSupportLink = useCallback(() => {
