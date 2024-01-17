@@ -3,14 +3,14 @@
   transition: background-color background 0.2s;
 
   & .show-more__button {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative) 33%);
+    background: linear-gradient(90deg, transparent 0%, var(--color-background-alternative) 33%);
   }
 
   &:hover {
     background-color: var(--color-background-alternative-hover);
 
     & .show-more__button {
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative-hover) 33%);
+      background: linear-gradient(90deg, transparent 0%, var(--color-background-alternative-hover) 33%);
     }
   }
 
@@ -18,47 +18,48 @@
     background-color: var(--color-background-alternative-pressed);
 
     & .show-more__button {
-      background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative-pressed) 33%);
+      background: linear-gradient(90deg, transparent 0%, var(--color-background-alternative-pressed) 33%);
     }
 
     &:hover {
       background-color: var(--color-background-alternative-pressed);
 
       & .show-more__button {
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, var(--color-background-alternative-pressed) 33%);
+        background: linear-gradient(90deg, transparent 0%, var(--color-background-alternative-pressed) 33%);
       }
     }
   }
 
   &.sensitive {
     &.visible {
-      background-color: rgba(215, 56, 71, 0.2);
+      background-color: var(--color-error-muted);
+
 
       & .show-more__button {
-        background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(215, 56, 71, 0.2) 33%);
+        background: linear-gradient(90deg, transparent 0%, var(--color-error-muted) 33%);
       }
 
       &:hover {
-        background-color: rgba(215, 56, 71, 0.25);
+        background-color: var(--color-error-muted-hover);
 
         & .show-more__button {
-          background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(215, 56, 71, 0.25) 33%);
+          background: linear-gradient(90deg, transparent 0%, var(--color-error-muted-hover) 33%);
         }
       }
 
       &.clicked {
-        background-color: rgba(215, 56, 71, 0.3);
+        background-color: var(--color-error-muted-pressed);
 
         & .show-more__button {
-          background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(215, 56, 71, 0.3) 33%);
+          background: linear-gradient(90deg, transparent 0%, var(--color-error-muted-pressed) 33%);
         }
 
 
         &:hover {
-          background-color: rgba(215, 56, 71, 0.3);
+          background-color: var(--color-error-muted-pressed);
 
           & .show-more__button {
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(215, 56, 71, 0.3) 33%);
+            background: linear-gradient(90deg, transparent 0%, var(--color-error-muted-pressed) 33%);
           }
         }
       }
