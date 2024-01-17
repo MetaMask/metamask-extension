@@ -70,9 +70,7 @@ const TransactionAlerts = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const trackEvent = useContext(MetaMetricsContext);
-  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const onClickSupportLink = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
@@ -83,7 +81,7 @@ const TransactionAlerts = ({
         external_link_clicked: 'security_alert_support_link',
       },
     });
-  }, []);
+  }, [trackEvent, txData?.origin]);
   ///: END:ONLY_INCLUDE_IF
 
   return (
