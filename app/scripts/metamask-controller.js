@@ -130,6 +130,8 @@ import {
   createQueuedRequestMiddleware,
 } from '@metamask/queued-request-controller';
 
+import { UserOperationController } from '@metamask/user-operation-controller';
+
 import {
   TransactionController,
   TransactionStatus,
@@ -137,6 +139,7 @@ import {
 } from '@metamask/transaction-controller';
 
 import { BrowserRuntimePostMessageStream } from '@metamask/post-message-stream';
+
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -290,6 +293,7 @@ import { LedgerOffscreenBridge } from './lib/offscreen-bridge/ledger-offscreen-b
 import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
+import { addDappTransaction, addTransaction } from './lib/transaction/util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1738,6 +1742,31 @@ export default class MetamaskController extends EventEmitter {
     }).init();
     ///: END:ONLY_INCLUDE_IF
 
+    this.userOperationController = new UserOperationController({
+      entrypoint: process.env.EIP_4337_ENTRYPOINT,
+      getGasFeeEstimates: this.gasFeeController.fetchGasFeeEstimates.bind(
+        this.gasFeeController,
+      ),
+      messenger: this.controllerMessenger.getRestricted({
+        name: 'UserOperationController',
+        allowedActions: [
+          'ApprovalController:addRequest',
+          'NetworkController:getNetworkClientById',
+        ],
+      }),
+      state: initState.UserOperationController,
+    });
+
+    this.userOperationController.hub.on(
+      'user-operation-added',
+      this._onUserOperationAdded.bind(this),
+    );
+
+    this.userOperationController.hub.on(
+      'transaction-updated',
+      this._onUserOperationTransactionUpdated.bind(this),
+    );
+
     // ensure accountTracker updates balances after network change
     networkControllerMessenger.subscribe(
       'NetworkController:networkDidChange',
@@ -1780,7 +1809,10 @@ export default class MetamaskController extends EventEmitter {
         return []; // changing this is a breaking change
       },
       // tx signing
-      processTransaction: this.newUnapprovedTransaction.bind(this),
+      processTransaction: (transactionParams, dappRequest) =>
+        addDappTransaction(
+          this.getAddTransactionRequest({ transactionParams, dappRequest }),
+        ),
       // msg signing
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       processEthSignMessage: this.signatureController.newUnsignedMessage.bind(
@@ -1918,6 +1950,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       NameController: this.nameController,
       ///: END:ONLY_INCLUDE_IF
+      UserOperationController: this.userOperationController,
       ...resetOnRestartStore,
     });
 
@@ -1966,6 +1999,7 @@ export default class MetamaskController extends EventEmitter {
         ///: BEGIN:ONLY_INCLUDE_IF(petnames)
         NameController: this.nameController,
         ///: END:ONLY_INCLUDE_IF
+        UserOperationController: this.userOperationController,
         ...resetOnRestartStore,
       },
       controllerMessenger: this.controllerMessenger,
@@ -2950,9 +2984,25 @@ export default class MetamaskController extends EventEmitter {
       createSpeedUpTransaction: this.createSpeedUpTransaction.bind(this),
       estimateGas: this.estimateGas.bind(this),
       getNextNonce: this.getNextNonce.bind(this),
-      addTransaction: this.addTransaction.bind(this),
-      addTransactionAndWaitForPublish:
-        this.addTransactionAndWaitForPublish.bind(this),
+      addTransaction: (transactionParams, transactionOptions) =>
+        addTransaction(
+          this.getAddTransactionRequest({
+            transactionParams,
+            transactionOptions,
+            waitForSubmit: false,
+          }),
+        ),
+      addTransactionAndWaitForPublish: (
+        transactionParams,
+        transactionOptions,
+      ) =>
+        addTransaction(
+          this.getAddTransactionRequest({
+            transactionParams,
+            transactionOptions,
+            waitForSubmit: true,
+          }),
+        ),
       createTransactionEventFragment:
         createTransactionEventFragmentWithTxId.bind(
           null,
@@ -4104,53 +4154,20 @@ export default class MetamaskController extends EventEmitter {
   // ---------------------------------------------------------------------------
   // Identity Management (signature operations)
 
-  /**
-   * Called when a Dapp suggests a new tx to be signed.
-   * this wrapper needs to exist so we can provide a reference to
-   *  "newUnapprovedTransaction" before "txController" is instantiated
-   *
-   * @param {object} txParams - The transaction parameters.
-   * @param {object} [req] - The original request, containing the origin.
-   */
-  async newUnapprovedTransaction(txParams, req) {
-    // Options are passed explicitly as an additional security measure
-    // to ensure approval is not disabled
-    const { result } = await this.txController.addTransaction(txParams, {
-      actionId: req.id,
-      method: req.method,
-      origin: req.origin,
-      // This is the default behaviour but specified here for clarity
-      requireApproval: true,
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-      securityAlertResponse: req.securityAlertResponse,
-      ///: END:ONLY_INCLUDE_IF
-    });
-
-    return await result;
-  }
-
-  async addTransactionAndWaitForPublish(txParams, options) {
-    const { transactionMeta, result } = await this.txController.addTransaction(
-      txParams,
-      options,
-    );
-
-    await result;
-
-    return transactionMeta;
-  }
-
-  async addTransaction(txParams, options) {
-    const { transactionMeta, result } = await this.txController.addTransaction(
-      txParams,
-      options,
-    );
-
-    result.catch(() => {
-      // Not concerned with result
-    });
-
-    return transactionMeta;
+  getAddTransactionRequest({
+    transactionParams,
+    transactionOptions,
+    dappRequest,
+  }) {
+    return {
+      dappRequest,
+      networkClientId: this.networkController.state.selectedNetworkClientId,
+      selectedAccount: this.accountsController.getSelectedAccount(),
+      transactionController: this.txController,
+      transactionOptions,
+      transactionParams,
+      userOperationController: this.userOperationController,
+    };
   }
 
   /**
@@ -5698,5 +5715,47 @@ export default class MetamaskController extends EventEmitter {
         matomoEvent: true,
       },
     );
+  }
+
+  _onUserOperationAdded(userOperationMeta) {
+    const transactionMeta = this.txController.state.transactions.find(
+      (tx) => tx.id === userOperationMeta.id,
+    );
+
+    if (!transactionMeta) {
+      return;
+    }
+
+    if (transactionMeta.type === TransactionType.swap) {
+      this.txController.hub.emit('transaction-new-swap', {
+        transactionMeta,
+      });
+    } else if (transactionMeta.type === TransactionType.swapApproval) {
+      this.txController.hub.emit('transaction-new-swap-approval', {
+        transactionMeta,
+      });
+    }
+  }
+
+  _onUserOperationTransactionUpdated(transactionMeta) {
+    transactionMeta.txParams.from =
+      this.preferencesController.getSelectedAddress();
+
+    const transactionExists = this.txController.state.transactions.some(
+      (tx) => tx.id === transactionMeta.id,
+    );
+
+    if (!transactionExists) {
+      this.txController.state.transactions.push(transactionMeta);
+    }
+
+    this.txController.updateTransaction(
+      transactionMeta,
+      'Generated from user operation',
+    );
+
+    this.txController.hub.emit('transaction-status-update', {
+      transactionMeta,
+    });
   }
 }
