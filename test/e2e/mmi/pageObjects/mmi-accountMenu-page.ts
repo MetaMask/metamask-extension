@@ -144,7 +144,9 @@ export class MMIAccountMenuPage {
       accountNames.push(accountName);
     }
 
-    await this.page.getByRole('button', { name: /close/iu }).first().click();
+    await this.page.locator('.mm-banner-base__close-button').click();
+
+    await this.page.getByRole('button', { name: /close/iu }).click();
     return accountNames;
   }
 }
