@@ -205,4 +205,134 @@ describe('Show account details', function () {
       },
     );
   });
+  it('should pin the account when pinned', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="account-list-item-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="account-list-menu-pin"]');
+
+        const pinnedIcon = await driver.findElement('.account-pinned-icon');
+        assert.equal(await pinnedIcon.isDisplayed(), true);
+      },
+    );
+  });
+
+  it('should unpin the account when unpin is clicked', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="account-list-item-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="account-list-menu-pin"]');
+        const pinnedIcon = await driver.findElement('.account-pinned-icon');
+        assert.equal(await pinnedIcon.isDisplayed(), true);
+        await driver.clickElement(
+          '[data-testid="account-list-item-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="account-list-menu-pin"]');
+        assert.equal(await pinnedIcon.isDisplayed(), true);
+      },
+    );
+  });
+
+  it('should hide the account when Hide Account is clicked', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="account-list-item-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="account-list-menu-hide"]');
+        const hiddenAccounts = await driver.findElement(
+          '.hidden-accounts-list',
+        );
+        assert.equal(await hiddenAccounts.isDisplayed(), true);
+      },
+    );
+  });
+
+  it('should unhide the account when Show Account is clicked', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="account-list-item-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="account-list-menu-hide"]');
+
+        await driver.clickElement('.hidden-accounts-list');
+
+        await driver.clickElement(
+          '.multichain-account-menu-popover__list--menu-item-hidden-account [data-testid="account-list-item-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="account-list-menu-hide"]');
+
+        const accounts = await driver.findElement(
+          '.multichain-account-menu-popover__list--menu-item',
+        );
+        assert.equal(await accounts.isDisplayed(), true);
+      },
+    );
+  });
+
+  it('should unpin and hide the pinned account when hide Account is clicked', async function () {
+    await withFixtures(
+      {
+        fixtures: new FixtureBuilder().build(),
+        ganacheOptions: defaultGanacheOptions,
+        title: this.test.fullTitle(),
+      },
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement(
+          '[data-testid="account-list-item-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="account-list-menu-pin"]');
+        const pinnedIcon = await driver.findElement('.account-pinned-icon');
+        assert.equal(await pinnedIcon.isDisplayed(), true);
+        await driver.clickElement(
+          '[data-testid="account-list-item-menu-button"]',
+        );
+        await driver.clickElement('[data-testid="account-list-menu-hide"]');
+        const hiddenAccounts = await driver.findElement(
+          '.hidden-accounts-list',
+        );
+        assert.equal(await hiddenAccounts.isDisplayed(), true);
+      },
+    );
+  });
 });
