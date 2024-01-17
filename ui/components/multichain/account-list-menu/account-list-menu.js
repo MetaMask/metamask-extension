@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import Fuse from 'fuse.js';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  BannerBase,
   Box,
   ButtonLink,
   ButtonSecondary,
@@ -20,9 +21,11 @@ import { TextFieldSearch } from '../../component-library/text-field-search/depre
 import { AccountListItem, CreateAccount, ImportAccount } from '..';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
+  JustifyContent,
   Size,
   TextColor,
 } from '../../../helpers/constants/design-system';
@@ -34,12 +37,15 @@ import {
   getConnectedSubjectsForAllAddresses,
   getOriginOfCurrentTab,
   getUpdatedAndSortedAccounts,
+  getHiddenAccountsList,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
   getInternalAccounts,
+  getOnboardedInThisUISession,
+  getShowAccountBanner,
 } from '../../../selectors';
-import { setSelectedAccount } from '../../../store/actions';
+import { hideAccountBanner, setSelectedAccount } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
   MetaMetricsEventCategory,
@@ -54,6 +60,8 @@ import {
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getAccountLabel } from '../../../helpers/utils/accounts';
+import { getCompletedOnboarding } from '../../../ducks/metamask/metamask';
+import { HiddenAccountList } from './hidden-account-list';
 
 const ACTION_MODES = {
   // Displays the search box and account list
@@ -73,7 +81,7 @@ const ACTION_MODES = {
  * @param internalAccounts - internal accounts
  * @returns merged accounts list with balances and internal account data
  */
-const mergeAccounts = (accountsWithBalances, internalAccounts) => {
+export const mergeAccounts = (accountsWithBalances, internalAccounts) => {
   return accountsWithBalances.map((account) => {
     const internalAccount = internalAccounts.find(
       (intAccount) => intAccount.address === account.address,
@@ -108,14 +116,21 @@ export const AccountListMenu = ({
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
   const dispatch = useDispatch();
+  const hiddenAddresses = useSelector(getHiddenAccountsList);
+  const updatedAccountsList = useSelector(getUpdatedAndSortedAccounts);
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   const addSnapAccountEnabled = useSelector(getIsAddSnapAccountEnabled);
   ///: END:ONLY_INCLUDE_IF
 
   const [searchQuery, setSearchQuery] = useState('');
   const [actionMode, setActionMode] = useState(ACTION_MODES.LIST);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
+  const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
+  const showAccountBanner = useSelector(getShowAccountBanner);
+  const showBanner =
+    completedOnboarding && !onboardedInThisUISession && showAccountBanner;
 
-  let searchResults = accounts;
+  let searchResults = updatedAccountsList;
   if (searchQuery) {
     const fuse = new Fuse(accounts, {
       threshold: 0.2,
@@ -145,11 +160,6 @@ export const AccountListMenu = ({
       onBack = () => setActionMode(ACTION_MODES.MENU);
     }
   }
-
-  const sortedSearchResults = process.env.NETWORK_ACCOUNT_DND
-    ? // eslint-disable-next-line react-hooks/rules-of-hooks
-      useSelector(getUpdatedAndSortedAccounts)
-    : searchResults;
 
   return (
     <Modal isOpen onClose={onClose}>
@@ -338,9 +348,30 @@ export const AccountListMenu = ({
                 />
               </Box>
             ) : null}
+            {/* Accounts Pinning Update Banner */}
+            {showBanner ? (
+              <BannerBase
+                className="network-list-menu__banner"
+                marginLeft={4}
+                marginRight={4}
+                backgroundColor={BackgroundColor.backgroundAlternative}
+                startAccessory={
+                  <Box
+                    display={Display.Flex}
+                    alignItems={AlignItems.center}
+                    justifyContent={JustifyContent.center}
+                  >
+                    <img src="./images/pinning-animation.svg" alt="pinning" />
+                  </Box>
+                }
+                onClose={() => hideAccountBanner()}
+                description={t('accountsPinningBannerDescription')}
+                marginBottom={4}
+              />
+            ) : null}
             {/* Account list block */}
             <Box className="multichain-account-menu-popover__list">
-              {sortedSearchResults.length === 0 && searchQuery !== '' ? (
+              {searchResults.length === 0 && searchQuery !== '' ? (
                 <Text
                   paddingLeft={4}
                   paddingRight={4}
@@ -350,41 +381,57 @@ export const AccountListMenu = ({
                   {t('noAccountsFound')}
                 </Text>
               ) : null}
-              {sortedSearchResults.map((account) => {
+              {searchResults.map((account) => {
                 const connectedSite = connectedSites[account.address]?.find(
                   ({ origin }) => origin === currentTabOrigin,
                 );
 
+                const hideAccountListItem =
+                  searchQuery.length === 0 && account.hidden;
+
+                /* NOTE: Hidden account will be displayed only in the search list */
+
                 return (
-                  <AccountListItem
-                    onClick={() => {
-                      onClose();
-                      trackEvent({
-                        category: MetaMetricsEventCategory.Navigation,
-                        event: MetaMetricsEventName.NavAccountSwitched,
-                        properties: {
-                          location: 'Main Menu',
-                        },
-                      });
-                      dispatch(setSelectedAccount(account.address));
-                    }}
-                    identity={account}
-                    key={account.address}
-                    selected={selectedAccount.address === account.address}
-                    closeMenu={onClose}
-                    connectedAvatar={connectedSite?.iconUrl}
-                    connectedAvatarName={connectedSite?.name}
-                    showOptions
-                    isPinned={
-                      process.env.NETWORK_ACCOUNT_DND
-                        ? Boolean(account.pinned)
-                        : null
+                  <Box
+                    className={
+                      account.hidden
+                        ? 'multichain-account-menu-popover__list--menu-item-hidden'
+                        : 'multichain-account-menu-popover__list--menu-item'
                     }
-                    {...accountListItemProps}
-                  />
+                    display={hideAccountListItem ? Display.None : Display.Block}
+                    key={account.address}
+                  >
+                    <AccountListItem
+                      onClick={() => {
+                        onClose();
+                        trackEvent({
+                          category: MetaMetricsEventCategory.Navigation,
+                          event: MetaMetricsEventName.NavAccountSwitched,
+                          properties: {
+                            location: 'Main Menu',
+                          },
+                        });
+                        dispatch(setSelectedAccount(account.address));
+                      }}
+                      identity={account}
+                      key={account.address}
+                      selected={selectedAccount.address === account.address}
+                      closeMenu={onClose}
+                      connectedAvatar={connectedSite?.iconUrl}
+                      connectedAvatarName={connectedSite?.name}
+                      showOptions
+                      isPinned={Boolean(account.pinned)}
+                      isHidden={Boolean(account.hidden)}
+                      {...accountListItemProps}
+                    />
+                  </Box>
                 );
               })}
             </Box>
+            {/* Hidden Accounts, this component shows hidden accounts in account list Item*/}
+            {hiddenAddresses.length > 0 ? (
+              <HiddenAccountList onClose={onClose} />
+            ) : null}
             {/* Add / Import / Hardware button */}
             {showAccountCreation ? (
               <Box

@@ -157,12 +157,11 @@ describe('Add account', function () {
         });
 
         // Check address of 2nd account
-        const accountTwoSelector = await findAnotherAccountFromAccountList(
-          driver,
-          2,
-          'Account 2',
-        );
-        await driver.clickElement(accountTwoSelector);
+        await driver.clickElement('[data-testid="account-menu-icon"]');
+        await driver.clickElement({
+          css: `.multichain-account-list-item__account-name__button`,
+          text: 'Account 2',
+        });
 
         await driver.findElement({
           css: process.env.MULTICHAIN

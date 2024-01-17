@@ -23,7 +23,7 @@ describe('Test Snap manageState', function () {
         await driver.driver.get(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
 
-        // find and scroll to the connect button and click it
+        // navigate to test snaps page and connect to manage-state snap
         const snapButton1 = await driver.findElement('#connectmanage-state');
         await driver.scrollToElement(snapButton1);
         await driver.delay(1000);

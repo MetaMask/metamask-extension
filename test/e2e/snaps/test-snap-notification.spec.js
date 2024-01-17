@@ -23,7 +23,7 @@ describe('Test Snap Notification', function () {
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
         await driver.delay(1000);
 
-        // find and scroll down to snapId5 and connect
+        // connect to notifications snap
         const snapButton = await driver.findElement('#connectnotifications');
         await driver.scrollToElement(snapButton);
         await driver.delay(1000);

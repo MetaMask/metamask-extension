@@ -29,9 +29,8 @@ import { useGasFeeContext } from '../../../contexts/gasFee';
 
 export default function FeeDetailsComponent({
   txData,
-  supportsEIP1559,
   useCurrencyRateCheck,
-  shouldShow = true,
+  hideGasDetails = false,
 }) {
   const [expandFeeDetails, setExpandFeeDetails] = useState(false);
   const [estimatedL1Fees, setEstimatedL1Fees] = useState(null);
@@ -107,7 +106,7 @@ export default function FeeDetailsComponent({
         justifyContent={JustifyContent.center}
         flexDirection={FlexDirection.Column}
       >
-        {supportsEIP1559 && shouldShow && (
+        {!hideGasDetails && (
           <Box
             padding={4}
             display={Display.Flex}
@@ -136,7 +135,7 @@ export default function FeeDetailsComponent({
         )}
       </Box>
 
-      {supportsEIP1559 && shouldShow && expandFeeDetails && (
+      {!hideGasDetails && expandFeeDetails && (
         <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
           {isMultiLayerFeeNetwork && (
             <TransactionDetailItem
@@ -175,7 +174,6 @@ export default function FeeDetailsComponent({
 
 FeeDetailsComponent.propTypes = {
   txData: PropTypes.object,
-  supportsEIP1559: PropTypes.bool,
   useCurrencyRateCheck: PropTypes.bool,
-  shouldShow: PropTypes.bool,
+  hideGasDetails: PropTypes.bool,
 };

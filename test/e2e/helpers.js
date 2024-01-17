@@ -460,6 +460,20 @@ const onboardingCompleteWalletCreation = async (driver) => {
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
 };
 
+const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
+  // wait for h2 to appear
+  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+  // opt-out from third party API
+  await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+  await Promise.all(
+    (
+      await driver.findClickableElements('.toggle-button.toggle-button--on')
+    ).map((toggle) => toggle.click()),
+  );
+  // complete onboarding
+  await driver.clickElement({ text: 'Done', tag: 'button' });
+};
+
 /**
  * Move through the steps of pinning extension after successful onboarding
  *
@@ -469,6 +483,17 @@ const onboardingPinExtension = async (driver) => {
   // pin extension
   await driver.clickElement('[data-testid="pin-extension-next"]');
   await driver.clickElement('[data-testid="pin-extension-done"]');
+};
+
+const completeCreateNewWalletOnboardingFlowWithOptOut = async (
+  driver,
+  password,
+) => {
+  await onboardingBeginCreateNewWallet(driver);
+  await onboardingChooseMetametricsOption(driver, false);
+  await onboardingCreatePassword(driver, password);
+  await onboardingRevealAndConfirmSRP(driver);
+  await onboardingCompleteWalletCreationWithOptOut(driver);
 };
 
 const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
@@ -519,14 +544,17 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
   }
 };
 
-const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
-  await unlockWallet(driver);
-
+const openSRPRevealQuiz = async (driver) => {
   // navigate settings to reveal SRP
   await driver.clickElement('[data-testid="account-options-menu-button"]');
   await driver.clickElement({ text: 'Settings', tag: 'div' });
   await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
   await driver.clickElement('[data-testid="reveal-seed-words"]');
+};
+
+const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
+  await unlockWallet(driver);
+  await openSRPRevealQuiz(driver);
 };
 
 const completeSRPRevealQuiz = async (driver) => {
@@ -955,6 +983,8 @@ module.exports = {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
+  completeCreateNewWalletOnboardingFlowWithOptOut,
+  openSRPRevealQuiz,
   passwordUnlockOpenSRPRevealQuiz,
   completeSRPRevealQuiz,
   closeSRPReveal,

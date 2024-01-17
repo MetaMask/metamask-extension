@@ -15,9 +15,12 @@ import browser from 'webextension-polyfill';
 import { RestrictedControllerMessenger } from '@metamask/base-controller';
 import { MaybeUpdateState, TestOrigin } from '@metamask/phishing-controller';
 import { SnapId } from '@metamask/snaps-sdk';
+import { GetSubjectMetadata } from '@metamask/permission-controller';
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
+import { IconName } from '../../../../ui/components/component-library/icon';
+import { getSnapName } from '../../../../ui/helpers/utils/util';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 
 /**
@@ -45,7 +48,8 @@ type SnapKeyringBuilderAllowActions =
   | RejectRequest
   | MaybeUpdateState
   | TestOrigin
-  | KeyringControllerGetAccountsAction;
+  | KeyringControllerGetAccountsAction
+  | GetSubjectMetadata;
 
 type snapKeyringBuilderMessenger = RestrictedControllerMessenger<
   'SnapKeyringBuilder',
@@ -140,6 +144,17 @@ export const snapKeyringBuilder = (
           properties: { snapId: origin },
         };
 
+        const learnMoreLink = {
+          name: 'a',
+          key: 'learnMore',
+          properties: {
+            href: 'https://support.metamask.io/hc/en-us/articles/360015289452-How-to-add-accounts-in-your-wallet',
+            rel: 'noopener noreferrer',
+            target: '_blank',
+          },
+          children: t('learnMoreUpperCase') as string,
+        };
+
         try {
           const confirmationResult = Boolean(
             await controllerMessenger.call(
@@ -158,13 +173,65 @@ export const snapKeyringBuilder = (
               await persistKeyringHelper();
               setSelectedAccountHelper(address);
               await controllerMessenger.call('ApprovalController:showSuccess', {
-                message: t('snapAccountCreated') as string,
                 header: [snapAuthorshipHeader],
+                title: t('snapAccountCreated') as string,
+                icon: IconName.UserCircleAdd,
+                message: [
+                  {
+                    name: 'SnapAccountCard',
+                    key: 'snapAccountCard',
+                    properties: {
+                      address,
+                    },
+                  },
+                  {
+                    name: 'Text',
+                    key: 'description',
+                    children: [
+                      t('snapAccountCreatedDescription') as string,
+                      ' ',
+                      learnMoreLink,
+                    ],
+                  },
+                ],
               });
             } catch (error) {
+              const subjectMetadata = controllerMessenger.call(
+                'SubjectMetadataController:getSubjectMetadata',
+                origin,
+              );
+
+              const snapName = getSnapName(origin, subjectMetadata);
+
               await controllerMessenger.call('ApprovalController:showError', {
-                error: (error as Error).message,
                 header: [snapAuthorshipHeader],
+                title: t('snapAccountCreationFailed') as string,
+                icon: IconName.UserCircleAdd,
+                error: [
+                  {
+                    key: 'description',
+                    name: 'Text',
+                    children: [
+                      t(
+                        'snapAccountCreationFailedDescription',
+                        snapName,
+                      ) as string,
+                      ' ',
+                      learnMoreLink,
+                    ],
+                    properties: {
+                      marginBottom: '2',
+                    },
+                  },
+                  {
+                    key: 'error',
+                    name: 'ActionableMessage',
+                    properties: {
+                      type: 'danger',
+                      message: (error as Error).message,
+                    },
+                  },
+                ],
               });
               throw new Error(
                 `Error occurred while creating snap account: ${
@@ -197,6 +264,17 @@ export const snapKeyringBuilder = (
           properties: { snapId },
         };
 
+        const learnMoreLink = {
+          name: 'a',
+          key: 'learnMore',
+          properties: {
+            href: 'https://support.metamask.io/hc/en-us/articles/360057435092-How-to-remove-an-account-from-your-MetaMask-wallet',
+            rel: 'noopener noreferrer',
+            target: '_blank',
+          },
+          children: t('learnMoreUpperCase') as string,
+        };
+
         try {
           const confirmationResult = Boolean(
             await controllerMessenger.call(
@@ -215,14 +293,61 @@ export const snapKeyringBuilder = (
               await removeAccountHelper(address);
               await handleUserInput(confirmationResult);
               await persistKeyringHelper();
-              await controllerMessenger.call('ApprovalController:showSuccess', {
-                message: t('snapAccountRemoved') ?? 'Account removed',
+              // This isn't actually an error, but we show it as one for styling reasons
+              await controllerMessenger.call('ApprovalController:showError', {
                 header: [snapAuthorshipHeader],
+                icon: IconName.UserCircleRemove,
+                title: t('snapAccountRemoved') as string,
+                error: [
+                  {
+                    name: 'Text',
+                    key: 'description',
+
+                    children: [
+                      t('snapAccountRemovedDescription') as string,
+                      ' ',
+                      learnMoreLink,
+                    ],
+                  },
+                ],
               });
             } catch (error) {
+              const subjectMetadata = controllerMessenger.call(
+                'SubjectMetadataController:getSubjectMetadata',
+                snapId,
+              );
+
+              const snapName = getSnapName(snapId, subjectMetadata);
+
               await controllerMessenger.call('ApprovalController:showError', {
-                error: (error as Error).message,
                 header: [snapAuthorshipHeader],
+                icon: IconName.UserCircleRemove,
+                title: t('snapAccountRemovalFailed') as string,
+                error: [
+                  {
+                    key: 'description',
+                    name: 'Text',
+                    children: [
+                      t(
+                        'snapAccountRemovalFailedDescription',
+                        snapName,
+                      ) as string,
+                      ' ',
+                      learnMoreLink,
+                    ],
+                    properties: {
+                      marginBottom: '2',
+                    },
+                  },
+                  {
+                    key: 'error',
+                    name: 'ActionableMessage',
+                    properties: {
+                      type: 'danger',
+                      message: (error as Error).message,
+                    },
+                  },
+                ],
               });
               throw new Error(
                 `Error occurred while removing snap account: ${

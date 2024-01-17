@@ -7,6 +7,13 @@ const {
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { TEST_SNAPS_WEBSITE_URL } = require('../snaps/enums');
+const {
+  expectName,
+  focusTestDapp,
+  rejectSignatureOrTransactionRequest,
+  saveName,
+  clickName,
+} = require('./petnames-helpers');
 
 const SIGNATURE_TYPE = {
   TYPED_V3: 'v3',
@@ -57,17 +64,6 @@ async function createSignatureRequest(driver, type) {
   await driver.delay(3000);
 }
 
-async function rejectSignatureRequest(driver) {
-  await driver.clickElement({ text: 'Reject', tag: 'button' });
-  await driver.delay(3000);
-}
-
-async function focusTestDapp(driver) {
-  const windowHandles = await driver.getAllWindowHandles();
-  await driver.switchToWindowWithTitle('E2E Test Dapp', windowHandles);
-  await driver.delay(3000);
-}
-
 async function showThirdPartyDetails(driver) {
   await driver.clickElement(
     '.signature-request-content__verify-contract-details',
@@ -76,43 +72,6 @@ async function showThirdPartyDetails(driver) {
 
 async function closeThirdPartyDetails(driver) {
   await driver.clickElement({ text: 'Got it', tag: 'button' });
-}
-
-async function expectName(driver, expectedValue, isSaved) {
-  const containerClass = isSaved ? 'name__saved' : 'name__missing';
-  const valueClass = isSaved ? 'name__name' : 'name__value';
-
-  await driver.findElement({
-    css: `.${containerClass} .${valueClass}`,
-    text: expectedValue,
-  });
-}
-
-async function clickName(driver, value) {
-  await driver.clickElement({
-    css: `.name`,
-    text: value,
-  });
-}
-
-async function saveName(driver, value, name, proposedName) {
-  await clickName(driver, value);
-  await driver.clickElement('.form-combo-field');
-
-  if (proposedName) {
-    await driver.clickElement({
-      css: '.form-combo-field__option-primary',
-      text: proposedName,
-    });
-  }
-
-  if (name) {
-    const input = await driver.findElement('.form-combo-field input');
-    await input.fill(name);
-    await input.press(driver.Key.ENTER);
-  }
-
-  await driver.clickElement({ text: 'Save', tag: 'button' });
 }
 
 async function expectProposedNames(driver, value, options) {
@@ -157,7 +116,7 @@ describe('Petnames', function () {
         await expectName(driver, '0xCcCCc...ccccC', false);
         await saveName(driver, '0xCcCCc...ccccC', 'Custom Name');
         await closeThirdPartyDetails(driver);
-        await rejectSignatureRequest(driver);
+        await rejectSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V3);
         await switchToNotificationWindow(driver, 3);
@@ -196,7 +155,7 @@ describe('Petnames', function () {
         await expectName(driver, '0xCcCCc...ccccC', false);
         await saveName(driver, '0xCcCCc...ccccC', 'Custom Name');
         await closeThirdPartyDetails(driver);
-        await rejectSignatureRequest(driver);
+        await rejectSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
         await createSignatureRequest(driver, SIGNATURE_TYPE.TYPED_V4);
         await switchToNotificationWindow(driver, 3);

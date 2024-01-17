@@ -1,7 +1,4 @@
 {
-  "DragAndDropBanner": {
-    "message": "You can drag networks to reorder them. "
-  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -158,6 +155,9 @@
   },
   "accountsConnected": {
     "message": "Accounts connected"
+  },
+  "accountsPinningBannerDescription": {
+    "message": "Keep tabs on what matters by pinning or hiding accounts"
   },
   "active": {
     "message": "Active"
@@ -1008,10 +1008,10 @@
     "message": "Create password"
   },
   "createSnapAccountDescription": {
-    "message": "$1 wants to add a new Snap account to your wallet"
+    "message": "$1 wants to add a new account to MetaMask."
   },
   "createSnapAccountTitle": {
-    "message": "Create Snap account"
+    "message": "Create account"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -1406,6 +1406,9 @@
   },
   "downloadStateLogs": {
     "message": "Download state logs"
+  },
+  "dragAndDropBanner": {
+    "message": "You can drag networks to reorder them. "
   },
   "dropped": {
     "message": "Dropped"
@@ -1892,8 +1895,14 @@
   "hexData": {
     "message": "Hex data"
   },
+  "hiddenAccounts": {
+    "message": "Hidden accounts"
+  },
   "hide": {
     "message": "Hide"
+  },
+  "hideAccount": {
+    "message": "Hide account"
   },
   "hideFullTransactionDetails": {
     "message": "Hide full transaction details"
@@ -2511,10 +2520,6 @@
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
   },
-  "nameNoProposedNames": {
-    "message": "No proposed names found",
-    "description": "Text shown in the proposed name dropdown if none found."
-  },
   "nameSetPlaceholder": {
     "message": "Set a personal display name...",
     "description": "Placeholder text for name input field in name component modal."
@@ -3062,6 +3067,21 @@
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
   },
+  "notificationsBlockaidDefaultDescriptionOne": {
+    "message": "Stay safe from scams while still protecting your privacy with security alerts powered by Blockaid. This feature is now on by default for all MetaMask users."
+  },
+  "notificationsBlockaidDefaultDescriptionThree": {
+    "message": "Only on Ethereum Mainnet. More networks available soon."
+  },
+  "notificationsBlockaidDefaultDescriptionThreeActionText": {
+    "message": "Got it"
+  },
+  "notificationsBlockaidDefaultDescriptionTwo": {
+    "message": "Always do your own due diligence before approving requests."
+  },
+  "notificationsBlockaidDefaultTitle": {
+    "message": "Stay safe with security alerts"
+  },
   "notificationsBuySellActionText": {
     "message": "Try it on MetaMask Portfolio"
   },
@@ -3106,6 +3126,18 @@
   },
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
+  },
+  "notificationsStakingPortfolioActionText": {
+    "message": "Got it",
+    "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  },
+  "notificationsStakingPortfolioDescription": {
+    "message": "Now you can stake ETH and manage your rewards all in one place.",
+    "description": "Description for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  },
+  "notificationsStakingPortfolioTitle": {
+    "message": "Stake smarter in Portfolio",
+    "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
@@ -3764,11 +3796,8 @@
   "removeSnap": {
     "message": "Remove Snap"
   },
-  "removeSnapAccountBannerDescription": {
-    "message": "Be sure you can access this account on your own before removing it"
-  },
   "removeSnapAccountDescription": {
-    "message": "$1 wants to remove this account from MetaMask:"
+    "message": "If you proceed, this account will no longer be available in MetaMask."
   },
   "removeSnapAccountTitle": {
     "message": "Remove account"
@@ -4167,6 +4196,15 @@
   "show": {
     "message": "Show"
   },
+  "showAccount": {
+    "message": "Show account"
+  },
+  "showExtensionInFullSizeView": {
+    "message": "Show extension in full-size view"
+  },
+  "showExtensionInFullSizeViewDescription": {
+    "message": "Turn this on to make full-size view your default when you click the extension icon."
+  },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
   },
@@ -4273,7 +4311,17 @@
     "description": "$1 is an external link to FAQ and Risk Disclosures"
   },
   "snapAccountCreated": {
-    "message": "Your account is ready!"
+    "message": "Account created"
+  },
+  "snapAccountCreatedDescription": {
+    "message": "Your new account is ready to use!"
+  },
+  "snapAccountCreationFailed": {
+    "message": "Account creation failed"
+  },
+  "snapAccountCreationFailedDescription": {
+    "message": "$1 didn't manage to create an account for you.",
+    "description": "$1 is the snap name"
   },
   "snapAccountRedirectFinishSigningTitle": {
     "message": "Finish signing"
@@ -4281,8 +4329,18 @@
   "snapAccountRedirectSiteDescription": {
     "message": "Follow the instructions from $1"
   },
+  "snapAccountRemovalFailed": {
+    "message": "Account removal failed"
+  },
+  "snapAccountRemovalFailedDescription": {
+    "message": "$1 didn't manage to remove this account for you.",
+    "description": "$1 is the snap name"
+  },
   "snapAccountRemoved": {
     "message": "Account removed"
+  },
+  "snapAccountRemovedDescription": {
+    "message": "This account will no longer be available to use in MetaMask."
   },
   "snapAccounts": {
     "message": "Account Snaps"

@@ -11,6 +11,7 @@ import {
   getHardwareWalletType,
   getAccountTypeForKeyring,
   getPinnedAccountsList,
+  getHiddenAccountsList,
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMaskAccountsOrdered,
   ///: END:ONLY_INCLUDE_IF
@@ -32,7 +33,11 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { showModal, updateAccountsList } from '../../../store/actions';
+import {
+  showModal,
+  updateAccountsList,
+  updateHiddenAccountsList,
+} from '../../../store/actions';
 import { TextVariant } from '../../../helpers/constants/design-system';
 import { formatAccountType } from '../../../helpers/utils/metrics';
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
@@ -47,6 +52,7 @@ export const AccountListItemMenu = ({
   identity,
   isOpen,
   isPinned,
+  isHidden,
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -62,6 +68,7 @@ export const AccountListItemMenu = ({
   const accountType = formatAccountType(getAccountTypeForKeyring(keyring));
 
   const pinnedAccountList = useSelector(getPinnedAccountsList);
+  const hiddenAccountList = useSelector(getHiddenAccountsList);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const isCustodial = keyring?.type ? /Custody/u.test(keyring.type) : false;
@@ -137,6 +144,21 @@ export const AccountListItemMenu = ({
     dispatch(updateAccountsList(updatedPinnedAccountList));
   };
 
+  const handleHidding = (address) => {
+    const updatedHiddenAccountList = [...hiddenAccountList, address];
+    if (pinnedAccountList.includes(address)) {
+      handleUnpinning(address);
+    }
+    dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
+  };
+
+  const handleUnhidding = (address) => {
+    const updatedHiddenAccountList = hiddenAccountList.filter(
+      (item) => item !== address,
+    );
+    dispatch(updateHiddenAccountsList(updatedHiddenAccountList));
+  };
+
   return (
     <Popover
       className="multichain-account-list-item-menu__popover"
@@ -163,7 +185,7 @@ export const AccountListItemMenu = ({
             textProps={{ variant: TextVariant.bodySm }}
             address={identity.address}
           />
-          {process.env.NETWORK_ACCOUNT_DND ? (
+          {isHidden ? null : (
             <MenuItem
               data-testid="account-list-menu-pin"
               onClick={() => {
@@ -178,7 +200,21 @@ export const AccountListItemMenu = ({
                 {isPinned ? t('unpin') : t('pinToTop')}
               </Text>
             </MenuItem>
-          ) : null}
+          )}
+          <MenuItem
+            data-testid="account-list-menu-hide"
+            onClick={() => {
+              isHidden
+                ? handleUnhidding(identity.address)
+                : handleHidding(identity.address);
+              onClose();
+            }}
+            iconName={isHidden ? IconName.Eye : IconName.EyeSlash}
+          >
+            <Text variant={TextVariant.bodySm}>
+              {isHidden ? t('showAccount') : t('hideAccount')}
+            </Text>
+          </MenuItem>
           {isRemovable ? (
             <MenuItem
               ref={removeAccountItemRef}
@@ -277,6 +313,10 @@ AccountListItemMenu.propTypes = {
    * Represents pinned accounts
    */
   isPinned: PropTypes.bool,
+  /**
+   * Represents hidden accounts
+   */
+  isHidden: PropTypes.bool,
   /**
    * Identity of the account
    */
