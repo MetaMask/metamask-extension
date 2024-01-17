@@ -57,11 +57,11 @@ aliases:
       git fetch --depth 1 origin "$CIRCLE_SHA1"
 
       if [ -n "${CIRCLE_TAG-}" ]; then
-        echo "Checkout out tag '${CIRCLE_TAG}' at commit '${CIRCLE_SHA1}'"
+        echo "Checkout tag '${CIRCLE_TAG}' at commit '${CIRCLE_SHA1}'"
         git checkout "$CIRCLE_TAG"
         git reset --hard "$CIRCLE_SHA1"
       else
-        echo "Checkout out branch '${CIRCLE_BRANCH}' at commit '${CIRCLE_SHA1}'"
+        echo "Checkout branch '${CIRCLE_BRANCH}' at commit '${CIRCLE_SHA1}'"
         git checkout -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
       fi
 
