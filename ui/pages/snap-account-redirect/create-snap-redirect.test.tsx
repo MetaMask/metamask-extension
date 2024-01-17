@@ -17,7 +17,7 @@ global.platform = {
 
 const mockUrl = 'https://metamask.github.io/snap-simple-keyring/1.0.0/';
 const mockSnapName = 'Snap Simple Keyring';
-const mockSnapId = '@metamask/snap-simple-keyring';
+const mockSnapId = 'npm:@metamask/snap-simple-keyring';
 const mockMessage = 'Redirecting to Snap Simple Keyring';
 
 describe('<SnapAccountRedirect />', () => {
