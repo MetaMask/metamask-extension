@@ -99,21 +99,21 @@ function shouldCloseNotificationPopup({
   institutionalConnectRequests,
   ///: END:ONLY_INCLUDE_IF
 }) {
-  let shouldCLose =
+  let shouldClose =
     isNotification &&
     totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  shouldCLose &&=
+  shouldClose &&=
     // MMI User must be shown a deeplink
     !waitForConfirmDeepLinkDialog &&
     // MMI User is connecting to custodian
     institutionalConnectRequests.length === 0;
   ///: END:ONLY_INCLUDE_IF
 
-  return shouldCLose;
+  return shouldClose;
 }
 
 export default class Home extends PureComponent {
@@ -193,6 +193,7 @@ export default class Home extends PureComponent {
     setActiveNetwork: PropTypes.func,
     setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
     showSurveyToast: PropTypes.bool.isRequired,
+    hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
     mmiPortfolioEnabled: PropTypes.bool,
@@ -349,12 +350,17 @@ export default class Home extends PureComponent {
   }
 
   componentDidUpdate(_prevProps, prevState) {
-    const { closeNotificationPopup, isNotification } = this.props;
+    const {
+      closeNotificationPopup,
+      isNotification,
+      hasAllowedPopupRedirectApprovals,
+    } = this.props;
+
     const { notificationClosing } = this.state;
 
     if (notificationClosing && !prevState.notificationClosing) {
       closeNotificationPopup();
-    } else if (isNotification) {
+    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
       this.checkStatusAndNavigate();
     }
   }

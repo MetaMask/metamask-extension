@@ -62,6 +62,7 @@ export const AccountListItem = ({
   connectedAvatarName,
   isPinned = false,
   showOptions = false,
+  isHidden = false,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -146,8 +147,19 @@ export const AccountListItem = ({
               alignItems={AlignItems.center}
               gap={2}
             >
-              {process.env.NETWORK_ACCOUNT_DND && isPinned ? (
-                <Icon name={IconName.Pin} size={IconSize.Xs} />
+              {isPinned ? (
+                <Icon
+                  name={IconName.Pin}
+                  size={IconSize.Xs}
+                  className="account-pinned-icon"
+                />
+              ) : null}
+              {isHidden ? (
+                <Icon
+                  name={IconName.EyeSlash}
+                  size={IconSize.Xs}
+                  className="account-hidden-icon"
+                />
               ) : null}
               <Text
                 as="button"
@@ -284,7 +296,8 @@ export const AccountListItem = ({
           isOpen={accountOptionsMenuOpen}
           isRemovable={identity.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
-          isPinned={process.env.NETWORK_ACCOUNT_DND ? isPinned : null}
+          isPinned={isPinned}
+          isHidden={isHidden}
         />
       ) : null}
     </Box>
@@ -332,6 +345,10 @@ AccountListItem.propTypes = {
    * Represents pinned accounts
    */
   isPinned: PropTypes.bool,
+  /**
+   * Represents hidden accounts
+   */
+  isHidden: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

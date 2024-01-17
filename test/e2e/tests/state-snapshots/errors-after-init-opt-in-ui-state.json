@@ -29,6 +29,7 @@
     "currentLocale": "en",
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "useNativeCurrencyAsPrimaryCurrency": true
@@ -53,6 +54,8 @@
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
     "showProductTour": true,
+    "showNetworkBanner": true,
+    "showAccountBanner": true,
     "trezorModel": null,
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "nftsDropdownState": {},
@@ -133,6 +136,7 @@
     "announcements": "object",
     "orderedNetworkList": { "0": "string", "1": "string", "2": "string" },
     "pinnedAccountList": {},
+    "hiddenAccountList": {},
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},

@@ -163,6 +163,7 @@ exports[`SendPage render renders correctly 1`] = `
               <button
                 aria-label="Scan QR code"
                 class="mm-box mm-button-icon mm-button-icon--size-lg ens-input__wrapper__action-icon-button mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+                data-testid="ens-qr-scan-button"
               >
                 <span
                   class="mm-box mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"

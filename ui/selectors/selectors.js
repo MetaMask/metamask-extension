@@ -44,7 +44,6 @@ import {
   HardwareTransportStates,
 } from '../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../shared/constants/keyring';
-import { MESSAGE_TYPE } from '../../shared/constants/app';
 
 import { TRUNCATED_NAME_CHAR_LIMIT } from '../../shared/constants/labels';
 
@@ -91,10 +90,14 @@ import {
 } from '../../shared/modules/conversion.utils';
 import { BackgroundColor } from '../helpers/constants/design-system';
 import {
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  NOTIFICATION_BLOCKAID_DEFAULT,
+  ///: END:ONLY_INCLUDE_IF
   NOTIFICATION_BUY_SELL_BUTTON,
   NOTIFICATION_DROP_LEDGER_FIREFOX,
   NOTIFICATION_OPEN_BETA_SNAPS,
   NOTIFICATION_U2F_LEDGER_LIVE,
+  NOTIFICATION_STAKING_PORTFOLIO,
 } from '../../shared/notifications';
 import {
   SURVEY_DATE,
@@ -162,47 +165,8 @@ export function getCurrentQRHardwareState(state) {
   return qrHardware || {};
 }
 
-export function hasUnsignedQRHardwareTransaction(state) {
-  const { txParams } = state.confirmTransaction.txData;
-  if (!txParams) {
-    return false;
-  }
-  const { from } = txParams;
-  const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === KeyringType.qr);
-  if (!qrKeyring) {
-    return false;
-  }
-  return Boolean(
-    qrKeyring.accounts.find(
-      (account) => account.toLowerCase() === from.toLowerCase(),
-    ),
-  );
-}
-
-export function hasUnsignedQRHardwareMessage(state) {
-  const { type, msgParams } = state.confirmTransaction.txData;
-  if (!type || !msgParams) {
-    return false;
-  }
-  const { from } = msgParams;
-  const { keyrings } = state.metamask;
-  const qrKeyring = keyrings.find((kr) => kr.type === KeyringType.qr);
-  if (!qrKeyring) {
-    return false;
-  }
-  switch (type) {
-    case MESSAGE_TYPE.ETH_SIGN_TYPED_DATA:
-    case MESSAGE_TYPE.ETH_SIGN:
-    case MESSAGE_TYPE.PERSONAL_SIGN:
-      return Boolean(
-        qrKeyring.accounts.find(
-          (account) => account.toLowerCase() === from.toLowerCase(),
-        ),
-      );
-    default:
-      return false;
-  }
+export function getIsSigningQRHardwareTransaction(state) {
+  return state.metamask.qrHardware?.sign?.request !== undefined;
 }
 
 export function getCurrentKeyring(state) {
@@ -701,6 +665,11 @@ export function getPreferences({ metamask }) {
 export function getShowTestNetworks(state) {
   const { showTestNetworks } = getPreferences(state);
   return Boolean(showTestNetworks);
+}
+
+export function getShowExtensionInFullSizeView(state) {
+  const { showExtensionInFullSizeView } = getPreferences(state);
+  return Boolean(showExtensionInFullSizeView);
 }
 
 export function getTestNetworkBackgroundColor(state) {
@@ -1235,7 +1204,7 @@ function getAllowedAnnouncementIds(state) {
     21: false,
     22: false,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    23: true,
+    23: false,
     ///: END:ONLY_INCLUDE_IF
     24: state.metamask.hadAdvancedGasFeesSetPriorToMigration92_3 === true,
     // This syntax is unusual, but very helpful here.  It's equivalent to `unnamedObject[NOTIFICATION_DROP_LEDGER_FIREFOX] =`
@@ -1243,6 +1212,10 @@ function getAllowedAnnouncementIds(state) {
     [NOTIFICATION_OPEN_BETA_SNAPS]: true,
     [NOTIFICATION_BUY_SELL_BUTTON]: true,
     [NOTIFICATION_U2F_LEDGER_LIVE]: currentKeyringIsLedger && !isFirefox,
+    [NOTIFICATION_STAKING_PORTFOLIO]: true,
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    [NOTIFICATION_BLOCKAID_DEFAULT]: true,
+    ///: END:ONLY_INCLUDE_IF
   };
 }
 
@@ -1283,6 +1256,10 @@ export function getOrderedNetworksList(state) {
 
 export function getPinnedAccountsList(state) {
   return state.metamask.pinnedAccountList;
+}
+
+export function getHiddenAccountsList(state) {
+  return state.metamask.hiddenAccountList;
 }
 
 export function getShowRecoveryPhraseReminder(state) {
@@ -1332,6 +1309,14 @@ export function getShowBetaHeader(state) {
 
 export function getShowProductTour(state) {
   return state.metamask.showProductTour;
+}
+
+export function getShowNetworkBanner(state) {
+  return state.metamask.showNetworkBanner;
+}
+
+export function getShowAccountBanner(state) {
+  return state.metamask.showAccountBanner;
 }
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
@@ -1861,22 +1846,38 @@ export function getCustomTokenAmount(state) {
 export function getUpdatedAndSortedAccounts(state) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const pinnedAddresses = getPinnedAccountsList(state);
+  const hiddenAddresses = getHiddenAccountsList(state);
 
   accounts.forEach((account) => {
-    account.pinned = Boolean(pinnedAddresses?.includes(account.address));
+    account.pinned = Boolean(pinnedAddresses.includes(account.address));
+    account.hidden = Boolean(hiddenAddresses.includes(account.address));
   });
 
-  const notPinnedAccounts = accounts.filter(
-    (account) => !pinnedAddresses.includes(account.address),
-  );
-
   const sortedPinnedAccounts = pinnedAddresses
-    .map((address) => accounts.find((account) => account.address === address))
+    ?.map((address) => accounts.find((account) => account.address === address))
     .filter((account) =>
-      Boolean(account && pinnedAddresses.includes(account.address)),
+      Boolean(
+        account &&
+          pinnedAddresses.includes(account.address) &&
+          !hiddenAddresses?.includes(account.address),
+      ),
     );
 
-  const sortedSearchResults = [...sortedPinnedAccounts, ...notPinnedAccounts];
+  const notPinnedAccounts = accounts.filter(
+    (account) =>
+      !pinnedAddresses.includes(account.address) &&
+      !hiddenAddresses.includes(account.address),
+  );
+
+  const filteredHiddenAccounts = accounts.filter((account) =>
+    hiddenAddresses.includes(account.address),
+  );
+
+  const sortedSearchResults = [
+    ...sortedPinnedAccounts,
+    ...notPinnedAccounts,
+    ...filteredHiddenAccounts,
+  ];
 
   return sortedSearchResults;
 }

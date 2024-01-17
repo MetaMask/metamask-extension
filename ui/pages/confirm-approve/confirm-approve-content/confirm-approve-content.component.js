@@ -134,7 +134,6 @@ export default class ConfirmApproveContent extends Component {
           <Box marginBottom={4}>
             <FeeDetailsComponent
               txData={txData}
-              supportsEIP1559={supportsEIP1559}
               useCurrencyRateCheck={useCurrencyRateCheck}
             />
           </Box>

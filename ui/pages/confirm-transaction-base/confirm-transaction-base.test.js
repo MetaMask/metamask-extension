@@ -225,6 +225,20 @@ describe('Confirm Transaction Base', () => {
     expect(queryByText('Layer 2 gas fee')).not.toBeInTheDocument();
   });
 
+  it('should render only total fee details if simulation fails', () => {
+    mockedStore.send.hasSimulationError = true;
+    const store = configureMockStore(middleware)(mockedStore);
+    const { queryByText } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+
+    expect(queryByText('Total')).toBeInTheDocument();
+    expect(queryByText('Amount + gas fee')).toBeInTheDocument();
+
+    expect(queryByText('Estimated fee')).not.toBeInTheDocument();
+  });
+
   it('should contain L1 L2 fee details for optimism', () => {
     mockedStore.metamask.providerConfig.chainId = CHAIN_IDS.OPTIMISM;
     mockedStore.confirmTransaction.txData.chainId = CHAIN_IDS.OPTIMISM;

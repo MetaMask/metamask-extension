@@ -169,6 +169,9 @@ workflows:
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
+      - test-e2e-chrome-multiple-providers:
+          requires:
+            - prep-build-test
       - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
@@ -274,6 +277,7 @@ workflows:
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-chrome-multichain
+            - test-e2e-chrome-multiple-providers
             - test-e2e-firefox
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
@@ -956,6 +960,33 @@ jobs:
             if .circleci/scripts/test-run-e2e.sh
             then
               yarn test:e2e:chrome:rpc --retries 2
+            fi
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-multiple-providers:
+    executor: node-browsers
+    parallelism: 1
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: test:e2e:chrome:multi-provider
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:multi-provider --retries 2
             fi
           no_output_timeout: 5m
       - store_artifacts:
