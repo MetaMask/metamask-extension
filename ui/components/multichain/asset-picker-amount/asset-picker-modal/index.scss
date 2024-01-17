@@ -7,11 +7,7 @@
     max-height: 200px;
 
     &:hover {
-      border-color: rgba(16, 152, 252, 1);
-    }
-
-    &:focus {
-      border-color: rgba(16, 152, 252, 1);
+      border-color: var(--color-primary-default);
     }
   }
 
