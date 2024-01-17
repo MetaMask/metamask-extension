@@ -8,13 +8,15 @@ import { IconColor } from '../../../helpers/constants/design-system';
 
 interface RedirectUrlIconProps {
   url: string;
+  onSubmit?: () => void;
 }
 
-const RedirectUrlIcon = ({ url }: RedirectUrlIconProps) => {
+const RedirectUrlIcon = ({ url, onSubmit }: RedirectUrlIconProps) => {
   return (
     <ButtonIcon
       onClick={() => {
         global.platform.openTab({ url });
+        onSubmit?.();
       }}
       iconName={IconName.Export}
       color={IconColor.primaryDefault}

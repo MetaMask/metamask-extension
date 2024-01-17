@@ -17,12 +17,14 @@ global.platform = {
 
 const mockUrl = 'https://metamask.github.io/snap-simple-keyring/1.0.0/';
 const mockSnapName = 'Snap Simple Keyring';
+const mockSnapId = '@metamask/snap-simple-keyring';
 const mockMessage = 'Redirecting to Snap Simple Keyring';
 
 describe('<SnapAccountRedirect />', () => {
   it('renders the url and message when provided and isBlockedUrl is false', () => {
     const { getByTestId, container } = renderWithProvider(
       <SnapAccountRedirect
+        snapId={mockSnapId}
         url={mockUrl}
         snapName={mockSnapName}
         isBlockedUrl={false}
@@ -44,6 +46,7 @@ describe('<SnapAccountRedirect />', () => {
   it('renders alert banner and does not render message or url when isBlockedUrl is true', () => {
     const { queryByTestId } = renderWithProvider(
       <SnapAccountRedirect
+        snapId={mockSnapId}
         url={mockUrl}
         snapName={mockSnapName}
         isBlockedUrl={true}
@@ -65,6 +68,7 @@ describe('<SnapAccountRedirect />', () => {
   it('does not render URL display box when URL is empty', () => {
     const { queryByTestId } = renderWithProvider(
       <SnapAccountRedirect
+        snapId={mockSnapId}
         url=""
         snapName={mockSnapName}
         isBlockedUrl={false}
@@ -81,6 +85,7 @@ describe('<SnapAccountRedirect />', () => {
   it('does not render message when message is empty', () => {
     const { queryByTestId } = renderWithProvider(
       <SnapAccountRedirect
+        snapId={mockSnapId}
         url={mockUrl}
         snapName={mockSnapName}
         isBlockedUrl={false}
@@ -98,6 +103,7 @@ describe('<SnapAccountRedirect />', () => {
   it('does not render message/url box when message and url are empty', () => {
     const { queryByTestId } = renderWithProvider(
       <SnapAccountRedirect
+        snapId={mockSnapId}
         url={''}
         snapName={''}
         isBlockedUrl={false}
