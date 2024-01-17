@@ -331,7 +331,6 @@ const completeImportSRPOnboardingFlow = async (
   // pin extension
   await driver.clickElement('[data-testid="pin-extension-next"]');
   await driver.clickElement('[data-testid="pin-extension-done"]');
-  throw new Error('Example error');
 };
 
 const completeImportSRPOnboardingFlowWordByWord = async (
