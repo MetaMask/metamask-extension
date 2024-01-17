@@ -49,6 +49,7 @@ import {
   showPrimaryCurrency,
   showSecondaryCurrency,
 } from '../../../../shared/modules/currency-display.utils';
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -105,7 +106,10 @@ const AssetList = ({ onClickAsset }) => {
 
   const { tokensWithBalances, totalFiatBalance, totalWeiBalance, loading } =
     useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
-
+  const roundedTokensWithBalances = tokensWithBalances.forEach((token) => {
+    // token.string is the balance displayed in the TokenList UI
+    token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
+  });
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsBuyableChain);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
@@ -205,7 +209,7 @@ const AssetList = ({ onClickAsset }) => {
         isStakeable={isStakeable}
       />
       <TokenList
-        tokens={tokensWithBalances}
+        tokens={roundedTokensWithBalances}
         loading={loading}
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);
