@@ -38,7 +38,7 @@ export default function TokenSearch({
 
   useEffect(() => {
     setTokenSearchFuse(createTokenSearchFuse(tokenList));
-  }, [tokenList, searchQuery]);
+  }, [tokenList]);
 
   const handleSearch = (newSearchQuery) => {
     setSearchQuery(newSearchQuery);
@@ -46,7 +46,7 @@ export default function TokenSearch({
     const addressSearchResult = getTokens(tokenList).filter((token) => {
       return (
         token.address &&
-        searchQuery &&
+        newSearchQuery &&
         isEqualCaseInsensitive(token.address, newSearchQuery)
       );
     });
@@ -68,7 +68,7 @@ export default function TokenSearch({
       autoFocus
       autoComplete={false}
       width={BlockSize.Full}
-      clearButtonOnClick={() => clear()}
+      clearButtonOnClick={clear}
       clearButtonProps={{
         size: Size.SM,
       }}
