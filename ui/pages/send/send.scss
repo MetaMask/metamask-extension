@@ -105,7 +105,7 @@
       padding: 16px;
 
       &:hover {
-        background-color: rgba($alto, 0.2);
+        background-color: var(--color-background-hover);
       }
 
       .identicon {

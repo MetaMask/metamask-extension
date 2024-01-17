@@ -19,7 +19,7 @@
     min-height: 570px;
     flex: 0 0 auto;
     border-radius: 8px;
-    box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-size-sm) var(--color-shadow-default);
   }
 }
 
