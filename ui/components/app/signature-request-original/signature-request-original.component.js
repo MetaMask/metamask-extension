@@ -160,10 +160,8 @@ export default class SignatureRequestOriginal extends Component {
     }
 
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    const trackEvent = useContext(MetaMetricsContext);
-
-    const onClickSupportLink = useCallback(() => {
-      trackEvent({
+    const onClickSupportLink = () => {
+      this.context.trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: MetaMetricsEventName.ExternalLinkClicked,
         properties: {
@@ -172,7 +170,7 @@ export default class SignatureRequestOriginal extends Component {
           external_link_clicked: 'security_alert_support_link',
         },
       });
-    }, [trackEvent, txData?.origin]);
+    };
     ///: END:ONLY_INCLUDE_IF
 
     const targetSubjectMetadata = txData.msgParams.origin

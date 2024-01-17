@@ -518,12 +518,7 @@ export default class ConfirmApproveContent extends Component {
   }
 
   render() {
-    const {
-      t,
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-      trackEvent,
-      ///: END:ONLY_INCLUDE_IF
-    } = this.context;
+    const { t } = this.context;
     const {
       siteImage,
       origin,
@@ -552,7 +547,7 @@ export default class ConfirmApproveContent extends Component {
 
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     const onClickSupportLink = () => {
-      trackEvent({
+      this.context.trackEvent({
         category: MetaMetricsEventCategory.Transactions,
         event: MetaMetricsEventName.ExternalLinkClicked,
         properties: {
