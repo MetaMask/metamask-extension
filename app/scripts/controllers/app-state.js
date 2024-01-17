@@ -48,6 +48,8 @@ export default class AppStateController extends EventEmitter {
       showTestnetMessageInDropdown: true,
       showBetaHeader: isBeta(),
       showProductTour: true,
+      showNetworkBanner: true,
+      showAccountBanner: true,
       trezorModel: null,
       currentPopupId: undefined,
       // This key is only used for checking if the user had set advancedGasFee
@@ -368,6 +370,24 @@ export default class AppStateController extends EventEmitter {
    */
   setShowProductTour(showProductTour) {
     this.store.updateState({ showProductTour });
+  }
+
+  /**
+   * Sets whether the Network Banner should be shown
+   *
+   * @param showNetworkBanner
+   */
+  setShowNetworkBanner(showNetworkBanner) {
+    this.store.updateState({ showNetworkBanner });
+  }
+
+  /**
+   * Sets whether the Account Banner should be shown
+   *
+   * @param showAccountBanner
+   */
+  setShowAccountBanner(showAccountBanner) {
+    this.store.updateState({ showAccountBanner });
   }
 
   /**
