@@ -1,6 +1,5 @@
 import { MESSAGE_TYPE } from '../../../../../../shared/constants/app';
 
-// TODO (Bernardo) - When is this method called?
 const mmiAuthenticate = {
   methodNames: [MESSAGE_TYPE.MMI_CHECK_IF_TOKEN_IS_PRESENT],
   implementation: mmiCheckIfTokenIsPresentHandler,
