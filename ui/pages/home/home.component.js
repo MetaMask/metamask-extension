@@ -37,6 +37,8 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi)
   JustifyContent,
   ///: END:ONLY_INCLUDE_IF
+  IconColor,
+  BackgroundColor,
 } from '../../helpers/constants/design-system';
 import { SECOND } from '../../../shared/constants/time';
 import {
@@ -48,6 +50,8 @@ import {
   ButtonLink,
   ///: END:ONLY_INCLUDE_IF
   Text,
+  BannerBase,
+  Icon,
 } from '../../components/component-library';
 
 import {
@@ -95,21 +99,21 @@ function shouldCloseNotificationPopup({
   institutionalConnectRequests,
   ///: END:ONLY_INCLUDE_IF
 }) {
-  let shouldCLose =
+  let shouldClose =
     isNotification &&
     totalUnapprovedCount === 0 &&
     !hasApprovalFlows &&
     !isSigningQRHardwareTransaction;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  shouldCLose &&=
+  shouldClose &&=
     // MMI User must be shown a deeplink
     !waitForConfirmDeepLinkDialog &&
     // MMI User is connecting to custodian
     institutionalConnectRequests.length === 0;
   ///: END:ONLY_INCLUDE_IF
 
-  return shouldCLose;
+  return shouldClose;
 }
 
 export default class Home extends PureComponent {
@@ -182,9 +186,14 @@ export default class Home extends PureComponent {
     setRemoveNftMessage: PropTypes.func.isRequired,
     closeNotificationPopup: PropTypes.func.isRequired,
     newTokensImported: PropTypes.string,
+    newTokensImportedError: PropTypes.string,
     setNewTokensImported: PropTypes.func.isRequired,
+    setNewTokensImportedError: PropTypes.func.isRequired,
     clearNewNetworkAdded: PropTypes.func,
     setActiveNetwork: PropTypes.func,
+    setSurveyLinkLastClickedOrClosed: PropTypes.func.isRequired,
+    showSurveyToast: PropTypes.bool.isRequired,
+    hasAllowedPopupRedirectApprovals: PropTypes.bool.isRequired,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     institutionalConnectRequests: PropTypes.arrayOf(PropTypes.object),
     mmiPortfolioEnabled: PropTypes.bool,
@@ -341,12 +350,17 @@ export default class Home extends PureComponent {
   }
 
   componentDidUpdate(_prevProps, prevState) {
-    const { closeNotificationPopup, isNotification } = this.props;
+    const {
+      closeNotificationPopup,
+      isNotification,
+      hasAllowedPopupRedirectApprovals,
+    } = this.props;
+
     const { notificationClosing } = this.state;
 
     if (notificationClosing && !prevState.notificationClosing) {
       closeNotificationPopup();
-    } else if (isNotification) {
+    } else if (isNotification || hasAllowedPopupRedirectApprovals) {
       this.checkStatusAndNavigate();
     }
   }
@@ -415,7 +429,9 @@ export default class Home extends PureComponent {
       removeNftMessage,
       setRemoveNftMessage,
       newTokensImported,
+      newTokensImportedError,
       setNewTokensImported,
+      setNewTokensImportedError,
       newNetworkAddedConfigurationId,
       clearNewNetworkAdded,
       setActiveNetwork,
@@ -424,6 +440,8 @@ export default class Home extends PureComponent {
     const onAutoHide = () => {
       setNewNftAddedMessage('');
       setRemoveNftMessage('');
+      setNewTokensImported(''); // Added this so we dnt see the notif if user does not close it
+      setNewTokensImportedError('');
     };
 
     const autoHideDelay = 5 * SECOND;
@@ -498,6 +516,8 @@ export default class Home extends PureComponent {
         {newTokensImported ? (
           <ActionableMessage
             type="success"
+            autoHideTime={autoHideDelay}
+            onAutoHide={onAutoHide}
             className="home__new-tokens-imported-notification"
             message={
               <Box display={Display.InlineFlex}>
@@ -525,6 +545,28 @@ export default class Home extends PureComponent {
                   ariaLabel={t('close')}
                   onClick={() => setNewTokensImported('')}
                   className="home__new-tokens-imported-notification-close"
+                />
+              </Box>
+            }
+          />
+        ) : null}
+        {newTokensImportedError ? (
+          <ActionableMessage
+            type="danger"
+            className="home__new-tokens-imported-notification"
+            autoHideTime={autoHideDelay}
+            onAutoHide={onAutoHide}
+            message={
+              <Box display={Display.InlineFlex}>
+                <Icon name={IconName.Danger} />
+                <Text variant={TextVariant.bodySm} as="h6">
+                  {t('importTokensError')}
+                </Text>
+                <ButtonIcon
+                  iconName={IconName.Close}
+                  size={ButtonIconSize.Sm}
+                  ariaLabel={t('close')}
+                  onClick={onAutoHide}
                 />
               </Box>
             }
@@ -708,6 +750,8 @@ export default class Home extends PureComponent {
       onTabClick,
       forgottenPassword,
       history,
+      setSurveyLinkLastClickedOrClosed,
+      showSurveyToast,
       ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
       connectedStatusPopoverHasBeenShown,
       isPopup,
@@ -946,6 +990,27 @@ export default class Home extends PureComponent {
             }
           </div>
           {this.renderNotifications()}
+          {showSurveyToast ? (
+            <BannerBase
+              className="home__survey-banner"
+              data-theme="dark"
+              backgroundColor={BackgroundColor.backgroundAlternative}
+              startAccessory={
+                <Icon name={IconName.Heart} color={IconColor.errorDefault} />
+              }
+              title={t('surveyTitle')}
+              actionButtonLabel={t('surveyConversion')}
+              actionButtonOnClick={() => {
+                global.platform.openTab({
+                  url: 'https://www.getfeedback.com/r/Oczu1vP0',
+                });
+                setSurveyLinkLastClickedOrClosed(Date.now());
+              }}
+              onClose={() => {
+                setSurveyLinkLastClickedOrClosed(Date.now());
+              }}
+            />
+          ) : null}
         </div>
       </div>
     );

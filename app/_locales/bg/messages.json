@@ -605,9 +605,6 @@
   "search": {
     "message": "Търсене"
   },
-  "searchResults": {
-    "message": "Резултати от търсенето"
-  },
   "securityAndPrivacy": {
     "message": "Сигурност и поверителност"
   },
@@ -775,12 +772,6 @@
   },
   "unknown": {
     "message": "Неизвестно"
-  },
-  "unknownCameraError": {
-    "message": "При опита за достъп до камерата Ви възникна грешка. Моля, опитайте отново..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Упс! Нещо се обърка...."
   },
   "unknownNetwork": {
     "message": "Неизвестна частна мрежа"

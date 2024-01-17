@@ -424,6 +424,10 @@ class Driver {
     return newHandle;
   }
 
+  async refresh() {
+    await this.driver.navigate().refresh();
+  }
+
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
   }
@@ -453,6 +457,11 @@ class Driver {
       timeElapsed += delayStep;
     }
     throw new Error('waitUntilXWindowHandles timed out polling window handles');
+  }
+
+  async getWindowTitleByHandlerId(handlerId) {
+    await this.driver.switchTo().window(handlerId);
+    return await this.driver.getTitle();
   }
 
   async switchToWindowWithTitle(

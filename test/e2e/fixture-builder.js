@@ -176,6 +176,11 @@ function defaultFixture() {
           23: {
             date: null,
             id: 23,
+            isShown: true,
+          },
+          30: {
+            date: null,
+            id: 30,
             isShown: false,
           },
           ///: END:ONLY_INCLUDE_IF
@@ -183,6 +188,10 @@ function defaultFixture() {
       },
       NetworkOrderController: {
         orderedNetworkList: [],
+      },
+      AccountOrderController: {
+        pinnedAccountList: [],
+        hiddenAccountList: [],
       },
       AppStateController: {
         browserEnvironment: {},
@@ -207,11 +216,6 @@ function defaultFixture() {
           [CHAIN_IDS.LOCALHOST]: true,
         },
         snapsInstallPrivacyWarningShown: true,
-      },
-      CachedBalancesController: {
-        cachedBalances: {
-          [CHAIN_IDS.LOCALHOST]: {},
-        },
       },
       CurrencyController: {
         currentCurrency: 'usd',
@@ -296,6 +300,7 @@ function defaultFixture() {
         openSeaEnabled: false,
         preferences: {
           hideZeroBalanceTokens: false,
+          showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
@@ -417,6 +422,7 @@ function onboardingFixture() {
         openSeaEnabled: false,
         preferences: {
           hideZeroBalanceTokens: false,
+          showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
@@ -487,13 +493,13 @@ class FixtureBuilder {
     return this;
   }
 
-  withAppStateController(data) {
-    merge(this.fixture.data.AppStateController, data);
+  withAccountOrderController(data) {
+    merge(this.fixture.data.AccountOrderController, data);
     return this;
   }
 
-  withCachedBalancesController(data) {
-    merge(this.fixture.data.CachedBalancesController, data);
+  withAppStateController(data) {
+    merge(this.fixture.data.AppStateController, data);
     return this;
   }
 

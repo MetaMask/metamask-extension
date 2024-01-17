@@ -60,6 +60,10 @@ jest.mock('../../hooks/useIsOriginalNativeTokenSymbol', () => {
   };
 });
 
+jest.mock(
+  '../../components/app/metamask-template-renderer/safe-component-list',
+);
+
 describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
   afterEach(() => {

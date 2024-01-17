@@ -2,6 +2,7 @@
   "DNS": "object",
   "activeTab": "object",
   "appState": "object",
+  "confirm": "object",
   "confirmTransaction": "object",
   "gas": { "customData": { "price": null, "limit": null } },
   "history": { "mostRecentOverviewPage": "/" },
@@ -17,6 +18,7 @@
     "networkConfigurations": "object",
     "addressBook": "object",
     "contractExchangeRates": "object",
+    "confirmationExchangeRates": {},
     "contractExchangeRatesByChainId": "object",
     "pendingTokens": "object",
     "customNonceValue": "",
@@ -27,6 +29,7 @@
     "currentLocale": "en",
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "useNativeCurrencyAsPrimaryCurrency": true
@@ -51,6 +54,8 @@
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
     "showProductTour": true,
+    "showNetworkBanner": true,
+    "showAccountBanner": true,
     "trezorModel": null,
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "nftsDropdownState": {},
@@ -58,6 +63,7 @@
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
+    "surveyLinkLastClickedOrClosed": "object",
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
@@ -78,7 +84,6 @@
         "status": "available"
       }
     },
-    "cachedBalances": "object",
     "keyrings": "object",
     "useNonceField": false,
     "usePhishDetect": true,
@@ -115,8 +120,8 @@
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
+        "conversionRate": 1300,
+        "usdConversionRate": 1300
       }
     },
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
@@ -130,6 +135,8 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "string", "1": "string", "2": "string" },
+    "pinnedAccountList": {},
+    "hiddenAccountList": {},
     "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
     "estimatedGasFeeTimeBounds": {},

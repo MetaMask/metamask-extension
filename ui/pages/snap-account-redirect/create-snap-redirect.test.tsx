@@ -1,6 +1,14 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { SnapAccountRedirect } from '.';
+import configureStore from '../../store/store';
+import mockState from '../../../test/data/mock-state.json';
+import { renderWithProvider } from '../../../test/jest';
+import SnapAccountRedirect from './snap-account-redirect';
+
+const store = configureStore({
+  metamask: {
+    ...mockState.metamask,
+  },
+});
 
 // If you're using some kind of global variable (like `global.platform` in your component), you might want to mock it.
 global.platform = {
@@ -13,13 +21,14 @@ const mockMessage = 'Redirecting to Snap Simple Keyring';
 
 describe('<SnapAccountRedirect />', () => {
   it('renders the url and message when provided and isBlockedUrl is false', () => {
-    const { getByTestId, container } = render(
+    const { getByTestId, container } = renderWithProvider(
       <SnapAccountRedirect
         url={mockUrl}
         snapName={mockSnapName}
         isBlockedUrl={false}
         message={mockMessage}
       />,
+      store,
     );
 
     expect(getByTestId('snap-account-redirect-content-title'));
@@ -33,13 +42,14 @@ describe('<SnapAccountRedirect />', () => {
   });
 
   it('renders alert banner and does not render message or url when isBlockedUrl is true', () => {
-    const { queryByTestId } = render(
+    const { queryByTestId } = renderWithProvider(
       <SnapAccountRedirect
         url={mockUrl}
         snapName={mockSnapName}
         isBlockedUrl={true}
         message={mockMessage}
       />,
+      store,
     );
 
     expect(
@@ -53,13 +63,14 @@ describe('<SnapAccountRedirect />', () => {
   });
 
   it('does not render URL display box when URL is empty', () => {
-    const { queryByTestId } = render(
+    const { queryByTestId } = renderWithProvider(
       <SnapAccountRedirect
         url=""
         snapName={mockSnapName}
         isBlockedUrl={false}
         message={mockMessage}
       />,
+      store,
     );
     expect(queryByTestId('snap-account-redirect-message')).toHaveTextContent(
       mockMessage,
@@ -68,13 +79,14 @@ describe('<SnapAccountRedirect />', () => {
   });
 
   it('does not render message when message is empty', () => {
-    const { queryByTestId } = render(
+    const { queryByTestId } = renderWithProvider(
       <SnapAccountRedirect
         url={mockUrl}
         snapName={mockSnapName}
         isBlockedUrl={false}
         message=""
       />,
+      store,
     );
 
     expect(
@@ -84,13 +96,14 @@ describe('<SnapAccountRedirect />', () => {
   });
 
   it('does not render message/url box when message and url are empty', () => {
-    const { queryByTestId } = render(
+    const { queryByTestId } = renderWithProvider(
       <SnapAccountRedirect
         url={''}
         snapName={''}
         isBlockedUrl={false}
         message=""
       />,
+      store,
     );
     expect(queryByTestId('snap-account-redirect-message-container')).toBeNull();
   });

@@ -2,6 +2,8 @@ export const GO_HOME = 'GO_HOME';
 // modal state
 export const MODAL_OPEN = 'UI_MODAL_OPEN';
 export const MODAL_CLOSE = 'UI_MODAL_CLOSE';
+export const SET_CONFIRMATION_EXCHANGE_RATES =
+  'SET_CONFIRMATION_EXCHANGE_RATES';
 // alert state
 export const ALERT_OPEN = 'UI_ALERT_OPEN';
 export const ALERT_CLOSE = 'UI_ALERT_CLOSE';
@@ -109,6 +111,8 @@ export const TOGGLE_CURRENCY_INPUT_SWITCH = 'TOGGLE_CURRENCY_INPUT_SWITCH';
 
 // Token detection v2
 export const SET_NEW_TOKENS_IMPORTED = 'SET_NEW_TOKENS_IMPORTED';
+
+export const SET_NEW_TOKENS_IMPORTED_ERROR = 'SET_NEW_TOKENS_IMPORTED_ERROR';
 
 // Token allowance
 export const SET_CUSTOM_TOKEN_AMOUNT = 'SET_CUSTOM_TOKEN_AMOUNT';

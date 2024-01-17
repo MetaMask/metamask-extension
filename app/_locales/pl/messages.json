@@ -603,9 +603,6 @@
   "search": {
     "message": "Szukaj"
   },
-  "searchResults": {
-    "message": "Wyniki wyszukiwania"
-  },
   "securityAndPrivacy": {
     "message": "Bezpieczeństwo i prywatność"
   },
@@ -767,12 +764,6 @@
   },
   "unknown": {
     "message": "Nieznane"
-  },
-  "unknownCameraError": {
-    "message": "Podczas łączenia się z kamerą wystąpił błąd. Spróbuj ponownie..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ups! Coś poszło nie tak..."
   },
   "unknownNetwork": {
     "message": "Nieznana sieć prywatna"

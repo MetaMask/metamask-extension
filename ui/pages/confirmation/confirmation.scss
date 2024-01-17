@@ -21,6 +21,8 @@
   }
 
   &__content {
+    display: flex;
+    flex-direction: column;
     grid-area: content;
     min-width: 0;
 
@@ -69,5 +71,9 @@
     &__label {
       word-break: break-all;
     }
+  }
+
+  .actionable-message {
+    margin-top: 0;
   }
 }
