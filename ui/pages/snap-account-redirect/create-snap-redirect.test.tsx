@@ -113,4 +113,24 @@ describe('<SnapAccountRedirect />', () => {
     );
     expect(queryByTestId('snap-account-redirect-message-container')).toBeNull();
   });
+  it('calls onSubmit prop when provided and the redirect button is clicked', () => {
+    const mockOnSubmit = jest.fn();
+    const { getByTestId } = renderWithProvider(
+      <SnapAccountRedirect
+        snapId={mockSnapId}
+        url={mockUrl}
+        snapName={mockSnapName}
+        isBlockedUrl={false}
+        message={mockMessage}
+        onSubmit={mockOnSubmit}
+      />,
+      store,
+    );
+
+    const redirectUrlIcon = getByTestId('snap-account-redirect-url-icon');
+    redirectUrlIcon.click();
+
+    expect(mockOnSubmit).toHaveBeenCalled();
+    expect(global.platform.openTab).toHaveBeenCalledWith({ url: mockUrl });
+  });
 });

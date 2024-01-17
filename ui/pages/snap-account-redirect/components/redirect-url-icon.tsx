@@ -14,6 +14,7 @@ interface RedirectUrlIconProps {
 const RedirectUrlIcon = ({ url, onSubmit }: RedirectUrlIconProps) => {
   return (
     <ButtonIcon
+      data-testid={'snap-account-redirect-url-icon'}
       onClick={() => {
         global.platform.openTab({ url });
         onSubmit?.();
