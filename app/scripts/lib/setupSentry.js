@@ -346,6 +346,19 @@ export const SENTRY_UI_STATE = {
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
     ///: END:ONLY_INCLUDE_IF
+    nameSources: {},
+    names: {
+      ethereumAddress: {},
+    },
+    preferences: {
+      petnamesEnabled: false,
+      hideZeroBalanceTokens: false,
+      showExtensionInFullSizeView: false,
+      showFiatInTestnets: false,
+      showTestNetworks: false,
+      useNativeCurrencyAsPrimaryCurrency: true,
+    },
+    useExternalNameSources: true,
   },
   unconnectedAccount: true,
 };
