@@ -1,10 +1,4 @@
-import React, {
-  Component,
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  useContext,
-  useCallback,
-  ///: END:ONLY_INCLUDE_IF
-} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { ObjectInspector } from 'react-inspector';
@@ -51,7 +45,6 @@ import {
 } from '../../component-library';
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
