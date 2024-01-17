@@ -1322,6 +1322,14 @@ export function getShowBetaHeader(state) {
 export function getShowProductTour(state) {
   return state.metamask.showProductTour;
 }
+
+export function getShowNetworkBanner(state) {
+  return state.metamask.showNetworkBanner;
+}
+
+export function getShowAccountBanner(state) {
+  return state.metamask.showAccountBanner;
+}
 /**
  * To get the useTokenDetection flag which determines whether a static or dynamic token list is used
  *
