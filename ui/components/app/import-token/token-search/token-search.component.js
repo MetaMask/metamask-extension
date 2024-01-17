@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
@@ -40,22 +40,19 @@ export default function TokenSearch({
     setTokenSearchFuse(createTokenSearchFuse(tokenList));
   }, [tokenList, searchQuery]);
 
-  const handleSearch = useCallback(
-    (newSearchQuery) => {
-      setSearchQuery(newSearchQuery);
-      const fuseSearchResult = tokenSearchFuse.search(newSearchQuery);
-      const addressSearchResult = getTokens(tokenList).filter((token) => {
-        return (
-          token.address &&
-          searchQuery &&
-          isEqualCaseInsensitive(token.address, newSearchQuery)
-        );
-      });
-      const results = [...addressSearchResult, ...fuseSearchResult];
-      onSearch({ newSearchQuery, results });
-    },
-    [onSearch, searchQuery, tokenList, tokenSearchFuse],
-  );
+  const handleSearch = (newSearchQuery) => {
+    setSearchQuery(newSearchQuery);
+    const fuseSearchResult = tokenSearchFuse.search(newSearchQuery);
+    const addressSearchResult = getTokens(tokenList).filter((token) => {
+      return (
+        token.address &&
+        searchQuery &&
+        isEqualCaseInsensitive(token.address, newSearchQuery)
+      );
+    });
+    const results = [...addressSearchResult, ...fuseSearchResult];
+    onSearch({ newSearchQuery, results });
+  };
 
   const clear = () => {
     setSearchQuery('');

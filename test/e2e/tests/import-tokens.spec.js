@@ -21,7 +21,17 @@ describe('Import flow', function () {
         .thenCallback(() => {
           return {
             statusCode: 200,
-            json: {},
+            json: {
+              '0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+                eth: 0.0002,
+              },
+              '0x514910771af9ca656af840dff83e8264ecf986ca': {
+                eth: 0.0003,
+              },
+              '0x7d4b8cce0591c9044a22ee543533b72e976e36c3': {
+                eth: 0.0001,
+              },
+            },
           };
         }),
     ];
