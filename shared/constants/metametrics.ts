@@ -355,9 +355,9 @@ export type MetaMetricsUserTraits = {
    */
   token_detection_enabled?: boolean;
   /**
-   * Does the user have native currency or fiat currency enabled?
+   * Does the user have native currency enabled?
    */
-  preferred_primary_currency?: string;
+  use_native_as_primary_currency?: boolean;
   /**
    * Does the user have desktop enabled?
    */
@@ -444,7 +444,7 @@ export enum MetaMetricsUserTrait {
   /**
    * Identified when the user enables native currency.
    */
-  PreferredPrimaryCurrency = 'preferred_primary_currency',
+  UseNativeCurrencyAsPrimaryCurrency = 'use_native_currency_as_primary_currency',
   /**
    * Identified when the user enables desktop.
    */
@@ -568,7 +568,6 @@ export enum MetaMetricsEventName {
   PetnameUpdated = 'Petname Updated',
   PhishingPageDisplayed = 'Phishing Page Displayed',
   PortfolioLinkClicked = 'Portfolio Link Clicked',
-  PreferredPrimaryCurrency = 'Preferred Primary Currency',
   ProviderMethodCalled = 'Provider Method Called',
   PublicAddressCopied = 'Public Address Copied',
   QuoteError = 'Quote Error',
@@ -604,6 +603,7 @@ export enum MetaMetricsEventName {
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
+  UseNativeCurrencyAsPrimaryCurrency = 'Use Native Currency as Primary Currency',
   WalletSetupStarted = 'Wallet Setup Selected',
   WalletSetupCanceled = 'Wallet Setup Canceled',
   WalletSetupFailed = 'Wallet Setup Failed',
