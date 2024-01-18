@@ -2,7 +2,7 @@ import { createAsyncMiddleware } from 'json-rpc-engine';
 import { formatTxMetaForRpcResult } from '../util';
 
 export function createPendingNonceMiddleware({ getPendingNonce }) {
-    // this would not be using the provider for the current domain...
+  // this would not be using the provider for the current domain...
 
   return createAsyncMiddleware(async (req, res, next) => {
     const { method, params } = req;
