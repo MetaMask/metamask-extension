@@ -3,7 +3,6 @@ import ConfirmationNetworkSwitch from '.';
 
 export default {
   title: 'Pages/Confirmation/Components/ConfirmationNetworkSwitch',
-
   argTypes: {
     toNetwork: {
       controls: 'object',
@@ -14,11 +13,14 @@ export default {
   },
   args: {
     toNetwork: {
-      chainId: 'chainId',
-      nickname: 'Binance Smart Chain Mainnet',
+      chainId: '0xa',
+      ticker: 'OP',
+      nickname: 'Optimism',
+      rpcUrl: 'https://optimism-mainnet.infura.io',
     },
     fromNetwork: {
       chainId: '1',
+      ticker: 'ETH',
       nickname: 'Ethereum Mainnet',
     },
   },
