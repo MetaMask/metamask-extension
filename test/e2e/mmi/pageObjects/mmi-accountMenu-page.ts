@@ -42,7 +42,8 @@ export class MMIAccountMenuPage {
     const bannerCloseButton = this.page.locator(
       '.mm-banner-base__close-button',
     );
-    if (await bannerCloseButton.isVisible()) {
+
+    if ((await bannerCloseButton.count()) > 0) {
       await bannerCloseButton.click();
     }
   }
