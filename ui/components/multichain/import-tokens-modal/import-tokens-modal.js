@@ -460,7 +460,10 @@ export const ImportTokensModal = ({ onClose }) => {
         break;
 
       case Boolean(
-        accounts.find((internalAccount) => internalAccount.address === address),
+        accounts.find(
+          (internalAccount) =>
+            internalAccount.address.toLowerCase() === standardAddress,
+        ),
       ):
         setCustomAddressError(t('personalAddressDetected'));
         setShowSymbolAndDecimals(false);
