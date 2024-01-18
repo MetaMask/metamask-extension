@@ -37,15 +37,20 @@ export function useName(
   const normalizedValue = normalizeValue(value, type);
   const typeVariationKey = getVariationKey(type, chainId);
   const variationKey = variation ?? typeVariationKey;
-  const variationsToNameEntries = names[type]?.[normalizedValue] || {};
-  const nameEntry = variationsToNameEntries[variationKey]?.name
-    ? variationsToNameEntries[variationKey]
-    : variationsToNameEntries[FALLBACK_VARIATION];
-
+  const variationsToNameEntries = names[type]?.[normalizedValue] ?? {};
+  const nameEntry =
+    variationsToNameEntries[variationKey] ??
+    variationsToNameEntries[FALLBACK_VARIATION];
+  const {
+    name = null,
+    sourceId = null,
+    origin = null,
+    proposedNames = {},
+  } = nameEntry ?? {};
   return {
-    name: nameEntry?.name ?? null,
-    sourceId: nameEntry?.sourceId ?? null,
-    proposedNames: nameEntry?.proposedNames ?? {},
-    origin: nameEntry?.origin ?? null,
+    name,
+    sourceId,
+    proposedNames,
+    origin,
   };
 }

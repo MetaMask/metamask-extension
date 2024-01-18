@@ -153,7 +153,7 @@ describe('useName', () => {
       });
     });
 
-    it('gets used if specified variation has cleared name', () => {
+    it('*is not* used if specified variation has cleared name', () => {
       getNamesMock.mockReturnValue({
         [TYPE_MOCK]: {
           [VALUE_MOCK]: {
@@ -165,7 +165,7 @@ describe('useName', () => {
             },
             [FALLBACK_VARIATION]: {
               name: NAME_MOCK,
-              proposedNames: PROPOSED_NAMES_MOCK,
+              proposedNames: {},
               sourceId: SOURCE_ID_MOCK,
               origin: ORIGIN_MOCK,
             },
@@ -176,10 +176,10 @@ describe('useName', () => {
       const nameEntry = useName(VALUE_MOCK, TYPE_MOCK, CHAIN_ID_2_MOCK);
 
       expect(nameEntry).toStrictEqual<NameEntry>({
-        name: NAME_MOCK,
-        sourceId: SOURCE_ID_MOCK,
+        name: null,
         proposedNames: PROPOSED_NAMES_MOCK,
-        origin: ORIGIN_MOCK,
+        sourceId: null,
+        origin: null,
       });
     });
   });
