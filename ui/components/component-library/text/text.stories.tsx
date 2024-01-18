@@ -264,8 +264,8 @@ export const TextDirectionStory: StoryFn<typeof Text> = (args) => (
       This is left to right (ltr) for English and most languages
     </Text>
     <Text {...args} textDirection={TextDirection.RightToLeft}>
-      This is right to left (rtl) for use with other laguanges such as Arabic.
-      This Enlgish example is incorrect usage.
+      This is right to left (rtl) for use with other languages such as Arabic.
+      This English example is incorrect usage.
     </Text>
     <Text {...args} textDirection={TextDirection.Auto}>
       Let the user agent decide with the auto option
