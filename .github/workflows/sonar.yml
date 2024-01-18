@@ -4,6 +4,9 @@ on:
     secrets:
       SONAR_TOKEN:
         required: true
+  push:
+    branches: [chore/sonar-integration]
+
 jobs:
   sonarcloud:
     name: SonarCloud

@@ -203,6 +203,10 @@ workflows:
             - test-unit-jest-main
             - test-unit-jest-development
             - test-unit-mocha
+      # - sonar-analysis:
+      #     requires:
+      #       - upload-and-validate-coverage
+      #       - #Need to add sonar step
       - test-unit-global:
           requires:
             - prep-deps
@@ -1444,6 +1448,15 @@ jobs:
           root: .
           paths:
             - coverage
+
+  # Could add the analysis here but it may make sense to use a GH action
+  # sonar-analysis:
+  #   executor: node-browsers
+  #     - attach_workspace:
+  #         at: .
+  #     - codecov/upload  #this file needs to be lcov format
+  #   steps:
+  #     -
 
   test-unit-global:
     executor: node-browsers-small
