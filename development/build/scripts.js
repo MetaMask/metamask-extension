@@ -1224,6 +1224,9 @@ async function setEnvironmentVariables({
 
   variables.set({
     DEBUG: devMode || testing ? variables.getMaybe('DEBUG') : undefined,
+    EIP_4337_ENTRYPOINT:
+      variables.getMaybe('EIP_4337_ENTRYPOINT') ||
+      '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,
