@@ -3,10 +3,7 @@
     "pinnedAccountList": {},
     "hiddenAccountList": {}
   },
-  "AccountTracker": {
-    "accounts": "object",
-    "accountsByChainId": "object"
-  },
+  "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
@@ -55,14 +52,14 @@
   },
   "CronjobController": { "jobs": "object" },
   "CurrencyController": {
-    "currentCurrency": "usd",
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
         "conversionRate": 1700,
         "usdConversionRate": 1700
       }
-    }
+    },
+    "currentCurrency": "usd"
   },
   "DecryptMessageController": {
     "unapprovedDecryptMsgs": "object",
@@ -74,8 +71,8 @@
   },
   "EnsController": { "ensResolutionsByAddress": "object" },
   "GasFeeController": {
-    "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
+    "gasFeeEstimates": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none"
   },
@@ -91,9 +88,9 @@
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object",
-    "previousUserTraits": "object"
+    "segmentApiCalls": "object"
   },
+  "NameController": "object",
   "NetworkController": {
     "selectedNetworkClientId": "string",
     "providerConfig": {
@@ -148,12 +145,12 @@
     "dismissSeedBackUpReminder": true,
     "disabledRpcMethodPreferences": { "eth_sign": false },
     "useMultiAccountBalanceChecker": true,
-    "useRequestQueue": false,
     "useSafeChainsListValidation": "boolean",
     "useTokenDetection": false,
     "useNftDetection": false,
     "use4ByteResolution": true,
     "useCurrencyRateCheck": true,
+    "useRequestQueue": false,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
@@ -170,7 +167,8 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "petnamesEnabled": "boolean"
     },
     "ipfsGateway": "string",
     "useAddressBarEnsResolution": true,
@@ -180,12 +178,11 @@
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
     "isLineaMainnetReleased": true,
+    "useExternalNameSources": "boolean",
     "selectedAddress": "string"
   },
   "SelectedNetworkController": {
-    "domains": {
-      "metamask": "networkConfigurationId"
-    },
+    "domains": { "metamask": "networkConfigurationId" },
     "perDomainNetwork": "boolean"
   },
   "SignatureController": {
@@ -256,11 +253,8 @@
     "allDetectedTokens": {}
   },
   "TxController": {
-    "lastFetchedBlockNumbers": "object",
     "methodData": "object",
-    "transactions": "object"
-  },
-  "UserOperationController": {
-    "userOperations": "object"
+    "transactions": "object",
+    "lastFetchedBlockNumbers": "object"
   }
 }
