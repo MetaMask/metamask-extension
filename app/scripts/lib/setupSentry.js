@@ -136,9 +136,6 @@ export const SENTRY_BACKGROUND_STATE = {
     segmentApiCalls: false,
     traits: false,
   },
-  NameController: {
-    [AllProperties]: false,
-  },
   NetworkController: {
     networkConfigurations: false,
     networksMetadata: true,
