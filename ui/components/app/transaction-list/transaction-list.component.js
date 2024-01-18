@@ -217,26 +217,24 @@ export default function TransactionList({
                     TransactionType.smart
                   ) {
                     return (
-                      <>
+                      <span key={`${transactionGroup.nonce}:${index}`}>
                         {renderDateStamp(index, dateGroup)}
                         <SmartTransactionListItem
                           isEarliestNonce={index === 0}
                           smartTransaction={transactionGroup.initialTransaction}
                           transactionGroup={transactionGroup}
-                          key={`${transactionGroup.nonce}:${index}`}
                         />
-                      </>
+                      </span>
                     );
                   }
                   return (
-                    <>
+                    <span key={`${transactionGroup.nonce}:${index}`}>
                       {renderDateStamp(index, dateGroup)}
                       <TransactionListItem
                         isEarliestNonce={index === 0}
                         transactionGroup={transactionGroup}
-                        key={`${transactionGroup.nonce}:${index}`}
                       />
-                    </>
+                    </span>
                   );
                 },
               );
@@ -254,7 +252,13 @@ export default function TransactionList({
                 return dateGroup.transactionGroups.map(
                   (transactionGroup, index) => {
                     return (
-                      <>
+                      <span
+                        key={`${transactionGroup.nonce}:${
+                          transactionGroup.initialTransaction
+                            ? index
+                            : limit + index - 10
+                        }`}
+                      >
                         {renderDateStamp(index, dateGroup)}
                         {transactionGroup.initialTransaction
                           ?.transactionType === TransactionType.smart ? (
@@ -263,17 +267,13 @@ export default function TransactionList({
                             smartTransaction={
                               transactionGroup.initialTransaction
                             }
-                            key={`${transactionGroup.nonce}:${index}`}
                           />
                         ) : (
                           <TransactionListItem
                             transactionGroup={transactionGroup}
-                            key={`${transactionGroup.nonce}:${
-                              limit + index - 10
-                            }`}
                           />
                         )}
-                      </>
+                      </span>
                     );
                   },
                 );
