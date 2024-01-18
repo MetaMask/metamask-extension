@@ -492,10 +492,15 @@ export default class MetamaskController extends EventEmitter {
       }),
     });
 
-    if (!this.selectedNetworkController.getNetworkClientIdForDomain('metamask')) {
-      this.selectedNetworkController.setNetworkClientIdForMetamask(this.networkController.state.selectedNetworkClientId);
+    if (
+      !this.selectedNetworkController.getNetworkClientIdForDomain('metamask')
+    ) {
+      this.selectedNetworkController.setNetworkClientIdForMetamask(
+        this.networkController.state.selectedNetworkClientId,
+      );
     }
-    const networkClient = this.selectedNetworkController.getProviderAndBlockTracker('metamask');
+    const networkClient =
+      this.selectedNetworkController.getProviderAndBlockTracker('metamask');
     this.provider = networkClient.provider;
     this.blockTracker = networkClient.blockTracker;
 
@@ -516,8 +521,11 @@ export default class MetamaskController extends EventEmitter {
       networkConfigurations: this.networkController.state.networkConfigurations,
     });
 
-    this.preferencesController.store.subscribe(({useRequestQueue}) => {
-      if (useRequestQueue !== this.selectedNetworkController.state.perDomainNetwork) {
+    this.preferencesController.store.subscribe(({ useRequestQueue }) => {
+      if (
+        useRequestQueue !==
+        this.selectedNetworkController.state.perDomainNetwork
+      ) {
         this.selectedNetworkController.setPerDomainNetwork(useRequestQueue);
       }
     });
@@ -4628,22 +4636,14 @@ export default class MetamaskController extends EventEmitter {
     // setup json rpc engine stack
     const engine = new JsonRpcEngine();
 
-    const { blockTracker, provider } = this;
-
     // append origin to each request
     engine.push(createOriginMiddleware({ origin }));
 
     // append selectedNetworkClientId to each request
     engine.push(createSelectedNetworkMiddleware(this.controllerMessenger));
 
-    const { selectedNetworkClientId } = this.networkController.state;
-
-    const selectedNetworkClientIdForDomain =
-      this.selectedNetworkController.getNetworkClientIdForDomain(origin);
-
-    const proxyClient = this.selectedNetworkController.getProviderAndBlockTracker(
-        origin,
-      );
+    const proxyClient =
+      this.selectedNetworkController.getProviderAndBlockTracker(origin);
 
     const requestQueueMiddleware = createQueuedRequestMiddleware({
       messenger: this.controllerMessenger,
