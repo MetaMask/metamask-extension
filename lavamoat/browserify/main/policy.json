@@ -1994,8 +1994,8 @@
         "@metamask/snaps-controllers>readable-stream": true,
         "browserify>buffer": true,
         "browserify>concat-stream>typedarray": true,
-        "peek-stream>buffer-from": true,
-        "pumpify>inherits": true
+        "pumpify>inherits": true,
+        "terser>source-map-support>buffer-from": true
       }
     },
     "@metamask/snaps-controllers>nanoid": {
@@ -3890,9 +3890,9 @@
         "gunzip-maybe>browserify-zlib": true,
         "gunzip-maybe>is-deflate": true,
         "gunzip-maybe>is-gzip": true,
+        "gunzip-maybe>peek-stream": true,
         "gunzip-maybe>pumpify": true,
-        "gunzip-maybe>through2": true,
-        "peek-stream": true
+        "gunzip-maybe>through2": true
       }
     },
     "gunzip-maybe>browserify-zlib": {
@@ -3903,6 +3903,32 @@
         "browserify>util": true,
         "gunzip-maybe>browserify-zlib>pako": true,
         "readable-stream": true
+      }
+    },
+    "gunzip-maybe>peek-stream": {
+      "packages": {
+        "browserify>buffer": true,
+        "gunzip-maybe>peek-stream>duplexify": true,
+        "gunzip-maybe>peek-stream>through2": true,
+        "terser>source-map-support>buffer-from": true
+      }
+    },
+    "gunzip-maybe>peek-stream>duplexify": {
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "duplexify>stream-shift": true,
+        "end-of-stream": true,
+        "pumpify>inherits": true,
+        "readable-stream": true
+      }
+    },
+    "gunzip-maybe>peek-stream>through2": {
+      "packages": {
+        "browserify>process": true,
+        "browserify>util": true,
+        "readable-stream": true,
+        "watchify>xtend": true
       }
     },
     "gunzip-maybe>pumpify": {
@@ -4089,37 +4115,6 @@
         "end-of-stream": true,
         "pump>once": true,
         "readable-stream": true
-      }
-    },
-    "peek-stream": {
-      "packages": {
-        "browserify>buffer": true,
-        "peek-stream>buffer-from": true,
-        "peek-stream>duplexify": true,
-        "peek-stream>through2": true
-      }
-    },
-    "peek-stream>buffer-from": {
-      "packages": {
-        "browserify>buffer": true
-      }
-    },
-    "peek-stream>duplexify": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "duplexify>stream-shift": true,
-        "end-of-stream": true,
-        "pumpify>inherits": true,
-        "readable-stream": true
-      }
-    },
-    "peek-stream>through2": {
-      "packages": {
-        "browserify>process": true,
-        "browserify>util": true,
-        "readable-stream": true,
-        "watchify>xtend": true
       }
     },
     "promise-to-callback": {
@@ -4877,6 +4872,11 @@
       "globals": {
         "console.warn": true,
         "define": true
+      }
+    },
+    "terser>source-map-support>buffer-from": {
+      "packages": {
+        "browserify>buffer": true
       }
     },
     "uuid": {

@@ -351,7 +351,6 @@
     "luxon": "^3.2.1",
     "nanoid": "^2.1.6",
     "obj-multiplex": "^1.0.0",
-    "peek-stream": "^1.1.3",
     "pify": "^5.0.0",
     "promise-to-callback": "^1.0.0",
     "prop-types": "^15.6.1",
