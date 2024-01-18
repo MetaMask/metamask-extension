@@ -4872,10 +4872,12 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getAll',
         ),
-        handleSnapRpcRequest: this.handleSnapRequest.bind(this),
+        handleSnapRpcRequest: (args) =>
+          this.handleSnapRequest({ ...args, origin }),
         getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
           this.subjectMetadataController,
-        ).bind(origin),
+          origin,
+        ),
         ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       }),
