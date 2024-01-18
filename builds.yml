@@ -190,7 +190,6 @@ env:
 
   # TODO(ritave): Move ManifestV3 into a feature?
   - ENABLE_MV3: false
-  - HARDWARE_WALLETS_MV3: false
   # These are exclusively used for MV3
   - APPLY_LAVAMOAT
   - FILE_NAMES
@@ -261,10 +260,16 @@ env:
   - BLOCKAID_PUBLIC_KEY
   # Determines if feature flagged Multichain UI should be used
   - MULTICHAIN: ''
-  - NETWORK_ACCOUNT_DND: ''
+
   ###
   # Meta variables
   ###
 
   # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
   - METAMASK_BUILD_TYPE_DEFAULT: *default
+
+  ###
+  # Account Abstraction (EIP-4337)
+  ###
+
+  - EIP_4337_ENTRYPOINT: null
