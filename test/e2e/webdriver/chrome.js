@@ -18,6 +18,7 @@ class ChromeDriver {
       `--proxy-server=${HTTPS_PROXY_HOST}`, // Set proxy in the way that doesn't interfere with Selenium Manager
       `--disable-gpu`,
       `--disable-dev-shm-usage`,
+      `--no-sandbox`,
     ];
 
     if (process.env.MULTIPROVIDER) {
