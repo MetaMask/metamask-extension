@@ -100,7 +100,11 @@ export class MMIAccountMenuPage {
       .getByRole('dialog')
       .filter({ hasText: 'Select an account' });
 
-    await dialog.locator('.mm-banner-base__close-button').click();
+    const bannerCloseButton = dialog.locator('.mm-banner-base__close-button');
+
+    if ((await bannerCloseButton.count()) > 0) {
+      await bannerCloseButton.click();
+    }
 
     const accountsFunds = dialog.locator(
       '.multichain-account-list-item__content',
