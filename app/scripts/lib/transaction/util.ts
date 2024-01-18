@@ -81,6 +81,7 @@ export async function addDappTransaction(
 export async function addTransaction(
   request: AddTransactionRequest,
 ): Promise<TransactionMeta> {
+  console.log('Dickie: addTransaction: request', request);
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const { transactionParams, transactionOptions, ppomController } = request;
   let securityAlertResponse;
@@ -101,7 +102,19 @@ export async function addTransaction(
     };
 
     securityAlertResponse = await ppomController.usePPOM(async (ppom) => {
-      return ppom.validateJsonRpc(request);
+      return ppom.validateJsonRpc(ppomRequest);
+    });
+
+    console.log('Dickie: addTransaction: before', {
+      transactionOptions,
+      transactionParams,
+    });
+
+    request.transactionOptions.securityAlertResponse = securityAlertResponse;
+
+    console.log('Dickie: addTransaction: after', {
+      transactionOptions,
+      transactionParams,
     });
   } catch (e) {
     captureException(e);
@@ -111,7 +124,6 @@ export async function addTransaction(
   const { waitForSubmit } = request;
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     request,
-    securityAlertResponse,
   );
 
   if (!waitForSubmit) {
@@ -134,7 +146,6 @@ export async function addTransaction(
 
 async function addTransactionOrUserOperation(
   request: FinalAddTransactionRequest,
-  securityAlertResponse?: SecurityAlertResponse,
 ) {
   const { selectedAccount } = request;
 
@@ -144,23 +155,25 @@ async function addTransactionOrUserOperation(
     return addUserOperationWithController(request);
   }
 
-  return addTransactionWithController(request, securityAlertResponse);
+  return addTransactionWithController(request);
 }
 
 async function addTransactionWithController(
   request: FinalAddTransactionRequest,
-  securityAlertResponse?: SecurityAlertResponse,
 ) {
   const { transactionController, transactionOptions, transactionParams } =
     request;
 
+  console.log('Dickie: addTransactionWithController', {
+    transactionOptions,
+    transactionParams,
+  });
+
   const { result, transactionMeta } =
-    await transactionController.addTransaction(transactionParams, {
-      ...transactionOptions,
-      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-      securityAlertResponse,
-      ///: END:ONLY_INCLUDE_IF
-    });
+    await transactionController.addTransaction(
+      transactionParams,
+      transactionOptions,
+    );
 
   return {
     transactionMeta,
