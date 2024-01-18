@@ -4855,10 +4855,14 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:install',
           origin,
         ),
+        getIsLocked: () => {
+          return !this.appStateController.isUnlocked;
+        },
         ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         hasPermission: this.permissionController.hasPermission.bind(
           this.permissionController,
+          origin,
         ),
         getSnap: this.controllerMessenger.call.bind(
           this.controllerMessenger,
@@ -4871,7 +4875,7 @@ export default class MetamaskController extends EventEmitter {
         handleSnapRpcRequest: this.handleSnapRequest.bind(this),
         getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
           this.subjectMetadataController,
-        ),
+        ).bind(origin),
         ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)
       }),
