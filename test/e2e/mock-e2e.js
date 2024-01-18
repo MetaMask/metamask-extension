@@ -488,8 +488,9 @@ async function mockLensNameProvider(server) {
     '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb': 'test4.lens',
   };
 
-  await server.forPost('https://api.lens.dev').thenCallback((request) => {
-    const address = request.body?.json?.variables?.address;
+  await server.forPost('https://api.lens.dev').thenCallback(async (request) => {
+    const json = await request.body?.getJson();
+    const address = json?.variables?.address;
     const handle = handlesByAddress[address];
 
     return {

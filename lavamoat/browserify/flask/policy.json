@@ -1002,7 +1002,7 @@
         "@metamask/desktop>eciesjs>futoin-hkdf": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true
+        "ganache>secp256k1": true
       }
     },
     "@metamask/desktop>eciesjs>futoin-hkdf": {
@@ -1267,7 +1267,7 @@
         "browserify>crypto-browserify": true,
         "ethereumjs-util>create-hash>ripemd160": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
+        "ganache>secp256k1": true,
         "koa>content-disposition>safe-buffer": true
       }
     },
@@ -1427,8 +1427,8 @@
         "browserify>crypto-browserify>create-hmac": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "ethereumjs-util>ethereum-cryptography>hash.js": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
+        "ganache>keccak": true,
+        "ganache>secp256k1": true,
         "koa>content-disposition>safe-buffer": true,
         "mocha>serialize-javascript>randombytes": true
       }
@@ -3618,8 +3618,8 @@
     "eth-sig-util>ethereumjs-util>ethereum-cryptography": {
       "packages": {
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
+        "ganache>keccak": true,
+        "ganache>secp256k1": true,
         "mocha>serialize-javascript>randombytes": true
       }
     },
@@ -3671,8 +3671,8 @@
     "ethereumjs-abi>ethereumjs-util>ethereum-cryptography": {
       "packages": {
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
+        "ganache>keccak": true,
+        "ganache>secp256k1": true,
         "mocha>serialize-javascript>randombytes": true
       }
     },
@@ -3746,8 +3746,8 @@
     "ethereumjs-util>ethereum-cryptography": {
       "packages": {
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
+        "ganache>keccak": true,
+        "ganache>secp256k1": true,
         "mocha>serialize-javascript>randombytes": true
       }
     },
@@ -3784,23 +3784,6 @@
         "pumpify>inherits": true
       }
     },
-    "ethereumjs-util>ethereum-cryptography>keccak": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": true
-      }
-    },
-    "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
-      }
-    },
     "ethereumjs-util>ethereum-cryptography>scrypt-js": {
       "globals": {
         "define": true,
@@ -3808,11 +3791,6 @@
       },
       "packages": {
         "browserify>timers-browserify": true
-      }
-    },
-    "ethereumjs-util>ethereum-cryptography>secp256k1": {
-      "packages": {
-        "@metamask/ppom-validator>elliptic": true
       }
     },
     "ethereumjs-util>rlp": {
@@ -4004,6 +3982,28 @@
       "globals": {
         "console": true,
         "define": true
+      }
+    },
+    "ganache>keccak": {
+      "packages": {
+        "browserify>buffer": true,
+        "ganache>keccak>readable-stream": true
+      }
+    },
+    "ganache>keccak>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
+      }
+    },
+    "ganache>secp256k1": {
+      "packages": {
+        "@metamask/ppom-validator>elliptic": true
       }
     },
     "globalthis>define-properties": {
