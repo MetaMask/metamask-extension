@@ -122,10 +122,10 @@ export abstract class AbstractPetnamesBridge {
    * This predicate describes a subset of NameController state that is relevant
    * to the bridge. Override this method to specify a subset of petname entries.
    *
-   * @param _targetEntry - The entry to check for membership.
+   * @param _entry - The entry to check for membership.
    * @returns
    */
-  protected isSyncParticipant(_targetEntry: PetnameEntry): boolean {
+  protected isSyncParticipant(_entry: PetnameEntry): boolean {
     // All petname entries are sync participants by default.
     return true;
   }
