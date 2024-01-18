@@ -2057,10 +2057,8 @@
         "@metamask/snaps-utils": true,
         "@metamask/snaps-utils>@metamask/snaps-registry": true,
         "@metamask/utils": true,
-        "browserify>browserify-zlib": true,
-        "json-rpc-middleware-stream": true,
-        "peek-stream": true,
-        "pumpify": true
+        "gunzip-maybe": true,
+        "json-rpc-middleware-stream": true
       }
     },
     "@metamask/snaps-controllers-flask>nanoid": {
@@ -3205,27 +3203,6 @@
         "crypto.getRandomValues": true
       }
     },
-    "duplexify": {
-      "packages": {
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "duplexify>readable-stream": true,
-        "duplexify>stream-shift": true,
-        "end-of-stream": true,
-        "pumpify>inherits": true
-      }
-    },
-    "duplexify>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
-      }
-    },
     "end-of-stream": {
       "packages": {
         "browserify>process": true,
@@ -3985,6 +3962,58 @@
         "string.prototype.matchall>has-symbols": true
       }
     },
+    "gunzip-maybe": {
+      "packages": {
+        "gunzip-maybe>browserify-zlib": true,
+        "gunzip-maybe>is-deflate": true,
+        "gunzip-maybe>is-gzip": true,
+        "gunzip-maybe>pumpify": true,
+        "gunzip-maybe>through2": true,
+        "peek-stream": true
+      }
+    },
+    "gunzip-maybe>browserify-zlib": {
+      "packages": {
+        "browserify>assert": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>util": true,
+        "gunzip-maybe>browserify-zlib>pako": true,
+        "readable-stream": true
+      }
+    },
+    "gunzip-maybe>pumpify": {
+      "packages": {
+        "gunzip-maybe>pumpify>duplexify": true,
+        "gunzip-maybe>pumpify>pump": true,
+        "pumpify>inherits": true
+      }
+    },
+    "gunzip-maybe>pumpify>duplexify": {
+      "packages": {
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "duplexify>stream-shift": true,
+        "end-of-stream": true,
+        "pumpify>inherits": true,
+        "readable-stream": true
+      }
+    },
+    "gunzip-maybe>pumpify>pump": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "end-of-stream": true,
+        "pump>once": true
+      }
+    },
+    "gunzip-maybe>through2": {
+      "packages": {
+        "browserify>process": true,
+        "browserify>util": true,
+        "readable-stream": true,
+        "watchify>xtend": true
+      }
+    },
     "json-rpc-engine": {
       "packages": {
         "@metamask/safe-event-emitter": true,
@@ -4209,13 +4238,6 @@
     "pump>once": {
       "packages": {
         "pump>once>wrappy": true
-      }
-    },
-    "pumpify": {
-      "packages": {
-        "duplexify": true,
-        "pump": true,
-        "pumpify>inherits": true
       }
     },
     "qrcode-generator": {

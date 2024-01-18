@@ -4942,7 +4942,7 @@ __metadata:
 
 "@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A4.0.0#~/.yarn/patches/@metamask-snaps-controllers-npm-4.0.0-1c08ba6119.patch":
   version: 4.0.0
-  resolution: "@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A4.0.0#~/.yarn/patches/@metamask-snaps-controllers-npm-4.0.0-1c08ba6119.patch::version=4.0.0&hash=521363"
+  resolution: "@metamask/snaps-controllers@patch:@metamask/snaps-controllers@npm%3A4.0.0#~/.yarn/patches/@metamask-snaps-controllers-npm-4.0.0-1c08ba6119.patch::version=4.0.0&hash=da7ba5"
   dependencies:
     "@metamask/approval-controller": "npm:^5.1.1"
     "@metamask/base-controller": "npm:^4.0.0"
@@ -4972,7 +4972,7 @@ __metadata:
   peerDependenciesMeta:
     "@metamask/snaps-execution-environments":
       optional: true
-  checksum: 8a4953b969063aadbe86934ad68a7a3cb58a8e2f513da108c30471015ada433e1fc1ab60e9b8aa75de16a15a8aa3d7ec7f83611a608ace8ba2145cdadaaabc2d
+  checksum: 158db5739c15fbc6ad3d85734ed21ad882051260161357bc5f2cbace69648899e24fbb44095ab23776281648424158f77483a87badc390a65faffeda0448642c
   languageName: node
   linkType: hard
 
@@ -8824,6 +8824,15 @@ __metadata:
     "@types/vinyl-fs": "npm:*"
     chokidar: "npm:^3.3.1"
   checksum: d0fe14866cc2c233c4116941f7c275b1b907d5b40de8bf92899e4152979cd6c51a71d407ac752f0434a7ed95a97979f61c1dd05b82fdee73088809476f8d9f85
+  languageName: node
+  linkType: hard
+
+"@types/gunzip-maybe@npm:^1":
+  version: 1.4.2
+  resolution: "@types/gunzip-maybe@npm:1.4.2"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 9be931d6b74ea4e28f2682e3aac6c242448128c6e06bee2e5758e8747ef51f231c46f11e27783092530f81c51f0a5ce6f87217e92e7e80b55e7132c7538e5f3e
   languageName: node
   linkType: hard
 
@@ -24672,6 +24681,7 @@ __metadata:
     "@types/gulp-autoprefixer": "npm:^0.0.33"
     "@types/gulp-sass": "npm:^5.0.0"
     "@types/gulp-sourcemaps": "npm:^0.0.35"
+    "@types/gunzip-maybe": "npm:^1"
     "@types/jest": "npm:^29.1.2"
     "@types/madge": "npm:^5.0.0"
     "@types/mocha": "npm:^10.0.3"
@@ -24777,6 +24787,7 @@ __metadata:
     gulp-stylelint: "npm:^13.0.0"
     gulp-watch: "npm:^5.0.1"
     gulp-zip: "npm:^5.1.0"
+    gunzip-maybe: "npm:^1.4.2"
     history: "npm:^5.0.0"
     human-standard-token-abi: "npm:^2.0.0"
     husky: "npm:^8.0.3"
