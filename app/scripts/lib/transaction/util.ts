@@ -8,6 +8,10 @@ import {
   AddUserOperationOptions,
   UserOperationController,
 } from '@metamask/user-operation-controller';
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+import { PPOMController } from '@metamask/ppom-validator';
+///: END:ONLY_INCLUDE_IF
+import { captureException } from '@sentry/browser';
 import { addHexPrefix } from 'ethereumjs-util';
 
 export type AddTransactionOptions = NonNullable<
@@ -20,6 +24,17 @@ type BaseAddTransactionRequest = {
   transactionParams: TransactionParams;
   transactionController: TransactionController;
   userOperationController: UserOperationController;
+  ppomController: PPOMController;
+};
+
+/**
+ * Type for security alert response from transaction validator.
+ */
+export type SecurityAlertResponse = {
+  reason: string;
+  features?: string[];
+  result_type: string;
+  providerRequestsCount?: Record<string, number>;
 };
 
 type FinalAddTransactionRequest = BaseAddTransactionRequest & {
@@ -66,10 +81,37 @@ export async function addDappTransaction(
 export async function addTransaction(
   request: AddTransactionRequest,
 ): Promise<TransactionMeta> {
-  const { waitForSubmit } = request;
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  const { transactionParams, transactionOptions, ppomController } = request;
+  let securityAlertResponse;
 
+  try {
+    const ppomRequest = {
+      method: 'eth_sendTransaction',
+      id: 'actionId' in transactionOptions ? transactionOptions.actionId : '',
+      origin: 'origin' in transactionOptions ? transactionOptions.origin : '',
+      params: [
+        {
+          from: transactionParams.from,
+          to: transactionParams.to,
+          value: transactionParams.value,
+          data: transactionParams.data,
+        },
+      ],
+    };
+
+    securityAlertResponse = await ppomController.usePPOM(async (ppom) => {
+      return ppom.validateJsonRpc(request);
+    });
+  } catch (e) {
+    captureException(e);
+  }
+  ///: END:ONLY_INCLUDE_IF
+
+  const { waitForSubmit } = request;
   const { transactionMeta, waitForHash } = await addTransactionOrUserOperation(
     request,
+    securityAlertResponse,
   );
 
   if (!waitForSubmit) {
@@ -92,6 +134,7 @@ export async function addTransaction(
 
 async function addTransactionOrUserOperation(
   request: FinalAddTransactionRequest,
+  securityAlertResponse?: SecurityAlertResponse,
 ) {
   const { selectedAccount } = request;
 
@@ -101,20 +144,23 @@ async function addTransactionOrUserOperation(
     return addUserOperationWithController(request);
   }
 
-  return addTransactionWithController(request);
+  return addTransactionWithController(request, securityAlertResponse);
 }
 
 async function addTransactionWithController(
   request: FinalAddTransactionRequest,
+  securityAlertResponse?: SecurityAlertResponse,
 ) {
   const { transactionController, transactionOptions, transactionParams } =
     request;
 
   const { result, transactionMeta } =
-    await transactionController.addTransaction(
-      transactionParams,
-      transactionOptions,
-    );
+    await transactionController.addTransaction(transactionParams, {
+      ...transactionOptions,
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+      securityAlertResponse,
+      ///: END:ONLY_INCLUDE_IF
+    });
 
   return {
     transactionMeta,
