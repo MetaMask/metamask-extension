@@ -106,7 +106,7 @@ const AssetList = ({ onClickAsset }) => {
 
   const { tokensWithBalances, totalFiatBalance, totalWeiBalance, loading } =
     useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
-  const roundedTokensWithBalances = tokensWithBalances.forEach((token) => {
+  tokensWithBalances.forEach((token) => {
     // token.string is the balance displayed in the TokenList UI
     token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
   });
@@ -209,7 +209,7 @@ const AssetList = ({ onClickAsset }) => {
         isStakeable={isStakeable}
       />
       <TokenList
-        tokens={roundedTokensWithBalances}
+        tokens={tokensWithBalances}
         loading={loading}
         onTokenClick={(tokenAddress) => {
           onClickAsset(tokenAddress);
