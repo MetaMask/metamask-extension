@@ -95,16 +95,9 @@ export class MMIAccountMenuPage {
   }
 
   async accountMenuScreenshot(screenshotName: string) {
-    await this.accountsMenu();
     const dialog = this.page
       .getByRole('dialog')
       .filter({ hasText: 'Select an account' });
-
-    const bannerCloseButton = dialog.locator('.mm-banner-base__close-button');
-
-    if ((await bannerCloseButton.count()) > 0) {
-      await bannerCloseButton.click();
-    }
 
     const accountsFunds = dialog.locator(
       '.multichain-account-list-item__content',
@@ -154,5 +147,13 @@ export class MMIAccountMenuPage {
 
     await this.page.getByRole('button', { name: /close/iu }).first().click();
     return accountNames;
+  }
+
+  async closeBanner() {
+    await this.page
+      .getByRole('dialog')
+      .filter({ hasText: 'Select an account' })
+      .locator('.mm-banner-base__close-button')
+      .click();
   }
 }
