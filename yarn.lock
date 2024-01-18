@@ -3683,7 +3683,7 @@ __metadata:
 
 "@metamask-institutional/custody-keyring@patch:@metamask-institutional/custody-keyring@npm%3A1.0.7#~/.yarn/patches/@metamask-institutional-custody-keyring-npm-1.0.7-e20ee2bc55.patch":
   version: 1.0.7
-  resolution: "@metamask-institutional/custody-keyring@patch:@metamask-institutional/custody-keyring@npm%3A1.0.7#~/.yarn/patches/@metamask-institutional-custody-keyring-npm-1.0.7-e20ee2bc55.patch::version=1.0.7&hash=ab33cf"
+  resolution: "@metamask-institutional/custody-keyring@patch:@metamask-institutional/custody-keyring@npm%3A1.0.7#~/.yarn/patches/@metamask-institutional-custody-keyring-npm-1.0.7-e20ee2bc55.patch::version=1.0.7&hash=377317"
   dependencies:
     "@ethereumjs/tx": "npm:^4.1.1"
     "@ethereumjs/util": "npm:^8.0.5"
@@ -3693,7 +3693,7 @@ __metadata:
     "@metamask/obs-store": "npm:^8.0.0"
     crypto: "npm:^1.0.1"
     lodash.clonedeep: "npm:^4.5.0"
-  checksum: 5438873ffdcc697def0c45ce351b3bb2c5bc437a173000f293633fbda78a99c4c01d6e8f5fada93ab69eddb853a8e6ae509450fd9f1b081e917111065a664426
+  checksum: 0dce9eccb2e73c657a99c65c6ba84da8f0d3f5edebd034929374698524a742b9cb1cc0c9ca55ef13d0d6eb911404ed096f5acbcaf61286aa6c8fda8a442d2ad6
   languageName: node
   linkType: hard
 
