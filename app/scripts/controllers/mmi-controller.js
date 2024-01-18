@@ -152,7 +152,11 @@ export default class MMIController extends EventEmitter {
 
         // Trigger this event, listen to sdk, sdk change the state and then Ui is listening for the state changed
         keyring.on(INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT, (payload) => {
-          log.info(`Interactive refresh token change event for ${payload}`);
+          log.info(
+            `Interactive refresh token change event for ${JSON.stringify(
+              payload,
+            )}`,
+          );
           this.appStateController.showInteractiveReplacementTokenBanner(
             payload,
           );
@@ -251,7 +255,9 @@ export default class MMIController extends EventEmitter {
 
     // Trigger this event, listen to sdk, sdk change the state and then Ui is listening for the state changed
     keyring.on(INTERACTIVE_REPLACEMENT_TOKEN_CHANGE_EVENT, (payload) => {
-      log.info(`Interactive refresh token change event for ${payload}`);
+      log.info(
+        `Interactive refresh token change event for ${JSON.stringify(payload)}`,
+      );
       this.appStateController.showInteractiveReplacementTokenBanner(payload);
     });
 
