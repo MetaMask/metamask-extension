@@ -38,14 +38,6 @@ export class MMIAccountMenuPage {
 
   async accountsMenu() {
     await this.accountsMenuBtn.click();
-
-    const bannerCloseButton = this.page.locator(
-      '.mm-banner-base__close-button',
-    );
-
-    if ((await bannerCloseButton.count()) > 0) {
-      await bannerCloseButton.click();
-    }
   }
 
   async setDialog() {
@@ -110,6 +102,15 @@ export class MMIAccountMenuPage {
     const accountsFunds = dialog.locator(
       '.multichain-account-list-item__content',
     );
+
+    const bannerCloseButton = accountsFunds.locator(
+      '.mm-banner-base__close-button',
+    );
+
+    if ((await bannerCloseButton.count()) > 0) {
+      await bannerCloseButton.click();
+    }
+
     await test.expect
       .soft(dialog)
       .toHaveScreenshot(screenshotName, { mask: [accountsFunds] });
