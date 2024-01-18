@@ -1937,6 +1937,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@endo/env-options@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@endo/env-options@npm:1.1.0"
+  checksum: c362b5ccda9407c7049d4f5812023b9f5123116282719a4b296702f93baca7030066359af0b8bf869f8d7736f85d5fe12d21e1375049b10a482eb9bae3715797
+  languageName: node
+  linkType: hard
+
 "@ensdomains/content-hash@npm:^2.5.6":
   version: 2.5.6
   resolution: "@ensdomains/content-hash@npm:2.5.6"
@@ -24928,7 +24935,7 @@ __metadata:
     selenium-webdriver: "npm:^4.15.0"
     semver: "npm:^7.5.4"
     serve-handler: "npm:^6.1.2"
-    ses: "npm:^0.18.8"
+    ses: "npm:^1.1.0"
     single-call-balance-checker-abi: "npm:^1.0.0"
     sinon: "npm:^9.0.0"
     source-map: "npm:^0.7.4"
@@ -31167,6 +31174,15 @@ __metadata:
   dependencies:
     "@endo/env-options": "npm:^0.1.4"
   checksum: 243b8d546ca2f0ad68cda1178689c4a4bfab8ac25fd03daccaf6c4b94ee0c10b07eb10b8d477c73ceef9ba10a2205d2bef0bd3c64b8c98130c01adfd9c873103
+  languageName: node
+  linkType: hard
+
+"ses@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "ses@npm:1.1.0"
+  dependencies:
+    "@endo/env-options": "npm:^1.1.0"
+  checksum: b98b360a1d40ebb737cb237ac025b5b6ccf74f21ce000fc9c470241e2db357bd3bd041a400f21fe863acb76543e0b6757cd70ec0f8618df69d5d05be5a222b12
   languageName: node
   linkType: hard
 
