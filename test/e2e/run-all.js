@@ -10,6 +10,7 @@ const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS = [
   'test-snap-txinsights-v2.spec.js',
+  'test-snap-namelookup.spec.js',
   'test-snap-homepage.spec.js',
 ];
 
