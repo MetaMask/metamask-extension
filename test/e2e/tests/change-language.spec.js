@@ -91,9 +91,7 @@ describe('Settings - general tab, validate the change language functionality:', 
           selectors.localeSelect,
         );
         await dropdownElement.click();
-        const options = await dropdownElement.findElements(
-          By.css('option'),
-        );
+        const options = await dropdownElement.findElements(By.css('option'));
         await options[languageIndex].click();
 
         await driver.isElementPresentAndVisible(selectors.localeSelect);
