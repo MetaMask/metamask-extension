@@ -432,7 +432,7 @@ jobs:
           command: .circleci/scripts/check-working-tree.sh
 
   validate-lavamoat-policy-webapp:
-    executor: node-browsers-medium-plus
+    executor: node-browsers-large
     parameters:
       build-type:
         type: string
