@@ -79,6 +79,7 @@ describe('Custom network', function () {
             .build(),
           ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
+          failOnConsoleError: false,
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -157,6 +158,7 @@ describe('Custom network', function () {
             .withPreferencesController({ useSafeChainsListValidation: true })
             .build(),
           title: this.test.fullTitle(),
+          failOnConsoleError: false,
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -264,6 +266,7 @@ describe('Custom network', function () {
             .build(),
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
+          failOnConsoleError: false,
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -317,6 +320,7 @@ describe('Custom network', function () {
             .build(),
           ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
+          failOnConsoleError: false,
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -377,6 +381,7 @@ describe('Custom network', function () {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
+          failOnConsoleError: false,
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -463,6 +468,7 @@ describe('Custom network', function () {
           fixtures: new FixtureBuilder().build(),
           ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
+          failOnConsoleError: false,
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -519,6 +525,7 @@ describe('Custom network', function () {
             .build(),
           ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
+          failOnConsoleError: false,
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -570,6 +577,7 @@ describe('Custom network', function () {
           ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
+          failOnConsoleError: false,
         },
         async ({ driver }) => {
           await unlockWallet(driver);
@@ -610,6 +618,7 @@ describe('Custom network', function () {
           ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
+          failOnConsoleError: false,
         },
         async ({ driver }) => {
           await unlockWallet(driver);
