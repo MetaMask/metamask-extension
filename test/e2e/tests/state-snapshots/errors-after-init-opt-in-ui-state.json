@@ -220,7 +220,8 @@
     "chainStatus": {
       "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
     },
-    "versionFileETag": "string"
+    "versionFileETag": "string",
+    "userOperations": "object"
   },
   "send": "object",
   "swaps": "object",
