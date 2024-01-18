@@ -99,17 +99,16 @@ export class MMIAccountMenuPage {
     const dialog = this.page
       .getByRole('dialog')
       .filter({ hasText: 'Select an account' });
-    const accountsFunds = dialog.locator(
-      '.multichain-account-list-item__content',
-    );
 
-    const bannerCloseButton = accountsFunds.locator(
-      '.mm-banner-base__close-button',
-    );
+    const bannerCloseButton = dialog.locator('.mm-banner-base__close-button');
 
     if ((await bannerCloseButton.count()) > 0) {
       await bannerCloseButton.click();
     }
+
+    const accountsFunds = dialog.locator(
+      '.multichain-account-list-item__content',
+    );
 
     await test.expect
       .soft(dialog)
