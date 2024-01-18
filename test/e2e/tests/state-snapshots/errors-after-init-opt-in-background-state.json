@@ -255,7 +255,9 @@
   },
   "TxController": {
     "methodData": "object",
-    "transactions": "object",
-    "lastFetchedBlockNumbers": "object"
+    "transactions": "object"
+  },
+  "UserOperationController": {
+    "userOperations": "object"
   }
 }
