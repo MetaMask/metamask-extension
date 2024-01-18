@@ -4593,14 +4593,6 @@ export default class MetamaskController extends EventEmitter {
     const selectedNetworkClientIdForDomain =
       this.selectedNetworkController.getNetworkClientIdForDomain(origin);
 
-    // Not sure that this will happen anymore
-    if (selectedNetworkClientIdForDomain === undefined) {
-      this.selectedNetworkController.setNetworkClientIdForDomain(
-        origin,
-        selectedNetworkClientId,
-      );
-    }
-
     const proxyClient = this.selectedNetworkController.getProviderAndBlockTracker(
         origin,
       );
@@ -4616,8 +4608,6 @@ export default class MetamaskController extends EventEmitter {
 
     // create filter polyfill middleware
     const filterMiddleware = createFilterMiddleware(proxyClient);
-    console.log('selectedNetworkClientId:', selectedNetworkClientIdForDomain);
-    console.log('proxyClient:', proxyClient);
 
     // create subscription polyfill middleware
     const subscriptionManager = createSubscriptionManager(proxyClient);
