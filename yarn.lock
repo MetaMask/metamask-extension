@@ -4581,7 +4581,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^17.1.0":
+"@metamask/network-controller@npm:^17.0.0, @metamask/network-controller@npm:^17.1.0":
   version: 17.1.0
   resolution: "@metamask/network-controller@npm:17.1.0"
   dependencies:
