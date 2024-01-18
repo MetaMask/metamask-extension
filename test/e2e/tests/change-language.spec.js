@@ -92,7 +92,7 @@ describe('Settings - general tab, validate the change language functionality:', 
         );
         await dropdownElement.click();
         const options = await dropdownElement.findElements(
-          By.tagName('option'),
+          By.css('option'),
         );
         await options[languageIndex].click();
 
