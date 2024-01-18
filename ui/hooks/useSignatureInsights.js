@@ -7,7 +7,7 @@ import { getSignatureInsightSnapIds } from '../selectors';
 
 const SIGNATURE_INSIGHT_PERMISSION = 'endowment:signature-insight';
 
-export function useSignatureInsights({ txData, origin }) {
+export function useSignatureInsights({ txData }) {
   const subjects = useSelector(getPermissionSubjectsDeepEqual);
   const snapIds = useSelector(getSignatureInsightSnapIds);
   const [loading, setLoading] = useState(true);
@@ -21,17 +21,17 @@ export function useSignatureInsights({ txData, origin }) {
 
       const newData = await Promise.allSettled(
         snapIds.map((snapId) => {
-          const permission = subjects[snapId]?.permissions[INSIGHT_PERMISSION];
+          const permission = subjects[snapId]?.permissions[SIGNATURE_INSIGHT_PERMISSION];
           if (!permission) {
             return Promise.reject(
               new Error(
-                'This Snap does not have the transaction insight endowment.',
+                'This Snap does not have the signature insight endowment.',
               ),
             );
           }
 
           const hasSignatureOriginCaveat =
-            hasSignatureOriginCaveat(permission);
+            getSignatureOriginCaveat(permission);
           const signatureOrigin = hasSignatureOriginCaveat ? origin : null;
           return handleSnapRequest({
             snapId,

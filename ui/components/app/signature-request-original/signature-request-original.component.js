@@ -54,6 +54,9 @@ import SignatureRequestHeader from '../signature-request-header';
 import SnapLegacyAuthorshipHeader from '../snaps/snap-legacy-authorship-header';
 ///: END:ONLY_INCLUDE_IF
 import SignatureRequestOriginalWarning from './signature-request-original-warning';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import InsightWarnings from '../snaps/insight-warnings';
+///: END:ONLY_INCLUDE_IF
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -85,10 +88,14 @@ export default class SignatureRequestOriginal extends Component {
     selectedAccount: PropTypes.object,
     mmiOnSignCallback: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    warnings: PropTypes.array,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   state = {
     showSignatureRequestWarning: false,
+    showSignatureInsights: false,
   };
 
   msgHexToText = (hex) => {
@@ -130,7 +137,7 @@ export default class SignatureRequestOriginal extends Component {
     let rows;
     const notice = `${this.context.t('youSign')}:`;
 
-    const { txData, subjectMetadata } = this.props;
+    const { txData, subjectMetadata, warnings } = this.props;
     const {
       type,
       msgParams: { data },
@@ -306,7 +313,6 @@ export default class SignatureRequestOriginal extends Component {
       txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
-      resolvePendingApproval,
     } = this.props;
     const { t } = this.context;
 
@@ -326,16 +332,12 @@ export default class SignatureRequestOriginal extends Component {
           if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
             this.setState({ showSignatureRequestWarning: true });
           } else {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-            if (this.props.mmiOnSignCallback) {
-              await this.props.mmiOnSignCallback(txData);
-              return;
+            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+            if (warnings.length >= 1) {
+              return this.setState({ showSignatureInsights: true });
             }
             ///: END:ONLY_INCLUDE_IF
-
-            await resolvePendingApproval(txData.id);
-            clearConfirmTransaction();
-            history.push(mostRecentOverviewPage);
+            await this.onSubmit();
           }
         }}
         disabled={
@@ -398,10 +400,35 @@ export default class SignatureRequestOriginal extends Component {
           <SignatureRequestOriginalWarning
             senderAddress={address}
             name={name}
-            onSubmit={async (event) => await this.onSubmit(event)}
+            onSubmit={async () => {
+              if (warnings.length >= 1) {
+                this.setState({ showSignatureInsights: true, showSignatureRequestWarning: false })
+              } else {
+                await this.onSubmit();
+              }
+            }}
             onCancel={async (event) => await this.onCancel(event)}
           />
         )}
+        {
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+        }
+        {this.state.showSignatureInsights && (
+          <InsightWarnings
+            warnings={warnings}
+            origin={origin}
+            onCancel={() => {
+              this.setState({ showSignatureInsights: false });
+            }}
+            onSubmit={async () => {
+              await this.onSubmit();
+              this.setState({ showSignatureInsights: false })
+            }}
+          />
+        )}
+        {
+          ///: END:ONLY_INCLUDE_IF
+        }
         {this.renderFooter()}
         {messagesCount > 1 ? (
           <ButtonLink

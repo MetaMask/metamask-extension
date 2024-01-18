@@ -76,9 +76,7 @@ const ConfirmTxScreen = ({ match }) => {
   const history = useHistory();
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-  const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
-  useState(false);
-  const { data } = useSignatureInsights();
+  const { data } = useSignatureInsights({ txData });
 
   const warnings = data?.reduce((warningsArr, promise) => {
     if (promise.response?.severity === SeverityLevel.Critical) {
@@ -219,36 +217,20 @@ const ConfirmTxScreen = ({ match }) => {
   const SigComponent = signatureSelect(txData, targetSubjectMetadata);
 
   return (
-    <>
-      <SigComponent
-        history={history}
-        txData={txData}
-        key={txData.id}
-        identities={identities}
-        currentCurrency={currentCurrency}
-        blockGasLimit={blockGasLimit}
-        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-        selectedAccount={selectedAccount}
-        ///: END:ONLY_INCLUDE_IF
-      />
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-      }
-      {isShowingSigInsightWarnings && (
-        <InsightWarnings
-          warnings={warnings}
-          origin={origin}
-          onCancel={() => setIsShowingSigInsightWarnings(false)}
-          onSubmit={() => {
-            handleSubmit();
-            setIsShowingSigInsightWarnings(false);
-          }}
-        />
-      )}
-      {
-        ///: END:ONLY_INCLUDE_IF
-      }
-    </>
+    <SigComponent
+      history={history}
+      txData={txData}
+      key={txData.id}
+      identities={identities}
+      currentCurrency={currentCurrency}
+      blockGasLimit={blockGasLimit}
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+      selectedAccount={selectedAccount}
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+      warnings={warnings}
+      ///: END:ONLY_INCLUDE_IF
+    />
   );
 };
 
