@@ -10,8 +10,8 @@ import {
 } from '@metamask/user-operation-controller';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { PPOMController } from '@metamask/ppom-validator';
-///: END:ONLY_INCLUDE_IF
 import { captureException } from '@sentry/browser';
+///: END:ONLY_INCLUDE_IF
 import { addHexPrefix } from 'ethereumjs-util';
 
 export type AddTransactionOptions = NonNullable<
