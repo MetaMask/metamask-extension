@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -217,24 +217,24 @@ export default function TransactionList({
                     TransactionType.smart
                   ) {
                     return (
-                      <span key={`${transactionGroup.nonce}:${index}`}>
+                      <Fragment key={`${transactionGroup.nonce}:${index}`}>
                         {renderDateStamp(index, dateGroup)}
                         <SmartTransactionListItem
                           isEarliestNonce={index === 0}
                           smartTransaction={transactionGroup.initialTransaction}
                           transactionGroup={transactionGroup}
                         />
-                      </span>
+                      </Fragment>
                     );
                   }
                   return (
-                    <span key={`${transactionGroup.nonce}:${index}`}>
+                    <Fragment key={`${transactionGroup.nonce}:${index}`}>
                       {renderDateStamp(index, dateGroup)}
                       <TransactionListItem
                         isEarliestNonce={index === 0}
                         transactionGroup={transactionGroup}
                       />
-                    </span>
+                    </Fragment>
                   );
                 },
               );
@@ -252,7 +252,7 @@ export default function TransactionList({
                 return dateGroup.transactionGroups.map(
                   (transactionGroup, index) => {
                     return (
-                      <span
+                      <Fragment
                         key={`${transactionGroup.nonce}:${
                           transactionGroup.initialTransaction
                             ? index
@@ -273,7 +273,7 @@ export default function TransactionList({
                             transactionGroup={transactionGroup}
                           />
                         )}
-                      </span>
+                      </Fragment>
                     );
                   },
                 );
