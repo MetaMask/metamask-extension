@@ -38,6 +38,13 @@ export class MMIAccountMenuPage {
 
   async accountsMenu() {
     await this.accountsMenuBtn.click();
+
+    const bannerCloseButton = this.page.locator(
+      '.mm-banner-base__close-button',
+    );
+    if (await bannerCloseButton.isVisible()) {
+      await bannerCloseButton.click();
+    }
   }
 
   async setDialog() {
@@ -143,8 +150,6 @@ export class MMIAccountMenuPage {
       const accountName = await accounts.nth(i).getByRole('button').innerText();
       accountNames.push(accountName);
     }
-
-    await this.page.locator('.mm-banner-base__close-button').click();
 
     await this.page.getByRole('button', { name: /close/iu }).first().click();
     return accountNames;
