@@ -22,7 +22,7 @@ const ConfirmationMethods = Object.freeze([
   'personal_sign',
 ]);
 
-export const SUPPORTED_CHAIN_IDS: Array<string> = [
+export const SUPPORTED_CHAIN_IDS: string[] = [
   CHAIN_IDS.MAINNET,
   CHAIN_IDS.BSC,
   CHAIN_IDS.POLYGON,
