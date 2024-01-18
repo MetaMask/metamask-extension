@@ -3030,19 +3030,32 @@ index 0000000000000000000000000000000000000000..a7a0af2ef792d4f69d8595fdc0f3af79
 \ No newline at end of file
 diff --git a/dist/migrations/index.d.ts.map b/dist/migrations/index.d.ts.map
 new file mode 100644
-index 0000000000000000000000000000000000000000..af14cccaf3a0582eb5a16fa1620e78ea5efdf231
+index 0000000000000000000000000000000000000000..16b00db2e986f7849ced7436045d55b367f80819
 --- /dev/null
 +++ b/dist/migrations/index.d.ts.map
 @@ -0,0 +1 @@
-+{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/migrations/index.ts"],"names":[],"mappings":"AAKA,eAAO,MAAM,UAAU;;;;GAAS,CAAC"}
++{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["../../src/migrations/index.ts"],"names":[],"mappings":"AAMA,eAAO,MAAM,UAAU;;;;GAAe,CAAC"}
+\ No newline at end of file
+diff --git a/dist/migrations/index.js b/dist/migrations/index.js
+index 64d150433e8cb6df0fd572ca51b654af8462cfbd..ea49ad44c1c1f9fde01a3ab1fb5cc673cc02d4e9 100644
+--- a/dist/migrations/index.js
++++ b/dist/migrations/index.js
+@@ -5,5 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
+ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.migrations = void 0;
+ const _001_1 = __importDefault(require("./001"));
+-exports.migrations = [_001_1.default];
++const _002_1 = __importDefault(require("./002"));
++exports.migrations = [_001_1.default, _002_1.default];
+ //# sourceMappingURL=index.js.map
 \ No newline at end of file
 diff --git a/dist/migrations/index.js.map b/dist/migrations/index.js.map
 new file mode 100644
-index 0000000000000000000000000000000000000000..ff891fc810765600b5550a8178247272379bb95c
+index 0000000000000000000000000000000000000000..b44467d748fca0779102161669dede4dac1ec811
 --- /dev/null
 +++ b/dist/migrations/index.js.map
 @@ -0,0 +1 @@
-+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../src/migrations/index.ts"],"names":[],"mappings":";;;;;;AAGA,iDAAyB;AAEZ,QAAA,UAAU,GAAG,CAAC,cAAI,CAAC,CAAC"}
++{"version":3,"file":"index.js","sourceRoot":"","sources":["../../src/migrations/index.ts"],"names":[],"mappings":";;;;;;AAGA,iDAAyB;AACzB,iDAAyB;AAEZ,QAAA,UAAU,GAAG,CAAC,cAAI,EAAE,cAAI,CAAC,CAAC"}
 \ No newline at end of file
 diff --git a/dist/migrations/migrator.d.ts.map b/dist/migrations/migrator.d.ts.map
 new file mode 100644
@@ -5855,6 +5868,18 @@ index 0000000000000000000000000000000000000000..0e96c01fe7037bf39b2d90496148861b
 +
 +  return keyring;
 +}
+diff --git a/src/migrations/index.ts b/src/migrations/index.ts
+index 46ed689bc4fc3f3664c278dfe1a5a544da51afdc..baffa6f6cdce1c59c7b6808b51bac5354c066ccc 100644
+--- a/src/migrations/index.ts
++++ b/src/migrations/index.ts
+@@ -2,5 +2,6 @@
+ // They are objects with a `version` number
+ // and a `migrate` function.
+ import m001 from "./001";
++import m002 from "./002";
+ 
+-export const migrations = [m001];
++export const migrations = [m001, m002];
 diff --git a/src/migrations/migrator.test.ts b/src/migrations/migrator.test.ts
 new file mode 100644
 index 0000000000000000000000000000000000000000..e044d5e93eb9901cd3cf38cce6e1b44e241e6741
