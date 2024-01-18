@@ -24,6 +24,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   return (
     <HeaderBase
       className={classnames('mm-modal-header', className)}
+      as="header"
       paddingLeft={4}
       paddingRight={4}
       paddingBottom={4}
@@ -57,11 +58,7 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
       {...props}
     >
       {typeof children === 'string' ? (
-        <Text
-          as="header"
-          variant={TextVariant.headingSm}
-          textAlign={TextAlign.Center}
-        >
+        <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
           {children}
         </Text>
       ) : (
