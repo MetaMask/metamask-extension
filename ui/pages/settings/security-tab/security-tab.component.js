@@ -911,16 +911,16 @@ export default class SecurityTab extends PureComponent {
           {this.renderNftDetectionToggle()}
         </div>
 
-        {petnamesEnabled ? (
+        {petnamesEnabled && (
           <>
             <span className="settings-page__security-tab-sub-header">
-              {this.context.t('settingsSubHeadingSignatures')}
+              {this.context.t('settingsSubHeadingSignaturesAndTransactions')}
             </span>
             <div className="settings-page__content-padded">
               {this.renderExternalNameSourcesToggle()}
             </div>
           </>
-        ) : null}
+        )}
 
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('metrics')}
