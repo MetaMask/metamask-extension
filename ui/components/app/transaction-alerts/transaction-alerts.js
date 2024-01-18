@@ -39,6 +39,7 @@ const TransactionAlerts = ({
   setUserAcknowledgedGasMissing,
   tokenSymbol,
   txData,
+  isUsingPaymaster,
 }) => {
   const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
     useGasFeeContext();
@@ -148,6 +149,11 @@ const TransactionAlerts = ({
           {t('sendingZeroAmount', [currentTokenSymbol])}
         </BannerAlert>
       )}
+      {isUsingPaymaster && (
+        <BannerAlert data-testid="paymaster-alert" severity={SEVERITIES.INFO}>
+          {t('paymasterInUse')}
+        </BannerAlert>
+      )}
     </div>
   );
 };
@@ -157,6 +163,7 @@ TransactionAlerts.propTypes = {
   setUserAcknowledgedGasMissing: PropTypes.func,
   tokenSymbol: PropTypes.string,
   txData: PropTypes.object,
+  isUsingPaymaster: PropTypes.bool,
 };
 
 export default TransactionAlerts;

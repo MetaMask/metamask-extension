@@ -261,9 +261,16 @@ env:
   - BLOCKAID_PUBLIC_KEY
   # Determines if feature flagged Multichain UI should be used
   - MULTICHAIN: ''
+
   ###
   # Meta variables
   ###
 
   # Uses yaml anchors to DRY - https://juju.is/docs/sdk/yaml-anchors-and-aliases
   - METAMASK_BUILD_TYPE_DEFAULT: *default
+
+  ###
+  # Account Abstraction (EIP-4337)
+  ###
+
+  - EIP_4337_ENTRYPOINT: null
