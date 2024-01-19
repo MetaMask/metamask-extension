@@ -688,6 +688,8 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           const data = transformBackgroundState(appState.state);
+          // changing version info as its values is dynamic and can break test case
+          // this is lisf of blockaid data files version info
           data.PPOMController.versionInfo = {};
           await matchesSnapshot({
             data,
@@ -784,6 +786,8 @@ describe('Sentry errors', function () {
             'Invalid version state',
           );
           const data = transformUiState(appState.state);
+          // changing version info as its values is dynamic and can break test case
+          // this is lisf of blockaid data files version info
           data.PPOMController.versionInfo = {};
           await matchesSnapshot({
             data,
