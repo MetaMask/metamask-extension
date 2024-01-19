@@ -145,6 +145,8 @@ export const CHAIN_IDS = {
   GNOSIS: '0x64',
   ZKSYNC_ERA: '0x144',
   TEST_ETH: '0x539',
+  XDC_NETWORK_MAINNET: '0x32',
+  XDC_APOTHEM_TESTNET: '0x33',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -232,6 +234,8 @@ export const GNOSIS_DISPLAY_NAME = 'Gnosis';
 export const ZK_SYNC_ERA_DISPLAY_NAME = 'zkSync Era Mainnet';
 export const BASE_DISPLAY_NAME = 'Base Mainnet';
 export const AURORA_ETH_DISPLAY_NAME = 'Aurora';
+export const XDC_NETWORK_MAINNET_DISPLAY_NAME = 'XDC Network Mainnet';
+export const XDC_APOTHEM_TESTNET_DISPLAY_NAME = 'XDC Apothem Testnet';
 
 export const infuraProjectId = process.env.INFURA_PROJECT_ID;
 export const getRpcUrl = ({
@@ -283,6 +287,8 @@ export const CURRENCY_SYMBOLS = {
   GLIMMER: 'GLMR',
   MOONRIVER: 'MOVR',
   ONE: 'ONE',
+  XDC_NETWORK_MAINNET: 'XDC',
+  XDC_APOTHEM_TESTNET: 'TXDC',
 } as const;
 
 const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
@@ -360,6 +366,7 @@ export const CELO_TOKEN_IMAGE_URL = './images/celo.svg';
 export const GNOSIS_TOKEN_IMAGE_URL = './images/gnosis.svg';
 export const ZK_SYNC_ERA_TOKEN_IMAGE_URL = './images/zk-sync.svg';
 export const BASE_TOKEN_IMAGE_URL = './images/base.png';
+export const XDC_TOKEN_IMAGE_URL = './images/xdc-token.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -574,6 +581,10 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.HUOBI_ECO_CHAIN_MAINNET,
   [CHAINLIST_CHAIN_IDS_MAP.ACALA_NETWORK]:
     CHAINLIST_CURRENCY_SYMBOLS_MAP.ACALA_NETWORK,
+  [CHAINLIST_CHAIN_IDS_MAP.XDC_NETWORK_MAINNET]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.XDC_NETWORK_MAINNET,
+  [CHAINLIST_CHAIN_IDS_MAP.XDC_APOTHEM_TESTNET]:
+    CHAINLIST_CURRENCY_SYMBOLS_MAP.XDC_APOTHEM_TESTNET,
 } as const;
 
 export const CHAIN_ID_TO_TYPE_MAP = {
@@ -608,6 +619,8 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP = {
   [CHAIN_IDS.PALM]: PALM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.XDC_NETWORK_MAINNET]: XDC_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.XDC_APOTHEM_TESTNET]: XDC_TOKEN_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -627,6 +640,8 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.OPTIMISM]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.CELO]: CELO_TOKEN_IMAGE_URL,
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.XDC_NETWORK_MAINNET]: XDC_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.XDC_APOTHEM_TESTNET]: XDC_TOKEN_IMAGE_URL,
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -718,6 +733,14 @@ export const ETHERSCAN_SUPPORTED_NETWORKS = {
     domain: 'gnosisscan.io',
     subdomain: `${defaultEtherscanSubdomainPrefix}-gnosis`,
   },
+  [CHAIN_IDS.XDC_NETWORK_MAINNET]: {
+    domain: 'blocksscan.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-xdc`,
+  },
+  [CHAIN_IDS.XDC_APOTHEM_TESTNET]: {
+    domain: 'blocksscan.io',
+    subdomain: `${defaultEtherscanSubdomainPrefix}-apothem`,
+  },
 };
 
 export const CHAIN_ID_TO_GAS_LIMIT_BUFFER_MAP = {
@@ -760,6 +783,8 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
     | typeof CHAIN_IDS.AURORA
+    | typeof CHAIN_IDS.XDC_NETWORK_MAINNET
+    | typeof CHAIN_IDS.XDC_APOTHEM_TESTNET
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -821,6 +846,14 @@ export const BUYABLE_CHAINS_MAP: {
   [CHAIN_IDS.ZKSYNC_ERA]: {
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     network: 'zksync',
+  },
+  [CHAIN_IDS.XDC_NETWORK_MAINNET]: {
+    nativeCurrency: CURRENCY_SYMBOLS.XDC_NETWORK_MAINNET,
+    network: 'xdc',
+  },
+  [CHAIN_IDS.XDC_APOTHEM_TESTNET]: {
+    nativeCurrency: CURRENCY_SYMBOLS.XDC_APOTHEM_TESTNET,
+    network: 'xdc',
   },
 };
 
@@ -913,6 +946,26 @@ export const FEATURED_RPCS: RPCDefinition[] = [
     rpcPrefs: {
       blockExplorerUrl: 'https://basescan.org',
       imageUrl: BASE_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.XDC_NETWORK_MAINNET,
+    nickname: XDC_NETWORK_MAINNET_DISPLAY_NAME,
+    rpcUrl: `https://erpc.xinfin.network`,
+    ticker: CURRENCY_SYMBOLS.XDC_NETWORK_MAINNET,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://xdc.network/',
+      imageUrl: XDC_TOKEN_IMAGE_URL,
+    },
+  },
+  {
+    chainId: CHAIN_IDS.XDC_APOTHEM_TESTNET,
+    nickname: XDC_APOTHEM_TESTNET_DISPLAY_NAME,
+    rpcUrl: `https://rpc.apothem.network`,
+    ticker: CURRENCY_SYMBOLS.XDC_APOTHEM_TESTNET,
+    rpcPrefs: {
+      blockExplorerUrl: 'https://explorer.apothem.network/',
+      imageUrl: XDC_TOKEN_IMAGE_URL,
     },
   },
 ];
