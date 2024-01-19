@@ -87,6 +87,7 @@ describe('Import flow', function () {
 
         const items = await driver.findElements('.multichain-token-list-item');
         assert.equal(items.length, 4);
+
       },
     );
   });
