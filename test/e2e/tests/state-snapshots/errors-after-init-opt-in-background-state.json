@@ -129,7 +129,6 @@
     "onboardingTabs": "object"
   },
   "PPOMController": {
-    "versionInfo": {},
     "storageMetadata": {},
     "chainStatus": {
       "0x539": { "chainId": "0x539", "versionInfo": [] }
