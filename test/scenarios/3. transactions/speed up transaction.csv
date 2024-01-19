@@ -14,7 +14,7 @@ The specified amount is shown.
 The estimated gas details are shown.
 The total amount is shown.",
 8,Proceed to edit the transaction gas fees.,e.g. 0.1.,,
-9,Reduce the the Max base fee and Priority fee.,e.g. Max base fee 0.00001 and Priority fee 0.00001.,,
+9,Reduce the Max base fee and Priority fee.,e.g. Max base fee 0.00001 and Priority fee 0.00001.,,
 10,Confirm the transaction.,,"The transaction appears in the activity list.
 The amount is shown in the activity list item.",
 11,Speed up the transaction.,,"The transaction appears in the activity list.
