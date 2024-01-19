@@ -84,8 +84,8 @@ describe('Settings - general tab, validate the change language functionality:', 
         );
         assert.equal(isLanguageLabelChanged, true, 'Language did not change');
 
-        await driver.delay(2000);
-        await driver.isElementPresentAndVisible(selectors.localeSelect);
+        await driver.isElementPresent('.loading-overlay__spinner');
+        await driver.waitForElementNotPresent('.loading-overlay__spinner');
 
         languageIndex = 9;
         const dropdownElement = await driver.findElement(
@@ -95,8 +95,8 @@ describe('Settings - general tab, validate the change language functionality:', 
         const options = await dropdownElement.findElements(By.css('option'));
         await options[languageIndex].click();
 
-        await driver.delay(2000);
-        await driver.isElementPresentAndVisible(selectors.localeSelect);
+        await driver.isElementPresent('.loading-overlay__spinner');
+        await driver.waitForElementNotPresent('.loading-overlay__spinner');
 
         const islabelTextChanged = await driver.isElementPresent(
           selectors.currentLanguageLabel,
