@@ -81,7 +81,6 @@ export async function addDappTransaction(
 export async function addTransaction(
   request: AddTransactionRequest,
 ): Promise<TransactionMeta> {
-  console.log('Dickie: addTransaction: request', request);
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const { transactionParams, transactionOptions, ppomController } = request;
   let securityAlertResponse;
@@ -105,17 +104,7 @@ export async function addTransaction(
       return ppom.validateJsonRpc(ppomRequest);
     });
 
-    console.log('Dickie: addTransaction: before', {
-      transactionOptions,
-      transactionParams,
-    });
-
     request.transactionOptions.securityAlertResponse = securityAlertResponse;
-
-    console.log('Dickie: addTransaction: after', {
-      transactionOptions,
-      transactionParams,
-    });
   } catch (e) {
     captureException(e);
   }
@@ -163,12 +152,6 @@ async function addTransactionWithController(
 ) {
   const { transactionController, transactionOptions, transactionParams } =
     request;
-
-  console.log('Dickie: addTransactionWithController', {
-    transactionOptions,
-    transactionParams,
-  });
-
   const { result, transactionMeta } =
     await transactionController.addTransaction(
       transactionParams,
