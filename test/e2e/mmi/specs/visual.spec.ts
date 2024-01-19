@@ -51,6 +51,8 @@ test.describe('MMI visual', () => {
 
     const accountsPopup = new MMIAccountMenuPage(page);
 
+    await accountsPopup.accountsMenu();
+    await accountsPopup.closeBanner();
     await accountsPopup.accountMenuScreenshot('connect_custodian.png');
     await accountsPopup.connectCustodian(
       process.env.MMI_E2E_CUSTODIAN_NAME as string,
@@ -58,6 +60,7 @@ test.describe('MMI visual', () => {
     );
 
     // Check accounts added from Custodian
+    await accountsPopup.accountsMenu();
     await accountsPopup.accountMenuScreenshot('custody_accounts_selection.png');
 
     // Check remove custodian token screen (aborted before removed)

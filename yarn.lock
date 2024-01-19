@@ -32862,6 +32862,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tar-stream@npm:3.1.6":
+  version: 3.1.6
+  resolution: "tar-stream@npm:3.1.6"
+  dependencies:
+    b4a: "npm:^1.6.4"
+    fast-fifo: "npm:^1.2.0"
+    streamx: "npm:^2.15.0"
+  checksum: 2c32e0d57de778ae415357bfb126a512a384e9bfb8e234920455ad65282181a3765515bbd80392ab8e7e630158376ec7de46b18ab86a33d256a7dcc43b0648b7
+  languageName: node
+  linkType: hard
+
 "tar-stream@npm:^2.1.4":
   version: 2.2.0
   resolution: "tar-stream@npm:2.2.0"
@@ -32875,14 +32886,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tar-stream@npm:^3.1.6":
+"tar-stream@patch:tar-stream@npm%3A3.1.6#~/.yarn/patches/tar-stream-npm-3.1.6-ce3ac17e49.patch":
   version: 3.1.6
-  resolution: "tar-stream@npm:3.1.6"
+  resolution: "tar-stream@patch:tar-stream@npm%3A3.1.6#~/.yarn/patches/tar-stream-npm-3.1.6-ce3ac17e49.patch::version=3.1.6&hash=f45d58"
   dependencies:
     b4a: "npm:^1.6.4"
     fast-fifo: "npm:^1.2.0"
     streamx: "npm:^2.15.0"
-  checksum: 2c32e0d57de778ae415357bfb126a512a384e9bfb8e234920455ad65282181a3765515bbd80392ab8e7e630158376ec7de46b18ab86a33d256a7dcc43b0648b7
+  checksum: 517d101950f47c96c581f2bf4886dcb48ee55a1dc47dd8aec6d3512450d6470fc9fbe0704e22379a289caee5034ea3e8586596b2c15cd5ee135588481ac415b1
   languageName: node
   linkType: hard
 
