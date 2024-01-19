@@ -226,7 +226,7 @@ const firstTimeState = {
 
 const noop = () => undefined;
 
-describe.only('MetaMaskController', () => {
+describe('MetaMaskController', () => {
   beforeAll(async () => {
     await ganacheServer.start();
   });
@@ -279,8 +279,8 @@ describe.only('MetaMaskController', () => {
     await ganacheServer.quit();
   });
 
-  describe.only('Phishing Detection Mock', () => {
-    it.only('should be updated to use v1 of the API', () => {
+  describe('Phishing Detection Mock', () => {
+    it('should be updated to use v1 of the API', () => {
       // Update the fixture above if this test fails
       expect(METAMASK_STALELIST_URL).toStrictEqual(
         'https://phishing-detection.metafi.codefi.network/v1/stalelist',

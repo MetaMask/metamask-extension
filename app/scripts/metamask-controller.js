@@ -722,6 +722,7 @@ export default class MetamaskController extends EventEmitter {
       interval: 10000,
       messenger: gasFeeMessenger,
       clientId: SWAPS_CLIENT_ID,
+      getProvider: () => this.provider,
       onNetworkDidChange: (eventHandler) => {
         networkControllerMessenger.subscribe(
           'NetworkController:networkDidChange',
