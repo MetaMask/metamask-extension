@@ -46,6 +46,7 @@ const removedBackgroundFields = [
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
   'PPOMController.chainStatus.0x539.lastVisited',
+  'PPOMController.versionInfo',
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);
@@ -687,12 +688,8 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
-          const data = transformBackgroundState(appState.state);
-          // changing version info as its values is dynamic and can break test case
-          // this is lisf of blockaid data files version info
-          data.PPOMController.versionInfo = {};
           await matchesSnapshot({
-            data,
+            data: transformBackgroundState(appState.state),
             snapshot: 'errors-after-init-opt-in-background-state',
           });
         },
@@ -785,12 +782,8 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
-          const data = transformUiState(appState.state);
-          // changing version info as its values is dynamic and can break test case
-          // this is lisf of blockaid data files version info
-          data.PPOMController.versionInfo = {};
           await matchesSnapshot({
-            data,
+            data: transformUiState(appState.state),
             snapshot: 'errors-after-init-opt-in-ui-state',
           });
         },
