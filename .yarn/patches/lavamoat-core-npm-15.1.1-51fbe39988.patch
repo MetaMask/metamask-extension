@@ -16,3 +16,25 @@ index f0ca3c4991a64f316f4e7199867439dd9ab09354..11296dd253b8dc1afd4cc870a0207c28
  
    return finalPolicy
  }
+diff --git a/src/sourceTransforms.js b/src/sourceTransforms.js
+index 9b1524810574c207631823869a781c343adb197f..4d02a6557ca0391a06326b420c274b5f60f72edc 100644
+--- a/src/sourceTransforms.js
++++ b/src/sourceTransforms.js
+@@ -12,12 +12,12 @@ function applySourceTransforms(source) {
+   ])
+ }
+ 
++const DIRECT_EVAL_REPLACE_FN = (_, p1) => '(0,eval)' + p1
+ function evadeDirectEvalExpressions(source) {
+-  /* eslint-disable-next-line prefer-regex-literals */
+-  const someDirectEvalPattern = new RegExp('\\beval(\\s*\\()', 'g')
+-
+-  const replaceFn = (_, p1) => `(0,eval)${p1}`
+-  return source.replace(someDirectEvalPattern, replaceFn)
++  return source.replace(
++    /\beval(\s*\()/g,
++    DIRECT_EVAL_REPLACE_FN
++  )
+ }
+ 
+ module.exports = {
