@@ -1,8 +1,8 @@
 diff --git a/dist/KeyringController.js b/dist/KeyringController.js
-index fc1c30d4e23badb803242eee5cac65ece8de172b..57d0067cbe551fc0cea986daedf95344dd41fa14 100644
+index da9523afe0a83e3fa298b47a518cb583eb509e52..8fe701103975335ff02ed8195f250f35eedccbab 100644
 --- a/dist/KeyringController.js
 +++ b/dist/KeyringController.js
-@@ -645,7 +645,6 @@ class KeyringController extends base_controller_1.BaseControllerV2 {
+@@ -662,7 +662,6 @@ class KeyringController extends base_controller_1.BaseControllerV2 {
                      throw new Error('Seed phrase imported different accounts.');
                  }
              });
