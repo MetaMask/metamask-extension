@@ -24,8 +24,8 @@ describe('keyringSnapPermissionsBuilder', () => {
   });
 
   it('returns the methods metamask can call', () => {
-    const permissions = keyringSnapPermissionsBuilder(mockController);
-    expect(permissions('metamask')).toStrictEqual([
+    const permissions = keyringSnapPermissionsBuilder(mockController, 'metamask');
+    expect(permissions()).toStrictEqual([
       KeyringRpcMethod.ListAccounts,
       KeyringRpcMethod.GetAccount,
       KeyringRpcMethod.FilterAccountChains,
@@ -38,8 +38,8 @@ describe('keyringSnapPermissionsBuilder', () => {
   });
 
   it('returns the methods a known origin can call', () => {
-    const permissions = keyringSnapPermissionsBuilder(mockController);
-    expect(permissions('https://some-dapp.com')).toStrictEqual([
+    const permissions = keyringSnapPermissionsBuilder(mockController, 'https://some-dapp.com');
+    expect(permissions()).toStrictEqual([
       KeyringRpcMethod.ListAccounts,
       KeyringRpcMethod.GetAccount,
       KeyringRpcMethod.CreateAccount,
@@ -55,8 +55,8 @@ describe('keyringSnapPermissionsBuilder', () => {
   });
 
   it('returns the methods an unknown origin can call', () => {
-    const permissions = keyringSnapPermissionsBuilder(mockController);
-    expect(permissions('https://some-other-dapp.com')).toStrictEqual([]);
+    const permissions = keyringSnapPermissionsBuilder(mockController, 'https://some-other-dapp.com');
+    expect(permissions()).toStrictEqual([]);
   });
 
   it.each([
@@ -73,8 +73,8 @@ describe('keyringSnapPermissionsBuilder', () => {
     0,
     -1,
   ])('"%s" cannot call any methods', (origin) => {
-    const permissions = keyringSnapPermissionsBuilder(mockController);
-    expect(permissions(origin as any)).toStrictEqual([]);
+    const permissions = keyringSnapPermissionsBuilder(mockController, origin as any);
+    expect(permissions()).toStrictEqual([]);
   });
 });
 
