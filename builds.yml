@@ -190,7 +190,6 @@ env:
 
   # TODO(ritave): Move ManifestV3 into a feature?
   - ENABLE_MV3: false
-  - HARDWARE_WALLETS_MV3: false
   # These are exclusively used for MV3
   - APPLY_LAVAMOAT
   - FILE_NAMES
