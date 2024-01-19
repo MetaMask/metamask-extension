@@ -3,6 +3,7 @@ const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const {
   withFixtures,
   openDapp,
+  locateAccountBalanceDOM,
   logInWithBalanceValidation,
   openActionMenuAndStartSendFlow,
   unlockWallet,
@@ -179,10 +180,7 @@ describe('Send ETH', function () {
           await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
           // Go back to home screen to check txn
-          const balance = await driver.findElement(
-            '[data-testid="eth-overview__primary-currency"]',
-          );
-          assert.equal(await balance.getText(), '$42,496.43\nUSD');
+          await locateAccountBalanceDOM(driver, ganacheServer);
           await driver.clickElement('[data-testid="home__activity-tab"]');
 
           await driver.findElement(
