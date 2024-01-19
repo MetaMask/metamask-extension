@@ -99,8 +99,11 @@ Chart.register(
   CrosshairPlugin,
 );
 
+const aspectRatio = 1.3;
+
 const getChartOptions = (currency: string) =>
   ({
+    aspectRatio,
     fill: true,
     layout: { autoPadding: false },
     elements: {
@@ -162,7 +165,7 @@ const AssetChart = ({
   useEffect(() => {
     setPrices(undefined);
     fetch(
-      `https://price-api.metafi.codefi.network/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
+      `https://price-api.metafi-dev.codefi.network/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timeRange}`,
     )
       .then((resp) => (resp.status === 200 ? resp.json() : { prices: [] }))
       .then((data) => setPrices(data.prices));
@@ -206,6 +209,8 @@ const AssetChart = ({
     };
   }
 
+  // background --background-default-pressed
+
   const getButton = (label: string, range: TimeRange) => {
     const opts = { onClick: () => setTimeRange(range) };
     return range === timeRange ? (
@@ -225,7 +230,7 @@ const AssetChart = ({
 
   return (
     <Box>
-      <Box padding={4} paddingTop={0}>
+      <Box padding={4} paddingTop={0} paddingBottom={4}>
         {priceDelta !== undefined && pricePercent !== undefined ? (
           <>
             {priceDelta >= 0 ? chartUp : chartDown}
@@ -264,7 +269,7 @@ const AssetChart = ({
         }
         return prices?.length === 0 ? (
           <Box
-            style={{ height: '50vw' }}
+            style={{ height: `${100/aspectRatio}vw` }}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
             alignItems={AlignItems.center}
@@ -285,7 +290,7 @@ const AssetChart = ({
           // in popup mode, but is too large in fullscreen mode since the full viewport is not used.
           // We really want height to be "50% of the parent's width", not 50% of the viewport's width.
           <Box
-            style={{ height: '50vw' }}
+            style={{ height: `${100/aspectRatio}vw` }}
             borderRadius={BorderRadius.LG}
             marginLeft={4}
             marginRight={4}
@@ -296,7 +301,7 @@ const AssetChart = ({
       <Box
         display={Display.Flex}
         justifyContent={JustifyContent.spaceEvenly}
-        marginTop={1}
+        marginTop={2}
       >
         {getButton(t('oneDayAbbreviation'), '1D')}
         {getButton(t('oneWeekAbbreviation'), '7D')}

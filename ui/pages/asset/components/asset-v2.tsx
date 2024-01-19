@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import { getCurrentChainId, getCurrentCurrency } from '../../../selectors';
 import {
   AlignItems,
+  BackgroundColor,
   BlockSize,
   Display,
   FlexDirection,
@@ -15,7 +16,10 @@ import {
   AvatarToken,
   AvatarTokenSize,
   Box,
+  ButtonPrimary,
+  ButtonPrimarySize,
   ButtonSecondary,
+  ButtonSecondarySize,
   Text,
 } from '../../../components/component-library';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
@@ -59,8 +63,9 @@ const formatNumber = (t: any, number: number) => {
 
 const renderRow = (leftColumn: string, rightColumn: string) => (
   <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
-    <Text>{leftColumn}</Text>
-    <Text>{rightColumn}</Text>
+    {/* // left should be grey/alternative */}
+    <Text variant={TextVariant.bodyMdMedium}>{leftColumn}</Text>
+    <Text variant={TextVariant.bodyMd}>{rightColumn}</Text>
   </Box>
 );
 
@@ -129,8 +134,9 @@ const AssetV2 = ({
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         padding={4}
-        paddingTop={7}
-        gap={7}
+        paddingTop={9}
+        gap={6}
+        style={{boxShadow:'0px -15px 15px -15px gray inset'}} // todo dark theme?
       >
         <Text variant={TextVariant.headingMd}>{t('yourBalance')}</Text>
         <Box
@@ -139,12 +145,12 @@ const AssetV2 = ({
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <AvatarToken src={image} size={AvatarTokenSize.Md} />
-            <Text paddingLeft={3} variant={TextVariant.bodyMdBold}>
+            <Text paddingLeft={3} >
               {name ?? symbol}
             </Text>
           </Box>
           <Box>
-            <Text variant={TextVariant.bodyMdBold}>
+            <Text >
               {balance} {symbol}
               {/* TODO: Try to show fiat value of balance here */}
             </Text>
@@ -203,6 +209,7 @@ const AssetV2 = ({
                 display={Display.Flex}
                 justifyContent={JustifyContent.spaceBetween}
               >
+                {/* button is lower line height than "contract addtres " text */}
                 <Text>{t('contractAddress')}</Text>
                 <AddressCopyButton address={address} shorten />
               </Box>
@@ -217,6 +224,9 @@ const AssetV2 = ({
               )}
             </Box>
           </>
+
+
+// for sectiona, 16 gap between sections and 8 between items within section
         ) : undefined}
         {spotPrices?.marketCap > 0 ||
         spotPrices?.totalVolume > 0 ||
@@ -281,6 +291,30 @@ const AssetV2 = ({
         ) : undefined}
         <Text variant={TextVariant.headingMd}>{t('yourActivity')}</Text>
         {/* TODO: Transaction history */}
+      </Box>
+      <Box
+        padding={4}
+        backgroundColor={BackgroundColor.backgroundDefault}
+        style={{ position: 'sticky', bottom: 0, boxShadow: 'lightgrey 0px 0px 12px 0px' }} // todo dark theme?
+      >
+        <Box display={Display.Flex} gap={4}>
+          <ButtonSecondary
+            size={ButtonSecondarySize.Md}
+            padding={5}
+            width={BlockSize.Full}
+            onClick={async () => {}}
+          >
+            {t('buy')}
+          </ButtonSecondary>
+          <ButtonPrimary
+            size={ButtonPrimarySize.Md}
+            padding={5}
+            width={BlockSize.Full}
+            onClick={async () => {}}
+          >
+            {t('swap')}
+          </ButtonPrimary>
+        </Box>
       </Box>
     </Box>
   );
