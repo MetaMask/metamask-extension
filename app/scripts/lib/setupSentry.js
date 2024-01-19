@@ -136,6 +136,11 @@ export const SENTRY_BACKGROUND_STATE = {
     segmentApiCalls: false,
     traits: false,
   },
+  NameController: {
+    names: false,
+    nameSources: false,
+    useExternalNameSources: false,
+  },
   NetworkController: {
     networkConfigurations: false,
     networksMetadata: true,
@@ -201,6 +206,7 @@ export const SENTRY_BACKGROUND_STATE = {
       showFiatInTestnets: true,
       showTestNetworks: true,
       useNativeCurrencyAsPrimaryCurrency: true,
+      petnamesEnabled: true,
     },
     selectedAddress: false,
     snapRegistryList: false,
@@ -349,19 +355,6 @@ export const SENTRY_UI_STATE = {
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
     ///: END:ONLY_INCLUDE_IF
-    nameSources: {},
-    names: {
-      ethereumAddress: {},
-    },
-    preferences: {
-      petnamesEnabled: false,
-      hideZeroBalanceTokens: false,
-      showExtensionInFullSizeView: false,
-      showFiatInTestnets: false,
-      showTestNetworks: false,
-      useNativeCurrencyAsPrimaryCurrency: true,
-    },
-    useExternalNameSources: true,
   },
   unconnectedAccount: true,
 };

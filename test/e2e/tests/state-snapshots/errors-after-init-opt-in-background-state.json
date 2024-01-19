@@ -88,9 +88,10 @@
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object"
+    "segmentApiCalls": "object",
+    "previousUserTraits": "object"
   },
-  "NameController": "object",
+  "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {
     "selectedNetworkClientId": "string",
     "providerConfig": {
@@ -168,7 +169,7 @@
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
-      "petnamesEnabled": "boolean"
+      "petnamesEnabled": false
     },
     "ipfsGateway": "string",
     "useAddressBarEnsResolution": true,
