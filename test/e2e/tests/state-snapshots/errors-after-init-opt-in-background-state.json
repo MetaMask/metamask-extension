@@ -3,10 +3,7 @@
     "pinnedAccountList": {},
     "hiddenAccountList": {}
   },
-  "AccountTracker": {
-    "accounts": "object",
-    "accountsByChainId": "object"
-  },
+  "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
   },
@@ -255,9 +252,8 @@
   },
   "TxController": {
     "methodData": "object",
-    "transactions": "object"
+    "transactions": "object",
+    "lastFetchedBlockNumbers": "object"
   },
-  "UserOperationController": {
-    "userOperations": "object"
-  }
+  "UserOperationController": { "userOperations": "object" }
 }
