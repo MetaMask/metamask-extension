@@ -123,6 +123,7 @@
     "traits": "object",
     "fragments": "object",
     "segmentApiCalls": "object",
+    "previousUserTraits": "object",
     "currentCurrency": "usd",
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
     "unconnectedAccountAlertShownOrigins": "object",
