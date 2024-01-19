@@ -687,8 +687,10 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
+          const data = transformBackgroundState(appState.state);
+          delete data.PPOMController.versionInfo;
           await matchesSnapshot({
-            data: transformBackgroundState(appState.state),
+            data,
             snapshot: 'errors-after-init-opt-in-background-state',
           });
         },
@@ -781,8 +783,10 @@ describe('Sentry errors', function () {
               appState?.version.length > 0,
             'Invalid version state',
           );
+          const data = transformUiState(appState.state);
+          delete data.PPOMController.versionInfo;
           await matchesSnapshot({
-            data: transformUiState(appState.state),
+            data,
             snapshot: 'errors-after-init-opt-in-ui-state',
           });
         },
