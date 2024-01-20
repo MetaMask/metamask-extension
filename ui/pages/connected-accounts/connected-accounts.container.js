@@ -7,6 +7,7 @@ import {
   getPermissionSubjects,
   getSelectedAddress,
   getSubjectMetadata,
+  getInternalAccounts,
 } from '../../selectors';
 import { isExtensionUrl } from '../../helpers/utils/util';
 import {
@@ -21,6 +22,23 @@ const mapStateToProps = (state) => {
   const { activeTab } = state;
   const accountToConnect = getAccountToConnectToActiveTab(state);
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
+  const internalAccounts = getInternalAccounts(state);
+  // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
+  const internalAccountsMap = new Map(
+    internalAccounts.map((acc) => [acc.address, acc]),
+  );
+
+  const connectedAccountsWithName = connectedAccounts.map((account) => ({
+    ...account,
+    name: internalAccountsMap.get(account.address)?.metadata.name,
+  }));
+  const accountToConnectWithName = accountToConnect && {
+    ...accountToConnect,
+    name: internalAccounts.find(
+      (internalAccount) =>
+        internalAccount.address === accountToConnect?.address,
+    )?.metadata.name,
+  };
   const permissions = getPermissionsForActiveTab(state);
   const selectedAddress = getSelectedAddress(state);
   const subjectMetadata = getSubjectMetadata(state);
@@ -29,10 +47,10 @@ const mapStateToProps = (state) => {
 
   const isActiveTabExtension = isExtensionUrl(activeTab);
   return {
-    accountToConnect,
+    accountToConnect: accountToConnectWithName,
     isActiveTabExtension,
     activeTabOrigin: activeTab.origin,
-    connectedAccounts,
+    connectedAccounts: connectedAccountsWithName,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     permissions,
     selectedAddress,

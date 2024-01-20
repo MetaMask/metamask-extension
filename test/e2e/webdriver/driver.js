@@ -168,8 +168,16 @@ class Driver {
     await new Promise((resolve) => setTimeout(resolve, time));
   }
 
-  async wait(condition, timeout = this.timeout) {
-    await this.driver.wait(condition, timeout);
+  async wait(condition, timeout = this.timeout, catchError = false) {
+    try {
+      await this.driver.wait(condition, timeout);
+    } catch (e) {
+      if (!catchError) {
+        throw e;
+      }
+
+      console.log('Caught error waiting for condition:', e);
+    }
   }
 
   async waitForSelector(
@@ -449,6 +457,11 @@ class Driver {
       timeElapsed += delayStep;
     }
     throw new Error('waitUntilXWindowHandles timed out polling window handles');
+  }
+
+  async getWindowTitleByHandlerId(handlerId) {
+    await this.driver.switchTo().window(handlerId);
+    return await this.driver.getTitle();
   }
 
   async switchToWindowWithTitle(
