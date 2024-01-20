@@ -53,12 +53,12 @@ async function mockServerJsonRpc(
     await mockServer
       .forPost()
       .withJsonBodyIncluding(params ? { method, params } : { method })
-      .thenCallback((req: any) => {
+      .thenCallback(async (req: any) => {
         return {
           statusCode: 200,
           json: {
             jsonrpc: '2.0',
-            id: req.body.json.id,
+            id: (await req.body.getJson()).id,
             result,
           },
         };

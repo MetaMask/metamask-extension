@@ -266,11 +266,12 @@ describe('Import flow @no-mmi', function () {
         // Account 5 can be removed
         await driver.clickElement('[data-testid="account-list-menu-remove"]');
         await driver.clickElement({ text: 'Remove', tag: 'button' });
-        await driver.findClickableElement({
+
+        await driver.delay(1000);
+        await driver.clickElementUsingMouseMove({
           css: '[data-testid="account-menu-icon"]',
           text: 'Account 4',
         });
-        await driver.clickElement('[data-testid="account-menu-icon"]');
         const accountListItemsAfterRemoval = await driver.findElements(
           '.multichain-account-list-item',
         );
