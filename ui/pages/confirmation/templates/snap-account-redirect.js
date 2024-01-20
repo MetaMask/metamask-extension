@@ -18,6 +18,8 @@ function getValues(pendingApproval, t, actions, _history) {
     return {};
   };
 
+  const conditionalProps = getConditionalProps();
+
   return {
     content: [
       {
@@ -29,12 +31,13 @@ function getValues(pendingApproval, t, actions, _history) {
           snapId,
           snapName,
           isBlockedUrl,
+          ...conditionalProps,
         },
       },
     ],
     cancelText: t('close'),
     onCancel: () => actions.resolvePendingApproval(pendingApproval.id, false),
-    ...getConditionalProps(),
+    ...conditionalProps,
   };
 }
 
