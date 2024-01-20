@@ -402,14 +402,15 @@ export default class SignatureRequestOriginal extends Component {
             senderAddress={address}
             name={name}
             onSubmit={async () => {
+              ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
               if (warnings.length >= 1) {
                 this.setState({
                   showSignatureInsights: true,
                   showSignatureRequestWarning: false,
                 });
-              } else {
-                await this.onSubmit();
               }
+              ///: END:ONLY_INCLUDE_IF
+              await this.onSubmit();
             }}
             onCancel={async (event) => await this.onCancel(event)}
           />
