@@ -30,7 +30,7 @@ import { getSendTo } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { useSignatureInsights } from '../../hooks/useSignatureInsights';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 const signatureSelect = (txData, targetSubjectMetadata) => {
   const {
     type,
