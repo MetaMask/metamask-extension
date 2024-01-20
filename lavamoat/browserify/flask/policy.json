@@ -774,6 +774,11 @@
         "@metamask/base-controller": true
       }
     },
+    "@metamask/announcement-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
+      }
+    },
     "@metamask/approval-controller": {
       "globals": {
         "console.info": true
@@ -997,7 +1002,7 @@
         "@metamask/desktop>eciesjs>futoin-hkdf": true,
         "browserify>buffer": true,
         "browserify>crypto-browserify": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true
+        "ganache>secp256k1": true
       }
     },
     "@metamask/desktop>eciesjs>futoin-hkdf": {
@@ -1262,7 +1267,7 @@
         "browserify>crypto-browserify": true,
         "ethereumjs-util>create-hash>ripemd160": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
+        "ganache>secp256k1": true,
         "koa>content-disposition>safe-buffer": true
       }
     },
@@ -1276,20 +1281,27 @@
         "console": true
       },
       "packages": {
-        "@metamask/ethjs-query>ethjs-format": true,
-        "@metamask/ethjs-query>ethjs-rpc": true,
+        "@metamask/ethjs-query>@metamask/ethjs-format": true,
+        "@metamask/ethjs-query>@metamask/ethjs-rpc": true,
         "promise-to-callback": true
       }
     },
-    "@metamask/ethjs-query>ethjs-format": {
+    "@metamask/ethjs-query>@metamask/ethjs-format": {
       "packages": {
-        "@metamask/ethjs-query>ethjs-format>ethjs-schema": true,
-        "ethjs>ethjs-util": true,
+        "@metamask/ethjs-query>@metamask/ethjs-format>@metamask/ethjs-util": true,
+        "@metamask/ethjs-query>@metamask/ethjs-format>ethjs-schema": true,
         "ethjs>ethjs-util>strip-hex-prefix": true,
         "ethjs>number-to-bn": true
       }
     },
-    "@metamask/ethjs-query>ethjs-rpc": {
+    "@metamask/ethjs-query>@metamask/ethjs-format>@metamask/ethjs-util": {
+      "packages": {
+        "browserify>buffer": true,
+        "ethjs>ethjs-util>is-hex-prefixed": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true
+      }
+    },
+    "@metamask/ethjs-query>@metamask/ethjs-rpc": {
       "packages": {
         "promise-to-callback": true
       }
@@ -1415,8 +1427,8 @@
         "browserify>crypto-browserify>create-hmac": true,
         "ethereumjs-util>ethereum-cryptography>bs58check": true,
         "ethereumjs-util>ethereum-cryptography>hash.js": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
+        "ganache>keccak": true,
+        "ganache>secp256k1": true,
         "koa>content-disposition>safe-buffer": true,
         "mocha>serialize-javascript>randombytes": true
       }
@@ -2321,63 +2333,68 @@
     },
     "@metamask/transaction-controller>eth-method-registry": {
       "packages": {
-        "@metamask/transaction-controller>eth-method-registry>ethjs": true
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs": true
       }
     },
-    "@metamask/transaction-controller>eth-method-registry>ethjs": {
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs": {
       "globals": {
         "clearInterval": true,
         "setInterval": true
       },
       "packages": {
-        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-abi": true,
-        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-contract": true,
-        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-query": true,
+        "@metamask/ethjs-query": true,
+        "@metamask/ethjs-query>@metamask/ethjs-format>@metamask/ethjs-util": true,
+        "@metamask/gas-fee-controller>@metamask/ethjs-unit": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-contract": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-filter": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-provider-http": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>js-sha3": true,
         "bn.js": true,
         "browserify>buffer": true,
-        "ethjs>ethjs-filter": true,
-        "ethjs>ethjs-provider-http": true,
-        "ethjs>ethjs-unit": true,
-        "ethjs>ethjs-util": true,
-        "ethjs>js-sha3": true,
+        "ethjs>ethjs-abi": true,
         "ethjs>number-to-bn": true
       }
     },
-    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-abi": {
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-contract": {
       "packages": {
-        "bn.js": true,
-        "browserify>buffer": true,
-        "ethjs>js-sha3": true,
-        "ethjs>number-to-bn": true
-      }
-    },
-    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-contract": {
-      "packages": {
-        "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": true,
+        "@metamask/ethjs-query>@metamask/ethjs-format>@metamask/ethjs-util": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-contract>js-sha3": true,
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-filter": true,
         "ethjs-contract>babel-runtime": true,
-        "ethjs>ethjs-filter": true,
-        "ethjs>ethjs-util": true,
-        "ethjs>js-sha3": true,
+        "ethjs>ethjs-abi": true,
         "promise-to-callback": true
       }
     },
-    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-contract>ethjs-abi": {
-      "packages": {
-        "bn.js": true,
-        "browserify>buffer": true,
-        "ethjs>js-sha3": true,
-        "ethjs>number-to-bn": true
-      }
-    },
-    "@metamask/transaction-controller>eth-method-registry>ethjs>ethjs-query": {
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-contract>js-sha3": {
       "globals": {
-        "console": true
+        "define": true
       },
       "packages": {
-        "@metamask/ethjs-query>ethjs-format": true,
-        "@metamask/ethjs-query>ethjs-rpc": true,
-        "ethjs-contract>babel-runtime": true,
-        "promise-to-callback": true
+        "browserify>process": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-filter": {
+      "globals": {
+        "clearInterval": true,
+        "setInterval": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-provider-http": {
+      "packages": {
+        "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-provider-http>xhr2": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>@metamask/ethjs-provider-http>xhr2": {
+      "globals": {
+        "XMLHttpRequest": true
+      }
+    },
+    "@metamask/transaction-controller>eth-method-registry>@metamask/ethjs>js-sha3": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "browserify>process": true
       }
     },
     "@metamask/transaction-controller>nonce-tracker": {
@@ -2395,6 +2412,42 @@
       },
       "packages": {
         "mockttp>graphql-tag>tslib": true
+      }
+    },
+    "@metamask/user-operation-controller": {
+      "globals": {
+        "fetch": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/eth-query": true,
+        "@metamask/gas-fee-controller": true,
+        "@metamask/polling-controller": true,
+        "@metamask/transaction-controller": true,
+        "@metamask/user-operation-controller>@metamask/controller-utils": true,
+        "@metamask/utils": true,
+        "ethereumjs-util": true,
+        "lodash": true,
+        "superstruct": true,
+        "uuid": true,
+        "webpack>events": true
+      }
+    },
+    "@metamask/user-operation-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/gas-fee-controller>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true
       }
     },
     "@metamask/utils": {
@@ -3198,6 +3251,11 @@
         "crypto.getRandomValues": true
       }
     },
+    "depcheck>is-core-module>hasown": {
+      "packages": {
+        "browserify>has>function-bind": true
+      }
+    },
     "dependency-tree>precinct>detective-postcss>postcss>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
@@ -3560,8 +3618,8 @@
     "eth-sig-util>ethereumjs-util>ethereum-cryptography": {
       "packages": {
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
+        "ganache>keccak": true,
+        "ganache>secp256k1": true,
         "mocha>serialize-javascript>randombytes": true
       }
     },
@@ -3613,8 +3671,8 @@
     "ethereumjs-abi>ethereumjs-util>ethereum-cryptography": {
       "packages": {
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
+        "ganache>keccak": true,
+        "ganache>secp256k1": true,
         "mocha>serialize-javascript>randombytes": true
       }
     },
@@ -3688,8 +3746,8 @@
     "ethereumjs-util>ethereum-cryptography": {
       "packages": {
         "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak": true,
-        "ethereumjs-util>ethereum-cryptography>secp256k1": true,
+        "ganache>keccak": true,
+        "ganache>secp256k1": true,
         "mocha>serialize-javascript>randombytes": true
       }
     },
@@ -3726,23 +3784,6 @@
         "pumpify>inherits": true
       }
     },
-    "ethereumjs-util>ethereum-cryptography>keccak": {
-      "packages": {
-        "browserify>buffer": true,
-        "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": true
-      }
-    },
-    "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": {
-      "packages": {
-        "browserify>browser-resolve": true,
-        "browserify>buffer": true,
-        "browserify>process": true,
-        "browserify>string_decoder": true,
-        "pumpify>inherits": true,
-        "readable-stream>util-deprecate": true,
-        "webpack>events": true
-      }
-    },
     "ethereumjs-util>ethereum-cryptography>scrypt-js": {
       "globals": {
         "define": true,
@@ -3750,11 +3791,6 @@
       },
       "packages": {
         "browserify>timers-browserify": true
-      }
-    },
-    "ethereumjs-util>ethereum-cryptography>secp256k1": {
-      "packages": {
-        "@metamask/ppom-validator>elliptic": true
       }
     },
     "ethereumjs-util>rlp": {
@@ -3860,8 +3896,21 @@
         "console": true
       },
       "packages": {
-        "@metamask/ethjs-query>ethjs-format": true,
-        "@metamask/ethjs-query>ethjs-rpc": true,
+        "ethjs>ethjs-query>ethjs-format": true,
+        "ethjs>ethjs-query>ethjs-rpc": true,
+        "promise-to-callback": true
+      }
+    },
+    "ethjs>ethjs-query>ethjs-format": {
+      "packages": {
+        "@metamask/ethjs-query>@metamask/ethjs-format>ethjs-schema": true,
+        "ethjs>ethjs-util": true,
+        "ethjs>ethjs-util>strip-hex-prefix": true,
+        "ethjs>number-to-bn": true
+      }
+    },
+    "ethjs>ethjs-query>ethjs-rpc": {
+      "packages": {
         "promise-to-callback": true
       }
     },
@@ -3933,6 +3982,28 @@
       "globals": {
         "console": true,
         "define": true
+      }
+    },
+    "ganache>keccak": {
+      "packages": {
+        "browserify>buffer": true,
+        "ganache>keccak>readable-stream": true
+      }
+    },
+    "ganache>keccak>readable-stream": {
+      "packages": {
+        "browserify>browser-resolve": true,
+        "browserify>buffer": true,
+        "browserify>process": true,
+        "browserify>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>util-deprecate": true,
+        "webpack>events": true
+      }
+    },
+    "ganache>secp256k1": {
+      "packages": {
+        "@metamask/ppom-validator>elliptic": true
       }
     },
     "globalthis>define-properties": {
@@ -4829,20 +4900,15 @@
       },
       "packages": {
         "browserify>has>function-bind": true,
+        "depcheck>is-core-module>hasown": true,
         "string.prototype.matchall>es-abstract>has-proto": true,
-        "string.prototype.matchall>get-intrinsic>hasown": true,
         "string.prototype.matchall>has-symbols": true
-      }
-    },
-    "string.prototype.matchall>get-intrinsic>hasown": {
-      "packages": {
-        "browserify>has>function-bind": true
       }
     },
     "string.prototype.matchall>internal-slot": {
       "packages": {
+        "depcheck>is-core-module>hasown": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>get-intrinsic>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
     },

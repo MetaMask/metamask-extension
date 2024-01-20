@@ -11,6 +11,7 @@ const { loadBuildTypesConfig } = require('../../development/lib/build-type');
 const FLASK_ONLY_TESTS = [
   'petnames.spec.js',
   'test-snap-txinsights-v2.spec.js',
+  'test-snap-namelookup.spec.js',
   'test-snap-homepage.spec.js',
 ];
 
