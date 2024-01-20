@@ -99,11 +99,11 @@ import { useMMICustodySignMessage } from '../../../hooks/useMMICustodySignMessag
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 ///: END:ONLY_INCLUDE_IF
 
-import Message from './signature-request-message';
-import Footer from './signature-request-footer';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import InsightWarnings from '../snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
+import Message from './signature-request-message';
+import Footer from './signature-request-footer';
 
 const SignatureRequest = ({ txData, warnings }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -148,7 +148,7 @@ const SignatureRequest = ({ txData, warnings }) => {
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
-  useState(false);
+    useState(false);
   ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
@@ -388,11 +388,11 @@ const SignatureRequest = ({ txData, warnings }) => {
           cancelAction={onCancel}
           signAction={() => {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-            if (warnings.length >=1 ) {
+            if (warnings.length >= 1) {
               return setIsShowingSigInsightWarnings(true);
             }
             ///: END:ONLY_INCLUDE_IF
-            onSign();
+            return onSign();
           }}
           disabled={
             ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -428,7 +428,7 @@ const SignatureRequest = ({ txData, warnings }) => {
       {isShowingSigInsightWarnings && (
         <InsightWarnings
           warnings={warnings}
-          type={'signing'}
+          type="signing"
           origin={origin}
           onCancel={() => setIsShowingSigInsightWarnings(false)}
           onSubmit={() => {

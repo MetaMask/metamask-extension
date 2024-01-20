@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getSignatureOriginCaveat } from '@metamask/snaps-controllers';
-import { handleSnapRequest } from '../../store/actions';
-import { getPermissionSubjectsDeepEqual } from '../../selectors';
-import { getSignatureInsightSnapIds } from '../selectors';
+import { handleSnapRequest } from '../store/actions';
+import {
+  getSignatureInsightSnapIds,
+  getPermissionSubjectsDeepEqual,
+} from '../selectors';
 
 const SIGNATURE_INSIGHT_PERMISSION = 'endowment:signature-insight';
 
@@ -37,9 +39,10 @@ export function useSignatureInsights({ txData }) {
             );
           }
 
-          const hasSignatureOriginCaveat =
-            getSignatureOriginCaveat(permission);
-          const signatureOrigin = hasSignatureOriginCaveat ? msgParams.origin : null;
+          const hasSignatureOriginCaveat = getSignatureOriginCaveat(permission);
+          const signatureOrigin = hasSignatureOriginCaveat
+            ? msgParams.origin
+            : null;
           return handleSnapRequest({
             snapId,
             origin: '',
@@ -78,12 +81,7 @@ export function useSignatureInsights({ txData }) {
     return () => {
       cancelled = true;
     };
-  }, [
-    txData,
-    subjects,
-    // TODO: Figure out how to improve this
-    JSON.stringify(snapIds),
-  ]);
+  }, [txData, snapIds, subjects]);
 
   return { data, loading };
 }

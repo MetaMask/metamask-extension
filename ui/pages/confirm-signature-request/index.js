@@ -6,6 +6,9 @@ import log from 'loglevel';
 import { cloneDeep } from 'lodash';
 import { SubjectType } from '@metamask/permission-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import { SeverityLevel } from '@metamask/snaps-sdk';
+///: END:ONLY_INCLUDE_IN
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
@@ -25,8 +28,9 @@ import {
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
 import { getSendTo } from '../../ducks/send';
 import { getProviderConfig } from '../../ducks/metamask/metamask';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { useSignatureInsights } from '../../hooks/useSignatureInsights';
-
+///: END:ONLY_INCLUDE_IN
 const signatureSelect = (txData, targetSubjectMetadata) => {
   const {
     type,
@@ -74,6 +78,37 @@ const ConfirmTxScreen = ({ match }) => {
 
   const [prevValue, setPrevValues] = useState();
   const history = useHistory();
+
+  const getTxData = useCallback(() => {
+    const { params: { id: transactionId } = {} } = match;
+
+    const unconfTxList = txHelper(
+      unapprovedTxs || {},
+      unapprovedMsgs,
+      unapprovedPersonalMsgs,
+      {},
+      {},
+      unapprovedTypedMessages,
+      chainId,
+    );
+
+    log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`);
+
+    const unconfirmedTx = transactionId
+      ? unconfTxList.find(({ id }) => `${id}` === transactionId)
+      : unconfTxList[index];
+    return cloneDeep(unconfirmedTx);
+  }, [
+    chainId,
+    index,
+    match,
+    unapprovedMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedTxs,
+    unapprovedTypedMessages,
+  ]);
+
+  const txData = useMemo(() => getTxData() || {}, [getTxData]);
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const { data } = useSignatureInsights({ txData });
@@ -174,37 +209,6 @@ const ConfirmTxScreen = ({ match }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-
-  const getTxData = useCallback(() => {
-    const { params: { id: transactionId } = {} } = match;
-
-    const unconfTxList = txHelper(
-      unapprovedTxs || {},
-      unapprovedMsgs,
-      unapprovedPersonalMsgs,
-      {},
-      {},
-      unapprovedTypedMessages,
-      chainId,
-    );
-
-    log.info(`rendering a combined ${unconfTxList.length} unconf msgs & txs`);
-
-    const unconfirmedTx = transactionId
-      ? unconfTxList.find(({ id }) => `${id}` === transactionId)
-      : unconfTxList[index];
-    return cloneDeep(unconfirmedTx);
-  }, [
-    chainId,
-    index,
-    match,
-    unapprovedMsgs,
-    unapprovedPersonalMsgs,
-    unapprovedTxs,
-    unapprovedTypedMessages,
-  ]);
-
-  const txData = useMemo(() => getTxData() || {}, [getTxData]);
 
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, txData.msgParams?.origin),

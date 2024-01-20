@@ -1102,9 +1102,9 @@ export const getSignatureInsightSnaps = createDeepEqualSelector(
   (snaps, subjects) => {
     return Object.values(snaps).filter(
       ({ id }) => subjects[id]?.permissions['endowment:signature-insight'],
-    )
-  }
-)
+    );
+  },
+);
 
 export const getSignatureInsightSnapIds = createDeepEqualSelector(
   getSignatureInsightSnaps,

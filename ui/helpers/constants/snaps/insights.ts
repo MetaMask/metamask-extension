@@ -2,8 +2,8 @@ type InsightLanguageMapper = {
   [action: string]: {
     noun: string;
     imperative: string;
-  }
-}
+  };
+};
 
 /**
  * Mapping of actions to the language needed to be used in

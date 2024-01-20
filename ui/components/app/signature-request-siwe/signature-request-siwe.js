@@ -57,11 +57,11 @@ import {
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
-import Header from './signature-request-siwe-header';
-import Message from './signature-request-siwe-message';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import InsightWarnings from '../snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
+import Header from './signature-request-siwe-header';
+import Message from './signature-request-siwe-message';
 
 export default function SignatureRequestSIWE({ txData, warnings }) {
   const dispatch = useDispatch();
@@ -124,7 +124,7 @@ export default function SignatureRequestSIWE({ txData, warnings }) {
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   const [isShowingSigInsightWarnings, setIsShowingSigInsightWarnings] =
-  useState(false);
+    useState(false);
   ///: END:ONLY_INCLUDE_IF
 
   const onSign = useCallback(async () => {
@@ -230,14 +230,15 @@ export default function SignatureRequestSIWE({ txData, warnings }) {
           onSubmit={() => {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
             if (warnings.length >= 1) {
-              return isSIWEDomainValid ? setIsShowingSigInsightWarnings(true) : setIsShowingDomainWarning(true);
+              return isSIWEDomainValid
+                ? setIsShowingSigInsightWarnings(true)
+                : setIsShowingDomainWarning(true);
             }
             ///: END:ONLY_INCLUDE_IF
             if (isSIWEDomainValid) {
-              onSign();
-            } else {
-              setIsShowingDomainWarning(true)
+              return onSign();
             }
+            return setIsShowingDomainWarning(true);
           }}
           cancelText={t('cancel')}
           submitText={t('signin')}
@@ -275,7 +276,7 @@ export default function SignatureRequestSIWE({ txData, warnings }) {
                   }
                   ///: END:ONLY_INCLUDE_IF
                   onSign();
-                  setIsShowingDomainWarning(false);
+                  return setIsShowingDomainWarning(false);
                 }}
                 submitText={t('confirm')}
                 submitButtonType="danger-primary"
@@ -288,7 +289,9 @@ export default function SignatureRequestSIWE({ txData, warnings }) {
                 id="signature-request-siwe_domain-checkbox"
                 checked={hasAgreedToDomainWarning}
                 className="signature-request-siwe__warning-popover__checkbox-wrapper__checkbox"
-                onClick={() => setHasAgreedToDomainWarning((checked) => !checked)}
+                onClick={() =>
+                  setHasAgreedToDomainWarning((checked) => !checked)
+                }
               />
               <label
                 className="signature-request-siwe__warning-popover__checkbox-wrapper__label"
@@ -306,7 +309,7 @@ export default function SignatureRequestSIWE({ txData, warnings }) {
       {isShowingSigInsightWarnings && (
         <InsightWarnings
           warnings={warnings}
-          type={'signing'}
+          type="signing"
           origin={origin}
           onCancel={() => setIsShowingSigInsightWarnings(false)}
           onSubmit={() => {

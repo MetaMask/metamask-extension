@@ -29,7 +29,10 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SnapUIRenderer } from '../snap-ui-renderer';
-import { DelineatorType, InsightWarningLanguage } from '../../../../helpers/constants/snaps';
+import {
+  DelineatorType,
+  InsightWarningLanguage,
+} from '../../../../helpers/constants/snaps';
 import { stripHttpSchemes } from '../../../../helpers/utils/util';
 
 export default function InsightWarnings({

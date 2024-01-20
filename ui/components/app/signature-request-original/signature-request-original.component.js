@@ -53,10 +53,10 @@ import SignatureRequestHeader from '../signature-request-header';
 ///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import SnapLegacyAuthorshipHeader from '../snaps/snap-legacy-authorship-header';
 ///: END:ONLY_INCLUDE_IF
-import SignatureRequestOriginalWarning from './signature-request-original-warning';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import InsightWarnings from '../snaps/insight-warnings';
 ///: END:ONLY_INCLUDE_IF
+import SignatureRequestOriginalWarning from './signature-request-original-warning';
 
 export default class SignatureRequestOriginal extends Component {
   static contextTypes = {
@@ -137,7 +137,7 @@ export default class SignatureRequestOriginal extends Component {
     let rows;
     const notice = `${this.context.t('youSign')}:`;
 
-    const { txData, subjectMetadata, warnings } = this.props;
+    const { txData, subjectMetadata } = this.props;
     const {
       type,
       msgParams: { data },
@@ -313,6 +313,7 @@ export default class SignatureRequestOriginal extends Component {
       txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
+      warnings
     } = this.props;
     const { t } = this.context;
 
@@ -376,6 +377,7 @@ export default class SignatureRequestOriginal extends Component {
       messagesCount,
       fromAccount: { address, name },
       txData,
+      warnings,
     } = this.props;
     const { showSignatureRequestWarning } = this.state;
     const { t } = this.context;
@@ -402,7 +404,10 @@ export default class SignatureRequestOriginal extends Component {
             name={name}
             onSubmit={async () => {
               if (warnings.length >= 1) {
-                this.setState({ showSignatureInsights: true, showSignatureRequestWarning: false })
+                this.setState({
+                  showSignatureInsights: true,
+                  showSignatureRequestWarning: false,
+                });
               } else {
                 await this.onSubmit();
               }
@@ -416,14 +421,14 @@ export default class SignatureRequestOriginal extends Component {
         {this.state.showSignatureInsights && (
           <InsightWarnings
             warnings={warnings}
-            type={'signing'}
-            origin={origin}
+            type="signing"
+            origin={txData.msgParams.origin}
             onCancel={() => {
               this.setState({ showSignatureInsights: false });
             }}
             onSubmit={async () => {
               await this.onSubmit();
-              this.setState({ showSignatureInsights: false })
+              this.setState({ showSignatureInsights: false });
             }}
           />
         )}
