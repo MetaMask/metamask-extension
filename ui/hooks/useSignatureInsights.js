@@ -26,11 +26,12 @@ export function useSignatureInsights({ txData }) {
         from: msgParams.from,
         data: JSON.parse(msgParams.data),
         signatureMethod: msgParams.signatureMethod,
-      }
+      };
 
       const newData = await Promise.allSettled(
         snapIds.map((snapId) => {
-          const permission = subjects[snapId]?.permissions[SIGNATURE_INSIGHT_PERMISSION];
+          const permission =
+            subjects[snapId]?.permissions[SIGNATURE_INSIGHT_PERMISSION];
           if (!permission) {
             return Promise.reject(
               new Error(

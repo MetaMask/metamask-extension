@@ -313,7 +313,7 @@ export default class SignatureRequestOriginal extends Component {
       txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
-      warnings
+      warnings,
     } = this.props;
     const { t } = this.context;
 
@@ -331,15 +331,14 @@ export default class SignatureRequestOriginal extends Component {
         }}
         onSubmit={async () => {
           if (txData.type === MESSAGE_TYPE.ETH_SIGN) {
-            this.setState({ showSignatureRequestWarning: true });
-          } else {
-            ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-            if (warnings.length >= 1) {
-              return this.setState({ showSignatureInsights: true });
-            }
-            ///: END:ONLY_INCLUDE_IF
-            await this.onSubmit();
+            return this.setState({ showSignatureRequestWarning: true });
           }
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          if (warnings.length >= 1) {
+            return this.setState({ showSignatureInsights: true });
+          }
+          ///: END:ONLY_INCLUDE_IF
+          return await this.onSubmit();
         }}
         disabled={
           ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
