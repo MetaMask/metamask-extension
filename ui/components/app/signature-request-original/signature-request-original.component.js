@@ -95,7 +95,9 @@ export default class SignatureRequestOriginal extends Component {
 
   state = {
     showSignatureRequestWarning: false,
+    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
     showSignatureInsights: false,
+    ///: END:ONLY_INCLUDE_IF
   };
 
   msgHexToText = (hex) => {
