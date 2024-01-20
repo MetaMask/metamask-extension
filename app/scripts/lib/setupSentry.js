@@ -312,6 +312,9 @@ export const SENTRY_BACKGROUND_STATE = {
   TxController: {
     transactions: false,
   },
+  UserOperationController: {
+    userOperations: false,
+  },
 };
 
 const flattenedBackgroundStateMask = Object.values(
