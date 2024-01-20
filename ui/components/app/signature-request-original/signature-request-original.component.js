@@ -313,7 +313,9 @@ export default class SignatureRequestOriginal extends Component {
       txData,
       hardwareWalletRequiresConnection,
       rejectPendingApproval,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       warnings,
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
     const { t } = this.context;
 
@@ -376,7 +378,9 @@ export default class SignatureRequestOriginal extends Component {
       messagesCount,
       fromAccount: { address, name },
       txData,
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       warnings,
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
     const { showSignatureRequestWarning } = this.state;
     const { t } = this.context;

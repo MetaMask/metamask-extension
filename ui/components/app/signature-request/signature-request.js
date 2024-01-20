@@ -105,7 +105,12 @@ import InsightWarnings from '../snaps/insight-warnings';
 import Message from './signature-request-message';
 import Footer from './signature-request-footer';
 
-const SignatureRequest = ({ txData, warnings }) => {
+const SignatureRequest = ({
+  txData,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  warnings,
+  ///: END:ONLY_INCLUDE_IF
+}) => {
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const t = useI18nContext();

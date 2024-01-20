@@ -63,7 +63,12 @@ import InsightWarnings from '../snaps/insight-warnings';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
 
-export default function SignatureRequestSIWE({ txData, warnings }) {
+export default function SignatureRequestSIWE({
+  txData,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  warnings,
+  ///: END:ONLY_INCLUDE_IF
+}) {
   const dispatch = useDispatch();
   const history = useHistory();
   const t = useContext(I18nContext);
