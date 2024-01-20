@@ -32,6 +32,7 @@ import {
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
+import { useTheme } from '../../../hooks/useTheme';
 import { getSortedAnnouncementsToShow } from '../../../selectors';
 import { updateViewedNotifications } from '../../../store/actions';
 import { ButtonPrimary, Text } from '../../component-library';
@@ -273,6 +274,7 @@ export default function WhatsNewPopup({ onClose }) {
 
   const notifications = useSelector(getSortedAnnouncementsToShow);
   const locale = useSelector(getCurrentLocale);
+  const theme = useTheme();
 
   const [seenNotifications, setSeenNotifications] = useState({});
   const [shouldShowScrollButton, setShouldShowScrollButton] = useState(true);
@@ -394,7 +396,9 @@ export default function WhatsNewPopup({ onClose }) {
     >
       <div className="whats-new-popup__notifications">
         {notifications.map(({ id }, index) => {
-          const notification = getTranslatedUINotifications(t, locale)[id];
+          const notification = getTranslatedUINotifications(t, locale, theme)[
+            id
+          ];
           const isLast = index === notifications.length - 1;
           // Choose the appropriate rendering function based on the id
           const renderNotification =

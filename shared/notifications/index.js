@@ -184,16 +184,13 @@ export const UI_NOTIFICATIONS = {
   [NOTIFICATION_BLOCKAID_DEFAULT]: {
     id: Number(NOTIFICATION_BLOCKAID_DEFAULT),
     date: null,
-    image: {
-      src: 'images/blockaid-security-provider.png',
-      width: '100%',
-    },
   },
   ///: END:ONLY_INCLUDE_IF
 };
 
-export const getTranslatedUINotifications = (t, locale) => {
+export const getTranslatedUINotifications = (t, locale, theme) => {
   const formattedLocale = locale?.replace('_', '-');
+
   return {
     1: {
       ...UI_NOTIFICATIONS[1],
@@ -500,6 +497,16 @@ export const getTranslatedUINotifications = (t, locale) => {
             new Date(UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date),
           )
         : '',
+      image:
+        theme === 'dark'
+          ? {
+              src: 'images/blockaid-whats-new-theme-dark.svg',
+              width: '100%',
+            }
+          : {
+              src: 'images/blockaid-whats-new.svg',
+              width: '100%',
+            },
     },
     ///: END:ONLY_INCLUDE_IF
   };
