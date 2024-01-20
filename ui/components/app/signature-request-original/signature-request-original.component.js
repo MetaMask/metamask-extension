@@ -416,6 +416,7 @@ export default class SignatureRequestOriginal extends Component {
         {this.state.showSignatureInsights && (
           <InsightWarnings
             warnings={warnings}
+            type={'signing'}
             origin={origin}
             onCancel={() => {
               this.setState({ showSignatureInsights: false });

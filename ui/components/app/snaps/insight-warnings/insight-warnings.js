@@ -29,12 +29,12 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { SnapUIRenderer } from '../snap-ui-renderer';
-import { DelineatorType } from '../../../../helpers/constants/snaps';
+import { DelineatorType, InsightWarningLanguage } from '../../../../helpers/constants/snaps';
 import { stripHttpSchemes } from '../../../../helpers/utils/util';
 
 export default function InsightWarnings({
   warnings,
-  type = 'confirming',
+  action = 'confirming',
   origin,
   onCancel,
   onSubmit,
@@ -87,13 +87,6 @@ export default function InsightWarnings({
     );
   };
 
-  // move this to an enum that defines the language to be used in this modal on the various
-  // screens that will offer transaction insights, should be indexed on "type".
-  const results = {
-    confirming: { noun: 'confirmation', imperative: 'confirm' },
-    signing: { noun: 'signature', imperative: 'sign' },
-  };
-
   return (
     <Modal
       isOpen
@@ -128,13 +121,13 @@ export default function InsightWarnings({
         <Text variant={TextVariant.bodyMd} paddingBottom={4}>
           {warnings.length === 1
             ? t('insightWarningContentSingular', [
-                type,
-                results[type].noun,
+                action,
+                InsightWarningLanguage[action].noun,
               ])
             : t('insightWarningContentPlural', [
                 warnings.length,
-                type,
-                results[type].noun,
+                action,
+                InsightWarningLanguage[action].noun,
               ])}
         </Text>
         <Warnings />
@@ -157,7 +150,7 @@ export default function InsightWarnings({
             isChecked={isChecked}
             onChange={handleOnChange}
             label={t('insightWarningCheckboxMessage', [
-              t(results[type].imperative),
+              t(InsightWarningLanguage[action].imperative),
               stripHttpSchemes(origin),
             ])}
           />
@@ -182,7 +175,7 @@ export default function InsightWarnings({
             onClick={onSubmit}
             disabled={!isChecked}
           >
-            {t(results[type].imperative)}
+            {t(InsightWarningLanguage[action].imperative)}
           </Button>
         </Box>
       </ModalContent>
@@ -198,7 +191,7 @@ InsightWarnings.propTypes = {
   /**
    * A limited set of actions defining the type of transaction
    */
-  type: PropTypes.oneOf(['confirming', 'signing']),
+  action: PropTypes.oneOf(Object.keys(InsightWarningLanguage)),
   /**
    * Origin initiating the transaction
    */

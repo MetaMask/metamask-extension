@@ -19,6 +19,13 @@ export function useSignatureInsights({ txData }) {
     async function fetchInsight() {
       setLoading(true);
 
+      const { msgParams } = txData;
+      const signature = {
+        from: msgParams.from,
+        data: JSON.parse(msgParams.data),
+        signatureMethod: msgParams.signatureMethod,
+      }
+
       const newData = await Promise.allSettled(
         snapIds.map((snapId) => {
           const permission = subjects[snapId]?.permissions[SIGNATURE_INSIGHT_PERMISSION];
@@ -32,7 +39,7 @@ export function useSignatureInsights({ txData }) {
 
           const hasSignatureOriginCaveat =
             getSignatureOriginCaveat(permission);
-          const signatureOrigin = hasSignatureOriginCaveat ? origin : null;
+          const signatureOrigin = hasSignatureOriginCaveat ? msgParams.origin : null;
           return handleSnapRequest({
             snapId,
             origin: '',
@@ -40,7 +47,7 @@ export function useSignatureInsights({ txData }) {
             request: {
               jsonrpc: '2.0',
               method: '',
-              params: { transaction, chainId, signatureOrigin },
+              params: { signature, signatureOrigin },
             },
           });
         }),
@@ -73,7 +80,6 @@ export function useSignatureInsights({ txData }) {
     };
   }, [
     txData,
-    origin,
     subjects,
     // TODO: Figure out how to improve this
     JSON.stringify(snapIds),

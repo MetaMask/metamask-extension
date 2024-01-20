@@ -59,6 +59,9 @@ import LedgerInstructionField from '../ledger-instruction-field';
 import SignatureRequestHeader from '../signature-request-header';
 import Header from './signature-request-siwe-header';
 import Message from './signature-request-siwe-message';
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+import InsightWarnings from '../snaps/insight-warnings';
+///: END:ONLY_INCLUDE_IF
 
 export default function SignatureRequestSIWE({ txData, warnings }) {
   const dispatch = useDispatch();
@@ -303,6 +306,7 @@ export default function SignatureRequestSIWE({ txData, warnings }) {
       {isShowingSigInsightWarnings && (
         <InsightWarnings
           warnings={warnings}
+          type={'signing'}
           origin={origin}
           onCancel={() => setIsShowingSigInsightWarnings(false)}
           onSubmit={() => {
