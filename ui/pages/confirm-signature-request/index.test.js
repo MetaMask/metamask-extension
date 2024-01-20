@@ -25,6 +25,7 @@ const mockState = {
           from: '0x8eeee1781fd885ff5ddef7789486676961873d12',
           version: 'V4',
           origin: 'https://metamask.github.io',
+          signatureMethod: 'eth_signTypedData_v4',
         },
         time: 1674533844299,
         status: 'unapproved',
