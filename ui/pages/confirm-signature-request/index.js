@@ -8,7 +8,7 @@ import { SubjectType } from '@metamask/permission-controller';
 import { TransactionStatus } from '@metamask/transaction-controller';
 ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { SeverityLevel } from '@metamask/snaps-sdk';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import * as actions from '../../store/actions';
 import txHelper from '../../helpers/utils/tx-helper';
 import SignatureRequest from '../../components/app/signature-request';
