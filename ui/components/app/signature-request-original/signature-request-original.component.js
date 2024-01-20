@@ -334,7 +334,7 @@ export default class SignatureRequestOriginal extends Component {
             return this.setState({ showSignatureRequestWarning: true });
           }
           ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-          if (warnings.length >= 1) {
+          if (warnings?.length >= 1) {
             return this.setState({ showSignatureInsights: true });
           }
           ///: END:ONLY_INCLUDE_IF
@@ -403,7 +403,7 @@ export default class SignatureRequestOriginal extends Component {
             name={name}
             onSubmit={async () => {
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-              if (warnings.length >= 1) {
+              if (warnings?.length >= 1) {
                 this.setState({
                   showSignatureInsights: true,
                   showSignatureRequestWarning: false,
