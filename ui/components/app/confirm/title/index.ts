@@ -1,1 +1,1 @@
-export { ConfirmTitle } from './title';
+export { default as ConfirmTitle } from './title';

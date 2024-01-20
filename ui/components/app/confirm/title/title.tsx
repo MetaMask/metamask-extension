@@ -18,7 +18,7 @@ const typeToDescTKey: Partial<Record<TransactionType, string>> = {
   [TransactionType.personalSign]: 'confirmTitleDescSignature',
 };
 
-export const ConfirmTitle: React.FC = memo(() => {
+const ConfirmTitle: React.FC = memo(() => {
   const t = useI18nContext();
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
@@ -49,3 +49,5 @@ export const ConfirmTitle: React.FC = memo(() => {
     </>
   );
 });
+
+export default ConfirmTitle;
