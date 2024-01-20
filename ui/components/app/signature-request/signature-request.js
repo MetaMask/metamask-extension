@@ -451,7 +451,9 @@ const SignatureRequest = ({
 
 SignatureRequest.propTypes = {
   txData: PropTypes.object,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   warnings: PropTypes.array,
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export default SignatureRequest;

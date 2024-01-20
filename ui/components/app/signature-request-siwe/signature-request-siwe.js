@@ -335,8 +335,10 @@ SignatureRequestSIWE.propTypes = {
    * The display content of transaction data
    */
   txData: PropTypes.object.isRequired,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   /**
    * Signature insights array
    */
   warnings: PropTypes.array,
+  ///: END:ONLY_INCLUDE_IF
 };
