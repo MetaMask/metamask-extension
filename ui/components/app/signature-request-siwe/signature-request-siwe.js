@@ -234,7 +234,7 @@ export default function SignatureRequestSIWE({
           onCancel={onCancel}
           onSubmit={() => {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-            if (warnings.length >= 1) {
+            if (warnings?.length >= 1) {
               return isSIWEDomainValid
                 ? setIsShowingSigInsightWarnings(true)
                 : setIsShowingDomainWarning(true);
@@ -276,7 +276,7 @@ export default function SignatureRequestSIWE({
                 cancelButtonType="default"
                 onSubmit={() => {
                   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-                  if (warnings.length >= 1) {
+                  if (warnings?.length >= 1) {
                     return setIsShowingSigInsightWarnings(true);
                   }
                   ///: END:ONLY_INCLUDE_IF

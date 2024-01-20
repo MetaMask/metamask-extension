@@ -393,7 +393,7 @@ const SignatureRequest = ({
           cancelAction={onCancel}
           signAction={() => {
             ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
-            if (warnings.length >= 1) {
+            if (warnings?.length >= 1) {
               return setIsShowingSigInsightWarnings(true);
             }
             ///: END:ONLY_INCLUDE_IF
