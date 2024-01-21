@@ -8,6 +8,7 @@ export const EndowmentPermissions = Object.freeze({
   'endowment:lifecycle-hooks': 'endowment:lifecycle-hooks',
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   'endowment:page-home': 'endowment:page-home',
+  'endowment:signature-insight': 'endowment:signature-insight',
   'endowment:name-lookup': 'endowment:name-lookup',
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
