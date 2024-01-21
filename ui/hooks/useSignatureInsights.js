@@ -24,7 +24,7 @@ export function useSignatureInsights({ txData }) {
       const { msgParams } = txData;
       const signature = {
         from: msgParams.from,
-        data: JSON.parse(msgParams.data),
+        data: JSON.parse(JSON.stringify(msgParams.data)),
         signatureMethod: msgParams.signatureMethod,
       };
 

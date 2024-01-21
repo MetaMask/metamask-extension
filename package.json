@@ -256,7 +256,7 @@
     "@metamask/controller-utils": "^5.0.0",
     "@metamask/design-tokens": "^1.12.0",
     "@metamask/desktop": "^0.3.0",
-    "@metamask/eth-json-rpc-middleware": "^12.0.1",
+    "@metamask/eth-json-rpc-middleware": "^12.1.0",
     "@metamask/eth-keyring-controller": "^15.1.0",
     "@metamask/eth-ledger-bridge-keyring": "^2.0.1",
     "@metamask/eth-query": "^4.0.0",
