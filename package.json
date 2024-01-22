@@ -653,7 +653,8 @@
       "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
-      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
+      "@metamask/desktop>eciesjs>secp256k1": false
     }
   },
   "packageManager": "yarn@4.0.2"
