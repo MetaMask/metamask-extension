@@ -88,8 +88,6 @@ function BlockaidBannerAlert({ txData, ...props }) {
     </Text>
   ) : null;
 
-  const isFailedResultType = resultType === BlockaidResultType.Failed;
-
   const severity =
     resultType === BlockaidResultType.Malicious
       ? Severity.Danger
@@ -100,9 +98,9 @@ function BlockaidBannerAlert({ txData, ...props }) {
   const reportUrl = (() => {
     const reportData = {
       domain: origin ?? msgParams?.origin,
+      blockNumber: block,
       jsonRpcMethod: type,
       jsonRpcParams: JSON.stringify(txParams ?? msgParams),
-      blockNumber: block,
       chain: NETWORK_TO_NAME_MAP[chainId],
       classification: reason,
       blockaidVersion: BlockaidPackage.version,
@@ -121,7 +119,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     <SecurityProviderBannerAlert
       description={description}
       details={details}
-      provider={isFailedResultType ? null : SecurityProvider.Blockaid}
+      provider={SecurityProvider.Blockaid}
       severity={severity}
       title={title}
       reportUrl={reportUrl}
