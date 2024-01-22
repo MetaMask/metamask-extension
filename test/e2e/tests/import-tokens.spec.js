@@ -54,6 +54,8 @@ describe('Import flow', function () {
         );
         await driver.waitForElementNotPresent('.loading-overlay');
 
+        await driver.waitForElementNotPresent('.loading-overlay'); // Make sure loading overlay has disappeared
+
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
 
         // Wait for network to change and token list to load from state
@@ -87,7 +89,6 @@ describe('Import flow', function () {
 
         const items = await driver.findElements('.multichain-token-list-item');
         assert.equal(items.length, 4);
-
       },
     );
   });
