@@ -220,6 +220,7 @@ import {
   getAdditionalSignArguments as getAdditionalSignArgumentsMMI,
 } from './lib/transaction/mmi-hooks';
 ///: END:ONLY_INCLUDE_IF
+import { publishHook as smartPublishHook } from './lib/transaction/smart-transactions';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
@@ -1499,6 +1500,12 @@ export default class MetamaskController extends EventEmitter {
           beforePublish: beforeTransactionPublishMMI.bind(this),
           getAdditionalSignArguments: getAdditionalSignArgumentsMMI.bind(this),
           ///: END:ONLY_INCLUDE_IF
+          publish: (transactionMeta) =>
+            smartPublishHook({
+              transactionMeta,
+              transactionController: this.txController,
+              smartTransactionsController: this.smartTransactionsController,
+            }),
         },
       },
       {

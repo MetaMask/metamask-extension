@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "packages": {
+    "@metamask/transaction-controller": {
+      "signature": "8f93cfe4e743a1dfbc6c666e9004cc53",
+      "file": true,
+      "replaced": "^20.0.0"
+    }
+  }
+}

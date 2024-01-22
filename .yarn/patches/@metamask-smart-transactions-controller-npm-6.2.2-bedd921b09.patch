@@ -1,0 +1,118 @@
+diff --git a/dist/SmartTransactionsController.js b/dist/SmartTransactionsController.js
+index ebb0015d020fb14e2e61544432ce9f9c2792a215..cb5b4cb0f0cb22cafba2739ec9185534848e0808 100644
+--- a/dist/SmartTransactionsController.js
++++ b/dist/SmartTransactionsController.js
+@@ -15,6 +15,7 @@ const cloneDeep_1 = __importDefault(require("lodash/cloneDeep"));
+ const types_1 = require("./types");
+ const utils_1 = require("./utils");
+ const constants_1 = require("./constants");
++const EventEmitter = require("events");
+ const SECOND = 1000;
+ exports.DEFAULT_INTERVAL = SECOND * 5;
+ class SmartTransactionsController extends base_controller_1.BaseController {
+@@ -52,6 +53,7 @@ class SmartTransactionsController extends base_controller_1.BaseController {
+             this.ethersProvider = new providers_1.Web3Provider(provider);
+         });
+         this.subscribe((currentState) => this.checkPoll(currentState));
++        this.hub = new EventEmitter();
+     }
+     /* istanbul ignore next */
+     async fetch(request, options) {
+@@ -138,7 +140,7 @@ class SmartTransactionsController extends base_controller_1.BaseController {
+         const { chainId } = this.config;
+         const { smartTransactionsState } = this.state;
+         const { smartTransactions } = smartTransactionsState;
+-        const currentSmartTransactions = smartTransactions[chainId];
++        const currentSmartTransactions = smartTransactions[chainId] ?? [];
+         const currentIndex = currentSmartTransactions === null || currentSmartTransactions === void 0 ? void 0 : currentSmartTransactions.findIndex((stx) => stx.uuid === smartTransaction.uuid);
+         const isNewSmartTransaction = this.isNewSmartTransaction(smartTransaction.uuid);
+         this.trackStxStatusChange(smartTransaction, isNewSmartTransaction
+@@ -220,7 +222,11 @@ class SmartTransactionsController extends base_controller_1.BaseController {
+                 const entry = (0, utils_1.generateHistoryEntry)(previousState, snapshot, 'txStateManager: setting status to confirmed');
+                 const txMeta = entry.length > 0
+                     ? Object.assign(Object.assign({}, originalTxMeta), { history: originalTxMeta.history.concat(entry) }) : originalTxMeta;
+-                this.confirmExternalTransaction(txMeta, txReceipt, baseFeePerGas);
++
++                if(!smartTransaction.skipConfirm) {
++                    this.confirmExternalTransaction(txMeta, txReceipt, baseFeePerGas);
++                }
++
+                 this.trackMetaMetricsEvent({
+                     event: 'STX Confirmed',
+                     category: 'swaps',
+@@ -244,7 +250,16 @@ class SmartTransactionsController extends base_controller_1.BaseController {
+         });
+         const url = `${(0, utils_1.getAPIRequestURL)(types_1.APIType.BATCH_STATUS, chainId)}?${params.toString()}`;
+         const data = await this.fetch(url);
++
+         Object.entries(data).forEach(([uuid, stxStatus]) => {
++            const transactionHash = stxStatus?.minedHash;
++
++            this.hub.emit(`${uuid}:status`, stxStatus);
++
++            if(transactionHash) {
++                this.hub.emit(`${uuid}:transaction-hash`, transactionHash);
++            }
++
+             this.updateSmartTransaction({
+                 statusMetadata: stxStatus,
+                 status: (0, utils_1.calculateStatus)(stxStatus),
+@@ -277,12 +292,16 @@ class SmartTransactionsController extends base_controller_1.BaseController {
+         if (approvalTx) {
+             const unsignedApprovalTransactionWithNonce = await this.addNonceToTransaction(approvalTx);
+             transactions.push(unsignedApprovalTransactionWithNonce);
+-            unsignedTradeTransactionWithNonce = Object.assign(Object.assign({}, tradeTx), { 
++            unsignedTradeTransactionWithNonce = Object.assign(Object.assign({}, tradeTx), {
+                 // If there is an approval tx, the trade tx's nonce is increased by 1.
+                 nonce: (0, utils_1.incrementNonceInHex)(unsignedApprovalTransactionWithNonce.nonce) });
+         }
+         else {
+-            unsignedTradeTransactionWithNonce = await this.addNonceToTransaction(tradeTx);
++            unsignedTradeTransactionWithNonce = tradeTx;
++
++            if(!unsignedTradeTransactionWithNonce.nonce) {
++                unsignedTradeTransactionWithNonce = await this.addNonceToTransaction(unsignedTradeTransactionWithNonce);
++            }
+         }
+         transactions.push(unsignedTradeTransactionWithNonce);
+         const data = await this.fetch((0, utils_1.getAPIRequestURL)(types_1.APIType.GET_FEES, chainId), {
+@@ -313,7 +332,7 @@ class SmartTransactionsController extends base_controller_1.BaseController {
+     }
+     // * After this successful call client must add a nonce representative to
+     // * transaction controller external transactions list
+-    async submitSignedTransactions({ txParams, signedTransactions, signedCanceledTransactions, }) {
++    async submitSignedTransactions({ txParams, signedTransactions, signedCanceledTransactions, skipConfirm}) {
+         const { chainId } = this.config;
+         const data = await this.fetch((0, utils_1.getAPIRequestURL)(types_1.APIType.SUBMIT_TRANSACTIONS, chainId), {
+             method: 'POST',
+@@ -331,13 +350,14 @@ class SmartTransactionsController extends base_controller_1.BaseController {
+         catch (e) {
+             console.error('ethers error', e);
+         }
+-        const nonceLock = await this.getNonceLock(txParams === null || txParams === void 0 ? void 0 : txParams.from);
++        const requiresNonce = !txParams.nonce;
++        const nonceLock = requiresNonce ? await this.getNonceLock(txParams === null || txParams === void 0 ? void 0 : txParams.from) : undefined;
+         try {
+-            const nonce = (0, bytes_1.hexlify)(nonceLock.nextNonce);
++            const nonce = nonceLock ? (0, bytes_1.hexlify)(nonceLock.nextNonce) : txParams.nonce;
+             if (txParams && !(txParams === null || txParams === void 0 ? void 0 : txParams.nonce)) {
+                 txParams.nonce = nonce;
+             }
+-            const { nonceDetails } = nonceLock;
++            const nonceDetails = nonceLock ? nonceLock.nonceDetails : {};
+             this.updateSmartTransaction({
+                 chainId,
+                 nonceDetails,
+@@ -347,10 +367,11 @@ class SmartTransactionsController extends base_controller_1.BaseController {
+                 txParams,
+                 uuid: data.uuid,
+                 cancellable: true,
++                skipConfirm: skipConfirm ?? false,
+             });
+         }
+         finally {
+-            nonceLock.releaseLock();
++            nonceLock?.releaseLock();
+         }
+         return data;
+     }
