@@ -229,6 +229,7 @@ export const AccountListItem = ({
               alignItems={AlignItems.center}
               justifyContent={JustifyContent.center}
               gap={1}
+              className="multichain-account-list-item__avatar-currency"
             >
               <AvatarToken
                 src={primaryTokenImage}
