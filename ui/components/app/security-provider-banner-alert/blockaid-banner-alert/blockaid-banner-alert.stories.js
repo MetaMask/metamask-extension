@@ -13,6 +13,18 @@ const mockFeatures = [
 export default {
   title: 'Components/App/SecurityProviderBannerAlert/BlockaidBannerAlert',
   argTypes: {
+    reason: {
+      control: 'select',
+      options: Object.values(BlockaidReason),
+      description:
+        '(non-param) overrides txData.securityAlertResponse.reason value',
+    },
+    resultType: {
+      control: 'select',
+      options: Object.values(BlockaidResultType),
+      description:
+        '(non-param) overrides securityAlertResponse.resultType value',
+    },
     txData: {
       securityAlertResponse: {
         features: {
@@ -25,10 +37,10 @@ export default {
           options: Object.values(BlockaidReason),
           description: 'securityAlertResponse.reason value',
         },
-        result_type: {
+        resultType: {
           control: 'select',
           options: Object.values(BlockaidResultType),
-          description: 'securityAlertResponse.result_type value',
+          description: 'securityAlertResponse.resultType value',
         },
       },
     },
@@ -44,5 +56,16 @@ export default {
   },
 };
 
-export const DefaultStory = (args) => <BlockaidBannerAlert {...args} />;
+export const DefaultStory = (args) => {
+  const { reason, resultType, txData } = args;
+
+  if (reason) {
+    txData.securityAlertResponse.reason = reason;
+  }
+  if (resultType) {
+    txData.securityAlertResponse.result_type = resultType;
+  }
+
+  return <BlockaidBannerAlert txData={args.txData} />;
+};
 DefaultStory.storyName = 'Default';
