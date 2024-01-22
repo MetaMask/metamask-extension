@@ -65,13 +65,15 @@ export function isProtocolAllowed(origin: string): boolean {
  * call.
  *
  * @param controller - Reference to the `SubjectMetadataController`.
+ * @param origin - The origin itself.
  * @returns A function that returns the list of keyring methods an origin can
  * call.
  */
 export function keyringSnapPermissionsBuilder(
   controller: SubjectMetadataController,
-): (origin: string) => string[] {
-  return (origin: string) => {
+  origin: string,
+): () => string[] {
+  return () => {
     if (origin === 'metamask') {
       return METAMASK_ALLOWED_METHODS;
     }
