@@ -45,6 +45,19 @@ async function mockInfura(mockServer) {
         methodResultVariant: 'balance',
         params: [
           {
+            accessList: [],
+            data: `0x70a08231000000000000000000000000${selectedAddressWithoutPrefix}`,
+            to: CONTRACT_ADDRESS.BUSD,
+          },
+        ],
+      },
+    ],
+    [
+      'eth_call',
+      {
+        methodResultVariant: 'balanceApprove',
+        params: [
+          {
             data: `0x70a08231000000000000000000000000${selectedAddressWithoutPrefix}`,
             to: CONTRACT_ADDRESS.BUSD,
           },
