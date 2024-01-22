@@ -1,0 +1,92 @@
+diff --git a/dist/TransactionController.js b/dist/TransactionController.js
+index b3d6f124d3ae656d14e46ae329f4eb0d731bb62e..9270336ea6c110d5fbb29b430d4501ba2c3087dc 100644
+--- a/dist/TransactionController.js
++++ b/dist/TransactionController.js
+@@ -92,11 +92,12 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+      * @param options.hooks.beforeCheckPendingTransaction - Additional logic to execute before checking pending transactions. Return false to prevent the broadcast of the transaction.
+      * @param options.hooks.beforePublish - Additional logic to execute before publishing a transaction. Return false to prevent the broadcast of the transaction.
+      * @param options.hooks.getAdditionalSignArguments - Returns additional arguments required to sign a transaction.
++     * @param options.hooks.publish - Alternate logic to publish a transaction.
+      * @param config - Initial options used to configure this controller.
+      * @param state - Initial state to set on this controller.
+      */
+     constructor({ blockTracker, cancelMultiplier, disableHistory, disableSendFlowHistory, disableSwaps, getCurrentAccountEIP1559Compatibility, getCurrentNetworkEIP1559Compatibility, getExternalPendingTransactions, getGasFeeEstimates, getNetworkState, getPermittedAccounts, getSavedGasFees, getSelectedAddress, incomingTransactions = {}, messenger, onNetworkStateChange, pendingTransactions = {}, provider, securityProviderRequest, speedUpMultiplier, hooks = {}, }, config, state) {
+-        var _a, _b, _c, _d, _e;
++        var _a, _b, _c, _d, _e, _f;
+         super(config, state);
+         this.inProcessOfSigning = new Set();
+         this.mutex = new async_mutex_1.Mutex();
+@@ -149,6 +150,8 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+         this.beforePublish = (_d = hooks === null || hooks === void 0 ? void 0 : hooks.beforePublish) !== null && _d !== void 0 ? _d : (() => true);
+         this.getAdditionalSignArguments =
+             (_e = hooks === null || hooks === void 0 ? void 0 : hooks.getAdditionalSignArguments) !== null && _e !== void 0 ? _e : (() => []);
++        this.publish =
++            (_f = hooks === null || hooks === void 0 ? void 0 : hooks.publish) !== null && _f !== void 0 ? _f : (() => Promise.resolve({ transactionHash: undefined }));
+         this.nonceTracker = new nonce_tracker_1.NonceTracker({
+             // @ts-expect-error provider types misaligned: SafeEventEmitterProvider vs Record<string,string>
+             provider,
+@@ -819,9 +822,11 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+      * Signs and returns the raw transaction data for provided transaction params list.
+      *
+      * @param listOfTxParams - The list of transaction params to approve.
++     * @param opts - Options bag.
++     * @param opts.hasNonce - Whether the transactions already have a nonce.
+      * @returns The raw transactions.
+      */
+-    approveTransactionsWithSameNonce(listOfTxParams = []) {
++    approveTransactionsWithSameNonce(listOfTxParams = [], { hasNonce } = {}) {
+         return __awaiter(this, void 0, void 0, function* () {
+             (0, logger_1.projectLogger)('Approving transactions with same nonce', {
+                 transactions: listOfTxParams,
+@@ -843,11 +848,18 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+             try {
+                 // TODO: we should add a check to verify that all transactions have the same from address
+                 const fromAddress = initialTx.from;
+-                nonceLock = yield this.nonceTracker.getNonceLock(fromAddress);
+-                const nonce = nonceLock.nextNonce;
+-                (0, logger_1.projectLogger)('Using nonce from nonce tracker', nonce, nonceLock.nonceDetails);
++                const requiresNonce = hasNonce !== true;
++                nonceLock = requiresNonce
++                    ? yield this.nonceTracker.getNonceLock(fromAddress)
++                    : undefined;
++                const nonce = nonceLock
++                    ? (0, ethereumjs_util_1.addHexPrefix)(nonceLock.nextNonce.toString(16))
++                    : initialTx.nonce;
++                if (nonceLock) {
++                    (0, logger_1.projectLogger)('Using nonce from nonce tracker', nonce, nonceLock.nonceDetails);
++                }
+                 rawTransactions = yield Promise.all(listOfTxParams.map((txParams) => {
+-                    txParams.nonce = (0, ethereumjs_util_1.addHexPrefix)(nonce.toString(16));
++                    txParams.nonce = nonce;
+                     return this.signExternalTransaction(txParams);
+                 }));
+             }
+@@ -858,9 +870,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+                 throw err;
+             }
+             finally {
+-                if (nonceLock) {
+-                    nonceLock.releaseLock();
+-                }
++                nonceLock === null || nonceLock === void 0 ? void 0 : nonceLock.releaseLock();
+                 this.inProcessOfSigning.delete(initialTxAsSerializedHex);
+             }
+             return rawTransactions;
+@@ -1157,6 +1167,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+      * @param transactionId - The ID of the transaction to approve.
+      */
+     approveTransaction(transactionId) {
++        var _a;
+         return __awaiter(this, void 0, void 0, function* () {
+             const { transactions } = this.state;
+             const releaseLock = yield this.mutex.acquire();
+@@ -1207,7 +1218,8 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+                     (0, logger_1.projectLogger)('Updated pre-transaction balance', transactionMeta.preTxBalance);
+                 }
+                 (0, logger_1.projectLogger)('Publishing transaction', txParams);
+-                const hash = yield this.publishTransaction(rawTx);
++                const hookResponse = yield this.publish(transactionMeta, rawTx);
++                const hash = (_a = hookResponse.transactionHash) !== null && _a !== void 0 ? _a : (yield this.publishTransaction(rawTx));
+                 (0, logger_1.projectLogger)('Publish successful', hash);
+                 transactionMeta.hash = hash;
+                 transactionMeta.status = types_1.TransactionStatus.submitted;
