@@ -771,7 +771,7 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
 const WALLET_PASSWORD = 'correct horse battery staple';
 
 async function waitForAccountRendered(driver) {
-  await driver.waitForSelector(
+  await driver.findElement(
     process.env.MULTICHAIN
       ? '[data-testid="token-balance-overview-currency-display"]'
       : '[data-testid="eth-overview__primary-currency"]',
@@ -909,21 +909,31 @@ async function switchToNotificationWindow(driver, numHandles = 3) {
  * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
  */
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
-  await driver.wait(async () => {
-    let isPending = true;
+  await driver.wait(
+    async () => {
+      let isPending = true;
 
-    for (const mockedEndpoint of mockedEndpoints) {
-      isPending = await mockedEndpoint.isPending();
-    }
+      for (const mockedEndpoint of mockedEndpoints) {
+        isPending = await mockedEndpoint.isPending();
+      }
 
-    return isPending === !hasRequest;
-  }, driver.timeout);
+      return isPending === !hasRequest;
+    },
+    driver.timeout,
+    true,
+  );
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
   }
 
-  return mockedRequests.map((req) => req.body.json?.batch).flat();
+  return (
+    await Promise.all(
+      mockedRequests.map(async (req) => {
+        return (await req.body?.getJson())?.batch;
+      }),
+    )
+  ).flat();
 }
 
 // Asserts that  each request passes all assertions in one group of assertions, and the order does not matter.

@@ -659,7 +659,7 @@ const state = {
     providerConfig: {
       type: 'goerli',
       ticker: 'ETH',
-      nickname: '',
+      nickname: 'Goerli',
       rpcUrl: '',
       chainId: '0x5',
     },
