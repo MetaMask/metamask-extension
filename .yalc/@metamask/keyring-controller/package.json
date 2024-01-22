@@ -1,0 +1,62 @@
+{
+  "name": "@metamask/keyring-controller",
+  "version": "12.0.0",
+  "description": "Stores identities seen in the wallet and manages interactions such as signing",
+  "keywords": [
+    "MetaMask",
+    "Ethereum"
+  ],
+  "homepage": "https://github.com/MetaMask/core/tree/main/packages/keyring-controller#readme",
+  "bugs": {
+    "url": "https://github.com/MetaMask/core/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MetaMask/core.git"
+  },
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build:docs": "typedoc",
+    "changelog:update": "../../scripts/update-changelog.sh @metamask/keyring-controller",
+    "changelog:validate": "../../scripts/validate-changelog.sh @metamask/keyring-controller",
+    "publish:preview": "yarn npm publish --tag preview",
+    "test": "jest --reporters=jest-silent-reporter",
+    "test:clean": "jest --clearCache",
+    "test:verbose": "jest --verbose",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@keystonehq/metamask-airgapped-keyring": "^0.13.1",
+    "@metamask/base-controller": "^4.1.0",
+    "@metamask/eth-keyring-controller": "^15.1.0",
+    "@metamask/keyring-api": "^2.0.0",
+    "@metamask/message-manager": "^7.3.7",
+    "@metamask/utils": "^8.3.0",
+    "async-mutex": "^0.2.6",
+    "ethereumjs-util": "^7.0.10",
+    "ethereumjs-wallet": "^1.0.1",
+    "immer": "^9.0.6"
+  },
+  "peerDependencies": {
+    "@metamask/preferences-controller": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "ethereumjs-util>ethereum-cryptography>keccak": false,
+      "ethereumjs-util>ethereum-cryptography>secp256k1": false
+    }
+  },
+  "yalcSig": "ef0d719287096af8ccc8c113bd565f2b"
+}

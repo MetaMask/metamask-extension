@@ -1752,6 +1752,9 @@ export default class MetamaskController extends EventEmitter {
         allowedActions: [
           'ApprovalController:addRequest',
           'NetworkController:getNetworkClientById',
+          'KeyringController:prepareUserOperation',
+          'KeyringController:patchUserOperation',
+          'KeyringController:signUserOperation',
         ],
       }),
       state: initState.UserOperationController,
@@ -2957,6 +2960,10 @@ export default class MetamaskController extends EventEmitter {
         appStateController.setShowBetaHeader.bind(appStateController),
       setShowProductTour:
         appStateController.setShowProductTour.bind(appStateController),
+      setShowAccountBanner:
+        appStateController.setShowAccountBanner.bind(appStateController),
+      setShowNetworkBanner:
+        appStateController.setShowNetworkBanner.bind(appStateController),
       updateNftDropDownState:
         appStateController.updateNftDropDownState.bind(appStateController),
       setFirstTimeUsedNetwork:

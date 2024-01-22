@@ -1229,9 +1229,8 @@ async function setEnvironmentVariables({
         ? 'http://localhost:3000/rpc'
         : undefined,
     EIP_4337_ENTRYPOINT:
-      variables.getMaybe('EIP_4337_ENTRYPOINT') || testing
-        ? '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b'
-        : undefined,
+      variables.getMaybe('EIP_4337_ENTRYPOINT') ||
+      (testing ? '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b' : undefined),
     EIP_4337_FORCE: variables.getMaybe('EIP_4337_FORCE'),
     EIP_4337_SIMPLE_ACCOUNT_FACTORY:
       variables.getMaybe('EIP_4337_SIMPLE_ACCOUNT_FACTORY') || testing

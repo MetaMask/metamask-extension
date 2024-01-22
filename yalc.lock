@@ -12,6 +12,16 @@
     "@metamask/test-bundler": {
       "signature": "4bc170d73e0d3ec2b2278e19980d193f",
       "file": true
+    },
+    "@metamask/user-operation-controller": {
+      "signature": "d111275c4e8d72c7598021ceac164031",
+      "file": true,
+      "replaced": "^1.0.0"
+    },
+    "@metamask/keyring-controller": {
+      "signature": "ef0d719287096af8ccc8c113bd565f2b",
+      "file": true,
+      "replaced": "patch:@metamask/keyring-controller@npm%3A9.0.0#~/.yarn/patches/@metamask-keyring-controller-npm-9.0.0-f57ed3ebea.patch"
     }
   }
 }

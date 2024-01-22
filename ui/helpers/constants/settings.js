@@ -104,6 +104,13 @@ export const SETTINGS_CONSTANTS = [
   },
   {
     tabMessage: (t) => t('advanced'),
+    sectionMessage: (t) => t('showExtensionInFullSizeView'),
+    descriptionMessage: (t) => t('showExtensionInFullSizeViewDescription'),
+    route: `${ADVANCED_ROUTE}#extension-full-size-view`,
+    icon: 'fas fa-sliders-h',
+  },
+  {
+    tabMessage: (t) => t('advanced'),
     sectionMessage: (t) => t('dismissReminderField'),
     descriptionMessage: (t) => t('dismissReminderDescriptionField'),
     route: `${ADVANCED_ROUTE}#dismiss-secretrecovery`,

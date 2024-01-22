@@ -147,7 +147,7 @@ describe('Transaction Utils', () => {
       it('does not wait for result if waitForSubmit is false', async () => {
         transactionController.addTransaction.mockResolvedValue({
           result: new Promise(() => {
-            /* Intentionally not resovled */
+            /* Intentionally not resolved */
           }),
           transactionMeta: TRANSACTION_META_MOCK,
         });
@@ -232,7 +232,7 @@ describe('Transaction Utils', () => {
             hash: undefined as never,
             transactionHash: () =>
               new Promise(() => {
-                /* Intentionally not resovled */
+                /* Intentionally not resolved */
               }),
           },
         );

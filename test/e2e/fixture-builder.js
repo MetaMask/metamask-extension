@@ -301,6 +301,7 @@ function defaultFixture() {
         openSeaEnabled: false,
         preferences: {
           hideZeroBalanceTokens: false,
+          showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
@@ -422,6 +423,7 @@ function onboardingFixture() {
         openSeaEnabled: false,
         preferences: {
           hideZeroBalanceTokens: false,
+          showExtensionInFullSizeView: false,
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
