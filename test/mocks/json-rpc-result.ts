@@ -1,4 +1,4 @@
-const MOCK_BLOCK_NUMBER = '0x122dfa1';
+const MOCK_BLOCK_NUMBER = '0x1';
 
 export interface mockJsonRpcResultType {
   [methodName: string]: { [arbitraryVariantName: string]: any };
