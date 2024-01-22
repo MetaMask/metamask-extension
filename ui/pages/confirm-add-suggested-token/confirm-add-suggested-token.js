@@ -99,7 +99,7 @@ const ConfirmAddSuggestedToken = () => {
           type="warning"
           withRightButton
           useIcon
-          iconFillColor="#f8c000"
+          iconFillColor="var(--brand-colors-yellow-yellow600)"
         />
       )
     );
@@ -113,7 +113,7 @@ const ConfirmAddSuggestedToken = () => {
           type="warning"
           withRightButton
           useIcon
-          iconFillColor="#f8c000"
+          iconFillColor="var(--brand-colors-yellow-yellow600)"
         />
       )
     );
