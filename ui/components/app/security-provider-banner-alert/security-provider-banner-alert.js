@@ -65,19 +65,21 @@ function SecurityProviderBannerAlert({
         variant={DisclosureVariant.Arrow}
       >
         {details}
-        <Text marginTop={3} display={Display.Flex}>
-          {t('somethingDoesntLookRight', [
-            <ButtonLink
-              key={`security-provider-button-supporturl-${provider}`}
-              size={Size.inherit}
-              href={reportUrl || ZENDESK_URLS.SUPPORT_URL}
-              externalLink
-              onClick={onClickSupportLink}
-            >
-              {t('reportIssue')}
-            </ButtonLink>,
-          ])}
-        </Text>
+        {onClickSupportLink && (
+          <Text marginTop={3} display={Display.Flex}>
+            {t('somethingDoesntLookRight', [
+              <ButtonLink
+                key={`security-provider-button-supporturl-${provider}`}
+                size={Size.inherit}
+                href={reportUrl || ZENDESK_URLS.SUPPORT_URL}
+                externalLink
+                onClick={onClickSupportLink}
+              >
+                {t('reportIssue')}
+              </ButtonLink>,
+            ])}
+          </Text>
+        )}
       </Disclosure>
 
       {provider && (
@@ -129,11 +131,11 @@ SecurityProviderBannerAlert.propTypes = {
   /** Additional details to be displayed under the description */
   details: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
 
-  /** Name of the security provider */
-  provider: PropTypes.oneOf(Object.values(SecurityProvider)),
-
   /** Function to be called when the support link is clicked */
   onClickSupportLink: PropTypes.func,
+
+  /** Name of the security provider */
+  provider: PropTypes.oneOf(Object.values(SecurityProvider)),
 
   /** URL to open when report an issue link is clicked */
   reportUrl: PropTypes.string,
