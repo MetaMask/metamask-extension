@@ -24,7 +24,6 @@ import {
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
 import { openWindow } from '../../../helpers/utils/window';
 import {
   AlignItems,
@@ -53,10 +52,6 @@ export default class SelectHardware extends Component {
   state = {
     selectedDevice: null,
   };
-
-  shouldShowConnectButton() {
-    return !isManifestV3 || process.env.HARDWARE_WALLETS_MV3;
-  }
 
   connect = () => {
     if (this.state.selectedDevice) {
@@ -136,8 +131,7 @@ export default class SelectHardware extends Component {
           className="hw-connect__btn-wrapper"
           style={{ margin: '10px 0 0 0' }}
         >
-          {this.shouldShowConnectButton() &&
-            this.renderConnectToLatticeButton()}
+          {this.renderConnectToLatticeButton()}
           {this.renderConnectToQRButton()}
         </div>
       </>
