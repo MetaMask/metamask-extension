@@ -837,23 +837,21 @@ export default class Home extends PureComponent {
             ///: END:ONLY_INCLUDE_IF
           }
           <div className="home__main-view">
-            {process.env.MULTICHAIN ? null : (
-              <div className="home__balance-wrapper">
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-                  <EthOverview showAddress />
-                  ///: END:ONLY_INCLUDE_IF
-                }
-                {
-                  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-                  <EthOverview
-                    showAddress
-                    mmiPortfolioEnabled={mmiPortfolioEnabled}
-                  />
-                  ///: END:ONLY_INCLUDE_IF
-                }
-              </div>
-            )}
+            <div className="home__balance-wrapper">
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
+                <EthOverview showAddress />
+                ///: END:ONLY_INCLUDE_IF
+              }
+              {
+                ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+                <EthOverview
+                  showAddress
+                  mmiPortfolioEnabled={mmiPortfolioEnabled}
+                />
+                ///: END:ONLY_INCLUDE_IF
+              }
+            </div>
             <Box style={{ flexGrow: '1' }} paddingTop={tabPadding}>
               <Tabs
                 t={this.context.t}
