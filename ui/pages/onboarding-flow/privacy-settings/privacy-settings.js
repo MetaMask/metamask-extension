@@ -98,6 +98,7 @@ export default function PrivacySettings() {
 
     if (ipfsURL && !ipfsError) {
       const { host } = new URL(addUrlProtocolPrefix(ipfsURL));
+      // todo: what is this component? does setIsIpfsGatewayEnabled need to be flipped here too?
       dispatch(setIpfsGateway(host));
     }
 

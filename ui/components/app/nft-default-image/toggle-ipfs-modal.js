@@ -53,6 +53,7 @@ export const ToggleIpfsModal = ({ onClose }) => {
           block
           marginTop={9}
           onClick={() => {
+            // todo: what is this component? does setIsIpfsGatewayEnabled need to be flipped here too?
             dispatch(setIpfsGateway(IPFS_DEFAULT_GATEWAY_URL));
             dispatch(hideIpfsModal());
           }}

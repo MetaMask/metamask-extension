@@ -94,6 +94,7 @@ export default class PreferencesController {
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
+      isIpfsGatewayEnabled: true,
       useAddressBarEnsResolution: true,
       // Ledger transport type is deprecated. We currently only support webhid
       // on chrome, and u2f on firefox.
@@ -578,6 +579,16 @@ export default class PreferencesController {
   async setIpfsGateway(domain) {
     this.store.updateState({ ipfsGateway: domain });
     return domain;
+  }
+
+  /**
+   * TODO docs
+   *
+   * @param enabled
+   */
+  async setIsIpfsGatewayEnabled(enabled) {
+    this.store.updateState({ isIpfsGatewayEnabled: enabled });
+    return enabled;
   }
 
   /**
