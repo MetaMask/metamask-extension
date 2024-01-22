@@ -58,6 +58,8 @@ ignores:
   - 'resolve-url-loader'
   # jest environments
   - 'jest-environment-jsdom'
+  # babel
+  - '@babel/plugin-transform-logical-assignment-operators'
 
 # files depcheck should not parse
 ignorePatterns:
