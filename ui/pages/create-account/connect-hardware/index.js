@@ -76,6 +76,21 @@ const HD_PATHS = {
   trezor: TREZOR_HD_PATHS,
 };
 
+const getErrorMessage = (errorCode, t) => {
+  switch (errorCode) {
+    case '0x650f':
+      return t('ledgerErrorConnectionIssue');
+    case '0x5515':
+      return t('ledgerErrorDevicedLocked');
+    case '0x6501':
+      return t('ledgerErrorEthAppNotOpen');
+    case '0x6a80':
+      return t('ledgerErrorTransactionDataNotPadded');
+    default:
+      return errorCode;
+  }
+};
+
 class ConnectHardwareForm extends Component {
   static contextTypes = {
     t: PropTypes.func,
@@ -220,9 +235,7 @@ class ConnectHardwareForm extends Component {
           });
         } else if (ledgerErrorCode) {
           this.setState({
-            error: `${errorMessage} - ${this.context.t(
-              LEDGER_ERRORS_CODES[ledgerErrorCode],
-            )}`,
+            error: `${errorMessage} - ${getErrorMessage(ledgerErrorCode)}`,
           });
         } else if (
           errorMessage
