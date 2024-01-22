@@ -97,23 +97,25 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const title = t(REASON_TO_TITLE_TKEY[reason] || 'blockaidTitleDeceptive');
 
-  const reportData = {
-    domain: origin ?? msgParams?.origin,
-    jsonRpcMethod: type,
-    jsonRpcParams: JSON.stringify(txParams ?? msgParams),
-    blockNumber: block,
-    chain: NETWORK_TO_NAME_MAP[chainId],
-    classification: reason,
-    blockaidVersion: BlockaidPackage.version,
-    resultType,
-    reproduce: JSON.stringify(features),
-  };
+  const reportUrl = (() => {
+    const reportData = {
+      domain: origin ?? msgParams?.origin,
+      jsonRpcMethod: type,
+      jsonRpcParams: JSON.stringify(txParams ?? msgParams),
+      blockNumber: block,
+      chain: NETWORK_TO_NAME_MAP[chainId],
+      classification: reason,
+      blockaidVersion: BlockaidPackage.version,
+      resultType,
+      reproduce: JSON.stringify(features),
+    };
 
-  const jsonData = JSON.stringify(reportData);
+    const jsonData = JSON.stringify(reportData);
 
-  const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
+    const encodedData = zlib?.gzipSync?.(jsonData) ?? jsonData;
 
-  const reportUrl = getReportUrl(encodedData);
+    return getReportUrl(encodedData);
+  })();
 
   return (
     <SecurityProviderBannerAlert
