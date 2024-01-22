@@ -97,13 +97,13 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const reportUrl = (() => {
     const reportData = {
-      domain: origin ?? msgParams?.origin,
       blockNumber: block,
-      jsonRpcMethod: type,
-      jsonRpcParams: JSON.stringify(txParams ?? msgParams),
+      blockaidVersion: BlockaidPackage.version,
       chain: NETWORK_TO_NAME_MAP[chainId],
       classification: reason,
-      blockaidVersion: BlockaidPackage.version,
+      domain: origin ?? msgParams?.origin,
+      jsonRpcMethod: type,
+      jsonRpcParams: JSON.stringify(txParams ?? msgParams),
       resultType,
       reproduce: JSON.stringify(features),
     };
@@ -120,9 +120,9 @@ function BlockaidBannerAlert({ txData, ...props }) {
       description={description}
       details={details}
       provider={SecurityProvider.Blockaid}
+      reportUrl={reportUrl}
       severity={severity}
       title={title}
-      reportUrl={reportUrl}
       {...props}
     />
   );
