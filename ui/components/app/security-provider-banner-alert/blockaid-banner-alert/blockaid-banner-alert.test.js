@@ -227,6 +227,8 @@ describe('Blockaid Banner Alert', () => {
         'If you approve this request, someone can steal your assets listed on Blur.',
       [BlockaidReason.failed]:
         'Because of an error, this request was not verified by the security provider. Proceed with caution.',
+      [BlockaidReason.notApplicable]:
+        'Because of an error, this request was not verified by the security provider. Proceed with caution.',
       [BlockaidReason.maliciousDomain]:
         "You're interacting with a malicious domain. If you approve this request, you might lose your assets.",
       [BlockaidReason.other]:
