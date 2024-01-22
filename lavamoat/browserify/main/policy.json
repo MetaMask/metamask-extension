@@ -1450,10 +1450,10 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-query": true,
         "@metamask/network-controller>@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-provider": true,
         "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
         "@metamask/network-controller>eth-block-tracker": true,
@@ -1491,6 +1491,22 @@
         "@metamask/providers>@metamask/rpc-errors": true,
         "@metamask/utils": true,
         "node-fetch": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true,
+        "@metamask/message-manager>@metamask/eth-sig-util": true,
+        "@metamask/providers>@metamask/json-rpc-engine": true,
+        "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/utils": true,
+        "pify": true,
+        "sass-loader>klona": true
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-provider": {
