@@ -40,6 +40,17 @@ function SecurityProviderBannerAlert({
 }) {
   const t = useContext(I18nContext);
 
+  const getDisclosureTitle = () => {
+    if (details) {
+      return t('seeDetails');
+    }
+    /**
+     * TODO: When Disclosure component is updated to support different text based on the state (open/closed),
+     * this should be revisited
+     */
+    return t('seeDetails');
+  };
+
   return (
     <BannerAlert
       data-testid="security-provider-banner-alert"
@@ -49,26 +60,27 @@ function SecurityProviderBannerAlert({
     >
       <Text marginTop={2}>{description}</Text>
 
-      {(details || onClickSupportLink) && (
-        <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
-          {details}
-          {onClickSupportLink && (
-            <Text marginTop={3} display={Display.Flex}>
-              {t('somethingDoesntLookRight', [
-                <ButtonLink
-                  key={`security-provider-button-supporturl-${provider}`}
-                  size={Size.inherit}
-                  href={reportUrl || ZENDESK_URLS.SUPPORT_URL}
-                  externalLink
-                  onClick={onClickSupportLink}
-                >
-                  {t('reportIssue')}
-                </ButtonLink>,
-              ])}
-            </Text>
-          )}
-        </Disclosure>
-      )}
+      <Disclosure
+        title={getDisclosureTitle()}
+        variant={DisclosureVariant.Arrow}
+      >
+        {details}
+        {onClickSupportLink && (
+          <Text marginTop={3} display={Display.Flex}>
+            {t('somethingDoesntLookRight', [
+              <ButtonLink
+                key={`security-provider-button-supporturl-${provider}`}
+                size={Size.inherit}
+                href={reportUrl || ZENDESK_URLS.SUPPORT_URL}
+                externalLink
+                onClick={onClickSupportLink}
+              >
+                {t('reportIssue')}
+              </ButtonLink>,
+            ])}
+          </Text>
+        )}
+      </Disclosure>
 
       {provider && (
         <Text
