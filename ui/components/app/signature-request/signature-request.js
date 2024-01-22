@@ -187,7 +187,7 @@ const SignatureRequest = ({
         external_link_clicked: 'security_alert_support_link',
       },
     });
-  }, []);
+  }, [trackEvent, type, version]);
   ///: END:ONLY_INCLUDE_IF
 
   const onSign = async () => {

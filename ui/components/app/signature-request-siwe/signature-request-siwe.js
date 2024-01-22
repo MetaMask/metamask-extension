@@ -77,11 +77,10 @@ export default function SignatureRequestSIWE({
   const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const trackEvent = useContext(MetaMetricsContext);
-  ///: END:ONLY_INCLUDE_IF
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  const trackEvent = useContext(MetaMetricsContext);
+
   useEffect(() => {
     if (txData.securityAlertResponse) {
       const blockaidMetricsParams = getBlockaidMetricsParams(
@@ -97,7 +96,20 @@ export default function SignatureRequestSIWE({
         },
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const onClickSupportLink = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        action: 'Sign Request SIWE',
+        origin: txData?.origin,
+        external_link_clicked: 'security_alert_support_link',
+      },
+    });
+  }, [trackEvent, txData?.origin]);
   ///: END:ONLY_INCLUDE_IF
 
   const {
@@ -308,6 +320,15 @@ export default function SignatureRequestSIWE({
           </Popover>
         )}
       </div>
+      {
+        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+        <BlockaidBannerAlert
+          txData={txData}
+          margin={4}
+          onClickSupportLink={onClickSupportLink}
+        />
+        ///: END:ONLY_INCLUDE_IF
+      }
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       }
