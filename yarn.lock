@@ -4096,24 +4096,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-middleware@npm:^12.0.1":
-  version: 12.0.1
-  resolution: "@metamask/eth-json-rpc-middleware@npm:12.0.1"
-  dependencies:
-    "@metamask/eth-json-rpc-provider": "npm:^2.1.0"
-    "@metamask/eth-sig-util": "npm:^7.0.0"
-    "@metamask/json-rpc-engine": "npm:^7.1.1"
-    "@metamask/rpc-errors": "npm:^6.0.0"
-    "@metamask/utils": "npm:^8.1.0"
-    eth-block-tracker: "npm:^8.0.0"
-    klona: "npm:^2.0.6"
-    pify: "npm:^5.0.0"
-    safe-stable-stringify: "npm:^2.4.3"
-  checksum: 3ff40940d118042cfa957222effcd30035b1eb8f412724c3e60e87eef7b9cdcaf4cd9af743eb7c9b1846a3af896830b1522c73f57bcc791a82aa7d1ee96d294c
-  languageName: node
-  linkType: hard
-
-"@metamask/eth-json-rpc-middleware@npm:^12.1.0":
+"@metamask/eth-json-rpc-middleware@npm:^12.0.1, @metamask/eth-json-rpc-middleware@npm:^12.1.0":
   version: 12.1.0
   resolution: "@metamask/eth-json-rpc-middleware@npm:12.1.0"
   dependencies:
