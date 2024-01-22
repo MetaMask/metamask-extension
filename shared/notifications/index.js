@@ -188,7 +188,13 @@ export const UI_NOTIFICATIONS = {
   ///: END:ONLY_INCLUDE_IF
 };
 
-export const getTranslatedUINotifications = (t, locale, theme) => {
+export const getTranslatedUINotifications = (
+  t,
+  locale,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  theme,
+  ///: END:ONLY_INCLUDE_IF
+) => {
   const formattedLocale = locale?.replace('_', '-');
 
   return {
