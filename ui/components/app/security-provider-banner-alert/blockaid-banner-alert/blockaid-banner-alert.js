@@ -62,10 +62,10 @@ function BlockaidBannerAlert({ txData, ...props }) {
   }
 
   const {
+    block,
+    features,
     reason,
     result_type: resultType,
-    features,
-    block,
   } = securityAlertResponse;
 
   if (resultType === BlockaidResultType.Benign) {
