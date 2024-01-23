@@ -434,13 +434,13 @@ export default class SignatureRequestOriginal extends Component {
             onSubmit={async () => {
               ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
               if (warnings?.length >= 1) {
-                this.setState({
+                return this.setState({
                   showSignatureInsights: true,
                   showSignatureRequestWarning: false,
                 });
               }
               ///: END:ONLY_INCLUDE_IF
-              await this.onSubmit();
+              return await this.onSubmit();
             }}
             onCancel={async (event) => await this.onCancel(event)}
           />
