@@ -131,6 +131,9 @@ workflows:
       - prep-build-test-swap-playwright:
           requires:
             - prep-deps
+      - prep-build-test-mmi-playwright:
+          requires:
+            - prep-deps
       - test-e2e-swap-playwright - OPTIONAL:
           requires:
             - prep-deps
@@ -327,6 +330,9 @@ workflows:
             - prep-build-ts-migration-dashboard
             - prep-build-test-mswapmi-playwright
             - prep-build-test-swap-playwright
+      - test-e2e-mmi-playwright - OPTIONAL:
+          requires:
+            - prep-build-test-mmi-playwright
 jobs:
   trigger-beta-build:
     executor: node-browsers-small
