@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { captureException } from '@sentry/browser';
 import BlockaidPackage from '@blockaid/ppom_release/package.json';
@@ -9,6 +10,7 @@ import {
   Severity,
 } from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
+import { updateTransaction } from '../../../../store/actions';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -56,6 +58,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     txData;
 
   const t = useContext(I18nContext);
+  const dispatch = useDispatch();
 
   if (!securityAlertResponse) {
     return null;
@@ -115,6 +118,18 @@ function BlockaidBannerAlert({ txData, ...props }) {
 
   const reportUrl = getReportUrl(encodedData);
 
+  const onClickSupportLink = () => {
+    dispatch(
+      updateTransaction(
+        {
+          ...txData,
+          externalLinkClicked: 'security_alert_support_link',
+        },
+        true,
+      ),
+    );
+  };
+
   return (
     <SecurityProviderBannerAlert
       description={description}
@@ -123,6 +138,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
       severity={severity}
       title={title}
       reportUrl={reportUrl}
+      onClickSupportLink={onClickSupportLink}
       {...props}
     />
   );

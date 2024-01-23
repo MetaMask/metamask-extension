@@ -764,6 +764,7 @@ async function buildEventFragmentProperties({
     contractMethodName,
     securityProviderResponse,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    externalLinkClicked,
     securityAlertResponse,
     ///: END:ONLY_INCLUDE_IF
     simulationFails,
@@ -949,7 +950,6 @@ async function buildEventFragmentProperties({
     );
     uiCustomizations = additionalBlockaidParams?.ui_customizations ?? null;
   }
-
   ///: END:ONLY_INCLUDE_IF
 
   if (simulationFails) {
@@ -1003,6 +1003,15 @@ async function buildEventFragmentProperties({
       transaction_approval_amount_type: transactionApprovalAmountType,
     };
   }
+
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  if (externalLinkClicked) {
+    properties = {
+      ...properties,
+      external_link_clicked: externalLinkClicked,
+    };
+  }
+  ///: END:ONLY_INCLUDE_IF
 
   let sensitiveProperties = {
     transaction_envelope_type: isEIP1559Transaction(transactionMeta)

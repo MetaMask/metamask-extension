@@ -212,6 +212,8 @@ export default function createRPCMethodTrackingMiddleware({
           BlockaidResultType.NotApplicable;
         eventProperties.security_alert_reason =
           req.securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
+
+        debugger;
         ///: END:ONLY_INCLUDE_IF
 
         const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
