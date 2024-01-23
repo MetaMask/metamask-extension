@@ -39,7 +39,7 @@
   }
 
   &__buttons {
-    border-top: 1px solid #d2d8dd;
+    border-top: 1px solid var(--color-border-muted);
   }
 
   &__button:not(:last-child) {
