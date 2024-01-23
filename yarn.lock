@@ -16827,18 +16827,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-block-tracker@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "eth-block-tracker@npm:5.0.1"
-  dependencies:
-    "@metamask/safe-event-emitter": "npm:^2.0.0"
-    json-rpc-random-id: "npm:^1.0.1"
-    pify: "npm:^3.0.0"
-  checksum: 64162323bfed49f2e94b5efc377dfb0e87dac22140f1f4c9923328b7261fc8a37563cb0e5f575590ecce174a53d6804aecd29293ba7f67a66094d29506a40ed9
-  languageName: node
-  linkType: hard
-
-"eth-block-tracker@npm:^8.0.0":
+"eth-block-tracker@npm:8.1.0":
   version: 8.1.0
   resolution: "eth-block-tracker@npm:8.1.0"
   dependencies:
@@ -16848,6 +16837,19 @@ __metadata:
     json-rpc-random-id: "npm:^1.0.1"
     pify: "npm:^5.0.0"
   checksum: 94d81a0f5ed62bb7fd70b99a3a6172f416a574dc9fcaa96c9bdedb4d98c52b257ee505957d4a5b248ce73220b96083420acdd2dd702a0330d016018a59bd0b2e
+  languageName: node
+  linkType: hard
+
+"eth-block-tracker@patch:eth-block-tracker@npm%3A8.1.0#~/.yarn/patches/eth-block-tracker-npm-8.1.0-9bb5237fb5.patch":
+  version: 8.1.0
+  resolution: "eth-block-tracker@patch:eth-block-tracker@npm%3A8.1.0#~/.yarn/patches/eth-block-tracker-npm-8.1.0-9bb5237fb5.patch::version=8.1.0&hash=a4f416"
+  dependencies:
+    "@metamask/eth-json-rpc-provider": "npm:^2.1.0"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    "@metamask/utils": "npm:^8.1.0"
+    json-rpc-random-id: "npm:^1.0.1"
+    pify: "npm:^5.0.0"
+  checksum: 653910c105a78c2afdf2ab3c3461f912fd3149c3f5ec989dd76c93f35bacd5461f77de73db7a6ff7a3e44f4a3e117ce8afc46986f9bb5b797b93deb5460e6e8b
   languageName: node
   linkType: hard
 
