@@ -21,11 +21,18 @@ export function useSignatureInsights({ txData }) {
     async function fetchInsight() {
       setLoading(true);
 
-      const { msgParams } = txData;
+      const {
+        msgParams: { from, data: msgData, signatureMethod, origin },
+      } = txData;
+
+      const shouldParse =
+        signatureMethod === 'eth_signTyepdData_v3' ||
+        signatureMethod === 'eth_signTypedData_v4';
+
       const signature = {
-        from: msgParams.from,
-        data: JSON.parse(JSON.stringify(msgParams.data)),
-        signatureMethod: msgParams.signatureMethod,
+        from,
+        data: shouldParse ? JSON.parse(msgData) : msgData,
+        signatureMethod,
       };
 
       const newData = await Promise.allSettled(
@@ -41,9 +48,7 @@ export function useSignatureInsights({ txData }) {
           }
 
           const hasSignatureOriginCaveat = getSignatureOriginCaveat(permission);
-          const signatureOrigin = hasSignatureOriginCaveat
-            ? msgParams.origin
-            : null;
+          const signatureOrigin = hasSignatureOriginCaveat ? origin : null;
           return handleSnapRequest({
             snapId,
             origin: '',
