@@ -29,6 +29,12 @@ buildTypes:
       - REQUIRE_SNAPS_ALLOWLIST: true
       - IFRAME_EXECUTION_ENVIRONMENT_URL: https://execution.metamask.io/iframe/5.0.2/index.html
       - ACCOUNT_SNAPS_DIRECTORY_URL: https://snaps.metamask.io/account-management
+      - CONTENTFUL_ACCESS_SPACE_ID: null
+      - CONTENTFUL_ACCESS_TOKEN: null
+      - AUTH_LOGIN_ENDPOINT: null
+      - USER_STORAGE_ENDPOINT: null
+      - NOTIFICATIONS_SERVICE_URL: null
+      - TRIGGERS_SERVICE_URL: null
     # Main build uses the default browser manifest
     manifestOverrides: false
     # Build name used in multiple user-readable places
@@ -145,6 +151,7 @@ features:
       - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
   petnames:
   conf-redesign:
+
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###
