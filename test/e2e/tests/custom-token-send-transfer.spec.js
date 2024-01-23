@@ -230,3 +230,4 @@ describe('Transfer custom tokens @no-mmi', function () {
     );
   });
 });
+
