@@ -1,6 +1,6 @@
 import { warn } from 'loglevel';
 import { PollingControllerOnly } from '@metamask/polling-controller';
-import { MINUTE } from '../../../shared/constants/time';
+import { MINUTE, SECOND } from '../../../shared/constants/time';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { isTokenDetectionEnabledForNetwork } from '../../../shared/modules/network.utils';
@@ -15,7 +15,7 @@ import {
 } from '../../../shared/constants/metametrics';
 
 // By default, poll every 3 minutes
-const DEFAULT_INTERVAL = MINUTE * 3;
+const DEFAULT_INTERVAL = MINUTE * 10;
 
 /**
  * A controller that polls for token exchange
@@ -112,14 +112,15 @@ export default class DetectTokensController extends PollingControllerOnly {
     );
     messenger.subscribe('NetworkController:stateChange', () => {
       if (this.chainId !== this.getChainIdFromNetworkStore()) {
+        const z = "NetworkController moving from "+ this.chainId + " to " + this.getChainIdFromNetworkStore() ;
         const chainId = this.getChainIdFromNetworkStore();
         this.chainId = chainId;
-        this.restartTokenDetection({ chainId: this.chainId });
+        this.restartTokenDetection({ chainId: this.chainId, foo:z});
       }
     });
 
     messenger.subscribe('TokenListController:stateChange', () => {
-      this.restartTokenDetection();
+      this.restartTokenDetection({foo: "TokenListController moving from "+ this.chainId + " to " + this.getChainIdFromNetworkStore()});
     });
 
     this.#registerKeyringHandlers();
@@ -140,10 +141,14 @@ export default class DetectTokensController extends PollingControllerOnly {
    * @param options.selectedAddress - the selectedAddress against which to detect for token balances
    * @param options.chainId - the chainId against which to detect for token balances
    */
-  async detectNewTokens({ selectedAddress, chainId } = {}) {
+  async detectNewTokens({ selectedAddress, chainId , foo } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
+    const z = this.getChainIdFromNetworkStore();
     const chainIdAgainstWhichToDetect =
-      chainId ?? this.getChainIdFromNetworkStore();
+      chainId ?? z;
+
+      console.log("start: "+foo)
+
     if (!this.isActive) {
       return;
     }
@@ -165,6 +170,10 @@ export default class DetectTokensController extends PollingControllerOnly {
     const tokenListUsed = isTokenDetectionInactiveInMainnet
       ? STATIC_MAINNET_TOKEN_LIST
       : tokenList;
+
+    const a = this.tokensController.state.allTokens?.[chainIdAgainstWhichToDetect]?.[addressAgainstWhichToDetect]
+    const b = this.tokensController.state.allDetectedTokens?.[chainIdAgainstWhichToDetect]?.[addressAgainstWhichToDetect]
+    const c = this.tokensController.state.allIgnoredTokens?.[chainIdAgainstWhichToDetect]?.[addressAgainstWhichToDetect]
 
     const tokensToDetect = [];
     for (const tokenAddress in tokenListUsed) {
@@ -218,6 +227,7 @@ export default class DetectTokensController extends PollingControllerOnly {
           });
         }
 
+        console.log("end: "+foo)
         if (tokensWithBalance.length > 0) {
           this._trackMetaMetricsEvent({
             event: MetaMetricsEventName.TokenDetected,
@@ -245,15 +255,16 @@ export default class DetectTokensController extends PollingControllerOnly {
    * @param options.selectedAddress - the selectedAddress against which to detect for token balances
    * @param options.chainId - the chainId against which to detect for token balances
    */
-  restartTokenDetection({ selectedAddress, chainId } = {}) {
+  restartTokenDetection({ selectedAddress, chainId, foo } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
-    const chainIdAgainstWhichToDetect = chainId ?? this.chainId;
+    const chainIdAgainstWhichToDetect = chainId ?? this.getChainIdFromNetworkStore();
     if (!(this.isActive && addressAgainstWhichToDetect)) {
       return;
     }
     this.detectNewTokens({
       selectedAddress: addressAgainstWhichToDetect,
       chainId: chainIdAgainstWhichToDetect,
+      foo
     });
     this.interval = DEFAULT_INTERVAL;
   }
@@ -271,8 +282,10 @@ export default class DetectTokensController extends PollingControllerOnly {
     if (!interval) {
       return;
     }
-    this._handle = setInterval(() => {
-      this.detectNewTokens();
+    this._handle = setInterval(async () => {
+      // await new Promise(r => setTimeout(r, 5000))
+      this.detectNewTokens({foo:'_handle'});
+
     }, interval);
   }
 
@@ -306,7 +319,7 @@ export default class DetectTokensController extends PollingControllerOnly {
 
     this.messenger.subscribe('KeyringController:unlock', () => {
       this.isUnlocked = true;
-      this.restartTokenDetection();
+      this.restartTokenDetection({foo:'registerKeyringHandlers'});
     });
 
     this.messenger.subscribe('KeyringController:lock', () => {
