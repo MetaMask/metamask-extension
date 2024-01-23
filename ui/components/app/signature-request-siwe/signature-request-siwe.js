@@ -85,23 +85,12 @@ export default function SignatureRequestSIWE({ txData }) {
         properties: {
           action: 'Sign Request',
           ...blockaidMetricsParams,
+          external_link_clicked: 'security_alert_support_link',
         },
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const onClickSupportLink = useCallback(() => {
-    trackEvent({
-      category: MetaMetricsEventCategory.Transactions,
-      event: MetaMetricsEventName.ExternalLinkClicked,
-      properties: {
-        action: 'Sign Request SIWE',
-        origin: txData?.origin,
-        external_link_clicked: 'security_alert_support_link',
-      },
-    });
-  }, [trackEvent, txData?.origin]);
   ///: END:ONLY_INCLUDE_IF
 
   const {
@@ -180,11 +169,7 @@ export default function SignatureRequestSIWE({ txData }) {
 
       {
         ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert
-          txData={txData}
-          margin={4}
-          onClickSupportLink={onClickSupportLink}
-        />
+        <BlockaidBannerAlert txData={txData} margin={4} />
         ///: END:ONLY_INCLUDE_IF
       }
       {showSecurityProviderBanner && (
