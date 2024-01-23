@@ -305,7 +305,10 @@ describe('MetaMask onboarding @no-mmi', function () {
           text: notificationMessage,
         });
         assert.equal(networkNotification, true);
-        await driver.clickElement({ text: 'Dismiss', tag: 'h6' });
+        await driver.clickElement({
+          text: 'Switch to Localhost 8546',
+          tag: 'h6',
+        });
 
         // Check localhost 8546 is selected and its balance value is correct
         await driver.findElement({
