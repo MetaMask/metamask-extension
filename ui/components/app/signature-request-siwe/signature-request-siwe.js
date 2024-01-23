@@ -191,7 +191,6 @@ export default function SignatureRequestSIWE({
           <ConfirmPageContainerNavigation />
         </div>
         <SignatureRequestHeader txData={txData} />
-
         {
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
           <BlockaidBannerAlert txData={txData} margin={4} />
@@ -320,15 +319,6 @@ export default function SignatureRequestSIWE({
           </Popover>
         )}
       </div>
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-        <BlockaidBannerAlert
-          txData={txData}
-          margin={4}
-          onClickSupportLink={onClickSupportLink}
-        />
-        ///: END:ONLY_INCLUDE_IF
-      }
       {
         ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       }
