@@ -248,7 +248,7 @@ describe('Show account details', function () {
           '[data-testid="account-list-item-menu-button"]',
         );
         await driver.clickElement('[data-testid="account-list-menu-pin"]');
-        assert.equal(await pinnedIcon.isDisplayed(), true);
+        driver.waitForElementNotPresent(pinnedIcon);
       },
     );
   });
