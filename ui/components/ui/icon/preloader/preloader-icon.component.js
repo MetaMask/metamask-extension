@@ -30,7 +30,7 @@ const Preloader = ({ className, size }) => (
         fillRule="evenodd"
         clipRule="evenodd"
         d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
-        fill="var(--brand-colors-blue-blue500)"
+        fill="var(--color-primary-default)"
       />
     </mask>
     <g mask="url(#mask0)">
