@@ -23,8 +23,12 @@ import {
   BackgroundColor,
   BlockSize,
   Display,
+  FlexDirection,
   FontWeight,
+  IconColor,
   JustifyContent,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -33,6 +37,7 @@ import {
   IconName,
   IconSize,
   PickerNetwork,
+  Text,
 } from '../../component-library';
 import {
   getCurrentChainId,
@@ -67,6 +72,7 @@ import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import Tooltip from '../../ui/tooltip';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { MINUTE } from '../../../../shared/constants/time';
+import { shortenAddress } from '../../../helpers/utils/util';
 
 export const AppHeader = ({ location }) => {
   const trackEvent = useContext(MetaMetricsContext);
@@ -82,6 +88,9 @@ export const AppHeader = ({ location }) => {
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
+  const shortenedAddress = shortenAddress(
+    toChecksumHexAddress(internalAccount.address),
+  );
   const dispatch = useDispatch();
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const onboardedInThisUISession = useSelector(getOnboardedInThisUISession);
@@ -103,11 +112,9 @@ export const AppHeader = ({ location }) => {
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
 
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-  const showConnectedStatus =
-    process.env.MULTICHAIN ||
-    (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+  const showConnectedStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
       origin &&
-      origin !== browser.runtime.id);
+      origin !== browser.runtime.id;
   const showProductTour =
     completedOnboarding && !onboardedInThisUISession && showProductTourPopup;
   const productTourDirection = document
@@ -281,33 +288,42 @@ export const AppHeader = ({ location }) => {
               ) : null}
 
               {internalAccount ? (
-                <AccountPicker
-                  address={internalAccount.address}
-                  name={internalAccount.metadata.name}
-                  onClick={() => {
-                    dispatch(toggleAccountMenu());
+                <Box
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  alignItems={AlignItems.center}
+                >
+                  <AccountPicker
+                    address={internalAccount.address}
+                    name={internalAccount.metadata.name}
+                    onClick={() => {
+                      dispatch(toggleAccountMenu());
 
-                    trackEvent({
-                      event: MetaMetricsEventName.NavAccountMenuOpened,
-                      category: MetaMetricsEventCategory.Navigation,
-                      properties: {
-                        location: 'Home',
-                      },
-                    });
-                  }}
-                  disabled={disableAccountPicker}
-                  showAddress={Boolean(process.env.MULTICHAIN)}
-                  labelProps={{ fontWeight: FontWeight.Bold }}
-                />
-              ) : null}
-              <Box
-                display={Display.Flex}
-                alignItems={AlignItems.center}
-                justifyContent={JustifyContent.flexEnd}
-              >
-                <Box display={Display.Flex} gap={4}>
-                  {showConnectedStatus &&
-                    (process.env.MULTICHAIN ? (
+                      trackEvent({
+                        event: MetaMetricsEventName.NavAccountMenuOpened,
+                        category: MetaMetricsEventCategory.Navigation,
+                        properties: {
+                          location: 'Home',
+                        },
+                      });
+                    }}
+                    disabled={disableAccountPicker}
+                    showAddress={Boolean(process.env.MULTICHAIN)}
+                    labelProps={{ fontWeight: FontWeight.Bold }}
+                  />
+                  {process.env.MULTICHAIN ? (
+                    <Box
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Row}
+                      alignItems={AlignItems.center}
+                    >
+                      <Text
+                        color={TextColor.textAlternative}
+                        variant={TextVariant.bodySm}
+                        ellipsis
+                      >
+                        {shortenedAddress}
+                      </Text>
                       <Tooltip
                         position="left"
                         title={copied ? t('addressCopied') : null}
@@ -319,22 +335,32 @@ export const AppHeader = ({ location }) => {
                           }
                           size={IconSize.Sm}
                           data-testid="app-header-copy-button"
+                          color={IconColor.iconAlternative}
                         />
                       </Tooltip>
-                    ) : (
-                      <Box ref={menuRef}>
-                        <ConnectedStatusIndicator
-                          onClick={() => {
-                            history.push(CONNECTED_ACCOUNTS_ROUTE);
-                            trackEvent({
-                              event:
-                                MetaMetricsEventName.NavConnectedSitesOpened,
-                              category: MetaMetricsEventCategory.Navigation,
-                            });
-                          }}
-                        />
-                      </Box>
-                    ))}{' '}
+                    </Box>
+                  ) : null}
+                </Box>
+              ) : null}
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.flexEnd}
+              >
+                <Box display={Display.Flex} gap={4}>
+                  {showConnectedStatus ? (
+                    <Box ref={menuRef}>
+                      <ConnectedStatusIndicator
+                        onClick={() => {
+                          history.push(CONNECTED_ACCOUNTS_ROUTE);
+                          trackEvent({
+                            event: MetaMetricsEventName.NavConnectedSitesOpened,
+                            category: MetaMetricsEventCategory.Navigation,
+                          });
+                        }}
+                      />
+                    </Box>
+                  ) : null}{' '}
                   {popupStatus && multichainProductTourStep === 2 ? (
                     <ProductTour
                       className="multichain-app-header__product-tour"

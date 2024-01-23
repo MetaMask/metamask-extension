@@ -30,14 +30,12 @@ export const AccountPicker = ({
   onClick,
   disabled = false,
   showAddress = false,
-  addressProps = {},
   labelProps = {},
   textProps = {},
   className = '',
   ...props
 }) => {
   const useBlockie = useSelector(getUseBlockie);
-  const shortenedAddress = shortenAddress(toChecksumHexAddress(address));
 
   return (
     <ButtonBase
@@ -53,7 +51,7 @@ export const AccountPicker = ({
         gap: 1,
         ...textProps,
       }}
-      size={showAddress ? ButtonBaseSize.Lg : ButtonBaseSize.Md}
+      size={showAddress ? ButtonBaseSize.Sm : ButtonBaseSize.Md}
       disabled={disabled}
       endIconName={IconName.ArrowDown}
       endIconProps={{
@@ -69,7 +67,7 @@ export const AccountPicker = ({
             : AvatarAccountVariant.Jazzicon
         }
         address={address}
-        size={Size.SM}
+        size={Size.XS}
         borderColor={BackgroundColor.backgroundDefault} // we currently don't have white color for border hence using backgroundDefault as the border
       />
       <Text
@@ -82,16 +80,6 @@ export const AccountPicker = ({
         )}
       >
         {name}
-        {showAddress ? (
-          <Text
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
-            ellipsis
-            {...addressProps}
-          >
-            {shortenedAddress}
-          </Text>
-        ) : null}
       </Text>
     </ButtonBase>
   );
@@ -122,10 +110,6 @@ AccountPicker.propTypes = {
    * Represents if the AccountPicker should take full width
    */
   block: PropTypes.bool,
-  /**
-   * Props to be added to the address element
-   */
-  addressProps: PropTypes.object,
   /**
    * Props to be added to the label element
    */
