@@ -15,7 +15,10 @@ import ToggleButton from '../../../components/ui/toggle-button';
 import locales from '../../../../app/_locales/index.json';
 import Jazzicon from '../../../components/ui/jazzicon';
 import BlockieIdenticon from '../../../components/ui/identicon/blockieIdenticon';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 import {
   getNumberOfSettingsInSection,
@@ -299,6 +302,15 @@ export default class SettingsTab extends PureComponent {
 
   renderUsePrimaryCurrencyOptions() {
     const { t } = this.context;
+    const getPrimaryCurrencySettingForMetrics = (newCurrency) => {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Settings,
+        event: MetaMetricsEventName.UseNativeCurrencyAsPrimaryCurrency,
+        properties: {
+          use_native_currency_as_primary_currency: newCurrency,
+        },
+      });
+    };
     const {
       nativeCurrency,
       setUseNativeCurrencyAsPrimaryCurrencyPreference,
@@ -325,9 +337,10 @@ export default class SettingsTab extends PureComponent {
                   type="radio"
                   data-testid="toggle-native-currency"
                   id="native-primary-currency"
-                  onChange={() =>
-                    setUseNativeCurrencyAsPrimaryCurrencyPreference(true)
-                  }
+                  onChange={() => {
+                    setUseNativeCurrencyAsPrimaryCurrencyPreference(true);
+                    getPrimaryCurrencySettingForMetrics(true);
+                  }}
                   checked={Boolean(useNativeCurrencyAsPrimaryCurrency)}
                 />
                 <label
@@ -342,9 +355,10 @@ export default class SettingsTab extends PureComponent {
                   type="radio"
                   data-testid="toggle-fiat-currency"
                   id="fiat-primary-currency"
-                  onChange={() =>
-                    setUseNativeCurrencyAsPrimaryCurrencyPreference(false)
-                  }
+                  onChange={() => {
+                    setUseNativeCurrencyAsPrimaryCurrencyPreference(false);
+                    getPrimaryCurrencySettingForMetrics(false);
+                  }}
                   checked={!useNativeCurrencyAsPrimaryCurrency}
                 />
                 <label
