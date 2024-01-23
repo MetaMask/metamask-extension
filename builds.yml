@@ -60,6 +60,7 @@ buildTypes:
       - keyring-snaps
       - blockaid
       - petnames
+      - platform-notifications
     env:
       - INFURA_FLASK_PROJECT_ID
       - SEGMENT_FLASK_WRITE_KEY
@@ -144,6 +145,11 @@ features:
       - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
   petnames:
   conf-redesign:
+  platform-notifications:
+    env:
+      - CONTENTFUL_ACCESS_SPACE_ID
+      - CONTENTFUL_ACCESS_TOKEN
+
   ###
   # Build Type code extensions. Things like different support links, warning pages, banners
   ###

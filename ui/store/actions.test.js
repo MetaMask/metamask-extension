@@ -2133,4 +2133,23 @@ describe('Actions', () => {
       });
     });
   });
+
+  describe('#fetchAndUpdatePlatformNotifications', () => {
+    it('calls fetchAndUpdatePlatformNotifications in background', async () => {
+      const store = mockStore();
+      const fetchAndUpdatePlatformNotifications = sinon
+        .stub()
+        .callsFake((cb) => cb());
+
+      background.getApi.returns({
+        fetchAndUpdatePlatformNotifications,
+      });
+
+      setBackgroundConnection(background.getApi());
+
+      await store.dispatch(actions.fetchAndUpdatePlatformNotifications());
+
+      expect(fetchAndUpdatePlatformNotifications.calledOnce).toBeTruthy();
+    });
+  });
 });

@@ -224,6 +224,7 @@
   "dependencies": {
     "@babel/runtime": "^7.23.2",
     "@blockaid/ppom_release": "^1.4.0",
+    "@contentful/rich-text-html-renderer": "^16.3.0",
     "@ensdomains/content-hash": "^2.5.6",
     "@ethereumjs/common": "^3.1.1",
     "@ethereumjs/tx": "^4.1.1",
@@ -474,6 +475,7 @@
     "chalk": "^4.1.2",
     "chokidar": "^3.5.3",
     "concurrently": "^7.6.0",
+    "contentful": "^10.6.16",
     "copy-webpack-plugin": "^6.0.3",
     "cross-spawn": "^7.0.3",
     "css-loader": "^2.1.1",

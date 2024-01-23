@@ -4774,3 +4774,38 @@ export async function setSnapsAddSnapAccountModalDismissed() {
   ]);
 }
 ///: END:ONLY_INCLUDE_IF
+
+///: BEGIN:ONLY_INCLUDE_IF(platform-notifications)
+export function fetchAndUpdatePlatformNotifications(): ThunkAction<
+  void,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    try {
+      await submitRequestToBackground('fetchAndUpdatePlatformNotifications');
+    } catch (error) {
+      logErrorWithMessage(error);
+    }
+  };
+}
+
+export function updatePlatformNotificationsReadList(
+  ids: string[],
+): ThunkAction<void, MetaMaskReduxState, any, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    console.log('start');
+    try {
+      await submitRequestToBackground('updatePlatformNotificationsReadList', [
+        ids,
+      ]);
+      await forceUpdateMetamaskState(dispatch);
+    } catch (error) {
+      console.error('Error updating platform notifications read list:', error);
+      // You can dispatch an action here to handle the error in your application
+      // dispatch(yourErrorAction(error));
+    }
+  };
+}
+///: END:ONLY_INCLUDE_IF

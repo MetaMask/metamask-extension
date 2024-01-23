@@ -1735,6 +1735,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@contentful/rich-text-html-renderer@npm:^16.3.0":
+  version: 16.3.0
+  resolution: "@contentful/rich-text-html-renderer@npm:16.3.0"
+  dependencies:
+    "@contentful/rich-text-types": "npm:^16.3.0"
+    escape-html: "npm:^1.0.3"
+  checksum: e192dcb550a68b11e144edda7adc2a240a583fe8911900b26e6f3870838e1a43fa37913c5fa5798466bfb69cd7688ad7af319cb2877b9cd78e025e763e149b90
+  languageName: node
+  linkType: hard
+
+"@contentful/rich-text-types@npm:^16.0.2, @contentful/rich-text-types@npm:^16.3.0":
+  version: 16.3.0
+  resolution: "@contentful/rich-text-types@npm:16.3.0"
+  checksum: 0fe6fda66725941f198ba880d045af0289ce226353ea9c458325778a3e5d1008fd68607bd943e94c0c2862a290396493d5216e88ec49ce52af6e76b2485e5d03
+  languageName: node
+  linkType: hard
+
 "@cspotcode/source-map-consumer@npm:0.8.0":
   version: 0.8.0
   resolution: "@cspotcode/source-map-consumer@npm:0.8.0"
@@ -11394,6 +11411,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"axios@npm:^1.6.0":
+  version: 1.6.5
+  resolution: "axios@npm:1.6.5"
+  dependencies:
+    follow-redirects: "npm:^1.15.4"
+    form-data: "npm:^4.0.0"
+    proxy-from-env: "npm:^1.1.0"
+  checksum: 465489d9bf8f039b9adbc8103b6299d6a5e26de77b27f0e4173d814d39bca8f4b4659d94e09ee40461aedccd8c2452f1e2b3edace1c9f81220060d2974ff9dc7
+  languageName: node
+  linkType: hard
+
 "b4a@npm:^1.6.4":
   version: 1.6.4
   resolution: "b4a@npm:1.6.4"
@@ -13758,6 +13786,42 @@ __metadata:
   version: 1.0.4
   resolution: "content-type@npm:1.0.4"
   checksum: 5ea85c5293475c0cdf2f84e2c71f0519ced565840fb8cbda35997cb67cc45b879d5b9dbd37760c4041ca7415a3687f8a5f2f87b556b2aaefa49c0f3436a346d4
+  languageName: node
+  linkType: hard
+
+"contentful-resolve-response@npm:^1.8.1":
+  version: 1.8.1
+  resolution: "contentful-resolve-response@npm:1.8.1"
+  dependencies:
+    fast-copy: "npm:^2.1.7"
+  checksum: 6023824e98843d47c900501d2252336dd1dfebe8d868cb81b650252f5946963063cbe2b466e8e2238d41634a779dbfe4a43ba6c7996ca77124824c2554f66cab
+  languageName: node
+  linkType: hard
+
+"contentful-sdk-core@npm:^8.1.0":
+  version: 8.1.2
+  resolution: "contentful-sdk-core@npm:8.1.2"
+  dependencies:
+    fast-copy: "npm:^2.1.7"
+    lodash.isplainobject: "npm:^4.0.6"
+    lodash.isstring: "npm:^4.0.1"
+    p-throttle: "npm:^4.1.1"
+    qs: "npm:^6.11.2"
+  checksum: 9e5b6dc1b2a1a91a9c4a01b0f24aff23606d0a6f7b56b7ca5930d57f4c29503886874e2ac653d924b742e9445da31b862c651b2d98e1f74ec35f6f0a3afdb912
+  languageName: node
+  linkType: hard
+
+"contentful@npm:^10.6.16":
+  version: 10.6.16
+  resolution: "contentful@npm:10.6.16"
+  dependencies:
+    "@contentful/rich-text-types": "npm:^16.0.2"
+    axios: "npm:^1.6.0"
+    contentful-resolve-response: "npm:^1.8.1"
+    contentful-sdk-core: "npm:^8.1.0"
+    json-stringify-safe: "npm:^5.0.1"
+    type-fest: "npm:^4.0.0"
+  checksum: 6cfcadb40cb7a34c93e6df4efbdd815a73e92861f0291ca4f9a745c97e56d96be48532942ec1bdc336f4133ea38866a8b54f79d7241e8de23e50a39c64b12359
   languageName: node
   linkType: hard
 
@@ -17483,6 +17547,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-copy@npm:^2.1.7":
+  version: 2.1.7
+  resolution: "fast-copy@npm:2.1.7"
+  checksum: 0651a334d42e567f48e6efa9595202f3613353d7b46a1c4e6e055e3ab508583e4819f1bc06722588bd121680722923ba26bcfa6100661e8171a914893fb77e62
+  languageName: node
+  linkType: hard
+
 "fast-deep-equal@npm:^3.1.1, fast-deep-equal@npm:^3.1.3":
   version: 3.1.3
   resolution: "fast-deep-equal@npm:3.1.3"
@@ -18079,6 +18150,16 @@ __metadata:
     debug:
       optional: true
   checksum: 60d98693f4976892f8c654b16ef6d1803887a951898857ab0cdc009570b1c06314ad499505b7a040ac5b98144939f8597766e5e6a6859c0945d157b473aa6f5f
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.15.4":
+  version: 1.15.5
+  resolution: "follow-redirects@npm:1.15.5"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: d467f13c1c6aa734599b8b369cd7a625b20081af358f6204ff515f6f4116eb440de9c4e0c49f10798eeb0df26c95dd05d5e0d9ddc5786ab1a8a8abefe92929b4
   languageName: node
   linkType: hard
 
@@ -23702,6 +23783,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lodash.isstring@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "lodash.isstring@npm:4.0.1"
+  checksum: eaac87ae9636848af08021083d796e2eea3d02e80082ab8a9955309569cb3a463ce97fd281d7dc119e402b2e7d8c54a23914b15d2fc7fff56461511dc8937ba0
+  languageName: node
+  linkType: hard
+
 "lodash.memoize@npm:~3.0.3":
   version: 3.0.4
   resolution: "lodash.memoize@npm:3.0.4"
@@ -24547,6 +24635,7 @@ __metadata:
     "@babel/register": "npm:^7.22.15"
     "@babel/runtime": "npm:^7.23.2"
     "@blockaid/ppom_release": "npm:^1.4.0"
+    "@contentful/rich-text-html-renderer": "npm:^16.3.0"
     "@ensdomains/content-hash": "npm:^2.5.6"
     "@ethereumjs/common": "npm:^3.1.1"
     "@ethereumjs/tx": "npm:^4.1.1"
@@ -24719,6 +24808,7 @@ __metadata:
     chokidar: "npm:^3.5.3"
     classnames: "npm:^2.2.6"
     concurrently: "npm:^7.6.0"
+    contentful: "npm:^10.6.16"
     copy-to-clipboard: "npm:^3.3.3"
     copy-webpack-plugin: "npm:^6.0.3"
     cross-spawn: "npm:^7.0.3"
@@ -27113,6 +27203,13 @@ __metadata:
   dependencies:
     aggregate-error: "npm:^3.0.0"
   checksum: 7ba4a2b1e24c05e1fc14bbaea0fc6d85cf005ae7e9c9425d4575550f37e2e584b1af97bcde78eacd7559208f20995988d52881334db16cf77bc1bcf68e48ed7c
+  languageName: node
+  linkType: hard
+
+"p-throttle@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "p-throttle@npm:4.1.1"
+  checksum: fe8709f3c3b1da7c033479375c2c302e80c1a5d86449013afa7cd46d1dc210bc824a7e4a9d088e66d31987d00878c2b5491bb2fe76246d4d2fc9a1636f5f8298
   languageName: node
   linkType: hard
 
@@ -33492,6 +33589,13 @@ __metadata:
   version: 3.5.1
   resolution: "type-fest@npm:3.5.1"
   checksum: 8ccf463845b557d6b17e0bf61b55ed931b20c663c712842b45c39c530eaefa3e093be1a1df789508e43d8cdd75aa0110766c1c94069e1e4fbe72e5e879356114
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:^4.0.0":
+  version: 4.9.0
+  resolution: "type-fest@npm:4.9.0"
+  checksum: 49acfb67999566a24d5604435c8cff786dfc26ebea5a2a343e14d437d34f30a55248f8e597b8f64446c344bb68ce14af68899f562cf66ca66c1e1a856b393259
   languageName: node
   linkType: hard
 
