@@ -26,7 +26,7 @@ export function useSignatureInsights({ txData }) {
       } = txData;
 
       const shouldParse =
-        signatureMethod === 'eth_signTyepdData_v3' ||
+        signatureMethod === 'eth_signTypedData_v3' ||
         signatureMethod === 'eth_signTypedData_v4';
 
       const signature = {
