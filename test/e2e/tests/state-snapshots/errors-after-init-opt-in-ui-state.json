@@ -214,10 +214,9 @@
     "approvalFlows": "object",
     "lastFetchedBlockNumbers": "object",
     "methodData": "object",
-    "versionInfo": {},
     "storageMetadata": {},
     "chainStatus": {
-      "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
+      "0x539": { "chainId": "0x539", "versionInfo": [] }
     },
     "versionFileETag": "string",
     "userOperations": "object"

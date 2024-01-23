@@ -46,6 +46,7 @@ const removedBackgroundFields = [
   'AppStateController.currentPopupId',
   'AppStateController.timeoutMinutes',
   'PPOMController.chainStatus.0x539.lastVisited',
+  'PPOMController.versionInfo',
 ];
 
 const removedUiFields = removedBackgroundFields.map(backgroundToUiField);

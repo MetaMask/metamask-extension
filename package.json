@@ -281,7 +281,7 @@
     "@metamask/phishing-controller": "^8.0.0",
     "@metamask/polling-controller": "^4.0.0",
     "@metamask/post-message-stream": "^7.0.0",
-    "@metamask/ppom-validator": "^0.10.0",
+    "@metamask/ppom-validator": "0.22.0",
     "@metamask/providers": "^14.0.2",
     "@metamask/queued-request-controller": "^0.3.0",
     "@metamask/rate-limit-controller": "^3.0.0",
@@ -653,7 +653,8 @@
       "@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
       "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false,
-      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false
+      "@metamask/eth-trezor-keyring>@trezor/connect-web>@trezor/connect>@trezor/transport>usb": false,
+      "@metamask/desktop>eciesjs>secp256k1": false
     }
   },
   "packageManager": "yarn@4.0.2"
