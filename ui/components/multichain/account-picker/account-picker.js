@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import { useSelector } from 'react-redux';
-import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   AvatarAccount,
   AvatarAccountVariant,
@@ -18,11 +17,8 @@ import {
   Display,
   IconColor,
   Size,
-  TextColor,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import { getUseBlockie } from '../../../selectors';
-import { shortenAddress } from '../../../helpers/utils/util';
 
 export const AccountPicker = ({
   address,

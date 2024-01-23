@@ -112,9 +112,10 @@ export const AppHeader = ({ location }) => {
   const [copied, handleCopy] = useCopyToClipboard(MINUTE);
 
   const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
-  const showConnectedStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
-      origin &&
-      origin !== browser.runtime.id;
+  const showConnectedStatus =
+    getEnvironmentType() === ENVIRONMENT_TYPE_POPUP &&
+    origin &&
+    origin !== browser.runtime.id;
   const showProductTour =
     completedOnboarding && !onboardedInThisUISession && showProductTourPopup;
   const productTourDirection = document
