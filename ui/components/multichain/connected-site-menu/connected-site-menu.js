@@ -27,8 +27,6 @@ import {
 } from '../../component-library';
 import {
   getOriginOfCurrentTab,
-  getPermissionsForActiveTab,
-  getPermissionSubjects,
   getSelectedInternalAccount,
   getSubjectMetadata,
 } from '../../../selectors';
