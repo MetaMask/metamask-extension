@@ -1842,6 +1842,9 @@
   "generalCameraErrorTitle": {
     "message": "Something went wrong...."
   },
+  "genericExplorerView": {
+    "message": "View account on $1"
+  },
   "globalTitle": {
     "message": "Global menu"
   },
