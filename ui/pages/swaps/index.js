@@ -86,7 +86,7 @@ import {
   setSwapsErrorKey,
 } from '../../store/actions';
 
-import { useGasFeeEstimates } from '../../hooks/useGasFeeEstimates';
+import { useGasFeeEstimates } from '../confirmations/hooks/useGasFeeEstimates';
 import FeatureToggledRoute from '../../helpers/higher-order-components/feature-toggled-route';
 import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../contexts/metametrics';

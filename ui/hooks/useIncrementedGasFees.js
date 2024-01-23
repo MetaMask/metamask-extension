@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { decGWEIToHexWEI } from '../../shared/modules/conversion.utils';
 import { isEIP1559Transaction } from '../../shared/modules/transaction.utils';
 import { addTenPercentAndRound } from '../helpers/utils/gas';
-import { useGasFeeEstimates } from './useGasFeeEstimates';
+import { useGasFeeEstimates } from '../pages/confirmations/hooks/useGasFeeEstimates';
 
 /**
  * Helper that returns the higher of two options for a new gas fee:
