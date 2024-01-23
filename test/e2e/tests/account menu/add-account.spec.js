@@ -10,10 +10,10 @@ const {
   unlockWallet,
   WALLET_PASSWORD,
   generateGanacheOptions,
-} = require('../helpers');
+} = require('../../helpers');
 
-const FixtureBuilder = require('../fixture-builder');
-const { shortenAddress } = require('../../../ui/helpers/utils/util');
+const FixtureBuilder = require('../../fixture-builder');
+const { shortenAddress } = require('../../../../ui/helpers/utils/util');
 
 describe('Add account', function () {
   const firstAccount = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
