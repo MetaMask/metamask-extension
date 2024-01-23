@@ -49,10 +49,7 @@ export const ConnectedSiteMenu = ({
     Boolean(connectedSubjectsMetadata?.iconUrl) ||
     status === STATUS_CONNECTED_TO_ANOTHER_ACCOUNT ||
     status === STATUS_CONNECTED_TO_SNAP;
-  console.log(
-    'isConnectedtoOtherAccountOrSnap',
-    isConnectedtoOtherAccountOrSnap,
-  );
+
   return (
     <Box
       className={classNames('multichain-connected-site-menu', className)}
