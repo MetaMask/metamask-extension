@@ -10,4 +10,4 @@ export const DEFAULT_FIXTURE_ACCOUNT =
 export const ENTRYPOINT = '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b';
 
 /* Address of the user operation sender. */
-export const SENDER = '0x03f522D61308F19aE950DFf351179434bAb665E8';
+export const SENDER = '0x053620F82392056baF0cE207334ed996D605Df63';

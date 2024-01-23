@@ -1,1 +1,0 @@
-{"version":3,"file":"constants.js","sourceRoot":"","sources":["../src/constants.ts"],"names":[],"mappings":";;;AAAa,QAAA,WAAW,GAAG,IAAI,CAAC;AACnB,QAAA,YAAY,GAAG,4CAA4C,CAAC;AAC5D,QAAA,UAAU,GAAG,KAAK,CAAC","sourcesContent":["export const EMPTY_BYTES = '0x';\nexport const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000';\nexport const VALUE_ZERO = '0x0';\n"]}

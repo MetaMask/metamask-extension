@@ -7,11 +7,54 @@ const {
   WINDOW_TITLES,
   sendTransaction,
   convertETHToHexGwei,
+  PRIVATE_KEY,
 } = require('../helpers');
 
 const FixtureBuilder = require('../fixture-builder');
 const { DEFAULT_FIXTURE_ACCOUNT, SENDER } = require('../constants');
 const { buildQuote, reviewQuote } = require('../tests/swaps/shared');
+
+async function installExampleSnap(driver) {
+  // Navigate to Site
+  await driver.openNewPage('http://localhost:8001');
+  await driver.delay(1000);
+
+  // Click Connect Button
+  await driver.clickElement('#connectButton');
+  await driver.delay(1000);
+
+  // Confirm Connect Modal
+  await switchToNotificationWindow(driver, 3);
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
+  });
+
+  // Scroll Down
+  await driver.clickElementSafe('[data-testid="snap-install-scroll"]');
+
+  // Confirm Install Modal
+  await driver.clickElement({
+    text: 'Install',
+    tag: 'button',
+  });
+
+  // Success Modal
+  await driver.clickElement({
+    text: 'OK',
+    tag: 'button',
+  });
+}
+
+async function createSnapAccount(driver, privateKey) {
+  await driver.switchToWindowWithTitle('Account Abstraction Snap');
+  await driver.clickElement({ text: 'Create account' });
+  await driver.fill('#create-account-private-key', privateKey);
+  await driver.clickElement({ text: 'Create Account', tag: 'button' });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.clickElement({ text: 'Create', tag: 'button' });
+  await driver.clickElement({ text: 'Ok', tag: 'button' });
+}
 
 async function createDappTransaction(driver, transaction) {
   await openDapp(
@@ -40,26 +83,22 @@ async function createSwap(driver) {
 }
 
 async function confirmTransaction(driver) {
-  await switchToNotificationWindow(driver, 3);
+  await switchToNotificationWindow(driver, 4);
   await driver.clickElement({ text: 'Confirm' });
 }
 
-async function switchToExtension(driver) {
-  const windowHandles = await driver.waitUntilXWindowHandles(2);
-
-  await driver.switchToWindowWithTitle(
-    WINDOW_TITLES.ExtensionInFullScreenView,
-    windowHandles,
-  );
-}
-
 async function openConfirmedTransaction(driver) {
+  await switchToExtensionWindow(driver);
   await driver.clickElement('[data-testid="home__activity-tab"]');
 
   await driver.clickElement({
     css: '[data-testid="activity-list-item"]',
     text: 'Confirmed',
   });
+}
+
+async function switchToExtensionWindow(driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 }
 
 async function expectTransactionDetail(driver, rowIndex, expectedText) {
@@ -102,7 +141,6 @@ describe('User Operations', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
-          .with4337Account()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         title: this.test.fullTitle(),
@@ -114,6 +152,8 @@ describe('User Operations', function () {
       },
       async ({ driver, bundlerServer }) => {
         await unlockWallet(driver);
+        await installExampleSnap(driver);
+        await createSnapAccount(driver, PRIVATE_KEY);
 
         await createDappTransaction(driver, {
           from: SENDER,
@@ -123,7 +163,6 @@ describe('User Operations', function () {
         });
 
         await confirmTransaction(driver);
-        await switchToExtension(driver);
         await openConfirmedTransaction(driver);
         await expectTransactionDetails(driver, bundlerServer);
       },
@@ -133,7 +172,7 @@ describe('User Operations', function () {
   it('from send transaction', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().with4337Account().build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
         useBundler: true,
         ganacheOptions: {
@@ -146,6 +185,9 @@ describe('User Operations', function () {
         }
 
         await unlockWallet(driver);
+        await installExampleSnap(driver);
+        await createSnapAccount(driver, PRIVATE_KEY);
+        await switchToExtensionWindow(driver);
 
         await sendTransaction(
           driver,
@@ -163,7 +205,7 @@ describe('User Operations', function () {
   it('from swap', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().with4337Account().build(),
+        fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
         useBundler: true,
         ganacheOptions: {
@@ -172,6 +214,9 @@ describe('User Operations', function () {
       },
       async ({ driver, bundlerServer }) => {
         await unlockWallet(driver);
+        await installExampleSnap(driver);
+        await createSnapAccount(driver, PRIVATE_KEY);
+        await switchToExtensionWindow(driver);
         await createSwap(driver);
         await openConfirmedTransaction(driver);
         await expectTransactionDetails(driver, bundlerServer);

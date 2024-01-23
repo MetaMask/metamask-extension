@@ -1,1 +1,0 @@
-{"version":3,"file":"constants.js","sourceRoot":"","sources":["../src/constants.ts"],"names":[],"mappings":";;;AAAa,QAAA,eAAe,GAC1B,sIAAsI,CAAC","sourcesContent":["export const DUMMY_SIGNATURE =\n  \"0xfffffffffffffffffffffffffffffff0000000000000000000000000000000007aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1c\";\n"]}
