@@ -16,6 +16,7 @@ export interface SnapAccountRedirectProps {
   snapName: string;
   isBlockedUrl: boolean;
   message: string;
+  onSubmit?: () => void;
 }
 
 const SnapAccountRedirect = ({
@@ -24,6 +25,7 @@ const SnapAccountRedirect = ({
   snapName,
   isBlockedUrl,
   message,
+  onSubmit,
 }: SnapAccountRedirectProps) => {
   return (
     <Box
@@ -45,6 +47,7 @@ const SnapAccountRedirect = ({
       >
         <SnapAccountRedirectContent
           url={url}
+          onSubmit={onSubmit}
           snapId={snapId}
           snapName={snapName}
           isBlockedUrl={isBlockedUrl}

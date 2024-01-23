@@ -20,6 +20,8 @@ jest.mock('../../../selectors/transactions', () => {
 
 jest.mock('../../../contexts/gasFee');
 
+jest.mock('../../../selectors/account-abstraction');
+
 function render({
   componentProps = {},
   useGasFeeContextValue = {},
@@ -570,6 +572,25 @@ describe('TransactionAlerts', () => {
         },
       });
       expect(queryByText('You are sending 0 DAI.')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('when paymaster is being used with user operation', () => {
+    it('displays alert', () => {
+      const { getByText } = render({
+        componentProps: {
+          txData: {
+            txParams: {
+              value: '0x1',
+            },
+          },
+          isUsingPaymaster: true,
+        },
+      });
+
+      expect(
+        getByText('The gas for this transaction will be paid by a paymaster.'),
+      ).toBeInTheDocument();
     });
   });
 });
