@@ -36,7 +36,7 @@ const Preloader = ({ className, size }) => (
     <g mask="url(#mask0)">
       <path
         d="M6.85718 17.9999V11.4285V8.28564H-4.85711V17.9999H6.85718Z"
-        fill="var(--brand-colors-blue-blue500)"
+        fill="var(--color-primary-default)"
       />
     </g>
   </svg>
