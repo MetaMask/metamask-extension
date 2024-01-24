@@ -201,78 +201,6 @@ describe('Transaction Utils', () => {
 
         expect(completed).toBe(true);
       });
-
-      it('validates if ppom is enabled', async () => {
-        await addTransaction({
-          ...request,
-          securityAlertsEnabled: true,
-          chainId: '0x1',
-        });
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
-          ...TRANSACTION_OPTIONS_MOCK,
-          securityAlertResponse: {
-            reason: 'testReason',
-            result_type: 'testResultType',
-          },
-        });
-
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(1);
-        expect(request.ppomController.usePPOM).toHaveBeenCalledWith(
-          expect.any(Function),
-        );
-        expect(request.ppomController.usePPOM).toHaveReturnedWith(
-          Promise.resolve({
-            reason: 'testReason',
-            result_type: 'testResultType',
-          }),
-        );
-      });
-
-      it('does not validate if ppom is disabled', async () => {
-        await addTransaction({
-          ...request,
-          securityAlertsEnabled: false,
-          chainId: '0x1',
-        });
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
-          TRANSACTION_OPTIONS_MOCK,
-        );
-
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
-      });
-
-      it('does not validate if chain id is not supported', async () => {
-        await addTransaction({
-          ...request,
-          securityAlertsEnabled: true,
-          chainId: '0xF',
-        });
-
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          request.transactionController.addTransaction,
-        ).toHaveBeenCalledWith(
-          TRANSACTION_PARAMS_MOCK,
-          TRANSACTION_OPTIONS_MOCK,
-        );
-
-        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
-      });
     });
 
     describe('if selected account is smart contract', () => {
@@ -433,6 +361,102 @@ describe('Transaction Utils', () => {
           },
           expect.anything(),
         );
+      });
+    });
+
+    describe('when blockaid is enabled', () => {
+      it('validates if blockaid is enabled and chain id is supported', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: '0x1',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          securityAlertResponse: {
+            reason: 'testReason',
+            result_type: 'testResultType',
+          },
+        });
+
+        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(1);
+        expect(request.ppomController.usePPOM).toHaveBeenCalledWith(
+          expect.any(Function),
+        );
+        expect(request.ppomController.usePPOM).toHaveReturnedWith(
+          Promise.resolve({
+            reason: 'testReason',
+            result_type: 'testResultType',
+          }),
+        );
+      });
+
+      it('does not validate if blockaid is enabled and chain id is not supported', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: '0xF',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          TRANSACTION_OPTIONS_MOCK,
+        );
+
+        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+      });
+    });
+
+    describe('when blockaid is disabled', () => {
+      it('does not validate if blockaid is disabled and chain id is supported', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: false,
+          chainId: '0x1',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          TRANSACTION_OPTIONS_MOCK,
+        );
+
+        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+      });
+
+      it('does not validate if blockaid is disabled and chain id is not supported', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: false,
+          chainId: '0xF',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          TRANSACTION_OPTIONS_MOCK,
+        );
+
+        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
       });
     });
   });
