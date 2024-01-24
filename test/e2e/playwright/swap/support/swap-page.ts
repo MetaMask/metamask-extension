@@ -85,13 +85,19 @@ export class SwapPage {
     }
     await this.tokenQty.fill(options.qty);
     await this.swapToDropDown.click();
+    await this.page.waitForTimeout(2000);
     await this.tokenSearch.fill(options.to);
-    await this.page.waitForTimeout(500);
+    await this.page.waitForTimeout(1000);
     await this.tokenList.first().click();
     await this.page.waitForSelector('text=/New quotes in 0:26/');
   }
 
   async swap() {
+    const swapAnywayButton = await this.page.$('text=/Swap anyway/');
+    if (swapAnywayButton) {
+      // Click only if it is present
+      await swapAnywayButton.click();
+    }
     await this.footerButton.click(); // Swap button
     await this.page.waitForTimeout(1000);
   }
