@@ -10,13 +10,19 @@ const {
   PRIVATE_KEY,
 } = require('../helpers');
 
+const BUNDLER_URL = 'http://localhost:3000/rpc';
+const SNAP_URL = 'http://localhost:8001';
+const ACCOUNT_SALT = '0x1';
+const SIMPLE_ACCOUNT_FACTORY = '0x4aFf835038b16dccDb1670103C4877A8F93E5219';
+const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';
+
 const FixtureBuilder = require('../fixture-builder');
-const { DEFAULT_FIXTURE_ACCOUNT, SENDER } = require('../constants');
+const { DEFAULT_FIXTURE_ACCOUNT, SENDER, ENTRYPOINT } = require('../constants');
 const { buildQuote, reviewQuote } = require('../tests/swaps/shared');
 
 async function installExampleSnap(driver) {
   // Navigate to Site
-  await driver.openNewPage('http://localhost:8001');
+  await driver.openNewPage(SNAP_URL);
   await driver.delay(1000);
 
   // Click Connect Button
@@ -46,14 +52,32 @@ async function installExampleSnap(driver) {
   });
 }
 
-async function createSnapAccount(driver, privateKey) {
+async function createSnapAccount(driver, privateKey, salt) {
   await driver.switchToWindowWithTitle('Account Abstraction Snap');
   await driver.clickElement({ text: 'Create account' });
   await driver.fill('#create-account-private-key', privateKey);
+  await driver.fill('#create-account-salt', salt);
   await driver.clickElement({ text: 'Create Account', tag: 'button' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await driver.clickElement({ text: 'Create', tag: 'button' });
   await driver.clickElement({ text: 'Ok', tag: 'button' });
+}
+
+async function setSnapConfig(
+  driver,
+  { bundlerUrl, entrypoint, simpleAccountFactory, paymaster },
+) {
+  const data = JSON.stringify({
+    bundlerUrl,
+    entryPoint: entrypoint,
+    simpleAccountFactory,
+    customVerifyingPaymasterAddress: paymaster,
+  });
+
+  await driver.switchToWindowWithTitle('Account Abstraction Snap');
+  await driver.clickElement({ text: 'Set Chain Config' });
+  await driver.fill('#set-chain-config-chain-config-object', data);
+  await driver.clickElement({ text: 'Set Chain Configs', tag: 'button' });
 }
 
 async function createDappTransaction(driver, transaction) {
@@ -69,6 +93,7 @@ async function createDappTransaction(driver, transaction) {
 }
 
 async function createSwap(driver) {
+  await switchToExtensionWindow(driver);
   await buildQuote(driver, {
     amount: 0.001,
     swapTo: 'USDC',
@@ -136,25 +161,78 @@ async function expectTransactionDetails(driver, bundlerServer) {
   );
 }
 
+async function withAccountSnap({ currentTest, paymaster }, createTransaction) {
+  await withFixtures(
+    {
+      fixtures: new FixtureBuilder()
+        .withPermissionControllerConnectedToTestDapp()
+        .build(),
+      title: currentTest.fullTitle(),
+      useBundler: true,
+      dapp: true,
+      ganacheOptions: {
+        hardfork: 'london',
+      },
+    },
+    async ({ driver, bundlerServer }) => {
+      await unlockWallet(driver);
+      await installExampleSnap(driver);
+
+      await setSnapConfig(driver, {
+        bundlerUrl: BUNDLER_URL,
+        entrypoint: ENTRYPOINT,
+        simpleAccountFactory: SIMPLE_ACCOUNT_FACTORY,
+        paymaster,
+      });
+
+      await createSnapAccount(driver, PRIVATE_KEY, ACCOUNT_SALT);
+      await createTransaction(driver);
+      await openConfirmedTransaction(driver);
+      await expectTransactionDetails(driver, bundlerServer);
+    },
+  );
+}
+
 describe('User Operations', function () {
   it('from dApp transaction', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withPermissionControllerConnectedToTestDapp()
-          .build(),
-        title: this.test.fullTitle(),
-        useBundler: true,
-        dapp: true,
-        ganacheOptions: {
-          hardfork: 'london',
-        },
-      },
-      async ({ driver, bundlerServer }) => {
-        await unlockWallet(driver);
-        await installExampleSnap(driver);
-        await createSnapAccount(driver, PRIVATE_KEY);
+    await withAccountSnap({ currentTest: this.test }, async (driver) => {
+      await createDappTransaction(driver, {
+        from: SENDER,
+        to: DEFAULT_FIXTURE_ACCOUNT,
+        value: convertETHToHexGwei(1),
+        data: '0x',
+      });
 
+      await confirmTransaction(driver);
+    });
+  });
+
+  it('from send transaction', async function () {
+    if (process.env.MULTICHAIN) {
+      return;
+    }
+
+    await withAccountSnap({ currentTest: this.test }, async (driver) => {
+      await switchToExtensionWindow(driver);
+      await sendTransaction(
+        driver,
+        DEFAULT_FIXTURE_ACCOUNT,
+        convertETHToHexGwei(1),
+        true,
+      );
+    });
+  });
+
+  it('from swap', async function () {
+    await withAccountSnap({ currentTest: this.test }, async (driver) => {
+      await createSwap(driver);
+    });
+  });
+
+  it('with paymaster', async function () {
+    await withAccountSnap(
+      { currentTest: this.test, paymaster: VERIFYING_PAYMASTER },
+      async (driver) => {
         await createDappTransaction(driver, {
           from: SENDER,
           to: DEFAULT_FIXTURE_ACCOUNT,
@@ -163,63 +241,6 @@ describe('User Operations', function () {
         });
 
         await confirmTransaction(driver);
-        await openConfirmedTransaction(driver);
-        await expectTransactionDetails(driver, bundlerServer);
-      },
-    );
-  });
-
-  it('from send transaction', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
-        useBundler: true,
-        ganacheOptions: {
-          hardfork: 'london',
-        },
-      },
-      async ({ driver, bundlerServer }) => {
-        if (process.env.MULTICHAIN) {
-          return;
-        }
-
-        await unlockWallet(driver);
-        await installExampleSnap(driver);
-        await createSnapAccount(driver, PRIVATE_KEY);
-        await switchToExtensionWindow(driver);
-
-        await sendTransaction(
-          driver,
-          DEFAULT_FIXTURE_ACCOUNT,
-          convertETHToHexGwei(1),
-          true,
-        );
-
-        await openConfirmedTransaction(driver);
-        await expectTransactionDetails(driver, bundlerServer);
-      },
-    );
-  });
-
-  it('from swap', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder().build(),
-        title: this.test.fullTitle(),
-        useBundler: true,
-        ganacheOptions: {
-          hardfork: 'london',
-        },
-      },
-      async ({ driver, bundlerServer }) => {
-        await unlockWallet(driver);
-        await installExampleSnap(driver);
-        await createSnapAccount(driver, PRIVATE_KEY);
-        await switchToExtensionWindow(driver);
-        await createSwap(driver);
-        await openConfirmedTransaction(driver);
-        await expectTransactionDetails(driver, bundlerServer);
       },
     );
   });
