@@ -101,7 +101,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
       blockaidVersion: BlockaidPackage.version,
       chain: NETWORK_TO_NAME_MAP[chainId],
       classification: reason,
-      domain: origin ?? msgParams?.origin,
+      domain: origin ?? msgParams?.origin ?? txParams?.origin,
       jsonRpcMethod: type,
       jsonRpcParams: JSON.stringify(txParams ?? msgParams),
       resultType,
