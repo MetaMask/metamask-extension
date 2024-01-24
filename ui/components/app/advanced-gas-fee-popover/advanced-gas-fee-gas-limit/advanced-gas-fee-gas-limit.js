@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useGasFeeContext } from '../../../../pages/confirmations/contexts/gasFee';
 import { bnGreaterThan, bnLessThan } from '../../../../helpers/utils/util';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';

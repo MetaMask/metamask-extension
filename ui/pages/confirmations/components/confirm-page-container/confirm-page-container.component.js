@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 
 import { TransactionType } from '@metamask/transaction-controller';
 import { EditGasModes } from '../../../../../shared/constants/gas';
-import { GasFeeContextProvider } from '../../../../contexts/gasFee';
+import { GasFeeContextProvider } from '../../contexts/gasFee';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
 

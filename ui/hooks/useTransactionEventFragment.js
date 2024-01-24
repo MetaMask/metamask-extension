@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useGasFeeContext } from '../contexts/gasFee';
+import { useGasFeeContext } from '../pages/confirmations/contexts/gasFee';
 import {
   createTransactionEventFragment,
   updateEventFragment,

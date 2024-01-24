@@ -12,7 +12,7 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../helpers/constants/error-keys';
-import { useGasFeeContext } from '../../../contexts/gasFee';
+import { useGasFeeContext } from '../../../pages/confirmations/contexts/gasFee';
 import AppLoadingSpinner from '../app-loading-spinner';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { Text } from '../../component-library';

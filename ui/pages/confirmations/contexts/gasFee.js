@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import PropTypes from 'prop-types';
-import { useGasFeeInputs } from '../pages/confirmations/hooks/useGasFeeInputs';
+import { useGasFeeInputs } from '../hooks/useGasFeeInputs';
 
 export const GasFeeContext = createContext({});
 

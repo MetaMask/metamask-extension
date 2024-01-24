@@ -9,7 +9,7 @@ import {
 import { PRIMARY } from '../../../../../helpers/constants/common';
 import { bnGreaterThan, bnLessThan } from '../../../../../helpers/utils/util';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
-import { useGasFeeContext } from '../../../../../contexts/gasFee';
+import { useGasFeeContext } from '../../../../../pages/confirmations/contexts/gasFee';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';

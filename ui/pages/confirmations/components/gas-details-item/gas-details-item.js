@@ -20,7 +20,7 @@ import {
   sumHexes,
 } from '../../../../../shared/modules/conversion.utils';
 import { useDraftTransactionWithTxParams } from '../../../../hooks/useDraftTransactionWithTxParams';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useGasFeeContext } from '../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 import Box from '../../../../components/ui/box';

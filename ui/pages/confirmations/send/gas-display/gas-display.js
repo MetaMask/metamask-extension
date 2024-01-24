@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import { I18nContext } from '../../../../contexts/i18n';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useGasFeeContext } from '../../contexts/gasFee';
 import { PRIMARY, SECONDARY } from '../../../../helpers/constants/common';
 import UserPreferencedCurrencyDisplay from '../../../../components/app/user-preferenced-currency-display';
 import Typography from '../../../../components/ui/typography';

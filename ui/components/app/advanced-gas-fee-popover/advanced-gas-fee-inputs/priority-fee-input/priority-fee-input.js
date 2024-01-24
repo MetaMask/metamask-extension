@@ -9,7 +9,7 @@ import {
 import { PRIMARY } from '../../../../../helpers/constants/common';
 import { getAdvancedGasFeeValues } from '../../../../../selectors';
 import { useCurrencyDisplay } from '../../../../../hooks/useCurrencyDisplay';
-import { useGasFeeContext } from '../../../../../contexts/gasFee';
+import { useGasFeeContext } from '../../../../../pages/confirmations/contexts/gasFee';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useUserPreferencedCurrency } from '../../../../../hooks/useUserPreferencedCurrency';
 import FormField from '../../../../ui/form-field';

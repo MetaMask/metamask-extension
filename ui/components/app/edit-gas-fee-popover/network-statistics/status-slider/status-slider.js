@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { NetworkCongestionThresholds } from '../../../../../../shared/constants/gas';
-import { useGasFeeContext } from '../../../../../contexts/gasFee';
+import { useGasFeeContext } from '../../../../../pages/confirmations/contexts/gasFee';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { NetworkStabilityTooltip } from '../tooltips';
 

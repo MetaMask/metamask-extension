@@ -15,7 +15,7 @@ import {
   getNetworkIdentifier,
 } from '../../../../selectors';
 import { setAdvancedGasFee } from '../../../../store/actions';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useGasFeeContext } from '../../../../pages/confirmations/contexts/gasFee';
 import { useAdvancedGasFeePopoverContext } from '../context';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Checkbox, Box } from '../../../component-library';

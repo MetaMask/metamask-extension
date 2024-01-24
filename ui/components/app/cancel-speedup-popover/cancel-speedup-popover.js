@@ -9,7 +9,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { getAppIsLoading } from '../../../selectors';
 import { gasEstimateGreaterThanGasUsedPlusTenPercent } from '../../../helpers/utils/gas';
-import { useGasFeeContext } from '../../../contexts/gasFee';
+import { useGasFeeContext } from '../../../pages/confirmations/contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../contexts/transaction-modal';
 import GasDetailsItem from '../../../pages/confirmations/components/gas-details-item';

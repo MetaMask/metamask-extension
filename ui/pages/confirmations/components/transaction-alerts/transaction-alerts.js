@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { PriorityLevels } from '../../../../../shared/constants/gas';
 import { submittedPendingTransactionsSelector } from '../../../../selectors';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useGasFeeContext } from '../../contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   BannerAlert,

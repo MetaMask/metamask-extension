@@ -11,7 +11,7 @@ import {
   gasEstimateGreaterThanGasUsedPlusTenPercent,
 } from '../../../../helpers/utils/gas';
 import { getAdvancedGasFeeValues } from '../../../../selectors';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useGasFeeContext } from '../../../../pages/confirmations/contexts/gasFee';
 import {
   decGWEIToHexWEI,
   decimalToHex,

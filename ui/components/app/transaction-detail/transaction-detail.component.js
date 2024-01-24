@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useGasFeeContext } from '../../../contexts/gasFee';
+import { useGasFeeContext } from '../../../pages/confirmations/contexts/gasFee';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Box from '../../ui/box';
 

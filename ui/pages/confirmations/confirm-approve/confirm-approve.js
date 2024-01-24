@@ -10,7 +10,7 @@ import {
 } from '../../../store/actions';
 import { getTokenApprovedParam } from '../../../helpers/utils/token-util';
 import { readAddressAsContract } from '../../../../shared/modules/contract-utils';
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
+import { GasFeeContextProvider } from '../contexts/gasFee';
 import { TransactionModalContextProvider } from '../../../contexts/transaction-modal';
 import {
   getNativeCurrency,

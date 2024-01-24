@@ -44,7 +44,7 @@ import { EditGasModes } from '../../../../shared/constants/gas';
 import {
   GasFeeContextProvider,
   useGasFeeContext,
-} from '../../../contexts/gasFee';
+} from '../../../pages/confirmations/contexts/gasFee';
 import {
   TransactionModalContextProvider,
   useTransactionModalContext,

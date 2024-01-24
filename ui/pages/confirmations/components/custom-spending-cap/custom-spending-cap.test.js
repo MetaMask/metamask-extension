@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event';
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import * as Actions from '../../../../store/actions';
-import * as GasFeeContext from '../../../../contexts/gasFee';
+import * as GasFeeContext from '../../contexts/gasFee';
 import CustomSpendingCap from './custom-spending-cap';
 
 const props = {

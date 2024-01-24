@@ -11,7 +11,7 @@ import { PRIORITY_LEVEL_ICON_MAP } from '../../../../helpers/constants/gas';
 ///: END:ONLY_INCLUDE_IF
 import { PRIMARY } from '../../../../helpers/constants/common';
 import { toHumanReadableTime } from '../../../../helpers/utils/util';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useGasFeeContext } from '../../../../pages/confirmations/contexts/gasFee';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';

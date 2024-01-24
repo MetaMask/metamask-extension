@@ -22,7 +22,7 @@ import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import { I18nContext } from '../../../../contexts/i18n';
 import Typography from '../../../../components/ui/typography/typography';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+import { useGasFeeContext } from '../../contexts/gasFee';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { useDraftTransactionWithTxParams } from '../../../../hooks/useDraftTransactionWithTxParams';
 
