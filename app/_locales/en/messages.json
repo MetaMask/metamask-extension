@@ -2204,6 +2204,18 @@
     "message": "Ledger Live",
     "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
+  "ledgerErrorConnectionIssue": {
+    "message": "Reconnect your ledger, open the ETH app and try again."
+  },
+  "ledgerErrorDevicedLocked": {
+    "message": "Your Ledger is locked. Unlock it then try again."
+  },
+  "ledgerErrorEthAppNotOpen": {
+    "message": "To solve the issue, open the ETH application on your device and retry."
+  },
+  "ledgerErrorTransactionDataNotPadded": {
+    "message": "Ethereum transaction's input data isn't sufficiently padded."
+  },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
   },
