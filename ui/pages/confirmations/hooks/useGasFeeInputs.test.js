@@ -13,7 +13,7 @@ import {
 import { ETH, PRIMARY } from '../../../helpers/constants/common';
 
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
-import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+import { useGasFeeEstimates } from './useGasFeeEstimates';
 import { useGasFeeInputs } from './useGasFeeInputs';
 
 import {

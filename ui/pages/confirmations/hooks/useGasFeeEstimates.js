@@ -6,7 +6,7 @@ import {
   getIsGasEstimatesLoading,
   getIsNetworkBusy,
 } from '../../../ducks/metamask/metamask';
-import { useSafeGasEstimatePolling } from '../../../hooks/useSafeGasEstimatePolling';
+import { useSafeGasEstimatePolling } from './useSafeGasEstimatePolling';
 
 /**
  * @typedef {object} GasEstimates

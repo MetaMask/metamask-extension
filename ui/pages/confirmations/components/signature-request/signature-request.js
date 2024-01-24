@@ -46,7 +46,7 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useRejectTransactionModal } from '../../../../hooks/useRejectTransactionModal';
+import { useRejectTransactionModal } from '../../hooks/useRejectTransactionModal';
 
 import { ConfirmPageContainerNavigation } from '../confirm-page-container';
 import SignatureRequestHeader from '../signature-request-header/signature-request-header';

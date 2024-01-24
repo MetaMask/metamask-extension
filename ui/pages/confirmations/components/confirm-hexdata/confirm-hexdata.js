@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { toBuffer } from '../../../../../shared/modules/buffer-utils';
 import { getKnownMethodData } from '../../../../selectors';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { useTransactionFunctionType } from '../../../../hooks/useTransactionFunctionType';
+import { useTransactionFunctionType } from '../../hooks/useTransactionFunctionType';
 import {
   Color,
   OverflowWrap,

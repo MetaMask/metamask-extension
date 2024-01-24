@@ -52,7 +52,7 @@ import TransactionAlerts from '../components/transaction-alerts';
 import { ConfirmHexData } from '../components/confirm-hexdata';
 import { ConfirmTitle } from '../components/confirm-title';
 import { ConfirmSubTitle } from '../components/confirm-subtitle';
-import { ConfirmGasDisplay } from '../components/confirm-gas-display';
+import { ConfirmGasDisplay } from '../../../components/app/confirm-gas-display';
 import updateTxData from '../../../../shared/modules/updateTxData';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringType } from '../../../../shared/constants/keyring';

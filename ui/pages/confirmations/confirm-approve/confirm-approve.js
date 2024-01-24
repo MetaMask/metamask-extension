@@ -32,9 +32,9 @@ import {
 } from '../../../selectors';
 import { useApproveTransaction } from '../hooks/useApproveTransaction';
 import { useSimulationFailureWarning } from '../hooks/useSimulationFailureWarning';
-import AdvancedGasFeePopover from '../components/advanced-gas-fee-popover';
-import EditGasFeePopover from '../components/edit-gas-fee-popover';
-import EditGasPopover from '../components/edit-gas-popover/edit-gas-popover.component';
+import AdvancedGasFeePopover from '../../../components/app/advanced-gas-fee-popover';
+import EditGasFeePopover from '../../../components/app/edit-gas-fee-popover';
+import EditGasPopover from '../../../components/app/edit-gas-popover/edit-gas-popover.component';
 import Loading from '../../../components/ui/loading-screen';
 import { parseStandardTokenTransactionData } from '../../../../shared/modules/transaction.utils';
 import { TokenStandard } from '../../../../shared/constants/transaction';

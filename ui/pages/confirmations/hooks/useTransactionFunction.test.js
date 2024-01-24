@@ -10,7 +10,7 @@ import {
 import mockState from '../../../../test/data/mock-state.json';
 import * as Actions from '../../../store/actions';
 import configureStore from '../../../store/store';
-import { useGasFeeEstimates } from '../../../hooks/useGasFeeEstimates';
+import { useGasFeeEstimates } from './useGasEstimates';
 import { FEE_MARKET_ESTIMATE_RETURN_VALUE } from './test-utils';
 import { useTransactionFunctions } from './useTransactionFunctions';
 
