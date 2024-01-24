@@ -254,12 +254,12 @@ describe('Create token, approve token and approve token without gas', function (
         );
 
         // editing gas fee
-        const editBtn = await driver.findElements({
+        const editBtn = await driver.findElement({
           text: 'Edit',
-          class: 'btn-link > h6',
+          tag: 'h6',
         });
 
-        editBtn[1].click();
+        editBtn.click();
 
         await driver.clickElement({
           text: 'Edit suggested gas fee',
