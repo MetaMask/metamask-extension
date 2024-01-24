@@ -545,6 +545,43 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
     leftIcon: getLeftIcon(IconName.Search),
     weight: 4,
   }),
+  [EndowmentPermissions['endowment:signature-insight']]: ({
+    t,
+    permissionValue,
+    targetSubjectMetadata,
+  }) => {
+    const baseDescription = {
+      leftIcon: IconName.Warning,
+      weight: 4,
+    };
+
+    const result = [
+      {
+        ...baseDescription,
+        label: t('permission_signatureInsight'),
+        description: t('permission_signatureInsightDescription', [
+          getSnapNameComponent(targetSubjectMetadata),
+        ]),
+      },
+    ];
+
+    if (
+      isNonEmptyArray(permissionValue.caveats) &&
+      permissionValue.caveats[0].type === SnapCaveatType.SignatureOrigin &&
+      permissionValue.caveats[0].value
+    ) {
+      result.push({
+        ...baseDescription,
+        label: t('permission_signatureInsightOrigin'),
+        description: t('permission_signatureInsightOriginDescription', [
+          getSnapNameComponent(targetSubjectMetadata),
+        ]),
+        leftIcon: IconName.Explore,
+      });
+    }
+
+    return result;
+  },
   ///: END:ONLY_INCLUDE_IF
   [UNKNOWN_PERMISSION]: ({ t, permissionName }) => ({
     label: t('permission_unknown', [permissionName ?? 'undefined']),
