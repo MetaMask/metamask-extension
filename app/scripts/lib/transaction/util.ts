@@ -11,9 +11,9 @@ import {
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { PPOMController } from '@metamask/ppom-validator';
 import { captureException } from '@sentry/browser';
-///: END:ONLY_INCLUDE_IF
 import { addHexPrefix } from 'ethereumjs-util';
 import { SUPPORTED_CHAIN_IDS } from '../ppom/ppom-middleware';
+///: END:ONLY_INCLUDE_IF
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -85,7 +85,6 @@ export async function addTransaction(
   request: AddTransactionRequest,
 ): Promise<TransactionMeta> {
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-
   const {
     transactionParams,
     transactionOptions,
