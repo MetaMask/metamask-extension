@@ -186,7 +186,7 @@ describe('Transaction Utils', () => {
 
     describe('if selected account is smart contract', () => {
       beforeEach(() => {
-        request.selectedAccount.type = 'eip155:eip4337';
+        request.selectedAccount.type = 'eip155:erc4337';
       });
 
       it('adds user operation', async () => {
@@ -384,7 +384,7 @@ describe('Transaction Utils', () => {
 
     describe('if selected account is smart contract', () => {
       beforeEach(() => {
-        request.selectedAccount.type = 'eip155:eip4337';
+        request.selectedAccount.type = 'eip155:erc4337';
       });
 
       it('adds user operation', async () => {

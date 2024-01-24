@@ -95,7 +95,7 @@ async function addTransactionOrUserOperation(
 ) {
   const { selectedAccount } = request;
 
-  const isSmartContractAccount = selectedAccount.type === 'eip155:eip4337';
+  const isSmartContractAccount = selectedAccount.type === 'eip155:erc4337';
 
   if (isSmartContractAccount) {
     return addUserOperationWithController(request);
