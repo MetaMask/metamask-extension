@@ -15,13 +15,17 @@ export default {
   argTypes: {
     reason: {
       control: 'select',
-      options: Object.values(BlockaidReason),
+      options: Object.values(BlockaidReason).filter(
+        (reason) => reason !== BlockaidReason.notApplicable,
+      ),
       description:
         '(non-param) overrides txData.securityAlertResponse.reason value',
     },
     resultType: {
       control: 'select',
-      options: Object.values(BlockaidResultType),
+      options: Object.values(BlockaidResultType).filter(
+        (result) => result !== BlockaidResultType.NotApplicable,
+      ),
       description:
         '(non-param) overrides securityAlertResponse.resultType value',
     },
