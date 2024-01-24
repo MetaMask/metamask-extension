@@ -30,7 +30,6 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
   [BlockaidReason.blurFarming]: 'blockaidDescriptionBlurFarming',
 
   [BlockaidReason.failed]: 'blockaidDescriptionFailed',
-  [BlockaidReason.notApplicable]: 'blockaidDescriptionFailed',
 
   [BlockaidReason.seaportFarming]: 'blockaidDescriptionSeaportFarming',
 
@@ -49,7 +48,6 @@ const REASON_TO_DESCRIPTION_TKEY = Object.freeze({
 /** Reason to title translation key mapping. */
 const REASON_TO_TITLE_TKEY = Object.freeze({
   [BlockaidReason.failed]: 'blockaidTitleMayNotBeSafe',
-  [BlockaidReason.notApplicable]: 'blockaidTitleMayNotBeSafe',
   [BlockaidReason.rawSignatureFarming]: 'blockaidTitleSuspicious',
 });
 
