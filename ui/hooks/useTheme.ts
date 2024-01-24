@@ -18,8 +18,9 @@ const validThemes = Object.values(ThemeType).filter((theme) => {
  */
 export function useTheme() {
   const settingTheme = useSelector(getTheme);
+  const [theme, setTheme] = useState(settingTheme);
 
-  const [theme, setTheme] = useState(() => {
+  useEffect(() => {
     const result =
       !settingTheme || settingTheme === ThemeType.os
         ? document.documentElement.getAttribute('data-theme')
@@ -30,16 +31,10 @@ export function useTheme() {
       console.warn(
         `useTheme: Invalid theme resolved to "${result}". Defaulting to "${ThemeType.light}".`,
       );
-      return ThemeType.light;
+      setTheme(ThemeType.light);
     }
 
-    return result;
-  });
-
-  useEffect(() => {
-    if (settingTheme) {
-      setTheme(settingTheme);
-    }
+    setTheme(result);
   }, [settingTheme]);
 
   return theme;
