@@ -20,14 +20,14 @@ export type AddTransactionOptions = NonNullable<
 >;
 
 type BaseAddTransactionRequest = {
+  chainId: string;
   networkClientId: string;
+  ppomController: PPOMController;
+  securityAlertsEnabled: boolean;
   selectedAccount: InternalAccount;
   transactionParams: TransactionParams;
   transactionController: TransactionController;
   userOperationController: UserOperationController;
-  ppomController: PPOMController;
-  securityAlertsEnabled: boolean;
-  chainId: string;
 };
 
 /**
@@ -94,12 +94,10 @@ export async function addTransaction(
   } = request;
 
   if (securityAlertsEnabled && SUPPORTED_CHAIN_IDS.includes(chainId)) {
-    let securityAlertResponse;
-
     try {
       const ppomRequest = {
         method: 'eth_sendTransaction',
-        id: 'actionId' in transactionOptions ? transactionOptions.actionId : '',
+        id: transactionOptions.actionId ?? '',
         origin: 'origin' in transactionOptions ? transactionOptions.origin : '',
         params: [
           {
@@ -111,9 +109,11 @@ export async function addTransaction(
         ],
       };
 
-      securityAlertResponse = await ppomController.usePPOM(async (ppom) => {
-        return ppom.validateJsonRpc(ppomRequest);
-      });
+      const securityAlertResponse = await ppomController.usePPOM(
+        async (ppom) => {
+          return ppom.validateJsonRpc(ppomRequest);
+        },
+      );
 
       request.transactionOptions.securityAlertResponse = securityAlertResponse;
     } catch (e) {
