@@ -4,7 +4,6 @@ import configureStore from '../../../store/store';
 import testData from '../../../../.storybook/test-data';
 import CustodyPage from '.';
 
-// TODO (Bernardo) - Add environment to connectionRequest
 const customData = {
   ...testData,
   metamask: {
@@ -26,6 +25,7 @@ const customData = {
           refreshTokenUrl: null,
           isNoteToTraderSupported: false,
           version: 1,
+          envName: 'saturn',
         },
       ],
     },

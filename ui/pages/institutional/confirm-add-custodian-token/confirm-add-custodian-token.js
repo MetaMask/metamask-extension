@@ -49,8 +49,6 @@ const ConfirmAddCustodianToken = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [connectError, setConnectError] = useState('');
 
-  console.log('CONNECT REQUESTS', connectRequests);
-
   const connectRequest = connectRequests ? connectRequests[0] : undefined;
 
   useEffect(() => {
