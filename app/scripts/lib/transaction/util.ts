@@ -97,7 +97,7 @@ export async function addTransaction(
     try {
       const ppomRequest = {
         method: 'eth_sendTransaction',
-        id: transactionOptions.actionId ?? '',
+        id: 'actionId' in transactionOptions ? transactionOptions.actionId : '',
         origin: 'origin' in transactionOptions ? transactionOptions.origin : '',
         params: [
           {
