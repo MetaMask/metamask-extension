@@ -93,8 +93,8 @@ export async function addTransaction(
     chainId,
   } = request;
 
-  try {
-    if (securityAlertsEnabled && SUPPORTED_CHAIN_IDS.includes(chainId)) {
+  if (securityAlertsEnabled && SUPPORTED_CHAIN_IDS.includes(chainId)) {
+    try {
       const ppomRequest = {
         method: 'eth_sendTransaction',
         id: 'actionId' in transactionOptions ? transactionOptions.actionId : '',
@@ -116,9 +116,9 @@ export async function addTransaction(
       );
 
       request.transactionOptions.securityAlertResponse = securityAlertResponse;
+    } catch (e) {
+      captureException(e);
     }
-  } catch (e) {
-    captureException(e);
   }
   ///: END:ONLY_INCLUDE_IF
 
