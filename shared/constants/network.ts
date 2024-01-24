@@ -145,8 +145,8 @@ export const CHAIN_IDS = {
   GNOSIS: '0x64',
   ZKSYNC_ERA: '0x144',
   TEST_ETH: '0x539',
-  ANCIENT_TESTNET: '0x1ad1ba8',
-  ANCIENT_MAINNET: '0x34fb5e38',
+  ANCIENT8_TESTNET: '0x1ad1ba8',
+  ANCIENT8_MAINNET: '0x34fb5e38',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -284,7 +284,7 @@ export const CURRENCY_SYMBOLS = {
   CRONOS: 'CRO',
   GLIMMER: 'GLMR',
   MOONRIVER: 'MOVR',
-  ONE: 'ONE'
+  ONE: 'ONE',
 } as const;
 
 const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
@@ -762,6 +762,8 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
     | typeof CHAIN_IDS.AURORA
+    | typeof CHAIN_IDS.ANCIENT8_MAINNET
+    | typeof CHAIN_IDS.ANCIENT8_TESTNET
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {

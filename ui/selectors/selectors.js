@@ -644,11 +644,11 @@ export function getIsMainnet(state) {
   return chainId === CHAIN_IDS.MAINNET;
 }
 
-export function getIsAncient(state) {
+export function getIsAncient8(state) {
   const chainId = getCurrentChainId(state);
   return (
-    chainId === CHAIN_IDS.ANCIENT_TESTNET ||
-    chainId === CHAIN_IDS.ANCIENT_MAINNET
+    chainId === CHAIN_IDS.ANCIENT8_TESTNET ||
+    chainId === CHAIN_IDS.ANCIENT8_MAINNET
   );
 }
 
@@ -1576,11 +1576,11 @@ export function getIsOpbnb(state) {
 
 export function getIsOpStack(state) {
   return (
-      getIsOptimism(state) ||
-      getIsBase(state) ||
-      getIsOpbnb(state) ||
-      getIsAncient(state)
-    );
+    getIsOptimism(state) ||
+    getIsBase(state) ||
+    getIsOpbnb(state) ||
+    getIsAncient8(state)
+  );
 }
 
 export function getIsMultiLayerFeeNetwork(state) {
