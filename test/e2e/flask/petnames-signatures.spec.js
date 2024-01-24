@@ -91,7 +91,7 @@ async function expectProposedNames(driver, value, options) {
   }
 }
 
-describe('Petnames', function () {
+describe('Petnames - Signatures', function () {
   it('can save names for addresses in type 3 signatures', async function () {
     await withFixtures(
       {
