@@ -145,7 +145,6 @@ export const CHAIN_IDS = {
   GNOSIS: '0x64',
   ZKSYNC_ERA: '0x144',
   TEST_ETH: '0x539',
-  ANCIENT_TESTNET: '0x1ad1ba8',
 } as const;
 
 const CHAINLIST_CHAIN_IDS_MAP = {
@@ -284,6 +283,8 @@ export const CURRENCY_SYMBOLS = {
   GLIMMER: 'GLMR',
   MOONRIVER: 'MOVR',
   ONE: 'ONE',
+  ANCIENT_TESTNET: '0x1ad1ba8',
+  ANCIENT_MAINNET: '0x34fb5e38',
 } as const;
 
 const CHAINLIST_CURRENCY_SYMBOLS_MAP = {
