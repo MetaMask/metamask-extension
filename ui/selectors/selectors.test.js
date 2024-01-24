@@ -808,6 +808,11 @@ describe('Selectors', () => {
     expect(isDesktopEnabled).toBeFalsy();
   });
 
+  it('#getPetnamesEnabled', () => {
+    const petnamesEnabled = selectors.getPetnamesEnabled(mockState);
+    expect(petnamesEnabled).toBe(false);
+  });
+
   it('#getIsBridgeChain', () => {
     mockState.metamask.providerConfig.chainId = '0xa';
     const isOptimismSupported = selectors.getIsBridgeChain(mockState);
