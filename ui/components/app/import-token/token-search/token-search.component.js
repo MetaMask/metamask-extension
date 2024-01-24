@@ -1,87 +1,84 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
 import { TextFieldSearch } from '../../../component-library/text-field-search/deprecated';
 import { BlockSize, Size } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
-export default class TokenSearch extends Component {
-  static contextTypes = {
-    t: PropTypes.func,
-  };
+const getTokens = (tokenList) => Object.values(tokenList);
 
-  static defaultProps = {
-    error: null,
-    searchClassName: undefined,
-  };
+const createTokenSearchFuse = (tokenList) => {
+  return new Fuse(getTokens(tokenList), {
+    shouldSort: true,
+    threshold: 0.45,
+    location: 0,
+    distance: 100,
+    maxPatternLength: 32,
+    minMatchCharLength: 1,
+    keys: [
+      { name: 'name', weight: 0.5 },
+      { name: 'symbol', weight: 0.5 },
+    ],
+  });
+};
+export default function TokenSearch({
+  onSearch,
+  error,
+  tokenList,
+  searchClassName,
+}) {
+  const t = useI18nContext();
 
-  static propTypes = {
-    onSearch: PropTypes.func,
-    error: PropTypes.string,
-    tokenList: PropTypes.object,
-    searchClassName: PropTypes.string,
-  };
+  const [searchQuery, setSearchQuery] = useState('');
 
-  state = {
-    searchQuery: '',
-  };
+  const [tokenSearchFuse, setTokenSearchFuse] = useState(
+    createTokenSearchFuse(tokenList),
+  );
 
-  constructor(props) {
-    super(props);
-    const { tokenList } = this.props;
-    this.tokenList = Object.values(tokenList);
-    this.tokenSearchFuse = new Fuse(this.tokenList, {
-      shouldSort: true,
-      threshold: 0.45,
-      location: 0,
-      distance: 100,
-      maxPatternLength: 32,
-      minMatchCharLength: 1,
-      keys: [
-        { name: 'name', weight: 0.5 },
-        { name: 'symbol', weight: 0.5 },
-      ],
-    });
-  }
+  useEffect(() => {
+    setTokenSearchFuse(createTokenSearchFuse(tokenList));
+  }, [tokenList]);
 
-  handleSearch(searchQuery) {
-    this.setState({ searchQuery });
-    const fuseSearchResult = this.tokenSearchFuse.search(searchQuery);
-    const addressSearchResult = this.tokenList.filter((token) => {
+  const handleSearch = (newSearchQuery) => {
+    setSearchQuery(newSearchQuery);
+    const fuseSearchResult = tokenSearchFuse.search(newSearchQuery);
+    const addressSearchResult = getTokens(tokenList).filter((token) => {
       return (
         token.address &&
-        searchQuery &&
-        isEqualCaseInsensitive(token.address, searchQuery)
+        newSearchQuery &&
+        isEqualCaseInsensitive(token.address, newSearchQuery)
       );
     });
     const results = [...addressSearchResult, ...fuseSearchResult];
-    this.props.onSearch({ searchQuery, results });
-  }
+    onSearch({ newSearchQuery, results });
+  };
 
-  clear() {
-    this.setState({ searchQuery: '' });
-  }
+  const clear = () => {
+    setSearchQuery('');
+  };
 
-  render() {
-    const { error } = this.props;
-    const { searchQuery } = this.state;
-    const { searchClassName } = this.props;
-
-    return (
-      <TextFieldSearch
-        className={searchClassName}
-        placeholder={this.context.t('searchTokens')}
-        value={searchQuery}
-        onChange={(e) => this.handleSearch(e.target.value)}
-        error={error}
-        autoFocus
-        autoComplete={false}
-        width={BlockSize.Full}
-        clearButtonOnClick={() => this.clear()}
-        clearButtonProps={{
-          size: Size.SM,
-        }}
-      />
-    );
-  }
+  return (
+    <TextFieldSearch
+      className={searchClassName}
+      placeholder={t('searchTokens')}
+      value={searchQuery}
+      onChange={(e) => handleSearch(e.target.value)}
+      error={error}
+      autoFocus
+      autoComplete={false}
+      width={BlockSize.Full}
+      clearButtonOnClick={clear}
+      clearButtonProps={{
+        size: Size.SM,
+      }}
+    />
+  );
 }
+
+TokenSearch.propTypes = {
+  onSearch: PropTypes.func.isRequired,
+  error: PropTypes.object,
+  tokenList: PropTypes.object.isRequired,
+  searchClassName: PropTypes.string.isRequired,
+};

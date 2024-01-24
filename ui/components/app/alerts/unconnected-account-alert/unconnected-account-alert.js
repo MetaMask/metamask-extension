@@ -36,12 +36,15 @@ const UnconnectedAccountAlert = () => {
   );
   const internalAccounts = useSelector(getInternalAccounts);
   // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
-  const connectedAccountsWithName = connectedAccounts.map((account) => {
-    account.name = internalAccounts.find(
-      (internalAccount) => internalAccount.address === account.address,
-    )?.metadata.name;
-    return account;
-  });
+  const internalAccountsMap = new Map(
+    internalAccounts.map((acc) => [acc.address, acc]),
+  );
+
+  const connectedAccountsWithName = connectedAccounts.map((account) => ({
+    ...account,
+    name: internalAccountsMap.get(account.address)?.metadata.name,
+  }));
+
   const origin = useSelector(getOriginOfCurrentTab);
   const selectedIdentity = useSelector(getSelectedIdentity);
   // Temporary fix until https://github.com/MetaMask/metamask-extension/pull/21553
