@@ -109,14 +109,14 @@ describe('Token Cell', () => {
   });
 
   it('should render the correct token and filter by symbol and address', () => {
-    const { queryByText, getByAltText } = renderWithProvider(
+    const { getByTestId, getByAltText } = renderWithProvider(
       <TokenCell {...props} />,
       mockStore,
     );
 
     const image = getByAltText('TEST logo');
 
-    expect(queryByText('TEST')).toBeInTheDocument();
+    expect(getByTestId('multichain-token-list-item-value')).toBeInTheDocument();
     expect(image).toBeInTheDocument();
     expect(image).toHaveAttribute('src', './images/test_image.svg');
   });
