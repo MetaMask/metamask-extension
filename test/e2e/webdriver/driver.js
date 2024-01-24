@@ -539,16 +539,13 @@ class Driver {
   // Error handling
 
   async verboseReportOnFailure(title, error) {
-    if (process.env.CIRCLECI) {
-      console.error(
-        `Failure in ${title}, for more information see the artifacts tab in CI\n`,
-      );
-    } else {
-      console.error(
-        `Failure in ${title}, for more information see the test-artifacts folder\n`,
-      );
-    }
+    console.error(
+      `Failure on testcase: '${title}', for more information see the ${
+        process.env.CIRCLECI ? 'artifacts tab in CI' : 'test-artifacts folder'
+      }\n`,
+    );
     console.error(`${error}\n`);
+
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
@@ -591,11 +588,11 @@ class Driver {
   }
 
   async checkBrowserForExceptions(failOnConsoleError) {
-    const { exceptions } = this;
     const cdpConnection = await this.driver.createCDPConnection('page');
-    await this.driver.onLogException(cdpConnection, (exception) => {
+
+    this.driver.onLogException(cdpConnection, (exception) => {
       const { description } = exception.exceptionDetails.exception;
-      exceptions.push(description);
+      this.exceptions.push(description);
       logBrowserError(failOnConsoleError, description);
     });
   }
@@ -610,9 +607,9 @@ class Driver {
       'Failed to load resource: the server responded with a status of 502 (Bad Gateway)',
     ];
 
-    const { errors } = this;
     const cdpConnection = await this.driver.createCDPConnection('page');
-    await this.driver.onLogEvent(cdpConnection, (event) => {
+
+    this.driver.onLogEvent(cdpConnection, (event) => {
       if (event.type === 'error') {
         const eventDescriptions = event.args.filter(
           (err) => err.description !== undefined,
@@ -625,8 +622,14 @@ class Driver {
             eventDescription?.description.includes(message),
           );
           if (!ignore) {
-            errors.push(eventDescription?.description);
-            logBrowserError(failOnConsoleError, eventDescription?.description);
+            const isWarning = logBrowserError(
+              failOnConsoleError,
+              eventDescription?.description,
+            );
+
+            if (!isWarning) {
+              this.errors.push(eventDescription?.description);
+            }
           }
         } else if (event.args.length !== 0) {
           // Extract the values from the array
@@ -634,24 +637,41 @@ class Driver {
 
           // The values are in the "printf" form of [message, ...substitutions]
           // so use sprintf to parse
-          logBrowserError(failOnConsoleError, sprintf(...values));
+          const newError = sprintf(...values);
+
+          const isWarning = logBrowserError(failOnConsoleError, newError);
+
+          if (!isWarning) {
+            this.errors.push(newError);
+          }
         }
       }
     });
   }
+
+  summarizeErrorsAndExceptions() {
+    return this.errors.concat(this.exceptions).join('\n');
+  }
 }
 
 function logBrowserError(failOnConsoleError, errorMessage) {
+  let isWarning = false;
+
   console.error('\n----Received an error from Chrome----');
   console.error(errorMessage);
   console.error('---------End of Chrome error---------');
+  console.error(
+    `-----failOnConsoleError is ${failOnConsoleError ? 'true-' : 'false'}-----`,
+  );
 
-  if (failOnConsoleError) {
-    console.error('-----failOnConsoleError is true------\n');
-    throw new Error(errorMessage);
-  } else {
-    console.error('-----failOnConsoleError is false-----\n');
+  if (errorMessage.startsWith('Warning:')) {
+    console.error("----We will ignore this 'Warning'----");
+    isWarning = true;
   }
+
+  console.error('\n');
+
+  return isWarning;
 }
 
 function collectMetrics() {

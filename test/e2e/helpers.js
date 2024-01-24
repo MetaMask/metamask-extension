@@ -125,8 +125,8 @@ async function withFixtures(options, testSuite) {
     webDriver = driver.driver;
 
     if (process.env.SELENIUM_BROWSER === 'chrome') {
-      await driver.checkBrowserForExceptions(failOnConsoleError);
-      await driver.checkBrowserForConsoleErrors(failOnConsoleError);
+      driver.checkBrowserForExceptions(failOnConsoleError);
+      driver.checkBrowserForConsoleErrors(failOnConsoleError);
     }
 
     let driverProxy;
@@ -158,6 +158,11 @@ async function withFixtures(options, testSuite) {
       secondaryGanacheServer,
       mockedEndpoint,
     });
+
+    const errorsAndExceptions = driver.summarizeErrorsAndExceptions();
+    if (errorsAndExceptions && failOnConsoleError) {
+      throw new Error(errorsAndExceptions);
+    }
 
     // At this point the suite has executed successfully, so we can log out a success message
     // (Note: a Chrome browser error will unfortunately pop up after this success message)
