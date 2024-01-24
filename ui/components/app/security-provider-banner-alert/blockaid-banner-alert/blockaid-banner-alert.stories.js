@@ -30,23 +30,7 @@ export default {
         '(non-param) overrides securityAlertResponse.resultType value',
     },
     txData: {
-      securityAlertResponse: {
-        features: {
-          control: 'array',
-          description:
-            'securityAlertResponse.features value which is a list displayed as SecurityProviderBannerAlert details',
-        },
-        reason: {
-          control: 'select',
-          options: Object.values(BlockaidReason),
-          description: 'securityAlertResponse.reason value',
-        },
-        resultType: {
-          control: 'select',
-          options: Object.values(BlockaidResultType),
-          description: 'securityAlertResponse.resultType value',
-        },
-      },
+      control: 'object',
     },
   },
   args: {
