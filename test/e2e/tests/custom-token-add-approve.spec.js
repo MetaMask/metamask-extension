@@ -261,10 +261,10 @@ describe('Create token, approve token and approve token without gas', function (
 
         editBtn.click();
 
-        await driver.clickElement({
-          text: 'Edit suggested gas fee',
-          tag: 'button',
-        });
+        await driver.clickElement(
+          { text: 'Edit suggested gas fee', tag: 'button' },
+          10000,
+        );
         const [gasLimitInput, gasPriceInput] = await driver.findElements(
           'input[type="number"]',
         );
