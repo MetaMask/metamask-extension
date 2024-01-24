@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {
@@ -15,7 +15,11 @@ import { SECURITY_ROUTE } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../hooks/useNftsCollections';
-import { getIsMainnet, getUseNftDetection } from '../../../selectors';
+import {
+  getCurrentNetwork,
+  getIsMainnet,
+  getUseNftDetection,
+} from '../../../selectors';
 import {
   checkAndUpdateAllNftsOwnershipStatus,
   detectNfts,
@@ -26,6 +30,10 @@ import NFTsDetectionNoticeNFTsTab from '../nfts-detection-notice-nfts-tab/nfts-d
 import NftsItems from '../nfts-items';
 import { AssetListConversionButton } from '../../multichain';
 import { ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES } from '../../multichain/asset-list-conversion-button/asset-list-conversion-button';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { ORIGIN_METAMASK } from '../../../../shared/constants/app';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
+import { getCurrentLocale } from '../../../ducks/locale/locale';
 
 export default function NftsTab() {
   const useNftDetection = useSelector(getUseNftDetection);
@@ -33,6 +41,7 @@ export default function NftsTab() {
   const history = useHistory();
   const t = useI18nContext();
   const dispatch = useDispatch();
+  const trackEvent = useContext(MetaMetricsContext);
 
   const { nftsLoading, collections, previouslyOwnedCollection } =
     useNftsCollections();
@@ -50,6 +59,22 @@ export default function NftsTab() {
 
   const hasAnyNfts = Object.keys(collections).length > 0;
   const showNftBanner = hasAnyNfts === false;
+  const currentNetwork = useSelector(getCurrentNetwork);
+  const currentLocale = useSelector(getCurrentLocale);
+  useEffect(() => {
+    if (!showNftBanner) {
+      return;
+    }
+    trackEvent({
+      event: MetaMetricsEventName.EmptyNftsBannerClicked,
+      properties: {
+        chain_id: currentNetwork.chainId,
+        locale: currentLocale,
+        network: currentNetwork.nickname,
+        referrer: ORIGIN_METAMASK,
+      },
+    });
+  }, [showNftBanner, trackEvent, currentNetwork, currentLocale]);
 
   if (nftsLoading) {
     return <div className="nfts-tab__loading">{t('loadingNFTs')}</div>;

@@ -82,6 +82,9 @@ export function MetaMetricsProvider({ children }) {
   const trackEvent = useCallback(
     (payload, options) => {
       addContextPropsIntoEventProperties(payload, options);
+
+      console.log('trackEvent!  ', payload, options);
+
       trackMetaMetricsEvent(
         {
           ...payload,
