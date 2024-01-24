@@ -552,7 +552,7 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
   }) => {
     const baseDescription = {
       leftIcon: IconName.Warning,
-      weight: 4,
+      weight: 3,
     };
 
     const result = [
