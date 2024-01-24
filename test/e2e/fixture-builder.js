@@ -428,7 +428,6 @@ function onboardingFixture() {
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
-          // TODO(dbrans): Remove this once we remove the petnamesEnabled toggle from the advanced preferences.
           petnamesEnabled: false,
         },
         theme: 'light',
