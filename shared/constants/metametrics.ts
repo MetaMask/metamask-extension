@@ -355,6 +355,10 @@ export type MetaMetricsUserTraits = {
    */
   token_detection_enabled?: boolean;
   /**
+   * Does the user have native currency enabled?
+   */
+  use_native_as_primary_currency?: boolean;
+  /**
    * Does the user have desktop enabled?
    */
   desktop_enabled?: boolean;
@@ -437,6 +441,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the token detection feature is toggled.
    */
   TokenDetectionEnabled = 'token_detection_enabled',
+  /**
+   * Identified when the user enables native currency.
+   */
+  UseNativeCurrencyAsPrimaryCurrency = 'use_native_currency_as_primary_currency',
   /**
    * Identified when the user enables desktop.
    */
@@ -595,6 +603,7 @@ export enum MetaMetricsEventName {
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
+  UseNativeCurrencyAsPrimaryCurrency = 'Use Native Currency as Primary Currency',
   WalletSetupStarted = 'Wallet Setup Selected',
   WalletSetupCanceled = 'Wallet Setup Canceled',
   WalletSetupFailed = 'Wallet Setup Failed',

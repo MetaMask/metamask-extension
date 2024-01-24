@@ -75,7 +75,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
                 <path
                   clip-rule="evenodd"
                   d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
-                  fill="#C1DAEC"
+                  fill="var(--color-primary-muted)"
                   fill-rule="evenodd"
                 />
                 <mask
@@ -90,7 +90,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
                   <path
                     clip-rule="evenodd"
                     d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
-                    fill="#037DD6"
+                    fill="var(--color-primary-default)"
                     fill-rule="evenodd"
                   />
                 </mask>
@@ -99,7 +99,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
                 >
                   <path
                     d="M6.85718 17.9999V11.4285V8.28564H-4.85711V17.9999H6.85718Z"
-                    fill="#037DD6"
+                    fill="var(--color-primary-default)"
                   />
                 </g>
               </svg>
@@ -177,7 +177,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
                     class="mm-box mm-text mm-text--body-md mm-box--padding-2 mm-box--color-primary-default"
                     data-testid="snap-account-redirect-url-display-box"
                   >
-                    https://metamask.github.io/snap-simple-keyring/1.0.0/
+                    https://metamask.github.io/snap-simple-keyring/1.1.1/
                   </p>
                   <button
                     aria-label=""
