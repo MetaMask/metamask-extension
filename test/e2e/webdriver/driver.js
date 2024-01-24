@@ -34,13 +34,28 @@ function wrapElementWithAPI(element, driver) {
     // The 'fill' method in playwright replaces existing input
     await driver.wait(until.elementIsVisible(element));
 
-    // try two ways to clear input fields
+    // Try multiple ways to clear input fields, first try with clear() method
     await element.clear();
-    await element.sendKeys(
-      Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
-    );
+
+    // Use keyboard simulation if the input field is not empty
+    if ((await element.getProperty('value')) !== '') {
+      await element.sendKeys(
+        Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
+      );
+    }
+    // If previous methods fail, use Selenium's actions to select all text and replace it with the expected value
+    if ((await element.getProperty('value')) !== '') {
+      await driver.driver
+        .actions()
+        .click(element)
+        .keyDown(driver.Key.MODIFIER)
+        .sendKeys('a')
+        .keyUp(driver.Key.MODIFIER)
+        .perform();
+    }
     await element.sendKeys(input);
   };
+
   element.waitForElementState = async (state, timeout) => {
     switch (state) {
       case 'hidden':
