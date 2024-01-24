@@ -4156,6 +4156,9 @@ export default class MetamaskController extends EventEmitter {
       userOperationController: this.userOperationController,
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       ppomController: this.ppomController,
+      securityAlertsEnabled:
+        this.preferencesController.store.getState()?.securityAlertsEnabled,
+      chainId: this.networkController.state.providerConfig.chainId,
       ///: END:ONLY_INCLUDE_IF
     };
   }

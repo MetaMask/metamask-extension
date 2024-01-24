@@ -13,6 +13,7 @@ import { PPOMController } from '@metamask/ppom-validator';
 import { captureException } from '@sentry/browser';
 ///: END:ONLY_INCLUDE_IF
 import { addHexPrefix } from 'ethereumjs-util';
+import { SUPPORTED_CHAIN_IDS } from '../ppom/ppom-middleware';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -25,6 +26,8 @@ type BaseAddTransactionRequest = {
   transactionController: TransactionController;
   userOperationController: UserOperationController;
   ppomController: PPOMController;
+  securityAlertsEnabled: boolean;
+  chainId: string;
 };
 
 /**
@@ -82,31 +85,41 @@ export async function addTransaction(
   request: AddTransactionRequest,
 ): Promise<TransactionMeta> {
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const { transactionParams, transactionOptions, ppomController } = request;
-  let securityAlertResponse;
 
-  try {
-    const ppomRequest = {
-      method: 'eth_sendTransaction',
-      id: 'actionId' in transactionOptions ? transactionOptions.actionId : '',
-      origin: 'origin' in transactionOptions ? transactionOptions.origin : '',
-      params: [
-        {
-          from: transactionParams.from,
-          to: transactionParams.to,
-          value: transactionParams.value,
-          data: transactionParams.data,
-        },
-      ],
-    };
+  const {
+    transactionParams,
+    transactionOptions,
+    ppomController,
+    securityAlertsEnabled,
+    chainId,
+  } = request;
 
-    securityAlertResponse = await ppomController.usePPOM(async (ppom) => {
-      return ppom.validateJsonRpc(ppomRequest);
-    });
+  if (securityAlertsEnabled && SUPPORTED_CHAIN_IDS.includes(chainId)) {
+    let securityAlertResponse;
 
-    request.transactionOptions.securityAlertResponse = securityAlertResponse;
-  } catch (e) {
-    captureException(e);
+    try {
+      const ppomRequest = {
+        method: 'eth_sendTransaction',
+        id: 'actionId' in transactionOptions ? transactionOptions.actionId : '',
+        origin: 'origin' in transactionOptions ? transactionOptions.origin : '',
+        params: [
+          {
+            from: transactionParams.from,
+            to: transactionParams.to,
+            value: transactionParams.value,
+            data: transactionParams.data,
+          },
+        ],
+      };
+
+      securityAlertResponse = await ppomController.usePPOM(async (ppom) => {
+        return ppom.validateJsonRpc(ppomRequest);
+      });
+
+      request.transactionOptions.securityAlertResponse = securityAlertResponse;
+    } catch (e) {
+      captureException(e);
+    }
   }
   ///: END:ONLY_INCLUDE_IF
 
