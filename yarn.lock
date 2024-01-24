@@ -4096,6 +4096,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-json-rpc-filters@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@metamask/eth-json-rpc-filters@npm:7.0.0"
+  dependencies:
+    "@metamask/eth-query": "npm:^3.0.1"
+    "@metamask/json-rpc-engine": "npm:^7.1.0"
+    "@metamask/safe-event-emitter": "npm:^3.0.0"
+    async-mutex: "npm:^0.2.6"
+    pify: "npm:^5.0.0"
+  checksum: 8ee6a6791f8e84d590192ade2c8b1ddaaa81fd4eb64b042facaafd8fbe69f29df3a3e2c79dfb0da0839f72e53832e73ac8b72dbedb94a919fe9afcdad51a2c2a
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-json-rpc-infura@npm:^9.0.0":
   version: 9.0.0
   resolution: "@metamask/eth-json-rpc-infura@npm:9.0.0"
