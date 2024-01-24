@@ -32,6 +32,10 @@ function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
   element.fill = async (input) => {
     // The 'fill' method in playwright replaces existing input
+    await driver.wait(until.elementIsVisible(element));
+
+    // try two ways to clear input fields
+    await element.clear();
     await element.sendKeys(
       Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
     );
