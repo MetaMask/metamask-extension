@@ -4252,7 +4252,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-contract@npm:^0.3.3":
+"@metamask/ethjs-contract@npm:^0.3.3, @metamask/ethjs-contract@npm:^0.3.4":
   version: 0.3.4
   resolution: "@metamask/ethjs-contract@npm:0.3.4"
   dependencies:
@@ -4296,7 +4296,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs-query@npm:^0.5.0, @metamask/ethjs-query@npm:^0.5.2":
+"@metamask/ethjs-query@npm:^0.5.2, @metamask/ethjs-query@npm:^0.5.3":
   version: 0.5.3
   resolution: "@metamask/ethjs-query@npm:0.5.3"
   dependencies:
@@ -4337,7 +4337,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/ethjs@npm:^0.5.0":
+"@metamask/ethjs@npm:^0.5.0, @metamask/ethjs@npm:^0.5.1":
   version: 0.5.1
   resolution: "@metamask/ethjs@npm:0.5.1"
   dependencies:
@@ -4704,19 +4704,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-warning@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/phishing-warning@npm:3.0.0"
+"@metamask/phishing-warning@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@metamask/phishing-warning@npm:3.0.3"
   dependencies:
     "@metamask/design-tokens": "npm:^1.12.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/post-message-stream": "npm:^7.0.0"
     eth-phishing-detect: "npm:^1.2.0"
     globalthis: "npm:1.0.1"
-    punycode: "npm:^2.3.0"
+    punycode: "npm:^2.3.1"
     readable-stream: "npm:^3.6.2"
-    ses: "npm:^0.18.8"
-  checksum: 86aeb3c46fb1f47d59017d8de60545d11cf16d3784c9cb3adcfe4b9c8f775c06889ced2ed816c75a87581bbe5919db11b2f3176b095f46b62d3bb31560ecd008
+    ses: "npm:^1.1.0"
+  checksum: 12702062f0fb84b029d330d1f05a7d6cd6bdc28e7bc0f3507267944a93e5274d1c92920fb2d96dbce7997d949af14a1ca0726ee6485527ec9663577c1393bda2
   languageName: node
   linkType: hard
 
@@ -16899,15 +16899,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-method-registry@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "eth-method-registry@npm:2.0.0"
-  dependencies:
-    ethjs: "npm:^0.4.0"
-  checksum: 4e804030f36a0282a071ef138287f9c0a15ecbbc24ddc3ea01e29aafcae278c8798c91615d42cc7bbe3ecfb38d6457174ed1a3d10ce31f40c44093a9395b50a8
-  languageName: node
-  linkType: hard
-
 "eth-method-registry@npm:^3.0.0":
   version: 3.0.0
   resolution: "eth-method-registry@npm:3.0.0"
@@ -24757,7 +24748,9 @@ __metadata:
     "@metamask/eth-token-tracker": "npm:^4.0.0"
     "@metamask/eth-trezor-keyring": "npm:^3.0.0"
     "@metamask/etherscan-link": "npm:^3.0.0"
-    "@metamask/ethjs-query": "npm:^0.5.0"
+    "@metamask/ethjs": "npm:^0.5.1"
+    "@metamask/ethjs-contract": "npm:^0.3.4"
+    "@metamask/ethjs-query": "npm:^0.5.3"
     "@metamask/forwarder": "npm:^1.1.0"
     "@metamask/gas-fee-controller": "npm:^12.0.0"
     "@metamask/jazzicon": "npm:^2.0.0"
@@ -24773,7 +24766,7 @@ __metadata:
     "@metamask/obs-store": "npm:^8.1.0"
     "@metamask/permission-controller": "npm:^7.1.0"
     "@metamask/phishing-controller": "npm:^8.0.0"
-    "@metamask/phishing-warning": "npm:^3.0.0"
+    "@metamask/phishing-warning": "npm:^3.0.3"
     "@metamask/polling-controller": "npm:^4.0.0"
     "@metamask/post-message-stream": "npm:^7.0.0"
     "@metamask/ppom-validator": "npm:^0.10.0"
@@ -24910,14 +24903,12 @@ __metadata:
     eth-ens-namehash: "npm:^2.0.8"
     eth-json-rpc-filters: "npm:^6.0.0"
     eth-lattice-keyring: "npm:^0.12.4"
-    eth-method-registry: "npm:^2.0.0"
+    eth-method-registry: "npm:^3.0.0"
     eth-rpc-errors: "npm:^4.0.2"
     eth-sig-util: "npm:^3.0.0"
     ethereum-ens-network-map: "npm:^1.0.2"
     ethereumjs-abi: "npm:^0.6.4"
     ethereumjs-util: "npm:^7.0.10"
-    ethjs: "npm:^0.4.0"
-    ethjs-contract: "npm:^0.2.3"
     extension-port-stream: "npm:^3.0.0"
     fake-indexeddb: "npm:^4.0.1"
     fancy-log: "npm:^1.3.3"
@@ -28786,7 +28777,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"punycode@npm:^2.1.0, punycode@npm:^2.1.1, punycode@npm:^2.3.0":
+"punycode@npm:^2.1.0, punycode@npm:^2.1.1, punycode@npm:^2.3.1":
   version: 2.3.1
   resolution: "punycode@npm:2.3.1"
   checksum: febdc4362bead22f9e2608ff0171713230b57aff9dddc1c273aa2a651fbd366f94b7d6a71d78342a7c0819906750351ca7f2edd26ea41b626d87d6a13d1bd059
