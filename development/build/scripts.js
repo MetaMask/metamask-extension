@@ -1224,32 +1224,9 @@ async function setEnvironmentVariables({
 
   variables.set({
     DEBUG: devMode || testing ? variables.getMaybe('DEBUG') : undefined,
-    EIP_4337_BUNDLER:
-      variables.getMaybe('EIP_4337_BUNDLER') || testing
-        ? 'http://localhost:3000/rpc'
-        : undefined,
     EIP_4337_ENTRYPOINT:
       variables.getMaybe('EIP_4337_ENTRYPOINT') ||
       (testing ? '0x18b06605539dc02ecD3f7AB314e38eB7c1dA5c9b' : undefined),
-    EIP_4337_FORCE: variables.getMaybe('EIP_4337_FORCE'),
-    EIP_4337_SIMPLE_ACCOUNT_FACTORY:
-      variables.getMaybe('EIP_4337_SIMPLE_ACCOUNT_FACTORY') || testing
-        ? '0x4aFf835038b16dccDb1670103C4877A8F93E5219'
-        : undefined,
-    EIP_4337_SIMPLE_ACCOUNT_OWNER:
-      variables.getMaybe('EIP_4337_SIMPLE_ACCOUNT_OWNER') || testing
-        ? '0x5CfE73b6021E818B776b421B1c4Db2474086a7e1'
-        : undefined,
-    EIP_4337_SIMPLE_ACCOUNT_PRIVATE_KEY:
-      variables.getMaybe('EIP_4337_SIMPLE_ACCOUNT_PRIVATE_KEY') || testing
-        ? '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC'
-        : undefined,
-    EIP_4337_SIMPLE_ACCOUNT_SALT:
-      variables.getMaybe('EIP_4337_SIMPLE_ACCOUNT_SALT') || '0x1',
-    EIP_4337_VERIFYING_PAYMASTER:
-      variables.getMaybe('EIP_4337_VERIFYING_PAYMASTER') || testing
-        ? '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7'
-        : undefined,
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,

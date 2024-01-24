@@ -16,7 +16,7 @@ const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { DEFAULT_FIXTURE_ACCOUNT, SENDER } = require('./constants');
+const { SENDER } = require('./constants');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -49,6 +49,7 @@ async function withFixtures(options, testSuite) {
       // do nothing.
     },
     useBundler,
+    usePaymaster,
   } = options;
 
   const fixtureServer = new FixtureServer();
@@ -95,18 +96,15 @@ async function withFixtures(options, testSuite) {
         SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY,
       );
 
-      await ganacheSeeder.deploySmartContract(
-        SMART_CONTRACTS.VERIFYING_PAYMASTER,
-      );
+      if (usePaymaster) {
+        await ganacheSeeder.deploySmartContract(
+          SMART_CONTRACTS.VERIFYING_PAYMASTER,
+        );
+
+        await ganacheSeeder.paymasterDeposit(convertETHToHexGwei(1));
+      }
 
       await ganacheSeeder.transfer(SENDER, convertETHToHexGwei(10));
-
-      await ganacheSeeder.transfer(
-        DEFAULT_FIXTURE_ACCOUNT,
-        convertETHToHexGwei(10),
-      );
-
-      await ganacheSeeder.paymasterDeposit(convertETHToHexGwei(1));
 
       await bundlerServer.start();
     }

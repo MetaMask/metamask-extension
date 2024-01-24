@@ -7,7 +7,6 @@ const {
   WINDOW_TITLES,
   sendTransaction,
   convertETHToHexGwei,
-  PRIVATE_KEY,
 } = require('../helpers');
 
 const BUNDLER_URL = 'http://localhost:3000/rpc';
@@ -15,9 +14,11 @@ const SNAP_URL = 'http://localhost:8001';
 const ACCOUNT_SALT = '0x1';
 const SIMPLE_ACCOUNT_FACTORY = '0x4aFf835038b16dccDb1670103C4877A8F93E5219';
 const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';
+const PRIVATE_KEY =
+  '0x4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
 
 const FixtureBuilder = require('../fixture-builder');
-const { DEFAULT_FIXTURE_ACCOUNT, SENDER, ENTRYPOINT } = require('../constants');
+const { SENDER, ENTRYPOINT, GANACHE_SEED_ACCOUNT } = require('../constants');
 const { buildQuote, reviewQuote } = require('../tests/swaps/shared');
 
 async function installExampleSnap(driver) {
@@ -169,6 +170,7 @@ async function withAccountSnap({ currentTest, paymaster }, createTransaction) {
         .build(),
       title: currentTest.fullTitle(),
       useBundler: true,
+      usePaymaster: Boolean(paymaster),
       dapp: true,
       ganacheOptions: {
         hardfork: 'london',
@@ -198,7 +200,7 @@ describe('User Operations', function () {
     await withAccountSnap({ currentTest: this.test }, async (driver) => {
       await createDappTransaction(driver, {
         from: SENDER,
-        to: DEFAULT_FIXTURE_ACCOUNT,
+        to: GANACHE_SEED_ACCOUNT,
         value: convertETHToHexGwei(1),
         data: '0x',
       });
@@ -216,7 +218,7 @@ describe('User Operations', function () {
       await switchToExtensionWindow(driver);
       await sendTransaction(
         driver,
-        DEFAULT_FIXTURE_ACCOUNT,
+        GANACHE_SEED_ACCOUNT,
         convertETHToHexGwei(1),
         true,
       );
@@ -235,7 +237,7 @@ describe('User Operations', function () {
       async (driver) => {
         await createDappTransaction(driver, {
           from: SENDER,
-          to: DEFAULT_FIXTURE_ACCOUNT,
+          to: GANACHE_SEED_ACCOUNT,
           value: convertETHToHexGwei(1),
           data: '0x',
         });

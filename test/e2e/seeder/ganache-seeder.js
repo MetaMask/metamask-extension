@@ -1,7 +1,7 @@
 const { Web3Provider } = require('@ethersproject/providers');
 const { ContractFactory, Contract } = require('@ethersproject/contracts');
 
-const { ENTRYPOINT, DEFAULT_FIXTURE_ACCOUNT } = require('../constants');
+const { ENTRYPOINT, GANACHE_SEED_ACCOUNT } = require('../constants');
 const { SMART_CONTRACTS, contractConfiguration } = require('./smart-contracts');
 const GanacheContractAddressRegistry = require('./ganache-contract-address-registry');
 
@@ -42,10 +42,7 @@ class GanacheSeeder {
     } else if (contractName === SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY) {
       contract = await contractFactory.deploy(ENTRYPOINT);
     } else if (contractName === SMART_CONTRACTS.VERIFYING_PAYMASTER) {
-      contract = await contractFactory.deploy(
-        ENTRYPOINT,
-        DEFAULT_FIXTURE_ACCOUNT,
-      );
+      contract = await contractFactory.deploy(ENTRYPOINT, GANACHE_SEED_ACCOUNT);
     } else {
       contract = await contractFactory.deploy();
     }
