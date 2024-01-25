@@ -932,7 +932,8 @@ async function buildEventFragmentProperties({
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const additionalBlockaidParams = getBlockaidMetricsParams(transactionMeta);
+  const additionalBlockaidParams: any =
+    getBlockaidMetricsParams(transactionMeta);
 
   if (additionalBlockaidParams?.ui_customizations?.length > 0) {
     uiCustomizations.push(...additionalBlockaidParams.ui_customizations);
@@ -967,6 +968,7 @@ async function buildEventFragmentProperties({
     ...additionalBlockaidParams,
     ///: END:ONLY_INCLUDE_IF
     gas_estimation_failed: Boolean(simulationFails),
+    // ui_customizations must come after ...addtionBlockaidParams
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
   } as Record<string, any>;
 
