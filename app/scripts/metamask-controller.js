@@ -84,7 +84,6 @@ import {
   buildSnapEndowmentSpecifications,
   buildSnapRestrictedMethodSpecifications,
 } from '@metamask/snaps-controllers';
-///: END:ONLY_INCLUDE_IN
 import { createSnapsMethodMiddleware } from '@metamask/snaps-rpc-methods';
 import { getLocalizedSnapManifest } from '@metamask/snaps-utils';
 ///: END:ONLY_INCLUDE_IF
@@ -2390,6 +2389,30 @@ export default class MetamaskController extends EventEmitter {
     );
 
     ///: BEGIN:ONLY_INCLUDE_IF(snaps)
+    // Record Snap metadata whenever a Snap is added to state.
+    this.controllerMessenger.subscribe(
+      `${this.snapController.name}:snapAdded`,
+      (snap, svgIcon = null) => {
+        const { manifest, localizationFiles, version } = snap;
+
+        // In case the Snap uses a localized manifest, we need to get the
+        // proposed name from the localized manifest.
+        const { proposedName } = getLocalizedSnapManifest(
+          manifest,
+          'en',
+          localizationFiles,
+        );
+
+        this.subjectMetadataController.addSubjectMetadata({
+          subjectType: SubjectType.Snap,
+          name: proposedName,
+          origin: snap.id,
+          version,
+          svgIcon,
+        });
+      },
+    );
+
     this.controllerMessenger.subscribe(
       `${this.snapController.name}:snapInstalled`,
       (truncatedSnap, origin) => {

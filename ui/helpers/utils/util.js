@@ -560,6 +560,7 @@ export function isNullish(value) {
   return value === null || value === undefined;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export const getSnapRoute = (snapId) => {
   return `${SNAPS_VIEW_ROUTE}/${encodeURIComponent(snapId)}`;
 };

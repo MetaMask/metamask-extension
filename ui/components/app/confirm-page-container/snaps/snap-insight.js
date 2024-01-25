@@ -28,7 +28,7 @@ import { SnapDelineator } from '../../snaps/snap-delineator';
 import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { Copyable } from '../../snaps/copyable';
 import { getSnapMetadata } from '../../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { trackInsightSnapUsage } from '../../../../store/actions';
 ///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
