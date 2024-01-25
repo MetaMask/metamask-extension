@@ -32,6 +32,9 @@ import {
 } from '../../../helpers/constants/routes';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useEqualityCheck } from '../../../hooks/useEqualityCheck';
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+import { useTheme } from '../../../hooks/useTheme';
+///: END:ONLY_INCLUDE_IF
 import { getSortedAnnouncementsToShow } from '../../../selectors';
 import { updateViewedNotifications } from '../../../store/actions';
 import { ButtonPrimary, Text } from '../../component-library';
@@ -274,6 +277,10 @@ export default function WhatsNewPopup({ onClose }) {
   const notifications = useSelector(getSortedAnnouncementsToShow);
   const locale = useSelector(getCurrentLocale);
 
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  const theme = useTheme();
+  ///: END:ONLY_INCLUDE_IF
+
   const [seenNotifications, setSeenNotifications] = useState({});
   const [shouldShowScrollButton, setShouldShowScrollButton] = useState(true);
 
@@ -394,7 +401,14 @@ export default function WhatsNewPopup({ onClose }) {
     >
       <div className="whats-new-popup__notifications">
         {notifications.map(({ id }, index) => {
-          const notification = getTranslatedUINotifications(t, locale)[id];
+          const notification = getTranslatedUINotifications(
+            t,
+            locale,
+
+            ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+            theme,
+            ///: END:ONLY_INCLUDE_IF
+          )[id];
           const isLast = index === notifications.length - 1;
           // Choose the appropriate rendering function based on the id
           const renderNotification =

@@ -5,20 +5,19 @@ import { I18nContext } from '../../../contexts/i18n';
 import Popover from '../../ui/popover';
 import {
   AlignItems,
-  FLEX_DIRECTION,
   TextVariant,
   Color,
   TextColor,
+  FlexDirection,
 } from '../../../helpers/constants/design-system';
 import {
+  Box,
   Button,
   BUTTON_VARIANT,
   ButtonLink,
-  Label,
+  Checkbox,
   Text,
 } from '../../component-library';
-import Box from '../../ui/box';
-import CheckBox from '../../ui/check-box/check-box.component';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -72,7 +71,7 @@ export default function TermsOfUsePopup({ onAccept }) {
       onScrollDownButtonClick={handleScrollDownClick}
       footerProps={{
         justifyContent: AlignItems.center,
-        flexDirection: FLEX_DIRECTION.COLUMN,
+        flexDirection: FlexDirection.Column,
       }}
       footer={
         <>
@@ -1162,26 +1161,23 @@ export default function TermsOfUsePopup({ onAccept }) {
             processing.&nbsp;
           </Text>
           <Box
-            flexDirection={FLEX_DIRECTION.ROW}
+            flexDirection={FlexDirection.Row}
             alignItems={AlignItems.flexStart}
             marginLeft={3}
             marginRight={3}
             gap={2}
           >
-            <CheckBox
+            <Checkbox
               id="terms-of-use__checkbox"
               className="terms-of-use__checkbox"
-              dataTestId="terms-of-use-checkbox"
-              checked={isTermsOfUseChecked}
-              onClick={() => {
+              data-testid="terms-of-use-checkbox"
+              isChecked={isTermsOfUseChecked}
+              onChange={() => {
                 setIsTermsOfUseChecked(!isTermsOfUseChecked);
               }}
+              label={t('termsOfUseAgreeText')}
+              ref={bottomRef}
             />
-            <Label htmlFor="terms-of-use__checkbox">
-              <Text variant={TextVariant.bodyMdBold} as="span" ref={bottomRef}>
-                {t('termsOfUseAgreeText')}
-              </Text>
-            </Label>
           </Box>
         </Box>
       </Box>
