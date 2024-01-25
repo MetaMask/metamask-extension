@@ -252,6 +252,13 @@ describe('Create token, approve token and approve token without gas', function (
           '5 TST',
           'Default value is not correctly set',
         );
+        await driver.waitForSelector(
+          {
+            css: '.box--flex-direction-row > h6',
+            text: '0.000895 ETH',
+          },
+          { timeout: 15000 },
+        );
 
         // editing gas fee
         const editBtn = await driver.findElement({
