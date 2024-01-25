@@ -97,7 +97,6 @@ describe('Petnames - Signatures', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPreferencesControllerPetnamesEnabled()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
@@ -134,7 +133,6 @@ describe('Petnames - Signatures', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPreferencesControllerPetnamesEnabled()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),
@@ -176,7 +174,6 @@ describe('Petnames - Signatures', function () {
       {
         dapp: true,
         fixtures: new FixtureBuilder()
-          .withPreferencesControllerPetnamesEnabled()
           .withPermissionControllerConnectedToTestDapp()
           .withNoNames()
           .build(),

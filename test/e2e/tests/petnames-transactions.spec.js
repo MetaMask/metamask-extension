@@ -37,7 +37,6 @@ describe('Petnames - Transactions', function () {
         dapp: true,
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerPetnamesEnabled()
           .withNoNames()
           .build(),
         ganacheOptions: defaultGanacheOptions,
@@ -78,7 +77,6 @@ describe('Petnames - Transactions', function () {
               sendHexData: true,
             },
           })
-          .withPreferencesControllerPetnamesEnabled()
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),

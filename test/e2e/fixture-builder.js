@@ -428,7 +428,7 @@ function onboardingFixture() {
           showFiatInTestnets: false,
           showTestNetworks: false,
           useNativeCurrencyAsPrimaryCurrency: true,
-          petnamesEnabled: false,
+          petnamesEnabled: true,
         },
         theme: 'light',
         useBlockie: false,
@@ -833,10 +833,10 @@ class FixtureBuilder {
   }
 
   // TODO(dbrans): Remove this once we remove the petnamesEnabled toggle from the experimental preferences.
-  withPreferencesControllerPetnamesEnabled() {
+  withPreferencesControllerPetnamesDisabled() {
     return this.withPreferencesController({
       preferences: {
-        petnamesEnabled: true,
+        petnamesEnabled: false,
       },
     });
   }
