@@ -6,7 +6,7 @@ import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedPendingTransactionsSelector,
 } from '../../../selectors/transactions';
-import { getCurrentChainId, getSelectedAddress } from '../../../selectors';
+import { getCurrentChainId, getSelectedAccount } from '../../../selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import TransactionListItem from '../transaction-list-item';
 import SmartTransactionListItem from '../transaction-list-item/smart-transaction-list-item.component';
@@ -113,7 +113,7 @@ export default function TransactionList({
     nonceSortedCompletedTransactionsSelector,
   );
   const chainId = useSelector(getCurrentChainId);
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
   const renderDateStamp = (index, dateGroup) => {
     return index === 0 ? (
       <Text

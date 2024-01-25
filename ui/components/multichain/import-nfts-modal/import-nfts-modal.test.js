@@ -51,7 +51,7 @@ describe('ImportNftsModal', () => {
 
   it('should enable the "Import" button when valid entries are input into both Address and TokenId fields', () => {
     const { getByText, getByPlaceholderText } = renderWithProvider(
-      <ImportNftsModal />,
+      <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
     expect(getByText('Import')).not.toBeEnabled();
@@ -68,7 +68,7 @@ describe('ImportNftsModal', () => {
 
   it('should not enable the "Import" button when an invalid entry is input into one or both Address and TokenId fields', () => {
     const { getByText, getByPlaceholderText } = renderWithProvider(
-      <ImportNftsModal />,
+      <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
     expect(getByText('Import')).not.toBeEnabled();
@@ -144,7 +144,7 @@ describe('ImportNftsModal', () => {
     );
 
     const { getByTestId, getByText, getByPlaceholderText } = renderWithProvider(
-      <ImportNftsModal />,
+      <ImportNftsModal onClose={jest.fn()} />,
       store,
     );
     const addressInput = getByPlaceholderText('0x...');

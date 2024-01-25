@@ -31,18 +31,18 @@ const thumbStyle = {
 
 const colors = {
   activeThumb: {
-    base: '#037DD6',
+    base: '#037DD6', // var(--brand-colors-blue-blue500)
   },
   inactiveThumb: {
-    base: '#6A737D',
+    base: '#6A737D', // var(--brand-colors-grey-grey500)
   },
   active: {
-    base: '#F2F4F6',
-    hover: '#F2F4F6',
+    base: '#F2F4F6', // var(--brand-colors-grey-grey040)
+    hover: '#F2F4F6', // var(--brand-colors-grey-grey040)
   },
   inactive: {
-    base: '#F2F4F6',
-    hover: '#F2F4F6',
+    base: '#F2F4F6', // var(--brand-colors-grey-grey040)
+    hover: '#F2F4F6', // var(--brand-colors-grey-grey040)
   },
 };
 

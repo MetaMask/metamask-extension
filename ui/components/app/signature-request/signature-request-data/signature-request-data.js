@@ -4,7 +4,7 @@ import { isEqual } from 'lodash';
 import PropTypes from 'prop-types';
 import { NameType } from '@metamask/name-controller';
 import {
-  getMemoizedMetaMaskIdentities,
+  getMemoizedMetaMaskInternalAccounts,
   getAccountName,
 } from '../../../../selectors';
 import Address from '../../transaction-decoding/components/decoding/address';
@@ -24,7 +24,7 @@ import { usePetnamesEnabled } from '../../../../hooks/usePetnamesEnabled';
 import Name from '../../name/name';
 
 function SignatureRequestData({ data }) {
-  const identities = useSelector(getMemoizedMetaMaskIdentities);
+  const internalAccounts = useSelector(getMemoizedMetaMaskInternalAccounts);
   const petnamesEnabled = usePetnamesEnabled();
 
   return (
@@ -75,7 +75,7 @@ function SignatureRequestData({ data }) {
                     <Address
                       addressOnly
                       checksummedRecipientAddress={toChecksumHexAddress(value)}
-                      recipientName={getAccountName(identities, value)}
+                      recipientName={getAccountName(internalAccounts, value)}
                     />
                   )}
                 </Text>

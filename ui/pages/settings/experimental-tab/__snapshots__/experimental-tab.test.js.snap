@@ -57,7 +57,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
             <h6
               class="mm-box mm-text mm-text--body-sm mm-box--margin-top-0 mm-box--margin-right-1 mm-box--color-text-alternative"
             >
-              Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet.
+              Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon.
             </h6>
           </div>
           <label
