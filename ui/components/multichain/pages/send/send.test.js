@@ -10,8 +10,8 @@ import {
 } from '../../../../../shared/constants/network';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
-import { SendPage } from '.';
 import { IS_FLASK } from '../../../../helpers/utils/util';
+import { SendPage } from '.';
 
 jest.mock('@ethersproject/providers', () => {
   const originalModule = jest.requireActual('@ethersproject/providers');
@@ -61,19 +61,11 @@ describe('SendPage', () => {
   describe('render', () => {
     it('renders correctly', () => {
       const { container, getByTestId } = render();
-      const expectedPlaceholder =
-        // disabled due to some non-determinism with the placeholder values
-        // eslint-disable-next-line jest/no-if
-        IS_FLASK
-          ? 'Enter public address (0x) or domain name'
-          : 'Enter public address (0x) or ENS name';
+      const expectedPlaceholder = 'Enter public address (0x) or ENS name';
       const currentInput = container.querySelector(
         '.ens-input__wrapper__input',
       );
       expect(currentInput.placeholder).toStrictEqual(expectedPlaceholder);
-      const newInput = currentInput.cloneNode(true);
-      newInput.placeholder = 'Enter public address (0x) or ENS name';
-      currentInput.replaceWith(newInput);
       expect(container).toMatchSnapshot();
       expect(getByTestId('send-page-network-picker')).toBeInTheDocument();
     });
