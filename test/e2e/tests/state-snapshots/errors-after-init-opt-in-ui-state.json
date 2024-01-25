@@ -163,8 +163,6 @@
     "perDomainNetwork": "boolean",
     "logs": "object",
     "methodData": "object",
-    "lastFetchedBlockNumbers": "object",
-    "snaps": "object",
     "snapStates": "object",
     "unencryptedSnapStates": "object",
     "jobs": "object",
@@ -220,7 +218,7 @@
     "versionInfo": {},
     "storageMetadata": {},
     "chainStatus": {
-      "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
+      "0x539": { "chainId": "0x539", "versionInfo": [] }
     },
     "versionFileETag": "string"
   },
