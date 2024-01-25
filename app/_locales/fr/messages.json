@@ -1666,6 +1666,9 @@
   "general": {
     "message": "Général"
   },
+  "genericExplorerView": {
+    "message": "Afficher le compte sur $1"
+  },
   "globalTitle": {
     "message": "Menu global"
   },
