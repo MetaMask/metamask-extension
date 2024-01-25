@@ -26,6 +26,18 @@ export function formatAccountType(accountType) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+const getBlockaidMetricUiCustomization = (resultType) => {
+  let uiCustomization;
+
+  if (resultType === BlockaidResultType.Failed) {
+    uiCustomization = [MetaMetricsEventUiCustomization.SecurityAlertFailed];
+  } else if (resultType === BlockaidResultType.Malicious) {
+    uiCustomization = [MetaMetricsEventUiCustomization.FlaggedAsMalicious];
+  }
+
+  return uiCustomization;
+};
+
 export const getBlockaidMetricsProps = (transaction) => {
   if (!transaction.securityAlertResponse) {
     return {};
@@ -41,18 +53,13 @@ export const getBlockaidMetricsProps = (transaction) => {
     },
   } = transaction;
 
-  if (externalLinkClicked) {
-    params.external_link_clicked = externalLinkClicked;
+  const uiCustomization = getBlockaidMetricUiCustomization(resultType);
+  if (uiCustomization) {
+    params.ui_customizations = uiCustomization;
   }
 
-  if (resultType === BlockaidResultType.Failed) {
-    params.ui_customizations = [
-      MetaMetricsEventUiCustomization.SecurityAlertFailed,
-    ];
-  } else if (resultType === BlockaidResultType.Malicious) {
-    params.ui_customizations = [
-      MetaMetricsEventUiCustomization.FlaggedAsMalicious,
-    ];
+  if (externalLinkClicked) {
+    params.external_link_clicked = externalLinkClicked;
   }
 
   if (resultType !== BlockaidResultType.Benign) {
