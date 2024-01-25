@@ -163,22 +163,16 @@
     "perDomainNetwork": "boolean",
     "logs": "object",
     "methodData": "object",
-<<<<<<< HEAD
-=======
     "lastFetchedBlockNumbers": "object",
     "snaps": "object",
->>>>>>> develop
     "snapStates": "object",
     "unencryptedSnapStates": "object",
     "jobs": "object",
     "database": "object",
     "lastUpdated": "object",
     "notifications": "object",
-<<<<<<< HEAD
     "names": "object",
     "nameSources": "object",
-=======
->>>>>>> develop
     "userOperations": "object",
     "accounts": "object",
     "accountsByChainId": "object",
