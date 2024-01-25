@@ -25,8 +25,17 @@ export default class ConnectedAccountsList extends PureComponent {
 
   static propTypes = {
     accountToConnect: PropTypes.shape({
+      id: PropTypes.string.isRequired,
       address: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
+      metadata: PropTypes.shape({
+        name: PropTypes.string.isRequired,
+        keyring: PropTypes.shape({
+          type: PropTypes.string.isRequired,
+        }).isRequired,
+      }).isRequired,
+      options: PropTypes.object.isRequired,
+      methods: PropTypes.arrayOf(PropTypes.string).isRequired,
+      type: PropTypes.string.isRequired,
     }),
     connectedAccounts: PropTypes.arrayOf(
       PropTypes.shape({
@@ -85,7 +94,10 @@ export default class ConnectedAccountsList extends PureComponent {
       return null;
     }
 
-    const { address, name } = accountToConnect;
+    const {
+      address,
+      metadata: { name },
+    } = accountToConnect;
     return (
       <ConnectedAccountsListItem
         className="connected-accounts-list__row--highlight"
@@ -97,7 +109,7 @@ export default class ConnectedAccountsList extends PureComponent {
           <Text variant={TextVariant.bodyMd}>
             <ButtonLink
               className="connected-accounts-list__account-status-link"
-              onClick={() => connectAccount(accountToConnect.address)}
+              onClick={() => connectAccount(address)}
               size={ButtonLinkSize.Inherit}
             >
               {t('connect')}
