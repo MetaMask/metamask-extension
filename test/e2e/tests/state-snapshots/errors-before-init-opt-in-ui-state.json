@@ -100,7 +100,7 @@
         "showFiatInTestnets": false,
         "showTestNetworks": false,
         "useNativeCurrencyAsPrimaryCurrency": true,
-        "petnamesEnabled": false
+        "petnamesEnabled": true
       },
       "selectedAddress": "string",
       "theme": "light",

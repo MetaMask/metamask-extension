@@ -128,9 +128,7 @@
   },
   "PPOMController": {
     "storageMetadata": {},
-    "chainStatus": {
-      "0x539": { "chainId": "0x539", "versionInfo": [] }
-    },
+    "chainStatus": { "0x539": { "chainId": "0x539", "versionInfo": [] } },
     "versionFileETag": "string"
   },
   "PermissionController": { "subjects": "object" },
@@ -168,7 +166,7 @@
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "useNativeCurrencyAsPrimaryCurrency": true,
-      "petnamesEnabled": false
+      "petnamesEnabled": true
     },
     "ipfsGateway": "string",
     "useAddressBarEnsResolution": true,
