@@ -26,43 +26,44 @@ export function formatAccountType(accountType) {
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 export const getBlockaidMetricsParams = (securityAlertResponse = null) => {
-  const additionalParams = {};
-
   if (securityAlertResponse) {
-    const {
-      externalLinkClicked,
-      result_type: resultType,
-      reason,
-      providerRequestsCount,
-    } = securityAlertResponse;
+    return {};
+  }
 
-    if (externalLinkClicked) {
-      additionalParams.external_link_clicked = externalLinkClicked;
-    }
+  const additionalParams = {};
+  const {
+    externalLinkClicked,
+    result_type: resultType,
+    reason,
+    providerRequestsCount,
+  } = securityAlertResponse;
 
-    if (resultType === BlockaidResultType.Failed) {
-      additionalParams.ui_customizations = ['security_alert_failed'];
-      return additionalParams;
-    }
+  if (externalLinkClicked) {
+    additionalParams.external_link_clicked = externalLinkClicked;
+  }
 
-    if (resultType === BlockaidResultType.Malicious) {
-      additionalParams.ui_customizations = ['flagged_as_malicious'];
-    } else if (resultType !== BlockaidResultType.Benign) {
-      additionalParams.security_alert_reason = BlockaidReason.notApplicable;
-    }
+  if (resultType === BlockaidResultType.Failed) {
+    additionalParams.ui_customizations = ['security_alert_failed'];
+    return additionalParams;
+  }
 
-    additionalParams.security_alert_response =
-      resultType ?? BlockaidResultType.NotApplicable;
-    additionalParams.security_alert_reason =
-      reason ?? securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
+  if (resultType === BlockaidResultType.Malicious) {
+    additionalParams.ui_customizations = ['flagged_as_malicious'];
+  } else if (resultType !== BlockaidResultType.Benign) {
+    additionalParams.security_alert_reason = BlockaidReason.notApplicable;
+  }
 
-    // add counts of each RPC call
-    if (providerRequestsCount) {
-      Object.keys(providerRequestsCount).forEach((key) => {
-        const metricKey = `ppom_${key}_count`;
-        additionalParams[metricKey] = providerRequestsCount[key];
-      });
-    }
+  additionalParams.security_alert_response =
+    resultType ?? BlockaidResultType.NotApplicable;
+  additionalParams.security_alert_reason =
+    reason ?? securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
+
+  // add counts of each RPC call
+  if (providerRequestsCount) {
+    Object.keys(providerRequestsCount).forEach((key) => {
+      const metricKey = `ppom_${key}_count`;
+      additionalParams[metricKey] = providerRequestsCount[key];
+    });
   }
 
   return additionalParams;
