@@ -255,6 +255,9 @@ describe('Send ETH', function () {
               tag: 'button',
             });
             await driver.waitForSelector({
+              text: 'Edit priority',
+            });
+            await driver.waitForSelector({
               text: '0.00021 ETH',
             });
             const inputs = await driver.findElements('input[type="number"]');
