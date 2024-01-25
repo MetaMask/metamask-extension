@@ -749,7 +749,7 @@
       "packages": {
         "@metamask/address-book-controller>@metamask/controller-utils>@metamask/utils": true,
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>ethjs-unit": true,
+        "@metamask/message-manager>@metamask/controller-utils>ethjs-unit": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
@@ -1590,12 +1590,18 @@
       },
       "packages": {
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>ethjs-unit": true,
+        "@metamask/message-manager>@metamask/controller-utils>ethjs-unit": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
         "eth-ens-namehash": true,
         "ethereumjs-util": true
+      }
+    },
+    "@metamask/message-manager>@metamask/controller-utils>ethjs-unit": {
+      "packages": {
+        "@metamask/ethjs>number-to-bn": true,
+        "bn.js": true
       }
     },
     "@metamask/message-manager>@metamask/eth-sig-util": {
@@ -1812,12 +1818,14 @@
         "URL": true,
         "clearInterval": true,
         "console.error": true,
+        "crypto": true,
         "setInterval": true
       },
       "packages": {
+        "@metamask/controller-utils": true,
         "@metamask/eth-query>json-rpc-random-id": true,
         "@metamask/ppom-validator>@metamask/base-controller": true,
-        "@metamask/ppom-validator>@metamask/controller-utils": true,
+        "@metamask/ppom-validator>crypto-js": true,
         "@metamask/ppom-validator>elliptic": true,
         "await-semaphore": true,
         "browserify>buffer": true
@@ -1831,40 +1839,14 @@
         "immer": true
       }
     },
-    "@metamask/ppom-validator>@metamask/controller-utils": {
+    "@metamask/ppom-validator>crypto-js": {
       "globals": {
-        "URL": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
+        "crypto": true,
+        "define": true,
+        "msCrypto": true
       },
       "packages": {
-        "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>@metamask/utils": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>ethjs-unit": true,
-        "browserify>buffer": true,
-        "eslint>fast-deep-equal": true,
-        "eth-ens-namehash": true,
-        "ethereumjs-util": true
-      }
-    },
-    "@metamask/ppom-validator>@metamask/controller-utils>@metamask/utils": {
-      "globals": {
-        "TextDecoder": true,
-        "TextEncoder": true
-      },
-      "packages": {
-        "@metamask/utils>@noble/hashes": true,
-        "browserify>buffer": true,
-        "nock>debug": true,
-        "semver": true,
-        "superstruct": true
-      }
-    },
-    "@metamask/ppom-validator>@metamask/controller-utils>ethjs-unit": {
-      "packages": {
-        "@metamask/ethjs>number-to-bn": true,
-        "bn.js": true
+        "browserify>browser-resolve": true
       }
     },
     "@metamask/ppom-validator>elliptic": {
@@ -2033,7 +2015,7 @@
       },
       "packages": {
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>ethjs-unit": true,
+        "@metamask/message-manager>@metamask/controller-utils>ethjs-unit": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
@@ -2078,7 +2060,7 @@
       },
       "packages": {
         "@metamask/controller-utils>@spruceid/siwe-parser": true,
-        "@metamask/ppom-validator>@metamask/controller-utils>ethjs-unit": true,
+        "@metamask/message-manager>@metamask/controller-utils>ethjs-unit": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
         "eslint>fast-deep-equal": true,
