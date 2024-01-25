@@ -121,9 +121,9 @@
     "metaMetricsId": "fake-metrics-id",
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
+    "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object",
-    "previousUserTraits": "object",
     "currentCurrency": "usd",
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
     "unconnectedAccountAlertShownOrigins": "object",
@@ -163,14 +163,22 @@
     "perDomainNetwork": "boolean",
     "logs": "object",
     "methodData": "object",
+<<<<<<< HEAD
+=======
+    "lastFetchedBlockNumbers": "object",
+    "snaps": "object",
+>>>>>>> develop
     "snapStates": "object",
     "unencryptedSnapStates": "object",
     "jobs": "object",
     "database": "object",
     "lastUpdated": "object",
     "notifications": "object",
+<<<<<<< HEAD
     "names": "object",
     "nameSources": "object",
+=======
+>>>>>>> develop
     "userOperations": "object",
     "accounts": "object",
     "accountsByChainId": "object",

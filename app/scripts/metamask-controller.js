@@ -969,6 +969,8 @@ export default class MetamaskController extends EventEmitter {
         'PhishingController:maybeUpdateState',
         'KeyringController:getAccounts',
         'SubjectMetadataController:getSubjectMetadata',
+        'AccountsController:setSelectedAccount',
+        'AccountsController:getAccountByAddress',
       ],
     });
 
@@ -1452,7 +1454,7 @@ export default class MetamaskController extends EventEmitter {
             this.networkController.state.providerConfig.chainId
           ],
         getSelectedAddress: () =>
-          this.preferencesController.store.getState().selectedAddress,
+          this.accountsController.getSelectedAccount().address,
         incomingTransactions: {
           includeTokenTransfers: false,
           isEnabled: () =>

@@ -87,9 +87,9 @@
     "metaMetricsId": "fake-metrics-id",
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
+    "previousUserTraits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object",
-    "previousUserTraits": "object"
+    "segmentApiCalls": "object"
   },
   "NameController": { "names": "object", "nameSources": "object" },
   "NetworkController": {

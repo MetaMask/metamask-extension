@@ -1024,6 +1024,12 @@ describe('MetaMetricsController', function () {
           },
           'network-configuration-id-3': { chainId: '0xaf' },
         },
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+          },
+        },
         identities: [{}, {}],
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
@@ -1115,6 +1121,12 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+          },
+        },
         identities: [{}, {}],
         useNftDetection: false,
         theme: 'default',
@@ -1139,6 +1151,13 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: false,
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+            mock3: {},
+          },
+        },
         identities: [{}, {}, {}],
         useNftDetection: false,
         theme: 'default',
@@ -1170,6 +1189,12 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+          },
+        },
         identities: [{}, {}],
         useNftDetection: true,
         theme: 'default',
@@ -1190,6 +1215,12 @@ describe('MetaMetricsController', function () {
         },
         ledgerTransportType: 'web-hid',
         openSeaEnabled: true,
+        internalAccounts: {
+          accounts: {
+            mock1: {},
+            mock2: {},
+          },
+        },
         identities: [{}, {}],
         useNftDetection: true,
         theme: 'default',
