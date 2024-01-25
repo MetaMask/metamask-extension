@@ -30,27 +30,31 @@ export const getBlockaidMetricsParams = (securityAlertResponse = null) => {
 
   if (securityAlertResponse) {
     const {
+      externalLinkClicked,
       result_type: resultType,
       reason,
       providerRequestsCount,
     } = securityAlertResponse;
 
-    if (resultType === BlockaidResultType.Malicious) {
-      additionalParams.ui_customizations = ['flagged_as_malicious'];
+    if (externalLinkClicked) {
+      additionalParams.external_link_clicked = externalLinkClicked;
     }
 
     if (resultType === BlockaidResultType.Failed) {
       additionalParams.ui_customizations = ['security_alert_failed'];
+      return additionalParams;
     }
 
-    if (resultType !== BlockaidResultType.Benign) {
+    if (resultType === BlockaidResultType.Malicious) {
+      additionalParams.ui_customizations = ['flagged_as_malicious'];
+    } else if (resultType !== BlockaidResultType.Benign) {
       additionalParams.security_alert_reason = BlockaidReason.notApplicable;
-
-      if (reason) {
-        additionalParams.security_alert_response = resultType;
-        additionalParams.security_alert_reason = reason;
-      }
     }
+
+    additionalParams.security_alert_response =
+      resultType ?? BlockaidResultType.NotApplicable;
+    additionalParams.security_alert_reason =
+      reason ?? securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
 
     // add counts of each RPC call
     if (providerRequestsCount) {

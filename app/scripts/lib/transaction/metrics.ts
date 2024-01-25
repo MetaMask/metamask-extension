@@ -764,7 +764,6 @@ async function buildEventFragmentProperties({
     contractMethodName,
     securityProviderResponse,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    externalLinkClicked,
     securityAlertResponse,
     ///: END:ONLY_INCLUDE_IF
     simulationFails,
@@ -929,36 +928,30 @@ async function buildEventFragmentProperties({
     }
   }
 
-  let uiCustomizations;
-  let additionalBlockaidParams;
+  const uiCustomizations = [];
 
+  /** securityProviderResponse is used by the OpenSea <> Blockaid provider */
   // eslint-disable-next-line no-lonely-if
   if (securityProviderResponse?.flagAsDangerous === 1) {
-    uiCustomizations = ['flagged_as_malicious'];
+    uiCustomizations.push('flagged_as_malicious');
   } else if (securityProviderResponse?.flagAsDangerous === 2) {
-    uiCustomizations = ['flagged_as_safety_unknown'];
-  } else {
-    uiCustomizations = null;
+    uiCustomizations.push('flagged_as_safety_unknown');
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  if (securityAlertResponse?.result_type === BlockaidResultType.Failed) {
-    uiCustomizations = ['security_alert_failed'];
-  } else {
-    additionalBlockaidParams = getBlockaidMetricsParams(
-      securityAlertResponse as any,
-    );
-    uiCustomizations = additionalBlockaidParams?.ui_customizations ?? null;
+  const additionalBlockaidParams = getBlockaidMetricsParams(
+    securityAlertResponse as any,
+  );
+
+  if (additionalBlockaidParams.ui_customizations?.length > 0) {
+    uiCustomizations.push(...additionalBlockaidParams.ui_customizations);
   }
   ///: END:ONLY_INCLUDE_IF
 
   if (simulationFails) {
-    if (uiCustomizations === null) {
-      uiCustomizations = ['gas_estimation_failed'];
-    } else {
-      uiCustomizations.push('gas_estimation_failed');
-    }
+    uiCustomizations.push('gas_estimation_failed');
   }
+
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
   let properties = {
     chain_id: chainId,
@@ -979,15 +972,11 @@ async function buildEventFragmentProperties({
     token_standard: tokenStandard,
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
-    ...additionalBlockaidParams,
-    ui_customizations: uiCustomizations?.length > 0 ? uiCustomizations : null,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    security_alert_response:
-      securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
-    security_alert_reason:
-      securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
+    ...additionalBlockaidParams,
     ///: END:ONLY_INCLUDE_IF
     gas_estimation_failed: Boolean(simulationFails),
+    ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
   } as Record<string, any>;
 
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
@@ -1003,15 +992,6 @@ async function buildEventFragmentProperties({
       transaction_approval_amount_type: transactionApprovalAmountType,
     };
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  if (externalLinkClicked) {
-    properties = {
-      ...properties,
-      external_link_clicked: externalLinkClicked,
-    };
-  }
-  ///: END:ONLY_INCLUDE_IF
 
   let sensitiveProperties = {
     transaction_envelope_type: isEIP1559Transaction(transactionMeta)

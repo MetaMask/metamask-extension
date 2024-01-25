@@ -135,8 +135,6 @@ describe('Transaction metrics', () => {
       gas_edit_type: 'none',
       network: mockNetworkId,
       referrer: ORIGIN_METAMASK,
-      security_alert_reason: BlockaidReason.notApplicable,
-      security_alert_response: BlockaidReason.notApplicable,
       source: MetaMetricsTransactionEventSource.User,
       status: 'unapproved',
       token_standard: TokenStandard.none,
