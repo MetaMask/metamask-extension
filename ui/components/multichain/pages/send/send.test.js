@@ -4,6 +4,7 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../../test/jest';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { SendPage } from '.';
+import { IS_FLASK } from '../../../../helpers/utils/util';
 
 jest.mock('@ethersproject/providers', () => {
   const originalModule = jest.requireActual('@ethersproject/providers');
@@ -39,7 +40,7 @@ describe('SendPage', () => {
       const expectedPlaceholder =
         // disabled due to some non-determinism with the placeholder values
         // eslint-disable-next-line jest/no-if
-        process.env.METAMASK_BUILD_TYPE === 'flask'
+        IS_FLASK
           ? 'Enter public address (0x) or domain name'
           : 'Enter public address (0x) or ENS name';
       const currentInput = container.querySelector(

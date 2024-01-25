@@ -4,7 +4,7 @@ import classnames from 'classnames';
 
 import { isHexString } from '@metamask/utils';
 import { addHexPrefix } from '../../../../../app/scripts/lib/util';
-import { isValidDomainName } from '../../../../helpers/utils/util';
+import { IS_FLASK, isValidDomainName } from '../../../../helpers/utils/util';
 import {
   isBurnAddress,
   isValidHexAddress,
@@ -72,9 +72,7 @@ export default class DomainInput extends Component {
       return null;
     }
 
-    const isFlask = process.env.METAMASK_BUILD_TYPE === 'flask';
-
-    if ((isFlask && !isHexString(input)) || isValidDomainName(input)) {
+    if ((IS_FLASK && !isHexString(input)) || isValidDomainName(input)) {
       lookupDomainName(input);
     } else {
       resetDomainResolution();
@@ -95,7 +93,6 @@ export default class DomainInput extends Component {
     const { className, selectedAddress, selectedName, userInput } = this.props;
 
     const hasSelectedAddress = Boolean(selectedAddress);
-    const isFlask = process.env.METAMASK_BUILD_TYPE === 'flask';
 
     return (
       <div className={classnames('ens-input', className)}>
@@ -133,7 +130,7 @@ export default class DomainInput extends Component {
                 type="text"
                 dir="auto"
                 placeholder={
-                  isFlask
+                  IS_FLASK
                     ? t('recipientAddressPlaceholderFlask')
                     : t('recipientAddressPlaceholder')
                 }
