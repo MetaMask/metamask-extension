@@ -8,7 +8,7 @@ const { NetworkStatus } = require('@metamask/network-controller');
 const { CHAIN_IDS, NETWORK_TYPES } = require('../../shared/constants/network');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { DAPP_URL, DAPP_ONE_URL } = require('./helpers');
-const { SENDER, DEFAULT_FIXTURE_ACCOUNT } = require('./constants');
+const { DEFAULT_FIXTURE_ACCOUNT, ERC_4337_ACCOUNT } = require('./constants');
 
 function defaultFixture() {
   return {
@@ -687,7 +687,7 @@ class FixtureBuilder {
                   value: [
                     DEFAULT_FIXTURE_ACCOUNT.toLowerCase(),
                     '0x09781764c08de8ca82e156bbf156a3ca217c7950',
-                    SENDER.toLowerCase(),
+                    ERC_4337_ACCOUNT.toLowerCase(),
                   ],
                 },
               ],
@@ -1692,26 +1692,6 @@ class FixtureBuilder {
 
   withNoNames() {
     return this.withNameController({ names: {} });
-  }
-
-  with4337Account() {
-    const accountControllerState = defaultFixture().data.AccountsController;
-
-    const selectedAccount =
-      accountControllerState.internalAccounts.accounts[
-        'd5e45e4a-3b04-4a09-a5e1-39762e5c6be4'
-      ];
-
-    selectedAccount.address = '0x03f522D61308F19aE950DFf351179434bAb665E8';
-    selectedAccount.type = 'eip155:eip4337';
-    selectedAccount.metadata.type = 'Snap Keyring';
-
-    return this.withAccountsController(
-      accountControllerState,
-    ).withKeyringController({
-      vault:
-        '{"data":"7l6yezk3ZqVMQfnFCaOgjNLjcnswwnQ7G25fFgkFC9U2sdtCNAveVfs71DT294PC9Mj/K8wxEL3zMgO4x3pkzN1oLlsFbHjDEwXZDwRaST/IdJ7xE4DXipR10kv1vozFKOae6JH67qoohjIr95/ftKwFiYmYVlGEtTzi2zu1W7Pun6j0CZmgc/C8GObrF0kPwIoj0ZqdH9ntOJvrKKmUHJLTTq6gnDtq/ScPFRXWKpTyjFTea9Q5i0O3MBgzT2rG5OA4Hy8hT0sre0bpdwPnZKWtIQEZF5fBltf5tqEV5b+MITlwjzCFPnx0UNFKA03rCM1VvEC9vU0K+A0GQv07OyWpiN7+HSBT3wUdFrRHrhkXQyBNNtfXjCjiD5TJBWK4JOvDHGeOhJyxGgJkNNnvyPA38AU1cpYsIr8rN0xf1F4zGkCmTE6EjD5RhAn91ih7F/BuTrfy1Ao9gcvsSNSrlHNufj5ArxQABhZ1+mVw12j4547eofqwKCLXnukRdGL06cewj6fw6AvMw9MEA9M8oE3tp4w=","iv":"4rTaZMdT4QOXgZGvoIsbJg==","keyMetadata":{"algorithm":"PBKDF2","params":{"iterations":600000}},"salt":"Zoxkfwy3YgR719zPAvudAf4bZwkrN0clDEKzUPjeLIg="}',
-    });
   }
 
   build() {

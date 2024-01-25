@@ -1,6 +1,6 @@
 import { startBundler, BundlerServer } from '@metamask/test-bundler';
+import { BUNDLER_URL } from './constants';
 
-const BUNDLER_URL = 'http://localhost:3000/rpc';
 const CONFIG_FILE = `${__dirname}/bundler.config.json`;
 
 export class Bundler {

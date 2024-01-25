@@ -9,21 +9,23 @@ const {
   convertETHToHexGwei,
 } = require('../helpers');
 
-const BUNDLER_URL = 'http://localhost:3000/rpc';
-const SNAP_URL = 'http://localhost:8001';
-const ACCOUNT_SALT = '0x1';
-const SIMPLE_ACCOUNT_FACTORY = '0x4aFf835038b16dccDb1670103C4877A8F93E5219';
-const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';
-const PRIVATE_KEY =
-  '0x4cfd3e90fc78b0f86bf7524722150bb8da9c60cd532564d7ff43f5716514f553';
-
 const FixtureBuilder = require('../fixture-builder');
-const { SENDER, ENTRYPOINT, GANACHE_SEED_ACCOUNT } = require('../constants');
+const {
+  ENTRYPOINT,
+  ERC_4337_ACCOUNT_SNAP_URL,
+  BUNDLER_URL,
+  SIMPLE_ACCOUNT_FACTORY,
+  GANACHE_PRIVATE_KEY,
+  ERC_4337_ACCOUNT_SALT,
+  ERC_4337_ACCOUNT,
+  GANACHE_ACCOUNT,
+  VERIFYING_PAYMASTER,
+} = require('../constants');
 const { buildQuote, reviewQuote } = require('../tests/swaps/shared');
 
 async function installExampleSnap(driver) {
   // Navigate to Site
-  await driver.openNewPage(SNAP_URL);
+  await driver.openNewPage(ERC_4337_ACCOUNT_SNAP_URL);
   await driver.delay(1000);
 
   // Click Connect Button
@@ -187,7 +189,12 @@ async function withAccountSnap({ currentTest, paymaster }, createTransaction) {
         paymaster,
       });
 
-      await createSnapAccount(driver, PRIVATE_KEY, ACCOUNT_SALT);
+      await createSnapAccount(
+        driver,
+        GANACHE_PRIVATE_KEY,
+        ERC_4337_ACCOUNT_SALT,
+      );
+
       await createTransaction(driver);
       await openConfirmedTransaction(driver);
       await expectTransactionDetails(driver, bundlerServer);
@@ -199,8 +206,8 @@ describe('User Operations', function () {
   it('from dApp transaction', async function () {
     await withAccountSnap({ currentTest: this.test }, async (driver) => {
       await createDappTransaction(driver, {
-        from: SENDER,
-        to: GANACHE_SEED_ACCOUNT,
+        from: ERC_4337_ACCOUNT,
+        to: GANACHE_ACCOUNT,
         value: convertETHToHexGwei(1),
         data: '0x',
       });
@@ -218,7 +225,7 @@ describe('User Operations', function () {
       await switchToExtensionWindow(driver);
       await sendTransaction(
         driver,
-        GANACHE_SEED_ACCOUNT,
+        GANACHE_ACCOUNT,
         convertETHToHexGwei(1),
         true,
       );
@@ -236,8 +243,8 @@ describe('User Operations', function () {
       { currentTest: this.test, paymaster: VERIFYING_PAYMASTER },
       async (driver) => {
         await createDappTransaction(driver, {
-          from: SENDER,
-          to: GANACHE_SEED_ACCOUNT,
+          from: ERC_4337_ACCOUNT,
+          to: GANACHE_ACCOUNT,
           value: convertETHToHexGwei(1),
           data: '0x',
         });

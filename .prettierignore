@@ -13,4 +13,3 @@ test/e2e/send-eth-with-private-key-test/**
 development/chromereload.js
 development/ts-migration-dashboard/filesToConvert.json
 public
-.yalc

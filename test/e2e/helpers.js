@@ -16,7 +16,7 @@ const { PAGES } = require('./webdriver/driver');
 const GanacheSeeder = require('./seeder/ganache-seeder');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
-const { SENDER } = require('./constants');
+const { ERC_4337_ACCOUNT } = require('./constants');
 
 const tinyDelayMs = 200;
 const regularDelayMs = tinyDelayMs * 2;
@@ -88,25 +88,7 @@ async function withFixtures(options, testSuite) {
     }
 
     if (useBundler) {
-      const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
-
-      await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
-
-      await ganacheSeeder.deploySmartContract(
-        SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY,
-      );
-
-      if (usePaymaster) {
-        await ganacheSeeder.deploySmartContract(
-          SMART_CONTRACTS.VERIFYING_PAYMASTER,
-        );
-
-        await ganacheSeeder.paymasterDeposit(convertETHToHexGwei(1));
-      }
-
-      await ganacheSeeder.transfer(SENDER, convertETHToHexGwei(10));
-
-      await bundlerServer.start();
+      await _initBundler(bundlerServer, ganacheServer, usePaymaster);
     }
 
     await fixtureServer.start();
@@ -1020,6 +1002,33 @@ async function getCleanAppState(driver) {
       window.stateHooks?.getCleanAppState &&
       window.stateHooks.getCleanAppState(),
   );
+}
+
+async function _initBundler(bundlerServer, ganacheServer, usePaymaster) {
+  try {
+    const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
+
+    await ganacheSeeder.deploySmartContract(SMART_CONTRACTS.ENTRYPOINT);
+
+    await ganacheSeeder.deploySmartContract(
+      SMART_CONTRACTS.SIMPLE_ACCOUNT_FACTORY,
+    );
+
+    if (usePaymaster) {
+      await ganacheSeeder.deploySmartContract(
+        SMART_CONTRACTS.VERIFYING_PAYMASTER,
+      );
+
+      await ganacheSeeder.paymasterDeposit(convertETHToHexGwei(1));
+    }
+
+    await ganacheSeeder.transfer(ERC_4337_ACCOUNT, convertETHToHexGwei(10));
+
+    await bundlerServer.start();
+  } catch (error) {
+    console.log('Failed to initialise bundler', error);
+    throw error;
+  }
 }
 
 module.exports = {
