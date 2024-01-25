@@ -49,7 +49,7 @@ describe('getBlockaidMetricsProps', () => {
     expect(result.external_link_clicked).toBe('security_alert_support_link');
   });
 
-  it('includes not applicable result type or reason when they are not provided', () => {
+  it('includes not applicable reason or result type when they are not provided', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
@@ -76,6 +76,21 @@ describe('getBlockaidMetricsProps', () => {
       security_alert_reason: BlockaidReason.setApprovalForAll,
       security_alert_response: BlockaidResultType.Failed,
       ui_customizations: ['security_alert_failed'],
+    });
+  });
+
+  it('includes "flagged_as_malicious" ui_customization when type is malicious', () => {
+    const result = getBlockaidMetricsProps({
+      securityAlertResponse: {
+        ...securityAlertResponse,
+        result_type: BlockaidResultType.Malicious,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      security_alert_reason: BlockaidReason.setApprovalForAll,
+      security_alert_response: BlockaidResultType.Malicious,
+      ui_customizations: ['flagged_as_malicious'],
     });
   });
 
