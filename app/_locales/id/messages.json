@@ -4920,12 +4920,6 @@
   "unknown": {
     "message": "Tidak diketahui"
   },
-  "unknownCameraError": {
-    "message": "Terjadi kesalahan sewaktu mencoba mengakses kamera Anda. Harap coba lagi..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ups! Terjadi kesalahan...."
-  },
   "unknownCollection": {
     "message": "Koleksi tanpa nama"
   },

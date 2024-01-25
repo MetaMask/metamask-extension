@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.8.0]
+## [11.7.4]
+
+## [11.7.3]
+### Fixed
+- Ensure fiat token balances are displayed on the homescreen [#22295](https://github.com/MetaMask/metamask-extension/pull/22295)
+
+## [11.7.2]
+### Fixed
+- Fixed the activity list occasionally incorrectly showing transaction statuses as failed, pending or dropped [#22319](https://github.com/MetaMask/metamask-extension/pull/22319)
+
+## [11.7.1]
+### Added
+- Added mapping to hardcode a mapping of ChainIDs to currency symbols [#22292](https://github.com/MetaMask/metamask-extension/pull/22292)
+
+### Changed
+- Updated onboarding flow to ensure user is prompted for password during reminder based backup [#22307](https://github.com/MetaMask/metamask-extension/pull/22297)
+
+### Fixed
+- Fixed QR scan functionality when sending a transaction to another contact [#22297](https://github.com/MetaMask/metamask-extension/pull/22297)
+- Fixed incorrect warnings when adding a chain from a dapp [#22309](https://github.com/MetaMask/metamask-extension/pull/22309)
+- Stopped unnecessary Cryptocompare polling when initialize the UI ([#22326](https://github.com/MetaMask/metamask-extension/pull/22326))
 
 ## [11.7.0]
 ### Added
@@ -4250,6 +4271,11 @@ Update styles and spacing on the critical error page  ([#20350](https://github.c
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.8.0...HEAD
 [11.8.0]: https://github.com/MetaMask/metamask-extension/compare/v11.7.0...v11.8.0
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v11.7.4...HEAD
+[11.7.4]: https://github.com/MetaMask/metamask-extension/compare/v11.7.3...v11.7.4
+[11.7.3]: https://github.com/MetaMask/metamask-extension/compare/v11.7.2...v11.7.3
+[11.7.2]: https://github.com/MetaMask/metamask-extension/compare/v11.7.1...v11.7.2
+[11.7.1]: https://github.com/MetaMask/metamask-extension/compare/v11.7.0...v11.7.1
 [11.7.0]: https://github.com/MetaMask/metamask-extension/compare/v11.6.3...v11.7.0
 [11.6.3]: https://github.com/MetaMask/metamask-extension/compare/v11.6.2...v11.6.3
 [11.6.2]: https://github.com/MetaMask/metamask-extension/compare/v11.6.1...v11.6.2

@@ -4920,12 +4920,6 @@
   "unknown": {
     "message": "Неизвестно"
   },
-  "unknownCameraError": {
-    "message": "При попытке получить доступ к вашей камере произошла ошибка. Попробуйте еще раз..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ой! Что-то пошло не так...."
-  },
   "unknownCollection": {
     "message": "Безымянная коллекция"
   },

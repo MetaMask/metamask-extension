@@ -4920,12 +4920,6 @@
   "unknown": {
     "message": "未知"
   },
-  "unknownCameraError": {
-    "message": "尝试访问您的相机时出错。请重试……"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "糟糕！出问题了...."
-  },
   "unknownCollection": {
     "message": "未命名的收藏"
   },

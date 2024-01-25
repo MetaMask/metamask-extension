@@ -1844,6 +1844,12 @@
   "general": {
     "message": "General"
   },
+  "generalCameraError": {
+    "message": "We couldn't access your camera. Please give it another try."
+  },
+  "generalCameraErrorTitle": {
+    "message": "Something went wrong...."
+  },
   "getStarted": {
     "message": "Get started"
   },
@@ -5556,12 +5562,6 @@
   },
   "unknown": {
     "message": "Unknown"
-  },
-  "unknownCameraError": {
-    "message": "There was an error while trying to access your camera. Please try again..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Something went wrong...."
   },
   "unknownCollection": {
     "message": "Unnamed collection"

@@ -4920,12 +4920,6 @@
   "unknown": {
     "message": "Άγνωστο"
   },
-  "unknownCameraError": {
-    "message": "Προέκυψε ένα σφάλμα κατά την προσπάθεια πρόσβασης στην κάμερά σας. Προσπαθήστε ξανά..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ουπς! Κάτι πήγε στραβά...."
-  },
   "unknownCollection": {
     "message": "Ανώνυμη συλλογή"
   },

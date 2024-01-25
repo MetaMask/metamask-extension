@@ -4920,12 +4920,6 @@
   "unknown": {
     "message": "不明"
   },
-  "unknownCameraError": {
-    "message": "カメラへのアクセス時にエラーが発生しました。もう一度実行してください..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "申し訳ありません。問題が発生しました..."
-  },
   "unknownCollection": {
     "message": "無名のコレクション"
   },
