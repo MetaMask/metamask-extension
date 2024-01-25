@@ -19,7 +19,6 @@
     "addressBook": "object",
     "contractExchangeRates": "object",
     "confirmationExchangeRates": {},
-    "contractExchangeRatesByChainId": "object",
     "pendingTokens": "object",
     "customNonceValue": "",
     "useBlockie": false,
@@ -137,7 +136,6 @@
     "orderedNetworkList": { "0": "string", "1": "string", "2": "string" },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
-    "gasFeeEstimates": {},
     "gasFeeEstimatesByChainId": {},
     "gasFeeEstimates": {},
     "estimatedGasFeeTimeBounds": {},
@@ -171,8 +169,10 @@
     "database": "object",
     "lastUpdated": "object",
     "notifications": "object",
+    "userOperations": "object",
     "accounts": "object",
     "accountsByChainId": "object",
+    "contractExchangeRatesByChainId": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
@@ -213,13 +213,9 @@
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
-    "versionInfo": {},
     "storageMetadata": {},
-    "chainStatus": {
-      "0x539": { "chainId": "0x539", "versionInfo": [] }
-    },
-    "versionFileETag": "string",
-    "userOperations": "object"
+    "chainStatus": { "0x539": { "chainId": "0x539", "versionInfo": [] } },
+    "versionFileETag": "string"
   },
   "send": "object",
   "swaps": "object",
