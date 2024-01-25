@@ -17,7 +17,7 @@ exports[`ExperimentalTab with desktop enabled renders ExperimentalTab component 
         <div
           class="settings-page__content-description"
         >
-          This allows you to assign a nickname to any address. This nickname will be visible to you only.
+          This allows you to assign a name to any address. This name will be visible to you only.
         </div>
       </div>
       <div
