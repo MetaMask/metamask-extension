@@ -5,6 +5,7 @@ const {
   withFixtures,
   openDapp,
   unlockWallet,
+  editGasfeeForm,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
@@ -281,14 +282,7 @@ describe('Create token, approve token and approve token without gas', function (
           tag: 'h1',
         });
 
-        const inputs = await driver.findElements('input[type="number"]');
-        const gasLimitInput = inputs[0];
-        const gasPriceInput = inputs[1];
-        await gasPriceInput.clear();
-        await gasPriceInput.fill('10');
-        await gasLimitInput.clear();
-        await gasLimitInput.fill('60001');
-        await driver.clickElement({ text: 'Save', tag: 'button' });
+        await editGasfeeForm(driver, '60001', '10');
 
         await driver.waitForSelector(
           {

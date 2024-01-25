@@ -685,6 +685,18 @@ const generateGanacheOptions = ({
   };
 };
 
+// Edit priority gas fee form
+const editGasfeeForm = async (driver, gasLimit, gasPrice) => {
+  const inputs = await driver.findElements('input[type="number"]');
+  const gasLimitInput = inputs[0];
+  const gasPriceInput = inputs[1];
+  await gasLimitInput.clear();
+  await gasLimitInput.fill(gasLimit);
+  await gasPriceInput.clear();
+  await gasPriceInput.fill(gasPrice);
+  await driver.clickElement({ text: 'Save', tag: 'button' });
+};
+
 const openActionMenuAndStartSendFlow = async (driver) => {
   // TODO: Update Test when Multichain Send Flow is added
   if (process.env.MULTICHAIN) {
@@ -1033,4 +1045,5 @@ module.exports = {
   genRandInitBal,
   openActionMenuAndStartSendFlow,
   getCleanAppState,
+  editGasfeeForm,
 };
