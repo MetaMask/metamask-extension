@@ -169,7 +169,8 @@ describe('Petnames - Signatures', function () {
     );
   });
 
-  it('can propose names using installed snaps', async function () {
+  // TODO(dbrans): Skipping until name-lookup endowment is in stable.
+  it.skip('can propose names using installed snaps', async function () {
     await withFixtures(
       {
         dapp: true,
