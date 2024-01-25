@@ -16,14 +16,11 @@ describe('getMethodName', () => {
   });
 });
 
-const mockTransaction = {
-  securityAlertResponse: {
-    result_type: BlockaidResultType.Malicious,
-    reason: BlockaidReason.setApprovalForAll,
-    features: [],
-  },
+const securityAlertResponse = {
+  result_type: BlockaidResultType.Malicious,
+  reason: BlockaidReason.setApprovalForAll,
+  features: [],
 };
-const mockedTransaction = jest.mocked(mockTransaction);
 
 describe('getBlockaidMetricsProps', () => {
   it('returns an empty object when securityAlertResponse is not defined', () => {
@@ -32,7 +29,9 @@ describe('getBlockaidMetricsProps', () => {
   });
 
   it('returns metric props when securityAlertResponse defined', () => {
-    const result = getBlockaidMetricsProps(mockedTransaction);
+    const result = getBlockaidMetricsProps({
+      securityAlertResponse,
+    });
     expect(result).toStrictEqual({
       security_alert_reason: BlockaidReason.setApprovalForAll,
       security_alert_response: BlockaidResultType.Malicious,
@@ -40,12 +39,56 @@ describe('getBlockaidMetricsProps', () => {
     });
   });
 
+  it('returns external_link_clicked when externalLinkClicked is provided', () => {
+    const result = getBlockaidMetricsProps({
+      externalLinkClicked: 'security_alert_support_link',
+      securityAlertResponse: {
+        ...securityAlertResponse,
+      },
+    });
+    expect(result.external_link_clicked).toBe('security_alert_support_link');
+  });
+
+  it('returns not applicable result type or reason when they are not provided', () => {
+    const result = getBlockaidMetricsProps({
+      securityAlertResponse: {
+        ...securityAlertResponse,
+        reason: null,
+        result_type: null,
+      },
+    });
+
+    expect(result.security_alert_reason).toBe(BlockaidReason.notApplicable);
+    expect(result.security_alert_response).toBe(
+      BlockaidResultType.NotApplicable,
+    );
+  });
+
+  it('returns "security_alert_failed" ui_customization when type is failed', () => {
+    const result = getBlockaidMetricsProps({
+      securityAlertResponse: {
+        ...securityAlertResponse,
+        result_type: BlockaidResultType.Failed,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      security_alert_reason: BlockaidReason.setApprovalForAll,
+      security_alert_response: BlockaidResultType.Failed,
+      ui_customizations: ['security_alert_failed'],
+    });
+  });
+
   it('returns eth call counts when providerRequestsCount is provided', () => {
-    mockedTransaction.securityAlertResponse.providerRequestsCount = {
-      eth_call: 5,
-      eth_getCode: 3,
-    };
-    const result = getBlockaidMetricsProps(mockedTransaction);
+    const result = getBlockaidMetricsProps({
+      securityAlertResponse: {
+        ...securityAlertResponse,
+        providerRequestsCount: {
+          eth_call: 5,
+          eth_getCode: 3,
+        },
+      },
+    });
 
     expect(result).toStrictEqual({
       ppom_eth_call_count: 5,
@@ -57,8 +100,12 @@ describe('getBlockaidMetricsProps', () => {
   });
 
   it('does not return eth call counts if providerRequestsCount is empty', () => {
-    mockedTransaction.securityAlertResponse.providerRequestsCount = {};
-    const result = getBlockaidMetricsProps(mockedTransaction);
+    const result = getBlockaidMetricsProps({
+      securityAlertResponse: {
+        ...securityAlertResponse,
+        providerRequestsCount: {},
+      },
+    });
 
     expect(result).toStrictEqual({
       ui_customizations: ['flagged_as_malicious'],
@@ -68,8 +115,12 @@ describe('getBlockaidMetricsProps', () => {
   });
 
   it('does not return eth call counts if providerRequestsCount is undefined', () => {
-    mockedTransaction.securityAlertResponse.providerRequestsCount = undefined;
-    const result = getBlockaidMetricsProps(mockedTransaction);
+    const result = getBlockaidMetricsProps({
+      securityAlertResponse: {
+        ...securityAlertResponse,
+        providerRequestsCount: undefined,
+      },
+    });
 
     expect(result).toStrictEqual({
       ui_customizations: ['flagged_as_malicious'],
