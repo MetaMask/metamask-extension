@@ -25,6 +25,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventFragment,
   MetaMetricsEventName,
+  MetaMetricsEventUiCustomization,
   MetaMetricsPageObject,
   MetaMetricsReferrerObject,
 } from '../../../../shared/constants/metametrics';
@@ -926,9 +927,11 @@ async function buildEventFragmentProperties({
   /** securityProviderResponse is used by the OpenSea <> Blockaid provider */
   // eslint-disable-next-line no-lonely-if
   if (securityProviderResponse?.flagAsDangerous === 1) {
-    uiCustomizations.push('flagged_as_malicious');
+    uiCustomizations.push(MetaMetricsEventUiCustomization.FlaggedAsMalicious);
   } else if (securityProviderResponse?.flagAsDangerous === 2) {
-    uiCustomizations.push('flagged_as_safety_unknown');
+    uiCustomizations.push(
+      MetaMetricsEventUiCustomization.FlaggedAsSafetyUnknown,
+    );
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
@@ -940,7 +943,7 @@ async function buildEventFragmentProperties({
   ///: END:ONLY_INCLUDE_IF
 
   if (simulationFails) {
-    uiCustomizations.push('gas_estimation_failed');
+    uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
 
   /** The transaction status property is not considered sensitive and is now included in the non-anonymous event */
@@ -967,7 +970,7 @@ async function buildEventFragmentProperties({
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     ...blockaidProperties,
     ///: END:ONLY_INCLUDE_IF
-    // ui_customizations must come after ...addtionBlockaidParams
+    // ui_customizations must come after ...blockaidProperties
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
   } as Record<string, any>;
 

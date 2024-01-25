@@ -3,6 +3,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
+import { MetaMetricsEventUiCustomization } from '../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IF
 
 export function getMethodName(camelCase) {
@@ -47,7 +48,9 @@ export const getBlockaidMetricsProps = (transaction) => {
   if (resultType === BlockaidResultType.Failed) {
     params.ui_customizations = ['security_alert_failed'];
   } else if (resultType === BlockaidResultType.Malicious) {
-    params.ui_customizations = ['flagged_as_malicious'];
+    params.ui_customizations = [
+      MetaMetricsEventUiCustomization.FlaggedAsMalicious,
+    ];
   }
 
   if (resultType !== BlockaidResultType.Benign) {
