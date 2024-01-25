@@ -28,7 +28,9 @@ import {
   getApprovalFlows,
   getTotalUnapprovedCount,
   useSafeChainsListValidationSelector,
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getSnapMetadata,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../selectors';
 import NetworkDisplay from '../../components/app/network-display/network-display';
 import Callout from '../../components/ui/callout';
