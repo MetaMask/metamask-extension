@@ -246,10 +246,11 @@ describe('Send ETH', function () {
               windowHandles,
             );
             await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
-            await driver.clickElement({ text: 'Edit', tag: 'button' });
             await driver.waitForSelector({
+              css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
               text: '0.00021 ETH',
             });
+            await driver.clickElement({ text: 'Edit', tag: 'button' });
             await driver.clickElement({
               text: 'Edit suggested gas fee',
               tag: 'button',
@@ -259,6 +260,7 @@ describe('Send ETH', function () {
             });
             await driver.waitForSelector({
               text: '0.00021 ETH',
+              tag: 'h1',
             });
             const inputs = await driver.findElements('input[type="number"]');
             const gasPriceInput = inputs[1];
