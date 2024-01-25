@@ -171,8 +171,7 @@ export enum IconName {
   Bold = 'bold',
   CircleX = 'circle-x',
   Download = 'download',
-  // eslint-disable-next-line @typescript-eslint/no-shadow
-  File = 'file',
+  FileIcon = 'file',
   Flask = 'flask',
   Plug = 'plug',
   Share = 'share',
