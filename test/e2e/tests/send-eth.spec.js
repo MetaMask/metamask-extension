@@ -261,10 +261,6 @@ describe('Send ETH', function () {
             });
             await editGasfeeForm(driver, '21000', '100');
             await driver.waitForSelector({
-              text: '0.0021 ETH',
-            });
-            await driver.clickElement({ text: 'Save', tag: 'button' });
-            await driver.waitForSelector({
               css: '.transaction-detail-item:nth-of-type(1) h6:nth-of-type(2)',
               text: '0.0021 ETH',
             });
