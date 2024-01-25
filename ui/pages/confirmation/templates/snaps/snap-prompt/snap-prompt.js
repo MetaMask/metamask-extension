@@ -28,7 +28,14 @@ function getValues(pendingApproval, t, actions, _history, setInputState) {
           },
           children: [
             // TODO: Replace with SnapUIRenderer when we don't need to inject the input manually.
-            mapToTemplate(content, elementKeyIndex),
+            {
+              element: 'Box',
+              key: 'snap-ui-content',
+              children: mapToTemplate(content, elementKeyIndex),
+              props: {
+                className: 'snap-ui-renderer__content',
+              },
+            },
             {
               element: 'div',
               key: 'snap-prompt-container',

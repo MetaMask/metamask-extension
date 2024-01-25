@@ -589,9 +589,6 @@
   "search": {
     "message": "Carian"
   },
-  "searchResults": {
-    "message": "Hasil Carian"
-  },
   "securityAndPrivacy": {
     "message": "Keselamatan & Privasi"
   },
@@ -756,12 +753,6 @@
   },
   "unknown": {
     "message": "Tidak diketahui"
-  },
-  "unknownCameraError": {
-    "message": "Terdapat ralat semasa cuba mengakses kamera anda. Sila cuba sekali lagi..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Alamak! Ada yang tak kena...."
   },
   "unknownNetwork": {
     "message": "Rangkaian Persendirian Tidak Dikenali"

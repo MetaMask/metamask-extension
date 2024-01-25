@@ -14,8 +14,9 @@ import {
   getIsBuyableChain,
   getCurrentChainId,
   getSwapsDefaultToken,
-  getSelectedAddress,
+  getSelectedAccount,
   getPreferences,
+  getIsMainnet,
 } from '../../../selectors';
 import {
   getNativeCurrency,
@@ -48,6 +49,7 @@ import {
   showPrimaryCurrency,
   showSecondaryCurrency,
 } from '../../../../shared/modules/currency-display.utils';
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -55,6 +57,7 @@ const AssetList = ({ onClickAsset }) => {
   const nativeCurrency = useSelector(getNativeCurrency);
   const showFiat = useSelector(getShouldShowFiat);
   const chainId = useSelector(getCurrentChainId);
+  const isMainnet = useSelector(getIsMainnet);
   const { useNativeCurrencyAsPrimaryCurrency } = useSelector(getPreferences);
   const { ticker, type } = useSelector(getProviderConfig);
   const isOriginalNativeSymbol = useIsOriginalNativeTokenSymbol(
@@ -65,7 +68,7 @@ const AssetList = ({ onClickAsset }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -103,13 +106,22 @@ const AssetList = ({ onClickAsset }) => {
 
   const { tokensWithBalances, totalFiatBalance, totalWeiBalance, loading } =
     useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
-
+  tokensWithBalances.forEach((token) => {
+    // token.string is the balance displayed in the TokenList UI
+    token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
+  });
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsBuyableChain);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   const shouldShowReceive = balanceIsZero;
   const { openBuyCryptoInPdapp } = useRamps();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+
+  let isStakeable = isMainnet;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  isStakeable = false;
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
@@ -123,7 +135,7 @@ const AssetList = ({ onClickAsset }) => {
             margin={4}
           />
         )}
-      {process.env.MULTICHAIN && (shouldShowBuy || shouldShowReceive) ? (
+      {shouldShowBuy || shouldShowReceive ? (
         <Box
           paddingInlineStart={4}
           paddingInlineEnd={4}
@@ -161,58 +173,56 @@ const AssetList = ({ onClickAsset }) => {
             />
           ) : null}
         </Box>
-      ) : (
-        <>
-          <TokenListItem
-            onClick={() => onClickAsset(nativeCurrency)}
-            title={nativeCurrency}
-            primary={
-              showPrimaryCurrency(
-                isOriginalNativeSymbol,
-                useNativeCurrencyAsPrimaryCurrency,
-              )
-                ? primaryCurrencyProperties.value ??
-                  secondaryCurrencyProperties.value
-                : null
-            }
-            tokenSymbol={
-              showPrimaryCurrency(
-                isOriginalNativeSymbol,
-                useNativeCurrencyAsPrimaryCurrency,
-              )
-                ? primaryCurrencyProperties.suffix
-                : null
-            }
-            secondary={
-              showFiat &&
-              showSecondaryCurrency(
-                isOriginalNativeSymbol,
-                useNativeCurrencyAsPrimaryCurrency,
-              )
-                ? secondaryCurrencyDisplay
-                : undefined
-            }
-            tokenImage={balanceIsLoading ? null : primaryTokenImage}
-            isOriginalTokenSymbol={isOriginalNativeSymbol}
-            isNativeCurrency
-          />
-          <TokenList
-            tokens={tokensWithBalances}
-            loading={loading}
-            onTokenClick={(tokenAddress) => {
-              onClickAsset(tokenAddress);
-              trackEvent({
-                event: MetaMetricsEventName.TokenScreenOpened,
-                category: MetaMetricsEventCategory.Navigation,
-                properties: {
-                  token_symbol: primaryCurrencyProperties.suffix,
-                  location: 'Home',
-                },
-              });
-            }}
-          />
-        </>
-      )}
+      ) : null}
+      <TokenListItem
+        onClick={() => onClickAsset(nativeCurrency)}
+        title={nativeCurrency}
+        primary={
+          showPrimaryCurrency(
+            isOriginalNativeSymbol,
+            useNativeCurrencyAsPrimaryCurrency,
+          )
+            ? primaryCurrencyProperties.value ??
+              secondaryCurrencyProperties.value
+            : null
+        }
+        tokenSymbol={
+          showPrimaryCurrency(
+            isOriginalNativeSymbol,
+            useNativeCurrencyAsPrimaryCurrency,
+          )
+            ? primaryCurrencyProperties.suffix
+            : null
+        }
+        secondary={
+          showFiat &&
+          showSecondaryCurrency(
+            isOriginalNativeSymbol,
+            useNativeCurrencyAsPrimaryCurrency,
+          )
+            ? secondaryCurrencyDisplay
+            : undefined
+        }
+        tokenImage={balanceIsLoading ? null : primaryTokenImage}
+        isOriginalTokenSymbol={isOriginalNativeSymbol}
+        isNativeCurrency
+        isStakeable={isStakeable}
+      />
+      <TokenList
+        tokens={tokensWithBalances}
+        loading={loading}
+        onTokenClick={(tokenAddress) => {
+          onClickAsset(tokenAddress);
+          trackEvent({
+            event: MetaMetricsEventName.TokenScreenOpened,
+            category: MetaMetricsEventCategory.Navigation,
+            properties: {
+              token_symbol: primaryCurrencyProperties.suffix,
+              location: 'Home',
+            },
+          });
+        }}
+      />
       <Box marginTop={detectedTokens.length > 0 ? 0 : 4}>
         <ImportTokenLink margin={4} marginBottom={2} />
       </Box>

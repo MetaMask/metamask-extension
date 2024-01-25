@@ -28,8 +28,7 @@ import {
   getShowTermsOfUse,
   getShowOutdatedBrowserWarning,
   getNewNetworkAdded,
-  hasUnsignedQRHardwareTransaction,
-  hasUnsignedQRHardwareMessage,
+  getIsSigningQRHardwareTransaction,
   getNewNftAddedMessage,
   getNewTokensImported,
   getShouldShowSeedPhraseReminder,
@@ -37,6 +36,9 @@ import {
   getSuggestedTokens,
   getSuggestedNfts,
   getApprovalFlows,
+  getShowSurveyToast,
+  getNewTokensImportedError,
+  hasPendingApprovals,
 } from '../../selectors';
 
 import {
@@ -54,6 +56,8 @@ import {
   setRemoveNftMessage,
   setNewTokensImported,
   setActiveNetwork,
+  setSurveyLinkLastClickedOrClosed,
+  setNewTokensImportedError,
 } from '../../store/actions';
 import { hideWhatsNewPopup } from '../../ducks/app/app';
 import { getWeb3ShimUsageAlertEnabledness } from '../../ducks/metamask/metamask';
@@ -63,6 +67,9 @@ import { getIsBrowserDeprecated } from '../../helpers/utils/util';
 import {
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_POPUP,
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../shared/constants/app';
 import {
   AlertTypes,
@@ -115,13 +122,15 @@ const mapStateToProps = (state) => {
     getWeb3ShimUsageStateForOrigin(state, originOfCurrentTab) ===
       Web3ShimUsageAlertStates.recorded;
 
-  const isSigningQRHardwareTransaction =
-    hasUnsignedQRHardwareTransaction(state) ||
-    hasUnsignedQRHardwareMessage(state);
-
   const hasWatchTokenPendingApprovals = getSuggestedTokens(state).length > 0;
 
   const hasWatchNftPendingApprovals = getSuggestedNfts(state).length > 0;
+
+  const hasAllowedPopupRedirectApprovals = hasPendingApprovals(state, [
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
+    ///: END:ONLY_INCLUDE_IF
+  ]);
 
   return {
     forgottenPassword,
@@ -156,12 +165,15 @@ const mapStateToProps = (state) => {
       getIsBrowserDeprecated() && getShowOutdatedBrowserWarning(state),
     seedPhraseBackedUp,
     newNetworkAddedName: getNewNetworkAdded(state),
-    isSigningQRHardwareTransaction,
+    isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     newNftAddedMessage: getNewNftAddedMessage(state),
     removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
+    newTokensImportedError: getNewTokensImportedError(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
     onboardedInThisUISession: appState.onboardedInThisUISession,
+    showSurveyToast: getShowSurveyToast(state),
+    hasAllowedPopupRedirectApprovals,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     waitForConfirmDeepLinkDialog: getWaitForConfirmDeepLinkDialog(state),
     institutionalConnectRequests,
@@ -209,6 +221,9 @@ const mapDispatchToProps = (dispatch) => {
     setNewTokensImported: (newTokens) => {
       dispatch(setNewTokensImported(newTokens));
     },
+    setNewTokensImportedError: (msg) => {
+      dispatch(setNewTokensImportedError(msg));
+    },
     clearNewNetworkAdded: () => {
       dispatch(setNewNetworkAdded({}));
     },
@@ -219,6 +234,8 @@ const mapDispatchToProps = (dispatch) => {
     setWaitForConfirmDeepLinkDialog: (wait) =>
       dispatch(mmiActions.setWaitForConfirmDeepLinkDialog(wait)),
     ///: END:ONLY_INCLUDE_IF
+    setSurveyLinkLastClickedOrClosed: (time) =>
+      dispatch(setSurveyLinkLastClickedOrClosed(time)),
   };
 };
 

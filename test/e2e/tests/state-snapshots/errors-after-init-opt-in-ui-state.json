@@ -2,6 +2,7 @@
   "DNS": "object",
   "activeTab": "object",
   "appState": "object",
+  "confirm": "object",
   "confirmTransaction": "object",
   "gas": { "customData": { "price": null, "limit": null } },
   "history": { "mostRecentOverviewPage": "/" },
@@ -17,16 +18,16 @@
     "networkConfigurations": "object",
     "addressBook": "object",
     "contractExchangeRates": "object",
-    "contractExchangeRatesByChainId": "object",
+    "confirmationExchangeRates": {},
     "pendingTokens": "object",
     "customNonceValue": "",
     "useBlockie": false,
-    "useRequestQueue": false,
     "featureFlags": {},
     "welcomeScreenSeen": false,
     "currentLocale": "en",
     "preferences": {
       "hideZeroBalanceTokens": false,
+      "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
       "useNativeCurrencyAsPrimaryCurrency": true
@@ -37,6 +38,22 @@
     "use4ByteResolution": true,
     "participateInMetaMetrics": true,
     "nextNonce": null,
+    "currencyRates": {
+      "ETH": {
+        "conversionDate": "number",
+        "conversionRate": 1300,
+        "usdConversionRate": 1300
+      }
+    },
+    "providerConfig": {
+      "chainId": "0x539",
+      "nickname": "Localhost 8545",
+      "rpcPrefs": "object",
+      "rpcUrl": "string",
+      "ticker": "ETH",
+      "type": "rpc",
+      "id": "networkConfigurationId"
+    },
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
@@ -51,6 +68,8 @@
     "showTestnetMessageInDropdown": true,
     "showBetaHeader": false,
     "showProductTour": true,
+    "showNetworkBanner": true,
+    "showAccountBanner": true,
     "trezorModel": null,
     "hadAdvancedGasFeesSetPriorToMigration92_3": false,
     "nftsDropdownState": {},
@@ -58,27 +77,18 @@
     "qrHardware": {},
     "usedNetworks": { "0x1": true, "0x5": true, "0x539": true },
     "snapsInstallPrivacyWarningShown": true,
+    "surveyLinkLastClickedOrClosed": "object",
     "currentAppVersion": "string",
     "previousAppVersion": "",
     "previousMigrationVersion": 0,
     "currentMigrationVersion": "number",
     "selectedNetworkClientId": "string",
-    "providerConfig": {
-      "chainId": "0x539",
-      "nickname": "Localhost 8545",
-      "rpcPrefs": "object",
-      "rpcUrl": "string",
-      "ticker": "ETH",
-      "type": "rpc",
-      "id": "networkConfigurationId"
-    },
     "networksMetadata": {
       "networkConfigurationId": {
         "EIPS": { "1559": false },
         "status": "available"
       }
     },
-    "cachedBalances": "object",
     "keyrings": "object",
     "useNonceField": false,
     "usePhishDetect": true,
@@ -89,6 +99,7 @@
     "useTokenDetection": false,
     "useNftDetection": false,
     "useCurrencyRateCheck": true,
+    "useRequestQueue": false,
     "openSeaEnabled": false,
     "securityAlertsEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
@@ -108,17 +119,10 @@
     "metaMetricsId": "fake-metrics-id",
     "eventsBeforeMetricsOptIn": "object",
     "traits": "object",
+    "previousUserTraits": "object",
     "fragments": "object",
     "segmentApiCalls": "object",
-    "previousUserTraits": "object",
     "currentCurrency": "usd",
-    "currencyRates": {
-      "ETH": {
-        "conversionDate": "number",
-        "conversionRate": 1700,
-        "usdConversionRate": 1700
-      }
-    },
     "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
     "unconnectedAccountAlertShownOrigins": "object",
     "web3ShimUsageOrigins": "object",
@@ -130,8 +134,10 @@
     "subjectMetadata": "object",
     "announcements": "object",
     "orderedNetworkList": { "0": "string", "1": "string", "2": "string" },
-    "gasFeeEstimates": {},
+    "pinnedAccountList": {},
+    "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},
+    "gasFeeEstimates": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none",
     "tokenList": "object",
@@ -151,11 +157,11 @@
     "allNftContracts": "object",
     "allNfts": "object",
     "ignoredNfts": "object",
-    "domains": {
-      "metamask": "networkConfigurationId"
-    },
+    "domains": { "metamask": "networkConfigurationId" },
     "perDomainNetwork": "boolean",
     "logs": "object",
+    "methodData": "object",
+    "lastFetchedBlockNumbers": "object",
     "snaps": "object",
     "snapStates": "object",
     "unencryptedSnapStates": "object",
@@ -163,8 +169,10 @@
     "database": "object",
     "lastUpdated": "object",
     "notifications": "object",
+    "userOperations": "object",
     "accounts": "object",
     "accountsByChainId": "object",
+    "contractExchangeRatesByChainId": "object",
     "unapprovedDecryptMsgs": "object",
     "unapprovedDecryptMsgCount": 0,
     "unapprovedEncryptionPublicKeyMsgs": "object",
@@ -205,13 +213,8 @@
     "pendingApprovals": "object",
     "pendingApprovalCount": "number",
     "approvalFlows": "object",
-    "lastFetchedBlockNumbers": "object",
-    "methodData": "object",
-    "versionInfo": {},
     "storageMetadata": {},
-    "chainStatus": {
-      "0x539": { "chainId": "0x539", "dataFetched": false, "versionInfo": [] }
-    },
+    "chainStatus": { "0x539": { "chainId": "0x539", "versionInfo": [] } },
     "versionFileETag": "string"
   },
   "send": "object",

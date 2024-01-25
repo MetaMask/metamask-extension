@@ -28,7 +28,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
           <img
             alt="Ethereum Mainnet logo"
             class="mm-avatar-network__network-image"
-            src="./images/eth_logo.png"
+            src="./images/eth_logo.svg"
           />
         </div>
         <div
@@ -115,7 +115,7 @@ exports[`IncomingTransactionToggle should render existing incoming transaction p
           <img
             alt="Linea Mainnet logo"
             class="mm-avatar-network__network-image"
-            src="./images/linea-logo-mainnet.png"
+            src="./images/linea-logo-mainnet.svg"
           />
         </div>
         <div

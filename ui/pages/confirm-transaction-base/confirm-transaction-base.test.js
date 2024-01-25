@@ -5,6 +5,7 @@ import { fireEvent } from '@testing-library/react';
 
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import {
   TransactionStatus,
   TransactionType,
@@ -22,6 +23,10 @@ import {
 } from '../../../shared/constants/network';
 import { domainInitialState } from '../../ducks/domains';
 
+import {
+  BlockaidReason,
+  BlockaidResultType,
+} from '../../../shared/constants/security-provider';
 import ConfirmTransactionBase from './confirm-transaction-base.container';
 
 const middleware = [thunk];
@@ -37,6 +42,7 @@ setBackgroundConnection({
 const mockTxParamsFromAddress = '0x123456789';
 
 const mockTxParamsToAddress = '0x85c1685cfceaa5c0bdb1609fc536e9a8387dd65e';
+const mockMaliciousToAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 const mockTxParamsToAddressConcat = '0x85c16...DD65e';
 
 const mockParsedTxDataToAddressWithout0x =
@@ -114,7 +120,7 @@ const baseStore = {
     addressBook: {
       [CHAIN_IDS.GOERLI]: [],
     },
-    cachedBalances: {
+    accountsByChainId: {
       [CHAIN_IDS.GOERLI]: {},
     },
     accounts: {
@@ -128,6 +134,24 @@ const baseStore = {
       [mockTxParamsToAddress]: {
         name: 'Test Address 1',
       },
+    },
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: mockTxParamsFromAddress,
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Account 1',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
     },
     tokenAddress: '0x32e6c34cd57087abbd59b5a4aecc4cb495924356',
     tokenList: {},
@@ -204,6 +228,57 @@ describe('Confirm Transaction Base', () => {
     );
     expect(queryByText('Layer 1 fees')).not.toBeInTheDocument();
     expect(queryByText('Layer 2 gas fee')).not.toBeInTheDocument();
+  });
+
+  it('should render only total fee details if simulation fails', () => {
+    mockedStore.send.hasSimulationError = true;
+    const store = configureMockStore(middleware)(mockedStore);
+    const { queryByText } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+
+    expect(queryByText('Total')).toBeInTheDocument();
+    expect(queryByText('Amount + gas fee')).toBeInTheDocument();
+
+    expect(queryByText('Estimated fee')).not.toBeInTheDocument();
+  });
+
+  it('renders blockaid security alert if recipient is a malicious address', () => {
+    const newMockedStore = {
+      ...mockedStore,
+      send: {
+        ...mockedStore.send,
+        hasSimulationError: false,
+      },
+      confirmTransaction: {
+        ...mockedStore.confirmTransaction,
+        txData: {
+          ...mockedStore.confirmTransaction.txData,
+          txParams: {
+            ...mockedStore.confirmTransaction.txData.txParams,
+            to: mockMaliciousToAddress,
+          },
+          securityAlertResponse: {
+            reason: BlockaidReason.maliciousDomain,
+            result_type: BlockaidResultType.Malicious,
+            features: [],
+          },
+        },
+      },
+    };
+
+    const store = configureMockStore(middleware)(newMockedStore);
+
+    const { getByTestId } = renderWithProvider(
+      <ConfirmTransactionBase actionKey="confirm" />,
+      store,
+    );
+
+    const securityProviderBanner = getByTestId(
+      'security-provider-banner-alert',
+    );
+    expect(securityProviderBanner).toBeInTheDocument();
   });
 
   it('should contain L1 L2 fee details for optimism', () => {
@@ -409,6 +484,7 @@ describe('Confirm Transaction Base', () => {
         gasFeeIsCustom: true,
       },
     };
+
     const store = configureMockStore(middleware)(newMockedStore);
     const sendTransaction = jest.fn().mockResolvedValue();
 
@@ -484,6 +560,7 @@ describe('Confirm Transaction Base', () => {
         gasFeeIsCustom: true,
       },
     };
+
     const store = configureMockStore(middleware)(newMockedStore);
     const sendTransaction = jest
       .fn()

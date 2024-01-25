@@ -10,19 +10,14 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 
-import {
-  Text,
-  Box,
-  Tag,
-  ButtonLink,
-} from '../../../components/component-library';
+import { Text, Box, Tag } from '../../../components/component-library';
 import {
   TextColor,
   TextVariant,
   Display,
   FlexDirection,
   JustifyContent,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   FontWeight,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(desktop)
@@ -48,7 +43,7 @@ export default class ExperimentalTab extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: PropTypes.bool,
     setAddSnapAccountEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
@@ -218,24 +213,18 @@ export default class ExperimentalTab extends PureComponent {
                   </Text>
                   <Tag marginLeft={2} label="Beta" />
                 </Box>
-                <Text
-                  variant={TextVariant.bodySm}
-                  as="h6"
-                  color={TextColor.textAlternative}
-                  marginTop={0}
-                  marginRight={1}
-                >
+                <div className="settings-page__content-description">
                   {t('openSeaMessage', [
-                    <ButtonLink
-                      variant="bodyMd"
-                      href={OPENSEA_TERMS_OF_USE}
-                      externalLink
+                    <a
                       key="opensea-terms-of-use"
+                      href={OPENSEA_TERMS_OF_USE}
+                      rel="noreferrer"
+                      target="_blank"
                     >
                       {t('terms')}
-                    </ButtonLink>,
+                    </a>,
                   ])}
-                </Text>
+                </div>
               </div>
               <ToggleButton
                 value={transactionSecurityCheckEnabled}
@@ -282,7 +271,7 @@ export default class ExperimentalTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   renderKeyringSnapsToggle() {
     const { t, trackEvent } = this.context;
     const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
@@ -324,20 +313,22 @@ export default class ExperimentalTab extends PureComponent {
                 >
                   {t('addSnapAccountToggle')}
                 </Text>
-                <ToggleButton
-                  dataTestId="add-snap-account-toggle"
-                  value={addSnapAccountEnabled}
-                  onToggle={(value) => {
-                    trackEvent({
-                      event: MetaMetricsEventName.AddSnapAccountEnabled,
-                      category: MetaMetricsEventCategory.Settings,
-                      properties: {
-                        enabled: !value,
-                      },
-                    });
-                    setAddSnapAccountEnabled(!value);
-                  }}
-                />
+                <div data-testid="add-account-snap-toggle-div">
+                  <ToggleButton
+                    value={addSnapAccountEnabled}
+                    dataTestId="add-account-snap-toggle-button"
+                    onToggle={(value) => {
+                      trackEvent({
+                        event: MetaMetricsEventName.AddSnapAccountEnabled,
+                        category: MetaMetricsEventCategory.Settings,
+                        properties: {
+                          enabled: !value,
+                        },
+                      });
+                      setAddSnapAccountEnabled(!value);
+                    }}
+                  />
+                </div>
               </div>
               <Text
                 variant={TextVariant.bodySm}
@@ -353,8 +344,8 @@ export default class ExperimentalTab extends PureComponent {
       </>
     );
   }
-
   ///: END:ONLY_INCLUDE_IF
+
   renderToggleRequestQueue() {
     const { t } = this.context;
     const { useRequestQueue, setUseRequestQueue } = this.props;
@@ -389,7 +380,7 @@ export default class ExperimentalTab extends PureComponent {
       <div className="settings-page__body">
         {this.renderSecurityAlertsToggle()}
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           this.renderKeyringSnapsToggle()
           ///: END:ONLY_INCLUDE_IF
         }

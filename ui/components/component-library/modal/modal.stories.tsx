@@ -9,6 +9,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
+  ModalFooter,
   Text,
   Button,
   ButtonLink,
@@ -17,7 +18,6 @@ import {
   IconName,
   Box,
 } from '..';
-
 import { Modal } from './modal';
 
 import README from './README.mdx';
@@ -131,7 +131,6 @@ const Template: StoryFn<typeof Modal> = (args) => {
             >
               {showMoreModalContent ? 'Hide' : 'Show more'}
             </ButtonLink>
-
             {showMoreModalContent && (
               <>
                 <LoremIpsum marginTop={8} />
@@ -143,6 +142,7 @@ const Template: StoryFn<typeof Modal> = (args) => {
               </>
             )}
           </ModalBody>
+          <ModalFooter onSubmit={handleOnClose} onCancel={handleOnClose} />
         </ModalContent>
       </Modal>
       {showLoremIpsum && (
@@ -186,7 +186,7 @@ IsClosedOnEscapeKey.args = {
 };
 
 export const InitialFocusRef: StoryFn<typeof Modal> = (args) => {
-  const inputRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
   const [{ isOpen }, updateArgs] = useArgs();
   const handleOnClick = () => {
     updateArgs({ isOpen: true });
@@ -217,7 +217,7 @@ export const InitialFocusRef: StoryFn<typeof Modal> = (args) => {
             inputProps={{ ref: inputRef }}
             width={BlockSize.Full}
           />
-          {args.children}
+          <ModalBody>{args.children}</ModalBody>
         </ModalContent>
       </Modal>
     </>
@@ -263,7 +263,9 @@ export const FinalFocusRef: StoryFn<typeof Modal> = (args) => {
           >
             Modal Header
           </ModalHeader>
-          <Text>{args.children}</Text>
+          <ModalBody>
+            <Text>{args.children}</Text>
+          </ModalBody>
         </ModalContent>
       </Modal>
     </>

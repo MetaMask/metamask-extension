@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { promises: fs } = require('fs');
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   createDownloadFolder,
   unlockWallet,
@@ -22,16 +22,6 @@ const getStateLogsJson = async () => {
 };
 
 describe('State logs', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
-
   it('should download state logs for the account', async function () {
     if (process.env.SELENIUM_BROWSER === 'chrome') {
       // Chrome shows OS level download prompt which can't be dismissed by Selenium
@@ -40,7 +30,7 @@ describe('State logs', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
       },

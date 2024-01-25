@@ -30,12 +30,12 @@ import {
   BannerAlert,
   Modal,
   ModalOverlay,
-  ModalContent,
-  ModalHeader,
   ButtonPrimary,
   ButtonLink,
   ButtonLinkSize,
 } from '../../../components/component-library';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import { setSwapsErrorKey } from '../../../store/actions';
 import { getSwapsErrorKey } from '../../../ducks/swaps/swaps';
 

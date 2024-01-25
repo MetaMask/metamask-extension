@@ -606,9 +606,6 @@
   "search": {
     "message": "Haku"
   },
-  "searchResults": {
-    "message": "Hakutulokset"
-  },
   "securityAndPrivacy": {
     "message": "Turva & yksityisyys"
   },
@@ -776,12 +773,6 @@
   },
   "unknown": {
     "message": "Tuntematon"
-  },
-  "unknownCameraError": {
-    "message": "Tapahtui virhe yritettäessä käyttää kameraasi. Ole hyvä ja yritä uudestaan..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Oho! Jokin meni vikaan..."
   },
   "unknownNetwork": {
     "message": "Tuntematon yksityinen verkko"

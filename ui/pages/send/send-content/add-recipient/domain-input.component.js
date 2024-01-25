@@ -155,6 +155,7 @@ export default class DomainInput extends Component {
                 color={
                   userInput ? IconColor.iconDefault : IconColor.primaryDefault
                 }
+                data-testid="ens-qr-scan-button"
               />
             </>
           )}

@@ -239,7 +239,7 @@ export const StartAccessoryEndAccessory = (args) => {
           >
             <AvatarToken
               name="eth"
-              src="./images/eth_logo.png"
+              src="./images/eth_logo.svg"
               size={AvatarTokenSize.Sm}
             />
             <Text>ETH</Text>
