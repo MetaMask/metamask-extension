@@ -25,7 +25,9 @@ export function formatAccountType(accountType) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-export const getBlockaidMetricsParams = (securityAlertResponse) => {
+export const getBlockaidMetricsParams = (transaction) => {
+  const { externalLinkClicked, securityAlertResponse } = transaction;
+
   if (!securityAlertResponse) {
     return {};
   }
@@ -36,6 +38,10 @@ export const getBlockaidMetricsParams = (securityAlertResponse) => {
     reason,
     providerRequestsCount,
   } = securityAlertResponse;
+
+  if (externalLinkClicked) {
+    params.external_link_clicked = externalLinkClicked;
+  }
 
   if (resultType === BlockaidResultType.Failed) {
     params.ui_customizations = ['security_alert_failed'];

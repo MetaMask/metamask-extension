@@ -75,9 +75,7 @@ export default function SignatureRequestSIWE({ txData }) {
 
   useEffect(() => {
     if (txData.securityAlertResponse) {
-      const blockaidMetricsParams = getBlockaidMetricsParams(
-        txData.securityAlertResponse,
-      );
+      const blockaidMetricsParams = getBlockaidMetricsParams(txData);
 
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,

@@ -18,7 +18,7 @@ describe('getMethodName', () => {
 
 describe('getBlockaidMetricsParams', () => {
   it('should return empty object when securityAlertResponse is not defined', () => {
-    const result = getBlockaidMetricsParams(undefined);
+    const result = getBlockaidMetricsParams({});
     expect(result).toStrictEqual({});
   });
 
@@ -37,11 +37,11 @@ describe('getBlockaidMetricsParams', () => {
 
     const result = getBlockaidMetricsParams(transaction);
     expect(result).toStrictEqual({
-      ui_customizations: ['flagged_as_malicious'],
-      security_alert_response: BlockaidResultType.Malicious,
-      security_alert_reason: BlockaidReason.setApprovalForAll,
       ppom_eth_call_count: 5,
       ppom_eth_getCode_count: 3,
+      security_alert_reason: BlockaidReason.setApprovalForAll,
+      security_alert_response: BlockaidResultType.Malicious,
+      ui_customizations: ['flagged_as_malicious'],
     });
   });
 

@@ -35,10 +35,6 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import {
-  BlockaidReason,
-  BlockaidResultType,
-} from '../../../../shared/constants/security-provider';
 import { getBlockaidMetricsParams } from '../../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
 import {
@@ -763,9 +759,6 @@ async function buildEventFragmentProperties({
     finalApprovalAmount,
     contractMethodName,
     securityProviderResponse,
-    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    securityAlertResponse,
-    ///: END:ONLY_INCLUDE_IF
     simulationFails,
   } = transactionMeta;
   const query = new EthQuery(transactionMetricsRequest.provider);
@@ -939,11 +932,9 @@ async function buildEventFragmentProperties({
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const additionalBlockaidParams = getBlockaidMetricsParams(
-    securityAlertResponse as any,
-  );
+  const additionalBlockaidParams = getBlockaidMetricsParams(transactionMeta);
 
-  if (additionalBlockaidParams.ui_customizations?.length > 0) {
+  if (additionalBlockaidParams?.ui_customizations?.length > 0) {
     uiCustomizations.push(...additionalBlockaidParams.ui_customizations);
   }
   ///: END:ONLY_INCLUDE_IF
