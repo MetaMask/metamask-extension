@@ -3992,6 +3992,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/design-tokens@npm:^1.13.0":
+  version: 1.13.0
+  resolution: "@metamask/design-tokens@npm:1.13.0"
+  checksum: a76d10ad3ad6f1f30bf3b8e749e70c71587fd543fafd355b6185fb191994547acb63408c6d5ac4a53c4aa1f9e4022cd63ad83bd98cbac79f21f5bc7df15e63ab
+  languageName: node
+  linkType: hard
+
 "@metamask/desktop@npm:^0.3.0":
   version: 0.3.0
   resolution: "@metamask/desktop@npm:0.3.0"
@@ -24619,7 +24626,7 @@ __metadata:
     "@metamask/build-utils": "npm:^1.0.0"
     "@metamask/contract-metadata": "npm:^2.3.1"
     "@metamask/controller-utils": "npm:^8.0.1"
-    "@metamask/design-tokens": "npm:^1.12.0"
+    "@metamask/design-tokens": "npm:^1.13.0"
     "@metamask/desktop": "npm:^0.3.0"
     "@metamask/eslint-config": "npm:^9.0.0"
     "@metamask/eslint-config-jest": "npm:^9.0.0"
