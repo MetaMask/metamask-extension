@@ -19,7 +19,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
           <img
             alt="AVAX logo"
             class="mm-avatar-token__token-image"
-            src="./images/avax-token.png"
+            src="./images/avax-token.svg"
           />
         </div>
       </div>
@@ -47,7 +47,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
           <img
             alt="MATIC logo"
             class="mm-avatar-token__token-image"
-            src="./images/matic-token.png"
+            src="./images/matic-token.svg"
           />
         </div>
       </div>
@@ -61,7 +61,7 @@ exports[`AvatarGroup should render AvatarGroup component 1`] = `
           <img
             alt="ETH logo"
             class="mm-avatar-token__token-image"
-            src="./images/eth_logo.png"
+            src="./images/eth_logo.svg"
           />
         </div>
       </div>

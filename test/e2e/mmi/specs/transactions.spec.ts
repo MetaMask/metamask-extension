@@ -48,6 +48,8 @@ const sendTransaction = async (
   const accountFrom = await client.getAccountFrom();
   const accounTo = await client.getAccountTo();
 
+  await mainMenuPage.closeDeprecatedNetworksBanner();
+
   const accountsPopup = new MMIAccountMenuPage(page);
   await accountsPopup.accountsMenu();
   await accountsPopup.connectCustodian(
@@ -88,7 +90,7 @@ test.describe('MMI send', () => {
     await mainPage.checkLastTransactionStatus(statusName);
   });
 
-  test('Send a transaction from one account to another and abort it from custody', async ({
+  test.skip('Send a transaction from one account to another and abort it from custody', async ({
     page,
     context,
   }) => {

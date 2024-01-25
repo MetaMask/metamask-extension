@@ -28,7 +28,7 @@ export default {
   },
   args: {
     label: 'Avalanche C-Chain',
-    src: './images/avax-token.png',
+    src: './images/avax-token.svg',
   },
 } as Meta<typeof PickerNetwork>;
 
@@ -66,7 +66,7 @@ export const Src: StoryFn<typeof PickerNetwork> = (args) => (
     <PickerNetwork
       {...args}
       label="Polygon Mainnet"
-      src="./images/matic-token.png"
+      src="./images/matic-token.svg"
     />
     <PickerNetwork {...args} label="Optimism" src="./images/optimism.svg" />
   </Box>

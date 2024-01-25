@@ -1,16 +1,16 @@
 import React, {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   useEffect,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from 'react';
 
 import PropTypes from 'prop-types';
 
 import {
   useSelector,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   useDispatch,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from 'react-redux';
 import { Text } from '../../../component-library';
 import {
@@ -30,25 +30,25 @@ import { Copyable } from '../../snaps/copyable';
 import { getSnapMetadata } from '../../../../selectors';
 ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
 import { trackInsightSnapUsage } from '../../../../store/actions';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
 import { useTransactionInsightSnaps } from '../../../../hooks/snaps/useTransactionInsightSnaps';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 export const SnapInsight = ({
   snapId,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   data,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   loading,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
   insightHookParams,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 }) => {
   const t = useI18nContext();
   let error, content;
   let isLoading = loading;
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   error = data?.error;
   content = data?.response?.content;
   const dispatch = useDispatch();
@@ -62,14 +62,14 @@ export const SnapInsight = ({
     };
     trackInsightUsage();
   }, [snapId, dispatch]);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
   const insights = useTransactionInsightSnaps(insightHookParams);
   error = insights.data?.[0]?.error;
   content = insights.data?.[0]?.response?.content;
   isLoading = insights.loading;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const { name: snapName } = useSelector((state) =>
     getSnapMetadata(state, snapId),
@@ -129,20 +129,20 @@ export const SnapInsight = ({
 
 SnapInsight.propTypes = {
   snapId: PropTypes.string,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   /*
    * The insight object
    */
   data: PropTypes.object,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   /*
    * Boolean as to whether or not the insights are loading
    */
   loading: PropTypes.bool,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
   /**
    * Params object for the useTransactionInsightSnaps hook
    */
   insightHookParams: PropTypes.object,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 };

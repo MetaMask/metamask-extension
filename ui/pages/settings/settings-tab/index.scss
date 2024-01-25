@@ -13,11 +13,11 @@
   }
 
   &__button--red {
-    border-color: lighten($monzo, 10%);
+    border-color: var(--color-error-muted);
     color: var(--color-error-default);
 
     &:active {
-      background: lighten($monzo, 55%);
+      background: var(--color-error-muted-pressed);
       border-color: var(--color-error-default);
     }
 

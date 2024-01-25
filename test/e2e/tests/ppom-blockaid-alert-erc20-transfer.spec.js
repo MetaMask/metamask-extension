@@ -73,12 +73,12 @@ async function mockInfura(mockServer) {
       method: 'debug_traceCall',
       params: [{ accessList: [], data: '0x00000000' }],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       return {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result: {
             calls: [
               {
@@ -111,7 +111,7 @@ async function mockInfura(mockServer) {
       method: 'debug_traceCall',
       params: [{ from: selectedAddress }],
     })
-    .thenCallback((req) => {
+    .thenCallback(async (req) => {
       const mockFakePhishingAddress =
         '5fbdb2315678afecb367f032d93f642f64180aa3';
 
@@ -119,7 +119,7 @@ async function mockInfura(mockServer) {
         statusCode: 200,
         json: {
           jsonrpc: '2.0',
-          id: req.body.json.id,
+          id: (await req.body.getJson()).id,
           result: {
             calls: [
               {
@@ -182,7 +182,6 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
         const expectedDescription =
           'If you approve this request, a third party known for scams will take all your assets.';
 
-        await driver.navigate();
         await unlockWallet(driver);
         await openDapp(driver);
 
@@ -191,7 +190,7 @@ describe('PPOM Blockaid Alert - Malicious ERC20 Transfer @no-mmi', function () {
 
         // Wait for confirmation pop-up
         await driver.waitUntilXWindowHandles(3);
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Notification);
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const bannerAlertFoundByTitle = await driver.findElement({
           css: bannerAlertSelector,

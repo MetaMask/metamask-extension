@@ -1,5 +1,5 @@
 const { buildWebDriver } = require('../webdriver');
-const { withFixtures, tinyDelayMs } = require('../helpers');
+const { withFixtures, tinyDelayMs, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Settings', function () {
@@ -43,9 +43,7 @@ describe('Settings', function () {
         },
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // goes to the settings screen
         await driver.clickElement(

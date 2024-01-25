@@ -1,10 +1,13 @@
-import { TrezorBridge } from '@metamask/eth-trezor-keyring';
+import type { TrezorBridge } from '@metamask/eth-trezor-keyring';
+import type { LedgerBridge } from '@metamask/eth-ledger-bridge-keyring';
 import { KeyringClass, Json } from '@metamask/utils';
 
 /**
  * A transport bridge between the keyring and the hardware device.
  */
-export type HardwareTransportBridgeClass = new () => TrezorBridge;
+export type HardwareTransportBridgeClass =
+  | (new () => TrezorBridge)
+  | (new () => LedgerBridge);
 
 /**
  * Get builder function for Hardware keyrings which require an additional `opts`

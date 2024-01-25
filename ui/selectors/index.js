@@ -1,3 +1,4 @@
+export * from './confirm';
 export * from './confirm-transaction';
 export * from './custom-gas';
 export * from './first-time-flow';

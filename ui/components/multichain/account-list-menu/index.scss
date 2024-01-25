@@ -9,5 +9,13 @@
 
   &__list {
     overflow: auto;
+
+    &--menu-item-hidden {
+      opacity: 0.5;
+    }
+
+    &--menu-item-hidden-account {
+      opacity: 0.5;
+    }
   }
 }

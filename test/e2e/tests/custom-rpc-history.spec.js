@@ -1,21 +1,14 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
+  generateGanacheOptions,
   withFixtures,
   regularDelayMs,
+  unlockWallet,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Stores custom RPC history', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   it(`creates first custom RPC entry`, async function () {
     const port = 8546;
     const chainId = 1338;
@@ -23,13 +16,13 @@ describe('Stores custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions: { ...ganacheOptions, concurrent: { port, chainId } },
+        ganacheOptions: generateGanacheOptions({
+          concurrent: { port, chainId },
+        }),
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         const rpcUrl = `http://127.0.0.1:${port}`;
         const networkName = 'Secondary Ganache Testnet';
@@ -79,13 +72,11 @@ describe('Stores custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // duplicate network
         const duplicateRpcUrl = 'https://mainnet.infura.io/v3/';
@@ -121,14 +112,12 @@ describe('Stores custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // duplicate network
         const newRpcUrl = 'http://localhost:8544';
@@ -182,18 +171,16 @@ describe('Stores custom RPC history', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
 
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'button' });
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
       },
     );
   });
@@ -223,13 +210,11 @@ describe('Stores custom RPC history', function () {
             },
           })
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');
@@ -245,7 +230,7 @@ describe('Stores custom RPC history', function () {
         });
 
         // click Mainnet to dismiss network dropdown
-        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'button' });
+        await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
 
         assert.equal(customRpcs.length, 2);
       },
@@ -275,14 +260,12 @@ describe('Stores custom RPC history', function () {
             },
           })
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         await driver.waitForElementNotPresent('.loading-overlay');
         await driver.clickElement('[data-testid="network-display"]');

@@ -102,9 +102,10 @@
 
       align-items: center;
       cursor: pointer;
+      padding: 16px;
 
       &:hover {
-        background-color: rgba($alto, 0.2);
+        background-color: var(--color-background-hover);
       }
 
       .identicon {
@@ -117,6 +118,19 @@
 
         flex: 1 1 auto;
         width: 0;
+      }
+
+      &__title,
+      &__subtitle {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      &__title {
+        .confusable__point {
+          text-overflow: ellipsis;
+        }
       }
     }
 

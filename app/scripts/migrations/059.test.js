@@ -1,9 +1,9 @@
 import { cloneDeep } from 'lodash';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
-  TransactionType,
   TransactionStatus,
-} from '../../../shared/constants/transaction';
+  TransactionType,
+} from '@metamask/transaction-controller';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 import migration59 from './059';
 
 const SENT_ETHER = 'sentEther'; // a legacy transaction type replaced now by TransactionType.simpleSend

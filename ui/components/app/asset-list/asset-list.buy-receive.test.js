@@ -3,10 +3,17 @@ import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import AssetList from './asset-list';
 
 // Specific to just the ETH FIAT conversion
 const ETH_BALANCE = '0x041173b2c0e57d'; // 0.0011 ETH ($1.83)
+
+jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
+  return {
+    useIsOriginalNativeTokenSymbol: jest.fn(),
+  };
+});
 
 const render = (
   selectedAddress = mockState.metamask.selectedAddress,
@@ -18,9 +25,9 @@ const render = (
     metamask: {
       ...mockState.metamask,
       providerConfig: { chainId, ticker: 'ETH' },
-      cachedBalances: {
+      accountsByChainId: {
         [CHAIN_IDS.MAINNET]: {
-          [selectedAddress]: balance,
+          [selectedAddress]: { balance },
         },
       },
       selectedAddress,
@@ -34,6 +41,8 @@ const render = (
 };
 
 describe('AssetList Buy/Receive', () => {
+  useIsOriginalNativeTokenSymbol.mockReturnValue(true);
+
   it('shows Buy and Receive when the account is empty', () => {
     process.env.MULTICHAIN = 1;
     const { queryByText } = render(

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Meta } from '@storybook/react';
+import { TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL } from '../../helpers/constants/common';
 import SnapAccountRedirect from './snap-account-redirect';
 
 export default {
@@ -29,7 +30,7 @@ export default {
   args: {
     snapName: 'Snap Simple Keyring',
     isBlockedUrl: false,
-    url: 'https://metamask.github.io/snap-simple-keyring/0.2.4/',
+    url: TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL,
     message: 'Redirecting to Snap Simple Keyring',
   },
 } as Meta<typeof SnapAccountRedirect>;

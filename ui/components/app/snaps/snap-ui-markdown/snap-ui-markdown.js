@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import {
   TextVariant,
   OverflowWrap,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import {
   ButtonLink,
@@ -16,15 +17,20 @@ import SnapLinkWarning from '../snap-link-warning';
 const Paragraph = (props) => (
   <Text
     {...props}
+    marginTop={1}
+    marginBottom={1}
     variant={TextVariant.bodyMd}
     className="snap-ui-markdown__text"
-    overflowWrap={OverflowWrap.BreakWord}
+    overflowWrap={OverflowWrap.Anywhere}
+    color={TextColor.inherit}
   />
 );
 
 const Link = ({ onClick, children, ...rest }) => (
   <ButtonLink
     {...rest}
+    marginTop={1}
+    marginBottom={1}
     onClick={onClick}
     externalLink
     size={ButtonLinkSize.Inherit}

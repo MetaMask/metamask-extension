@@ -62,7 +62,12 @@ const SnapAvatar = ({
       position={BadgeWrapperPosition.bottomRight}
     >
       {iconUrl ? (
-        <AvatarFavicon size={avatarSize} src={iconUrl} name={friendlyName} />
+        <AvatarFavicon
+          backgroundColor={BackgroundColor.backgroundAlternative}
+          size={avatarSize}
+          src={iconUrl}
+          name={friendlyName}
+        />
       ) : (
         <AvatarBase
           size={avatarSize}
@@ -71,6 +76,7 @@ const SnapAvatar = ({
           justifyContent={JustifyContent.center}
           color={TextColor.textAlternative}
           style={{ borderWidth: '0px' }}
+          backgroundColor={BackgroundColor.backgroundAlternative}
         >
           {fallbackIcon}
         </AvatarBase>

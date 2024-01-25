@@ -2,6 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { fireEvent, waitFor } from '@testing-library/react';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import mockState from '../../../../test/data/mock-state.json';
 
 import { renderWithProvider } from '../../../../test/jest/rendering';
@@ -62,9 +63,9 @@ describe('Select Action Modal', () => {
         chainId: CHAIN_IDS.MAINNET,
         ticker: 'ETH',
       },
-      cachedBalances: {
+      accountsByChainId: {
         '0x1': {
-          '0x1': '0x1F4',
+          '0x1': { balance: '0x1F4' },
         },
       },
       preferences: {
@@ -87,7 +88,24 @@ describe('Select Action Modal', () => {
           balance: '0x1F4',
         },
       },
-      selectedAddress: '0x1',
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x1',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: KeyringType.imported,
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
       keyrings: [
         {
           type: KeyringType.imported,

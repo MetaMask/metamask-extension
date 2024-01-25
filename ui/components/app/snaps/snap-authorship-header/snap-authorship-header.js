@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { getSnapPrefix } from '@metamask/snaps-utils';
+import { getSnapPrefix, stripSnapPrefix } from '@metamask/snaps-utils';
 import { useSelector } from 'react-redux';
 import {
   BackgroundColor,
@@ -13,7 +13,6 @@ import {
   BlockSize,
   FontWeight,
 } from '../../../../helpers/constants/design-system';
-import { removeSnapIdPrefix } from '../../../../helpers/utils/util';
 import {
   getSnapMetadata,
   getTargetSubjectMetadata,
@@ -33,7 +32,7 @@ const SnapAuthorshipHeader = ({
   // update request is rejected because the reference comes from the request itself and not subject metadata
   // like it is done with snap install
   const snapPrefix = snapId && getSnapPrefix(snapId);
-  const packageName = snapId && removeSnapIdPrefix(snapId);
+  const packageName = snapId && stripSnapPrefix(snapId);
   const isNPM = snapPrefix === 'npm:';
 
   const subjectMetadata = useSelector((state) =>

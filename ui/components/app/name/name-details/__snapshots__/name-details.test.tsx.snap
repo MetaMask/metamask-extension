@@ -32,6 +32,7 @@ exports[`NameDetails renders proposed names 1`] = `
           aria-modal="true"
           class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
           role="dialog"
+          style="overflow-y: auto;"
         >
           <div
             class="mm-box mm-header-base mm-modal-header mm-box--display-flex mm-box--justify-content-space-between"
@@ -85,11 +86,11 @@ exports[`NameDetails renders proposed names 1`] = `
                   class="mm-box name__icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/save.svg');"
                 />
-                <span
-                  class="name__name"
+                <p
+                  class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
                 >
                   TestName
-                </span>
+                </p>
               </div>
             </div>
           </div>
@@ -98,9 +99,6 @@ exports[`NameDetails renders proposed names 1`] = `
           >
             Interactions with this address will always be identified using this personal display name.
           </p>
-          <hr
-            class="name-details__line"
-          />
           <div
             class="box mm-form-text-field mm-form-text-field--disabled name-details__address box--margin-bottom-4 box--display-flex box--flex-direction-column"
           >
@@ -111,7 +109,7 @@ exports[`NameDetails renders proposed names 1`] = `
               Address
             </label>
             <div
-              class="box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
             >
               <input
                 autocomplete="off"
@@ -145,7 +143,7 @@ exports[`NameDetails renders proposed names 1`] = `
                   class="box mm-form-text-field form-combo-field__value form-combo-field__value-dropdown-visible box--display-flex box--flex-direction-column"
                 >
                   <div
-                    class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+                    class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
                   >
                     <input
                       autocomplete="off"
@@ -204,9 +202,6 @@ exports[`NameDetails renders proposed names 1`] = `
               </div>
             </div>
           </label>
-          <hr
-            class="name-details__line"
-          />
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           >
@@ -256,6 +251,7 @@ exports[`NameDetails renders with no saved name 1`] = `
           aria-modal="true"
           class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
           role="dialog"
+          style="overflow-y: auto;"
         >
           <div
             class="mm-box mm-header-base mm-modal-header mm-box--display-flex mm-box--justify-content-space-between"
@@ -309,11 +305,11 @@ exports[`NameDetails renders with no saved name 1`] = `
                   class="mm-box name__icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/warning.svg');"
                 />
-                <span
-                  class="name__value"
+                <p
+                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
                 >
                   0xc0ffe...54979
-                </span>
+                </p>
               </div>
             </div>
           </div>
@@ -322,9 +318,6 @@ exports[`NameDetails renders with no saved name 1`] = `
           >
             You are interacting with an unknown contract address. If you trust this author, set a personal display name to identify it going forward.
           </p>
-          <hr
-            class="name-details__line"
-          />
           <div
             class="box mm-form-text-field mm-form-text-field--disabled name-details__address box--margin-bottom-4 box--display-flex box--flex-direction-column"
           >
@@ -335,7 +328,7 @@ exports[`NameDetails renders with no saved name 1`] = `
               Address
             </label>
             <div
-              class="box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
             >
               <input
                 autocomplete="off"
@@ -369,7 +362,7 @@ exports[`NameDetails renders with no saved name 1`] = `
                   class="box mm-form-text-field form-combo-field__value box--display-flex box--flex-direction-column"
                 >
                   <div
-                    class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+                    class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
                   >
                     <input
                       autocomplete="off"
@@ -393,9 +386,6 @@ exports[`NameDetails renders with no saved name 1`] = `
               </div>
             </div>
           </label>
-          <hr
-            class="name-details__line"
-          />
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           >
@@ -449,6 +439,7 @@ exports[`NameDetails renders with saved name 1`] = `
           aria-modal="true"
           class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-sm mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default mm-box--rounded-lg"
           role="dialog"
+          style="overflow-y: auto;"
         >
           <div
             class="mm-box mm-header-base mm-modal-header mm-box--display-flex mm-box--justify-content-space-between"
@@ -502,11 +493,11 @@ exports[`NameDetails renders with saved name 1`] = `
                   class="mm-box name__icon mm-icon mm-icon--size-lg mm-box--display-inline-block mm-box--color-inherit"
                   style="mask-image: url('./images/icons/save.svg');"
                 />
-                <span
-                  class="name__name"
+                <p
+                  class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
                 >
                   TestName
-                </span>
+                </p>
               </div>
             </div>
           </div>
@@ -515,9 +506,6 @@ exports[`NameDetails renders with saved name 1`] = `
           >
             Interactions with this address will always be identified using this personal display name.
           </p>
-          <hr
-            class="name-details__line"
-          />
           <div
             class="box mm-form-text-field mm-form-text-field--disabled name-details__address box--margin-bottom-4 box--display-flex box--flex-direction-column"
           >
@@ -528,7 +516,7 @@ exports[`NameDetails renders with saved name 1`] = `
               Address
             </label>
             <div
-              class="box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+              class="mm-box mm-text-field mm-text-field--size-md mm-text-field--disabled mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
             >
               <input
                 autocomplete="off"
@@ -562,7 +550,7 @@ exports[`NameDetails renders with saved name 1`] = `
                   class="box mm-form-text-field form-combo-field__value box--display-flex box--flex-direction-column"
                 >
                   <div
-                    class="box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field box--padding-right-4 box--display-inline-flex box--flex-direction-row box--align-items-center box--background-color-background-default box--rounded-sm box--border-width-1 box--border-style-solid"
+                    class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-form-text-field__text-field mm-box--padding-right-4 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-sm mm-box--border-width-1 box--border-style-solid"
                   >
                     <input
                       autocomplete="off"
@@ -586,9 +574,6 @@ exports[`NameDetails renders with saved name 1`] = `
               </div>
             </div>
           </label>
-          <hr
-            class="name-details__line"
-          />
           <button
             class="mm-box mm-text mm-button-base mm-button-base--size-md mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-pill"
           >

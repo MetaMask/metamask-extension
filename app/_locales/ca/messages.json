@@ -229,9 +229,6 @@
   "editContact": {
     "message": "Editar Contacte"
   },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "El nom ENS no s'ha trovat a la xarxa actual. Prova a cambiar a la xarxa principal d'Ethereum."
-  },
   "ensRegistrationError": {
     "message": "Error al registre de nom ENS"
   },
@@ -593,9 +590,6 @@
   "search": {
     "message": "Cerca"
   },
-  "searchResults": {
-    "message": "Resultats de Cerca"
-  },
   "securityAndPrivacy": {
     "message": "Seguretat i privacitat"
   },
@@ -757,12 +751,6 @@
   },
   "unknown": {
     "message": "Desconegut"
-  },
-  "unknownCameraError": {
-    "message": "Hi ha hagut un error mentre intentaves accedir a la teva càmera"
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ups! Hi ha alguna cosa que no ha funcionat..."
   },
   "unknownNetwork": {
     "message": "Xarxa privada desconeguda"

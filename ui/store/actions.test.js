@@ -1,9 +1,10 @@
 import sinon from 'sinon';
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import enLocale from '../../app/_locales/en/messages.json';
 import MetaMaskController from '../../app/scripts/metamask-controller';
-import { TransactionStatus } from '../../shared/constants/transaction';
 import { HardwareDeviceNames } from '../../shared/constants/hardware-wallets';
 import { GAS_LIMITS } from '../../shared/constants/gas';
 import { ORIGIN_METAMASK } from '../../shared/constants/app';
@@ -22,13 +23,26 @@ const defaultState = {
         balance: '0x0',
       },
     },
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0xFirstAddress',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Test Account',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
     identities: {
       '0xFirstAddress': {},
-    },
-    cachedBalances: {
-      '0x1': {
-        '0xFirstAddress': '0x0',
-      },
     },
   },
 };
@@ -185,7 +199,7 @@ describe('Actions', () => {
       const verifyPassword = background.verifyPassword.callsFake((_, cb) =>
         cb(),
       );
-      const verifySeedPhrase = background.verifySeedPhrase.callsFake((cb) =>
+      const getSeedPhrase = background.getSeedPhrase.callsFake((_, cb) =>
         cb(null, Array.from(Buffer.from('test').values())),
       );
 
@@ -193,14 +207,14 @@ describe('Actions', () => {
 
       await store.dispatch(actions.requestRevealSeedWords());
       expect(verifyPassword.callCount).toStrictEqual(1);
-      expect(verifySeedPhrase.callCount).toStrictEqual(1);
+      expect(getSeedPhrase.callCount).toStrictEqual(1);
     });
 
     it('displays warning error message then callback in background errors', async () => {
       const store = mockStore();
 
       background.verifyPassword.callsFake((_, cb) => cb());
-      background.verifySeedPhrase.callsFake((cb) => {
+      background.getSeedPhrase.callsFake((_, cb) => {
         cb(new Error('error'));
       });
 
@@ -239,13 +253,26 @@ describe('Actions', () => {
               balance: '0x0',
             },
           },
-          cachedBalances: {
-            '0x1': {
-              '0xAnotherAddress': '0x0',
-            },
-          },
           identities: {
             '0xAnotherAddress': {},
+          },
+          internalAccounts: {
+            accounts: {
+              '22497cc9-e791-42b8-adef-2f13ef216b86': {
+                address: '0xAnotherAddress',
+                id: '22497cc9-e791-42b8-adef-2f13ef216b86',
+                metadata: {
+                  name: 'Test Account 2',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: '22497cc9-e791-42b8-adef-2f13ef216b86',
           },
         }),
       );
@@ -531,8 +558,6 @@ describe('Actions', () => {
         (_, __, ___, cb) => cb(),
       );
 
-      background.establishLedgerTransportPreference.callsFake((cb) => cb());
-
       setBackgroundConnection(background);
 
       await store.dispatch(
@@ -551,8 +576,6 @@ describe('Actions', () => {
       background.connectHardware.callsFake((_, __, ___, cb) =>
         cb(new Error('error')),
       );
-
-      background.establishLedgerTransportPreference.callsFake((cb) => cb());
 
       setBackgroundConnection(background);
 
@@ -832,33 +855,89 @@ describe('Actions', () => {
     it('#setSelectedAccount', async () => {
       const store = mockStore({
         activeTab: {},
-        metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
+        metamask: {
+          alertEnabledness: {},
+          internalAccounts: {
+            accounts: {
+              'mock-id': {
+                address: '0x123',
+                id: 'mock-id',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [
+                  'personal_sign',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+              },
+            },
+            selectedAccount: 'mock-id',
+          },
+        },
       });
 
-      const setSelectedAddressSpy = sinon.stub().callsFake((_, cb) => cb());
+      const setSelectedInternalAccountSpy = sinon
+        .stub()
+        .callsFake((_, cb) => cb());
 
       background.getApi.returns({
-        setSelectedAddress: setSelectedAddressSpy,
+        setSelectedInternalAccount: setSelectedInternalAccountSpy,
       });
 
       setBackgroundConnection(background.getApi());
 
-      await store.dispatch(actions.setSelectedAccount());
-      expect(setSelectedAddressSpy.callCount).toStrictEqual(1);
+      await store.dispatch(actions.setSelectedAccount('0x123'));
+      expect(setSelectedInternalAccountSpy.callCount).toStrictEqual(1);
     });
 
     it('displays warning if setSelectedAccount throws', async () => {
       const store = mockStore({
         activeTab: {},
-        metamask: { alertEnabledness: {}, selectedAddress: '0x123' },
+        metamask: {
+          alertEnabledness: {},
+          internalAccounts: {
+            accounts: {
+              'mock-id': {
+                address: '0x123',
+                id: 'mock-id',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [
+                  'personal_sign',
+                  'eth_sign',
+                  'eth_signTransaction',
+                  'eth_signTypedData_v1',
+                  'eth_signTypedData_v3',
+                  'eth_signTypedData_v4',
+                ],
+                type: 'eip155:eoa',
+              },
+            },
+            selectedAccount: 'mock-id',
+          },
+        },
       });
 
-      const setSelectedAddressSpy = sinon
+      const setSelectedInternalAccountSpy = sinon
         .stub()
         .callsFake((_, cb) => cb(new Error('error')));
 
       background.getApi.returns({
-        setSelectedAddress: setSelectedAddressSpy,
+        setSelectedInternalAccount: setSelectedInternalAccountSpy,
       });
 
       setBackgroundConnection(background.getApi());
@@ -869,7 +948,7 @@ describe('Actions', () => {
         { type: 'HIDE_LOADING_INDICATION' },
       ];
 
-      await store.dispatch(actions.setSelectedAccount());
+      await store.dispatch(actions.setSelectedAccount('0x123'));
       expect(store.getActions()).toStrictEqual(expectedActions);
     });
   });
@@ -1989,6 +2068,24 @@ describe('Actions', () => {
             },
             identities: {
               '0xFirstAddress': {},
+            },
+            internalAccounts: {
+              accounts: {
+                '8e110453-2231-4e62-82de-29b913dfef4b': {
+                  address: '0xFirstAddress',
+                  id: '8e110453-2231-4e62-82de-29b913dfef4b',
+                  metadata: {
+                    name: 'Test Account 2',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: '8e110453-2231-4e62-82de-29b913dfef4b',
             },
             cachedBalances: {
               '0x1': {

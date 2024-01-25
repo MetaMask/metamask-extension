@@ -24,10 +24,10 @@ import {
   IconName,
   IconSize,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
 } from '../../../component-library';
+import { ModalContent } from '../../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import QuizContent from '../QuizContent';
 import { JSXDict, QuizStage } from '../types';
 

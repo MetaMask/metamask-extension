@@ -6,21 +6,21 @@ import {
   setNewNetworkAdded,
   upsertNetworkConfiguration,
 } from '../../../store/actions';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/constants/app';
 import createSnapAccount from './create-snap-account';
 import removeSnapAccount from './remove-snap-account';
 import snapAccountRedirect from './snap-account-redirect';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import addEthereumChain from './add-ethereum-chain';
 import switchEthereumChain from './switch-ethereum-chain';
 import success from './success';
 import error from './error';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import snapAlert from './snaps/snap-alert/snap-alert';
 import snapConfirmation from './snaps/snap-confirmation/snap-confirmation';
 import snapPrompt from './snaps/snap-prompt/snap-prompt';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 const APPROVAL_TEMPLATES = {
   [ApprovalType.AddEthereumChain]: addEthereumChain,
@@ -28,19 +28,19 @@ const APPROVAL_TEMPLATES = {
   // Use ApprovalType from utils controller
   [ApprovalType.ResultSuccess]: success,
   [ApprovalType.ResultError]: error,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   [ApprovalType.SnapDialogAlert]: snapAlert,
   [ApprovalType.SnapDialogConfirmation]: snapConfirmation,
   [ApprovalType.SnapDialogPrompt]: snapPrompt,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation]:
     createSnapAccount,
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval]:
     removeSnapAccount,
   [SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect]:
     snapAccountRedirect,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 };
 
 export const TEMPLATED_CONFIRMATION_APPROVAL_TYPES =
@@ -148,6 +148,7 @@ function getAttenuatedDispatch(dispatch) {
  * @param {object} history - The application's history object.
  * @param {Function} setInputState - A function that can be used to record the
  * state of input fields in the templated component.
+ * @param {object} data - The data object passed into the template from the confimation page.
  */
 export function getTemplateValues(
   pendingApproval,
@@ -155,6 +156,7 @@ export function getTemplateValues(
   dispatch,
   history,
   setInputState,
+  data,
 ) {
   const fn = APPROVAL_TEMPLATES[pendingApproval.type]?.getValues;
   if (!fn) {
@@ -164,7 +166,14 @@ export function getTemplateValues(
   }
 
   const safeActions = getAttenuatedDispatch(dispatch);
-  const values = fn(pendingApproval, t, safeActions, history, setInputState);
+  const values = fn(
+    pendingApproval,
+    t,
+    safeActions,
+    history,
+    setInputState,
+    data,
+  );
   const extraneousKeys = omit(values, ALLOWED_TEMPLATE_KEYS);
   const safeValues = pick(values, ALLOWED_TEMPLATE_KEYS);
   if (extraneousKeys.length > 0) {

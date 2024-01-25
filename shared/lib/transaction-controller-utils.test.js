@@ -1,6 +1,6 @@
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { EtherDenomination } from '../constants/common';
 import { CHAIN_IDS } from '../constants/network';
-import { TransactionEnvelopeType } from '../constants/transaction';
 import { Numeric } from '../modules/Numeric';
 import {
   calcGasTotal,

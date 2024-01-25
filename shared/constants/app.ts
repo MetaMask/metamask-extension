@@ -1,6 +1,6 @@
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { DialogType } from '@metamask/snaps-sdk';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { RestrictedMethods } from './permissions';
 
 /**
@@ -30,7 +30,9 @@ export const MESSAGE_TYPE = {
   ADD_ETHEREUM_CHAIN: 'wallet_addEthereumChain',
   ETH_ACCOUNTS: RestrictedMethods.eth_accounts,
   ETH_DECRYPT: 'eth_decrypt',
+  ETH_CHAIN_ID: 'eth_chainId',
   ETH_GET_ENCRYPTION_PUBLIC_KEY: 'eth_getEncryptionPublicKey',
+  ETH_GET_BLOCK_BY_NUMBER: 'eth_getBlockByNumber',
   ETH_REQUEST_ACCOUNTS: 'eth_requestAccounts',
   ETH_SIGN: 'eth_sign',
   ETH_SIGN_TYPED_DATA: 'eth_signTypedData',
@@ -45,12 +47,12 @@ export const MESSAGE_TYPE = {
   WALLET_REQUEST_PERMISSIONS: 'wallet_requestPermissions',
   WATCH_ASSET: 'wallet_watchAsset',
   WATCH_ASSET_LEGACY: 'metamask_watchAsset',
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   SNAP_DIALOG_ALERT: `${RestrictedMethods.snap_dialog}:alert`,
   SNAP_DIALOG_CONFIRMATION: `${RestrictedMethods.snap_dialog}:confirmation`,
   SNAP_DIALOG_PROMPT: `${RestrictedMethods.snap_dialog}:prompt`,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI_AUTHENTICATE: 'metamaskinstitutional_authenticate',
   MMI_REAUTHENTICATE: 'metamaskinstitutional_reauthenticate',
   MMI_REFRESH_TOKEN: 'metamaskinstitutional_refresh_token',
@@ -60,30 +62,24 @@ export const MESSAGE_TYPE = {
   MMI_CHECK_IF_TOKEN_IS_PRESENT: 'metamaskinstitutional_checkIfTokenIsPresent',
   MMI_SET_ACCOUNT_AND_NETWORK: 'metamaskinstitutional_setAccountAndNetwork',
   MMI_OPEN_ADD_HARDWARE_WALLET: 'metamaskinstitutional_openAddHardwareWallet',
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } as const;
 
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-// eslint-disable-next-line prefer-destructuring
-export const KEYRING_SNAPS_REGISTRY_URL =
-  process.env.KEYRING_SNAPS_REGISTRY_URL;
-///: END:ONLY_INCLUDE_IN
-
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 export const SNAP_DIALOG_TYPES = {
   [DialogType.Alert]: MESSAGE_TYPE.SNAP_DIALOG_ALERT,
   [DialogType.Confirmation]: MESSAGE_TYPE.SNAP_DIALOG_CONFIRMATION,
   [DialogType.Prompt]: MESSAGE_TYPE.SNAP_DIALOG_PROMPT,
 };
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 export const SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES = {
   confirmAccountCreation: 'snap_manageAccounts:confirmAccountCreation',
   confirmAccountRemoval: 'snap_manageAccounts:confirmAccountRemoval',
   showSnapAccountRedirect: 'showSnapAccountRedirect',
 };
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 /**
  * Custom messages to send and be received by the extension
