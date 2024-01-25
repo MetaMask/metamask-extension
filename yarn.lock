@@ -3985,14 +3985,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/design-tokens@npm:^1.12.0":
-  version: 1.12.0
-  resolution: "@metamask/design-tokens@npm:1.12.0"
-  checksum: bc1f5f4c3d43455a10e546bed951de6797a134557adb654cc61f39c4adc22065aedf12f6891c138e207d4ecd541914f95a9cc12fa201055bf65002f54207bc58
-  languageName: node
-  linkType: hard
-
-"@metamask/design-tokens@npm:^1.13.0":
+"@metamask/design-tokens@npm:^1.12.0, @metamask/design-tokens@npm:^1.13.0":
   version: 1.13.0
   resolution: "@metamask/design-tokens@npm:1.13.0"
   checksum: a76d10ad3ad6f1f30bf3b8e749e70c71587fd543fafd355b6185fb191994547acb63408c6d5ac4a53c4aa1f9e4022cd63ad83bd98cbac79f21f5bc7df15e63ab
