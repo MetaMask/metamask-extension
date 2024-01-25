@@ -66,7 +66,7 @@ export default function NftsTab() {
       return;
     }
     trackEvent({
-      event: MetaMetricsEventName.EmptyNftsBannerClicked,
+      event: MetaMetricsEventName.EmptyNftsBannerDisplayed,
       properties: {
         chain_id: currentNetwork.chainId,
         locale: currentLocale,
@@ -103,9 +103,18 @@ export default function NftsTab() {
             >
               <AssetListConversionButton
                 variant={ASSET_LIST_CONVERSION_BUTTON_VARIANT_TYPES.NFT}
-                onClick={() =>
-                  global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS })
-                }
+                onClick={() => {
+                  global.platform.openTab({ url: ZENDESK_URLS.NFT_TOKENS });
+                  trackEvent({
+                    event: MetaMetricsEventName.EmptyNftsBannerClicked,
+                    properties: {
+                      chain_id: currentNetwork.chainId,
+                      locale: currentLocale,
+                      network: currentNetwork.nickname,
+                      referrer: ORIGIN_METAMASK,
+                    },
+                  });
+                }}
               />
             </Box>
           ) : null}

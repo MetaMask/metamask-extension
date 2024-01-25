@@ -127,34 +127,35 @@ const AssetList = ({ onClickAsset }) => {
   ///: END:ONLY_INCLUDE_IF
 
   useEffect(() => {
-    if (!shouldShowBuy) {
-      return;
+    if (shouldShowBuy) {
+      trackEvent({
+        event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
+        properties: {
+          chain_id: currentNetwork.chainId,
+          locale: currentLocale,
+          network: currentNetwork.nickname,
+          referrer: ORIGIN_METAMASK,
+        },
+      });
     }
-    trackEvent({
-      event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
-      properties: {
-        chain_id: currentNetwork.chainId,
-        locale: currentLocale,
-        network: currentNetwork.nickname,
-        referrer: ORIGIN_METAMASK,
-      },
-    });
-  }, [shouldShowBuy, trackEvent, currentNetwork, currentLocale]);
-
-  useEffect(() => {
-    if (!shouldShowReceive) {
-      return;
+    if (shouldShowReceive) {
+      trackEvent({
+        event: MetaMetricsEventName.EmptyReceiveBannerDisplayed,
+        properties: {
+          chain_id: currentNetwork.chainId,
+          locale: currentLocale,
+          network: currentNetwork.nickname,
+          referrer: ORIGIN_METAMASK,
+        },
+      });
     }
-    trackEvent({
-      event: MetaMetricsEventName.EmptyBuyBannerDisplayed,
-      properties: {
-        chain_id: currentNetwork.chainId,
-        locale: currentLocale,
-        network: currentNetwork.nickname,
-        referrer: ORIGIN_METAMASK,
-      },
-    });
-  }, [shouldShowReceive, trackEvent, currentNetwork, currentLocale]);
+  }, [
+    shouldShowBuy,
+    shouldShowReceive,
+    trackEvent,
+    currentNetwork,
+    currentLocale,
+  ]);
 
   return (
     <>
