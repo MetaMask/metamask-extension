@@ -1026,3 +1026,95 @@ describe('Selectors', () => {
     ).toStrictEqual(expectedResult);
   });
 });
+
+describe('#getKeyringSnapAccounts', () => {
+  it('returns an empty array if no keyring snap accounts exist', () => {
+    const state = {
+      metamask: {
+        internalAccounts: {
+          accounts: {
+            1: {
+              address: '0x123456789',
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            2: {
+              address: '0x987654321',
+              metadata: {
+                name: 'Account 2',
+                keyring: {
+                  type: 'Simple Key Pair',
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    expect(selectors.getKeyringSnapAccounts(state)).toStrictEqual([]);
+  });
+
+  it('returns an array of keyring snap accounts', () => {
+    const state = {
+      metamask: {
+        internalAccounts: {
+          accounts: {
+            'mock-id-1': {
+              address: '0x123456789',
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'Ledger',
+                },
+              },
+            },
+            'mock-id-2': {
+              address: '0x987654321',
+              metadata: {
+                name: 'Account 2',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+              },
+            },
+            'mock-id-3': {
+              address: '0xabcdef123',
+              metadata: {
+                name: 'Account 3',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    expect(selectors.getKeyringSnapAccounts(state)).toStrictEqual([
+      {
+        address: '0x987654321',
+        metadata: {
+          name: 'Account 2',
+          keyring: {
+            type: 'Snap Keyring',
+          },
+        },
+      },
+      {
+        address: '0xabcdef123',
+        metadata: {
+          name: 'Account 3',
+          keyring: {
+            type: 'Snap Keyring',
+          },
+        },
+      },
+    ]);
+  });
+});

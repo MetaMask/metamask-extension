@@ -107,9 +107,9 @@ describe('Unconnected Account Alert', () => {
     metamask: {
       selectedAddress,
       identities,
+      internalAccounts,
       accounts,
       accountsByChainId,
-      internalAccounts,
       keyrings,
       providerConfig: {
         chainId: CHAIN_IDS.MAINNET,
