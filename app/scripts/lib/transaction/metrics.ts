@@ -932,11 +932,10 @@ async function buildEventFragmentProperties({
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const additionalBlockaidParams: any =
-    getBlockaidMetricsParams(transactionMeta);
+  const blockaidProperties: any = getBlockaidMetricsParams(transactionMeta);
 
-  if (additionalBlockaidParams?.ui_customizations?.length > 0) {
-    uiCustomizations.push(...additionalBlockaidParams.ui_customizations);
+  if (blockaidProperties?.ui_customizations?.length > 0) {
+    uiCustomizations.push(...blockaidProperties.ui_customizations);
   }
   ///: END:ONLY_INCLUDE_IF
 
@@ -966,7 +965,7 @@ async function buildEventFragmentProperties({
     transaction_type: transactionType,
     transaction_speed_up: type === TransactionType.retry,
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-    ...additionalBlockaidParams,
+    ...blockaidProperties,
     ///: END:ONLY_INCLUDE_IF
     // ui_customizations must come after ...addtionBlockaidParams
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
