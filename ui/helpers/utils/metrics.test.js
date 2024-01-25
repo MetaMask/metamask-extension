@@ -39,7 +39,7 @@ describe('getBlockaidMetricsProps', () => {
     });
   });
 
-  it('returns external_link_clicked when externalLinkClicked is provided', () => {
+  it('includes external_link_clicked when externalLinkClicked is provided', () => {
     const result = getBlockaidMetricsProps({
       externalLinkClicked: 'security_alert_support_link',
       securityAlertResponse: {
@@ -49,7 +49,7 @@ describe('getBlockaidMetricsProps', () => {
     expect(result.external_link_clicked).toBe('security_alert_support_link');
   });
 
-  it('returns not applicable result type or reason when they are not provided', () => {
+  it('includes not applicable result type or reason when they are not provided', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
@@ -64,7 +64,7 @@ describe('getBlockaidMetricsProps', () => {
     );
   });
 
-  it('returns "security_alert_failed" ui_customization when type is failed', () => {
+  it('includes "security_alert_failed" ui_customization when type is failed', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
@@ -79,7 +79,7 @@ describe('getBlockaidMetricsProps', () => {
     });
   });
 
-  it('does not return reason when type is benign', () => {
+  it('excludes reason when type is benign', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
@@ -92,7 +92,7 @@ describe('getBlockaidMetricsProps', () => {
     });
   });
 
-  it('returns eth call counts when providerRequestsCount is provided', () => {
+  it('includes eth call counts when providerRequestsCount is provided', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
@@ -112,7 +112,7 @@ describe('getBlockaidMetricsProps', () => {
     });
   });
 
-  it('does not return eth call counts if providerRequestsCount is empty', () => {
+  it('excludes eth call counts if providerRequestsCount is empty', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
@@ -127,7 +127,7 @@ describe('getBlockaidMetricsProps', () => {
     });
   });
 
-  it('does not return eth call counts if providerRequestsCount is undefined', () => {
+  it('excludes eth call counts if providerRequestsCount is undefined', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {
         ...securityAlertResponse,
