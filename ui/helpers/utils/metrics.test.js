@@ -20,29 +20,39 @@ const mockTransaction = {
   securityAlertResponse: {
     result_type: BlockaidResultType.Malicious,
     reason: BlockaidReason.setApprovalForAll,
-    providerRequestsCount: {
-      eth_call: 5,
-      eth_getCode: 3,
-    },
     features: [],
   },
 };
 const mockedTransaction = jest.mocked(mockTransaction);
 
 describe('getBlockaidMetricsProps', () => {
-  it('returns empty object when securityAlertResponse is not defined', () => {
+  it('returns an empty object when securityAlertResponse is not defined', () => {
     const result = getBlockaidMetricsProps({});
     expect(result).toStrictEqual({});
   });
 
-  it('returns additionalParams object when securityAlertResponse defined', () => {
+  it('returns metric props when securityAlertResponse defined', () => {
     const result = getBlockaidMetricsProps(mockedTransaction);
     expect(result).toStrictEqual({
-      ppom_eth_call_count: 5,
-      ppom_eth_getCode_count: 3,
       security_alert_reason: BlockaidReason.setApprovalForAll,
       security_alert_response: BlockaidResultType.Malicious,
       ui_customizations: ['flagged_as_malicious'],
+    });
+  });
+
+  it('returns eth call counts when providerRequestsCount is provided', () => {
+    mockedTransaction.securityAlertResponse.providerRequestsCount = {
+      eth_call: 5,
+      eth_getCode: 3,
+    };
+    const result = getBlockaidMetricsProps(mockedTransaction);
+
+    expect(result).toStrictEqual({
+      ppom_eth_call_count: 5,
+      ppom_eth_getCode_count: 3,
+      ui_customizations: ['flagged_as_malicious'],
+      security_alert_response: BlockaidResultType.Malicious,
+      security_alert_reason: BlockaidReason.setApprovalForAll,
     });
   });
 
