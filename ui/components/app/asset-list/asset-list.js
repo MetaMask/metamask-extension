@@ -117,12 +117,6 @@ const AssetList = ({ onClickAsset }) => {
   const { openBuyCryptoInPdapp } = useRamps();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
 
-  let isStakeable = isMainnet;
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  isStakeable = false;
-  ///: END:ONLY_INCLUDE_IF
-
   return (
     <>
       {process.env.MULTICHAIN ? (
@@ -206,7 +200,7 @@ const AssetList = ({ onClickAsset }) => {
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
         isOriginalTokenSymbol={isOriginalNativeSymbol}
         isNativeCurrency
-        isStakeable={isStakeable}
+        isStakeable={isMainnet}
       />
       <TokenList
         tokens={tokensWithBalances}
