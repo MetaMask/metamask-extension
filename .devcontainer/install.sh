@@ -4,10 +4,12 @@
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
 #-------------------------------------------------------------------------------------------------------------
 #
-# Docs: https://github.com/microsoft/vscode-dev-containers/blob/main/script-library/docs/desktop-lite.md
+# Docs: https://github.com/devcontainers/features/blob/main/src/desktop-lite/README.md
 # Maintainer: The VS Code and Codespaces Teams
 #
+# Original file source: https://github.com/devcontainers/features/blob/main/src/desktop-lite/install.sh
 # Adapted by the MetaMask Codespaces team in 2023 to support noVNC 1.4.0
+#
 # shellcheck disable=SC1091,SC2086
 
 NOVNC_VERSION="1.4.0"
@@ -247,6 +249,7 @@ fi
 
 # Set up folders for scripts and init files
 mkdir -p /var/run/dbus /usr/local/etc/vscode-dev-containers/
+sudo cp .devcontainer/first-run-notice.txt  /usr/local/etc/vscode-dev-containers/
 
 # Script to change resolution of desktop
 cat << EOF > /usr/local/bin/set-resolution
