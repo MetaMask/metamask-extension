@@ -16,6 +16,19 @@ describe('getMethodName', () => {
   });
 });
 
+const mockTransaction = {
+  securityAlertResponse: {
+    result_type: BlockaidResultType.Malicious,
+    reason: BlockaidReason.setApprovalForAll,
+    providerRequestsCount: {
+      eth_call: 5,
+      eth_getCode: 3,
+    },
+    features: [],
+  },
+};
+const mockedTransaction = jest.mocked(mockTransaction);
+
 describe('getBlockaidMetricsProps', () => {
   it('returns empty object when securityAlertResponse is not defined', () => {
     const result = getBlockaidMetricsProps({});
@@ -23,19 +36,7 @@ describe('getBlockaidMetricsProps', () => {
   });
 
   it('returns additionalParams object when securityAlertResponse defined', () => {
-    const transaction = {
-      securityAlertResponse: {
-        result_type: BlockaidResultType.Malicious,
-        reason: BlockaidReason.setApprovalForAll,
-        providerRequestsCount: {
-          eth_call: 5,
-          eth_getCode: 3,
-        },
-        features: [],
-      },
-    };
-
-    const result = getBlockaidMetricsProps(transaction);
+    const result = getBlockaidMetricsProps(mockedTransaction);
     expect(result).toStrictEqual({
       ppom_eth_call_count: 5,
       ppom_eth_getCode_count: 3,
@@ -46,38 +47,24 @@ describe('getBlockaidMetricsProps', () => {
   });
 
   it('does not return eth call counts if providerRequestsCount is empty', () => {
-    const transaction = {
-      securityAlertResponse: {
-        result_type: BlockaidResultType.Malicious,
-        reason: BlockaidReason.notApplicable,
-        features: [],
-        providerRequestsCount: {},
-      },
-    };
+    mockedTransaction.securityAlertResponse.providerRequestsCount = {};
+    const result = getBlockaidMetricsProps(mockedTransaction);
 
-    const result = getBlockaidMetricsProps(transaction);
     expect(result).toStrictEqual({
       ui_customizations: ['flagged_as_malicious'],
       security_alert_response: BlockaidResultType.Malicious,
-      security_alert_reason: BlockaidReason.notApplicable,
+      security_alert_reason: BlockaidReason.setApprovalForAll,
     });
   });
 
   it('does not return eth call counts if providerRequestsCount is undefined', () => {
-    const transaction = {
-      securityAlertResponse: {
-        result_type: BlockaidResultType.Malicious,
-        reason: BlockaidReason.notApplicable,
-        features: [],
-        providerRequestsCount: undefined,
-      },
-    };
+    mockedTransaction.securityAlertResponse.providerRequestsCount = undefined;
+    const result = getBlockaidMetricsProps(mockedTransaction);
 
-    const result = getBlockaidMetricsProps(transaction);
     expect(result).toStrictEqual({
       ui_customizations: ['flagged_as_malicious'],
       security_alert_response: BlockaidResultType.Malicious,
-      security_alert_reason: BlockaidReason.notApplicable,
+      security_alert_reason: BlockaidReason.setApprovalForAll,
     });
   });
 });
