@@ -169,23 +169,26 @@ export const TokenListItem = ({
                   tooltipInnerClassName="multichain-token-list-item__tooltip"
                 >
                   <Text
+                    as="span"
                     fontWeight={FontWeight.Medium}
                     variant={TextVariant.bodyMd}
                     ellipsis
                   >
-                    {tokenTitle}
+                    {tokenSymbol}
                   </Text>
                 </Tooltip>
               ) : (
                 <Text
+                  as="span"
                   fontWeight={FontWeight.Medium}
                   variant={TextVariant.bodyMd}
                   ellipsis
                 >
-                  {tokenTitle}
+                  {tokenSymbol}
                 </Text>
               )}
             </Box>
+
             {showScamWarning ? (
               <ButtonIcon
                 iconName={IconName.Danger}
