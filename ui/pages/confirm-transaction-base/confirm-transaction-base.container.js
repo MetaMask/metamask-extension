@@ -49,6 +49,7 @@ import {
   getFullTxData,
   getUseCurrencyRateCheck,
   getUnapprovedTransactions,
+  getInternalAccountByAddress,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -135,7 +136,7 @@ const mapStateToProps = (state, ownProps) => {
   const isBuyableChain = getIsBuyableChain(state);
   const { confirmTransaction, metamask } = state;
   const conversionRate = getConversionRate(state);
-  const { identities, addressBook, nextNonce } = metamask;
+  const { addressBook, nextNonce } = metamask;
   const unapprovedTxs = getUnapprovedTransactions(state);
   const { chainId } = getProviderConfig(state);
   const { tokenData, txData, tokenProps, nonce } = confirmTransaction;
@@ -156,7 +157,8 @@ const mapStateToProps = (state, ownProps) => {
   const tokenToAddress = getTokenAddressParam(transactionData);
 
   const { balance } = accounts[fromAddress];
-  const { name: fromName } = identities[fromAddress];
+  const fromName = getInternalAccountByAddress(state, fromAddress)?.metadata
+    .name;
   const keyring = findKeyringForAddress(state, fromAddress);
 
   const isSendingAmount =
@@ -171,7 +173,7 @@ const mapStateToProps = (state, ownProps) => {
   const tokenList = getTokenList(state);
 
   const toName =
-    identities[toAddress]?.name ||
+    getInternalAccountByAddress(state, toAddress)?.metadata.name ||
     tokenList[toAddress?.toLowerCase()]?.name ||
     shortenAddress(toChecksumHexAddress(toAddress));
 
