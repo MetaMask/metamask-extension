@@ -10,7 +10,7 @@ import { SnapInsight } from '../components/app/confirm-page-container';
 import {
   getInsightSnapIds,
   getInsightSnaps,
-  getSnapMetadata,
+  getInsightSnapsMetadata,
 } from '../selectors';
 import { useTransactionInsightSnaps } from './snaps/useTransactionInsightSnaps';
 
@@ -29,7 +29,7 @@ const useTransactionInsights = ({ txData }) => {
   const caip2ChainId = `eip155:${stripHexPrefix(chainId)}`;
   const insightSnaps = useSelector(getInsightSnaps);
   const insightSnapIds = useSelector(getInsightSnapIds);
-  const state = useSelector((value) => value);
+  const insightSnapsMetadata = useSelector(getInsightSnapsMetadata);
 
   /**
    * Get the snap name from the snap ID.
@@ -41,7 +41,7 @@ const useTransactionInsights = ({ txData }) => {
    * @returns {string | undefined} The snap name if it exists, or `undefined`.
    */
   const getSnapName = (id) => {
-    const snap = getSnapMetadata(state, id);
+    const snap = insightSnapsMetadata[id];
     return snap?.name;
   };
 

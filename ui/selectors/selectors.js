@@ -1155,6 +1155,28 @@ export const getInsightSnaps = createDeepEqualSelector(
   },
 );
 
+/**
+ * Get a selector that returns insight snaps metadata (name and description).
+ *
+ * @param {object} state - The Redux state object.
+ * @returns {object} An object with snapId keys and values of snap names and descriptions.
+ */
+export const getInsightSnapsMetadata = createDeepEqualSelector(
+  getInsightSnaps,
+  (state, snaps) => {
+    return Object.values(snaps).reduce((snap, metadataObj) => {
+      const manifest = getSnapManifest(state, snap.id);
+      metadataObj[snap.id] = {
+        // The snap manifest may not be available if the Snap is not installed, so
+        // we use the snap ID as the name in that case.
+        name: manifest?.proposedName ?? stripSnapPrefix(snap.id),
+        description: manifest?.description,
+      };
+      return metadataObj;
+    }, {});
+  },
+);
+
 export const getInsightSnapIds = createDeepEqualSelector(
   getInsightSnaps,
   (snaps) => snaps.map((snap) => snap.id),
