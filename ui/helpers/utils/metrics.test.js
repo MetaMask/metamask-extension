@@ -79,6 +79,19 @@ describe('getBlockaidMetricsProps', () => {
     });
   });
 
+  it('does not return reason when type is benign', () => {
+    const result = getBlockaidMetricsProps({
+      securityAlertResponse: {
+        ...securityAlertResponse,
+        result_type: BlockaidResultType.Benign,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      security_alert_response: BlockaidResultType.Benign,
+    });
+  });
+
   it('returns eth call counts when providerRequestsCount is provided', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {

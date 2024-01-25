@@ -48,13 +48,13 @@ export const getBlockaidMetricsProps = (transaction) => {
     params.ui_customizations = ['security_alert_failed'];
   } else if (resultType === BlockaidResultType.Malicious) {
     params.ui_customizations = ['flagged_as_malicious'];
-  } else if (resultType !== BlockaidResultType.Benign) {
-    params.security_alert_reason = BlockaidReason.notApplicable;
   }
 
+  if (resultType !== BlockaidResultType.Benign) {
+    params.security_alert_reason = reason ?? BlockaidReason.notApplicable;
+  }
   params.security_alert_response =
     resultType ?? BlockaidResultType.NotApplicable;
-  params.security_alert_reason = reason ?? BlockaidReason.notApplicable;
 
   // add counts of each RPC call
   if (providerRequestsCount) {
