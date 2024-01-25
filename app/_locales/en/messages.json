@@ -1998,6 +1998,9 @@
   "ignoreTokenWarning": {
     "message": "If you hide tokens, they will not be shown in your wallet. However, you can still add them by searching for them."
   },
+  "imToken": {
+    "message": "imToken"
+  },
   "import": {
     "message": "Import",
     "description": "Button to import an account from a selected file"
