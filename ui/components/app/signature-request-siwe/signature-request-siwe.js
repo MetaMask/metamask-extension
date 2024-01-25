@@ -329,7 +329,7 @@ export default function SignatureRequestSIWE({
       {isShowingSigInsightWarnings && (
         <InsightWarnings
           warnings={warnings}
-          type="signing"
+          action="signing"
           origin={origin}
           onCancel={() => setIsShowingSigInsightWarnings(false)}
           onSubmit={() => {

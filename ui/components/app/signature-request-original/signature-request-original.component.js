@@ -451,7 +451,7 @@ export default class SignatureRequestOriginal extends Component {
         {this.state.showSignatureInsights && (
           <InsightWarnings
             warnings={warnings}
-            type="signing"
+            action="signing"
             origin={txData.msgParams.origin}
             onCancel={() => {
               this.setState({ showSignatureInsights: false });
