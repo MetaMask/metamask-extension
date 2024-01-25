@@ -5,7 +5,7 @@ import {
 import { getBlockaidMetricsProps, getMethodName } from './metrics';
 
 describe('getMethodName', () => {
-  it('should get correct method names', () => {
+  it('gets correct method names', () => {
     expect(getMethodName(undefined)).toStrictEqual('');
     expect(getMethodName({})).toStrictEqual('');
     expect(getMethodName('confirm')).toStrictEqual('confirm');
@@ -17,12 +17,12 @@ describe('getMethodName', () => {
 });
 
 describe('getBlockaidMetricsProps', () => {
-  it('should return empty object when securityAlertResponse is not defined', () => {
+  it('returns empty object when securityAlertResponse is not defined', () => {
     const result = getBlockaidMetricsProps({});
     expect(result).toStrictEqual({});
   });
 
-  it('should return additionalParams object when securityAlertResponse defined', () => {
+  it('returns additionalParams object when securityAlertResponse defined', () => {
     const transaction = {
       securityAlertResponse: {
         result_type: BlockaidResultType.Malicious,
@@ -45,7 +45,7 @@ describe('getBlockaidMetricsProps', () => {
     });
   });
 
-  it('should not return eth call counts if providerRequestsCount is empty', () => {
+  it('does not return eth call counts if providerRequestsCount is empty', () => {
     const transaction = {
       securityAlertResponse: {
         result_type: BlockaidResultType.Malicious,
@@ -63,7 +63,7 @@ describe('getBlockaidMetricsProps', () => {
     });
   });
 
-  it('should not return eth call counts if providerRequestsCount is undefined', () => {
+  it('does not return eth call counts if providerRequestsCount is undefined', () => {
     const transaction = {
       securityAlertResponse: {
         result_type: BlockaidResultType.Malicious,
