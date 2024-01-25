@@ -783,6 +783,7 @@ export const BUYABLE_CHAINS_MAP: {
     | typeof CHAIN_IDS.SEPOLIA
     | typeof CHAIN_IDS.GNOSIS
     | typeof CHAIN_IDS.AURORA
+    | typeof CHAIN_IDS.XDC_APOTHEM_TESTNET
   >]: BuyableChainSettings;
 } = {
   [CHAIN_IDS.MAINNET]: {
@@ -847,10 +848,6 @@ export const BUYABLE_CHAINS_MAP: {
   },
   [CHAIN_IDS.XDC_NETWORK_MAINNET]: {
     nativeCurrency: CURRENCY_SYMBOLS.XDC_NETWORK_MAINNET,
-    network: 'xdc',
-  },
-  [CHAIN_IDS.XDC_APOTHEM_TESTNET]: {
-    nativeCurrency: CURRENCY_SYMBOLS.XDC_APOTHEM_TESTNET,
     network: 'xdc',
   },
 };
