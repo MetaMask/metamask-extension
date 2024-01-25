@@ -61,7 +61,7 @@ export const SnapDelineator = ({
         className="snap-delineator__header"
         display={Display.Flex}
         alignItems={AlignItems.center}
-        JustifyContent={JustifyContent.spaceBetween}
+        justifyContent={JustifyContent.spaceBetween}
         padding={1}
         style={{ borderBottomWidth: isCollapsed ? 0 : 1 }}
       >
