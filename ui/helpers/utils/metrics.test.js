@@ -94,6 +94,21 @@ describe('getBlockaidMetricsProps', () => {
     });
   });
 
+  it('includes "flagged_as_warning" ui_customization when type is a warning', () => {
+    const result = getBlockaidMetricsProps({
+      securityAlertResponse: {
+        ...securityAlertResponse,
+        result_type: BlockaidResultType.Malicious,
+      },
+    });
+
+    expect(result).toStrictEqual({
+      security_alert_reason: BlockaidReason.setApprovalForAll,
+      security_alert_response: BlockaidResultType.Malicious,
+      ui_customizations: ['flagged_as_malicious'],
+    });
+  });
+
   it('excludes reason when type is benign', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {

@@ -746,6 +746,7 @@ export enum MetaMetricsEventLocation {
 export enum MetaMetricsEventUiCustomization {
   FlaggedAsMalicious = 'flagged_as_malicious',
   FlaggedAsSafetyUnknown = 'flagged_as_safety_unknown',
+  FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
   SecurityAlertFailed = 'security_alert_failed',
   Siwe = 'sign_in_with_ethereum',
