@@ -25,29 +25,21 @@ export function formatAccountType(accountType) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-export const getBlockaidMetricsParams = (securityAlertResponse = null) => {
-  if (securityAlertResponse) {
+export const getBlockaidMetricsParams = (securityAlertResponse) => {
+  if (!securityAlertResponse) {
     return {};
   }
 
   const params = {};
   const {
-    externalLinkClicked,
     result_type: resultType,
     reason,
     providerRequestsCount,
   } = securityAlertResponse;
 
-  if (externalLinkClicked) {
-    params.external_link_clicked = externalLinkClicked;
-  }
-
   if (resultType === BlockaidResultType.Failed) {
     params.ui_customizations = ['security_alert_failed'];
-    return params;
-  }
-
-  if (resultType === BlockaidResultType.Malicious) {
+  } else if (resultType === BlockaidResultType.Malicious) {
     params.ui_customizations = ['flagged_as_malicious'];
   } else if (resultType !== BlockaidResultType.Benign) {
     params.security_alert_reason = BlockaidReason.notApplicable;
