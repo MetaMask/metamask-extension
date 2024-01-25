@@ -23,35 +23,39 @@ describe('getBlockaidMetricsParams', () => {
   });
 
   it('should return additionalParams object when securityAlertResponse defined', () => {
-    const securityAlertResponse = {
-      result_type: BlockaidResultType.Malicious,
-      reason: BlockaidReason.notApplicable,
-      providerRequestsCount: {
-        eth_call: 5,
-        eth_getCode: 3,
+    const transaction = {
+      securityAlertResponse: {
+        result_type: BlockaidResultType.Malicious,
+        reason: BlockaidReason.setApprovalForAll,
+        providerRequestsCount: {
+          eth_call: 5,
+          eth_getCode: 3,
+        },
+        features: [],
       },
-      features: [],
     };
 
-    const result = getBlockaidMetricsParams(securityAlertResponse);
+    const result = getBlockaidMetricsParams(transaction);
     expect(result).toStrictEqual({
       ui_customizations: ['flagged_as_malicious'],
       security_alert_response: BlockaidResultType.Malicious,
-      security_alert_reason: BlockaidReason.notApplicable,
+      security_alert_reason: BlockaidReason.setApprovalForAll,
       ppom_eth_call_count: 5,
       ppom_eth_getCode_count: 3,
     });
   });
 
   it('should not return eth call counts if providerRequestsCount is empty', () => {
-    const securityAlertResponse = {
-      result_type: BlockaidResultType.Malicious,
-      reason: BlockaidReason.notApplicable,
-      features: [],
-      providerRequestsCount: {},
+    const transaction = {
+      securityAlertResponse: {
+        result_type: BlockaidResultType.Malicious,
+        reason: BlockaidReason.notApplicable,
+        features: [],
+        providerRequestsCount: {},
+      },
     };
 
-    const result = getBlockaidMetricsParams(securityAlertResponse);
+    const result = getBlockaidMetricsParams(transaction);
     expect(result).toStrictEqual({
       ui_customizations: ['flagged_as_malicious'],
       security_alert_response: BlockaidResultType.Malicious,
@@ -60,14 +64,16 @@ describe('getBlockaidMetricsParams', () => {
   });
 
   it('should not return eth call counts if providerRequestsCount is undefined', () => {
-    const securityAlertResponse = {
-      result_type: BlockaidResultType.Malicious,
-      reason: BlockaidReason.notApplicable,
-      features: [],
-      providerRequestsCount: undefined,
+    const transaction = {
+      securityAlertResponse: {
+        result_type: BlockaidResultType.Malicious,
+        reason: BlockaidReason.notApplicable,
+        features: [],
+        providerRequestsCount: undefined,
+      },
     };
 
-    const result = getBlockaidMetricsParams(securityAlertResponse);
+    const result = getBlockaidMetricsParams(transaction);
     expect(result).toStrictEqual({
       ui_customizations: ['flagged_as_malicious'],
       security_alert_response: BlockaidResultType.Malicious,
