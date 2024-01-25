@@ -248,6 +248,9 @@ describe('Send ETH', function () {
             );
             await driver.assertElementNotPresent({ text: 'Data', tag: 'li' });
             await driver.clickElement({ text: 'Edit', tag: 'button' });
+            await driver.waitForSelector({
+              text: '0.00021 ETH',
+            });
             await driver.clickElement({
               text: 'Edit suggested gas fee',
               tag: 'button',
