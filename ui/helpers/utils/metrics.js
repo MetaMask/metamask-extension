@@ -46,7 +46,9 @@ export const getBlockaidMetricsProps = (transaction) => {
   }
 
   if (resultType === BlockaidResultType.Failed) {
-    params.ui_customizations = ['security_alert_failed'];
+    params.ui_customizations = [
+      MetaMetricsEventUiCustomization.SecurityAlertFailed,
+    ];
   } else if (resultType === BlockaidResultType.Malicious) {
     params.ui_customizations = [
       MetaMetricsEventUiCustomization.FlaggedAsMalicious,
