@@ -10,7 +10,6 @@ import {
 } from '../../../../../shared/constants/network';
 import mockSendState from '../../../../../test/data/mock-send-state.json';
 import { useIsOriginalNativeTokenSymbol } from '../../../../hooks/useIsOriginalNativeTokenSymbol';
-import { IS_FLASK } from '../../../../helpers/utils/util';
 import { SendPage } from '.';
 
 jest.mock('@ethersproject/providers', () => {
