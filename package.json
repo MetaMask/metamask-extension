@@ -398,6 +398,7 @@
     "@lavamoat/allow-scripts": "^3.0.1",
     "@lavamoat/lavapack": "^6.0.2",
     "@metamask/auto-changelog": "^2.1.0",
+    "@metamask/bip32-example-snap": "^2.1.0",
     "@metamask/build-utils": "^1.0.0",
     "@metamask/eslint-config": "^9.0.0",
     "@metamask/eslint-config-jest": "^9.0.0",
