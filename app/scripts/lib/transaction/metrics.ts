@@ -954,6 +954,7 @@ async function buildEventFragmentProperties({
     eip_1559_version: eip1559Version,
     gas_edit_type: 'none',
     gas_edit_attempted: 'none',
+    gas_estimation_failed: Boolean(simulationFails),
     account_type: await transactionMetricsRequest.getAccountType(
       transactionMetricsRequest.getSelectedAddress(),
     ),
@@ -967,7 +968,6 @@ async function buildEventFragmentProperties({
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     ...additionalBlockaidParams,
     ///: END:ONLY_INCLUDE_IF
-    gas_estimation_failed: Boolean(simulationFails),
     // ui_customizations must come after ...addtionBlockaidParams
     ui_customizations: uiCustomizations.length > 0 ? uiCustomizations : null,
   } as Record<string, any>;
