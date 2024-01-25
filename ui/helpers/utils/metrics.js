@@ -30,7 +30,7 @@ export const getBlockaidMetricsParams = (securityAlertResponse = null) => {
     return {};
   }
 
-  const additionalParams = {};
+  const params = {};
   const {
     externalLinkClicked,
     result_type: resultType,
@@ -39,33 +39,33 @@ export const getBlockaidMetricsParams = (securityAlertResponse = null) => {
   } = securityAlertResponse;
 
   if (externalLinkClicked) {
-    additionalParams.external_link_clicked = externalLinkClicked;
+    params.external_link_clicked = externalLinkClicked;
   }
 
   if (resultType === BlockaidResultType.Failed) {
-    additionalParams.ui_customizations = ['security_alert_failed'];
-    return additionalParams;
+    params.ui_customizations = ['security_alert_failed'];
+    return params;
   }
 
   if (resultType === BlockaidResultType.Malicious) {
-    additionalParams.ui_customizations = ['flagged_as_malicious'];
+    params.ui_customizations = ['flagged_as_malicious'];
   } else if (resultType !== BlockaidResultType.Benign) {
-    additionalParams.security_alert_reason = BlockaidReason.notApplicable;
+    params.security_alert_reason = BlockaidReason.notApplicable;
   }
 
-  additionalParams.security_alert_response =
+  params.security_alert_response =
     resultType ?? BlockaidResultType.NotApplicable;
-  additionalParams.security_alert_reason =
+  params.security_alert_reason =
     reason ?? securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
 
   // add counts of each RPC call
   if (providerRequestsCount) {
     Object.keys(providerRequestsCount).forEach((key) => {
       const metricKey = `ppom_${key}_count`;
-      additionalParams[metricKey] = providerRequestsCount[key];
+      params[metricKey] = providerRequestsCount[key];
     });
   }
 
-  return additionalParams;
+  return params;
 };
 ///: END:ONLY_INCLUDE_IF
