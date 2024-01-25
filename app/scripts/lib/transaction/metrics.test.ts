@@ -160,14 +160,14 @@ describe('Transaction metrics', () => {
   });
 
   describe('handleTransactionAdded', () => {
-    it('should return if transaction meta is not defined', async () => {
+    it('returns if transaction meta is not defined', async () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
       ).not.toBeCalled();
     });
 
-    it('should create event fragment', async () => {
+    it('creates event fragment', async () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
@@ -189,7 +189,7 @@ describe('Transaction metrics', () => {
       });
     });
 
-    it('should create event fragment when simulation failed', async () => {
+    it('creates event fragment when simulation failed', async () => {
       mockTransactionMeta.simulationFails = true;
 
       await handleTransactionAdded(mockTransactionMetricsRequest, {
@@ -217,7 +217,7 @@ describe('Transaction metrics', () => {
       });
     });
 
-    it('should create event fragment with blockaid', async () => {
+    it('creates event fragment with blockaid', async () => {
       await handleTransactionAdded(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid as any,
         actionId: mockActionId,
@@ -248,7 +248,7 @@ describe('Transaction metrics', () => {
   });
 
   describe('handleTransactionApproved', () => {
-    it('should return if transaction meta is not defined', async () => {
+    it('returns if transaction meta is not defined', async () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -261,7 +261,7 @@ describe('Transaction metrics', () => {
       ).not.toBeCalled();
     });
 
-    it('should create, update, finalize event fragment', async () => {
+    it('creates, update, finalize event fragment', async () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
@@ -302,7 +302,7 @@ describe('Transaction metrics', () => {
       ).toBeCalledWith(expectedUniqueId);
     });
 
-    it('should create, update, finalize event fragment with blockaid', async () => {
+    it('creates, update, finalize event fragment with blockaid', async () => {
       await handleTransactionApproved(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid as any,
         actionId: mockActionId,
@@ -359,7 +359,7 @@ describe('Transaction metrics', () => {
   });
 
   describe('handleTransactionFailed', () => {
-    it('should return if transaction meta is not defined', async () => {
+    it('returns if transaction meta is not defined', async () => {
       await handleTransactionFailed(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -372,7 +372,7 @@ describe('Transaction metrics', () => {
       ).not.toBeCalled();
     });
 
-    it('should create, update, finalize event fragment', async () => {
+    it('creates, update, finalize event fragment', async () => {
       const mockErrorMessage = 'Unexpected error';
       mockTransactionMeta.txReceipt = {
         gasUsed: '0x123',
@@ -426,7 +426,7 @@ describe('Transaction metrics', () => {
       ).toBeCalledWith(expectedUniqueId);
     });
 
-    it('should create, update, finalize event fragment with blockaid', async () => {
+    it('creates, update, finalize event fragment with blockaid', async () => {
       const mockErrorMessage = 'Unexpected error';
       mockTransactionMetaWithBlockaid.txReceipt = {
         gasUsed: '0x123',
@@ -494,7 +494,7 @@ describe('Transaction metrics', () => {
       ).toBeCalledWith(expectedUniqueId);
     });
 
-    it('should append error to event properties', async () => {
+    it('appends error to event properties', async () => {
       const mockErrorMessage = 'Unexpected error';
 
       await handleTransactionFailed(mockTransactionMetricsRequest, {
@@ -545,7 +545,7 @@ describe('Transaction metrics', () => {
   });
 
   describe('handleTransactionConfirmed', () => {
-    it('should return if transaction meta is not defined', async () => {
+    it('returns if transaction meta is not defined', async () => {
       await handleTransactionConfirmed(
         mockTransactionMetricsRequest,
         {} as any,
@@ -561,7 +561,7 @@ describe('Transaction metrics', () => {
       ).not.toBeCalled();
     });
 
-    it('should create, update, finalize event fragment', async () => {
+    it('creates, update, finalize event fragment', async () => {
       mockTransactionMeta.txReceipt = {
         gasUsed: '0x123',
         status: '0x0',
@@ -617,7 +617,7 @@ describe('Transaction metrics', () => {
       ).toBeCalledWith(expectedUniqueId);
     });
 
-    it('should create, update, finalize event fragment with blockaid', async () => {
+    it('creates, update, finalize event fragment with blockaid', async () => {
       mockTransactionMetaWithBlockaid.txReceipt = {
         gasUsed: '0x123',
         status: '0x0',
@@ -689,7 +689,7 @@ describe('Transaction metrics', () => {
   });
 
   describe('handleTransactionDropped', () => {
-    it('should return if transaction meta is not defined', async () => {
+    it('returns if transaction meta is not defined', async () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -702,7 +702,7 @@ describe('Transaction metrics', () => {
       ).not.toBeCalled();
     });
 
-    it('should create, update, finalize event fragment', async () => {
+    it('creates, update, finalize event fragment', async () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
@@ -750,7 +750,7 @@ describe('Transaction metrics', () => {
       ).toBeCalledWith(expectedUniqueId);
     });
 
-    it('should create, update, finalize event fragment with blockaid', async () => {
+    it('creates, update, finalize event fragment with blockaid', async () => {
       await handleTransactionDropped(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
@@ -814,7 +814,7 @@ describe('Transaction metrics', () => {
   });
 
   describe('handleTransactionRejected', () => {
-    it('should return if transaction meta is not defined', async () => {
+    it('returns if transaction meta is not defined', async () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {} as any);
       expect(
         mockTransactionMetricsRequest.createEventFragment,
@@ -827,7 +827,7 @@ describe('Transaction metrics', () => {
       ).not.toBeCalled();
     });
 
-    it('should create, update, finalize event fragment', async () => {
+    it('creates, update, finalize event fragment', async () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta,
         actionId: mockActionId,
@@ -870,7 +870,7 @@ describe('Transaction metrics', () => {
       });
     });
 
-    it('should create, update, finalize event fragment with blockaid', async () => {
+    it('creates, update, finalize event fragment with blockaid', async () => {
       await handleTransactionRejected(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMetaWithBlockaid,
         actionId: mockActionId,
@@ -929,7 +929,7 @@ describe('Transaction metrics', () => {
   });
 
   describe('handleTransactionSubmitted', () => {
-    it('should return if transaction meta is not defined', async () => {
+    it('returns if transaction meta is not defined', async () => {
       await handleTransactionSubmitted(
         mockTransactionMetricsRequest,
         {} as any,
@@ -939,7 +939,7 @@ describe('Transaction metrics', () => {
       ).not.toBeCalled();
     });
 
-    it('should only create event fragment', async () => {
+    it('onlys create event fragment', async () => {
       await handleTransactionSubmitted(mockTransactionMetricsRequest, {
         transactionMeta: mockTransactionMeta as any,
         actionId: mockActionId,
