@@ -26,18 +26,19 @@ export function formatAccountType(accountType) {
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 export const getBlockaidMetricsProps = (transaction) => {
-  const { externalLinkClicked, securityAlertResponse } = transaction;
-
-  if (!securityAlertResponse) {
+  if (!transaction.securityAlertResponse) {
     return {};
   }
 
   const params = {};
   const {
-    result_type: resultType,
-    reason,
-    providerRequestsCount,
-  } = securityAlertResponse;
+    externalLinkClicked,
+    securityAlertResponse: {
+      providerRequestsCount,
+      reason,
+      result_type: resultType,
+    },
+  } = transaction;
 
   if (externalLinkClicked) {
     params.external_link_clicked = externalLinkClicked;
@@ -53,8 +54,7 @@ export const getBlockaidMetricsProps = (transaction) => {
 
   params.security_alert_response =
     resultType ?? BlockaidResultType.NotApplicable;
-  params.security_alert_reason =
-    reason ?? securityAlertResponse?.reason ?? BlockaidReason.notApplicable;
+  params.security_alert_reason = reason ?? BlockaidReason.notApplicable;
 
   // add counts of each RPC call
   if (providerRequestsCount) {
