@@ -2,7 +2,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
-import { getBlockaidMetricsParams, getMethodName } from './metrics';
+import { getBlockaidMetricsProps, getMethodName } from './metrics';
 
 describe('getMethodName', () => {
   it('should get correct method names', () => {
@@ -16,9 +16,9 @@ describe('getMethodName', () => {
   });
 });
 
-describe('getBlockaidMetricsParams', () => {
+describe('getBlockaidMetricsProps', () => {
   it('should return empty object when securityAlertResponse is not defined', () => {
-    const result = getBlockaidMetricsParams({});
+    const result = getBlockaidMetricsProps({});
     expect(result).toStrictEqual({});
   });
 
@@ -35,7 +35,7 @@ describe('getBlockaidMetricsParams', () => {
       },
     };
 
-    const result = getBlockaidMetricsParams(transaction);
+    const result = getBlockaidMetricsProps(transaction);
     expect(result).toStrictEqual({
       ppom_eth_call_count: 5,
       ppom_eth_getCode_count: 3,
@@ -55,7 +55,7 @@ describe('getBlockaidMetricsParams', () => {
       },
     };
 
-    const result = getBlockaidMetricsParams(transaction);
+    const result = getBlockaidMetricsProps(transaction);
     expect(result).toStrictEqual({
       ui_customizations: ['flagged_as_malicious'],
       security_alert_response: BlockaidResultType.Malicious,
@@ -73,7 +73,7 @@ describe('getBlockaidMetricsParams', () => {
       },
     };
 
-    const result = getBlockaidMetricsParams(transaction);
+    const result = getBlockaidMetricsProps(transaction);
     expect(result).toStrictEqual({
       ui_customizations: ['flagged_as_malicious'],
       security_alert_response: BlockaidResultType.Malicious,

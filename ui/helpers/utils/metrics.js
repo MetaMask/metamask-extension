@@ -25,7 +25,7 @@ export function formatAccountType(accountType) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-export const getBlockaidMetricsParams = (transaction) => {
+export const getBlockaidMetricsProps = (transaction) => {
   const { externalLinkClicked, securityAlertResponse } = transaction;
 
   if (!securityAlertResponse) {

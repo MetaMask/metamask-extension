@@ -35,7 +35,7 @@ import {
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-import { getBlockaidMetricsParams } from '../../../../ui/helpers/utils/metrics';
+import { getBlockaidMetricsProps } from '../../../../ui/helpers/utils/metrics';
 ///: END:ONLY_INCLUDE_IF
 import {
   getSnapAndHardwareInfoForMetrics,
@@ -932,7 +932,7 @@ async function buildEventFragmentProperties({
   }
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
-  const blockaidProperties: any = getBlockaidMetricsParams(transactionMeta);
+  const blockaidProperties: any = getBlockaidMetricsProps(transactionMeta);
 
   if (blockaidProperties?.ui_customizations?.length > 0) {
     uiCustomizations.push(...blockaidProperties.ui_customizations);

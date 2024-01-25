@@ -47,7 +47,7 @@ import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-pa
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
-import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
+import { getBlockaidMetricsProps } from '../../../helpers/utils/metrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -75,7 +75,7 @@ export default function SignatureRequestSIWE({ txData }) {
 
   useEffect(() => {
     if (txData.securityAlertResponse) {
-      const blockaidMetricsParams = getBlockaidMetricsParams(txData);
+      const blockaidMetricsParams = getBlockaidMetricsProps(txData);
 
       trackEvent({
         category: MetaMetricsEventCategory.Transactions,
