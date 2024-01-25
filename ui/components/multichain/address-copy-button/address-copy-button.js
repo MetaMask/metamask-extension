@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import { useSelector } from 'react-redux';
-import { getSelectedAddress } from '../../../selectors';
+import { getSelectedInternalAccount } from '../../../selectors';
 import {
   getIsCustodianSupportedChain,
   getCustodianIconForAddress,
@@ -41,7 +41,7 @@ export const AddressCopyButton = ({
   const t = useI18nContext();
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedInternalAccount);
   const custodianIcon = useSelector((state) =>
     getCustodianIconForAddress(state, selectedAddress),
   );

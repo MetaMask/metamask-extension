@@ -1,3 +1,61 @@
+diff --git a/dist/UserOperationController.d.ts b/dist/UserOperationController.d.ts
+index c9f9fe6818189ba5fb26887510b65eaef3283a22..bc32542e0d99003bb1e483af30d7b7916bceba17 100644
+--- a/dist/UserOperationController.d.ts
++++ b/dist/UserOperationController.d.ts
+@@ -3,6 +3,7 @@ import type { AddApprovalRequest } from '@metamask/approval-controller';
+ import type { RestrictedControllerMessenger } from '@metamask/base-controller';
+ import { BaseController } from '@metamask/base-controller';
+ import type { GasFeeState } from '@metamask/gas-fee-controller';
++import type { KeyringControllerPrepareUserOperationAction, KeyringControllerPatchUserOperationAction, KeyringControllerSignUserOperationAction } from '@metamask/keyring-controller';
+ import type { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
+ import { type TransactionMeta, type TransactionParams, type TransactionType } from '@metamask/transaction-controller';
+ import EventEmitter from 'events';
+@@ -33,7 +34,7 @@ export declare type UserOperationStateChange = {
+     type: `${typeof controllerName}:stateChange`;
+     payload: [UserOperationControllerState, Patch[]];
+ };
+-export declare type UserOperationControllerActions = GetUserOperationState | NetworkControllerGetNetworkClientByIdAction | AddApprovalRequest;
++export declare type UserOperationControllerActions = GetUserOperationState | NetworkControllerGetNetworkClientByIdAction | AddApprovalRequest | KeyringControllerPrepareUserOperationAction | KeyringControllerPatchUserOperationAction | KeyringControllerSignUserOperationAction;
+ export declare type UserOperationControllerEvents = UserOperationStateChange;
+ export declare type UserOperationControllerMessenger = RestrictedControllerMessenger<typeof controllerName, UserOperationControllerActions, UserOperationControllerEvents, UserOperationControllerActions['type'], UserOperationControllerEvents['type']>;
+ export declare type UserOperationControllerOptions = {
+@@ -45,6 +46,7 @@ export declare type UserOperationControllerOptions = {
+ };
+ export declare type AddUserOperationRequest = {
+     data?: string;
++    from: string;
+     maxFeePerGas?: string;
+     maxPriorityFeePerGas?: string;
+     to?: string;
+@@ -64,7 +66,7 @@ export declare type AddUserOperationOptions = {
+     networkClientId: string;
+     origin: string;
+     requireApproval?: boolean;
+-    smartContractAccount: SmartContractAccount;
++    smartContractAccount?: SmartContractAccount;
+     swaps?: AddUserOperationSwapOptions;
+     type?: TransactionType;
+ };
+@@ -102,7 +104,9 @@ export declare class UserOperationController extends BaseController<typeof contr
+      * @param options.networkClientId - ID of the network client used to query the chain.
+      * @param options.origin - Origin of the user operation, such as the hostname of a dApp.
+      * @param options.requireApproval - Whether to require user approval before submitting the user operation. Defaults to true.
+-     * @param options.smartContractAccount - Smart contract abstraction to provide the contract specific values such as call data and nonce.
++     * @param options.smartContractAccount - Smart contract abstraction to provide the contract specific values such as call data and nonce. Defaults to the current snap account.
++     * @param options.swaps - Swap metadata to record with the user operation.
++     * @param options.type - Type of the transaction.
+      */
+     addUserOperation(request: AddUserOperationRequest, options: AddUserOperationOptions): Promise<AddUserOperationResponse>;
+     /**
+@@ -113,7 +117,7 @@ export declare class UserOperationController extends BaseController<typeof contr
+      * @param options.networkClientId - ID of the network client used to query the chain.
+      * @param options.origin - Origin of the user operation, such as the hostname of a dApp.
+      * @param options.requireApproval - Whether to require user approval before submitting the user operation. Defaults to true.
+-     * @param options.smartContractAccount - Smart contract abstraction to provide the contract specific values such as call data and nonce.
++     * @param options.smartContractAccount - Smart contract abstraction to provide the contract specific values such as call data and nonce. Defaults to the current snap account.
+      * @param options.swaps - Swap metadata to record with the user operation.
+      * @param options.type - Type of the transaction.
+      */
 diff --git a/dist/UserOperationController.js b/dist/UserOperationController.js
 index 740a09649c2cfc2fa2bb90e5db50cf898a96aff3..241533353969d0e3ccd82183265e081d2a6900ac 100644
 --- a/dist/UserOperationController.js
@@ -120,6 +178,23 @@ index 740a09649c2cfc2fa2bb90e5db50cf898a96aff3..241533353969d0e3ccd82183265e081d
  }, _UserOperationController_updateTransaction = function _UserOperationController_updateTransaction(metadata) {
      if (!metadata.transactionParams) {
          return;
+diff --git a/dist/helpers/SnapSmartContractAccount.d.ts b/dist/helpers/SnapSmartContractAccount.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..e5c20171a4e1274639d7a6be760d3f4b898313a7
+--- /dev/null
++++ b/dist/helpers/SnapSmartContractAccount.d.ts
+@@ -0,0 +1,10 @@
++import type { PrepareUserOperationRequest, PrepareUserOperationResponse, SignUserOperationRequest, SignUserOperationResponse, SmartContractAccount, UpdateUserOperationRequest, UpdateUserOperationResponse } from '../types';
++import type { UserOperationControllerMessenger } from '../UserOperationController';
++export declare class SnapSmartContractAccount implements SmartContractAccount {
++    #private;
++    constructor(messenger: UserOperationControllerMessenger);
++    prepareUserOperation(request: PrepareUserOperationRequest): Promise<PrepareUserOperationResponse>;
++    updateUserOperation(request: UpdateUserOperationRequest): Promise<UpdateUserOperationResponse>;
++    signUserOperation(request: SignUserOperationRequest): Promise<SignUserOperationResponse>;
++}
++//# sourceMappingURL=SnapSmartContractAccount.d.ts.map
+\ No newline at end of file
 diff --git a/dist/helpers/SnapSmartContractAccount.js b/dist/helpers/SnapSmartContractAccount.js
 new file mode 100644
 index 0000000000000000000000000000000000000000..ad20431144fab136e37da7de9d91a62d4424dd08
@@ -202,6 +277,19 @@ index 0000000000000000000000000000000000000000..ad20431144fab136e37da7de9d91a62d
 +_SnapSmartContractAccount_messenger = new WeakMap();
 +//# sourceMappingURL=SnapSmartContractAccount.js.map
 \ No newline at end of file
+diff --git a/dist/types.d.ts b/dist/types.d.ts
+index 3021969d91887218d15db8d9748239058505e0ba..4698570c841c710ae5e7bcfcbefff63d108bc297 100644
+--- a/dist/types.d.ts
++++ b/dist/types.d.ts
+@@ -120,6 +120,8 @@ export declare type PrepareUserOperationRequest = {
+     chainId: string;
+     /** The data to include in the resulting transaction.  */
+     data?: string;
++    /** Address of the account requesting the user operation. */
++    from: string;
+     /** The destination address of the resulting transaction. */
+     to?: string;
+     /** The value to send in the resulting transaction. */
 diff --git a/dist/utils/transaction.js b/dist/utils/transaction.js
 index 1cf69b5f30655713b34fee84457ec8e529ceb20a..b045c83526f4432d8768108d9c7bbf48eb6311d8 100644
 --- a/dist/utils/transaction.js

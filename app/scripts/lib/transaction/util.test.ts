@@ -7,6 +7,7 @@ import {
 } from '@metamask/transaction-controller';
 import { UserOperationController } from '@metamask/user-operation-controller';
 import { cloneDeep } from 'lodash';
+import { PPOMController } from '@metamask/ppom-validator';
 import {
   AddDappTransactionRequest,
   AddTransactionOptions,
@@ -14,8 +15,6 @@ import {
   addDappTransaction,
   addTransaction,
 } from './util';
-
-jest.mock('simple-smart-contract-account');
 
 const TRANSACTION_PARAMS_MOCK: TransactionParams = {
   from: '0x1',
@@ -64,6 +63,17 @@ function createUserOperationControllerMock() {
   } as unknown as jest.Mocked<UserOperationController>;
 }
 
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+function createPPOMControllerMock() {
+  return {
+    usePPOM: jest.fn().mockResolvedValue({
+      reason: 'testReason',
+      result_type: 'testResultType',
+    }),
+  } as unknown as jest.Mocked<PPOMController>;
+}
+///: END:ONLY_INCLUDE_IF
+
 async function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve));
 }
@@ -73,6 +83,9 @@ describe('Transaction Utils', () => {
   let dappRequest: AddDappTransactionRequest;
   let transactionController: jest.Mocked<TransactionController>;
   let userOperationController: jest.Mocked<UserOperationController>;
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  let ppomController: jest.Mocked<PPOMController>;
+  ///: END:ONLY_INCLUDE_IF
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -80,6 +93,10 @@ describe('Transaction Utils', () => {
     request = cloneDeep(TRANSACTION_REQUEST_MOCK);
     transactionController = createTransactionControllerMock();
     userOperationController = createUserOperationControllerMock();
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    ppomController = createPPOMControllerMock();
+    request.ppomController = ppomController;
+    ///: END:ONLY_INCLUDE_IF
 
     transactionController.addTransaction.mockResolvedValue({
       result: Promise.resolve('testHash'),
@@ -188,7 +205,7 @@ describe('Transaction Utils', () => {
 
     describe('if selected account is smart contract', () => {
       beforeEach(() => {
-        request.selectedAccount.type = 'eip155:eip4337';
+        request.selectedAccount.type = 'eip155:erc4337';
       });
 
       it('adds user operation', async () => {
@@ -203,7 +220,6 @@ describe('Transaction Utils', () => {
           networkClientId: TRANSACTION_REQUEST_MOCK.networkClientId,
           origin: TRANSACTION_OPTIONS_MOCK.origin,
           requireApproval: TRANSACTION_OPTIONS_MOCK.requireApproval,
-          smartContractAccount: expect.anything(),
           swaps: undefined,
           type: TRANSACTION_OPTIONS_MOCK.type,
         });
@@ -347,6 +363,102 @@ describe('Transaction Utils', () => {
         );
       });
     });
+
+    describe('when blockaid is enabled', () => {
+      it('validates if blockaid is enabled and chain id is supported', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: '0x1',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(TRANSACTION_PARAMS_MOCK, {
+          ...TRANSACTION_OPTIONS_MOCK,
+          securityAlertResponse: {
+            reason: 'testReason',
+            result_type: 'testResultType',
+          },
+        });
+
+        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(1);
+        expect(request.ppomController.usePPOM).toHaveBeenCalledWith(
+          expect.any(Function),
+        );
+        expect(request.ppomController.usePPOM).toHaveReturnedWith(
+          Promise.resolve({
+            reason: 'testReason',
+            result_type: 'testResultType',
+          }),
+        );
+      });
+
+      it('does not validate if blockaid is enabled and chain id is not supported', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: true,
+          chainId: '0xF',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          TRANSACTION_OPTIONS_MOCK,
+        );
+
+        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+      });
+    });
+
+    describe('when blockaid is disabled', () => {
+      it('does not validate if blockaid is disabled and chain id is supported', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: false,
+          chainId: '0x1',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          TRANSACTION_OPTIONS_MOCK,
+        );
+
+        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+      });
+
+      it('does not validate if blockaid is disabled and chain id is not supported', async () => {
+        await addTransaction({
+          ...request,
+          securityAlertsEnabled: false,
+          chainId: '0xF',
+        });
+
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          request.transactionController.addTransaction,
+        ).toHaveBeenCalledWith(
+          TRANSACTION_PARAMS_MOCK,
+          TRANSACTION_OPTIONS_MOCK,
+        );
+
+        expect(request.ppomController.usePPOM).toHaveBeenCalledTimes(0);
+      });
+    });
   });
 
   describe('addDappTransaction', () => {
@@ -387,7 +499,7 @@ describe('Transaction Utils', () => {
 
     describe('if selected account is smart contract', () => {
       beforeEach(() => {
-        request.selectedAccount.type = 'eip155:eip4337';
+        request.selectedAccount.type = 'eip155:erc4337';
       });
 
       it('adds user operation', async () => {
@@ -402,7 +514,6 @@ describe('Transaction Utils', () => {
           networkClientId: TRANSACTION_REQUEST_MOCK.networkClientId,
           origin: TRANSACTION_OPTIONS_MOCK.origin,
           requireApproval: true,
-          smartContractAccount: expect.anything(),
           swaps: undefined,
           type: undefined,
         });

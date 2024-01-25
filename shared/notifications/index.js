@@ -138,7 +138,7 @@ export const UI_NOTIFICATIONS = {
     id: 23,
     date: null,
     image: {
-      src: 'images/blockaid-security-provider.svg',
+      src: 'images/blockaid-security-provider.png',
       width: '100%',
     },
   },
@@ -184,16 +184,19 @@ export const UI_NOTIFICATIONS = {
   [NOTIFICATION_BLOCKAID_DEFAULT]: {
     id: Number(NOTIFICATION_BLOCKAID_DEFAULT),
     date: null,
-    image: {
-      src: 'images/blockaid-security-provider.svg',
-      width: '100%',
-    },
   },
   ///: END:ONLY_INCLUDE_IF
 };
 
-export const getTranslatedUINotifications = (t, locale) => {
+export const getTranslatedUINotifications = (
+  t,
+  locale,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  theme,
+  ///: END:ONLY_INCLUDE_IF
+) => {
   const formattedLocale = locale?.replace('_', '-');
+
   return {
     1: {
       ...UI_NOTIFICATIONS[1],
@@ -492,14 +495,23 @@ export const getTranslatedUINotifications = (t, locale) => {
       description: [
         t('notificationsBlockaidDefaultDescriptionOne'),
         t('notificationsBlockaidDefaultDescriptionTwo'),
-        t('notificationsBlockaidDefaultDescriptionThree'),
       ],
-      actionText: t('notificationsBlockaidDefaultDescriptionThreeActionText'),
+      actionText: t('notificationsBlockaidDefaultDescriptionActionText'),
       date: UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date
         ? new Intl.DateTimeFormat(formattedLocale).format(
             new Date(UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date),
           )
         : '',
+      image:
+        theme === 'dark'
+          ? {
+              src: 'images/blockaid-whats-new-theme-dark.svg',
+              width: '100%',
+            }
+          : {
+              src: 'images/blockaid-whats-new.svg',
+              width: '100%',
+            },
     },
     ///: END:ONLY_INCLUDE_IF
   };

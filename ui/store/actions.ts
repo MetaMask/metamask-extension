@@ -38,7 +38,6 @@ import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
-  getSelectedAddress,
   hasTransactionPendingApprovals,
   getApprovalFlows,
   getCurrentNetworkTransactions,
@@ -50,6 +49,8 @@ import {
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
   ///: END:ONLY_INCLUDE_IF
+  getInternalAccountByAddress,
+  getSelectedInternalAccount,
 } from '../selectors';
 import {
   computeEstimatedGasLimit,
@@ -1550,12 +1551,15 @@ export function updateMetamaskState(
     const providerConfig = getProviderConfig(state);
     const { metamask: currentState } = state;
 
-    const { currentLocale, selectedAddress } = currentState;
-    const {
-      currentLocale: newLocale,
-      selectedAddress: newSelectedAddress,
-      providerConfig: newProviderConfig,
-    } = newState;
+    const { currentLocale } = currentState;
+    const currentInternalAccount = getSelectedInternalAccount(state);
+    const selectedAddress = currentInternalAccount?.address;
+    const { currentLocale: newLocale, providerConfig: newProviderConfig } =
+      newState;
+    const newInternalAccount = getSelectedInternalAccount({
+      metamask: newState,
+    });
+    const newSelectedAddress = newInternalAccount?.address;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
       dispatch(updateCurrentLocale(newLocale));
@@ -1700,6 +1704,34 @@ export function setSelectedAddress(
   };
 }
 
+async function _setSelectedInternalAccount(accountId: string): Promise<void> {
+  log.debug(`background.setSelectedInternalAccount`);
+  await submitRequestToBackground('setSelectedInternalAccount', [accountId]);
+}
+
+/**
+ * Sets the selected internal account.
+ *
+ * @param accountId - The ID of the account to set as selected.
+ * @returns A thunk action that dispatches loading and warning indications.
+ */
+export function setSelectedInternalAccount(
+  accountId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setSelectedInternalAccount`);
+    try {
+      await _setSelectedInternalAccount(accountId);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setSelectedAccount(
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1711,12 +1743,12 @@ export function setSelectedAccount(
     const unconnectedAccountAccountAlertIsEnabled =
       getUnconnectedAccountAlertEnabledness(state);
     const activeTabOrigin = state.activeTab.origin;
-    const selectedAddress = getSelectedAddress(state);
+    const internalAccount = getInternalAccountByAddress(state, address);
     const permittedAccountsForCurrentTab =
       getPermittedAccountsForCurrentTab(state);
     const currentTabIsConnectedToPreviousAddress =
       Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(selectedAddress);
+      permittedAccountsForCurrentTab.includes(internalAccount.address);
     const currentTabIsConnectedToNextAddress =
       Boolean(activeTabOrigin) &&
       permittedAccountsForCurrentTab.includes(address);
@@ -1725,7 +1757,7 @@ export function setSelectedAccount(
       !currentTabIsConnectedToNextAddress;
 
     try {
-      await _setSelectedAddress(address);
+      await _setSelectedInternalAccount(internalAccount.id);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -4018,7 +4050,7 @@ export function getNextNonce(): ThunkAction<
   AnyAction
 > {
   return async (dispatch, getState) => {
-    const address = getState().metamask.selectedAddress;
+    const { address } = getSelectedInternalAccount(getState());
     let nextNonce;
     try {
       nextNonce = await submitRequestToBackground<string>('getNextNonce', [

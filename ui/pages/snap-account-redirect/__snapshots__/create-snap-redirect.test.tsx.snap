@@ -19,7 +19,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
             class="mm-box mm-text mm-avatar-base mm-avatar-base--size-lg mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-alternative mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-border-default box--border-style-solid box--border-width-1"
             style="border-width: 0px;"
           >
-            ?
+            m
           </div>
           <div
             class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--circular-bottom-right"
@@ -41,16 +41,21 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
       >
         <p
           class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
-        />
+        >
+          @metamask/snap-simple-keyring
+        </p>
         <p
           class="mm-box mm-text mm-text--body-sm mm-text--ellipsis mm-box--color-text-alternative"
-        />
+        >
+          @metamask/snap-simple-keyring
+        </p>
       </div>
       <div
         class="mm-box mm-box--margin-left-auto"
       >
-        <button
+        <a
           class="mm-box mm-text mm-button-base snap-version mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
+          href="https://www.npmjs.com/package/@metamask/snap-simple-keyring"
           target="_blank"
         >
           <span
@@ -70,7 +75,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
                 <path
                   clip-rule="evenodd"
                   d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
-                  fill="#C1DAEC"
+                  fill="var(--color-primary-muted)"
                   fill-rule="evenodd"
                 />
                 <mask
@@ -85,7 +90,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
                   <path
                     clip-rule="evenodd"
                     d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
-                    fill="#037DD6"
+                    fill="var(--color-primary-default)"
                     fill-rule="evenodd"
                   />
                 </mask>
@@ -94,7 +99,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
                 >
                   <path
                     d="M6.85718 17.9999V11.4285V8.28564H-4.85711V17.9999H6.85718Z"
-                    fill="#037DD6"
+                    fill="var(--color-primary-default)"
                   />
                 </g>
               </svg>
@@ -104,7 +109,7 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
               />
             </div>
           </span>
-        </button>
+        </a>
       </div>
     </div>
     <div
@@ -172,11 +177,12 @@ exports[`<SnapAccountRedirect /> renders the url and message when provided and i
                     class="mm-box mm-text mm-text--body-md mm-box--padding-2 mm-box--color-primary-default"
                     data-testid="snap-account-redirect-url-display-box"
                   >
-                    https://metamask.github.io/snap-simple-keyring/1.0.0/
+                    https://metamask.github.io/snap-simple-keyring/1.1.1/
                   </p>
                   <button
                     aria-label=""
                     class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-lg"
+                    data-testid="snap-account-redirect-url-icon"
                   >
                     <span
                       class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"

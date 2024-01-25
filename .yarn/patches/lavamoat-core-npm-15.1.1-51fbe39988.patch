@@ -1,0 +1,70 @@
+diff --git a/src/kernelCoreTemplate.js b/src/kernelCoreTemplate.js
+index 752a9c0f0179c1249bd4c3fdb62c216543f01ce2..39fccc6a004218ce7233cbf95db4ffe24907b856 100644
+--- a/src/kernelCoreTemplate.js
++++ b/src/kernelCoreTemplate.js
+@@ -70,6 +70,8 @@
+     const { prepareCompartmentGlobalFromConfig } = templateRequire('makePrepareRealmGlobalFromConfig')({ createFunctionWrapper })
+     const { strictScopeTerminator } = templateRequire('strict-scope-terminator')
+ 
++    // cache regular expressions to work around https://github.com/MetaMask/metamask-extension/issues/21006
++    const regexCache = new Map()
+     const scuttleOpts = generateScuttleOpts(scuttleGlobalThis)
+     const moduleCache = new Map()
+     const packageCompartmentCache = new Map()
+@@ -126,10 +128,15 @@
+         if (!except.startsWith('/')) {
+           return except
+         }
++        if (regexCache.has(except)) {
++          return regexCache.get(except)
++        }
+         const parts = except.split('/')
+         const pattern = parts.slice(1, -1).join('/')
+         const flags = parts[parts.length - 1]
+-        return new RegExp(pattern, flags)
++        const re = new RegExp(pattern, flags)
++        regexCache.set(except, re)
++        return re
+       }
+     }
+ 
+diff --git a/src/loadPolicy.js b/src/loadPolicy.js
+index f0ca3c4991a64f316f4e7199867439dd9ab09354..11296dd253b8dc1afd4cc870a0207c280fb728d9 100644
+--- a/src/loadPolicy.js
++++ b/src/loadPolicy.js
+@@ -84,10 +84,9 @@ async function loadPolicyAndApplyOverrides({
+ 
+   const finalPolicy = mergePolicy(policy, policyOverride)
+ 
+-  // TODO: Only write if merge results in changes.
+-  // Would have to make a deep equal check on whole policy, which is a waste of time.
+-  // mergePolicy() should be able to do it in one pass.
+-  await fs.writeFile(policyPath, jsonStringify(finalPolicy, { space: 2 }))
++  // Skip policy write step to prevent intermittent build failures
++  // The extension validates the policy in a separate step, we don't need it
++  // to be written to disk here.
+ 
+   return finalPolicy
+ }
+diff --git a/src/sourceTransforms.js b/src/sourceTransforms.js
+index 9b1524810574c207631823869a781c343adb197f..4d02a6557ca0391a06326b420c274b5f60f72edc 100644
+--- a/src/sourceTransforms.js
++++ b/src/sourceTransforms.js
+@@ -12,12 +12,12 @@ function applySourceTransforms(source) {
+   ])
+ }
+ 
++const DIRECT_EVAL_REPLACE_FN = (_, p1) => '(0,eval)' + p1
+ function evadeDirectEvalExpressions(source) {
+-  /* eslint-disable-next-line prefer-regex-literals */
+-  const someDirectEvalPattern = new RegExp('\\beval(\\s*\\()', 'g')
+-
+-  const replaceFn = (_, p1) => `(0,eval)${p1}`
+-  return source.replace(someDirectEvalPattern, replaceFn)
++  return source.replace(
++    /\beval(\s*\()/g,
++    DIRECT_EVAL_REPLACE_FN
++  )
+ }
+ 
+ module.exports = {
