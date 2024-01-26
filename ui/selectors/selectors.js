@@ -1159,6 +1159,7 @@ export const getInsightSnaps = createDeepEqualSelector(
  * @returns {object} An object with snapId keys and values of snap names and descriptions.
  */
 export const getInsightSnapsMetadata = createDeepEqualSelector(
+  (state) => state,
   getInsightSnaps,
   (state, snaps) => {
     return Object.values(snaps).reduce((snap, metadataObj) => {
