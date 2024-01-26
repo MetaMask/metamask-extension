@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
 import configureStore from '../store/store';
 import useAddressDetails from './useAddressDetails';
@@ -13,6 +14,24 @@ const renderUseAddressDetails = (toAddress, stateVariables = {}) => {
         chainId: '0x5',
       },
       tokenList: {},
+      internalAccounts: {
+        accounts: {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+            metadata: {
+              name: 'Test Account',
+              keyring: {
+                type: 'HD Key Tree',
+              },
+            },
+            options: {},
+            methods: [...Object.values(EthMethod)],
+            type: EthAccountType.Eoa,
+          },
+        },
+        selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+      },
       ...stateVariables,
     },
   };
@@ -54,15 +73,27 @@ describe('useAddressDetails', () => {
     expect(isTrusted).toBe(true);
   });
 
-  it('should return name from identities if address is present in identities', () => {
+  it('should return name from internal account if address is present in internalAccounts', () => {
     const { result } = renderUseAddressDetails(
       '0x06195827297c7A80a443b6894d3BDB8824b43896',
       {
-        identities: {
-          '0x06195827297c7A80a443b6894d3BDB8824b43896': {
-            address: '0x06195827297c7A80a443b6894d3BDB8824b43896',
-            name: 'Account 1',
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0x06195827297c7A80a443b6894d3BDB8824b43896',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
           },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
         },
       },
     );

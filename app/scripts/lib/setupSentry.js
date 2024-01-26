@@ -86,6 +86,8 @@ export const SENTRY_BACKGROUND_STATE = {
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
     showProductTour: true,
+    showNetworkBanner: true,
+    showAccountBanner: true,
     showTestnetMessageInDropdown: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
@@ -133,6 +135,11 @@ export const SENTRY_BACKGROUND_STATE = {
     previousUserTraits: false,
     segmentApiCalls: false,
     traits: false,
+  },
+  NameController: {
+    names: false,
+    nameSources: false,
+    useExternalNameSources: false,
   },
   NetworkController: {
     networkConfigurations: false,
@@ -195,9 +202,11 @@ export const SENTRY_BACKGROUND_STATE = {
     preferences: {
       autoLockTimeLimit: true,
       hideZeroBalanceTokens: true,
+      showExtensionInFullSizeView: true,
       showFiatInTestnets: true,
       showTestNetworks: true,
       useNativeCurrencyAsPrimaryCurrency: true,
+      petnamesEnabled: true,
     },
     selectedAddress: false,
     snapRegistryList: false,
@@ -308,6 +317,9 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   TxController: {
     transactions: false,
+  },
+  UserOperationController: {
+    userOperations: false,
   },
 };
 

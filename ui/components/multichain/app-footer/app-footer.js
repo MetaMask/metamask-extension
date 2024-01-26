@@ -38,7 +38,7 @@ import {
   getConnectedSubjectsForAllAddresses,
   getCurrentNetwork,
   getOriginOfCurrentTab,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getTestNetworkBackgroundColor,
 } from '../../../selectors';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
@@ -55,7 +55,10 @@ export const AppFooter = () => {
   const activeConnections = location.pathname === CONNECTIONS;
   const isUnlocked = useSelector((state) => state.metamask.isUnlocked);
   const isFullScreen = getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN;
-  const selectedAddress = useSelector(getSelectedAddress);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+
+  // During onboarding there is no selected internal account
+  const selectedAddress = selectedAccount?.address;
 
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);

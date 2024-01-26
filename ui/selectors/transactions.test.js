@@ -1,4 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { TransactionStatus } from '@metamask/transaction-controller';
 import { CHAIN_IDS } from '../../shared/constants/network';
 import {
@@ -33,6 +34,24 @@ describe('Transaction Selectors', () => {
           },
           providerConfig: {
             chainId: '0x5',
+          },
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
           },
         },
       };
@@ -115,6 +134,24 @@ describe('Transaction Selectors', () => {
           },
           featureFlags: {},
           selectedAddress: '0xAddress',
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           transactions: [
             {
               id: 0,
@@ -156,6 +193,21 @@ describe('Transaction Selectors', () => {
           },
           featureFlags: {},
           selectedAddress: '0xAddress',
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                address: '0xAddress',
+              },
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           transactions: [
             {
               id: 0,
@@ -231,6 +283,24 @@ describe('Transaction Selectors', () => {
             chainId: CHAIN_IDS.MAINNET,
           },
           selectedAddress: '0xAddress',
+          internalAccounts: {
+            accounts: {
+              'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                address: '0xAddress',
+                id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                metadata: {
+                  name: 'Test Account',
+                  keyring: {
+                    type: 'HD Key Tree',
+                  },
+                },
+                options: {},
+                methods: [...Object.values(EthMethod)],
+                type: EthAccountType.Eoa,
+              },
+            },
+            selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          },
           featureFlags: {},
           transactions: [tx1, tx2],
         },
@@ -317,6 +387,24 @@ describe('Transaction Selectors', () => {
           chainId: CHAIN_IDS.MAINNET,
         },
         selectedAddress: '0xAddress',
+        internalAccounts: {
+          accounts: {
+            'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+              address: '0xAddress',
+              id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+              metadata: {
+                name: 'Test Account',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+              options: {},
+              methods: [...Object.values(EthMethod)],
+              type: EthAccountType.Eoa,
+            },
+          },
+          selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        },
         featureFlags: {},
         transactions: [submittedTx, unapprovedTx, approvedTx, confirmedTx],
       },

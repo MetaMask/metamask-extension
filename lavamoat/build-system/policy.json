@@ -6,8 +6,56 @@
         "process.emitWarning": true
       },
       "packages": {
-        "@babel/code-frame>chalk": true,
-        "lavamoat>@babel/highlight": true
+        "@babel/code-frame>@babel/highlight": true,
+        "@babel/code-frame>chalk": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight": {
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "loose-envify>js-tokens": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk>ansi-styles": true,
+        "@babel/code-frame>@babel/highlight>chalk>escape-string-regexp": true,
+        "@babel/code-frame>@babel/highlight>chalk>supports-color": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk>supports-color": {
+      "builtin": {
+        "os.release": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.versions.node.split": true
+      },
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk>supports-color>has-flag": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "@babel/code-frame>chalk": {
@@ -89,6 +137,7 @@
         "@babel/plugin-proposal-nullish-coalescing-operator": true,
         "@babel/plugin-proposal-object-rest-spread": true,
         "@babel/plugin-proposal-optional-chaining": true,
+        "@babel/plugin-transform-logical-assignment-operators": true,
         "@babel/plugin-transform-runtime": true,
         "@babel/preset-env": true,
         "@babel/preset-react": true,
@@ -256,6 +305,13 @@
         "eslint": true
       }
     },
+    "@babel/plugin-transform-logical-assignment-operators": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-logical-assignment-operators": true
+      }
+    },
     "@babel/preset-env": {
       "globals": {
         "console.log": true,
@@ -266,6 +322,7 @@
       "packages": {
         "@babel/core>@babel/helper-compilation-targets": true,
         "@babel/core>@babel/types": true,
+        "@babel/plugin-transform-logical-assignment-operators": true,
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
@@ -308,7 +365,6 @@
         "@babel/preset-env>@babel/plugin-transform-function-name": true,
         "@babel/preset-env>@babel/plugin-transform-json-strings": true,
         "@babel/preset-env>@babel/plugin-transform-literals": true,
-        "@babel/preset-env>@babel/plugin-transform-logical-assignment-operators": true,
         "@babel/preset-env>@babel/plugin-transform-member-expression-literals": true,
         "@babel/preset-env>@babel/plugin-transform-modules-amd": true,
         "@babel/preset-env>@babel/plugin-transform-modules-commonjs": true,
@@ -519,10 +575,10 @@
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>globals": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "depcheck>@babel/traverse>globals": true
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
@@ -667,13 +723,6 @@
     "@babel/preset-env>@babel/plugin-transform-literals": {
       "packages": {
         "@babel/preset-env>@babel/helper-plugin-utils": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-logical-assignment-operators": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-syntax-logical-assignment-operators": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-member-expression-literals": {
@@ -1130,12 +1179,12 @@
         "@lavamoat/lavapack>combine-source-map": true,
         "@lavamoat/lavapack>convert-source-map": true,
         "@lavamoat/lavapack>readable-stream": true,
+        "@lavamoat/lavapack>through2": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "eslint>espree": true,
         "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true,
-        "through2": true
+        "lavamoat>lavamoat-core": true
       }
     },
     "@lavamoat/lavapack>combine-source-map": {
@@ -1186,6 +1235,52 @@
         "browserify>string_decoder": true,
         "pumpify>inherits": true,
         "readable-stream>util-deprecate": true
+      }
+    },
+    "@lavamoat/lavapack>through2": {
+      "builtin": {
+        "util.inherits": true
+      },
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "@lavamoat/lavapack>through2>readable-stream": true,
+        "watchify>xtend": true
+      }
+    },
+    "@lavamoat/lavapack>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "@lavamoat/lavapack>through2>readable-stream>safe-buffer": true,
+        "@lavamoat/lavapack>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>core-util-is": true,
+        "readable-stream>isarray": true,
+        "readable-stream>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "@lavamoat/lavapack>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "@lavamoat/lavapack>through2>readable-stream>string_decoder": {
+      "packages": {
+        "@lavamoat/lavapack>through2>readable-stream>safe-buffer": true
       }
     },
     "@metamask/build-utils": {
@@ -2330,7 +2425,12 @@
         "process.versions": true
       },
       "packages": {
-        "browserify>has": true
+        "depcheck>is-core-module>hasown": true
+      }
+    },
+    "depcheck>is-core-module>hasown": {
+      "packages": {
+        "browserify>has>function-bind": true
       }
     },
     "depcheck>json5": {
@@ -3016,8 +3116,8 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>@eslint/eslintrc>globals": true,
         "eslint>ajv": true,
+        "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true,
@@ -6167,25 +6267,13 @@
       "packages": {
         "@lavamoat/lavapack": true,
         "browserify>browser-resolve": true,
+        "browserify>concat-stream": true,
         "duplexify": true,
-        "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>readable-stream": true,
         "lavamoat-browserify>through2": true,
         "lavamoat>@lavamoat/aa": true,
         "lavamoat>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true
-      }
-    },
-    "lavamoat-browserify>concat-stream": {
-      "globals": {
-        "Buffer.concat": true,
-        "Buffer.isBuffer": true
-      },
-      "packages": {
-        "browserify>concat-stream>typedarray": true,
-        "lavamoat-browserify>readable-stream": true,
-        "pumpify>inherits": true,
-        "terser>source-map-support>buffer-from": true
       }
     },
     "lavamoat-browserify>readable-stream": {
@@ -6215,55 +6303,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "lavamoat-browserify>readable-stream": true
+        "lavamoat-browserify>through2>readable-stream": true,
+        "watchify>xtend": true
       }
     },
-    "lavamoat>@babel/highlight": {
-      "packages": {
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>@babel/highlight>chalk": true,
-        "loose-envify>js-tokens": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles": true,
-        "lavamoat>@babel/highlight>chalk>escape-string-regexp": true,
-        "lavamoat>@babel/highlight>chalk>supports-color": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>ansi-styles": {
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>supports-color": {
+    "lavamoat-browserify>through2>readable-stream": {
       "builtin": {
-        "os.release": true
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
       },
       "globals": {
-        "process.env": true,
-        "process.platform": true,
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
         "process.stderr": true,
         "process.stdout": true,
-        "process.versions.node.split": true
+        "process.version.slice": true,
+        "setImmediate": true
       },
       "packages": {
-        "lavamoat>@babel/highlight>chalk>supports-color>has-flag": true
+        "lavamoat-browserify>through2>readable-stream>safe-buffer": true,
+        "lavamoat-browserify>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>core-util-is": true,
+        "readable-stream>isarray": true,
+        "readable-stream>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
       }
     },
-    "lavamoat>@babel/highlight>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+    "lavamoat-browserify>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "lavamoat-browserify>through2>readable-stream>string_decoder": {
+      "packages": {
+        "lavamoat-browserify>through2>readable-stream>safe-buffer": true
       }
     },
     "lavamoat>@lavamoat/aa": {
@@ -6285,8 +6360,8 @@
     "lavamoat>lavamoat-core": {
       "builtin": {
         "events": true,
-        "fs.existsSync": true,
         "fs.readFileSync": true,
+        "node:fs/promises.readFile": true,
         "path.extname": true,
         "path.join": true
       },
@@ -7750,20 +7825,15 @@
       },
       "packages": {
         "browserify>has>function-bind": true,
+        "depcheck>is-core-module>hasown": true,
         "string.prototype.matchall>es-abstract>has-proto": true,
-        "string.prototype.matchall>get-intrinsic>hasown": true,
         "string.prototype.matchall>has-symbols": true
-      }
-    },
-    "string.prototype.matchall>get-intrinsic>hasown": {
-      "packages": {
-        "browserify>has>function-bind": true
       }
     },
     "string.prototype.matchall>internal-slot": {
       "packages": {
+        "depcheck>is-core-module>hasown": true,
         "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>get-intrinsic>hasown": true,
         "string.prototype.matchall>side-channel": true
       }
     },

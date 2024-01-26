@@ -3,9 +3,9 @@ const {
   defaultGanacheOptions,
   withFixtures,
   unlockWallet,
-} = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
-const { tEn } = require('../../lib/i18n-helpers');
+} = require('../../helpers');
+const FixtureBuilder = require('../../fixture-builder');
+const { tEn } = require('../../../lib/i18n-helpers');
 
 describe('Show account details', function () {
   const PASSWORD = 'correct horse battery staple';

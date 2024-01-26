@@ -51,7 +51,7 @@ export interface TextFieldStyleUtilityProps
    */
   id?: string;
   /**
-   * The the component that is rendered as the input
+   * The component that is rendered as the input
    * Defaults to the Text component
    */
   InputComponent?: InputComponent;
