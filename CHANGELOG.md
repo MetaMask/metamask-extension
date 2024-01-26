@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ## [11.8.0]
+### Added
+- Enhanced the build process by allowing build types to override the build name ([#22220] (https://github.com/MetaMask/metamask-extension/pull/22220))
+- Enhanced the Networks List with drag and drop functionality ([#21163] (https://github.com/MetaMask/metamask-extension/pull/21163))
+- Added a deprecation warning for the Aurora network to inform users about its upcoming removal ([#21933] (https://github.com/MetaMask/metamask-extension/pull/21933))
+- Added a survey prompt to the home screen for user feedback ([#21918] (https://github.com/MetaMask/metamask-extension/pull/21918))
+
+### Changed
+- Corrected a typo and improved the alignment of 'Terms of use' ([#22227] (https://github.com/MetaMask/metamask-extension/pull/22227))
+- Removed remaining references to the Aurora network ([#22184] (https://github.com/MetaMask/metamask-extension/pull/22184))
+- Changed the title of MetaMask pop-up window to 'MetaMask Dialog' ([#21680] (https://github.com/MetaMask/metamask-extension/pull/21680))
+- Refined the Max fee calculation in Smart Swaps to ensure it does not exceed twice the estimated gas fee ([#22127] (https://github.com/MetaMask/metamask-extension/pull/22127))
+- Improved security and performance by updating the features related to password management and key handling ([#21878] (https://github.com/MetaMask/metamask-extension/pull/21878))
+- [MMI] Updated the visual snapshot in MetaMask Institutional ([#22181] (https://github.com/MetaMask/metamask-extension/pull/22181))
+- [MMI] Enabled the Cancel and Speed Up options for non-custodial accounts in MetaMask Institutional ([#22164] (https://github.com/MetaMask/metamask-extension/pull/22164))
+- [MMI] Updated Consensys URLs from .net to .io ([#22107] (https://github.com/MetaMask/metamask-extension/pull/22107))
+- [FLASK] Updated the background color of the Snap Avatar ([#22137] (https://github.com/MetaMask/metamask-extension/pull/22137))
+- [FLASK] Updated the color of the tooltip icon in the transaction confirmation section ([#22144] (https://github.com/MetaMask/metamask-extension/pull/22144))
+- [FLASK] Updated the weighting of permissions ([#22063] (https://github.com/MetaMask/metamask-extension/pull/22063))
+
+### Fixed
+- Improved the token autodetection feature to automatically trigger detection when the setting is enabled ([#21749] (https://github.com/MetaMask/metamask-extension/pull/21749))
+- Fixed an issue causing duplicate entries for confirmed incoming transactions ([#21840] (https://github.com/MetaMask/metamask-extension/pull/21840))
+- Fixed a rounding issue causing incorrect gas fee displays on the Optimism network ([#19960] (https://github.com/MetaMask/metamask-extension/pull/19960))
+- Fixed an issue causing incorrect EIP-6963 provider names in MetaMask production builds ([#22090] (https://github.com/MetaMask/metamask-extension/pull/22090))
+- Fixed a crash that occurred when the list of ordered networks was empty ([#22109] (https://github.com/MetaMask/metamask-extension/pull/22109))
+- Fixed an issue where the settings search function only supported English and numbers ([#21013] (https://github.com/MetaMask/metamask-extension/pull/21013))
 ## [11.7.4]
 
 ## [11.7.3]
