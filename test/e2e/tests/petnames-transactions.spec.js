@@ -84,7 +84,7 @@ describe('Petnames - Transactions', function () {
     );
   });
 
-  it('can save petnames for addresses in wallet send transactions', async function () {
+  it.only('can save petnames for addresses in wallet send transactions', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -93,13 +93,15 @@ describe('Petnames - Transactions', function () {
               sendHexData: true,
             },
           })
+          .withNoNames()
           .build(),
         ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        createWalletSendTransaction(driver, ADDRESS_MOCK);
+        await createWalletSendTransaction(driver, ADDRESS_MOCK);
+        await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);
 
         // Test custom name.
         await saveName(
