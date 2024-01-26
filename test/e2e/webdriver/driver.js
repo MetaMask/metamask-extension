@@ -69,6 +69,31 @@ function wrapElementWithAPI(element, driver) {
     return wrapElementWithAPI(newElement, driver);
   };
 
+  // We need to hold a pointer to the original click() method so that we can call it in the replaced click() method
+  if (!element.originalClick) {
+    element.originalClick = element.click;
+  }
+
+  // This special click() method waits for the loading overlay to disappear before clicking
+  element.click = async () => {
+    try {
+      await element.originalClick();
+    } catch (e) {
+      if (
+        e.name === 'ElementClickInterceptedError' &&
+        e.message.includes('<div class="mm-box loading-overlay">')
+      ) {
+        // Wait for the loading overlay to disappear and try again
+        await driver.wait(
+          until.elementIsNotPresent(By.css('.loading-overlay')),
+        );
+        await element.originalClick();
+      } else {
+        throw e; // If the error is not related to the loading overlay, throw it
+      }
+    }
+  };
+
   return element;
 }
 
