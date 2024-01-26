@@ -50,22 +50,22 @@ const config: PlaywrightTestConfig = {
   projects: [
     {
       name: 'mmi',
-      testMatch: '/mmi/specs/**.spec.ts',
-      testIgnore: '/mmi/specs/visual.spec.ts',
+      testMatch: '/playwright/mmi/specs/**.spec.ts',
+      testIgnore: '/playwright/mmi/specs/visual.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
       },
     },
     {
       name: 'mmi.visual',
-      testMatch: '/mmi/specs/visual.spec.ts',
+      testMatch: '/playwright/mmi/specs/visual.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
       },
     },
     {
       name: 'swap',
-      testMatch: '*swap/specs/*swap.spec.ts',
+      testMatch: '/playwright/swap/specs/*swap.spec.ts',
       use: {
         ...devices['Desktop Chrome'],
       },
