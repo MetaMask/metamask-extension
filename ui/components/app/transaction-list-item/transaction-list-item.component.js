@@ -166,6 +166,8 @@ function TransactionListItemInner({
   const isApproval = category === TransactionGroupCategory.approval;
   const isUnapproved = status === TransactionStatus.unapproved;
   const isSwap = category === TransactionGroupCategory.swap;
+  const isSigning = status === TransactionStatus.approved;
+  const isSubmitting = status === TransactionStatus.signed;
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const isCustodian = Boolean(transactionGroup.primaryTransaction.custodyId);
   ///: END:ONLY_INCLUDE_IF
@@ -218,7 +220,13 @@ function TransactionListItemInner({
     }
     ///: END:ONLY_INCLUDE_IF
 
-    if (!shouldShowSpeedUp || !isPending || isUnapproved) {
+    if (
+      !shouldShowSpeedUp ||
+      !isPending ||
+      isUnapproved ||
+      isSigning ||
+      isSubmitting
+    ) {
       return null;
     }
 
