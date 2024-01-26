@@ -3050,10 +3050,6 @@
     "message": "インターネットにアクセスします。",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessSnap": {
-    "message": "$1 snapに接続します。",
-    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
-  },
   "permission_accessSnapDescription": {
     "message": "Webサイトまたはsnapによる$1とのやり取りを許可します。",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."

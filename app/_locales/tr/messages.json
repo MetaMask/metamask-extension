@@ -3050,10 +3050,6 @@
     "message": "İnternete erişim sağla.",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessSnap": {
-    "message": "$1 snape bağlan.",
-    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
-  },
   "permission_accessSnapDescription": {
     "message": "Web sitesinin veya snapin $1 ile etkileşimde bulunmasına izin verin.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."

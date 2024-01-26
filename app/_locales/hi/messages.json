@@ -3050,10 +3050,6 @@
     "message": "इंटरनेट एक्सेस करें।",
     "description": "The description of the `endowment:network-access` permission."
   },
-  "permission_accessSnap": {
-    "message": "$1 Snap से कनेक्ट करें।",
-    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
-  },
   "permission_accessSnapDescription": {
     "message": "$1 के साथ इंटरैक्ट करने के लिए वेबसाइट या Snap को अनुमति दें।",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
