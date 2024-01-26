@@ -6,9 +6,10 @@ import { CaveatTypes } from '../../shared/constants/permissions';
 import { getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 import {
+  getInternalAccount,
   getMetaMaskAccountsOrdered,
   getOriginOfCurrentTab,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getSubjectMetadata,
   getTargetSubjectMetadata,
 } from '.';
@@ -250,23 +251,26 @@ function subjectSelector(state, origin) {
 }
 
 export function getAccountToConnectToActiveTab(state) {
-  const selectedAddress = getSelectedAddress(state);
+  const selectedInternalAccount = getSelectedInternalAccount(state);
   const connectedAccounts = getPermittedAccountsForCurrentTab(state);
 
   const {
-    metamask: { identities },
+    metamask: {
+      internalAccounts: { accounts },
+    },
   } = state;
-  const numberOfAccounts = Object.keys(identities).length;
+  const numberOfAccounts = Object.keys(accounts).length;
 
   if (
     connectedAccounts.length &&
     connectedAccounts.length !== numberOfAccounts
   ) {
     if (
-      connectedAccounts.findIndex((address) => address === selectedAddress) ===
-      -1
+      connectedAccounts.findIndex(
+        (address) => address === selectedInternalAccount.address,
+      ) === -1
     ) {
-      return identities[selectedAddress];
+      return getInternalAccount(state, selectedInternalAccount.id);
     }
   }
 

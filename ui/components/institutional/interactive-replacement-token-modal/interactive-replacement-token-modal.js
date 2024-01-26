@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { hideModal } from '../../../store/actions';
-import { getSelectedAddress } from '../../../selectors/selectors';
+import { getSelectedInternalAccount } from '../../../selectors/selectors';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
   Box,
@@ -43,7 +43,7 @@ const InteractiveReplacementTokenModal = () => {
   const { custodians } = useSelector(
     (state) => state.metamask.mmiConfiguration,
   );
-  const address = useSelector(getSelectedAddress);
+  const { address } = useSelector(getSelectedInternalAccount);
   const custodyAccountDetails = useSelector(
     (state) =>
       state.metamask.custodyAccountDetails[toChecksumHexAddress(address)],
