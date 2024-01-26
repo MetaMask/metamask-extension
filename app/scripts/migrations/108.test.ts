@@ -1,4 +1,4 @@
-import { FALLBACK_VARIATION, NameType } from '@metamask/name-controller';
+import { FALLBACK_VARIATION, NameOrigin, NameType } from '@metamask/name-controller';
 import { migrate, version } from './108';
 
 const oldVersion = 107;
@@ -87,6 +87,7 @@ describe('migration #108', () => {
                 name: NAME_1,
                 sourceId: null,
                 proposedNames: {},
+                origin: NameOrigin.ACCOUNT_IDENTITY,
               },
             },
             [ADDRESS_2.toLowerCase()]: {
@@ -94,6 +95,7 @@ describe('migration #108', () => {
                 name: NAME_2,
                 sourceId: null,
                 proposedNames: {},
+                origin: NameOrigin.ACCOUNT_IDENTITY,
               },
             },
             [ADDRESS_3.toLowerCase()]: {
@@ -101,6 +103,7 @@ describe('migration #108', () => {
                 name: NAME_3,
                 sourceId: null,
                 proposedNames: {},
+                origin: NameOrigin.ACCOUNT_IDENTITY,
               },
             },
           },
@@ -150,6 +153,7 @@ describe('migration #108', () => {
                 name: NAME_1,
                 sourceId: null,
                 proposedNames: {},
+                origin: NameOrigin.ACCOUNT_IDENTITY,
               },
             },
             [ADDRESS_2.toLowerCase()]: {
@@ -250,6 +254,7 @@ describe('migration #108', () => {
                 name: NAME_3,
                 sourceId: null,
                 proposedNames: {},
+                origin: NameOrigin.ACCOUNT_IDENTITY,
               },
             },
           },
