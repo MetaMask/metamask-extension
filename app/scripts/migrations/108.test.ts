@@ -1,18 +1,6 @@
-import {
-  FALLBACK_VARIATION,
-  NameOrigin,
-  NameType,
-} from '@metamask/name-controller';
 import { migrate, version } from './108';
 
 const oldVersion = 107;
-
-const ADDRESS_1 = '0xc0ffee254729296a45a3885639AC7E10F9d54979';
-const NAME_1 = 'TestName1';
-const ADDRESS_2 = '0xc0ffee254729296a45a3885639AC7E10F9d54978';
-const NAME_2 = 'TestName2';
-const ADDRESS_3 = '0xc0ffee254729296a45a3885639AC7E10F9d54977';
-const NAME_3 = 'TestName3';
 
 describe('migration #108', () => {
   it('updates the version metadata', async () => {
@@ -26,7 +14,7 @@ describe('migration #108', () => {
     expect(newStorage.meta).toStrictEqual({ version });
   });
 
-  it('does nothing if no preferences state', async () => {
+  it('does nothing if no address book state', async () => {
     const oldState = {
       OtherController: {},
     };
@@ -39,11 +27,11 @@ describe('migration #108', () => {
     expect(transformedState.data).toEqual(oldState);
   });
 
-  it('does nothing if no account id entries', async () => {
+  it('does nothing if no address book entries', async () => {
     const oldState = {
       OtherController: {},
-      PreferencesController: {
-        identities: {},
+      AddressBookController: {
+        addressBook: {},
       },
     };
 
@@ -58,19 +46,27 @@ describe('migration #108', () => {
   it('adds name entries', async () => {
     const oldState = {
       OtherController: {},
-      PreferencesController: {
-        identities: {
-          [ADDRESS_1]: {
-            name: NAME_1,
-            address: ADDRESS_1,
+      AddressBookController: {
+        addressBook: {
+          '0x1': {
+            '0xc0ffee254729296a45a3885639AC7E10F9d54979': {
+              name: 'TestName1',
+              isEns: false,
+            },
+            '0xc0ffee254729296a45a3885639AC7E10F9d54978': {
+              name: 'TestName2',
+              isEns: true,
+            },
           },
-          [ADDRESS_2]: {
-            name: NAME_2,
-            address: ADDRESS_2,
-          },
-          [ADDRESS_3]: {
-            name: NAME_3,
-            address: ADDRESS_3,
+          '0x2': {
+            '0xc0ffee254729296a45a3885639AC7E10F9d54977': {
+              name: 'TestName3',
+              isEns: false,
+            },
+            '0xc0ffee254729296a45a3885639AC7E10F9d54978': {
+              name: 'TestName4',
+              isEns: false,
+            },
           },
         },
       },
@@ -85,29 +81,31 @@ describe('migration #108', () => {
       ...oldState,
       NameController: {
         names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            [ADDRESS_1.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_1,
+          ethereumAddress: {
+            '0xc0ffee254729296a45a3885639ac7e10f9d54979': {
+              '0x1': {
+                name: 'TestName1',
                 sourceId: null,
                 proposedNames: {},
-                origin: NameOrigin.ACCOUNT_IDENTITY,
               },
             },
-            [ADDRESS_2.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_2,
+            '0xc0ffee254729296a45a3885639ac7e10f9d54978': {
+              '0x1': {
+                name: 'TestName2',
+                sourceId: 'ens',
+                proposedNames: {},
+              },
+              '0x2': {
+                name: 'TestName4',
                 sourceId: null,
                 proposedNames: {},
-                origin: NameOrigin.ACCOUNT_IDENTITY,
               },
             },
-            [ADDRESS_3.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_3,
+            '0xc0ffee254729296a45a3885639ac7e10f9d54977': {
+              '0x2': {
+                name: 'TestName3',
                 sourceId: null,
                 proposedNames: {},
-                origin: NameOrigin.ACCOUNT_IDENTITY,
               },
             },
           },
@@ -119,20 +117,22 @@ describe('migration #108', () => {
   it('keeps existing name entries', async () => {
     const oldState = {
       OtherController: {},
-      PreferencesController: {
-        identities: {
-          [ADDRESS_1]: {
-            name: NAME_1,
-            address: ADDRESS_1,
+      AddressBookController: {
+        addressBook: {
+          '0x1': {
+            '0xc0ffee254729296a45a3885639AC7E10F9d54979': {
+              name: 'TestName1',
+              isEns: false,
+            },
           },
         },
       },
       NameController: {
         names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            [ADDRESS_2.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_2,
+          ethereumAddress: {
+            '0xc0ffee254729296a45a3885639ac7e10f9d54978': {
+              '0x1': {
+                name: 'TestName2',
                 sourceId: 'ens',
                 proposedNames: {},
               },
@@ -151,18 +151,17 @@ describe('migration #108', () => {
       ...oldState,
       NameController: {
         names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            [ADDRESS_1.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_1,
+          ethereumAddress: {
+            '0xc0ffee254729296a45a3885639ac7e10f9d54979': {
+              '0x1': {
+                name: 'TestName1',
                 sourceId: null,
                 proposedNames: {},
-                origin: NameOrigin.ACCOUNT_IDENTITY,
               },
             },
-            [ADDRESS_2.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_2,
+            '0xc0ffee254729296a45a3885639ac7e10f9d54978': {
+              '0x1': {
+                name: 'TestName2',
                 sourceId: 'ens',
                 proposedNames: {},
               },
@@ -173,23 +172,25 @@ describe('migration #108', () => {
     });
   });
 
-  it('ignores account id entry if existing petname', async () => {
+  it('ignores address book entry if existing petname', async () => {
     const oldState = {
       OtherController: {},
-      PreferencesController: {
-        identities: {
-          [ADDRESS_1]: {
-            name: NAME_1,
-            address: ADDRESS_1,
+      AddressBookController: {
+        addressBook: {
+          '0x1': {
+            '0xc0ffee254729296a45a3885639AC7E10F9d54979': {
+              name: 'TestName1',
+              isEns: false,
+            },
           },
         },
       },
       NameController: {
         names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            [ADDRESS_1.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_2,
+          ethereumAddress: {
+            '0xc0ffee254729296a45a3885639ac7e10f9d54979': {
+              '0x1': {
+                name: 'TestName2',
                 sourceId: 'ens',
                 proposedNames: {},
               },
@@ -208,10 +209,10 @@ describe('migration #108', () => {
       ...oldState,
       NameController: {
         names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            [ADDRESS_1.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_2,
+          ethereumAddress: {
+            '0xc0ffee254729296a45a3885639ac7e10f9d54979': {
+              '0x1': {
+                name: 'TestName2',
                 sourceId: 'ens',
                 proposedNames: {},
               },
@@ -222,22 +223,20 @@ describe('migration #108', () => {
     });
   });
 
-  it('ignores account id entry if no name or address', async () => {
+  it('ignores address book entry if no name or address', async () => {
     const oldState = {
       OtherController: {},
-      PreferencesController: {
-        identities: {
-          [ADDRESS_1]: {
-            name: NAME_1,
-            address: '',
-          },
-          [ADDRESS_2]: {
-            name: '',
-            address: ADDRESS_2,
-          },
-          [ADDRESS_3]: {
-            name: NAME_3,
-            address: ADDRESS_3,
+      AddressBookController: {
+        addressBook: {
+          '0x1': {
+            '': {
+              name: 'TestName1',
+              isEns: false,
+            },
+            '0xc0ffee254729296a45a3885639AC7E10F9d54979': {
+              name: '',
+              isEns: false,
+            },
           },
         },
       },
@@ -252,43 +251,9 @@ describe('migration #108', () => {
       ...oldState,
       NameController: {
         names: {
-          [NameType.ETHEREUM_ADDRESS]: {
-            [ADDRESS_3.toLowerCase()]: {
-              [FALLBACK_VARIATION]: {
-                name: NAME_3,
-                sourceId: null,
-                proposedNames: {},
-                origin: NameOrigin.ACCOUNT_IDENTITY,
-              },
-            },
-          },
+          ethereumAddress: {},
         },
       },
     });
-  });
-
-  it('does not modify state if there are no changes.', async () => {
-    const oldState = {
-      OtherController: {},
-      PreferencesController: {
-        identities: {
-          [ADDRESS_1]: {
-            name: NAME_1,
-            address: '',
-          },
-          [ADDRESS_2]: {
-            name: '',
-            address: ADDRESS_2,
-          },
-        },
-      },
-    };
-
-    const transformedState = await migrate({
-      meta: { version: oldVersion },
-      data: oldState,
-    });
-
-    expect(transformedState.data).toEqual(oldState);
   });
 });

@@ -1,6 +1,6 @@
+// This migration is a copy of 100.ts, but we want it to run again once
+// petnames is enabled.
 import { cloneDeep, isEmpty } from 'lodash';
-import { FALLBACK_VARIATION, NameOrigin } from '@metamask/name-controller';
-import { PreferencesControllerState } from '../controllers/preferences';
 
 type VersionedData = {
   meta: { version: number };
@@ -10,7 +10,7 @@ type VersionedData = {
 export const version = 108;
 
 /**
- * Copy all account identity entries from PreferencesController to NameController.
+ * Copy all entries from AddressBookController to NameController.
  *
  * @param originalVersionedData - Versioned MetaMask extension state, exactly what we persist to dist.
  * @param originalVersionedData.meta - State metadata.
@@ -28,52 +28,45 @@ export async function migrate(
 }
 
 function transformState(state: Record<string, any>) {
-  const identities: PreferencesControllerState['identities'] =
-    state?.PreferencesController?.identities ?? {};
-
+  const addressBook = state?.AddressBookController?.addressBook ?? {};
   const names = state?.NameController?.names?.ethereumAddress ?? {};
 
-  if (isEmpty(Object.keys(identities))) {
+  if (isEmpty(Object.keys(addressBook))) {
     return;
   }
 
-  let hasChanges = false;
+  for (const chainId of Object.keys(addressBook)) {
+    const chainAddressBook = addressBook[chainId];
 
-  for (const address of Object.keys(identities)) {
-    const accountEntry = identities[address];
+    for (const address of Object.keys(chainAddressBook)) {
+      const addressBookEntry = chainAddressBook[address];
+      const normalizedAddress = address.toLowerCase();
+      const nameEntry = names[normalizedAddress] ?? {};
+      const nameChainEntry = nameEntry[chainId] ?? {};
 
-    const normalizedAddress = address.toLowerCase();
-    const nameEntry = names[normalizedAddress] ?? {};
-    const petnameExists = Boolean(nameEntry[FALLBACK_VARIATION]?.name);
+      // Ignore if petname already set, or if address book entry is missing name or address.
+      if (
+        nameChainEntry.name?.length ||
+        !addressBookEntry.name?.length ||
+        !normalizedAddress?.length
+      ) {
+        continue;
+      }
 
-    // Ignore if petname already set, or if account entry is missing name or address.
-    if (
-      petnameExists ||
-      !accountEntry.name?.length ||
-      !accountEntry.address?.length ||
-      !normalizedAddress?.length
-    ) {
-      continue;
+      names[normalizedAddress] = nameEntry;
+
+      nameEntry[chainId] = {
+        name: addressBookEntry.name,
+        sourceId: addressBookEntry.isEns ? 'ens' : null,
+        proposedNames: {},
+      };
     }
-
-    names[normalizedAddress] = nameEntry;
-
-    nameEntry[FALLBACK_VARIATION] = {
-      name: accountEntry.name,
-      sourceId: null,
-      proposedNames: {},
-      origin: NameOrigin.ACCOUNT_IDENTITY,
-    };
-
-    hasChanges = true;
   }
 
-  if (hasChanges) {
-    state.NameController = {
-      ...state.NameController,
-      names: {
-        ethereumAddress: names,
-      },
-    };
-  }
+  state.NameController = {
+    ...state.NameController,
+    names: {
+      ethereumAddress: names,
+    },
+  };
 }
