@@ -2336,12 +2336,12 @@
         "@ethereumjs/common": true,
         "@ethereumjs/tx": true,
         "@ethersproject/abi": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
         "@metamask/eth-query": true,
         "@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/providers>@metamask/rpc-errors": true,
+        "@metamask/transaction-controller>@metamask/base-controller": true,
+        "@metamask/transaction-controller>@metamask/controller-utils": true,
         "@metamask/transaction-controller>nonce-tracker": true,
         "@metamask/utils": true,
         "eth-json-rpc-filters>async-mutex": true,
@@ -2351,6 +2351,31 @@
         "lodash": true,
         "uuid": true,
         "webpack>events": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/base-controller": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "immer": true
+      }
+    },
+    "@metamask/transaction-controller>@metamask/controller-utils": {
+      "globals": {
+        "URL": true,
+        "console.error": true,
+        "fetch": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/controller-utils>@spruceid/siwe-parser": true,
+        "@metamask/ethjs>@metamask/ethjs-unit": true,
+        "@metamask/utils": true,
+        "browserify>buffer": true,
+        "eslint>fast-deep-equal": true,
+        "eth-ens-namehash": true,
+        "ethereumjs-util": true
       }
     },
     "@metamask/transaction-controller>nonce-tracker": {
