@@ -278,22 +278,20 @@ export const PERMISSION_DESCRIPTIONS = deepFreeze({
 
     return Object.keys(snaps).map((snapId) => {
       const friendlyName = snapName;
-      if (friendlyName) {
-        return {
-          ...baseDescription,
-          label: t('permission_accessNamedSnap', [
-            <Text
-              color={TextColor.inherit}
-              variant={TextVariant.inherit}
-              fontWeight={FontWeight.Medium}
-              key={snapId}
-            >
-              {friendlyName}
-            </Text>,
-          ]),
-          description: t('permission_accessSnapDescription', [friendlyName]),
-        };
-      }
+      return {
+        ...baseDescription,
+        label: t('permission_accessNamedSnap', [
+          <Text
+            color={TextColor.inherit}
+            variant={TextVariant.inherit}
+            fontWeight={FontWeight.Medium}
+            key={snapId}
+          >
+            {friendlyName}
+          </Text>,
+        ]),
+        description: t('permission_accessSnapDescription', [friendlyName]),
+      };
     });
   },
   [EndowmentPermissions['endowment:network-access']]: ({ t, snapName }) => ({

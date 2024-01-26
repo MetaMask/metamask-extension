@@ -232,7 +232,8 @@ export const snapKeyringBuilder = (
                     children: [
                       t(
                         'snapAccountCreationFailedDescription',
-                        snapName,
+                        // should be guaranteed to be a string as snap metadata is added when a snap is installed
+                        snapName as string,
                       ) as string,
                       ' ',
                       learnMoreLink,
@@ -335,7 +336,7 @@ export const snapKeyringBuilder = (
                 snapId,
               );
 
-              const snapName = getSnapName(snapId, subjectMetadata);
+              const snapName = subjectMetadata?.name;
 
               await controllerMessenger.call('ApprovalController:showError', {
                 header: [snapAuthorshipHeader],
@@ -348,7 +349,8 @@ export const snapKeyringBuilder = (
                     children: [
                       t(
                         'snapAccountRemovalFailedDescription',
-                        snapName,
+                        // should be guaranteed to be a string as snap metadata is added when a snap is installed
+                        snapName as string,
                       ) as string,
                       ' ',
                       learnMoreLink,
