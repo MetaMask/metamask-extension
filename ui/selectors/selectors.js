@@ -62,9 +62,6 @@ import {
   shortenAddress,
   getAccountByAddress,
   getURLHostName,
-  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
-  getSnapName,
-  ///: END:ONLY_INCLUDE_IF
 } from '../helpers/utils/util';
 
 import { TEMPLATED_CONFIRMATION_APPROVAL_TYPES } from '../pages/confirmation/templates';
@@ -2027,7 +2024,7 @@ export function getSnapsList(state) {
       iconUrl: targetSubjectMetadata?.iconUrl,
       subjectType: targetSubjectMetadata?.subjectType,
       packageName: stripSnapPrefix(snap.id),
-      name: getSnapName(snap.id, targetSubjectMetadata),
+      name: getSnapMetadata(state, snap.id).name,
     };
   });
 }

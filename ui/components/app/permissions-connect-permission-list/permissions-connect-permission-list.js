@@ -1,10 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   getRightIcon,
   getWeightedPermissions,
 } from '../../../helpers/utils/permission';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { getSnapMetadata } from '../../../selectors';
 
 /**
  * Get one or more permission descriptions for a permission name.
@@ -30,12 +32,12 @@ export default function PermissionsConnectPermissionList({
   targetSubjectMetadata,
 }) {
   const t = useI18nContext();
+  const snapId = targetSubjectMetadata?.origin;
+  const snapName = useSelector((state) => getSnapMetadata(state, snapId))?.name;
 
   return (
     <div className="permissions-connect-permission-list">
-      {getWeightedPermissions(t, permissions, targetSubjectMetadata).map(
-        getDescriptionNode,
-      )}
+      {getWeightedPermissions(t, permissions, snapName).map(getDescriptionNode)}
     </div>
   );
 }

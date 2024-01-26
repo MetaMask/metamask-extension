@@ -15,30 +15,14 @@ export default function SnapPermissionsList({
   showOptions,
 }) {
   const t = useI18nContext();
-  const state = useSelector((value) => value);
-
-  /**
-   * Get the snap name from the snap ID.
-   *
-   * This is used to get the names for permissions which include snap IDs as
-   * caveat.
-   *
-   * @param id - The snap ID.
-   * @returns {string | undefined} The snap name if it exists, or `undefined`.
-   */
-  const getSnapName = (id) => {
-    const snap = getSnapMetadata(state, id);
-    return snap?.name;
-  };
+  const snapName = useSelector((state) => getSnapMetadata(state, snapId))?.name;
 
   return (
     <Box paddingTop={2} paddingBottom={2} className="snap-permissions-list">
       {getWeightedPermissions(
         t,
         permissions,
-        targetSubjectMetadata,
         snapName,
-        getSnapName,
       ).map((permission, index) => {
         return (
           <PermissionCell

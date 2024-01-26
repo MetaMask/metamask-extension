@@ -24,7 +24,6 @@ import { SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES } from '../../../../shared/cons
 import { t } from '../../translate';
 import MetamaskController from '../../metamask-controller';
 import { IconName } from '../../../../ui/components/component-library/icon';
-import { getSnapName } from '../../../../ui/helpers/utils/util';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 
 /**
@@ -220,7 +219,7 @@ export const snapKeyringBuilder = (
                 origin,
               );
 
-              const snapName = getSnapName(origin, subjectMetadata);
+              const snapName = subjectMetadata?.name;
 
               await controllerMessenger.call('ApprovalController:showError', {
                 header: [snapAuthorshipHeader],
