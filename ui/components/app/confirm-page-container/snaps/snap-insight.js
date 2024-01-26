@@ -1,18 +1,17 @@
 import React, {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   useEffect,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from 'react';
 
 import PropTypes from 'prop-types';
 
 import {
   useSelector,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   useDispatch,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from 'react-redux';
-import Preloader from '../../../ui/icon/preloader/preloader-icon.component';
 import { Text } from '../../../component-library';
 import {
   AlignItems,
@@ -30,28 +29,28 @@ import { DelineatorType } from '../../../../helpers/constants/snaps';
 import { getSnapName } from '../../../../helpers/utils/util';
 import { Copyable } from '../../snaps/copyable';
 import { getTargetSubjectMetadata } from '../../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-flask)
 import { trackInsightSnapUsage } from '../../../../store/actions';
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+///: END:ONLY_INCLUDE_IF
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
 import { useTransactionInsightSnaps } from '../../../../hooks/snaps/useTransactionInsightSnaps';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 export const SnapInsight = ({
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  snapId,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   data,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   loading,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
   insightHookParams,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 }) => {
   const t = useI18nContext();
-  let error, snapId, content;
+  let error, content;
   let isLoading = loading;
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   error = data?.error;
-  snapId = data?.snapId;
   content = data?.response?.content;
   const dispatch = useDispatch();
   useEffect(() => {
@@ -64,15 +63,14 @@ export const SnapInsight = ({
     };
     trackInsightUsage();
   }, [snapId, dispatch]);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
   const insights = useTransactionInsightSnaps(insightHookParams);
   error = insights.data?.[0]?.error;
-  snapId = insights.data?.[0]?.snapId;
   content = insights.data?.[0]?.response?.content;
   isLoading = insights.loading;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const targetSubjectMetadata = useSelector((state) =>
     getTargetSubjectMetadata(state, snapId),
@@ -80,9 +78,7 @@ export const SnapInsight = ({
 
   const snapName = getSnapName(snapId, targetSubjectMetadata);
 
-  const hasNoData =
-    !error &&
-    (isLoading || !content || (content && Object.keys(content).length === 0));
+  const hasNoData = !error && !isLoading && !content;
   return (
     <Box
       flexDirection={FLEX_DIRECTION.COLUMN}
@@ -94,17 +90,19 @@ export const SnapInsight = ({
       textAlign={hasNoData && TextAlign.Center}
       className="snap-insight"
     >
-      {!isLoading && !error && (
+      {!error && (
         <Box
           height="full"
+          width="full"
           flexDirection={FLEX_DIRECTION.COLUMN}
           className="snap-insight__container"
         >
-          {content ? (
+          {isLoading || content ? (
             <SnapUIRenderer
               snapId={snapId}
               data={content}
               delineatorType={DelineatorType.Insights}
+              isLoading={isLoading}
             />
           ) : (
             <Text
@@ -128,39 +126,26 @@ export const SnapInsight = ({
           </SnapDelineator>
         </Box>
       )}
-
-      {isLoading && (
-        <>
-          <Preloader size={40} />
-          <Text
-            marginTop={3}
-            color={TextColor.textAlternative}
-            variant={TextVariant.bodySm}
-            as="h6"
-          >
-            {t('snapsInsightLoading')}
-          </Text>
-        </>
-      )}
     </Box>
   );
 };
 
 SnapInsight.propTypes = {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+  snapId: PropTypes.string,
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
   /*
    * The insight object
    */
   data: PropTypes.object,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   /*
    * Boolean as to whether or not the insights are loading
    */
   loading: PropTypes.bool,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-mmi,build-beta)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-mmi,build-beta)
   /**
    * Params object for the useTransactionInsightSnaps hook
    */
   insightHookParams: PropTypes.object,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 };

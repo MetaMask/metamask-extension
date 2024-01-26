@@ -12,11 +12,12 @@ import {
   IconName,
 } from '../../../component-library';
 import { Content, Footer, Header, Page } from '../page';
-import { AssetPickerAmount } from '../../asset-picker-amount/asset-picker-amount';
 import {
   SEND_STAGES,
   getDraftTransactionExists,
   getDraftTransactionID,
+  getRecipient,
+  getRecipientWarningAcknowledgement,
   getSendErrors,
   getSendStage,
   isSendFormInvalid,
@@ -36,10 +37,10 @@ import { MetaMetricsEventCategory } from '../../../../../shared/constants/metame
 import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import {
   SendPageAccountPicker,
-  SendPageRecipientInput,
+  SendPageContent,
   SendPageNetworkPicker,
   SendPageRecipient,
-  SendPageContent,
+  SendPageRecipientInput,
 } from './components';
 
 export const SendPage = () => {
@@ -127,10 +128,20 @@ export const SendPage = () => {
   };
 
   // Submit button
+  const recipient = useSelector(getRecipient);
+  const showKnownRecipientWarning =
+    recipient.warning === 'knownAddressRecipient';
+  const recipientWarningAcknowledged = useSelector(
+    getRecipientWarningAcknowledgement,
+  );
+  const requireContractAddressAcknowledgement =
+    showKnownRecipientWarning && !recipientWarningAcknowledged;
+
   const sendErrors = useSelector(getSendErrors);
   const isInvalidSendForm = useSelector(isSendFormInvalid);
   const submitDisabled =
-    isInvalidSendForm && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR;
+    (isInvalidSendForm && sendErrors.gasFee !== INSUFFICIENT_FUNDS_ERROR) ||
+    requireContractAddressAcknowledgement;
 
   return (
     <Page className="multichain-send-page">
@@ -152,11 +163,14 @@ export const SendPage = () => {
         <SendPageRecipientInput />
         {draftTransactionExists &&
         [SEND_STAGES.EDIT, SEND_STAGES.DRAFT].includes(sendStage) ? (
-          <SendPageContent />
+          <SendPageContent
+            requireContractAddressAcknowledgement={
+              requireContractAddressAcknowledgement
+            }
+          />
         ) : (
           <SendPageRecipient />
         )}
-        <AssetPickerAmount />
       </Content>
       <Footer>
         <ButtonSecondary onClick={onCancel} size={ButtonSecondarySize.Lg} block>

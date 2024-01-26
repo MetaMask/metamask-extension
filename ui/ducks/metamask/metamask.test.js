@@ -1,7 +1,7 @@
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
-import { TransactionStatus } from '../../../shared/constants/transaction';
+import { TransactionStatus } from '@metamask/transaction-controller';
 import * as actionConstants from '../../store/actionConstants';
 import reduceMetamask, {
   getBlockGasLimit,
@@ -12,6 +12,15 @@ import reduceMetamask, {
   getSendToAccounts,
   isNotEIP1559Network,
 } from './metamask';
+
+const EOA_EVM_METHODS = [
+  EthMethod.PersonalSign,
+  EthMethod.Sign,
+  EthMethod.SignTransaction,
+  EthMethod.SignTypedDataV1,
+  EthMethod.SignTypedDataV3,
+  EthMethod.SignTypedDataV4,
+];
 
 describe('MetaMask Reducers', () => {
   const mockState = {
@@ -50,7 +59,7 @@ describe('MetaMask Reducers', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: EOA_EVM_METHODS,
               type: EthAccountType.Eoa,
             },
             '07c2cfec-36c9-46c4-8115-3836d3ac9047': {
@@ -63,7 +72,7 @@ describe('MetaMask Reducers', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: EOA_EVM_METHODS,
               type: EthAccountType.Eoa,
             },
             '15e69915-2a1a-4019-93b3-916e11fd432f': {
@@ -76,7 +85,7 @@ describe('MetaMask Reducers', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: EOA_EVM_METHODS,
               type: EthAccountType.Eoa,
             },
             '784225f4-d30b-4e77-a900-c8bbce735b88': {
@@ -89,7 +98,7 @@ describe('MetaMask Reducers', () => {
                 },
               },
               options: {},
-              methods: [...Object.values(EthMethod)],
+              methods: EOA_EVM_METHODS,
               type: EthAccountType.Eoa,
             },
           },
@@ -97,9 +106,15 @@ describe('MetaMask Reducers', () => {
         },
         cachedBalances: {},
         currentBlockGasLimit: '0x4c1878',
-        conversionRate: 1200.88200327,
-        nativeCurrency: 'ETH',
+        currentBlockGasLimitByChainId: {
+          '0x5': '0x4c1878',
+        },
         useCurrencyRateCheck: true,
+        currencyRates: {
+          TestETH: {
+            conversionRate: 1200.88200327,
+          },
+        },
         selectedNetworkClientId: NetworkType.goerli,
         networksMetadata: {
           [NetworkType.goerli]: {
@@ -136,6 +151,34 @@ describe('MetaMask Reducers', () => {
             balance: '0x0',
             nonce: '0x0',
             address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+          },
+        },
+        accountsByChainId: {
+          '0x5': {
+            '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
+              code: '0x',
+              balance: '0x47c9d71831c76efe',
+              nonce: '0x1b',
+              address: '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825',
+            },
+            '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb': {
+              code: '0x',
+              balance: '0x37452b1315889f80',
+              nonce: '0xa',
+              address: '0xc5b8dbac4c1d3f152cdeb400e2313f309c410acb',
+            },
+            '0x2f8d4a878cfa04a6e60d46362f5644deab66572d': {
+              code: '0x',
+              balance: '0x30c9d71831c76efe',
+              nonce: '0x1c',
+              address: '0x2f8d4a878cfa04a6e60d46362f5644deab66572d',
+            },
+            '0xd85a4b6a394794842887b8284293d69163007bbb': {
+              code: '0x',
+              balance: '0x0',
+              nonce: '0x0',
+              address: '0xd85a4b6a394794842887b8284293d69163007bbb',
+            },
           },
         },
         addressBook: {
@@ -321,7 +364,7 @@ describe('MetaMask Reducers', () => {
 
     describe('getNativeCurrency()', () => {
       it('should return nativeCurrency when useCurrencyRateCheck is true', () => {
-        expect(getNativeCurrency(mockState)).toStrictEqual('ETH');
+        expect(getNativeCurrency(mockState)).toStrictEqual('TestETH');
       });
 
       it('should return the ticker symbol of the selected network when useCurrencyRateCheck is false', () => {
@@ -355,7 +398,7 @@ describe('MetaMask Reducers', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: EOA_EVM_METHODS,
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x47c9d71831c76efe',
@@ -371,7 +414,7 @@ describe('MetaMask Reducers', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: EOA_EVM_METHODS,
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x37452b1315889f80',
@@ -387,7 +430,7 @@ describe('MetaMask Reducers', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: EOA_EVM_METHODS,
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x30c9d71831c76efe',
@@ -403,7 +446,7 @@ describe('MetaMask Reducers', () => {
               },
             },
             options: {},
-            methods: [...Object.values(EthMethod)],
+            methods: EOA_EVM_METHODS,
             type: EthAccountType.Eoa,
             code: '0x',
             balance: '0x0',

@@ -232,6 +232,7 @@ const state = {
       type: 'mainnet',
       nickname: '',
     },
+    currencyRates: {},
     preferences: {
       showFiatInTestnets: true,
     },

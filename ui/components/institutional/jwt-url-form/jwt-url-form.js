@@ -7,8 +7,14 @@ import {
   BlockSize,
   FlexDirection,
   TextVariant,
+  BackgroundColor,
+  TextColor,
+  BorderRadius,
+  BorderStyle,
 } from '../../../helpers/constants/design-system';
 import { ButtonVariant, Box, Button, Text } from '../../component-library';
+import TextArea from '../../ui/textarea';
+import TextField from '../../ui/text-field';
 import JwtDropdown from '../jwt-dropdown';
 
 const JwtUrlForm = (props) => {
@@ -18,7 +24,6 @@ const JwtUrlForm = (props) => {
 
   return (
     <Box
-      className="jwt-url-form"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
       alignItems={AlignItems.flexStart}
@@ -30,7 +35,6 @@ const JwtUrlForm = (props) => {
         flexDirection={FlexDirection.Column}
         marginTop={4}
         alignItems={AlignItems.center}
-        className="jwt-url-form__jwt-container"
         marginBottom={4}
       >
         {showJwtDropdown && (
@@ -69,7 +73,6 @@ const JwtUrlForm = (props) => {
         {(!showJwtDropdown || addNewTokenClicked) && (
           <Box width={BlockSize.Full}>
             <Text
-              className="jwt-url-form__instruction"
               display={Display.Block}
               variant={TextVariant.bodyMd}
               marginBottom={4}
@@ -77,8 +80,7 @@ const JwtUrlForm = (props) => {
               {props.jwtInputText}
             </Text>
 
-            <textarea
-              className="jwt-url-form__input-jwt"
+            <TextArea
               data-testid="jwt-input"
               id="jwt-box"
               onChange={(e) => {
@@ -86,28 +88,38 @@ const JwtUrlForm = (props) => {
               }}
               value={props.currentJwt}
               autoFocus
+              height="154px"
+              resize="both"
+              boxProps={{
+                borderRadius: BorderRadius.SM,
+                borderStyle: BorderStyle.solid,
+                backgroundColor: BackgroundColor.backgroundDefault,
+                color: TextColor.textDefault,
+                padding: 2,
+              }}
             />
           </Box>
         )}
       </Box>
       <Box width={BlockSize.Full}>
-        <Text
-          className="jwt-url-form__instruction"
-          display={Display.Block}
-          variant={TextVariant.bodyMd}
-        >
+        <Text display={Display.Block} variant={TextVariant.bodyMd}>
           {props.urlInputText}
         </Text>
         <Box marginTop={4}>
-          <input
-            type="text"
-            className="jwt-url-form__input"
+          <TextField
+            fullWidth
             id="api-url-box"
             data-testid="jwt-api-url-input"
+            type="text"
             onChange={(e) => {
               props.onUrlChange(e.target.value);
             }}
             value={props.apiUrl}
+            inputProps={{
+              backgroundColor: BackgroundColor.backgroundDefault,
+              color: TextColor.textDefault,
+              padding: 2,
+            }}
           />
         </Box>
       </Box>

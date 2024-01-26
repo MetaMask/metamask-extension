@@ -6,70 +6,74 @@ import {
   CONNECTED_ROUTE,
   SETTINGS_ROUTE,
   DEFAULT_ROUTE,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
-  ///: END:ONLY_INCLUDE_IN(snaps)
+  ///: END:ONLY_INCLUDE_IF(snaps)
 } from '../../../helpers/constants/routes';
 import { lockMetamask } from '../../../store/actions';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   Box,
   IconName,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   Text,
-  ///: END:ONLY_INCLUDE_IN(snaps)
+  ///: END:ONLY_INCLUDE_IF(snaps)
+  Popover,
+  PopoverPosition,
 } from '../../component-library';
 
-import { Menu, MenuItem } from '../../ui/menu';
+import { MenuItem } from '../../ui/menu';
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_FULLSCREEN } from '../../../../shared/constants/app';
 import { SUPPORT_LINK } from '../../../../shared/lib/ui-utils';
-///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 import { SUPPORT_REQUEST_LINK } from '../../../helpers/constants/common';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
-  MetaMetricsEventName,
-  MetaMetricsEventCategory,
   MetaMetricsContextProp,
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import {
   getMmiPortfolioEnabled,
   getMmiPortfolioUrl,
 } from '../../../selectors/institutional/selectors';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getMetaMetricsId,
-  ///: END:ONLY_INCLUDE_IN(build-mmi)
+  ///: END:ONLY_INCLUDE_IF(build-mmi)
   getSelectedInternalAccount,
   getUnapprovedTransactions,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getNotifySnaps,
   getUnreadNotificationsCount,
-  ///: END:ONLY_INCLUDE_IN
+  getAnySnapUpdateAvailable,
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import {
   AlignItems,
   BackgroundColor,
   BlockSize,
   BorderColor,
+  BorderStyle,
   Display,
   JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { AccountDetailsMenuItem, ViewExplorerMenuItem } from '..';
 
 const METRICS_LOCATION = 'Global Menu';
 
-export const GlobalMenu = ({ closeMenu, anchorElement }) => {
+export const GlobalMenu = ({ closeMenu, anchorElement, isOpen }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
@@ -77,42 +81,82 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
   const account = useSelector(getSelectedInternalAccount);
   const unapprovedTransactons = useSelector(getUnapprovedTransactions);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const notifySnaps = useSelector(getNotifySnaps);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const hasUnapprovedTransactions =
     Object.keys(unapprovedTransactons).length > 0;
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const metaMetricsId = useSelector(getMetaMetricsId);
   const mmiPortfolioUrl = useSelector(getMmiPortfolioUrl);
   const mmiPortfolioEnabled = useSelector(getMmiPortfolioEnabled);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const unreadNotificationsCount = useSelector(getUnreadNotificationsCount);
-  ///: END:ONLY_INCLUDE_IN
+  const snapsUpdatesAvailable = useSelector(getAnySnapUpdateAvailable);
+  ///: END:ONLY_INCLUDE_IF
 
   let supportText = t('support');
   let supportLink = SUPPORT_LINK;
-  ///: BEGIN:ONLY_INCLUDE_IN(build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
   supportText = t('needHelpSubmitTicket');
   supportLink = SUPPORT_REQUEST_LINK;
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
+
+  // Accessibility improvement for popover
+  const lastItemRef = React.useRef(null);
+
+  React.useEffect(() => {
+    const lastItem = lastItemRef.current;
+    const handleKeyDown = (event) => {
+      if (event.key === 'Tab' && !event.shiftKey) {
+        event.preventDefault();
+        closeMenu();
+      }
+    };
+
+    if (lastItem) {
+      lastItem.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      if (lastItem) {
+        lastItem.removeEventListener('keydown', handleKeyDown);
+      }
+    };
+  }, [closeMenu]);
 
   return (
-    <Menu anchorElement={anchorElement} onHide={closeMenu}>
-      <AccountDetailsMenuItem
-        metricsLocation={METRICS_LOCATION}
-        closeMenu={closeMenu}
-        address={account.address}
-      />
-      <ViewExplorerMenuItem
-        metricsLocation={METRICS_LOCATION}
-        closeMenu={closeMenu}
-        address={account.address}
-      />
+    <Popover
+      referenceElement={anchorElement}
+      isOpen={isOpen}
+      padding={0}
+      onClickOutside={closeMenu}
+      onPressEscKey={closeMenu}
+      style={{
+        overflow: 'hidden',
+        minWidth: 225,
+      }}
+      borderStyle={BorderStyle.none}
+      position={PopoverPosition.BottomEnd}
+    >
+      {account && (
+        <>
+          <AccountDetailsMenuItem
+            metricsLocation={METRICS_LOCATION}
+            closeMenu={closeMenu}
+            address={account.address}
+          />
+          <ViewExplorerMenuItem
+            metricsLocation={METRICS_LOCATION}
+            closeMenu={closeMenu}
+            address={account.address}
+          />
+        </>
+      )}
       <Box
         borderColor={BorderColor.borderMuted}
         width={BlockSize.Full}
@@ -138,7 +182,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       </MenuItem>
 
       {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         mmiPortfolioEnabled && (
           <MenuItem
             iconName={IconName.Diagram}
@@ -158,7 +202,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             {t('portfolioDashboard')}
           </MenuItem>
         )
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       }
       {getEnvironmentType() === ENVIRONMENT_TYPE_FULLSCREEN ? null : (
         <MenuItem
@@ -180,7 +224,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         </MenuItem>
       )}
       {
-        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         notifySnaps.length ? (
           <>
             <MenuItem
@@ -217,20 +261,21 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
             </MenuItem>
           </>
         ) : null
-        ///: END:ONLY_INCLUDE_IN(snaps)
+        ///: END:ONLY_INCLUDE_IF(snaps)
       }
       {
-        ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+        ///: BEGIN:ONLY_INCLUDE_IF(snaps)
         <MenuItem
           iconName={IconName.Snaps}
           onClick={() => {
             history.push(SNAPS_ROUTE);
             closeMenu();
           }}
+          showInfoDot={snapsUpdatesAvailable}
         >
           {t('snaps')}
         </MenuItem>
-        ///: END:ONLY_INCLUDE_IN(snaps)
+        ///: END:ONLY_INCLUDE_IF(snaps)
       }
       <MenuItem
         iconName={IconName.MessageQuestion}
@@ -276,6 +321,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
         {t('settings')}
       </MenuItem>
       <MenuItem
+        ref={lastItemRef} // ref for last item in GlobalMenu
         iconName={IconName.Lock}
         onClick={() => {
           dispatch(lockMetamask());
@@ -293,7 +339,7 @@ export const GlobalMenu = ({ closeMenu, anchorElement }) => {
       >
         {t('lockMetaMask')}
       </MenuItem>
-    </Menu>
+    </Popover>
   );
 };
 
@@ -306,4 +352,8 @@ GlobalMenu.propTypes = {
    * Function that closes this menu
    */
   closeMenu: PropTypes.func.isRequired,
+  /**
+   * Whether or not the menu is open
+   */
+  isOpen: PropTypes.bool.isRequired,
 };

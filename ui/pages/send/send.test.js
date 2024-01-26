@@ -122,14 +122,14 @@ const baseStore = {
     providerConfig: {
       chainId: CHAIN_IDS.GOERLI,
     },
-    nativeCurrency: 'ETH',
+    currencyRates: {},
     featureFlags: {
       sendHexData: false,
     },
     addressBook: {
       [CHAIN_IDS.GOERLI]: [],
     },
-    cachedBalances: {
+    accountsByChainId: {
       [CHAIN_IDS.GOERLI]: {},
     },
     accounts: {

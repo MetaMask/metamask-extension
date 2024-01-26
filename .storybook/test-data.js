@@ -30,6 +30,9 @@ const state = {
         },
       },
     },
+    orderedNetworkList: [],
+    pinnedAccountList: [],
+    hiddenAccountList: [],
     tokenList: {
       '0x514910771af9ca656af840dff83e8264ecf986ca': {
         address: '0x514910771af9ca656af840dff83e8264ecf986ca',
@@ -112,7 +115,7 @@ const state = {
         address: '0x6b175474e89094c44da98b954eedeac495271d0f',
         symbol: 'ETH',
         decimals: 18,
-        image: './images/eth_logo.png',
+        image: './images/eth_logo.svg',
         unlisted: false,
       },
       '0xB8c77482e45F1F44dE1745F52C74426C631bDD52': {
@@ -241,45 +244,40 @@ const state = {
         svgIcon: '<svg>...</svg>',
         version: '0.6.0',
       },
-      'Filecoin Snap': {
-        enabled: true,
-        id: 'npm:http://localhost:8080/',
+      'npm:@metamask/test-snap-bip44': {
+        id: 'npm:@metamask/test-snap-bip44',
+        origin: 'npm:@metamask/test-snap-bip44',
+        version: '5.1.2',
+        iconUrl: null,
         initialPermissions: {
-          snap_dialog: {},
-          eth_accounts: {},
-          snap_manageState: {},
+          'endowment:ethereum-provider': {},
         },
         manifest: {
-          description:
-            'This swap provides developers everywhere access to an entirely new data storage paradigm, even letting your programs store data autonomously. Learn more.',
-          initialPermissions: {
-            snap_dialog: {},
-            eth_accounts: {},
-            snap_manageState: {},
-          },
-          manifestVersion: '0.1',
-          proposedName: 'Filecoin Snap',
+          description: 'An example Snap that signs messages using BLS.',
+          proposedName: 'BIP-44 Test Snap',
           repository: {
             type: 'git',
-            url: 'https://github.com/MetaMask/snaps-skunkworks.git',
+            url: 'https://github.com/MetaMask/test-snaps.git',
           },
           source: {
             location: {
               npm: {
                 filePath: 'dist/bundle.js',
-                iconPath: 'images/icon.svg',
-                packageName: '@metamask/example-snap',
-                registry: 'https://registry.npmjs.org/',
+                packageName: '@metamask/test-snap-bip44',
+                registry: 'https://registry.npmjs.org',
               },
             },
-            shasum: '3lEt0yUu080DwV78neROaAAIQWXukSkMnP4OBhOhBnE=',
+            shasum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
           },
-          version: '0.6.0',
+          version: '5.1.2',
         },
-        sourceCode: '(...)',
-        status: 'stopped',
-        svgIcon: '<svg>...</svg>',
-        version: '0.6.0',
+        versionHistory: [
+          {
+            date: 1680686075921,
+            origin: 'https://metamask.github.io',
+            version: '5.1.2',
+          },
+        ],
       },
     },
     accountArray: [
@@ -661,7 +659,7 @@ const state = {
     providerConfig: {
       type: 'goerli',
       ticker: 'ETH',
-      nickname: '',
+      nickname: 'Goerli',
       rpcUrl: '',
       chainId: '0x5',
     },
@@ -680,7 +678,33 @@ const state = {
         balance: '0x15f6f0b9d4f8d000',
       },
     },
+    accountsByChainId: {
+      '0x1': {
+        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': { balance: '0x0' },
+        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
+          balance: '0xcaf5317161f400',
+        },
+        '0x9d0ba4ddac06032527b140912ec808ab9451b788': { balance: '0x0' },
+      },
+      '0x5': {
+        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
+          address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+          balance: '0x176e5b6f173ebe66',
+        },
+        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
+          address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+          balance: '0x2d3142f5000',
+        },
+        '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
+          address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
+          balance: '0x15f6f0b9d4f8d000',
+        },
+      },
+    },
     currentBlockGasLimit: '0x793af4',
+    currentBlockGasLimitByChainId: {
+      '0x5': '0x793af4',
+    },
     transactions: [
       {
         chainId: '0x38',
@@ -1131,23 +1155,6 @@ const state = {
         v: '0x93',
       },
     ],
-    cachedBalances: {
-      1: {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': '0x0',
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': '0xcaf5317161f400',
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': '0x0',
-      },
-      3: {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': '0x18d289d450bace66',
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': '0x2d3142f5000',
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': '0x15f6f0b9d4f8d000',
-      },
-      5: {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': '0x176e5b6f173ebe66',
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': '0x2d3142f5000',
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': '0x15f6f0b9d4f8d000',
-      },
-    },
     unapprovedMsgs: {},
     unapprovedMsgCount: 0,
     unapprovedPersonalMsgs: {},
@@ -1240,11 +1247,14 @@ const state = {
     selectedAddress: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
     metaMetricsId:
       '0xc2377d11fec1c3b7dd88c4854240ee5e3ed0d9f63b00456d98d80320337b827f',
-    conversionDate: 1620710825.03,
-    conversionRate: 3910.28,
     currentCurrency: 'usd',
-    nativeCurrency: 'ETH',
-    usdConversionRate: 3910.28,
+    currencyRates: {
+      ETH: {
+        conversionDate: 1620710825.03,
+        conversionRate: 3910.28,
+        usdConversionRate: 3910.28,
+      },
+    },
     ticker: 'ETH',
     alertEnabledness: {
       unconnectedAccount: true,
@@ -1453,6 +1463,71 @@ const state = {
       },
     },
     notifications: {},
+    database: {
+      verifiedSnaps: {
+        'local:http://localhost:8080/': {
+          id: 'local:http://localhost:8080/',
+          metadata: {
+            name: 'BIP-44',
+            author: {
+              name: 'Consensys',
+              website: 'https://consensys.io/',
+            },
+            website: 'https://snaps.consensys.io/',
+            summary: 'An example Snap that signs messages using BLS.',
+            description: 'An example Snap that signs messages using BLS.',
+            audits: [
+              {
+                auditor: 'Consensys Diligence',
+                report: 'https://consensys.io/diligence/audits/',
+              },
+            ],
+            category: 'interoperability',
+            support: {
+              contact: 'https://github.com/MetaMask',
+            },
+            sourceCode: 'https://github.com/MetaMask/test-snaps',
+          },
+          versions: {
+            '0.1.2': {
+              checksum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+            },
+          },
+        },
+        'npm:@metamask/test-snap-bip44': {
+          id: 'npm:@metamask/test-snap-bip44',
+          metadata: {
+            name: 'BIP-44',
+            author: {
+              name: 'Consensys',
+              website: 'https://consensys.io/',
+            },
+            website: 'https://snaps.consensys.io/',
+            summary: 'An example Snap that signs messages using BLS.',
+            description: 'An example Snap that signs messages using BLS.',
+            audits: [
+              {
+                auditor: 'Consensys Diligence',
+                report: 'https://consensys.io/diligence/audits/',
+              },
+            ],
+            category: 'interoperability',
+            support: {
+              contact: 'https://github.com/MetaMask',
+            },
+            sourceCode: 'https://github.com/MetaMask/test-snaps',
+          },
+          versions: {
+            '5.1.2': {
+              checksum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+            },
+            '5.1.3': {
+              checksum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+            },
+          },
+        },
+      },
+    },
   },
   appState: {
     shouldClose: false,

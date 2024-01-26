@@ -1,6 +1,6 @@
 import EthQuery from '@metamask/ethjs-query';
+import { TransactionType } from '@metamask/transaction-controller';
 import { createTestProviderTools } from '../../test/stub/provider';
-import { TransactionType } from '../constants/transaction';
 import {
   determineTransactionType,
   isEIP1559Transaction,

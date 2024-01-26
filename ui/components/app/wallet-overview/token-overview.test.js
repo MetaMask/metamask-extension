@@ -33,6 +33,7 @@ describe('TokenOverview', () => {
         type: 'test',
         chainId: CHAIN_IDS.MAINNET,
       },
+      currencyRates: {},
       preferences: {
         useNativeCurrencyAsPrimaryCurrency: true,
       },

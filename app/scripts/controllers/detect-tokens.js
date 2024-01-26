@@ -1,5 +1,5 @@
 import { warn } from 'loglevel';
-import { PollingControllerOnly } from '@metamask/polling-controller';
+import { StaticIntervalPollingControllerOnly } from '@metamask/polling-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -21,7 +21,7 @@ const DEFAULT_INTERVAL = MINUTE * 3;
  * A controller that polls for token exchange
  * rates based on a user's current token list
  */
-export default class DetectTokensController extends PollingControllerOnly {
+export default class DetectTokensController extends StaticIntervalPollingControllerOnly {
   /**
    * Creates a DetectTokensController
    *
@@ -92,6 +92,15 @@ export default class DetectTokensController extends PollingControllerOnly {
       },
     );
 
+    preferences?.store.subscribe(({ useTokenDetection }) => {
+      if (this.useTokenDetection !== useTokenDetection) {
+        this.useTokenDetection = useTokenDetection;
+        this.restartTokenDetection({
+          selectedAddress: this.selectedAddress,
+        });
+      }
+    });
+
     tokensController?.subscribe(
       ({ tokens = [], ignoredTokens = [], detectedTokens = [] }) => {
         this.tokenAddresses = tokens.map((token) => {
@@ -107,6 +116,10 @@ export default class DetectTokensController extends PollingControllerOnly {
         this.chainId = chainId;
         this.restartTokenDetection({ chainId: this.chainId });
       }
+    });
+
+    messenger.subscribe('TokenListController:stateChange', () => {
+      this.restartTokenDetection();
     });
 
     this.#registerKeyringHandlers();

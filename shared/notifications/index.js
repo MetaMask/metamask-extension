@@ -7,6 +7,9 @@
 export const NOTIFICATION_DROP_LEDGER_FIREFOX = 25;
 export const NOTIFICATION_OPEN_BETA_SNAPS = 26;
 export const NOTIFICATION_BUY_SELL_BUTTON = 27;
+export const NOTIFICATION_U2F_LEDGER_LIVE = 28;
+export const NOTIFICATION_STAKING_PORTFOLIO = 29;
+export const NOTIFICATION_BLOCKAID_DEFAULT = 30;
 
 export const UI_NOTIFICATIONS = {
   1: {
@@ -130,16 +133,16 @@ export const UI_NOTIFICATIONS = {
       src: 'images/global-menu-block-explorer.svg',
     },
   },
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   23: {
     id: 23,
     date: null,
     image: {
-      src: 'images/blockaid-security-provider.svg',
+      src: 'images/blockaid-security-provider.png',
       width: '100%',
     },
   },
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   24: {
     id: 24,
     date: null,
@@ -165,10 +168,35 @@ export const UI_NOTIFICATIONS = {
       width: '100%',
     },
   },
+  [NOTIFICATION_U2F_LEDGER_LIVE]: {
+    id: Number(NOTIFICATION_U2F_LEDGER_LIVE),
+    date: null,
+  },
+  [NOTIFICATION_STAKING_PORTFOLIO]: {
+    id: Number(NOTIFICATION_STAKING_PORTFOLIO),
+    date: null,
+    image: {
+      src: 'images/portfolio-stake-notification-light-mode.png',
+      width: '100%',
+    },
+  },
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  [NOTIFICATION_BLOCKAID_DEFAULT]: {
+    id: Number(NOTIFICATION_BLOCKAID_DEFAULT),
+    date: null,
+  },
+  ///: END:ONLY_INCLUDE_IF
 };
 
-export const getTranslatedUINotifications = (t, locale) => {
+export const getTranslatedUINotifications = (
+  t,
+  locale,
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  theme,
+  ///: END:ONLY_INCLUDE_IF
+) => {
   const formattedLocale = locale?.replace('_', '-');
+
   return {
     1: {
       ...UI_NOTIFICATIONS[1],
@@ -375,7 +403,7 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     23: {
       ...UI_NOTIFICATIONS[23],
       title: t('notifications23Title'),
@@ -390,7 +418,7 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     24: {
       ...UI_NOTIFICATIONS[24],
       title: t('notifications24Title'),
@@ -439,5 +467,52 @@ export const getTranslatedUINotifications = (t, locale) => {
           )
         : '',
     },
+    [NOTIFICATION_U2F_LEDGER_LIVE]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE],
+      title: t('notificationsU2FLedgerLiveTitle'),
+      description: [t('notificationsU2FLedgerLiveDescription')],
+      date: UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_U2F_LEDGER_LIVE].date),
+          )
+        : '',
+    },
+    [NOTIFICATION_STAKING_PORTFOLIO]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO],
+      title: t('notificationsStakingPortfolioTitle'),
+      description: [t('notificationsStakingPortfolioDescription')],
+      actionText: t('notificationsStakingPortfolioActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_STAKING_PORTFOLIO].date),
+          )
+        : '',
+    },
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    [NOTIFICATION_BLOCKAID_DEFAULT]: {
+      ...UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT],
+      title: t('notificationsBlockaidDefaultTitle'),
+      description: [
+        t('notificationsBlockaidDefaultDescriptionOne'),
+        t('notificationsBlockaidDefaultDescriptionTwo'),
+      ],
+      actionText: t('notificationsBlockaidDefaultDescriptionActionText'),
+      date: UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date
+        ? new Intl.DateTimeFormat(formattedLocale).format(
+            new Date(UI_NOTIFICATIONS[NOTIFICATION_BLOCKAID_DEFAULT].date),
+          )
+        : '',
+      image:
+        theme === 'dark'
+          ? {
+              src: 'images/blockaid-whats-new-theme-dark.svg',
+              width: '100%',
+            }
+          : {
+              src: 'images/blockaid-whats-new.svg',
+              width: '100%',
+            },
+    },
+    ///: END:ONLY_INCLUDE_IF
   };
 };

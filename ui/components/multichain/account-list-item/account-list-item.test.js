@@ -1,6 +1,6 @@
 /* eslint-disable jest/require-top-level-describe */
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest';
@@ -14,6 +14,9 @@ const account = {
     'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
   ],
   balance: '0x152387ad22c3f0',
+  keyring: {
+    type: 'HD Key Tree',
+  },
 };
 
 const DEFAULT_PROPS = {
@@ -66,7 +69,7 @@ describe('AccountListItem', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders the three-dot menu to lauch the details menu', () => {
+  it('renders the three-dot menu to launch the details menu', () => {
     render({ showOptions: true });
     const optionsButton = document.querySelector(
       '[aria-label="Test Account Options"]',
@@ -108,31 +111,41 @@ describe('AccountListItem', () => {
     expect(getByAltText(`${connectedAvatarName} logo`)).toBeInTheDocument();
   });
 
-  ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-  it('renders the snap label for snap accounts', () => {
-    const { getByText } = render({
+  it('does not render a tag for a null label', () => {
+    const { container } = render({
       account: {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-        metadata: {
-          name: 'Snap Account',
-          keyring: {
-            type: 'Snap Keyring',
-          },
-          snap: {
-            name: 'Metamask Simple Snap',
-            id: 'metamask-simple-snap',
-            enabled: true,
-          },
-        },
-        options: {},
-        methods: [...Object.values(EthMethod)],
-        type: EthAccountType.Eoa,
-        balance: '0x0',
+        ...account,
+        label: null,
       },
     });
-
-    expect(getByText('Snaps (Beta)')).toBeInTheDocument();
+    expect(container.querySelector('.mm-tag')).not.toBeInTheDocument();
   });
-  ///: END:ONLY_INCLUDE_IN
+
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
+  it('renders the snap label for unnamed snap accounts', () => {
+    const { container } = render({
+      account: {
+        ...account,
+        balance: '0x0',
+        keyring: 'Snap Keyring',
+        label: 'Snaps (Beta)',
+      },
+    });
+    const tag = container.querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Snaps (Beta)');
+  });
+
+  it('renders the snap name for named snap accounts', () => {
+    const { container } = render({
+      account: {
+        ...account,
+        balance: '0x0',
+        keyring: 'Snap Keyring',
+        label: 'Test Snap Name (Beta)',
+      },
+    });
+    const tag = container.querySelector('.mm-tag');
+    expect(tag.textContent).toBe('Test Snap Name (Beta)');
+  });
+  ///: END:ONLY_INCLUDE_IF
 });

@@ -18,7 +18,7 @@ import {
   BackgroundColor,
 } from '../../../helpers/constants/design-system';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { getSnapsList } from '../../../selectors';
+import { getAllSnapAvailableUpdates, getSnapsList } from '../../../selectors';
 import { handleSettingsRefs } from '../../../helpers/utils/settings-search';
 import {
   Box,
@@ -50,7 +50,8 @@ const SnapList = () => {
     handleSettingsRefs(t, t('snaps'), settingsRef);
   }, [settingsRef, t]);
 
-  const snapsList = useSelector((state) => getSnapsList(state));
+  const snapsList = useSelector(getSnapsList);
+  const snapUpdateMap = useSelector(getAllSnapAvailableUpdates);
 
   return (
     <div className="snaps">
@@ -92,6 +93,7 @@ const SnapList = () => {
                           onClick(snap);
                         }}
                         snapId={snap.id}
+                        showUpdateDot={snapUpdateMap.get(snap.id)}
                       />
                     );
                   })}

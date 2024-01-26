@@ -1,15 +1,15 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
 } from '../helpers/constants/transactions';
 import txHelper from '../helpers/utils/tx-helper';
-import {
-  TransactionStatus,
-  TransactionType,
-  SmartTransactionStatus,
-} from '../../shared/constants/transaction';
+import { SmartTransactionStatus } from '../../shared/constants/transaction';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
 import { getCurrentChainId, getSelectedInternalAccount } from './selectors';
@@ -33,9 +33,9 @@ export const getCurrentNetworkTransactions = createDeepEqualSelector(
 
     const { chainId } = getProviderConfig(state);
 
-    return transactions.filter(
-      (transaction) => transaction.chainId === chainId,
-    );
+    return transactions
+      .filter((transaction) => transaction.chainId === chainId)
+      .sort((a, b) => a.time - b.time); // Ascending
   },
   (transactions) => transactions,
 );
@@ -106,6 +106,7 @@ export const selectedAddressTxListSelector = createSelector(
       .filter(
         ({ txParams }) => txParams.from === selectedInternalAccount.address,
       )
+      .filter(({ type }) => type !== TransactionType.incoming)
       .concat(smTransactions);
   },
 );
@@ -291,9 +292,9 @@ export const nonceSortedTransactionsSelector = createSelector(
       let shouldNotBeGrouped =
         typeof nonce === 'undefined' || type === TransactionType.incoming;
 
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       shouldNotBeGrouped = shouldNotBeGrouped || Boolean(transaction.custodyId);
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
 
       if (shouldNotBeGrouped) {
         const transactionGroup = {
@@ -595,6 +596,6 @@ const TRANSACTION_APPROVAL_TYPES = [
 export function hasTransactionPendingApprovals(state) {
   return (
     hasUnapprovedTransactionsInCurrentNetwork(state) ||
-    TRANSACTION_APPROVAL_TYPES.some((type) => hasPendingApprovals(state, type))
+    hasPendingApprovals(state, TRANSACTION_APPROVAL_TYPES)
   );
 }

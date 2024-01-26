@@ -1,5 +1,9 @@
 const { strict: assert } = require('assert');
-const { defaultGanacheOptions, withFixtures } = require('../helpers');
+const {
+  defaultGanacheOptions,
+  withFixtures,
+  unlockWallet,
+} = require('../helpers');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 const FixtureBuilder = require('../fixture-builder');
 
@@ -18,9 +22,7 @@ describe('Block Explorer', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // View account on explorer
         await driver.clickElement('[data-testid="account-menu-icon"]');
@@ -64,9 +66,7 @@ describe('Block Explorer', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // View TST token in block explorer
         await driver.clickElement('[data-testid="home__asset-tab"]');
@@ -113,9 +113,7 @@ describe('Block Explorer', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await driver.navigate();
-        await driver.fill('#password', 'correct horse battery staple');
-        await driver.press('#password', driver.Key.ENTER);
+        await unlockWallet(driver);
 
         // View transaction on block explorer
         await driver.clickElement('[data-testid="home__activity-tab"]');

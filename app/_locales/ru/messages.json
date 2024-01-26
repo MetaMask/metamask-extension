@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Добавить NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Откройте для себя варианты обеспечения безопасности своего счета с помощью MetaMask Snaps"
-  },
   "addSuggestedNFTs": {
     "message": "Добавить рекомендованные NFT"
   },
@@ -658,7 +655,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Сеть с ID блокчейна $1 может использовать другой символ валюты ($2), чем тот, который вы ввели. Подтвердите, прежде чем продолжить.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Выберите свою сеть"
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "Депозит"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Подробнее"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Из-за изменений протокола Ethereum: тестовые сети Rinkeby, Ropsten, Kovan могут работать не очень надежно и скоро будут признаны устаревшими."
-  },
   "description": {
     "message": "Описание"
   },
@@ -1398,12 +1389,6 @@
   "enableFromSettings": {
     "message": " Включите его в Настройках."
   },
-  "enableOpenSeaAPI": {
-    "message": "Включить API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Используйте API OpenSea для получения данных NFT. Для автоматического обнаружения NFT используется API OpenSea, и такое обнаружение будет недоступно, если этот API отключен."
-  },
   "enableSnap": {
     "message": "Включить"
   },
@@ -1433,12 +1418,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Недопустимый символ для ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Имя ENS не найдено в текущей сети. Попробуйте переключиться на Мейн-нет Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Сеть не поддерживает ENS"
   },
   "ensRegistrationError": {
     "message": "Ошибка при регистрации имени ENS"
@@ -1673,42 +1652,19 @@
     "message": "$1 ч",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 минут(-ы)",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 мин.",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Может быть, через $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Вероятно, через < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 секунд(-ы)",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 сек.",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Весьма вероятно, через < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Использовано газа"
   },
   "general": {
     "message": "Общие"
-  },
-  "getStarted": {
-    "message": "Начало работы"
   },
   "globalTitle": {
     "message": "Глобальное меню"
@@ -2112,25 +2068,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Включите «данные смарт-контракта» или «слепую подпись» в своем устройстве Ledger."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Включите «Использовать Ledger Live» в разделе «Настройки» > «Дополнительно»."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Убедитесь, что Ledger подключен, и выберите приложение Ethereum."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Откройте и разблокируйте приложение Ledger Live."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Настройте подключение Ledger к MetaMask. Рекомендуется $1, но возможны и другие варианты. См. подробнее здесь: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Не удалось открыть Ledger. Он может быть подключен к другой программе. Закройте Ledger Live или другие приложения, подключенные к Ledger, и снова попробуйте подключиться."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "приложение Ledger Live"
@@ -2140,9 +2082,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live слишком долго не отвечает, или время ожидания подключения истекло. Убедитесь, что приложение Ledger Live открыто и устройство разблокировано."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Если приложение Ledger Live открыто, отключите любое открытое соединение с Ledger Live и закройте это приложение."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledger не подключен. Если хотите подключить Ledger, нажмите «Продолжить» еще раз и одобрите HID-подключение",
@@ -3203,10 +3142,6 @@
   "portfolioDashboard": {
     "message": "Панель инструментов Portfolio"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Предпочтительный тип подключения к Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Подготовка свопа..."
   },
@@ -3528,9 +3463,6 @@
   "searchAccounts": {
     "message": "Поиск счетов"
   },
-  "searchResults": {
-    "message": "Результаты поиска"
-  },
   "secretRecoveryPhrase": {
     "message": "Секретная фраза для восстановления"
   },
@@ -3786,9 +3718,6 @@
   "smartContracts": {
     "message": "Смарт-контракты"
   },
-  "smartSwap": {
-    "message": "Смарт-своп"
-  },
   "smartSwapsAreHere": {
     "message": "Появились смарт-свопы!"
   },
@@ -3801,9 +3730,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Смарт-свопы временно недоступны."
   },
-  "snapConfigure": {
-    "message": "Настроить"
-  },
   "snapConnectionWarning": {
     "message": "$1 хочет подключиться к $2. Продолжайте, только если вы доверяете этому сайту.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3812,49 +3738,8 @@
     "message": "Этот контент поступает от $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Выберите способ защиты вашего нового счета с помощью MetaMask Snaps."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Создать новый счет $1",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "От MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Аудит"
-  },
-  "snapDetailDeveloper": {
-    "message": "Разработчик"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Обновлено"
-  },
-  "snapDetailManageSnap": {
-    "message": "Управление snap"
-  },
-  "snapDetailTags": {
-    "message": "Теги"
-  },
-  "snapDetailVersion": {
-    "message": "Версия"
-  },
   "snapDetailWebsite": {
     "message": "Веб-сайт"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Создать счет Snap"
-  },
-  "snapDetailsInstalled": {
-    "message": "Установлена"
-  },
-  "snapInstall": {
-    "message": "Установить snap"
   },
   "snapInstallRequest": {
     "message": "Установка $1 дает ему следующие разрешения. Продолжайте, только если доверяете $1.",
@@ -3873,9 +3758,6 @@
   "snapInstallationErrorTitle": {
     "message": "Ошибка установки",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "Проверена"
   },
   "snapResultError": {
     "message": "Ошибка"
@@ -3897,18 +3779,11 @@
     "message": "Ошибка обновления",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1 хочет обновить $2 до $3, что дает ему следующие разрешения. Продолжайте, только если доверяете $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "Обновление завершено"
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Загрузка аналитики по транзакции..."
   },
   "snapsInvalidUIError": {
     "message": "Пользовательский интерфейс, указанный snap, недействителен."
@@ -4827,9 +4702,6 @@
   "transactionDetailGasHeading": {
     "message": "Примерная плата за газ"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "примерная"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Подробнее о плате за газ"
   },
@@ -4965,12 +4837,6 @@
   "unknown": {
     "message": "Неизвестно"
   },
-  "unknownCameraError": {
-    "message": "При попытке получить доступ к вашей камере произошла ошибка. Попробуйте еще раз..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ой! Что-то пошло не так...."
-  },
   "unknownCollection": {
     "message": "Безымянная коллекция"
   },
@@ -5050,10 +4916,6 @@
   },
   "verifyContractDetails": {
     "message": "Проверьте информацию о третьей стороне"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Число десятичных знаков токена можно найти на $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Проверить этот токен на $1",

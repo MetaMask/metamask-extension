@@ -1,7 +1,7 @@
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
-import { TransactionType } from '../../../../../shared/constants/transaction';
+import { TransactionType } from '@metamask/transaction-controller';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,

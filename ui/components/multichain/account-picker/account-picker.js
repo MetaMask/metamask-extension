@@ -6,10 +6,10 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   AvatarAccount,
   AvatarAccountVariant,
-  IconName,
-  Text,
   ButtonBase,
   ButtonBaseSize,
+  IconName,
+  Text,
 } from '../../component-library';
 import {
   AlignItems,

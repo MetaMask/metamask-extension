@@ -1,4 +1,9 @@
 import {
+  TransactionEnvelopeType,
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
+import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
@@ -8,11 +13,6 @@ import {
   PLATFORM_FIREFOX,
   PLATFORM_OPERA,
 } from '../../../shared/constants/app';
-import {
-  TransactionEnvelopeType,
-  TransactionStatus,
-  TransactionType,
-} from '../../../shared/constants/transaction';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import {
   addUrlProtocolPrefix,

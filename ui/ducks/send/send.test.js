@@ -5,14 +5,17 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { NetworkType } from '@metamask/controller-utils';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthMethod } from '@metamask/keyring-api';
+import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import {
   CONTRACT_ADDRESS_ERROR,
+  FLOAT_TOKENS_ERROR,
   INSUFFICIENT_FUNDS_ERROR,
   INSUFFICIENT_FUNDS_FOR_GAS_ERROR,
   INSUFFICIENT_TOKENS_ERROR,
   INVALID_RECIPIENT_ADDRESS_ERROR,
   KNOWN_RECIPIENT_ADDRESS_WARNING,
   NEGATIVE_ETH_ERROR,
+  NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
 } from '../../pages/send/send.constants';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { GasEstimateTypes, GAS_LIMITS } from '../../../shared/constants/gas';
@@ -20,7 +23,6 @@ import { KeyringType } from '../../../shared/constants/keyring';
 import {
   AssetType,
   TokenStandard,
-  TransactionEnvelopeType,
 } from '../../../shared/constants/transaction';
 import * as Actions from '../../store/actions';
 import { setBackgroundConnection } from '../../store/background-connection';
@@ -939,6 +941,58 @@ describe('Send Slice', () => {
         expect(draftTransaction.amount.error).toStrictEqual(NEGATIVE_ETH_ERROR);
       });
 
+      it('should error float value amount of erc1155', () => {
+        const negativeAmountState = getInitialSendStateWithExistingTxState({
+          amount: {
+            value: '1.2',
+          },
+          asset: {
+            type: AssetType.NFT,
+            details: {
+              balance: '2',
+              standard: TokenStandard.ERC1155,
+            },
+          },
+        });
+
+        const action = {
+          type: 'send/validateAmountField',
+        };
+
+        const result = sendReducer(negativeAmountState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.amount.error).toStrictEqual(FLOAT_TOKENS_ERROR);
+      });
+
+      it('should error negative value amount of erc1155', () => {
+        const negativeAmountState = getInitialSendStateWithExistingTxState({
+          amount: {
+            value: '-1',
+          },
+          asset: {
+            type: AssetType.NFT,
+            details: {
+              balance: '2',
+              standard: TokenStandard.ERC1155,
+            },
+          },
+        });
+
+        const action = {
+          type: 'send/validateAmountField',
+        };
+
+        const result = sendReducer(negativeAmountState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.amount.error).toStrictEqual(
+          NEGATIVE_OR_ZERO_AMOUNT_TOKENS_ERROR,
+        );
+      });
+
       it('should not error for positive value amount', () => {
         const otherState = getInitialSendStateWithExistingTxState({
           amount: {
@@ -959,6 +1013,35 @@ describe('Send Slice', () => {
         const draftTransaction = getTestUUIDTx(result);
 
         expect(draftTransaction.amount.error).toBeNull();
+      });
+
+      it('should error with insufficient tokens amount when amount value of an erc1155 is higher than asset balance', () => {
+        const tokenAssetState = getInitialSendStateWithExistingTxState({
+          amount: {
+            value: '2',
+          },
+          asset: {
+            type: AssetType.NFT,
+            balance: '0x6fc23ac0',
+            details: {
+              standard: TokenStandard.ERC1155,
+              balance: '1',
+              decimals: 0,
+            },
+          },
+        });
+
+        const action = {
+          type: 'send/validateAmountField',
+        };
+
+        const result = sendReducer(tokenAssetState, action);
+
+        const draftTransaction = getTestUUIDTx(result);
+
+        expect(draftTransaction.amount.error).toStrictEqual(
+          INSUFFICIENT_FUNDS_ERROR,
+        );
       });
     });
 
@@ -1390,9 +1473,9 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               0x5: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             providerConfig: {
@@ -1765,14 +1848,14 @@ describe('Send Slice', () => {
           providerConfig: {
             chainId: CHAIN_IDS.GOERLI,
           },
-          cachedBalances: {
+          accountsByChainId: {
             [CHAIN_IDS.GOERLI]: {
-              [mockAddress1]: '0x0',
+              [mockAddress1]: { balance: '0x0' },
             },
           },
           accounts: {
             [mockAddress1]: {
-              address: mockAddress1,
+              address: '0x0',
             },
           },
           identities: {
@@ -2682,9 +2765,9 @@ describe('Send Slice', () => {
                 balance: '0x0',
               },
             },
-            cachedBalances: {
+            accountsByChainId: {
               [CHAIN_IDS.GOERLI]: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             tokenList: {},
@@ -2849,9 +2932,9 @@ describe('Send Slice', () => {
               },
               selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             },
-            cachedBalances: {
+            accountsByChainId: {
               [CHAIN_IDS.GOERLI]: {
-                [mockAddress1]: '0x0',
+                [mockAddress1]: { balance: '0x0' },
               },
             },
             tokenList: {},
@@ -3064,9 +3147,9 @@ describe('Send Slice', () => {
               balance: '0x0',
             },
           },
-          cachedBalances: {
+          accountsByChainId: {
             [CHAIN_IDS.GOERLI]: {
-              [mockAddress1]: '0x0',
+              [mockAddress1]: { balance: '0x0' },
             },
           },
           transactions: [

@@ -1,26 +1,23 @@
-const deepFreeze = require('deep-freeze-strict');
-const { loadBuildTypesConfig } = require('../../lib/build-type');
-const {
-  createRemoveFencedCodeTransform,
-  removeFencedCode,
-} = require('./remove-fenced-code');
+const buildUtils = require('@metamask/build-utils');
+const { createRemoveFencedCodeTransform } = require('./remove-fenced-code');
 const transformUtils = require('./utils');
 
-jest.mock('./utils', () => ({
+jest.mock('@metamask/build-utils', () => ({
+  ...jest.requireActual('@metamask/build-utils'),
   lintTransformedFile: jest.fn(),
 }));
 
-// The test data is just strings. We get it from a function at the end of this
-// file because it takes up a lot of lines and is very distracting.
-const testData = getTestData();
+jest.mock('./utils', () => ({
+  getESLintInstance: jest.fn(),
+}));
 
-const MAIN_BUILD = 'build-main';
-const FLASK_BUILD = 'build-flask';
+const FEATURE_A = 'build-main';
+const FEATURE_B = 'build-flask';
 
-const getMinimalFencedCode = (params = FLASK_BUILD) =>
-  `///: BEGIN:ONLY_INCLUDE_IN(${params})
+const getMinimalFencedCode = (params = FEATURE_B) =>
+  `///: BEGIN:ONLY_INCLUDE_IF(${params})
 Conditionally_Included
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 `;
 
 const getFeatures = ({ all, active }) => ({
@@ -28,14 +25,14 @@ const getFeatures = ({ all, active }) => ({
   active: new Set(active),
 });
 
-const buildTypesConfig = loadBuildTypesConfig();
-
 describe('build/transforms/remove-fenced-code', () => {
   describe('createRemoveFencedCodeTransform', () => {
-    const { lintTransformedFile: lintTransformedFileMock } = transformUtils;
+    const { lintTransformedFile: lintTransformedFileMock } = buildUtils;
+    const { getESLintInstance: getESLintInstanceMock } = transformUtils;
     const mockJsFileName = 'file.js';
 
     beforeEach(() => {
+      getESLintInstanceMock.mockImplementation(() => ({}));
       lintTransformedFileMock.mockImplementation(() => Promise.resolve());
     });
 
@@ -43,8 +40,8 @@ describe('build/transforms/remove-fenced-code', () => {
       const fileContent = '"Valid JSON content"\n';
       const stream = createRemoveFencedCodeTransform(
         getFeatures({
-          active: [MAIN_BUILD],
-          all: [MAIN_BUILD],
+          active: [FEATURE_A],
+          all: [FEATURE_A],
         }),
       )('file.json');
       let streamOutput = '';
@@ -56,6 +53,7 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(fileContent);
+          expect(getESLintInstanceMock).not.toHaveBeenCalled();
           expect(lintTransformedFileMock).not.toHaveBeenCalled();
           resolve();
         });
@@ -71,8 +69,8 @@ describe('build/transforms/remove-fenced-code', () => {
 
       const stream = createRemoveFencedCodeTransform(
         getFeatures({
-          active: [MAIN_BUILD],
-          all: [MAIN_BUILD, FLASK_BUILD],
+          active: [FEATURE_A],
+          all: [FEATURE_A, FEATURE_B],
         }),
       )(mockJsFileName);
       let streamOutput = '';
@@ -84,10 +82,12 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(filePrefix);
+          expect(getESLintInstanceMock).toHaveBeenCalledTimes(1);
           expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
           expect(lintTransformedFileMock).toHaveBeenCalledWith(
-            filePrefix,
+            {}, // mock eslint instance
             mockJsFileName,
+            filePrefix,
           );
           resolve();
         });
@@ -108,8 +108,8 @@ describe('build/transforms/remove-fenced-code', () => {
 
       const stream = createRemoveFencedCodeTransform(
         getFeatures({
-          active: [MAIN_BUILD],
-          all: [MAIN_BUILD, FLASK_BUILD],
+          active: [FEATURE_A],
+          all: [FEATURE_A, FEATURE_B],
         }),
       )(mockJsFileName);
       let streamOutput = '';
@@ -121,10 +121,12 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(filePrefix);
+          expect(getESLintInstanceMock).toHaveBeenCalledTimes(1);
           expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
           expect(lintTransformedFileMock).toHaveBeenCalledWith(
-            filePrefix,
+            {}, // mock eslint instance
             mockJsFileName,
+            filePrefix,
           );
           resolve();
         });
@@ -135,12 +137,12 @@ describe('build/transforms/remove-fenced-code', () => {
     });
 
     it('handles file with fences that is unmodified by the transform', async () => {
-      const fileContent = getMinimalFencedCode(MAIN_BUILD);
+      const fileContent = getMinimalFencedCode(FEATURE_A);
 
       const stream = createRemoveFencedCodeTransform(
         getFeatures({
-          active: [MAIN_BUILD],
-          all: [MAIN_BUILD],
+          active: [FEATURE_A],
+          all: [FEATURE_A],
         }),
       )(mockJsFileName);
       let streamOutput = '';
@@ -152,6 +154,7 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(fileContent);
+          expect(getESLintInstanceMock).not.toHaveBeenCalled();
           expect(lintTransformedFileMock).not.toHaveBeenCalled();
           resolve();
         });
@@ -165,7 +168,7 @@ describe('build/transforms/remove-fenced-code', () => {
       const fileContent = filePrefix.concat(getMinimalFencedCode());
 
       const stream = createRemoveFencedCodeTransform(
-        getFeatures({ all: [MAIN_BUILD, FLASK_BUILD], active: [MAIN_BUILD] }),
+        getFeatures({ all: [FEATURE_A, FEATURE_B], active: [FEATURE_A] }),
         false,
       )(mockJsFileName);
       let streamOutput = '';
@@ -177,6 +180,7 @@ describe('build/transforms/remove-fenced-code', () => {
 
         stream.on('end', () => {
           expect(streamOutput).toStrictEqual(filePrefix);
+          expect(getESLintInstanceMock).not.toHaveBeenCalled();
           expect(lintTransformedFileMock).not.toHaveBeenCalled();
           resolve();
         });
@@ -187,11 +191,11 @@ describe('build/transforms/remove-fenced-code', () => {
 
     it('handles error during code fence removal or parsing', async () => {
       const fileContent = getMinimalFencedCode().concat(
-        '///: END:ONLY_INCLUDE_IN',
+        '///: END:ONLY_INCLUDE_IF',
       );
 
       const stream = createRemoveFencedCodeTransform(
-        getFeatures({ all: [MAIN_BUILD, FLASK_BUILD], active: [MAIN_BUILD] }),
+        getFeatures({ all: [FEATURE_A, FEATURE_B], active: [FEATURE_A] }),
       )(mockJsFileName);
 
       await new Promise((resolve) => {
@@ -201,7 +205,8 @@ describe('build/transforms/remove-fenced-code', () => {
               'A valid fence consists of two fence lines, but the file contains an uneven number, "3", of fence lines.',
             ),
           );
-          expect(lintTransformedFileMock).toHaveBeenCalledTimes(0);
+          expect(getESLintInstanceMock).not.toHaveBeenCalled();
+          expect(lintTransformedFileMock).not.toHaveBeenCalled();
           resolve();
         });
 
@@ -218,16 +223,18 @@ describe('build/transforms/remove-fenced-code', () => {
       const fileContent = filePrefix.concat(getMinimalFencedCode());
 
       const stream = createRemoveFencedCodeTransform(
-        getFeatures({ all: [FLASK_BUILD], active: [] }),
+        getFeatures({ all: [FEATURE_B], active: [] }),
       )(mockJsFileName);
 
       await new Promise((resolve) => {
         stream.on('error', (error) => {
           expect(error).toStrictEqual(new Error('lint failure'));
+          expect(getESLintInstanceMock).toHaveBeenCalledTimes(1);
           expect(lintTransformedFileMock).toHaveBeenCalledTimes(1);
           expect(lintTransformedFileMock).toHaveBeenCalledWith(
-            filePrefix,
+            {}, // mock eslint instance
             mockJsFileName,
+            filePrefix,
           );
           resolve();
         });
@@ -236,826 +243,4 @@ describe('build/transforms/remove-fenced-code', () => {
       });
     });
   });
-
-  describe('removeFencedCode', () => {
-    const mockFileName = 'file.js';
-
-    // Valid inputs
-    ['main', 'flask', 'beta'].forEach((buildType) => {
-      const active = buildTypesConfig.buildTypes[buildType].features;
-      const all = Object.keys(buildTypesConfig.features);
-      const features = getFeatures({ all, active });
-      it(`transforms file with fences for build type "${buildType}"`, () => {
-        expect(
-          removeFencedCode(
-            mockFileName,
-            features,
-            testData.validInputs.withFences,
-          ),
-        ).toStrictEqual(testData.validOutputs[buildType]);
-
-        expect(
-          removeFencedCode(
-            mockFileName,
-            features,
-            testData.validInputs.extraContentWithFences,
-          ),
-        ).toStrictEqual(testData.validOutputsWithExtraContent[buildType]);
-
-        // Ensure that the minimal input template is in fact valid
-        const minimalInput = getMinimalFencedCode(`build-${buildType}`);
-        expect(
-          removeFencedCode(mockFileName, features, minimalInput),
-        ).toStrictEqual([minimalInput, false]);
-      });
-
-      it(`does not modify file without fences for build type "${buildType}"`, () => {
-        expect(
-          removeFencedCode(
-            mockFileName,
-            features,
-            testData.validInputs.withoutFences,
-          ),
-        ).toStrictEqual([testData.validInputs.withoutFences, false]);
-
-        expect(
-          removeFencedCode(
-            mockFileName,
-            features,
-            testData.validInputs.extraContentWithoutFences,
-          ),
-        ).toStrictEqual([
-          testData.validInputs.extraContentWithoutFences,
-          false,
-        ]);
-      });
-    });
-
-    // This is an edge case for the splicing function
-    it('transforms file with two fence lines', () => {
-      expect(
-        removeFencedCode(
-          mockFileName,
-          getFeatures({
-            active: [FLASK_BUILD],
-            all: [FLASK_BUILD, MAIN_BUILD],
-          }),
-          getMinimalFencedCode(MAIN_BUILD),
-        ),
-      ).toStrictEqual(['', true]);
-    });
-
-    it('ignores sentinels preceded by non-whitespace', () => {
-      const validBeginDirective = '///: BEGIN:ONLY_INCLUDE_IN(build-flask)\n';
-      const ignoredLines = [
-        `a ${validBeginDirective}`,
-        `2 ${validBeginDirective}`,
-        `@ ${validBeginDirective}`,
-      ];
-
-      ignoredLines.forEach((ignoredLine) => {
-        // These inputs will be transformed
-        expect(
-          removeFencedCode(
-            mockFileName,
-            getFeatures({
-              active: [FLASK_BUILD],
-              all: [FLASK_BUILD, MAIN_BUILD],
-            }),
-            getMinimalFencedCode(MAIN_BUILD).concat(ignoredLine),
-          ),
-        ).toStrictEqual([ignoredLine, true]);
-
-        const modifiedInputWithoutFences =
-          testData.validInputs.withoutFences.concat(ignoredLine);
-
-        // These inputs will not be transformed
-        expect(
-          removeFencedCode(
-            mockFileName,
-            getFeatures({ active: [FLASK_BUILD], all: [FLASK_BUILD] }),
-            modifiedInputWithoutFences,
-          ),
-        ).toStrictEqual([modifiedInputWithoutFences, false]);
-      });
-    });
-
-    // Invalid inputs
-    it('rejects empty fences', () => {
-      const jsComment = '// A comment\n';
-
-      const emptyFence = getMinimalFencedCode()
-        .split('\n')
-        .filter((line) => line.startsWith('///:'))
-        .map((line) => `${line}\n`)
-        .join('');
-
-      const emptyFenceWithPrefix = jsComment.concat(emptyFence);
-      const emptyFenceWithSuffix = emptyFence.concat(jsComment);
-      const emptyFenceSurrounded = emptyFenceWithPrefix.concat(jsComment);
-
-      const inputs = [
-        emptyFence,
-        emptyFenceWithPrefix,
-        emptyFenceWithSuffix,
-        emptyFenceSurrounded,
-      ];
-
-      inputs.forEach((input) => {
-        expect(() =>
-          removeFencedCode(
-            mockFileName,
-            getFeatures({ active: [FLASK_BUILD], all: [FLASK_BUILD] }),
-            input,
-          ),
-        ).toThrow(
-          `Empty fence found in file "${mockFileName}":\n${emptyFence}`,
-        );
-      });
-    });
-
-    it('rejects sentinels not followed by a single space and a multi-character alphabetical string', () => {
-      // Matches the sentinel and terminus component of the first line
-      // beginning with "///: TERMINUS"
-      const fenceSentinelAndTerminusRegex = /^\/\/\/: \w+/mu;
-
-      const replacements = [
-        '///:BEGIN',
-        '///:XBEGIN',
-        '///:_BEGIN',
-        '///:B',
-        '///:_',
-        '///: ',
-        '///: B',
-        '///:',
-      ];
-
-      replacements.forEach((replacement) => {
-        expect(() =>
-          removeFencedCode(
-            mockFileName,
-            getFeatures({ active: [FLASK_BUILD], all: [FLASK_BUILD] }),
-            getMinimalFencedCode().replace(
-              fenceSentinelAndTerminusRegex,
-              replacement,
-            ),
-          ),
-        ).toThrow(
-          /Fence sentinel must be followed by a single space and an alphabetical string of two or more characters.$/u,
-        );
-      });
-    });
-
-    it('rejects malformed BEGIN directives', () => {
-      // This is the first line of the minimal input template
-      const directiveString = '///: BEGIN:ONLY_INCLUDE_IN(build-flask)';
-
-      const replacements = [
-        // Invalid terminus
-        '///: BE_GIN:BEGIN:ONLY_INCLUDE_IN(build-flask)',
-        '///: BE6IN:BEGIN:ONLY_INCLUDE_IN(build-flask)',
-        '///: BEGIN7:BEGIN:ONLY_INCLUDE_IN(build-flask)',
-        '///: BeGIN:ONLY_INCLUDE_IN(build-flask)',
-        '///: BE3:BEGIN:ONLY_INCLUDE_IN(build-flask)',
-        '///: BEG-IN:BEGIN:ONLY_INCLUDE_IN(build-flask)',
-        '///: BEG N:BEGIN:ONLY_INCLUDE_IN(build-flask)',
-
-        // Invalid commands
-        '///: BEGIN:ONLY-INCLUDE_IN(flask)',
-        '///: BEGIN:ONLY_INCLUDE:IN(flask)',
-        '///: BEGIN:ONL6_INCLUDE_IN(flask)',
-        '///: BEGIN:ONLY_IN@LUDE_IN(flask)',
-        '///: BEGIN:ONLy_INCLUDE_IN(build-flask)',
-        '///: BEGIN:ONLY INCLUDE_IN(flask)',
-
-        // Invalid parameters
-        '///: BEGIN:ONLY_INCLUDE_IN(,flask)',
-        '///: BEGIN:ONLY_INCLUDE_IN(build-flask,)',
-        '///: BEGIN:ONLY_INCLUDE_IN(build-flask,,main)',
-        '///: BEGIN:ONLY_INCLUDE_IN(,)',
-        '///: BEGIN:ONLY_INCLUDE_IN()',
-        '///: BEGIN:ONLY_INCLUDE_IN( )',
-        '///: BEGIN:ONLY_INCLUDE_IN(build-flask]',
-        '///: BEGIN:ONLY_INCLUDE_IN[flask)',
-        '///: BEGIN:ONLY_INCLUDE_IN(build-flask.main)',
-        '///: BEGIN:ONLY_INCLUDE_IN(build-flask,@)',
-        '///: BEGIN:ONLY_INCLUDE_IN(fla k)',
-
-        // Stuff after the directive
-        '///: BEGIN:ONLY_INCLUDE_IN(build-flask) A',
-        '///: BEGIN:ONLY_INCLUDE_IN(build-flask) 9',
-        '///: BEGIN:ONLY_INCLUDE_IN(build-flask)A',
-        '///: BEGIN:ONLY_INCLUDE_IN(build-flask)9',
-        '///: BEGIN:ONLY_INCLUDE_IN(build-flask)_',
-        '///: BEGIN:ONLY_INCLUDE_IN(build-flask))',
-      ];
-
-      replacements.forEach((replacement) => {
-        expect(() =>
-          removeFencedCode(
-            mockFileName,
-            getFeatures({ active: [FLASK_BUILD], all: [FLASK_BUILD] }),
-            getMinimalFencedCode().replace(directiveString, replacement),
-          ),
-        ).toThrow(
-          new RegExp(
-            `${replacement.replace(
-              /([()[\]])/gu,
-              '\\$1',
-            )}":\nFailed to parse fence directive.$`,
-            'u',
-          ),
-        );
-      });
-    });
-
-    it('rejects malformed END directives', () => {
-      // This is the last line of the minimal input template
-      const directiveString = '///: END:ONLY_INCLUDE_IN';
-
-      const replacements = [
-        // Invalid terminus
-        '///: ENx:ONLY_INCLUDE_IN',
-        '///: EN3:ONLY_INCLUDE_IN',
-        '///: EN_:ONLY_INCLUDE_IN',
-        '///: EN :ONLY_INCLUDE_IN',
-        '///: EN::ONLY_INCLUDE_IN',
-
-        // Invalid commands
-        '///: END:ONLY-INCLUDE_IN',
-        '///: END::ONLY_INCLUDE_IN',
-        '///: END:ONLY_INCLUDE:IN',
-        '///: END:ONL6_INCLUDE_IN',
-        '///: END:ONLY_IN@LUDE_IN',
-        '///: END:ONLy_INCLUDE_IN',
-        '///: END:ONLY INCLUDE_IN',
-
-        // Stuff after the directive
-        '///: END:ONLY_INCLUDE_IN A',
-        '///: END:ONLY_INCLUDE_IN 9',
-        '///: END:ONLY_INCLUDE_IN _',
-      ];
-
-      replacements.forEach((replacement) => {
-        expect(() =>
-          removeFencedCode(
-            mockFileName,
-            getFeatures({ active: [FLASK_BUILD], all: [FLASK_BUILD] }),
-            getMinimalFencedCode().replace(directiveString, replacement),
-          ),
-        ).toThrow(
-          new RegExp(
-            `${replacement}":\nFailed to parse fence directive.$`,
-            'u',
-          ),
-        );
-      });
-    });
-
-    it('rejects files with uneven number of fence lines', () => {
-      const additions = [
-        '///: BEGIN:ONLY_INCLUDE_IN(build-flask)',
-        '///: END:ONLY_INCLUDE_IN',
-      ];
-      additions.forEach((addition) => {
-        expect(() =>
-          removeFencedCode(
-            mockFileName,
-            getFeatures({ active: [FLASK_BUILD], all: [FLASK_BUILD] }),
-            getMinimalFencedCode().concat(addition),
-          ),
-        ).toThrow(
-          /A valid fence consists of two fence lines, but the file contains an uneven number, "3", of fence lines.$/u,
-        );
-      });
-    });
-
-    it('rejects invalid terminuses', () => {
-      const testCases = [
-        ['BEGIN', ['KAPLAR', 'FLASK', 'FOO']],
-        ['END', ['KAPLAR', 'FOO', 'BAR']],
-      ];
-
-      testCases.forEach(([validTerminus, replacements]) => {
-        replacements.forEach((replacement) => {
-          expect(() =>
-            removeFencedCode(
-              mockFileName,
-              getFeatures({ active: [FLASK_BUILD], all: [FLASK_BUILD] }),
-              getMinimalFencedCode().replace(validTerminus, replacement),
-            ),
-          ).toThrow(
-            new RegExp(
-              `Line contains invalid directive terminus "${replacement}".$`,
-              'u',
-            ),
-          );
-        });
-      });
-    });
-
-    it('rejects invalid commands', () => {
-      const testCases = [
-        [/ONLY_INCLUDE_IN\(/mu, ['ONLY_KEEP_IN(', 'FLASK(', 'FOO(']],
-        [/ONLY_INCLUDE_IN$/mu, ['ONLY_KEEP_IN', 'FLASK', 'FOO']],
-      ];
-
-      testCases.forEach(([validCommand, replacements]) => {
-        replacements.forEach((replacement) => {
-          expect(() =>
-            removeFencedCode(
-              mockFileName,
-              getFeatures({ active: [FLASK_BUILD], all: [FLASK_BUILD] }),
-              getMinimalFencedCode().replace(validCommand, replacement),
-            ),
-          ).toThrow(
-            new RegExp(
-              `Line contains invalid directive command "${replacement.replace(
-                '(',
-                '',
-              )}".$`,
-              'u',
-            ),
-          );
-        });
-      });
-    });
-
-    it('rejects invalid command parameters', () => {
-      const testCases = [
-        [
-          'bar',
-          ['bar', 'build-flask,bar', 'build-flask,build-beta,build-main,bar'],
-        ],
-        [
-          'Foo',
-          ['Foo', 'build-flask,Foo', 'build-flask,build-beta,build-main,Foo'],
-        ],
-        [
-          'b3ta',
-          [
-            'b3ta',
-            'build-flask,b3ta',
-            'build-flask,build-beta,build-main,b3ta',
-          ],
-        ],
-        [
-          'bEta',
-          [
-            'bEta',
-            'build-flask,bEta',
-            'build-flask,build-beta,build-main,bEta',
-          ],
-        ],
-      ];
-
-      testCases.forEach(([invalidParam, replacements]) => {
-        replacements.forEach((replacement) => {
-          expect(() =>
-            removeFencedCode(
-              mockFileName,
-              getFeatures({
-                active: [FLASK_BUILD],
-                all: [FLASK_BUILD, MAIN_BUILD, 'build-beta'],
-              }),
-              getMinimalFencedCode(replacement),
-            ),
-          ).toThrow(
-            new RegExp(
-              `"${invalidParam}" is not a declared build feature.$`,
-              'u',
-            ),
-          );
-        });
-      });
-
-      // Should fail for empty params
-      expect(() =>
-        removeFencedCode(
-          mockFileName,
-          getFeatures({ active: [FLASK_BUILD], all: [FLASK_BUILD] }),
-          getMinimalFencedCode('').replace('()', ''),
-        ),
-      ).toThrow(/No params specified.$/u);
-    });
-
-    it('rejects directive pairs with wrong terminus order', () => {
-      // We need more than one directive pair for this test
-      const input = getMinimalFencedCode().concat(
-        getMinimalFencedCode('build-beta'),
-      );
-
-      const expectedBeginError =
-        'The first directive of a pair must be a "BEGIN" directive.';
-      const expectedEndError =
-        'The second directive of a pair must be an "END" directive.';
-      const testCases = [
-        [
-          'BEGIN:ONLY_INCLUDE_IN(build-flask)',
-          'END:ONLY_INCLUDE_IN',
-          expectedBeginError,
-        ],
-        [
-          /END:ONLY_INCLUDE_IN/mu,
-          'BEGIN:ONLY_INCLUDE_IN(build-main)',
-          expectedEndError,
-        ],
-        [
-          'BEGIN:ONLY_INCLUDE_IN(build-beta)',
-          'END:ONLY_INCLUDE_IN',
-          expectedBeginError,
-        ],
-      ];
-
-      testCases.forEach(([target, replacement, expectedError]) => {
-        expect(() =>
-          removeFencedCode(
-            mockFileName,
-            getFeatures({ active: [FLASK_BUILD], all: [FLASK_BUILD] }),
-            input.replace(target, replacement),
-          ),
-        ).toThrow(expectedError);
-      });
-    });
-
-    it('ignores files with inline source maps', () => {
-      // This is so that there isn't an unnecessary second execution of
-      // removeFencedCode with a transpiled version of the same file
-      const input = getTestData().validInputs.extraContentWithFences.concat(
-        '\n//# sourceMappingURL=as32e32wcwc2234f2ew32cnin4243f4nv9nsdoivnxzoivnd',
-      );
-      expect(
-        removeFencedCode(
-          mockFileName,
-          getFeatures({ active: [FLASK_BUILD], all: [FLASK_BUILD] }),
-          input,
-        ),
-      ).toStrictEqual([input, false]);
-    });
-
-    // We can't do this until there's more than one command
-    it.todo('rejects directive pairs with mismatched commands');
-  });
 });
-
-function getTestData() {
-  const data = {
-    validInputs: {
-      withFences: `
-///: BEGIN:ONLY_INCLUDE_IN(build-flask,build-beta,desktop)
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask,build-beta,desktop)
-Conditionally_Included
-
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-Conditionally_Included
-Conditionally_Included
-
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-`,
-
-      extraContentWithFences: `
-///: BEGIN:ONLY_INCLUDE_IN(build-flask,build-beta,desktop)
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask,build-beta,desktop)
-Conditionally_Included
-
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-Conditionally_Included
-Conditionally_Included
-
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-Conditionally_Included
-Conditionally_Included
-
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-`,
-
-      withoutFences: `
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-`,
-
-      extraContentWithoutFences: `
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-`,
-    },
-
-    validOutputs: {
-      beta: [
-        `
-///: BEGIN:ONLY_INCLUDE_IN(build-flask,build-beta,desktop)
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask,build-beta,desktop)
-Conditionally_Included
-
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-`,
-        true,
-      ],
-      flask: [
-        `
-///: BEGIN:ONLY_INCLUDE_IN(build-flask,build-beta,desktop)
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask,build-beta,desktop)
-Conditionally_Included
-
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-Conditionally_Included
-Conditionally_Included
-
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-`,
-        false,
-      ],
-      mmi: [
-        `
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-`,
-        true,
-      ],
-    },
-
-    validOutputsWithExtraContent: {
-      beta: [
-        `
-///: BEGIN:ONLY_INCLUDE_IN(build-flask,build-beta,desktop)
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask,build-beta,desktop)
-Conditionally_Included
-
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-`,
-        true,
-      ],
-      flask: [
-        `
-///: BEGIN:ONLY_INCLUDE_IN(build-flask,build-beta,desktop)
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask,build-beta,desktop)
-Conditionally_Included
-
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-Conditionally_Included
-Conditionally_Included
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-///: BEGIN:ONLY_INCLUDE_IN(build-flask)
-Conditionally_Included
-Conditionally_Included
-
-///: END:ONLY_INCLUDE_IN
-///: BEGIN:ONLY_INCLUDE_IN(desktop)
-Conditionally_Included
-Conditionally_Included
-
-///: END:ONLY_INCLUDE_IN
-Always_Included
-Always_Included
-Always_Included
-`,
-        false,
-      ],
-      mmi: [
-        `
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-Always_Included
-`,
-        true,
-      ],
-    },
-  };
-
-  data.validOutputs.desktop = [data.validInputs.withFences, false];
-  data.validOutputs.main = [data.validInputs.withoutFences, true];
-
-  data.validOutputsWithExtraContent.desktop = [
-    data.validInputs.extraContentWithFences,
-    false,
-  ];
-  data.validOutputsWithExtraContent.main = [
-    data.validInputs.extraContentWithoutFences,
-    true,
-  ];
-  return deepFreeze(data);
-}

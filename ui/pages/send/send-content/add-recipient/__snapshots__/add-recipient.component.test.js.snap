@@ -75,6 +75,11 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             <p
               class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
+              Test Account 4
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
+            >
               0xca8f...f281
             </p>
           </div>
@@ -132,6 +137,11 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
           >
             <p
               class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            >
+              Test Account
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0x0dcd...e7bc
             </p>
@@ -191,6 +201,11 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             <p
               class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
+              Test Account 2
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
+            >
               0xec1a...251b
             </p>
           </div>
@@ -249,6 +264,11 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
             <p
               class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
+              Test Account 3
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
+            >
               0xeb9e...4823
             </p>
           </div>
@@ -306,6 +326,11 @@ exports[`Add Recipient Component Domain Resolution should match snapshot 1`] = `
           >
             <p
               class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            >
+              Ledger Hardware 2
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0xc42e...8813
             </p>
@@ -549,6 +574,11 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             <p
               class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
+              Test Account 4
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
+            >
               0xca8f...f281
             </p>
           </div>
@@ -606,6 +636,11 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
           >
             <p
               class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            >
+              Test Account
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0x0dcd...e7bc
             </p>
@@ -665,6 +700,11 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             <p
               class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
+              Test Account 2
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
+            >
               0xec1a...251b
             </p>
           </div>
@@ -723,6 +763,11 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
             <p
               class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
             >
+              Test Account 3
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
+            >
               0xeb9e...4823
             </p>
           </div>
@@ -780,6 +825,11 @@ exports[`Add Recipient Component render should match snapshot 1`] = `
           >
             <p
               class="mm-box mm-text send__select-recipient-wrapper__group-item__title mm-text--body-lg-medium mm-box--color-text-default"
+            >
+              Ledger Hardware 2
+            </p>
+            <p
+              class="mm-box mm-text send__select-recipient-wrapper__group-item__subtitle mm-text--body-md mm-box--color-text-alternative"
             >
               0xc42e...8813
             </p>

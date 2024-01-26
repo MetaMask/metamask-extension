@@ -51,17 +51,8 @@ describe('Security Tab', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('toggles opensea api enabled off', async () => {
-    expect(await toggleCheckbox('enableOpenSeaAPI', true)).toBe(true);
-  });
-
-  it('toggles opensea api enabled on', async () => {
-    mockState.metamask.openSeaEnabled = false;
-
-    const localMockStore = configureMockStore([thunk])(mockState);
-    renderWithProvider(<SecurityTab />, localMockStore);
-
-    expect(await toggleCheckbox('enableOpenSeaAPI', false, true)).toBe(true);
+  it('toggles Display NFT media enabled', async () => {
+    expect(await toggleCheckbox('displayNftMedia', true)).toBe(true);
   });
 
   it('toggles nft detection', async () => {

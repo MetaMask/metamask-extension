@@ -1,4 +1,4 @@
-import { Story, Canvas, ArgsTable } from '@storybook/addon-docs';
+import { Story, Canvas, ArgTypes } from '@storybook/addon-docs';
 
 import { TextField } from './text-field';
 
@@ -6,15 +6,15 @@ import { TextField } from './text-field';
 
 `TextField` lets user enter a text data into a boxed field. It can sometimes contain related information or controls.
 
+[MetaMask Design System Guides](https://www.notion.so/MetaMask-Design-System-Guides-Design-f86ecc914d6b4eb6873a122b83c12940)
+
 <Canvas>
   <Story id="components-componentlibrary-textfield--default-story" />
 </Canvas>
 
 ## Props
 
-The `TextField` accepts all props below as well as all [Box](/docs/components-ui-box--default-story#props) component props
-
-<ArgsTable of={TextField} />
+<ArgTypes of={TextField} />
 
 ### Size
 
@@ -22,9 +22,9 @@ Use the `size` prop to set the height of the `TextField`.
 
 Possible sizes include:
 
-- `sm` 32px
-- `md` 40px
-- `lg` 48px
+- `Sm` 32px
+- `Md` 40px
+- `Lg` 48px
 
 Defaults to `md`
 
@@ -33,12 +33,11 @@ Defaults to `md`
 </Canvas>
 
 ```jsx
-import { Size } from '../../../helpers/constants/design-system';
-import { TextField } from '../../component-library';
+import { TextField, TextFieldSize } from '../../component-library';
 
-<TextField size={Size.SM} />
-<TextField size={Size.MD} />
-<TextField size={Size.LG} />
+<TextField size={TextFieldSize.Sm} />
+<TextField size={TextFieldSize.Md} />
+<TextField size={TextFieldSize.Lg} />
 ```
 
 ### Type
@@ -58,16 +57,16 @@ Defaults to `text`.
 </Canvas>
 
 ```jsx
-import { TextField } from '../../component-library';
+import { TextField, TextFieldType } from '../../component-library';
 
-<TextField type="text" /> // (Default)
-<TextField type="number" />
-<TextField type="password" />
+<TextField  placeholder="Default" />
+<TextField  type={TextFieldType.Password} placeholder="Password" />
+<TextField  type={TextFieldType.Number} placeholder="Number" />
 ```
 
 ### Truncate
 
-Use the `truncate` prop to truncate the text of the the `TextField`. Defaults to `true`.
+Use the `truncate` prop to truncate the text of the `TextField`. Defaults to `true`.
 
 <Canvas>
   <Story id="components-componentlibrary-textfield--truncate" />
@@ -201,7 +200,7 @@ To function fully the custom component should accept the following props:
 - `type`
 
 <Canvas>
-  <Story id="components-componentlibrary-textfield--input-component" />
+  <Story id="components-componentlibrary-textfield--input-component-story" />
 </Canvas>
 
 ```jsx
@@ -322,7 +321,7 @@ import { TextField } from '../../component-library';
 Use the `required` prop to set the `TextField` to required. Currently there is no visual difference to the `TextField` when required.
 
 <Canvas>
-  <Story id="components-componentlibrary-textfield--required" />
+  <Story id="components-componentlibrary-textfield--required-story" />
 </Canvas>
 
 ```jsx

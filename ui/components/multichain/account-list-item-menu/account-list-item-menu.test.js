@@ -63,7 +63,7 @@ describe('AccountListItem', () => {
 
     const newAccount = {
       ...mockState.metamask.internalAccounts.accounts[
-        'f810ad88-5c16-4e94-b375-b2a747a5213d'
+        '694225f4-d30b-4e77-a900-c8bbce735b42'
       ],
       balance: '0x152387ad22c3f0',
     };

@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "NFTを追加"
   },
-  "addSnapAccountModalDescription": {
-    "message": "MetaMask Snapsでアカウントのセキュリティを確保する方法をご覧ください"
-  },
   "addSuggestedNFTs": {
     "message": "推奨されたNFTを追加"
   },
@@ -658,7 +655,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "チェーンID $1 のネットワークは、入力されたものとは異なる通貨記号 ($2) を使用している可能性があります。続行する前に確認してください。",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "ネットワークを選択してください"
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "入金"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "詳細"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "イーサリアムのプロトコル変更のため: Rinkeby、Ropsten、Kovanテストネットワークは動作が安定しない可能性があり、近いうちに非推奨になります。"
-  },
   "description": {
     "message": "説明"
   },
@@ -1398,12 +1389,6 @@
   "enableFromSettings": {
     "message": " 設定で有効にします。"
   },
-  "enableOpenSeaAPI": {
-    "message": "OpenSea APIを有効にする"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "OpenSea APIを使用してNFTデータを取得します。NFT自動検出はOpenSea APIを使用するため、この設定をオフにすると利用できなくなります。"
-  },
   "enableSnap": {
     "message": "有効にする"
   },
@@ -1433,12 +1418,6 @@
   },
   "ensIllegalCharacter": {
     "message": "ENSにサポートされていない文字が使用されています。"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "ENS名が現在のネットワーク上に見つかりませんでした。イーサリアムメインネットへの切り替えを試みてください。"
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "ネットワークがENSをサポートしていません"
   },
   "ensRegistrationError": {
     "message": "ENS名の登録エラー"
@@ -1673,42 +1652,19 @@
     "message": "$1時間",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1分",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1分",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "おそらく$1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "$1未満の可能性が高い",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1秒",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1秒",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "$1未満の可能性が非常に高い",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "ガス使用量"
   },
   "general": {
     "message": "一般"
-  },
-  "getStarted": {
-    "message": "開始"
   },
   "globalTitle": {
     "message": "グローバルメニュー"
@@ -2112,25 +2068,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Ledgerデバイスで「スマートコントラクトデータ」または「ブラインド署名」を有効にしてください。"
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "「設定」>「高度な設定」でLedger Liveを有効にしてください。"
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Ledgerが接続されていて、イーサリアムアプリを選択していることを確認してください。"
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Ledger Liveアプリを開いてロックを解除してください。"
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "LedgerをMetaMaskに接続する方法をカスタマイズします。$1が推奨されますが、他のオプションも利用できます。詳細はこちらをご覧ください: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ledgerデバイスを開けませんでした。Ledgerが他のソフトウェアに接続されている可能性があります。Ledger LiveまたはLedgerデバイスに接続されている他のアプリケーションを閉じて、もう一度接続してみてください。"
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Liveアプリ"
@@ -2140,9 +2082,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Liveが応答に時間がかかりすぎているか、接続がタイムアウトしました。Ledger Liveのアプリが開かれていて、デバイスのロックが解除されていることを確認してください。"
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Ledger Liveアプリが開いている場合は、開いているLedger Live接続をすべて切断し、Ledger Liveアプリを閉じてください。"
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Ledgerデバイスが接続されていません。Ledgerに接続する場合は、もう一度「続行」をクリックして、HID接続を承認してください。",
@@ -3155,7 +3094,6 @@
     "message": "トランザクションインサイトを取得して表示します。",
     "description": "The description for the `endowment:transaction-insight` permission"
   },
-
   "permission_transactionInsightOrigin": {
     "message": "トランザクションを提案しているWebサイトの提供元を確認します",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
@@ -3203,10 +3141,6 @@
   },
   "portfolioDashboard": {
     "message": "Portfolioダッシュボード"
-  },
-  "preferredLedgerConnectionType": {
-    "message": "優先Ledger接続タイプ",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preparingSwap": {
     "message": "スワップを準備しています..."
@@ -3529,9 +3463,6 @@
   "searchAccounts": {
     "message": "アカウントを検索"
   },
-  "searchResults": {
-    "message": "検索結果"
-  },
   "secretRecoveryPhrase": {
     "message": "シークレットリカバリーフレーズ"
   },
@@ -3787,9 +3718,6 @@
   "smartContracts": {
     "message": "スマートコントラクト"
   },
-  "smartSwap": {
-    "message": "スマートスワップ"
-  },
   "smartSwapsAreHere": {
     "message": "スマートスワップの登場です！"
   },
@@ -3802,9 +3730,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "スマートスワップは一時的にご利用いただけません。"
   },
-  "snapConfigure": {
-    "message": "構成"
-  },
   "snapConnectionWarning": {
     "message": "$1が$2への接続を要求しています。このWebサイトが信頼できる場合にのみ続行してください。",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3813,49 +3738,8 @@
     "message": "このコンテンツは$1からのものです",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "MetaMask Snapで新規アカウントのセキュリティを確保する方法を選択してください。"
-  },
-  "snapCreateAccountTitle": {
-    "message": "$1アカウントの作成",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "By MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "監査"
-  },
-  "snapDetailDeveloper": {
-    "message": "開発者"
-  },
-  "snapDetailLastUpdated": {
-    "message": "更新済み"
-  },
-  "snapDetailManageSnap": {
-    "message": "snapの管理"
-  },
-  "snapDetailTags": {
-    "message": "タグ"
-  },
-  "snapDetailVersion": {
-    "message": "バージョン"
-  },
   "snapDetailWebsite": {
     "message": "Webサイト"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "スナップアカウントの作成"
-  },
-  "snapDetailsInstalled": {
-    "message": "インストール済み"
-  },
-  "snapInstall": {
-    "message": "snapをインストール"
   },
   "snapInstallRequest": {
     "message": "$1をインストールすることで、次のアクセス許可が付与されます。$1を信頼できる場合にのみ続行してください。",
@@ -3874,9 +3758,6 @@
   "snapInstallationErrorTitle": {
     "message": "インストールに失敗しました",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "監査済み"
   },
   "snapResultError": {
     "message": "エラー"
@@ -3898,18 +3779,11 @@
     "message": "更新失敗",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1が$2の$3への更新を要求しています。これにより、次のアクセス許可が付与されます。$2を信頼できる場合にのみ続行してください。",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "更新完了"
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "トランザクションインサイトを読み込み中..."
   },
   "snapsInvalidUIError": {
     "message": "snapに指定されたUIが無効です。"
@@ -4828,9 +4702,6 @@
   "transactionDetailGasHeading": {
     "message": "ガス代見積もり"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "見積もり"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "ガス代に関する詳細"
   },
@@ -4966,12 +4837,6 @@
   "unknown": {
     "message": "不明"
   },
-  "unknownCameraError": {
-    "message": "カメラへのアクセス時にエラーが発生しました。もう一度実行してください..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "申し訳ありません。問題が発生しました..."
-  },
   "unknownCollection": {
     "message": "無名のコレクション"
   },
@@ -5051,10 +4916,6 @@
   },
   "verifyContractDetails": {
     "message": "サードパーティの詳細を確認"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "トークンの10進数は$1にあります",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "このトークンを$1で検証",

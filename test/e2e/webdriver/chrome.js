@@ -14,10 +14,15 @@ const HTTPS_PROXY_HOST = '127.0.0.1:8000';
  */
 class ChromeDriver {
   static async build({ openDevToolsForTabs, port }) {
-    const args = [
-      `load-extension=${process.cwd()}/dist/chrome`,
-      `--proxy-server=${HTTPS_PROXY_HOST}`, // Set proxy in the way that doesn't interfere with Selenium Manager
-    ];
+    const args = [`--proxy-server=${HTTPS_PROXY_HOST}`]; // Set proxy in the way that doesn't interfere with Selenium Manager
+
+    if (process.env.MULTIPROVIDER) {
+      args.push(
+        `load-extension=${process.cwd()}/dist/chrome,${process.cwd()}/dist/chrome2`,
+      );
+    } else {
+      args.push(`load-extension=${process.cwd()}/dist/chrome`);
+    }
     if (openDevToolsForTabs) {
       args.push('--auto-open-devtools-for-tabs');
     }

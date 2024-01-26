@@ -31,6 +31,7 @@ const createKeyringControllerMock = () => ({
 const createMessengerMock = () =>
   ({
     registerActionHandler: jest.fn(),
+    registerInitialEventPayload: jest.fn(),
     publish: jest.fn(),
     call: jest.fn(),
   } as any as jest.Mocked<DecryptMessageControllerMessenger>);

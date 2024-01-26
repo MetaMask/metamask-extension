@@ -29,7 +29,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
             class="mm-box mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
           >
             <label
-              class="mm-box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-medium mm-box--margin-top-2 mm-box--margin-left-2 mm-box--display-flex mm-box--align-items-center mm-box--color-text-default"
+              class="mm-box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-medium mm-box--margin-top-2 mm-box--display-flex mm-box--align-items-center mm-box--color-text-default"
               for="address-0"
             >
               <span
@@ -104,7 +104,7 @@ exports[`CustodyAccountList renders accounts 1`] = `
             class="mm-box mm-box--margin-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
           >
             <label
-              class="mm-box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-medium mm-box--margin-top-2 mm-box--margin-left-2 mm-box--display-flex mm-box--align-items-center mm-box--color-text-default"
+              class="mm-box mm-text mm-label mm-label--html-for custody-account-list__item__title mm-text--body-md mm-text--font-weight-medium mm-box--margin-top-2 mm-box--display-flex mm-box--align-items-center mm-box--color-text-default"
               for="address-1"
             >
               <span

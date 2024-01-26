@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -10,35 +10,36 @@ import { shortenAddress } from '../../../helpers/utils/util';
 import { AccountListItemMenu, AvatarGroup } from '..';
 import {
   AvatarAccount,
-  Box,
-  AvatarFavicon,
-  Tag,
-  ButtonIcon,
-  IconName,
-  IconSize,
   AvatarAccountVariant,
-  Text,
+  AvatarFavicon,
   AvatarToken,
   AvatarTokenSize,
+  Box,
+  ButtonIcon,
+  Icon,
+  IconName,
+  IconSize,
+  Tag,
+  Text,
 } from '../../component-library';
 import {
-  Color,
-  TextAlign,
   AlignItems,
-  TextVariant,
-  FlexDirection,
-  BorderRadius,
-  JustifyContent,
-  Size,
-  BorderColor,
-  Display,
   BackgroundColor,
   BlockSize,
+  BorderColor,
+  BorderRadius,
+  Color,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  Size,
+  TextAlign,
+  TextColor,
+  TextVariant,
 } from '../../../helpers/constants/design-system';
-import { HardwareKeyringNames } from '../../../../shared/constants/hardware-wallets';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import UserPreferencedCurrencyDisplay from '../../app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { SECONDARY, PRIMARY } from '../../../helpers/constants/common';
+import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import { getNativeCurrency } from '../../../ducks/metamask/metamask';
 import Tooltip from '../../ui/tooltip/tooltip';
 import {
@@ -52,28 +53,6 @@ import { useAccountTotalFiatBalance } from '../../../hooks/useAccountTotalFiatBa
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 17;
 
-function getLabel(keyring = {}, t) {
-  const { type } = keyring;
-  switch (type) {
-    case KeyringType.qr:
-      return HardwareKeyringNames.qr;
-    case KeyringType.imported:
-      return t('imported');
-    case KeyringType.trezor:
-      return HardwareKeyringNames.trezor;
-    case KeyringType.ledger:
-      return HardwareKeyringNames.ledger;
-    case KeyringType.lattice:
-      return HardwareKeyringNames.lattice;
-    ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
-    case KeyringType.snap:
-      return `${t('snaps')} (${t('beta')})`;
-    ///: END:ONLY_INCLUDE_IN
-    default:
-      return null;
-  }
-}
-
 export const AccountListItem = ({
   account,
   selected = false,
@@ -81,7 +60,9 @@ export const AccountListItem = ({
   closeMenu,
   connectedAvatar,
   connectedAvatarName,
+  isPinned = false,
   showOptions = false,
+  isHidden = false,
 }) => {
   const t = useI18nContext();
   const [accountOptionsMenuOpen, setAccountOptionsMenuOpen] = useState(false);
@@ -109,9 +90,6 @@ export const AccountListItem = ({
     }
   }, [itemRef, selected]);
 
-  const { keyring } = account.metadata;
-  const label = getLabel(keyring, t);
-
   const trackEvent = useContext(MetaMetricsContext);
   const primaryTokenImage = useSelector(getNativeCurrencyImage);
   const nativeCurrency = useSelector(getNativeCurrency);
@@ -130,7 +108,7 @@ export const AccountListItem = ({
         // Without this check, the account will be selected after
         // the account options menu closes
         if (!accountOptionsMenuOpen) {
-          onClick();
+          onClick?.();
         }
       }}
     >
@@ -151,7 +129,7 @@ export const AccountListItem = ({
             : AvatarAccountVariant.Jazzicon
         }
         marginInlineEnd={2}
-      ></AvatarAccount>
+      />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -165,12 +143,29 @@ export const AccountListItem = ({
             <Box
               className="multichain-account-list-item__account-name"
               marginInlineEnd={2}
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              gap={2}
             >
+              {isPinned ? (
+                <Icon
+                  name={IconName.Pin}
+                  size={IconSize.Xs}
+                  className="account-pinned-icon"
+                />
+              ) : null}
+              {isHidden ? (
+                <Icon
+                  name={IconName.EyeSlash}
+                  size={IconSize.Xs}
+                  className="account-hidden-icon"
+                />
+              ) : null}
               <Text
                 as="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onClick();
+                  onClick?.();
                 }}
                 variant={TextVariant.bodyMdMedium}
                 className="multichain-account-list-item__account-name__button"
@@ -229,60 +224,46 @@ export const AccountListItem = ({
               {shortenAddress(toChecksumHexAddress(account.address))}
             </Text>
           </Box>
-          {process.env.MULTICHAIN ? (
-            <>
-              {orderedTokenList.length > 1 ? (
-                <AvatarGroup members={orderedTokenList} limit={4} />
-              ) : (
-                <Box
-                  display={Display.Flex}
-                  alignItems={AlignItems.center}
-                  justifyContent={JustifyContent.center}
-                  gap={1}
-                >
-                  <AvatarToken
-                    src={primaryTokenImage}
-                    name={nativeCurrency}
-                    size={AvatarTokenSize.Xs}
-                    borderColor={BorderColor.borderDefault}
-                  />
-                  <Text
-                    variant={TextVariant.bodySm}
-                    color={Color.textAlternative}
-                    textAlign={TextAlign.End}
-                    as="div"
-                  >
-                    <UserPreferencedCurrencyDisplay
-                      ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                      value={balanceToTranslate}
-                      type={SECONDARY}
-                    />
-                  </Text>
-                </Box>
-              )}
-            </>
+          {orderedTokenList.length > 1 ? (
+            <AvatarGroup members={orderedTokenList} limit={4} />
           ) : (
-            <Text
-              variant={TextVariant.bodySm}
-              color={Color.textAlternative}
-              textAlign={TextAlign.End}
-              as="div"
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+              gap={1}
             >
-              <UserPreferencedCurrencyDisplay
-                ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                value={balanceToTranslate}
-                type={SECONDARY}
+              <AvatarToken
+                src={primaryTokenImage}
+                name={nativeCurrency}
+                size={AvatarTokenSize.Xs}
+                borderColor={BorderColor.borderDefault}
               />
-            </Text>
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                textAlign={TextAlign.End}
+                as="div"
+              >
+                <UserPreferencedCurrencyDisplay
+                  ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
+                  value={balanceToTranslate}
+                  type={SECONDARY}
+                />
+              </Text>
+            </Box>
           )}
         </Box>
-        {label ? (
+        {account.label ? (
           <Tag
-            label={label}
+            label={account.label}
             labelProps={{
               variant: TextVariant.bodyXs,
               color: Color.textAlternative,
             }}
+            startIconName={
+              account.keyring.type === KeyringType.snap ? IconName.Snaps : null
+            }
           />
         ) : null}
       </Box>
@@ -314,8 +295,10 @@ export const AccountListItem = ({
           account={account}
           onClose={() => setAccountOptionsMenuOpen(false)}
           isOpen={accountOptionsMenuOpen}
-          isRemovable={keyring?.type !== KeyringType.hdKeyTree}
+          isRemovable={account.keyring.type !== KeyringType.hdKeyTree}
           closeMenu={closeMenu}
+          isPinned={isPinned}
+          isHidden={isHidden}
         />
       ) : null}
     </Box>
@@ -341,6 +324,10 @@ AccountListItem.propTypes = {
         type: PropTypes.string.isRequired,
       }).isRequired,
     }).isRequired,
+    keyring: PropTypes.shape({
+      type: PropTypes.string.isRequired,
+    }).isRequired,
+    label: PropTypes.string,
   }).isRequired,
   /**
    * Represents if this account is currently selected
@@ -349,7 +336,7 @@ AccountListItem.propTypes = {
   /**
    * Function to execute when the item is clicked
    */
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func,
   /**
    * Function that closes the menu
    */
@@ -366,6 +353,14 @@ AccountListItem.propTypes = {
    * Represents if the "Options" 3-dot menu should display
    */
   showOptions: PropTypes.bool,
+  /**
+   * Represents pinned accounts
+   */
+  isPinned: PropTypes.bool,
+  /**
+   * Represents hidden accounts
+   */
+  isHidden: PropTypes.bool,
 };
 
 AccountListItem.displayName = 'AccountListItem';

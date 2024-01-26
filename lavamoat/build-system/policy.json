@@ -6,8 +6,56 @@
         "process.emitWarning": true
       },
       "packages": {
-        "@babel/code-frame>chalk": true,
-        "lavamoat>@babel/highlight": true
+        "@babel/code-frame>@babel/highlight": true,
+        "@babel/code-frame>chalk": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight": {
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "loose-envify>js-tokens": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk": {
+      "globals": {
+        "process.env.TERM": true,
+        "process.platform": true
+      },
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk>ansi-styles": true,
+        "@babel/code-frame>@babel/highlight>chalk>escape-string-regexp": true,
+        "@babel/code-frame>@babel/highlight>chalk>supports-color": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk>ansi-styles": {
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk>supports-color": {
+      "builtin": {
+        "os.release": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.versions.node.split": true
+      },
+      "packages": {
+        "@babel/code-frame>@babel/highlight>chalk>supports-color>has-flag": true
+      }
+    },
+    "@babel/code-frame>@babel/highlight>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
       }
     },
     "@babel/code-frame>chalk": {
@@ -23,7 +71,12 @@
     },
     "@babel/code-frame>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "@babel/code-frame>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "@babel/code-frame>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "@babel/code-frame>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "@babel/code-frame>chalk>supports-color": {
@@ -84,6 +137,7 @@
         "@babel/plugin-proposal-nullish-coalescing-operator": true,
         "@babel/plugin-proposal-object-rest-spread": true,
         "@babel/plugin-proposal-optional-chaining": true,
+        "@babel/plugin-transform-logical-assignment-operators": true,
         "@babel/plugin-transform-runtime": true,
         "@babel/preset-env": true,
         "@babel/preset-react": true,
@@ -251,6 +305,13 @@
         "eslint": true
       }
     },
+    "@babel/plugin-transform-logical-assignment-operators": {
+      "packages": {
+        "@babel/core": true,
+        "@babel/preset-env>@babel/helper-plugin-utils": true,
+        "@babel/preset-env>@babel/plugin-syntax-logical-assignment-operators": true
+      }
+    },
     "@babel/preset-env": {
       "globals": {
         "console.log": true,
@@ -261,6 +322,7 @@
       "packages": {
         "@babel/core>@babel/helper-compilation-targets": true,
         "@babel/core>@babel/types": true,
+        "@babel/plugin-transform-logical-assignment-operators": true,
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>@babel/helper-plugin-utils": true,
         "@babel/preset-env>@babel/helper-validator-option": true,
@@ -303,7 +365,6 @@
         "@babel/preset-env>@babel/plugin-transform-function-name": true,
         "@babel/preset-env>@babel/plugin-transform-json-strings": true,
         "@babel/preset-env>@babel/plugin-transform-literals": true,
-        "@babel/preset-env>@babel/plugin-transform-logical-assignment-operators": true,
         "@babel/preset-env>@babel/plugin-transform-member-expression-literals": true,
         "@babel/preset-env>@babel/plugin-transform-modules-amd": true,
         "@babel/preset-env>@babel/plugin-transform-modules-commonjs": true,
@@ -514,10 +575,10 @@
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-optimise-call-expression": true,
         "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-replace-supers": true,
+        "@babel/preset-env>@babel/plugin-transform-classes>globals": true,
         "depcheck>@babel/traverse>@babel/helper-environment-visitor": true,
         "depcheck>@babel/traverse>@babel/helper-function-name": true,
-        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "depcheck>@babel/traverse>globals": true
+        "depcheck>@babel/traverse>@babel/helper-split-export-declaration": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-classes>@babel/helper-annotate-as-pure": {
@@ -662,13 +723,6 @@
     "@babel/preset-env>@babel/plugin-transform-literals": {
       "packages": {
         "@babel/preset-env>@babel/helper-plugin-utils": true
-      }
-    },
-    "@babel/preset-env>@babel/plugin-transform-logical-assignment-operators": {
-      "packages": {
-        "@babel/core": true,
-        "@babel/preset-env>@babel/helper-plugin-utils": true,
-        "@babel/preset-env>@babel/plugin-syntax-logical-assignment-operators": true
       }
     },
     "@babel/preset-env>@babel/plugin-transform-member-expression-literals": {
@@ -906,7 +960,7 @@
         "@babel/core": true,
         "@babel/preset-env>@babel/compat-data": true,
         "@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider": true,
-        "@babel/preset-env>semver": true
+        "@babel/preset-env>babel-plugin-polyfill-corejs2>semver": true
       }
     },
     "@babel/preset-env>babel-plugin-polyfill-corejs2>@babel/helper-define-polyfill-provider": {
@@ -932,6 +986,12 @@
       "globals": {
         "clearTimeout": true,
         "setTimeout": true
+      }
+    },
+    "@babel/preset-env>babel-plugin-polyfill-corejs2>semver": {
+      "globals": {
+        "console": true,
+        "process": true
       }
     },
     "@babel/preset-env>babel-plugin-polyfill-corejs3": {
@@ -1080,6 +1140,16 @@
         "react>object-assign": true
       }
     },
+    "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>has-unicode": {
+      "builtin": {
+        "os.type": true
+      },
+      "globals": {
+        "process.env.LANG": true,
+        "process.env.LC_ALL": true,
+        "process.env.LC_CTYPE": true
+      }
+    },
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>string-width": {
       "packages": {
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>string-width>is-fullwidth-code-point": true,
@@ -1095,6 +1165,11 @@
     "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>strip-ansi": {
       "packages": {
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>strip-ansi>ansi-regex": true
+      }
+    },
+    "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>wide-align": {
+      "packages": {
+        "yargs>string-width": true
       }
     },
     "@lavamoat/lavapack": {
@@ -1119,12 +1194,12 @@
         "@lavamoat/lavapack>combine-source-map": true,
         "@lavamoat/lavapack>convert-source-map": true,
         "@lavamoat/lavapack>readable-stream": true,
+        "@lavamoat/lavapack>through2": true,
         "@lavamoat/lavapack>umd": true,
         "browserify>JSONStream": true,
         "eslint>espree": true,
         "lavamoat>json-stable-stringify": true,
-        "lavamoat>lavamoat-core": true,
-        "through2": true
+        "lavamoat>lavamoat-core": true
       }
     },
     "@lavamoat/lavapack>combine-source-map": {
@@ -1177,6 +1252,57 @@
         "readable-stream>util-deprecate": true
       }
     },
+    "@lavamoat/lavapack>through2": {
+      "builtin": {
+        "util.inherits": true
+      },
+      "globals": {
+        "process.nextTick": true
+      },
+      "packages": {
+        "@lavamoat/lavapack>through2>readable-stream": true,
+        "watchify>xtend": true
+      }
+    },
+    "@lavamoat/lavapack>through2>readable-stream": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
+      },
+      "globals": {
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
+        "process.stderr": true,
+        "process.stdout": true,
+        "process.version.slice": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "@lavamoat/lavapack>through2>readable-stream>safe-buffer": true,
+        "@lavamoat/lavapack>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>core-util-is": true,
+        "readable-stream>isarray": true,
+        "readable-stream>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
+      }
+    },
+    "@lavamoat/lavapack>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "@lavamoat/lavapack>through2>readable-stream>string_decoder": {
+      "packages": {
+        "@lavamoat/lavapack>through2>readable-stream>safe-buffer": true
+      }
+    },
+    "@metamask/build-utils": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
     "@metamask/eth-token-tracker>deep-equal>is-date-object": {
       "packages": {
         "koa>is-generator-function>has-tostringtag": true
@@ -1187,9 +1313,31 @@
         "Buffer": true
       }
     },
-    "@metamask/jazzicon>color>color-convert": {
+    "@metamask/utils": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true
+      },
       "packages": {
-        "@metamask/jazzicon>color>color-convert>color-name": true
+        "@metamask/utils>@noble/hashes": true,
+        "@metamask/utils>@scure/base": true,
+        "@metamask/utils>pony-cause": true,
+        "nock>debug": true,
+        "semver": true,
+        "superstruct": true
+      }
+    },
+    "@metamask/utils>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/utils>@scure/base": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true
       }
     },
     "@sentry/cli>which": {
@@ -2292,7 +2440,12 @@
         "process.versions": true
       },
       "packages": {
-        "browserify>has": true
+        "depcheck>is-core-module>hasown": true
+      }
+    },
+    "depcheck>is-core-module>hasown": {
+      "packages": {
+        "browserify>has>function-bind": true
       }
     },
     "depcheck>json5": {
@@ -2978,8 +3131,8 @@
         "eslint-plugin-prettier": true,
         "eslint-plugin-react": true,
         "eslint-plugin-react-hooks": true,
-        "eslint>@eslint/eslintrc>globals": true,
         "eslint>ajv": true,
+        "eslint>globals": true,
         "eslint>ignore": true,
         "eslint>minimatch": true,
         "mocha>strip-json-comments": true,
@@ -3326,8 +3479,16 @@
     },
     "globalthis>define-properties": {
       "packages": {
+        "globalthis>define-properties>define-data-property": true,
         "globalthis>define-properties>has-property-descriptors": true,
         "globalthis>define-properties>object-keys": true
+      }
+    },
+    "globalthis>define-properties>define-data-property": {
+      "packages": {
+        "globalthis>define-properties>has-property-descriptors": true,
+        "string.prototype.matchall>es-abstract>gopd": true,
+        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "globalthis>define-properties>has-property-descriptors": {
@@ -3488,7 +3649,12 @@
     },
     "gulp-livereload>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "gulp-livereload>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "gulp-livereload>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "gulp-livereload>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "gulp-livereload>chalk>supports-color": {
@@ -3762,7 +3928,12 @@
     },
     "gulp-rtlcss>rtlcss>chalk>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "gulp-rtlcss>rtlcss>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "gulp-rtlcss>rtlcss>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "gulp-rtlcss>rtlcss>chalk>ansi-styles>color-convert>color-name": true
       }
     },
     "gulp-rtlcss>rtlcss>chalk>supports-color": {
@@ -4922,6 +5093,7 @@
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>detect-libc": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>semver": true
       }
@@ -4979,7 +5151,18 @@
       },
       "packages": {
         "@storybook/core>@storybook/core-server>x-default-browser>default-browser-id>untildify>os-homedir": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-homedir": true,
         "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-tmpdir": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-homedir": {
+      "builtin": {
+        "os.homedir": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.getuid": true,
+        "process.platform": true
       }
     },
     "gulp-watch>chokidar>fsevents>node-pre-gyp>nopt>osenv>os-tmpdir": {
@@ -4990,6 +5173,70 @@
         "process.env.TMPDIR": true,
         "process.env.windir": true,
         "process.platform": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "util": true
+      },
+      "globals": {
+        "process.nextTick": true,
+        "process.stderr": true
+      },
+      "packages": {
+        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>console-control-strings": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>are-we-there-yet": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge": true,
+        "nyc>yargs>set-blocking": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>are-we-there-yet": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "util.inherits": true
+      },
+      "packages": {
+        "koa>delegates": true,
+        "readable-stream": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge": {
+      "builtin": {
+        "util.format": true
+      },
+      "globals": {
+        "clearInterval": true,
+        "process": true,
+        "setImmediate": true,
+        "setInterval": true
+      },
+      "packages": {
+        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>console-control-strings": true,
+        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>has-unicode": true,
+        "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>wide-align": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>aproba": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi": true,
+        "nyc>signal-exit": true,
+        "react>object-assign": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width": {
+      "packages": {
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width>is-fullwidth-code-point": true,
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi": true,
+        "gulp>gulp-cli>yargs>string-width>code-point-at": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>string-width>is-fullwidth-code-point": {
+      "packages": {
+        "gulp>gulp-cli>yargs>string-width>is-fullwidth-code-point>number-is-nan": true
+      }
+    },
+    "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi": {
+      "packages": {
+        "gulp-watch>chokidar>fsevents>node-pre-gyp>npmlog>gauge>strip-ansi>ansi-regex": true
       }
     },
     "gulp-watch>chokidar>fsevents>node-pre-gyp>rimraf": {
@@ -6111,25 +6358,13 @@
       "packages": {
         "@lavamoat/lavapack": true,
         "browserify>browser-resolve": true,
+        "browserify>concat-stream": true,
         "duplexify": true,
-        "lavamoat-browserify>concat-stream": true,
         "lavamoat-browserify>readable-stream": true,
         "lavamoat-browserify>through2": true,
         "lavamoat>@lavamoat/aa": true,
         "lavamoat>json-stable-stringify": true,
         "lavamoat>lavamoat-core": true
-      }
-    },
-    "lavamoat-browserify>concat-stream": {
-      "globals": {
-        "Buffer.concat": true,
-        "Buffer.isBuffer": true
-      },
-      "packages": {
-        "browserify>concat-stream>typedarray": true,
-        "lavamoat-browserify>readable-stream": true,
-        "pumpify>inherits": true,
-        "terser>source-map-support>buffer-from": true
       }
     },
     "lavamoat-browserify>readable-stream": {
@@ -6159,50 +6394,42 @@
         "process.nextTick": true
       },
       "packages": {
-        "lavamoat-browserify>readable-stream": true
+        "lavamoat-browserify>through2>readable-stream": true,
+        "watchify>xtend": true
       }
     },
-    "lavamoat>@babel/highlight": {
-      "packages": {
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>@babel/highlight>chalk": true,
-        "loose-envify>js-tokens": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk": {
-      "globals": {
-        "process.env.TERM": true,
-        "process.platform": true
-      },
-      "packages": {
-        "lavamoat>@babel/highlight>chalk>ansi-styles": true,
-        "lavamoat>@babel/highlight>chalk>escape-string-regexp": true,
-        "lavamoat>@babel/highlight>chalk>supports-color": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>ansi-styles": {
-      "packages": {
-        "@metamask/jazzicon>color>color-convert": true
-      }
-    },
-    "lavamoat>@babel/highlight>chalk>supports-color": {
+    "lavamoat-browserify>through2>readable-stream": {
       "builtin": {
-        "os.release": true
+        "events.EventEmitter": true,
+        "stream": true,
+        "util": true
       },
       "globals": {
-        "process.env": true,
-        "process.platform": true,
+        "process.browser": true,
+        "process.env.READABLE_STREAM": true,
         "process.stderr": true,
         "process.stdout": true,
-        "process.versions.node.split": true
+        "process.version.slice": true,
+        "setImmediate": true
       },
       "packages": {
-        "lavamoat>@babel/highlight>chalk>supports-color>has-flag": true
+        "lavamoat-browserify>through2>readable-stream>safe-buffer": true,
+        "lavamoat-browserify>through2>readable-stream>string_decoder": true,
+        "pumpify>inherits": true,
+        "readable-stream>core-util-is": true,
+        "readable-stream>isarray": true,
+        "readable-stream>process-nextick-args": true,
+        "readable-stream>util-deprecate": true
       }
     },
-    "lavamoat>@babel/highlight>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+    "lavamoat-browserify>through2>readable-stream>safe-buffer": {
+      "builtin": {
+        "buffer": true
+      }
+    },
+    "lavamoat-browserify>through2>readable-stream>string_decoder": {
+      "packages": {
+        "lavamoat-browserify>through2>readable-stream>safe-buffer": true
       }
     },
     "lavamoat>@lavamoat/aa": {
@@ -6224,8 +6451,8 @@
     "lavamoat>lavamoat-core": {
       "builtin": {
         "events": true,
-        "fs.existsSync": true,
         "fs.readFileSync": true,
+        "node:fs/promises.readFile": true,
         "path.extname": true,
         "path.join": true
       },
@@ -6396,6 +6623,13 @@
       },
       "packages": {
         "chalk>supports-color>has-flag": true
+      }
+    },
+    "mockttp>portfinder>mkdirp": {
+      "builtin": {
+        "fs": true,
+        "path.dirname": true,
+        "path.resolve": true
       }
     },
     "nock>debug": {
@@ -7688,15 +7922,15 @@
         "WeakRef": true
       },
       "packages": {
-        "browserify>has": true,
         "browserify>has>function-bind": true,
+        "depcheck>is-core-module>hasown": true,
         "string.prototype.matchall>es-abstract>has-proto": true,
         "string.prototype.matchall>has-symbols": true
       }
     },
     "string.prototype.matchall>internal-slot": {
       "packages": {
-        "browserify>has": true,
+        "depcheck>is-core-module>hasown": true,
         "string.prototype.matchall>get-intrinsic": true,
         "string.prototype.matchall>side-channel": true
       }
@@ -7705,7 +7939,14 @@
       "packages": {
         "globalthis>define-properties": true,
         "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>regexp.prototype.flags>functions-have-names": true
+        "string.prototype.matchall>regexp.prototype.flags>set-function-name": true
+      }
+    },
+    "string.prototype.matchall>regexp.prototype.flags>set-function-name": {
+      "packages": {
+        "globalthis>define-properties>define-data-property": true,
+        "globalthis>define-properties>has-property-descriptors": true,
+        "string.prototype.matchall>es-abstract>function.prototype.name>functions-have-names": true
       }
     },
     "string.prototype.matchall>side-channel": {
@@ -8005,14 +8246,7 @@
         "path.dirname": true
       },
       "packages": {
-        "stylelint>file-entry-cache>flat-cache>write>mkdirp": true
-      }
-    },
-    "stylelint>file-entry-cache>flat-cache>write>mkdirp": {
-      "builtin": {
-        "fs": true,
-        "path.dirname": true,
-        "path.resolve": true
+        "mockttp>portfinder>mkdirp": true
       }
     },
     "stylelint>global-modules": {
@@ -8373,7 +8607,12 @@
     },
     "stylelint>table>slice-ansi>ansi-styles": {
       "packages": {
-        "@metamask/jazzicon>color>color-convert": true
+        "stylelint>table>slice-ansi>ansi-styles>color-convert": true
+      }
+    },
+    "stylelint>table>slice-ansi>ansi-styles>color-convert": {
+      "packages": {
+        "stylelint>table>slice-ansi>ansi-styles>color-convert>color-name": true
       }
     },
     "stylelint>table>string-width": {

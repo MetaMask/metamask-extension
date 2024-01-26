@@ -4,7 +4,7 @@ import {
   TransactionEnvelopeType,
   TransactionStatus,
   TransactionType,
-} from '../../../shared/constants/transaction';
+} from '@metamask/transaction-controller';
 import {
   GasRecommendations,
   EditGasModes,

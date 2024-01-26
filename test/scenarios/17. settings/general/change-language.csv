@@ -1,0 +1,15 @@
+Verify that the application handles different local times appropriately
+
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown,
+2,Proceed to Unlock the wallet.,password (8 characters min),,
+3,Click on the right corner setting(three dots).,,General settings page appears,
+4,Check the default language selected in the drop down For example :- local time in the Mac machine is set to 3:30 pm EST,,Default selected language should be English,
+
+Verify that the user can scroll through the language dropdown after resizing the browser window.
+
+Step,Test Steps,Test Data,Expected Result,Notes
+1,Open the extension.,,The Welcome Back screen is shown,
+2,Proceed to Unlock the wallet.,password (8 characters min),,
+3,Click on the right corner setting(three dots).,,General settings page appears,
+4,Check the language drop down has a scroll functionality and resize the browser window,,Drop down works as expected and the scroll is working,

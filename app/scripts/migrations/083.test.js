@@ -20,7 +20,6 @@ describe('migration #83', () => {
   beforeEach(() => {
     v4.mockImplementationOnce(() => 'network-configuration-id-1')
       .mockImplementationOnce(() => 'network-configuration-id-2')
-      .mockImplementationOnce(() => 'network-configuration-id-3')
       .mockImplementationOnce(() => 'network-configuration-id-4');
   });
 
@@ -66,16 +65,6 @@ describe('migration #83', () => {
                 'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
               ticker: 'ETH',
             },
-            'network-configuration-id-3': {
-              chainId: '0x4e454152',
-              nickname: 'Aurora Mainnet',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://aurorascan.dev/',
-              },
-              rpcUrl:
-                'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
-              ticker: 'Aurora ETH',
-            },
             'network-configuration-id-4': {
               chainId: '0x38',
               nickname:
@@ -118,17 +107,6 @@ describe('migration #83', () => {
                 'https://arbitrum-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
               ticker: 'ETH',
               id: 'network-configuration-id-2',
-            },
-            'network-configuration-id-3': {
-              chainId: '0x4e454152',
-              nickname: 'Aurora Mainnet',
-              rpcPrefs: {
-                blockExplorerUrl: 'https://aurorascan.dev/',
-              },
-              rpcUrl:
-                'https://aurora-mainnet.infura.io/v3/373266a93aab4acda48f89d4fe77c748',
-              ticker: 'Aurora ETH',
-              id: 'network-configuration-id-3',
             },
             'network-configuration-id-4': {
               chainId: '0x38',

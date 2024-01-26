@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Adicionar NFTs"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Descubra opções para manter sua conta segura com o MetaMask Snaps"
-  },
   "addSuggestedNFTs": {
     "message": "Adicionar NFTs sugeridos"
   },
@@ -658,7 +655,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "A rede com ID de cadeia $1 pode usar um símbolo de moeda ($2) diferente do que você inseriu. Por favor, verifique antes de continuar.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Escolha sua rede"
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "Depositar"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Saiba mais"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Devido às mudanças de protocolo do Ethereum, as redes de teste Rinkeby, Ropsten e Kovan podem não funcionar com a mesma confiança e serão descontinuadas em breve."
-  },
   "description": {
     "message": "Descrição"
   },
@@ -1398,12 +1389,6 @@
   "enableFromSettings": {
     "message": " Ative nas Configurações."
   },
-  "enableOpenSeaAPI": {
-    "message": "Habilitar API do OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Use a API OpenSea para recuperar dados de NFTs. A detecção automática de NFTs depende da API OpenSea e não estará disponível quando essa opção estiver desativada."
-  },
   "enableSnap": {
     "message": "Ativar"
   },
@@ -1433,12 +1418,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Caractere inválido para ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nome ENS não encontrado na rede atual. Tente alternar para a Mainnet da Ethereum."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "A rede não suporta ENS"
   },
   "ensRegistrationError": {
     "message": "Erro no registro do nome ENS"
@@ -1673,42 +1652,19 @@
     "message": "$1 h",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 minutos",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 min",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Talvez em $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Provavelmente em < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 segundos",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 s",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Muito provavelmente em < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gás usado"
   },
   "general": {
     "message": "Geral"
-  },
-  "getStarted": {
-    "message": "Começar"
   },
   "globalTitle": {
     "message": "Menu global"
@@ -2112,25 +2068,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Ative \"dados de contrato inteligente\" ou \"assinatura cega\" no seu dispositivo Ledger."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Ative Utilizar Ledger Live em Configurações > Avançado."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Certifique-se de conectar o seu dispositivo Ledger e de selecionar o app Ethereum."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Abra e desbloqueie o Ledger Live App."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Personalize como conectar sua Ledger à MetaMask. Recomenda-se utilizar $1, mas há outras opções. Leia mais aqui: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Ocorreu uma falha ao abrir o dispositivo Ledger. Seu Ledger pode não estar conectado a outros softwares. Feche o Ledger Live ou outros aplicativos conectados ao seu dispositivo Ledger e tente reconectar."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
@@ -2140,9 +2082,6 @@
   },
   "ledgerTimeout": {
     "message": "O Ledger Live está demorando muito para responder ou a conexão expirou. Certifique-se de que o aplicativo do Ledger Live esteja aberto e que seu dispositivo esteja desbloqueado."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Se o seu Ledger Live App estiver aberto, desconecte qualquer conexão aberta com o Ledger Live e feche o Ledger Live App."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "O dispositivo Ledger não foi conectado. Se deseja conectar seu Ledger, clique em \"Continuar\" novamente e aprove a conexão HID",
@@ -3207,10 +3146,6 @@
   "portfolioDashboard": {
     "message": "Painel do portfólio"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Tipo de conexão preferencial com o Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Preparando troca..."
   },
@@ -3532,9 +3467,6 @@
   "searchAccounts": {
     "message": "Pesquisar contas"
   },
-  "searchResults": {
-    "message": "Resultados da pesquisa"
-  },
   "secretRecoveryPhrase": {
     "message": "Frase de Recuperação Secreta"
   },
@@ -3790,9 +3722,6 @@
   "smartContracts": {
     "message": "Contratos inteligentes"
   },
-  "smartSwap": {
-    "message": "Troca inteligente"
-  },
   "smartSwapsAreHere": {
     "message": "As trocas inteligentes chegaram!"
   },
@@ -3805,9 +3734,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "As trocas inteligentes estão temporariamente indisponíveis."
   },
-  "snapConfigure": {
-    "message": "Configurar"
-  },
   "snapConnectionWarning": {
     "message": "$1 deseja conectar-se a $2. Continue apenas se você confia no site.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3816,49 +3742,8 @@
     "message": "Esse conteúdo vem de $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Escolha como proteger sua nova conta usando o MetaMask Snaps."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Criar uma conta $1",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Da MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Auditoria"
-  },
-  "snapDetailDeveloper": {
-    "message": "Desenvolvedor"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Atualizado"
-  },
-  "snapDetailManageSnap": {
-    "message": "Gerenciar snap"
-  },
-  "snapDetailTags": {
-    "message": "Tags"
-  },
-  "snapDetailVersion": {
-    "message": "Versão"
-  },
   "snapDetailWebsite": {
     "message": "Site"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Criar uma conta de snaps"
-  },
-  "snapDetailsInstalled": {
-    "message": "Instalado"
-  },
-  "snapInstall": {
-    "message": "Instalar snap"
   },
   "snapInstallRequest": {
     "message": "Instalar $1 concede as permissões a seguir. Continue apenas se você confia em $1.",
@@ -3877,9 +3762,6 @@
   "snapInstallationErrorTitle": {
     "message": "Falha na instalação",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "Auditado"
   },
   "snapResultError": {
     "message": "Erro"
@@ -3901,18 +3783,11 @@
     "message": "Falha na atualização",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1 deseja atualizar $2 para $3, o que concede as permissões a seguir. Continue apenas se você confia em $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "Atualização concluída"
   },
   "snaps": {
     "message": "Snaps"
-  },
-  "snapsInsightLoading": {
-    "message": "Carregando insight da transação..."
   },
   "snapsInvalidUIError": {
     "message": "A IU especificada pelo snap é inválida."
@@ -4831,9 +4706,6 @@
   "transactionDetailGasHeading": {
     "message": "Taxa de gás estimada"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "estimada"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Saiba mais sobre as taxas de gás"
   },
@@ -4969,12 +4841,6 @@
   "unknown": {
     "message": "Desconhecido"
   },
-  "unknownCameraError": {
-    "message": "Houve um erro ao tentar acessar sua câmera. Tente novamente..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ops! Algo deu errado...."
-  },
   "unknownCollection": {
     "message": "Coleção sem nome"
   },
@@ -5054,10 +4920,6 @@
   },
   "verifyContractDetails": {
     "message": "Verificar dados do terceiro"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Os decimais do token podem ser encontrados no $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Verifique esse token no $1",

@@ -2,10 +2,10 @@ import {
   constructPermission,
   PermissionType,
 } from '@metamask/permission-controller';
-///: BEGIN:ONLY_INCLUDE_IN(snaps)
+///: BEGIN:ONLY_INCLUDE_IF(snaps)
 import { endowmentCaveatSpecifications as snapsEndowmentCaveatSpecifications } from '@metamask/snaps-controllers';
 import { caveatSpecifications as snapsCaveatsSpecifications } from '@metamask/snaps-rpc-methods';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import {
   CaveatTypes,
   RestrictedMethods,
@@ -59,10 +59,10 @@ export const getCaveatSpecifications = ({ getInternalAccounts }) => {
         validateCaveatAccounts(caveat.value, getInternalAccounts),
     },
 
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     ...snapsCaveatsSpecifications,
     ...snapsEndowmentCaveatSpecifications,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 
@@ -150,13 +150,13 @@ export const getPermissionSpecifications = ({
               `Missing identity for address: "${secondAddress}".`,
             );
           } else if (
-            firstAccount.metadata?.lastSelected ===
-            secondAccount.metadata?.lastSelected
+            firstAccount.metadata.lastSelected ===
+            secondAccount.metadata.lastSelected
           ) {
             return 0;
-          } else if (firstAccount.metadata?.lastSelected === undefined) {
+          } else if (firstAccount.metadata.lastSelected === undefined) {
             return 1;
-          } else if (secondAccount.metadata?.lastSelected === undefined) {
+          } else if (secondAccount.metadata.lastSelected === undefined) {
             return -1;
           }
 
@@ -208,7 +208,7 @@ function validateCaveatAccounts(accounts, getInternalAccounts) {
     }
 
     if (
-      !internalAccounts.find(
+      !internalAccounts.some(
         (internalAccount) =>
           internalAccount.address.toLowerCase() === address.toLowerCase(),
       )

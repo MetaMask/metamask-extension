@@ -1,20 +1,20 @@
 import { connect } from 'react-redux';
 import {
   getInternalAccounts,
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getPermissions,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../selectors';
 import PermissionPageContainer from './permission-page-container.component';
 
 const mapStateToProps = (state, ownProps) => {
   const { selectedAccounts } = ownProps;
-  ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+  ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   const currentPermissions = getPermissions(
     state,
     ownProps.request.metadata?.origin,
   );
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   const allInternalAccounts = getInternalAccounts(state);
   const allInternalAccountsSelected =
     Object.keys(selectedAccounts).length ===
@@ -22,9 +22,9 @@ const mapStateToProps = (state, ownProps) => {
 
   return {
     allInternalAccountsSelected,
-    ///: BEGIN:ONLY_INCLUDE_IN(snaps)
+    ///: BEGIN:ONLY_INCLUDE_IF(snaps)
     currentPermissions,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 };
 

@@ -71,8 +71,12 @@ export default class SendAssetRow extends Component {
   async componentDidMount() {
     const sendableTokens = this.props.tokens.filter((token) => !token.isERC721);
     const sendableNftsNotSorted = this.props.nfts.filter(
-      (nft) => nft.isCurrentlyOwned && nft.standard === TokenStandard.ERC721,
+      (nft) =>
+        nft.isCurrentlyOwned &&
+        (nft.standard === TokenStandard.ERC721 ||
+          nft.standard === TokenStandard.ERC1155),
     );
+
     // Group and sort the sendableNfts Array
     const sendableNfts = chain(sendableNftsNotSorted)
       .groupBy('address')

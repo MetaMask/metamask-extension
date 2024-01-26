@@ -9,6 +9,7 @@ import {
   NETWORK_TYPES,
   OPTIMISM_DISPLAY_NAME,
 } from '../../shared/constants/network';
+import { SURVEY_DATE, SURVEY_GMT } from '../helpers/constants/survey';
 import * as selectors from './selectors';
 
 jest.mock('../../shared/modules/network.utils', () => {
@@ -53,7 +54,7 @@ describe('Selectors', () => {
             },
           },
         }),
-      ).toStrictEqual(undefined);
+      ).toBeUndefined();
     });
 
     it('returns selectedAccount', () => {
@@ -111,269 +112,6 @@ describe('Selectors', () => {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3'
         ],
       );
-    });
-  });
-
-  describe('#getMetaMaskAccounts', () => {
-    const mockInternalAccount = {
-      address: '0x123',
-      id: '9b1cbd2e-87a7-421d-9090-5970ae70ab72',
-      metadata: {
-        name: 'Test Account 3',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      methods: [
-        'personal_sign',
-        'eth_sign',
-        'eth_signTransaction',
-        'eth_signTypedData_v1',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-      ],
-      type: 'eip155:eoa',
-    };
-
-    const mockInternalAccounts = {
-      accounts: {
-        [mockInternalAccount.id]: mockInternalAccount,
-      },
-      selectedAccount: '9b1cbd2e-87a7-421d-9090-5970ae70ab72',
-    };
-
-    const mockAccounts = {
-      '0x123': {
-        address: '0x123',
-        balance: '0x1',
-      },
-    };
-
-    const mockChainId = '0x1';
-
-    const mockCachedBalances = {
-      [mockChainId]: {
-        '0x123': {
-          address: '0x123',
-          balance: '0x1',
-        },
-      },
-    };
-
-    it('returns an empty object if there are no accounts', () => {
-      expect(
-        selectors.getMetaMaskAccounts({
-          metamask: {
-            internalAccounts: { accounts: {} },
-            providerConfig: { chainId: '0x0' },
-            cachedBalances: {},
-          },
-        }),
-      ).toStrictEqual({});
-    });
-
-    it('returns accounts with balances', () => {
-      const expectedMetaMaskAccounts = {
-        [mockInternalAccount.address]: {
-          ...mockInternalAccount,
-          balance: mockAccounts['0x123'].balance,
-        },
-      };
-      expect(
-        selectors.getMetaMaskAccounts({
-          metamask: {
-            accounts: mockAccounts,
-            internalAccounts: mockInternalAccounts,
-            providerConfig: {
-              chainId: '0x1',
-            },
-            cachedBalances: {},
-          },
-        }),
-      ).toStrictEqual(expectedMetaMaskAccounts);
-    });
-
-    it('returns accounts that uses balance instead of cache if both are presetn', () => {
-      const expectedMetaMaskAccounts = {
-        [mockInternalAccount.address]: {
-          ...mockInternalAccount,
-          balance: mockAccounts['0x123'].balance,
-        },
-      };
-      expect(
-        selectors.getMetaMaskAccounts({
-          metamask: {
-            accounts: mockAccounts,
-            internalAccounts: mockInternalAccounts,
-            providerConfig: {
-              chainId: '0x1',
-            },
-            cachedBalances: mockCachedBalances,
-          },
-        }),
-      ).toStrictEqual(expectedMetaMaskAccounts);
-    });
-
-    it("returns object of accounts with undefined balance if there isn't any cached balance", () => {
-      const expectedMetaMaskAccounts = {
-        [mockInternalAccount.address]: {
-          ...mockInternalAccount,
-          balance: undefined,
-        },
-      };
-      expect(
-        selectors.getMetaMaskAccounts({
-          metamask: {
-            accounts: {},
-            internalAccounts: mockInternalAccounts,
-            providerConfig: {
-              chainId: '0x1',
-            },
-            cachedBalances: {},
-          },
-        }),
-      ).toStrictEqual(expectedMetaMaskAccounts);
-    });
-
-    it('returns an object of accounts with 0 balance the chainId is unknown', () => {
-      const expectedMetaMaskAccounts = {
-        [mockInternalAccount.address]: {
-          ...mockInternalAccount,
-          balance: '0x1',
-        },
-      };
-      expect(
-        selectors.getMetaMaskAccounts({
-          metamask: {
-            accounts: mockAccounts,
-            internalAccounts: mockInternalAccounts,
-            providerConfig: {
-              chainId: '0x11111111',
-            },
-            cachedBalances: {},
-          },
-        }),
-      ).toStrictEqual(expectedMetaMaskAccounts);
-    });
-  });
-
-  describe('#getMetaMaskAccountsOrdered', () => {
-    let mockInternalAccounts, mockAccounts;
-
-    const mockHDInternalAccount = {
-      address: '0x11111',
-      id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
-      metadata: {
-        name: 'Account 1',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      methods: [...Object.values(EthMethod)],
-      type: EthAccountType.Eoa,
-    };
-    const mockHDInternalAccount2 = {
-      address: '0x22222',
-      id: '1d2fac3d-d046-4452-b062-ab982f4a5572',
-      metadata: {
-        name: 'Account 2',
-        keyring: {
-          type: 'HD Key Tree',
-        },
-      },
-      options: {},
-      methods: [...Object.values(EthMethod)],
-      type: EthAccountType.Eoa,
-    };
-    const mockLedgerInternalAccount = {
-      address: '0x333333',
-      id: '4dc06564-4ce5-42a2-a7c1-ce1735e9b3d2',
-      metadata: {
-        name: 'Ledger 1',
-        keyring: {
-          type: 'Ledger Hardware',
-        },
-      },
-      options: {},
-      methods: [...Object.values(EthMethod)],
-      type: EthAccountType.Eoa,
-    };
-    const mockTrezorInternalAccount = {
-      address: '0x44444',
-      id: '58ba6dbd-d50d-4e02-88dc-b871caddcc73',
-      metadata: {
-        name: 'Trezor 1',
-        keyring: {
-          type: 'Trezor Hardware',
-        },
-      },
-      options: {},
-      methods: [...Object.values(EthMethod)],
-      type: EthAccountType.Eoa,
-    };
-
-    beforeEach(() => {
-      mockInternalAccounts = {
-        accounts: {
-          [mockTrezorInternalAccount.id]: mockTrezorInternalAccount,
-          [mockLedgerInternalAccount.id]: mockLedgerInternalAccount,
-          [mockHDInternalAccount.id]: mockHDInternalAccount,
-          [mockHDInternalAccount2.id]: mockHDInternalAccount2,
-        },
-        selectedAccount: mockHDInternalAccount.id,
-      };
-
-      mockAccounts = {
-        [mockHDInternalAccount.address]: {
-          address: mockHDInternalAccount.address,
-          balance: '0x1',
-        },
-        [mockHDInternalAccount2.address]: {
-          address: mockHDInternalAccount2.address,
-          balance: '0x1',
-        },
-        [mockLedgerInternalAccount.address]: {
-          address: mockLedgerInternalAccount.address,
-          balance: '0x1',
-        },
-        [mockTrezorInternalAccount.address]: {
-          address: mockTrezorInternalAccount.address,
-          balance: '0x1',
-        },
-      };
-    });
-    it('should return an ordered list of accounts by keyring', () => {
-      console.log(
-        selectors.getMetaMaskAccountsOrdered({
-          metamask: {
-            accounts: mockAccounts,
-            internalAccounts: mockInternalAccounts,
-            providerConfig: {
-              chainId: '0x11111111',
-            },
-            cachedBalances: {},
-          },
-        }),
-      );
-      expect(
-        selectors.getMetaMaskAccountsOrdered({
-          metamask: {
-            accounts: mockAccounts,
-            internalAccounts: mockInternalAccounts,
-            providerConfig: {
-              chainId: '0x11111111',
-            },
-            cachedBalances: {},
-          },
-        }),
-      ).toStrictEqual([
-        { ...mockHDInternalAccount, balance: '0x1' },
-        { ...mockHDInternalAccount2, balance: '0x1' },
-        { ...mockLedgerInternalAccount, balance: '0x1' },
-        { ...mockTrezorInternalAccount, balance: '0x1' },
-      ]);
     });
   });
 
@@ -1127,6 +865,12 @@ describe('Selectors', () => {
           '5.1.2': {
             checksum: 'L1k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
           },
+          '5.1.3': {
+            checksum: '21k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+          },
+          '6.0.0': {
+            checksum: '31k+dT9Q+y3KfIqzaH09MpDZVPS9ZowEh9w01ZMTWMU=',
+          },
         },
         metadata: expect.objectContaining({
           website: 'https://snaps.consensys.io/',
@@ -1134,5 +878,323 @@ describe('Selectors', () => {
         }),
       }),
     );
+  });
+
+  it('#getSnapLatestVersion', () => {
+    const mockSnapId = 'npm:@metamask/test-snap-bip44';
+    expect(selectors.getSnapLatestVersion(mockState, mockSnapId)).toStrictEqual(
+      '6.0.0',
+    );
+  });
+
+  it('#getAllSnapAvailableUpdates', () => {
+    const snapMap = selectors.getAllSnapAvailableUpdates(mockState);
+    expect(Object.fromEntries(snapMap)).toStrictEqual({
+      'npm:@metamask/test-snap-bip44': true,
+    });
+  });
+
+  it('#getAnySnapUpdateAvailable', () => {
+    expect(selectors.getAnySnapUpdateAvailable(mockState)).toStrictEqual(true);
+  });
+
+  describe('#getShowSurveyToast', () => {
+    const realDateNow = Date.now;
+
+    afterEach(() => {
+      Date.now = realDateNow;
+    });
+
+    it('shows the survey link when not yet seen and within time bounds', () => {
+      Date.now = () =>
+        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
+      const result = selectors.getShowSurveyToast({
+        metamask: {
+          surveyLinkLastClickedOrClosed: null,
+        },
+      });
+      expect(result).toStrictEqual(true);
+    });
+
+    it('does not show the survey link when seen and within time bounds', () => {
+      Date.now = () =>
+        new Date(`${SURVEY_DATE} 12:25:00 ${SURVEY_GMT}`).getTime();
+      const result = selectors.getShowSurveyToast({
+        metamask: {
+          surveyLinkLastClickedOrClosed: 123456789,
+        },
+      });
+      expect(result).toStrictEqual(false);
+    });
+
+    it('does not show the survey link before time bounds', () => {
+      Date.now = () =>
+        new Date(`${SURVEY_DATE} 11:25:00 ${SURVEY_GMT}`).getTime();
+      const result = selectors.getShowSurveyToast({
+        metamask: {
+          surveyLinkLastClickedOrClosed: null,
+        },
+      });
+      expect(result).toStrictEqual(false);
+    });
+
+    it('does not show the survey link after time bounds', () => {
+      Date.now = () =>
+        new Date(`${SURVEY_DATE} 14:25:00 ${SURVEY_GMT}`).getTime();
+      const result = selectors.getShowSurveyToast({
+        metamask: {
+          surveyLinkLastClickedOrClosed: null,
+        },
+      });
+      expect(result).toStrictEqual(false);
+    });
+  });
+
+  it('#getUpdatedAndSortedAccounts', () => {
+    const pinnedAccountState = {
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        pinnedAccountList: [
+          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+          '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+        ],
+        accounts: {
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            balance: '0x0',
+          },
+          '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
+            address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+            balance: '0x0',
+          },
+          '0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+            address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+            balance: '0x0',
+          },
+          '0xeb9e64b93097bc15f01f13eae97015c57ab64823': {
+            address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+            balance: '0x0',
+          },
+          '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+            address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+            balance: '0x0',
+          },
+        },
+      },
+    };
+    const expectedResult = [
+      {
+        address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+        balance: '0x0',
+        id: '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+        metadata: {
+          name: 'Test Account 2',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+        pinned: true,
+        hidden: false,
+      },
+
+      {
+        address: '0xeb9e64b93097bc15f01f13eae97015c57ab64823',
+        balance: '0x0',
+        id: '784225f4-d30b-4e77-a900-c8bbce735b88',
+        metadata: {
+          name: 'Test Account 3',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+        pinned: true,
+        hidden: false,
+      },
+      {
+        id: '694225f4-d30b-4e77-a900-c8bbce735b42',
+        metadata: {
+          name: 'Test Account 4',
+          keyring: {
+            type: 'Custody test',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+        address: '0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281',
+        balance: '0x0',
+        pinned: false,
+        hidden: false,
+      },
+      {
+        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+        metadata: {
+          name: 'Test Account',
+          keyring: {
+            type: 'HD Key Tree',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+        balance: '0x0',
+        pinned: false,
+        hidden: false,
+      },
+      {
+        address: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+        id: '15e69915-2a1a-4019-93b3-916e11fd432f',
+        metadata: {
+          name: 'Ledger Hardware 2',
+          keyring: {
+            type: 'Ledger Hardware',
+          },
+        },
+        options: {},
+        methods: [
+          'personal_sign',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData_v1',
+          'eth_signTypedData_v3',
+          'eth_signTypedData_v4',
+        ],
+        type: 'eip155:eoa',
+        balance: '0x0',
+        pinned: false,
+        hidden: false,
+      },
+    ];
+    expect(
+      selectors.getUpdatedAndSortedAccounts(pinnedAccountState),
+    ).toStrictEqual(expectedResult);
+  });
+});
+
+describe('#getKeyringSnapAccounts', () => {
+  it('returns an empty array if no keyring snap accounts exist', () => {
+    const state = {
+      metamask: {
+        internalAccounts: {
+          accounts: {
+            1: {
+              address: '0x123456789',
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'HD Key Tree',
+                },
+              },
+            },
+            2: {
+              address: '0x987654321',
+              metadata: {
+                name: 'Account 2',
+                keyring: {
+                  type: 'Simple Key Pair',
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    expect(selectors.getKeyringSnapAccounts(state)).toStrictEqual([]);
+  });
+
+  it('returns an array of keyring snap accounts', () => {
+    const state = {
+      metamask: {
+        internalAccounts: {
+          accounts: {
+            'mock-id-1': {
+              address: '0x123456789',
+              metadata: {
+                name: 'Account 1',
+                keyring: {
+                  type: 'Ledger',
+                },
+              },
+            },
+            'mock-id-2': {
+              address: '0x987654321',
+              metadata: {
+                name: 'Account 2',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+              },
+            },
+            'mock-id-3': {
+              address: '0xabcdef123',
+              metadata: {
+                name: 'Account 3',
+                keyring: {
+                  type: 'Snap Keyring',
+                },
+              },
+            },
+          },
+        },
+      },
+    };
+
+    expect(selectors.getKeyringSnapAccounts(state)).toStrictEqual([
+      {
+        address: '0x987654321',
+        metadata: {
+          name: 'Account 2',
+          keyring: {
+            type: 'Snap Keyring',
+          },
+        },
+      },
+      {
+        address: '0xabcdef123',
+        metadata: {
+          name: 'Account 3',
+          keyring: {
+            type: 'Snap Keyring',
+          },
+        },
+      },
+    ]);
   });
 });

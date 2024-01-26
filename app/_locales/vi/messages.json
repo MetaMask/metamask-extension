@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Thêm NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Khám phá các tùy chọn để đảm bảo an toàn cho tài khoản của bạn với MetaMask Snap"
-  },
   "addSuggestedNFTs": {
     "message": "Thêm NFT được đề xuất"
   },
@@ -658,7 +655,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "Mạng có ID chuỗi $1 có thể sử dụng một ký hiệu tiền tệ ($2) khác với ký hiệu mà bạn đã nhập. Vui lòng xác minh trước khi tiếp tục.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chooseYourNetwork": {
     "message": "Chọn mạng của bạn"
@@ -1127,12 +1124,6 @@
   "deposit": {
     "message": "Nạp"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Tìm hiểu thêm"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "Do những thay đổi trong giao thức của Ethereum: các mạng thử nghiệm Rinkeby, Ropsten và Kovan có thể không hoạt động đáng tin cậy và sẽ sớm bị ngừng sử dụng."
-  },
   "description": {
     "message": "Mô tả"
   },
@@ -1398,12 +1389,6 @@
   "enableFromSettings": {
     "message": " Bật trong Cài Đặt."
   },
-  "enableOpenSeaAPI": {
-    "message": "Bật API OpenSea"
-  },
-  "enableOpenSeaAPIDescription": {
-    "message": "Sử dụng API của OpenSea để tìm nạp dữ liệu NFT. Tính năng tự động phát hiện NFT dựa vào API của OpenSea và sẽ không khả dụng nếu tính năng này bị tắt."
-  },
   "enableSnap": {
     "message": "Bật"
   },
@@ -1433,12 +1418,6 @@
   },
   "ensIllegalCharacter": {
     "message": "Ký tự không hợp lệ đối với ENS."
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Không tìm thấy tên ENS trên mạng hiện tại. Đang chuyển sang Ethereum Mainnet."
-  },
-  "ensNotSupportedOnNetwork": {
-    "message": "Mạng không hỗ trợ ENS"
   },
   "ensRegistrationError": {
     "message": "Lỗi khi đăng ký tên ENS"
@@ -1673,42 +1652,19 @@
     "message": "$1 giờ",
     "description": "$1 represents a number of hours"
   },
-  "gasTimingMinutes": {
-    "message": "$1 phút",
-    "description": "$1 represents a number of minutes"
-  },
   "gasTimingMinutesShort": {
     "message": "$1 phút",
     "description": "$1 represents a number of minutes"
   },
-  "gasTimingNegative": {
-    "message": "Có thể sau $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingPositive": {
-    "message": "Có khả năng sau < $1",
-    "description": "$1 represents an amount of time"
-  },
-  "gasTimingSeconds": {
-    "message": "$1 giây",
-    "description": "$1 represents a number of seconds"
-  },
   "gasTimingSecondsShort": {
     "message": "$1 giây",
     "description": "$1 represents a number of seconds"
-  },
-  "gasTimingVeryPositive": {
-    "message": "Nhiều khả năng sau < $1",
-    "description": "$1 represents an amount of time"
   },
   "gasUsed": {
     "message": "Gas đã dùng"
   },
   "general": {
     "message": "Chung"
-  },
-  "getStarted": {
-    "message": "Bắt đầu"
   },
   "globalTitle": {
     "message": "Trình đơn chung"
@@ -2112,25 +2068,11 @@
   "ledgerConnectionInstructionStepFour": {
     "message": "Bật \"dữ liệu hợp đồng thông minh\" hoặc \"ký mù\" trên thiết bị Ledger của bạn."
   },
-  "ledgerConnectionInstructionStepOne": {
-    "message": "Bật Sử dụng Ledger Live trong Cài đặt > Nâng cao."
-  },
   "ledgerConnectionInstructionStepThree": {
     "message": "Nhớ cắm thiết bị Ledger và chọn ứng dụng Ethereum."
   },
-  "ledgerConnectionInstructionStepTwo": {
-    "message": "Mở và mở khóa Ứng dụng Ledger Live."
-  },
-  "ledgerConnectionPreferenceDescription": {
-    "message": "Tùy chỉnh cách thức kết nối Ledger với MetaMask. Nên dùng $1, nhưng cũng có sẵn các tùy chọn khác. Đọc thêm tại đây: $2",
-    "description": "A description that appears above a dropdown where users can select between up to three options - Ledger Live, U2F or WebHID - depending on what is supported in their browser. $1 is the recommended browser option, it will be either WebHID or U2f. $2 is a link to an article where users can learn more, but will be the translation of the learnMore message."
-  },
   "ledgerDeviceOpenFailureMessage": {
     "message": "Mở thiết bị Ledger không thành công. Ledger của bạn có thể đã được kết nối với phần mềm khác. Vui lòng đóng Ledger Live hoặc các ứng dụng khác được kết nối với thiết bị Ledger của bạn và thử kết nối lại."
-  },
-  "ledgerLive": {
-    "message": "Ledger Live",
-    "description": "The name of a desktop app that can be used with your ledger device. We can also use it to connect a users Ledger device to MetaMask."
   },
   "ledgerLiveApp": {
     "message": "Ứng dụng Ledger Live"
@@ -2140,9 +2082,6 @@
   },
   "ledgerTimeout": {
     "message": "Ledger Live mất quá nhiều thời gian để phản hồi hoặc đã hết thời gian chờ kết nối. Hãy đảm bảo bạn đã mở ứng dụng Ledger Live và đã mở khóa thiết bị."
-  },
-  "ledgerTransportChangeWarning": {
-    "message": "Nếu ứng dụng Ledger Live của bạn đang mở, vui lòng ngắt mọi kết nối Ledger Live đang mở và đóng ứng dụng Ledger Live."
   },
   "ledgerWebHIDNotConnectedErrorMessage": {
     "message": "Thiết bị Ledger chưa được kết nối. Nếu bạn muốn kết nối với Ledger, vui lòng nhấp lại vào \"Tiếp tục\" và chấp thuận kết nối HID",
@@ -3203,10 +3142,6 @@
   "portfolioDashboard": {
     "message": "Trang tổng quan Danh mục đầu tư"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Dạng kết nối Ledger ưu tiên",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Đang chuẩn bị hoán đổi..."
   },
@@ -3528,9 +3463,6 @@
   "searchAccounts": {
     "message": "Tìm kiếm tài khoản"
   },
-  "searchResults": {
-    "message": "Kết quả tìm kiếm"
-  },
   "secretRecoveryPhrase": {
     "message": "Cụm từ khôi phục bí mật"
   },
@@ -3786,9 +3718,6 @@
   "smartContracts": {
     "message": "Hợp đồng thông minh"
   },
-  "smartSwap": {
-    "message": "Hoán đổi thông minh"
-  },
   "smartSwapsAreHere": {
     "message": "Hoán đổi thông minh đã ra mắt!"
   },
@@ -3801,9 +3730,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Hoán đổi thông minh tạm thời không khả dụng."
   },
-  "snapConfigure": {
-    "message": "Định cấu hình"
-  },
   "snapConnectionWarning": {
     "message": "$1 muốn kết nối với $2. Chỉ tiếp tục nếu bạn tin tưởng trang web này.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3812,49 +3738,8 @@
     "message": "Nội dung này đến từ $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Chọn cách bảo mật tài khoản mới của bạn bằng MetaMask Snap."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Tạo tài khoản $1",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "Snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Bởi MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Kiểm tra"
-  },
-  "snapDetailDeveloper": {
-    "message": "Nhà phát triển"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Đã cập nhật"
-  },
-  "snapDetailManageSnap": {
-    "message": "Quản lý Snap"
-  },
-  "snapDetailTags": {
-    "message": "Thẻ"
-  },
-  "snapDetailVersion": {
-    "message": "Phiên bản"
-  },
   "snapDetailWebsite": {
     "message": "Trang web"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Tạo tài khoản Snap"
-  },
-  "snapDetailsInstalled": {
-    "message": "Đã cài đặt"
-  },
-  "snapInstall": {
-    "message": "Cài đặt Snap"
   },
   "snapInstallRequest": {
     "message": "Cài đặt $1 để được cấp các quyền sau. Chỉ tiếp tục nếu bạn tin tưởng $1.",
@@ -3873,9 +3758,6 @@
   "snapInstallationErrorTitle": {
     "message": "Cài đặt thất bại",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "Đã kiểm tra"
   },
   "snapResultError": {
     "message": "Lỗi"
@@ -3897,18 +3779,11 @@
     "message": "Cập nhật thất bại",
     "description": "Error title used when snap update fails."
   },
-  "snapUpdateRequest": {
-    "message": "$1 muốn cập nhật $2 lên $3 để được cấp các quyền sau. Chỉ tiếp tục nếu bạn tin tưởng $2.",
-    "description": "$1 is the dApp origin requesting the snap, $2 is the snap name and $3 is the snap version."
-  },
   "snapUpdateSuccess": {
     "message": "Cập nhật hoàn tất"
   },
   "snaps": {
     "message": "Snap"
-  },
-  "snapsInsightLoading": {
-    "message": "Đang tải thông tin chi tiết về giao dịch..."
   },
   "snapsInvalidUIError": {
     "message": "Giao diện người dùng được chỉ định bởi Snap không hợp lệ."
@@ -4827,9 +4702,6 @@
   "transactionDetailGasHeading": {
     "message": "Phí gas ước tính"
   },
-  "transactionDetailGasInfoV2": {
-    "message": "ước tính"
-  },
   "transactionDetailGasTooltipConversion": {
     "message": "Tìm hiểu thêm về phí gas"
   },
@@ -4965,12 +4837,6 @@
   "unknown": {
     "message": "Không xác định"
   },
-  "unknownCameraError": {
-    "message": "Đã xảy ra lỗi khi cố gắng truy cập máy ảnh của bạn. Vui lòng thử lại..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Rất tiếc! Đã xảy ra sự cố...."
-  },
   "unknownCollection": {
     "message": "Bộ sưu tập chưa có tên"
   },
@@ -5050,10 +4916,6 @@
   },
   "verifyContractDetails": {
     "message": "Xác minh thông tin bên thứ ba"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Không tìm thấy số thập phân của token trên $1",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "Xác minh token này trên $1",

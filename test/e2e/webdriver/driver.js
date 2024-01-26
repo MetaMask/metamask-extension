@@ -10,6 +10,7 @@ const {
   WebElement, // eslint-disable-line no-unused-vars -- this is imported for JSDoc
 } = require('selenium-webdriver');
 const cssToXPath = require('css-to-xpath');
+const { sprintf } = require('sprintf-js');
 const { retry } = require('../../../development/lib/retry');
 
 const PAGES = {
@@ -31,11 +32,26 @@ function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
   element.fill = async (input) => {
     // The 'fill' method in playwright replaces existing input
+    await driver.wait(until.elementIsVisible(element));
+
+    // Try 2 ways to clear input fields, first try with clear() method
+    // Use keyboard simulation if the input field is not empty
     await element.sendKeys(
       Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
     );
+    // If previous methods fail, use Selenium's actions to select all text and replace it with the expected value
+    if ((await element.getProperty('value')) !== '') {
+      await driver.driver
+        .actions()
+        .click(element)
+        .keyDown(driver.Key.MODIFIER)
+        .sendKeys('a')
+        .keyUp(driver.Key.MODIFIER)
+        .perform();
+    }
     await element.sendKeys(input);
   };
+
   element.waitForElementState = async (state, timeout) => {
     switch (state) {
       case 'hidden':
@@ -167,8 +183,16 @@ class Driver {
     await new Promise((resolve) => setTimeout(resolve, time));
   }
 
-  async wait(condition, timeout = this.timeout) {
-    await this.driver.wait(condition, timeout);
+  async wait(condition, timeout = this.timeout, catchError = false) {
+    try {
+      await this.driver.wait(condition, timeout);
+    } catch (e) {
+      if (!catchError) {
+        throw e;
+      }
+
+      console.log('Caught error waiting for condition:', e);
+    }
   }
 
   async waitForSelector(
@@ -415,6 +439,10 @@ class Driver {
     return newHandle;
   }
 
+  async refresh() {
+    await this.driver.navigate().refresh();
+  }
+
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
   }
@@ -444,6 +472,11 @@ class Driver {
       timeElapsed += delayStep;
     }
     throw new Error('waitUntilXWindowHandles timed out polling window handles');
+  }
+
+  async getWindowTitleByHandlerId(handlerId) {
+    await this.driver.switchTo().window(handlerId);
+    return await this.driver.getTitle();
   }
 
   async switchToWindowWithTitle(
@@ -534,10 +567,17 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
-    const screenshot = await this.driver.takeScreenshot();
-    await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
-      encoding: 'base64',
-    });
+    // On occassion there may be a bug in the offscreen document which does
+    // not render visibly to the user and therefore no screenshot can be
+    // taken. In this case we skip the screenshot and log the error.
+    try {
+      const screenshot = await this.driver.takeScreenshot();
+      await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+        encoding: 'base64',
+      });
+    } catch (e) {
+      console.error('Failed to take screenshot', e);
+    }
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
     const uiState = await this.driver.executeScript(
@@ -593,13 +633,23 @@ class Driver {
           (err) => err.description !== undefined,
         );
 
-        const [eventDescription] = eventDescriptions;
-        const ignore = ignoredErrorMessages.some((message) =>
-          eventDescription?.description.includes(message),
-        );
-        if (!ignore) {
-          errors.push(eventDescription?.description);
-          logBrowserError(failOnConsoleError, eventDescription?.description);
+        // If we received an SES_UNHANDLED_REJECTION from Chrome, eventDescriptions.length will be nonzero
+        if (eventDescriptions.length !== 0) {
+          const [eventDescription] = eventDescriptions;
+          const ignore = ignoredErrorMessages.some((message) =>
+            eventDescription?.description.includes(message),
+          );
+          if (!ignore) {
+            errors.push(eventDescription?.description);
+            logBrowserError(failOnConsoleError, eventDescription?.description);
+          }
+        } else if (event.args.length !== 0) {
+          // Extract the values from the array
+          const values = event.args.map((a) => a.value);
+
+          // The values are in the "printf" form of [message, ...substitutions]
+          // so use sprintf to parse
+          logBrowserError(failOnConsoleError, sprintf(...values));
         }
       }
     });
@@ -607,10 +657,15 @@ class Driver {
 }
 
 function logBrowserError(failOnConsoleError, errorMessage) {
+  console.error('\n----Received an error from Chrome----');
+  console.error(errorMessage);
+  console.error('---------End of Chrome error---------');
+
   if (failOnConsoleError) {
+    console.error('-----failOnConsoleError is true------\n');
     throw new Error(errorMessage);
   } else {
-    console.error(new Error(errorMessage));
+    console.error('-----failOnConsoleError is false-----\n');
   }
 }
 

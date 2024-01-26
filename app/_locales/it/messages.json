@@ -418,7 +418,7 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "La rete con chain ID $1 può utilizzare un simbolo diverso ($2) da quello che hai inserito. Si prega di verificare prima di continuare.",
-    "description": "$1 is the chain id currently entered in the network form and $2 is the return value of nativeCurrency.symbol from chainlist.network"
+    "description": "$1 is the symbol of the network that was returned by the chain list"
   },
   "chromeRequiredForHardwareWallets": {
     "message": "Devi usare MetaMask con Google Chrome per connettere il tuo Portafoglio Hardware"
@@ -704,12 +704,6 @@
   "deleteNetwork": {
     "message": "Cancella la rete?"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Scopri di più"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "A causa delle modifiche al protocollo di Ethereum: le reti di test Rinkeby, Ropsten e Kovan potrebbero non funzionare in modo affidabile e saranno presto rimosse."
-  },
   "description": {
     "message": "Descrizione"
   },
@@ -818,9 +812,6 @@
   "endpointReturnedDifferentChainId": {
     "message": "L'endpoint ha restituito un chain ID diverso: $1",
     "description": "$1 is the return value of eth_chainId from an RPC endpoint"
-  },
-  "ensNotFoundOnCurrentNetwork": {
-    "message": "Nome ENS non trovato sulla rete attuale. Prova a passare alla rete principale di Ethereum."
   },
   "ensRegistrationError": {
     "message": "Errore nella registrazione del nome ENS"
@@ -1356,9 +1347,6 @@
   "searchAccounts": {
     "message": "Cerca Account"
   },
-  "searchResults": {
-    "message": "Risultati Ricerca"
-  },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
@@ -1778,12 +1766,6 @@
   },
   "unknown": {
     "message": "Sconosciuto"
-  },
-  "unknownCameraError": {
-    "message": "C'è stato un errore nel tentativo di accedere alla fotocamera. Per favore prova di nuovo..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Qualcosa è andato storto...."
   },
   "unknownNetwork": {
     "message": "Rete Privata Sconosciuta"

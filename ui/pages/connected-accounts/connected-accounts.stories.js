@@ -83,12 +83,32 @@ const accounts = [
     type: EthAccountType.Eoa,
   },
 ];
+const internalAccount = {
+  address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+  metadata: {
+    name: 'Account 1',
+    keyring: {
+      type: 'HD Key Tree',
+    },
+  },
+  options: {},
+  methods: [
+    'personal_sign',
+    'eth_sign',
+    'eth_signTransaction',
+    'eth_signTypedData_v1',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+  ],
+  type: 'eip155:eoa',
+};
 
 export const DefaultStory = () => {
   return (
     <ConnectedAccounts
       activeTabOrigin="https://metamask.github.io"
-      accountToConnect={accounts[0]}
+      accountToConnect={internalAccount}
       connectAccount={action('Account Connected')}
       connectedAccounts={accounts}
       removePermittedAccount={action('Account Removed')}

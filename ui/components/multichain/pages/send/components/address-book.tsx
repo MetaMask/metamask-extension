@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
-import { Label } from '../../../../component-library';
+import { Box, Text } from '../../../../component-library';
 import { I18nContext } from '../../../../../contexts/i18n';
 import ContactList from '../../../../app/contact-list';
 import {
@@ -14,6 +14,12 @@ import {
   updateRecipient,
   updateRecipientUserInput,
 } from '../../../../../ducks/send';
+import {
+  FontWeight,
+  TextAlign,
+  TextColor,
+} from '../../../../../helpers/constants/design-system';
+import { CONTACT_LIST_ROUTE } from '../../../../../helpers/constants/routes';
 import { SendPageRow } from '.';
 
 export const SendPageAddressBook = () => {
@@ -95,7 +101,6 @@ export const SendPageAddressBook = () => {
     <SendPageRow>
       {addressBook.length ? (
         <>
-          <Label paddingBottom={2}>{t('contacts')}</Label>
           <ContactList
             addressBook={addressBook}
             searchForContacts={searchForContacts}
@@ -109,7 +114,28 @@ export const SendPageAddressBook = () => {
             }}
           />
         </>
-      ) : null}
+      ) : (
+        <Box padding={6} textAlign={TextAlign.Center}>
+          <Text marginBottom={4} fontWeight={FontWeight.Bold}>
+            {t('sendNoContactsTitle')}
+          </Text>
+          <Text color={TextColor.textAlternative}>
+            {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore: Expected 0-1 arguments, but got 2.
+              t('sendNoContactsDescription', [
+                <Text
+                  as="a"
+                  href={`#${CONTACT_LIST_ROUTE}`}
+                  color={TextColor.primaryDefault}
+                >
+                  {t('sendNoContactsConversionText')}
+                </Text>,
+              ])
+            }
+          </Text>
+        </Box>
+      )}
     </SendPageRow>
   );
 };

@@ -1,16 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isComponent } from '@metamask/snaps-ui';
+import { isComponent } from '@metamask/snaps-sdk';
 import { useSelector } from 'react-redux';
 import MetaMaskTemplateRenderer from '../../metamask-template-renderer/metamask-template-renderer';
 import {
   DISPLAY,
   FLEX_DIRECTION,
-  TypographyVariant,
   OverflowWrap,
-  FontWeight,
   TextVariant,
   BorderColor,
+  TextColor,
 } from '../../../../helpers/constants/design-system';
 import { SnapDelineator } from '../snap-delineator';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
@@ -32,15 +31,17 @@ export const UI_MAPPING = {
       display: DISPLAY.FLEX,
       flexDirection: FLEX_DIRECTION.COLUMN,
       className: 'snap-ui-renderer__panel',
+      color: TextColor.textDefault,
     },
   }),
   heading: (props) => ({
-    element: 'Typography',
+    element: 'Text',
     children: props.value,
     props: {
-      variant: TypographyVariant.H4,
-      fontWeight: FontWeight.Bold,
-      overflowWrap: OverflowWrap.BreakWord,
+      variant: TextVariant.headingSm,
+      overflowWrap: OverflowWrap.Anywhere,
+      marginTop: 1,
+      marginBottom: 1,
     },
   }),
   text: (props) => ({
@@ -61,20 +62,43 @@ export const UI_MAPPING = {
     props: {
       className: 'snap-ui-renderer__divider',
       backgroundColor: BorderColor.borderDefault,
-      marginTop: 2,
-      marginBottom: 2,
+      marginTop: 1,
+      marginBottom: 1,
     },
   }),
   copyable: (props) => ({
     element: 'Copyable',
     props: {
       text: props.value,
+      sensitive: props.sensitive,
+      marginTop: 1,
+      marginBottom: 1,
     },
   }),
   image: (props) => ({
     element: 'SnapUIImage',
     props: {
       value: props.value,
+    },
+  }),
+  row: (props, elementKey) => ({
+    element: 'ConfirmInfoRow',
+    // eslint-disable-next-line no-use-before-define
+    children: [mapToTemplate(props.value, elementKey)],
+    props: {
+      label: props.label,
+      variant: props.variant,
+      style: {
+        // We do this to cause an overhang with certain confirmation row variants
+        marginLeft: '-8px',
+        marginRight: '-8px',
+      },
+    },
+  }),
+  address: (props) => ({
+    element: 'ConfirmInfoRowAddress',
+    props: {
+      address: props.value,
     },
   }),
 };
@@ -94,6 +118,7 @@ export const SnapUIRenderer = ({
   delineatorType = DelineatorType.Content,
   isCollapsable = false,
   isCollapsed = false,
+  isLoading = false,
   data,
   onClick,
   boxProps,
@@ -104,6 +129,20 @@ export const SnapUIRenderer = ({
   );
 
   const snapName = getSnapName(snapId, targetSubjectMetadata);
+
+  if (isLoading) {
+    return (
+      <SnapDelineator
+        snapName={snapName}
+        type={delineatorType}
+        isCollapsable={isCollapsable}
+        isCollapsed={isCollapsed}
+        onClick={onClick}
+        boxProps={boxProps}
+        isLoading={isLoading}
+      />
+    );
+  }
 
   if (!isComponent(data)) {
     return (
@@ -148,6 +187,7 @@ SnapUIRenderer.propTypes = {
   data: PropTypes.object,
   isCollapsable: PropTypes.bool,
   isCollapsed: PropTypes.bool,
+  isLoading: PropTypes.bool,
   onClick: PropTypes.func,
   boxProps: PropTypes.object,
 };

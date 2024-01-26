@@ -48,26 +48,24 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
         class="box box--flex-direction-row box--justify-content-center box--display-flex"
       >
         <div
-          class="box confirmation-network-switch box--margin-top-8 box--display-flex box--flex-direction-row box--justify-content-center box--height-full"
+          class="mm-box confirmation-network-switch mm-box--margin-top-8 mm-box--display-flex mm-box--justify-content-center mm-box--height-full"
         >
           <div
-            class="box confirmation-network-switch__icon box--display-block box--flex-direction-row"
+            class="mm-box confirmation-network-switch__icon mm-box--display-block"
           >
             <div
-              class="confirmation-network-switch__unknown-icon"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              <i
-                class="fa fa-question fa-2x"
-              />
+              T
             </div>
-            <h6
-              class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--justify-content-center typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--justify-content-center mm-box--color-text-default"
             >
               Test initial state
-            </h6>
+            </p>
           </div>
           <div
-            class="box confirmation-network-switch__center-icon box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center"
+            class="mm-box confirmation-network-switch__center-icon mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
           >
             <i
               class="fa fa-angle-right fa-lg confirmation-network-switch__check"
@@ -77,20 +75,18 @@ exports[`switch-ethereum-chain confirmation should match snapshot 1`] = `
             />
           </div>
           <div
-            class="box confirmation-network-switch__icon box--display-block box--flex-direction-row"
+            class="mm-box confirmation-network-switch__icon mm-box--display-block"
           >
             <div
-              class="confirmation-network-switch__unknown-icon"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              <i
-                class="fa fa-question fa-2x"
-              />
+              T
             </div>
-            <h6
-              class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--justify-content-center typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--justify-content-center mm-box--color-text-default"
             >
               Test chain
-            </h6>
+            </p>
           </div>
         </div>
       </div>
@@ -169,26 +165,24 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
         class="box box--flex-direction-row box--justify-content-center box--display-flex"
       >
         <div
-          class="box confirmation-network-switch box--margin-top-8 box--display-flex box--flex-direction-row box--justify-content-center box--height-full"
+          class="mm-box confirmation-network-switch mm-box--margin-top-8 mm-box--display-flex mm-box--justify-content-center mm-box--height-full"
         >
           <div
-            class="box confirmation-network-switch__icon box--display-block box--flex-direction-row"
+            class="mm-box confirmation-network-switch__icon mm-box--display-block"
           >
             <div
-              class="confirmation-network-switch__unknown-icon"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              <i
-                class="fa fa-question fa-2x"
-              />
+              T
             </div>
-            <h6
-              class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--justify-content-center typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--justify-content-center mm-box--color-text-default"
             >
               Test initial state
-            </h6>
+            </p>
           </div>
           <div
-            class="box confirmation-network-switch__center-icon box--display-flex box--flex-direction-row box--justify-content-center box--align-items-center"
+            class="mm-box confirmation-network-switch__center-icon mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
           >
             <i
               class="fa fa-angle-right fa-lg confirmation-network-switch__check"
@@ -198,20 +192,18 @@ exports[`switch-ethereum-chain confirmation should show alert if there are pendi
             />
           </div>
           <div
-            class="box confirmation-network-switch__icon box--display-block box--flex-direction-row"
+            class="mm-box confirmation-network-switch__icon mm-box--display-block"
           >
             <div
-              class="confirmation-network-switch__unknown-icon"
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xl mm-avatar-network mm-text--body-lg-medium mm-text--text-transform-uppercase mm-box--margin-bottom-2 mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-full mm-box--border-color-transparent box--border-style-solid box--border-width-1"
             >
-              <i
-                class="fa fa-question fa-2x"
-              />
+              T
             </div>
-            <h6
-              class="box box--margin-top-1 box--margin-bottom-1 box--display-flex box--flex-direction-row box--justify-content-center typography typography--h6 typography--weight-normal typography--style-normal typography--align-center typography--color-text-default"
+            <p
+              class="mm-box mm-text mm-text--body-md mm-box--display-flex mm-box--justify-content-center mm-box--color-text-default"
             >
               Test chain
-            </h6>
+            </p>
           </div>
         </div>
       </div>
