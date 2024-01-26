@@ -6,7 +6,6 @@ import {
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { getCurrentChainId, getNames } from '../selectors';
-import { fa } from './.storybook/locales';
 
 function normalizeValue(value: string, type: string): string {
   switch (type) {
