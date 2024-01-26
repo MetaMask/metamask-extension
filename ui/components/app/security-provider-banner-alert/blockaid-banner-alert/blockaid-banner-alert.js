@@ -10,7 +10,7 @@ import {
   Severity,
 } from '../../../../helpers/constants/design-system';
 import { I18nContext } from '../../../../contexts/i18n';
-import { updateTransaction } from '../../../../store/actions';
+import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -58,7 +58,7 @@ function BlockaidBannerAlert({ txData, ...props }) {
     txData;
 
   const t = useContext(I18nContext);
-  const dispatch = useDispatch();
+  const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   if (!securityAlertResponse) {
     return null;
@@ -119,14 +119,13 @@ function BlockaidBannerAlert({ txData, ...props }) {
   const reportUrl = getReportUrl(encodedData);
 
   const onClickSupportLink = () => {
-    dispatch(
-      updateTransaction(
-        {
-          ...txData,
-          externalLinkClicked: 'security_alert_support_link',
+    updateTransactionEventFragment(
+      {
+        properties: {
+          external_link_clicked: 'security_alert_support_link',
         },
-        true,
-      ),
+      },
+      txData.id,
     );
   };
 

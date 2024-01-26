@@ -47,7 +47,6 @@ export const getBlockaidMetricsProps = (transaction) => {
 
   const params = {};
   const {
-    externalLinkClicked,
     securityAlertResponse: {
       providerRequestsCount,
       reason,
@@ -58,10 +57,6 @@ export const getBlockaidMetricsProps = (transaction) => {
   const uiCustomization = getBlockaidMetricUiCustomization(resultType);
   if (uiCustomization) {
     params.ui_customizations = uiCustomization;
-  }
-
-  if (externalLinkClicked) {
-    params.external_link_clicked = externalLinkClicked;
   }
 
   if (resultType !== BlockaidResultType.Benign) {

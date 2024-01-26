@@ -39,16 +39,6 @@ describe('getBlockaidMetricsProps', () => {
     });
   });
 
-  it('includes external_link_clicked when externalLinkClicked is provided', () => {
-    const result = getBlockaidMetricsProps({
-      externalLinkClicked: 'security_alert_support_link',
-      securityAlertResponse: {
-        ...securityAlertResponse,
-      },
-    });
-    expect(result.external_link_clicked).toBe('security_alert_support_link');
-  });
-
   it('includes not applicable reason or result type when they are not provided', () => {
     const result = getBlockaidMetricsProps({
       securityAlertResponse: {

@@ -1,5 +1,6 @@
 import React from 'react';
 import * as Sentry from '@sentry/browser';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';
 import { Severity } from '../../../../helpers/constants/design-system';
 import configureStore from '../../../../store/store';
@@ -13,6 +14,18 @@ jest.mock('@sentry/browser');
 jest.mock('zlib', () => ({
   gzipSync: (val) => val,
 }));
+
+const mockUpdateTransactionEventFragment = jest.fn();
+
+jest.mock('../../../../hooks/useTransactionEventFragment', () => {
+  return {
+    useTransactionEventFragment: () => {
+      return {
+        updateTransactionEventFragment: mockUpdateTransactionEventFragment,
+      };
+    },
+  };
+});
 
 const mockSecurityAlertResponse = {
   result_type: BlockaidResultType.Warning,
@@ -297,6 +310,42 @@ describe('Blockaid Banner Alert', () => {
 
       expect(getByText(stubOtherDescription)).toBeInTheDocument();
       expect(Sentry.captureException).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('when clicking See Details > "Report an issue"', () => {
+    it('calls updateTransactionEventFragment to add "external_link_clicked" prop to metric', () => {
+      const stubScrollIntoView = jest.fn();
+      const originalScrollIntoView =
+        window.HTMLElement.prototype.scrollIntoView;
+      window.HTMLElement.prototype.scrollIntoView = stubScrollIntoView;
+
+      renderWithProvider(
+        <BlockaidBannerAlert
+          txData={{
+            id: '1',
+            securityAlertResponse: {
+              ...mockSecurityAlertResponse,
+              reason: 'unmappedReason',
+            },
+          }}
+        />,
+        configureStore(),
+      );
+
+      fireEvent.click(screen.queryByText('See details'));
+      fireEvent.click(screen.queryByText('Report an issue'));
+
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledTimes(1);
+      expect(mockUpdateTransactionEventFragment).toHaveBeenCalledWith(
+        {
+          properties: {
+            external_link_clicked: 'security_alert_support_link',
+          },
+        },
+        '1',
+      );
+      window.HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
     });
   });
 });
