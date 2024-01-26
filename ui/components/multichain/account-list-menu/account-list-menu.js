@@ -110,7 +110,6 @@ export const AccountListMenu = ({
   const trackEvent = useContext(MetaMetricsContext);
   const accounts = useSelector(getMetaMaskAccountsOrdered);
   const selectedAccount = useSelector(getSelectedInternalAccount);
-  const internalAccounts = useSelector(getInternalAccounts);
   const connectedSites = useSelector(getConnectedSubjectsForAllAddresses);
   const currentTabOrigin = useSelector(getOriginOfCurrentTab);
   const history = useHistory();
@@ -142,7 +141,7 @@ export const AccountListMenu = ({
     fuse.setCollection(accounts);
     searchResults = fuse.search(searchQuery);
   }
-  searchResults = mergeAccounts(searchResults, internalAccounts);
+  searchResults = mergeAccounts(searchResults, accounts);
 
   let title = t('selectAnAccount');
   if (actionMode === ACTION_MODES.ADD || actionMode === ACTION_MODES.MENU) {

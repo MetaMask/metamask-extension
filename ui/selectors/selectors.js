@@ -278,7 +278,9 @@ export const getMetaMaskAccounts = createSelector(
       if (account.balance === null || account.balance === undefined) {
         account = {
           ...account,
-          balance: cachedBalances && cachedBalances[internalAccount.address],
+          balance:
+            (cachedBalances && cachedBalances[internalAccount.address]) ??
+            '0x0',
         };
       }
 
@@ -292,7 +294,6 @@ export const getMetaMaskAccounts = createSelector(
 /**
  * Returns the selected address from the Metamask state.
  *
- * @deprecated This function is deprecated and will be removed in a future release. Use `getSelectedAccount` instead.
  * @param state - The Metamask state object.
  * @returns {string} The selected address.
  */
@@ -303,7 +304,6 @@ export function getSelectedAddress(state) {
 /**
  * Returns the selected identity from the Metamask state.
  *
- * @deprecated This function is deprecated and will be removed in future versions. Use getSelectedInternalAccount() instead.
  * @param state - The Metamask state object.
  * @returns The selected identity object.
  */
@@ -381,7 +381,6 @@ export function getMetaMaskKeyrings(state) {
  *
  * @param {object} state - Redux state
  * @returns {object} A map of account addresses to identities (which includes the account name)
- * @deprecated This function is deprecated and will be removed in a future version. Use getInternalAccounts instead.
  */
 export function getMetaMaskIdentities(state) {
   return state.metamask.identities;
@@ -1021,7 +1020,6 @@ export function getShowWhatsNewPopup(state) {
 /**
  * Returns a memoized version of the MetaMask identities.
  *
- * @deprecated This selector is deprecated and will be removed in a future version.
  * Please use getMemoizedMetaMaskInternalAccounts instead.
  * @param state - The Redux state.
  * @returns {Array} An array of MetaMask identities.
