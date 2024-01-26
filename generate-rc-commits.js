@@ -1,21 +1,31 @@
 const simpleGit = require('simple-git');
 const fs = require('fs');
+/*
+ * This script is used to filter and group commits by teams based on unique commit messages.
+ * It takes two branches as input and generates a CSV file with the commit hash, commit message, author, team, and PR link.
+ * The teams and their members are defined in the 'authorTeams' object.
+ *
+ * Command to run the script: node generate-rc-commits.js origin/branchA origin/branchB
+ * Output: the generated commits will be in a file named 'commits.csv'.
+ */
 
 // JSON mapping authors to teams
 const authorTeams = {
-  "Accounts": ['Owen Craston', 'Gustavo Antunes', 'Monte Lai', 'Daniel Rocha', 'Howard Braham'],
-  "Extension UX": ['David Walsh', 'vthomas13', 'Nidhi Kumari'],
-  "Extension Platform": ['chloeYue', 'Pedro Figueiredo', 'danjm', 'Peter', 'Marina Boboc', 'Gauthier Petetin', 'Dan Miller', 'Dan J Miller', 'Dan J Miller'],
-  "DappAPI": ['tmashuang', 'jiexi', 'BelfordZ'],
-  "Confirmation UX": ['Sylva Elendu', 'Olusegun Akintayo', 'Jyoti Puri', 'Ariella Vu'],
-  "Confirmation Systems": ['OGPoyraz', 'vinistevam', 'Matthew Walsh', 'cryptotavares'],
-  "Design Systems": ['georgewrmarshall', 'Garrett Bear'],
-  "Snaps": ['David Drazic', 'hmalik88', 'Montoya', 'Mrtenz', 'Frederik Bolding', 'Bowen Sanders'],
-  "Assets": ['salimtb', 'sahar-fehri'],
+  "Accounts": ['Owen Craston', 'Gustavo Antunes', 'Monte Lai', 'Daniel Rocha', 'Howard Braham', 'Kate Johnson', 'Brian Bergeron'],
+  "Extension UX": ['David Walsh', 'vthomas13', 'Nidhi Kumari', 'Victor Thomas'],
+  "Extension Platform": ['chloeYue', 'Pedro Figueiredo', 'danjm', 'Danica Shen', 'Brad Decker', 'Mark Stacey', 'hjetpoluru', 'Harika Jetpoluru', 'Marina Boboc', 'Gauthier Petetin', 'Dan Miller', 'Dan J Miller', 'Gudahtt', 'David Murdoch'],
+  "DappAPI": ['tmashuang', 'jiexi', 'BelfordZ', 'Shane'],
+  "Confirmation UX": ['Sylva Elendu', 'Olusegun Akintayo', 'Jyoti Puri', 'Ariella Vu', 'Sylva Elendu', 'seaona'],
+  "Confirmation Systems": ['OGPoyraz', 'vinistevam', 'Matthew Walsh', 'cryptotavares', 'Vinicius Stevam', 'Derek Brans'],
+  "Design Systems": ['georgewrmarshall', 'Garrett Bear', 'George Marshall'],
+  "Snaps": ['David Drazic', 'hmalik88', 'Montoya', 'Mrtenz', 'Frederik Bolding', 'Bowen Sanders', 'Guillaume Roux', 'Hassan Malik', 'Maarten Zuidhoorn'],
+  "Assets": ['salimtb', 'sahar-fehri', 'Brian Bergeron'],
   "Linea": ['VGau'],
   "lavamoat": ['weizman', 'legobeat', 'kumavis'],
-  "Shared Libraries": ['Michele Esposito'],
-  "MMI": ['António Regadas', 'Albert Olivé']
+  "Shared Libraries": ['Michele Esposito', 'Elliot Winkler'],
+  "MMI": ['António Regadas', 'Albert Olivé', 'Ramon AC', 'Shane T', 'Bernardo Garces Chapero'],
+  "Swaps": ['Daniel', 'Davide Brocchetto'],
+  "Devex": ['Thomas Huang', 'Alex Donesky', 'jiexi', 'Zachary Belford'],
 }
 
 // Function to get the team for a given author
