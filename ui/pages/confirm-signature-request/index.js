@@ -15,9 +15,9 @@ import Loading from '../../components/ui/loading-screen';
 import { useRouting } from '../../hooks/useRouting';
 import {
   getTotalUnapprovedSignatureRequestCount,
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   getSelectedAccount,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   getTargetSubjectMetadata,
   getCurrentNetworkTransactions,
   getUnapprovedTransactions,
@@ -67,9 +67,9 @@ const ConfirmTxScreen = ({ match }) => {
   const { chainId } = useSelector(getProviderConfig);
   const { txId: index } = useSelector((state) => state.appState);
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   const selectedAccount = useSelector(getSelectedAccount);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   const [prevValue, setPrevValues] = useState();
   const history = useHistory();
@@ -208,9 +208,9 @@ const ConfirmTxScreen = ({ match }) => {
       identities={identities}
       currentCurrency={currentCurrency}
       blockGasLimit={blockGasLimit}
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       selectedAccount={selectedAccount}
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     />
   );
 };

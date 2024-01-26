@@ -9,12 +9,12 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Box,
   ButtonPrimary,
 } from '../../../components/component-library';
+import { ModalContent } from '../../../components/component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../components/component-library/modal-header/deprecated';
 import {
   SLIPPAGE_HIGH_ERROR,
   SLIPPAGE_LOW_ERROR,

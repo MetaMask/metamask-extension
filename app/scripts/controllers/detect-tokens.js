@@ -1,5 +1,5 @@
 import { warn } from 'loglevel';
-import { PollingControllerOnly } from '@metamask/polling-controller';
+import { StaticIntervalPollingControllerOnly } from '@metamask/polling-controller';
 import { MINUTE } from '../../../shared/constants/time';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
@@ -21,7 +21,7 @@ const DEFAULT_INTERVAL = MINUTE * 3;
  * A controller that polls for token exchange
  * rates based on a user's current token list
  */
-export default class DetectTokensController extends PollingControllerOnly {
+export default class DetectTokensController extends StaticIntervalPollingControllerOnly {
   /**
    * Creates a DetectTokensController
    *
@@ -34,6 +34,7 @@ export default class DetectTokensController extends PollingControllerOnly {
    * @param config.assetsContractController
    * @param config.trackMetaMetricsEvent
    * @param config.messenger
+   * @param config.getCurrentSelectedAccount
    * @param config.getNetworkClientById
    * @param config.disableLegacyInterval
    */
@@ -46,6 +47,7 @@ export default class DetectTokensController extends PollingControllerOnly {
     tokensController,
     assetsContractController = null,
     trackMetaMetricsEvent,
+    getCurrentSelectedAccount,
     getNetworkClientById,
     disableLegacyInterval = false,
   } = {}) {
@@ -62,7 +64,7 @@ export default class DetectTokensController extends PollingControllerOnly {
     this.tokenList = tokenList;
     this.useTokenDetection =
       this.preferences?.store.getState().useTokenDetection;
-    this.selectedAddress = this.preferences?.store.getState().selectedAddress;
+    this.selectedAddress = getCurrentSelectedAccount().address;
     this.tokenAddresses = this.tokensController?.state.tokens.map((token) => {
       return token.address;
     });
@@ -72,16 +74,33 @@ export default class DetectTokensController extends PollingControllerOnly {
     this.chainId = this.getChainIdFromNetworkStore();
     this._trackMetaMetricsEvent = trackMetaMetricsEvent;
 
-    preferences?.store.subscribe(({ selectedAddress, useTokenDetection }) => {
-      if (
-        this.selectedAddress !== selectedAddress ||
-        this.useTokenDetection !== useTokenDetection
-      ) {
-        this.selectedAddress = selectedAddress;
+    messenger.subscribe(
+      'AccountsController:selectedAccountChange',
+      (account) => {
+        const useTokenDetection =
+          this.preferences?.store.getState().useTokenDetection;
+        if (
+          this.selectedAddress !== account.address ||
+          this.useTokenDetection !== useTokenDetection
+        ) {
+          this.selectedAddress = account.address;
+          this.useTokenDetection = useTokenDetection;
+          this.restartTokenDetection({
+            selectedAddress: this.selectedAddress,
+          });
+        }
+      },
+    );
+
+    preferences?.store.subscribe(({ useTokenDetection }) => {
+      if (this.useTokenDetection !== useTokenDetection) {
         this.useTokenDetection = useTokenDetection;
-        this.restartTokenDetection({ selectedAddress });
+        this.restartTokenDetection({
+          selectedAddress: this.selectedAddress,
+        });
       }
     });
+
     tokensController?.subscribe(
       ({ tokens = [], ignoredTokens = [], detectedTokens = [] }) => {
         this.tokenAddresses = tokens.map((token) => {
@@ -97,6 +116,10 @@ export default class DetectTokensController extends PollingControllerOnly {
         this.chainId = chainId;
         this.restartTokenDetection({ chainId: this.chainId });
       }
+    });
+
+    messenger.subscribe('TokenListController:stateChange', () => {
+      this.restartTokenDetection();
     });
 
     this.#registerKeyringHandlers();

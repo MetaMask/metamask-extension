@@ -25,9 +25,9 @@ import {
   isLegacyTransaction,
 } from '../../helpers/utils/transactions.util';
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import NoteToTrader from '../../components/institutional/note-to-trader';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 import { TransactionModalContextProvider } from '../../contexts/transaction-modal';
 import TransactionDetail from '../../components/app/transaction-detail/transaction-detail.component';
@@ -54,10 +54,11 @@ import { ConfirmTitle } from '../../components/app/confirm-title';
 import { ConfirmSubTitle } from '../../components/app/confirm-subtitle';
 import { ConfirmGasDisplay } from '../../components/app/confirm-gas-display';
 import updateTxData from '../../../shared/modules/updateTxData';
-///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { KeyringType } from '../../../shared/constants/keyring';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { isHardwareKeyring } from '../../helpers/utils/hardware';
+import FeeDetailsComponent from '../../components/app/fee-details-component/fee-details-component';
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -78,7 +79,7 @@ export default class ConfirmTransactionBase extends Component {
     fromName: PropTypes.string,
     hexTransactionAmount: PropTypes.string,
     hexMaximumTransactionFee: PropTypes.string,
-    hexTransactionTotal: PropTypes.string,
+    hexMinimumTransactionFee: PropTypes.string,
     methodData: PropTypes.object,
     nonce: PropTypes.string,
     useNonceField: PropTypes.bool,
@@ -135,7 +136,6 @@ export default class ConfirmTransactionBase extends Component {
     nativeCurrency: PropTypes.string,
     supportsEIP1559: PropTypes.bool,
     hardwareWalletRequiresConnection: PropTypes.bool,
-    isMultiLayerFeeNetwork: PropTypes.bool,
     isBuyableChain: PropTypes.bool,
     isApprovalOrRejection: PropTypes.bool,
     assetStandard: PropTypes.string,
@@ -152,6 +152,7 @@ export default class ConfirmTransactionBase extends Component {
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
+    isUsingPaymaster: PropTypes.bool,
   };
 
   state = {
@@ -162,9 +163,9 @@ export default class ConfirmTransactionBase extends Component {
     editingGas: false,
     userAcknowledgedGasMissing: false,
     showWarningModal: false,
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     noteText: '',
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
   };
 
   componentDidUpdate(prevProps) {
@@ -317,7 +318,7 @@ export default class ConfirmTransactionBase extends Component {
       primaryTotalTextOverride,
       secondaryTotalTextOverride,
       hexMaximumTransactionFee,
-      hexTransactionTotal,
+      hexMinimumTransactionFee,
       useNonceField,
       customNonceValue,
       updateCustomNonce,
@@ -327,11 +328,11 @@ export default class ConfirmTransactionBase extends Component {
       useNativeCurrencyAsPrimaryCurrency,
       primaryTotalTextOverrideMaxAmount,
       showLedgerSteps,
-      isMultiLayerFeeNetwork,
       nativeCurrency,
       isBuyableChain,
       useCurrencyRateCheck,
       tokenSymbol,
+      isUsingPaymaster,
     } = this.props;
 
     const { t } = this.context;
@@ -348,7 +349,14 @@ export default class ConfirmTransactionBase extends Component {
       hasSimulationError && !userAcknowledgedGasMissing;
     const networkName = NETWORK_TO_NAME_MAP[txData.chainId];
 
-    const renderTotalMaxAmount = () => {
+    const getTotalAmount = (useMaxFee) => {
+      return addHexes(
+        txData.txParams.value,
+        useMaxFee ? hexMaximumTransactionFee : hexMinimumTransactionFee,
+      );
+    };
+
+    const renderTotalMaxAmount = (useMaxFee) => {
       if (
         primaryTotalTextOverrideMaxAmount === undefined &&
         secondaryTotalTextOverride === undefined
@@ -358,7 +366,7 @@ export default class ConfirmTransactionBase extends Component {
           <UserPreferencedCurrencyDisplay
             type={PRIMARY}
             key="total-max-amount"
-            value={addHexes(txData.txParams.value, hexMaximumTransactionFee)}
+            value={getTotalAmount(useMaxFee)}
             hideLabel={!useNativeCurrencyAsPrimaryCurrency}
           />
         );
@@ -370,32 +378,11 @@ export default class ConfirmTransactionBase extends Component {
         : secondaryTotalTextOverride;
     };
 
-    const renderTotalDetailTotal = () => {
+    const renderTotalDetailText = (value) => {
       if (
-        primaryTotalTextOverride === undefined &&
-        secondaryTotalTextOverride === undefined
-      ) {
-        return (
-          <div className="confirm-page-container-content__total-value">
-            <LoadingHeartBeat estimateUsed={this.props.txData?.userFeeLevel} />
-            <UserPreferencedCurrencyDisplay
-              type={PRIMARY}
-              key="total-detail-value"
-              value={hexTransactionTotal}
-              hideLabel={!useNativeCurrencyAsPrimaryCurrency}
-            />
-          </div>
-        );
-      }
-      return useNativeCurrencyAsPrimaryCurrency
-        ? primaryTotalTextOverride
-        : secondaryTotalTextOverride;
-    };
-
-    const renderTotalDetailText = () => {
-      if (
-        primaryTotalTextOverride === undefined &&
-        secondaryTotalTextOverride === undefined
+        (primaryTotalTextOverride === undefined &&
+          secondaryTotalTextOverride === undefined) ||
+        value === '0x0'
       ) {
         return (
           <div className="confirm-page-container-content__total-value">
@@ -403,7 +390,7 @@ export default class ConfirmTransactionBase extends Component {
             <UserPreferencedCurrencyDisplay
               type={SECONDARY}
               key="total-detail-text"
-              value={hexTransactionTotal}
+              value={value}
               hideLabel={Boolean(useNativeCurrencyAsPrimaryCurrency)}
             />
           </div>
@@ -471,8 +458,10 @@ export default class ConfirmTransactionBase extends Component {
           type={txData.type}
           isBuyableChain={isBuyableChain}
           tokenSymbol={tokenSymbol}
+          isUsingPaymaster={isUsingPaymaster}
         />
         <TransactionDetail
+          disableEditGasFeeButton
           disabled={isDisabled()}
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           onEdit={
@@ -481,31 +470,43 @@ export default class ConfirmTransactionBase extends Component {
           rows={[
             renderSimulationFailureWarning && simulationFailureWarning(),
             !renderSimulationFailureWarning && (
-              <ConfirmGasDisplay
-                key="confirm-transaction-base_confirm-gas-display"
-                userAcknowledgedGasMissing={userAcknowledgedGasMissing}
-              />
+              <div key="confirm-transaction-base_confirm-gas-display">
+                <ConfirmGasDisplay
+                  userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+                />
+                <FeeDetailsComponent
+                  useCurrencyRateCheck={useCurrencyRateCheck}
+                  txData={txData}
+                />
+              </div>
             ),
-            !isMultiLayerFeeNetwork && (
-              <TransactionDetailItem
-                key="confirm-transaction-base-total-item"
-                detailTitle={t('total')}
-                detailText={useCurrencyRateCheck && renderTotalDetailText()}
-                detailTotal={renderTotalDetailTotal()}
-                subTitle={t('transactionDetailGasTotalSubtitle')}
-                subText={
-                  <div className="confirm-page-container-content__total-amount">
-                    <LoadingHeartBeat
-                      estimateUsed={this.props.txData?.userFeeLevel}
-                    />
-                    <strong key="editGasSubTextAmountLabel">
-                      {t('editGasSubTextAmountLabel')}
-                    </strong>{' '}
-                    {renderTotalMaxAmount()}
-                  </div>
-                }
-              />
-            ),
+          ]}
+        />
+        <TransactionDetail
+          disableEditGasFeeButton
+          disabled={isDisabled()}
+          userAcknowledgedGasMissing={userAcknowledgedGasMissing}
+          rows={[
+            <TransactionDetailItem
+              key="confirm-transaction-base-total-item"
+              detailTitle={t('total')}
+              detailText={
+                useCurrencyRateCheck && renderTotalDetailText(getTotalAmount())
+              }
+              detailTotal={renderTotalMaxAmount(true)}
+              subTitle={t('transactionDetailGasTotalSubtitle')}
+              subText={
+                <div className="confirm-page-container-content__total-amount">
+                  <LoadingHeartBeat
+                    estimateUsed={this.props.txData?.userFeeLevel}
+                  />
+                  <strong key="editGasSubTextAmountLabel">
+                    {t('editGasSubTextAmountLabel')}
+                  </strong>{' '}
+                  {renderTotalMaxAmount(true)}
+                </div>
+              }
+            />,
           ]}
         />
         {nonceField}
@@ -631,11 +632,11 @@ export default class ConfirmTransactionBase extends Component {
     let loadingIndicatorMessage;
 
     switch (keyringForAccount?.type) {
-      ///: BEGIN:ONLY_INCLUDE_IN(keyring-snaps)
+      ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
       case KeyringType.snap:
         loadingIndicatorMessage = this.context.t('loadingScreenSnapMessage');
         break;
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       default:
         if (isHardwareKeyring(keyringForAccount?.type)) {
           loadingIndicatorMessage = this.context.t(
@@ -915,6 +916,7 @@ export default class ConfirmTransactionBase extends Component {
         removePollingTokenFromAppState(this.state.pollingToken);
       }
     });
+
     window.addEventListener('beforeunload', this._beforeUnloadForGasPolling);
   }
 
@@ -956,9 +958,9 @@ export default class ConfirmTransactionBase extends Component {
       assetStandard,
       displayAccountBalanceHeader,
       title,
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       isNoteToTraderSupported,
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     } = this.props;
     const {
       submitting,
@@ -1024,7 +1026,7 @@ export default class ConfirmTransactionBase extends Component {
           detailsComponent={this.renderDetails()}
           dataHexComponent={this.renderDataHex(functionType)}
           contentComponent={contentComponent}
-          ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
           noteComponent={
             isNoteToTraderSupported && (
               <NoteToTrader
@@ -1036,7 +1038,7 @@ export default class ConfirmTransactionBase extends Component {
               />
             )
           }
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
           nonce={customNonceValue || nonce}
           unapprovedTxCount={unapprovedTxCount}
           tokenAddress={tokenAddress}

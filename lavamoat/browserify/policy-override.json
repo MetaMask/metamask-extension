@@ -32,6 +32,12 @@
         "removeEventListener": true
       }
     },
+    "react-beautiful-dnd": {
+      "globals": {
+        "addEventListener": true,
+        "removeEventListener": true
+      }
+    },
     "react-dnd-html5-backend": {
       "globals": {
         "clearTimeout": true,
@@ -151,6 +157,11 @@
     "dependency-tree>precinct>detective-postcss>postcss>nanoid": {
       "globals": {
         "crypto.getRandomValues": true
+      }
+    },
+    "@metamask/announcement-controller>@metamask/base-controller": {
+      "packages": {
+        "immer": true
       }
     }
   }

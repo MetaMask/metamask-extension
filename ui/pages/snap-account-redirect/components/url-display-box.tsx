@@ -12,7 +12,10 @@ import {
 import { Box, Text } from '../../../components/component-library';
 import RedirectUrlIcon from './redirect-url-icon';
 
-const UrlDisplayBox = ({ url }: Pick<SnapAccountRedirectProps, 'url'>) => {
+const UrlDisplayBox = ({
+  url,
+  onSubmit,
+}: Pick<SnapAccountRedirectProps, 'url' | 'onSubmit'>) => {
   return (
     <Box
       display={Display.InlineFlex}
@@ -31,7 +34,7 @@ const UrlDisplayBox = ({ url }: Pick<SnapAccountRedirectProps, 'url'>) => {
       >
         {url}
       </Text>
-      <RedirectUrlIcon url={url} />
+      <RedirectUrlIcon url={url} onSubmit={onSubmit} />
     </Box>
   );
 };

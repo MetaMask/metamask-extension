@@ -2,11 +2,12 @@ const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../fixture-builder');
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   openDapp,
   regularDelayMs,
   unlockWallet,
+  WINDOW_TITLES,
 } = require('../helpers');
 
 const TEST_CHAIN_ID = toHex(100);
@@ -67,15 +68,6 @@ describe('Custom network', function () {
   const networkNAME = 'Arbitrum One';
   const currencySYMBOL = 'ETH';
   const blockExplorerURL = 'https://explorer.arbitrum.io';
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   describe('JSON-RPC API', function () {
     it('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
@@ -85,7 +77,7 @@ describe('Custom network', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions,
+          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -113,7 +105,7 @@ describe('Custom network', function () {
           const windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 
@@ -190,7 +182,7 @@ describe('Custom network', function () {
           const windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 
@@ -297,7 +289,7 @@ describe('Custom network', function () {
           const windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
 
@@ -323,7 +315,7 @@ describe('Custom network', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions,
+          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -350,7 +342,7 @@ describe('Custom network', function () {
           const windowHandles = await driver.waitUntilXWindowHandles(3);
 
           await driver.switchToWindowWithTitle(
-            'MetaMask Notification',
+            WINDOW_TITLES.Dialog,
             windowHandles,
           );
           await driver.clickElement({
@@ -383,7 +375,7 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions,
+          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -469,7 +461,7 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions,
+          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -502,7 +494,7 @@ describe('Custom network', function () {
 
           const arbitrumNetwork = await driver.findElements({
             text: 'Arbitrum One',
-            tag: 'button',
+            tag: 'p',
           });
           assert.ok(arbitrumNetwork.length, 1);
         },
@@ -525,7 +517,7 @@ describe('Custom network', function () {
               },
             })
             .build(),
-          ganacheOptions,
+          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver }) => {
@@ -575,7 +567,7 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions,
+          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
@@ -615,7 +607,7 @@ describe('Custom network', function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
-          ganacheOptions,
+          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
           testSpecificMock: mockRPCURLAndChainId,
         },
@@ -645,6 +637,7 @@ async function checkThatSafeChainsListValidationToggleIsOn(driver) {
     text: 'Security & privacy',
     tag: 'div',
   };
+  await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
   const useSafeChainsListValidationToggleSelector =
@@ -725,6 +718,8 @@ async function toggleOffSafeChainsListValidation(driver) {
     text: 'Security & privacy',
     tag: 'div',
   };
+
+  await driver.waitForSelector(securityAndPrivacyTabRawLocator);
   await driver.clickElement(securityAndPrivacyTabRawLocator);
 
   const useSafeChainsListValidationLabelSelector =

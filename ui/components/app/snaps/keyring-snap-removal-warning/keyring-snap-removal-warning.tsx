@@ -10,12 +10,12 @@ import {
   ButtonSize,
   ButtonVariant,
   Modal,
-  ModalContent,
-  ModalHeader,
   ModalOverlay,
   Text,
+  TextField,
 } from '../../../component-library';
-import { TextField } from '../../../component-library/text-field/deprecated';
+import { ModalContent } from '../../../component-library/modal-content/deprecated';
+import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import {
   BlockSize,
   Display,
@@ -156,7 +156,6 @@ export default function KeyringRemovalSnapWarning({
                   inputProps={{
                     'data-testid': 'remove-snap-confirmation-input',
                   }}
-                  type="text"
                 />
               </Box>
             </>

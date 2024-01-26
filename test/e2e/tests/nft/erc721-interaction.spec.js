@@ -1,24 +1,16 @@
 const { strict: assert } = require('assert');
 const {
-  convertToHexValue,
   withFixtures,
   openDapp,
   unlockWallet,
+  WINDOW_TITLES,
+  defaultGanacheOptions,
 } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixture-builder');
 
 describe('ERC721 NFTs testdapp interaction', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
 
   it('should prompt users to add their NFTs to their wallet (one by one) @no-mmi', async function () {
     await withFixtures(
@@ -27,7 +19,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
@@ -49,7 +41,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         let windowHandles = await driver.getAllWindowHandles();
         const [extension] = windowHandles;
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.waitForSelector({
@@ -85,7 +77,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -120,9 +112,15 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
+
+        // avoid race condition
+        await driver.waitForSelector({
+          css: '.confirm-add-suggested-nft__nft-tokenId',
+          text: '#6',
+        });
 
         // confirm watchNFT
         await driver.waitForSelector({
@@ -148,7 +146,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
@@ -170,7 +168,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         let windowHandles = await driver.getAllWindowHandles();
         const [extension] = windowHandles;
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
         await driver.waitForSelector({
@@ -200,7 +198,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         await driver.waitUntilXWindowHandles(3);
         windowHandles = await driver.getAllWindowHandles();
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -243,7 +241,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
@@ -263,7 +261,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const [extension] = windowHandles;
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -293,7 +291,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
@@ -316,7 +314,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const [extension] = windowHandles;
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -363,7 +361,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
@@ -382,7 +380,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const [extension] = windowHandles;
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 
@@ -432,7 +430,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         smartContract,
         title: this.test.fullTitle(),
         failOnConsoleError: false,
@@ -451,7 +449,7 @@ describe('ERC721 NFTs testdapp interaction', function () {
         const windowHandles = await driver.getAllWindowHandles();
         const [extension] = windowHandles;
         await driver.switchToWindowWithTitle(
-          'MetaMask Notification',
+          WINDOW_TITLES.Dialog,
           windowHandles,
         );
 

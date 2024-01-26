@@ -17,7 +17,7 @@ import * as actions from './store/actions';
 import configureStore from './store/store';
 import {
   getPermittedAccountsForCurrentTab,
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getUnapprovedTransactions,
 } from './selectors';
 import { ALERT_STATE } from './ducks/alerts';
@@ -55,7 +55,7 @@ export const updateBackgroundConnection = (backgroundConnection) => {
 
 export default function launchMetamaskUi(opts, cb) {
   const { backgroundConnection } = opts;
-  ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+  ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   let desktopEnabled = false;
 
   backgroundConnection.getDesktopEnabled(function (err, result) {
@@ -65,7 +65,7 @@ export default function launchMetamaskUi(opts, cb) {
 
     desktopEnabled = result;
   });
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   // check if we are unlocked first
   backgroundConnection.getState(function (err, metamaskState) {
@@ -74,9 +74,9 @@ export default function launchMetamaskUi(opts, cb) {
         err,
         {
           ...metamaskState,
-          ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+          ///: BEGIN:ONLY_INCLUDE_IF(desktop)
           desktopEnabled,
-          ///: END:ONLY_INCLUDE_IN
+          ///: END:ONLY_INCLUDE_IF
         },
         backgroundConnection,
       );
@@ -87,9 +87,9 @@ export default function launchMetamaskUi(opts, cb) {
       cb(
         null,
         store,
-        ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+        ///: BEGIN:ONLY_INCLUDE_IF(desktop)
         backgroundConnection,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       );
     });
   });
@@ -131,7 +131,8 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     const { origin } = draftInitialState.activeTab;
     const permittedAccountsForCurrentTab =
       getPermittedAccountsForCurrentTab(draftInitialState);
-    const selectedAddress = getSelectedAddress(draftInitialState);
+    const selectedAddress =
+      getSelectedInternalAccount(draftInitialState)?.address ?? '';
     const unconnectedAccountAlertShownOrigins =
       getUnconnectedAccountAlertShown(draftInitialState);
     const unconnectedAccountAlertIsEnabled =
@@ -164,6 +165,7 @@ async function startApp(metamaskState, backgroundConnection, opts) {
     metamaskState.unapprovedDecryptMsgs,
     metamaskState.unapprovedEncryptionPublicKeyMsgs,
     metamaskState.unapprovedTypedMessages,
+    metamaskState.networkId,
     metamaskState.providerConfig.chainId,
   );
   const numberOfUnapprovedTx = unapprovedTxsAll.length;

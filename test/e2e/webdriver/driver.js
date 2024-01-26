@@ -32,11 +32,26 @@ function wrapElementWithAPI(element, driver) {
   element.press = (key) => element.sendKeys(key);
   element.fill = async (input) => {
     // The 'fill' method in playwright replaces existing input
+    await driver.wait(until.elementIsVisible(element));
+
+    // Try 2 ways to clear input fields, first try with clear() method
+    // Use keyboard simulation if the input field is not empty
     await element.sendKeys(
       Key.chord(driver.Key.MODIFIER, 'a', driver.Key.BACK_SPACE),
     );
+    // If previous methods fail, use Selenium's actions to select all text and replace it with the expected value
+    if ((await element.getProperty('value')) !== '') {
+      await driver.driver
+        .actions()
+        .click(element)
+        .keyDown(driver.Key.MODIFIER)
+        .sendKeys('a')
+        .keyUp(driver.Key.MODIFIER)
+        .perform();
+    }
     await element.sendKeys(input);
   };
+
   element.waitForElementState = async (state, timeout) => {
     switch (state) {
       case 'hidden':
@@ -168,8 +183,16 @@ class Driver {
     await new Promise((resolve) => setTimeout(resolve, time));
   }
 
-  async wait(condition, timeout = this.timeout) {
-    await this.driver.wait(condition, timeout);
+  async wait(condition, timeout = this.timeout, catchError = false) {
+    try {
+      await this.driver.wait(condition, timeout);
+    } catch (e) {
+      if (!catchError) {
+        throw e;
+      }
+
+      console.log('Caught error waiting for condition:', e);
+    }
   }
 
   async waitForSelector(
@@ -416,6 +439,10 @@ class Driver {
     return newHandle;
   }
 
+  async refresh() {
+    await this.driver.navigate().refresh();
+  }
+
   async switchToWindow(handle) {
     await this.driver.switchTo().window(handle);
   }
@@ -445,6 +472,11 @@ class Driver {
       timeElapsed += delayStep;
     }
     throw new Error('waitUntilXWindowHandles timed out polling window handles');
+  }
+
+  async getWindowTitleByHandlerId(handlerId) {
+    await this.driver.switchTo().window(handlerId);
+    return await this.driver.getTitle();
   }
 
   async switchToWindowWithTitle(
@@ -535,10 +567,17 @@ class Driver {
     const artifactDir = `./test-artifacts/${this.browser}/${title}`;
     const filepathBase = `${artifactDir}/test-failure`;
     await fs.mkdir(artifactDir, { recursive: true });
-    const screenshot = await this.driver.takeScreenshot();
-    await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
-      encoding: 'base64',
-    });
+    // On occassion there may be a bug in the offscreen document which does
+    // not render visibly to the user and therefore no screenshot can be
+    // taken. In this case we skip the screenshot and log the error.
+    try {
+      const screenshot = await this.driver.takeScreenshot();
+      await fs.writeFile(`${filepathBase}-screenshot.png`, screenshot, {
+        encoding: 'base64',
+      });
+    } catch (e) {
+      console.error('Failed to take screenshot', e);
+    }
     const htmlSource = await this.driver.getPageSource();
     await fs.writeFile(`${filepathBase}-dom.html`, htmlSource);
     const uiState = await this.driver.executeScript(

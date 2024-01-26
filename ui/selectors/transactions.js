@@ -12,7 +12,7 @@ import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
 import { getProviderConfig } from '../ducks/metamask/metamask';
-import { getCurrentChainId, getSelectedAddress } from './selectors';
+import { getCurrentChainId, getSelectedInternalAccount } from './selectors';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
 import { createDeepEqualSelector } from './util';
 
@@ -64,7 +64,7 @@ export const incomingTxListSelector = createDeepEqualSelector(
     }
 
     const currentNetworkTransactions = getCurrentNetworkTransactions(state);
-    const selectedAddress = getSelectedAddress(state);
+    const { address: selectedAddress } = getSelectedInternalAccount(state);
 
     return currentNetworkTransactions.filter(
       (tx) =>
@@ -98,12 +98,15 @@ export const smartTransactionsListSelector = (state) =>
     }));
 
 export const selectedAddressTxListSelector = createSelector(
-  getSelectedAddress,
+  getSelectedInternalAccount,
   getCurrentNetworkTransactions,
   smartTransactionsListSelector,
-  (selectedAddress, transactions = [], smTransactions = []) => {
+  (selectedInternalAccount, transactions = [], smTransactions = []) => {
     return transactions
-      .filter(({ txParams }) => txParams.from === selectedAddress)
+      .filter(
+        ({ txParams }) => txParams.from === selectedInternalAccount.address,
+      )
+      .filter(({ type }) => type !== TransactionType.incoming)
       .concat(smTransactions);
   },
 );
@@ -289,9 +292,9 @@ export const nonceSortedTransactionsSelector = createSelector(
       let shouldNotBeGrouped =
         typeof nonce === 'undefined' || type === TransactionType.incoming;
 
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       shouldNotBeGrouped = shouldNotBeGrouped || Boolean(transaction.custodyId);
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
 
       if (shouldNotBeGrouped) {
         const transactionGroup = {
@@ -593,6 +596,6 @@ const TRANSACTION_APPROVAL_TYPES = [
 export function hasTransactionPendingApprovals(state) {
   return (
     hasUnapprovedTransactionsInCurrentNetwork(state) ||
-    TRANSACTION_APPROVAL_TYPES.some((type) => hasPendingApprovals(state, type))
+    hasPendingApprovals(state, TRANSACTION_APPROVAL_TYPES)
   );
 }

@@ -34,13 +34,13 @@ import {
   getSwapsTokensReceivedFromTxMeta,
   TRANSACTION_ENVELOPE_TYPE_NAMES,
 } from '../../../../shared/lib/transactions-controller-utils';
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../shared/constants/security-provider';
 import { getBlockaidMetricsParams } from '../../../../ui/helpers/utils/metrics';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import {
   getSnapAndHardwareInfoForMetrics,
   type SnapAndHardwareMessenger,
@@ -425,7 +425,7 @@ export const handlePostTransactionBalanceUpdate = async (
   }
 };
 
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 /**
  * This function is called when a transaction metadata updated in the MMI controller.
  *
@@ -449,7 +449,7 @@ export const handleMMITransactionUpdate = async (
     transactionMetricsRequest,
   });
 };
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 function calculateTransactionsCost(
   transactionMeta: TransactionMeta,
@@ -763,9 +763,9 @@ async function buildEventFragmentProperties({
     finalApprovalAmount,
     contractMethodName,
     securityProviderResponse,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     securityAlertResponse,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     simulationFails,
   } = transactionMeta;
   const query = new EthQuery(transactionMetricsRequest.provider);
@@ -940,7 +940,7 @@ async function buildEventFragmentProperties({
     uiCustomizations = null;
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   if (securityAlertResponse?.result_type === BlockaidResultType.Failed) {
     uiCustomizations = ['security_alert_failed'];
   } else {
@@ -950,7 +950,7 @@ async function buildEventFragmentProperties({
     uiCustomizations = additionalBlockaidParams?.ui_customizations ?? null;
   }
 
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   if (simulationFails) {
     if (uiCustomizations === null) {
@@ -981,17 +981,16 @@ async function buildEventFragmentProperties({
     transaction_speed_up: type === TransactionType.retry,
     ...additionalBlockaidParams,
     ui_customizations: uiCustomizations?.length > 0 ? uiCustomizations : null,
-    ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     security_alert_response:
       securityAlertResponse?.result_type ?? BlockaidResultType.NotApplicable,
     security_alert_reason:
       securityAlertResponse?.reason ?? BlockaidReason.notApplicable,
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     gas_estimation_failed: Boolean(simulationFails),
   } as Record<string, any>;
 
   const snapAndHardwareInfo = await getSnapAndHardwareInfoForMetrics(
-    transactionMetricsRequest.getSelectedAddress,
     transactionMetricsRequest.getAccountType,
     transactionMetricsRequest.getDeviceModel,
     transactionMetricsRequest.snapAndHardwareMessenger,

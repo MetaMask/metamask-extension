@@ -704,12 +704,6 @@
   "deleteNetwork": {
     "message": "Cancella la rete?"
   },
-  "deprecatedTestNetworksLink": {
-    "message": "Scopri di più"
-  },
-  "deprecatedTestNetworksMsg": {
-    "message": "A causa delle modifiche al protocollo di Ethereum: le reti di test Rinkeby, Ropsten e Kovan potrebbero non funzionare in modo affidabile e saranno presto rimosse."
-  },
   "description": {
     "message": "Descrizione"
   },
@@ -1353,9 +1347,6 @@
   "searchAccounts": {
     "message": "Cerca Account"
   },
-  "searchResults": {
-    "message": "Risultati Ricerca"
-  },
   "securityAndPrivacy": {
     "message": "Sicurezza & Privacy"
   },
@@ -1775,12 +1766,6 @@
   },
   "unknown": {
     "message": "Sconosciuto"
-  },
-  "unknownCameraError": {
-    "message": "C'è stato un errore nel tentativo di accedere alla fotocamera. Per favore prova di nuovo..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Qualcosa è andato storto...."
   },
   "unknownNetwork": {
     "message": "Rete Privata Sconosciuta"

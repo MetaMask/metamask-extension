@@ -1,9 +1,9 @@
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 export function getMethodName(camelCase) {
   if (!camelCase || typeof camelCase !== 'string') {
@@ -24,7 +24,7 @@ export function formatAccountType(accountType) {
   return accountType;
 }
 
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 export const getBlockaidMetricsParams = (securityAlertResponse = null) => {
   const additionalParams = {};
 
@@ -63,4 +63,4 @@ export const getBlockaidMetricsParams = (securityAlertResponse = null) => {
 
   return additionalParams;
 };
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF

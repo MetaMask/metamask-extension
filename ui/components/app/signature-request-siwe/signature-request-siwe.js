@@ -1,9 +1,9 @@
 import React, {
   useCallback,
   useContext,
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   useEffect,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
   useState,
 } from 'react';
 import PropTypes from 'prop-types';
@@ -45,7 +45,7 @@ import {
 import SecurityProviderBannerMessage from '../security-provider-banner-message/security-provider-banner-message';
 import ConfirmPageContainerNavigation from '../confirm-page-container/confirm-page-container-navigation';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
-///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
 import { getBlockaidMetricsParams } from '../../../helpers/utils/metrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -53,7 +53,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import LedgerInstructionField from '../ledger-instruction-field';
 
 import SignatureRequestHeader from '../signature-request-header';
@@ -69,11 +69,10 @@ export default function SignatureRequestSIWE({ txData }) {
   const messagesCount = useSelector(getTotalUnapprovedMessagesCount);
   const messagesList = useSelector(unconfirmedMessagesHashSelector);
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
-  const trackEvent = useContext(MetaMetricsContext);
-  ///: END:ONLY_INCLUDE_IN
 
-  ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+  const trackEvent = useContext(MetaMetricsContext);
+
   useEffect(() => {
     if (txData.securityAlertResponse) {
       const blockaidMetricsParams = getBlockaidMetricsParams(
@@ -89,8 +88,21 @@ export default function SignatureRequestSIWE({ txData }) {
         },
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  ///: END:ONLY_INCLUDE_IN
+
+  const onClickSupportLink = useCallback(() => {
+    trackEvent({
+      category: MetaMetricsEventCategory.Transactions,
+      event: MetaMetricsEventName.ExternalLinkClicked,
+      properties: {
+        action: 'Sign Request SIWE',
+        origin: txData?.origin,
+        external_link_clicked: 'security_alert_support_link',
+      },
+    });
+  }, [trackEvent, txData?.origin]);
+  ///: END:ONLY_INCLUDE_IF
 
   const {
     msgParams: {
@@ -167,12 +179,13 @@ export default function SignatureRequestSIWE({ txData }) {
       <SignatureRequestHeader txData={txData} />
 
       {
-        ///: BEGIN:ONLY_INCLUDE_IN(blockaid)
+        ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
         <BlockaidBannerAlert
-          securityAlertResponse={txData?.securityAlertResponse}
+          txData={txData}
           margin={4}
+          onClickSupportLink={onClickSupportLink}
         />
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       }
       {showSecurityProviderBanner && (
         <SecurityProviderBannerMessage

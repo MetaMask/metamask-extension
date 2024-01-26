@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { getCurrentKeyring, getSelectedAddress } from '../../../selectors';
+import {
+  getCurrentKeyring,
+  getSelectedInternalAccount,
+} from '../../../selectors';
 import { getInteractiveReplacementToken } from '../../../selectors/institutional/selectors';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -34,7 +37,7 @@ const InteractiveReplacementTokenNotification = ({ isVisible }) => {
   const mmiActions = mmiActionsFactory();
 
   const keyring = useSelector(getCurrentKeyring);
-  const address = useSelector(getSelectedAddress);
+  const { address } = useSelector(getSelectedInternalAccount);
   const isUnlocked = useSelector(getIsUnlocked);
   const interactiveReplacementToken = useSelector(
     getInteractiveReplacementToken,

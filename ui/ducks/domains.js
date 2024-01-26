@@ -65,9 +65,9 @@ const slice = createSlice({
       state.warning = null;
       state.domainType = null;
       state.domainName = null;
-      ///: BEGIN:ONLY_INCLUDE_IN(build-flask)
+      ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
       state.resolvingSnap = null;
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       const { address, error, chainId, domainType, domainName, resolvingSnap } =
         action.payload;
       state.domainType = domainType;

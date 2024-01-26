@@ -1,15 +1,15 @@
 import React, {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   useState,
   useContext,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from 'react';
 import { useHistory } from 'react-router-dom';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { useDispatch, useSelector } from 'react-redux';
 import { Carousel } from 'react-responsive-carousel';
 import { setCompletedOnboarding } from '../../../store/actions';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
 import {
@@ -18,19 +18,19 @@ import {
   TextAlign,
 } from '../../../helpers/constants/design-system';
 import {
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   DEFAULT_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
-  ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+  ///: END:ONLY_INCLUDE_IF
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
   MMI_ONBOARDING_COMPLETION_ROUTE,
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
-///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 import Box from '../../../components/ui/box';
 import OnboardingPinMmiBillboard from '../../institutional/pin-mmi-billboard/pin-mmi-billboard';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 import { Text } from '../../../components/component-library';
-///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { FIRST_TIME_FLOW_TYPES } from '../../../helpers/constants/onboarding';
 import { getFirstTimeFlowType } from '../../../selectors';
@@ -39,19 +39,19 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import OnboardingPinBillboard from './pin-billboard';
-///: END:ONLY_INCLUDE_IN
+///: END:ONLY_INCLUDE_IF
 
 export default function OnboardingPinExtension() {
   const t = useI18nContext();
   const history = useHistory();
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const [selectedIndex, setSelectedIndex] = useState(0);
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
   const handleClick = async () => {
     if (selectedIndex === 0) {
       setSelectedIndex(1);
@@ -71,7 +71,7 @@ export default function OnboardingPinExtension() {
       history.push(DEFAULT_ROUTE);
     }
   };
-  ///: END:ONLY_INCLUDE_IN
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <div
@@ -79,7 +79,7 @@ export default function OnboardingPinExtension() {
       data-testid="onboarding-pin-extension"
     >
       {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
         <>
           <Text
             variant={TextVariant.headingLg}
@@ -133,11 +133,11 @@ export default function OnboardingPinExtension() {
             </Button>
           </div>
         </>
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       }
 
       {
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         <>
           <div>
             <Box textAlign={TextAlign.Center}>
@@ -163,7 +163,7 @@ export default function OnboardingPinExtension() {
             </Button>
           </div>
         </>
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       }
     </div>
   );

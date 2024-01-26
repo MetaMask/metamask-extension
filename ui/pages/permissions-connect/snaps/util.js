@@ -11,7 +11,7 @@ export function getSnapInstallWarnings(permissions, targetSubjectMetadata, t) {
       });
 
       return filteredWarnings.concat(
-        permissionDescription.filter((description) => description.weight === 1),
+        permissionDescription.filter((description) => description.weight <= 2),
       );
     },
     [],

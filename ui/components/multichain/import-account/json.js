@@ -4,9 +4,8 @@ import { useSelector } from 'react-redux';
 import FileInput from 'react-simple-file-input';
 import {
   ButtonLink,
-  FormTextField,
-  TEXT_FIELD_SIZES,
-  TEXT_FIELD_TYPES,
+  TextFieldSize,
+  TextFieldType,
   Text,
 } from '../../component-library';
 import {
@@ -14,6 +13,7 @@ import {
   TextAlign,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { displayWarning } from '../../../store/actions';
@@ -75,9 +75,9 @@ export default function JsonImportSubview({
 
       <FormTextField
         id="json-password-box"
-        size={TEXT_FIELD_SIZES.LARGE}
+        size={TextFieldSize.Lg}
         autoFocus
-        type={TEXT_FIELD_TYPES.PASSWORD}
+        type={TextFieldType.Password}
         helpText={warning}
         error
         placeholder={t('enterOptionalPassword')}

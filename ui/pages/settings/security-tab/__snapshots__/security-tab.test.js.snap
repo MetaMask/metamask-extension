@@ -230,7 +230,7 @@ exports[`Security Tab should match snapshot 1`] = `
               </a>
                APIs to display your balance and token price. 
               <a
-                href="https://consensys.net/privacy-policy/"
+                href="https://consensys.io/privacy-policy/"
                 rel="noreferrer"
                 target="_blank"
               >
@@ -318,7 +318,7 @@ exports[`Security Tab should match snapshot 1`] = `
               <img
                 alt="Custom Mainnet RPC logo"
                 class="mm-avatar-network__network-image"
-                src="./images/eth_logo.png"
+                src="./images/eth_logo.svg"
               />
             </div>
             <div
@@ -405,7 +405,7 @@ exports[`Security Tab should match snapshot 1`] = `
               <img
                 alt="Linea Mainnet logo"
                 class="mm-avatar-network__network-image"
-                src="./images/linea-logo-mainnet.png"
+                src="./images/linea-logo-mainnet.svg"
               />
             </div>
             <div
@@ -759,7 +759,7 @@ exports[`Security Tab should match snapshot 1`] = `
                
               We use Infura as our remote procedure call (RPC) provider to offer the most reliable and private access to Ethereum data we can. You can choose your own RPC, but remember that any RPC will receive your IP address and Ethereum wallet to make transactions. Read our 
               <a
-                href="https://consensys.net/privacy-policy/"
+                href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
                 target="_blank"
               >
@@ -1072,7 +1072,7 @@ exports[`Security Tab should match snapshot 1`] = `
                
               We use third-party APIs to detect and display new tokens sent to your wallet. Turn off if you don’t want the app to automatically pull data from those services. 
               <a
-                href="https://consensys.net/privacy-policy/"
+                href="https://consensys.io/privacy-policy/"
                 rel="noopener noreferrer"
                 target="_blank"
               >

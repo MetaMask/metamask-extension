@@ -144,9 +144,9 @@ export default class MetaMetricsController {
     this.extension = extension;
     this.environment = environment;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     this.selectedAddress = prefState.selectedAddress;
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     const abandonedFragments = omitBy(initState?.fragments, 'persist');
     const segmentApiCalls = initState?.segmentApiCalls || {};
@@ -156,6 +156,7 @@ export default class MetaMetricsController {
       metaMetricsId: null,
       eventsBeforeMetricsOptIn: [],
       traits: {},
+      previousUserTraits: {},
       ...initState,
       fragments: {
         ...initState?.fragments,
@@ -456,7 +457,6 @@ export default class MetaMetricsController {
     } else if (participateInMetaMetrics === false) {
       // We also need to stop sentry automatic session tracking at this point
       await globalThis.sentry?.endSession();
-      metaMetricsId = null;
     }
     this.store.updateState({ participateInMetaMetrics, metaMetricsId });
     if (participateInMetaMetrics) {
@@ -464,9 +464,9 @@ export default class MetaMetricsController {
       this.clearEventsAfterMetricsOptIn();
     }
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-main,build-beta,build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
     this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     return metaMetricsId;
   }
@@ -665,21 +665,21 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsContext}
    */
   _buildContext(referrer, page = METAMETRICS_BACKGROUND_PAGE_OBJECT) {
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const mmiProps = {};
 
     if (this.extension?.runtime?.id) {
       mmiProps.extensionId = this.extension.runtime.id;
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     return {
       app: {
         name: 'MetaMask Extension',
         version: this.version,
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         ...mmiProps,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       },
       userAgent: window.navigator.userAgent,
       page,
@@ -710,17 +710,17 @@ export default class MetaMetricsController {
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
     } = rawPayload;
 
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const mmiProps = {};
 
     if (this.extension?.runtime?.id) {
       mmiProps.extensionId = this.extension.runtime.id;
     }
 
-    if (this.selectedAddres) {
-      mmiProps.accountAddress = this.selectedAddres;
+    if (this.selectedAddress) {
+      mmiProps.accountAddress = this.selectedAddress;
     }
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
 
     return {
       event,
@@ -740,9 +740,9 @@ export default class MetaMetricsController {
         locale: this.locale,
         chain_id: properties?.chain_id ?? this.chainId,
         environment_type: environmentType,
-        ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+        ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
         ...mmiProps,
-        ///: END:ONLY_INCLUDE_IN
+        ///: END:ONLY_INCLUDE_IF
       },
       context: this._buildContext(referrer, page),
     };
@@ -756,13 +756,13 @@ export default class MetaMetricsController {
    * @returns {MetaMetricsTraits | null} traits that have changed since last update
    */
   _buildUserTraitsObject(metamaskState) {
-    ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+    ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     const mmiAccountAddress =
       metamaskState.custodyAccountDetails &&
       Object.keys(metamaskState.custodyAccountDetails).length
         ? Object.keys(metamaskState.custodyAccountDetails)[0]
         : null;
-    ///: END:ONLY_INCLUDE_IN
+    ///: END:ONLY_INCLUDE_IF
     const { traits, previousUserTraits } = this.store.getState();
     let securityProvider;
     if (metamaskState.securityAlertsEnabled) {
@@ -791,7 +791,7 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
         metamaskState.useNftDetection,
       [MetaMetricsUserTrait.NumberOfAccounts]: Object.values(
-        metamaskState.identities,
+        metamaskState.internalAccounts.accounts,
       ).length,
       [MetaMetricsUserTrait.NumberOfNftCollections]:
         this._getAllUniqueNFTAddressesLength(metamaskState.allNfts),
@@ -805,22 +805,24 @@ export default class MetaMetricsController {
       [MetaMetricsUserTrait.Theme]: metamaskState.theme || 'default',
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
-      ///: BEGIN:ONLY_INCLUDE_IN(desktop)
+      [MetaMetricsUserTrait.UseNativeCurrencyAsPrimaryCurrency]:
+        metamaskState.useNativeCurrencyAsPrimaryCurrency,
+      ///: BEGIN:ONLY_INCLUDE_IF(desktop)
       [MetaMetricsUserTrait.DesktopEnabled]:
         metamaskState.desktopEnabled || false,
-      ///: END:ONLY_INCLUDE_IN
-      ///: BEGIN:ONLY_INCLUDE_IN(build-mmi)
+      ///: END:ONLY_INCLUDE_IF
+      ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       [MetaMetricsUserTrait.MmiExtensionId]: this.extension?.runtime?.id,
       [MetaMetricsUserTrait.MmiAccountAddress]: mmiAccountAddress,
       [MetaMetricsUserTrait.MmiIsCustodian]: Boolean(mmiAccountAddress),
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
       [MetaMetricsUserTrait.SecurityProviders]: securityProvider
         ? [securityProvider]
         : [],
-      ///: BEGIN:ONLY_INCLUDE_IN(petnames)
+      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       [MetaMetricsUserTrait.PetnameAddressCount]:
         this._getPetnameAddressCount(metamaskState),
-      ///: END:ONLY_INCLUDE_IN
+      ///: END:ONLY_INCLUDE_IF
     };
 
     if (!previousUserTraits) {

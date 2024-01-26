@@ -1193,9 +1193,6 @@
   "searchAccounts": {
     "message": "Maghanap ng Account"
   },
-  "searchResults": {
-    "message": "Mga Resulta ng Paghahanap"
-  },
   "securityAndPrivacy": {
     "message": "Seguridad at Privacy"
   },
@@ -1752,12 +1749,6 @@
   "unknown": {
     "message": "Hindi Alam"
   },
-  "unknownCameraError": {
-    "message": "Nagkaroon ng error habang sinusubukang i-access ang iyong camera. Pakisubukan ulit..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Nagkaproblema...."
-  },
   "unknownNetwork": {
     "message": "Hindi Alam na Pribadong Network"
   },
@@ -1797,10 +1788,6 @@
   },
   "userName": {
     "message": "Username"
-  },
-  "verifyThisTokenDecimalOn": {
-    "message": "Makikita sa $1 ang decimal ng token",
-    "description": "Points the user to etherscan as a place they can verify information about a token. $1 is replaced with the translation for \"etherscan\""
   },
   "verifyThisTokenOn": {
     "message": "I-verify ang token na ito sa $1",

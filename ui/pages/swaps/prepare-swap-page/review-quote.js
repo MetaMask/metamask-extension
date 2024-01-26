@@ -461,7 +461,9 @@ export default function ReviewQuote({ setReceiveToAmount }) {
       smartTransactionFees?.tradeTxFees.feeEstimate +
       (smartTransactionFees?.approvalTxFees?.feeEstimate || 0);
     const stxMaxFeeInWeiDec =
-      stxEstimatedFeeInWeiDec * swapsNetworkConfig.stxMaxFeeMultiplier;
+      smartTransactionFees?.tradeTxFees.maxFeeEstimate +
+      (smartTransactionFees?.approvalTxFees?.maxFeeEstimate || 0);
+
     ({ feeInFiat, feeInEth, rawEthFee, feeInUsd } = getFeeForSmartTransaction({
       chainId,
       currentCurrency,

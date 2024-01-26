@@ -47,33 +47,22 @@ aliases:
       set -u
       set -o pipefail
 
-      # This Shallow Git Clone code is adapted from what the standard CircleCI `checkout` command does for the case of an external PR (link to example below):
-      # https://app.circleci.com/pipelines/github/MetaMask/metamask-extension/49817/workflows/dc195ea6-ac06-4de1-9edf-4c949427b5fb/jobs/1430976/parallel-runs/0/steps/0-101
-      ### git clone --no-checkout "$CIRCLE_REPOSITORY_URL" .
-      ### git fetch --force origin +refs/pull/18748/head:refs/remotes/origin/pull/18748
-      ### git checkout --force -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
-      ### git --no-pager log --no-color -n 1 --format='HEAD is now at %h %s'
-
       # Set up SSH access
       # This SSH key is the current github.com SSH key as of June 2023, but it will need to be changed whenever github changes their key (probably every few years)
       GITHUB_SSH_KEY="AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl"
       mkdir -p ~/.ssh
       echo github.com ssh-ed25519 $GITHUB_SSH_KEY >> ~/.ssh/known_hosts
 
-      # Take a different clone path depending on if it's a tag, a PR from an external repo, or the normal case
+      git clone --depth 1 --no-checkout "$CIRCLE_REPOSITORY_URL" .
+      git fetch --depth 1 origin "$CIRCLE_SHA1"
+
       if [ -n "${CIRCLE_TAG-}" ]; then
-        # tag
-        git clone --depth 1 --no-checkout "$CIRCLE_REPOSITORY_URL" .
-        git fetch --depth 1 --force origin "+refs/tags/${CIRCLE_TAG}:refs/tags/${CIRCLE_TAG}"
-        git checkout --force -q "$CIRCLE_TAG" "$CIRCLE_SHA1"
-      elif [[ "$CIRCLE_BRANCH" =~ ^pull\/* ]]; then
-        # pull request
-        git clone --depth 1 --no-checkout "$CIRCLE_REPOSITORY_URL" .
-        git fetch --depth 1 --force origin "${CIRCLE_BRANCH}/head:remotes/origin/${CIRCLE_BRANCH}"
-        git checkout --force -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
+        echo "Checkout tag '${CIRCLE_TAG}' at commit '${CIRCLE_SHA1}'"
+        git checkout "$CIRCLE_TAG"
+        git reset --hard "$CIRCLE_SHA1"
       else
-        # normal case
-        git clone --depth 1 "$CIRCLE_REPOSITORY_URL" --branch "$CIRCLE_BRANCH" .
+        echo "Checkout branch '${CIRCLE_BRANCH}' at commit '${CIRCLE_SHA1}'"
+        git checkout -B "$CIRCLE_BRANCH" "$CIRCLE_SHA1"
       fi
 
 workflows:
@@ -169,6 +158,9 @@ workflows:
       - test-e2e-chrome-rpc:
           requires:
             - prep-build-test
+      - test-e2e-chrome-multiple-providers:
+          requires:
+            - prep-build-test
       - test-e2e-chrome-flask:
           requires:
             - prep-build-test-flask
@@ -187,6 +179,14 @@ workflows:
       - test-e2e-chrome-mv3:
           requires:
             - prep-build-test-mv3
+      - test-e2e-chrome-vault-decryption:
+          filters:
+            branches:
+              only:
+                - develop
+                - /^Version-v(\d+)[.](\d+)[.](\d+)/
+          requires:
+            - prep-build
       - test-unit-mocha:
           requires:
             - prep-deps
@@ -266,11 +266,13 @@ workflows:
             - test-mozilla-lint-flask
             - test-e2e-chrome
             - test-e2e-chrome-multichain
+            - test-e2e-chrome-multiple-providers
             - test-e2e-firefox
             - test-e2e-chrome-flask
             - test-e2e-firefox-flask
             - test-e2e-chrome-mmi
             - test-e2e-chrome-rpc-mmi
+            - test-e2e-chrome-vault-decryption
             - test-storybook
       - benchmark:
           requires:
@@ -867,7 +869,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2 --debug
+              timeout 20m yarn test:e2e:chrome --retries 2 --debug
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -894,9 +896,11 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              MULTICHAIN=1 yarn test:e2e:chrome --retries 2 --debug
+              timeout 20m yarn test:e2e:chrome --retries 2 --debug
             fi
           no_output_timeout: 5m
+          environment:
+            MULTICHAIN: 1
       - store_artifacts:
           path: test-artifacts
           destination: test-artifacts
@@ -921,7 +925,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome --retries 2 --debug || echo "Temporarily suppressing MV3 e2e test failures"
+              timeout 20m yarn test:e2e:chrome --retries 2 --debug || echo "Temporarily suppressing MV3 e2e test failures"
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -946,7 +950,34 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:rpc --retries 2
+              timeout 20m yarn test:e2e:chrome:rpc --retries 2
+            fi
+          no_output_timeout: 5m
+      - store_artifacts:
+          path: test-artifacts
+          destination: test-artifacts
+      - store_test_results:
+          path: test/test-results/e2e
+
+  test-e2e-chrome-multiple-providers:
+    executor: node-browsers
+    parallelism: 1
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: Move test build to dist
+          command: mv ./dist-test ./dist
+      - run:
+          name: Move test zips to builds
+          command: mv ./builds-test ./builds
+      - run:
+          name: test:e2e:chrome:multi-provider
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:chrome:multi-provider --retries 2
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -972,7 +1003,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:rpc --retries 2 --debug --build-type=mmi
+              timeout 20m yarn test:e2e:chrome:rpc --retries 2 --debug --build-type=mmi
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -980,6 +1011,21 @@ jobs:
           destination: test-artifacts
       - store_test_results:
           path: test/test-results/e2e
+
+  test-e2e-chrome-vault-decryption:
+    executor: node-browsers-large
+    steps:
+      - run: *shallow-git-clone
+      - attach_workspace:
+          at: .
+      - run:
+          name: test:e2e:chrome:vault
+          command: |
+            if .circleci/scripts/test-run-e2e.sh
+            then
+              yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.js --browser chrome --retries 2 --debug
+            fi
+          no_output_timeout: 5m
 
   test-e2e-firefox-flask:
     executor: node-browsers-large
@@ -999,7 +1045,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox:flask --retries 2 --debug
+              timeout 20m yarn test:e2e:firefox:flask --retries 2 --debug
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1026,7 +1072,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:flask --retries 2 --debug
+              timeout 20m yarn test:e2e:chrome:flask --retries 2 --debug
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1053,7 +1099,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:chrome:mmi --retries 2 --debug --build-type=mmi
+              timeout 20m yarn test:e2e:chrome:mmi --retries 2 --debug --build-type=mmi
             fi
           no_output_timeout: 5m
       - store_artifacts:
@@ -1079,18 +1125,20 @@ jobs:
       - run:
           name: test:e2e:chrome:mmi
           command: |
-            SHARD="$((${CIRCLE_NODE_INDEX}+1))"; xvfb-run yarn playwright test --shard=${SHARD}/${CIRCLE_NODE_TOTAL}
-          no_output_timeout: 20m
+            TESTFILES=$(circleci tests glob "test/e2e/mmi/**/*.spec.ts")
+            echo "$TESTFILES"
+            echo "$TESTFILES" | timeout 20m circleci tests run --command="xvfb-run xargs yarn playwright test" verbose --split-by=timings
+          no_output_timeout: 10m
       - slack/notify:
           branch_pattern: Version-v*
           event: fail
-          mentions: <@antonio.regadas>, <@ramon.acitores134>
+          mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
           channel: C01LUJL3T98
       - slack/notify:
           branch_pattern: develop
           event: fail
-          mentions: <@antonio.regadas>, <@ramon.acitores134>
+          mentions: <@antonio.regadas>, @ramon.acitores134
           template: basic_fail_1
           channel: C05QXJA7NP8
       - store_artifacts:
@@ -1118,7 +1166,7 @@ jobs:
           command: |
             if .circleci/scripts/test-run-e2e.sh
             then
-              yarn test:e2e:firefox --retries 2 --debug
+              timeout 20m yarn test:e2e:firefox --retries 2 --debug
             fi
           no_output_timeout: 5m
       - store_artifacts:

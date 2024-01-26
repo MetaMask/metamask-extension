@@ -602,9 +602,6 @@
   "search": {
     "message": "Keresés"
   },
-  "searchResults": {
-    "message": "Keresési eredmények"
-  },
   "securityAndPrivacy": {
     "message": "Biztonság és adatvédelem"
   },
@@ -769,12 +766,6 @@
   },
   "unknown": {
     "message": "Ismeretlen"
-  },
-  "unknownCameraError": {
-    "message": "Hiba történt a kamerához való hozzáférés közben. Kérjük, próbálja újra..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Hoppá! Valami hiba történt..."
   },
   "unknownNetwork": {
     "message": "Ismeretlen magánhálózat"
