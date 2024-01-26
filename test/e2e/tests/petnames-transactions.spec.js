@@ -14,12 +14,12 @@ const {
   saveName,
 } = require('./petnames-helpers');
 
-async function createTransactionRequestInDapp(driver) {
+async function createDappSendTransaction(driver) {
   await driver.clickElement('#sendButton');
   await driver.delay(3000);
 }
 
-async function createTransactionRequestInWallet(driver, recipientAddress) {
+async function createWalletSendTransaction(driver, recipientAddress) {
   await openActionMenuAndStartSendFlow(driver);
   await driver.fill(
     'input[placeholder="Enter public address (0x) or ENS name"]',
@@ -30,8 +30,13 @@ async function createTransactionRequestInWallet(driver, recipientAddress) {
   await driver.clickElement({ text: 'Next', tag: 'button' });
 }
 
+const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
+const ABBREVIATED_ADDRESS_MOCK = '0x0c54F...7AaFb';
+const CUSTOM_NAME_MOCK = 'Custom Name';
+const PROPOSED_NAME_MOCK = 'test4.lens';
+
 describe('Petnames - Transactions', function () {
-  it('can save custom names for addresses in transaction requests', async function () {
+  it('can save petnames for addresses in dapp send transactions', async function () {
     await withFixtures(
       {
         dapp: true,
@@ -45,30 +50,41 @@ describe('Petnames - Transactions', function () {
       async ({ driver }) => {
         await unlockWallet(driver);
         await openDapp(driver);
-        await createTransactionRequestInDapp(driver);
+        await createDappSendTransaction(driver);
         await switchToNotificationWindow(driver, 3);
-        await expectName(driver, '0x0c54F...7AaFb', false);
+        await expectName(driver, ABBREVIATED_ADDRESS_MOCK, false);
 
         // Test custom name.
-        await saveName(driver, '0x0c54F...7AaFb', 'Custom Name', undefined);
+        await saveName(
+          driver,
+          ABBREVIATED_ADDRESS_MOCK,
+          CUSTOM_NAME_MOCK,
+          undefined,
+        );
         await rejectSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
-        await createTransactionRequestInDapp(driver);
+        await createDappSendTransaction(driver);
         await switchToNotificationWindow(driver, 3);
-        await expectName(driver, 'Custom Name', true);
+        await expectName(driver, CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
-        await saveName(driver, 'Custom Name', undefined, 'test4.lens', true);
+        await saveName(
+          driver,
+          CUSTOM_NAME_MOCK,
+          undefined,
+          PROPOSED_NAME_MOCK,
+          true,
+        );
         await rejectSignatureOrTransactionRequest(driver);
         await focusTestDapp(driver);
-        await createTransactionRequestInDapp(driver);
+        await createDappSendTransaction(driver);
         await switchToNotificationWindow(driver, 3);
-        await expectName(driver, 'test4.lens', true);
+        await expectName(driver, PROPOSED_NAME_MOCK, true);
       },
     );
   });
 
-  it('can update custom names for addresses in transaction requests', async function () {
+  it('can save petnames for addresses in wallet send transactions', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
@@ -83,28 +99,30 @@ describe('Petnames - Transactions', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
-        createTransactionRequestInWallet(
-          driver,
-          '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb',
-        );
+        createWalletSendTransaction(driver, ADDRESS_MOCK);
 
         // Test custom name.
-        await saveName(driver, '0x0c54F...7AaFb', 'Custom Name', undefined);
-        await rejectSignatureOrTransactionRequest(driver);
-        await createTransactionRequestInWallet(
+        await saveName(
           driver,
-          '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb',
+          ABBREVIATED_ADDRESS_MOCK,
+          CUSTOM_NAME_MOCK,
+          undefined,
         );
-        await expectName(driver, 'Custom Name', true);
+        await rejectSignatureOrTransactionRequest(driver);
+        await createWalletSendTransaction(driver, ADDRESS_MOCK);
+        await expectName(driver, CUSTOM_NAME_MOCK, true);
 
         // Test proposed name.
-        await saveName(driver, 'Custom Name', undefined, 'test4.lens', true);
-        await rejectSignatureOrTransactionRequest(driver);
-        await createTransactionRequestInWallet(
+        await saveName(
           driver,
-          '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb',
+          CUSTOM_NAME_MOCK,
+          undefined,
+          PROPOSED_NAME_MOCK,
+          true,
         );
-        await expectName(driver, 'test4.lens', true);
+        await rejectSignatureOrTransactionRequest(driver);
+        await createWalletSendTransaction(driver, ADDRESS_MOCK);
+        await expectName(driver, PROPOSED_NAME_MOCK, true);
       },
     );
   });
