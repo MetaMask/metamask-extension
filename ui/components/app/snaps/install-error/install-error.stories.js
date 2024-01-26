@@ -24,7 +24,7 @@ export default {
     error:
       'Failed to fetch Snap "npm:metamask/test-snap-error: Failed to fetch',
     description:
-      'Fecthing of Error Test Snap failed, check you network and try again.',
+      'Fetching of Error Test Snap failed, check you network and try again.',
     iconName: IconName.Warning,
   },
 };

@@ -99,6 +99,12 @@ class AccountList extends Component {
           const checked =
             this.props.selectedAccounts.includes(account.index) ||
             accountAlreadyConnected;
+          const accountLink = getAccountLink(
+            account.address,
+            chainId,
+            rpcPrefs,
+          );
+          const blockExplorerDomain = getURLHostName(accountLink);
 
           return (
             <div
@@ -136,18 +142,13 @@ class AccountList extends Component {
               <a
                 className="hw-account-list__item__link"
                 onClick={() => {
-                  const accountLink = getAccountLink(
-                    account.address,
-                    chainId,
-                    rpcPrefs,
-                  );
                   this.context.trackEvent({
                     category: MetaMetricsEventCategory.Accounts,
                     event: 'Clicked Block Explorer Link',
                     properties: {
                       actions: 'Hardware Connect',
                       link_type: 'Account Tracker',
-                      block_explorer_domain: getURLHostName(accountLink),
+                      block_explorer_domain: blockExplorerDomain,
                     },
                   });
                   global.platform.openTab({
@@ -156,7 +157,9 @@ class AccountList extends Component {
                 }}
                 target="_blank"
                 rel="noopener noreferrer"
-                title={this.context.t('etherscanView')}
+                title={this.context.t('genericExplorerView', [
+                  blockExplorerDomain,
+                ])}
               >
                 <i
                   className="fa fa-share-square"

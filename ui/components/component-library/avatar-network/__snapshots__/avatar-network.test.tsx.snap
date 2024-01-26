@@ -9,7 +9,7 @@ exports[`AvatarNetwork should render correctly 1`] = `
     <img
       alt="ethereum logo"
       class="mm-avatar-network__network-image"
-      src="./images/eth_logo.png"
+      src="./images/eth_logo.svg"
     />
   </div>
 </div>

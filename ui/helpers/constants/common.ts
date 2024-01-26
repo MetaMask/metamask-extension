@@ -23,3 +23,6 @@ export const OUTDATED_BROWSER_VERSIONS = {
   // See https://en.wikipedia.org/wiki/History_of_the_Opera_web_browser
   opera: '<76',
 };
+
+export const TEST_SNAPS_SIMPLE_KEYRING_WEBSITE_URL =
+  'https://metamask.github.io/snap-simple-keyring/1.1.1/';

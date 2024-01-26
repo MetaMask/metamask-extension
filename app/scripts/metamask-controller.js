@@ -295,6 +295,7 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
+import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -769,16 +770,13 @@ export default class MetamaskController extends EventEmitter {
     this.ppomController = new PPOMController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'PPOMController',
+        allowedEvents: ['NetworkController:stateChange'],
       }),
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
       provider: this.provider,
       ppomProvider: { PPOM: PPOMModule.PPOM, ppomInit: PPOMModule.default },
       state: initState.PPOMController,
       chainId: this.networkController.state.providerConfig.chainId,
-      onNetworkChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:stateChange',
-      ),
       securityAlertsEnabled:
         this.preferencesController.store.getState().securityAlertsEnabled,
       onPreferencesChange: this.preferencesController.store.subscribe.bind(
@@ -910,7 +908,7 @@ export default class MetamaskController extends EventEmitter {
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
-    if (this.canUseHardwareWallets()) {
+    if (isManifestV3 === false) {
       const keyringOverrides = this.opts.overrides?.keyrings;
 
       const additionalKeyringTypes = [
@@ -952,10 +950,11 @@ export default class MetamaskController extends EventEmitter {
         );
       }
       ///: END:ONLY_INCLUDE_IF
-    } else if (isManifestV3) {
+    } else {
       additionalKeyrings.push(
         hardwareKeyringBuilderFactory(TrezorKeyring, TrezorOffscreenBridge),
         hardwareKeyringBuilderFactory(LedgerKeyring, LedgerOffscreenBridge),
+        keyringBuilderFactory(LatticeKeyringOffscreen),
       );
     }
 
@@ -974,6 +973,8 @@ export default class MetamaskController extends EventEmitter {
         'PhishingController:maybeUpdateState',
         'KeyringController:getAccounts',
         'SubjectMetadataController:getSubjectMetadata',
+        'AccountsController:setSelectedAccount',
+        'AccountsController:getAccountByAddress',
       ],
     });
 
@@ -1457,7 +1458,7 @@ export default class MetamaskController extends EventEmitter {
             this.networkController.state.providerConfig.chainId
           ],
         getSelectedAddress: () =>
-          this.preferencesController.store.getState().selectedAddress,
+          this.accountsController.getSelectedAccount().address,
         incomingTransactions: {
           includeTokenTransfers: false,
           isEnabled: () =>
@@ -2102,10 +2103,6 @@ export default class MetamaskController extends EventEmitter {
       this.tokenListController.stop();
       this.tokenRatesController.stop();
     }
-  }
-
-  canUseHardwareWallets() {
-    return !isManifestV3 || process.env.HARDWARE_WALLETS_MV3;
   }
 
   resetStates(resetMethods) {
@@ -3785,14 +3782,6 @@ export default class MetamaskController extends EventEmitter {
   async getKeyringForDevice(deviceName, hdPath = null) {
     const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringName = null;
-    if (
-      deviceName !== HardwareDeviceNames.trezor &&
-      deviceName !== HardwareDeviceNames.ledger &&
-      deviceName !== HardwareDeviceNames.QR &&
-      !this.canUseHardwareWallets()
-    ) {
-      throw new Error('Hardware wallets are not supported on this version.');
-    }
     switch (deviceName) {
       case HardwareDeviceNames.trezor:
         keyringName = keyringOverrides?.trezor?.type || TrezorKeyring.type;
@@ -4176,6 +4165,12 @@ export default class MetamaskController extends EventEmitter {
       transactionOptions,
       transactionParams,
       userOperationController: this.userOperationController,
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+      ppomController: this.ppomController,
+      securityAlertsEnabled:
+        this.preferencesController.store.getState()?.securityAlertsEnabled,
+      chainId: this.networkController.state.providerConfig.chainId,
+      ///: END:ONLY_INCLUDE_IF
     };
   }
 
@@ -4874,10 +4869,14 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:install',
           origin,
         ),
+        getIsLocked: () => {
+          return !this.appStateController.isUnlocked;
+        },
         ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         hasPermission: this.permissionController.hasPermission.bind(
           this.permissionController,
+          origin,
         ),
         getSnap: this.controllerMessenger.call.bind(
           this.controllerMessenger,
@@ -4887,9 +4886,11 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getAll',
         ),
-        handleSnapRpcRequest: this.handleSnapRequest.bind(this),
+        handleSnapRpcRequest: (args) =>
+          this.handleSnapRequest({ ...args, origin }),
         getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
           this.subjectMetadataController,
+          origin,
         ),
         ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)

@@ -25,6 +25,7 @@ const SnapAccountRedirectContent = ({
   snapName,
   isBlockedUrl,
   message,
+  onSubmit,
 }: SnapAccountRedirectProps) => {
   const t = useI18nContext();
   const learnMoreAboutBlockedUrls =
@@ -89,6 +90,7 @@ const SnapAccountRedirectContent = ({
             snapName={snapName}
             url={url}
             message={message}
+            onSubmit={onSubmit}
           />
         ) : null}
       </Box>

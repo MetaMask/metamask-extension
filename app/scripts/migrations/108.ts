@@ -1,5 +1,5 @@
 import { cloneDeep, isEmpty } from 'lodash';
-import { FALLBACK_VARIATION } from '@metamask/name-controller';
+import { FALLBACK_VARIATION, NameOrigin } from '@metamask/name-controller';
 import { PreferencesControllerState } from '../controllers/preferences';
 
 type VersionedData = {
@@ -62,6 +62,7 @@ function transformState(state: Record<string, any>) {
       name: accountEntry.name,
       sourceId: null,
       proposedNames: {},
+      origin: NameOrigin.ACCOUNT_IDENTITY,
     };
 
     hasChanges = true;

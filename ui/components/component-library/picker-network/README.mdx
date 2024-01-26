@@ -26,7 +26,7 @@ Use the `label` prop for the text content of the `PickerNetwork` component. For 
 
 ```jsx
 import { PickerNetwork } from '../../ui/component-library';
-<PickerNetwork src="./images/avax-token.png" label="Avalanche C-Chain" />
+<PickerNetwork src="./images/avax-token.svg" label="Avalanche C-Chain" />
 <PickerNetwork label="Arbitrum One" />
 <PickerNetwork label="Polygon Mainnet" />
 <PickerNetwork label="Optimism" />
@@ -44,7 +44,7 @@ Use the `src` prop with an image url to render the `AvatarNetwork`. Use the `ava
 ```jsx
 import { PickerNetwork } from '../../ui/component-library';
 <PickerNetwork src="./images/arbitrum.svg" label="Arbitrum One" />
-<PickerNetwork src="./images/matic-token.png" label="Polygon Mainnet" />
+<PickerNetwork src="./images/matic-token.svg" label="Polygon Mainnet" />
 <PickerNetwork src="./images/optimism.svg" label="Optimism" />
 ```
 
@@ -60,9 +60,9 @@ The width of the `PickerNetwork` is set to auto by default. Use the style utilit
 import { PickerNetwork } from '../../ui/component-library';
 import { BlockSize } from '../../../helpers/constants/design-system';
 
-<PickerNetwork src="./images/avax-token.png" label="Avalanche C-Chain" />;
+<PickerNetwork src="./images/avax-token.svg" label="Avalanche C-Chain" />;
 <PickerNetwork
-  src="./images/avax-token.png"
+  src="./images/avax-token.svg"
   label="Avalanche C-Chain"
   width={BlockSize.Full}
 />;

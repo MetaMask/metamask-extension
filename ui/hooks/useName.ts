@@ -38,15 +38,21 @@ export function useName(
   const typeVariationKey = getVariationKey(type, chainId);
   const variationKey = variation ?? typeVariationKey;
   const variationsToNameEntries = names[type]?.[normalizedValue] ?? {};
-  const nameEntry =
-    variationsToNameEntries[variationKey] ??
-    variationsToNameEntries[FALLBACK_VARIATION];
+
+  const variationEntry = variationsToNameEntries[variationKey];
+  const fallbackEntry = variationsToNameEntries[FALLBACK_VARIATION];
+
+  const entry =
+    !variationEntry?.name && fallbackEntry
+      ? fallbackEntry
+      : variationEntry ?? {};
+
   const {
     name = null,
     sourceId = null,
     origin = null,
     proposedNames = {},
-  } = nameEntry ?? {};
+  } = entry;
   return {
     name,
     sourceId,

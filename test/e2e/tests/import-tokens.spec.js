@@ -52,6 +52,7 @@ describe('Import flow', function () {
         const networkSelectionModal = await driver.findVisibleElement(
           '.mm-modal',
         );
+        await driver.waitForElementNotPresent('.loading-overlay');
 
         await driver.clickElement({ text: 'Ethereum Mainnet', tag: 'p' });
 

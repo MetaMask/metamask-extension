@@ -39,16 +39,15 @@ export class AddressBookPetnamesBridge extends AbstractPetnamesBridge {
 
       for (const address of Object.keys(chainEntries)) {
         const entry = state.addressBook[chainId as any][address];
-        const normalizedAddress = address.toLowerCase();
         const normalizedChainId = chainId.toLowerCase();
         const { name, isEns } = entry;
 
-        if (!name?.length || !normalizedAddress?.length) {
+        if (!name?.length || !address?.length) {
           continue;
         }
 
         entries.push({
-          value: normalizedAddress,
+          value: address,
           name,
           variation: normalizedChainId,
           type: NameType.ETHEREUM_ADDRESS,

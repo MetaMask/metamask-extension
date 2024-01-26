@@ -42,9 +42,14 @@ export type PetnamesBridgeMessenger = RestrictedControllerMessenger<
  * Get a string key for the given entry.
  *
  * @param entry
+ * @param entry.type
+ * @param entry.variation
+ * @param entry.value
  */
-function getKey(entry: PetnameEntry): string {
-  return `${entry.type}/${entry.variation}/${entry.value}`;
+function getKey({ type, variation, value }: PetnameEntry): string {
+  const normalizedValue =
+    type === NameType.ETHEREUM_ADDRESS ? value.toLowerCase() : value;
+  return `${type}/${variation}/${normalizedValue}`;
 }
 
 /**
