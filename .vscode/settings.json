@@ -3,5 +3,11 @@
   "editor.tabSize": 2,
   "files.trimTrailingWhitespace": true,
   "javascript.preferences.importModuleSpecifier": "relative",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "json.schemas": [
+    {
+      "fileMatch": ["app/manifest/*/*.json"],
+      "url": "https://json.schemastore.org/chrome-manifest"
+    }
+  ]
 }

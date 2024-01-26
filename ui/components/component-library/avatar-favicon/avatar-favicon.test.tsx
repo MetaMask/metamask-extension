@@ -7,7 +7,7 @@ import { AvatarFavicon } from '.';
 
 describe('AvatarFavicon', () => {
   const args = {
-    src: './images/eth_logo.png',
+    src: './images/eth_logo.svg',
     name: 'test',
   };
 

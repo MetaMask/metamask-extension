@@ -14,7 +14,7 @@ import {
   getIsBuyableChain,
   getCurrentChainId,
   getSwapsDefaultToken,
-  getSelectedAddress,
+  getSelectedAccount,
   getPreferences,
   getIsMainnet,
 } from '../../../selectors';
@@ -49,6 +49,7 @@ import {
   showPrimaryCurrency,
   showSecondaryCurrency,
 } from '../../../../shared/modules/currency-display.utils';
+import { roundToDecimalPlacesRemovingExtraZeroes } from '../../../helpers/utils/util';
 
 const AssetList = ({ onClickAsset }) => {
   const [showDetectedTokens, setShowDetectedTokens] = useState(false);
@@ -67,7 +68,7 @@ const AssetList = ({ onClickAsset }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );
@@ -105,13 +106,22 @@ const AssetList = ({ onClickAsset }) => {
 
   const { tokensWithBalances, totalFiatBalance, totalWeiBalance, loading } =
     useAccountTotalFiatBalance(selectedAddress, shouldHideZeroBalanceTokens);
-
+  tokensWithBalances.forEach((token) => {
+    // token.string is the balance displayed in the TokenList UI
+    token.string = roundToDecimalPlacesRemovingExtraZeroes(token.string, 5);
+  });
   const balanceIsZero = Number(totalFiatBalance) === 0;
   const isBuyableChain = useSelector(getIsBuyableChain);
   const shouldShowBuy = isBuyableChain && balanceIsZero;
   const shouldShowReceive = balanceIsZero;
   const { openBuyCryptoInPdapp } = useRamps();
   const defaultSwapsToken = useSelector(getSwapsDefaultToken);
+
+  let isStakeable = isMainnet;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
+  isStakeable = false;
+  ///: END:ONLY_INCLUDE_IF
 
   return (
     <>
@@ -196,7 +206,7 @@ const AssetList = ({ onClickAsset }) => {
         tokenImage={balanceIsLoading ? null : primaryTokenImage}
         isOriginalTokenSymbol={isOriginalNativeSymbol}
         isNativeCurrency
-        isStakeable={isMainnet}
+        isStakeable={isStakeable}
       />
       <TokenList
         tokens={tokensWithBalances}

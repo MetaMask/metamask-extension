@@ -5,13 +5,12 @@ import zxcvbn from 'zxcvbn';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import Button from '../../../components/ui/button';
-import Typography from '../../../components/ui/typography';
 import {
-  TEXT_ALIGN,
-  TypographyVariant,
   JustifyContent,
-  FONT_WEIGHT,
   AlignItems,
+  TextVariant,
+  TextAlign,
+  FontWeight,
 } from '../../../helpers/constants/design-system';
 import {
   ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
@@ -24,7 +23,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
 } from '../../../helpers/constants/routes';
 import FormField from '../../../components/ui/form-field';
-import Box from '../../../components/ui/box';
 import CheckBox from '../../../components/ui/check-box';
 ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
 import {
@@ -47,7 +45,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { Icon, IconName } from '../../../components/component-library';
+import {
+  Box,
+  ButtonLink,
+  Icon,
+  IconName,
+  Text,
+} from '../../../components/component-library';
 
 export default function CreatePassword({
   createNewAccount,
@@ -263,11 +267,15 @@ export default function CreatePassword({
         ///: END:ONLY_INCLUDE_IF
       }
 
-      <Typography variant={TypographyVariant.H2} fontWeight={FONT_WEIGHT.BOLD}>
+      <Text variant={TextVariant.headingLg} marginBottom={3}>
         {t('createPassword')}
-      </Typography>
+      </Text>
 
-      <Typography variant={TypographyVariant.H4} align={TEXT_ALIGN.CENTER}>
+      <Text
+        variant={TextVariant.headingSm}
+        textAlign={TextAlign.Center}
+        fontWeight={FontWeight.Normal}
+      >
         {
           ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
           t('passwordSetupDetails')
@@ -278,7 +286,7 @@ export default function CreatePassword({
           t('mmiPasswordSetupDetails')
           ///: END:ONLY_INCLUDE_IF
         }
-      </Typography>
+      </Text>
       <Box justifyContent={JustifyContent.center} marginTop={3}>
         <form className="create-password__form" onSubmit={handleCreate}>
           <FormField
@@ -291,19 +299,18 @@ export default function CreatePassword({
             titleText={t('newPassword')}
             value={password}
             titleDetail={
-              <Typography variant={TypographyVariant.H7}>
-                <a
-                  href=""
-                  data-testid="show-password"
-                  className="create-password__form--password-button"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setShowPassword(!showPassword);
-                  }}
-                >
-                  {showPassword ? t('hide') : t('show')}
-                </a>
-              </Typography>
+              <ButtonLink
+                variant={TextVariant.bodySm}
+                data-testid="show-password"
+                className="create-password__form--password-button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowPassword(!showPassword);
+                }}
+                marginBottom={1}
+              >
+                {showPassword ? t('hide') : t('show')}
+              </ButtonLink>
             }
           />
           <FormField
@@ -334,10 +341,7 @@ export default function CreatePassword({
                 onClick={() => setTermsChecked(!termsChecked)}
                 checked={termsChecked}
               />
-              <Typography
-                variant={TypographyVariant.H5}
-                boxProps={{ marginLeft: 3 }}
-              >
+              <Text variant={TextVariant.bodyMd} marginLeft={3}>
                 {
                   ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
                   t('passwordTermsWarning', [createPasswordLink])
@@ -348,7 +352,7 @@ export default function CreatePassword({
                   t('passwordMmiTermsWarning', [createPasswordLink])
                   ///: END:ONLY_INCLUDE_IF
                 }
-              </Typography>
+              </Text>
             </label>
           </Box>
           {

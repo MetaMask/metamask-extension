@@ -91,7 +91,7 @@ async function expectProposedNames(driver, value, options) {
   }
 }
 
-describe('Petnames', function () {
+describe('Petnames - Signatures', function () {
   it('can save names for addresses in type 3 signatures', async function () {
     await withFixtures(
       {
@@ -167,7 +167,9 @@ describe('Petnames', function () {
     );
   });
 
-  it('can propose names using installed snaps', async function () {
+  // TODO(dbrans): Re-enable this test when name-lookup endowment is in stable.
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('can propose names using installed snaps', async function () {
     await withFixtures(
       {
         dapp: true,

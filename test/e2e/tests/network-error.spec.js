@@ -6,13 +6,12 @@ const {
   generateGanacheOptions,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
+const { GAS_API_BASE_URL } = require('../../../shared/constants/swaps');
 
 describe('Gas API fallback', function () {
   async function mockGasApiDown(mockServer) {
     await mockServer
-      .forGet(
-        'https://gas-api.metaswap.codefi.network/networks/1337/suggestedGasFees',
-      )
+      .forGet(`${GAS_API_BASE_URL}/networks/1337/suggestedGasFees`)
       .always()
       .thenCallback(() => {
         return {

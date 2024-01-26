@@ -49,6 +49,8 @@ export default class ExperimentalTab extends PureComponent {
     ///: END:ONLY_INCLUDE_IF
     useRequestQueue: PropTypes.bool,
     setUseRequestQueue: PropTypes.func,
+    petnamesEnabled: PropTypes.bool.isRequired,
+    setPetnamesEnabled: PropTypes.func.isRequired,
   };
 
   settingsRefs = Array(
@@ -116,6 +118,36 @@ export default class ExperimentalTab extends PureComponent {
     if (newValue && securityAlertsEnabled && this.toggleSecurityAlert) {
       this.toggleSecurityAlert(true);
     }
+  }
+
+  renderTogglePetnames() {
+    const { t } = this.context;
+    const { petnamesEnabled, setPetnamesEnabled } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[0]}
+        className="settings-page__content-row settings-page__content-row-experimental"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('petnamesEnabledToggle')}</span>
+          <div className="settings-page__content-description">
+            {t('petnamesEnabledToggleDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            className="request-queue-toggle"
+            value={petnamesEnabled}
+            onToggle={(value) => setPetnamesEnabled(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="toggle-petnames"
+          />
+        </div>
+      </Box>
+    );
   }
 
   renderSecurityAlertsToggle() {
@@ -378,6 +410,7 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
+        {this.renderTogglePetnames()}
         {this.renderSecurityAlertsToggle()}
         {
           ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
