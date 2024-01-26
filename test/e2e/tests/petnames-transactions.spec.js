@@ -84,7 +84,11 @@ describe('Petnames - Transactions', function () {
     );
   });
 
-  it.only('can save petnames for addresses in wallet send transactions', async function () {
+  it('can save petnames for addresses in wallet send transactions', async function () {
+    // TODO: Update Test when Multichain Send Flow is added.
+    if (process.env.MULTICHAIN) {
+      return;
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
