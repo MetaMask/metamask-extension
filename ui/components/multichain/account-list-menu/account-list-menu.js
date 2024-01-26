@@ -41,7 +41,6 @@ import {
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getIsAddSnapAccountEnabled,
   ///: END:ONLY_INCLUDE_IF
-  getInternalAccounts,
   getOnboardedInThisUISession,
   getShowAccountBanner,
 } from '../../../selectors';

@@ -1020,7 +1020,6 @@ export function getShowWhatsNewPopup(state) {
 /**
  * Returns a memoized version of the MetaMask identities.
  *
- * Please use getMemoizedMetaMaskInternalAccounts instead.
  * @param state - The Redux state.
  * @returns {Array} An array of MetaMask identities.
  */
