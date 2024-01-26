@@ -1,4 +1,8 @@
-import { FALLBACK_VARIATION, NameOrigin, NameType } from '@metamask/name-controller';
+import {
+  FALLBACK_VARIATION,
+  NameOrigin,
+  NameType,
+} from '@metamask/name-controller';
 import { migrate, version } from './108';
 
 const oldVersion = 107;

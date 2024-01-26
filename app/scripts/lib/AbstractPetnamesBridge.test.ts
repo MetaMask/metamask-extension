@@ -315,7 +315,10 @@ describe('AbstractPetnamesBridge', () => {
       ]);
 
       const UPDATED_NAME = 'updatedName';
-      nameController.state = createNameState(ADDRESS_LOWERCASE_MOCK, UPDATED_NAME);
+      nameController.state = createNameState(
+        ADDRESS_LOWERCASE_MOCK,
+        UPDATED_NAME,
+      );
 
       const petnamesListener = messenger.subscribe.mock
         .calls[0][1] as () => void;
