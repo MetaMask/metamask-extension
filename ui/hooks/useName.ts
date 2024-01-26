@@ -43,14 +43,16 @@ export function useName(
   const fallbackEntry = variationsToNameEntries[FALLBACK_VARIATION];
 
   const entry =
-    !variationEntry?.name && fallbackEntry ? fallbackEntry : variationEntry;
+    !variationEntry?.name && fallbackEntry
+      ? fallbackEntry
+      : variationEntry ?? {};
 
   const {
     name = null,
     sourceId = null,
     origin = null,
     proposedNames = {},
-  } = entry ?? {};
+  } = entry;
   return {
     name,
     sourceId,
