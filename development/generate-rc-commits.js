@@ -189,7 +189,7 @@ async function main() {
     console.log('No unique commits found.');
   } else {
     const csvContent = formatAsCSV(commitsByTeam);
-    fs.writeFileSync('commits.csv', csvContent);
+    fs.writeFileSync('commits.csv', csvContent.join('\n'));
     console.log('CSV file "commits.csv" created successfully.');
   }
 }
