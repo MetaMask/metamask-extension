@@ -122,15 +122,30 @@ export abstract class AbstractPetnamesBridge {
   }
 
   /**
-   * Do you want to sync with only a subset of the petname entries?
+   * This predicate describes a subset of Petnames state that is relevant
+   * to the bridge.
    *
-   * This predicate describes a subset of NameController state that is relevant
-   * to the bridge. Override this method to specify a subset of petname entries.
+   * By default, the isSyncParticipant method returns true for all Petnames,
+   * meaning every PetnameEntry in the NameController state is considered for
+   * synchronization. This would result in Petnames state being a mirror of
+   * the source entries or vice versa after synchronization
    *
-   * @param _entry - The entry to check for membership.
-   * @returns
+   * If you override this method to return false for some Petnames, those
+   * entries are effectively 'masked' or excluded from the synchronization
+   * process. This has a couple of implications:
+   *
+   * Source->Petnames direction: Masked Petname entries will not be deleted.
+   * If isSyncParticipant returns false for some target Petname,that entry
+   * will not be deleted from Petnames state during synchronization.
+   *
+   * Petnames->Source direction: Masked Petname entries will not be added to
+   * Source.  If isSyncParticipant returns false for some Petname, that entry
+   * will not be added to the Source list during synchronization.
+   *
+   * @param _targetEntry - The entry from Petname state to check for membership.
+   * @returns true iff the target Petname entry should participate in synchronization.
    */
-  protected isSyncParticipant(_entry: PetnameEntry): boolean {
+  protected isSyncParticipant(_targetEntry: PetnameEntry): boolean {
     // All petname entries are sync participants by default.
     return true;
   }
