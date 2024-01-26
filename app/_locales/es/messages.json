@@ -316,6 +316,9 @@
   "airgapVault": {
     "message": "Bóveda AirGap"
   },
+  "ellipal": {
+    "message": "ellipal"
+  },
   "alertDisableTooltip": {
     "message": "Esto se puede modificar en \"Configuración > Alertas\""
   },

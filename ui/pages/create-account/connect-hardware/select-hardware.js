@@ -718,6 +718,41 @@ export default class SelectHardware extends Component {
         ),
       },
       {
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('ellipal')}
+            </p>
+            <Button
+              className="hw-connect__external-btn-first"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked ellipal Buy Now',
+                });
+                openWindow(HardwareAffiliateLinks.ellipal);
+              }}
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.context.trackEvent({
+                  category: MetaMetricsEventCategory.Navigation,
+                  event: 'Clicked Ellipal Tutorial',
+                });
+                openWindow(HardwareAffiliateTutorialLinks.ellipal);
+              }}
+            >
+              {this.context.t('tutorial')}
+            </Button>
+          </>
+        ),
+      },
+      {
         message: this.context.t('QRHardwareWalletSteps2Description'),
       },
       {

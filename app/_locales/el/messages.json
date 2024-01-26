@@ -316,6 +316,9 @@
   "airgapVault": {
     "message": "Θησαυροφυλάκιο AirGap"
   },
+  "ellipal": {
+    "message": "ellipal"
+  },
   "alertDisableTooltip": {
     "message": "Αυτό μπορεί να αλλάξει στις \"Ρυθμίσεις > Ειδοποιήσεις\""
   },

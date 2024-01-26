@@ -334,6 +334,9 @@
   "airgapVault": {
     "message": "AirGap Vault"
   },
+  "ellipal": {
+    "message": "ellipal"
+  },
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },

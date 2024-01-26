@@ -316,6 +316,9 @@
   "airgapVault": {
     "message": "AirGap Vault"
   },
+  "ellipal": {
+    "message": "ellipal"
+  },
   "alertDisableTooltip": {
     "message": "Bạn có thể thay đổi trong phần \"Cài đặt > Cảnh báo\""
   },
