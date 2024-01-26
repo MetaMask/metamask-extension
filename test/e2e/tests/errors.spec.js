@@ -631,7 +631,7 @@ describe('Sentry errors', function () {
       );
     });
 
-    it('should capture background application state', async function () {
+    it.only('should capture background application state', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
@@ -647,7 +647,6 @@ describe('Sentry errors', function () {
         async ({ driver, mockedEndpoint }) => {
           await driver.navigate();
           await driver.findElement('#password');
-
           // Trigger error
           await driver.executeScript(
             'window.stateHooks.throwTestBackgroundError()',

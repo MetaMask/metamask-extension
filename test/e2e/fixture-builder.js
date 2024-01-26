@@ -317,6 +317,10 @@ function defaultFixture() {
         useMultiAccountBalanceChecker: true,
         useRequestQueue: false,
       },
+      SelectedNetworkController: {
+        domains: {},
+        perDomainNetwork: false
+      },
       SmartTransactionsController: {
         smartTransactionsState: {
           fees: {},
@@ -438,6 +442,10 @@ function onboardingFixture() {
         useCurrencyRateCheck: true,
         useMultiAccountBalanceChecker: true,
         useRequestQueue: false,
+      },
+      SelectedNetworkController: {
+        domains: {},
+        perDomainNetwork: false
       },
       SmartTransactionsController: {
         smartTransactionsState: {
