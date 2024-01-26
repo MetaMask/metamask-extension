@@ -88,7 +88,7 @@ async function withFixtures(options, testSuite) {
     }
 
     if (useBundler) {
-      await _initBundler(bundlerServer, ganacheServer, usePaymaster);
+      await initBundler(bundlerServer, ganacheServer, usePaymaster);
     }
 
     await fixtureServer.start();
@@ -1004,7 +1004,7 @@ async function getCleanAppState(driver) {
   );
 }
 
-async function _initBundler(bundlerServer, ganacheServer, usePaymaster) {
+async function initBundler(bundlerServer, ganacheServer, usePaymaster) {
   try {
     const ganacheSeeder = new GanacheSeeder(ganacheServer.getProvider());
 

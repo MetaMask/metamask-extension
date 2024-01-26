@@ -1,11 +1,7 @@
 const { Web3Provider } = require('@ethersproject/providers');
 const { ContractFactory, Contract } = require('@ethersproject/contracts');
 
-const {
-  ENTRYPOINT,
-  GANACHE_SEED_ACCOUNT,
-  GANACHE_ACCOUNT,
-} = require('../constants');
+const { ENTRYPOINT, GANACHE_ACCOUNT } = require('../constants');
 const { SMART_CONTRACTS, contractConfiguration } = require('./smart-contracts');
 const GanacheContractAddressRegistry = require('./ganache-contract-address-registry');
 
