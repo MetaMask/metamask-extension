@@ -185,7 +185,7 @@ Different build types have different e2e tests sets. In order to run them look i
 When running e2e on an MMI build you need to know that there are 2 separated set of tests:
 
 - MMI runs a subset of MetaMask's e2e tests. To facilitate this, we have appended the `@no-mmi` tags to the names of those tests that are not applicable to this build type.
-- MMI runs another specific set of e2e legacy tests which are better documented [here](test/e2e/mmi/README.md)
+- MMI runs another specific set of e2e legacy tests which are better documented [here](test/e2e/playwright/mmi/README.md)
 
 ### Changing dependencies
 
