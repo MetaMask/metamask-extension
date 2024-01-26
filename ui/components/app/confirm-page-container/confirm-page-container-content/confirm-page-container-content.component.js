@@ -11,7 +11,10 @@ import {
   BannerAlert,
 } from '../../../component-library';
 import { PageContainerFooter } from '../../../ui/page-container';
-import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
+import {
+  INSUFFICIENT_FUNDS_ERROR_KEY,
+  PREVIOUS_APPROVED_SIGNED_TRANSACTION,
+} from '../../../../helpers/constants/error-keys';
 import { Severity } from '../../../../helpers/constants/design-system';
 
 import { ConfirmPageContainerSummary, ConfirmPageContainerWarning } from '.';
@@ -185,6 +188,9 @@ export default class ConfirmPageContainerContent extends Component {
     const showInsuffienctFundsError =
       (errorKey || errorMessage) && errorKey === INSUFFICIENT_FUNDS_ERROR_KEY;
 
+    const showPendingApproveOrSignError =
+      errorKey === PREVIOUS_APPROVED_SIGNED_TRANSACTION;
+
     return (
       <div
         className={classnames('confirm-page-container-content', {
@@ -248,6 +254,15 @@ export default class ConfirmPageContainerContent extends Component {
                     networkName,
                   ])
             }
+          />
+        )}
+        {showPendingApproveOrSignError && (
+          <BannerAlert
+            severity={Severity.Danger}
+            description={t(errorKey)}
+            marginBottom={4}
+            marginLeft={4}
+            marginRight={4}
           />
         )}
         <PageContainerFooter

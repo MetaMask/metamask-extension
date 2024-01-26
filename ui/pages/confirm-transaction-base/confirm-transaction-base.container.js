@@ -50,6 +50,7 @@ import {
   getUseCurrencyRateCheck,
   getUnapprovedTransactions,
   getInternalAccountByAddress,
+  getApprovedAndSignedTransactions,
 } from '../../selectors';
 import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import {
@@ -247,6 +248,8 @@ const mapStateToProps = (state, ownProps) => {
   const isMultiLayerFeeNetwork = getIsMultiLayerFeeNetwork(state);
   const isUsingPaymaster = getIsUsingPaymaster(state);
 
+  const approvedAndSignedTransactions = getApprovedAndSignedTransactions(state);
+
   return {
     balance,
     fromAddress,
@@ -299,6 +302,7 @@ const mapStateToProps = (state, ownProps) => {
     useCurrencyRateCheck: getUseCurrencyRateCheck(state),
     keyringForAccount: keyring,
     isUsingPaymaster,
+    approvedAndSignedTransactions,
     ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
     accountType,
     isNoteToTraderSupported,

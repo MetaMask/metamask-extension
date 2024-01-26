@@ -2117,6 +2117,20 @@ export function clearPendingTokens(): Action {
   };
 }
 
+export function abortTransactionSigning(
+  transactionId: string,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return (async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('abortTransactionSigning', [
+        transactionId,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+    }
+  }) as any;
+}
+
 export function createCancelTransaction(
   txId: string,
   customGasSettings: CustomGasSettings,

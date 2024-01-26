@@ -12,6 +12,7 @@ import {
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
   ETH_GAS_PRICE_FETCH_WARNING_KEY,
   GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
+  PREVIOUS_APPROVED_SIGNED_TRANSACTION
 } from '../../helpers/constants/error-keys';
 import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display';
 
@@ -153,6 +154,7 @@ export default class ConfirmTransactionBase extends Component {
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
     isUsingPaymaster: PropTypes.bool,
+    approvedAndSignedTransactions: PropTypes.array,
   };
 
   state = {
@@ -243,6 +245,7 @@ export default class ConfirmTransactionBase extends Component {
       customGas,
       noGasPrice,
       gasFeeIsCustom,
+      approvedAndSignedTransactions,
     } = this.props;
 
     const insufficientBalance =
@@ -272,6 +275,13 @@ export default class ConfirmTransactionBase extends Component {
       return {
         valid: false,
         errorKey: GAS_PRICE_FETCH_FAILURE_ERROR_KEY,
+      };
+    }
+
+    if (approvedAndSignedTransactions.length) {
+      return {
+        valid: false,
+        errorKey: PREVIOUS_APPROVED_SIGNED_TRANSACTION,
       };
     }
 
@@ -958,6 +968,7 @@ export default class ConfirmTransactionBase extends Component {
       assetStandard,
       displayAccountBalanceHeader,
       title,
+      approvedAndSignedTransactions,
       ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
       isNoteToTraderSupported,
       ///: END:ONLY_INCLUDE_IF
@@ -1051,7 +1062,8 @@ export default class ConfirmTransactionBase extends Component {
             !valid ||
             submitting ||
             hardwareWalletRequiresConnection ||
-            (gasIsLoading && !gasFeeIsCustom)
+            (gasIsLoading && !gasFeeIsCustom) ||
+            approvedAndSignedTransactions.length
           }
           onEdit={() => this.handleEdit()}
           onCancelAll={() => this.handleCancelAll()}

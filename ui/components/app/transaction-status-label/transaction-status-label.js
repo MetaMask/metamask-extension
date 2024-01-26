@@ -7,6 +7,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { TransactionGroupStatus } from '../../../../shared/constants/transaction';
 
 const QUEUED_PSEUDO_STATUS = 'queued';
+const SIGNING_PSUEDO_STATUS = 'signing';
 ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
 const CUSTODIAN_PSEUDO_STATUS = 'inCustody';
 ///: END:ONLY_INCLUDE_IF
@@ -55,10 +56,18 @@ export default function TransactionStatusLabel({
   const t = useI18nContext();
   let tooltipText = error?.rpc?.message || error?.message;
   let statusKey = status;
+
   if (pendingStatusHash[status]) {
     statusKey = isEarliestNonce
       ? TransactionGroupStatus.pending
       : QUEUED_PSEUDO_STATUS;
+  }
+
+  if (
+    statusKey === TransactionGroupStatus.pending &&
+    status === TransactionStatus.approved
+  ) {
+    statusKey = SIGNING_PSUEDO_STATUS;
   }
 
   let statusText = statusKey && t(statusKey);

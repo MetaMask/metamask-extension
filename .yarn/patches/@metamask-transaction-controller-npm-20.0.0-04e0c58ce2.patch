@@ -1,0 +1,97 @@
+diff --git a/dist/TransactionController.d.ts b/dist/TransactionController.d.ts
+index 470ed9065fa18ab5ce5b0c5fb3d3101faa6263d1..afba12ef11cd30d22754300348e51a7247279c1b 100644
+--- a/dist/TransactionController.d.ts
++++ b/dist/TransactionController.d.ts
+@@ -117,6 +117,7 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
+     private readonly pendingTransactionTracker;
+     private readonly cancelMultiplier;
+     private readonly speedUpMultiplier;
++    private readonly signAbortCallbacks;
+     private readonly afterSign;
+     private readonly beforeApproveOnInit;
+     private readonly beforeCheckPendingTransaction;
+@@ -478,6 +479,7 @@ export declare class TransactionController extends BaseControllerV1<TransactionC
+      * Removes unapproved transactions from state.
+      */
+     clearUnapprovedTransactions(): void;
++    abortTransactionSigning(transactionId: string): void;
+     private addMetadata;
+     private updateGasProperties;
+     private getCurrentChainTransactionsByStatus;
+diff --git a/dist/TransactionController.js b/dist/TransactionController.js
+index b3d6f124d3ae656d14e46ae329f4eb0d731bb62e..e2c1ef64f25e81cdfd61145e3beb718abbd7048a 100644
+--- a/dist/TransactionController.js
++++ b/dist/TransactionController.js
+@@ -100,6 +100,7 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+         super(config, state);
+         this.inProcessOfSigning = new Set();
+         this.mutex = new async_mutex_1.Mutex();
++        this.signAbortCallbacks = new Map();
+         /**
+          * EventEmitter instance used to listen to specific transactional events
+          */
+@@ -1031,6 +1032,17 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+         const transactions = this.state.transactions.filter(({ status }) => status !== types_1.TransactionStatus.unapproved);
+         this.update({ transactions: this.trimTransactionsForState(transactions) });
+     }
++    abortTransactionSigning(transactionId) {
++        const transactionMeta = this.getTransaction(transactionId);
++        if (!transactionMeta) {
++            throw new Error(`Cannot abort signing as no transaction metadata found`);
++        }
++        const abortCallback = this.signAbortCallbacks.get(transactionId);
++        if (!abortCallback) {
++            throw new Error(`Cannot abort signing as transaction is not waiting for signing`);
++        }
++        abortCallback();
++    }
+     addMetadata(transactionMeta) {
+         const { transactions } = this.state;
+         transactions.push(transactionMeta);
+@@ -1544,12 +1556,16 @@ class TransactionController extends base_controller_1.BaseControllerV1 {
+         this.pendingTransactionTracker.hub.on('transaction-updated', this.updateTransaction.bind(this));
+     }
+     signTransaction(transactionMeta, txParams) {
+-        var _a;
+         return __awaiter(this, void 0, void 0, function* () {
+             (0, logger_1.projectLogger)('Signing transaction', txParams);
+             const unsignedEthTx = this.prepareUnsignedEthTx(txParams);
+             this.inProcessOfSigning.add(transactionMeta.id);
+-            const signedTx = yield ((_a = this.sign) === null || _a === void 0 ? void 0 : _a.call(this, unsignedEthTx, txParams.from, ...this.getAdditionalSignArguments(transactionMeta)));
++            const signedTx = yield new Promise((resolve, reject) => {
++                var _a;
++                (_a = this.sign) === null || _a === void 0 ? void 0 : _a.call(this, unsignedEthTx, txParams.from, ...this.getAdditionalSignArguments(transactionMeta)).then(resolve, reject);
++                this.signAbortCallbacks.set(transactionMeta.id, () => reject(new Error('Signing aborted by user')));
++            });
++            this.signAbortCallbacks.delete(transactionMeta.id);
+             if (!signedTx) {
+                 (0, logger_1.projectLogger)('Skipping signed status as no signed transaction');
+                 return undefined;
+diff --git a/dist/types.d.ts b/dist/types.d.ts
+index d80d057d48112d9047fc6fe419c132c44a53c509..ec8e0b7dbd199fdac79ec9d967a141afd0e3c862 100644
+--- a/dist/types.d.ts
++++ b/dist/types.d.ts
+@@ -154,6 +154,10 @@ declare type TransactionMetaBase = {
+      * Which estimate level was used
+      */
+     estimateUsed?: string;
++    /**
++     * Description of the link clicked associated with the transaction
++     */
++    externalLinkClicked?: string;
+     /**
+      * The chosen amount which will be the same as the originally proposed token
+      * amount if the user does not edit the  amount or will be a custom token
+diff --git a/dist/utils/utils.js b/dist/utils/utils.js
+index 13f878ee31dd5bc7d280561a9fb91313c72c7ca1..8090c8f63b8c24c211f0c402831694f47dc45bed 100644
+--- a/dist/utils/utils.js
++++ b/dist/utils/utils.js
+@@ -20,7 +20,7 @@ const NORMALIZERS = {
+     maxFeePerGas: (maxFeePerGas) => (0, ethereumjs_util_1.addHexPrefix)(maxFeePerGas),
+     maxPriorityFeePerGas: (maxPriorityFeePerGas) => (0, ethereumjs_util_1.addHexPrefix)(maxPriorityFeePerGas),
+     estimatedBaseFee: (maxPriorityFeePerGas) => (0, ethereumjs_util_1.addHexPrefix)(maxPriorityFeePerGas),
+-    type: (type) => (type === '0x0' ? '0x0' : undefined),
++    type: (type) => (0, ethereumjs_util_1.addHexPrefix)(type),
+ };
+ /**
+  * Normalizes properties on transaction params.
