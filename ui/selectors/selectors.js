@@ -564,7 +564,6 @@ export function getAccountsWithLabels(state) {
       balance,
     };
   });
-  console.log(result);
   return result;
 }
 

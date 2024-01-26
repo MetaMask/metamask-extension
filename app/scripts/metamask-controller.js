@@ -2883,19 +2883,6 @@ export default class MetamaskController extends EventEmitter {
         this.accountsController.setAccountName(account.id, label);
       },
 
-      // AccountsController
-      setSelectedInternalAccount:
-        accountsController.setSelectedAccount.bind(accountsController),
-
-      setAccountName:
-        accountsController.setAccountName.bind(accountsController),
-
-      setAccountLabel: (address, label) => {
-        this.preferencesController.setAccountLabel(address, label);
-        const account = this.accountsController.getAccountByAddress(address);
-        this.accountsController.setAccountName(account.id, label);
-      },
-
       // AssetsContractController
       getTokenStandardAndDetails: this.getTokenStandardAndDetails.bind(this),
       getTokenSymbol: this.getTokenSymbol.bind(this),

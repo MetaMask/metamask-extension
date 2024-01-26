@@ -2,7 +2,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../../test/jest';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';

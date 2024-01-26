@@ -5,7 +5,6 @@ import thunk from 'redux-thunk';
 
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 
 import { tick } from '../../../../../test/lib/timer-helpers';
 import { renderWithProvider } from '../../../../../test/lib/render-helpers';

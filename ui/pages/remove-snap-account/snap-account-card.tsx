@@ -22,7 +22,7 @@ export const SnapAccountCard = ({
   // We should stop using mergeAccounts and write a new selector instead
   const mergedAccounts = mergeAccounts(accounts, internalAccounts);
   const account = mergedAccounts.find(
-    (account: { address: string }) => account.address === address,
+    (mergedAccount: { address: string }) => mergedAccount.address === address,
   );
 
   return (

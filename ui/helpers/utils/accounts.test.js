@@ -7,12 +7,12 @@ import {
 import { BackgroundColor } from '../constants/design-system';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { HardwareKeyringNames } from '../../../shared/constants/hardware-wallets';
+import mockState from '../../../test/data/mock-state.json';
 import {
   getAccountLabel,
   getAccountNameErrorMessage,
   getAvatarNetworkColor,
 } from './accounts';
-import mockState from '../../../test/data/mock-state.json';
 
 const mockAccounts = Object.values(
   mockState.metamask.internalAccounts.accounts,
