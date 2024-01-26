@@ -517,10 +517,12 @@ export default class MetamaskController extends EventEmitter {
       networkConfigurations: this.networkController.state.networkConfigurations,
     });
 
+
+    this.selectedNetworkController.setPerDomainNetwork(this.preferencesController.store.useRequestQueue);
     this.preferencesController.store.subscribe(({ useRequestQueue }) => {
       if (
         useRequestQueue !==
-        this.selectedNetworkController.state.perDomainNetwork
+          this.selectedNetworkController.state.perDomainNetwork
       ) {
         this.selectedNetworkController.setPerDomainNetwork(useRequestQueue);
       }
