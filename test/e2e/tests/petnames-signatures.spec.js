@@ -167,7 +167,9 @@ describe('Petnames - Signatures', function () {
     );
   });
 
-  it('can propose names using installed snaps', async function () {
+  // TODO(dbrans): Re-enable this test when name-lookup endowment is in stable.
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('can propose names using installed snaps', async function () {
     await withFixtures(
       {
         dapp: true,
