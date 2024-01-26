@@ -3448,10 +3448,6 @@
     "message": "Allow $1 to access the internet. This can be used to both send and receive data with third-party servers.",
     "description": "An extended description of the `endowment:network-access` permission. $1 is the snap name."
   },
-  "permission_accessSnap": {
-    "message": "Connect to the $1 snap.",
-    "description": "The description for the `wallet_snap` permission. $1 is the name of the snap."
-  },
   "permission_accessSnapDescription": {
     "message": "Allow the website or snap to interact with $1.",
     "description": "The description for the `wallet_snap_*` permission. $1 is the name of the Snap."
