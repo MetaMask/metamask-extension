@@ -14,6 +14,7 @@ import { PetnameEntry } from './AbstractPetnamesBridge';
 
 const ADDRESS_MOCK = '0xabc';
 const NAME_MOCK = 'name1';
+const NON_PARTICIPANT_ORIGIN_MOCK = NameOrigin.API;
 
 /**
  * Creates a PetnameEntry with the given name and address.
@@ -181,13 +182,25 @@ describe('AccountIdentitiesPetnamesBridge', () => {
     );
   });
 
-  it('does not delete entry when account identity is deleted', () => {
+  it('does not delete non-participating Petname entries', () => {
     const preferencesController = createPreferencesControllerMock(
       createPreferencesStateWithIdentity(ADDRESS_MOCK, NAME_MOCK),
     );
-    const nameController = createNameControllerMock(
-      createNameStateWithPetname(ADDRESS_MOCK, NAME_MOCK),
-    );
+    const nameController = createNameControllerMock({
+      ...EMPTY_NAME_STATE,
+      names: {
+        [NameType.ETHEREUM_ADDRESS]: {
+          [ADDRESS_MOCK]: {
+            [FALLBACK_VARIATION]: {
+              name: NAME_MOCK,
+              proposedNames: {},
+              sourceId: 'ens',
+              origin: NON_PARTICIPANT_ORIGIN_MOCK,
+            },
+          },
+        },
+      },
+    });
     const bridge = new AccountIdentitiesPetnamesBridge({
       preferencesController,
       nameController,
