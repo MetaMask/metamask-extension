@@ -313,7 +313,7 @@ describe('Blockaid Banner Alert', () => {
     });
   });
 
-  describe('when clicking See Details > "Report an issue"', () => {
+  describe('when clicking "See details" > "Report an issue"', () => {
     it('calls updateTransactionEventFragment to add "external_link_clicked" prop to metric', () => {
       const stubScrollIntoView = jest.fn();
       const originalScrollIntoView =
