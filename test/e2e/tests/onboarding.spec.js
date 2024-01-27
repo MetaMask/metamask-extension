@@ -273,7 +273,7 @@ describe('MetaMask onboarding @no-mmi', function () {
           WALLET_PASSWORD,
         );
 
-        // Add custome network localhost 8546 during onboarding
+        // Add custom network localhost 8546 during onboarding
         await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
         await driver.clickElement('.mm-picker-network');
         await driver.clickElement({
