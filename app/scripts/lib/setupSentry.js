@@ -136,6 +136,11 @@ export const SENTRY_BACKGROUND_STATE = {
     segmentApiCalls: false,
     traits: false,
   },
+  NameController: {
+    names: false,
+    nameSources: false,
+    useExternalNameSources: false,
+  },
   NetworkController: {
     networkConfigurations: false,
     networksMetadata: true,
@@ -201,6 +206,7 @@ export const SENTRY_BACKGROUND_STATE = {
       showFiatInTestnets: true,
       showTestNetworks: true,
       useNativeCurrencyAsPrimaryCurrency: true,
+      petnamesEnabled: true,
     },
     selectedAddress: false,
     snapRegistryList: false,

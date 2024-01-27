@@ -183,7 +183,15 @@ interface sendMessage {
     },
     callback: (response: { success: boolean; error?: Error }) => void,
   ): Promise<boolean>;
-
+  (
+    message: {
+      target: OffscreenCommunicationTarget.latticeOffscreen;
+      params: {
+        url: string;
+      };
+    },
+    callback: (response: { result: any; error?: Error }) => void,
+  );
   (
     message: Record<string, unknown>,
     callback?: (response: ResponseType) => void,

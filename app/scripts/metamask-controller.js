@@ -115,7 +115,7 @@ import {
   ERC721,
 } from '@metamask/controller-utils';
 import { wordlist } from '@metamask/scure-bip39/dist/wordlists/english';
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
+
 import {
   NameController,
   ENSNameProvider,
@@ -123,7 +123,6 @@ import {
   TokenNameProvider,
   LensNameProvider,
 } from '@metamask/name-controller';
-///: END:ONLY_INCLUDE_IF
 
 import {
   QueuedRequestController,
@@ -224,10 +223,8 @@ import {
 import { keyringSnapPermissionsBuilder } from './lib/keyring-snaps-permissions';
 ///: END:ONLY_INCLUDE_IF
 
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
 import { SnapsNameProvider } from './lib/SnapsNameProvider';
 import { AddressBookPetnamesBridge } from './lib/AddressBookPetnamesBridge';
-///: END:ONLY_INCLUDE_IF
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import { createPPOMMiddleware } from './lib/ppom/ppom-middleware';
@@ -294,6 +291,7 @@ import { snapKeyringBuilder, getAccountsBySnapId } from './lib/snap-keyring';
 ///: END:ONLY_INCLUDE_IF
 import { encryptorFactory } from './lib/encryptor-factory';
 import { addDappTransaction, addTransaction } from './lib/transaction/util';
+import { LatticeKeyringOffscreen } from './lib/offscreen-bridge/lattice-offscreen-keyring';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -768,16 +766,13 @@ export default class MetamaskController extends EventEmitter {
     this.ppomController = new PPOMController({
       messenger: this.controllerMessenger.getRestricted({
         name: 'PPOMController',
+        allowedEvents: ['NetworkController:stateChange'],
       }),
       storageBackend: new IndexedDBPPOMStorage('PPOMDB', 1),
       provider: this.provider,
       ppomProvider: { PPOM: PPOMModule.PPOM, ppomInit: PPOMModule.default },
       state: initState.PPOMController,
       chainId: this.networkController.state.providerConfig.chainId,
-      onNetworkChange: networkControllerMessenger.subscribe.bind(
-        networkControllerMessenger,
-        'NetworkController:stateChange',
-      ),
       securityAlertsEnabled:
         this.preferencesController.store.getState().securityAlertsEnabled,
       onPreferencesChange: this.preferencesController.store.subscribe.bind(
@@ -909,7 +904,7 @@ export default class MetamaskController extends EventEmitter {
 
     let additionalKeyrings = [keyringBuilderFactory(QRHardwareKeyring)];
 
-    if (this.canUseHardwareWallets()) {
+    if (isManifestV3 === false) {
       const keyringOverrides = this.opts.overrides?.keyrings;
 
       const additionalKeyringTypes = [
@@ -951,10 +946,11 @@ export default class MetamaskController extends EventEmitter {
         );
       }
       ///: END:ONLY_INCLUDE_IF
-    } else if (isManifestV3) {
+    } else {
       additionalKeyrings.push(
         hardwareKeyringBuilderFactory(TrezorKeyring, TrezorOffscreenBridge),
         hardwareKeyringBuilderFactory(LedgerKeyring, LedgerOffscreenBridge),
+        keyringBuilderFactory(LatticeKeyringOffscreen),
       );
     }
 
@@ -973,6 +969,8 @@ export default class MetamaskController extends EventEmitter {
         'PhishingController:maybeUpdateState',
         'KeyringController:getAccounts',
         'SubjectMetadataController:getSubjectMetadata',
+        'AccountsController:setSelectedAccount',
+        'AccountsController:getAccountByAddress',
       ],
     });
 
@@ -1456,7 +1454,7 @@ export default class MetamaskController extends EventEmitter {
             this.networkController.state.providerConfig.chainId
           ],
         getSelectedAddress: () =>
-          this.preferencesController.store.getState().selectedAddress,
+          this.accountsController.getSelectedAccount().address,
         incomingTransactions: {
           includeTokenTransfers: false,
           isEnabled: () =>
@@ -1699,7 +1697,6 @@ export default class MetamaskController extends EventEmitter {
       initState.SmartTransactionsController,
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(petnames)
     const isExternalNameSourcesEnabled = () =>
       this.preferencesController.store.getState().useExternalNameSources;
 
@@ -1740,7 +1737,6 @@ export default class MetamaskController extends EventEmitter {
         allowedEvents: ['NameController:stateChange'],
       }),
     }).init();
-    ///: END:ONLY_INCLUDE_IF
 
     this.userOperationController = new UserOperationController({
       entrypoint: process.env.EIP_4337_ENTRYPOINT,
@@ -1947,9 +1943,7 @@ export default class MetamaskController extends EventEmitter {
       ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
       PPOMController: this.ppomController,
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       NameController: this.nameController,
-      ///: END:ONLY_INCLUDE_IF
       UserOperationController: this.userOperationController,
       ...resetOnRestartStore,
     });
@@ -1996,9 +1990,7 @@ export default class MetamaskController extends EventEmitter {
           this.institutionalFeaturesController.store,
         MmiConfigurationController: this.mmiConfigurationController.store,
         ///: END:ONLY_INCLUDE_IF
-        ///: BEGIN:ONLY_INCLUDE_IF(petnames)
         NameController: this.nameController,
-        ///: END:ONLY_INCLUDE_IF
         UserOperationController: this.userOperationController,
         ...resetOnRestartStore,
       },
@@ -2093,10 +2085,6 @@ export default class MetamaskController extends EventEmitter {
       this.tokenListController.stop();
       this.tokenRatesController.stop();
     }
-  }
-
-  canUseHardwareWallets() {
-    return !isManifestV3 || process.env.HARDWARE_WALLETS_MV3;
   }
 
   resetStates(resetMethods) {
@@ -2727,12 +2715,10 @@ export default class MetamaskController extends EventEmitter {
           preferencesController,
         ),
       ///: END:ONLY_INCLUDE_IF
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       setUseExternalNameSources:
         preferencesController.setUseExternalNameSources.bind(
           preferencesController,
         ),
-      ///: END:ONLY_INCLUDE_IF
       setUseRequestQueue: this.setUseRequestQueue.bind(this),
       setIpfsGateway: preferencesController.setIpfsGateway.bind(
         preferencesController,
@@ -3329,12 +3315,10 @@ export default class MetamaskController extends EventEmitter {
       // E2E testing
       throwTestError: this.throwTestError.bind(this),
 
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       updateProposedNames: this.nameController.updateProposedNames.bind(
         this.nameController,
       ),
       setName: this.nameController.setName.bind(this.nameController),
-      ///: END:ONLY_INCLUDE_IF
     };
   }
 
@@ -3776,14 +3760,6 @@ export default class MetamaskController extends EventEmitter {
   async getKeyringForDevice(deviceName, hdPath = null) {
     const keyringOverrides = this.opts.overrides?.keyrings;
     let keyringName = null;
-    if (
-      deviceName !== HardwareDeviceNames.trezor &&
-      deviceName !== HardwareDeviceNames.ledger &&
-      deviceName !== HardwareDeviceNames.QR &&
-      !this.canUseHardwareWallets()
-    ) {
-      throw new Error('Hardware wallets are not supported on this version.');
-    }
     switch (deviceName) {
       case HardwareDeviceNames.trezor:
         keyringName = keyringOverrides?.trezor?.type || TrezorKeyring.type;
@@ -4167,6 +4143,12 @@ export default class MetamaskController extends EventEmitter {
       transactionOptions,
       transactionParams,
       userOperationController: this.userOperationController,
+      ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+      ppomController: this.ppomController,
+      securityAlertsEnabled:
+        this.preferencesController.store.getState()?.securityAlertsEnabled,
+      chainId: this.networkController.state.providerConfig.chainId,
+      ///: END:ONLY_INCLUDE_IF
     };
   }
 
@@ -4865,10 +4847,14 @@ export default class MetamaskController extends EventEmitter {
           'SnapController:install',
           origin,
         ),
+        getIsLocked: () => {
+          return !this.appStateController.isUnlocked;
+        },
         ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
         hasPermission: this.permissionController.hasPermission.bind(
           this.permissionController,
+          origin,
         ),
         getSnap: this.controllerMessenger.call.bind(
           this.controllerMessenger,
@@ -4878,9 +4864,11 @@ export default class MetamaskController extends EventEmitter {
           this.controllerMessenger,
           'SnapController:getAll',
         ),
-        handleSnapRpcRequest: this.handleSnapRequest.bind(this),
+        handleSnapRpcRequest: (args) =>
+          this.handleSnapRequest({ ...args, origin }),
         getAllowedKeyringMethods: keyringSnapPermissionsBuilder(
           this.subjectMetadataController,
+          origin,
         ),
         ///: END:ONLY_INCLUDE_IF
         ///: BEGIN:ONLY_INCLUDE_IF(snaps)

@@ -617,7 +617,7 @@
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
   "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
+    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -1673,7 +1673,7 @@
     "message": "Suggest address names"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signatures requests. Turning on name suggestions exposes your IP address to these third parties."
+    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signature and transaction requests. Turning on name suggestions exposes your IP address to these third parties."
   },
   "failed": {
     "message": "Failed"
@@ -1842,6 +1842,9 @@
   "generalCameraErrorTitle": {
     "message": "Something went wrong...."
   },
+  "genericExplorerView": {
+    "message": "View account on $1"
+  },
   "globalTitle": {
     "message": "Global menu"
   },
@@ -1994,6 +1997,9 @@
   },
   "ignoreTokenWarning": {
     "message": "If you hide tokens, they will not be shown in your wallet. However, you can still add them by searching for them."
+  },
+  "imToken": {
+    "message": "imToken"
   },
   "import": {
     "message": "Import",
@@ -2298,6 +2304,18 @@
   },
   "ledgerDeviceOpenFailureMessage": {
     "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Please close Ledger Live or other applications connected to your Ledger device, and try to connect again."
+  },
+  "ledgerErrorConnectionIssue": {
+    "message": "Reconnect your ledger, open the ETH app and try again."
+  },
+  "ledgerErrorDevicedLocked": {
+    "message": "Your Ledger is locked. Unlock it then try again."
+  },
+  "ledgerErrorEthAppNotOpen": {
+    "message": "To solve the issue, open the ETH application on your device and retry."
+  },
+  "ledgerErrorTransactionDataNotPadded": {
+    "message": "Ethereum transaction's input data isn't sufficiently padded."
   },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
@@ -3067,14 +3085,11 @@
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
   },
-  "notificationsBlockaidDefaultDescriptionOne": {
-    "message": "Stay safe from scams while still protecting your privacy with security alerts powered by Blockaid. This feature is now on by default for all MetaMask users."
-  },
-  "notificationsBlockaidDefaultDescriptionThree": {
-    "message": "Only on Ethereum Mainnet. More networks available soon."
-  },
-  "notificationsBlockaidDefaultDescriptionThreeActionText": {
+  "notificationsBlockaidDefaultDescriptionActionText": {
     "message": "Got it"
+  },
+  "notificationsBlockaidDefaultDescriptionOne": {
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
   },
   "notificationsBlockaidDefaultDescriptionTwo": {
     "message": "Always do your own due diligence before approving requests."
@@ -3616,6 +3631,12 @@
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
+  },
+  "petnamesEnabledToggle": {
+    "message": "Petnames"
+  },
+  "petnamesEnabledToggleDescription": {
+    "message": "This allows you to assign a name to any address. This name will be visible to you only."
   },
   "pinExtensionDescription": {
     "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
@@ -4194,8 +4215,8 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
-  "settingsSubHeadingSignatures": {
-    "message": "Signature requests"
+  "settingsSubHeadingSignaturesAndTransactions": {
+    "message": "Signature and transaction requests"
   },
   "show": {
     "message": "Show"

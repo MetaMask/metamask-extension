@@ -355,6 +355,10 @@ export type MetaMetricsUserTraits = {
    */
   token_detection_enabled?: boolean;
   /**
+   * Does the user have native currency enabled?
+   */
+  use_native_as_primary_currency?: boolean;
+  /**
    * Does the user have desktop enabled?
    */
   desktop_enabled?: boolean;
@@ -438,6 +442,10 @@ export enum MetaMetricsUserTrait {
    */
   TokenDetectionEnabled = 'token_detection_enabled',
   /**
+   * Identified when the user enables native currency.
+   */
+  UseNativeCurrencyAsPrimaryCurrency = 'use_native_currency_as_primary_currency',
+  /**
    * Identified when the user enables desktop.
    */
   DesktopEnabled = 'desktop_enabled',
@@ -459,9 +467,7 @@ export enum MetaMetricsUserTrait {
    */
   MmiIsCustodian = 'mmi_is_custodian',
   ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   PetnameAddressCount = 'petname_addresses_count',
-  ///: END:ONLY_INCLUDE_IF
 }
 
 /**
@@ -595,6 +601,7 @@ export enum MetaMetricsEventName {
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
+  UseNativeCurrencyAsPrimaryCurrency = 'Use Native Currency as Primary Currency',
   WalletSetupStarted = 'Wallet Setup Selected',
   WalletSetupCanceled = 'Wallet Setup Canceled',
   WalletSetupFailed = 'Wallet Setup Failed',

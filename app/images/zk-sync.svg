@@ -1,5 +1,14 @@
-<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="512" height="512" fill="black"/>
-<path d="M344.489 373L462 255.511L344.489 138V226.138L227 314.255H344.489V373Z" fill="white"/>
-<path d="M167.511 138L50 255.511L167.511 373V284.883L285 196.766H167.511V138Z" fill="white"/>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 27.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 400 400" style="enable-background:new 0 0 400 400;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;}
+	.st1{fill-rule:evenodd;clip-rule:evenodd;}
+</style>
+<circle class="st0" cx="200" cy="200" r="200"/>
+<g>
+	<path class="st1" d="M316,199l-66.7-66.4v48.6l-66.2,48.7l66.2,0v35.5L316,199z"/>
+	<path class="st1" d="M81,199l66.7,66.4v-48.3l66.2-49.1l-66.2,0v-35.5L81,199z"/>
+</g>
 </svg>
