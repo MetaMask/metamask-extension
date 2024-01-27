@@ -1,3 +1,5 @@
+const { GAS_API_BASE_URL } = require('../../shared/constants/swaps');
+
 const blacklistedHosts = [
   'arbitrum-mainnet.infura.io',
   'goerli.infura.io',
@@ -158,9 +160,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     });
 
   await server
-    .forGet(
-      `https://gas-api.metaswap.codefi.network/networks/${chainId}/gasPrices`,
-    )
+    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/gasPrices`)
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -190,9 +190,7 @@ async function setupMocking(server, testSpecificMock, { chainId }) {
     });
 
   await server
-    .forGet(
-      `https://gas-api.metaswap.codefi.network/networks/${chainId}/suggestedGasFees`,
-    )
+    .forGet(`${GAS_API_BASE_URL}/networks/${chainId}/suggestedGasFees`)
     .thenCallback(() => {
       return {
         statusCode: 200,

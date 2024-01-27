@@ -14,7 +14,7 @@ import {
   getIsBuyableChain,
   getCurrentChainId,
   getSwapsDefaultToken,
-  getSelectedAddress,
+  getSelectedAccount,
   getPreferences,
   getIsMainnet,
 } from '../../../selectors';
@@ -68,7 +68,7 @@ const AssetList = ({ onClickAsset }) => {
   const trackEvent = useContext(MetaMetricsContext);
   const balance = useSelector(getSelectedAccountCachedBalance);
   const balanceIsLoading = !balance;
-  const selectedAddress = useSelector(getSelectedAddress);
+  const { address: selectedAddress } = useSelector(getSelectedAccount);
   const shouldHideZeroBalanceTokens = useSelector(
     getShouldHideZeroBalanceTokens,
   );

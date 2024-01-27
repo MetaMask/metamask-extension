@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { showCustodianDeepLink } from '@metamask-institutional/extension';
 import mockState from '../../../../test/data/mock-state.json';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
@@ -15,12 +16,13 @@ import {
   conversionRateSelector,
   getCurrentCurrency,
   getMemoizedAddressBook,
-  getMemoizedMetaMaskIdentities,
   getPreferences,
   getSelectedAccount,
   getTotalUnapprovedMessagesCount,
+  getInternalAccounts,
   unconfirmedTransactionsHashSelector,
   getAccountType,
+  getMemoizedMetaMaskInternalAccounts,
 } from '../../../selectors';
 import SignatureRequest from './signature-request';
 
@@ -52,6 +54,25 @@ const mockStore = {
       },
     },
     selectedAddress: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'John Doe',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
+    nativeCurrency: 'ETH',
     currentCurrency: 'usd',
     currencyRates: {
       ETH: {
@@ -98,6 +119,10 @@ const generateUseSelectorRouter = (opts) => (selector) => {
         ?.conversionRate;
     case getSelectedAccount:
       return opts.metamask.accounts[opts.metamask.selectedAddress];
+    case getInternalAccounts:
+      return Object.values(opts.metamask.internalAccounts.accounts);
+    case getMemoizedMetaMaskInternalAccounts:
+      return Object.values(opts.metamask.internalAccounts.accounts);
     case getMemoizedAddressBook:
       return [];
     case accountsWithSendEtherInfoSelector:
@@ -105,7 +130,6 @@ const generateUseSelectorRouter = (opts) => (selector) => {
     case getAccountType:
       return 'custody';
     case unconfirmedTransactionsHashSelector:
-    case getMemoizedMetaMaskIdentities:
       return {};
     default:
       return undefined;
@@ -449,6 +473,42 @@ describe('Signature Request Component', () => {
                 balance: '0x0',
                 name: 'Account 1',
               },
+              '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5': {
+                address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+                balance: '0x0',
+                name: 'Account 2',
+              },
+            },
+            internalAccounts: {
+              accounts: {
+                'b7e813d6-e31c-4bad-8615-8d4eff9f44f1': {
+                  address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+                  id: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
+                  metadata: {
+                    name: 'Account 1',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+                  address: '0xd8f6a2ffb0fc5952d16c9768b71cfd35b6399aa5',
+                  id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                  metadata: {
+                    name: 'Account 2',
+                    keyring: {
+                      type: 'HD Key Tree',
+                    },
+                  },
+                  options: {},
+                  methods: [...Object.values(EthMethod)],
+                  type: EthAccountType.Eoa,
+                },
+              },
+              selectedAccount: 'b7e813d6-e31c-4bad-8615-8d4eff9f44f1',
             },
           },
         }),
