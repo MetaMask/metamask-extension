@@ -26,6 +26,12 @@ export function formatAccountType(accountType) {
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+/**
+ * Returns the ui_customization string value based on the result type
+ *
+ * @param {BlockaidResultType} resultType
+ * @returns {MetaMetricsEventUiCustomization}
+ */
 const getBlockaidMetricUiCustomization = (resultType) => {
   let uiCustomization;
 
@@ -40,19 +46,21 @@ const getBlockaidMetricUiCustomization = (resultType) => {
   return uiCustomization;
 };
 
-export const getBlockaidMetricsProps = (transaction) => {
-  if (!transaction.securityAlertResponse) {
+/**
+ * @param {import('@metamask/transaction-controller').TransactionMeta} transactionMeta
+ * @returns {object}
+ */
+export const getBlockaidMetricsProps = ({ securityAlertResponse }) => {
+  if (!securityAlertResponse) {
     return {};
   }
 
   const params = {};
   const {
-    securityAlertResponse: {
-      providerRequestsCount,
-      reason,
-      result_type: resultType,
-    },
-  } = transaction;
+    providerRequestsCount,
+    reason,
+    result_type: resultType,
+  } = securityAlertResponse;
 
   const uiCustomization = getBlockaidMetricUiCustomization(resultType);
   if (uiCustomization) {
