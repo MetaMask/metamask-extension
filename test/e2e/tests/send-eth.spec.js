@@ -397,6 +397,7 @@ describe('Send ETH', function () {
                   sendHexData: true,
                 },
               })
+              .withPreferencesControllerPetnamesDisabled()
               .build(),
             ganacheOptions: defaultGanacheOptions,
             title: this.test.fullTitle(),
