@@ -211,7 +211,8 @@ export default function NftsItems({
         {isExpanded ? (
           <Box display={DISPLAY.FLEX} flexWrap={FLEX_WRAP.WRAP} gap={4}>
             {nfts.map((nft, i) => {
-              const { image, address, tokenId, name, imageOriginal } = nft;
+              const { image, address, tokenId, name, imageOriginal, tokenURI } =
+                nft;
               const nftImage = getAssetImageURL(
                 imageOriginal ?? image,
                 ipfsGateway,
@@ -222,7 +223,7 @@ export default function NftsItems({
                 ? nftImage
                 : image;
               const nftSrcUrl = imageOriginal ?? image;
-              const isIpfsURL = nftSrcUrl?.startsWith('ipfs:');
+              const isIpfsURL = (nftSrcUrl ?? tokenURI)?.startsWith('ipfs:');
               const handleImageClick = () => {
                 if (isModal) {
                   return onSendNft(nft);

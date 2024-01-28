@@ -11,7 +11,7 @@ import {
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { hideIpfsModal, setIpfsGateway } from '../../../store/actions';
+import { hideIpfsModal, setIpfsGateway, setIsIpfsGatewayEnabled } from '../../../store/actions';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../../shared/constants/network';
 import {
   Size,
@@ -53,8 +53,8 @@ export const ToggleIpfsModal = ({ onClose }) => {
           block
           marginTop={9}
           onClick={() => {
-            // todo: what is this component? does setIsIpfsGatewayEnabled need to be flipped here too?
             dispatch(setIpfsGateway(IPFS_DEFAULT_GATEWAY_URL));
+            dispatch(setIsIpfsGatewayEnabled(true));
             dispatch(hideIpfsModal());
           }}
           size={Size.LG}
