@@ -169,29 +169,38 @@ export default class DetectTokensController extends StaticIntervalPollingControl
     const tokensToDetect = [];
     for (const tokenAddress in tokenListUsed) {
       if (
-        !this.tokenAddresses.find((address) =>
+        !this.tokensController.state.allTokens?.[chainIdAgainstWhichToDetect]?.[
+          addressAgainstWhichToDetect
+        ]?.find(({ address }) =>
           isEqualCaseInsensitive(address, tokenAddress),
         ) &&
-        !this.hiddenTokens.find((address) =>
+        !this.tokensController.state.allIgnoredTokens?.[
+          chainIdAgainstWhichToDetect
+        ]?.[addressAgainstWhichToDetect]?.find((address) =>
           isEqualCaseInsensitive(address, tokenAddress),
         ) &&
-        !this.detectedTokens.find(({ address }) =>
+        !this.tokensController.state.allDetectedTokens?.[
+          chainIdAgainstWhichToDetect
+        ]?.[addressAgainstWhichToDetect]?.find(({ address }) =>
           isEqualCaseInsensitive(address, tokenAddress),
         )
       ) {
         tokensToDetect.push(tokenAddress);
       }
     }
-    const sliceOfTokensToDetect = [
-      tokensToDetect.slice(0, 1000),
-      tokensToDetect.slice(1000, tokensToDetect.length - 1),
-    ];
+    const sliceOfTokensToDetect = [];
+    for (let i = 0, size = 1000; i < tokensToDetect.length; i += size) {
+      sliceOfTokensToDetect.push(tokensToDetect.slice(i, i + size));
+    }
     for (const tokensSlice of sliceOfTokensToDetect) {
       let result;
       try {
         result = await this.assetsContractController.getBalancesInSingleCall(
           addressAgainstWhichToDetect,
           tokensSlice,
+          this.network.findNetworkClientIdByChainId(
+            chainIdAgainstWhichToDetect,
+          ),
         );
       } catch (error) {
         warn(
@@ -247,7 +256,8 @@ export default class DetectTokensController extends StaticIntervalPollingControl
    */
   restartTokenDetection({ selectedAddress, chainId } = {}) {
     const addressAgainstWhichToDetect = selectedAddress ?? this.selectedAddress;
-    const chainIdAgainstWhichToDetect = chainId ?? this.chainId;
+    const chainIdAgainstWhichToDetect =
+      chainId ?? this.getChainIdFromNetworkStore();
     if (!(this.isActive && addressAgainstWhichToDetect)) {
       return;
     }
