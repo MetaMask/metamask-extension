@@ -78,10 +78,9 @@ export default class SecurityTab extends PureComponent {
     setUseCurrencyRateCheck: PropTypes.func.isRequired,
     useAddressBarEnsResolution: PropTypes.bool.isRequired,
     setUseAddressBarEnsResolution: PropTypes.func.isRequired,
-    ///: BEGIN:ONLY_INCLUDE_IF(petnames)
     useExternalNameSources: PropTypes.bool.isRequired,
     setUseExternalNameSources: PropTypes.func.isRequired,
-    ///: END:ONLY_INCLUDE_IF
+    petnamesEnabled: PropTypes.bool.isRequired,
   };
 
   state = {
@@ -821,7 +820,6 @@ export default class SecurityTab extends PureComponent {
     );
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   renderExternalNameSourcesToggle() {
     const { t } = this.context;
     const { useExternalNameSources, setUseExternalNameSources } = this.props;
@@ -856,10 +854,9 @@ export default class SecurityTab extends PureComponent {
       </Box>
     );
   }
-  ///: END:ONLY_INCLUDE_IF
 
   render() {
-    const { warning } = this.props;
+    const { warning, petnamesEnabled } = this.props;
 
     return (
       <div className="settings-page__body">
@@ -917,18 +914,16 @@ export default class SecurityTab extends PureComponent {
           {this.renderNftDetectionToggle()}
         </div>
 
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(petnames)
-        }
-        <span className="settings-page__security-tab-sub-header">
-          {this.context.t('settingsSubHeadingSignatures')}
-        </span>
-        <div className="settings-page__content-padded">
-          {this.renderExternalNameSourcesToggle()}
-        </div>
-        {
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {petnamesEnabled && (
+          <>
+            <span className="settings-page__security-tab-sub-header">
+              {this.context.t('settingsSubHeadingSignaturesAndTransactions')}
+            </span>
+            <div className="settings-page__content-padded">
+              {this.renderExternalNameSourcesToggle()}
+            </div>
+          </>
+        )}
 
         <span className="settings-page__security-tab-sub-header">
           {this.context.t('metrics')}

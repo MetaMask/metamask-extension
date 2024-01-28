@@ -1673,7 +1673,7 @@
     "message": "Suggest address names"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signatures requests. Turning on name suggestions exposes your IP address to these third parties."
+    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signature and transaction requests. Turning on name suggestions exposes your IP address to these third parties."
   },
   "failed": {
     "message": "Failed"
@@ -3632,6 +3632,12 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "petnamesEnabledToggle": {
+    "message": "Petnames"
+  },
+  "petnamesEnabledToggleDescription": {
+    "message": "This allows you to assign a name to any address. This name will be visible to you only."
+  },
   "pinExtensionDescription": {
     "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
   },
@@ -4209,8 +4215,8 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
-  "settingsSubHeadingSignatures": {
-    "message": "Signature requests"
+  "settingsSubHeadingSignaturesAndTransactions": {
+    "message": "Signature and transaction requests"
   },
   "show": {
     "message": "Show"

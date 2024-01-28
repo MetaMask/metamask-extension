@@ -30,7 +30,8 @@
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
       "showTestNetworks": false,
-      "useNativeCurrencyAsPrimaryCurrency": true
+      "useNativeCurrencyAsPrimaryCurrency": true,
+      "petnamesEnabled": true
     },
     "firstTimeFlowType": "import",
     "completedOnboarding": true,
@@ -115,6 +116,7 @@
     "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
     "isLineaMainnetReleased": true,
+    "useExternalNameSources": "boolean",
     "selectedAddress": "string",
     "metaMetricsId": "fake-metrics-id",
     "eventsBeforeMetricsOptIn": "object",
@@ -169,6 +171,8 @@
     "database": "object",
     "lastUpdated": "object",
     "notifications": "object",
+    "names": "object",
+    "nameSources": "object",
     "userOperations": "object",
     "accounts": "object",
     "accountsByChainId": "object",
