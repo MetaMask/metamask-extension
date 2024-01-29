@@ -51,7 +51,7 @@ export default {
   args: {
     fromNetworkConfigurationNickname: 'Test Network 1',
     fromNetworkConfigurationChainId: '0x123',
-    fromNetworkConfigurationIconURL: './images/eth_logo.png',
+    fromNetworkConfigurationIconURL: './images/eth_logo.svg',
     toNetworkConfigurationNickname: 'Test Network 2',
     toNetworkConfigurationChainId: '0x456',
     toNetworkConfigurationIconURL: './images/bnb.png',

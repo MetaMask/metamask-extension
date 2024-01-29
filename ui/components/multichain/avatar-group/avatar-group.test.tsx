@@ -5,10 +5,10 @@ import React from 'react';
 import { AvatarGroup } from './avatar-group';
 
 const members = [
-  { symbol: 'ETH', iconUrl: './images/eth_logo.png' },
-  { symbol: 'MATIC', iconUrl: './images/matic-token.png' },
+  { symbol: 'ETH', iconUrl: './images/eth_logo.svg' },
+  { symbol: 'MATIC', iconUrl: './images/matic-token.svg' },
   { symbol: 'OP', iconUrl: './images/optimism.svg' },
-  { symbol: 'AVAX', iconUrl: './images/avax-token.png' },
+  { symbol: 'AVAX', iconUrl: './images/avax-token.svg' },
   { symbol: 'PALM', iconUrl: './images/palm.svg' },
 ];
 

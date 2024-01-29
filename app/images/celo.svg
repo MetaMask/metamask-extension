@@ -1,1 +1,7 @@
-<svg id="Celo_Rings" data-name="Celo Rings" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 950"><defs><style>.cls-1{fill:#fbcc5c;}.cls-2{fill:#35d07f;}.cls-3{fill:#5ea33b;}</style></defs><title>Artboard 1</title><path id="Bottom_Ring" data-name="Bottom Ring" class="cls-1" d="M375,850c151.88,0,275-123.12,275-275S526.88,300,375,300,100,423.12,100,575,223.12,850,375,850Zm0,100C167.9,950,0,782.1,0,575S167.9,200,375,200,750,367.9,750,575,582.1,950,375,950Z"/><path id="Top_Ring" data-name="Top Ring" class="cls-2" d="M575,650c151.88,0,275-123.12,275-275S726.88,100,575,100,300,223.12,300,375,423.12,650,575,650Zm0,100c-207.1,0-375-167.9-375-375S367.9,0,575,0,950,167.9,950,375,782.1,750,575,750Z"/><path id="Rings_Overlap" data-name="Rings Overlap" class="cls-3" d="M587.39,750a274.38,274.38,0,0,0,54.55-108.06A274.36,274.36,0,0,0,750,587.4a373.63,373.63,0,0,1-29.16,133.45A373.62,373.62,0,0,1,587.39,750ZM308.06,308.06A274.36,274.36,0,0,0,200,362.6a373.63,373.63,0,0,1,29.16-133.45A373.62,373.62,0,0,1,362.61,200,274.38,274.38,0,0,0,308.06,308.06Z"/></svg>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.3.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Symbol" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 384 383" style="enable-background:new 0 0 384 383;" xml:space="preserve">
+<path d="M383.5,0H0.5v383h383V249.3h-63.6C298,298.1,248.7,332,192.3,332c-77.8,0-140.8-63.6-140.8-140.8
+	C51.4,114,114.5,51,192.3,51C249.8,51,299.1,86,321,135.9h62.5V0z"/>
+</svg>

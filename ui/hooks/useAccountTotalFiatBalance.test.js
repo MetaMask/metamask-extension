@@ -131,7 +131,7 @@ describe('useAccountTotalFiatBalance', () => {
       orderedTokenList: [
         {
           fiatBalance: '1.85',
-          iconUrl: './images/eth_logo.png',
+          iconUrl: './images/eth_logo.svg',
           symbol: 'ETH',
         },
         {
