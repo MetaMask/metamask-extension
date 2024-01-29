@@ -180,8 +180,7 @@
     "selectedAddress": "string"
   },
   "SelectedNetworkController": {
-    "domains": { "metamask": "networkConfigurationId" },
-    "perDomainNetwork": "boolean"
+    "domains": { "metamask": "networkConfigurationId" }
   },
   "SignatureController": {
     "unapprovedMsgs": "object",
