@@ -24,8 +24,8 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getCurrentChainId,
   getIsMainnet,
+  getSelectedInternalAccount,
   getOpenSeaEnabled,
-  getSelectedAddress,
 } from '../../../selectors';
 import {
   addNftVerifyOwnership,
@@ -41,7 +41,6 @@ import {
   ButtonPrimary,
   ButtonSecondary,
   ButtonSecondarySize,
-  FormTextField,
   Icon,
   IconName,
   IconSize,
@@ -49,6 +48,7 @@ import {
   Modal,
   ModalOverlay,
 } from '../../component-library';
+import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import { ModalContent } from '../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../component-library/modal-header/deprecated';
 import Tooltip from '../../ui/tooltip';
@@ -62,7 +62,7 @@ export const ImportNftsModal = ({ onClose }) => {
   const isDisplayNFTMediaToggleEnabled = useSelector(getOpenSeaEnabled);
   const isMainnet = useSelector(getIsMainnet);
   const nftsDropdownState = useSelector(getNftsDropdownState);
-  const selectedAddress = useSelector(getSelectedAddress);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
   const chainId = useSelector(getCurrentChainId);
   const {
     tokenAddress: initialTokenAddress,
@@ -84,10 +84,10 @@ export const ImportNftsModal = ({ onClose }) => {
       await dispatch(addNftVerifyOwnership(nftAddress, tokenId));
       const newNftDropdownState = {
         ...nftsDropdownState,
-        [selectedAddress]: {
-          ...nftsDropdownState?.[selectedAddress],
+        [selectedAccount.address]: {
+          ...nftsDropdownState?.[selectedAccount.address],
           [chainId]: {
-            ...nftsDropdownState?.[selectedAddress]?.[chainId],
+            ...nftsDropdownState?.[selectedAccount.address]?.[chainId],
             [nftAddress]: true,
           },
         },

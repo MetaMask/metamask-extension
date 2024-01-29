@@ -38,10 +38,10 @@ import { getEnvironmentType, addHexPrefix } from '../../app/scripts/lib/util';
 import {
   getMetaMaskAccounts,
   getPermittedAccountsForCurrentTab,
-  getSelectedAddress,
   hasTransactionPendingApprovals,
   getApprovalFlows,
   getCurrentNetworkTransactions,
+  getIsSigningQRHardwareTransaction,
   ///: BEGIN:ONLY_INCLUDE_IF(snaps)
   getNotifications,
   ///: END:ONLY_INCLUDE_IF
@@ -49,6 +49,8 @@ import {
   getPermissionSubjects,
   getFirstSnapInstallOrUpdateRequest,
   ///: END:ONLY_INCLUDE_IF
+  getInternalAccountByAddress,
+  getSelectedInternalAccount,
 } from '../selectors';
 import {
   computeEstimatedGasLimit,
@@ -220,7 +222,7 @@ export function createNewVaultAndGetSeedPhrase(
 
     try {
       await createNewVault(password);
-      const seedPhrase = await verifySeedPhrase();
+      const seedPhrase = await getSeedPhrase(password);
       return seedPhrase;
     } catch (error) {
       dispatch(displayWarning(error));
@@ -243,7 +245,7 @@ export function unlockAndGetSeedPhrase(
 
     try {
       await submitPassword(password);
-      const seedPhrase = await verifySeedPhrase();
+      const seedPhrase = await getSeedPhrase(password);
       await forceUpdateMetamaskState(dispatch);
       return seedPhrase;
     } catch (error) {
@@ -298,9 +300,10 @@ export function verifyPassword(password: string): Promise<boolean> {
   });
 }
 
-export async function verifySeedPhrase() {
+export async function getSeedPhrase(password: string) {
   const encodedSeedPhrase = await submitRequestToBackground<string>(
-    'verifySeedPhrase',
+    'getSeedPhrase',
+    [password],
   );
   return Buffer.from(encodedSeedPhrase).toString('utf8');
 }
@@ -314,7 +317,7 @@ export function requestRevealSeedWords(
 
     try {
       await verifyPassword(password);
-      const seedPhrase = await verifySeedPhrase();
+      const seedPhrase = await getSeedPhrase(password);
       return seedPhrase;
     } finally {
       dispatch(hideLoadingIndication());
@@ -526,9 +529,6 @@ export function connectHardware(
 
     let accounts: { address: string }[];
     try {
-      if (deviceName === HardwareDeviceNames.ledger) {
-        await submitRequestToBackground('establishLedgerTransportPreference');
-      }
       if (
         deviceName === HardwareDeviceNames.ledger &&
         ledgerTransportType === LedgerTransportTypes.webhid
@@ -1551,12 +1551,15 @@ export function updateMetamaskState(
     const providerConfig = getProviderConfig(state);
     const { metamask: currentState } = state;
 
-    const { currentLocale, selectedAddress } = currentState;
-    const {
-      currentLocale: newLocale,
-      selectedAddress: newSelectedAddress,
-      providerConfig: newProviderConfig,
-    } = newState;
+    const { currentLocale } = currentState;
+    const currentInternalAccount = getSelectedInternalAccount(state);
+    const selectedAddress = currentInternalAccount?.address;
+    const { currentLocale: newLocale, providerConfig: newProviderConfig } =
+      newState;
+    const newInternalAccount = getSelectedInternalAccount({
+      metamask: newState,
+    });
+    const newSelectedAddress = newInternalAccount?.address;
 
     if (currentLocale && newLocale && currentLocale !== newLocale) {
       dispatch(updateCurrentLocale(newLocale));
@@ -1701,6 +1704,34 @@ export function setSelectedAddress(
   };
 }
 
+async function _setSelectedInternalAccount(accountId: string): Promise<void> {
+  log.debug(`background.setSelectedInternalAccount`);
+  await submitRequestToBackground('setSelectedInternalAccount', [accountId]);
+}
+
+/**
+ * Sets the selected internal account.
+ *
+ * @param accountId - The ID of the account to set as selected.
+ * @returns A thunk action that dispatches loading and warning indications.
+ */
+export function setSelectedInternalAccount(
+  accountId: string,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    dispatch(showLoadingIndication());
+    log.debug(`background.setSelectedInternalAccount`);
+    try {
+      await _setSelectedInternalAccount(accountId);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      return;
+    } finally {
+      dispatch(hideLoadingIndication());
+    }
+  };
+}
+
 export function setSelectedAccount(
   address: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -1712,12 +1743,12 @@ export function setSelectedAccount(
     const unconnectedAccountAccountAlertIsEnabled =
       getUnconnectedAccountAlertEnabledness(state);
     const activeTabOrigin = state.activeTab.origin;
-    const selectedAddress = getSelectedAddress(state);
+    const internalAccount = getInternalAccountByAddress(state, address);
     const permittedAccountsForCurrentTab =
       getPermittedAccountsForCurrentTab(state);
     const currentTabIsConnectedToPreviousAddress =
       Boolean(activeTabOrigin) &&
-      permittedAccountsForCurrentTab.includes(selectedAddress);
+      permittedAccountsForCurrentTab.includes(internalAccount.address);
     const currentTabIsConnectedToNextAddress =
       Boolean(activeTabOrigin) &&
       permittedAccountsForCurrentTab.includes(address);
@@ -1726,7 +1757,7 @@ export function setSelectedAccount(
       !currentTabIsConnectedToNextAddress;
 
     try {
-      await _setSelectedAddress(address);
+      await _setSelectedInternalAccount(internalAccount.id);
       await forceUpdateMetamaskState(dispatch);
     } catch (error) {
       dispatch(displayWarning(error));
@@ -2463,6 +2494,13 @@ export function hideImportNftsModal(): Action {
   };
 }
 
+export function setConfirmationExchangeRates(value: Record<string, any>) {
+  return {
+    type: actionConstants.SET_CONFIRMATION_EXCHANGE_RATES,
+    value,
+  };
+}
+
 export function showIpfsModal(): Action {
   return {
     type: actionConstants.SHOW_IPFS_MODAL_OPEN,
@@ -2474,6 +2512,7 @@ export function hideIpfsModal(): Action {
     type: actionConstants.SHOW_IPFS_MODAL_CLOSE,
   };
 }
+
 export function closeCurrentNotificationWindow(): ThunkAction<
   void,
   MetaMaskReduxState,
@@ -2486,6 +2525,7 @@ export function closeCurrentNotificationWindow(): ThunkAction<
     if (
       getEnvironmentType() === ENVIRONMENT_TYPE_NOTIFICATION &&
       !hasTransactionPendingApprovals(state) &&
+      !getIsSigningQRHardwareTransaction(state) &&
       approvalFlows.length === 0
     ) {
       closeNotificationPopup();
@@ -2831,6 +2871,14 @@ export function setShowFiatConversionOnTestnetsPreference(value: boolean) {
 
 export function setShowTestNetworks(value: boolean) {
   return setPreference('showTestNetworks', value);
+}
+
+export function setPetnamesEnabled(value: boolean) {
+  return setPreference('petnamesEnabled', value);
+}
+
+export function setShowExtensionInFullSizeView(value: boolean) {
+  return setPreference('showExtensionInFullSizeView', value);
 }
 
 export function setAutoLockTimeLimit(value: boolean) {
@@ -3291,6 +3339,11 @@ export function setSwapsFeatureFlags(
   };
 }
 
+type Quotes = [
+  { destinationAmount: string; decimals: number; aggregator: string },
+  string,
+];
+
 export function fetchAndSetQuotes(
   fetchParams: {
     slippage: string;
@@ -3307,19 +3360,9 @@ export function fetchAndSetQuotes(
     accountBalance: string;
     chainId: string;
   },
-): ThunkAction<
-  Promise<
-    [
-      { destinationAmount: string; decimals: number; aggregator: string },
-      string,
-    ]
-  >,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+): ThunkAction<Promise<Quotes>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
-    const [quotes, selectedAggId] = await submitRequestToBackground(
+    const [quotes, selectedAggId] = await submitRequestToBackground<Quotes>(
       'fetchAndSetQuotes',
       [fetchParams, fetchParamsMetaData],
     );
@@ -3603,6 +3646,21 @@ export function updateAccountsList(
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     await submitRequestToBackground('updateAccountsList', [pinnedAccountList]);
+  };
+}
+
+/**
+ * Hides account in the accounts list
+ *
+ * @param hiddenAccountList
+ */
+export function updateHiddenAccountsList(
+  hiddenAccountList: [],
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateHiddenAccountsList', [
+      hiddenAccountList,
+    ]);
   };
 }
 
@@ -3991,7 +4049,7 @@ export function getNextNonce(): ThunkAction<
   AnyAction
 > {
   return async (dispatch, getState) => {
-    const address = getState().metamask.selectedAddress;
+    const { address } = getSelectedInternalAccount(getState());
     let nextNonce;
     try {
       nextNonce = await submitRequestToBackground<string>('getNextNonce', [
@@ -4051,16 +4109,6 @@ export function getOpenMetamaskTabsIds(): ThunkAction<
       [tabId: string]: boolean;
     }>('getOpenMetamaskTabsIds');
     dispatch(setOpenMetamaskTabsIDs(openMetaMaskTabIDs));
-  };
-}
-
-export function setLedgerTransportPreference(
-  value: LedgerTransportTypes,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (dispatch: MetaMaskReduxDispatch) => {
-    dispatch(showLoadingIndication());
-    await submitRequestToBackground('setLedgerTransportPreference', [value]);
-    dispatch(hideLoadingIndication());
   };
 }
 
@@ -4490,6 +4538,14 @@ export function hideProductTour() {
   return submitRequestToBackground('setShowProductTour', [false]);
 }
 
+export function hideAccountBanner() {
+  return submitRequestToBackground('setShowAccountBanner', [false]);
+}
+
+export function hideNetworkBanner() {
+  return submitRequestToBackground('setShowNetworkBanner', [false]);
+}
+
 // TODO: codeword NOT_A_THUNK @brad-decker
 export function setTransactionSecurityCheckEnabled(
   transactionSecurityCheckEnabled: boolean,
@@ -4558,7 +4614,6 @@ export function setUseRequestQueue(val: boolean): void {
   }
 }
 
-///: BEGIN:ONLY_INCLUDE_IF(petnames)
 export function setUseExternalNameSources(val: boolean): void {
   try {
     submitRequestToBackground('setUseExternalNameSources', [val]);
@@ -4566,7 +4621,6 @@ export function setUseExternalNameSources(val: boolean): void {
     logErrorWithMessage(error);
   }
 }
-///: END:ONLY_INCLUDE_IF
 
 export function setFirstTimeUsedNetwork(chainId: string) {
   return submitRequestToBackground('setFirstTimeUsedNetwork', [chainId]);
@@ -4718,9 +4772,5 @@ export async function setSnapsAddSnapAccountModalDismissed() {
   await submitRequestToBackground('setSnapsAddSnapAccountModalDismissed', [
     true,
   ]);
-}
-
-export async function updateSnapRegistry() {
-  await submitRequestToBackground('updateSnapRegistry', []);
 }
 ///: END:ONLY_INCLUDE_IF

@@ -23,13 +23,13 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonVariant,
-  FormTextField,
   IconName,
   Label,
   Modal,
   ModalOverlay,
   Text,
 } from '../../../component-library';
+import { FormTextField } from '../../../component-library/form-text-field/deprecated';
 import { ModalContent } from '../../../component-library/modal-content/deprecated';
 import { ModalHeader } from '../../../component-library/modal-header/deprecated';
 import {
@@ -283,7 +283,6 @@ export default function NameDetails({
               ? t('nameInstructionsSaved')
               : t('nameInstructionsNew')}
           </Text>
-          <hr className="name-details__line" />
           {/* @ts-ignore */}
           <FormTextField
             id="address"
@@ -311,15 +310,14 @@ export default function NameDetails({
           >
             {t('nameLabel')}
             <FormComboField
+              hideDropdownIfNoOptions
               value={name}
               options={proposedNameOptions}
               placeholder={t('nameSetPlaceholder')}
-              noOptionsText={t('nameNoProposedNames')}
               onChange={handleNameChange}
               onOptionClick={handleProposedNameClick}
             />
           </Label>
-          <hr className="name-details__line" />
           <Button
             variant={ButtonVariant.Primary}
             startIconName={hasSavedName ? undefined : IconName.Save}

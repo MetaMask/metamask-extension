@@ -305,7 +305,12 @@ function createScriptTasks({
     // In MV3 we will need to build our offscreen entry point bundle and any
     // entry points for iframes that we want to lockdown with LavaMoat.
     if (process.env.ENABLE_MV3 === 'true') {
-      standardEntryPoints.push('offscreen', 'trezor-iframe');
+      standardEntryPoints.push(
+        'offscreen',
+        'trezor-iframe',
+        'ledger-iframe',
+        'lattice-iframe',
+      );
     }
 
     const standardSubtask = createTask(
@@ -323,6 +328,10 @@ function createScriptTasks({
               return './offscreen/scripts/offscreen.ts';
             case 'trezor-iframe':
               return './offscreen/scripts/trezor-iframe.ts';
+            case 'ledger-iframe':
+              return './offscreen/scripts/ledger-iframe.ts';
+            case 'lattice-iframe':
+              return './offscreen/scripts/lattice-iframe.ts';
             default:
               return `./app/scripts/${label}.js`;
           }
@@ -820,6 +829,26 @@ function createFactoredBuild({
             });
             break;
           }
+          case 'ledger-iframe': {
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              applyLavaMoat,
+              destinationFileName: 'load-ledger-iframe.js',
+            });
+            break;
+          }
+          case 'lattice-iframe': {
+            renderJavaScriptLoader({
+              groupSet,
+              commonSet,
+              browserPlatforms,
+              applyLavaMoat,
+              destinationFileName: 'load-lattice-iframe.js',
+            });
+            break;
+          }
           default: {
             throw new Error(
               `build/scripts - unknown groupLabel "${groupLabel}"`,
@@ -1212,6 +1241,9 @@ async function setEnvironmentVariables({
 
   variables.set({
     DEBUG: devMode || testing ? variables.getMaybe('DEBUG') : undefined,
+    EIP_4337_ENTRYPOINT:
+      variables.getMaybe('EIP_4337_ENTRYPOINT') ||
+      '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789',
     IN_TEST: testing,
     INFURA_PROJECT_ID: getInfuraProjectId({
       buildType,

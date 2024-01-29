@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import fetchWithCache from '../../shared/lib/fetch-with-cache';
-import { BUILT_IN_NETWORKS } from '../../shared/constants/network';
+import { CHAIN_ID_TO_CURRENCY_SYMBOL_MAP } from '../../shared/constants/network';
 import { DAY } from '../../shared/constants/time';
 import { useSafeChainsListValidationSelector } from '../selectors';
 
@@ -18,10 +18,9 @@ export function useIsOriginalNativeTokenSymbol(chainId, ticker, type) {
           return;
         }
 
-        const matchedSymbolBuiltInNetwork =
-          BUILT_IN_NETWORKS[type]?.ticker ?? null;
-        if (matchedSymbolBuiltInNetwork) {
-          setIsOriginalNativeSymbol(matchedSymbolBuiltInNetwork === ticker);
+        const mappedCurrencySymbol = CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId];
+        if (mappedCurrencySymbol) {
+          setIsOriginalNativeSymbol(mappedCurrencySymbol === ticker);
           return;
         }
 

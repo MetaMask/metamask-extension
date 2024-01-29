@@ -460,6 +460,20 @@ const onboardingCompleteWalletCreation = async (driver) => {
   await driver.clickElement('[data-testid="onboarding-complete-done"]');
 };
 
+const onboardingCompleteWalletCreationWithOptOut = async (driver) => {
+  // wait for h2 to appear
+  await driver.findElement({ text: 'Wallet creation successful', tag: 'h2' });
+  // opt-out from third party API
+  await driver.clickElement({ text: 'Advanced configuration', tag: 'a' });
+  await Promise.all(
+    (
+      await driver.findClickableElements('.toggle-button.toggle-button--on')
+    ).map((toggle) => toggle.click()),
+  );
+  // complete onboarding
+  await driver.clickElement({ text: 'Done', tag: 'button' });
+};
+
 /**
  * Move through the steps of pinning extension after successful onboarding
  *
@@ -469,6 +483,17 @@ const onboardingPinExtension = async (driver) => {
   // pin extension
   await driver.clickElement('[data-testid="pin-extension-next"]');
   await driver.clickElement('[data-testid="pin-extension-done"]');
+};
+
+const completeCreateNewWalletOnboardingFlowWithOptOut = async (
+  driver,
+  password,
+) => {
+  await onboardingBeginCreateNewWallet(driver);
+  await onboardingChooseMetametricsOption(driver, false);
+  await onboardingCreatePassword(driver, password);
+  await onboardingRevealAndConfirmSRP(driver);
+  await onboardingCompleteWalletCreationWithOptOut(driver);
 };
 
 const completeCreateNewWalletOnboardingFlow = async (driver, password) => {
@@ -519,14 +544,17 @@ const testSRPDropdownIterations = async (options, driver, iterations) => {
   }
 };
 
-const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
-  await unlockWallet(driver);
-
+const openSRPRevealQuiz = async (driver) => {
   // navigate settings to reveal SRP
   await driver.clickElement('[data-testid="account-options-menu-button"]');
   await driver.clickElement({ text: 'Settings', tag: 'div' });
   await driver.clickElement({ text: 'Security & privacy', tag: 'div' });
   await driver.clickElement('[data-testid="reveal-seed-words"]');
+};
+
+const passwordUnlockOpenSRPRevealQuiz = async (driver) => {
+  await unlockWallet(driver);
+  await openSRPRevealQuiz(driver);
 };
 
 const completeSRPRevealQuiz = async (driver) => {
@@ -611,6 +639,7 @@ const connectToDapp = async (driver) => {
     text: 'Connect',
     tag: 'button',
   });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 };
 
 const PRIVATE_KEY =
@@ -623,6 +652,47 @@ const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
 const defaultGanacheOptions = {
   accounts: [{ secretKey: PRIVATE_KEY, balance: convertETHToHexGwei(25) }],
+};
+
+const multipleGanacheOptions = {
+  accounts: [
+    {
+      secretKey: PRIVATE_KEY,
+      balance: convertETHToHexGwei(25),
+    },
+    {
+      secretKey: PRIVATE_KEY_TWO,
+      balance: convertETHToHexGwei(25),
+    },
+  ],
+};
+
+const generateGanacheOptions = ({
+  secretKey = PRIVATE_KEY,
+  balance = convertETHToHexGwei(25),
+  ...otherProps
+}) => {
+  const accounts = [
+    {
+      secretKey,
+      balance,
+    },
+  ];
+
+  return {
+    accounts,
+    ...otherProps, // eg: hardfork
+  };
+};
+
+// Edit priority gas fee form
+const editGasfeeForm = async (driver, gasLimit, gasPrice) => {
+  const inputs = await driver.findElements('input[type="number"]');
+  const gasLimitInput = inputs[0];
+  const gasPriceInput = inputs[1];
+  await gasLimitInput.fill(gasLimit);
+  await gasPriceInput.fill(gasPrice);
+  await driver.clickElement({ text: 'Save', tag: 'button' });
 };
 
 const openActionMenuAndStartSendFlow = async (driver) => {
@@ -710,22 +780,8 @@ const locateAccountBalanceDOM = async (driver, ganacheServer) => {
 
 const WALLET_PASSWORD = 'correct horse battery staple';
 
-const DEFAULT_GANACHE_OPTIONS = {
-  accounts: [
-    {
-      secretKey: PRIVATE_KEY,
-      balance: convertETHToHexGwei(25),
-    },
-  ],
-};
-
-const generateGanacheOptions = (overrides) => ({
-  ...DEFAULT_GANACHE_OPTIONS,
-  ...overrides,
-});
-
 async function waitForAccountRendered(driver) {
-  await driver.waitForSelector(
+  await driver.findElement(
     process.env.MULTICHAIN
       ? '[data-testid="token-balance-overview-currency-display"]'
       : '[data-testid="eth-overview__primary-currency"]',
@@ -863,21 +919,31 @@ async function switchToNotificationWindow(driver, numHandles = 3) {
  * @returns {import('mockttp/dist/pluggable-admin').MockttpClientResponse[]}
  */
 async function getEventPayloads(driver, mockedEndpoints, hasRequest = true) {
-  await driver.wait(async () => {
-    let isPending = true;
+  await driver.wait(
+    async () => {
+      let isPending = true;
 
-    for (const mockedEndpoint of mockedEndpoints) {
-      isPending = await mockedEndpoint.isPending();
-    }
+      for (const mockedEndpoint of mockedEndpoints) {
+        isPending = await mockedEndpoint.isPending();
+      }
 
-    return isPending === !hasRequest;
-  }, driver.timeout);
+      return isPending === !hasRequest;
+    },
+    driver.timeout,
+    true,
+  );
   const mockedRequests = [];
   for (const mockedEndpoint of mockedEndpoints) {
     mockedRequests.push(...(await mockedEndpoint.getSeenRequests()));
   }
 
-  return mockedRequests.map((req) => req.body.json?.batch).flat();
+  return (
+    await Promise.all(
+      mockedRequests.map(async (req) => {
+        return (await req.body?.getJson())?.batch;
+      }),
+    )
+  ).flat();
 }
 
 // Asserts that  each request passes all assertions in one group of assertions, and the order does not matter.
@@ -937,6 +1003,8 @@ module.exports = {
   completeImportSRPOnboardingFlow,
   completeImportSRPOnboardingFlowWordByWord,
   completeCreateNewWalletOnboardingFlow,
+  completeCreateNewWalletOnboardingFlowWithOptOut,
+  openSRPRevealQuiz,
   passwordUnlockOpenSRPRevealQuiz,
   completeSRPRevealQuiz,
   closeSRPReveal,
@@ -947,6 +1015,7 @@ module.exports = {
   openDapp,
   switchToOrOpenDapp,
   connectToDapp,
+  multipleGanacheOptions,
   defaultGanacheOptions,
   sendTransaction,
   findAnotherAccountFromAccountList,
@@ -957,7 +1026,6 @@ module.exports = {
   generateGanacheOptions,
   WALLET_PASSWORD,
   WINDOW_TITLES,
-  DEFAULT_GANACHE_OPTIONS,
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
@@ -975,4 +1043,5 @@ module.exports = {
   genRandInitBal,
   openActionMenuAndStartSendFlow,
   getCleanAppState,
+  editGasfeeForm,
 };

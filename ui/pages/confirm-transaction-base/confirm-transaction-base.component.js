@@ -152,6 +152,7 @@ export default class ConfirmTransactionBase extends Component {
     displayAccountBalanceHeader: PropTypes.bool,
     tokenSymbol: PropTypes.string,
     updateTransaction: PropTypes.func,
+    isUsingPaymaster: PropTypes.bool,
   };
 
   state = {
@@ -331,6 +332,7 @@ export default class ConfirmTransactionBase extends Component {
       isBuyableChain,
       useCurrencyRateCheck,
       tokenSymbol,
+      isUsingPaymaster,
     } = this.props;
 
     const { t } = this.context;
@@ -456,6 +458,7 @@ export default class ConfirmTransactionBase extends Component {
           type={txData.type}
           isBuyableChain={isBuyableChain}
           tokenSymbol={tokenSymbol}
+          isUsingPaymaster={isUsingPaymaster}
         />
         <TransactionDetail
           disableEditGasFeeButton
@@ -472,7 +475,6 @@ export default class ConfirmTransactionBase extends Component {
                   userAcknowledgedGasMissing={userAcknowledgedGasMissing}
                 />
                 <FeeDetailsComponent
-                  supportsEIP1559={this.supportsEIP1559}
                   useCurrencyRateCheck={useCurrencyRateCheck}
                   txData={txData}
                 />
@@ -485,29 +487,26 @@ export default class ConfirmTransactionBase extends Component {
           disabled={isDisabled()}
           userAcknowledgedGasMissing={userAcknowledgedGasMissing}
           rows={[
-            !renderSimulationFailureWarning && (
-              <TransactionDetailItem
-                key="confirm-transaction-base-total-item"
-                detailTitle={t('total')}
-                detailText={
-                  useCurrencyRateCheck &&
-                  renderTotalDetailText(getTotalAmount())
-                }
-                detailTotal={renderTotalMaxAmount(true)}
-                subTitle={t('transactionDetailGasTotalSubtitle')}
-                subText={
-                  <div className="confirm-page-container-content__total-amount">
-                    <LoadingHeartBeat
-                      estimateUsed={this.props.txData?.userFeeLevel}
-                    />
-                    <strong key="editGasSubTextAmountLabel">
-                      {t('editGasSubTextAmountLabel')}
-                    </strong>{' '}
-                    {renderTotalMaxAmount(true)}
-                  </div>
-                }
-              />
-            ),
+            <TransactionDetailItem
+              key="confirm-transaction-base-total-item"
+              detailTitle={t('total')}
+              detailText={
+                useCurrencyRateCheck && renderTotalDetailText(getTotalAmount())
+              }
+              detailTotal={renderTotalMaxAmount(true)}
+              subTitle={t('transactionDetailGasTotalSubtitle')}
+              subText={
+                <div className="confirm-page-container-content__total-amount">
+                  <LoadingHeartBeat
+                    estimateUsed={this.props.txData?.userFeeLevel}
+                  />
+                  <strong key="editGasSubTextAmountLabel">
+                    {t('editGasSubTextAmountLabel')}
+                  </strong>{' '}
+                  {renderTotalMaxAmount(true)}
+                </div>
+              }
+            />,
           ]}
         />
         {nonceField}

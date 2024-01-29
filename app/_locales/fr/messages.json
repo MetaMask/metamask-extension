@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Ajouter des NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Découvrez les différentes options disponibles pour sécuriser votre compte avec lMetaMask Snaps"
-  },
   "addSuggestedNFTs": {
     "message": "Ajouter les NFT suggérés"
   },
@@ -1669,8 +1666,8 @@
   "general": {
     "message": "Général"
   },
-  "getStarted": {
-    "message": "Commencer"
+  "genericExplorerView": {
+    "message": "Afficher le compte sur $1"
   },
   "globalTitle": {
     "message": "Menu global"
@@ -3148,10 +3145,6 @@
   "portfolioDashboard": {
     "message": "Tableau de bord du portefeuille"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Type de connexion préférée au Ledger",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Préparation du swap..."
   },
@@ -3740,9 +3733,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Les contrats de swap intelligents sont temporairement indisponibles."
   },
-  "snapConfigure": {
-    "message": "Configurer"
-  },
   "snapConnectionWarning": {
     "message": "$1 veut se connecter à $2. Ne continuez que si vous avez confiance en ce site web.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3751,49 +3741,8 @@
     "message": "Ce contenu provient de $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Choisissez comment vous voulez sécuriser votre nouveau compte à l’aide de MetaMask Snaps."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Créer un compte $1",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Conçu par MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Audit"
-  },
-  "snapDetailDeveloper": {
-    "message": "Développeur"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Mis à jour"
-  },
-  "snapDetailManageSnap": {
-    "message": "Gérer ce snap"
-  },
-  "snapDetailTags": {
-    "message": "Tags"
-  },
-  "snapDetailVersion": {
-    "message": "Version"
-  },
   "snapDetailWebsite": {
     "message": "Site web"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Créer un compte snap"
-  },
-  "snapDetailsInstalled": {
-    "message": "Installé"
-  },
-  "snapInstall": {
-    "message": "Installer Snap"
   },
   "snapInstallRequest": {
     "message": "L’installation de $1 lui donne les autorisations suivantes. Ne continuez que si vous faites confiance à $1.",
@@ -3812,9 +3761,6 @@
   "snapInstallationErrorTitle": {
     "message": "L’installation a échoué",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "Audité"
   },
   "snapResultError": {
     "message": "Erreur"
@@ -4893,12 +4839,6 @@
   },
   "unknown": {
     "message": "Inconnu"
-  },
-  "unknownCameraError": {
-    "message": "Une erreur s’est produite lors de l’accès à votre appareil photo. Veuillez réessayer..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Oups ! Il y a eu un problème...."
   },
   "unknownCollection": {
     "message": "Collection sans nom"

@@ -1749,12 +1749,6 @@
   "unknown": {
     "message": "Hindi Alam"
   },
-  "unknownCameraError": {
-    "message": "Nagkaroon ng error habang sinusubukang i-access ang iyong camera. Pakisubukan ulit..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Nagkaproblema...."
-  },
   "unknownNetwork": {
     "message": "Hindi Alam na Pribadong Network"
   },

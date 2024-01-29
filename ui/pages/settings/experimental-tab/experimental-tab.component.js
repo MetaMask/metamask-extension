@@ -17,7 +17,7 @@ import {
   Display,
   FlexDirection,
   JustifyContent,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   FontWeight,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(desktop)
@@ -43,12 +43,14 @@ export default class ExperimentalTab extends PureComponent {
     ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
     setSecurityAlertsEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
-    ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+    ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     addSnapAccountEnabled: PropTypes.bool,
     setAddSnapAccountEnabled: PropTypes.func,
     ///: END:ONLY_INCLUDE_IF
     useRequestQueue: PropTypes.bool,
     setUseRequestQueue: PropTypes.func,
+    petnamesEnabled: PropTypes.bool.isRequired,
+    setPetnamesEnabled: PropTypes.func.isRequired,
   };
 
   settingsRefs = Array(
@@ -116,6 +118,36 @@ export default class ExperimentalTab extends PureComponent {
     if (newValue && securityAlertsEnabled && this.toggleSecurityAlert) {
       this.toggleSecurityAlert(true);
     }
+  }
+
+  renderTogglePetnames() {
+    const { t } = this.context;
+    const { petnamesEnabled, setPetnamesEnabled } = this.props;
+
+    return (
+      <Box
+        ref={this.settingsRefs[0]}
+        className="settings-page__content-row settings-page__content-row-experimental"
+      >
+        <div className="settings-page__content-item">
+          <span>{t('petnamesEnabledToggle')}</span>
+          <div className="settings-page__content-description">
+            {t('petnamesEnabledToggleDescription')}
+          </div>
+        </div>
+
+        <div className="settings-page__content-item-col">
+          <ToggleButton
+            className="request-queue-toggle"
+            value={petnamesEnabled}
+            onToggle={(value) => setPetnamesEnabled(!value)}
+            offLabel={t('off')}
+            onLabel={t('on')}
+            dataTestId="toggle-petnames"
+          />
+        </div>
+      </Box>
+    );
   }
 
   renderSecurityAlertsToggle() {
@@ -271,7 +303,7 @@ export default class ExperimentalTab extends PureComponent {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   renderKeyringSnapsToggle() {
     const { t, trackEvent } = this.context;
     const { addSnapAccountEnabled, setAddSnapAccountEnabled } = this.props;
@@ -313,20 +345,22 @@ export default class ExperimentalTab extends PureComponent {
                 >
                   {t('addSnapAccountToggle')}
                 </Text>
-                <ToggleButton
-                  dataTestId="add-snap-account-toggle"
-                  value={addSnapAccountEnabled}
-                  onToggle={(value) => {
-                    trackEvent({
-                      event: MetaMetricsEventName.AddSnapAccountEnabled,
-                      category: MetaMetricsEventCategory.Settings,
-                      properties: {
-                        enabled: !value,
-                      },
-                    });
-                    setAddSnapAccountEnabled(!value);
-                  }}
-                />
+                <div data-testid="add-account-snap-toggle-div">
+                  <ToggleButton
+                    value={addSnapAccountEnabled}
+                    dataTestId="add-account-snap-toggle-button"
+                    onToggle={(value) => {
+                      trackEvent({
+                        event: MetaMetricsEventName.AddSnapAccountEnabled,
+                        category: MetaMetricsEventCategory.Settings,
+                        properties: {
+                          enabled: !value,
+                        },
+                      });
+                      setAddSnapAccountEnabled(!value);
+                    }}
+                  />
+                </div>
               </div>
               <Text
                 variant={TextVariant.bodySm}
@@ -342,8 +376,8 @@ export default class ExperimentalTab extends PureComponent {
       </>
     );
   }
-
   ///: END:ONLY_INCLUDE_IF
+
   renderToggleRequestQueue() {
     const { t } = this.context;
     const { useRequestQueue, setUseRequestQueue } = this.props;
@@ -376,9 +410,10 @@ export default class ExperimentalTab extends PureComponent {
   render() {
     return (
       <div className="settings-page__body">
+        {this.renderTogglePetnames()}
         {this.renderSecurityAlertsToggle()}
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
           this.renderKeyringSnapsToggle()
           ///: END:ONLY_INCLUDE_IF
         }

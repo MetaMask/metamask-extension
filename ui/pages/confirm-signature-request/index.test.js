@@ -1,5 +1,6 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
+import { EthAccountType, EthMethod } from '@metamask/keyring-api';
 import { renderWithProvider } from '../../../test/lib/render-helpers';
 import ConfTx from '.';
 
@@ -39,13 +40,30 @@ const mockState = {
     accountsByChainId: {
       '0x5': {},
     },
+    internalAccounts: {
+      accounts: {
+        'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          address: '0x8eeee1781fd885ff5ddef7789486676961873d12',
+          id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+          metadata: {
+            name: 'Account 1',
+            keyring: {
+              type: 'HD Key Tree',
+            },
+          },
+          options: {},
+          methods: [...Object.values(EthMethod)],
+          type: EthAccountType.Eoa,
+        },
+      },
+      selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+    },
     accounts: {
       '0x8eeee1781fd885ff5ddef7789486676961873d12': {
         address: '0x8eeee1781fd885ff5ddef7789486676961873d12',
         balance: '0x7e64033f2fdb0436',
       },
     },
-    selectedAddress: '0x8eeee1781fd885ff5ddef7789486676961873d12',
     addressBook: {},
     tokenList: {},
     preferences: {},

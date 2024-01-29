@@ -1,7 +1,4 @@
 {
-  "DragAndDropBanner": {
-    "message": "You can drag networks to reorder them. "
-  },
   "QRHardwareInvalidTransactionTitle": {
     "message": "Error"
   },
@@ -156,11 +153,11 @@
   "accountSelectionRequired": {
     "message": "You need to select an account!"
   },
-  "accountSnapsFeedback": {
-    "message": "Submit feedback on this feature"
-  },
   "accountsConnected": {
     "message": "Accounts connected"
+  },
+  "accountsPinningBannerDescription": {
+    "message": "Keep tabs on what matters by pinning or hiding accounts"
   },
   "active": {
     "message": "Active"
@@ -185,9 +182,6 @@
   },
   "addAccount": {
     "message": "Add account"
-  },
-  "addAccountSnapModalHeader": {
-    "message": "Add Account Snap"
   },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
@@ -282,9 +276,6 @@
   },
   "addNfts": {
     "message": "Add NFTs"
-  },
-  "addSnapAccountModalDescription": {
-    "message": "Discover options to keep your account secure with MetaMask Snaps"
   },
   "addSnapAccountToggle": {
     "message": "Enable \"Add account Snap (Beta)\""
@@ -626,7 +617,7 @@
     "message": "If you approve this request, a third party known for scams will take all your assets."
   },
   "blockaidMessage": {
-    "message": "Privacy preserving - no data is shared with third parties. Available on Ethereum Mainnet."
+    "message": "Privacy preserving - no data is shared with third parties. Available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
   },
   "blockaidTitleDeceptive": {
     "message": "This is a deceptive request"
@@ -897,6 +888,9 @@
   "connectingTo": {
     "message": "Connecting to $1"
   },
+  "connectingToDeprecatedNetwork": {
+    "message": "'$1' is being phased out and may not work. Try another network."
+  },
   "connectingToGoerli": {
     "message": "Connecting to Goerli test network"
   },
@@ -1014,10 +1008,10 @@
     "message": "Create password"
   },
   "createSnapAccountDescription": {
-    "message": "$1 wants to add a new Snap account to your wallet"
+    "message": "$1 wants to add a new account to MetaMask."
   },
   "createSnapAccountTitle": {
-    "message": "Create Snap account"
+    "message": "Create account"
   },
   "cryptoCompare": {
     "message": "CryptoCompare"
@@ -1233,6 +1227,9 @@
   "deprecatedAuroraNetworkMsg": {
     "message": "MetaMask will be deprecating support for Aurora network. Please add it as a custom network if you want to continue to use it"
   },
+  "deprecatedGoerliNtwrkMsg": {
+    "message": "Because of updates to the Ethereum system, the Goerli test network will be phased out soon."
+  },
   "description": {
     "message": "Description"
   },
@@ -1409,6 +1406,9 @@
   },
   "downloadStateLogs": {
     "message": "Download state logs"
+  },
+  "dragAndDropBanner": {
+    "message": "You can drag networks to reorder them. "
   },
   "dropped": {
     "message": "Dropped"
@@ -1673,7 +1673,7 @@
     "message": "Suggest address names"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signatures requests. Turning on name suggestions exposes your IP address to these third parties."
+    "message": "We pull data from third parties like Etherscan, Infura, and Lens Protocol, to suggest names for addresses on signature and transaction requests. Turning on name suggestions exposes your IP address to these third parties."
   },
   "failed": {
     "message": "Failed"
@@ -1730,6 +1730,9 @@
   "flaskWelcomeWarningAcceptButton": {
     "message": "I accept the risks",
     "description": "this text is shown on a button, which the user presses to confirm they understand the risks of using Flask"
+  },
+  "floatAmountToken": {
+    "message": "Token amount must be an integer"
   },
   "followUsOnTwitter": {
     "message": "Follow us on Twitter"
@@ -1833,8 +1836,14 @@
   "general": {
     "message": "General"
   },
-  "getStarted": {
-    "message": "Get started"
+  "generalCameraError": {
+    "message": "We couldn't access your camera. Please give it another try."
+  },
+  "generalCameraErrorTitle": {
+    "message": "Something went wrong...."
+  },
+  "genericExplorerView": {
+    "message": "View account on $1"
   },
   "globalTitle": {
     "message": "Global menu"
@@ -1889,8 +1898,14 @@
   "hexData": {
     "message": "Hex data"
   },
+  "hiddenAccounts": {
+    "message": "Hidden accounts"
+  },
   "hide": {
     "message": "Hide"
+  },
+  "hideAccount": {
+    "message": "Hide account"
   },
   "hideFullTransactionDetails": {
     "message": "Hide full transaction details"
@@ -1982,6 +1997,9 @@
   },
   "ignoreTokenWarning": {
     "message": "If you hide tokens, they will not be shown in your wallet. However, you can still add them by searching for them."
+  },
+  "imToken": {
+    "message": "imToken"
   },
   "import": {
     "message": "Import",
@@ -2287,6 +2305,18 @@
   "ledgerDeviceOpenFailureMessage": {
     "message": "The Ledger device failed to open. Your Ledger might be connected to other software. Please close Ledger Live or other applications connected to your Ledger device, and try to connect again."
   },
+  "ledgerErrorConnectionIssue": {
+    "message": "Reconnect your ledger, open the ETH app and try again."
+  },
+  "ledgerErrorDevicedLocked": {
+    "message": "Your Ledger is locked. Unlock it then try again."
+  },
+  "ledgerErrorEthAppNotOpen": {
+    "message": "To solve the issue, open the ETH application on your device and retry."
+  },
+  "ledgerErrorTransactionDataNotPadded": {
+    "message": "Ethereum transaction's input data isn't sufficiently padded."
+  },
   "ledgerLiveApp": {
     "message": "Ledger Live App"
   },
@@ -2421,9 +2451,6 @@
   "metaMaskConnectStatusParagraphTwo": {
     "message": "The connection status button shows if the website you’re visiting is connected to your currently selected account."
   },
-  "metamaskFees": {
-    "message": "MetaMask fees"
-  },
   "metamaskInstitutionalVersion": {
     "message": "MetaMask Institutional Version"
   },
@@ -2511,10 +2538,6 @@
     "message": "Saved address",
     "description": "Title of the modal created by the name component when value is saved."
   },
-  "nameNoProposedNames": {
-    "message": "No proposed names found",
-    "description": "Text shown in the proposed name dropdown if none found."
-  },
   "nameSetPlaceholder": {
     "message": "Set a personal display name...",
     "description": "Placeholder text for name input field in name component modal."
@@ -2552,6 +2575,9 @@
   },
   "negativeETH": {
     "message": "Can not send negative amounts of ETH."
+  },
+  "negativeOrZeroAmountToken": {
+    "message": "Cannot send negative or zero amounts of Tokens"
   },
   "network": {
     "message": "Network:"
@@ -3059,6 +3085,18 @@
   "notifications9Title": {
     "message": "👓 We are making transactions easier to read."
   },
+  "notificationsBlockaidDefaultDescriptionActionText": {
+    "message": "Got it"
+  },
+  "notificationsBlockaidDefaultDescriptionOne": {
+    "message": "Steer clear of known scams while still preserving your privacy with security alerts powered by Blockaid. This feature is available on Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism and Polygon."
+  },
+  "notificationsBlockaidDefaultDescriptionTwo": {
+    "message": "Always do your own due diligence before approving requests."
+  },
+  "notificationsBlockaidDefaultTitle": {
+    "message": "Stay safe with security alerts"
+  },
   "notificationsBuySellActionText": {
     "message": "Try it on MetaMask Portfolio"
   },
@@ -3103,6 +3141,18 @@
   },
   "notificationsOpenBetaSnapsTitle": {
     "message": "Introducing MetaMask Snaps"
+  },
+  "notificationsStakingPortfolioActionText": {
+    "message": "Got it",
+    "description": "Action text for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  },
+  "notificationsStakingPortfolioDescription": {
+    "message": "Now you can stake ETH and manage your rewards all in one place.",
+    "description": "Description for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
+  },
+  "notificationsStakingPortfolioTitle": {
+    "message": "Stake smarter in Portfolio",
+    "description": "Title for a notification in the 'See What's New' popup. Tells users that staking is now available in the portfolio app."
   },
   "notificationsU2FLedgerLiveDescription": {
     "message": "U2F and Ledger Live are no longer available on Chrome. You can still connect Ledger devices on Chrome using Webhid.",
@@ -3357,6 +3407,10 @@
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
   },
+  "paymasterInUse": {
+    "message": "The gas for this transaction will be paid by a paymaster.",
+    "description": "Alert shown in transaction confirmation if paymaster in use."
+  },
   "pending": {
     "message": "Pending"
   },
@@ -3578,6 +3632,12 @@
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
+  "petnamesEnabledToggle": {
+    "message": "Petnames"
+  },
+  "petnamesEnabledToggleDescription": {
+    "message": "This allows you to assign a name to any address. This name will be visible to you only."
+  },
   "pinExtensionDescription": {
     "message": "Navigate to the extension menu and pin MetaMask Institutional for seamless access."
   },
@@ -3602,10 +3662,6 @@
   },
   "portfolioDashboard": {
     "message": "Portfolio Dashboard"
-  },
-  "preferredLedgerConnectionType": {
-    "message": "Preferred Ledger connection type",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
   },
   "preferredProvider": {
     "message": "Select your preferred provider"
@@ -3765,11 +3821,8 @@
   "removeSnap": {
     "message": "Remove Snap"
   },
-  "removeSnapAccountBannerDescription": {
-    "message": "Be sure you can access this account on your own before removing it"
-  },
   "removeSnapAccountDescription": {
-    "message": "$1 wants to remove this account from MetaMask:"
+    "message": "If you proceed, this account will no longer be available in MetaMask."
   },
   "removeSnapAccountTitle": {
     "message": "Remove account"
@@ -3783,6 +3836,9 @@
   },
   "replace": {
     "message": "replace"
+  },
+  "reportIssue": {
+    "message": "Report an issue"
   },
   "requestFlaggedAsMaliciousFallbackCopyReason": {
     "message": "The security provider has not shared additional details"
@@ -4159,11 +4215,20 @@
   "settingsSearchMatchingNotFound": {
     "message": "No matching results found."
   },
-  "settingsSubHeadingSignatures": {
-    "message": "Signature requests"
+  "settingsSubHeadingSignaturesAndTransactions": {
+    "message": "Signature and transaction requests"
   },
   "show": {
     "message": "Show"
+  },
+  "showAccount": {
+    "message": "Show account"
+  },
+  "showExtensionInFullSizeView": {
+    "message": "Show extension in full-size view"
+  },
+  "showExtensionInFullSizeViewDescription": {
+    "message": "Turn this on to make full-size view your default when you click the extension icon."
   },
   "showFiatConversionInTestnets": {
     "message": "Show conversion on test networks"
@@ -4271,32 +4336,17 @@
     "description": "$1 is an external link to FAQ and Risk Disclosures"
   },
   "snapAccountCreated": {
-    "message": "Your account is ready!"
+    "message": "Account created"
   },
-  "snapAccountLegalDisclaimerExperimentalBetaDescription": {
-    "message": "Account Management Snaps are released as part of an experimental Beta release. You agree that you will only use one of these Snaps if you understand how it functions and how to use it, and you have fully read and understand all risk warnings and other disclosures made available by the Third Party Service provider relating to use of their Snap. You agree that Consensys is not responsible for any injury that you incur as a result of your use of this Snap.\n\nYou will not be able to use your MetaMask Secret Recovery Phrase to recover accounts added through Account Management Snaps. If your account credentials are lost or compromised, MetaMask will not be able to help you. If the Snap or the associated dapp is hacked or ceases to function, you may not be able to access your account and the funds in your account."
+  "snapAccountCreatedDescription": {
+    "message": "Your new account is ready to use!"
   },
-  "snapAccountLegalDisclaimerExperimentalBetaSubtitle": {
-    "message": "Experimental Beta"
+  "snapAccountCreationFailed": {
+    "message": "Account creation failed"
   },
-  "snapAccountLegalDisclaimerPrivacyDescription": {
-    "message": "Any information you share with Third Party Services will be collected directly by those Third Party Services in accordance with their privacy policies. Please refer to their privacy policies for more information. Consensys has no access to information you share with Third Party Services."
-  },
-  "snapAccountLegalDisclaimerPrivacySubtitle": {
-    "message": "Privacy"
-  },
-  "snapAccountLegalDisclaimerTermsOfUseLink": {
-    "message": "Consensys Terms of Use"
-  },
-  "snapAccountLegalDisclaimerThirdPartyDescription": {
-    "message": "You acknowledge that Account Management Snaps are a Third Party Service, as defined in the $1. Your use of Third Party Services is governed by separate terms and conditions set forth by the Third Party Service provider. Consensys does not recommend the use of any Snap by any particular person for any particular reason. You access, rely upon or use the Third Party Service at your own risk. Consensys disclaims all responsibility and liability for any losses on account of your use of Third Party Services.",
-    "description": "$1 is a link to the ConsenSys Terms of Use"
-  },
-  "snapAccountLegalDisclaimerThirdPartySubtitle": {
-    "message": "Third-Party Service"
-  },
-  "snapAccountLegalDisclaimerTitle": {
-    "message": "Important Information"
+  "snapAccountCreationFailedDescription": {
+    "message": "$1 didn't manage to create an account for you.",
+    "description": "$1 is the snap name"
   },
   "snapAccountRedirectFinishSigningTitle": {
     "message": "Finish signing"
@@ -4304,17 +4354,24 @@
   "snapAccountRedirectSiteDescription": {
     "message": "Follow the instructions from $1"
   },
+  "snapAccountRemovalFailed": {
+    "message": "Account removal failed"
+  },
+  "snapAccountRemovalFailedDescription": {
+    "message": "$1 didn't manage to remove this account for you.",
+    "description": "$1 is the snap name"
+  },
   "snapAccountRemoved": {
     "message": "Account removed"
+  },
+  "snapAccountRemovedDescription": {
+    "message": "This account will no longer be available to use in MetaMask."
   },
   "snapAccounts": {
     "message": "Account Snaps"
   },
   "snapAccountsDescription": {
     "message": "Accounts controlled by third-party Snaps."
-  },
-  "snapConfigure": {
-    "message": "Configure"
   },
   "snapConnectionWarning": {
     "message": "$1 wants to connect to $2. Only continue if you trust this website.",
@@ -4327,49 +4384,8 @@
     "message": "This content is coming from $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Choose how to secure your new account using MetaMask Snaps. If you install an account Snap, remember that it is a third-party service."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Create an account $1 (Beta)",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "Snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "By MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "Audit"
-  },
-  "snapDetailDeveloper": {
-    "message": "Developer"
-  },
-  "snapDetailLastUpdated": {
-    "message": "Updated"
-  },
-  "snapDetailManageSnap": {
-    "message": "Manage snap"
-  },
-  "snapDetailTags": {
-    "message": "Tags"
-  },
-  "snapDetailVersion": {
-    "message": "Version"
-  },
   "snapDetailWebsite": {
     "message": "Website"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Add an account Snap (Beta)"
-  },
-  "snapDetailsInstalled": {
-    "message": "Installed"
-  },
-  "snapInstall": {
-    "message": "Install snap"
   },
   "snapInstallRequest": {
     "message": "Installing $1 gives it the following permissions. Only continue if you trust $1.",
@@ -4408,9 +4424,6 @@
   "snapInstallationErrorTitle": {
     "message": "Installation failed",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "Audited"
   },
   "snapResultError": {
     "message": "Error"
@@ -5563,12 +5576,6 @@
   },
   "unknown": {
     "message": "Unknown"
-  },
-  "unknownCameraError": {
-    "message": "There was an error while trying to access your camera. Please try again..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Something went wrong...."
   },
   "unknownCollection": {
     "message": "Unnamed collection"

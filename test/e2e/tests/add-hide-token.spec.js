@@ -1,7 +1,7 @@
 const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
 const {
-  convertToHexValue,
+  defaultGanacheOptions,
   withFixtures,
   unlockWallet,
   WINDOW_TITLES,
@@ -9,15 +9,6 @@ const {
 const FixtureBuilder = require('../fixture-builder');
 
 describe('Hide token', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   it('hides the token when clicked', async function () {
     await withFixtures(
       {
@@ -47,7 +38,7 @@ describe('Hide token', function () {
             ],
           })
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -63,7 +54,7 @@ describe('Hide token', function () {
 
         await driver.clickElement({ text: 'Tokens', tag: 'button' });
 
-        await driver.clickElement({ text: 'TST', tag: 'p' });
+        await driver.clickElement({ text: 'TST', tag: 'span' });
 
         await driver.clickElement('[data-testid="asset-options__button"]');
 
@@ -87,22 +78,13 @@ describe('Hide token', function () {
 
 /* eslint-disable-next-line mocha/max-top-level-suites */
 describe('Add existing token using search', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
   it('renders the balance for the chosen token', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withPreferencesController({ useTokenDetection: true })
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -135,16 +117,6 @@ describe('Add existing token using search', function () {
 });
 
 describe('Add token using wallet_watchAsset', function () {
-  const ganacheOptions = {
-    accounts: [
-      {
-        secretKey:
-          '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-        balance: convertToHexValue(25000000000000000000),
-      },
-    ],
-  };
-
   it('opens a notification that adds a token when wallet_watchAsset is executed, then approves', async function () {
     await withFixtures(
       {
@@ -152,7 +124,7 @@ describe('Add token using wallet_watchAsset', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
@@ -203,7 +175,7 @@ describe('Add token using wallet_watchAsset', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        ganacheOptions,
+        ganacheOptions: defaultGanacheOptions,
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {

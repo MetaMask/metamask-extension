@@ -33,7 +33,7 @@ When the modal opens:
 
 ```jsx
 import React, { useState, useRef } from 'react';
-import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, Text, Button } from '../../component-library';
+import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalFooter, Text, Button } from '../../component-library';
 
 const [open, setOpen] = useState(false);
 
@@ -58,6 +58,7 @@ const handleOnClose = () => {
     <ModalBody>
       <Text>ModalBody children</Text>
     </ModalBody>
+    <ModalFooter onSubmit={handleOnClose} onCancel={handleOnCancel}>
   </ModalContent>
 </Modal>
 ```

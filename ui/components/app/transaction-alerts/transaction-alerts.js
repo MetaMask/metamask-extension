@@ -39,6 +39,7 @@ const TransactionAlerts = ({
   setUserAcknowledgedGasMissing,
   tokenSymbol,
   txData,
+  isUsingPaymaster,
 }) => {
   const { estimateUsed, hasSimulationError, supportsEIP1559, isNetworkBusy } =
     useGasFeeContext();
@@ -70,9 +71,7 @@ const TransactionAlerts = ({
 
   ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const trackEvent = useContext(MetaMetricsContext);
-  ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
   const onClickSupportLink = useCallback(() => {
     trackEvent({
       category: MetaMetricsEventCategory.Transactions,
@@ -83,7 +82,7 @@ const TransactionAlerts = ({
         external_link_clicked: 'security_alert_support_link',
       },
     });
-  }, []);
+  }, [trackEvent, txData?.origin]);
   ///: END:ONLY_INCLUDE_IF
 
   return (
@@ -92,7 +91,7 @@ const TransactionAlerts = ({
         ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
         <BlockaidBannerAlert
           onClickSupportLink={onClickSupportLink}
-          securityAlertResponse={txData?.securityAlertResponse}
+          txData={txData}
         />
         ///: END:ONLY_INCLUDE_IF
       }
@@ -150,6 +149,11 @@ const TransactionAlerts = ({
           {t('sendingZeroAmount', [currentTokenSymbol])}
         </BannerAlert>
       )}
+      {isUsingPaymaster && (
+        <BannerAlert data-testid="paymaster-alert" severity={SEVERITIES.INFO}>
+          {t('paymasterInUse')}
+        </BannerAlert>
+      )}
     </div>
   );
 };
@@ -159,6 +163,7 @@ TransactionAlerts.propTypes = {
   setUserAcknowledgedGasMissing: PropTypes.func,
   tokenSymbol: PropTypes.string,
   txData: PropTypes.object,
+  isUsingPaymaster: PropTypes.bool,
 };
 
 export default TransactionAlerts;

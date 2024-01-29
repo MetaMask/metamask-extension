@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   TransactionStatus,
   TransactionType,
@@ -117,6 +117,7 @@ export function useTransactionDisplayData(transactionGroup) {
   const displayedStatusKey = getStatusKey(primaryTransaction);
   const isPending = displayedStatusKey in PENDING_STATUS_HASH;
   const isSubmitted = displayedStatusKey === TransactionStatus.submitted;
+  const mounted = useRef(true);
 
   const primaryValue = primaryTransaction.txParams?.value;
   const date = formatDateWithYearContext(initialTransaction.time);
@@ -149,6 +150,11 @@ export function useTransactionDisplayData(transactionGroup) {
       tokenList[recipientAddress.toLowerCase()];
   }
   useEffect(() => {
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+  useEffect(() => {
     async function getAndSetAssetDetails() {
       if (isTokenCategory && !token) {
         const assetDetails = await getAssetDetails(
@@ -157,7 +163,9 @@ export function useTransactionDisplayData(transactionGroup) {
           initialTransaction?.txParams?.data,
           knownNfts,
         );
-        setCurrentAssetDetails(assetDetails);
+        if (mounted.current === true) {
+          setCurrentAssetDetails(assetDetails);
+        }
       }
     }
     getAndSetAssetDetails();
@@ -169,6 +177,7 @@ export function useTransactionDisplayData(transactionGroup) {
     initialTransaction?.txParams?.data,
     knownNfts,
     to,
+    mounted,
   ]);
   if (currentAssetDetails) {
     token = {

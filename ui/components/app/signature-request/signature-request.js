@@ -174,7 +174,7 @@ const SignatureRequest = ({ txData }) => {
         external_link_clicked: 'security_alert_support_link',
       },
     });
-  }, []);
+  }, [trackEvent, type, version]);
   ///: END:ONLY_INCLUDE_IF
 
   const onSign = async () => {
@@ -268,7 +268,7 @@ const SignatureRequest = ({ txData }) => {
         {
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
           <BlockaidBannerAlert
-            securityAlertResponse={txData?.securityAlertResponse}
+            txData={txData}
             marginLeft={4}
             marginRight={4}
             marginBottom={4}

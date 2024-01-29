@@ -3,9 +3,17 @@ import { ApprovalControllerState } from '@metamask/approval-controller';
 
 import { getPendingApprovals } from './approvals';
 
+type Confirmation = {
+  msgParams?: {
+    from: string;
+  };
+  chainId?: string;
+  id: string;
+};
+
 type ConfirmMetamaskState = {
   confirm: {
-    currentConfirmation?: Record<string, unknown>;
+    currentConfirmation?: Confirmation;
   };
   metamask: {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];

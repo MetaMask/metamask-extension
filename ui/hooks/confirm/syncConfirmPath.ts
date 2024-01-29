@@ -15,16 +15,18 @@ const syncConfirmPath = () => {
   const currentConfirmation = useSelector(currentConfirmationSelector);
 
   // Redirect below is done to keep the confirmation routes backward compatible
-  // Currently we have only signature request,
-  // but it will include other confirmation types in future
   useEffect(() => {
     if (!currentConfirmation) {
       return;
     }
     if (paramsTransactionId !== currentConfirmation.id) {
-      history.replace(
-        `${CONFIRM_TRANSACTION_ROUTE}/${currentConfirmation.id}/${SIGNATURE_REQUEST_PATH}`,
-      );
+      const isSignature = Boolean(currentConfirmation.msgParams);
+      if (isSignature) {
+        history.replace(
+          `${CONFIRM_TRANSACTION_ROUTE}/${currentConfirmation.id}/${SIGNATURE_REQUEST_PATH}`,
+        );
+      }
+      // todo: logic to replace url for rest of transactions to be added here
     }
   }, [currentConfirmation, paramsTransactionId]);
 };

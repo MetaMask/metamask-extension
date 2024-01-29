@@ -4,7 +4,7 @@ const {
   regularDelayMs,
   openDapp,
   DAPP_URL,
-  convertToHexValue,
+  defaultGanacheOptions,
   unlockWallet,
   WINDOW_TITLES,
 } = require('../helpers');
@@ -54,15 +54,7 @@ const testData = [
     },
   },
 ];
-const ganacheOptions = {
-  accounts: [
-    {
-      secretKey:
-        '0x7C9529A67102755B7E6102D6D950AC5D5863C98713805CEC576B945B15B71EAC',
-      balance: convertToHexValue(25000000000000000000),
-    },
-  ],
-};
+
 describe('Sign Typed Data Signature Request', function () {
   testData.forEach((data) => {
     it(`can initiate and confirm a Signature Request of ${data.type}`, async function () {
@@ -72,7 +64,7 @@ describe('Sign Typed Data Signature Request', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions,
+          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver, ganacheServer }) => {
@@ -131,7 +123,7 @@ describe('Sign Typed Data Signature Request', function () {
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          ganacheOptions,
+          ganacheOptions: defaultGanacheOptions,
           title: this.test.fullTitle(),
         },
         async ({ driver, ganacheServer }) => {

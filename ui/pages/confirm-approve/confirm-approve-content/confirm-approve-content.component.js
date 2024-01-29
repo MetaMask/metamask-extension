@@ -21,6 +21,10 @@ import { ConfirmPageContainerWarning } from '../../../components/app/confirm-pag
 import LedgerInstructionField from '../../../components/app/ledger-instruction-field';
 ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
 import BlockaidBannerAlert from '../../../components/app/security-provider-banner-alert/blockaid-banner-alert/blockaid-banner-alert';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 ///: END:ONLY_INCLUDE_IF
 import { isSuspiciousResponse } from '../../../../shared/modules/security-provider.utils';
 
@@ -134,7 +138,6 @@ export default class ConfirmApproveContent extends Component {
           <Box marginBottom={4}>
             <FeeDetailsComponent
               txData={txData}
-              supportsEIP1559={supportsEIP1559}
               useCurrencyRateCheck={useCurrencyRateCheck}
             />
           </Box>
@@ -542,6 +545,20 @@ export default class ConfirmApproveContent extends Component {
     } = this.props;
     const { showFullTxDetails, setShowContractDetails } = this.state;
 
+    ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
+    const onClickSupportLink = () => {
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Transactions,
+        event: MetaMetricsEventName.ExternalLinkClicked,
+        properties: {
+          action: 'Confirm Approve',
+          origin: txData?.origin,
+          external_link_clicked: 'security_alert_support_link',
+        },
+      });
+    };
+    ///: END:ONLY_INCLUDE_IF
+
     return (
       <div
         className={classnames('confirm-approve-content', {
@@ -551,8 +568,9 @@ export default class ConfirmApproveContent extends Component {
         {
           ///: BEGIN:ONLY_INCLUDE_IF(blockaid)
           <BlockaidBannerAlert
-            securityAlertResponse={txData?.securityAlertResponse}
+            txData={txData}
             margin={4}
+            onClickSupportLink={onClickSupportLink}
           />
           ///: END:ONLY_INCLUDE_IF
         }

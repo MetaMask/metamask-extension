@@ -47,9 +47,6 @@ import Notifications from '../notifications';
 import SnapList from '../snaps/snaps-list';
 import SnapView from '../snaps/snap-view';
 ///: END:ONLY_INCLUDE_IF
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import AddSnapAccountPage from '../keyring-snaps/add-snap-account';
-///: END:ONLY_INCLUDE_IF
 ///: BEGIN:ONLY_INCLUDE_IF(desktop)
 import { registerOnDesktopDisconnect } from '../../hooks/desktopHooks';
 import DesktopErrorPage from '../desktop-error';
@@ -96,9 +93,6 @@ import {
   NOTIFICATIONS_ROUTE,
   SNAPS_ROUTE,
   SNAPS_VIEW_ROUTE,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  ADD_SNAP_ACCOUNT_ROUTE,
   ///: END:ONLY_INCLUDE_IF
   ///: BEGIN:ONLY_INCLUDE_IF(desktop)
   DESKTOP_PAIRING_ROUTE,
@@ -161,6 +155,7 @@ export default class Routes extends Component {
     isNetworkUsed: PropTypes.bool,
     allAccountsOnNetworkAreEmpty: PropTypes.bool,
     isTestNet: PropTypes.bool,
+    showExtensionInFullSizeView: PropTypes.bool,
     currentChainId: PropTypes.string,
     shouldShowSeedPhraseReminder: PropTypes.bool,
     forgottenPassword: PropTypes.bool,
@@ -234,7 +229,14 @@ export default class Routes extends Component {
       setCurrentCurrencyToUSD,
       history,
       theme,
+      showExtensionInFullSizeView,
     } = this.props;
+
+    const windowType = getEnvironmentType();
+    if (showExtensionInFullSizeView && windowType === ENVIRONMENT_TYPE_POPUP) {
+      global.platform.openExtensionInBrowser();
+    }
+
     if (!currentCurrency) {
       setCurrentCurrencyToUSD();
     }
@@ -361,14 +363,6 @@ export default class Routes extends Component {
           ///: END:ONLY_INCLUDE_IF
         }
         <Authenticated path={NEW_ACCOUNT_ROUTE} component={CreateAccountPage} />
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-          <Authenticated
-            path={ADD_SNAP_ACCOUNT_ROUTE}
-            component={AddSnapAccountPage}
-          />
-          ///: END:ONLY_INCLUDE_IF
-        }
         <Authenticated
           path={`${CONNECT_ROUTE}/:id`}
           component={PermissionsConnect}

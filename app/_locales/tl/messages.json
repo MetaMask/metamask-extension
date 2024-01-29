@@ -265,9 +265,6 @@
   "addNfts": {
     "message": "Magdagdag ng mga NFT"
   },
-  "addSnapAccountModalDescription": {
-    "message": "Tuklasin ang mga opsyon upang mapanatiling ligtas ang iyong MetaMask Snaps"
-  },
   "addSuggestedNFTs": {
     "message": "Magdagdag ng mga iminumungkahing NFT"
   },
@@ -1668,9 +1665,6 @@
   },
   "general": {
     "message": "Pangkalahatan"
-  },
-  "getStarted": {
-    "message": "Magsimula"
   },
   "globalTitle": {
     "message": "Global menu"
@@ -3148,10 +3142,6 @@
   "portfolioDashboard": {
     "message": "Dashboard ng Portfolio"
   },
-  "preferredLedgerConnectionType": {
-    "message": "Napiling Uri ng Ledger Connection",
-    "description": "A header for a dropdown in Settings > Advanced. Appears above the ledgerConnectionPreferenceDescription message"
-  },
   "preparingSwap": {
     "message": "Inihahanda ang pag-swap..."
   },
@@ -3740,9 +3730,6 @@
   "smartSwapsErrorUnavailable": {
     "message": "Pansamantalang hindi available ang mga Smart Swap."
   },
-  "snapConfigure": {
-    "message": "I-configure"
-  },
   "snapConnectionWarning": {
     "message": "Gustong kumonekta ng $1 sa $2. Magpatuloy lang kung pinagkakatiwalaan mo ang website na ito.",
     "description": "$2 is the snap and $1 is the dapp requesting connection to the snap."
@@ -3751,49 +3738,8 @@
     "message": "Ang nilalamang ito ay nagmumula sa $1",
     "description": "This is shown when a snap shows transaction insight information in the confirmation UI. $1 is a link to the snap's settings page with the link text being the name of the snap."
   },
-  "snapCreateAccountSubtitle": {
-    "message": "Piliin kung paano gawing ligtas ang iyong bagong account gamit ang mga MetaMask Snap."
-  },
-  "snapCreateAccountTitle": {
-    "message": "Gumawa ng $1 account",
-    "description": "Title of the Create Account Snap Page, $1 is the text using a different color"
-  },
-  "snapCreateAccountTitle2": {
-    "message": "snap",
-    "description": "$1 of the snapCreateAccountTitle"
-  },
-  "snapCreatedByMetaMask": {
-    "message": "Sa pamamagitan ng MetaMask"
-  },
-  "snapDetailAudits": {
-    "message": "I-audit"
-  },
-  "snapDetailDeveloper": {
-    "message": "Developer"
-  },
-  "snapDetailLastUpdated": {
-    "message": "In-update"
-  },
-  "snapDetailManageSnap": {
-    "message": "Pamahalaan ang snap"
-  },
-  "snapDetailTags": {
-    "message": "Mga Tag"
-  },
-  "snapDetailVersion": {
-    "message": "Bersyon"
-  },
   "snapDetailWebsite": {
     "message": "Website"
-  },
-  "snapDetailsCreateASnapAccount": {
-    "message": "Gumawa ng Snap Account"
-  },
-  "snapDetailsInstalled": {
-    "message": "Na-install"
-  },
-  "snapInstall": {
-    "message": "I-install ang snap"
   },
   "snapInstallRequest": {
     "message": "Ang pag-install ng $1 ay nagbibigay dito ng mga sumusunod na pahintulot. Magpatuloy lang kung pinagkakatiwalaan mo ang $1.",
@@ -3812,9 +3758,6 @@
   "snapInstallationErrorTitle": {
     "message": "Nabigo ang pag-install",
     "description": "Error title used when snap installation fails."
-  },
-  "snapIsAudited": {
-    "message": "In-audit"
   },
   "snapResultError": {
     "message": "Error"
@@ -4893,12 +4836,6 @@
   },
   "unknown": {
     "message": "Hindi Alam"
-  },
-  "unknownCameraError": {
-    "message": "Nagkaroon ng error habang sinusubukang i-access ang iyong camera. Pakisubukan ulit..."
-  },
-  "unknownCameraErrorTitle": {
-    "message": "Ooops! Nagkaproblema...."
   },
   "unknownCollection": {
     "message": "Walang pangalang koleksyon"

@@ -7,9 +7,6 @@ import {
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
 import { shouldShowLineaMainnet } from '../../../shared/modules/network.utils';
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-import { KEYRING_SNAPS_REGISTRY_URL } from '../../../shared/constants/app';
-///: END:ONLY_INCLUDE_IF
 
 const mainNetworks = {
   [CHAIN_IDS.MAINNET]: true,
@@ -89,14 +86,18 @@ export default class PreferencesController {
       forgottenPassword: false,
       preferences: {
         autoLockTimeLimit: undefined,
+        showExtensionInFullSizeView: false,
         showFiatInTestnets: false,
         showTestNetworks: false,
         useNativeCurrencyAsPrimaryCurrency: true,
         hideZeroBalanceTokens: false,
+        petnamesEnabled: true,
       },
       // ENS decentralized website resolution
       ipfsGateway: IPFS_DEFAULT_GATEWAY_URL,
       useAddressBarEnsResolution: true,
+      // Ledger transport type is deprecated. We currently only support webhid
+      // on chrome, and u2f on firefox.
       ledgerTransportType: window.navigator.hid
         ? LedgerTransportTypes.webhid
         : LedgerTransportTypes.u2f,
@@ -107,9 +108,7 @@ export default class PreferencesController {
       snapsAddSnapAccountModalDismissed: false,
       ///: END:ONLY_INCLUDE_IF
       isLineaMainnetReleased: false,
-      ///: BEGIN:ONLY_INCLUDE_IF(petnames)
       useExternalNameSources: true,
-      ///: END:ONLY_INCLUDE_IF
       ...opts.initState,
     };
 
@@ -271,7 +270,6 @@ export default class PreferencesController {
   }
   ///: END:ONLY_INCLUDE_IF
 
-  ///: BEGIN:ONLY_INCLUDE_IF(petnames)
   /**
    * Setter for the `useExternalNameSources` property
    *
@@ -282,7 +280,6 @@ export default class PreferencesController {
       useExternalNameSources,
     });
   }
-  ///: END:ONLY_INCLUDE_IF
 
   /**
    * Setter for the `advancedGasFee` property
@@ -417,7 +414,7 @@ export default class PreferencesController {
    * Removes any unknown identities, and returns the resulting selected address.
    *
    * @param {Array<string>} addresses - known to the vault.
-   * @returns {Promise<string>} selectedAddress the selected address.
+   * @returns {string} selectedAddress the selected address.
    */
   syncAddresses(addresses) {
     if (!Array.isArray(addresses) || addresses.length === 0) {
@@ -592,21 +589,14 @@ export default class PreferencesController {
   /**
    * A setter for the `ledgerTransportType` property.
    *
-   * @param {string} ledgerTransportType - Either 'ledgerLive', 'webhid' or 'u2f'
+   * @deprecated We no longer support specifying a ledger transport type other
+   * than webhid, therefore managing a preference is no longer necessary.
+   * @param {LedgerTransportTypes.webhid} ledgerTransportType - 'webhid'
    * @returns {string} The transport type that was set.
    */
   setLedgerTransportPreference(ledgerTransportType) {
     this.store.updateState({ ledgerTransportType });
     return ledgerTransportType;
-  }
-
-  /**
-   * A getter for the `ledgerTransportType` property.
-   *
-   * @returns {string} The current preferred Ledger transport type.
-   */
-  getLedgerTransportPreference() {
-    return this.store.getState().ledgerTransportType;
   }
 
   /**
@@ -659,19 +649,6 @@ export default class PreferencesController {
   setSnapsAddSnapAccountModalDismissed(value) {
     this.store.updateState({ snapsAddSnapAccountModalDismissed: value });
   }
-
-  async updateSnapRegistry() {
-    let snapRegistry;
-    try {
-      const response = await fetch(KEYRING_SNAPS_REGISTRY_URL);
-      snapRegistry = await response.json();
-    } catch (error) {
-      console.error(`Failed to fetch registry: `, error);
-      snapRegistry = {};
-    }
-    this.store.updateState({ snapRegistryList: snapRegistry });
-  }
-
   ///: END:ONLY_INCLUDE_IF
 
   /**
