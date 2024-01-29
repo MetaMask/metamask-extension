@@ -22,7 +22,7 @@ describe('Settings', function () {
         await unlockWallet(driver);
 
         await driver.clickElement('[data-testid="home__asset-tab"]');
-        const tokenValue = process.env.MULTICHAIN ? '0\nETH' : '0 ETH';
+        const tokenValue = '0 ETH';
         const tokenListAmount = await driver.findElement(
           '[data-testid="multichain-token-list-item-value"]',
         );
@@ -65,7 +65,7 @@ describe('Settings', function () {
         );
         await driver.clickElement('[data-testid="home__asset-tab"]');
 
-        const tokenValue = process.env.MULTICHAIN ? '0\nETH' : '0 ETH';
+        const tokenValue = '0 ETH';
         const tokenListAmount = await driver.findElement(
           '[data-testid="multichain-token-list-item-value"]',
         );
