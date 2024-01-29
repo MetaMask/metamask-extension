@@ -640,7 +640,7 @@ jobs:
           name: Build MMI extension for Playwright e2e
           command: |
             export MMI_CONFIGURATION_SERVICE_URL=$MMI_DEV_CONFIGURATION_SERVICE_URL
-            yarn dist:mmi
+            yarn dist:mmi:debug
       - run:
           name: Move test build to 'dist-test' to avoid conflict with production build
           command: mv ./dist ./dist-test-mmi-playwright

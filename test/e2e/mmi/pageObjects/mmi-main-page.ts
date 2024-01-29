@@ -75,12 +75,20 @@ export class MMIMainPage {
     const fundsDetails = this.page.getByTestId(
       'multichain-token-list-item-value',
     );
+    const fundsDetailsSecondaryValue = this.page.getByTestId(
+      'multichain-token-list-item-secondary-value',
+    );
     const accountsFunds = this.page.locator('.wallet-overview__balance');
     const accountMenu = this.page.getByTestId('account-menu-icon');
     await expect(accountMenu).toHaveText(accountName);
     await test.expect.soft(this.page).toHaveScreenshot(screenshotName, {
       fullPage: true,
-      mask: [accountsFunds, fundsDetails, accountMenu],
+      mask: [
+        accountsFunds,
+        fundsDetailsSecondaryValue,
+        fundsDetails,
+        accountMenu,
+      ],
       maxDiffPixelRatio: 0.02,
     });
   }
