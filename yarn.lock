@@ -4507,14 +4507,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/name-controller@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "@metamask/name-controller@npm:4.0.1"
+"@metamask/name-controller@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "@metamask/name-controller@npm:4.2.0"
   dependencies:
-    "@metamask/base-controller": "npm:^4.0.1"
-    "@metamask/utils": "npm:^8.2.0"
+    "@metamask/base-controller": "npm:^4.1.0"
+    "@metamask/utils": "npm:^8.3.0"
     async-mutex: "npm:^0.2.6"
-  checksum: 177e5b48e9e6c62579fb314d2db5e47c9bfb68035eb0d2e75431f765f98cdcaef4ade946f77769ddf9f0d45a483d44028dde7224ead2e427d2878d2a4a24e421
+  checksum: 79a8d1281a85fabc817c47a8d1eb04708d69198db732c1eb17bd61718e476aee75734a8e1ae65253b642feb6d9c96082f47fb30ff3fa9aa8b657d3d2bc217b6a
   languageName: node
   linkType: hard
 
@@ -24539,7 +24539,7 @@ __metadata:
     "@metamask/approval-controller": "npm:^5.1.1"
     "@metamask/assets-controllers": "npm:^24.0.0"
     "@metamask/auto-changelog": "npm:^2.1.0"
-    "@metamask/base-controller": "npm:^4.0.0"
+    "@metamask/base-controller": "npm:^4.1.0"
     "@metamask/browser-passworder": "npm:^4.3.0"
     "@metamask/build-utils": "npm:^1.0.0"
     "@metamask/contract-metadata": "npm:^2.3.1"
@@ -24571,7 +24571,7 @@ __metadata:
     "@metamask/logo": "npm:^3.1.2"
     "@metamask/message-manager": "npm:^7.3.0"
     "@metamask/metamask-eth-abis": "npm:^3.0.0"
-    "@metamask/name-controller": "npm:^4.0.0"
+    "@metamask/name-controller": "npm:^4.2.0"
     "@metamask/network-controller": "npm:^17.1.0"
     "@metamask/notification-controller": "npm:^3.0.0"
     "@metamask/obs-store": "npm:^8.1.0"
