@@ -841,20 +841,12 @@
     },
     "@metamask/accounts-controller": {
       "packages": {
-        "@metamask/accounts-controller>@metamask/base-controller": true,
+        "@metamask/base-controller": true,
         "@metamask/eth-snap-keyring": true,
         "@metamask/keyring-api": true,
         "@metamask/keyring-controller": true,
         "ethereumjs-util": true,
         "uuid": true
-      }
-    },
-    "@metamask/accounts-controller>@metamask/base-controller": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "immer": true
       }
     },
     "@metamask/address-book-controller": {
