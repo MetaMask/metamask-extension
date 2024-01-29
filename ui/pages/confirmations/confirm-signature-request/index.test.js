@@ -64,7 +64,6 @@ const mockState = {
         balance: '0x7e64033f2fdb0436',
       },
     },
-    selectedAddress: '0x8eeee1781fd885ff5ddef7789486676961873d12',
     addressBook: {},
     tokenList: {},
     preferences: {},

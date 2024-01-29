@@ -5,22 +5,13 @@ const {
   switchToNotificationWindow,
   openDapp,
   unlockWallet,
+  editGasfeeForm,
   WINDOW_TITLES,
 } = require('../helpers');
 const FixtureBuilder = require('../fixture-builder');
 const { SMART_CONTRACTS } = require('../seeder/smart-contracts');
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
-const editGasfeeCustomToken = async (driver) => {
-  const inputs = await driver.findElements('input[type="number"]');
-  const gasLimitInput = inputs[0];
-  const gasPriceInput = inputs[1];
-  await gasLimitInput.clear();
-  await gasLimitInput.fill('60000');
-  await gasPriceInput.clear();
-  await gasPriceInput.fill('10');
-  await driver.clickElement({ text: 'Save', tag: 'button' });
-};
 
 describe('Transfer custom tokens @no-mmi', function () {
   const smartContract = SMART_CONTRACTS.HST;
@@ -92,7 +83,7 @@ describe('Transfer custom tokens @no-mmi', function () {
         // edit gas fee
         await driver.clickElement({ text: 'Details', tag: 'button' });
         await driver.clickElement({ text: 'Edit', tag: 'button' });
-        await editGasfeeCustomToken(driver);
+        await editGasfeeForm(driver, '60000', '10');
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // check that transaction has completed correctly and is displayed in the activity list
@@ -141,7 +132,7 @@ describe('Transfer custom tokens @no-mmi', function () {
           { text: 'Edit suggested gas fee', tag: 'button' },
           10000,
         );
-        await editGasfeeCustomToken(driver);
+        await editGasfeeForm(driver, '60000', '10');
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
         // in extension, check that transaction has completed correctly and is displayed in the activity list

@@ -140,7 +140,9 @@ exports[`Confirm Transaction Base should match snapshot 1`] = `
           >
             <div
               class="sender-to-recipient__name"
-            />
+            >
+              Account 1
+            </div>
           </div>
         </div>
       </div>
