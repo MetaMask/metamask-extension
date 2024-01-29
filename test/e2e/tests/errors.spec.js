@@ -641,7 +641,7 @@ describe('Sentry errors', function () {
       );
     });
 
-    it.only('should capture background application state', async function () {
+    it('should capture background application state', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder()
